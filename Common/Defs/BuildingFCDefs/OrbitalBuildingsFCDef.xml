@@ -16,7 +16,7 @@
 		</applicableBiomes>
 		<settlementTypeRestriction>OrbitalOnly</settlementTypeRestriction>
 		<upkeep>400</upkeep>
-		<iconPath>GUI/Buildings/OrbitalFuelDepot</iconPath>
+		<iconPath>GUI/Buildings/Orbital/OrbitalFuelDepot</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
 	<FactionColonies.FCTraitEffectDef>

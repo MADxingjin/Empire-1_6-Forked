@@ -12,7 +12,7 @@ namespace FactionColonies
         Basic,
         Logistics,
         Advanced,
-        ZeroG
+        Glitter
     }
 
     public class OrbitalPlatformCreationWindow : Window
@@ -105,8 +105,8 @@ namespace FactionColonies
                 tiers.Add(OrbitalPlatformTier.Logistics);
             if (DefDatabase<ResearchProjectDef>.GetNamed("AdvancedOrbitalEngineering").IsFinished)
                 tiers.Add(OrbitalPlatformTier.Advanced);
-            if (DefDatabase<ResearchProjectDef>.GetNamed("ZeroGManufacturing").IsFinished)
-                tiers.Add(OrbitalPlatformTier.ZeroG);
+            if (DefDatabase<ResearchProjectDef>.GetNamed("GlitterworldOrbitalSettlements").IsFinished)
+                tiers.Add(OrbitalPlatformTier.Glitter);
                 
             return tiers.ToArray();
         }
@@ -121,7 +121,7 @@ namespace FactionColonies
                     return ("Logistics Platform", "50% faster tax delivery, special buildings");
                 case OrbitalPlatformTier.Advanced:
                     return ("Advanced Platform", "25% lower construction cost, larger size");
-                case OrbitalPlatformTier.ZeroG:
+                case OrbitalPlatformTier.Glitter:
                     return ("Zero-G Manufacturing Platform", "Specialized production buildings with bonuses");
                 default:
                     return ("Unknown", "");
@@ -140,7 +140,7 @@ namespace FactionColonies
                     return baseCost + 2000;
                 case OrbitalPlatformTier.Advanced:
                     return (int)(baseCost * 0.75f) + 3000; // 25% discount + premium
-                case OrbitalPlatformTier.ZeroG:
+                case OrbitalPlatformTier.Glitter:
                     return (int)(baseCost * 0.75f) + 5000;
                 default:
                     return baseCost;
@@ -209,7 +209,7 @@ namespace FactionColonies
                     return (baseDays + 5) * GenDate.TicksPerDay;
                 case OrbitalPlatformTier.Advanced:
                     return (int)((baseDays + 8) * 0.75f * GenDate.TicksPerDay); // 25% faster due to research
-                case OrbitalPlatformTier.ZeroG:
+                case OrbitalPlatformTier.Glitter:
                     return (int)((baseDays + 12) * 0.75f * GenDate.TicksPerDay);
                 default:
                     return baseDays * GenDate.TicksPerDay;

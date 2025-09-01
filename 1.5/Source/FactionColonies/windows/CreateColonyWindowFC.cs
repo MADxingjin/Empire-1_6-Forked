@@ -436,8 +436,8 @@ namespace FactionColonies
         private OrbitalPlatformTier GetHighestOrbitalTier()
         {
             var tiers = new System.Collections.Generic.List<OrbitalPlatformTier>();
-            if (DefDatabase<ResearchProjectDef>.GetNamed("ZeroGManufacturing").IsFinished)
-                tiers.Add(OrbitalPlatformTier.ZeroG);
+            if (DefDatabase<ResearchProjectDef>.GetNamed("GlitterworldOrbitalSettlements").IsFinished)
+                tiers.Add(OrbitalPlatformTier.Glitter);
             if (DefDatabase<ResearchProjectDef>.GetNamed("AdvancedOrbitalEngineering").IsFinished)
                 tiers.Add(OrbitalPlatformTier.Advanced);
             if (DefDatabase<ResearchProjectDef>.GetNamed("OrbitalLogistics").IsFinished)
@@ -453,7 +453,7 @@ namespace FactionColonies
             Basic,
             Logistics,
             Advanced,
-            ZeroG
+            Glitter
         }
     }
 }

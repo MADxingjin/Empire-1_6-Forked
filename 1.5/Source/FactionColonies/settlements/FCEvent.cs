@@ -929,7 +929,7 @@ namespace FactionColonies
                         resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.15, 1);
                     }
                     break;
-                case OrbitalPlatformTier.ZeroG:
+                case OrbitalPlatformTier.Glitter:
                     // Specialized production bonuses + 25% production boost
                     settlement.upgradeSettlement();
                     foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
