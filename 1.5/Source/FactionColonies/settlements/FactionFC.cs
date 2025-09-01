@@ -1517,6 +1517,7 @@ namespace FactionColonies
                     // This prevents issues when settings get corrupted during performance problems
 
                     int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes;
+                    // Log.Message($"Empire Mod - TaxTick: Using timeBetweenTaxes: {timeBetweenTaxes} ticks ({timeBetweenTaxes / 60000} days)");
                     
                     // Safety check: ensure timeBetweenTaxes is at least 1 day
                     if (timeBetweenTaxes <= 0)

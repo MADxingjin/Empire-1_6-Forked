@@ -305,16 +305,34 @@ namespace FactionColonies
                     case "settleNewColony":
                     {
                         //Settle new colony event
-                        //Log.Message(events[i].def.defName + " event triggered" + Find.TickManager.TicksGame)
                         faction.addExperienceToFactionLevel(10f);
-                        if (Find.World.info.name == evt.planetName)
+                        
+                        // Check if this is an orbital platform
+                        if (evt.isOrbitalPlatform)
                         {
-                            FactionColonies.createPlayerColonySettlement(evt.location, true, evt.planetName);
+                            // Create orbital platform
+                            if (Find.World.info.name == evt.planetName)
+                            {
+                                CreateOrbitalPlatformSettlement(evt.location, evt.orbitalTier, evt.planetName);
+                            }
+                            else
+                            {
+                                // Handle SoS2 orbital platforms if needed
+                                CreateOrbitalPlatformSettlement(evt.location, evt.orbitalTier, evt.planetName);
+                            }
                         }
                         else
                         {
-                            FactionColonies.createPlayerColonySettlement(evt.location, false, evt.planetName);
-                            faction.createSettlementQueue.Add(new SettlementSoS2Info(evt.planetName, evt.location));
+                            // Regular settlement creation
+                            if (Find.World.info.name == evt.planetName)
+                            {
+                                FactionColonies.createPlayerColonySettlement(evt.location, true, evt.planetName);
+                            }
+                            else
+                            {
+                                FactionColonies.createPlayerColonySettlement(evt.location, false, evt.planetName);
+                                faction.createSettlementQueue.Add(new SettlementSoS2Info(evt.planetName, evt.location));
+                            }
                         }
 
                         faction.settlementCaravansList.Remove(evt.location.ToString());
@@ -667,6 +685,329 @@ namespace FactionColonies
 
             faction.Bills.Remove(bill);
         }
+
+        // Techdebt - This section requires language support. This would just involve switching out the strings below to the language definitions for each case.
+        private static void CreateOrbitalPlatformSettlement(int tile, OrbitalPlatformTier tier, string planetName)
+        {
+            try
+            {
+                // Create orbital platform settlement directly (bypass tile validation)
+                Faction playerFaction = FactionColonies.getPlayerColonyFaction();
+                FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+                
+                if (!worldcomp.settlements.Any())
+                {
+                    worldcomp.timeStart = Find.TickManager.TicksGame;
+                }
+
+                // Find an empty orbital tile instead of using the passed tile
+                PlanetTile orbitalTile = FindEmptyOrbitalTile();
+                
+                if (!orbitalTile.Valid)
+                {
+                    Log.Error("Could not find suitable orbital tile for orbital platform");
+                    Messages.Message("Could not find suitable space for orbital platform.", MessageTypeDefOf.RejectInput);
+                    return;
+                }
+
+                Log.Message($"Creating orbital platform at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
+
+                // Create settlement data using the orbital tile ID
+            
+                string platformName = GetTierName(tier);
+                SettlementFC settlementfc = new SettlementFC(platformName, orbitalTile.tileId);
+                
+                // Ensure the name is properly set
+                if (string.IsNullOrEmpty(settlementfc.name))
+                {
+                    settlementfc.name = platformName;
+                }
+                
+                // Set up as orbital platform
+                settlementfc.power.isTithe = true;
+                settlementfc.power.isTitheBool = true;
+                settlementfc.research.isTithe = true;
+                settlementfc.research.isTitheBool = true;
+                settlementfc.planetName = planetName;
+
+                // Ensure orbital platforms start in a good state
+                settlementfc.isUnderAttack = false;
+                
+                // Apply tier-specific bonuses
+                ApplyOrbitalTierBonuses(settlementfc, tier);
+                
+                // Apply policies
+                if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
+                    settlementfc.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
+                if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
+                    settlementfc.loyalty = 70;
+                if (worldcomp.hasPolicy(FCPolicyDefOf.egalitarian))
+                    settlementfc.happiness = 60;
+                if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlementfc.settlementLevel == 1)
+                    settlementfc.upgradeSettlement();
+
+                worldcomp.addSettlement(settlementfc);
+                
+                // Create world object using orbital platform def
+                var orbitalDef = DefDatabase<WorldObjectDef>.GetNamed("FCOrbitalPlatform");
+                if (orbitalDef == null)
+                {
+                    Log.Error("FCOrbitalPlatform WorldObjectDef not found!");
+                    Messages.Message("Orbital platform definition missing.", MessageTypeDefOf.RejectInput);
+                    return;
+                }
+
+                WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(orbitalDef);
+                if (settlement == null)
+                {
+                    Log.Error("Failed to create WorldSettlementFC object!");
+                    return;
+                }
+
+                Log.Message($"Created WorldSettlementFC object successfully, setting tile to {orbitalTile.tileId}");
+                
+                settlement.Tile = orbitalTile; // Use the PlanetTile directly
+                settlement.SetFaction(playerFaction);
+
+                // Set the settlement property FIRST
+                if (settlement != null && settlementfc != null)
+                {
+                    settlement.settlement = settlementfc;
+                    settlementfc.worldSettlement = settlement; // Add this line
+                    Log.Message($"Settlement.settlement property linked successfully");
+                }
+                else
+                {
+                    Log.Error($"Cannot link settlement property: settlement={settlement != null}, settlementfc={settlementfc != null}");
+                }
+
+                // THEN set the name (which now works because settlement.settlement is set)
+                string finalName = platformName; // Use platformName directly as fallback
+                if (!string.IsNullOrEmpty(settlementfc?.name))
+                {
+                    finalName = settlementfc.name;
+                }
+
+                Log.Message($"Setting settlement name to: {finalName}");
+
+                if (settlement != null && !string.IsNullOrEmpty(finalName))
+                {
+                    settlement.Name = finalName;
+                    Log.Message($"Settlement name set successfully");
+                }
+                else
+                {
+                    Log.Error($"Cannot set settlement name: settlement={settlement != null}, finalName={finalName}");
+                }
+                
+                // Add to world objects
+                Log.Message($"Adding settlement to world objects...");
+                Find.WorldObjects.Add(settlement);
+                Log.Message($"Added orbital platform to world objects successfully");
+
+                // Force a world render update
+                Find.World.renderer.RegenerateAllLayersNow();
+                Log.Message($"Forced world renderer update");
+
+                Find.LetterStack.ReceiveLetter("Orbital Platform Complete", 
+                    $"The {platformName} Platform has been completed and is now operational!", 
+                    LetterDefOf.PositiveEvent);
+                
+                Log.Message($"Orbital platform created successfully at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
+                
+                // Debug: List all world objects to see if our platform was added
+                Log.Message($"Total world objects after creation: {Find.WorldObjects.AllWorldObjects.Count()}");
+                var orbitalObjects = Find.WorldObjects.AllWorldObjects.Where(wo => wo.def?.defName == "FCOrbitalPlatform").ToList();
+                Log.Message($"Orbital platforms in world: {orbitalObjects.Count}");
+                foreach (var obj in orbitalObjects)
+                {
+                    Log.Message($"  - Platform at tile {obj.Tile} with name {obj.Label}");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Error($"Exception in CreateOrbitalPlatformSettlement: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        private static string GetTierName(OrbitalPlatformTier tier)
+        {
+            // Space-themed keywords to append to generated names
+            string[] spaceKeywords = { "Space Station", "Station", "Satellite", "Solar Base", "Orbital Hub", "Space Platform", "Cosmic Station", "Stellar Base", "Void Station", "Astral Platform" };
+            
+            // Get the base name using the same logic as regular settlements
+            string baseName = GetOrbitalBaseName();
+            
+            // Get a random space keyword
+            string spaceKeyword = spaceKeywords[Rand.Range(0, spaceKeywords.Length)];
+            
+            // Combine base name with space keyword
+            return $"{baseName} {spaceKeyword}";
+        }
+
+        private static string GetOrbitalBaseName()
+        {
+            // Copy the same logic as the normal settlement name generator
+            Faction faction = FactionColonies.getPlayerColonyFaction();
+            
+            if (faction?.def.settlementNameMaker == null)
+            {
+                // If no settlementNameMaker, generate a simple name
+                return "Orbital";
+            }
+
+            // Use the same name generation system as regular settlements
+            RulePackDef rulePack = faction.def.settlementNameMaker;
+            List<string> usedNames = new List<string>();
+            List<Settlement> settlements = Find.WorldObjects.Settlements;
+            for (int index = 0; index < settlements.Count; ++index)
+            {
+                Settlement settlement = settlements[index];
+                if (settlement.Name != null)
+                    usedNames.Add(settlement.Name);
+            }
+
+            return NameGenerator.GenerateName(rulePack, usedNames, true);
+        }
+
+        private static void ApplyOrbitalTierBonuses(SettlementFC settlement, OrbitalPlatformTier tier)
+        {
+            // Create fake biome/hilliness data for orbital platforms with guaranteed positive values
+            var orbitalBiomeDef = new BiomeResourceDef();
+            var orbitalHillinessDef = new BiomeResourceDef();
+            
+            // Set the defName for the orbital biome so updateDescription() can find it
+            orbitalBiomeDef.defName = "OrbitalSpace";
+            orbitalHillinessDef.defName = "Orbital";
+            
+            // Initialize the lists
+            orbitalBiomeDef.BaseProductionAdditive = new List<double>();
+            orbitalBiomeDef.BaseProductionMultiplicative = new List<double>();
+            orbitalHillinessDef.BaseProductionAdditive = new List<double>();
+            orbitalHillinessDef.BaseProductionMultiplicative = new List<double>();
+            
+            // Generate values for each resource type (9 resources) - ensure positive production
+            for (int i = 0; i < ResourceUtils.resourceTypes.Length; i++)
+            {
+                // Base production additive: 1.0 to 2.0, weighted toward good values
+                double additiveValue = GetWeightedRandomAdditive();
+                orbitalBiomeDef.BaseProductionAdditive.Add(Math.Round(additiveValue, 1));
+                orbitalHillinessDef.BaseProductionAdditive.Add(0.0); // Keep hilliness additive at 0
+                
+                // Base production multiplicative: 1.0 to 1.5, weighted toward good values
+                double multiplicativeValue = GetWeightedRandomMultiplicative();
+                orbitalBiomeDef.BaseProductionMultiplicative.Add(Math.Round(multiplicativeValue, 1));
+                orbitalHillinessDef.BaseProductionMultiplicative.Add(1.0); // Keep hilliness multiplier at 1
+            }
+            
+            // Override the settlement's biome and hilliness definitions
+            settlement.biomeDef = orbitalBiomeDef;
+            settlement.hillinessDef = orbitalHillinessDef;
+            settlement.biome = "OrbitalSpace";
+            settlement.hilliness = "Orbital";
+            
+            // Reinitialize base production with the new fake biome data
+            settlement.initBaseProduction();
+            
+            // Apply tier-specific bonuses (rounded to 1 decimal)
+            switch (tier)
+            {
+                case OrbitalPlatformTier.Logistics:
+                    // 50% faster tax delivery + 10% production boost
+                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+                    {
+                        ResourceFC resource = settlement.getResource(resourceType);
+                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.1, 1);
+                    }
+                    break;
+                case OrbitalPlatformTier.Advanced:
+                    // 25% lower construction cost, larger size + 15% production boost
+                    settlement.upgradeSettlement(); // Start at level 2
+                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+                    {
+                        ResourceFC resource = settlement.getResource(resourceType);
+                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.15, 1);
+                    }
+                    break;
+                case OrbitalPlatformTier.ZeroG:
+                    // Specialized production bonuses + 25% production boost
+                    settlement.upgradeSettlement();
+                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+                    {
+                        ResourceFC resource = settlement.getResource(resourceType);
+                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.25, 1);
+                    }
+                    break;
+            }
+            
+            // Update production calculations
+            settlement.updateProduction();
+            
+            // Ensure orbital platforms are not flagged as under attack
+            settlement.isUnderAttack = false;
+        }
+
+        // Helper method for weighted random additive values (1.0-2.0 range) - guaranteed positive
+        // I might change this again. I'm not sure if this is the best way.
+        private static double GetWeightedRandomAdditive()
+        {
+            float roll = Rand.Value;
+            
+            if (roll < 0.30f) return 1.5; // 30% chance for 1.5
+            if (roll < 0.50f) return 1.0; // 20% chance for 1.0  
+            if (roll < 0.70f) return 1.8; // 20% chance for 1.8
+            if (roll < 0.85f) return 2.0; // 15% chance for 2.0
+            
+            // 15% chance for other random values between 1.2-1.9, rounded to 1 decimal
+            return Math.Round(Rand.Range(1.2f, 1.9f), 1);
+        }
+
+        // Helper method for weighted random multiplicative values (1.0-1.5 range) - guaranteed positive
+        private static double GetWeightedRandomMultiplicative()
+        {
+            float roll = Rand.Value;
+            
+            if (roll < 0.30f) return 1.2; // 30% chance for 1.2
+            if (roll < 0.50f) return 1.0; // 20% chance for 1.0
+            if (roll < 0.70f) return 1.3; // 20% chance for 1.3
+            if (roll < 0.85f) return 1.5; // 15% chance for 1.5
+            
+            // 15% chance for other random values between 1.1-1.4, rounded to 1 decimal
+            return Math.Round(Rand.Range(1.1f, 1.4f), 1);
+        }
+
+        // Add the FindEmptyOrbitalTile method to the FCEventMaker class
+        private static PlanetTile FindEmptyOrbitalTile()
+        {
+            var worldGrid = Find.WorldGrid;
+            var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
+            
+            // If Odyssey is active and orbit layer exists, try to find a tile in orbit first
+            if (ModsConfig.OdysseyActive && worldGrid.Orbit != null)
+            {
+                for (int attempts = 0; attempts < 1000; attempts++)
+                {
+                    int randomTileId = Rand.Range(0, worldGrid.Orbit.TilesCount);
+                    PlanetTile orbitalTile = new PlanetTile(randomTileId, worldGrid.Orbit);
+                    
+                    if (!existingObjectTiles.Contains(orbitalTile))
+                        return orbitalTile;
+                }
+            }
+            
+            // Fallback: find any empty surface tile (though this shouldn't happen for orbital platforms) Don't fall from orbit ahh!!!!!!!
+            Log.Warning("Could not find orbital tile, falling back to surface tile");
+            for (int attempts = 0; attempts < 1000; attempts++)
+            {
+                int randomTileId = Rand.Range(0, worldGrid.TilesCount);
+                PlanetTile surfaceTile = new PlanetTile(randomTileId, worldGrid.Surface);
+                
+                if (!existingObjectTiles.Contains(surfaceTile))
+                    return surfaceTile;
+            }
+            
+            return PlanetTile.Invalid;
+        }
     }
 
     public class FCEvent : IExposable, ILoadReferenceable
@@ -762,6 +1103,10 @@ namespace FactionColonies
             Scribe_References.Look(ref militaryForceDefendingFaction, "militaryForceDefendingFaction");
             Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
             Scribe_Values.Look(ref isMilitaryEvent, "isMilitaryEvent");
+
+            // Orbital Platform specific fields
+            Scribe_Values.Look(ref isOrbitalPlatform, "isOrbitalPlatform", false);
+            Scribe_Values.Look(ref orbitalTier, "orbitalTier", OrbitalPlatformTier.Basic);
         }
 
         public FCEventDef def = new FCEventDef();
@@ -827,6 +1172,9 @@ namespace FactionColonies
         public SettlementFC settlementFCDefending;
         public bool isMilitaryEvent;
 
+        // Orbital Platform specific fields
+        public bool isOrbitalPlatform = false;
+        public OrbitalPlatformTier orbitalTier = OrbitalPlatformTier.Basic;
 
         public string GetUniqueLoadID()
         {

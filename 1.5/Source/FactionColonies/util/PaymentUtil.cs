@@ -263,29 +263,6 @@ namespace FactionColonies
             return things;
         }
 
-        public static void resetThingFilter(in SettlementFC settlement, ResourceType resourceType)
-        {
-            //Log.Message(resourceID.ToString());
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            ThingFilter filter = settlement.getResource(resourceType).filter;
-            filterResource(filter, resourceType, faction.techLevel);
-
-            switch (resourceType)
-            {
-                case ResourceType.Research:
-                case ResourceType.Power:
-                    break;
-                default:
-                    List<ThingDef> things = debugGenerateTithe(resourceType);
-                    foreach (var thing in things.Where(thing => !FactionColonies.canCraftItem(thing)))
-                    {
-                        filter.SetAllow(thing, false);
-                    }
-
-                    break;
-            }
-        }
-
         private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel)
         {
             switch (resourceType)
@@ -420,8 +397,112 @@ namespace FactionColonies
             }
         }
 
+        // New overloaded method that takes settlement context
+        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.Logging:
+                    if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
+                    {
+                        filter.SetAllow(ThingDefOf.GravlitePanel, true);
+                    
+                    }
+                    else
+                    {
+                        // Regular logging for planetary settlements
+                        filter.SetAllow(ThingDefOf.WoodLog, true);
+                        filter.SetAllow(StuffCategoryDefOf.Woody, true);
+                    }
+                    break;
+                case ResourceType.Animals:
+                    if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
+                    {
+                        // Chemfuel production for orbital platforms
+                        filter.SetAllow(ThingDefOf.Chemfuel, true);
+                    }
+                    else
+                    {
+                        // Regular animals for planetary settlements
+                        List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                        foreach (PawnKindDef def in allAnimalDefs)
+                        {
+                            if (def.IsAnimalAndAllowed())
+                            {
+                                filter.SetAllow(def.race, true);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    // Use the original method for all other resource types
+                    filterResource(filter, resourceType, techLevel);
+                    break;
+            }
+        }
+
+        public static void resetThingFilter(in SettlementFC settlement, ResourceType resourceType)
+        {
+            //Log.Message(resourceID.ToString());
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            ThingFilter filter = settlement.getResource(resourceType).filter;
+            filterResource(filter, resourceType, faction.techLevel, settlement);
+
+            switch (resourceType)
+            {
+                case ResourceType.Research:
+                case ResourceType.Power:
+                    break;
+                default:
+                    List<ThingDef> things = debugGenerateTithe(resourceType, settlement);
+                    foreach (var thing in things.Where(thing => !FactionColonies.canCraftItem(thing)))
+                    {
+                        filter.SetAllow(thing, false);
+                    }
+
+                    break;
+            }
+        }
+
         public static List<ThingDef> debugGenerateTithe(ResourceType resourceType)
         {
+            return debugGenerateTithe(resourceType, null);
+        }
+
+        public static List<ThingDef> debugGenerateTithe(ResourceType resourceType, SettlementFC settlement)
+        {
+            // Special handling for orbital platforms - override specific resource types. Can I improve this?
+            if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
+            {
+                if (resourceType == ResourceType.Animals)
+                {
+                    // Return Chemfuel for Animals on orbital platforms
+                    List<ThingDef> chemfuelList = new List<ThingDef>();
+                    chemfuelList.Add(ThingDefOf.Chemfuel);
+                    return chemfuelList;
+                }
+                
+                if (resourceType == ResourceType.Logging)
+                {
+                    // Return Gravlite Panels for Logging on orbital platforms
+                    Log.Message($"Processing Logging case for orbital platform");
+                    List<ThingDef> GravliteList = new List<ThingDef>();
+                    
+                    if (ThingDefOf.GravlitePanel != null)
+                    {
+                        GravliteList.Add(ThingDefOf.GravlitePanel);
+                        Log.Message($"Added GravlitePanel to list, returning {GravliteList.Count} items");
+                    }
+                    else
+                    {
+                        Log.Message($"ERROR: ThingDefOf.GravlitePanel is null!");
+                    }
+                    
+                    return GravliteList;
+                }
+            }
+            
+            // Regular handling for all other cases
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             ThingSetMaker thingSetMaker = resourceType == ResourceType.Animals
                 ? (ThingSetMaker) new ThingSetMaker_Animal()
@@ -433,7 +514,7 @@ namespace FactionColonies
             param.techLevel = faction.techLevel;
             param.countRange = new IntRange(1, 1);
 
-            filterResource(param.filter, resourceType, faction.techLevel);
+            filterResource(param.filter, resourceType, faction.techLevel, settlement);
 
             things = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
 

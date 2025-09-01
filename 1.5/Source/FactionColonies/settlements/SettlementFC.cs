@@ -1174,6 +1174,9 @@ namespace FactionColonies
                 case "ExtremeDesert":
                     description = "FCDescExtremeDesert".Translate();
                     break;
+                case "OrbitalSpace":
+                    description = "FCDescOrbitalSpace".Translate();
+                    break;
                 default:
                     description = "FCDescUnknown".Translate();
                     break;
@@ -1314,6 +1317,26 @@ namespace FactionColonies
                     valid = false;
                     Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
                 }
+            }
+
+            // Check settlement type restrictions
+            bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
+            switch (building.settlementTypeRestriction)
+            {
+                case SettlementTypeRestriction.SurfaceOnly:
+                    if (isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingSurfaceOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
+                case SettlementTypeRestriction.OrbitalOnly:
+                    if (!isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingOrbitalOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
             }
 
             return valid;

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
@@ -171,11 +171,15 @@ namespace FactionColonies
                 })
             };
 
-            List<ThingDef> things = PaymentUtil.debugGenerateTithe(resourceType);
+            List<ThingDef> things = PaymentUtil.debugGenerateTithe(resourceType, settlement);
 
             foreach (ThingDef thing in things.Where(thing => thing.race?.animalType != AnimalType.Dryad))
             {
-                if (!FactionColonies.canCraftItem(thing))
+                // Skip craftability check for orbital platform items (GravlitePanel, Chemfuel)
+                // I'm not sure if this is the best way to do this, but it works for now. Can't say I'm proud of it.
+                bool isOrbitalItem = (thing == ThingDefOf.GravlitePanel) && ResourceUtils.IsOrbitalPlatform(settlement);
+                
+                if (!isOrbitalItem && !FactionColonies.canCraftItem(thing))
                 {
                     resource.filter.SetAllow(thing, false);
                     continue;
@@ -226,9 +230,8 @@ namespace FactionColonies
             if (Widgets.ButtonImage(new Rect(x + 45, scroll + y + 75 + (int)resourceType * (45 + spacing), 30, 30), resource.getIcon()))
             {
                 Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": "
-                    + resource.label,
-                    char.ToUpper(resource.label[0])
-                    + resource.label.Substring(1)));
+                    + ResourceUtils.GetResourceDisplayLabel(resourceType, settlement),
+                    ResourceUtils.GetResourceDisplayLabel(resourceType, settlement)));
             }
         }
 
@@ -367,11 +370,38 @@ namespace FactionColonies
 
             //Draw town location flabor text
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(55, 40, 470, 20),
-                "Located".Translate() + " " +
-                Find.WorldGrid[settlement.mapLocation].hilliness.GetLabel() + " " +
-                "LandOf".Translate() + " " +
-                Find.WorldGrid[settlement.mapLocation].PrimaryBiome.LabelCap.ToLower()); //returnSettlement().title);
+
+            // Check if this is an orbital platform and show appropriate location text
+            // Techdebt - Language support for this would be nice
+            string locationText;
+            if (ResourceUtils.IsOrbitalPlatform(settlement))
+            {
+                // Space-themed location text for orbital platforms - use deterministic selection based on settlement ID
+                // Techdebt - Language support for this would be nice
+                string[] spaceLocations = { 
+                    "Orbiting in deep space", 
+                    "Stationed in low orbit", 
+                    "Floating in the emptiness of space", 
+                    "Anchored in orbit",
+                    "Positioned in low orbit",
+                    "Suspended above the surface",
+                    "Deployed in orbital space"
+                };
+                
+                // Use the settlement's loadID to deterministically select a location text
+                int locationIndex = Math.Abs(settlement.loadID) % spaceLocations.Length;
+                locationText = spaceLocations[locationIndex];
+            }
+            else
+            {
+                // Regular location text for surface settlements
+                locationText = "Located".Translate() + " " +
+                    Find.WorldGrid[settlement.mapLocation].hilliness.GetLabel() + " " +
+                    "LandOf".Translate() + " " +
+                    Find.WorldGrid[settlement.mapLocation].PrimaryBiome.LabelCap.ToLower();
+            }
+
+            Widgets.Label(new Rect(55, 40, 470, 20), locationText);
 
             //Draw header Settings button
             if (Widgets.ButtonImage(new Rect(495, 5, 20, 20), TexLoad.iconCustomize))
