@@ -204,7 +204,7 @@ namespace FactionColonies.util
 								deliveryPawn = PawnGenerator.GeneratePawn(request);
 								if (deliveryPawn != null)
 								{
-									Log.Message($"Empire: Successfully generated delivery pawn with xenotype: {xenotype.label}");
+									// Log.Message($"Empire: Successfully generated delivery pawn with xenotype: {xenotype.label}");
 									break;
 								}
 							}
@@ -355,15 +355,15 @@ namespace FactionColonies.util
 			// This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
 			var guardAnimals = DefDatabase<PawnKindDef>.AllDefsListForReading
 				.Where(def => def.race.race.Animal && 
-							def.RaceProps.trainability != null && 
-							def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
-							def.race.race.predator &&
-							def.combatPower > 50f && // Strong combat animals
-							!def.race.tradeTags.NullOrEmpty() &&
-							!def.race.tradeTags.Contains("AnimalMonster") &&
-							!def.race.tradeTags.Contains("AnimalGenetic") &&
-							!def.label.ToLower().Contains("bear") && // Exclude bears
-							!def.label.ToLower().Contains("warg")) // Exclude wargs
+					def.RaceProps.trainability != null && 
+					def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
+					def.race.race.predator &&
+					def.combatPower > 50f && // Strong combat animals
+					!def.race.tradeTags.NullOrEmpty() &&
+					!def.race.tradeTags.Contains("AnimalMonster") &&
+					!def.race.tradeTags.Contains("AnimalGenetic") &&
+					!def.label.ToLower().Contains("bear") && // Exclude bears
+					!def.label.ToLower().Contains("warg")) // Exclude wargs
 				.OrderByDescending(def => def.combatPower)
 				.Take(5); // Take more options to ensure we can get 2 guards
 
@@ -371,7 +371,7 @@ namespace FactionColonies.util
 			var availableGuardAnimals = guardAnimals.ToList();
 			if (availableGuardAnimals.Any())
 			{
-				Log.Message($"Empire: Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
+				// Log.Message($"Empire: Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
 			}
 
 			int guardsAdded = 0;
@@ -384,7 +384,7 @@ namespace FactionColonies.util
 					{
 						securityGuards.Add(guard);
 						guardsAdded++;
-						Log.Message($"Empire: Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
+						// Log.Message($"Empire: Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
 						if (guardsAdded >= 2) break; // Always add at least 2 guards
 					}
 				}

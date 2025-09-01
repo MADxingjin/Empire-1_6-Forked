@@ -349,23 +349,23 @@ namespace FactionColonies
             }
             List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
                 .settlements.Select(settlement => new FloatMenuOption(settlement.name + " - Settlement Level : " +
-                                                                      settlement.settlementLevel + " - Prisoners: " +
-                                                                      settlement.prisonerList.Count(), delegate
-                                                                      {
-                                                                          foreach (Pawn pawn in selected)
-                                                                          {
-                                                                              //disappear colonist
-                                                                              FactionColonies.sendPrisoner(pawn, settlement);
+                    settlement.settlementLevel + " - Prisoners: " +
+                    settlement.prisonerList.Count(), delegate
+                    {
+                        foreach (Pawn pawn in selected)
+                        {
+                            //disappear colonist
+                            FactionColonies.sendPrisoner(pawn, settlement);
 
-                                                                              foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
-                                                                                  map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
-                                                                              {
-                                                                                  if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
-                                                                                  bed.ForPrisoners = false;
-                                                                                  bed.ForPrisoners = true;
-                                                                              }
-                                                                          }
-                                                                      }))
+                            foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
+                                map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
+                            {
+                                if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
+                                bed.ForPrisoners = false;
+                                bed.ForPrisoners = true;
+                            }
+                        }
+                    }))
                 .ToList();
 
             FloatMenu floatMenu2 = new FloatMenu(settlementList);
@@ -377,8 +377,8 @@ namespace FactionColonies
             foreach (SettlementFC settlement in settlements)
             {
                 settlement.happiness += amount *
-                                    TraitUtilsFC.cycleTraits("happinessLostMultiplier", settlement.traits,
-                                        Operation.Multiplication) * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+                    TraitUtilsFC.cycleTraits("happinessLostMultiplier", settlement.traits,
+                    Operation.Multiplication) * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
             }
         }
 
@@ -388,10 +388,10 @@ namespace FactionColonies
             foreach (SettlementFC settlement in settlements)
             {
                 settlement.unrest += amount *
-                                     TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                                         settlement.traits, Operation.Multiplication) *
-                                     TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                                         traits, Operation.Multiplication);
+                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
+                    settlement.traits, Operation.Multiplication) *
+                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
+                    traits, Operation.Multiplication);
             }
         }
 
@@ -710,15 +710,30 @@ namespace FactionColonies
 
         public void setStartTime()
         {
-            taxTimeDue = Find.TickManager.TicksGame + LoadedModManager.GetMod<FactionColoniesMod>()
+            int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>()
                 .GetSettings<FactionColonies>().timeBetweenTaxes;
+            
+            // Safety check: ensure timeBetweenTaxes is at least 1 day
+            if (timeBetweenTaxes <= 0)
+            {
+                Log.Warning("Empire Mod - setStartTime: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
+                timeBetweenTaxes = GenDate.TicksPerDay;
+                
+                // Fix the corrupted setting
+                try
+                {
+                    LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
+                    Log.Message("Empire Mod - setStartTime: Fixed corrupted timeBetweenTaxes setting");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Empire Mod - setStartTime: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
+                }
+            }
+            
+            taxTimeDue = Find.TickManager.TicksGame + timeBetweenTaxes;
             dailyTimer = Find.TickManager.TicksGame + 2000;
         }
-
-        //0 defname
-        //1 desc
-        //2 location
-        //3 time till trigger
 
         public int returnHighestMilitaryLevel()
         {
@@ -1499,6 +1514,7 @@ namespace FactionColonies
                         addTax(false);
                         //NOT WHERE FINAL UPDATE IS. Go to addTax Function
                     }
+                    // This prevents issues when settings get corrupted during performance problems
 
                     int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes;
                     
@@ -1507,6 +1523,17 @@ namespace FactionColonies
                     {
                         Log.Warning("Empire Mod - TaxTick: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
                         timeBetweenTaxes = GenDate.TicksPerDay;
+                        
+                        // Fix the corrupted setting to prevent future issues
+                        try
+                        {
+                            LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
+                            Log.Message("Empire Mod - TaxTick: Fixed corrupted timeBetweenTaxes setting");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("Empire Mod - TaxTick: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
+                        }
                     }
                     
                     taxTimeDue += timeBetweenTaxes;

@@ -20,7 +20,36 @@ namespace FactionColonies
 
     public class FactionColonies : ModSettings
     {
+
+                // Constants for validation
+        private const int MINIMUM_TAX_INTERVAL = GenDate.TicksPerDay;
+        private const int DEFAULT_TAX_INTERVAL = GenDate.TicksPerTwelfth;
+        public const int updateUiTimer = 150; // UI update interval in ticks
         private Faction playerFactionRef = null;
+
+        public static string GetModVersion()
+        {
+            try
+            {
+                var mod = LoadedModManager.GetMod<FactionColoniesMod>();
+                string manifestPath = Path.Combine(mod.Content.RootDir, "About", "Manifest.xml");
+                if (File.Exists(manifestPath))
+                {
+                    string content = File.ReadAllText(manifestPath);
+                    int versionStart = content.IndexOf("<version>") + 9;
+                    int versionEnd = content.IndexOf("</version>");
+                    if (versionStart > 8 && versionEnd > versionStart)
+                    {
+                        return content.Substring(versionStart, versionEnd - versionStart);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Empire Mod: Failed to read version from manifest: " + ex.Message);
+            }
+            return "Unknown";
+        }
         public Faction GetVanillaPlayerFaction()
         {
             if (playerFactionRef == null)
@@ -1223,8 +1252,39 @@ namespace FactionColonies
 
         public int silverPerResource = 100;
         public static double silverToCreateSettlement = 1000;
-        public int timeBetweenTaxes = GenDate.TicksPerTwelfth;
-        public static int updateUiTimer = 150;
+        // public int timeBetweenTaxes = GenDate.TicksPerTwelfth;
+        // public static int updateUiTimer = 150;'
+
+        // Tax attempt fix
+        private int _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+        public int timeBetweenTaxes
+        {
+            get
+            {
+                // Ensure the value is never 0 or negative
+                if (_timeBetweenTaxes <= 0)
+                {
+                    Log.Warning("Empire Mod - Settings: timeBetweenTaxes getter detected invalid value (" + _timeBetweenTaxes + "), resetting to default");
+                    _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+                }
+                return _timeBetweenTaxes;
+            }
+            set
+            {
+                // Ensure the value is never 0 or negative
+                if (value <= 0)
+                {
+                    Log.Warning("Empire Mod - Settings: Attempted to set timeBetweenTaxes to invalid value (" + value + "), using minimum value instead");
+                    _timeBetweenTaxes = MINIMUM_TAX_INTERVAL;
+                }
+                else
+                {
+                    _timeBetweenTaxes = value;
+                }
+            }
+        }
+
+
         public int productionTitheMod = 25;
         public static int productionResearchBase = 100;
         public static int storeReportCount = 4;
@@ -1278,7 +1338,14 @@ namespace FactionColonies
         {
             base.ExposeData();
             Scribe_Values.Look(ref silverPerResource, "silverPerResource");
-            Scribe_Values.Look(ref timeBetweenTaxes, "timeBetweenTaxes");
+            Scribe_Values.Look(ref _timeBetweenTaxes, "timeBetweenTaxes");
+            
+            // Validate timeBetweenTaxes after loading to prevent corruption issues
+            if (Scribe.mode == LoadSaveMode.LoadingVars && _timeBetweenTaxes <= 0)
+            {
+                Log.Warning("Empire Mod - Settings: Detected corrupted timeBetweenTaxes value (" + _timeBetweenTaxes + "), resetting to default");
+                _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+            }
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod");
             Scribe_Values.Look(ref workerCost, "workerCost");
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel");
@@ -1377,6 +1444,11 @@ namespace FactionColonies
             Widgets.BeginScrollView(inRect, ref scrollVector, viewRect);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(viewRect);
+
+            // Display mod version
+            ls.Label("Empire Mod Version: " + FactionColonies.GetModVersion());
+            ls.Gap(10f);
+
             ls.Label("FCSettingSilverPerResource".Translate());
             ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
             ls.Label("FCSettingDaysBetweenTax".Translate());
