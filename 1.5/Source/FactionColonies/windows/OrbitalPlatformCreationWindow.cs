@@ -39,7 +39,7 @@ namespace FactionColonies
             // Title
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 0, inRect.width, 40), "Create Orbital Platform");
+            Widgets.Label(new Rect(0, 0, inRect.width, 40), "Create Orbital Colony");
 
             // Platform tier selection
             Text.Font = GameFont.Small;
@@ -47,7 +47,7 @@ namespace FactionColonies
             
             float y = 60f;
             
-            Widgets.Label(new Rect(20, y, 200, 25), "Platform Type:");
+            Widgets.Label(new Rect(20, y, 200, 25), "Available to Launch:");
             y += 30f;
 
             var availableTiers = GetAvailableTiers();
@@ -116,13 +116,13 @@ namespace FactionColonies
             switch (tier)
             {
                 case OrbitalPlatformTier.Basic:
-                    return ("Basic Platform", "Standard orbital construction capabilities");
+                    return ("Basic Orbital Colony", "Standard orbital construction capabilities");
                 case OrbitalPlatformTier.Logistics:
-                    return ("Logistics Platform", "50% faster tax delivery, special buildings");
+                    return ("Logistics Orbital Colony", "50% faster tax delivery, special buildings");
                 case OrbitalPlatformTier.Advanced:
-                    return ("Advanced Platform", "25% lower construction cost, larger size");
+                    return ("Advanced Orbital Colony", "25% lower construction cost, larger size");
                 case OrbitalPlatformTier.Glitter:
-                    return ("Zero-G Manufacturing Platform", "Specialized production buildings with bonuses");
+                    return ("Glitterworld Orbital Colony", "Specialized production buildings with bonuses");
                 default:
                     return ("Unknown", "");
             }
@@ -165,7 +165,7 @@ namespace FactionColonies
 
             if (!orbitalTile.Valid)
             {
-                Messages.Message("Could not find suitable empty space for orbital platform.", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("Could not find suitable empty space for the orbital settlement.", MessageTypeDefOf.RejectInput, false);
                 return;
             }
 
@@ -198,8 +198,8 @@ namespace FactionColonies
 
         private int GetConstructionTime(OrbitalPlatformTier tier)
         {
-            // Base construction time (e.g., 10 days)
-            int baseDays = 10;
+            // Base construction time , lets start with 8 days
+            int baseDays = 8;
             
             switch (tier)
             {
