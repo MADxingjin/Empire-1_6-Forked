@@ -619,5 +619,16 @@ namespace FactionColonies.util
 		DropPod,
 		Shuttle
 	}
+
+	public enum EmpireDifficultyLevel
+	{
+		Peaceful = 0,
+		CommunityBuilder = 1,
+		AdventureStory = 2,
+		StriveToSurvive = 3,
+		BloodAndDust = 4,
+		LosingIsFun = 5,
+		Custom = 6
+	}
 }
 

@@ -23,7 +23,7 @@ namespace FactionColonies
 
                 // Constants for validation
         private const int MINIMUM_TAX_INTERVAL = GenDate.TicksPerDay;
-        private const int DEFAULT_TAX_INTERVAL = GenDate.TicksPerTwelfth;
+        private const int DEFAULT_TAX_INTERVAL = 5 * 60000; // 5 days in ticks
         public const int updateUiTimer = 150; // UI update interval in ticks
         private Faction playerFactionRef = null;
 
@@ -1307,6 +1307,7 @@ namespace FactionColonies
         public static int storeReportCount = 4;
         public int workerCost = 100;
 
+        public EmpireDifficultyLevel difficultyLevel = EmpireDifficultyLevel.AdventureStory; // Default to Adventure Story
 
         public static double unrestBaseGain = 0;
         public static double unrestBaseLost = 1;
@@ -1351,6 +1352,53 @@ namespace FactionColonies
         private static Vector2 savedWindowSize = new Vector2(450f, 600f);
         private static bool hasSavedSize = false;
 
+        // Difficulty preset values
+        public void ApplyDifficultyPreset(EmpireDifficultyLevel difficulty)
+        {
+            switch (difficulty)
+            {
+                case EmpireDifficultyLevel.Peaceful:
+                    silverPerResource = 200;
+                    timeBetweenTaxes = 2 * 60000; // 2 days in ticks
+                    productionTitheMod = 50;
+                    workerCost = 75;
+                    break;
+                case EmpireDifficultyLevel.CommunityBuilder:
+                    silverPerResource = 150;
+                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
+                    productionTitheMod = 25;
+                    workerCost = 100;
+                    break;
+                case EmpireDifficultyLevel.AdventureStory:
+                    silverPerResource = 100;
+                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
+                    productionTitheMod = 25;
+                    workerCost = 100;
+                    break;
+                case EmpireDifficultyLevel.StriveToSurvive:
+                    silverPerResource = 100;
+                    timeBetweenTaxes = 10 * 60000; // 10 days in ticks
+                    productionTitheMod = 20;
+                    workerCost = 125;
+                    break;
+                case EmpireDifficultyLevel.BloodAndDust:
+                    silverPerResource = 80;
+                    timeBetweenTaxes = 15 * 60000; // 15 days in ticks
+                    productionTitheMod = 15;
+                    workerCost = 125;
+                    break;
+                case EmpireDifficultyLevel.LosingIsFun:
+                    silverPerResource = 70;
+                    timeBetweenTaxes = 30 * 60000; // 30 days in ticks
+                    productionTitheMod = 10;
+                    workerCost = 150;
+                    break;
+                case EmpireDifficultyLevel.Custom:
+                    // Don't change anything for custom
+                    break;
+            }
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -1379,6 +1427,18 @@ namespace FactionColonies
             Scribe_Values.Look(ref updateVersion, "updateVersion");
             Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
+            Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", EmpireDifficultyLevel.AdventureStory);
+            
+            // Band aid - For existing users upgrading from old system, detect if they have custom values
+            if (Scribe.mode == LoadSaveMode.LoadingVars && difficultyLevel == EmpireDifficultyLevel.AdventureStory)
+            {
+                // Check if current values match Adventure Story defaults
+                if (silverPerResource != 100 || (timeBetweenTaxes / 60000) != 5 || productionTitheMod != 25 || workerCost != 100)
+                {
+                    // User had custom settings, set to Custom mode
+                    difficultyLevel = EmpireDifficultyLevel.Custom;
+                }
+            }
         }
     }
 
@@ -1466,15 +1526,65 @@ namespace FactionColonies
             ls.Label("Empire Mod Version: " + FactionColonies.GetModVersion());
             ls.Gap(10f);
 
-            ls.Label("FCSettingSilverPerResource".Translate());
-            ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
-            ls.Label("FCSettingDaysBetweenTax".Translate());
-            ls.IntEntry(ref daysBetweenTaxes, ref timeBetweenTaxes);
-            settings.timeBetweenTaxes = Math.Max(1, daysBetweenTaxes) * 60000;
-            ls.Label("FCSettingProductionTitheMod".Translate());
-            ls.IntEntry(ref settings.productionTitheMod, ref productionTitheMod);
-            ls.Label("FCSettingWorkerCost".Translate());
-            ls.IntEntry(ref settings.workerCost, ref workerCost);
+            // Empire Difficulty Selection
+            ls.Label("FCSettingEmpireDifficulty".Translate());
+            ls.Gap(5f);
+
+            // Create difficulty options with descriptions
+            var difficultyOptions = new List<(EmpireDifficultyLevel level, string nameKey, string descKey)>
+            {
+                (EmpireDifficultyLevel.Peaceful, "FCDifficultyPeaceful", "FCDifficultyPeacefulDesc"),
+                (EmpireDifficultyLevel.CommunityBuilder, "FCDifficultyCommunityBuilder", "FCDifficultyCommunityBuilderDesc"),
+                (EmpireDifficultyLevel.AdventureStory, "FCDifficultyAdventureStory", "FCDifficultyAdventureStoryDesc"),
+                (EmpireDifficultyLevel.StriveToSurvive, "FCDifficultyStriveToSurvive", "FCDifficultyStriveToSurviveDesc"),
+                (EmpireDifficultyLevel.BloodAndDust, "FCDifficultyBloodAndDust", "FCDifficultyBloodAndDustDesc"),
+                (EmpireDifficultyLevel.LosingIsFun, "FCDifficultyLosingIsFun", "FCDifficultyLosingIsFunDesc"),
+                (EmpireDifficultyLevel.Custom, "FCDifficultyCustom", "FCDifficultyCustomDesc")
+            };
+
+            foreach (var option in difficultyOptions)
+            {
+                bool isSelected = settings.difficultyLevel == option.level;
+                
+                if (ls.RadioButton(option.nameKey.Translate(), isSelected))
+                {
+                    if (!isSelected) // Only change if not already selected
+                    {
+                        settings.difficultyLevel = option.level;
+                        if (option.level != EmpireDifficultyLevel.Custom)
+                        {
+                            settings.ApplyDifficultyPreset(option.level);
+                        }
+                    }
+                }
+                // Add description as a separate indented label
+                ls.Label("    " + option.descKey.Translate(), -1f);
+            }
+
+            ls.Gap(15f);
+
+            // Show economic settings only if Custom is selected
+            if (settings.difficultyLevel == EmpireDifficultyLevel.Custom)
+            {
+                ls.Label("FCSettingSilverPerResource".Translate());
+                ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
+                ls.Label("FCSettingDaysBetweenTax".Translate());
+                ls.IntEntry(ref daysBetweenTaxes, ref timeBetweenTaxes);
+                settings.timeBetweenTaxes = Math.Max(1, daysBetweenTaxes) * 60000;
+                ls.Label("FCSettingProductionTitheMod".Translate());
+                ls.IntEntry(ref settings.productionTitheMod, ref productionTitheMod);
+                ls.Label("FCSettingWorkerCost".Translate());
+                ls.IntEntry(ref settings.workerCost, ref workerCost);
+            }
+            else
+            {
+                // Show current values as read-only labels for non-custom difficulties
+                ls.Label($"FCSettingSilverPerResource".Translate() + ": " + settings.silverPerResource);
+                ls.Label($"FCSettingDaysBetweenTax".Translate() + ": " + (settings.timeBetweenTaxes / 60000));
+                ls.Label($"FCSettingProductionTitheMod".Translate() + ": " + settings.productionTitheMod);
+                ls.Label($"FCSettingWorkerCost".Translate() + ": " + settings.workerCost);
+            }
+
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settings.settlementMaxLevel, ref settlementMaxLevel);
             ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref settings.medievalTechOnly);
@@ -1515,6 +1625,8 @@ namespace FactionColonies
                 settings.settlementsAutoBattle = blank.settlementsAutoBattle;
                 settings.disableForcedPausingDuringEvents = blank.disableForcedPausingDuringEvents;
                 settings.forcedTaxDeliveryMode = blank.forcedTaxDeliveryMode;
+                settings.difficultyLevel = blank.difficultyLevel;
+                settings.ApplyDifficultyPreset(settings.difficultyLevel);
             }
 
             FixScrollingBug(ls);
