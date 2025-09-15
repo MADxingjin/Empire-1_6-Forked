@@ -64,11 +64,14 @@ namespace FactionColonies
             FactionFC factionFC = Find.World.GetComponent<FactionFC>();
             PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
 
+            // Store the initial state before any modifications
+            bool wasAlreadyProcessed = factionFC.updateProcessed;
+
             // Only log once when first setting up
             if (!factionFC.updateProcessed)
             {
                 Log.Message("Updating Empire to Latest Version");
-                factionFC.updateProcessed = true;
+                // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
             }
             //NEW PLACE FOR UPDATE VERSIONS
 
@@ -85,23 +88,29 @@ namespace FactionColonies
 
                 factionFC.capitalPlanet = Find.World.info.name;
 
-                if (!factionFC.updateProcessed)
+                if (!wasAlreadyProcessed)
                 {
                     Log.Message("Resetting faction leaders");
-                    factionFC.updateProcessed = true;
                 }
                 SoS2HarmonyPatches.ResetFactionLeaders();
             }
 
-            // Only run verification once
-            if (!factionFC.updateProcessed)
+            // Only run verification and alerts for new games/first time setup
+            if (!wasAlreadyProcessed)
             {
+
+                // Welcome message!
+                Find.WindowStack.Add(new FCWindow_Welcome());
+
                 Log.Message("Empire - Testing for traits with no tie");
                 verifyTraits();
             
-                MessagePlayerAboutConfigErrors(factionFC);
+                MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
 
                 Log.Message("Empire - Testing for update change");
+                
+                // Mark as processed AFTER everything is done
+                factionFC.updateProcessed = true;
             }
 
             if (Settings().updateVersion < 0.370)

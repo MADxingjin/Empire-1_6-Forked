@@ -69,7 +69,11 @@ namespace FactionColonies
         //public static readonly Texture2D iconProdAnimals = ContentFinder<Texture2D>.Get("GUI/productionanimals");
         //public static readonly Texture2D iconProdLogging = ContentFinder<Texture2D>.Get("GUI/productionlogging");
         //public static readonly Texture2D iconProdMining = ContentFinder<Texture2D>.Get("GUI/productionmining");
-
+        // Welcome window textures
+        public static readonly Texture2D empireIcon = ContentFinder<Texture2D>.Get("UI/Banners/Empire");
+        public static readonly Texture2D discordIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/discordlogo");
+        public static readonly Texture2D githubIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/githublogo");
+        public static readonly Texture2D wikiIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/wikilogo");
 
 
         public static readonly List<KeyValuePair<string, Texture2D>> textures = new List<KeyValuePair<string, Texture2D>>() 
@@ -104,5 +108,6 @@ namespace FactionColonies
             var fallbackEntry = textures.FirstOrDefault(t => t.Key == resourceType.ToString().ToLower());
             return fallbackEntry.Value ?? textures[0].Value; // Final fallback to first texture
         }
+
     }
 }
