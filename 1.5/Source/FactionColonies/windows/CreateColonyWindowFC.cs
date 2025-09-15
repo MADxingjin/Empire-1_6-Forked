@@ -85,17 +85,17 @@ namespace FactionColonies
             DrawProduction();
             DrawCreateSettlementButton();
 
-            // Orbital Platform button (only show if research is complete)
-            if (CanCreateOrbitalPlatforms())
-            {
-                int orbitalBtnLength = 140;
-                if (Widgets.ButtonText(
-                        new Rect((InitialSize.x - 32 - orbitalBtnLength) / 2f, 535 - 38f, orbitalBtnLength, 32),
-                        "Create Orbital Platform"))
-                {
-                    Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
-                }
-            }
+            // // Orbital Platform button (only show if research is complete)
+            // if (CanCreateOrbitalPlatforms())
+            // {
+            //     int orbitalBtnLength = 140;
+            //     if (Widgets.ButtonText(
+            //             new Rect((InitialSize.x - 32 - orbitalBtnLength) / 2f, 535 - 38f, orbitalBtnLength, 32),
+            //             "Create Orbital Platform"))
+            //     {
+            //         Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
+            //     }
+            // }
 
             //reset anchor/font
             Text.Font = fontBefore;
@@ -427,11 +427,11 @@ namespace FactionColonies
             return PlanetTile.Invalid;
         }
 
-        private bool CanCreateOrbitalPlatforms()
-        {
-            var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
-            return research != null && research.IsFinished;
-        }
+        // private bool CanCreateOrbitalPlatforms()
+        // {
+        //     var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
+        //     return research != null && research.IsFinished;
+        // }
 
         private OrbitalPlatformTier GetHighestOrbitalTier()
         {

@@ -24,13 +24,5 @@
 		<label>Solar Collection Array</label>
 		<desc></desc>
 		<productionMultiplierPower>2.0</productionMultiplierPower>
-
 	</FactionColonies.FCTraitEffectDef>
-        <FactionColonies.FCTraitEffectDef>
-		<defName>interplanetaryTradeHub</defName>
-		<label>Interplanetary Trade Hub</label>
-		<desc></desc>
-		<taxBasePercentage>20</taxBasePercentage>
-	</FactionColonies.FCTraitEffectDef>
-
 </Defs>

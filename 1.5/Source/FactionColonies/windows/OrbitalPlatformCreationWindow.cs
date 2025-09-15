@@ -73,13 +73,14 @@ namespace FactionColonies
             }
 
             // Cost display
-            y += 20f;
-            var cost = GetPlatformCost(selectedTier);
-            Widgets.Label(new Rect(20, y, 200, 25), $"Cost: {cost} silver");
-            y += 30f;
+            // y += 20f;
+            // var cost = GetPlatformCost(selectedTier);
+            // Widgets.Label(new Rect(20, y, 200, 25), $"Cost: {cost} silver");
+            // y += 30f;
 
             // Create button
-            if (Widgets.ButtonText(new Rect(20, y, 150, 35), "Create Platform"))
+            var cost = GetPlatformCost(selectedTier);
+            if (Widgets.ButtonText(new Rect(20, y, 150, 35), $"Send to Orbit ({cost})"))
             {
                 CreateOrbitalPlatform(selectedTier);
                 Close();
