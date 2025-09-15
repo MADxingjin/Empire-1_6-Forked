@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<FactionColonies.FCTraitEffectDef>
+		<defName>orbitalFuelDepot</defName>
+		<label>Orbital Fuel Depot</label>
+		<desc></desc>
+		<productionBasePower>0.5</productionBasePower>
+        <!-- Currently we override Animals to be Chemfuel -->
+		<productionBaseAnimals>0.3</productionBaseAnimals>
+        <!-- Currently we override Logging to be Gravtech -->
+		<productionBaseLogging>0</productionBaseLogging>
+	</FactionColonies.FCTraitEffectDef>
+
+    <FactionColonies.FCTraitEffectDef>
+		<defName>asteroidMiningPlatform</defName>
+		<label>Asteroid Mining Platform</label>
+		<desc></desc>
+		<productionMultiplierMining>0.8</productionMultiplierMining>
+	</FactionColonies.FCTraitEffectDef>
+
+    <FactionColonies.FCTraitEffectDef>
+		<defName>solarCollectionArray</defName>
+		<label>Solar Collection Array</label>
+		<desc></desc>
+		<productionMultiplierPower>2.0</productionMultiplierPower>
+
+	</FactionColonies.FCTraitEffectDef>
+        <FactionColonies.FCTraitEffectDef>
+		<defName>interplanetaryTradeHub</defName>
+		<label>Interplanetary Trade Hub</label>
+		<desc></desc>
+		<taxBasePercentage>20</taxBasePercentage>
+	</FactionColonies.FCTraitEffectDef>
+
+</Defs>
