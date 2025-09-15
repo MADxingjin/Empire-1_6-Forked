@@ -7,7 +7,7 @@ namespace FactionColonies
 {
     public class FCWindow_Welcome : Window
     {
-        public override Vector2 InitialSize => new Vector2(700f, 750f);
+        public override Vector2 InitialSize => new Vector2(700f, 700f);
 
         public FCWindow_Welcome()
         {
@@ -48,9 +48,9 @@ namespace FactionColonies
 
             // Quick start guide
             Text.Font = GameFont.Small;
-            ls.Label("QUICK START:");
+            ls.Label("📋 QUICK START:");
             ls.Label("• Select faction traits (you'll get an alert)");
-            ls.Label("• Set your tax collection spot & capital");
+            ls.Label("• Set your tax collection spot & capital seat"); // Updated this line
             ls.Label("• Create your first settlement");
             ls.Label("• Start production of resources, handle military and manage loyalty");
             ls.Gap(15f);

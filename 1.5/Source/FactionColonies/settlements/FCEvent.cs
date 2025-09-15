@@ -635,13 +635,31 @@ namespace FactionColonies
             }
             else
             {
-                tmp.source = -1;
+                // FIX: Instead of using -1, use the capital location as both source and destination
+                // This represents taxes being collected locally at the capital
+                int fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? 0;
+                tmp.source = faction.capitalLocation >= 0 ? faction.capitalLocation : fallbackTile;
                 tmp.planetName = Find.World.info.name;
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Null");
+                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital");
+                
+                Log.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }
 
             tmp.location = faction.capitalLocation;
-            tmp.timeTillTrigger = Find.TickManager.TicksGame + FactionColonies.ReturnTicksToArrive(tmp.source, tmp.location);
+            
+            // FIX: Handle case where source equals destination (local delivery)
+            if (tmp.source == tmp.location)
+            {
+                // Local delivery - very short time
+                tmp.timeTillTrigger = Find.TickManager.TicksGame + GenDate.TicksPerHour; // 1 hour
+            }
+            else
+            {
+                int travelTime = FactionColonies.ReturnTicksToArrive(tmp.source, tmp.location);
+                tmp.timeTillTrigger = Find.TickManager.TicksGame + travelTime;
+                Log.Message($"Tax Event Travel Debug: source={tmp.source}, destination={tmp.location}, travelTime={travelTime} ticks ({travelTime / 60000f:F1} days)");
+            }
+            
             tmp.hasCustomDescription = true;
             //add tithe
             tmp.goods = bill.taxes.itemTithes;

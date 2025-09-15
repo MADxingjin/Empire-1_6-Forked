@@ -1366,6 +1366,17 @@ namespace FactionColonies
 
         public void setCapital()
         {
+            // Check if there's an active capital spot first
+            Building_CapitalSpot activeCapitalSpot = GetActiveCapitalSpot();
+            if (activeCapitalSpot != null)
+            {
+                Messages.Message(
+                    $"Empire capital is already established at {activeCapitalSpot.Map.Parent.LabelCap}. Disable the capital seat there first if you want to move it.",
+                    MessageTypeDefOf.RejectInput
+                );
+                return;
+            }
+
             if (Find.CurrentMap != null && Find.CurrentMap.IsPlayerHome)
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
@@ -1387,7 +1398,7 @@ namespace FactionColonies
             else
             {
                 Messages.Message(
-                    "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or else you may have some bugs soon.",
+                    "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.",
                     MessageTypeDefOf.NegativeEvent);
             }
         }
@@ -1765,6 +1776,40 @@ namespace FactionColonies
             {
                 uiTimeUpdate -= 1;
             }
+        }
+
+        public bool HasActiveCapitalSpot()
+        {
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public Building_CapitalSpot GetActiveCapitalSpot()
+        {
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
+                    {
+                        return capitalSpot;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

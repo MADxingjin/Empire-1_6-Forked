@@ -1036,14 +1036,28 @@ namespace FactionColonies
 
         public static int ReturnTicksToArrive(int currentTile, int destinationTile)
         {
+            Log.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
+            
             bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
             bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().medievalTechOnly;
             bool podsResearched = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false;
 
             if (!medievalOnly)
             {
-                if (!(currentTile, destinationTile).AreValidTiles()) return podsResearched ? 30000 : 600000;
-                if (podsResearched) return Find.WorldGrid.TraversalDistanceBetween(currentTile, destinationTile) * (tilesInShuttleRange ? 5 : 10);
+                bool tilesValid = (currentTile, destinationTile).AreValidTiles();
+                Log.Message($"ReturnTicksToArrive Debug: tilesValid={tilesValid}, medievalOnly={medievalOnly}, podsResearched={podsResearched}");
+                
+                if (!tilesValid) 
+                {
+                    int fallbackTime = podsResearched ? 30000 : 600000;
+                    Log.Message($"ReturnTicksToArrive Debug: Invalid tiles, returning fallback time: {fallbackTime} ticks ({fallbackTime / 60000f:F1} days)");
+                    return fallbackTime;
+                }
+                if (podsResearched) 
+                {
+                    int multiplier = tilesInShuttleRange ? 5 : 10;
+                    return Find.WorldGrid.TraversalDistanceBetween(currentTile, destinationTile) * multiplier;
+                }
             }
 
             var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];

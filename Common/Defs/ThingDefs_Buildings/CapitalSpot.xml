@@ -2,29 +2,34 @@
 <Defs>
 
 <ThingDef ParentName="BuildingBase">
-    <defName>TaxSpot</defName>
-    <label>tax spot</label>
-    <description>Designates a spot to receive taxes and tithes. Can be set as the active tax delivery location for your entire empire.</description>
-    <thingClass>FactionColonies.Building_TaxSpot</thingClass>
+    <defName>CapitalSpot</defName>
+    <label>capital seat</label>
+    <description>Designates the seat of your Empire's capital. This location serves as the central reference point for travel calculations, event targeting, and administrative functions. Can be moved with your gravship empire.</description>
+    <thingClass>FactionColonies.Building_CapitalSpot</thingClass>
     <graphicData>
-      <texPath>Things/Building/Misc/PartySpot</texPath>
+      <texPath>Things/Building/Misc/MarriageSpot</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <altitudeLayer>FloorEmplacement</altitudeLayer>
     <statBases>
       <WorkToBuild>0</WorkToBuild>
+      <Mass>5</Mass>
     </statBases>
     <rotatable>false</rotatable>
     <scatterableOnMapGen>false</scatterableOnMapGen>
     <useHitPoints>False</useHitPoints>
     <designationCategory>Misc</designationCategory>
     <passability>Standable</passability>
+    <tickerType>Rare</tickerType>
     <building>
       <sowTag>SupportPlantsOnly</sowTag>
       <canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
       <ai_chillDestination>false</ai_chillDestination>
     </building>
-    <designationHotKey>Misc11</designationHotKey>
+    <designationHotKey>Misc12</designationHotKey>
+    <researchPrerequisites>
+      <li>ComplexFurniture</li>
+    </researchPrerequisites>
   </ThingDef>
   
  </Defs>

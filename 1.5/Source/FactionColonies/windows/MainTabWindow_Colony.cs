@@ -645,42 +645,42 @@ namespace FactionColonies
                     {
                         List<FloatMenuOption> list = new List<FloatMenuOption>
                         {
-                            new FloatMenuOption("TaxDeliveryMap".Translate(), delegate
-                            {
-                                List<FloatMenuOption> list2 = new List<FloatMenuOption> { new FloatMenuOption("SetMap".Translate(), delegate
-                                {
-                                    List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
+                            // new FloatMenuOption("TaxDeliveryMap".Translate(), delegate
+                            // {
+                            //     List<FloatMenuOption> list2 = new List<FloatMenuOption> { new FloatMenuOption("SetMap".Translate(), delegate
+                            //     {
+                            //         List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
-                                    foreach (Map map in Find.Maps)
-                                    {
-                                        if (map.IsPlayerHome)
-                                        {
-                                            settlementList.Add(new FloatMenuOption(map.Parent.LabelCap, delegate
-                                            {
-                                                faction.taxMap = map;
-                                                Find.LetterStack.ReceiveLetter("Map Set!", "The tax delivery map has been set to the player colony of " + map.Parent.LabelCap + ".\n All taxes and other goods will be delivered there", LetterDefOf.NeutralEvent);
-                                            }
-                                            ));
-                                        }
-                                    }
+                            //         foreach (Map map in Find.Maps)
+                            //         {
+                            //             if (map.IsPlayerHome)
+                            //             {
+                            //                 settlementList.Add(new FloatMenuOption(map.Parent.LabelCap, delegate
+                            //                 {
+                            //                     faction.taxMap = map;
+                            //                     Find.LetterStack.ReceiveLetter("Map Set!", "The tax delivery map has been set to the player colony of " + map.Parent.LabelCap + ".\n All taxes and other goods will be delivered there", LetterDefOf.NeutralEvent);
+                            //                 }
+                            //                 ));
+                            //             }
+                            //         }
 
-                                    if (settlementList.Count == 0)
-                                    {
-                                        settlementList.Add(new FloatMenuOption("No valid settlements to use.", null));
-                                    }
+                            //         if (settlementList.Count == 0)
+                            //         {
+                            //             settlementList.Add(new FloatMenuOption("No valid settlements to use.", null));
+                            //         }
 
-                                    FloatMenu floatMenu2 = new FloatMenu(settlementList);
-                                    Find.WindowStack.Add(floatMenu2);
-                                }) };
+                            //         FloatMenu floatMenu2 = new FloatMenu(settlementList);
+                            //         Find.WindowStack.Add(floatMenu2);
+                            //     }) };
 
-                                FloatMenu floatMenu = new FloatMenu(list2);
-                                Find.WindowStack.Add(floatMenu);
-                            }),
+                            //     FloatMenu floatMenu = new FloatMenu(list2);
+                            //     Find.WindowStack.Add(floatMenu);
+                            // }),
 
-                            new FloatMenuOption("SetCapital".Translate(), delegate
-                            {
-                                faction.setCapital();
-                            }),
+                            // new FloatMenuOption("SetCapital".Translate(), delegate
+                            // {
+                            //     faction.setCapital();
+                            // }),
 
                             new FloatMenuOption("ActivateResearch".Translate(), delegate
                             {

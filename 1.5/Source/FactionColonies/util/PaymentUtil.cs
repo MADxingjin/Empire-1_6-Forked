@@ -113,15 +113,25 @@ namespace FactionColonies
 
         public static void placeThing(Thing thing)
         {
-            Map taxMap = Find.World.GetComponent<FactionFC>().TaxMap;
-
+            Map taxMap = GetActiveTaxDeliveryMap();
+            
             IntVec3 intvec;
-            if (checkForTaxSpot(taxMap, out intvec) != true)
+            if (checkForActiveTaxDeliverySpot(out intvec, out taxMap))
             {
-                intvec = DropCellFinder.TradeDropSpot(taxMap);
+                // Found an active tax delivery spot, use it
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
             }
-
-            GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            else if (checkForTaxSpot(taxMap, out intvec))
+            {
+                // Found regular tax spot on the tax map
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            }
+            else
+            {
+                // Fallback to drop spot on tax map
+                intvec = DropCellFinder.TradeDropSpot(taxMap);
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            }
         }
 
         public static void deliverThings(FCEvent evt, Letter let = null, Message msg = null)
@@ -689,6 +699,49 @@ namespace FactionColonies
 
             //Log.Message("Total Value: $" + totalValue);
             return totalValue;
+        }
+
+        private static Map GetActiveTaxDeliveryMap()
+        {
+            // First try to find a map with an active tax delivery spot
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
+                    {
+                        return map;
+                    }
+                }
+            }
+            
+            // Fallback to existing tax map logic
+            return Find.World.GetComponent<FactionFC>().TaxMap;
+        }
+
+        public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
+        {
+            // Search all player home maps for an active tax delivery spot
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
+                    {
+                        dropSpot = building.Position;
+                        taxMap = map;
+                        return true;
+                    }
+                }
+            }
+            
+            dropSpot = IntVec3.Invalid;
+            taxMap = null;
+            return false;
         }
     }
 
