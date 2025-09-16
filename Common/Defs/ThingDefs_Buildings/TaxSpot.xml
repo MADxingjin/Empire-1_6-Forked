@@ -17,7 +17,7 @@
     <rotatable>false</rotatable>
     <scatterableOnMapGen>false</scatterableOnMapGen>
     <useHitPoints>False</useHitPoints>
-    <designationCategory>Misc</designationCategory>
+    <designationCategory>Empire</designationCategory>
     <passability>Standable</passability>
     <building>
       <sowTag>SupportPlantsOnly</sowTag>
