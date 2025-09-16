@@ -13,12 +13,11 @@
     <altitudeLayer>FloorEmplacement</altitudeLayer>
     <statBases>
       <WorkToBuild>0</WorkToBuild>
-      <Mass>5</Mass>
     </statBases>
     <rotatable>false</rotatable>
     <scatterableOnMapGen>false</scatterableOnMapGen>
     <useHitPoints>False</useHitPoints>
-    <designationCategory>Misc</designationCategory>
+    <designationCategory>Empire</designationCategory>
     <passability>Standable</passability>
     <tickerType>Rare</tickerType>
     <building>

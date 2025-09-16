@@ -7,7 +7,7 @@ namespace FactionColonies
 {
     public class FCWindow_Welcome : Window
     {
-        public override Vector2 InitialSize => new Vector2(700f, 700f);
+        public override Vector2 InitialSize => new Vector2(700f, 650f);
 
         public FCWindow_Welcome()
         {

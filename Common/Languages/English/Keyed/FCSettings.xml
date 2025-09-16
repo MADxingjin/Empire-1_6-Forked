@@ -32,4 +32,8 @@
 	<FCDifficultyBloodAndDustDesc>Hard difficulty with limited resources and infrequent tax collection.</FCDifficultyBloodAndDustDesc>
 	<FCDifficultyLosingIsFunDesc>Brutal difficulty for masochists. Minimal resources and very long tax intervals.</FCDifficultyLosingIsFunDesc>
 	<FCDifficultyCustomDesc>Customize all empire settings manually.</FCDifficultyCustomDesc>
+	
+	<!-- Welcome Window -->
+	<FCWelcomeTitle>Welcome to the Empire Mod!</FCWelcomeTitle>
+	<FCWelcomeMessage>Welcome to the Empire Mod! Build and manage settlements with production, military and loyalty!</FCWelcomeMessage>
 </LanguageData>

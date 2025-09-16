@@ -9,7 +9,7 @@
     <graphicData>
       <texPath>Things/Building/Transformer</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>(1,1)</drawSize>
+      <drawSize>(2,2)</drawSize>
       <shadowData>
         <volume>(.35,0.07,.34)</volume>
         <offset>(0,0,0)</offset>
@@ -31,10 +31,10 @@
       <Flammability>0.7</Flammability>
     </statBases>
     <tickerType>Normal</tickerType>
-    <size>(1,1)</size>
+    <size>(2,2)</size>
     <costList>
-      <Steel>100</Steel>
-      <ComponentIndustrial>2</ComponentIndustrial>
+      <Steel>350</Steel>
+      <ComponentIndustrial>4</ComponentIndustrial>
     </costList>
     <comps>
       <li Class="CompProperties_Power">
