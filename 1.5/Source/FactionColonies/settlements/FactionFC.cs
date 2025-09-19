@@ -85,7 +85,7 @@ namespace FactionColonies
         public ResourceFC power = new ResourceFC(0, ResourceType.Power);
         public ResourceFC medicine = new ResourceFC(0, ResourceType.Medicine);
         public ResourceFC research = new ResourceFC(0, ResourceType.Research);
-        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech);
+        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech); // Orbital tech bases
         public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
 
         //Faction Def

@@ -14,7 +14,7 @@ namespace FactionColonies
         Research,
         Power,
         Medicine,
-        // New orbital-specific resources
+        // New orbital-specific resources independent from overloads
         Gravtech,
         Chemfuel
     }

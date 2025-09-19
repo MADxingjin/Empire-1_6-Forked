@@ -19,7 +19,7 @@ namespace FactionColonies
 
         public void EnsureResourceLists()
         {
-            // Ensure both lists have exactly 11 elements (one for each resource type)
+            // Ensure both lists have exactly 11 elements (one for each resource type) We should be able to increase it further in future...
             const int resourceCount = 11;
             
             while (BaseProductionAdditive.Count < resourceCount)

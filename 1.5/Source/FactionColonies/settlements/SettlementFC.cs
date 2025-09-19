@@ -144,7 +144,7 @@ namespace FactionColonies
             {
                 ResourceFC resource = getResource(titheType);
                 
-                // Get the correct index based on the resource type and settlement type
+                // Get the correct index based on the resource type and settlement type. Someone tell me if I can do this better??? I kept crashing and breaking saves until I did this
                 int resourceIndex;
                 if (ResourceUtils.IsOrbitalPlatform(this))
                 {

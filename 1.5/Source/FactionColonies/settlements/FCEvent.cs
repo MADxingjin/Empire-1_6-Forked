@@ -757,7 +757,7 @@ namespace FactionColonies
                 
                 if (orbitalBiomeDef == null || orbitalHillinessDef == null)
                 {
-                    Log.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback.");
+                    Log.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback. FALLBACK!");
                     orbitalBiomeDef = BiomeResourceDefOf.defaultBiome;
                     orbitalHillinessDef = BiomeResourceDefOf.defaultBiome;
                 }
