@@ -751,8 +751,25 @@ namespace FactionColonies
                 // Ensure orbital platforms start in a good state
                 settlementfc.isUnderAttack = false;
                 
-                // Apply tier-specific bonuses
-                ApplyOrbitalTierBonuses(settlementfc, tier);
+                // Set up orbital biome definitions
+                var orbitalBiomeDef = DefDatabase<BiomeResourceDef>.GetNamed("OrbitalSpace", false);
+                var orbitalHillinessDef = DefDatabase<BiomeResourceDef>.GetNamed("Orbital", false);
+                
+                if (orbitalBiomeDef == null || orbitalHillinessDef == null)
+                {
+                    Log.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback.");
+                    orbitalBiomeDef = BiomeResourceDefOf.defaultBiome;
+                    orbitalHillinessDef = BiomeResourceDefOf.defaultBiome;
+                }
+                
+                // Override the settlement's biome and hilliness definitions
+                settlementfc.biomeDef = orbitalBiomeDef;
+                settlementfc.hillinessDef = orbitalHillinessDef;
+                settlementfc.biome = "OrbitalSpace";
+                settlementfc.hilliness = "Orbital";
+                
+                // Initialize base production for new orbital settlement
+                settlementfc.initBaseProduction();
                 
                 // Apply policies
                 if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
@@ -888,111 +905,7 @@ namespace FactionColonies
             return NameGenerator.GenerateName(rulePack, usedNames, true);
         }
 
-        private static void ApplyOrbitalTierBonuses(SettlementFC settlement, OrbitalPlatformTier tier)
-        {
-            // Create fake biome/hilliness data for orbital platforms with guaranteed positive values
-            var orbitalBiomeDef = new BiomeResourceDef();
-            var orbitalHillinessDef = new BiomeResourceDef();
-            
-            // Set the defName for the orbital biome so updateDescription() can find it
-            orbitalBiomeDef.defName = "OrbitalSpace";
-            orbitalHillinessDef.defName = "Orbital";
-            
-            // Initialize the lists
-            orbitalBiomeDef.BaseProductionAdditive = new List<double>();
-            orbitalBiomeDef.BaseProductionMultiplicative = new List<double>();
-            orbitalHillinessDef.BaseProductionAdditive = new List<double>();
-            orbitalHillinessDef.BaseProductionMultiplicative = new List<double>();
-            
-            // Generate values for each resource type (9 resources) - ensure positive production
-            for (int i = 0; i < ResourceUtils.resourceTypes.Length; i++)
-            {
-                // Base production additive: 1.0 to 2.0, weighted toward good values
-                double additiveValue = GetWeightedRandomAdditive();
-                orbitalBiomeDef.BaseProductionAdditive.Add(Math.Round(additiveValue, 1));
-                orbitalHillinessDef.BaseProductionAdditive.Add(0.0); // Keep hilliness additive at 0
-                
-                // Base production multiplicative: 1.0 to 1.5, weighted toward good values
-                double multiplicativeValue = GetWeightedRandomMultiplicative();
-                orbitalBiomeDef.BaseProductionMultiplicative.Add(Math.Round(multiplicativeValue, 1));
-                orbitalHillinessDef.BaseProductionMultiplicative.Add(1.0); // Keep hilliness multiplier at 1
-            }
-            
-            // Override the settlement's biome and hilliness definitions
-            settlement.biomeDef = orbitalBiomeDef;
-            settlement.hillinessDef = orbitalHillinessDef;
-            settlement.biome = "OrbitalSpace";
-            settlement.hilliness = "Orbital";
-            
-            // Reinitialize base production with the new fake biome data
-            settlement.initBaseProduction();
-            
-            // Apply tier-specific bonuses (rounded to 1 decimal)
-            switch (tier)
-            {
-                case OrbitalPlatformTier.Logistics:
-                    // 50% faster tax delivery + 10% production boost
-                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
-                    {
-                        ResourceFC resource = settlement.getResource(resourceType);
-                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.1, 1);
-                    }
-                    break;
-                case OrbitalPlatformTier.Advanced:
-                    // 25% lower construction cost, larger size + 15% production boost
-                    settlement.upgradeSettlement(); // Start at level 2
-                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
-                    {
-                        ResourceFC resource = settlement.getResource(resourceType);
-                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.15, 1);
-                    }
-                    break;
-                case OrbitalPlatformTier.Glitter:
-                    // Specialized production bonuses + 25% production boost
-                    settlement.upgradeSettlement();
-                    foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
-                    {
-                        ResourceFC resource = settlement.getResource(resourceType);
-                        resource.baseProductionMultiplier = Math.Round(resource.baseProductionMultiplier * 1.25, 1);
-                    }
-                    break;
-            }
-            
-            // Update production calculations
-            settlement.updateProduction();
-            
-            // Ensure orbital platforms are not flagged as under attack
-            settlement.isUnderAttack = false;
-        }
 
-        // Helper method for weighted random additive values (1.0-2.0 range) - guaranteed positive
-        // I might change this again. I'm not sure if this is the best way.
-        private static double GetWeightedRandomAdditive()
-        {
-            float roll = Rand.Value;
-            
-            if (roll < 0.30f) return 1.5; // 30% chance for 1.5
-            if (roll < 0.50f) return 1.0; // 20% chance for 1.0  
-            if (roll < 0.70f) return 1.8; // 20% chance for 1.8
-            if (roll < 0.85f) return 2.0; // 15% chance for 2.0
-            
-            // 15% chance for other random values between 1.2-1.9, rounded to 1 decimal
-            return Math.Round(Rand.Range(1.2f, 1.9f), 1);
-        }
-
-        // Helper method for weighted random multiplicative values (1.0-1.5 range) - guaranteed positive
-        private static double GetWeightedRandomMultiplicative()
-        {
-            float roll = Rand.Value;
-            
-            if (roll < 0.30f) return 1.2; // 30% chance for 1.2
-            if (roll < 0.50f) return 1.0; // 20% chance for 1.0
-            if (roll < 0.70f) return 1.3; // 20% chance for 1.3
-            if (roll < 0.85f) return 1.5; // 15% chance for 1.5
-            
-            // 15% chance for other random values between 1.1-1.4, rounded to 1 decimal
-            return Math.Round(Rand.Range(1.1f, 1.4f), 1);
-        }
 
         // Add the FindEmptyOrbitalTile method to the FCEventMaker class
         private static PlanetTile FindEmptyOrbitalTile()

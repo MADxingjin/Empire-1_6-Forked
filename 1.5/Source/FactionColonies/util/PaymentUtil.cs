@@ -273,7 +273,7 @@ namespace FactionColonies
             return things;
         }
 
-        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel)
+        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
         {
             switch (resourceType)
             {
@@ -296,11 +296,9 @@ namespace FactionColonies
                     {
                         filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("DevilstrandCloth"), true);
                     }
-
                     break;
                 case ResourceType.Animals:
                     List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-
                     foreach (PawnKindDef def in allAnimalDefs)
                     {
                         if (def.IsAnimalAndAllowed())
@@ -308,7 +306,6 @@ namespace FactionColonies
                             filter.SetAllow(def.race, true);
                         }
                     }
-
                     break;
                 case ResourceType.Logging:
                     filter.SetAllow(ThingDefOf.WoodLog, true);
@@ -329,7 +326,6 @@ namespace FactionColonies
                     {
                         filter.SetAllow(rawMagicyte, true);
                     }
-
                     filter.SetAllow(ThingDefOf.ComponentIndustrial, true);
                     filter.SetAllow(ThingCategoryDefOf.StoneBlocks, true);
                     break;
@@ -345,108 +341,52 @@ namespace FactionColonies
                         case TechLevel.Ultra:
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsUltra"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"),
-                                    true);
-
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
                             break;
                         case TechLevel.Spacer:
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
                             break;
                         case TechLevel.Industrial:
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             break;
                     }
-
                     break;
-            }
-        }
-
-        // New overloaded method that takes settlement context
-        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement)
-        {
-            switch (resourceType)
-            {
-                case ResourceType.Logging:
-                    if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
-                    {
-                        filter.SetAllow(ThingDefOf.GravlitePanel, true);
-                    
-                    }
-                    else
-                    {
-                        // Regular logging for planetary settlements
-                        filter.SetAllow(ThingDefOf.WoodLog, true);
-                        filter.SetAllow(StuffCategoryDefOf.Woody, true);
-                    }
+                case ResourceType.Gravtech:
+                    filter.SetAllow(ThingDefOf.GravlitePanel, true);
                     break;
-                case ResourceType.Animals:
-                    if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
-                    {
-                        // Chemfuel production for orbital platforms
-                        filter.SetAllow(ThingDefOf.Chemfuel, true);
-                    }
-                    else
-                    {
-                        // Regular animals for planetary settlements
-                        List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-                        foreach (PawnKindDef def in allAnimalDefs)
-                        {
-                            if (def.IsAnimalAndAllowed())
-                            {
-                                filter.SetAllow(def.race, true);
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    // Use the original method for all other resource types
-                    filterResource(filter, resourceType, techLevel);
+                case ResourceType.Chemfuel:
+                    filter.SetAllow(ThingDefOf.Chemfuel, true);
                     break;
             }
         }
@@ -481,39 +421,27 @@ namespace FactionColonies
 
         public static List<ThingDef> debugGenerateTithe(ResourceType resourceType, SettlementFC settlement)
         {
-            // Special handling for orbital platforms - override specific resource types. Can I improve this?
-            if (settlement != null && ResourceUtils.IsOrbitalPlatform(settlement))
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            
+            // Handle special orbital resources
+            if (resourceType == ResourceType.Gravtech)
             {
-                if (resourceType == ResourceType.Animals)
+                List<ThingDef> gravtechList = new List<ThingDef>();
+                if (ThingDefOf.GravlitePanel != null)
                 {
-                    // Return Chemfuel for Animals on orbital platforms
-                    List<ThingDef> chemfuelList = new List<ThingDef>();
-                    chemfuelList.Add(ThingDefOf.Chemfuel);
-                    return chemfuelList;
+                    gravtechList.Add(ThingDefOf.GravlitePanel);
                 }
-                
-                if (resourceType == ResourceType.Logging)
-                {
-                    // Return Gravlite Panels for Logging on orbital platforms
-                    Log.Message($"Processing Logging case for orbital platform");
-                    List<ThingDef> GravliteList = new List<ThingDef>();
-                    
-                    if (ThingDefOf.GravlitePanel != null)
-                    {
-                        GravliteList.Add(ThingDefOf.GravlitePanel);
-                        Log.Message($"Added GravlitePanel to list, returning {GravliteList.Count} items");
-                    }
-                    else
-                    {
-                        Log.Message($"ERROR: ThingDefOf.GravlitePanel is null!");
-                    }
-                    
-                    return GravliteList;
-                }
+                return gravtechList;
+            }
+            
+            if (resourceType == ResourceType.Chemfuel)
+            {
+                List<ThingDef> chemfuelList = new List<ThingDef>();
+                chemfuelList.Add(ThingDefOf.Chemfuel);
+                return chemfuelList;
             }
             
             // Regular handling for all other cases
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
             ThingSetMaker thingSetMaker = resourceType == ResourceType.Animals
                 ? (ThingSetMaker) new ThingSetMaker_Animal()
                 : new ThingSetMaker_Count();
@@ -572,6 +500,12 @@ namespace FactionColonies
                     break;
                 case ResourceType.Medicine:
                     param.countRange = new IntRange(1, 2 * multiplier);
+                    break;
+                case ResourceType.Gravtech:
+                    param.countRange = new IntRange(1, 3 * multiplier);
+                    break;
+                case ResourceType.Chemfuel:
+                    param.countRange = new IntRange(1, 4 * multiplier);
                     break;
             }
 

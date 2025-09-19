@@ -85,6 +85,8 @@ namespace FactionColonies
         public ResourceFC power = new ResourceFC(0, ResourceType.Power);
         public ResourceFC medicine = new ResourceFC(0, ResourceType.Medicine);
         public ResourceFC research = new ResourceFC(0, ResourceType.Research);
+        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech);
+        public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
 
         //Faction Def
         public FactionFCDef factionDef = new FactionFCDef();
@@ -251,6 +253,8 @@ namespace FactionColonies
             Scribe_Deep.Look(ref research, "research");
             Scribe_Deep.Look(ref power, "power");
             Scribe_Deep.Look(ref medicine, "medicine");
+            Scribe_Deep.Look(ref gravtech, "gravtech");
+            Scribe_Deep.Look(ref chemfuel, "chemfuel");
 
             //Faction Def
             Scribe_Deep.Look(ref factionDef, "factionDef");
@@ -869,8 +873,11 @@ namespace FactionColonies
         public void updateFactionIcon(ref Faction faction, string iconPath)
         {
             Log.Message("Updated Icon - " + iconPath);
-            faction.def.factionIconPath = iconPath;
-            if (settlements.Any())
+            if (faction?.def != null)
+            {
+                faction.def.factionIconPath = iconPath;
+            }
+            if (settlements.Any() && settlements[0]?.worldSettlement?.def != null)
             {
                 WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].worldSettlement.def,
                     ContentFinder<Texture2D>.Get(iconPath));
@@ -878,8 +885,14 @@ namespace FactionColonies
 
             foreach (SettlementFC settlement in settlements)
             {
-                settlement.worldSettlement.def.expandingIconTexture = iconPath;
-                settlement.worldSettlement.Faction.def.factionIconPath = iconPath;
+                if (settlement?.worldSettlement?.def != null)
+                {
+                    settlement.worldSettlement.def.expandingIconTexture = iconPath;
+                }
+                if (settlement?.worldSettlement?.Faction?.def != null)
+                {
+                    settlement.worldSettlement.Faction.def.factionIconPath = iconPath;
+                }
             }
         }
 
@@ -1358,6 +1371,10 @@ namespace FactionColonies
                     return power;
                 case ResourceType.Medicine:
                     return medicine;
+                case ResourceType.Gravtech:
+                    return gravtech;
+                case ResourceType.Chemfuel:
+                    return chemfuel;
             }
 
             Log.Message("Unable to find resource - returnResourceByInt(int name)");

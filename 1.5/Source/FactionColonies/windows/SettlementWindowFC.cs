@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
@@ -30,7 +30,7 @@ namespace FactionColonies
 
         public void windowUpdateFc()
         {
-            settlement.updateProfitAndProduction();
+            // Only update description, don't recalculate production unless needed
             settlement.updateDescription();
         }
 
@@ -38,8 +38,9 @@ namespace FactionColonies
         {
             base.PreOpen();
             settlement.updateDescription();
-            settlement.updateProfitAndProduction();
-            maxScroll = (ResourceUtils.resourceTypes.Length * ScrollSpacing) - ScrollHeight;
+            // Don't recalculate production on UI open - this overwrites saved values
+            // settlement.updateProfitAndProduction();
+            maxScroll = (ResourceUtils.GetAvailableResourceTypes(settlement).Length * ScrollSpacing) - ScrollHeight;
             //settlement.update description
             factionfc = Find.World.GetComponent<FactionFC>();
         }
@@ -256,30 +257,36 @@ namespace FactionColonies
 
         private void DrawResources(int x, int y, int spacing)
         {
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            // Get the appropriate resource types based on settlement type
+            ResourceType[] availableResources = ResourceUtils.GetAvailableResourceTypes(settlement);
+            
+            for (int i = 0; i < availableResources.Length; i++)
             {
+                ResourceType resourceType = availableResources[i];
                 ResourceFC resource = settlement.getResource(resourceType);
-                float rectY = scroll + y + 70 + (int)resourceType * (45 + spacing);
+                if (resource == null) continue;
+                
+                float rectY = scroll + y + 70 + i * (45 + spacing);
 
                 //Don't draw if outside view
-                if ((int)resourceType * ScrollSpacing + scroll < 0) continue;
+                if (i * ScrollSpacing + scroll < 0) continue;
 
                 bool titheDisabled = false;
                 if (ShouldTitheBeLockedForResouceType(resourceType))
                     titheDisabled = true;
-                else if (Widgets.ButtonImage(new Rect(x - 15,scroll + y + 65 + (int)resourceType * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize)) 
+                else if (Widgets.ButtonImage(new Rect(x - 15,scroll + y + 65 + i * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize)) 
                     TitheCustomizationClicked(resource, resourceType);
 
-                Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + (int)resourceType * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
+                Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + i * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
                 DoTitheCheckboxAction(resource.isTithe != resource.isTitheBool, resource);
                 DoResourceDescriptionButton(resource, resourceType, x, y, spacing);
 
                 //Production Efficiency
                 Widgets.DrawBox(new Rect(x + 80, rectY, 100, 20));
                 Widgets.FillableBar(new Rect(x + 80, rectY, 100, 20), (float)Math.Min(resource.baseProductionMultiplier, 1.0));
-                Widgets.Label(new Rect(x + 80, scroll + y + 90 + (int)resourceType * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
-                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + (int)resourceType * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resourceType, true);
-                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + (int)resourceType * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resourceType);
+                Widgets.Label(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
+                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resourceType, true);
+                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resourceType);
 
                 //Base Production
                 Widgets.Label(new Rect(x + 195, rectY, 45, 40),

@@ -768,9 +768,12 @@ namespace FactionColonies
             float resourcesPerRow = 7;
             int ySpacing = 30;
 
+            // Show all resource types in faction overview
             foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
             {
                 ResourceFC resource = faction.returnResource(resourceType);
+                if (resource == null) continue;
+                
                 k = (int)Math.Floor((int)resourceType / resourcesPerRow);
                 j = (int)((int)resourceType % resourcesPerRow);
                 if (Widgets.ButtonImage(new Rect(5 + x + (j * (resourceSize + 5)), y - 5 + ySpacing * k, resourceSize,

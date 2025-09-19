@@ -9,11 +9,14 @@ namespace FactionColonies
         Weapons,
         Apparel,
         Animals,
-        Logging, // This will be "Gravtech" for orbital platforms, "Logging" for regular settlements
+        Logging,
         Mining,
         Research,
         Power,
-        Medicine
+        Medicine,
+        // New orbital-specific resources
+        Gravtech,
+        Chemfuel
     }
 
     public static class ResourceUtils
@@ -39,32 +42,49 @@ namespace FactionColonies
             return settlement?.worldSettlement?.def?.defName == "FCOrbitalPlatform";
         }
         
-        // New method to get the display name for a resource type based on settlement type
+        // Get the display name for a resource type
         public static string GetResourceDisplayName(ResourceType resourceType, SettlementFC settlement)
         {
-            if (resourceType == ResourceType.Logging && IsOrbitalPlatform(settlement))
-            {
-                return "gravtech";
-            }
-            if (resourceType == ResourceType.Animals && IsOrbitalPlatform(settlement))
-            {
-                return "chemfuel";
-            }
             return resourceType.ToString().ToLower();
         }
         
-        // New method to get the display label for a resource type based on settlement type
+        // Get the display label for a resource type
         public static string GetResourceDisplayLabel(ResourceType resourceType, SettlementFC settlement)
         {
-            if (resourceType == ResourceType.Logging && IsOrbitalPlatform(settlement))
-            {
-                return "Gravtech";
-            }
-            if (resourceType == ResourceType.Animals && IsOrbitalPlatform(settlement))
-            {
-                return "Chemfuel";
-            }
             return resourceType.ToString();
+        }
+        
+        // Get available resource types for a settlement
+        public static ResourceType[] GetAvailableResourceTypes(SettlementFC settlement)
+        {
+            if (IsOrbitalPlatform(settlement))
+            {
+                return new ResourceType[] {
+                    ResourceType.Food,
+                    ResourceType.Weapons,
+                    ResourceType.Apparel,
+                    ResourceType.Animals,
+                    ResourceType.Logging,
+                    ResourceType.Mining,
+                    ResourceType.Research,
+                    ResourceType.Power,
+                    ResourceType.Medicine,
+                    ResourceType.Gravtech,
+                    ResourceType.Chemfuel
+                };
+            }
+            
+            return new ResourceType[] {
+                ResourceType.Food,
+                ResourceType.Weapons,
+                ResourceType.Apparel,
+                ResourceType.Animals,
+                ResourceType.Logging,
+                ResourceType.Mining,
+                ResourceType.Research,
+                ResourceType.Power,
+                ResourceType.Medicine
+            };
         }
     }
 }
