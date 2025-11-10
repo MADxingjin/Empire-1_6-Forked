@@ -714,20 +714,22 @@ namespace FactionColonies
 
         public void setStartTime()
         {
-            int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>()
-                .GetSettings<FactionColonies>().timeBetweenTaxes;
+            var settings = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>();
+            int timeBetweenTaxes = settings.timeBetweenTaxes;
             
             // Safety check: ensure timeBetweenTaxes is at least 1 day
             if (timeBetweenTaxes <= 0)
             {
-                Log.Warning("Empire Mod - setStartTime: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
-                timeBetweenTaxes = GenDate.TicksPerDay;
+                // Restore based on current difficulty level, not always to 1 day
+                int correctValue = GetTimeBetweenTaxesForDifficulty(settings.difficultyLevel);
+                Log.Warning($"Empire Mod - setStartTime: timeBetweenTaxes was {timeBetweenTaxes}, restoring to difficulty preset ({settings.difficultyLevel} = {correctValue / 60000} days)");
+                timeBetweenTaxes = correctValue;
                 
                 // Fix the corrupted setting
                 try
                 {
-                    LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
-                    Log.Message("Empire Mod - setStartTime: Fixed corrupted timeBetweenTaxes setting");
+                    settings.timeBetweenTaxes = correctValue;
+                    Log.Message($"Empire Mod - setStartTime: Fixed corrupted timeBetweenTaxes setting to {correctValue / 60000} days");
                 }
                 catch (Exception ex)
                 {
@@ -737,6 +739,29 @@ namespace FactionColonies
             
             taxTimeDue = Find.TickManager.TicksGame + timeBetweenTaxes;
             dailyTimer = Find.TickManager.TicksGame + 2000;
+        }
+        
+        // Helper method to get the correct timeBetweenTaxes for a difficulty level
+        private static int GetTimeBetweenTaxesForDifficulty(EmpireDifficultyLevel difficulty)
+        {
+            switch (difficulty)
+            {
+                case EmpireDifficultyLevel.Peaceful:
+                    return 2 * 60000; // 2 days in ticks
+                case EmpireDifficultyLevel.CommunityBuilder:
+                    return 5 * 60000; // 5 days in ticks
+                case EmpireDifficultyLevel.AdventureStory:
+                    return 5 * 60000; // 5 days in ticks
+                case EmpireDifficultyLevel.StriveToSurvive:
+                    return 10 * 60000; // 10 days in ticks
+                case EmpireDifficultyLevel.BloodAndDust:
+                    return 15 * 60000; // 15 days in ticks
+                case EmpireDifficultyLevel.LosingIsFun:
+                    return 30 * 60000; // 30 days in ticks
+                case EmpireDifficultyLevel.Custom:
+                default:
+                    return 5 * 60000; // 5 days fallback for Custom or unknown
+            }
         }
 
         public int returnHighestMilitaryLevel()
@@ -1544,20 +1569,23 @@ namespace FactionColonies
                     }
                     // This prevents issues when settings get corrupted during performance problems
 
-                    int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes;
+                    var settings = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>();
+                    int timeBetweenTaxes = settings.timeBetweenTaxes;
                     // Log.Message($"Empire Mod - TaxTick: Using timeBetweenTaxes: {timeBetweenTaxes} ticks ({timeBetweenTaxes / 60000} days)");
                     
                     // Safety check: ensure timeBetweenTaxes is at least 1 day
                     if (timeBetweenTaxes <= 0)
                     {
-                        Log.Warning("Empire Mod - TaxTick: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
-                        timeBetweenTaxes = GenDate.TicksPerDay;
+                        // Restore based on current difficulty level, not always to 1 day
+                        int correctValue = GetTimeBetweenTaxesForDifficulty(settings.difficultyLevel);
+                        Log.Warning($"Empire Mod - TaxTick: timeBetweenTaxes was {timeBetweenTaxes}, restoring to difficulty preset ({settings.difficultyLevel} = {correctValue / 60000} days)");
+                        timeBetweenTaxes = correctValue;
                         
                         // Fix the corrupted setting to prevent future issues
                         try
                         {
-                            LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
-                            Log.Message("Empire Mod - TaxTick: Fixed corrupted timeBetweenTaxes setting");
+                            settings.timeBetweenTaxes = correctValue;
+                            Log.Message($"Empire Mod - TaxTick: Fixed corrupted timeBetweenTaxes setting to {correctValue / 60000} days");
                         }
                         catch (Exception ex)
                         {

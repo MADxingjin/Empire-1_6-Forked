@@ -1304,8 +1304,10 @@ namespace FactionColonies
                 // Ensure the value is never 0 or negative
                 if (_timeBetweenTaxes <= 0)
                 {
-                    Log.Warning("Empire Mod - Settings: timeBetweenTaxes getter detected invalid value (" + _timeBetweenTaxes + "), resetting to default");
-                    _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+                    // Restore based on current difficulty level, not always to default
+                    int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
+                    Log.Warning($"Empire Mod - Settings: timeBetweenTaxes getter detected invalid value ({_timeBetweenTaxes}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
+                    _timeBetweenTaxes = correctValue;
                 }
                 return _timeBetweenTaxes;
             }
@@ -1314,8 +1316,10 @@ namespace FactionColonies
                 // Ensure the value is never 0 or negative
                 if (value <= 0)
                 {
-                    Log.Warning("Empire Mod - Settings: Attempted to set timeBetweenTaxes to invalid value (" + value + "), using minimum value instead");
-                    _timeBetweenTaxes = MINIMUM_TAX_INTERVAL;
+                    // Restore based on current difficulty level, not always to minimum
+                    int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
+                    Log.Warning($"Empire Mod - Settings: Attempted to set timeBetweenTaxes to invalid value ({value}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
+                    _timeBetweenTaxes = correctValue;
                 }
                 else
                 {
@@ -1375,6 +1379,30 @@ namespace FactionColonies
         private static Vector2 savedWindowSize = new Vector2(450f, 600f);
         private static bool hasSavedSize = false;
 
+        // Helper method to get the correct timeBetweenTaxes for a difficulty level
+        // Used when restoring corrupted values to ensure we use the preset value, not always 1 day
+        private static int GetTimeBetweenTaxesForDifficulty(EmpireDifficultyLevel difficulty)
+        {
+            switch (difficulty)
+            {
+                case EmpireDifficultyLevel.Peaceful:
+                    return 2 * 60000; // 2 days in ticks
+                case EmpireDifficultyLevel.CommunityBuilder:
+                    return 5 * 60000; // 5 days in ticks
+                case EmpireDifficultyLevel.AdventureStory:
+                    return 5 * 60000; // 5 days in ticks
+                case EmpireDifficultyLevel.StriveToSurvive:
+                    return 10 * 60000; // 10 days in ticks
+                case EmpireDifficultyLevel.BloodAndDust:
+                    return 15 * 60000; // 15 days in ticks
+                case EmpireDifficultyLevel.LosingIsFun:
+                    return 30 * 60000; // 30 days in ticks
+                case EmpireDifficultyLevel.Custom:
+                default:
+                    return DEFAULT_TAX_INTERVAL; // 5 days fallback for Custom or unknown
+            }
+        }
+
         // Difficulty preset values
         public void ApplyDifficultyPreset(EmpireDifficultyLevel difficulty)
         {
@@ -1431,8 +1459,10 @@ namespace FactionColonies
             // Validate timeBetweenTaxes after loading to prevent corruption issues
             if (Scribe.mode == LoadSaveMode.LoadingVars && _timeBetweenTaxes <= 0)
             {
-                Log.Warning("Empire Mod - Settings: Detected corrupted timeBetweenTaxes value (" + _timeBetweenTaxes + "), resetting to default");
-                _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+                // Restore based on current difficulty level, not always to default
+                int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
+                Log.Warning($"Empire Mod - Settings: Detected corrupted timeBetweenTaxes value ({_timeBetweenTaxes}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
+                _timeBetweenTaxes = correctValue;
             }
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod");
             Scribe_Values.Look(ref workerCost, "workerCost");
