@@ -30,7 +30,7 @@ namespace FactionColonies
 
         public void windowUpdateFc()
         {
-            settlement.updateProfitAndProduction();
+            // Only update description, don't recalculate production unless needed
             settlement.updateDescription();
         }
 
@@ -38,8 +38,9 @@ namespace FactionColonies
         {
             base.PreOpen();
             settlement.updateDescription();
-            settlement.updateProfitAndProduction();
-            maxScroll = (ResourceUtils.resourceTypes.Length * ScrollSpacing) - ScrollHeight;
+            // Don't recalculate production on UI open - this overwrites saved values
+            // settlement.updateProfitAndProduction();
+            maxScroll = (ResourceUtils.GetAvailableResourceTypes(settlement).Length * ScrollSpacing) - ScrollHeight;
             //settlement.update description
             factionfc = Find.World.GetComponent<FactionFC>();
         }
@@ -171,11 +172,15 @@ namespace FactionColonies
                 })
             };
 
-            List<ThingDef> things = PaymentUtil.debugGenerateTithe(resourceType);
+            List<ThingDef> things = PaymentUtil.debugGenerateTithe(resourceType, settlement);
 
             foreach (ThingDef thing in things.Where(thing => thing.race?.animalType != AnimalType.Dryad))
             {
-                if (!FactionColonies.canCraftItem(thing))
+                // Skip craftability check for orbital platform items (GravlitePanel, Chemfuel)
+                // I'm not sure if this is the best way to do this, but it works for now. Can't say I'm proud of it.
+                bool isOrbitalItem = (thing == ThingDefOf.GravlitePanel) && ResourceUtils.IsOrbitalPlatform(settlement);
+                
+                if (!isOrbitalItem && !FactionColonies.canCraftItem(thing))
                 {
                     resource.filter.SetAllow(thing, false);
                     continue;
@@ -226,9 +231,8 @@ namespace FactionColonies
             if (Widgets.ButtonImage(new Rect(x + 45, scroll + y + 75 + (int)resourceType * (45 + spacing), 30, 30), resource.getIcon()))
             {
                 Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": "
-                    + resource.label,
-                    char.ToUpper(resource.label[0])
-                    + resource.label.Substring(1)));
+                    + ResourceUtils.GetResourceDisplayLabel(resourceType, settlement),
+                    ResourceUtils.GetResourceDisplayLabel(resourceType, settlement)));
             }
         }
 
@@ -253,30 +257,36 @@ namespace FactionColonies
 
         private void DrawResources(int x, int y, int spacing)
         {
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            // Get the appropriate resource types based on settlement type
+            ResourceType[] availableResources = ResourceUtils.GetAvailableResourceTypes(settlement);
+            
+            for (int i = 0; i < availableResources.Length; i++)
             {
+                ResourceType resourceType = availableResources[i];
                 ResourceFC resource = settlement.getResource(resourceType);
-                float rectY = scroll + y + 70 + (int)resourceType * (45 + spacing);
+                if (resource == null) continue;
+                
+                float rectY = scroll + y + 70 + i * (45 + spacing);
 
                 //Don't draw if outside view
-                if ((int)resourceType * ScrollSpacing + scroll < 0) continue;
+                if (i * ScrollSpacing + scroll < 0) continue;
 
                 bool titheDisabled = false;
                 if (ShouldTitheBeLockedForResouceType(resourceType))
                     titheDisabled = true;
-                else if (Widgets.ButtonImage(new Rect(x - 15,scroll + y + 65 + (int)resourceType * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize)) 
+                else if (Widgets.ButtonImage(new Rect(x - 15,scroll + y + 65 + i * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize)) 
                     TitheCustomizationClicked(resource, resourceType);
 
-                Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + (int)resourceType * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
+                Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + i * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
                 DoTitheCheckboxAction(resource.isTithe != resource.isTitheBool, resource);
                 DoResourceDescriptionButton(resource, resourceType, x, y, spacing);
 
                 //Production Efficiency
                 Widgets.DrawBox(new Rect(x + 80, rectY, 100, 20));
                 Widgets.FillableBar(new Rect(x + 80, rectY, 100, 20), (float)Math.Min(resource.baseProductionMultiplier, 1.0));
-                Widgets.Label(new Rect(x + 80, scroll + y + 90 + (int)resourceType * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
-                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + (int)resourceType * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resourceType, true);
-                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + (int)resourceType * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resourceType);
+                Widgets.Label(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
+                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resourceType, true);
+                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resourceType);
 
                 //Base Production
                 Widgets.Label(new Rect(x + 195, rectY, 45, 40),
@@ -367,11 +377,38 @@ namespace FactionColonies
 
             //Draw town location flabor text
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(55, 40, 470, 20),
-                "Located".Translate() + " " +
-                Find.WorldGrid[settlement.mapLocation].hilliness.GetLabel() + " " +
-                "LandOf".Translate() + " " +
-                Find.WorldGrid[settlement.mapLocation].PrimaryBiome.LabelCap.ToLower()); //returnSettlement().title);
+
+            // Check if this is an orbital platform and show appropriate location text
+            // Techdebt - Language support for this would be nice
+            string locationText;
+            if (ResourceUtils.IsOrbitalPlatform(settlement))
+            {
+                // Space-themed location text for orbital platforms - use deterministic selection based on settlement ID
+                // Techdebt - Language support for this would be nice
+                string[] spaceLocations = { 
+                    "Orbiting in deep space", 
+                    "Stationed in low orbit", 
+                    "Floating in the emptiness of space", 
+                    "Anchored in orbit",
+                    "Positioned in low orbit",
+                    "Suspended above the surface",
+                    "Deployed in orbital space"
+                };
+                
+                // Use the settlement's loadID to deterministically select a location text
+                int locationIndex = Math.Abs(settlement.loadID) % spaceLocations.Length;
+                locationText = spaceLocations[locationIndex];
+            }
+            else
+            {
+                // Regular location text for surface settlements
+                locationText = "Located".Translate() + " " +
+                    Find.WorldGrid[settlement.mapLocation].hilliness.GetLabel() + " " +
+                    "LandOf".Translate() + " " +
+                    Find.WorldGrid[settlement.mapLocation].PrimaryBiome.LabelCap.ToLower();
+            }
+
+            Widgets.Label(new Rect(55, 40, 470, 20), locationText);
 
             //Draw header Settings button
             if (Widgets.ButtonImage(new Rect(495, 5, 20, 20), TexLoad.iconCustomize))

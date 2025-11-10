@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<FactionColonies.BuildingFCDef>
+		<defName>orbitalFuelDepot</defName>
+		<label>Orbital Fuel Depot</label>
+		<desc>Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel. +0.5 power production, +0.3 chemfuel production. $400 upkeep cost.</desc>
+		<cost>2000</cost>
+		<techLevel>Spacer</techLevel>
+		<constructionDuration>300000</constructionDuration>
+		<traits>
+			<li>orbitalFuelDepot</li>
+		</traits>
+		<applicableBiomes>
+		
+		</applicableBiomes>
+		<settlementTypeRestriction>OrbitalOnly</settlementTypeRestriction>
+		<upkeep>400</upkeep>
+		<iconPath>GUI/Buildings/Orbital/OrbitalFuelDepot</iconPath>
+	</FactionColonies.BuildingFCDef>
+
+	<FactionColonies.BuildingFCDef>
+		<defName>asteroidMiningPlatform</defName>
+		<label>Asteroid Mining Platform</label>
+		<desc>Automated mining drones harvest resources from nearby asteroids and space debris. Much more efficient than planetary mining. +0.8 base mining production. $400 upkeep cost.</desc>
+		<cost>3500</cost>
+		<techLevel>Spacer</techLevel>
+		<constructionDuration>300000</constructionDuration>
+		<traits>
+			<li>asteroidMiningPlatform</li>
+		</traits>
+		<applicableBiomes>
+		
+		</applicableBiomes>
+		<settlementTypeRestriction>OrbitalOnly</settlementTypeRestriction>
+		<upkeep>400</upkeep>
+		<iconPath>GUI/Buildings/Orbital/AsteroidMiningPlatform</iconPath>
+	</FactionColonies.BuildingFCDef>
+	
+	<FactionColonies.BuildingFCDef>
+		<defName>solarCollectionArray</defName>
+		<label>Solar Collection Array</label>
+		<desc>Massive solar panel arrays with no atmospheric interference collect energy directly from the star. Powers the station and provides surplus energy. +2.0 base power production. $650 upkeep cost.</desc>
+		<cost>7500</cost>
+		<techLevel>Spacer</techLevel>
+		<constructionDuration>300000</constructionDuration>
+		<traits>
+			<li>solarCollectionArray</li>
+		</traits>
+		<applicableBiomes>
+		
+		</applicableBiomes>
+		<settlementTypeRestriction>OrbitalOnly</settlementTypeRestriction>
+		<upkeep>650</upkeep>
+		<iconPath>GUI/Buildings/Orbital/solarCollectionArray</iconPath>
+	</FactionColonies.BuildingFCDef>
+
+</Defs>

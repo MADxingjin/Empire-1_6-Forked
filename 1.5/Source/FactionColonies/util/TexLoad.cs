@@ -69,7 +69,11 @@ namespace FactionColonies
         //public static readonly Texture2D iconProdAnimals = ContentFinder<Texture2D>.Get("GUI/productionanimals");
         //public static readonly Texture2D iconProdLogging = ContentFinder<Texture2D>.Get("GUI/productionlogging");
         //public static readonly Texture2D iconProdMining = ContentFinder<Texture2D>.Get("GUI/productionmining");
-
+        // Welcome window textures
+        public static readonly Texture2D empireIcon = ContentFinder<Texture2D>.Get("UI/Banners/Empire");
+        public static readonly Texture2D discordIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/discordlogo");
+        public static readonly Texture2D githubIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/githublogo");
+        public static readonly Texture2D wikiIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/wikilogo");
 
 
         public static readonly List<KeyValuePair<string, Texture2D>> textures = new List<KeyValuePair<string, Texture2D>>() 
@@ -78,13 +82,32 @@ namespace FactionColonies
             new KeyValuePair<string, Texture2D>("weapons", ContentFinder<Texture2D>.Get("GUI/ProductionWeapons")), 
             new KeyValuePair<string, Texture2D>("apparel", ContentFinder<Texture2D>.Get("GUI/ProductionApparel")), 
             new KeyValuePair<string, Texture2D>("animals", ContentFinder<Texture2D>.Get("GUI/ProductionAnimals")), 
+            new KeyValuePair<string, Texture2D>("chemfuel", ContentFinder<Texture2D>.Get("GUI/ProductionChemfuel")), // Chemfuel texture for orbital platforms
             new KeyValuePair<string, Texture2D>("logging", ContentFinder<Texture2D>.Get("GUI/ProductionLogging")), 
+            new KeyValuePair<string, Texture2D>("gravtech", ContentFinder<Texture2D>.Get("GUI/ProductionGravtech")), // Gravtech texture
             new KeyValuePair<string, Texture2D>("mining", ContentFinder<Texture2D>.Get("GUI/ProductionMining")),
-             new KeyValuePair<string, Texture2D>("medicine", ContentFinder<Texture2D>.Get("GUI/ProductionMedicine")),
-              new KeyValuePair<string, Texture2D>("power", ContentFinder<Texture2D>.Get("GUI/ProductionPower")),
-               new KeyValuePair<string, Texture2D>("research", ContentFinder<Texture2D>.Get("GUI/ProductionResearch"))
+            new KeyValuePair<string, Texture2D>("medicine", ContentFinder<Texture2D>.Get("GUI/ProductionMedicine")),
+            new KeyValuePair<string, Texture2D>("power", ContentFinder<Texture2D>.Get("GUI/ProductionPower")),
+            new KeyValuePair<string, Texture2D>("research", ContentFinder<Texture2D>.Get("GUI/ProductionResearch"))
         };
 
         public static List<Texture2D> factionIcons = new List<Texture2D>();
+
+        // Add a method to get the appropriate texture based on settlement type
+        public static Texture2D GetResourceTexture(ResourceType resourceType, SettlementFC settlement)
+        {
+            string resourceName = ResourceUtils.GetResourceDisplayName(resourceType, settlement);
+            
+            var textureEntry = textures.FirstOrDefault(t => t.Key == resourceName);
+            if (textureEntry.Value != null)
+            {
+                return textureEntry.Value;
+            }
+            
+            // Fallback to the original resource type name if specific texture not found
+            var fallbackEntry = textures.FirstOrDefault(t => t.Key == resourceType.ToString().ToLower());
+            return fallbackEntry.Value ?? textures[0].Value; // Final fallback to first texture
+        }
+
     }
 }

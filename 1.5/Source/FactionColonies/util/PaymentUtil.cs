@@ -113,15 +113,25 @@ namespace FactionColonies
 
         public static void placeThing(Thing thing)
         {
-            Map taxMap = Find.World.GetComponent<FactionFC>().TaxMap;
-
+            Map taxMap = GetActiveTaxDeliveryMap();
+            
             IntVec3 intvec;
-            if (checkForTaxSpot(taxMap, out intvec) != true)
+            if (checkForActiveTaxDeliverySpot(out intvec, out taxMap))
             {
-                intvec = DropCellFinder.TradeDropSpot(taxMap);
+                // Found an active tax delivery spot, use it
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
             }
-
-            GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            else if (checkForTaxSpot(taxMap, out intvec))
+            {
+                // Found regular tax spot on the tax map
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            }
+            else
+            {
+                // Fallback to drop spot on tax map
+                intvec = DropCellFinder.TradeDropSpot(taxMap);
+                GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
+            }
         }
 
         public static void deliverThings(FCEvent evt, Letter let = null, Message msg = null)
@@ -263,30 +273,7 @@ namespace FactionColonies
             return things;
         }
 
-        public static void resetThingFilter(in SettlementFC settlement, ResourceType resourceType)
-        {
-            //Log.Message(resourceID.ToString());
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            ThingFilter filter = settlement.getResource(resourceType).filter;
-            filterResource(filter, resourceType, faction.techLevel);
-
-            switch (resourceType)
-            {
-                case ResourceType.Research:
-                case ResourceType.Power:
-                    break;
-                default:
-                    List<ThingDef> things = debugGenerateTithe(resourceType);
-                    foreach (var thing in things.Where(thing => !FactionColonies.canCraftItem(thing)))
-                    {
-                        filter.SetAllow(thing, false);
-                    }
-
-                    break;
-            }
-        }
-
-        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel)
+        private static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
         {
             switch (resourceType)
             {
@@ -309,11 +296,9 @@ namespace FactionColonies
                     {
                         filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("DevilstrandCloth"), true);
                     }
-
                     break;
                 case ResourceType.Animals:
                     List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-
                     foreach (PawnKindDef def in allAnimalDefs)
                     {
                         if (def.IsAnimalAndAllowed())
@@ -321,7 +306,6 @@ namespace FactionColonies
                             filter.SetAllow(def.race, true);
                         }
                     }
-
                     break;
                 case ResourceType.Logging:
                     filter.SetAllow(ThingDefOf.WoodLog, true);
@@ -342,7 +326,6 @@ namespace FactionColonies
                     {
                         filter.SetAllow(rawMagicyte, true);
                     }
-
                     filter.SetAllow(ThingDefOf.ComponentIndustrial, true);
                     filter.SetAllow(ThingCategoryDefOf.StoneBlocks, true);
                     break;
@@ -358,62 +341,73 @@ namespace FactionColonies
                         case TechLevel.Ultra:
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsUltra"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"),
-                                    true);
-
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
                             break;
                         case TechLevel.Spacer:
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
                             break;
                         case TechLevel.Industrial:
-                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"),
-                                true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
                             filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
                             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
-                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"),
-                                    true);
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
                             break;
+                    }
+                    break;
+                case ResourceType.Gravtech:
+                    filter.SetAllow(ThingDefOf.GravlitePanel, true);
+                    break;
+                case ResourceType.Chemfuel:
+                    filter.SetAllow(ThingDefOf.Chemfuel, true);
+                    break;
+            }
+        }
+
+        public static void resetThingFilter(in SettlementFC settlement, ResourceType resourceType)
+        {
+            //Log.Message(resourceID.ToString());
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            ThingFilter filter = settlement.getResource(resourceType).filter;
+            filterResource(filter, resourceType, faction.techLevel, settlement);
+
+            switch (resourceType)
+            {
+                case ResourceType.Research:
+                case ResourceType.Power:
+                    break;
+                default:
+                    List<ThingDef> things = debugGenerateTithe(resourceType, settlement);
+                    foreach (var thing in things.Where(thing => !FactionColonies.canCraftItem(thing)))
+                    {
+                        filter.SetAllow(thing, false);
                     }
 
                     break;
@@ -422,7 +416,32 @@ namespace FactionColonies
 
         public static List<ThingDef> debugGenerateTithe(ResourceType resourceType)
         {
+            return debugGenerateTithe(resourceType, null);
+        }
+
+        public static List<ThingDef> debugGenerateTithe(ResourceType resourceType, SettlementFC settlement)
+        {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
+            
+            // Handle special orbital resources
+            if (resourceType == ResourceType.Gravtech)
+            {
+                List<ThingDef> gravtechList = new List<ThingDef>();
+                if (ThingDefOf.GravlitePanel != null)
+                {
+                    gravtechList.Add(ThingDefOf.GravlitePanel);
+                }
+                return gravtechList;
+            }
+            
+            if (resourceType == ResourceType.Chemfuel)
+            {
+                List<ThingDef> chemfuelList = new List<ThingDef>();
+                chemfuelList.Add(ThingDefOf.Chemfuel);
+                return chemfuelList;
+            }
+            
+            // Regular handling for all other cases
             ThingSetMaker thingSetMaker = resourceType == ResourceType.Animals
                 ? (ThingSetMaker) new ThingSetMaker_Animal()
                 : new ThingSetMaker_Count();
@@ -433,7 +452,7 @@ namespace FactionColonies
             param.techLevel = faction.techLevel;
             param.countRange = new IntRange(1, 1);
 
-            filterResource(param.filter, resourceType, faction.techLevel);
+            filterResource(param.filter, resourceType, faction.techLevel, settlement);
 
             things = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
 
@@ -481,6 +500,12 @@ namespace FactionColonies
                     break;
                 case ResourceType.Medicine:
                     param.countRange = new IntRange(1, 2 * multiplier);
+                    break;
+                case ResourceType.Gravtech:
+                    param.countRange = new IntRange(1, 3 * multiplier);
+                    break;
+                case ResourceType.Chemfuel:
+                    param.countRange = new IntRange(1, 4 * multiplier);
                     break;
             }
 
@@ -608,6 +633,49 @@ namespace FactionColonies
 
             //Log.Message("Total Value: $" + totalValue);
             return totalValue;
+        }
+
+        private static Map GetActiveTaxDeliveryMap()
+        {
+            // First try to find a map with an active tax delivery spot
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
+                    {
+                        return map;
+                    }
+                }
+            }
+            
+            // Fallback to existing tax map logic
+            return Find.World.GetComponent<FactionFC>().TaxMap;
+        }
+
+        public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
+        {
+            // Search all player home maps for an active tax delivery spot
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
+                    {
+                        dropSpot = building.Position;
+                        taxMap = map;
+                        return true;
+                    }
+                }
+            }
+            
+            dropSpot = IntVec3.Invalid;
+            taxMap = null;
+            return false;
         }
     }
 

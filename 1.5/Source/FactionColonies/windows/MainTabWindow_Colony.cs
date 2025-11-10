@@ -221,16 +221,45 @@ namespace FactionColonies
             Faction gfaction = FactionColonies.getPlayerColonyFaction();
             if (gfaction != null)
             {
-
-                if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
+                // Check if orbital research is unlocked
+                bool canCreateOrbital = CanCreateOrbitalPlatforms();
+                
+                if (canCreateOrbital)
                 {
-                    Find.WindowStack.Add(new CreateColonyWindowFc());
+                    // Show dropdown button when orbital research is unlocked and present Orbital and Land Colony options :D
+                    if (Widgets.ButtonText(button, "CreateNewColony".Translate() + " ▼"))
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>
+                        {
+                            new FloatMenuOption("Create Land Colony", delegate
+                            {
+                                Find.WindowStack.Add(new CreateColonyWindowFc());
+                                //Move player to world map
+                                Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+                                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
+                            }),
+                            new FloatMenuOption("Create Orbital Colony", delegate
+                            {
+                                Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
+                            })
+                        };
+                        
+                        FloatMenu floatMenu = new FloatMenu(options);
+                        Find.WindowStack.Add(floatMenu);
+                    }
+                }
+                else
+                {
+                    // Show regular button when orbital research is not unlocked
+                    if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
+                    {
+                        Find.WindowStack.Add(new CreateColonyWindowFc());
 
-                    //Move player to world map
-                    Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+                        //Move player to world map
+                        Find.World.renderer.wantedMode = WorldRenderMode.Planet;
 
-                    Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-
+                        Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
+                    }
                 }
             }
             else //create new faction
@@ -257,6 +286,12 @@ namespace FactionColonies
             }
         }
 
+        // Add the method to check orbital research
+        private bool CanCreateOrbitalPlatforms()
+        {
+            var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
+            return research != null && research.IsFinished;
+        }
 
         private void DrawTabFaction(Rect inRect)
         {
@@ -610,42 +645,42 @@ namespace FactionColonies
                     {
                         List<FloatMenuOption> list = new List<FloatMenuOption>
                         {
-                            new FloatMenuOption("TaxDeliveryMap".Translate(), delegate
-                            {
-                                List<FloatMenuOption> list2 = new List<FloatMenuOption> { new FloatMenuOption("SetMap".Translate(), delegate
-                                {
-                                    List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
+                            // new FloatMenuOption("TaxDeliveryMap".Translate(), delegate
+                            // {
+                            //     List<FloatMenuOption> list2 = new List<FloatMenuOption> { new FloatMenuOption("SetMap".Translate(), delegate
+                            //     {
+                            //         List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
-                                    foreach (Map map in Find.Maps)
-                                    {
-                                        if (map.IsPlayerHome)
-                                        {
-                                            settlementList.Add(new FloatMenuOption(map.Parent.LabelCap, delegate
-                                            {
-                                                faction.taxMap = map;
-                                                Find.LetterStack.ReceiveLetter("Map Set!", "The tax delivery map has been set to the player colony of " + map.Parent.LabelCap + ".\n All taxes and other goods will be delivered there", LetterDefOf.NeutralEvent);
-                                            }
-                                            ));
-                                        }
-                                    }
+                            //         foreach (Map map in Find.Maps)
+                            //         {
+                            //             if (map.IsPlayerHome)
+                            //             {
+                            //                 settlementList.Add(new FloatMenuOption(map.Parent.LabelCap, delegate
+                            //                 {
+                            //                     faction.taxMap = map;
+                            //                     Find.LetterStack.ReceiveLetter("Map Set!", "The tax delivery map has been set to the player colony of " + map.Parent.LabelCap + ".\n All taxes and other goods will be delivered there", LetterDefOf.NeutralEvent);
+                            //                 }
+                            //                 ));
+                            //             }
+                            //         }
 
-                                    if (settlementList.Count == 0)
-                                    {
-                                        settlementList.Add(new FloatMenuOption("No valid settlements to use.", null));
-                                    }
+                            //         if (settlementList.Count == 0)
+                            //         {
+                            //             settlementList.Add(new FloatMenuOption("No valid settlements to use.", null));
+                            //         }
 
-                                    FloatMenu floatMenu2 = new FloatMenu(settlementList);
-                                    Find.WindowStack.Add(floatMenu2);
-                                }) };
+                            //         FloatMenu floatMenu2 = new FloatMenu(settlementList);
+                            //         Find.WindowStack.Add(floatMenu2);
+                            //     }) };
 
-                                FloatMenu floatMenu = new FloatMenu(list2);
-                                Find.WindowStack.Add(floatMenu);
-                            }),
+                            //     FloatMenu floatMenu = new FloatMenu(list2);
+                            //     Find.WindowStack.Add(floatMenu);
+                            // }),
 
-                            new FloatMenuOption("SetCapital".Translate(), delegate
-                            {
-                                faction.setCapital();
-                            }),
+                            // new FloatMenuOption("SetCapital".Translate(), delegate
+                            // {
+                            //     faction.setCapital();
+                            // }),
 
                             new FloatMenuOption("ActivateResearch".Translate(), delegate
                             {
@@ -733,9 +768,12 @@ namespace FactionColonies
             float resourcesPerRow = 7;
             int ySpacing = 30;
 
+            // Show all resource types in faction overview
             foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
             {
                 ResourceFC resource = faction.returnResource(resourceType);
+                if (resource == null) continue;
+                
                 k = (int)Math.Floor((int)resourceType / resourcesPerRow);
                 j = (int)((int)resourceType % resourcesPerRow);
                 if (Widgets.ButtonImage(new Rect(5 + x + (j * (resourceSize + 5)), y - 5 + ySpacing * k, resourceSize,

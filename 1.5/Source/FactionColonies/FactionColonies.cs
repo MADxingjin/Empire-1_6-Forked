@@ -20,7 +20,36 @@ namespace FactionColonies
 
     public class FactionColonies : ModSettings
     {
+
+                // Constants for validation
+        private const int MINIMUM_TAX_INTERVAL = GenDate.TicksPerDay;
+        private const int DEFAULT_TAX_INTERVAL = 5 * 60000; // 5 days in ticks
+        public const int updateUiTimer = 150; // UI update interval in ticks
         private Faction playerFactionRef = null;
+
+        public static string GetModVersion()
+        {
+            try
+            {
+                var mod = LoadedModManager.GetMod<FactionColoniesMod>();
+                string manifestPath = Path.Combine(mod.Content.RootDir, "About", "Manifest.xml");
+                if (File.Exists(manifestPath))
+                {
+                    string content = File.ReadAllText(manifestPath);
+                    int versionStart = content.IndexOf("<version>") + 9;
+                    int versionEnd = content.IndexOf("</version>");
+                    if (versionStart > 8 && versionEnd > versionStart)
+                    {
+                        return content.Substring(versionStart, versionEnd - versionStart);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Empire Mod: Failed to read version from manifest: " + ex.Message);
+            }
+            return "Unknown";
+        }
         public Faction GetVanillaPlayerFaction()
         {
             if (playerFactionRef == null)
@@ -35,7 +64,15 @@ namespace FactionColonies
             FactionFC factionFC = Find.World.GetComponent<FactionFC>();
             PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
 
-            Log.Message("Updating Empire to Latest Version");
+            // Store the initial state before any modifications
+            bool wasAlreadyProcessed = factionFC.updateProcessed;
+
+            // Only log once when first setting up
+            if (!factionFC.updateProcessed)
+            {
+                Log.Message("Updating Empire to Latest Version");
+                // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
+            }
             //NEW PLACE FOR UPDATE VERSIONS
 
             //I think this does things necessary for SOS so I'm gonna keep it
@@ -51,15 +88,30 @@ namespace FactionColonies
 
                 factionFC.capitalPlanet = Find.World.info.name;
 
+                if (!wasAlreadyProcessed)
+                {
+                    Log.Message("Resetting faction leaders");
+                }
                 SoS2HarmonyPatches.ResetFactionLeaders();
             }
 
-            Log.Message("Empire - Testing for traits with no tie");
-            verifyTraits();
+            // Only run verification and alerts for new games/first time setup
+            if (!wasAlreadyProcessed)
+            {
 
-            MessagePlayerAboutConfigErrors(factionFC);
+                // Welcome message!
+                Find.WindowStack.Add(new FCWindow_Welcome());
 
-            Log.Message("Empire - Testing for update change");
+                Log.Message("Empire - Testing for traits with no tie");
+                verifyTraits();
+            
+                MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
+
+                Log.Message("Empire - Testing for update change");
+                
+                // Mark as processed AFTER everything is done
+                factionFC.updateProcessed = true;
+            }
 
             if (Settings().updateVersion < 0.370)
             {
@@ -984,14 +1036,28 @@ namespace FactionColonies
 
         public static int ReturnTicksToArrive(int currentTile, int destinationTile)
         {
+            Log.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
+            
             bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
             bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().medievalTechOnly;
             bool podsResearched = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false;
 
             if (!medievalOnly)
             {
-                if (!(currentTile, destinationTile).AreValidTiles()) return podsResearched ? 30000 : 600000;
-                if (podsResearched) return Find.WorldGrid.TraversalDistanceBetween(currentTile, destinationTile) * (tilesInShuttleRange ? 5 : 10);
+                bool tilesValid = (currentTile, destinationTile).AreValidTiles();
+                Log.Message($"ReturnTicksToArrive Debug: tilesValid={tilesValid}, medievalOnly={medievalOnly}, podsResearched={podsResearched}");
+                
+                if (!tilesValid) 
+                {
+                    int fallbackTime = podsResearched ? 30000 : 600000;
+                    Log.Message($"ReturnTicksToArrive Debug: Invalid tiles, returning fallback time: {fallbackTime} ticks ({fallbackTime / 60000f:F1} days)");
+                    return fallbackTime;
+                }
+                if (podsResearched) 
+                {
+                    int multiplier = tilesInShuttleRange ? 5 : 10;
+                    return Find.WorldGrid.TraversalDistanceBetween(currentTile, destinationTile) * multiplier;
+                }
             }
 
             var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
@@ -1053,18 +1119,35 @@ namespace FactionColonies
                 Type typ = returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
                 Type typ2 = returnUnknownTypeFromName("SaveOurShip2.WorldFactionList");
 
-                var mainclass = Traverse.CreateWithType(typ.ToString());
-                var dict = mainclass.Property("PastWorldTracker").Field("WorldFactions").GetValue();
+                // Check if SoS2 classes were found
+                // Preview debug - Remove once confirmed ok!
+                if (typ == null || typ2 == null)
+                {
+                    Log.Warning("Empire - SoS2 compatibility: Could not find required SoS2 classes. SoS2 may not be loaded or has a different version.");
+                }
+                else
+                {
+                    try
+                    {
+                        var mainclass = Traverse.CreateWithType(typ.ToString());
+                        var dict = mainclass.Property("PastWorldTracker").Field("WorldFactions").GetValue();
 
-                var planetfactiondict = Traverse.Create(dict);
-                var unknownclass = planetfactiondict.Property("Item", new object[] {Find.World.info.name}).GetValue();
+                        var planetfactiondict = Traverse.Create(dict);
+                        var unknownclass = planetfactiondict.Property("Item", new object[] {Find.World.info.name}).GetValue();
 
-                var factionlist = Traverse.Create(unknownclass);
-                var list = factionlist.Field("myFactions").GetValue();
-                List<String> modifiedlist = (List<String>) list;
-                modifiedlist.Add(faction.GetUniqueLoadID());
-                factionlist.Field("myFactions").SetValue(modifiedlist);
-                //Log.Message("Added faction to world list");
+                        var factionlist = Traverse.Create(unknownclass);
+                        var list = factionlist.Field("myFactions").GetValue();
+                        List<String> modifiedlist = (List<String>) list;
+                        modifiedlist.Add(faction.GetUniqueLoadID());
+                        factionlist.Field("myFactions").SetValue(modifiedlist);
+                        //Log.Message("Added faction to world list");
+                    // Preview debug - Remove once confirmed ok!
+                    } 
+                    catch (Exception ex)
+                    {
+                        Log.Warning("Empire - SoS2 compatibility: Error adding faction to SoS2 world list: " + ex.Message);
+                    }
+                }
 
                 foreach (Faction other in Find.FactionManager.AllFactionsVisibleInViewOrder)
                 {
@@ -1209,13 +1292,45 @@ namespace FactionColonies
 
         public int silverPerResource = 100;
         public static double silverToCreateSettlement = 1000;
-        public int timeBetweenTaxes = GenDate.TicksPerTwelfth;
-        public static int updateUiTimer = 150;
+        // public int timeBetweenTaxes = GenDate.TicksPerTwelfth;
+        // public static int updateUiTimer = 150;'
+
+        // Tax attempt fix
+        private int _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+        public int timeBetweenTaxes
+        {
+            get
+            {
+                // Ensure the value is never 0 or negative
+                if (_timeBetweenTaxes <= 0)
+                {
+                    Log.Warning("Empire Mod - Settings: timeBetweenTaxes getter detected invalid value (" + _timeBetweenTaxes + "), resetting to default");
+                    _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+                }
+                return _timeBetweenTaxes;
+            }
+            set
+            {
+                // Ensure the value is never 0 or negative
+                if (value <= 0)
+                {
+                    Log.Warning("Empire Mod - Settings: Attempted to set timeBetweenTaxes to invalid value (" + value + "), using minimum value instead");
+                    _timeBetweenTaxes = MINIMUM_TAX_INTERVAL;
+                }
+                else
+                {
+                    _timeBetweenTaxes = value;
+                }
+            }
+        }
+
+
         public int productionTitheMod = 25;
         public static int productionResearchBase = 100;
         public static int storeReportCount = 4;
         public int workerCost = 100;
 
+        public EmpireDifficultyLevel difficultyLevel = EmpireDifficultyLevel.AdventureStory; // Default to Adventure Story
 
         public static double unrestBaseGain = 0;
         public static double unrestBaseLost = 1;
@@ -1260,11 +1375,65 @@ namespace FactionColonies
         private static Vector2 savedWindowSize = new Vector2(450f, 600f);
         private static bool hasSavedSize = false;
 
+        // Difficulty preset values
+        public void ApplyDifficultyPreset(EmpireDifficultyLevel difficulty)
+        {
+            switch (difficulty)
+            {
+                case EmpireDifficultyLevel.Peaceful:
+                    silverPerResource = 200;
+                    timeBetweenTaxes = 2 * 60000; // 2 days in ticks
+                    productionTitheMod = 50;
+                    workerCost = 75;
+                    break;
+                case EmpireDifficultyLevel.CommunityBuilder:
+                    silverPerResource = 150;
+                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
+                    productionTitheMod = 25;
+                    workerCost = 100;
+                    break;
+                case EmpireDifficultyLevel.AdventureStory:
+                    silverPerResource = 100;
+                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
+                    productionTitheMod = 25;
+                    workerCost = 100;
+                    break;
+                case EmpireDifficultyLevel.StriveToSurvive:
+                    silverPerResource = 100;
+                    timeBetweenTaxes = 10 * 60000; // 10 days in ticks
+                    productionTitheMod = 20;
+                    workerCost = 125;
+                    break;
+                case EmpireDifficultyLevel.BloodAndDust:
+                    silverPerResource = 80;
+                    timeBetweenTaxes = 15 * 60000; // 15 days in ticks
+                    productionTitheMod = 15;
+                    workerCost = 125;
+                    break;
+                case EmpireDifficultyLevel.LosingIsFun:
+                    silverPerResource = 70;
+                    timeBetweenTaxes = 30 * 60000; // 30 days in ticks
+                    productionTitheMod = 10;
+                    workerCost = 150;
+                    break;
+                case EmpireDifficultyLevel.Custom:
+                    // Don't change anything for custom
+                    break;
+            }
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref silverPerResource, "silverPerResource");
-            Scribe_Values.Look(ref timeBetweenTaxes, "timeBetweenTaxes");
+            Scribe_Values.Look(ref _timeBetweenTaxes, "timeBetweenTaxes");
+            
+            // Validate timeBetweenTaxes after loading to prevent corruption issues
+            if (Scribe.mode == LoadSaveMode.LoadingVars && _timeBetweenTaxes <= 0)
+            {
+                Log.Warning("Empire Mod - Settings: Detected corrupted timeBetweenTaxes value (" + _timeBetweenTaxes + "), resetting to default");
+                _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
+            }
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod");
             Scribe_Values.Look(ref workerCost, "workerCost");
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel");
@@ -1281,6 +1450,18 @@ namespace FactionColonies
             Scribe_Values.Look(ref updateVersion, "updateVersion");
             Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
+            Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", EmpireDifficultyLevel.AdventureStory);
+            
+            // Band aid - For existing users upgrading from old system, detect if they have custom values
+            if (Scribe.mode == LoadSaveMode.LoadingVars && difficultyLevel == EmpireDifficultyLevel.AdventureStory)
+            {
+                // Check if current values match Adventure Story defaults
+                if (silverPerResource != 100 || (timeBetweenTaxes / 60000) != 5 || productionTitheMod != 25 || workerCost != 100)
+                {
+                    // User had custom settings, set to Custom mode
+                    difficultyLevel = EmpireDifficultyLevel.Custom;
+                }
+            }
         }
     }
 
@@ -1363,15 +1544,70 @@ namespace FactionColonies
             Widgets.BeginScrollView(inRect, ref scrollVector, viewRect);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(viewRect);
-            ls.Label("FCSettingSilverPerResource".Translate());
-            ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
-            ls.Label("FCSettingDaysBetweenTax".Translate());
-            ls.IntEntry(ref daysBetweenTaxes, ref timeBetweenTaxes);
-            settings.timeBetweenTaxes = Math.Max(1, daysBetweenTaxes) * 60000;
-            ls.Label("FCSettingProductionTitheMod".Translate());
-            ls.IntEntry(ref settings.productionTitheMod, ref productionTitheMod);
-            ls.Label("FCSettingWorkerCost".Translate());
-            ls.IntEntry(ref settings.workerCost, ref workerCost);
+
+            // Display mod version
+            ls.Label("Empire Mod Version: " + FactionColonies.GetModVersion());
+            ls.Gap(10f);
+
+            // Empire Difficulty Selection
+            ls.Label("FCSettingEmpireDifficulty".Translate());
+            ls.Gap(5f);
+
+            // Create difficulty options with descriptions
+            var difficultyOptions = new List<(EmpireDifficultyLevel level, string nameKey, string descKey)>
+            {
+                (EmpireDifficultyLevel.Peaceful, "FCDifficultyPeaceful", "FCDifficultyPeacefulDesc"),
+                (EmpireDifficultyLevel.CommunityBuilder, "FCDifficultyCommunityBuilder", "FCDifficultyCommunityBuilderDesc"),
+                (EmpireDifficultyLevel.AdventureStory, "FCDifficultyAdventureStory", "FCDifficultyAdventureStoryDesc"),
+                (EmpireDifficultyLevel.StriveToSurvive, "FCDifficultyStriveToSurvive", "FCDifficultyStriveToSurviveDesc"),
+                (EmpireDifficultyLevel.BloodAndDust, "FCDifficultyBloodAndDust", "FCDifficultyBloodAndDustDesc"),
+                (EmpireDifficultyLevel.LosingIsFun, "FCDifficultyLosingIsFun", "FCDifficultyLosingIsFunDesc"),
+                (EmpireDifficultyLevel.Custom, "FCDifficultyCustom", "FCDifficultyCustomDesc")
+            };
+
+            foreach (var option in difficultyOptions)
+            {
+                bool isSelected = settings.difficultyLevel == option.level;
+                
+                if (ls.RadioButton(option.nameKey.Translate(), isSelected))
+                {
+                    if (!isSelected) // Only change if not already selected
+                    {
+                        settings.difficultyLevel = option.level;
+                        if (option.level != EmpireDifficultyLevel.Custom)
+                        {
+                            settings.ApplyDifficultyPreset(option.level);
+                        }
+                    }
+                }
+                // Add description as a separate indented label
+                ls.Label("    " + option.descKey.Translate(), -1f);
+            }
+
+            ls.Gap(15f);
+
+            // Show economic settings only if Custom is selected
+            if (settings.difficultyLevel == EmpireDifficultyLevel.Custom)
+            {
+                ls.Label("FCSettingSilverPerResource".Translate());
+                ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
+                ls.Label("FCSettingDaysBetweenTax".Translate());
+                ls.IntEntry(ref daysBetweenTaxes, ref timeBetweenTaxes);
+                settings.timeBetweenTaxes = Math.Max(1, daysBetweenTaxes) * 60000;
+                ls.Label("FCSettingProductionTitheMod".Translate());
+                ls.IntEntry(ref settings.productionTitheMod, ref productionTitheMod);
+                ls.Label("FCSettingWorkerCost".Translate());
+                ls.IntEntry(ref settings.workerCost, ref workerCost);
+            }
+            else
+            {
+                // Show current values as read-only labels for non-custom difficulties
+                ls.Label($"FCSettingSilverPerResource".Translate() + ": " + settings.silverPerResource);
+                ls.Label($"FCSettingDaysBetweenTax".Translate() + ": " + (settings.timeBetweenTaxes / 60000));
+                ls.Label($"FCSettingProductionTitheMod".Translate() + ": " + settings.productionTitheMod);
+                ls.Label($"FCSettingWorkerCost".Translate() + ": " + settings.workerCost);
+            }
+
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settings.settlementMaxLevel, ref settlementMaxLevel);
             ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref settings.medievalTechOnly);
@@ -1412,6 +1648,8 @@ namespace FactionColonies
                 settings.settlementsAutoBattle = blank.settlementsAutoBattle;
                 settings.disableForcedPausingDuringEvents = blank.disableForcedPausingDuringEvents;
                 settings.forcedTaxDeliveryMode = blank.forcedTaxDeliveryMode;
+                settings.difficultyLevel = blank.difficultyLevel;
+                settings.ApplyDifficultyPreset(settings.difficultyLevel);
             }
 
             FixScrollingBug(ls);

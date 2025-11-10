@@ -14,6 +14,8 @@
 			<li>0</li> <!-- Research -->
 			<li>0</li> <!-- Power -->
 			<li>0</li> <!-- Medicine -->
+			<li>0</li> <!-- Gravtech - Orbital only -->
+			<li>0</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionAdditive>
 		<BaseProductionMultiplicative> <!-- li is default -->
 			<li>1.1</li> <!-- Food -->
@@ -25,6 +27,8 @@
 			<li>1</li> <!-- Research -->
 			<li>1</li> <!-- Power -->
 			<li>1</li> <!-- Medicine -->
+			<li>1</li> <!-- Gravtech - Orbital only -->
+			<li>1</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionMultiplicative>
 	</FactionColonies.BiomeResourceDef>
 	
@@ -42,6 +46,8 @@
 			<li>0</li> <!-- Research -->
 			<li>0</li> <!-- Power -->
 			<li>0</li> <!-- Medicine -->
+			<li>0</li> <!-- Gravtech - Orbital only -->
+			<li>0</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionAdditive>
 		<BaseProductionMultiplicative> <!-- li is default -->
 			<li>1</li> <!-- Food -->
@@ -53,6 +59,8 @@
 			<li>1.1</li> <!-- Research -->
 			<li>.9</li> <!-- Power -->
 			<li>1</li> <!-- Medicine -->
+			<li>1</li> <!-- Gravtech - Orbital only -->
+			<li>1</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionMultiplicative>
 	</FactionColonies.BiomeResourceDef>
 	
@@ -70,6 +78,8 @@
 			<li>0</li> <!-- Research -->
 			<li>0</li> <!-- Power -->
 			<li>0</li> <!-- Medicine -->
+			<li>0</li> <!-- Gravtech - Orbital only -->
+			<li>0</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionAdditive>
 		<BaseProductionMultiplicative> <!-- li is default -->
 			<li>.5</li> <!-- Food -->
@@ -81,6 +91,8 @@
 			<li>1</li> <!-- Research -->
 			<li>.8</li> <!-- Power -->
 			<li>1</li> <!-- Medicine -->
+			<li>1</li> <!-- Gravtech - Orbital only -->
+			<li>1</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionMultiplicative>
 	</FactionColonies.BiomeResourceDef>
 	
@@ -98,6 +110,8 @@
 			<li>0</li> <!-- Research -->
 			<li>0</li> <!-- Power -->
 			<li>0</li> <!-- Medicine -->
+			<li>0</li> <!-- Gravtech - Orbital only -->
+			<li>0</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionAdditive>
 		<BaseProductionMultiplicative> <!-- li is default -->
 			<li>1</li> <!-- Food -->
@@ -109,6 +123,40 @@
 			<li>1</li> <!-- Research -->
 			<li>1</li> <!-- Power -->
 			<li>1</li> <!-- Medicine -->
+			<li>1</li> <!-- Gravtech - Orbital only -->
+			<li>1</li> <!-- Chemfuel - Orbital only -->
+		</BaseProductionMultiplicative>
+	</FactionColonies.BiomeResourceDef>
+	
+	<FactionColonies.BiomeResourceDef>
+		<defName>Orbital</defName>
+		<label>Orbital</label>
+		<canSettle>true</canSettle>
+		<BaseProductionAdditive> <!-- 0 is default -->
+			<li>0</li> <!-- Food -->
+			<li>0</li> <!-- Weapons -->
+			<li>0</li> <!-- Apparel -->
+			<li>0</li> <!-- Animals -->
+			<li>0</li> <!-- Logging -->
+			<li>0</li> <!-- Mining -->
+			<li>0</li> <!-- Research -->
+			<li>0</li> <!-- Power -->
+			<li>0</li> <!-- Medicine -->
+			<li>0</li> <!-- Gravtech - Orbital only -->
+			<li>0</li> <!-- Chemfuel - Orbital only -->
+		</BaseProductionAdditive>
+		<BaseProductionMultiplicative> <!-- li is default -->
+			<li>1</li> <!-- Food -->
+			<li>1</li> <!-- Weapons -->
+			<li>1</li> <!-- Apparel -->
+			<li>1</li> <!-- Animals -->
+			<li>1</li> <!-- Logging -->
+			<li>1</li> <!-- Mining -->
+			<li>1</li> <!-- Research -->
+			<li>1</li> <!-- Power -->
+			<li>1</li> <!-- Medicine -->
+			<li>1</li> <!-- Gravtech - Orbital only -->
+			<li>1</li> <!-- Chemfuel - Orbital only -->
 		</BaseProductionMultiplicative>
 	</FactionColonies.BiomeResourceDef>
 	

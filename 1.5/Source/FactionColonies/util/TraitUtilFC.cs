@@ -11,8 +11,21 @@ namespace FactionColonies
     {
         public static double returnVariable(string field, FCTraitEffectDef def)
         {
+            if (def == null)
+            {
+                Log.Warning($"FCTraitEffectDef is null for field '{field}'");
+                return 0.0;
+            }
+            
             Type typ = def.GetType();
             FieldInfo fieldInfo = typ.GetField(field);
+            
+            if (fieldInfo == null)
+            {
+                Log.Warning($"Field '{field}' not found on FCTraitEffectDef type '{typ.Name}'");
+                return 0.0;
+            }
+            
             return (double) fieldInfo.GetValue(def);
         }
 

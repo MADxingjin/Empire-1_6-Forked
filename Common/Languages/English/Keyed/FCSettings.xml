@@ -14,4 +14,26 @@
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
 	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>
+	
+	<!-- Empire Difficulty Settings -->
+	<FCSettingEmpireDifficulty>Empire Difficulty</FCSettingEmpireDifficulty>
+	<FCDifficultyPeaceful>Peaceful</FCDifficultyPeaceful>
+	<FCDifficultyCommunityBuilder>Community Builder</FCDifficultyCommunityBuilder>
+	<FCDifficultyAdventureStory>(Default) Adventure Story</FCDifficultyAdventureStory>
+	<FCDifficultyStriveToSurvive>Strive To Survive</FCDifficultyStriveToSurvive>
+	<FCDifficultyBloodAndDust>Blood and Dust</FCDifficultyBloodAndDust>
+	<FCDifficultyLosingIsFun>Losing Is Fun</FCDifficultyLosingIsFun>
+	<FCDifficultyCustom>Custom</FCDifficultyCustom>
+	
+	<FCDifficultyPeacefulDesc>For players who want a relaxed empire management experience with generous resource gains and frequent tax collection.</FCDifficultyPeacefulDesc>
+	<FCDifficultyCommunityBuilderDesc>Easy difficulty with good resource gains and moderate tax frequency.</FCDifficultyCommunityBuilderDesc>
+	<FCDifficultyAdventureStoryDesc>Balanced difficulty for most players.Moderate resource gains with reasonable tax intervals.</FCDifficultyAdventureStoryDesc>
+	<FCDifficultyStriveToSurviveDesc>Challenging difficulty with reduced resources and longer tax intervals.</FCDifficultyStriveToSurviveDesc>
+	<FCDifficultyBloodAndDustDesc>Hard difficulty with limited resources and infrequent tax collection.</FCDifficultyBloodAndDustDesc>
+	<FCDifficultyLosingIsFunDesc>Brutal difficulty for masochists. Minimal resources and very long tax intervals.</FCDifficultyLosingIsFunDesc>
+	<FCDifficultyCustomDesc>Customize all empire settings manually.</FCDifficultyCustomDesc>
+	
+	<!-- Welcome Window -->
+	<FCWelcomeTitle>Welcome to the Empire Mod!</FCWelcomeTitle>
+	<FCWelcomeMessage>Welcome to the Empire Mod! Build and manage settlements with production, military and loyalty!</FCWelcomeMessage>
 </LanguageData>

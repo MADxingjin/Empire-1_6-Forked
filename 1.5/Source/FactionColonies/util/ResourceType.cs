@@ -13,7 +13,10 @@ namespace FactionColonies
         Mining,
         Research,
         Power,
-        Medicine
+        Medicine,
+        // New orbital-specific resources independent from overloads
+        Gravtech,
+        Chemfuel
     }
 
     public static class ResourceUtils
@@ -31,6 +34,57 @@ namespace FactionColonies
             }
 
             return resourceTypes[index];
+        }
+        
+        // Check if orbital platform
+        public static bool IsOrbitalPlatform(SettlementFC settlement)
+        {
+            return settlement?.worldSettlement?.def?.defName == "FCOrbitalPlatform";
+        }
+        
+        // Get the display name for a resource type
+        public static string GetResourceDisplayName(ResourceType resourceType, SettlementFC settlement)
+        {
+            return resourceType.ToString().ToLower();
+        }
+        
+        // Get the display label for a resource type
+        public static string GetResourceDisplayLabel(ResourceType resourceType, SettlementFC settlement)
+        {
+            return resourceType.ToString();
+        }
+        
+        // Get available resource types for a settlement
+        public static ResourceType[] GetAvailableResourceTypes(SettlementFC settlement)
+        {
+            if (IsOrbitalPlatform(settlement))
+            {
+                return new ResourceType[] {
+                    ResourceType.Food,
+                    ResourceType.Weapons,
+                    ResourceType.Apparel,
+                    ResourceType.Animals,
+                    ResourceType.Logging,
+                    ResourceType.Mining,
+                    ResourceType.Research,
+                    ResourceType.Power,
+                    ResourceType.Medicine,
+                    ResourceType.Gravtech,
+                    ResourceType.Chemfuel
+                };
+            }
+            
+            return new ResourceType[] {
+                ResourceType.Food,
+                ResourceType.Weapons,
+                ResourceType.Apparel,
+                ResourceType.Animals,
+                ResourceType.Logging,
+                ResourceType.Mining,
+                ResourceType.Research,
+                ResourceType.Power,
+                ResourceType.Medicine
+            };
         }
     }
 }

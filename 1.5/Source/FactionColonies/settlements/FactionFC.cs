@@ -48,6 +48,7 @@ namespace FactionColonies
         public Map taxMap;
         public TechLevel techLevel = TechLevel.Undefined;
         private bool firstTick = true;
+        public bool updateProcessed = false;
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
 
@@ -68,7 +69,8 @@ namespace FactionColonies
         public List<FCPolicy> policies = new List<FCPolicy>();
         public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
         public List<int> militaryTargets = new List<int>();
-        public RaceThingFilter raceFilter;
+        public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
+        public XenotypeFilter xenotypeFilter;
 
         //Faction resources
         public ResourceFC food = new ResourceFC(0, ResourceType.Food);
@@ -83,6 +85,8 @@ namespace FactionColonies
         public ResourceFC power = new ResourceFC(0, ResourceType.Power);
         public ResourceFC medicine = new ResourceFC(0, ResourceType.Medicine);
         public ResourceFC research = new ResourceFC(0, ResourceType.Research);
+        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech); // Orbital tech bases
+        public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
 
         //Faction Def
         public FactionFCDef factionDef = new FactionFCDef();
@@ -249,10 +253,15 @@ namespace FactionColonies
             Scribe_Deep.Look(ref research, "research");
             Scribe_Deep.Look(ref power, "power");
             Scribe_Deep.Look(ref medicine, "medicine");
+            Scribe_Deep.Look(ref gravtech, "gravtech");
+            Scribe_Deep.Look(ref chemfuel, "chemfuel");
 
             //Faction Def
             Scribe_Deep.Look(ref factionDef, "factionDef");
             Scribe_Deep.Look(ref raceFilter, "raceFilter");
+            Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
+            Scribe_Values.Look(ref updateProcessed, "updateProcessed", false);
+            Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
 
             //Update
             Scribe_Values.Look(ref nextSettlementFCID, "nextSettlementFCID");
@@ -323,6 +332,14 @@ namespace FactionColonies
                 raceFilter = new RaceThingFilter(this);
             }
             raceFilter.FinalizeInit(this);
+
+            // Initialize xenotype filter
+            if (xenotypeFilter == null)
+            {
+                Log.Message("Null xenotypeFilter detected - Creating new one");
+                xenotypeFilter = new XenotypeFilter(this);
+            }
+            xenotypeFilter.FinalizeInit(this);
         }
 
         [DebugAction("Empire", "Send Pawn To Settlement", allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -336,23 +353,23 @@ namespace FactionColonies
             }
             List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
                 .settlements.Select(settlement => new FloatMenuOption(settlement.name + " - Settlement Level : " +
-                                                                      settlement.settlementLevel + " - Prisoners: " +
-                                                                      settlement.prisonerList.Count(), delegate
-                                                                      {
-                                                                          foreach (Pawn pawn in selected)
-                                                                          {
-                                                                              //disappear colonist
-                                                                              FactionColonies.sendPrisoner(pawn, settlement);
+                    settlement.settlementLevel + " - Prisoners: " +
+                    settlement.prisonerList.Count(), delegate
+                    {
+                        foreach (Pawn pawn in selected)
+                        {
+                            //disappear colonist
+                            FactionColonies.sendPrisoner(pawn, settlement);
 
-                                                                              foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
-                                                                                  map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
-                                                                              {
-                                                                                  if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
-                                                                                  bed.ForPrisoners = false;
-                                                                                  bed.ForPrisoners = true;
-                                                                              }
-                                                                          }
-                                                                      }))
+                            foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
+                                map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
+                            {
+                                if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
+                                bed.ForPrisoners = false;
+                                bed.ForPrisoners = true;
+                            }
+                        }
+                    }))
                 .ToList();
 
             FloatMenu floatMenu2 = new FloatMenu(settlementList);
@@ -364,8 +381,8 @@ namespace FactionColonies
             foreach (SettlementFC settlement in settlements)
             {
                 settlement.happiness += amount *
-                                    TraitUtilsFC.cycleTraits("happinessLostMultiplier", settlement.traits,
-                                        Operation.Multiplication) * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+                    TraitUtilsFC.cycleTraits("happinessLostMultiplier", settlement.traits,
+                    Operation.Multiplication) * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
             }
         }
 
@@ -375,10 +392,10 @@ namespace FactionColonies
             foreach (SettlementFC settlement in settlements)
             {
                 settlement.unrest += amount *
-                                     TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                                         settlement.traits, Operation.Multiplication) *
-                                     TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                                         traits, Operation.Multiplication);
+                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
+                    settlement.traits, Operation.Multiplication) *
+                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
+                    traits, Operation.Multiplication);
             }
         }
 
@@ -697,15 +714,30 @@ namespace FactionColonies
 
         public void setStartTime()
         {
-            taxTimeDue = Find.TickManager.TicksGame + LoadedModManager.GetMod<FactionColoniesMod>()
+            int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>()
                 .GetSettings<FactionColonies>().timeBetweenTaxes;
+            
+            // Safety check: ensure timeBetweenTaxes is at least 1 day
+            if (timeBetweenTaxes <= 0)
+            {
+                Log.Warning("Empire Mod - setStartTime: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
+                timeBetweenTaxes = GenDate.TicksPerDay;
+                
+                // Fix the corrupted setting
+                try
+                {
+                    LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
+                    Log.Message("Empire Mod - setStartTime: Fixed corrupted timeBetweenTaxes setting");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Empire Mod - setStartTime: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
+                }
+            }
+            
+            taxTimeDue = Find.TickManager.TicksGame + timeBetweenTaxes;
             dailyTimer = Find.TickManager.TicksGame + 2000;
         }
-
-        //0 defname
-        //1 desc
-        //2 location
-        //3 time till trigger
 
         public int returnHighestMilitaryLevel()
         {
@@ -790,6 +822,7 @@ namespace FactionColonies
                 factionDef.techLevel = TechLevel.Medieval;
                 Log.Message("Medieval");
                 raceFilter.FinalizeInit(this);
+                xenotypeFilter.FinalizeInit(this);
             }
             else
             {
@@ -798,6 +831,7 @@ namespace FactionColonies
                     Log.Message("Neolithic");
                     techLevel = TechLevel.Neolithic;
                     raceFilter.FinalizeInit(this);
+                    xenotypeFilter.FinalizeInit(this);
                 }
             }
 
@@ -839,8 +873,11 @@ namespace FactionColonies
         public void updateFactionIcon(ref Faction faction, string iconPath)
         {
             Log.Message("Updated Icon - " + iconPath);
-            faction.def.factionIconPath = iconPath;
-            if (settlements.Any())
+            if (faction?.def != null)
+            {
+                faction.def.factionIconPath = iconPath;
+            }
+            if (settlements.Any() && settlements[0]?.worldSettlement?.def != null)
             {
                 WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].worldSettlement.def,
                     ContentFinder<Texture2D>.Get(iconPath));
@@ -848,8 +885,14 @@ namespace FactionColonies
 
             foreach (SettlementFC settlement in settlements)
             {
-                settlement.worldSettlement.def.expandingIconTexture = iconPath;
-                settlement.worldSettlement.Faction.def.factionIconPath = iconPath;
+                if (settlement?.worldSettlement?.def != null)
+                {
+                    settlement.worldSettlement.def.expandingIconTexture = iconPath;
+                }
+                if (settlement?.worldSettlement?.Faction?.def != null)
+                {
+                    settlement.worldSettlement.Faction.def.factionIconPath = iconPath;
+                }
             }
         }
 
@@ -987,6 +1030,12 @@ namespace FactionColonies
         {
             raceFilter = new RaceThingFilter(this);
             raceFilter.FinalizeInit(this);
+        }
+
+        public void resetXenotypeFilter()
+        {
+            xenotypeFilter = new XenotypeFilter(this);
+            xenotypeFilter.FinalizeInit(this);
         }
 
         public void updateAverages()
@@ -1322,6 +1371,10 @@ namespace FactionColonies
                     return power;
                 case ResourceType.Medicine:
                     return medicine;
+                case ResourceType.Gravtech:
+                    return gravtech;
+                case ResourceType.Chemfuel:
+                    return chemfuel;
             }
 
             Log.Message("Unable to find resource - returnResourceByInt(int name)");
@@ -1330,6 +1383,17 @@ namespace FactionColonies
 
         public void setCapital()
         {
+            // Check if there's an active capital spot first
+            Building_CapitalSpot activeCapitalSpot = GetActiveCapitalSpot();
+            if (activeCapitalSpot != null)
+            {
+                Messages.Message(
+                    $"Empire capital is already established at {activeCapitalSpot.Map.Parent.LabelCap}. Disable the capital seat there first if you want to move it.",
+                    MessageTypeDefOf.RejectInput
+                );
+                return;
+            }
+
             if (Find.CurrentMap != null && Find.CurrentMap.IsPlayerHome)
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
@@ -1351,7 +1415,7 @@ namespace FactionColonies
             else
             {
                 Messages.Message(
-                    "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or else you may have some bugs soon.",
+                    "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.",
                     MessageTypeDefOf.NegativeEvent);
             }
         }
@@ -1478,14 +1542,27 @@ namespace FactionColonies
                         addTax(false);
                         //NOT WHERE FINAL UPDATE IS. Go to addTax Function
                     }
+                    // This prevents issues when settings get corrupted during performance problems
 
                     int timeBetweenTaxes = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes;
+                    // Log.Message($"Empire Mod - TaxTick: Using timeBetweenTaxes: {timeBetweenTaxes} ticks ({timeBetweenTaxes / 60000} days)");
                     
                     // Safety check: ensure timeBetweenTaxes is at least 1 day
                     if (timeBetweenTaxes <= 0)
                     {
                         Log.Warning("Empire Mod - TaxTick: timeBetweenTaxes was " + timeBetweenTaxes + ", setting to 1 day minimum");
                         timeBetweenTaxes = GenDate.TicksPerDay;
+                        
+                        // Fix the corrupted setting to prevent future issues
+                        try
+                        {
+                            LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = GenDate.TicksPerDay;
+                            Log.Message("Empire Mod - TaxTick: Fixed corrupted timeBetweenTaxes setting");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("Empire Mod - TaxTick: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
+                        }
                     }
                     
                     taxTimeDue += timeBetweenTaxes;
@@ -1716,6 +1793,40 @@ namespace FactionColonies
             {
                 uiTimeUpdate -= 1;
             }
+        }
+
+        public bool HasActiveCapitalSpot()
+        {
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public Building_CapitalSpot GetActiveCapitalSpot()
+        {
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+                
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
+                    {
+                        return capitalSpot;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

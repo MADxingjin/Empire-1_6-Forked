@@ -73,7 +73,7 @@ namespace FactionColonies
             medicine = new ResourceFC(0, ResourceType.Medicine, this);
             research = new ResourceFC(0, ResourceType.Research, this);
 
-            foreach (ResourceType titheType in ResourceUtils.resourceTypes)
+            foreach (ResourceType titheType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 PaymentUtil.resetThingFilter(this, titheType);
             }
@@ -120,13 +120,76 @@ namespace FactionColonies
 
         public void initBaseProduction()
         {
-            foreach (ResourceType titheType in ResourceUtils.resourceTypes)
+            // Don't overwrite production values if they've already been set (e.g., loaded from save file)
+            // Only initialize if all resources have default values (baseProduction = 0 and baseProductionMultiplier = 1)
+            bool hasCustomValues = false;
+            foreach (ResourceType titheType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 ResourceFC resource = getResource(titheType);
-                resource.baseProduction = biomeDef.BaseProductionAdditive[(int) titheType]
-                                          + hillinessDef.BaseProductionAdditive[(int) titheType];
-                resource.baseProduction = biomeDef.BaseProductionMultiplicative[(int) titheType]
-                                          + hillinessDef.BaseProductionMultiplicative[(int) titheType];
+                if (resource.baseProduction != 0 || resource.baseProductionMultiplier != 1)
+                {
+                    hasCustomValues = true;
+                    break;
+                }
+            }
+            
+            // If custom values exist, don't overwrite them (they were loaded from save file)
+            if (hasCustomValues)
+            {
+                Log.Message($"Settlement {name}: Skipping initBaseProduction - custom values detected (loaded from save)");
+                return;
+            }
+            
+            foreach (ResourceType titheType in ResourceUtils.GetAvailableResourceTypes(this))
+            {
+                ResourceFC resource = getResource(titheType);
+                
+                // Get the correct index based on the resource type and settlement type. Someone tell me if I can do this better??? I kept crashing and breaking saves until I did this
+                int resourceIndex;
+                if (ResourceUtils.IsOrbitalPlatform(this))
+                {
+                    switch (titheType)
+                    {
+                        case ResourceType.Food: resourceIndex = 0; break;
+                        case ResourceType.Weapons: resourceIndex = 1; break;
+                        case ResourceType.Apparel: resourceIndex = 2; break;
+                        case ResourceType.Animals: resourceIndex = 3; break;
+                        case ResourceType.Logging: resourceIndex = 4; break;
+                        case ResourceType.Mining: resourceIndex = 5; break;
+                        case ResourceType.Research: resourceIndex = 6; break;
+                        case ResourceType.Power: resourceIndex = 7; break;
+                        case ResourceType.Medicine: resourceIndex = 8; break;
+                        case ResourceType.Gravtech: resourceIndex = 9; break;
+                        case ResourceType.Chemfuel: resourceIndex = 10; break;
+                        default: resourceIndex = 0; break;
+                    }
+                }
+                else
+                {
+                    switch (titheType)
+                    {
+                        case ResourceType.Food: resourceIndex = 0; break;
+                        case ResourceType.Weapons: resourceIndex = 1; break;
+                        case ResourceType.Apparel: resourceIndex = 2; break;
+                        case ResourceType.Animals: resourceIndex = 3; break;
+                        case ResourceType.Logging: resourceIndex = 4; break;
+                        case ResourceType.Mining: resourceIndex = 5; break;
+                        case ResourceType.Research: resourceIndex = 6; break;
+                        case ResourceType.Power: resourceIndex = 7; break;
+                        case ResourceType.Medicine: resourceIndex = 8; break;
+                        default: resourceIndex = 0; break;
+                    }
+                }
+                
+                // Ensure lists are initialized
+                if (biomeDef != null)
+                {
+                    biomeDef.EnsureResourceLists();
+                    resource.baseProduction = biomeDef.BaseProductionAdditive[resourceIndex]
+                                              + hillinessDef.BaseProductionAdditive[resourceIndex];
+                    resource.baseProductionMultiplier = biomeDef.BaseProductionMultiplicative[resourceIndex]
+                                              + hillinessDef.BaseProductionMultiplicative[resourceIndex];
+                }
                 resource.settlement = this;
             }
         }
@@ -330,7 +393,7 @@ namespace FactionColonies
             if (faction.hasPolicy(FCPolicyDefOf.isolationist))
                 isolationistTaxBoost = 10;
 
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 //Grab trait additive variables
                 int resourceMultiplier = 1;
@@ -338,16 +401,76 @@ namespace FactionColonies
                     resourceMultiplier = 2;
 
                 ResourceFC resource = getResource(resourceType);
+                
+                // Get the correct index based on the resource type and settlement type
+                int resourceIndex;
+                if (ResourceUtils.IsOrbitalPlatform(this))
+                {
+                    switch (resourceType)
+                    {
+                        case ResourceType.Food: resourceIndex = 0; break;
+                        case ResourceType.Weapons: resourceIndex = 1; break;
+                        case ResourceType.Apparel: resourceIndex = 2; break;
+                        case ResourceType.Animals: resourceIndex = 3; break;
+                        case ResourceType.Logging: resourceIndex = 4; break;
+                        case ResourceType.Mining: resourceIndex = 5; break;
+                        case ResourceType.Research: resourceIndex = 6; break;
+                        case ResourceType.Power: resourceIndex = 7; break;
+                        case ResourceType.Medicine: resourceIndex = 8; break;
+                        case ResourceType.Gravtech: resourceIndex = 9; break;
+                        case ResourceType.Chemfuel: resourceIndex = 10; break;
+                        default: resourceIndex = 0; break;
+                    }
+                }
+                else
+                {
+                    switch (resourceType)
+                    {
+                        case ResourceType.Food: resourceIndex = 0; break;
+                        case ResourceType.Weapons: resourceIndex = 1; break;
+                        case ResourceType.Apparel: resourceIndex = 2; break;
+                        case ResourceType.Animals: resourceIndex = 3; break;
+                        case ResourceType.Logging: resourceIndex = 4; break;
+                        case ResourceType.Mining: resourceIndex = 5; break;
+                        case ResourceType.Research: resourceIndex = 6; break;
+                        case ResourceType.Power: resourceIndex = 7; break;
+                        case ResourceType.Medicine: resourceIndex = 8; break;
+                        default: resourceIndex = 0; break;
+                    }
+                }
 
-                resource.baseProduction = biomeDef.BaseProductionAdditive[(int) resourceType] +
-                                          hillinessDef.BaseProductionAdditive[(int) resourceType] +
+                // Ensure lists are initialized and get base production values
+                double biomeProduction = 0;
+                double hillProduction = 0;
+
+                if (biomeDef != null)
+                {
+                    biomeDef.EnsureResourceLists();
+                    biomeProduction = biomeDef.BaseProductionAdditive[resourceIndex];
+                }
+                if (hillinessDef != null)
+                {
+                    hillinessDef.EnsureResourceLists();
+                    hillProduction = hillinessDef.BaseProductionAdditive[resourceIndex];
+                }
+
+                resource.baseProduction = biomeProduction + hillProduction +
                                           TraitUtilsFC.cycleTraits("productionBase" +
                                                                    resourceType, traits, Operation.Addition) +
                                           TraitUtilsFC.cycleTraits("productionBase" +
                                                                    resourceType, Find.World.GetComponent<FactionFC>().traits, Operation.Addition);
+                // Get base multiplier values
+                double biomeMultiplier = 1;
+                double hillMultiplier = 1;
+
+                if (biomeDef != null)
+                    biomeMultiplier = biomeDef.BaseProductionMultiplicative[resourceIndex];
+                if (hillinessDef != null)
+                    hillMultiplier = hillinessDef.BaseProductionMultiplicative[resourceIndex];
+
                 resource.baseProductionMultiplier = resourceMultiplier *
-                                                    biomeDef.BaseProductionMultiplicative[(int) resourceType] *
-                                                    hillinessDef.BaseProductionMultiplicative[(int) resourceType] *
+                                                    biomeMultiplier *
+                                                    hillMultiplier *
                                                     ((100 + egalitarianTaxBoost + isolationistTaxBoost + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition) + TraitUtilsFC.cycleTraits("taxBasePercentage", Find.World.GetComponent<FactionFC>().traits, Operation.Addition)) / 100);
 
 
@@ -391,7 +514,7 @@ namespace FactionColonies
         public double getTotalIncome() //return total income of settlements
         {
             double income = 0;
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 ResourceFC resource = getResource(resourceType);
                 if (resource != null)
@@ -412,7 +535,7 @@ namespace FactionColonies
         public int getTotalWorkers()
         {
             int totalWorkers = 0;
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 totalWorkers += getResource(resourceType).assignedWorkers;
             }
@@ -447,11 +570,12 @@ namespace FactionColonies
 
                 while (workers > workersUltraMax)
                 {
-                    int num = Rand.RangeInclusive(0, ResourceUtils.resourceTypes.Length - 1);
+                    var availableTypes = ResourceUtils.GetAvailableResourceTypes(this).ToList();
+                    int num = Rand.RangeInclusive(0, availableTypes.Count - 1);
                     //Log.Message(num.ToString());
-                    if (getResource(ResourceUtils.resourceTypes[num]).assignedWorkers > 0)
+                    if (getResource(availableTypes[num]).assignedWorkers > 0)
                     {
-                        getResource(ResourceUtils.resourceTypes[num]).assignedWorkers -= 1;
+                        getResource(availableTypes[num]).assignedWorkers -= 1;
                         return true;
                     }
                 }
@@ -568,6 +692,8 @@ namespace FactionColonies
             Scribe_Deep.Look(ref research, "research");
             Scribe_Deep.Look(ref power, "power");
             Scribe_Deep.Look(ref medicine, "medicine");
+            Scribe_Deep.Look(ref gravtech, "gravtech");
+            Scribe_Deep.Look(ref chemfuel, "chemfuel");
 
 
             //Taxes
@@ -1122,7 +1248,7 @@ namespace FactionColonies
             double highest = -1;
             ResourceFC highestResource = null;
 
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 ResourceFC resource = getResource(resourceType);
                 if (resource.endProduction > highest)
@@ -1173,6 +1299,9 @@ namespace FactionColonies
                     break;
                 case "ExtremeDesert":
                     description = "FCDescExtremeDesert".Translate();
+                    break;
+                case "OrbitalSpace":
+                    description = "FCDescOrbitalSpace".Translate();
                     break;
                 default:
                     description = "FCDescUnknown".Translate();
@@ -1316,6 +1445,26 @@ namespace FactionColonies
                 }
             }
 
+            // Check settlement type restrictions
+            bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
+            switch (building.settlementTypeRestriction)
+            {
+                case SettlementTypeRestriction.SurfaceOnly:
+                    if (isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingSurfaceOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
+                case SettlementTypeRestriction.OrbitalOnly:
+                    if (!isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingOrbitalOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
+            }
+
             return valid;
         }
 
@@ -1347,7 +1496,7 @@ namespace FactionColonies
         public double returnTitheEstimatedValue()
         {
             double titheVal = 0;
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 if (getResource(resourceType).isTithe)
                 {
@@ -1409,8 +1558,12 @@ namespace FactionColonies
                     return power;
                 case ResourceType.Medicine:
                     return medicine;
+                case ResourceType.Gravtech:
+                    return gravtech;
+                case ResourceType.Chemfuel:
+                    return chemfuel;
                 default:
-                    Log.Message("Unable to find resource - returnResourceByInt(int name)");
+                    Log.Message($"Unable to find resource - getResource({type})");
                     return null;
             }
         }
@@ -1466,7 +1619,7 @@ namespace FactionColonies
             return null;
         }
 
-        //Settlment resources
+        //Settlement resources
         public ResourceFC food = new ResourceFC(0, ResourceType.Food);
         public ResourceFC weapons = new ResourceFC(0, ResourceType.Weapons);
         public ResourceFC apparel = new ResourceFC(0, ResourceType.Apparel);
@@ -1476,6 +1629,8 @@ namespace FactionColonies
         public ResourceFC power = new ResourceFC(0, ResourceType.Power);
         public ResourceFC medicine = new ResourceFC(0, ResourceType.Medicine);
         public ResourceFC research = new ResourceFC(0, ResourceType.Research);
+        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech);
+        public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
 
 
         public void taxProductionGoods() //update goods (TAX TAX TAX)   # Not used?
@@ -1583,7 +1738,7 @@ namespace FactionColonies
 
 
             List<Thing> list = new List<Thing>();
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceType resourceType in ResourceUtils.GetAvailableResourceTypes(this))
             {
                 ResourceFC resource = getResource(resourceType);
                 if (resource.isTithe && resourceType != ResourceType.Power && resourceType != ResourceType.Research)
