@@ -8,31 +8,64 @@ using Verse;
 
 namespace FactionColonies
 {
+	/// Cached faction reference to avoid expensive lookups every frame
+	internal static class FactionCache
+	{
+		private static Faction _cachedFaction;
+		private static int _cacheFrame = -1;
+		
+		public static Faction PlayerColonyFaction
+		{
+			get
+			{
+				// Cache for one frame to handle hot reloads/game state changes
+				int currentFrame = UnityEngine.Time.frameCount;
+				if (_cacheFrame != currentFrame || _cachedFaction == null)
+				{
+					_cachedFaction = FactionColonies.getPlayerColonyFaction();
+					_cacheFrame = currentFrame;
+				}
+				return _cachedFaction;
+			}
+		}
+		
+		public static void InvalidateCache()
+		{
+			_cachedFaction = null;
+			_cacheFrame = -1;
+		}
+	}
+
 	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	class PawnDraftGizmos
 	{
 		public static void Postfix(ref Pawn __instance, ref IEnumerable<Gizmo> __result)
 		{
-			List<Gizmo> output = __result.ToList();
-			if (__result == null || __instance?.Faction == null || !output.Any() ||
-				!(__instance.Map.Parent is WorldSettlementFC))
+			// Early exit checks BEFORE any allocations - most pawns will exit here
+			if (__result == null || __instance?.Faction == null || __instance.Map == null)
+			{
+				return;
+			}
+			
+			WorldSettlementFC settlementFc = __instance.Map.Parent as WorldSettlementFC;
+			if (settlementFc == null)
 			{
 				return;
 			}
 
-			Pawn found = __instance;
-			Pawn_DraftController pawnDraftController = __instance.drafter ?? new Pawn_DraftController(__instance);
-
-			WorldSettlementFC settlementFc = (WorldSettlementFC)__instance.Map.Parent;
-			if (__instance.Faction.Equals(FactionColonies.getPlayerColonyFaction()))
+			Faction playerColonyFaction = FactionCache.PlayerColonyFaction;
+			
+			if (__instance.Faction == playerColonyFaction)
 			{
+				Pawn_DraftController pawnDraftController = __instance.drafter ?? new Pawn_DraftController(__instance);
+				
 				Command_Toggle draftColonists = new Command_Toggle
 				{
 					hotKey = KeyBindingDefOf.Command_ColonistDraft,
 					isActive = () => false,
 					toggleAction = () =>
 					{
-						if (pawnDraftController.pawn.Faction.Equals(Faction.OfPlayer)) return;
+						if (pawnDraftController.pawn.Faction == Faction.OfPlayer) return;
 						pawnDraftController.pawn.SetFaction(Faction.OfPlayer);
 						pawnDraftController.Drafted = true;
 					},
@@ -42,42 +75,72 @@ namespace FactionColonies
 					groupKey = 81729172,
 					defaultLabel = "CommandDraftLabel".Translate()
 				};
-				if (pawnDraftController.pawn.Downed) draftColonists.Disable("IsIncapped".Translate(pawnDraftController.pawn.LabelShort, pawnDraftController.pawn));
-				draftColonists.tutorTag = "Draft";
-				output.Add(draftColonists);
-			}
-			else if (__instance.Faction.Equals(Faction.OfPlayer) && __instance.Drafted &&
-					 !settlementFc.supporting.Any(caravan => caravan.pawns.Any(pawn => pawn.Equals(found))))
-			{
-				foreach (Command_Toggle action in output.Where(gizmo => gizmo is Command_Toggle))
+				
+				if (pawnDraftController.pawn.Downed)
 				{
-					if (action.hotKey != KeyBindingDefOf.Command_ColonistDraft)
+					draftColonists.Disable("IsIncapped".Translate(pawnDraftController.pawn.LabelShort, pawnDraftController.pawn));
+				}
+				
+				draftColonists.tutorTag = "Draft";
+				__result = __result.Append(draftColonists);
+				return;
+			}
+			
+			if (__instance.Faction == Faction.OfPlayer && __instance.Drafted)
+			{
+				// Check if pawn is in a supporting caravan (avoid LINQ closure allocations)
+				Pawn found = __instance;
+				bool isSupporting = false;
+				foreach (var caravan in settlementFc.supporting)
+				{
+					if (caravan.pawns.Contains(found))
 					{
-						continue;
+						isSupporting = true;
+						break;
 					}
-
-					int index = output.IndexOf(action);
-					action.toggleAction = () =>
+				}
+				
+				if (!isSupporting)
+				{
+					// Only convert to list when we actually need to modify existing gizmos
+					List<Gizmo> output = __result.ToList();
+					
+					foreach (Gizmo gizmo in output)
 					{
-						found.SetFaction(FactionColonies.getPlayerColonyFaction());
-						//settlementFc.worldSettlement.defenderLord.AddPawn(__instance);
-					};
-					output[index] = action;
-					break;
+						Command_Toggle action = gizmo as Command_Toggle;
+						if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
+						{
+							action.toggleAction = () => found.SetFaction(FactionColonies.getPlayerColonyFaction());
+							break;
+						}
+					}
+					
+					__result = output;
 				}
 			}
-
-			__result = output;
 		}
 	}
 
 	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	class PrisonerGizmosPatch
 	{
-		private static bool IsPrisonerAndCanBeSend(Pawn pawn) => pawn.guest == null || !pawn.guest.IsPrisoner || !pawn.guest.PrisonerIsSecure || !QuestUtility.GetQuestRelatedGizmos(pawn).EnumerableNullOrEmpty();
+		/// <summary>
+		/// Checks if pawn is a valid prisoner that can be sent to settlements.
+		/// Optimized to avoid expensive quest gizmo enumeration when possible.
+		/// </summary>
+		private static bool CanSendPrisoner(Pawn pawn)
+		{
+			// Fast checks first
+			if (pawn.guest == null) return false;
+			if (!pawn.guest.IsPrisoner) return false;
+			if (!pawn.guest.PrisonerIsSecure) return false;
+			
+			// Only do expensive quest check if basic checks pass
+			return QuestUtility.GetQuestRelatedGizmos(pawn).EnumerableNullOrEmpty();
+		}
 
 		/// <param name="prisoner"></param>
-		/// <returns>A <c>Command_Action</c> that sends the selected <paramref name="prisoner"/> to an empire settlementFC. Only displays if the <paramref name="prisoner"/> can be send.</returns>
+		/// <returns>A <c>Command_Action</c> that sends the selected <paramref name="prisoner"/> to an empire settlementFC.</returns>
 		private static Command_Action SendPrisonerAction(Pawn prisoner) => new Command_Action
 		{
 			defaultLabel = "SendToSettlement".Translate(),
@@ -109,10 +172,15 @@ namespace FactionColonies
 
 		public static void Postfix(ref Pawn __instance, ref IEnumerable<Gizmo> __result)
 		{
-			Pawn pawn = __instance;
-			if (IsPrisonerAndCanBeSend(pawn)) return;
+			// Early exit for non-prisoners (most common case) hmmmm
+			if (__instance.guest == null || !__instance.guest.IsPrisoner)
+			{
+				return;
+			}
+			
+			if (!CanSendPrisoner(__instance)) return;
 
-			__result = __result.Append(SendPrisonerAction(pawn));
+			__result = __result.Append(SendPrisonerAction(__instance));
 		}
 	}
 
@@ -201,7 +269,7 @@ namespace FactionColonies
 		/// </summary>
 		/// <param name="worldObject"></param>
 		/// <returns>true if the faction linked isn't from the player or their empire faction, false otherwise</returns>
-		private static bool HasValidFaction(WorldObject worldObject) => worldObject.Faction != FactionColonies.getPlayerColonyFaction() && worldObject.Faction != Find.FactionManager.OfPlayer;
+		private static bool HasValidFaction(WorldObject worldObject) => worldObject.Faction != FactionCache.PlayerColonyFaction && worldObject.Faction != Find.FactionManager.OfPlayer;
 
 		/// <summary>
 		/// This Postfix adds Gizmos on settlements not owned by the player or their empire

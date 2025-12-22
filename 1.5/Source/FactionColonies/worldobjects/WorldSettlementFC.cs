@@ -897,64 +897,6 @@ namespace FactionColonies
         }
     }
 
-    [HarmonyPatch(typeof(Pawn), "GetGizmos")]
-    internal class PawnGizmos
-    {
-        private static void Postfix(ref Pawn __instance, ref IEnumerable<Gizmo> __result)
-        {
-            var output = __result.ToList();
-            if (__result == null || __instance?.Faction == null || !output.Any() ||
-                !(__instance.Map.Parent is WorldSettlementFC))
-                return;
-
-            var found = __instance;
-            var pawnDraftController = __instance.drafter ?? new Pawn_DraftController(__instance);
-
-            var settlementFc = (WorldSettlementFC) __instance.Map.Parent;
-            if (__instance.Faction.Equals(FactionColonies.getPlayerColonyFaction()))
-            {
-                var draftColonists = new Command_Toggle
-                {
-                    hotKey = KeyBindingDefOf.Command_ColonistDraft,
-                    isActive = () => false,
-                    toggleAction = () =>
-                    {
-                        if (pawnDraftController.pawn.Faction.Equals(Faction.OfPlayer)) return;
-                        pawnDraftController.pawn.SetFaction(Faction.OfPlayer);
-                        pawnDraftController.Drafted = true;
-                    },
-                    defaultDesc = "CommandToggleDraftDesc".Translate(),
-                    icon = TexCommand.Draft,
-                    turnOnSound = SoundDefOf.DraftOn,
-                    groupKey = 81729172,
-                    defaultLabel = "CommandDraftLabel".Translate()
-                };
-                if (pawnDraftController.pawn.Downed)
-                    draftColonists.Disable("IsIncapped".Translate(
-                        (NamedArgument) pawnDraftController.pawn.LabelShort,
-                        (NamedArgument) pawnDraftController.pawn));
-                draftColonists.tutorTag = "Draft";
-                output.Add(draftColonists);
-            }
-            else if (__instance.Faction.Equals(Faction.OfPlayer) && __instance.Drafted &&
-                     !settlementFc.supporting.Any(caravan => caravan.pawns.Any(pawn => pawn.Equals(found))))
-            {
-                foreach (Command_Toggle action in output.Where(gizmo => gizmo is Command_Toggle))
-                {
-                    if (action.hotKey != KeyBindingDefOf.Command_ColonistDraft) continue;
-
-                    var index = output.IndexOf(action);
-                    action.toggleAction = () =>
-                    {
-                        found.SetFaction(FactionColonies.getPlayerColonyFaction());
-                        //settlementFc.worldSettlement.defenderLord.AddPawn(__instance);
-                    };
-                    output[index] = action;
-                    break;
-                }
-            }
-
-            __result = output;
-        }
-    }
+    // NOTE: PawnGizmos patch moved to GizmosPatches.cs to avoid duplication
+    // The optimized version in GizmosPatches.PawnDraftGizmos handles all pawn gizmo modifications
 }
