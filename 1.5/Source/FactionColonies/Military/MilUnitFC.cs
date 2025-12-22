@@ -120,8 +120,106 @@ namespace FactionColonies
             }
 
 
-            defaultPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
-            //defaultPawn.health.forceIncap = true;
+            // Try to generate pawn with the requested kind
+            try
+            {
+                defaultPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
+                
+                // Set faction after generation (since we generate without faction to avoid xenotype forcing)
+                if (defaultPawn != null && defaultPawn.Faction == null)
+                {
+                    var empireFaction = FactionColonies.getPlayerColonyFaction();
+                    if (empireFaction != null)
+                    {
+                        defaultPawn.SetFaction(empireFaction);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Empire: Failed to generate default pawn with kind {pawnKind?.defName}: {ex.Message}");
+                defaultPawn = null;
+            }
+            
+            // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing) I'll explore this one further as this may break immersion
+            if (defaultPawn == null)
+            {
+                Log.Warning($"Empire: Default pawn generation failed for {pawnKind?.defName}. Trying Baseliner fallback without faction.");
+                try
+                {
+                    pawnKind = PawnKindDefOf.Colonist;
+                    var simpleRequest = new PawnGenerationRequest(
+                        kind: PawnKindDefOf.Colonist,
+                        faction: null, // NO faction - this prevents faction xenotype forcing
+                        context: PawnGenerationContext.NonPlayer,
+                        tile: -1,
+                        forceGenerateNewPawn: false,
+                        allowDead: false,
+                        allowDowned: false,
+                        canGeneratePawnRelations: false, // No relations for factionless pawns
+                        mustBeCapableOfViolence: true,
+                        colonistRelationChanceFactor: 0,
+                        forceAddFreeWarmLayerIfNeeded: false,
+                        allowGay: true,
+                        allowFood: true,
+                        allowAddictions: false,
+                        forcedXenotype: XenotypeDefOf.Baseliner // Force Baseliner - guaranteed violence capable
+                    );
+                    defaultPawn = PawnGenerator.GeneratePawn(simpleRequest);
+                    
+                    // Set the faction after generation
+                    if (defaultPawn != null)
+                    {
+                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        if (empireFaction != null)
+                        {
+                            defaultPawn.SetFaction(empireFaction);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Empire: Baseliner fallback also failed: {ex.Message}");
+                }
+            }
+            
+            // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
+            if (defaultPawn == null)
+            {
+                Log.Warning("Empire: All standard generation failed. Trying minimal fallback.");
+                try
+                {
+                    var fallbackRequest = new PawnGenerationRequest(
+                        kind: PawnKindDefOf.Colonist,
+                        faction: null, // NO faction
+                        context: PawnGenerationContext.NonPlayer,
+                        mustBeCapableOfViolence: false // Allow non-violent as absolute last resort
+                    );
+                    defaultPawn = PawnGenerator.GeneratePawn(fallbackRequest);
+                    
+                    // Set the faction after generation
+                    if (defaultPawn != null)
+                    {
+                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        if (empireFaction != null)
+                        {
+                            defaultPawn.SetFaction(empireFaction);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Empire: Critical - all pawn generation attempts failed: {ex.Message}");
+                }
+            }
+            
+            // Final check - if still null, we cannot proceed!!!
+            if (defaultPawn == null)
+            {
+                Log.Error("Empire: Critical error - could not generate any default pawn for military unit.");
+                return;
+            }
+            
             defaultPawn.mindState.canFleeIndividual = false;
             defaultPawn.apparel.DestroyAll();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FactionColonies.util;
 using HarmonyLib;
@@ -205,7 +206,15 @@ namespace FactionColonies
                 {
                     Mercenary pawn = new Mercenary(true);
                     createNewPawn(ref pawn, null, null);
-                    mercenaries.Add(pawn);
+                    // Only add if pawn was successfully created
+                    if (pawn?.pawn != null)
+                    {
+                        mercenaries.Add(pawn);
+                    }
+                    else
+                    {
+                        Log.Warning($"Empire: Failed to create mercenary {k + 1}/30 during squad initiation.");
+                    }
                 }
             }
             else
@@ -214,7 +223,15 @@ namespace FactionColonies
                 {
                     Mercenary pawn = new Mercenary(true);
                     createNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
-                    mercenaries.Add(pawn);
+                    // Only add if pawn was successfully created
+                    if (pawn?.pawn != null)
+                    {
+                        mercenaries.Add(pawn);
+                    }
+                    else
+                    {
+                        Log.Warning($"Empire: Failed to create mercenary {k + 1}/30 for unit {outfit.units[k]?.name ?? "unknown"}.");
+                    }
                 }
             }
 
@@ -301,24 +318,135 @@ namespace FactionColonies
                 raceChoice = FactionColonies.getPlayerColonyFaction().RandomPawnKind();
             }
 
-            Pawn newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
+            // Try to generate pawn with the requested kind
+            Pawn newPawn = null;
+            try
+            {
+                newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
+                
+                // Set faction after generation (since we generate without faction to avoid xenotype forcing)
+                if (newPawn != null && newPawn.Faction == null)
+                {
+                    var empireFaction = FactionColonies.getPlayerColonyFaction();
+                    if (empireFaction != null)
+                    {
+                        newPawn.SetFaction(empireFaction);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Empire: Failed to generate pawn with kind {raceChoice?.defName}: {ex.Message}");
+            }
+            
+            // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing)
+            if (newPawn == null)
+            {
+                Log.Warning($"Empire: Pawn generation failed for {raceChoice?.defName}. Trying Baseliner fallback without faction.");
+                try
+                {
+                    var simpleRequest = new PawnGenerationRequest(
+                        kind: PawnKindDefOf.Colonist,
+                        faction: null, // NO faction - this prevents faction xenotype forcing
+                        context: PawnGenerationContext.NonPlayer,
+                        tile: -1,
+                        forceGenerateNewPawn: false,
+                        allowDead: false,
+                        allowDowned: false,
+                        canGeneratePawnRelations: false, // No relations for factionless pawns
+                        mustBeCapableOfViolence: true,
+                        colonistRelationChanceFactor: 0,
+                        forceAddFreeWarmLayerIfNeeded: false,
+                        allowGay: true,
+                        allowFood: true,
+                        allowAddictions: false,
+                        forcedXenotype: XenotypeDefOf.Baseliner // Force Baseliner - guaranteed violence capable
+                    );
+                    newPawn = PawnGenerator.GeneratePawn(simpleRequest);
+                    
+                    // Set the faction after generation
+                    if (newPawn != null)
+                    {
+                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        if (empireFaction != null)
+                        {
+                            newPawn.SetFaction(empireFaction);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Empire: Baseliner fallback also failed: {ex.Message}");
+                }
+            }
+            
+            // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
+            if (newPawn == null)
+            {
+                Log.Warning("Empire: All standard generation failed. Trying minimal fallback.");
+                try
+                {
+                    var fallbackRequest = new PawnGenerationRequest(
+                        kind: PawnKindDefOf.Colonist,
+                        faction: null, // NO faction
+                        context: PawnGenerationContext.NonPlayer,
+                        tile: -1,
+                        forceGenerateNewPawn: false,
+                        allowDead: false,
+                        allowDowned: false,
+                        canGeneratePawnRelations: false,
+                        mustBeCapableOfViolence: false, // Allow non-violent as absolute last resort
+                        colonistRelationChanceFactor: 0,
+                        forceAddFreeWarmLayerIfNeeded: false,
+                        allowGay: true,
+                        allowFood: true,
+                        allowAddictions: false
+                    );
+                    newPawn = PawnGenerator.GeneratePawn(fallbackRequest);
+                    
+                    // Set the faction after generation
+                    if (newPawn != null)
+                    {
+                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        if (empireFaction != null)
+                        {
+                            newPawn.SetFaction(empireFaction);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Empire: Critical - all pawn generation attempts failed: {ex.Message}");
+                }
+            }
+            
+            // Final check - if still null, we cannot proceed
+            if (newPawn == null)
+            {
+                Log.Error("Empire: Critical error - could not generate any pawn for mercenary squad. Skipping this mercenary.");
+                return;
+            }
+            
             newPawn.apparel?.DestroyAll();
             newPawn.equipment?.DestroyAllEquipment();
-            //merc = (Mercenary)newPawn;
             merc.squad = this;
             merc.settlement = settlement;
-            //Log.Message(newPawn.Name + "   State: Dead - " + newPawn.health.Dead + "    Apparel Count: " + newPawn.apparel.WornApparel.Count());
             merc.pawn = newPawn;
-            Log.Message("MercenarySquad");
 
         }
         public void updateSquadStats(int level)
         {
             foreach (Mercenary merc in mercenaries)
             {
-                merc.pawn.skills.GetSkill(SkillDefOf.Shooting).Level = Math.Min(level * 2, 20);
-                merc.pawn.skills.GetSkill(SkillDefOf.Melee).Level = Math.Min(level * 2, 20);
-                merc.pawn.skills.GetSkill(SkillDefOf.Medicine).Level = Math.Min(level * 1, 20);
+                if (merc?.pawn?.skills == null) continue;
+                
+                var shooting = merc.pawn.skills.GetSkill(SkillDefOf.Shooting);
+                var melee = merc.pawn.skills.GetSkill(SkillDefOf.Melee);
+                var medicine = merc.pawn.skills.GetSkill(SkillDefOf.Medicine);
+                
+                if (shooting != null) shooting.Level = Math.Min(level * 2, 20);
+                if (melee != null) melee.Level = Math.Min(level * 2, 20);
+                if (medicine != null) medicine.Level = Math.Min(level * 1, 20);
             }
         }
 
@@ -337,20 +465,37 @@ namespace FactionColonies
 
             //util.deadPawns.Add(pwn);
             Mercenary pawn2 = new Mercenary(true);
-            createNewPawn(ref pawn2, merc.pawn.kindDef, merc.pawn.genes.Xenotype);
-            mercenaries.Replace(merc, pawn2);
+            PawnKindDef kindDef = merc?.pawn?.kindDef ?? PawnKindDefOf.Colonist;
+            XenotypeDef xenotype = merc?.pawn?.genes?.Xenotype ?? XenotypeDefOf.Baseliner;
+            createNewPawn(ref pawn2, kindDef, xenotype);
+            
+            // Only replace if new pawn was successfully created
+            if (pawn2?.pawn != null)
+            {
+                mercenaries.Replace(merc, pawn2);
+            }
+            else
+            {
+                Log.Warning("Empire: Failed to replace dead mercenary with new pawn.");
+            }
         }
 
         public void HealPawn(Mercenary merc)
         {
-            merc.pawn.health.Reset();
+            if (merc?.pawn?.health != null)
+            {
+                merc.pawn.health.Reset();
+            }
         }
 
         public void StripSquad()
         {
-            for (int count = 0; count < 30; count++)
+            for (int count = 0; count < mercenaries.Count && count < 30; count++)
             {
-                StripPawn(mercenaries[count]);
+                if (mercenaries[count]?.pawn != null)
+                {
+                    StripPawn(mercenaries[count]);
+                }
             }
         }
 
@@ -367,12 +512,50 @@ namespace FactionColonies
             {
                 try
                 {
+                    // Ensure we have enough mercenaries in the list
+                    while (mercenaries.Count <= count)
+                    {
+                        Mercenary newMerc = new Mercenary(true);
+                        createNewPawn(ref newMerc, loadout?.pawnKind, loadout?.xenotype);
+                        if (newMerc?.pawn != null)
+                        {
+                            mercenaries.Add(newMerc);
+                        }
+                        else
+                        {
+                            Log.Warning($"Empire: Could not create mercenary for slot {count}.");
+                            break;
+                        }
+                    }
+                    
+                    // Skip if we still don't have enough mercenaries
+                    if (count >= mercenaries.Count || mercenaries[count]?.pawn == null)
+                    {
+                        Log.Warning($"Empire: Skipping outfit slot {count} - no valid mercenary available.");
+                        count++;
+                        continue;
+                    }
 
                     if (mercenaries[count]?.pawn?.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
                     {
                         Mercenary pawn = new Mercenary(true);
                         createNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype);
-                        mercenaries.Replace(mercenaries[count], pawn);
+                        // Only replace if new pawn was successfully created
+                        if (pawn?.pawn != null)
+                        {
+                            mercenaries.Replace(mercenaries[count], pawn);
+                        }
+                        else
+                        {
+                            Log.Warning($"Empire: Failed to create replacement pawn for slot {count}.");
+                        }
+                    }
+                    
+                    // Skip operations if pawn is null
+                    if (mercenaries[count]?.pawn == null)
+                    {
+                        count++;
+                        continue;
                     }
 
                     StripPawn(mercenaries[count]);
@@ -395,14 +578,14 @@ namespace FactionColonies
                         mercenaries[count].deployable = mercenaries[count].loadout != faction.militaryCustomizationUtil.blankUnit;
                     }
 
-                    if (mercenaries[count].pawn.equipment.AllEquipmentListForReading != null)
+                    if (mercenaries[count]?.pawn?.equipment?.AllEquipmentListForReading != null)
                     {
                         UsedWeaponList.AddRange(mercenaries[count].pawn.equipment.AllEquipmentListForReading);
 
                         //add single check at start of load and mark variable
                     }
 
-                    if (mercenaries[count].pawn.apparel.WornApparel != null)
+                    if (mercenaries[count]?.pawn?.apparel?.WornApparel != null)
                     {
                         UsedApparelList.AddRange(mercenaries[count].pawn.apparel.WornApparel);
                     }
@@ -429,8 +612,10 @@ namespace FactionColonies
 
         public void StripPawn(Mercenary merc)
         {
-            merc.pawn.apparel.DestroyAll();
-            merc.pawn.equipment.DestroyAllEquipment();
+            if (merc?.pawn == null) return;
+            
+            merc.pawn.apparel?.DestroyAll();
+            merc.pawn.equipment?.DestroyAllEquipment();
         }
 
         public void EquipPawn(Mercenary merc, MilUnitFC loadout)

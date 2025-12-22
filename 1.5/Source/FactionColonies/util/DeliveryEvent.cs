@@ -49,17 +49,24 @@ namespace FactionColonies.util
 		{
 			try
 			{
-				if (evt.let != null)
+				var notificationMode = FactionColonies.Settings().taxNotificationMode;
+				bool showLetter = notificationMode == TaxNotificationMode.All || notificationMode == TaxNotificationMode.LetterOnly;
+				bool showMessage = notificationMode == TaxNotificationMode.All || notificationMode == TaxNotificationMode.MessageOnly;
+
+				if (showLetter)
 				{
-					evt.let.lookTargets = evt.goods;
-					Find.LetterStack.ReceiveLetter(evt.let);
-				}
-				else
-				{
-					Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(evt.def.label.ToLower()), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
+					if (evt.let != null)
+					{
+						evt.let.lookTargets = evt.goods;
+						Find.LetterStack.ReceiveLetter(evt.let);
+					}
+					else
+					{
+						Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(evt.def.label.ToLower()), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
+					}
 				}
 
-				if (evt.msg != null)
+				if (showMessage && evt.msg != null)
 				{
 					evt.msg.lookTargets = evt.goods;
 					Messages.Message(evt.msg);
@@ -629,6 +636,14 @@ namespace FactionColonies.util
 		BloodAndDust = 4,
 		LosingIsFun = 5,
 		Custom = 6
+	}
+
+	public enum TaxNotificationMode
+	{
+		All,        // Show both Letter and Message
+		LetterOnly, // Only show Letter (blue notification)
+		MessageOnly,// Only show Message (top-screen text)
+		None        // Hide all tax delivery notifications
 	}
 }
 

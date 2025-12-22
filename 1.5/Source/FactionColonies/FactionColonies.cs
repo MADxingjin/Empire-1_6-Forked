@@ -1357,6 +1357,7 @@ namespace FactionColonies
         public bool deadPawnsIncreaseMilitaryCooldown;
         public bool settlementsAutoBattle = true;
         public TaxDeliveryMode forcedTaxDeliveryMode;
+        public TaxNotificationMode taxNotificationMode = TaxNotificationMode.All;
 
         public int minDaysTillMilitaryAction = 4;
         public int maxDaysTillMilitaryAction = 10;
@@ -1471,6 +1472,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions");
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents");
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", default);
+            Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", TaxNotificationMode.All);
             Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown");
             Scribe_Values.Look(ref settlementsAutoBattle, "settlementsAutoBattle");
             Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction");
@@ -1555,6 +1557,17 @@ namespace FactionColonies
                 };
             }
         }
+
+        /// <summary>
+        /// Creates a list of options for tax notification mode
+        /// </summary>
+        private List<FloatMenuOption> TaxNotificationOptions => new List<FloatMenuOption>
+        {
+            new FloatMenuOption("FCTaxNotifyAll".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.All),
+            new FloatMenuOption("FCTaxNotifyLetterOnly".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.LetterOnly),
+            new FloatMenuOption("FCTaxNotifyMessageOnly".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.MessageOnly),
+            new FloatMenuOption("FCTaxNotifyNone".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.None)
+        };
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
@@ -1647,6 +1660,7 @@ namespace FactionColonies
             ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref settings.disableForcedPausingDuringEvents);
             //ls.CheckboxLabeled("FCSettingAutoResolveBattles".Translate(), ref settings.settlementsAutoBattle);
             if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + settings.forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
+            if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + settings.taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
             ls.Label("FCSettingMinMaxMilitaryAction".Translate());
             ls.IntRange(ref minMaxDaysTillMilitaryAction, 1, 30);
@@ -1678,6 +1692,7 @@ namespace FactionColonies
                 settings.settlementsAutoBattle = blank.settlementsAutoBattle;
                 settings.disableForcedPausingDuringEvents = blank.disableForcedPausingDuringEvents;
                 settings.forcedTaxDeliveryMode = blank.forcedTaxDeliveryMode;
+                settings.taxNotificationMode = blank.taxNotificationMode;
                 settings.difficultyLevel = blank.difficultyLevel;
                 settings.ApplyDifficultyPreset(settings.difficultyLevel);
             }
@@ -1712,7 +1727,12 @@ namespace FactionColonies
 
         public override void WriteSettings()
         {
-            LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = daysBetweenTaxes * 60000;
+            // Only update timeBetweenTaxes if daysBetweenTaxes has been properly initialized
+            // (i.e., the settings window was actually opened during this session)
+            if (daysBetweenTaxes > 0)
+            {
+                LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = daysBetweenTaxes * 60000;
+            }
             base.WriteSettings();
         }
     }

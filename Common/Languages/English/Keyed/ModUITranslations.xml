@@ -99,6 +99,13 @@
     <WillBeConstructedIn>will be constructed in</WillBeConstructedIn>
     <BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
     <BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
+    
+    <!-- Building Demolition -->
+    <FCDemolish>Demolish</FCDemolish>
+    <FCDemolishConfirmation>Are you sure you want to demolish {0}? This will cost {1} silver.</FCDemolishConfirmation>
+    <FCNotEnoughSilverDemolish>You do not have enough silver on the current map to pay for the demolition</FCNotEnoughSilverDemolish>
+    <FCBuildingDemolished>{0} has been demolished</FCBuildingDemolished>
+    <FCChangeBuildingButton>Change Building</FCChangeBuildingButton>
 
     <!-- listFactionPolicyFC -->
     <Enact>Enact</Enact>
@@ -347,6 +354,13 @@
 	<taxDeliveryModeDropPodDesc>DropPod. Delivery always arrives in drop pods</taxDeliveryModeDropPodDesc>
 	<taxDeliveryModeShuttleDesc>Shuttle. Delivery always arrives by shuttle</taxDeliveryModeShuttleDesc>
 	<taxDeliveryModeShuttleUnavailableDesc>Shuttle. Unavailable due to royality not being present</taxDeliveryModeShuttleUnavailableDesc>
+	
+	<!-- Tax Notification Mode -->
+	<FCTaxNotificationModeButton>Tax Arrival Notifications: </FCTaxNotificationModeButton>
+	<FCTaxNotifyAll>All (Letter + Message)</FCTaxNotifyAll>
+	<FCTaxNotifyLetterOnly>Letter Only (blue notification)</FCTaxNotifyLetterOnly>
+	<FCTaxNotifyMessageOnly>Message Only (top-screen text)</FCTaxNotifyMessageOnly>
+	<FCTaxNotifyNone>None (hide all)</FCTaxNotifyNone>
 	
 	<deliveryPawnsHiding>The delivering pawns are dropping their items and hiding on your tax delivery spot! They will only engage if the enemy is close!</deliveryPawnsHiding>
 	<deliveryPawnsLeavingMap>The delivering pawns are leaving the map.</deliveryPawnsLeavingMap>

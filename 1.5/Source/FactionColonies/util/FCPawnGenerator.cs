@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using System.Linq;
 using System.Reflection.Emit;
@@ -11,15 +12,126 @@ namespace FactionColonies.util
 	{
 		public Pawn defaultPawn;
 		public XenotypeDef xenotype;
+		
+		// List of pawn kinds known to commonly generate violence-incapable pawns
+		private static readonly HashSet<string> problematicPawnKinds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			// Civilian/non-combat pawns
+			"Beggar", "Villager", "Ghoul", "Hunter", "Slave", "WildMan", 
+			"SpaceRefugee", "Refugee", "Drifter", "AncientSoldier",
+			// Other problematic types
+			"Farmer", "Trader", "Minstrel", "Hermit", "Pilgrim", "Monk",
+			"Child", "Baby", "Newborn", "StrangerInBlack"
+		};
+		
+		/// <summary>
+		/// Check if pawn kind name contains problematic patterns
+		/// </summary>
+		private static bool HasProblematicPattern(string defName)
+		{
+			if (string.IsNullOrEmpty(defName)) return true;
+			
+			string lower = defName.ToLower();
+			// Filter out child pawns, tribal variants that often fail, and other problematic patterns
+			return lower.Contains("child") || 
+			       lower.Contains("baby") || 
+			       lower.Contains("newborn") ||
+			       lower.Contains("_child") ||
+			       lower.Contains("slave") ||
+			       lower.Contains("refugee") ||
+			       lower.Contains("beggar") ||
+			       lower.Contains("hermit") ||
+			       lower.Contains("pilgrim");
+		}
+		
+		// List of pawn kinds that are reliable for military use
+		private static readonly List<string> preferredMilitaryKinds = new List<string>
+		{
+			"Colonist", "Mercenary", "Fighter", "Soldier", "Pirate", "Grenadier",
+			"SpaceSoldier", "EliteMercenary", "TownGuard", "Janissary"
+		};
+		
+		/// <summary>
+		/// Check if a pawn kind is likely to produce violence-capable pawns
+		/// </summary>
+		public static bool IsViolenceCapablePawnKind(PawnKindDef kindDef)
+		{
+			if (kindDef == null) return false;
+			
+			// Check if it's in the problematic list
+			if (problematicPawnKinds.Contains(kindDef.defName))
+			{
+				return false;
+			}
+			
+			// Check for problematic patterns in the name
+			if (HasProblematicPattern(kindDef.defName))
+			{
+				return false;
+			}
+			
+			// Check combat power - very low combat power suggests non-combat pawn
+			if (kindDef.combatPower < 30f)
+			{
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/// <summary>
+		/// Get a violence-capable pawn kind, with fallbacks
+		/// </summary>
+		public static PawnKindDef GetViolenceCapablePawnKind(Faction faction)
+		{
+			if (faction?.def?.pawnGroupMakers == null)
+			{
+				return PawnKindDefOf.Colonist;
+			}
+			
+			// Try to find a violence-capable pawn kind from the faction
+			var allKinds = faction.def.pawnGroupMakers
+				.Where(pgm => pgm.options != null)
+				.SelectMany(pgm => pgm.options)
+				.Select(opt => opt.kind)
+				.Where(k => k != null && IsViolenceCapablePawnKind(k))
+				.ToList();
+			
+			if (allKinds.Any())
+			{
+				return allKinds.RandomElement();
+			}
+			
+			// Try preferred military kinds from the database
+			foreach (var kindName in preferredMilitaryKinds)
+			{
+				var kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(kindName);
+				if (kind != null && IsViolenceCapablePawnKind(kind))
+				{
+					return kind;
+				}
+			}
+			
+			// Final fallback
+			return PawnKindDefOf.Colonist;
+		}
 
 		public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
         {
 			var kindDef = pawnKindDef;
+			
+			// Validate the provided pawn kind for violence capability
+			if (kindDef != null && !IsViolenceCapablePawnKind(kindDef))
+			{
+				kindDef = null; // Force fallback - skip problematic pawn kinds silently
+			}
+			
 			if (kindDef == null)
 			{
 				try
 				{
-					kindDef = FactionColonies.getPlayerColonyFaction()?.RandomPawnKind();
+					var tempFaction = FactionColonies.getPlayerColonyFaction();
+					kindDef = GetViolenceCapablePawnKind(tempFaction);
 				}
 				catch (Exception ex)
 				{
@@ -33,29 +145,31 @@ namespace FactionColonies.util
 				}
 			}
 			
-			var faction = FactionColonies.getPlayerColonyFaction();
-			if (faction == null)
-			{
-				faction = Faction.OfPlayer; // Fallback to player faction
-			}
-			
 			var factionFC = Find.World.GetComponent<FactionFC>();
 			
-			// If no specific xenotype is requested, select from allowed xenotypes
-			if (xenotypeDef == null)
+			// For military pawns, we need to ensure violence capability
+			// Check if the xenotype needs security guards (is non-violent)
+			XenotypeDef chosenXenotype = xenotypeDef;
+			bool needsSecurityGuards = false;
+			
+			if (chosenXenotype == null)
 			{
-				if (factionFC?.xenotypeFilter != null && factionFC.xenotypeFilter.AllowedXenotypes.Any())
+				// For military, always use Baseliner unless user specifically requested a xenotype
+				// This avoids faction xenotype forcing that causes violence-incapable pawns
+				chosenXenotype = XenotypeDefOf.Baseliner;
+			}
+			else
+			{
+				// Check if the requested xenotype allows violence
+				needsSecurityGuards = factionFC?.xenotypeFilter?.XenotypeNeedsSecurityGuards(chosenXenotype) ?? false;
+				
+				// If the xenotype is non-violent and we need violence, fall back to Baseliner
+				if (needsSecurityGuards)
 				{
-					xenotypeDef = factionFC.xenotypeFilter.AllowedXenotypes.RandomElement();
-				}
-				else
-				{
-					xenotypeDef = XenotypeDefOf.Baseliner; // Fallback to default
+					chosenXenotype = XenotypeDefOf.Baseliner;
+					needsSecurityGuards = false;
 				}
 			}
-			
-			// Check if the xenotype needs security guards (is non-violent)
-			bool needsSecurityGuards = factionFC?.xenotypeFilter?.XenotypeNeedsSecurityGuards(xenotypeDef) ?? false;
 			
 			// Get a safe age value
 			float? fixedAge = null;
@@ -69,16 +183,18 @@ namespace FactionColonies.util
 				fixedAge = null; // Let the game decide the age
 			}
 			
+			// IMPORTANT: Use null faction to prevent faction xenotype forcing
+			// The pawn's faction will be set after generation
 			return new PawnGenerationRequest(
 				kind: kindDef,
-				faction: faction,
+				faction: null, // NO faction - prevents faction xenotype requirements
 				context: PawnGenerationContext.NonPlayer,
 				tile: -1,
 				forceGenerateNewPawn: false,
 				allowDead: false,
 				allowDowned: false,
-				canGeneratePawnRelations: true,
-				mustBeCapableOfViolence: !needsSecurityGuards, // Allow non-violent pawns if they have security guards
+				canGeneratePawnRelations: false, // No relations for factionless pawn
+				mustBeCapableOfViolence: true, // Always require violence for military
 				colonistRelationChanceFactor: 0,
 				forceAddFreeWarmLayerIfNeeded: false,
 				allowGay: true,
@@ -87,7 +203,7 @@ namespace FactionColonies.util
 				inhabitant: false,
 				certainlyBeenInCryptosleep: false,
 				forceRedressWorldPawnIfFormerColonist: false,
-				worldPawnFactionDoesntMatter: false,
+				worldPawnFactionDoesntMatter: true, // Allow any world pawn
 				biocodeWeaponChance: 0,
 				extraPawnForExtraRelationChance: null,
 				relationWithExtraPawnChanceFactor: 0,
@@ -95,7 +211,7 @@ namespace FactionColonies.util
 				validatorPostGear: null,
 				forcedTraits: null,
 				prohibitedTraits: null,
-				forcedXenotype: xenotypeDef,
+				forcedXenotype: chosenXenotype,
 				fixedBiologicalAge: fixedAge
 			);
 		}
