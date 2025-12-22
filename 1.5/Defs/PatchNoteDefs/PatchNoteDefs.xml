@@ -30,6 +30,42 @@
 	</FactionColonies.PatchNoteDef>
 
 		<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_50_0</defName>
+		<label>Updated Textures</label>
+		<description>This is a hotfix that updates all broken textures, all credits to @Midnight5431.</description>
+
+		<major>0</major>
+		<minor>50</minor>
+		<patch>0</patch>
+
+		<releaseDay>22</releaseDay>
+		<releaseMonth>12</releaseMonth>
+		<releaseYear>2025</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+			<li>Textures have been updated. @Midnight5431</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Textures have been updated. @Midnight5431</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+			<li>Midnight5431</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_43_3</defName>
 		<label>SOS2 Support and updating Conflicting Textures</label>
 		<description>This is a hotfix to update SOS2 support and address conflicting textures.</description>
