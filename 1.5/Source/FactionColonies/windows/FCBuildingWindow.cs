@@ -18,6 +18,7 @@ namespace FactionColonies
         Research,
         Medicine,
         Power,
+        Military,
         Basetax,
         Workers
     }
@@ -99,6 +100,7 @@ namespace FactionColonies
                 BuildingFilter.Research,
                 BuildingFilter.Medicine,
                 BuildingFilter.Power,
+                BuildingFilter.Military,
                 BuildingFilter.Basetax,
                 BuildingFilter.Workers
             };
@@ -107,8 +109,8 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            // Calculate button dimensions
-            int buttonsPerRow = 5;
+            // Calculate button dimensions - 6 per row to fit all 11 filters in 2 rows
+            int buttonsPerRow = 6;
             float buttonWidth = (FilterArea.width - 10) / buttonsPerRow;
             float buttonHeight = filterButtonHeight;
 
@@ -227,6 +229,11 @@ namespace FactionColonies
                     
                     case BuildingFilter.Power:
                         if (traitDef.productionBasePower != 0 || Math.Abs(traitDef.productionMultiplierPower - 1.0) > 0.001)
+                            return true;
+                        break;
+                    
+                    case BuildingFilter.Military:
+                        if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
                             return true;
                         break;
                     
