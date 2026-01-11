@@ -118,7 +118,7 @@ namespace FactionColonies
             if (isAttacking && faction.hasPolicy(FCPolicyDefOf.militaristic)) 
                 efficiency *= 1.2;
             militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement,
-                FactionColonies.getPlayerColonyFaction());
+                ColonyUtil.getPlayerColonyFaction());
             return returnForce;
             //create and return force.
         }
@@ -229,7 +229,7 @@ namespace FactionColonies
                 }
             }
 
-            double value = militaryLevel + FactionColonies.RandomAttackModifier();
+            double value = militaryLevel + MilitaryUtil.RandomAttackModifier();
             if (handicap)
             {
                 value = Math.Min(value,
@@ -260,7 +260,7 @@ namespace FactionColonies
             tmp.customDescription = "settlementAboutToBeAttacked"
                 .Translate(settlement.name, enemyFaction.Name);
             tmp.militaryForceDefending = militaryForce.createMilitaryForceFromSettlement(settlement);
-            tmp.militaryForceDefendingFaction = FactionColonies.getPlayerColonyFaction();
+            tmp.militaryForceDefendingFaction = ColonyUtil.getPlayerColonyFaction();
             tmp.militaryForceAttacking = attackingForce;
             tmp.militaryForceAttackingFaction = enemyFaction;
             tmp.settlementFCDefending = settlement;
@@ -371,7 +371,7 @@ namespace FactionColonies
 
         public static void resetPlayerColonyRelations()
         {
-            Faction PCFaction = FactionColonies.getPlayerColonyFaction();
+            Faction PCFaction = ColonyUtil.getPlayerColonyFaction();
             foreach (Faction faction in Find.FactionManager.AllFactionsInViewOrder)
             {
                 if (faction != Find.FactionManager.OfPlayer && faction != PCFaction)

@@ -326,11 +326,11 @@ namespace FactionColonies
                             // Regular settlement creation
                             if (Find.World.info.name == evt.planetName)
                             {
-                                FactionColonies.createPlayerColonySettlement(evt.location, true, evt.planetName);
+                                ColonyUtil.createPlayerColonySettlement(evt.location, true, evt.planetName);
                             }
                             else
                             {
-                                FactionColonies.createPlayerColonySettlement(evt.location, false, evt.planetName);
+                                ColonyUtil.createPlayerColonySettlement(evt.location, false, evt.planetName);
                                 faction.createSettlementQueue.Add(new SettlementSoS2Info(evt.planetName, evt.location));
                             }
                         }
@@ -655,7 +655,7 @@ namespace FactionColonies
             }
             else
             {
-                int travelTime = FactionColonies.ReturnTicksToArrive(tmp.source, tmp.location);
+                int travelTime = TravelUtil.ReturnTicksToArrive(tmp.source, tmp.location);
                 tmp.timeTillTrigger = Find.TickManager.TicksGame + travelTime;
                 Log.Message($"Tax Event Travel Debug: source={tmp.source}, destination={tmp.location}, travelTime={travelTime} ticks ({travelTime / 60000f:F1} days)");
             }
@@ -710,7 +710,7 @@ namespace FactionColonies
             try
             {
                 // Create orbital platform settlement directly (bypass tile validation)
-                Faction playerFaction = FactionColonies.getPlayerColonyFaction();
+                Faction playerFaction = ColonyUtil.getPlayerColonyFaction();
                 FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
                 
                 if (!worldcomp.settlements.Any())
@@ -883,7 +883,7 @@ namespace FactionColonies
         private static string GetOrbitalBaseName()
         {
             // Copy the same logic as the normal settlement name generator
-            Faction faction = FactionColonies.getPlayerColonyFaction();
+            Faction faction = ColonyUtil.getPlayerColonyFaction();
             
             if (faction?.def.settlementNameMaker == null)
             {

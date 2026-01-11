@@ -38,7 +38,7 @@ namespace FactionColonies
         public static void Patch(Harmony harmony)
         {
 
-            Type typ = FactionColonies.returnUnknownTypeFromName("AndroidTiers.PawnGroupMakerUtility_Patch");
+            Type typ = GenUtil.returnUnknownTypeFromName("AndroidTiers.PawnGroupMakerUtility_Patch");
 
 
 

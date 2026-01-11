@@ -75,7 +75,7 @@ namespace FactionColonies
                         MilitaryLevel.y + (SettlementBox.height + settlementYSpacing) * count + scroll,
                         MilitaryLevel.width, MilitaryLevel.height * 2),
                     "Mil Level: " + settlement.settlementMilitaryLevel + " - Max Squad Cost: " +
-                    FactionColonies.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel));
+                    MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel));
                 if (settlement.militarySquad != null)
                 {
                     if (settlement.militarySquad.outfit != null)
@@ -178,7 +178,7 @@ namespace FactionColonies
 
                                         deploymentOptions.Add(new FloatMenuOption("Walk into map", delegate
                                         {
-                                            FactionColonies.CallinExtraForces(settlement, false);
+                                            MilitaryUtil.CallinExtraForces(settlement, false);
                                             Find.WindowStack.currentlyDrawnWindow.Close();
                                         }));
                                         //check if medieval only
@@ -189,7 +189,7 @@ namespace FactionColonies
                                         {
                                             deploymentOptions.Add(new FloatMenuOption("Drop-Pod", delegate
                                             {
-                                                FactionColonies.CallinExtraForces(settlement, true);
+                                                MilitaryUtil.CallinExtraForces(settlement, true);
                                                 Find.WindowStack.currentlyDrawnWindow.Close();
                                             }));
                                         }
@@ -259,7 +259,7 @@ namespace FactionColonies
                         FloatMenuOption option = new FloatMenuOption(support.name + " - $" + cost, delegate
                         {
                             if (support.returnTotalCost() <=
-                                FactionColonies.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
+                                MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
                             {
                                 if (settlement.buildings.Contains(BuildingFCDefOf.artilleryOutpost))
                                 {
@@ -267,7 +267,7 @@ namespace FactionColonies
                                     {
                                         if (PaymentUtil.getSilver() >= cost)
                                         {
-                                            FactionColonies.FireSupport(settlement, support);
+                                            MilitaryUtil.FireSupport(settlement, support);
                                             Find.WindowStack.TryRemove(typeof(MilitaryCustomizationWindowFc));
                                         }
                                         else
@@ -331,7 +331,7 @@ namespace FactionColonies
             if (!medievalOnly && (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
             {
                 return new FloatMenuOption("dropPodDeploymentOption".Translate(),
-                    delegate { FactionColonies.CallinAlliedForces(settlement, true); });
+                    delegate { MilitaryUtil.CallinAlliedForces(settlement, true); });
             }
 
             return new FloatMenuOption(
@@ -346,7 +346,7 @@ namespace FactionColonies
         {
             new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate 
             { 
-                FactionColonies.CallinAlliedForces(settlement, false); 
+                MilitaryUtil.CallinAlliedForces(settlement, false); 
             }), DropPodDeploymentOption(settlement)
         };
     }

@@ -1058,7 +1058,7 @@ namespace FactionColonies
                                 planetName = planetName,
                                 goods = loot,
                                 customDescription = text,
-                                timeTillTrigger = Find.TickManager.TicksGame + FactionColonies.ReturnTicksToArrive(mapLocation, Find.AnyPlayerHomeMap.Tile)
+                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(mapLocation, Find.AnyPlayerHomeMap.Tile)
                             };
 
                             DeliveryEvent.CreateDeliveryEvent(eventParams);
@@ -1125,13 +1125,13 @@ namespace FactionColonies
                         if (Find.World.info.name == militaryLocationPlanet)
                         {
                             WorldSettlementFC settlement =
-                                FactionColonies.createPlayerColonySettlement(militaryLocation, true,
+                                ColonyUtil.createPlayerColonySettlement(militaryLocation, true,
                                     militaryLocationPlanet);
                             settlement.Name = tmpName;
                         }
                         else
                         {
-                            FactionColonies.createPlayerColonySettlement(militaryLocation, false,
+                            ColonyUtil.createPlayerColonySettlement(militaryLocation, false,
                                 militaryLocationPlanet);
                             Find.World.GetComponent<FactionFC>().createSettlementQueue
                                 .Add(new SettlementSoS2Info(militaryLocationPlanet, militaryLocation));

@@ -315,7 +315,7 @@ namespace FactionColonies
 
             if (race == null || !factionFc.raceFilter.Allows(raceChoice.race))
             {
-                raceChoice = FactionColonies.getPlayerColonyFaction().RandomPawnKind();
+                raceChoice = ColonyUtil.getPlayerColonyFaction().RandomPawnKind();
             }
 
             // Try to generate pawn with the requested kind
@@ -327,7 +327,7 @@ namespace FactionColonies
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (newPawn != null && newPawn.Faction == null)
                 {
-                    var empireFaction = FactionColonies.getPlayerColonyFaction();
+                    var empireFaction = ColonyUtil.getPlayerColonyFaction();
                     if (empireFaction != null)
                     {
                         newPawn.SetFaction(empireFaction);
@@ -367,7 +367,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (newPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        var empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             newPawn.SetFaction(empireFaction);
@@ -407,7 +407,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (newPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        var empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             newPawn.SetFaction(empireFaction);
@@ -655,7 +655,7 @@ namespace FactionColonies
                     {
                         if (comp.GetType().ToString() == "CombatExtended.CompInventory")
                         {
-                            Type typ = FactionColonies.returnUnknownTypeFromName(
+                            Type typ = GenUtil.returnUnknownTypeFromName(
                                 "CombatExtended.LoadoutPropertiesExtension");
 
                             //Method not static, so create instance of object and define the parameters to the method.
@@ -682,7 +682,7 @@ namespace FactionColonies
                     if (weapon.ParentHolder is Pawn_EquipmentTracker)
                     {
                         if ((((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
-                             FactionColonies.getPlayerColonyFaction() ||
+                             ColonyUtil.getPlayerColonyFaction() ||
                              ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
                              Find.FactionManager.OfPlayer) &&
                             ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Dead == false)
@@ -716,7 +716,7 @@ namespace FactionColonies
                     if (apparel.ParentHolder is Pawn_ApparelTracker)
                     {
                         if ((((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
-                             FactionColonies.getPlayerColonyFaction() ||
+                             ColonyUtil.getPlayerColonyFaction() ||
                              ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
                              Find.FactionManager.OfPlayer) &&
                             ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Dead == false)

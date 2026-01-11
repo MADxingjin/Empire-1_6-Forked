@@ -423,7 +423,7 @@ namespace FactionColonies
                 }
             }
 
-            buildingList.Sort(FactionColonies.CompareBuildingDef);
+            buildingList.Sort(CompareUtil.CompareBuildingDef);
 
             // Initialize filtered list with all buildings
             filteredBuildingList.AddRange(buildingList);

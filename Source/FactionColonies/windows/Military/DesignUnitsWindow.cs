@@ -232,7 +232,7 @@ namespace FactionColonies
                     options.Add(new FloatMenuOption("changeUnitRaceNoRaces".Translate(), null));
                 }
 
-                options.Sort(FactionColonies.CompareFloatMenuOption);
+                options.Sort(CompareUtil.CompareFloatMenuOption);
                 FloatMenu menu = new Searchable_FloatMenu(options);
                 Find.WindowStack.Add(menu);
             }
@@ -263,7 +263,7 @@ namespace FactionColonies
                     options1.Add(new FloatMenuOption("changeUnitXenoNoXenos".Translate(), null));
                 }
 
-                options1.Sort(FactionColonies.CompareFloatMenuOption);
+                options1.Sort(CompareUtil.CompareFloatMenuOption);
                 FloatMenu menu = new Searchable_FloatMenu(options1);
                 Find.WindowStack.Add(menu);
             }
@@ -312,7 +312,7 @@ namespace FactionColonies
                                                           selectedUnit.animal = animal;
                                                       }, animal.race.uiIcon, UnityEngine.Color.white)).ToList();
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
     {
@@ -327,7 +327,7 @@ namespace FactionColonies
                 if (Widgets.ButtonInvisible(EquipmentWeapon))
                 {
                     List<FloatMenuOption> list = (from thing in DefDatabase<ThingDef>.AllDefs
-                                                  where thing.IsWeapon && thing.BaseMarketValue != 0 && FactionColonies.canCraftItem(thing)
+                                                  where thing.IsWeapon && thing.BaseMarketValue != 0 && CraftUtil.canCraftItem(thing)
                                                   where true
                                                   select new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue, delegate
                                                   {
@@ -347,7 +347,7 @@ namespace FactionColonies
                                                                            ThingMaker.MakeThing(thing, stuff) as ThingWithComps);
                                                                    })).ToList();
 
-                                                          stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                                          stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                                           FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                                           Find.WindowStack.Add(stuffWindow);
                                                       }
@@ -360,7 +360,7 @@ namespace FactionColonies
                                                   }, thing)).ToList();
 
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate { selectedUnit.unequipWeapon(); }));
 
@@ -380,7 +380,7 @@ namespace FactionColonies
                         if (thing.IsApparel)
                         {
                             if (thing.apparel.layers.Contains(ApparelLayerDefOf.Overhead) &&
-                                FactionColonies.canCraftItem(thing))
+                                CraftUtil.canCraftItem(thing))
                             {
                                 headgearList.Add(new FloatMenuOption(
                                     thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
@@ -409,7 +409,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -425,7 +425,7 @@ namespace FactionColonies
                         }
                     }
 
-                    headgearList.Sort(FactionColonies.CompareFloatMenuOption);
+                    headgearList.Sort(CompareUtil.CompareFloatMenuOption);
 
                     headgearList.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                     {
@@ -456,7 +456,7 @@ namespace FactionColonies
                         {
                             if (thing.apparel.layers.Contains(ApparelLayerDefOf.Shell) &&
                                 thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                FactionColonies.canCraftItem(thing)) //CHANGE THIS
+                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
                             {
                                 list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
                                     delegate
@@ -484,7 +484,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -500,7 +500,7 @@ namespace FactionColonies
                         }
                     }
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                     {
@@ -533,7 +533,7 @@ namespace FactionColonies
                         {
                             if (thing.apparel.layers.Contains(ApparelLayerDefOf.Middle) &&
                                 thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                FactionColonies.canCraftItem(thing)) //CHANGE THIS
+                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
                             {
                                 list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
                                     delegate
@@ -561,7 +561,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -577,7 +577,7 @@ namespace FactionColonies
                         }
                     }
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                     {
@@ -610,7 +610,7 @@ namespace FactionColonies
                         {
                             if (thing.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
                                 thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                FactionColonies.canCraftItem(thing)) //CHANGE THIS
+                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
                             {
                                 list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
                                     delegate
@@ -638,7 +638,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -654,7 +654,7 @@ namespace FactionColonies
                         }
                     }
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
@@ -687,7 +687,7 @@ namespace FactionColonies
                         {
                             if (thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) &&
                                 thing.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
-                                FactionColonies.canCraftItem(thing)) //CHANGE THIS
+                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
                             {
                                 list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
                                     delegate
@@ -715,7 +715,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -731,7 +731,7 @@ namespace FactionColonies
                         }
                     }
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                     {
@@ -762,7 +762,7 @@ namespace FactionColonies
                         if (thing.IsApparel)
                         {
                             if (thing.apparel.layers.Contains(ApparelLayerDefOf.Belt) &&
-                                FactionColonies.canCraftItem(thing))
+                                CraftUtil.canCraftItem(thing))
                             {
                                 list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
                                     delegate
@@ -790,7 +790,7 @@ namespace FactionColonies
                                                 }
                                             }
 
-                                            stuffList.Sort(FactionColonies.CompareFloatMenuOption);
+                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
                                             FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
                                             Find.WindowStack.Add(stuffWindow);
                                         }
@@ -816,7 +816,7 @@ namespace FactionColonies
                         }
                     }
 
-                    list.Sort(FactionColonies.CompareFloatMenuOption);
+                    list.Sort(CompareUtil.CompareFloatMenuOption);
 
                     list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                     {

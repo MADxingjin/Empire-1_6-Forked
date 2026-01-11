@@ -1,11 +1,12 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using RimWorld;
-using RimWorld.Planet;
 
 
 namespace FactionColonies
@@ -58,7 +59,7 @@ namespace FactionColonies
                 if (reason == "faction")
                 {
                     Find.World.GetComponent<FactionFC>().name = text;
-                    FactionColonies.getPlayerColonyFaction().Name = text;
+                    ColonyUtil.getPlayerColonyFaction().Name = text;
                 }
                 Find.WindowStack.TryRemove(this);
             }

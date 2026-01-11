@@ -180,7 +180,7 @@ namespace FactionColonies
                 // I'm not sure if this is the best way to do this, but it works for now. Can't say I'm proud of it.
                 bool isOrbitalItem = (thing == ThingDefOf.GravlitePanel) && ResourceUtils.IsOrbitalPlatform(settlement);
                 
-                if (!isOrbitalItem && !FactionColonies.canCraftItem(thing))
+                if (!isOrbitalItem && !CraftUtil.canCraftItem(thing))
                 {
                     resource.filter.SetAllow(thing, false);
                     continue;
@@ -290,24 +290,24 @@ namespace FactionColonies
 
                 //Base Production
                 Widgets.Label(new Rect(x + 195, rectY, 45, 40),
-                    FactionColonies.FloorStat(resource.baseProduction));
+                    TextUtil.FloorStat(resource.baseProduction));
 
                 //Final Modifier
                 Widgets.Label(new Rect(x + 250, rectY, 50, 40),
-                    FactionColonies.FloorStat(resource.endProductionMultiplier));
+                    TextUtil.FloorStat(resource.endProductionMultiplier));
 
                 //Final Base
                 Widgets.Label(new Rect(x + 310, rectY, 45, 40),
-                    (FactionColonies.FloorStat(resource.endProduction)));
+                    (TextUtil.FloorStat(resource.endProduction)));
 
                 //Est Income
                 Widgets.Label(new Rect(x + 365, rectY, 45, 40),
-                    (FactionColonies.FloorStat(resource.endProduction * LoadedModManager
+                    (TextUtil.FloorStat(resource.endProduction * LoadedModManager
                         .GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().silverPerResource)));
 
                 //Tithe Percentage
                 resource.returnTaxPercentage();
-                string taxPercentage = FactionColonies.FloorStat(resource.taxPercentage) + "%";
+                string taxPercentage = TextUtil.FloorStat(resource.taxPercentage) + "%";
                 Widgets.Label(new Rect(x + 420, rectY, 45, 40), taxPercentage);
             }
 
@@ -521,7 +521,7 @@ namespace FactionColonies
                         {
                             //if click to delete colony
                             Find.WindowStack.TryRemove(this);
-                            FactionColonies.removePlayerSettlement(settlement);
+                            ColonyUtil.removePlayerSettlement(settlement);
                         }
 
                         if (buttons[i] == "DeleteSettlement".Translate())

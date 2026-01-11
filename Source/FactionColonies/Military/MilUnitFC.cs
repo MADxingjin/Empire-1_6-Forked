@@ -35,7 +35,7 @@ namespace FactionColonies
 
             try
             {
-                var playerFaction = FactionColonies.getPlayerColonyFaction();
+                Faction playerFaction = ColonyUtil.getPlayerColonyFaction();
                 if (playerFaction != null && playerFaction.def.pawnGroupMakers.Any() && 
                     playerFaction.def.pawnGroupMakers.Any(pgm => pgm.options?.Any() == true))
                 {
@@ -128,7 +128,7 @@ namespace FactionColonies
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (defaultPawn != null && defaultPawn.Faction == null)
                 {
-                    var empireFaction = FactionColonies.getPlayerColonyFaction();
+                    Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
                     if (empireFaction != null)
                     {
                         defaultPawn.SetFaction(empireFaction);
@@ -170,7 +170,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (defaultPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             defaultPawn.SetFaction(empireFaction);
@@ -200,7 +200,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (defaultPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             defaultPawn.SetFaction(empireFaction);

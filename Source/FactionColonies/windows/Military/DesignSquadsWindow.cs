@@ -107,7 +107,7 @@ namespace FactionColonies
                 {
                     Widgets.Label(EquipmentTotalCost, "Total Squad Equipment Cost: " +
                                                       selectedSquad.equipmentTotalCost +
-                                                      " / " + FactionColonies
+                                                      " / " + MilitaryCustomizationUtil
                                                           .calculateMilitaryLevelPoints(settlementPointReference
                                                               .settlementMilitaryLevel) +
                                                       " (Max Cost)");

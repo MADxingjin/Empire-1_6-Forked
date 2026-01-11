@@ -130,7 +130,7 @@ namespace FactionColonies.util
 			{
 				try
 				{
-					var tempFaction = FactionColonies.getPlayerColonyFaction();
+					var tempFaction = ColonyUtil.getPlayerColonyFaction();
 					kindDef = GetViolenceCapablePawnKind(tempFaction);
 				}
 				catch (Exception ex)
@@ -223,7 +223,7 @@ namespace FactionColonies.util
 			{
 				try
 				{
-					kindDef = FactionColonies.getPlayerColonyFaction()?.RandomPawnKind();
+					kindDef = ColonyUtil.getPlayerColonyFaction()?.RandomPawnKind();
 				}
 				catch (Exception ex)
 				{
@@ -237,7 +237,7 @@ namespace FactionColonies.util
 				}
 			}
 			
-			var faction = FactionColonies.getPlayerColonyFaction();
+			var faction = ColonyUtil.getPlayerColonyFaction();
 			if (faction == null)
 			{
 				faction = Faction.OfPlayer; // Fallback to player faction
@@ -307,7 +307,7 @@ namespace FactionColonies.util
 
 		public static PawnGenerationRequest AnimalRequest(PawnKindDef race)
 		{
-			var faction = FactionColonies.getPlayerColonyFaction();
+			var faction = ColonyUtil.getPlayerColonyFaction();
 			
 			return new PawnGenerationRequest(
 				kind: race,
@@ -344,7 +344,7 @@ namespace FactionColonies.util
 		/// </summary>
 		public static PawnGenerationRequest SimpleDeliveryRequest()
 		{
-			var faction = FactionColonies.getPlayerColonyFaction();
+			var faction = ColonyUtil.getPlayerColonyFaction();
 			if (faction == null)
 			{
 				faction = Faction.OfPlayer; // Fallback to player faction

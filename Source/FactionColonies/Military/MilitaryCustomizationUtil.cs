@@ -105,7 +105,7 @@ namespace FactionColonies
                     if (squad.settlement != null)
                         settlementMilLevel = squad.settlement.settlementMilitaryLevel;
                     if (squad.outfit == null || !(squad.outfit.equipmentTotalCost >
-                                                  FactionColonies.calculateMilitaryLevelPoints(settlementMilLevel)))
+                                                  calculateMilitaryLevelPoints(settlementMilLevel)))
                         continue;
                     if (squad.settlement != null)
                     {
@@ -130,6 +130,17 @@ namespace FactionColonies
         public int GETLatestChange
         {
             get { return squads.Select(squadFC => squadFC.getLatestChanged).Prepend(0).Max(); }
+        }
+
+        public static double calculateMilitaryLevelPoints(int MilitaryLevel)
+        {
+            double points = 500; //starting points at mil level 0
+            for (int i = 1; i <= MilitaryLevel; i++)
+            {
+                points += (500 * MilitaryLevel);
+            }
+
+            return points;
         }
 
         public MercenarySquadFC returnSquadFromUnit(Pawn unit)
@@ -191,7 +202,7 @@ namespace FactionColonies
 
         public void attemptToAssignSquad(SettlementFC settlement, MilSquadFC squad)
         {
-            if (FactionColonies.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
+            if (calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
                 squad.equipmentTotalCost)
             {
                 if (squadExists(settlement))

@@ -253,7 +253,7 @@ namespace FactionColonies
                 currentHillinessSelected = DefDatabase<BiomeResourceDef>.GetNamed(Find.WorldGrid[currentTileSelected].hilliness.ToString());
                 if (currentBiomeSelected.canSettle && currentHillinessSelected.canSettle && currentTileSelected != 1)
                 {
-                    timeToTravel = FactionColonies.ReturnTicksToArrive(faction.capitalLocation, currentTileSelected);
+                    timeToTravel = TravelUtil.ReturnTicksToArrive(faction.capitalLocation, currentTileSelected);
                 }
                 else
                 {

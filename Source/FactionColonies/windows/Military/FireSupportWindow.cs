@@ -111,7 +111,7 @@ namespace FactionColonies
                 {
                     Widgets.Label(TotalCost,
                         "Total Fire Support Silver Cost: " + selectedSupport.returnTotalCost() + " / " +
-                        FactionColonies.calculateMilitaryLevelPoints(settlementPointReference
+                        MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlementPointReference
                             .settlementMilitaryLevel) +
                         " (Max Cost)");
                 }

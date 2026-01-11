@@ -358,7 +358,7 @@ namespace FactionColonies
                         if (defenders.Any())
                             defenders[0].GetLord().AddPawn(pawn);
                         else
-                            LordMaker.MakeNewLord(FactionColonies.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
+                            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
                                 Map, pawns);
                     }
 
@@ -483,7 +483,7 @@ namespace FactionColonies
                     goods = pawns.ToList(),
                     customDescription = DeliveryEvent.ShuttleEventInjuredString,
                     timeTillTrigger = Find.TickManager.TicksGame +
-                                      FactionColonies.ReturnTicksToArrive(Tile, Find.AnyPlayerHomeMap.Tile)
+                                      TravelUtil.ReturnTicksToArrive(Tile, Find.AnyPlayerHomeMap.Tile)
                 };
 
                 if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
@@ -656,7 +656,7 @@ namespace FactionColonies
                 var parms = new IncidentParms
                 {
                     target = Map,
-                    faction = FactionColonies.getPlayerColonyFaction(),
+                    faction = ColonyUtil.getPlayerColonyFaction(),
                     generateFightersOnly = true,
                     raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
                 };
@@ -733,7 +733,7 @@ namespace FactionColonies
                 friendly.drafter.Drafted = true;
             }
 
-            LordMaker.MakeNewLord(FactionColonies.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
+            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
                 friendlies);
 
             defenders = friendlies;

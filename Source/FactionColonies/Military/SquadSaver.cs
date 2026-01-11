@@ -1,13 +1,14 @@
+using FactionColonies.util;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using HarmonyLib;
-using RimWorld;
 using UnityEngine;
 using Verse;
-using LudeonTK;
 
 namespace FactionColonies
 {
@@ -217,7 +218,7 @@ namespace FactionColonies
             };
             if (!Find.World.GetComponent<FactionFC>().raceFilter.Allows(pawnKind.race))
             {
-                unit.pawnKind = FactionColonies.getPlayerColonyFaction().RandomPawnKind();
+                unit.pawnKind = ColonyUtil.getPlayerColonyFaction().RandomPawnKind();
             }
             unit.defaultPawn.genes.SetXenotype(xenotype);
             unit.generateDefaultPawn();

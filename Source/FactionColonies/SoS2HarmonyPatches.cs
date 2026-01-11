@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
-using UnityEngine;
-using Verse;
-using System.Reflection;
 using RimWorld.Planet;
 using RimWorld.QuestGen;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using Verse;
 
 namespace FactionColonies
 {
@@ -57,8 +58,8 @@ namespace FactionColonies
         {
             //List<Faction> finalList = new List<Faction>();
 
-            Type typ = FactionColonies.returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
-            Type typ2 = FactionColonies.returnUnknownTypeFromName("SaveOurShip2.WorldFactionList");
+            Type typ = GenUtil.returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
+            Type typ2 = GenUtil.returnUnknownTypeFromName("SaveOurShip2.WorldFactionList");
 
             // Check if SoS2 classes were found
             if (typ == null || typ2 == null)
@@ -104,14 +105,14 @@ namespace FactionColonies
         public static void updateFactionOnPlanet()
         {
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-            Faction faction1 = FactionColonies.getPlayerColonyFaction();
+            Faction faction1 = ColonyUtil.getPlayerColonyFaction();
             //Log.Message((faction1 != null).ToString());
             if (faction1 == null && worldcomp.factionCreated == true)
             {
                 Log.Message("Moved to new planet - Adding faction copy");
                 //FactionColonies.createPlayerColonyFaction();
-                FactionColonies.copyPlayerColonyFaction();
-                faction1 = FactionColonies.getPlayerColonyFaction();
+                ColonyUtil.copyPlayerColonyFaction();
+                faction1 = ColonyUtil.getPlayerColonyFaction();
             }
             //Log.Message(((bool)(faction1 != null)).ToString());
             foreach (Faction factionOther in Find.FactionManager.AllFactionsListForReading)
@@ -148,7 +149,7 @@ namespace FactionColonies
             //FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
             if (worldcomp != null && worldcomp.planetName != null && worldcomp.planetName != Find.World.info.name && Find.TickManager.TicksGame > 60000)
             {
-                Faction faction1 = FactionColonies.getPlayerColonyFaction();
+                Faction faction1 = ColonyUtil.getPlayerColonyFaction();
                 updateFactionOnPlanet();
 
                 if (worldcomp.SoSMoving == true)
@@ -189,8 +190,8 @@ namespace FactionColonies
         public static void Patch(Harmony harmony)
         {
 
-            Type typ = FactionColonies.returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
-            Type typ2 = FactionColonies.returnUnknownTypeFromName("SaveOurShip2.FixOutdoorTemp");
+            Type typ = GenUtil.returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
+            Type typ2 = GenUtil.returnUnknownTypeFromName("SaveOurShip2.FixOutdoorTemp");
 
             // Debug: List all available SoS2 classes
             if (typ == null || typ2 == null)

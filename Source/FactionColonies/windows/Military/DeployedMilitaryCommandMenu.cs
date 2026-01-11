@@ -142,7 +142,7 @@ namespace FactionColonies
 
             try
             {
-                foreach (Pawn pawn in Find.CurrentMap.mapPawns.SpawnedPawnsInFaction(FactionColonies.getPlayerColonyFaction()))
+                foreach (Pawn pawn in Find.CurrentMap.mapPawns.SpawnedPawnsInFaction(ColonyUtil.getPlayerColonyFaction()))
                 {
                     pawn.Destroy();
                 }

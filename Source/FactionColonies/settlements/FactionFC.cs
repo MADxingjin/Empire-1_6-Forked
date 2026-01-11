@@ -359,7 +359,7 @@ namespace FactionColonies
                         foreach (Pawn pawn in selected)
                         {
                             //disappear colonist
-                            FactionColonies.sendPrisoner(pawn, settlement);
+                            TravelUtil.sendPrisoner(pawn, settlement);
 
                             foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
                                 map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
@@ -498,7 +498,7 @@ namespace FactionColonies
 
                 roadBuilder.FirstTick();
 
-                Faction FCf = FactionColonies.getPlayerColonyFaction();
+                Faction FCf = ColonyUtil.getPlayerColonyFaction();
                 if (FCf != null)
                 {
                     FCf.def.techLevel = TechLevel.Undefined;
@@ -521,7 +521,7 @@ namespace FactionColonies
 
 
             //If Player Colony Faction does exists
-            Faction faction = FactionColonies.getPlayerColonyFaction();
+            Faction faction = ColonyUtil.getPlayerColonyFaction();
             if (faction != null)
             {
                 roadBuilder.RoadTick();
@@ -618,7 +618,7 @@ namespace FactionColonies
                 worker.def = IncidentDefOf.TraderCaravanArrival;
                 IncidentParms parms =
                     StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, returnCapitalMap());
-                parms.faction = FactionColonies.getPlayerColonyFaction();
+                parms.faction = ColonyUtil.getPlayerColonyFaction();
                 RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
                     CellFinder.EdgeRoadChance_Friendly);
                 parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
@@ -780,7 +780,7 @@ namespace FactionColonies
 
         public void updateFactionRaces()
         {
-            Faction faction = FactionColonies.getPlayerColonyFaction();
+            Faction faction = ColonyUtil.getPlayerColonyFaction();
             // TODO updateFactionRaces()
         }
 
@@ -863,7 +863,7 @@ namespace FactionColonies
             //update to player colony faction
             updateFaction();
 
-            Faction playerColonyfaction = FactionColonies.getPlayerColonyFaction();
+            Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
             {
                 Log.Message("Updating Tech Level");
@@ -1092,10 +1092,10 @@ namespace FactionColonies
             averageProsperity = averageProsperityTmp;
 
 
-            if (settlements.Any() && FactionColonies.getPlayerColonyFaction() != null)
+            if (settlements.Any() && ColonyUtil.getPlayerColonyFaction() != null)
             {
-                FactionColonies.getPlayerColonyFaction().TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
-                    (Convert.ToInt32(averageHappiness) - FactionColonies.getPlayerColonyFaction().PlayerGoodwill));
+                ColonyUtil.getPlayerColonyFaction().TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
+                    (Convert.ToInt32(averageHappiness) - ColonyUtil.getPlayerColonyFaction().PlayerGoodwill));
             }
         }
 
@@ -1280,7 +1280,7 @@ namespace FactionColonies
                                         settlement.totalUpkeep) + settlement.returnSilverIncome(true);
                     Bills.Add(bill);
 
-                    FactionColonies.GetTownTitle(settlement);
+                    TextUtil.GetTownTitle(settlement);
                     TaxTickPrisoner(settlement);
                 }
 
