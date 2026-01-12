@@ -20,7 +20,7 @@ namespace FactionColonies
                     {
                         if (squad.settlement != null)
                         {
-                            if (FactionColonies.Settings().deadPawnsIncreaseMilitaryCooldown)
+                            if (FCSettings.deadPawnsIncreaseMilitaryCooldown)
                             {
                                 squad.dead += 1;
                             }

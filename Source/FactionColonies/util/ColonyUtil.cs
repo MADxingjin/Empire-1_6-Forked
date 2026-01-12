@@ -47,7 +47,7 @@ namespace FactionColonies.util
             }
 
             //Log.Message("Colony is being created");
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
+            Faction faction = getPlayerColonyFaction();
 
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
             if (!worldcomp.settlements.Any())
@@ -256,7 +256,7 @@ namespace FactionColonies.util
             //Find.FactionManager.Add(faction);
 
             //check if SoS2 is enabled
-            if (FactionColonies.IsModLoaded("kentington.saveourship2"))
+            if (FCSettings.IsModLoaded("kentington.saveourship2"))
             {
                 Log.Message("SoS2 running - planet changed");
                 //SoS2 is loaded

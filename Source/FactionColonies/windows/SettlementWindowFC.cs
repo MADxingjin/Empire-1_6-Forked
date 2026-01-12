@@ -49,7 +49,7 @@ namespace FactionColonies
         {
             if (uiUpdateTimer == 0)
             {
-                uiUpdateTimer = FactionColonies.updateUiTimer;
+                uiUpdateTimer = FCSettings.updateUiTimer;
                 windowUpdateFc();
             }
             else
@@ -302,8 +302,7 @@ namespace FactionColonies
 
                 //Est Income
                 Widgets.Label(new Rect(x + 365, rectY, 45, 40),
-                    (TextUtil.FloorStat(resource.endProduction * LoadedModManager
-                        .GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().silverPerResource)));
+                    (TextUtil.FloorStat(resource.endProduction * FCSettings.silverPerResource)));
 
                 //Tithe Percentage
                 resource.returnTaxPercentage();

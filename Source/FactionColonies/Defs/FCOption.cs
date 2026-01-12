@@ -66,7 +66,7 @@ namespace FactionColonies
 
 		public FCOptionWindow(FCEventDef evt, FCEvent parentEvent)
 		{
-			this.forcePause = !FactionColonies.Settings().disableForcedPausingDuringEvents;
+			this.forcePause = !FCSettings.disableForcedPausingDuringEvents;
 			this.draggable = true;
 			this.doCloseX = false;
 			this.preventCameraMotion = false;

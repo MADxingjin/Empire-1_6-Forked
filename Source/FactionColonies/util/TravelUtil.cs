@@ -17,7 +17,7 @@ namespace FactionColonies
             Log.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
 
             bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
-            bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().medievalTechOnly;
+            bool medievalOnly = FCSettings.medievalTechOnly;
             bool podsResearched = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false;
 
             if (!medievalOnly)

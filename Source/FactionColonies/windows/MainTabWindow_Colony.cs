@@ -139,7 +139,7 @@ namespace FactionColonies
         {
             if (UIUpdateTimer < Find.TickManager.TicksAbs)
             {
-                UIUpdateTimer = Find.TickManager.TicksAbs + FactionColonies.updateUiTimer;
+                UIUpdateTimer = Find.TickManager.TicksAbs + FCSettings.updateUiTimer;
                 WindowUpdateFC();
             }
         }

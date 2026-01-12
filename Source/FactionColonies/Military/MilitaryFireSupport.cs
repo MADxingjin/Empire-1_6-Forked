@@ -178,7 +178,7 @@ namespace FactionColonies
                     IntVec3 spawnCenter = SemiRandomSpawnCenter;
                     LocalTargetInfo info = new LocalTargetInfo(spawnCenter);
                     ThingDef def = new ThingDef();
-                    if (FactionColonies.IsModLoaded("CETeam.CombatExtended")) 
+                    if (FCSettings.IsModLoaded("CETeam.CombatExtended")) 
                     {
                         DoCombatExtendedLaunch(spawnCenter, def);
                     }

@@ -93,7 +93,7 @@ namespace FactionColonies
             icon = TexLoad.iconMilitary,
             action = delegate
             {
-                if (FactionColonies.Settings().settlementsAutoBattle)
+                if (FCSettings.settlementsAutoBattle)
                     Messages.Message("autoBattleEnabledNoManualFight".Translate(), MessageTypeDefOf.RejectInput);
                 else
                     startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(settlement.mapLocation), () => { });
@@ -503,7 +503,7 @@ namespace FactionColonies
 
         public void startDefence(FCEvent evt, Action after)
         {
-            if (FactionColonies.Settings().settlementsAutoBattle)
+            if (FCSettings.settlementsAutoBattle)
             {
                 var won = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending) == 1;
                 endBattle(won, (int) evt.militaryForceDefending.forceRemaining);

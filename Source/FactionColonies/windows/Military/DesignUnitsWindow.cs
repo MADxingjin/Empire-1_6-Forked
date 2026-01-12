@@ -218,7 +218,7 @@ namespace FactionColonies
                     if (def.race == ThingDefOf.Human && def.LabelCap != "Colonist") continue;
                     races.Add(def.race.label);
 
-                    string optionStr = def.race.label.CapitalizeFirst() + " - Cost: " + Math.Floor(def.race.BaseMarketValue * FactionColonies.militaryRaceCostMultiplier);
+                    string optionStr = def.race.label.CapitalizeFirst() + " - Cost: " + Math.Floor(def.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
                     options.Add(new FloatMenuOption(optionStr, delegate
                     {
                         selectedUnit.pawnKind = def;
@@ -305,7 +305,7 @@ namespace FactionColonies
                                                   where animal.IsAnimalAndAllowed()
                                                   select new FloatMenuOption(animal.LabelCap + " - Cost: " +
                                                                              Math.Floor(animal.race.BaseMarketValue *
-                                                                                        FactionColonies.militaryAnimalCostMultiplier),
+                                                                                        FCSettings.militaryAnimalCostMultiplier),
                                                       delegate
                                                       {
                                                           //Do add animal code here
@@ -841,7 +841,7 @@ namespace FactionColonies
                 int i = 0;
 
                 totalCost += (float)Math.Floor(selectedUnit.defaultPawn.def.BaseMarketValue *
-                                                FactionColonies.militaryRaceCostMultiplier);
+                                                FCSettings.militaryRaceCostMultiplier);
 
                 foreach (Thing thing in selectedUnit.defaultPawn.apparel.WornApparel.Concat(selectedUnit.defaultPawn
                     .equipment.AllEquipmentListForReading))
@@ -864,7 +864,7 @@ namespace FactionColonies
                 {
                     Widgets.ButtonImage(AnimalCompanion, selectedUnit.animal.race.uiIcon);
                     totalCost += (float)Math.Floor(selectedUnit.animal.race.BaseMarketValue *
-                                                    FactionColonies.militaryAnimalCostMultiplier);
+                                                    FCSettings.militaryAnimalCostMultiplier);
                 }
 
                 foreach (Thing thing in selectedUnit.defaultPawn.apparel.WornApparel)

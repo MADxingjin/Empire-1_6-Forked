@@ -22,7 +22,7 @@ namespace FactionColonies
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
 
-        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.traits, Operation.Multiplication) * (FactionColonies.silverToCreateSettlement + (500 * (faction.settlements.Count() + faction.settlementCaravansList.Count())) + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.traits, Operation.Addition))));
+        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.traits, Operation.Multiplication) * (FCSettings.silverToCreateSettlement + (500 * (faction.settlements.Count() + faction.settlementCaravansList.Count())) + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.traits, Operation.Addition))));
 
         public CreateColonyWindowFc()
         {

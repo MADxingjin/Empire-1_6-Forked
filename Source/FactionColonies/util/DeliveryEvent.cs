@@ -49,7 +49,7 @@ namespace FactionColonies.util
 		{
 			try
 			{
-				var notificationMode = FactionColonies.Settings().taxNotificationMode;
+				var notificationMode = FCSettings.taxNotificationMode;
 				bool showLetter = notificationMode == TaxNotificationMode.All || notificationMode == TaxNotificationMode.LetterOnly;
 				bool showMessage = notificationMode == TaxNotificationMode.All || notificationMode == TaxNotificationMode.MessageOnly;
 
@@ -462,9 +462,9 @@ namespace FactionColonies.util
 				return TaxDeliveryMode.DropPod;
 			}
 			
-			if (FactionColonies.Settings().forcedTaxDeliveryMode != default)
+			if (FCSettings.forcedTaxDeliveryMode != default)
 			{
-				return FactionColonies.Settings().forcedTaxDeliveryMode;
+				return FCSettings.forcedTaxDeliveryMode;
 			}
 
 			if (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod").IsFinished)

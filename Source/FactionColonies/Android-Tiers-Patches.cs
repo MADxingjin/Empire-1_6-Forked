@@ -100,7 +100,7 @@ namespace FactionColonies
                     }
                     catch (NullReferenceException e)
                     {
-                        Log.Message("Empire - Error trying to generate leader for " + faction.Name);
+                        Log.Message($"Empire - Received the following error when trying to generate leader for {faction.Name}: {e.Message}");
                     }
                     //Log.Message("Generated new leader for " + faction.Name);
                 }

@@ -33,10 +33,10 @@ namespace FactionColonies
             preventCameraMotion = false;
             header = "UpgradeSettlement".Translate();
             this.settlement = settlement;
-            settlementUpgradeCost = Convert.ToInt32(LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().settlementBaseUpgradeCost) + (settlement.settlementLevel * 1000);
+            settlementUpgradeCost = Convert.ToInt32(FCSettings.settlementBaseUpgradeCost) + (settlement.settlementLevel * 1000);
             desc = settlement.name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
             factionfc = Find.World.GetComponent<FactionFC>();
-            maxSettlementLevel = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().settlementMaxLevel;
+            maxSettlementLevel = FCSettings.settlementMaxLevel;
         }
 
         /// <summary>

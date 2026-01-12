@@ -449,14 +449,15 @@ namespace FactionColonies
 
             harmony.PatchAll();
 
-            if (FactionColonies.IsModLoaded("kentington.saveourship2"))
+            if (FCSettings.IsModLoaded("kentington.saveourship2"))
             {
                 Log.Message("Starting SoS2 patch...");
                 SoS2HarmonyPatches.Patch(harmony);
             }
 
-            if (FactionColonies.IsModLoaded("Krkr.AndroidTiers") || FactionColonies.IsModLoaded("Atlas.AndroidTiers"))
+            if (FCSettings.IsModLoaded("Krkr.AndroidTiers") || FCSettings.IsModLoaded("Atlas.AndroidTiers"))
             {
+                //TODO: do we still need this patch?
                 //Android_Tiers_Patches.Patch(harmony);
             }
 
@@ -490,7 +491,7 @@ namespace FactionColonies
             if (firstTick)
             {
                 //Log.Message("First Tick");
-                FactionColonies.UpdateChanges();
+                FCSettings.UpdateChanges();
                 if (planetName.NullOrEmpty())
                 {
                     planetName = Find.World.info.name;
@@ -713,55 +714,9 @@ namespace FactionColonies
 
 
         public void setStartTime()
-        {
-            var settings = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>();
-            int timeBetweenTaxes = settings.timeBetweenTaxes;
-            
-            // Safety check: ensure timeBetweenTaxes is at least 1 day
-            if (timeBetweenTaxes <= 0)
-            {
-                // Restore based on current difficulty level, not always to 1 day
-                int correctValue = GetTimeBetweenTaxesForDifficulty(settings.difficultyLevel);
-                Log.Warning($"Empire Mod - setStartTime: timeBetweenTaxes was {timeBetweenTaxes}, restoring to difficulty preset ({settings.difficultyLevel} = {correctValue / 60000} days)");
-                timeBetweenTaxes = correctValue;
-                
-                // Fix the corrupted setting
-                try
-                {
-                    settings.timeBetweenTaxes = correctValue;
-                    Log.Message($"Empire Mod - setStartTime: Fixed corrupted timeBetweenTaxes setting to {correctValue / 60000} days");
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Empire Mod - setStartTime: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
-                }
-            }
-            
-            taxTimeDue = Find.TickManager.TicksGame + timeBetweenTaxes;
+        {   
+            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
             dailyTimer = Find.TickManager.TicksGame + 2000;
-        }
-        
-        // Helper method to get the correct timeBetweenTaxes for a difficulty level
-        private static int GetTimeBetweenTaxesForDifficulty(EmpireDifficultyLevel difficulty)
-        {
-            switch (difficulty)
-            {
-                case EmpireDifficultyLevel.Peaceful:
-                    return 2 * 60000; // 2 days in ticks
-                case EmpireDifficultyLevel.CommunityBuilder:
-                    return 5 * 60000; // 5 days in ticks
-                case EmpireDifficultyLevel.AdventureStory:
-                    return 5 * 60000; // 5 days in ticks
-                case EmpireDifficultyLevel.StriveToSurvive:
-                    return 10 * 60000; // 10 days in ticks
-                case EmpireDifficultyLevel.BloodAndDust:
-                    return 15 * 60000; // 15 days in ticks
-                case EmpireDifficultyLevel.LosingIsFun:
-                    return 30 * 60000; // 30 days in ticks
-                case EmpireDifficultyLevel.Custom:
-                default:
-                    return 5 * 60000; // 5 days fallback for Custom or unknown
-            }
         }
 
         public int returnHighestMilitaryLevel()
@@ -805,8 +760,7 @@ namespace FactionColonies
 
         public void updateTechLevel(ResearchManager researchManager)
         {
-            bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>()
-                .medievalTechOnly;
+            bool medievalOnly = FCSettings.medievalTechOnly;
 
 
             if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false) != null &&
@@ -939,7 +893,7 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
                     break;
                 case TechLevel.Medieval:
-                    if (FactionColonies.IsModLoaded("OskarPotocki.VanillaFactionsExpanded.MedievalModule"))
+                    if (FCSettings.IsModLoaded("OskarPotocki.VanillaFactionsExpanded.MedievalModule"))
                     {
                         replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("VFEM_KingdomCivil");
                     }
@@ -1567,33 +1521,8 @@ namespace FactionColonies
                         addTax(false);
                         //NOT WHERE FINAL UPDATE IS. Go to addTax Function
                     }
-                    // This prevents issues when settings get corrupted during performance problems
-
-                    var settings = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>();
-                    int timeBetweenTaxes = settings.timeBetweenTaxes;
-                    // Log.Message($"Empire Mod - TaxTick: Using timeBetweenTaxes: {timeBetweenTaxes} ticks ({timeBetweenTaxes / 60000} days)");
                     
-                    // Safety check: ensure timeBetweenTaxes is at least 1 day
-                    if (timeBetweenTaxes <= 0)
-                    {
-                        // Restore based on current difficulty level, not always to 1 day
-                        int correctValue = GetTimeBetweenTaxesForDifficulty(settings.difficultyLevel);
-                        Log.Warning($"Empire Mod - TaxTick: timeBetweenTaxes was {timeBetweenTaxes}, restoring to difficulty preset ({settings.difficultyLevel} = {correctValue / 60000} days)");
-                        timeBetweenTaxes = correctValue;
-                        
-                        // Fix the corrupted setting to prevent future issues
-                        try
-                        {
-                            settings.timeBetweenTaxes = correctValue;
-                            Log.Message($"Empire Mod - TaxTick: Fixed corrupted timeBetweenTaxes setting to {correctValue / 60000} days");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error("Empire Mod - TaxTick: Failed to fix corrupted timeBetweenTaxes setting: " + ex.Message);
-                        }
-                    }
-                    
-                    taxTimeDue += timeBetweenTaxes;
+                    taxTimeDue += FCSettings.timeBetweenTaxes;
                     //Log.Message(Find.TickManager.TicksGame + " vs " + taxTimeDue + " - Taxing");
                 }
                 
@@ -1645,9 +1574,9 @@ namespace FactionColonies
             traitMercantileTradeCaravanTickDue = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
         }
 
-        private bool CanMakeRandomEventNow() => Rand.Chance((randomEventLastAdded - LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().minDaysTillRandomEvent) / (LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().maxDaysTillRandomEvent - LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().minDaysTillRandomEvent));
+        private bool CanMakeRandomEventNow() => Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
 
-        private bool RandomEventsDisabledOrNoSettlements() => Find.World.GetComponent<FactionFC>().settlements.Count == 0 || FactionColonies.Settings().disableRandomEvents;
+        private bool RandomEventsDisabledOrNoSettlements() => Find.World.GetComponent<FactionFC>().settlements.Count == 0 || FCSettings.disableRandomEvents;
 
         private void MakeRandomEvent()
         {
@@ -1717,8 +1646,7 @@ namespace FactionColonies
         {
             if (Find.TickManager.TicksGame >= militaryTimeDue)
             {
-                if (LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>()
-                        .disableHostileMilitaryActions == false &
+                if (FCSettings.disableHostileMilitaryActions == false &
                     Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
                 {
                     //if military actions not disabled or game has not passed through the first season
@@ -1796,8 +1724,7 @@ namespace FactionColonies
                     }
                 }
 
-                militaryTimeDue = Find.TickManager.TicksGame + (60000 * LoadedModManager.GetMod<FactionColoniesMod>()
-                    .GetSettings<FactionColonies>().minMaxDaysTillMilitaryAction.RandomInRange);
+                militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * FCSettings.minMaxDaysTillMilitaryAction.RandomInRange);
                 //Log.Message(militaryTimeDue + " - " + Find.TickManager.TicksGame);
                 //Log.Message((militaryTimeDue - Find.TickManager.TicksGame) / 60000 + " days till next military action");
                 //militaryTimeDue =
@@ -1809,7 +1736,7 @@ namespace FactionColonies
         {
             if (uiTimeUpdate <= 0) //update per time?
             {
-                uiTimeUpdate = FactionColonies.updateUiTimer;
+                uiTimeUpdate = FCSettings.updateUiTimer;
 
                 //already built in ui update -.-
                 Find.WindowStack.WindowsUpdate();

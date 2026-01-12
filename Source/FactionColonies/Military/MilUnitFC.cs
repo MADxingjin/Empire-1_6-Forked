@@ -342,7 +342,7 @@ namespace FactionColonies
             else
             {
                 double totalCost = 0;
-                totalCost += Math.Floor(defaultPawn.def.BaseMarketValue * FactionColonies.militaryRaceCostMultiplier);
+                totalCost += Math.Floor(defaultPawn.def.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
 
                 totalCost = defaultPawn.apparel.WornApparel.Aggregate(totalCost,
                     (current, thing) => current + thing.MarketValue);
@@ -352,7 +352,7 @@ namespace FactionColonies
 
                 if (animal != null)
                 {
-                    totalCost += Math.Floor(animal.race.BaseMarketValue * FactionColonies.militaryAnimalCostMultiplier);
+                    totalCost += Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier);
                 }
 
                 equipmentTotalCost = Math.Ceiling(totalCost);

@@ -182,10 +182,8 @@ namespace FactionColonies
                                             Find.WindowStack.currentlyDrawnWindow.Close();
                                         }));
                                         //check if medieval only
-                                        bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>()
-                                            .GetSettings<FactionColonies>().medievalTechOnly;
-                                        if (!medievalOnly && (DefDatabase<ResearchProjectDef>
-                                            .GetNamed("TransportPod", false)?.IsFinished ?? false))
+                                        if (!FCSettings.medievalTechOnly &&
+                                            (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
                                         {
                                             deploymentOptions.Add(new FloatMenuOption("Drop-Pod", delegate
                                             {
@@ -326,8 +324,7 @@ namespace FactionColonies
 
         private FloatMenuOption DropPodDeploymentOption(SettlementFC settlement)
         {
-            bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>()
-                .medievalTechOnly;
+            bool medievalOnly = FCSettings.medievalTechOnly;
             if (!medievalOnly && (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
             {
                 return new FloatMenuOption("dropPodDeploymentOption".Translate(),
