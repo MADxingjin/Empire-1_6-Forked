@@ -76,7 +76,7 @@ namespace FactionColonies.util
 			} 
 			catch
 			{
-				Log.ErrorOnce("MakeDeliveryLetterAndMessage failed to attach targets to the message", 908347458);
+				LogUtil.ErrorOnce("MakeDeliveryLetterAndMessage failed to attach targets to the message", 908347458);
 			}
 		}
 
@@ -211,13 +211,13 @@ namespace FactionColonies.util
 								deliveryPawn = PawnGenerator.GeneratePawn(request);
 								if (deliveryPawn != null)
 								{
-									// Log.Message($"Empire: Successfully generated delivery pawn with xenotype: {xenotype.label}");
+									LogUtil.Message($"Successfully generated delivery pawn with xenotype: {xenotype.label}");
 									break;
 								}
 							}
 							catch (Exception ex)
 							{
-								Log.Warning($"Empire: Failed to generate pawn with xenotype {xenotype.label}: {ex.Message}");
+								LogUtil.Warning($"Failed to generate pawn with xenotype {xenotype.label}: {ex.Message}");
 								continue;
 							}
 						}
@@ -226,14 +226,14 @@ namespace FactionColonies.util
 					// If no xenotype worked, try a simple civilian request
 					if (deliveryPawn == null)
 					{
-						Log.Warning("Empire: Failed to generate pawn with allowed xenotypes, trying simple civilian request");
+						LogUtil.Warning("Failed to generate pawn with allowed xenotypes, trying simple civilian request");
 						deliveryPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.SimpleDeliveryRequest());
 					}
 					
 					// If still no pawn, fall back to animals (like wolves)
 					if (deliveryPawn == null)
 					{
-						Log.Warning("Empire: Failed to generate human pawn, falling back to animals");
+						LogUtil.Warning("Failed to generate human pawn, falling back to animals");
 						var availableAnimals = DefDatabase<PawnKindDef>.AllDefsListForReading
 							.Where(def => def.race.race.Animal && 
 										def.RaceProps.trainability != null && 
@@ -255,7 +255,7 @@ namespace FactionColonies.util
 					
 					if (deliveryPawn == null)
 					{
-						Log.Error("Empire: Could not generate any pawn for delivery, skipping item");
+						LogUtil.Error("Could not generate any pawn for delivery, skipping item");
 						evt.goods.RemoveAt(0); // Remove the item we can't deliver
 						continue;
 					}
@@ -271,18 +271,18 @@ namespace FactionColonies.util
 				}
 				catch (Exception ex)
 				{
-					Log.Error($"Empire: Error generating pawn for delivery: {ex.Message}");
+					LogUtil.Error($"Error generating pawn for delivery: {ex.Message}");
 					evt.goods.RemoveAt(0); // Remove the problematic item
 				}
 			}
 			
 			if (attempts >= maxAttempts)
 			{
-				Log.Warning("Empire: Reached maximum attempts for generating delivery pawns, some items may not be delivered");
+				LogUtil.Warning("Reached maximum attempts for generating delivery pawns, some items may not be delivered");
 			}
 			
 			// Always add at least one guard animal for protection, plus extra if caravan is small
-			Log.Message("Empire: Adding guard animals for delivery caravan protection");
+			LogUtil.Message("Adding guard animals for delivery caravan protection");
 			
 			// Add extra capable pawns using allowed xenotypes if caravan is small
 			if (pawns.Count < 3)
@@ -353,7 +353,7 @@ namespace FactionColonies.util
 					}
 					catch (Exception ex)
 					{
-						Log.Warning($"Empire: Failed to spawn extra pawn: {ex.Message}");
+						LogUtil.Warning($"Failed to spawn extra pawn: {ex.Message}");
 					}
 				}
 			}
@@ -378,7 +378,7 @@ namespace FactionColonies.util
 			var availableGuardAnimals = guardAnimals.ToList();
 			if (availableGuardAnimals.Any())
 			{
-				// Log.Message($"Empire: Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
+				LogUtil.Message($"Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
 			}
 
 			int guardsAdded = 0;
@@ -391,13 +391,13 @@ namespace FactionColonies.util
 					{
 						securityGuards.Add(guard);
 						guardsAdded++;
-						// Log.Message($"Empire: Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
+						LogUtil.Message($"Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
 						if (guardsAdded >= 2) break; // Always add at least 2 guards
 					}
 				}
 				catch (Exception ex)
 				{
-					Log.Warning($"Empire: Failed to spawn security guard {guardAnimal.label}: {ex.Message}");
+					LogUtil.Warning($"Failed to spawn security guard {guardAnimal.label}: {ex.Message}");
 				}
 			}
 
@@ -502,7 +502,7 @@ namespace FactionColonies.util
 			} 
 			catch(Exception e)
 			{
-				Log.ErrorOnce("Critical delivery failure, spawning things on tax spot instead! Message: " + e.Message + " StackTrace: " + e.StackTrace + " Source: " + e.Source, 77239232);
+				LogUtil.ErrorOnce("Critical delivery failure, spawning things on tax spot instead! Message: " + e.Message + " StackTrace: " + e.StackTrace + " Source: " + e.Source, 77239232);
 				evt.goods.ForEach(thing => PaymentUtil.placeThing(thing));
 			}
 		}
