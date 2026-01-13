@@ -46,6 +46,10 @@ namespace FactionColonies
         {
             LogMessage(message, LogMessageType.Message);
         }
+        /// <summary>
+        /// Prints a non-warning, non-error message to the log even if the user has disabled Verbose Logging.
+        /// </summary>
+        /// <param name="message"></param>
         public static void MessageForce(string message)
         {
             LogMessage(message, LogMessageType.Message, true);
