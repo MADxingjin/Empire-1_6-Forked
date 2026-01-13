@@ -64,7 +64,7 @@ namespace FactionColonies
                 
                 if (squads == null) return;
                 
-                LogUtil.Message("MilitaryCustomizationUtil: checking for errors" + Find.TickManager.TicksGame);
+                LogUtil.Message("MilitaryCustomizationUtil: checking for errors on tick " + Find.TickManager.TicksGame);
                 foreach (MilSquadFC squad in squads)
                 {
                     if (squad?.units == null) continue;

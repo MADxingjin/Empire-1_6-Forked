@@ -169,10 +169,11 @@ namespace FactionColonies
             Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
+            Scribe_Values.Look(ref printDebug, "printDebug", false);
 
-            // Band aid - For existing users upgrading from old system, detect if they have custom values
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                // Band aid - For existing users upgrading from old system, detect if they have custom values
                 if (difficultyLevel == DEFAULT_DIFFICULTY_LEVEL)
                 {
                     // Check if current values match Adventure Story defaults

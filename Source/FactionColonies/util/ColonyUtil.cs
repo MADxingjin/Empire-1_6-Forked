@@ -349,6 +349,14 @@ namespace FactionColonies.util
                 {
                     LogUtil.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
                 }
+                else
+                {
+                    if (!Find.WorldPawns.Contains(faction.leader))
+                    {
+                        Find.WorldPawns.PassToWorld(faction.leader, PawnDiscardDecideMode.KeepForever);
+                    }
+                    LogUtil.Message($"Created pawn {faction.leader.Name} ({faction.leader.ThingID}) to lead faction {faction.Name}");
+                }
             }
             worldcomp.factionBackup = faction;
             Find.FactionManager.Add(faction);
