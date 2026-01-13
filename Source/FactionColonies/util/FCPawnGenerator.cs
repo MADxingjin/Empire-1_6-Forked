@@ -135,7 +135,7 @@ namespace FactionColonies.util
 				}
 				catch (Exception ex)
 				{
-					Log.Warning($"Empire: Failed to get pawn kind from player faction: {ex.Message}");
+					LogUtil.Warning($"Failed to get pawn kind from player faction: {ex.Message}");
 				}
 				
 				// Fallback to default colonist if still null
@@ -179,7 +179,7 @@ namespace FactionColonies.util
 			}
 			catch (Exception ex)
 			{
-				Log.Warning($"Empire: Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
+				LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
 				fixedAge = null; // Let the game decide the age
 			}
 			
@@ -227,7 +227,7 @@ namespace FactionColonies.util
 				}
 				catch (Exception ex)
 				{
-					Log.Warning($"Empire: Failed to get pawn kind from player faction: {ex.Message}");
+					LogUtil.Warning($"Failed to get pawn kind from player faction: {ex.Message}");
 				}
 				
 				// Fallback to default colonist if still null
@@ -269,7 +269,7 @@ namespace FactionColonies.util
 			}
 			catch (Exception ex)
 			{
-				Log.Warning($"Empire: Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
+				LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
 				fixedAge = null; // Let the game decide the age
 			}
 			

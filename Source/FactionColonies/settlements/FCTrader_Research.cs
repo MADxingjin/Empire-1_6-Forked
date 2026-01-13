@@ -55,7 +55,7 @@ namespace FactionColonies
         {
             Thing thing = toGive.SplitOff(countToGive);
 
-            Log.Message(thing.MarketValue + " added to research pool");
+            LogUtil.Message(thing.MarketValue + " added to research pool");
             factionfc.researchPointPool += thing.MarketValue;
             factionfc.tradedAmount += thing.MarketValue;
             thing.Destroy(DestroyMode.Vanish);

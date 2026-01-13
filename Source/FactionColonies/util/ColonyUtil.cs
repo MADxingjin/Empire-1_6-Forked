@@ -32,21 +32,18 @@ namespace FactionColonies.util
         //<DevAdd>   Create new seperate function to create a faction
         public static WorldSettlementFC createPlayerColonySettlement(int tile, bool createWorldObject, string planetName)
         {
-            //Log.Message("boop");
             StringBuilder reason = new StringBuilder();
             if (!TileFinder.IsValidTileForNewSettlement(tile, reason))
             {
-                //Log.Message("Invalid Tile");
+                LogUtil.Message("Tried to create player colony settlement on Invalid Tile");
                 //Alert Error to User
                 Messages.Message(reason.ToString(), MessageTypeDefOf.NegativeEvent);
 
 
                 return null;
-                //create alert with reason
-                //AlertsReadout alert = new AlertsReadout()
             }
 
-            //Log.Message("Colony is being created");
+            //LogUtil.Message("Colony is being created");
             Faction faction = getPlayerColonyFaction();
 
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
@@ -55,7 +52,7 @@ namespace FactionColonies.util
                 Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
             }
 
-            //Log.Message(faction.Name);
+            //LogUtil.Message(faction.Name);
 
             SettlementFC settlementfc;
             WorldSettlementFC settlement = null;
@@ -112,7 +109,7 @@ namespace FactionColonies.util
                 LetterDefOf.PositiveEvent);
 
             //Example to grab settlement data from FC
-            //Log.Message(settlementfc.ReturnFCSettlement().Name.ToString());
+            //LogUtil.Message(settlementfc.ReturnFCSettlement().Name.ToString());
 
 
             return settlement;
@@ -251,14 +248,14 @@ namespace FactionColonies.util
             //faction.GenerateNewLeader();
             faction.TryGenerateNewLeader();
 
-            //Log.Message(Find.FactionManager.AllFactions.Contains(faction).ToString());
+            //LogUtil.Message(Find.FactionManager.AllFactions.Contains(faction).ToString());
 
             //Find.FactionManager.Add(faction);
 
             //check if SoS2 is enabled
             if (FCSettings.IsModLoaded("kentington.saveourship2"))
             {
-                Log.Message("SoS2 running - planet changed");
+                LogUtil.MessageForce("SoS2 running - planet changed");
                 //SoS2 is loaded
 
                 Type typ = GenUtil.returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
@@ -268,7 +265,7 @@ namespace FactionColonies.util
                 // Preview debug - Remove once confirmed ok!
                 if (typ == null || typ2 == null)
                 {
-                    Log.Warning("Empire - SoS2 compatibility: Could not find required SoS2 classes. SoS2 may not be loaded or has a different version.");
+                    LogUtil.Warning("SoS2 compatibility: Could not find required SoS2 classes. SoS2 may not be loaded or has a different version.");
                 }
                 else
                 {
@@ -285,12 +282,12 @@ namespace FactionColonies.util
                         List<String> modifiedlist = (List<String>)list;
                         modifiedlist.Add(faction.GetUniqueLoadID());
                         factionlist.Field("myFactions").SetValue(modifiedlist);
-                        //Log.Message("Added faction to world list");
+                        //LogUtil.Message("Added faction to world list");
                         // Preview debug - Remove once confirmed ok!
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning("Empire - SoS2 compatibility: Error adding faction to SoS2 world list: " + ex.Message);
+                        LogUtil.Warning("SoS2 compatibility: Error adding faction to SoS2 world list: " + ex.Message);
                     }
                 }
 
@@ -311,14 +308,14 @@ namespace FactionColonies.util
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
             if (worldcomp == null)
             {
-                Log.Error("FactionFC world component is missing! Cannot create player colony faction.");
+                LogUtil.Error("FactionFC world component is missing! Cannot create player colony faction.");
                 return null;
             }
-            //Log.Message("Creating new faction");
+            //LogUtil.Message("Creating new faction");
             //Set start time for world component to start tracking your faction;
             worldcomp.setCapital();
 
-            //Log.Message("Faction is being created");
+            //LogUtil.Message("Faction is being created");
             FactionDef facDef = DefDatabase<FactionDef>.GetNamed("PColony");
             Faction faction = new Faction
             {
@@ -342,7 +339,7 @@ namespace FactionColonies.util
             // Generate Leader
             if (!faction.TryGenerateNewLeader())
             {
-                Log.Message("Generating Leader failed! Manually Generating . . .");
+                LogUtil.Message("Generating Leader failed! Manually Generating . . .");
                 faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
                 faction: faction, context: PawnGenerationContext.NonPlayer,
                 forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
@@ -350,7 +347,7 @@ namespace FactionColonies.util
                 forceAddFreeWarmLayerIfNeeded: false, worldPawnFactionDoesntMatter: false));
                 if (faction.leader == null)
                 {
-                    Log.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
+                    LogUtil.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
                 }
             }
             worldcomp.factionBackup = faction;
@@ -363,7 +360,7 @@ namespace FactionColonies.util
         public static void ChangePlayerColonyFaction(Faction faction)
         {
             faction = createPlayerColonyFaction();
-            Log.Message("Faction was updated - " + faction.Name);
+            LogUtil.Message("Faction was updated - " + faction.Name);
         }
     }
 }

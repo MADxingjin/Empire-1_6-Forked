@@ -163,7 +163,7 @@ namespace FactionColonies
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
 
-                        Log.Message(
+                        LogUtil.MessageForce(
                             "Unable to find a player-set tax map or a valid location for the capital. Please open the faction main menu tab and set the capital and tax map. Taxes were sent to the following random PlayerHomeMap " +
                             map.Parent.LabelCap);
                     }
@@ -172,7 +172,7 @@ namespace FactionColonies
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
 
-                        Log.Message(
+                        LogUtil.MessageForce(
                             "Unable to find a player-set tax map or a valid location for the capital. Please open the faction main menu tab and set the capital and tax map. Taxes were sent to the following random PlayerHomeMap " +
                             map.Parent.LabelCap);
                     }
@@ -328,7 +328,7 @@ namespace FactionColonies
             //Just in case null is saved somehow
             if (raceFilter == null)
             {
-                Log.Message("Null raceFilter detected - Recreating");
+                LogUtil.Message("Null raceFilter detected - Recreating");
                 raceFilter = new RaceThingFilter(this);
             }
             raceFilter.FinalizeInit(this);
@@ -336,7 +336,7 @@ namespace FactionColonies
             // Initialize xenotype filter
             if (xenotypeFilter == null)
             {
-                Log.Message("Null xenotypeFilter detected - Creating new one");
+                LogUtil.Message("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
             }
             xenotypeFilter.FinalizeInit(this);
@@ -451,7 +451,7 @@ namespace FactionColonies
 
             if (FCSettings.IsModLoaded("kentington.saveourship2"))
             {
-                Log.Message("Starting SoS2 patch...");
+                LogUtil.MessageForce("Starting SoS2 patch...");
                 SoS2HarmonyPatches.Patch(harmony);
             }
 
@@ -490,7 +490,6 @@ namespace FactionColonies
             base.WorldComponentTick();
             if (firstTick)
             {
-                //Log.Message("First Tick");
                 FCSettings.UpdateChanges();
                 if (planetName.NullOrEmpty())
                 {
@@ -534,7 +533,7 @@ namespace FactionColonies
             }
             else if (faction == null && settlements.Count() >= 0 && factionBackup != null)
             {
-                //Log.Message("Moved to new planet - Adding faction copy");
+                //LogUtil.Message("Moved to new planet - Adding faction copy");
                 //FactionColonies.createPlayerColonyFaction();
                 //FactionColonies.copyPlayerColonyFaction();
             }
@@ -547,13 +546,13 @@ namespace FactionColonies
                 factionUpdated = false;
             // }
             Reset:
-                //Log.Message("New planet-" + Find.World.info.name);
+                //LogUtil.Message("New planet-" + Find.World.info.name);
                 foreach (SettlementSoS2Info entry in createSettlementQueue)
                 {
-                    //Log.Message("key for create-" + entry.Key);
+                    //LogUtil.Message("key for create-" + entry.Key);
                     if (entry.planetName == Find.World.info.name)
                     {
-                        //Log.Message("Match");
+                        //LogUtil.Message("Match");
 
 
                         Settlement settlement =
@@ -573,9 +572,9 @@ namespace FactionColonies
             Reset2:
                 foreach (SettlementSoS2Info entry in deleteSettlementQueue)
                 {
-                    //Log.Message("key for destroy-" + entry.Key);
+                    //LogUtil.Message("key for destroy-" + entry.Key);
                     if (entry.planetName != Find.World.info.name) continue;
-                    //Log.Message("Match");
+                    //LogUtil.Message("Match");
                     Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(entry.location));
                     deleteSettlementQueue.Remove(entry);
                     goto Reset2;
@@ -626,7 +625,7 @@ namespace FactionColonies
                 if (parms.spawnCenter.IsValid)
                     worker.TryExecute(parms);
                 else
-                    Log.Message("Empire - Mercantile - Spawn Center not valid");
+                    LogUtil.Warning("Mercantile - Spawn Center not valid");
 
 
                 resetTraitMercantileCaravanTime();
@@ -649,7 +648,7 @@ namespace FactionColonies
         public int GetNextSettlementFCID()
         {
             nextSettlementFCID++;
-            //Log.Message("Returning next settlement FC ID " + nextSettlementFCID);
+            //LogUtil.Message("Returning next settlement FC ID " + nextSettlementFCID);
 
             return nextSettlementFCID;
         }
@@ -657,14 +656,14 @@ namespace FactionColonies
         public int GetNextMercenaryID()
         {
             nextMercenaryID++;
-            //Log.Message("Returning next mercenary ID " + nextMercenaryID);
+            //LogUtil.Message("Returning next mercenary ID " + nextMercenaryID);
             return nextMercenaryID;
         }
 
         public int GetNextMilitaryFireSupportID()
         {
             nextMilitaryFireSupportID++;
-            //Log.Message("Returning next MilitaryFireSupportID " + nextSquadID);
+            //LogUtil.Message("Returning next MilitaryFireSupportID " + nextSquadID);
 
             return nextMilitaryFireSupportID;
         }
@@ -672,7 +671,7 @@ namespace FactionColonies
         public int GetNextMercenarySquadID()
         {
             nextMercenarySquadID++;
-            //Log.Message("Returning next MercenarySquadID " + nextMercenarySquadID);
+            //LogUtil.Message("Returning next MercenarySquadID " + nextMercenarySquadID);
 
             return nextMercenarySquadID;
         }
@@ -769,7 +768,7 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Ultra;
                 factionDef.techLevel = TechLevel.Ultra;
-                Log.Message("Ultra");
+                LogUtil.Message("updateTechLevel: Ultra");
                 raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false) != null &&
@@ -779,7 +778,7 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Spacer;
                 factionDef.techLevel = TechLevel.Spacer;
-                Log.Message("Spacer");
+                LogUtil.Message("updateTechLevel: Spacer");
                 raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false) != null &&
@@ -789,7 +788,7 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Industrial;
                 factionDef.techLevel = TechLevel.Industrial;
-                Log.Message("Industrial");
+                LogUtil.Message("updateTechLevel: Industrial");
                 raceFilter.FinalizeInit(this);
             }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false) != null &&
@@ -799,7 +798,7 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Medieval;
                 factionDef.techLevel = TechLevel.Medieval;
-                Log.Message("Medieval");
+                LogUtil.Message("updateTechLevel: Medieval");
                 raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
             }
@@ -807,7 +806,7 @@ namespace FactionColonies
             {
                 if (techLevel < TechLevel.Neolithic)
                 {
-                    Log.Message("Neolithic");
+                    LogUtil.Message("updateTechLevel: Neolithic");
                     techLevel = TechLevel.Neolithic;
                     raceFilter.FinalizeInit(this);
                     xenotypeFilter.FinalizeInit(this);
@@ -820,12 +819,12 @@ namespace FactionColonies
             Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
             {
-                Log.Message("Updating Tech Level");
+                LogUtil.Message("Updating Tech Level");
                 updateFactionDef(techLevel, ref playerColonyfaction);
             }
             else if (playerColonyfaction.def.techLevel >= techLevel)
             {
-                //Log.Message("Tech Level already matches");
+                //LogUtil.Message("Tech Level already matches");
             }
             // Check Leader
             if (playerColonyfaction != null)
@@ -834,7 +833,7 @@ namespace FactionColonies
                 {
                     if (!playerColonyfaction.TryGenerateNewLeader())
                     {
-                        Log.Message("Generating Leader failed! Manually Generating . . .");
+                        LogUtil.Message("Generating Leader failed! Manually Generating . . .");
                         playerColonyfaction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
                         faction: playerColonyfaction, context: PawnGenerationContext.NonPlayer,
                         forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
@@ -842,7 +841,7 @@ namespace FactionColonies
                         forceAddFreeWarmLayerIfNeeded: false, worldPawnFactionDoesntMatter: false));
                         if (playerColonyfaction.leader == null)
                         {
-                            Log.Warning("That failed, too! Contacting " + playerColonyfaction.Name + " won't work!");
+                            LogUtil.Warning("That failed, too! Contacting " + playerColonyfaction.Name + " won't work!");
                         }
                     }
                 }
@@ -851,7 +850,7 @@ namespace FactionColonies
 
         public void updateFactionIcon(ref Faction faction, string iconPath)
         {
-            Log.Message("Updated Icon - " + iconPath);
+            LogUtil.Message("Updated Icon - " + iconPath);
             if (faction?.def != null)
             {
                 faction.def.factionIconPath = iconPath;
@@ -907,22 +906,14 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     break;
             }
-            //Log.Message("FactionFC.updateFactionDef - switch(tech) passed");
-
-            //Log.Message("2");
+            //LogUtil.Message("FactionFC.updateFactionDef - switch(tech) passed");
             def.caravanTraderKinds = replacingDef.caravanTraderKinds;
-            //Log.Message("3");
             if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
                 def.backstoryFilters = replacingDef.backstoryFilters;
-            //Log.Message("4");
             def.techLevel = tech;
-            //Log.Message("5");
             def.basicMemberKind = replacingDef.basicMemberKind;
-            //Log.Message("6");
             def.visitorTraderKinds = replacingDef.visitorTraderKinds;
-            //Log.Message("7");
             def.baseTraderKinds = replacingDef.baseTraderKinds;
-            //Log.Message("8");
             if (replacingDef.apparelStuffFilter != null)
                 def.apparelStuffFilter = replacingDef.apparelStuffFilter;
 
@@ -935,7 +926,7 @@ namespace FactionColonies
             }
             updateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
 
-            Log.Message("FactionFC.updateFactionDef - Completed tech update");
+            LogUtil.Message("FactionFC.updateFactionDef - Completed tech update");
         }
 
         public bool hasPolicy(FCPolicyDef def)
@@ -1119,7 +1110,7 @@ namespace FactionColonies
                 }
 
                 returnResource(resourceType).amount = resource;
-                //Log.Message(i + " " + returnResourceByInt(i).amount);  //display total resources by type
+                //LogUtil.Message(i + " " + returnResourceByInt(i).amount);  //display total resources by type
             }
         }
                 public void updateDailyResearch()
@@ -1131,11 +1122,11 @@ namespace FactionColonies
                     }
                     else if (researchPointPool != 0 && Find.ResearchManager.GetProject() != null)
                     {
-                        //Log.Message(researchTotal.ToString());
+                        //LogUtil.Message(researchTotal.ToString());
                         float neededPoints;
                         neededPoints = (float)Math.Ceiling(Find.ResearchManager.GetProject().CostApparent - 
                             Find.ResearchManager.GetProject().ProgressApparent);
-                        Log.Message("Needed points: " + neededPoints);
+                        LogUtil.Message("Needed points: " + neededPoints);
 
                         float expendedPoints;
                         if (researchPointPool >= neededPoints)
@@ -1147,10 +1138,10 @@ namespace FactionColonies
                         {
                             expendedPoints = researchPointPool;
                             researchPointPool = 0;
-                            Log.Message("Used all research points in the pool.");
+                            LogUtil.Message("Used all research points in the pool.");
                         }
 
-                        Log.Message("Expended points: " + expendedPoints);
+                        LogUtil.Message("Expended points: " + expendedPoints);
 
                         Find.LetterStack.ReceiveLetter(
                             "ResearchPointsExpended".Translate(), 
@@ -1158,27 +1149,17 @@ namespace FactionColonies
                             Find.ResearchManager.GetProject().LabelCap, 
                             Math.Round(researchPointPool)), 
                             LetterDefOf.PositiveEvent);
-                Log.Message("Test1");
                         if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
                         {
                             Pawn pawn = Find.ColonistBar.GetColonistsInOrder()[0];
-//Debugging                   Log.Message(pawn);
-//Debugging                   Log.Message("TestIF1");
                             Find.ResearchManager.ResearchPerformed(
                                 (float)Math.Ceiling(((1 * Find.ResearchManager.GetProject().CostFactor(pawn.Faction.def.techLevel)) / 
                                     (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints),
                                 pawn);
-//Debugging                    Log.Message("TestIF2");
- //Commented out this section, all it does is throw a NRE exception and spending research points works fine without it
-                    // Log.Message("Passed to function: " + (float)Math.Ceiling(
-                           //     ((1 * Find.ResearchManager.GetProject().CostFactor(pawn.Faction.def.techLevel)) / 
-                             //       (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints));
-//Debugging                    Log.Message("TestIF3");
                         }
                         else
                         {
-//Debugging                    Log.Message("TestElse");
-                            Log.Message("Could not find colonist to research with");
+                            LogUtil.Message("Could not find colonist to research with");
                             Find.ResearchManager.ResearchPerformed((float)Math.Ceiling((1 / 
                                 (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints), null);
                         }
@@ -1293,7 +1274,7 @@ namespace FactionColonies
                     location.traits.AddRange(fcevent.def.traits);
                     foreach (FCTraitEffectDef trait in fcevent.def.traits)
                     {
-                        //Log.Message(trait.label);
+                        //LogUtil.Message(trait.label);
                     }
                 }
             }
@@ -1356,7 +1337,8 @@ namespace FactionColonies
                     return chemfuel;
             }
 
-            Log.Message("Unable to find resource - returnResourceByInt(int name)");
+            /* We should NOT be here */
+            LogUtil.Error($"Unable to find resource {type} - returnResourceByInt(int name)");
             return null;
         }
 
@@ -1366,6 +1348,7 @@ namespace FactionColonies
             Building_CapitalSpot activeCapitalSpot = GetActiveCapitalSpot();
             if (activeCapitalSpot != null)
             {
+                //TODO: Localization key
                 Messages.Message(
                     $"Empire capital is already established at {activeCapitalSpot.Map.Parent.LabelCap}. Disable the capital seat there first if you want to move it.",
                     MessageTypeDefOf.RejectInput
@@ -1378,7 +1361,6 @@ namespace FactionColonies
                 capitalLocation = Find.CurrentMap.Parent.Tile;
                 capitalPlanet = Find.World.info.name;
 
-                //Log.Message(Find.CurrentMap.Parent.def.defName);
                 if (Find.CurrentMap.Parent.def.defName == "ShipOrbiting")
                 {
                     SoSShipCapital = true;
@@ -1393,6 +1375,7 @@ namespace FactionColonies
             }
             else
             {
+                //TODO: Localization key
                 Messages.Message(
                     "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.",
                     MessageTypeDefOf.NegativeEvent);
@@ -1409,7 +1392,7 @@ namespace FactionColonies
                 }
             }
 
-            Log.Message("CouldNotFindMapOfCapital".Translate());
+            LogUtil.Message("CouldNotFindMapOfCapital".Translate());
             return -1;
         }
 
@@ -1423,7 +1406,7 @@ namespace FactionColonies
                 }
             }
 
-            Log.Message("CouldNotFindMapOfCapital".Translate());
+            LogUtil.Message("CouldNotFindMapOfCapital".Translate());
             return null;
         }
 
@@ -1444,14 +1427,13 @@ namespace FactionColonies
         {
             if (planetName == null)
             {
-                Log.Message(
+                LogUtil.Warning(
                     "Planet name was null. Please report this as well as the military event that the settlement was used for.");
                 planetName = Find.World.info.name;
             }
 
             for (int i = 0; i < settlements.Count(); i++)
             {
-                //Log.Message(settlements[i].planetName);
                 if (settlements[i].mapLocation == location && settlements[i].planetName == planetName)
                 {
                     return settlements[i];
@@ -1516,19 +1498,19 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Message(
-                            "Empire Mod - TaxTick - Catching Up - Did you skip time? Report this if you did not");
+                        LogUtil.Message(
+                            "TaxTick - Catching Up - Did you skip time? Report this if you did not");
                         addTax(false);
                         //NOT WHERE FINAL UPDATE IS. Go to addTax Function
                     }
                     
                     taxTimeDue += FCSettings.timeBetweenTaxes;
-                    //Log.Message(Find.TickManager.TicksGame + " vs " + taxTimeDue + " - Taxing");
+                    //LogUtil.Message(Find.TickManager.TicksGame + " vs " + taxTimeDue + " - Taxing");
                 }
                 
                 if (iterations >= maxIterations)
                 {
-                    Log.Error("Empire Mod - TaxTick: Hit maximum iteration limit (" + maxIterations + "), breaking out of loop to prevent freeze. Current tick: " + Find.TickManager.TicksGame + ", taxTimeDue: " + taxTimeDue);
+                    LogUtil.Error($"TaxTick: Hit maximum iteration limit ({maxIterations}), breaking out of loop to prevent freeze. Current tick: {Find.TickManager.TicksGame}, taxTimeDue: {taxTimeDue}");
                     // Force advance taxTimeDue to break the loop
                     taxTimeDue = Find.TickManager.TicksGame + GenDate.TicksPerDay;
                 }
@@ -1582,11 +1564,9 @@ namespace FactionColonies
         {
             if (RandomEventsDisabledOrNoSettlements()) return;
 
-            //Log.Message(tmpNum.ToString());
             if (CanMakeRandomEventNow())
             {
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.returnRandomEvent(), null);
-                //Log.Message(tmpEvt.def.label);
                 if (tmpEvt != null)
                 {
                     Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
@@ -1624,8 +1604,6 @@ namespace FactionColonies
                 while (Find.TickManager.TicksGame >= dailyTimer) //while updating events
                 {
                     //update events in this order: regular events: tax events.
-
-                    // Log.Message("Tick");
                     updateSettlementStats();
                     updateAverages();
                     RelationsUtilFC.resetPlayerColonyRelations();
@@ -1637,7 +1615,6 @@ namespace FactionColonies
                     MakeRandomEvent();
 
                     dailyTimer += GenDate.TicksPerDay;
-                    //Log.Message(Find.TickManager.TicksGame + " vs " + taxTimeDue + " - Taxing");
                 }
             }
         }
@@ -1650,7 +1627,7 @@ namespace FactionColonies
                     Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
                 {
                     //if military actions not disabled or game has not passed through the first season
-                    //Log.Message("Mil Action debug");
+                    //LogUtil.Message("Mil Action debug");
 
 
                     //if settlements exist
@@ -1725,8 +1702,8 @@ namespace FactionColonies
                 }
 
                 militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * FCSettings.minMaxDaysTillMilitaryAction.RandomInRange);
-                //Log.Message(militaryTimeDue + " - " + Find.TickManager.TicksGame);
-                //Log.Message((militaryTimeDue - Find.TickManager.TicksGame) / 60000 + " days till next military action");
+                //LogUtil.Message(militaryTimeDue + " - " + Find.TickManager.TicksGame);
+                //LogUtil.Message((militaryTimeDue - Find.TickManager.TicksGame) / 60000 + " days till next military action");
                 //militaryTimeDue =
             }
         }

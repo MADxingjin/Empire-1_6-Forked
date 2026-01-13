@@ -414,7 +414,6 @@ namespace FactionColonies
             {
                 //if click faction customize button
                 Find.WindowStack.Add(new SettlementCustomizeWindowFc(settlement));
-                //Log.Message("Settlement customize clicked");
             }
         }
 
@@ -513,7 +512,6 @@ namespace FactionColonies
                         {
                             //if click upgrade town button
                             Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
-                            //Log.Message(buttons[i]);
                         }
 
                         if (buttons[i] == "AreYouSureRemove".Translate())
@@ -526,7 +524,6 @@ namespace FactionColonies
                         if (buttons[i] == "DeleteSettlement".Translate())
                         {
                             //if click town log button
-                            //Log.Message(buttons[i]);
                             buttons[i] = "AreYouSureRemove".Translate();
                         }
 

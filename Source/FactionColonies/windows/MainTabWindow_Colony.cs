@@ -79,12 +79,12 @@ namespace FactionColonies
             }
             else
             {
-                Log.Message("WorldComp FactionFC is null - Something is wrong! Empire Mod");
+                LogUtil.Message("WorldComp FactionFC is null - Something is wrong!");
             }
  */
             if(faction == null)
             {
-                Log.Message("WorldComp FactionFC is null - Something is wrong! Empire Mod");
+                LogUtil.Error("WorldComp FactionFC is null - Something is wrong!");
                 return;
             }
             else
@@ -280,7 +280,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Error("FactionFC world component is still null after creating new faction!");
+                        LogUtil.Error("FactionFC world component is still null after creating new faction!");
                     }
                 }
             }
@@ -328,7 +328,6 @@ namespace FactionColonies
             if (Widgets.ButtonTextSubtle(new Rect(tabSize * 2, 0, tabSize, 30), "Bills".Translate(), 0f, 8f, SoundDefOf.Mouseover_Category, new Vector2(-1f, -1f)))
             {
                 Find.WindowStack.Add(new FCBillWindow());
-                //Log.Message("Try open bills");
 
             }
         }
@@ -519,7 +518,6 @@ namespace FactionColonies
                 Widgets.Label(new Rect(7, 32, 200, 40), faction.name);
             if (Widgets.ButtonImage(new Rect(210, 37, 20, 20), TexLoad.iconCustomize))
             { //if click faction customize button
-              //Log.Message("Faction customize clicked");
                 Faction fact = ColonyUtil.getPlayerColonyFaction();
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
@@ -701,7 +699,7 @@ namespace FactionColonies
                                 if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
                                 {
                                     Pawn playerNegotiator = Find.ColonistBar.GetColonistsInOrder()[0];
-                                    //Log.Message(playerNegotiator.Name + " Negotiator");
+                                    //LogUtil.Message(playerNegotiator.Name + " Negotiator");
 
                                     FCTrader_Research trader = new FCTrader_Research();
 
@@ -709,7 +707,7 @@ namespace FactionColonies
                                 }
                                 else
                                 {
-                                    Log.Error("Couldn't find any colonists to trade with");
+                                    LogUtil.Error("Couldn't find any colonists to trade with");
                                 }
                             }));
 

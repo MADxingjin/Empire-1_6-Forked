@@ -13,7 +13,7 @@ namespace FactionColonies
         {
             if (def == null)
             {
-                Log.Warning($"FCTraitEffectDef is null for field '{field}'");
+                LogUtil.Warning($"FCTraitEffectDef is null for field '{field}'");
                 return 0.0;
             }
             
@@ -22,7 +22,7 @@ namespace FactionColonies
             
             if (fieldInfo == null)
             {
-                Log.Warning($"Field '{field}' not found on FCTraitEffectDef type '{typ.Name}'");
+                LogUtil.Warning($"Field '{field}' not found on FCTraitEffectDef type '{typ.Name}'");
                 return 0.0;
             }
             

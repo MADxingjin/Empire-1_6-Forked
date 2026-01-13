@@ -1,4 +1,4 @@
-﻿using FactionColonies.util;
+using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
 using System;
@@ -20,21 +20,21 @@ namespace FactionColonies
         {
             Find.World.GetComponent<FactionFC>().events.ForEach(delegate (FCEvent e)
             {
-                Log.Message(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
+                LogUtil.MessageForce(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
             });
         }
 
         [DebugAction("Empire", "Increment Time 5 Days", allowedGameStates = AllowedGameStates.Playing)]
         private static void incrementTimeFiveDays()
         {
-            //Log.Message("Debug - Increment Time 5 Days");
+            LogUtil.MessageForce("Debug - Increment Time 5 Days");
             Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + 300000);
         }
 
         [DebugAction("Empire", "Increment Time 1 Year", allowedGameStates = AllowedGameStates.Playing)]
         private static void incrementTimeOneYear()
         {
-            //Log.Message("Debug - Increment Time 5 Days");
+            LogUtil.MessageForce("Debug - Increment Time 5 Days");
             Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + GenDate.TicksPerYear);
         }
 
@@ -43,10 +43,10 @@ namespace FactionColonies
         {
             ColonyUtil.getPlayerColonyFaction().def.pawnGroupMakers.ForEach(maker =>
             {
-                Log.Message("Traders: " + maker.traders.Count);
+                LogUtil.MessageForce("Traders: " + maker.traders.Count);
                 foreach (PawnGenOption option in maker.options)
                 {
-                    Log.Message("Race: " + option.kind.race.defName + ", " + option.kind.defName + ", " +
+                    LogUtil.MessageForce("Race: " + option.kind.race.defName + ", " + option.kind.defName + ", " +
                                 option.kind.isFighter + ", " + option.kind.trader + " for " + maker.kindDef);
                 }
             });
@@ -55,7 +55,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Reset All Military Squad Assignments", allowedGameStates = AllowedGameStates.Playing)]
         private static void resetAllMilitarySquads()
         {
-            Log.Message("Debug - Reset All Military Squad Assignments");
+            LogUtil.MessageForce("Debug - Reset All Military Squad Assignments");
             MilitaryCustomizationUtil util = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil;
             for (int i = util.AllMercenaries.Count - 1; i >= 0; i--)
             {
@@ -88,7 +88,7 @@ namespace FactionColonies
                 if (evtDef.isRandomEvent)
                     list.Add(new DebugMenuOption(evtDef.label, DebugMenuOptionMode.Action, delegate
                     {
-                        Log.Message("Debug - Make Random Event - " + evtDef.label);
+                        LogUtil.MessageForce("Debug - Make Random Event - " + evtDef.label);
                         FCEvent evt = FCEventMaker.MakeRandomEvent(evtDef, null);
                         if (evtDef.activateAtStart == false)
                         {
@@ -110,14 +110,14 @@ namespace FactionColonies
         [DebugAction("Empire", "Proc MilitaryTimeDue", allowedGameStates = AllowedGameStates.Playing)]
         private static void procMilitaryTimeDue()
         {
-            Log.Message("Debug - Proc MilitaryTimeDue");
+            LogUtil.MessageForce("Debug - Proc MilitaryTimeDue");
             Find.World.GetComponent<FactionFC>().militaryTimeDue = Find.TickManager.TicksGame + 1;
         }
 
         [DebugAction("Empire", "Fix Missing Settlements", allowedGameStates = AllowedGameStates.Playing)]
         private static void checkForMissingSettlements()
         {
-            Log.Message("Debug - Proc MilitaryTimeDue");
+            LogUtil.MessageForce("Debug - Proc MilitaryTimeDue");
 
             FactionFC factionfc = Find.World.GetComponent<FactionFC>();
 
@@ -134,7 +134,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Reset Faction Leaders", allowedGameStates = AllowedGameStates.Playing)]
         private static void resetFactionLeadeers()
         {
-            Log.Message("Debug - Reset Faction Leaders");
+            LogUtil.MessageForce("Debug - Reset Faction Leaders");
             SoS2HarmonyPatches.ResetFactionLeaders();
         }
 
@@ -146,7 +146,7 @@ namespace FactionColonies
             {
                 list.Add(new DebugMenuOption(settlement.name, DebugMenuOptionMode.Action, delegate
                 {
-                    Log.Message("Debug - Attack Player Settlement - " + settlement.name);
+                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.name}");
                     Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
                     MilitaryUtilFC.attackPlayerSettlement(
                         militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
@@ -184,9 +184,7 @@ namespace FactionColonies
                                         {
                                             if (settlement.isMilitaryBusy() == false)
                                             {
-                                                Log.Message("Debug - Change Player Settlement - " +
-                                                            evt.militaryForceDefending.homeSettlement.name + " to " +
-                                                            settlement.name);
+                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending.homeSettlement.name} to {settlement.name}");
                                                 MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
                                             }
                                         }
@@ -217,11 +215,11 @@ namespace FactionColonies
                 {
                     if (times > 0)
                     {
-                        Log.Message("Debug - Upgrade Player Settlement x" + times + "- " + settlement.name);
+                        LogUtil.MessageForce("Debug - Upgrade Player Settlement x" + times + "- " + settlement.name);
                     }
                     else
                     {
-                        Log.Message("Debug - Downgrade Player Settlement x" + times + "- " + settlement.name);
+                        LogUtil.MessageForce("Debug - Downgrade Player Settlement x" + times + "- " + settlement.name);
                     }
                     settlement.upgradeSettlement(times);
                 }
@@ -234,7 +232,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Test Function", allowedGameStates = AllowedGameStates.Playing)]
         private static void testVariable()
         {
-            Log.Message("Debug - Test Function - ");
+            LogUtil.MessageForce("Debug - Test Function - ");
             Find.World.GetComponent<FactionFC>().roadBuilder.FlagUpdateRoadQueues();
         }
 
@@ -246,7 +244,7 @@ namespace FactionColonies
         {
             Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.mercenarySquads =
                 new List<MercenarySquadFC>();
-            Log.Message("Debug - Reset Military Squad Cooldowns");
+            LogUtil.MessageForce("Debug - Reset Military Squad Cooldowns");
             foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
                 settlement.returnMilitary(false);

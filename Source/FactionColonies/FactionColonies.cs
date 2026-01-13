@@ -208,7 +208,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Warning("Empire Mod: Failed to read version from manifest: " + ex.Message);
+                LogUtil.Warning("Failed to read version from manifest: " + ex.Message);
             }
             return "Unknown";
         }
@@ -223,7 +223,7 @@ namespace FactionColonies
             // Only log once when first setting up
             if (!factionFC.updateProcessed)
             {
-                Log.Message("Updating Empire to Latest Version");
+                LogUtil.Message("Updating Empire to Latest Version");
                 // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
             }
             //NEW PLACE FOR UPDATE VERSIONS
@@ -235,7 +235,7 @@ namespace FactionColonies
                 factionFC.factionBackup = ColonyUtil.getPlayerColonyFaction();
                 if (ColonyUtil.getPlayerColonyFaction() != null)
                 {
-                    Log.Message("Faction created");
+                    LogUtil.Message("Faction created");
                     factionFC.factionCreated = true;
                 }
 
@@ -243,7 +243,7 @@ namespace FactionColonies
 
                 if (!wasAlreadyProcessed)
                 {
-                    Log.Message("Resetting faction leaders");
+                    LogUtil.Message("Resetting faction leaders");
                 }
                 SoS2HarmonyPatches.ResetFactionLeaders();
             }
@@ -255,12 +255,12 @@ namespace FactionColonies
                 // Welcome message!
                 Find.WindowStack.Add(new FCWindow_Welcome());
 
-                Log.Message("Empire - Testing for traits with no tie");
+                LogUtil.Message("Testing for traits with no tie");
                 verifyTraits();
             
                 MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
 
-                Log.Message("Empire - Testing for update change");
+                LogUtil.Message("Testing for update change");
                 
                 // Mark as processed AFTER everything is done
                 factionFC.updateProcessed = true;
@@ -290,7 +290,7 @@ namespace FactionColonies
 
         private static void MessagePlayerAboutConfigErrors(FactionFC factionFC)
         {
-            Log.Message("Empire - Testing for invalid capital map");
+            LogUtil.Message("Testing for invalid capital map");
             //Check for an invalid capital map
             if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null && factionFC.SoSShipCapital == false)
             {
@@ -364,7 +364,7 @@ namespace FactionColonies
 
         public static void debugMarker(ref int i)
         {
-            Log.Message(i.ToString());
+            LogUtil.Message($"debugMarker: {i}");
             i ++;
         }
 

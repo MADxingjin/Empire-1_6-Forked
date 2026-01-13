@@ -35,7 +35,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    Log.Message("Mercenary Errored out. Did not find squad.");
+                    LogUtil.Warning("Mercenary Errored out. Did not find squad.");
                 }
 
                 __instance.equipment?.DestroyAllEquipment();

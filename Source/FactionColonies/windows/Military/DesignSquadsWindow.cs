@@ -193,8 +193,8 @@ namespace FactionColonies
                         {
                             new FloatMenuOption("clearUnitSlot".Translate(), delegate
                             {
-                                //Log.Message(selectedSquad.units.Count().ToString());
-                                //Log.Message(click.ToString());
+                                //LogUtil.Message(selectedSquad.units.Count().ToString());
+                                //LogUtil.Message(click.ToString());
                                 selectedSquad.units[click] = new MilUnitFC(true);
                                 selectedSquad.updateEquipmentTotalCost();
                                 selectedSquad.ChangeTick();

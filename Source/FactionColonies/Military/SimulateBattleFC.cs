@@ -14,7 +14,7 @@ namespace FactionColonies
             int result = 0;
             try
             {
-                //Log.Message("Starting battle");
+                LogUtil.Message("SimulateBattleFc.FightBattle: Starting battle");
                 while (MFA.forceRemaining > 0 && MFB.forceRemaining > 0)
                 {
                     // One number should always be reduced to 0
@@ -23,21 +23,21 @@ namespace FactionColonies
 
                 if (MFA.forceRemaining <= 0)
                 {
-                    //Log.Message("Defending Force has won.");
+                    LogUtil.Message("SimulateBattleFc.FightBattle: Defending Force has won.");
                     //b is winner
                     result = 1;
                 }
 
                 else
                 {
-                    //Log.Message("Attacking Force has won.");
+                    LogUtil.Message("SimulateBattleFc.FightBattle: Attacking Force has won.");
                     //a is winner
                     result = 0;
                 }
             }
             catch (Exception e)
             {
-                Log.Error($"An exception occurred while resolving combat in Empire {System.Environment.NewLine}[{e}]");
+                LogUtil.Error($"An exception occurred while resolving combat in Empire {Environment.NewLine}[{e}]");
                 result = -1;
             }
 
@@ -48,8 +48,8 @@ namespace FactionColonies
         {
             var randA = (Rand.Range(0, 20) * MFA.militaryEfficiency);
             var randB = (Rand.Range(0, 20) * MFA.militaryEfficiency);
-            // Log.Message("A Begin: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B begin");
-            // Log.Message("A Rolled: " + randA.ToString() + " : " + randB.ToString() + " B rolled");
+            // LogUtil.Message("A Begin: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B begin");
+            // LogUtil.Message("A Rolled: " + randA.ToString() + " : " + randB.ToString() + " B rolled");
 
             if (randA > randB)
             {
@@ -59,7 +59,7 @@ namespace FactionColonies
             {
                 MFA.forceRemaining -= 1;
             }
-            //Log.Message("A Remain: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B remain");
+            //LogUtil.Message("A Remain: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B remain");
         }
     }
 
@@ -166,7 +166,7 @@ namespace FactionColonies
                 default:
                     militaryLevel = 1;
                     efficiency = 1;
-                    Log.Message("Defaulted createMilitaryForceFromEnemyFaction switch case - Empire Mod");
+                    LogUtil.Message("Defaulted createMilitaryForceFromEnemyFaction switch case");
                     break;
             }
 
@@ -218,7 +218,7 @@ namespace FactionColonies
                     default:
                         militaryLevel = 1;
                         efficiency = 1;
-                        Log.Message("Defaulted createMilitaryForceFromEnemyFaction switch case - Empire Mod");
+                        LogUtil.Message("Defaulted createMilitaryForceFromEnemyFaction switch case");
                         break;
                 }
 
@@ -236,7 +236,7 @@ namespace FactionColonies
                     (2 + Math.Round((double) (Find.TickManager.TicksGame -
                                               Find.World.GetComponent<FactionFC>().timeStart - GenDate.TicksPerSeason) /
                                     GenDate.TicksPerSeason)));
-                //Log.Message(value.ToString());
+                //LogUtil.Message(value.ToString());
             }
 
             militaryForce returnForce = new militaryForce(value, efficiency, null, faction);
@@ -360,12 +360,12 @@ namespace FactionColonies
     {
         public static void attackFaction(Faction faction)
         {
-            //Log.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
+            //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             Find.FactionManager.OfPlayer.TryAffectGoodwillWith(faction, -50);
             // FIXME Workaround, since method TrySetRelationKind is gone
             TrySetRelationKind(Find.FactionManager.OfPlayer, faction, FactionRelationKind.Hostile);
             resetPlayerColonyRelations();
-            //Log.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
+            //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             //FactionColonies.getPlayerColonyFaction().TryAffectGoodwillWith(faction, -50)
         }
 
@@ -382,7 +382,7 @@ namespace FactionColonies
                          PCFaction.RelationWith(faction).baseGoodwill));
                     // FIXME Workaround, since method TrySetRelationKind is gone
                     TrySetRelationKind(PCFaction, faction, Find.FactionManager.OfPlayer.RelationKindWith(faction));
-                    //Log.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony " + PCFaction.RelationWith(faction).goodwill);
+                    //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony " + PCFaction.RelationWith(faction).goodwill);
                 }
             }
         }

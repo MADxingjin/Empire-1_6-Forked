@@ -869,7 +869,7 @@ namespace FactionColonies
 
                 foreach (Thing thing in selectedUnit.defaultPawn.apparel.WornApparel)
                 {
-                    //Log.Message(thing.Label);
+                    //LogUtil.Message(thing.Label);
 
 
                     if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))

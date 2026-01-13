@@ -33,7 +33,7 @@ namespace FactionColonies.util
 			catch
 			{
 				string pawnName = (pawn?.Name != null) ? pawn.Name.ToString() : "pawn is null!";
-				Log.Error("Required ritual wounds couldn't be applied to pawn: " + pawnName + ". Pawn Ideo == null: " + (pawn?.Ideo == null));
+				LogUtil.Error("Required ritual wounds couldn't be applied to pawn: " + pawnName + ". Pawn Ideo == null: " + (pawn?.Ideo == null));
 			}
 		}
 

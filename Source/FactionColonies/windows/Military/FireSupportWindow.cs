@@ -301,7 +301,6 @@ namespace FactionColonies
                                         def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2).ToString(),
                                         delegate
                                         {
-                                            Log.Message("insert at " + k);
                                             selectedSupport.projectiles.Insert(k, def);
                                         }, def));
                                 }
@@ -460,7 +459,6 @@ namespace FactionColonies
             }
 
             Rect newRect = new Rect(rect.x + rect.width + x, rect.y + y, inputWidth, inputHeight);
-            //Log.Message(newRect.width.ToString());
             return newRect;
         }
     }

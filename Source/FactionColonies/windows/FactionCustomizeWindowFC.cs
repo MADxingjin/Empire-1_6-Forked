@@ -244,8 +244,7 @@ namespace FactionColonies
                             }
                             else
                             {
-                                Log.Message("Empire Error - Zero xenotypes available for faction - Report this");
-                                Log.Message("Resetting xenotype filter");
+                                LogUtil.Error("Zero xenotypes available for faction - Report this. Resetting xenotype filter");
                                 faction.resetXenotypeFilter();
                             }
                         }));

@@ -45,7 +45,7 @@ namespace FactionColonies
             workersUltraMax = workersMax + 5 + returnOverMaxWorkersFromPrisoners();
 
 
-            // Log.Message(Find.WorldGrid.tiles[location].biome.ToString());   <= Returns biome
+            // LogUtil.Message(Find.WorldGrid.tiles[location].biome.ToString());   <= Returns biome
             //biome info
             biome = Find.WorldGrid[location].PrimaryBiome.defName;
             hilliness = Find.WorldGrid[location].hilliness.ToString();
@@ -53,7 +53,7 @@ namespace FactionColonies
             //modded biomes
             biomeDef = DefDatabase<BiomeResourceDef>.GetNamed(biome, false) ?? BiomeResourceDefOf.defaultBiome;
 
-            //Log.Message(hilliness);
+            //LogUtil.Message(hilliness);
             hillinessDef = DefDatabase<BiomeResourceDef>.GetNamed(hilliness);
 
             for (int i = 0; i < 8; i++)
@@ -85,7 +85,7 @@ namespace FactionColonies
         public void addPrisoner(Pawn prisoner)
         {
             prisonerList.Add(new FCPrisoner(prisoner, this));
-            //Log.Message(prisoners.Count().ToString());
+            //LogUtil.Message(prisoners.Count().ToString());
         }
 
         public int NumberBuildings => 3 + (int) Math.Floor(settlementLevel / 2f);
@@ -136,7 +136,7 @@ namespace FactionColonies
             // If custom values exist, don't overwrite them (they were loaded from save file)
             if (hasCustomValues)
             {
-                Log.Message($"Settlement {name}: Skipping initBaseProduction - custom values detected (loaded from save)");
+                LogUtil.Message($"Settlement {name}: Skipping initBaseProduction - custom values detected (loaded from save)");
                 return;
             }
             
@@ -527,7 +527,7 @@ namespace FactionColonies
                 }
             }
 
-            //Log.Message("income " + income.ToString());
+            LogUtil.Message("getTotalIncome - {income}");
             return income;
         }
 
@@ -548,7 +548,7 @@ namespace FactionColonies
                         totalWorkers -= 1;
                     }
 
-                    //Log.Message("Remove 1 worker");
+                    //LogUtil.Message("Remove 1 worker");
                 }
             }
 
@@ -571,7 +571,7 @@ namespace FactionColonies
                 {
                     var availableTypes = ResourceUtils.GetAvailableResourceTypes(this).ToList();
                     int num = Rand.RangeInclusive(0, availableTypes.Count - 1);
-                    //Log.Message(num.ToString());
+                    //LogUtil.Message(num.ToString());
                     if (getResource(availableTypes[num]).assignedWorkers > 0)
                     {
                         getResource(availableTypes[num]).assignedWorkers -= 1;
@@ -642,7 +642,7 @@ namespace FactionColonies
                     upkeep += Math.Max(0, building.upkeep - 100);
             }
 
-            //Log.Message("upkeep " + upkeep.ToString());
+            //LogUtil.Message("upkeep " + upkeep.ToString());
             return upkeep;
         }
 
@@ -985,7 +985,7 @@ namespace FactionColonies
             {
                 faction.militaryTargets.Remove(militaryLocation);
             }
-            //Log.Message(winner + " job = " + militaryJob);
+            //LogUtil.Message(winner + " job = " + militaryJob);
             //Process end result here
             //attacker == 0; defender == 1;
 
@@ -1114,7 +1114,6 @@ namespace FactionColonies
                         militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
                     if (winner == 0)
                     {
-                        //Log.Message("Won");
                         faction.addExperienceToFactionLevel(5f);
                     
                         string tmpName = Find.WorldObjects.SettlementAt(militaryLocation).LabelCap;
@@ -1179,7 +1178,6 @@ namespace FactionColonies
                     }
                     else if (winner == 1)
                     {
-                        //Log.Message("Loss");
                         Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
                             "CaptureEnemySettlementFailure".Translate(name,
                                 Find.WorldObjects.SettlementAt(militaryLocation).Name), LetterDefOf.NegativeEvent,
@@ -1383,7 +1381,7 @@ namespace FactionColonies
 
         private int returnOverMaxWorkersFromPrisoners()
         {
-            //Log.Message("max worker : " + num);
+            //LogUtil.Message("max worker : " + num);
             return prisonerList.Count(prisoner => prisoner.workload == FCWorkLoad.Light);
         }
 
@@ -1506,6 +1504,7 @@ namespace FactionColonies
             return titheVal;
         }
 
+        //FIXME: why even use this function when we have an enum?
         public ResourceFC returnResource(string name) //used to return the correct resource based on string name
         {
             switch (name)
@@ -1529,7 +1528,7 @@ namespace FactionColonies
                 case "medicine":
                     return medicine;
                 default:
-                    Log.Message("Unable to find resource - returnResource(string name)");
+                    LogUtil.Message("Unable to find resource - returnResource(string name)");
                     return null;
             }
         }
@@ -1561,11 +1560,12 @@ namespace FactionColonies
                 case ResourceType.Chemfuel:
                     return chemfuel;
                 default:
-                    Log.Message($"Unable to find resource - getResource({type})");
+                    LogUtil.Error($"Unable to find resource - getResource({type})");
                     return null;
             }
         }
 
+        //TODO: why does this function exist when we hace an enum? Look into just getting rid of it
         public string returnResourceNameByInt(int name) //used to return the correct resource based on string name
         {
             if (name == 0)
@@ -1613,7 +1613,7 @@ namespace FactionColonies
                 return "Medicine";
             }
 
-            Log.Message("Unable to find resource - returnResourceByInt(int name)");
+            LogUtil.Message("Unable to find resource - returnResourceByInt(int name)");
             return null;
         }
 

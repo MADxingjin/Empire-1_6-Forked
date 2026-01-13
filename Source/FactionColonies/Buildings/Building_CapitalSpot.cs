@@ -63,11 +63,11 @@ namespace FactionColonies
                     faction.SoSShipCapital = false;
                 }
                 
-                Log.Message($"Capital Building: Set Empire capital to tile {newTile} (SoS2: {faction.SoSShipCapital})");
+                LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile} (SoS2: {faction.SoSShipCapital})");
             }
             else
             {
-                Log.Error($"Capital Building: Failed to set capital - faction={faction != null}, Map={Map != null}");
+                LogUtil.Error($"Capital Building: Failed to set capital - faction={faction != null}, Map={Map != null}");
             }
         }
 
@@ -82,10 +82,10 @@ namespace FactionColonies
                 if (lastKnownTile == -1)
                 {
                     lastKnownTile = currentTile;
-                    Log.Message($"Capital Spot Debug: Initialized lastKnownTile to {currentTile}");
+                    LogUtil.Message($"Capital Spot Debug: Initialized lastKnownTile to {currentTile}");
                 }
                 
-                Log.Message($"Capital Spot Debug: Active={isActiveCapitalSpot}, CurrentTile={currentTile}, LastKnown={lastKnownTile}");
+                LogUtil.Message($"Capital Spot Debug: Active={isActiveCapitalSpot}, CurrentTile={currentTile}, LastKnown={lastKnownTile}");
                 
                 if (lastKnownTile != currentTile)
                 {
@@ -108,8 +108,8 @@ namespace FactionColonies
                             faction.SoSShipCapital = false;
                         }
                         
-                        Log.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
-                        Log.Message($"Empire SoSShipCapital set to: {faction.SoSShipCapital}");
+                        LogUtil.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
+                        LogUtil.Message($"Empire SoSShipCapital set to: {faction.SoSShipCapital}");
                         
                         Find.LetterStack.ReceiveLetter(
                             "Empire Relocated", 
@@ -119,13 +119,13 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Error("Capital Spot Debug: FactionFC component not found!");
+                        LogUtil.Error("Capital Spot Debug: FactionFC component not found!");
                     }
                 }
             }
             else if (isActiveCapitalSpot)
             {
-                Log.Message($"Capital Spot Debug: Active but Map is null!");
+                LogUtil.Warning($"Capital Spot Debug: Active but Map is null!");
             }
         }
 
@@ -172,10 +172,11 @@ namespace FactionColonies
                         bool wasActive = IsActiveCapitalSpot;
                         IsActiveCapitalSpot = !IsActiveCapitalSpot;
                         
-                        Log.Message($"Capital Building: Toggle from {wasActive} to {IsActiveCapitalSpot}");
+                        LogUtil.Message($"Capital Building: Toggle from {wasActive} to {IsActiveCapitalSpot}");
                         
                         if (IsActiveCapitalSpot)
                         {
+                            //TODO: Localization key
                             Messages.Message(
                                 $"Empire capital established at {Map.Parent.LabelCap}! This location will be used as the center of your empire.",
                                 MessageTypeDefOf.PositiveEvent
@@ -183,6 +184,7 @@ namespace FactionColonies
                         }
                         else
                         {
+                            //TODO: Localization key
                             Messages.Message(
                                 "Capital seat disabled. Empire will use fallback capital location if available.",
                                 MessageTypeDefOf.NeutralEvent
@@ -213,6 +215,7 @@ namespace FactionColonies
                 FactionFC faction = Find.World.GetComponent<FactionFC>();
                 if (faction != null)
                 {
+                    //TODO: Localization key
                     faction.capitalLocation = -1;
                     Messages.Message(
                         "Empire capital has been lost! You should establish a new capital seat.",

@@ -23,14 +23,14 @@ namespace FactionColonies
         // {
         //     static void Prefix(ref WorldLayer __instance)
         //     {
-        //         Log.Message("World grid exists: " + Find.WorldGrid);
-        //         Log.Message("world grid tile count" + Find.WorldGrid.tiles.Count().ToString());
-        //         Log.Message("tile 5 info" + ((bool)(Find.WorldGrid.tiles[5] != null)).ToString());
+        //         LogUtil.Message("World grid exists: " + Find.WorldGrid);
+        //         LogUtil.Message("world grid tile count" + Find.WorldGrid.tiles.Count().ToString());
+        //         LogUtil.Message("tile 5 info" + ((bool)(Find.WorldGrid.tiles[5] != null)).ToString());
         //         //foreach (Tile tile in Find.WorldGrid.tiles)
         //         // {
-        //         //Log.Message("tile info - " + Find.WorldGrid.tiles.IndexOf(tile));
+        //         //LogUtil.Message("tile info - " + Find.WorldGrid.tiles.IndexOf(tile));
         //         //}
-        //         Log.Message("world grid hilliness of tile 5" + Find.WorldGrid.tiles[5].hilliness);
+        //         LogUtil.Message("world grid hilliness of tile 5" + Find.WorldGrid.tiles[5].hilliness);
         //     }
         // }
 
@@ -64,7 +64,7 @@ namespace FactionColonies
             // Check if SoS2 classes were found
             if (typ == null || typ2 == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find required SoS2 classes for returnPlanetFactionLoadIds. Returning empty list.");
+                LogUtil.Warning("SoS2 compatibility: Could not find required SoS2 classes for returnPlanetFactionLoadIds. Returning empty list.");
                 return new List<string>();
             }
 
@@ -83,7 +83,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Warning("Empire - SoS2 compatibility: Error in returnPlanetFactionLoadIds: " + ex.Message);
+                LogUtil.Warning("SoS2 compatibility: Error in returnPlanetFactionLoadIds: " + ex.Message);
                 return new List<string>();
             }
         }
@@ -106,18 +106,18 @@ namespace FactionColonies
         {
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
             Faction faction1 = ColonyUtil.getPlayerColonyFaction();
-            //Log.Message((faction1 != null).ToString());
+            //LogUtil.Message((faction1 != null).ToString());
             if (faction1 == null && worldcomp.factionCreated == true)
             {
-                Log.Message("Moved to new planet - Adding faction copy");
+                LogUtil.Message("Moved to new planet - Adding faction copy");
                 //FactionColonies.createPlayerColonyFaction();
                 ColonyUtil.copyPlayerColonyFaction();
                 faction1 = ColonyUtil.getPlayerColonyFaction();
             }
-            //Log.Message(((bool)(faction1 != null)).ToString());
+            //LogUtil.Message(((bool)(faction1 != null)).ToString());
             foreach (Faction factionOther in Find.FactionManager.AllFactionsListForReading)
             {
-                //Log.Message(factionOther.def.defName);
+                //LogUtil.Message(factionOther.def.defName);
                 if (factionOther != faction1 && faction1.RelationWith(factionOther, true) == null)
                 {
 
@@ -163,8 +163,7 @@ namespace FactionColonies
                 if (worldcomp.SoSShipTaxMap == true)
                 {
                     worldcomp.taxMap = Find.CurrentMap;
-                    Log.Message("Updated Tax map to ship");
-                    Log.Message(worldcomp.taxMap.Parent.Label);
+                    LogUtil.Message($"Updated Tax map to ship: {worldcomp.taxMap.Parent.Label}");
                 }
                 if (worldcomp.SoSShipCapitalMoving == true)
                 {
@@ -196,20 +195,20 @@ namespace FactionColonies
             // Debug: List all available SoS2 classes
             if (typ == null || typ2 == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find required SoS2 classes. Debugging available classes...");
+                LogUtil.Warning("SoS2 compatibility: Could not find required SoS2 classes. Debugging available classes...");
                 DebugListSoS2Classes();
             }
 
             // Check if SoS2 classes were found
             if (typ == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find SaveOurShip2.WorldSwitchUtility class. SoS2 may not be loaded or has a different version.");
+                LogUtil.Warning("SoS2 compatibility: Could not find SaveOurShip2.WorldSwitchUtility class. SoS2 may not be loaded or has a different version.");
                 return;
             }
 
             if (typ2 == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find SaveOurShip2.FixOutdoorTemp class. SoS2 may not be loaded or has a different version.");
+                LogUtil.Warning("SoS2 compatibility: Could not find SaveOurShip2.FixOutdoorTemp class. SoS2 may not be loaded or has a different version.");
                 return;
             }
 
@@ -217,11 +216,9 @@ namespace FactionColonies
             Type[] types = typ2.GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
             foreach (Type t in types)
             {
-                //Log.Message( t.ToString());
                 if (t.ToString() == "SaveOurShip2.FixOutdoorTemp+SelectiveWorldGeneration")
                 {
                     typ2 = t;
-                    //Log.Message("found" + t.ToString());
                     break;
                 }
             }
@@ -234,13 +231,13 @@ namespace FactionColonies
             // Check if methods were found
             if (originalpre == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find KillAllColonistsNotInCrypto method in SaveOurShip2.WorldSwitchUtility.");
+                LogUtil.Warning("SoS2 compatibility: Could not find KillAllColonistsNotInCrypto method in SaveOurShip2.WorldSwitchUtility.");
                 return;
             }
 
             if (originalpost == null)
             {
-                Log.Warning("Empire - SoS2 compatibility: Could not find DoWorldSwitch method in SaveOurShip2.WorldSwitchUtility.");
+                LogUtil.Warning("SoS2 compatibility: Could not find DoWorldSwitch method in SaveOurShip2.WorldSwitchUtility.");
                 return;
             }
 
@@ -249,14 +246,14 @@ namespace FactionColonies
             harmony.Patch(originalpre, prefix: new HarmonyMethod(prefix));
             harmony.Patch(originalpost, postfix: new HarmonyMethod(postfix));
             // harmony.Patch(originalpost2, postfix: new HarmonyMethod(postfix));
-            Log.Message("Finished patching Empire and SoS2");
+            LogUtil.Message("Finished patching Empire and SoS2");
         }
 
         private static void DebugListSoS2Classes()
         {
             try
             {
-                Log.Message("Empire - SoS2 Debug: Searching for SoS2 classes...");
+                LogUtil.Message("SoS2 Debug: Searching for SoS2 classes...");
                 int sos2ClassCount = 0;
                 
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -266,7 +263,7 @@ namespace FactionColonies
                         var sos2Types = assembly.GetTypes().Where(t => t.FullName != null && t.FullName.StartsWith("SaveOurShip2.")).ToList();
                         if (sos2Types.Any())
                         {
-                            Log.Message($"Empire - SoS2 Debug: Found {sos2Types.Count} SoS2 classes in assembly: {assembly.GetName().Name}");
+                            LogUtil.Message($"SoS2 Debug: Found {sos2Types.Count} SoS2 classes in assembly: {assembly.GetName().Name}");
                             
                             // Look for classes that might be the new versions of what we need
                             var worldSwitchClasses = sos2Types.Where(t => t.FullName.ToLower().Contains("world") && t.FullName.ToLower().Contains("switch")).ToList();
@@ -275,48 +272,48 @@ namespace FactionColonies
                             
                             if (worldSwitchClasses.Any())
                             {
-                                Log.Message($"Empire - SoS2 Debug: Found {worldSwitchClasses.Count} potential world switch classes:");
+                                LogUtil.Message($"SoS2 Debug: Found {worldSwitchClasses.Count} potential world switch classes:");
                                 foreach (var type in worldSwitchClasses)
                                 {
-                                    Log.Message($"  - {type.FullName}");
+                                    LogUtil.Message($"  - {type.FullName}");
                                 }
                             }
                             
                             if (factionClasses.Any())
                             {
-                                Log.Message($"Empire - SoS2 Debug: Found {factionClasses.Count} potential faction classes:");
+                                LogUtil.Message($"SoS2 Debug: Found {factionClasses.Count} potential faction classes:");
                                 foreach (var type in factionClasses.Take(5))
                                 {
-                                    Log.Message($"  - {type.FullName}");
+                                    LogUtil.Message($"  - {type.FullName}");
                                 }
                                 if (factionClasses.Count > 5)
                                 {
-                                    Log.Message($"  ... and {factionClasses.Count - 5} more faction classes");
+                                    LogUtil.Message($"  ... and {factionClasses.Count - 5} more faction classes");
                                 }
                             }
                             
                             if (utilityClasses.Any())
                             {
-                                Log.Message($"Empire - SoS2 Debug: Found {utilityClasses.Count} potential utility classes:");
+                                LogUtil.Message($"SoS2 Debug: Found {utilityClasses.Count} potential utility classes:");
                                 foreach (var type in utilityClasses.Take(5))
                                 {
-                                    Log.Message($"  - {type.FullName}");
+                                    LogUtil.Message($"  - {type.FullName}");
                                 }
                                 if (utilityClasses.Count > 5)
                                 {
-                                    Log.Message($"  ... and {utilityClasses.Count - 5} more utility classes");
+                                    LogUtil.Message($"  ... and {utilityClasses.Count - 5} more utility classes");
                                 }
                             }
                             
                             // Show first 10 general classes
                             foreach (var type in sos2Types.Take(10))
                             {
-                                Log.Message($"  - {type.FullName}");
+                                LogUtil.Message($"  - {type.FullName}");
                                 sos2ClassCount++;
                             }
                             if (sos2Types.Count > 10)
                             {
-                                Log.Message($"  ... and {sos2Types.Count - 10} more classes");
+                                LogUtil.Message($"  ... and {sos2Types.Count - 10} more classes");
                             }
                         }
                     }
@@ -328,16 +325,16 @@ namespace FactionColonies
                 
                 if (sos2ClassCount == 0)
                 {
-                    Log.Warning("Empire - SoS2 Debug: No SoS2 classes found in any assembly. SoS2 may not be properly loaded.");
+                    LogUtil.Warning("SoS2 Debug: No SoS2 classes found in any assembly. SoS2 may not be properly loaded.");
                 }
                 else
                 {
-                    Log.Message($"Empire - SoS2 Debug: Total SoS2 classes found: {sos2ClassCount}");
+                    LogUtil.Message($"SoS2 Debug: Total SoS2 classes found: {sos2ClassCount}");
                 }
             }
             catch (Exception ex)
             {
-                Log.Error("Empire - SoS2 Debug: Error while searching for SoS2 classes: " + ex.Message);
+                LogUtil.Error("SoS2 Debug: Error while searching for SoS2 classes: " + ex.Message);
             }
         }
         //
@@ -355,8 +352,7 @@ namespace FactionColonies
                 var factions = Find.FactionManager.GetType().GetField("allFactions", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Find.FactionManager);
                 list = (List<Faction>)factions;
             }
-            // Log.Message(list.Count().ToString());
-            Log.Message("Resetting faction leaders");
+            LogUtil.Message("Resetting faction leaders");
             // List<Faction> list = (List<Faction>)mainclass                //mainclass.Field("allFactions", ).GetValue();
             foreach (Faction faction in list)
             {
@@ -368,9 +364,9 @@ namespace FactionColonies
                     }
                     catch (NullReferenceException e) 
                     {
-                        Log.Message("Empire - Error trying to generate leader for " + faction.Name);
+                        LogUtil.Error("Error trying to generate leader for " + faction.Name);
                     }
-                    // Log.Message("Generated new leader for " + faction.Name);
+                    // LogUtil.Message("Generated new leader for " + faction.Name);
                 }
 
             }

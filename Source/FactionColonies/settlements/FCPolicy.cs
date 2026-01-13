@@ -32,7 +32,7 @@ namespace FactionColonies
             {
                 ResearchProjectDef researchdef = DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false);
                 if (researchdef == null)
-                    Log.Message("Empire Error - Road research returned Null");
+                    LogUtil.Error("Road research returned Null");
                 if (!(Find.ResearchManager.GetProgress(researchdef) == researchdef.baseCost))
                 {
                     Find.ResearchManager.FinishProject(researchdef);
@@ -116,7 +116,7 @@ namespace FactionColonies
                     case "slaver":
                         return TexLoad.traitSlaverLight;
                     default:
-                        Log.Message("Could not find icon for " + defName);
+                        LogUtil.Warning("Could not find icon for " + defName);
                         return null;
                 }
             }
@@ -147,7 +147,7 @@ namespace FactionColonies
                     case "slaver":
                         return TexLoad.traitSlaverDark;
                     default:
-                        Log.Message("Could not find icon for " + defName);
+                        LogUtil.Warning("Could not find icon for " + defName);
                         return null;
                 }
             }

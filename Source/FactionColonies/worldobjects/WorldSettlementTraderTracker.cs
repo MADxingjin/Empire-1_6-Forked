@@ -201,14 +201,14 @@ namespace FactionColonies
                         null);
                 if (toMoveInventoryTo == null)
                 {
-                    Log.Error("Could not find any pawn to give sold thing to.");
+                    LogUtil.Error("Could not find any pawn to give sold thing to.");
                     thing.Destroy();
                 }
                 else
                 {
                     if (toMoveInventoryTo.inventory.innerContainer.TryAdd(thing))
                         return;
-                    Log.Error("Could not add sold thing to inventory.");
+                    LogUtil.Error("Could not add sold thing to inventory.");
                     thing.Destroy();
                 }
             }
@@ -233,7 +233,7 @@ namespace FactionColonies
                 for (int index = stock.Count - 1; index >= 0; --index)
                 {
                     if (!(stock[index] is Pawn p3) || p3.IsWorldPawn()) continue;
-                    Log.Error("Faction base has non-world-pawns in its stock. Removing...");
+                    LogUtil.Error("Faction base has non-world-pawns in its stock. Removing...");
                     stock.Remove(p3);
                 }
             }

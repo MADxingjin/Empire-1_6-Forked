@@ -87,7 +87,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to load squad at path " + path);
+                    LogUtil.Error("Failed to load squad at path " + path);
                 }
                 finally
                 {
@@ -106,7 +106,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to load unit at path " + path);
+                    LogUtil.Error("Failed to load unit at path " + path);
                 }
                 finally
                 {
@@ -135,7 +135,7 @@ namespace FactionColonies
             }
             catch (Exception e)
             {
-                Log.Error($"Failed to save squad {squad.name} {e}");
+                LogUtil.Error($"Failed to save squad {squad.name} {e}");
             }
             finally
             {
@@ -163,7 +163,7 @@ namespace FactionColonies
             }
             catch (Exception e)
             {
-                Log.Error($"Failed to save unit {unit.name} {e}");
+                LogUtil.Error($"Failed to save unit {unit.name} {e}");
             }
             finally
             {

@@ -14,7 +14,7 @@ namespace FactionColonies
     {
         public static int ReturnTicksToArrive(int currentTile, int destinationTile)
         {
-            Log.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
+            LogUtil.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
 
             bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
             bool medievalOnly = FCSettings.medievalTechOnly;
@@ -23,12 +23,12 @@ namespace FactionColonies
             if (!medievalOnly)
             {
                 bool tilesValid = (currentTile, destinationTile).AreValidTiles();
-                Log.Message($"ReturnTicksToArrive Debug: tilesValid={tilesValid}, medievalOnly={medievalOnly}, podsResearched={podsResearched}");
+                LogUtil.Message($"ReturnTicksToArrive Debug: tilesValid={tilesValid}, medievalOnly={medievalOnly}, podsResearched={podsResearched}");
 
                 if (!tilesValid)
                 {
                     int fallbackTime = podsResearched ? 30000 : 600000;
-                    Log.Message($"ReturnTicksToArrive Debug: Invalid tiles, returning fallback time: {fallbackTime} ticks ({fallbackTime / 60000f:F1} days)");
+                    LogUtil.Message($"ReturnTicksToArrive Debug: Invalid tiles, returning fallback time: {fallbackTime} ticks ({fallbackTime / 60000f:F1} days)");
                     return fallbackTime;
                 }
                 if (podsResearched)

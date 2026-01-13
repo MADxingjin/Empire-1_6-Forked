@@ -59,7 +59,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Error($"Empire: Error creating MilUnitFC: {ex.Message}");
+                LogUtil.Error($"Error creating MilUnitFC: {ex.Message}");
                 pawnKind = PawnKindDefOf.Colonist;
                 generateDefaultPawn();
             }
@@ -137,14 +137,14 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Warning($"Empire: Failed to generate default pawn with kind {pawnKind?.defName}: {ex.Message}");
+                LogUtil.Warning($"Failed to generate default pawn with kind {pawnKind?.defName}: {ex.Message}");
                 defaultPawn = null;
             }
             
             // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing) I'll explore this one further as this may break immersion
             if (defaultPawn == null)
             {
-                Log.Warning($"Empire: Default pawn generation failed for {pawnKind?.defName}. Trying Baseliner fallback without faction.");
+                LogUtil.Warning($"Default pawn generation failed for {pawnKind?.defName}. Trying Baseliner fallback without faction.");
                 try
                 {
                     pawnKind = PawnKindDefOf.Colonist;
@@ -179,14 +179,14 @@ namespace FactionColonies
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"Empire: Baseliner fallback also failed: {ex.Message}");
+                    LogUtil.Warning($"Baseliner fallback also failed: {ex.Message}");
                 }
             }
             
             // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
             if (defaultPawn == null)
             {
-                Log.Warning("Empire: All standard generation failed. Trying minimal fallback.");
+                LogUtil.Warning("All standard generation failed. Trying minimal fallback.");
                 try
                 {
                     var fallbackRequest = new PawnGenerationRequest(
@@ -209,14 +209,14 @@ namespace FactionColonies
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Empire: Critical - all pawn generation attempts failed: {ex.Message}");
+                    LogUtil.Error($"Critical - all pawn generation attempts failed: {ex.Message}");
                 }
             }
             
             // Final check - if still null, we cannot proceed!!!
             if (defaultPawn == null)
             {
-                Log.Error("Empire: Critical error - could not generate any default pawn for military unit.");
+                LogUtil.Error("Critical error - could not generate any default pawn for military unit.");
                 return;
             }
             
@@ -225,19 +225,19 @@ namespace FactionColonies
 
             foreach (Apparel clothes in apparel)
             {
-                //Log.Message(clothes.Label);
+                //LogUtil.Message(clothes.Label);
                 defaultPawn.apparel.Wear(clothes);
             }
 
             foreach (ThingWithComps weapon in equipment)
             {
-                //Log.Message(weapon.Label);
+                //LogUtil.Message(weapon.Label);
                 equipWeapon(weapon);
             }
 
             foreach (Gene xenogene in gene)
             {
-                //Log.Message(gene.Label);
+                //LogUtil.Message(gene.Label);
                 GenerateXenotype(xenogene);
             }
 

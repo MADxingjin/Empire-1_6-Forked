@@ -105,13 +105,13 @@ namespace FactionColonies.util
             string missingLabel0 = ResolveTypeToLabel0(type);
             if (!workList.Any(predicate))
             {
-                Log.Warning("noPawnKindDefOfTypeOfRaceError".Translate(missingLabel0, race.label.CapitalizeFirst()));
+                LogUtil.Warning("noPawnKindDefOfTypeOfRaceError".Translate(missingLabel0, race.label.CapitalizeFirst()));
                 workList = workList.Concat(DefaultList.Where(predicate));
             }
             else if (triedLevels.Count != 0)
             {
                 string missingLabel1 = ResolveTypeToLabel1(type);
-                Log.Warning("noPawnKindDefOfTypeOfRaceWarning".Translate(missingLabel0, string.Join(", ", triedLevels), race.label.CapitalizeFirst(), missingLabel1, successLevel.ToString()));
+                LogUtil.Warning("noPawnKindDefOfTypeOfRaceWarning".Translate(missingLabel0, string.Join(", ", triedLevels), race.label.CapitalizeFirst(), missingLabel1, successLevel.ToString()));
             }
             return workList;
         }
@@ -174,7 +174,7 @@ namespace FactionColonies.util
             if (!HasMissingPawnKindDefTypes) return;
 
             Messages.Message("missingPawnKindDefsCriticalError".Translate(), MessageTypeDefOf.NegativeEvent);
-            Log.Error("missingPawnKindDefsCriticalError".Translate());
+            LogUtil.Error("missingPawnKindDefsCriticalError".Translate());
             workList = GenerateIfMissing(workList, def => def.race == ThingDefOf.Human, MissingType.Undefined, ThingDefOf.Human);
             faction.pawnGroupMakers = emptyList.ListFullCopy();
             GeneratePawnGenOptions(workList);
@@ -184,7 +184,7 @@ namespace FactionColonies.util
         {
             foreach (PawnKindDef def in workList)
             {
-                //Log.Message(def.defaultFactionType.techLevel.ToString() + " == " + factionFc.techLevel.ToString() + " = " + (def.defaultFactionType.techLevel == factionFc.techLevel));
+                //LogUtil.Message(def.defaultFactionType.techLevel.ToString() + " == " + factionFc.techLevel.ToString() + " = " + (def.defaultFactionType.techLevel == factionFc.techLevel));
                 //0 = combat, 1 = trader, 2 = settlement, 3 = peaceful
                 PawnGenOption type = new PawnGenOption { kind = def, selectionWeight = 1 };
                 faction.pawnGroupMakers[2].options.Add(type);

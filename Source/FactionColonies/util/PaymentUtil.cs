@@ -54,7 +54,7 @@ namespace FactionColonies
                     float result = positiveBill.taxes.silverAmount + negativeBill.taxes.silverAmount;
                     if (result == 0)
                     {
-                        //Log.Message("Equal");
+                        //LogUtil.Message("Equal");
                         //if bills cancel eachother out
                         //resolve positive bill and negative bill
                         positiveBill.taxes.silverAmount = 0;
@@ -67,7 +67,7 @@ namespace FactionColonies
                     }
                     else if (result > 0)
                     {
-                        //Log.Message("More");
+                        //LogUtil.Message("More");
                         //if positive bill greater than negative bill
                         positiveBill.taxes.silverAmount = result;
                         negativeBill.taxes.silverAmount = 0;
@@ -78,7 +78,7 @@ namespace FactionColonies
                     }
                     else if (result < 0)
                     {
-                        //Log.Message("Less");
+                        //LogUtil.Message("Less");
                         //if negative bill is greater (technically lesser) than positive bill
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = result;
@@ -198,7 +198,6 @@ namespace FactionColonies
                     {
                         //if silver, add to count
                         dropSpot = cell;
-                        //Log.Message("Found thing!");
                         return true;
                     }
                 }
@@ -220,14 +219,13 @@ namespace FactionColonies
                     {
                         if (thing.def == ThingDefOf.Silver && thing.IsInAnyStorage() == true)
                         {
-                            //Log.Message(thing.LabelCap + " inStorage: " + thing.IsInAnyStorage());
                             silver += thing.stackCount;
                         }
                     }
                 }
             }
 
-            //Log.Message("Silver: " + silver);
+            //LogUtil.Message("getSilver {silver}");
             return silver;
         }
 
@@ -393,7 +391,7 @@ namespace FactionColonies
 
         public static void resetThingFilter(in SettlementFC settlement, ResourceType resourceType)
         {
-            //Log.Message(resourceID.ToString());
+            //LogUtil.Message(resourceID.ToString());
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             ThingFilter filter = settlement.getResource(resourceType).filter;
             filterResource(filter, resourceType, faction.techLevel, settlement);
@@ -496,7 +494,7 @@ namespace FactionColonies
                     break;
                 case ResourceType.Research:
                 case ResourceType.Power:
-                    Log.Message("generateTithe - " + resourceType + " Tithe - How did you get here?");
+                    LogUtil.Error("generateTithe - " + resourceType + " Tithe - How did you get here?");
                     break;
                 case ResourceType.Medicine:
                     param.countRange = new IntRange(1, 2 * multiplier);
@@ -509,7 +507,7 @@ namespace FactionColonies
                     break;
             }
 
-            //Log.Message(resourceID.ToString());
+            //LogUtil.Message(resourceID.ToString());
 
             //thingSetMaker.root
             things = thingSetMaker.Generate(param);
@@ -604,12 +602,11 @@ namespace FactionColonies
                     param.countRange = new IntRange(1, 2);
                     break;
                 default: //log error
-                    Log.Message("This is an error. Report this to the dev. generateThing - nonexistent case");
-                    Log.Message(resourceOfThing);
+                    LogUtil.Error("This is an error. Report this to the dev. generateThing - nonexistent case ({resourceOfThing})");
                     break;
             }
 
-            //Log.Message(resourceID.ToString());
+            //LogUtil.Message(resourceID.ToString());
 
 
             //thingSetMaker.root
@@ -627,11 +624,11 @@ namespace FactionColonies
             double totalValue = 0;
             foreach (Thing thing in things)
             {
-                //Log.Message(thing.def + " #" + thing.stackCount + " $" + thing.stackCount * thing.MarketValue);
+                //LogUtil.Message(thing.def + " #" + thing.stackCount + " $" + thing.stackCount * thing.MarketValue);
                 totalValue += thing.stackCount * thing.MarketValue;
             }
 
-            //Log.Message("Total Value: $" + totalValue);
+            //LogUtil.Message("Total Value: $" + totalValue);
             return totalValue;
         }
 
@@ -698,7 +695,7 @@ namespace FactionColonies
             }
 
             int attempts = 0;
-            //Log.Message("Min: " + parms.totalMarketValueRange.Value.min + " = " + parms.totalMarketValueRange.Value.max + " max");
+            //LogUtil.Message("Min: " + parms.totalMarketValueRange.Value.min + " = " + parms.totalMarketValueRange.Value.max + " max");
 
             while (parms.totalMarketValueRange.Value.min > value && value < parms.totalMarketValueRange.Value.max)
             {
@@ -706,7 +703,7 @@ namespace FactionColonies
                 if (parms.totalMarketValueRange.Value.min < value)
                 {
                     attempts += 1;
-                    //Log.Message("Attempts +1");
+                    //LogUtil.Message("Attempts +1");
                 }
 
                 PawnGenerationRequest request = new PawnGenerationRequest(kind: things.RandomElement<PawnKindDef>(),
@@ -719,7 +716,7 @@ namespace FactionColonies
                     relationWithExtraPawnChanceFactor: 1, validatorPreGear: null, validatorPostGear: null, 
                     forcedTraits: null, prohibitedTraits: null);
                 Pawn pawn = PawnGenerator.GeneratePawn(request);
-                //Log.Message("Pawn generate: " + pawn.LabelCap + " value: " + pawn.MarketValue);
+                //LogUtil.Message("Pawn generate: " + pawn.LabelCap + " value: " + pawn.MarketValue);
                 if (pawn.MarketValue + value > parms.totalMarketValueRange.Value.max)
                 {
                     if (attempts >= 5)
@@ -732,10 +729,10 @@ namespace FactionColonies
                     }
                 }
 
-                //Log.Message(pawn.Name + "   " + pawn.MarketValue + "MarketValue: max value" + parms.totalMarketValueRange.Value.max + ", min val: " + parms.totalMarketValueRange.Value.min);
+                //LogUtil.Message(pawn.Name + "   " + pawn.MarketValue + "MarketValue: max value" + parms.totalMarketValueRange.Value.max + ", min val: " + parms.totalMarketValueRange.Value.min);
                 value += (int) pawn.MarketValue;
                 outThings.Add(pawn);
-                //Log.Message(pawn.Label + "total cost: " + value);
+                //LogUtil.Message(pawn.Label + "total cost: " + value);
                 goto Regen;
                 Exit: ;
             }

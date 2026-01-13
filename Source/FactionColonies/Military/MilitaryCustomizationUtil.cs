@@ -64,7 +64,7 @@ namespace FactionColonies
                 
                 if (squads == null) return;
                 
-                //Log.Message("checking for errors" + Find.TickManager.TicksGame);
+                LogUtil.Message("MilitaryCustomizationUtil: checking for errors" + Find.TickManager.TicksGame);
                 foreach (MilSquadFC squad in squads)
                 {
                     if (squad?.units == null) continue;
@@ -88,7 +88,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Error($"Empire: Error in checkMilitaryUtilForErrors: {ex.Message}");
+                LogUtil.Error($"Error in checkMilitaryUtilForErrors: {ex.Message}");
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace FactionColonies
                 return squad;
             }
 
-            Log.Message("Empire - MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
+            LogUtil.Message("MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
             return null;
         }
 
@@ -237,7 +237,7 @@ namespace FactionColonies
 
             if (settlement.militarySquad == null)
             {
-                Log.Message("Empire - createMercenarySquad fail. Found squad is Null");
+                LogUtil.Warning("createMercenarySquad fail. Found squad is Null");
             }
 
             return findSquad(squad);

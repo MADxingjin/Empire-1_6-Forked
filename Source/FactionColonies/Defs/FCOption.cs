@@ -98,16 +98,9 @@ namespace FactionColonies
 
 		public override void DoWindowContents(Rect inRect)
 		{
-
-
-
-
-
 			//grab before anchor/font
 			GameFont fontBefore = Text.Font;
 			TextAnchor anchorBefore = Text.Anchor;
-
-
 
 			//Settlement Tax Collection Header
 			Text.Anchor = TextAnchor.MiddleLeft;
@@ -116,8 +109,6 @@ namespace FactionColonies
 			Widgets.Label(new Rect(10, 0, 500, 60), header);
 			Widgets.DrawLineHorizontal(0, 155, 544);
 
-
-
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.Font = GameFont.Tiny;
 			Widgets.Label(new Rect(20, 60, 470, 90), desc);
@@ -125,9 +116,6 @@ namespace FactionColonies
 
 			Text.Anchor = TextAnchor.MiddleLeft;
 			Text.Font = GameFont.Tiny;
-
-
-			
 
 			for(int i = 0; i < options.Count(); i++)
 			{
@@ -138,13 +126,13 @@ namespace FactionColonies
 						PaymentUtil.paySilver(options[i].silverCost);
 
 						FCEventMaker.calculateSuccess(options[i], parentEvent);
-						//Log.Message(options[i].label);
 
 
 						Find.WindowStack.TryRemove(this);
 					}
 					else
 					{
+						//TODO: Localization key
 						Messages.Message("You do not have enough silver on the map to pay for that option", MessageTypeDefOf.RejectInput);
 					}
 				}
@@ -159,8 +147,5 @@ namespace FactionColonies
 			Text.Anchor = anchorBefore;
 
 		}
-
-
-
 	}
 }

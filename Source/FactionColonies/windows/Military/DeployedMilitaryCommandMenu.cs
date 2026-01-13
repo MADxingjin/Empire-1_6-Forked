@@ -62,7 +62,7 @@ namespace FactionColonies
             if (!list.Any())
             {
                 //This should never happen
-                Log.Error("No deployed squad, but window is still open? Closing..");
+                LogUtil.Error("No deployed squad, but window is still open? Closing..");
                 Close();
                 list.Add(new FloatMenuOption("noSquadsAvailable".Translate(), null));
             }

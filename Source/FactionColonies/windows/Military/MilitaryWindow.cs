@@ -32,8 +32,6 @@ namespace FactionColonies
             }
 
             Event.current.Use();
-
-            //Log.Message(scroll.ToString());
         }
     }
 }

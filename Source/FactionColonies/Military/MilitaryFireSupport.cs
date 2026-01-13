@@ -112,7 +112,7 @@ namespace FactionColonies
             var ammoSetDef = typeDef.GetProperty("AmmoSetDefs", BindingFlags.Public | BindingFlags.Instance).GetValue(tempDef);
             Type ammoLink = GenUtil.returnUnknownTypeFromName("CombatExtended.AmmoLink");
             var ammoLinkVar = ammoSetDef.GetType().GetProperty("Item").GetValue(ammoSetDef, new object[] { 0 });
-            //  Log.Message(ammoLinkVar.ToString());
+            //  LogUtil.Message(ammoLinkVar.ToString());
             var ammoTypes = ammoLinkVar.GetType().GetField("ammoTypes", BindingFlags.Public | BindingFlags.Instance).GetValue(ammoLinkVar);
             //list of ammotypes
             int count = (int) ammoTypes.GetType().GetProperty("Count").GetValue(ammoTypes, new object[] { });
