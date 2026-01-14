@@ -156,6 +156,7 @@ namespace FactionColonies
         }
         public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
         {
+            /* Allow lists */
             if (thingAllowList != null)
             {
                 foreach (ResourceThingDef thingDef in thingAllowList)
@@ -176,24 +177,19 @@ namespace FactionColonies
                     }
                 }
             }
+            /* Block lists */
             if (thingBlockList != null)
             {
-                foreach (ResourceThingDef thingDef in thingBlockList)
+                foreach (ThingDef thingDef in thingBlockList)
                 {
-                    if (thingDef.IsAvailable(techlevel))
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
-                    }
+                    filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
                 }
             }
             if (thingCategoryBlockList != null)
             {
-                foreach (ResourceThingCategoryDef thingCategoryDef in thingCategoryBlockList)
+                foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
                 {
-                    if (thingCategoryDef.IsAvailable(techlevel))
-                    {
-                        filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), false);
-                    }
+                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), false);
                 }
             }
 
