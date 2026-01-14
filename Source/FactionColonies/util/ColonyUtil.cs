@@ -59,8 +59,7 @@ namespace FactionColonies.util
             if (createWorldObject)
             {
                 settlementfc = new SettlementFC(getName(faction), tile);
-                settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(
-                    DefDatabase<WorldObjectDef>.GetNamed("FactionBaseGenerator"));
+                settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("SettlementFC"));
                 settlement.Tile = tile;
 
                 List<String> used = new List<string>();
