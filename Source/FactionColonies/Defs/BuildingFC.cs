@@ -5,25 +5,8 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class BuildingFCDef : Def, IExposable
+    public class BuildingFCDef : Def
     {
-        //TODO: look into why we're saving fields of a Def. This shouldn't be necessary
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref desc, "desc");
-            Scribe_Values.Look(ref cost, "cost");
-            Scribe_Values.Look(ref techLevel, "techLevel");
-            Scribe_Values.Look(ref constructionDuration, "constructionDuration");
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
-            Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
-            Scribe_Values.Look(ref upkeep, "upkeep");
-            Scribe_Values.Look(ref iconPath, "iconPath");
-            Scribe_Values.Look(ref requiresRoyality, "requiresRoyality");
-            Scribe_Values.Look(ref requiresIdeology, "requiresIdeology");
-            Scribe_Collections.Look(ref requiredModsID, "requiredMods", LookMode.Value);
-            Scribe_Values.Look(ref settlementTypeRestriction, "settlementTypeRestriction", SettlementTypeRestriction.None);
-        }
-
         public string desc;
         public double cost;
         public int constructionDuration;

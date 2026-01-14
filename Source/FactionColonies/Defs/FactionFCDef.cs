@@ -8,6 +8,9 @@ using RimWorld;
 
 namespace FactionColonies
 {
+    //TODO: I don't think this class should actually be a def. We don't treat techLevel like a def, since it's actually modified during runtime
+    //      and the stufffilter isn't actually used at all.
+    //      techLevel should be moved into the Faction probably (maybe maybe a subclass to hold Empire-specific info)
     public class FactionFCDef : Def, IExposable
     {
 

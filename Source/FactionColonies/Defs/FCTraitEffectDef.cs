@@ -4,7 +4,7 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class FCTraitEffectDef: Def, IExposable
+    public class FCTraitEffectDef: Def
     {
         public string desc = ""; //Description of trait
 
@@ -70,77 +70,6 @@ namespace FactionColonies
         List<TraitDef> forcedFactionPawnTraits = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<TraitDef> factionAllowedRaces = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<Thing> factionUniform = new List<Thing>(); //List of the things pawns in the faction can wear                                        #NEEDS TO BE IMPLEMENTED
-
-        //TODO: Why are we saving all this information? Isn't the point of using a def so that we don't have to do this?
-        //      are there *any* vanilla defs that are also iexposable? If so, this might be kosher, but it seems like we're saving a lot of data for no reason
-        public void ExposeData()
-        {
-            //Description
-            Scribe_Values.Look(ref desc, "desc");
-
-        //Resource Base Production
-        Scribe_Values.Look(ref productionBaseFood, "productionBaseFood");
-        Scribe_Values.Look(ref productionBaseWeapons, "productionBaseWeapons");
-        Scribe_Values.Look(ref productionBaseApparel, "productionBaseApparel");
-        Scribe_Values.Look(ref productionBaseAnimals, "productionBaseAnimals");
-        Scribe_Values.Look(ref productionBaseLogging, "productionBaseLogging");
-        Scribe_Values.Look(ref productionBaseMining, "productionBaseMining");
-        Scribe_Values.Look(ref productionBaseAnimals, "productionBaseResearch");
-        Scribe_Values.Look(ref productionBaseLogging, "productionBasePower");
-        Scribe_Values.Look(ref productionBaseMining, "productionBaseMedicine");
-
-        //Resource Multiplier Production
-        Scribe_Values.Look(ref productionMultiplierFood, "productionMultiplierFood");
-        Scribe_Values.Look(ref productionMultiplierWeapons, "productionMiltiplierWeapons");
-        Scribe_Values.Look(ref productionMultiplierApparel, "productionMultiplierApparel");
-        Scribe_Values.Look(ref productionMultiplierAnimals, "productionMultiplierAnimals");
-        Scribe_Values.Look(ref productionMultiplierLogging, "productionMultiplierLogging");
-        Scribe_Values.Look(ref productionMultiplierMining, "productionMultiplierMining");
-        Scribe_Values.Look(ref productionMultiplierAnimals, "productionMultiplierResearch");
-        Scribe_Values.Look(ref productionMultiplierLogging, "productionMultiplierPower");
-        Scribe_Values.Look(ref productionMultiplierMining, "productionMultiplierMedicine");
-
-            //Military Stats
-            Scribe_Values.Look(ref militaryBaseLevel, "militaryBaseLevel");
-        Scribe_Values.Look(ref militaryMultiplierCombatEfficiency, "militaryMultiplierCombatEfficiency");
-
-        //Economic Stats
-        Scribe_Values.Look(ref taxBasePercentage, "taxBasePercentage"); //0.01 - 2.00// Affects the base tax percentage
-        Scribe_Values.Look(ref taxBaseRandomModifier, "taxBaseRandomModifier");  //Affects the modifier for tithe income
-        Scribe_Values.Look(ref prosperityBaseRecovery, "prosperityBaseRecovery"); //Affects how quickly settlements recover from lost prosperity
-        Scribe_Values.Look(ref workerBaseCost, "workerBaseCost"); //Affects how much a single worker costs
-        Scribe_Values.Look(ref workerBaseMax, "workerBaseMax"); //Affects how many workers you can have (Max) before worker costs start to rise
-        Scribe_Values.Look(ref workerBaseOverMax, "workerBaseOverMax"); //Affects how many workers past the max you can hire
-
-            //Social Stats Base
-        Scribe_Values.Look(ref happinessLostBase, "happinessLostBase"); //0.0 - 2.0;     Affects how much happiness is lost
-        Scribe_Values.Look(ref happinessGainedBase, "happinessGainedBase"); //0.0 - 2.0    Affects how much happiness is gained
-        Scribe_Values.Look(ref loyaltyLostBase, "loyaltyLostBase"); //0.0 - 2.0;         Affects how much loyalty is lost
-        Scribe_Values.Look(ref loyaltyGainedBase, "loyaltyGainedBase"); //0.0 - 2.0;         Affects how much loyalty is gained
-        Scribe_Values.Look(ref unrestLostBase, "unrestLostBase");  //0.0 - 2.0;         Affects how much unrest is lost
-        Scribe_Values.Look(ref unrestGainedBase, "unrestGainedBase"); //0.0 - 2.0;         Affects how much loyalty is gained
-
-        //Social Stats Multipliers
-        Scribe_Values.Look(ref happinessLostMultiplier, "happinessLostMultiplier"); //0.0 - 2.0;     Affects how much happiness is lost
-        Scribe_Values.Look(ref happinessGainedMultiplier, "happinessGainedMultiplier"); //0.0 - 2.0    Affects how much happiness is gained
-        Scribe_Values.Look(ref loyaltyLostMultiplier, "loyaltyLostMultiplier"); //0.0 - 2.0;         Affects how much loyalty is lost
-        Scribe_Values.Look(ref loyaltyGainedMultiplier, "loyaltyGainedMultiplier"); //0.0 - 2.0;         Affects how much loyalty is gained
-        Scribe_Values.Look(ref unrestLostMultiplier, "unrestLostMultiplier");  //0.0 - 2.0;         Affects how much unrest is lost
-        Scribe_Values.Look(ref unrestGainedMultiplier, "unrestGainedMultiplier"); //0.0 - 2.0;         Affects how much loyalty is gained
-
-
-
-            //Create Settlement Stats
-        Scribe_Values.Look(ref createSettlementBaseCost, "createSettlementBaseCost");  //affects how much it costs to create a settlement
-        Scribe_Values.Look(ref createSettlementMultiplier, "createSettlementMultiplier");  //affects how much it costs to create a settlement
-
-            //Faction Pawn Required Traits
-        Scribe_Collections.Look(ref forcedFactionPawnTraits, "forcedFactionPawnTraits", LookMode.Deep);   //Traits that pawns are required to have
-        Scribe_Collections.Look(ref factionAllowedRaces, "factionAllowedRaces", LookMode.Deep);   //Traits that pawns are required to have
-        Scribe_Collections.Look(ref factionUniform, "factionUniform", LookMode.Deep); //List of uniform items for the faction
-        }
-
-
     }
 
     [DefOf]

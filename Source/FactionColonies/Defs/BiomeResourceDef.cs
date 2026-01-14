@@ -4,18 +4,11 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class BiomeResourceDef : Def, IExposable
+    public class BiomeResourceDef : Def
     {
         public List<double> BaseProductionAdditive = new List<double>();
         public List<double> BaseProductionMultiplicative = new List<double>();
         public bool canSettle;
-
-        public void ExposeData()
-        {
-            Scribe_Collections.Look(ref BaseProductionAdditive, "BaseProductionAdditive", LookMode.Value);
-            Scribe_Collections.Look(ref BaseProductionMultiplicative, "BaseProductionMultiplicative", LookMode.Value);
-            Scribe_Values.Look(ref canSettle, "canSettle");
-        }
 
         public void EnsureResourceLists()
         {
