@@ -16,7 +16,12 @@
 		</traits>
 		<upkeep>600</upkeep>
 		<iconPath>GUI/Buildings/ShuttlePort</iconPath>
-		<shuttleUses>3</shuttleUses>
 		<requiresRoyality>true</requiresRoyality>
+		<modExtensions>
+		  <li Class="FactionColonies.BuildingFCExtension_Shuttles">
+		    <compClass>FactionColonies.WorldObjectComp_SettlementShuttles</compClass>
+			<shuttleUses>3</shuttleUses>
+		  </li>
+		</modExtensions>
 	</FactionColonies.BuildingFCDef>
 </Defs>

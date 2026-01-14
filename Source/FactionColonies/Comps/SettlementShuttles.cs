@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static Verse.KeyPrefs;
 
 namespace FactionColonies
 {
@@ -30,21 +31,89 @@ namespace FactionColonies
         }
     }
 
-    public class WorldObjectComp_SettlementShuttles : WorldObjectComp
+    public class WorldObjectComp_SettlementShuttles : WorldObjectComp_SettlementBuilding
     {
+        public int shuttleUsesRemaining = 0;
+        public int totalShuttleUses = 0;
+        public int lastShuttleUsesRefreshTick = 0;
+        public const int shuttleRefreshInterval = GenDate.TicksPerDay * 5;
+        public bool shuttlesActive => totalShuttleUses > 0;
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look(ref shuttleUsesRemaining, "shuttleUsesRemaining", 0);
+            Scribe_Values.Look(ref totalShuttleUses, "totalShuttleUses", 0);
+            Scribe_Values.Look(ref lastShuttleUsesRefreshTick, "lastShuttleUsesRefreshTick", 0);
+        }
+
+        private void RefreshTotalShuttleUses(int buildingSlotToSkip = -1)
+        {
+            if (parent is WorldSettlementFC settlement)
+            {
+                totalShuttleUses = 0;
+                for (int i = 0; i < settlement.settlement.buildings.Count; i++)
+                {
+                    if (i != buildingSlotToSkip)
+                    {
+                        BuildingFCExtension_Shuttles ext = settlement.settlement.buildings[i].GetModExtension<BuildingFCExtension_Shuttles>();
+                        if (ext != null)
+                        {
+                            totalShuttleUses += ext.shuttleUses;
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void OnConstruct(int buildingSlot)
+        {
+            LogUtil.Message("Start of WorldObjectComp_SettlementShuttles.OnConstruct");
+            if (parent is WorldSettlementFC settlement)
+            {
+                int oldTotalUses = totalShuttleUses;
+                RefreshTotalShuttleUses();
+                shuttleUsesRemaining += (totalShuttleUses - oldTotalUses);
+                if (shuttleUsesRemaining < 0)
+                {
+                    shuttleUsesRemaining = 0;
+                }
+            }
+        }
+        public override void OnDeconstruct(int buildingSlot)
+        {
+            LogUtil.Message("Start of WorldObjectComp_SettlementShuttles.OnDeconstruct");
+            if (parent is WorldSettlementFC settlement)
+            {
+                RefreshTotalShuttleUses(buildingSlot);
+                if (shuttleUsesRemaining > totalShuttleUses)
+                {
+                    shuttleUsesRemaining = totalShuttleUses;
+                }
+            }
+        }
+
+        public override void CompTick()
+        {
+            base.CompTick();
+            
+            if (shuttlesActive && lastShuttleUsesRefreshTick + shuttleRefreshInterval > Find.TickManager.TicksGame && parent is WorldSettlementFC settlement)
+            {
+                RefreshTotalShuttleUses();
+                shuttleUsesRemaining = totalShuttleUses;
+                lastShuttleUsesRefreshTick = Find.TickManager.TicksGame;
+            }
+        }
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (Gizmo gizmo in base.GetGizmos())
             {
                 yield return gizmo;
             }
-            if (parent is WorldSettlementFC worldsettlement)
+            if (shuttlesActive && parent is WorldSettlementFC worldsettlement)
             {
-                if (worldsettlement.settlement.buildings.Contains(BuildingFCDefOf.shuttlePort))
-                {
-                    yield return RequestShuttleAction(worldsettlement);
-                    yield return RequestShuttleForCaravanAction(worldsettlement);
-                }
+                yield return RequestShuttleAction(worldsettlement);
+                yield return RequestShuttleForCaravanAction(worldsettlement);
             }
         }
 
@@ -53,18 +122,18 @@ namespace FactionColonies
             Command_Action requestShuttle = new Command_Action
             {
                 defaultLabel = "shuttlePortCallShuttleLabel".Translate(),
-                defaultDesc = "shuttlePortCallShuttleDesc".Translate(worldsettlement.shuttleUsesRemaining, ShuttleSender.cost),
+                defaultDesc = "shuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/CallShuttle"),
                 action = delegate
                 {
                     Find.WorldSelector.ClearSelection();
-                    var sender = new ShuttleSender(worldsettlement.Tile, worldsettlement);
+                    var sender = new ShuttleSender(worldsettlement.Tile, this);
                     Find.WorldTargeter.BeginTargeting(sender.PerformActionWithTarget, true,
                         CompLaunchable.TargeterMouseAttachment, false, sender.DrawWorldRadiusRing,
                         sender.DisplayTargetInformation, sender.ChoseWorldTarget);
                 }
             };
-            if (worldsettlement.shuttleUsesRemaining < ShuttleSender.cost)
+            if (shuttleUsesRemaining < ShuttleSender.cost)
             {
                 requestShuttle.Disable("notEnoughShuttleUsesRemaining".Translate());
             }
@@ -77,7 +146,7 @@ namespace FactionColonies
             Command_Action requestShuttleForCaravan = new Command_Action
             {
                 defaultLabel = "shuttlePortCallShuttleForCaravanLabel".Translate(),
-                defaultDesc = "shuttlePortCallShuttleDesc".Translate(worldsettlement.shuttleUsesRemaining, ShuttleSender.cost),
+                defaultDesc = "shuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/CallShuttle"),
 
                 action = delegate
@@ -87,7 +156,7 @@ namespace FactionColonies
 
                     caravans.ForEach(caravan => options.Add(new FloatMenuOption(caravan.Label, delegate
                     {
-                        var sender = new ShuttleSenderCaravan(caravan.Tile, caravan, worldsettlement);
+                        var sender = new ShuttleSenderCaravan(caravan.Tile, caravan, this);
 
                         CameraJumper.TryJump(caravan);
                         Find.WorldSelector.ClearSelection();
@@ -104,7 +173,7 @@ namespace FactionColonies
                     Find.WindowStack.Add(new FloatMenu(options));
                 }
             };
-            if (worldsettlement.shuttleUsesRemaining < ShuttleSender.cost)
+            if (shuttleUsesRemaining < ShuttleSender.cost)
             {
                 requestShuttleForCaravan.Disable("noShuttleUsesRemaining".Translate());
             }

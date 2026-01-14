@@ -71,6 +71,8 @@ namespace FactionColonies
         List<TraitDef> factionAllowedRaces = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<Thing> factionUniform = new List<Thing>(); //List of the things pawns in the faction can wear                                        #NEEDS TO BE IMPLEMENTED
 
+        //TODO: Why are we saving all this information? Isn't the point of using a def so that we don't have to do this?
+        //      are there *any* vanilla defs that are also iexposable? If so, this might be kosher, but it seems like we're saving a lot of data for no reason
         public void ExposeData()
         {
             //Description

@@ -7,6 +7,7 @@ namespace FactionColonies
 {
     public class BuildingFCDef : Def, IExposable
     {
+        //TODO: look into why we're saving fields of a Def. This shouldn't be necessary
         public void ExposeData()
         {
             Scribe_Values.Look(ref desc, "desc");
@@ -17,7 +18,6 @@ namespace FactionColonies
             Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
             Scribe_Values.Look(ref upkeep, "upkeep");
             Scribe_Values.Look(ref iconPath, "iconPath");
-            Scribe_Values.Look(ref shuttleUses, "shuttleUses");
             Scribe_Values.Look(ref requiresRoyality, "requiresRoyality");
             Scribe_Values.Look(ref requiresIdeology, "requiresIdeology");
             Scribe_Collections.Look(ref requiredModsID, "requiredMods", LookMode.Value);
@@ -33,7 +33,6 @@ namespace FactionColonies
         public int upkeep;
         public string iconPath = "GUI/unrest";
         public Texture2D iconLoaded;
-        public int shuttleUses = 0;
         public bool requiresRoyality = false;
         public bool requiresIdeology = false;
         public List<string> requiredModsID = new List<string>();

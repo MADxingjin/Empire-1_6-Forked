@@ -108,14 +108,6 @@ namespace FactionColonies
             if (trait_Egalitarian_TaxBreak_Enabled &&
                 tick >= trait_Egalitarian_TaxBreak_Tick + GenDate.TicksPerDay * 10)
                 trait_Egalitarian_TaxBreak_Enabled = false;
-
-            if (lastShuttleUsesTick < (tick - GenDate.TicksPerDay * 5))
-            {
-                int temp = 0;
-                buildings.ForEach(building => temp += building.shuttleUses);
-                worldSettlement.shuttleUsesRemaining = temp;
-                lastShuttleUsesTick = tick;
-            }
         }
 
         public void initBaseProduction()
@@ -730,9 +722,6 @@ namespace FactionColonies
             //Traits
             Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Tick, "trait_Egalitarian_TaxBreak_Tick");
             Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Enabled, "trait_Egalitarian_TaxBreak_Enabled");
-
-            //Shuttles
-            Scribe_Values.Look(ref lastShuttleUsesTick, "lastShuttleUsesTick");
         }
 
         //Settlement Base Info
@@ -789,9 +778,6 @@ namespace FactionColonies
         //Trait stuff
         public int trait_Egalitarian_TaxBreak_Tick;
         public bool trait_Egalitarian_TaxBreak_Enabled;
-
-        //shuttle stuff
-        public int lastShuttleUsesTick = 0;
 
 
         //public static Biome biome;
@@ -1345,14 +1331,39 @@ namespace FactionColonies
 
         public void deconstructBuilding(int buildingSlot)
         {
-            foreach (FCTraitEffectDef trait in buildings[buildingSlot].traits) //remove traits
+            LogUtil.Message($"Deconstructing building {buildings[buildingSlot].defName} in slot {buildingSlot} in settlement {name}");
+
+            /* The way buildings are set up, I don't think traits should ever be null. But it can't hurt to check. */
+            if (buildings[buildingSlot].traits != null)
             {
-                foreach (FCTraitEffectDef settlement in traits)
+                foreach (FCTraitEffectDef trait in buildings[buildingSlot].traits) //remove traits
                 {
-                    if (settlement == trait)
+                    foreach (FCTraitEffectDef settlement in traits)
                     {
-                        traits.Remove(settlement);
-                        break;
+                        if (settlement == trait)
+                        {
+                            traits.Remove(settlement);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                LogUtil.Warning($"Building {buildings[buildingSlot].defName} has no traits. Is this intentional?");
+            }
+
+            /* Check if the building has any defmodextensions. If so, do any deconstruct processing demanded by the extensions. */
+            if (buildings[buildingSlot].modExtensions != null)
+            {
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].modExtensions)
+                {
+                    LogUtil.Message($"  found defmodextension {ext}");
+                    if (ext.compClass != null)
+                    {
+                        LogUtil.Message($"    with compClass {ext.compClass}");
+
+                        CompHelper.SettlementBuilding_Deconstruct(worldSettlement, ext.compClass, buildingSlot);
                     }
                 }
             }
@@ -1470,9 +1481,34 @@ namespace FactionColonies
         {
             deconstructBuilding(buildingSlot);
 
+            LogUtil.Message($"Constructing building {building.defName} in slot {buildingSlot} in settlement {name}");
+
             buildings[buildingSlot] = building;
 
-            traits.AddRange(building.traits); //add new traits
+            /* The way buildings are set up, I don't think traits should ever be null. But it can't hurt to check. */
+            if (building.traits != null)
+            {
+                traits.AddRange(building.traits); //add new traits
+            }
+            else
+            {
+                LogUtil.Warning($"Building {building.defName} has no traits. Is this intentional?");
+            }
+
+            /* Check if the building has any defmodextensions. If so, do any construct processing demanded by the extensions. */
+            if (building.modExtensions != null)
+            {
+                foreach (BuildingFCExtension ext in building.modExtensions)
+                {
+                    LogUtil.Message($"  found defmodextension {ext}");
+                    if (ext.compClass != null)
+                    {
+                        LogUtil.Message($"    with compClass {ext.compClass}");
+
+                        CompHelper.SettlementBuilding_Construct(worldSettlement, ext.compClass, buildingSlot);
+                    }
+                }
+            }
         }
 
 

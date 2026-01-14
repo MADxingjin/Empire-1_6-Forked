@@ -40,7 +40,6 @@ namespace FactionColonies
         private bool destroyFlag;
 
         public SettlementFC settlement;
-        public int shuttleUsesRemaining;
         public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
 
         public new WorldSettlementTraderTracker trader;
@@ -161,11 +160,7 @@ namespace FactionColonies
             Scribe_Deep.Look(ref defenderForce, "defenderForce");
             Scribe_Deep.Look(ref attackerForce, "attackerForce");
             Scribe_Deep.Look(ref trader, "trader");
-            Scribe_Values.Look(ref shuttleUsesRemaining, "shuttleUsesRemaining");
         }
-        //TODO: Make it so you can assign comps to buildings. Then, have this function call GetGizmos on all building comps associated with the settlement
-        //      Example: the shuttle building could have a comp that is in charge of handling the shuttle gizmo, rather than assigning the comp to the settlement
-        //      Could allow for more buildings that add gizmos without having to change the world settlement object itself
         /*public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (var gizmo in base.GetGizmos()) yield return gizmo;
