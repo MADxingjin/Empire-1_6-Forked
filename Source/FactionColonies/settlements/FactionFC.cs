@@ -88,9 +88,6 @@ namespace FactionColonies
         public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech); // Orbital tech bases
         public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
 
-        //Faction Def
-        public FactionFCDef factionDef = new FactionFCDef();
-
         //Update
         public int nextSettlementFCID = 1;
         public int nextMercenarySquadID = 1;
@@ -256,8 +253,6 @@ namespace FactionColonies
             Scribe_Deep.Look(ref gravtech, "gravtech");
             Scribe_Deep.Look(ref chemfuel, "chemfuel");
 
-            //Faction Def
-            Scribe_Deep.Look(ref factionDef, "factionDef");
             Scribe_Deep.Look(ref raceFilter, "raceFilter");
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
             Scribe_Values.Look(ref updateProcessed, "updateProcessed", false);
@@ -729,9 +724,6 @@ namespace FactionColonies
             return max;
         }
 
-
-        public void updateFaction() => Find.World.GetComponent<FactionFC>().factionDef = Find.World.GetComponent<FactionFC>().factionDef ?? new FactionFCDef();
-
         public void updateFactionRaces()
         {
             Faction faction = ColonyUtil.getPlayerColonyFaction();
@@ -767,7 +759,6 @@ namespace FactionColonies
                 DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false).baseCost && techLevel < TechLevel.Ultra)
             {
                 techLevel = TechLevel.Ultra;
-                factionDef.techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
                 raceFilter.FinalizeInit(this);
             }
@@ -777,7 +768,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Spacer)
             {
                 techLevel = TechLevel.Spacer;
-                factionDef.techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
                 raceFilter.FinalizeInit(this);
             }
@@ -787,7 +777,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Industrial)
             {
                 techLevel = TechLevel.Industrial;
-                factionDef.techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
                 raceFilter.FinalizeInit(this);
             }
@@ -797,7 +786,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Medieval)
             {
                 techLevel = TechLevel.Medieval;
-                factionDef.techLevel = TechLevel.Medieval;
                 LogUtil.Message("updateTechLevel: Medieval");
                 raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
@@ -812,9 +800,6 @@ namespace FactionColonies
                     xenotypeFilter.FinalizeInit(this);
                 }
             }
-
-            //update to player colony faction
-            updateFaction();
 
             Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
