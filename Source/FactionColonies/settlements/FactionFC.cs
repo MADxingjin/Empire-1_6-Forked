@@ -1,16 +1,17 @@
+using FactionColonies.util;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
+using RimWorld.BaseGen;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using FactionColonies.util;
-using HarmonyLib;
-using RimWorld;
-using RimWorld.BaseGen;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
-using LudeonTK;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
@@ -816,19 +817,7 @@ namespace FactionColonies
             {
                 if (playerColonyfaction.leader == null || playerColonyfaction.leader.Dead)
                 {
-                    if (!playerColonyfaction.TryGenerateNewLeader())
-                    {
-                        LogUtil.Message("Generating Leader failed! Manually Generating . . .");
-                        playerColonyfaction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
-                        faction: playerColonyfaction, context: PawnGenerationContext.NonPlayer,
-                        forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
-                        canGeneratePawnRelations: true, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0,
-                        forceAddFreeWarmLayerIfNeeded: false, worldPawnFactionDoesntMatter: false));
-                        if (playerColonyfaction.leader == null)
-                        {
-                            LogUtil.Warning("That failed, too! Contacting " + playerColonyfaction.Name + " won't work!");
-                        }
-                    }
+                    ColonyUtil.CreatePlayerFactionLeader(playerColonyfaction);
                 }
             }
         }

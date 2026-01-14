@@ -59,7 +59,7 @@ namespace FactionColonies.util
             if (createWorldObject)
             {
                 settlementfc = new SettlementFC(getName(faction), tile);
-                settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("SettlementFC"));
+                settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<SettlementDef>.GetNamed("SettlementFC"));
                 settlement.Tile = tile;
 
                 List<String> used = new List<string>();
@@ -244,8 +244,7 @@ namespace FactionColonies.util
                 faction.TryMakeInitialRelationsWith(other);
             }
 
-            //faction.GenerateNewLeader();
-            faction.TryGenerateNewLeader();
+            CreatePlayerFactionLeader(faction);
 
             //LogUtil.Message(Find.FactionManager.AllFactions.Contains(faction).ToString());
 
@@ -336,6 +335,18 @@ namespace FactionColonies.util
             faction.TryAffectGoodwillWith(Faction.OfPlayer, 200);
 
             // Generate Leader
+            CreatePlayerFactionLeader(faction);
+
+            worldcomp.factionBackup = faction;
+            Find.FactionManager.Add(faction);
+
+            Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);
+            return faction;
+        }
+
+        public static bool CreatePlayerFactionLeader(Faction faction)
+        {
+            bool success = true;
             if (!faction.TryGenerateNewLeader())
             {
                 LogUtil.Message("Generating Leader failed! Manually Generating . . .");
@@ -347,6 +358,7 @@ namespace FactionColonies.util
                 if (faction.leader == null)
                 {
                     LogUtil.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
+                    success = false;
                 }
                 else
                 {
@@ -357,17 +369,8 @@ namespace FactionColonies.util
                     LogUtil.Message($"Created pawn {faction.leader.Name} ({faction.leader.ThingID}) to lead faction {faction.Name}");
                 }
             }
-            worldcomp.factionBackup = faction;
-            Find.FactionManager.Add(faction);
 
-            Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);
-            return faction;
-        }
-
-        public static void ChangePlayerColonyFaction(Faction faction)
-        {
-            faction = createPlayerColonyFaction();
-            LogUtil.Message("Faction was updated - " + faction.Name);
+            return success;
         }
     }
 }

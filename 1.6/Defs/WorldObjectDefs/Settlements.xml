@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   
-  <WorldObjectDef Name="SettlementFC" ParentName="StaticWorldObjectBase">
+  <FactionColonies.SettlementDef Name="SettlementFC" ParentName="StaticWorldObjectBase">
     <defName>SettlementFC</defName>
     <label>empire settlement</label>
     <description>A base of the Empire player faction.</description>
@@ -16,6 +16,6 @@
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementDefense" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementShuttles" />
     </comps>
-  </WorldObjectDef>
+  </FactionColonies.SettlementDef>
 
 </Defs>
