@@ -10,118 +10,214 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class ResourceThingDef : ThingDef
+    public abstract class ResourceResearchRestrictionDef : Def
     {
         public TechLevel minTechLevel;
         public TechLevel maxTechLevel;
         public List<ResearchProjectDef> researchProjectDefs = new List<ResearchProjectDef>();
         public bool needsAllResearchRequirements = false;
+        public bool restrictByRecipe = true;
+        public bool restrictByThingTechLevel = true;
 
         public bool hasResearchDefs => (researchProjectDefs.Count > 0);
         public bool hasDefinedMinTechLevel => (minTechLevel != TechLevel.Undefined);
         public bool hasDefinedMaxTechLevel => (maxTechLevel != TechLevel.Undefined);
         public bool hasDefinedTechLevel => hasDefinedMinTechLevel || hasDefinedMaxTechLevel;
-        public bool alwaysAvailable => (!hasResearchDefs && !hasDefinedTechLevel);
-        public bool IsAvailable(TechLevel techlevel)
+        public virtual bool alwaysSatisfiesTechRequirements => (!hasResearchDefs && !hasDefinedTechLevel && !restrictByRecipe && !restrictByThingTechLevel);
+        public virtual bool SatisfiesTechRequirements(TechLevel techlevel)
         {
-            if (alwaysAvailable)
+            if (alwaysSatisfiesTechRequirements)
                 return true;
-
-            bool satisfiesTechLevel = true;
 
             if (hasDefinedTechLevel)
             {
                 bool satisfiesMinLevel = !hasDefinedMinTechLevel || techlevel >= minTechLevel;
                 bool satisfiesMaxLevel = !hasDefinedMaxTechLevel || techlevel <= maxTechLevel;
-                satisfiesTechLevel = satisfiesMinLevel && satisfiesMaxLevel;
-                LogUtil.Message($"techlevel {techlevel} satisfies tech level requirement for ResourceThingDef {LabelCap}: {satisfiesTechLevel}");
-                if (!needsAllResearchRequirements)
+                bool satisfiesDefTechLevel = satisfiesMinLevel && satisfiesMaxLevel;
+                LogUtil.Message($"techlevel {techlevel} satisfies def tech level requirement for ResourceResearchRestrictionDef {LabelCap}: {satisfiesDefTechLevel}");
+                if ((!needsAllResearchRequirements && satisfiesDefTechLevel) ||
+                    (needsAllResearchRequirements && !satisfiesDefTechLevel))
                 {
-                    return satisfiesTechLevel;
+                    return satisfiesDefTechLevel;
                 }
             }
 
             if (hasResearchDefs)
             {
+                bool satisfiesResearchDefs = needsAllResearchRequirements;
                 foreach (ResearchProjectDef projectDef in researchProjectDefs)
                 {
                     if (projectDef.IsFinished && !needsAllResearchRequirements)
                     {
-                        return true;
+                        satisfiesResearchDefs = true;
+                        break;
                     }
                     else if (!projectDef.IsFinished && needsAllResearchRequirements)
                     {
+                        satisfiesResearchDefs = false;
+                        break;
+                    }
+                }
+                LogUtil.Message($"Completed research satisfies the def research requirements for ResourceResearchRestrictionDef {LabelCap}: {satisfiesResearchDefs}");
+                if ((!needsAllResearchRequirements && satisfiesResearchDefs) ||
+                    (needsAllResearchRequirements && !satisfiesResearchDefs))
+                {
+                    return satisfiesResearchDefs;
+                }
+            }
+
+            /* If we get here and we need to meet all requirements, then that means we've passed all checks, and want to return TRUE.
+             * But if we get here and we do NOT need to meet all requirements, then that means that we failed all checks, and want to return FALSE.
+             * So, we can just return needsAllResearchRequirements itself, since its value is exactly what we want to return right now. */
+            return needsAllResearchRequirements;
+        }
+        public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
+        {
+        }
+        public static bool ThingAllowedByRecipe(ThingDef thing)
+        {
+            if (thing.recipeMaker != null)
+            {
+                if (thing.recipeMaker.researchPrerequisites != null)
+                {
+                    foreach (ResearchProjectDef research in thing.recipeMaker.researchPrerequisites)
+                    {
+                        if (!research.IsFinished)
+                        {
+                            //research is not good
+                            return false;
+                        }
+                    }
+                }
+
+                if (thing.recipeMaker.researchPrerequisite != null)
+                {
+                    if (!thing.recipeMaker.researchPrerequisite.IsFinished)
+                    {
+                        //research is not good
                         return false;
                     }
                 }
             }
-            else
+            return true;
+        }
+        public static bool ThingAllowedByThingTechLevel(ThingDef thing, TechLevel techlevel)
+        {
+            if (techlevel < thing.techLevel)
             {
-                /* If we're here, it means that needsAllResearchRequirements is marked as true, but this ResourceThingDef only defined a min and/or max tech level.
-                 * So just return the result of the tech level check. */
-                /* We know that there was a defined tech level, because if there wasn't, we would have returned after the alwaysAvailable check. */
-                LogUtil.Warning($"ResourceThingDef {LabelCap} has needsAllResearchRequirements={needsAllResearchRequirements}, but didn't specify any ResearchProjectDefs");
-                return satisfiesTechLevel;
+                return false;
             }
-
-            return false;
+            return true;
         }
     }
-    public class ResourceThingCategoryDef : ThingCategoryDef
+    public class ResourceThingDef : ResourceResearchRestrictionDef
     {
-        public TechLevel minTechLevel;
-        public TechLevel maxTechLevel;
-        public List<ResearchProjectDef> researchProjectDefs = new List<ResearchProjectDef>();
-        public bool needsAllResearchRequirements = false;
+        public ThingDef thingDef;
 
-        public bool hasResearchDefs => (researchProjectDefs.Count > 0);
-        public bool hasDefinedMinTechLevel => (minTechLevel != TechLevel.Undefined);
-        public bool hasDefinedMaxTechLevel => (maxTechLevel != TechLevel.Undefined);
-        public bool hasDefinedTechLevel => hasDefinedMinTechLevel || hasDefinedMaxTechLevel;
-        public bool alwaysAvailable => (!hasResearchDefs && !hasDefinedTechLevel);
-        public bool IsAvailable(TechLevel techlevel)
+        public override bool SatisfiesTechRequirements(TechLevel techlevel)
         {
-            if (alwaysAvailable)
+            if (alwaysSatisfiesTechRequirements)
                 return true;
 
-            bool satisfiesTechLevel = true;
+            bool satisfiesTechLevel = base.SatisfiesTechRequirements(techlevel);
 
-            if (hasDefinedTechLevel)
+            if ((!needsAllResearchRequirements && satisfiesTechLevel) ||
+                (needsAllResearchRequirements && !satisfiesTechLevel))
             {
-                bool satisfiesMinLevel = !hasDefinedMinTechLevel || techlevel >= minTechLevel;
-                bool satisfiesMaxLevel = !hasDefinedMaxTechLevel || techlevel <= maxTechLevel;
-                satisfiesTechLevel = satisfiesMinLevel && satisfiesMaxLevel;
-                LogUtil.Message($"techlevel {techlevel} satisfies tech level requirement for ResourceThingCategoryDef {LabelCap}: {satisfiesTechLevel}");
-                if (!needsAllResearchRequirements)
-                {
-                    return satisfiesTechLevel;
-                }
-            }
-
-            if (hasResearchDefs)
-            {
-                foreach (ResearchProjectDef projectDef in researchProjectDefs)
-                {
-                    if (projectDef.IsFinished && !needsAllResearchRequirements)
-                    {
-                        return true;
-                    }
-                    else if (!projectDef.IsFinished && needsAllResearchRequirements)
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                /* If we're here, it means that needsAllResearchRequirements is marked as true, but this ResourceThingCategoryDef only defined a min and/or max tech level.
-                 * So just return the result of the tech level check. */
-                /* We know that there was a defined tech level, because if there wasn't, we would have returned after the alwaysAvailable check. */
-                LogUtil.Warning($"ResourceThingCategoryDef {LabelCap} has needsAllResearchRequirements={needsAllResearchRequirements}, but didn't specify any ResearchProjectDefs");
                 return satisfiesTechLevel;
             }
 
-            return false;
+            if (restrictByRecipe)
+            {
+                bool allowedByRecipe = ThingAllowedByRecipe(thingDef);
+                if ((!needsAllResearchRequirements && allowedByRecipe) ||
+                    (needsAllResearchRequirements && !allowedByRecipe))
+                {
+                    return allowedByRecipe;
+                }
+            }
+
+            if (restrictByThingTechLevel)
+            {
+                bool allowedByTechLevel = ThingAllowedByThingTechLevel(thingDef, techlevel);
+                if ((!needsAllResearchRequirements && allowedByTechLevel) ||
+                    (needsAllResearchRequirements && !allowedByTechLevel))
+                {
+                    return allowedByTechLevel;
+                }
+            }
+
+            /* If we get here and we need to meet all requirements, then that means we've passed all checks, and want to return TRUE.
+             * But if we get here and we do NOT need to meet all requirements, then that means that we failed all checks, and want to return FALSE.
+             * So, we can just return needsAllResearchRequirements itself, since its value is exactly what we want to return right now. */
+            return needsAllResearchRequirements;
+        }
+        public override void SetFilter(ThingFilter filter, TechLevel techlevel)
+        {
+            if (SatisfiesTechRequirements(techlevel))
+            {
+                filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
+            }
+        }
+    }
+    public class ResourceThingCategoryDef : ResourceResearchRestrictionDef
+    {
+        public ThingCategoryDef thingCategoryDef;
+
+        /* We don't override SatisfiesTechRequirements here because the base class's checks are enough for the ThingCategoryDef.
+         * All further checks are on the things listed within the category. That logic has to be handled in SetFiler. */
+        public override void SetFilter(ThingFilter filter, TechLevel techlevel)
+        {
+            if (alwaysSatisfiesTechRequirements)
+            {
+                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), true);
+                return;
+            }
+
+            bool satisfiesTechRequirements = SatisfiesTechRequirements(techlevel);
+            if (satisfiesTechRequirements)
+            {
+                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), true);
+                if (!needsAllResearchRequirements)
+                {  
+                    return;
+                }
+            }
+            else if (needsAllResearchRequirements)
+            {
+                return;
+            }
+
+            if (restrictByRecipe)
+            {
+                foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
+                {
+                    bool allowed = ThingAllowedByRecipe(thingDef);
+                    if (needsAllResearchRequirements && !allowed)
+                    {
+                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
+                    }
+                    else if (!needsAllResearchRequirements && allowed)
+                    {
+                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
+                    }
+                }
+            }
+            if (restrictByThingTechLevel)
+            {
+                foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
+                {
+                    bool allowed = ThingAllowedByThingTechLevel(thingDef, techlevel);
+                    if (needsAllResearchRequirements && !allowed)
+                    {
+                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
+                    }
+                    else if (!needsAllResearchRequirements && allowed)
+                    {
+                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
+                    }
+                }
+            }
         }
     }
     public class ResourceTypeDef : Def
@@ -161,20 +257,14 @@ namespace FactionColonies
             {
                 foreach (ResourceThingDef thingDef in thingAllowList)
                 {
-                    if (thingDef.IsAvailable(techlevel))
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
-                    }
+                    thingDef.SetFilter(filter, techlevel);
                 }
             }
             if (thingCategoryAllowList != null)
             {
                 foreach (ResourceThingCategoryDef thingCategoryDef in thingCategoryAllowList)
                 {
-                    if (thingCategoryDef.IsAvailable(techlevel))
-                    {
-                        filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), true);
-                    }
+                    thingCategoryDef.SetFilter(filter, techlevel);
                 }
             }
             /* Block lists */
@@ -198,7 +288,7 @@ namespace FactionColonies
             {
                 foreach (ResourceExtension ext in modExtensions)
                 {
-                    ext.SetFilter(filter);
+                    ext.SetFilter(filter, techlevel);
                 }
             }
         }

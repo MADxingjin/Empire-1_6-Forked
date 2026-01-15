@@ -1354,7 +1354,7 @@ namespace FactionColonies
             }
 
             /* Handle special building behaviors. */
-            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement.GetComponent<WorldObjectComp_SettlementBuildings>();
+            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement?.GetComponent<WorldObjectComp_SettlementBuildings>();
             if (buildingComp != null)
             {
                 buildingComp.OnDeconstruct(buildingSlot);
@@ -1488,7 +1488,7 @@ namespace FactionColonies
             }
 
             /* Handle special building behaviors. */
-            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement.GetComponent<WorldObjectComp_SettlementBuildings>();
+            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement?.GetComponent<WorldObjectComp_SettlementBuildings>();
             if (buildingComp != null)
             {
                 buildingComp.OnConstruct(buildingSlot);

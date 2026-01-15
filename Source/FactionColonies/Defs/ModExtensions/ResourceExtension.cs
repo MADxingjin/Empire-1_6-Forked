@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace FactionColonies
     /// </summary>
     public abstract class ResourceExtension : DefModExtension
     {
-        public virtual void SetFilter(ThingFilter filter)
+        public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
         }
     }
