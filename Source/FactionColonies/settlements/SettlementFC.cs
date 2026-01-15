@@ -1353,19 +1353,11 @@ namespace FactionColonies
                 LogUtil.Warning($"Building {buildings[buildingSlot].defName} has no traits. Is this intentional?");
             }
 
-            /* Check if the building has any defmodextensions. If so, do any deconstruct processing demanded by the extensions. */
-            if (buildings[buildingSlot].modExtensions != null)
+            /* Handle special building behaviors. */
+            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement.GetComponent<WorldObjectComp_SettlementBuildings>();
+            if (buildingComp != null)
             {
-                foreach (BuildingFCExtension ext in buildings[buildingSlot].modExtensions)
-                {
-                    LogUtil.Message($"  found defmodextension {ext}");
-                    if (ext.compClass != null)
-                    {
-                        LogUtil.Message($"    with compClass {ext.compClass}");
-
-                        CompHelper.SettlementBuilding_Deconstruct(worldSettlement, ext.compClass, buildingSlot);
-                    }
-                }
+                buildingComp.OnDeconstruct(buildingSlot);
             }
 
             buildings[buildingSlot] = BuildingFCDefOf.Empty;
@@ -1495,19 +1487,11 @@ namespace FactionColonies
                 LogUtil.Warning($"Building {building.defName} has no traits. Is this intentional?");
             }
 
-            /* Check if the building has any defmodextensions. If so, do any construct processing demanded by the extensions. */
-            if (building.modExtensions != null)
+            /* Handle special building behaviors. */
+            WorldObjectComp_SettlementBuildings buildingComp = worldSettlement.GetComponent<WorldObjectComp_SettlementBuildings>();
+            if (buildingComp != null)
             {
-                foreach (BuildingFCExtension ext in building.modExtensions)
-                {
-                    LogUtil.Message($"  found defmodextension {ext}");
-                    if (ext.compClass != null)
-                    {
-                        LogUtil.Message($"    with compClass {ext.compClass}");
-
-                        CompHelper.SettlementBuilding_Construct(worldSettlement, ext.compClass, buildingSlot);
-                    }
-                }
+                buildingComp.OnConstruct(buildingSlot);
             }
         }
 

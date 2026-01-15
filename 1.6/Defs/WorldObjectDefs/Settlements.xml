@@ -14,7 +14,7 @@
       <li Class="WorldObjectCompProperties_TradeRequest" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementDefense" />
-	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementShuttles" />
+	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementBuildings" />
     </comps>
   </FactionColonies.SettlementDef>
 

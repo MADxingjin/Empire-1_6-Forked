@@ -19,7 +19,7 @@
 		<requiresRoyality>true</requiresRoyality>
 		<modExtensions>
 		  <li Class="FactionColonies.BuildingFCExtension_Shuttles">
-		    <compClass>FactionColonies.WorldObjectComp_SettlementShuttles</compClass>
+		    <compClass>FactionColonies.SettlementBuildingComp_Shuttles</compClass>
 			<shuttleUses>3</shuttleUses>
 		  </li>
 		</modExtensions>

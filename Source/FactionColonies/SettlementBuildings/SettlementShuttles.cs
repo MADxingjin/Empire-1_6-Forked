@@ -8,40 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static Verse.KeyPrefs;
 
 namespace FactionColonies
 {
-    public class WorldObjectCompProperties_SettlementShuttles : WorldObjectCompProperties
-    {
-        public WorldObjectCompProperties_SettlementShuttles()
-        {
-            compClass = typeof(WorldObjectComp_SettlementShuttles);
-        }
-        public override IEnumerable<string> ConfigErrors(WorldObjectDef parentDef)
-        {
-            foreach (string item in base.ConfigErrors(parentDef))
-            {
-                yield return item;
-            }
-            if (!typeof(MapParent).IsAssignableFrom(parentDef.worldObjectClass))
-            {
-                yield return parentDef.defName + " has WorldObjectCompProperties_SettlementShuttles but it's not MapParent.";
-            }
-        }
-    }
-
-    public class WorldObjectComp_SettlementShuttles : WorldObjectComp_SettlementBuilding
+    public class SettlementBuildingComp_Shuttles : SettlementBuildingComp
     {
         public int shuttleUsesRemaining = 0;
         public int totalShuttleUses = 0;
         public int lastShuttleUsesRefreshTick = 0;
         public const int shuttleRefreshInterval = GenDate.TicksPerDay * 5;
-        public bool shuttlesActive => totalShuttleUses > 0;
 
-        public override void PostExposeData()
+        public override void ExposeData()
         {
-            base.PostExposeData();
+            base.ExposeData();
             Scribe_Values.Look(ref shuttleUsesRemaining, "shuttleUsesRemaining", 0);
             Scribe_Values.Look(ref totalShuttleUses, "totalShuttleUses", 0);
             Scribe_Values.Look(ref lastShuttleUsesRefreshTick, "lastShuttleUsesRefreshTick", 0);
@@ -49,18 +28,16 @@ namespace FactionColonies
 
         private void RefreshTotalShuttleUses(int buildingSlotToSkip = -1)
         {
-            if (parent is WorldSettlementFC settlement)
+            totalShuttleUses = 0;
+            for (int i = 0; i < buildingSlots.Count; i++)
             {
-                totalShuttleUses = 0;
-                for (int i = 0; i < settlement.settlement.buildings.Count; i++)
+                int slot = buildingSlots[i];
+                if (slot != buildingSlotToSkip)
                 {
-                    if (i != buildingSlotToSkip)
+                    BuildingFCExtension_Shuttles ext = settlement.buildings[slot].GetModExtension<BuildingFCExtension_Shuttles>();
+                    if (ext != null)
                     {
-                        BuildingFCExtension_Shuttles ext = settlement.settlement.buildings[i].GetModExtension<BuildingFCExtension_Shuttles>();
-                        if (ext != null)
-                        {
-                            totalShuttleUses += ext.shuttleUses;
-                        }
+                        totalShuttleUses += ext.shuttleUses;
                     }
                 }
             }
@@ -68,36 +45,38 @@ namespace FactionColonies
 
         public override void OnConstruct(int buildingSlot)
         {
-            LogUtil.Message("Start of WorldObjectComp_SettlementShuttles.OnConstruct");
-            if (parent is WorldSettlementFC settlement)
+            LogUtil.Message("Start of SettlementBuildingComp_Shuttles.OnConstruct");
+            base.OnConstruct(buildingSlot);
+
+            int oldTotalUses = totalShuttleUses;
+            RefreshTotalShuttleUses();
+            shuttleUsesRemaining += (totalShuttleUses - oldTotalUses);
+            if (shuttleUsesRemaining < 0)
             {
-                int oldTotalUses = totalShuttleUses;
-                RefreshTotalShuttleUses();
-                shuttleUsesRemaining += (totalShuttleUses - oldTotalUses);
-                if (shuttleUsesRemaining < 0)
-                {
-                    shuttleUsesRemaining = 0;
-                }
+                shuttleUsesRemaining = 0;
+            }
+            else if (shuttleUsesRemaining > totalShuttleUses)
+            {
+                shuttleUsesRemaining = totalShuttleUses;
             }
         }
         public override void OnDeconstruct(int buildingSlot)
         {
-            LogUtil.Message("Start of WorldObjectComp_SettlementShuttles.OnDeconstruct");
-            if (parent is WorldSettlementFC settlement)
+            LogUtil.Message("Start of SettlementBuildingComp_Shuttles.OnDeconstruct");
+            RefreshTotalShuttleUses(buildingSlot);
+            if (shuttleUsesRemaining > totalShuttleUses)
             {
-                RefreshTotalShuttleUses(buildingSlot);
-                if (shuttleUsesRemaining > totalShuttleUses)
-                {
-                    shuttleUsesRemaining = totalShuttleUses;
-                }
+                shuttleUsesRemaining = totalShuttleUses;
             }
+
+            base.OnDeconstruct(buildingSlot);
         }
 
-        public override void CompTick()
+        public override void Tick()
         {
-            base.CompTick();
+            base.Tick();
             
-            if (shuttlesActive && lastShuttleUsesRefreshTick + shuttleRefreshInterval > Find.TickManager.TicksGame && parent is WorldSettlementFC settlement)
+            if (lastShuttleUsesRefreshTick + shuttleRefreshInterval > Find.TickManager.TicksGame)
             {
                 RefreshTotalShuttleUses();
                 shuttleUsesRemaining = totalShuttleUses;
@@ -110,11 +89,8 @@ namespace FactionColonies
             {
                 yield return gizmo;
             }
-            if (shuttlesActive && parent is WorldSettlementFC worldsettlement)
-            {
-                yield return RequestShuttleAction(worldsettlement);
-                yield return RequestShuttleForCaravanAction(worldsettlement);
-            }
+            yield return RequestShuttleAction(settlement.worldSettlement);
+            yield return RequestShuttleForCaravanAction(settlement.worldSettlement);
         }
 
         private Command RequestShuttleAction(WorldSettlementFC worldsettlement)

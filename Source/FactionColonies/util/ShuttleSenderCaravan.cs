@@ -13,7 +13,7 @@ namespace FactionColonies.util
     {
         private readonly Caravan caravan;
 
-        public ShuttleSenderCaravan(PlanetTile Tile, Caravan caravan, WorldObjectComp_SettlementShuttles comp) : base(Tile, comp)
+        public ShuttleSenderCaravan(PlanetTile Tile, Caravan caravan, SettlementBuildingComp_Shuttles comp) : base(Tile, comp)
         {
 			this.caravan = caravan;
         }
