@@ -271,7 +271,7 @@ namespace FactionColonies
             if (!(def is WorldSettlementDef))
             { 
                 LogUtil.Error($"Created settlement {name} with an invalid def: {def}! Panic! Defaulting to base def!");
-                def = WorldSettlementDefOf.WorldSettlementDefBase;
+                def = WorldSettlementDefOf.WorldSettlementDefSettlement;
             }
 
             settlementLevel = 1;
@@ -312,6 +312,7 @@ namespace FactionColonies
                 /* ResourceFC initialization takes care of biome bonuses, so no need to handle that up here */
                 resources.Add(new ResourceFC(rtd.resourceDef, this));
             }
+            resources.Sort(ResourceFC.sortForUI);
 
             updateTechIcon();
             def.expandingIconTexture = "FactionIcons/" + Find.World.GetComponent<FactionFC>().factionIconPath;

@@ -6,28 +6,289 @@
 	<label>food</label>
 	<description>A resource category for meals, plants, and meat.</description>
 	<iconPath>GUI/ProductionFood</iconPath>
+	<uiPriority>100</uiPriority>
 	<thingAllowList>
 		<li>
-			<ResourceThingDefRestriction>
-				<thingDef>Hay</thingDef>
-			</ResourceThingDefRestriction>
+			<thingDef>Hay</thingDef>
 		</li>
 		<li>
-			<ResourceThingDefRestriction>
-				<thingDef>Kibble</thingDef>
-			</ResourceThingDefRestriction>
+			<thingDef>Kibble</thingDef>
 		</li>
 	</thingAllowList>
 	<thingCategoryAllowList>
 		<li>
-			<ResourceThingCategoryDefRestriction>
-				<ThingCategoryDef>Foods</ThingCategoryDef>
-			</ResourceThingCategoryDefRestriction>
+			<thingCategoryDef>Foods</thingCategoryDef>
 		</li>
 	</thingCategoryAllowList>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
+			<resourceHilliness>
+				<li>
+					<hilliness>Flat</hilliness>
+					<multiplier>1.1</multiplier>
+				</li>
+				<li>
+					<hilliness>Mountainous</hilliness>
+					<multiplier>0.5</multiplier>
+				</li>
+			</resourceHilliness>
+		</li>
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Weapons</defName>
+	<label>weapons</label>
+	<description>A resource category for weapons.</description>
+	<iconPath>GUI/ProductionWeapons</iconPath>
+	<uiPriority>200</uiPriority>
+	<thingCategoryAllowList>
+		<li>
+			<thingCategoryDef>Weapons</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>MortarShells</thingCategoryDef>
+		</li>
+	</thingCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>4</titheMaxCountBase>
+	<titheMaxCountScaler>2</titheMaxCountScaler>
+	<aidsDefense>true</aidsDefense>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
+			<resourceHilliness>
+				<li>
+					<hilliness>Mountainous</hilliness>
+					<multiplier>1.1</multiplier>
+				</li>
+			</resourceHilliness>
+		</li>
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Apparel</defName>
+	<label>apparel</label>
+	<description>A resource category for apparel.</description>
+	<iconPath>GUI/ProductionApparel</iconPath>
+	<uiPriority>300</uiPriority>
+	<thingAllowList>
+		<li>
+			<thingDef>Cloth</thingDef>
+		</li>
+		<li>
+			<thingDef>DevilstrandCloth</thingDef>
+			<researchProjectDefs>
+				<li>Devilstrand</li>
+			</researchProjectDefs>
+		</li>
+	</thingAllowList>
+	<thingCategoryAllowList>
+		<li>
+			<thingCategoryDef>Apparel</thingCategoryDef>
+		</li>
+	</thingCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>5</titheMaxCountBase>
+	<titheMaxCountScaler>1</titheMaxCountScaler>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Animals</defName>
+	<label>animals</label>
+	<description>A resource category for livestock.</description>
+	<iconPath>GUI/ProductionAnimals</iconPath>
+	<uiPriority>400</uiPriority>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceFilterExtension_Animals" />
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Logging</defName>
+	<label>logging</label>
+	<description>A resource category for logging.</description>
+	<iconPath>GUI/ProductionLogging</iconPath>
+	<uiPriority>500</uiPriority>
+	<thingAllowList>
+		<li>
+			<thingDef>WoodLog</thingDef>
+		</li>
+	</thingAllowList>
+	<stuffCategoryAllowList>
+		<li>Woody</li>
+	</stuffCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>0</titheMaxCountBase>
+	<titheMaxCountScaler>5</titheMaxCountScaler>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Mining</defName>
+	<label>mining</label>
+	<description>A resource category for mining materials.</description>
+	<iconPath>GUI/ProductionMining</iconPath>
+	<uiPriority>600</uiPriority>
+	<thingAllowList>
+		<li>
+			<thingDef>ComponentIndustrial</thingDef>
+		</li>
+	</thingAllowList>
+	<thingBlockList>
+		<li>Silver</li>
+	</thingBlockList>
+	<thingCategoryAllowList>
+		<li>
+			<thingCategoryDef>StoneBlocks</thingCategoryDef>
+		</li>
+	</thingCategoryAllowList>
+	<stuffCategoryAllowList>
+		<li>Metallic</li>
+		<li>Stony</li>
+	</stuffCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>0</titheMaxCountBase>
+	<titheMaxCountScaler>2</titheMaxCountScaler>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
+			<resourceHilliness>
+				<li>
+					<hilliness>SmallHills</hilliness>
+					<multiplier>1.1</multiplier>
+				</li>
+				<li>
+					<hilliness>LargeHills</hilliness>
+					<multiplier>1.1</multiplier>
+				</li>
+				<li>
+					<hilliness>Mountainous</hilliness>
+					<multiplier>1.25</multiplier>
+				</li>
+			</resourceHilliness>
+		</li>
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Medicine</defName>
+	<label>medicine</label>
+	<description>A resource category for medicine.</description>
+	<iconPath>GUI/ProductionMedicine</iconPath>
+	<uiPriority>700</uiPriority>
+	<thingCategoryAllowList>
+		<li>
+			<thingCategoryDef>Medicine</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>BodyPartsNatural</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>BodyPartsProsthetic</thingCategoryDef>
+			<minTechLevel>Industrial</minTechLevel>
+		</li>
+		<li>
+			<thingCategoryDef>BodyPartsBionic</thingCategoryDef>
+			<minTechLevel>Industrial</minTechLevel>
+		</li>
+		<li>
+			<thingCategoryDef>BodyPartsUltra</thingCategoryDef>
+			<minTechLevel>Ultra</minTechLevel>
+		</li>
+	</thingCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>0</titheMaxCountBase>
+	<titheMaxCountScaler>2</titheMaxCountScaler>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Research</defName>
+	<label>research</label>
+	<description>A resource category for research.</description>
+	<iconPath>GUI/ProductionResearch</iconPath>
+	<uiPriority>800</uiPriority>
+	<isPoolResource>true</isPoolResource>
+	<modExtensions>
+		<li Class="FactionColonies.ResourcePoolExt_Research" />
+		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
+			<resourceHilliness>
+				<li>
+					<hilliness>LargeHills</hilliness>
+					<multiplier>1.1</multiplier>
+				</li>
+			</resourceHilliness>
+		</li>
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Power</defName>
+	<label>power</label>
+	<description>A resource category for power.</description>
+	<iconPath>GUI/ProductionPower</iconPath>
+	<uiPriority>900</uiPriority>
+	<isPoolResource>true</isPoolResource>
+	<researchProjectDefs>
+		<li>Electricity</li>
+	</researchProjectDefs>
+	<modExtensions>
+		<li Class="FactionColonies.ResourcePoolExt_Power" />
+		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
+			<resourceHilliness>
+				<li>
+					<hilliness>LargeHills</hilliness>
+					<multiplier>0.9</multiplier>
+				</li>
+				<li>
+					<hilliness>Mountainous</hilliness>
+					<multiplier>0.8</multiplier>
+				</li>
+			</resourceHilliness>
+		</li>
+	</modExtensions>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Chemfuel</defName>
+	<label>chemfuel</label>
+	<description>A resource category for chemfuel.</description>
+	<iconPath>GUI/ProductionChemfuel</iconPath>
+	<uiPriority>1000</uiPriority>
+	<thingAllowList>
+		<li>
+			<thingDef>Chemfuel</thingDef>
+		</li>
+	</thingAllowList>
+	<researchProjectDefs>
+		<li>BiofuelRefining</li>
+	</researchProjectDefs>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>0</titheMaxCountBase>
+	<titheMaxCountScaler>4</titheMaxCountScaler>
+  </FactionColonies.ResourceTypeDef>
+  
+  <FactionColonies.ResourceTypeDef MayRequire="Ludeon.RimWorld.Odyssey">
+	<defName>RTD_Gravtech</defName>
+	<label>gravtech</label>
+	<description>A resource category for gravtech resources.</description>
+	<iconPath>GUI/ProductionGravtech</iconPath>
+	<uiPriority>1100</uiPriority>
+	<thingAllowList>
+		<li>
+			<thingDef>GravlitePanel</thingDef>
+			<researchProjectDefs>
+				<li>AdvancedGravtech</li>
+			</researchProjectDefs>
+		</li>
+		<li>
+			<thingDef>BlocksVacstone</thingDef>
+		</li>
+	</thingAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>0</titheMaxCountBase>
+	<titheMaxCountScaler>3</titheMaxCountScaler>
   </FactionColonies.ResourceTypeDef>
 
 </Defs>

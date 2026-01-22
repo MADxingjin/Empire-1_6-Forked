@@ -20,7 +20,7 @@ namespace FactionColonies
         public bool traitExpansionistReducedFee;
         public int timeToTravel = -1;
 
-        public WorldSettlementDef currentSettlementType = WorldSettlementDefOf.WorldSettlementDefBase;
+        public WorldSettlementDef currentSettlementType = WorldSettlementDefOf.WorldSettlementDefSettlement;
 
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;

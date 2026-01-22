@@ -292,6 +292,11 @@ namespace FactionColonies
         /// </summary>
         public bool aidsDefense = false;
 
+        /// <summary>
+        /// Determines the order that the resource is listed in the UI. Lower values = ealier in the list. Ties are broken randomly.
+        /// </summary>
+        public int uiPriority = 10000;
+
         private Texture2D iconLoaded;
 
         public Texture2D Icon
@@ -407,7 +412,7 @@ namespace FactionColonies
             double add = 0;
             if (modExtensions?.Count > 0)
             {
-                foreach(ResourceProductionExtension prod in modExtensions)
+                foreach(ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
                     add += prod.GetAdditiveBonus(tile);
                 }
@@ -419,7 +424,7 @@ namespace FactionColonies
             double mult = 1;
             if (modExtensions?.Count > 0)
             {
-                foreach (ResourceProductionExtension prod in modExtensions)
+                foreach (ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
                     mult *= prod.GetMultiplierBonus(tile);
                 }
@@ -428,7 +433,7 @@ namespace FactionColonies
         }
         public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
         {
-            /* Allow lists */
+            /* Category Allow lists */
             if (thingCategoryAllowList != null)
             {
                 foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
@@ -441,6 +446,21 @@ namespace FactionColonies
                 foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryAllowList)
                 {
                     filter.SetAllow(stuffCategoryDef, true);
+                }
+            }
+            /* Category Block Lists */
+            if (thingCategoryBlockList != null)
+            {
+                foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
+                {
+                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), false);
+                }
+            }
+            if (stuffCategoryBlockList != null)
+            {
+                foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryBlockList)
+                {
+                    filter.SetAllow(stuffCategoryDef, false);
                 }
             }
             // Handle Things after the categories. This allows for more fine-grained control over when
@@ -460,29 +480,32 @@ namespace FactionColonies
                     filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
                 }
             }
-            if (thingCategoryBlockList != null)
-            {
-                foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
-                {
-                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), false);
-                }
-            }
-            if (stuffCategoryBlockList != null)
-            {
-                foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryBlockList)
-                {
-                    filter.SetAllow(stuffCategoryDef, false);
-                }
-            }
 
             /* Check for any ResourceExtensions, and process them now. */
             if (modExtensions != null)
             {
-                foreach (ResourceFilterExtension ext in modExtensions)
+                foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
                 {
                     ext.SetFilter(filter, techlevel);
                 }
             }
+        }
+
+        public int compareForUI(ResourceTypeDef compareDef)
+        {
+            return this.uiPriority - compareDef.uiPriority;
+        }
+        public static int sortForUI(ResourceTypeDef a, ResourceTypeDef b)
+        {
+            if (a == null)
+            {
+                return 1;
+            }
+            if (b == null)
+            {
+                return -1;
+            }
+            return a.compareForUI(b);
         }
 
         public override IEnumerable<string> ConfigErrors()
@@ -491,11 +514,15 @@ namespace FactionColonies
             {
                 yield return item;
             }
-            if (thingAllowList == null && thingCategoryAllowList == null && stuffCategoryAllowList == null && modExtensions == null)
+            if ((thingAllowList?.Count ?? 0) == 0  && (thingCategoryAllowList?.Count ?? 0) == 0 && (stuffCategoryAllowList?.Count ?? 0) == 0 && (modExtensions?.Count ?? 0) == 0)
             {
-                yield return "ResourceTypeDef " + this.defName + " does not specify any allowed resources or modExtensions";
+                yield return "ResourceTypeDef " + this.defName + " does not specify any allowed resources";
             }
-            if (thingAllowList != null)
+            if (isPoolResource && (thingAllowList?.Count > 0 || thingCategoryAllowList?.Count > 0 || stuffCategoryAllowList?.Count > 0))
+            {
+                yield return "ResourceTypeDef " + this.defName + " is set as a pool resource, but it also specifies allowlists for things, thingCategories, or stuffCategories";
+            }
+            if (thingAllowList?.Count > 0)
             {
                 foreach (ResourceThingDefRestriction thingDefRestriction in thingAllowList)
                 {
@@ -513,7 +540,7 @@ namespace FactionColonies
                     }
                 }
             }
-            if (thingCategoryAllowList != null)
+            if (thingCategoryAllowList?.Count > 0)
             {
                 foreach (ResourceThingCategoryDefRestriction thingCategoryDefRestriction in thingCategoryAllowList)
                 {
@@ -534,7 +561,7 @@ namespace FactionColonies
                     }
                 }
             }
-            if (stuffCategoryAllowList != null && stuffCategoryBlockList != null)    
+            if (stuffCategoryAllowList?.Count > 0 && stuffCategoryBlockList?.Count > 0)    
             {
                 foreach (StuffCategoryDef stuffCategoryDefAllow in stuffCategoryAllowList)
                 {
@@ -544,35 +571,25 @@ namespace FactionColonies
                     }
                 }
             }
-            if (modExtensions != null)
+            if (modExtensions?.Count > 0)
             {
                 bool foundPoolExtension = false;
-                foreach (ResourcePoolExtension ext in modExtensions)
+                foreach (ResourcePoolExtension ext in modExtensions.OfType<ResourcePoolExtension>())
                 {
                     foundPoolExtension = true;
-                    foreach (ResourcePoolExtension ext2 in modExtensions)
+                    foreach (ResourcePoolExtension ext2 in modExtensions.OfType<ResourcePoolExtension>())
                     {
-                        if (ext == ext2)
+                        if (ext != ext2)
                         {
                             yield return "ResourcePoolExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }
-                foreach (ResourceProductionExtension ext in modExtensions)
+                foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
                 {
-                    foreach (ResourceProductionExtension ext2 in modExtensions)
+                    foreach (ResourceFilterExtension ext2 in modExtensions.OfType<ResourceFilterExtension>())
                     {
-                        if (ext == ext2)
-                        {
-                            yield return "ResourceProductionExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
-                        }
-                    }
-                }
-                foreach (ResourceFilterExtension ext in modExtensions)
-                {
-                    foreach (ResourceFilterExtension ext2 in modExtensions)
-                    {
-                        if (ext == ext2)
+                        if (ext != ext2)
                         {
                             yield return "ResourceFilterExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
@@ -609,12 +626,20 @@ namespace FactionColonies
     public class ResourceTypeDefOf
     {
         public static ResourceTypeDef RTD_Food;
-        public static ResourceTypeDef RTD_Animals;
-        public static ResourceTypeDef RTD_Apparel;
         public static ResourceTypeDef RTD_Weapons;
+        public static ResourceTypeDef RTD_Apparel;
+        public static ResourceTypeDef RTD_Animals;
         public static ResourceTypeDef RTD_Logging;
-        public static ResourceTypeDef RTD_Power;
+        public static ResourceTypeDef RTD_Mining;
         public static ResourceTypeDef RTD_Research;
+        public static ResourceTypeDef RTD_Power;
         public static ResourceTypeDef RTD_Medicine;
+        public static ResourceTypeDef RTD_Chemfuel;
+        public static ResourceTypeDef RTD_Gravtech;
+
+        static ResourceTypeDefOf()
+        {
+            DefOfHelper.EnsureInitializedInCtor(typeof(ResourceTypeDefOf));
+        }
     }
 }

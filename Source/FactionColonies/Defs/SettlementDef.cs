@@ -143,6 +143,10 @@ namespace FactionColonies
 
     public static class WorldSettlementDefOf
     {
-        public static WorldSettlementDef WorldSettlementDefBase;
+        public static WorldSettlementDef WorldSettlementDefSettlement;
+        static WorldSettlementDefOf()
+        {
+            DefOfHelper.EnsureInitializedInCtor(typeof(WorldSettlementDefOf));
+        }
     }
 }

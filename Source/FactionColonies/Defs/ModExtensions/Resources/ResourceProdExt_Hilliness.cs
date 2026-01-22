@@ -19,6 +19,8 @@ namespace FactionColonies
     /// </summary>
     public class ResourceProductionExtension_Hilliness : ResourceProductionExtension
     {
+        public new string extName = "HillinessExtension";
+        public new string extDesc = "Production bonuses from tile hilliness.";
         public List<ResourceHilliness> resourceHilliness = new List<ResourceHilliness>();
         public override double GetAdditiveBonus(PlanetTile tile, WorldSettlementFC settlement = null)
         {
@@ -31,7 +33,7 @@ namespace FactionColonies
             {
                 return 0;
             }
-            return resourceHilliness.Find((ResourceHilliness rh) => rh.hilliness == hilly).additive;
+            return resourceHilliness.Find((ResourceHilliness rh) => rh.hilliness == hilly)?.additive ?? 0;
         }
         public override double GetMultiplierBonus(PlanetTile tile, WorldSettlementFC settlement = null)
         {
@@ -44,7 +46,7 @@ namespace FactionColonies
             {
                 return 1;
             }
-            return resourceHilliness.Find((ResourceHilliness rh) => rh.hilliness == hilly).multiplier;
+            return resourceHilliness.Find((ResourceHilliness rh) => rh.hilliness == hilly)?.multiplier ?? 1;
         }
     }
 }

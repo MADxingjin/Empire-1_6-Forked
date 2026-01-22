@@ -299,7 +299,7 @@ namespace FactionColonies
             }
             if (def != null && def.modExtensions != null)
             {
-                foreach (ResourceProductionExtension ext in def.modExtensions)
+                foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
                 {
                     bonus = ext.GetAdditiveBonus(settlement.Tile);
                     if (bonus != 0)
@@ -356,7 +356,7 @@ namespace FactionColonies
             }
             if (def != null && def.modExtensions != null)
             {
-                foreach (ResourceProductionExtension ext in def.modExtensions)
+                foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
                 {
                     bonus = ext.GetMultiplierBonus(settlement.Tile);
                     if (bonus != 1)
@@ -494,6 +494,27 @@ namespace FactionColonies
                 }*/
             things = thingSetMaker.Generate(param);
             return things;
+        }
+
+        public int compareForUI(ResourceFC compareDef)
+        {
+            if (compareDef == null)
+            {
+                return -2;
+            }
+            if (compareDef.def == null)
+            {
+                return -1;
+            }
+            if (this.def == null)
+            {
+                return 1;
+            }
+            return ResourceTypeDef.sortForUI(this.def, compareDef.def);
+        }
+        public static int sortForUI(ResourceFC a, ResourceFC b)
+        {
+            return a.compareForUI(b);
         }
     }
 

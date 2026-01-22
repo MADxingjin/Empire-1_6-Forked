@@ -35,9 +35,9 @@ namespace FactionColonies
             for(int i = 0; i < parentComp.Buildings.Count; i++)
             {
                 BuildingFCDef building = parentComp.getBuildingInSlot(i);
-                if (building.modExtensions != null)
+                if (building.modExtensions?.Count > 0)
                 {
-                    foreach (BuildingFCExtension ext in building.modExtensions)
+                    foreach (BuildingFCExtension ext in building.modExtensions.OfType<BuildingFCExtension>())
                     {
                         if (ext.compClass != null)
                         {

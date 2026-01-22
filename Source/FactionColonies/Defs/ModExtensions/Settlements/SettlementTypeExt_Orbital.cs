@@ -46,6 +46,7 @@ namespace FactionColonies
         {
             int baseCost = 5000;
 
+            //TODO: reconsider how these are priced. "25% discount" for the advanced orbital makes no damn sense when we add a "premimum" anyways
             switch (parentDef.defName)
             {
                 case "WorldSettlementDefOrbital_Basic":

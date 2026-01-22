@@ -41,7 +41,7 @@ namespace FactionColonies
             else
             {
                 LogUtil.Error($"SettlementTypeExtension has non-WorldSettlementDef parent {parentDef.defName}! Setting to default");
-                parentDef = WorldSettlementDefOf.WorldSettlementDefBase;
+                parentDef = WorldSettlementDefOf.WorldSettlementDefSettlement;
             }
         }
         /// <summary>

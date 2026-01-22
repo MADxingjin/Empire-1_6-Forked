@@ -958,7 +958,7 @@ namespace FactionColonies
                             TechLevel tech = Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.techLevel;
                             Faction tempFactionLink = Find.WorldObjects.SettlementAt(militaryLocation).Faction;
                             Find.WorldObjects.SettlementAt(militaryLocation).Destroy();
-                            WorldSettlementFC worldsettlement = ColonyUtil.createPlayerColonySettlement(militaryLocation, WorldSettlementDefOf.WorldSettlementDefBase);
+                            WorldSettlementFC worldsettlement = ColonyUtil.createPlayerColonySettlement(militaryLocation, WorldSettlementDefOf.WorldSettlementDefSettlement);
                             worldsettlement.Name = tmpName;
 
                             int upgradeTimes;

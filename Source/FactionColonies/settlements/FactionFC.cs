@@ -323,6 +323,7 @@ namespace FactionColonies
                 factionResources.Add(new ResourceFC(resourceTypeDef, null));
                 LogUtil.Message($"Added ResourceFC for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
+            factionResources.Sort(ResourceFC.sortForUI);
         }
 
         public void addTrait(FCTraitEffectDef trait, string id = "")

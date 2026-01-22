@@ -248,9 +248,9 @@ namespace FactionColonies
             //   we'll leave this code here.
             addBuildingTrait(buildingSlot);
 
-            if (buildings[buildingSlot].def.modExtensions != null)
+            if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
-                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions.OfType<BuildingFCExtension>())
                 {
                     if (ext.compClass != null)
                     {
@@ -286,9 +286,9 @@ namespace FactionColonies
 
             addBuildingTrait(buildingSlot);
 
-            if (buildings[buildingSlot].def.modExtensions != null)
+            if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
-                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions.OfType<BuildingFCExtension>())
                 {
                     if (ext.compClass != null)
                     {
@@ -315,9 +315,9 @@ namespace FactionColonies
 
             removeBuildingTrait(buildingSlot);
 
-            if (buildings[buildingSlot].def.modExtensions != null)
+            if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
-                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions.OfType<BuildingFCExtension>())
                 {
                     if (ext.compClass != null)
                     {

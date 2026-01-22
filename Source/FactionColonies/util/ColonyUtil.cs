@@ -36,7 +36,7 @@ namespace FactionColonies.util
             if (settlementType == null)
             {
                 LogUtil.Error($"Tried to create a settlement with null WorldSettlementDef! Using default WorldSettlementDef.");
-                settlementType = WorldSettlementDefOf.WorldSettlementDefBase;
+                settlementType = WorldSettlementDefOf.WorldSettlementDefSettlement;
             }
 
             /* Do any pre-settlement-creation demanded of the settlement type */
