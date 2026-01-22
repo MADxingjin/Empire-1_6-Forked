@@ -18,7 +18,7 @@ namespace FactionColonies
         public string name;
         public List<Mercenary> mercenaries = new List<Mercenary>();
         public List<Mercenary> animals = new List<Mercenary>();
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public bool isTraderCaravan;
         public bool isDeployed;
         public bool isExtraSquad;
@@ -165,7 +165,7 @@ namespace FactionColonies
                 return pawns;
             }
         }
-        public SettlementFC getSettlement
+        public WorldSettlementFC getSettlement
         {
             get
             {
@@ -174,9 +174,9 @@ namespace FactionColonies
                     return settlement;
                 }
 
-                foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+                foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
                 {
-                    if (settlement.militarySquad != null && settlement.militarySquad == this)
+                    if (settlement.MilitaryComp?.militarySquad != null && settlement.MilitaryComp?.militarySquad == this)
                     {
                         this.settlement = settlement;
                         return settlement;
@@ -766,7 +766,7 @@ namespace FactionColonies
         {
             if (!isExtraSquad)
             {
-                settlement.cooldownMilitary();
+                settlement.MilitaryComp?.cooldownMilitary();
                 return true;
             }
 

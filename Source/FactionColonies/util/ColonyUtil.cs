@@ -30,20 +30,19 @@ namespace FactionColonies.util
 
 
         //<DevAdd>   Create new seperate function to create a faction
-        public static WorldSettlementFC createPlayerColonySettlement(int tile, bool createWorldObject, string planetName)
+        //TODO: need a WorldSettlementDefOf for the default settlement type
+        public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
-            StringBuilder reason = new StringBuilder();
-            if (!TileFinder.IsValidTileForNewSettlement(tile, reason))
+            if (settlementType == null)
             {
-                LogUtil.Message("Tried to create player colony settlement on Invalid Tile");
-                //Alert Error to User
-                Messages.Message(reason.ToString(), MessageTypeDefOf.NegativeEvent);
-
-
-                return null;
+                LogUtil.Error($"Tried to create a settlement with null WorldSettlementDef! Using default WorldSettlementDef.");
+                settlementType = WorldSettlementDefOf.WorldSettlementDefBase;
             }
 
-            //LogUtil.Message("Colony is being created");
+            /* Do any pre-settlement-creation demanded of the settlement type */
+            settlementType.GetModExtension<SettlementTypeExtension>().preCreation();
+
+            LogUtil.Message($"Creating settlement of type {settlementType.defName}");
             Faction faction = getPlayerColonyFaction();
 
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
@@ -52,110 +51,47 @@ namespace FactionColonies.util
                 Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
             }
 
-            //LogUtil.Message(faction.Name);
+            WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldSettlementDef>.GetNamed(settlementType.defName));
+            settlement.Tile = tile;
 
-            SettlementFC settlementfc;
-            WorldSettlementFC settlement = null;
-            if (createWorldObject)
-            {
-                settlementfc = new SettlementFC(getName(faction), tile);
-                settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<SettlementDef>.GetNamed("SettlementFC"));
-                settlement.Tile = tile;
+            settlement.Name = settlementType.getSettlementTypeExtension().getSettlementName();
 
-                List<String> used = new List<string>();
-                List<Settlement> settlements = Find.WorldObjects.Settlements;
-                foreach (Settlement found in settlements)
-                {
-                    used.Add(found.Name);
-                }
+            settlement.SetFaction(faction);
+            Find.WorldObjects.Add(settlement);
 
-                settlement.settlement = settlementfc;
-                settlement.Name =
-                    NameGenerator.GenerateName(faction.def.factionNameMaker, used, true);
-
-                settlement.SetFaction(faction);
-                Find.WorldObjects.Add(settlement);
-                settlementfc.worldSettlement = settlement;
-            }
-            else
-            {
-                settlementfc = new SettlementFC("Settlement", tile);
-            }
-
+            //TODO: settlement resources should be initialized with bonuses based on biome, hilliness, and settlement type
             //create settlement data for world object
-            settlementfc.power.isTithe = true;
-            settlementfc.power.isTitheBool = true;
-            settlementfc.research.isTithe = true;
-            settlementfc.research.isTitheBool = true;
-            settlementfc.planetName = planetName;
             if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
-                settlementfc.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
+                settlement.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
             if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
-                settlementfc.loyalty = 70;
+                settlement.loyalty = 70;
             if (worldcomp.hasPolicy(FCPolicyDefOf.egalitarian))
-                settlementfc.happiness = 60;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlementfc.settlementLevel == 1)
-                settlementfc.upgradeSettlement();
+                settlement.happiness = 60;
+            if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlement.settlementLevel == 1)
+                settlement.upgradeSettlement();
 
-            worldcomp.addSettlement(settlementfc);
-            if (createWorldObject)
-            {
-                worldcomp.roadBuilder.FlagUpdateRoadQueues();
-            }
+            worldcomp.addSettlement(settlement);
+            worldcomp.roadBuilder.FlagUpdateRoadQueues();
 
-            Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
-                "TheSettlement".Translate() + " " + settlementfc.name + "HasBeenFormed".Translate() + "!",
-                LetterDefOf.PositiveEvent);
+            /* Do any post-settlement-creation demanded of the settlement type */
+            settlementType.GetModExtension<SettlementTypeExtension>().postCreation();
 
-            //Example to grab settlement data from FC
-            //LogUtil.Message(settlementfc.ReturnFCSettlement().Name.ToString());
-
+            Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(), "TheSettlement".Translate() + " " + settlement.Name + "HasBeenFormed".Translate() + "!", LetterDefOf.PositiveEvent);
 
             return settlement;
         }
 
-        private static readonly List<string> usedNames = new List<string>();
-
-        private static string getName(Faction faction)
-        {
-            if (faction?.def.settlementNameMaker == null)
-            {
-                return "Settlement";
-            }
-
-            RulePackDef rulePack = faction.def.settlementNameMaker;
-            usedNames.Clear();
-            List<Settlement> settlements = Find.WorldObjects.Settlements;
-            for (int index = 0; index < settlements.Count; ++index)
-            {
-                Settlement settlement = settlements[index];
-                if (settlement.Name != null)
-                    usedNames.Add(settlement.Name);
-            }
-
-            return NameGenerator.GenerateName(rulePack, usedNames, true);
-        }
-
-        public static void removePlayerSettlement(SettlementFC settlement)
+        public static void removePlayerSettlement(WorldSettlementFC settlement)
         {
             settlement.PrepareDestroyWorldObject();
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             faction.settlements.Remove(settlement);
-            Messages.Message("SettlementRemoved".Translate(settlement.name), MessageTypeDefOf.NegativeEvent);
+            Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
-            if (Find.World.info.name == settlement.planetName)
-            {
-                Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>
-                    .GetNamed("FactionBaseGenerator"), settlement.mapLocation));
-            }
-            else
-            {
-                faction.deleteSettlementQueue.Add(new SettlementSoS2Info(settlement.planetName,
-                    settlement.mapLocation));
-            }
+            Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>.GetNamed(settlement.def.defName), settlement.Tile));
 
             //clear military events
-            settlement.returnMilitary(false);
+            settlement.MilitaryComp?.returnMilitary(false);
 
             HashSet<FCEvent> toRemove = new HashSet<FCEvent>();
 
@@ -185,7 +121,7 @@ namespace FactionColonies.util
                     else
                     {
                         //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.cooldownMilitary();
+                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.cooldownMilitary();
 
                         toRemove.Add(evt);
                     }
@@ -196,7 +132,7 @@ namespace FactionColonies.util
                 if (evt.def == FCEventDefOf.constructBuilding || evt.def == FCEventDefOf.enactSettlementPolicy ||
                     evt.def == FCEventDefOf.upgradeSettlement || evt.def == FCEventDefOf.cooldownMilitary)
                 {
-                    if (evt.source == settlement.mapLocation)
+                    if (evt.source == settlement.Tile)
                     {
                         toRemove.Add(evt);
                     }
@@ -220,7 +156,9 @@ namespace FactionColonies.util
                 faction.events.Remove(evt);
             }
         }
-
+        //only used with the obsolte SOS2 patch.
+        // commenting out for now. Should remove for good eventually
+        /*
         public static Faction copyPlayerColonyFaction()
         {
             FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
@@ -299,7 +237,7 @@ namespace FactionColonies.util
 
 
             return faction;
-        }
+        }*/
 
         public static Faction createPlayerColonyFaction()
         {
@@ -309,11 +247,9 @@ namespace FactionColonies.util
                 LogUtil.Error("FactionFC world component is missing! Cannot create player colony faction.");
                 return null;
             }
-            //LogUtil.Message("Creating new faction");
-            //Set start time for world component to start tracking your faction;
+            LogUtil.Message("Creating new player faction");
             worldcomp.setCapital();
 
-            //LogUtil.Message("Faction is being created");
             FactionDef facDef = DefDatabase<FactionDef>.GetNamed("PColony");
             Faction faction = new Faction
             {
@@ -323,7 +259,6 @@ namespace FactionColonies.util
             faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
             faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
             faction.Name = "PlayerColony".Translate();
-            //faction.centralMelanin = Rand.Value;
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
             //<DevAdd> Copy player faction relationships  
@@ -337,7 +272,6 @@ namespace FactionColonies.util
             // Generate Leader
             CreatePlayerFactionLeader(faction);
 
-            worldcomp.factionBackup = faction;
             Find.FactionManager.Add(faction);
 
             Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);

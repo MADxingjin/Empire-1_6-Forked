@@ -19,7 +19,8 @@ namespace FactionColonies
         public bool requiresRoyality = false;
         public bool requiresIdeology = false;
         public List<string> requiredModsID = new List<string>();
-        public SettlementTypeRestriction settlementTypeRestriction = SettlementTypeRestriction.None;
+        public List<WorldSettlementDef> settlementTypeBlockList = new List<WorldSettlementDef>();
+        public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         //public required research
 
         public Texture2D Icon
@@ -67,5 +68,21 @@ namespace FactionColonies
         public static RoadDef DirtPath;        
 
         public static object RoadDef { get; internal set; }
+    }
+
+    public class BuildingFC : IExposable
+    {
+        public BuildingFCDef def;
+        public BuildingFCDef underConstructionDef = BuildingFCDefOf.Empty;
+        public int startedTick;
+        public int completionTick;
+
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref def, "buildingdef");
+            Scribe_Defs.Look(ref underConstructionDef, "underConstructionDef");
+            Scribe_Values.Look(ref startedTick, "startedtick");
+            Scribe_Values.Look(ref completionTick, "completionTick");
+        }
     }
 }

@@ -23,8 +23,9 @@ namespace FactionColonies
                 if (faction.powerOutput == null || faction.powerOutput.DestroyedOrNull() || faction.powerOutput == this.parent)
                 {
                     faction.powerOutput = this.parent;
-                    return Find.World.GetComponent<FactionFC>().powerPool;
-                } else
+                    return (float)faction.getResourcePoolValue(ResourceTypeDefOf.RTD_Power);
+                }
+                else
                 {
                     return 0f;
                 }

@@ -9,40 +9,40 @@ namespace FactionColonies
     [HarmonyPatch]
     public class WorldSettlementTransportersDefendAction : TransportersArrivalAction_LandInSpecificCell
     {
-    private readonly IntVec3 cell;
-    private readonly MapParent mapParent;
-    private readonly bool landInShuttle;
+        private readonly IntVec3 cell;
+        private readonly MapParent mapParent;
+        private readonly bool landInShuttle;
 
-    public WorldSettlementTransportersDefendAction(WorldSettlementFC mapParent, IntVec3 cell, bool landInShuttle)
-    {
-        this.mapParent = mapParent;
-        this.cell = cell;
-        this.landInShuttle = landInShuttle;
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(TransportersArrivalAction_LandInSpecificCell), "Arrived")]
-    private static void ArrivePatch(TransportersArrivalAction_LandInSpecificCell __instance, List<ActiveTransporterInfo> transporters, PlanetTile tile)
-    {
-        if (Traverse.Create(__instance).Field("mapParent").GetValue() is WorldSettlementFC settlement)
+        public WorldSettlementTransportersDefendAction(WorldSettlementFC mapParent, IntVec3 cell, bool landInShuttle)
         {
-            List<Pawn> pawns = new List<Pawn>();
-            bool hasAnyPawns = false;
+            this.mapParent = mapParent;
+            this.cell = cell;
+            this.landInShuttle = landInShuttle;
+        }
 
-            foreach (ActiveTransporterInfo activeTransporterInfo in transporters)
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(TransportersArrivalAction_LandInSpecificCell), "Arrived")]
+        private static void ArrivePatch(TransportersArrivalAction_LandInSpecificCell __instance, List<ActiveTransporterInfo> transporters, PlanetTile tile)
+        {
+            if (Traverse.Create(__instance).Field("mapParent").GetValue() is WorldSettlementFC settlement)
             {
-                foreach (Thing thing in activeTransporterInfo.innerContainer)
+                List<Pawn> pawns = new List<Pawn>();
+                bool hasAnyPawns = false;
+
+                foreach (ActiveTransporterInfo activeTransporterInfo in transporters)
                 {
-                    if (thing is Pawn pawn)
+                    foreach (Thing thing in activeTransporterInfo.innerContainer)
                     {
-                        hasAnyPawns = true;
-                        pawns.Add(pawn);
+                        if (thing is Pawn pawn)
+                        {
+                            hasAnyPawns = true;
+                            pawns.Add(pawn);
+                        }
                     }
                 }
-            }
 
-            if (hasAnyPawns) settlement.AddToDefenceFromList(pawns, tile);
+                if (hasAnyPawns) settlement.MilitaryComp?.AddToDefenceFromList(pawns, tile);
+            }
         }
-    }
     }
 }

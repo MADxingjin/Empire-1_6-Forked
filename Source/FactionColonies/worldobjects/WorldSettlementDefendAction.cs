@@ -21,7 +21,7 @@ namespace FactionColonies
             this.settlement = settlement;
         }
 
-        public override void Arrived(Caravan caravan) => settlement.startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(settlement.settlement.mapLocation),() => settlement.CaravanDefend(caravan));
+        public override void Arrived(Caravan caravan) => settlement.MilitaryComp?.startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(settlement.Tile),() => settlement.MilitaryComp?.CaravanDefend(caravan));
         
         public override void ExposeData()
         {
@@ -38,7 +38,7 @@ namespace FactionColonies
             WorldSettlementFC settlement)
         {
             return CaravanArrivalActionUtility.GetFloatMenuOptions(
-                () => settlement.Spawned && settlement.settlement.isUnderAttack,
+                () => settlement.Spawned && settlement.MilitaryComp?.isUnderAttack == true,
                 () => new WorldSettlementDefendAction(settlement),
                 "DefendColony".Translate(), caravan,
                 settlement.Tile, settlement);

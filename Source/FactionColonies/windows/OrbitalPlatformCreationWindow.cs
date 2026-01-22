@@ -14,7 +14,7 @@ namespace FactionColonies
         Advanced,
         Glitter
     }
-
+    //TODO: fully remove this class once the generalized settlement window is good to go
     public class OrbitalPlatformCreationWindow : Window
     {
         public sealed override Vector2 InitialSize => new Vector2(400f, 500f);
@@ -121,7 +121,7 @@ namespace FactionColonies
                 case OrbitalPlatformTier.Logistics:
                     return ("Logistics Orbital Colony", "50% faster tax delivery, special buildings");
                 case OrbitalPlatformTier.Advanced:
-                    return ("Advanced Orbital Colony", "25% lower construction cost, larger size");
+                    return ("Advanced Orbital Colony", "25% lower base construction cost, larger size");
                 case OrbitalPlatformTier.Glitter:
                     return ("Glitterworld Orbital Colony", "Specialized production buildings with bonuses");
                 default:
@@ -158,9 +158,6 @@ namespace FactionColonies
                 return;
             }
 
-            // Pay the cost
-            PaymentUtil.paySilver(cost);
-
             // Find an empty orbital tile
             PlanetTile orbitalTile = FindEmptyOrbitalTile();
 
@@ -169,6 +166,9 @@ namespace FactionColonies
                 Messages.Message("Could not find suitable empty space for the orbital settlement.", MessageTypeDefOf.RejectInput, false);
                 return;
             }
+
+            // Pay the cost
+            PaymentUtil.paySilver(cost);
 
             // Create orbital platform construction event (similar to regular settlement)
             CreateOrbitalPlatformEvent(tier, orbitalTile);
@@ -180,7 +180,6 @@ namespace FactionColonies
             
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
             evt.location = orbitalTile.tileId; // Use the tile ID, not the PlanetTile object
-            evt.planetName = Find.World.info.name;
             evt.timeTillTrigger = Find.TickManager.TicksGame + constructionTime;
             evt.source = faction.capitalLocation;
             

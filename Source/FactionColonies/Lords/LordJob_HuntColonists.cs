@@ -37,8 +37,8 @@ namespace FactionColonies
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             //Check if a settlement battle ended
-            SettlementFC settlement = faction.getSettlement(pawn.Tile, Find.World.info.name);
-            settlement?.worldSettlement.removeAttacker(pawn);
+            WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);
+            settlement?.MilitaryComp?.removeAttacker(pawn);
         }
     }
 }

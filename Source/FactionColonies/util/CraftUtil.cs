@@ -54,7 +54,7 @@ namespace FactionColonies.util
 
             return canCraft;
         }
-
+        /*
         public static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
         {
             switch (resourceType)
@@ -171,6 +171,6 @@ namespace FactionColonies.util
                     filter.SetAllow(ThingDefOf.Chemfuel, true);
                     break;
             }
-        }
+        }*/
     }
 }

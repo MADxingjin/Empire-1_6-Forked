@@ -12,19 +12,20 @@ namespace FactionColonies
         public int loadID;
         public List<Thing> itemTithes;
         public float silverAmount;
+        public List<ResourcePool> resourcePools;
+        //TODO: on the chopping block
         public float electricityAllotted;
         public float researchCompleted;
 
         //ref
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public BillFC bill;
 
         public void ExposeData()
         {
             Scribe_Collections.Look(ref itemTithes, "itemTithes", LookMode.Deep);
             Scribe_Values.Look(ref silverAmount, "silverAmount");
-            Scribe_Values.Look(ref electricityAllotted, "electricityAllotted");
-            Scribe_Values.Look(ref researchCompleted, "researchCompleted");
+            Scribe_Collections.Look(ref resourcePools, "resourcePools", LookMode.Deep);
 
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_References.Look(ref settlement, "settlement");
@@ -48,8 +49,7 @@ namespace FactionColonies
             settlement = bill.settlement;
             silverAmount = 0;
             itemTithes = new List<Thing>();
-            electricityAllotted = 0;
-            researchCompleted = 0;
+            resourcePools = new List<ResourcePool>();
 
         }
 
@@ -67,7 +67,7 @@ namespace FactionColonies
         
 
         //ref
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public TaxesFC taxes;
 
 
@@ -93,7 +93,7 @@ namespace FactionColonies
 
         }
 
-        public BillFC(SettlementFC settlement)
+        public BillFC(WorldSettlementFC settlement)
         {
             SetUniqueLoadID();
             this.settlement = settlement;
@@ -109,26 +109,12 @@ namespace FactionColonies
         public bool resolve()
         {
             FactionFC factionfc = Find.World.GetComponent<FactionFC>();
-            if (PaymentUtil.getSilver() >= -1 * taxes.silverAmount || taxes.silverAmount >= 0)
-            { //if have enough silver on the current map to pay  & map belongs to player
-
-                FCEventMaker.createTaxEvent(this);
-                if (taxes.researchCompleted != 0)
-                {
-                    factionfc.researchPointPool += taxes.researchCompleted;
-                    Messages.Message("PointsAddedToResearchPool".Translate(taxes.researchCompleted), MessageTypeDefOf.PositiveEvent);
-                }
-
-                if (taxes.electricityAllotted != 0)
-                {
-                    factionfc.powerPool += taxes.electricityAllotted;
-                }
-
+            if (attemptResolve())
+            {
                 return true;
-
             }
 
-            string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
+            string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
             settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
             settlement.GainHappiness(-10d);
             factionfc.Bills.Remove(this);
@@ -142,15 +128,9 @@ namespace FactionColonies
             { //if have enough silver on the current map to pay  & map belongs to player
 
                 FCEventMaker.createTaxEvent(this);
-                if (taxes.researchCompleted != 0)
+                if (taxes.resourcePools.Count > 0)
                 {
-                    factionfc.researchPointPool += taxes.researchCompleted;
-                    Messages.Message("PointsAddedToResearchPool".Translate(taxes.researchCompleted), MessageTypeDefOf.PositiveEvent);
-                }
-
-                if (taxes.electricityAllotted != 0)
-                {
-                    factionfc.powerPool += taxes.electricityAllotted;
+                    factionfc.addResourcePools(taxes.resourcePools);
                 }
 
                 return true;

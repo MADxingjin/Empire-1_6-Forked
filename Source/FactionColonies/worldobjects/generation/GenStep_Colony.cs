@@ -12,7 +12,7 @@ namespace FactionColonies
         //basic investment into guns, even though there will be a profit hit.
         private const double CurveFactor = 1.6;
         
-        private SettlementFC Settlement { get; set; }
+        private WorldSettlementFC Settlement { get; set; }
         
         public override int SeedPart => 1806208471;
 
@@ -27,7 +27,7 @@ namespace FactionColonies
             if (Settlement == null)
             {
                 FactionFC settlementFaction = Find.World.GetComponent<FactionFC>();
-                Settlement = settlementFaction.getSettlement(map.Tile, Find.World.info.name);
+                Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
             }
             int min = 36 + Settlement.settlementLevel * 2 - 2;
             return new CellRect(c.x - min / 2, c.z - min / 2, min, min).FullyContainedWithin(new CellRect(0, 0,
@@ -39,7 +39,7 @@ namespace FactionColonies
             if (Settlement == null)
             {
                 FactionFC settlementFaction = Find.World.GetComponent<FactionFC>();
-                Settlement = settlementFaction.getSettlement(map.Tile, Find.World.info.name);
+                Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
             }
             
             int middle = 36 + Settlement.settlementLevel * 2;
@@ -66,7 +66,7 @@ namespace FactionColonies
             resolveParams.faction = faction;
             BaseGen.globalSettings.map = map;
             resolveParams.stockpileMarketValue = (float) Settlement.totalProfit;
-            double defenseBuildings = Settlement.weapons.endProduction;
+            double defenseBuildings = Settlement.getDefenseBonus();
             
             int defenseCount = (int) (CurveFactor * Math.Log(defenseBuildings+1));
             resolveParams.edgeDefenseMortarsCount = (int) Math.Ceiling(defenseCount/3f);

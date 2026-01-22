@@ -53,8 +53,14 @@ namespace FactionColonies
 
 
             int count = 0;
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
+                if (settlement.MilitaryComp == null)
+                {
+                    continue;
+                }
+                WorldObjectComp_SettlementMilitary MilitaryComp = settlement.MilitaryComp;
+
                 Text.Font = GameFont.Small;
 
                 Widgets.DrawMenuSection(new Rect(SettlementBox.x,
@@ -65,7 +71,7 @@ namespace FactionColonies
                 if (Widgets.ButtonTextSubtle(
                     new Rect(SettlementName.x,
                         SettlementName.y + (SettlementBox.height + settlementYSpacing) * count + scroll,
-                        SettlementName.width, SettlementName.height), settlement.name))
+                        SettlementName.width, SettlementName.height), settlement.Name))
                 {
                     Find.WindowStack.Add(new SettlementWindowFc(settlement));
                 }
@@ -76,16 +82,16 @@ namespace FactionColonies
                         MilitaryLevel.width, MilitaryLevel.height * 2),
                     "Mil Level: " + settlement.settlementMilitaryLevel + " - Max Squad Cost: " +
                     MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel));
-                if (settlement.militarySquad != null)
+                if (MilitaryComp.militarySquad != null)
                 {
-                    if (settlement.militarySquad.outfit != null)
+                    if (MilitaryComp.militarySquad.outfit != null)
                     {
                         Widgets.Label(
                             new Rect(AssignedSquad.x,
                                 AssignedSquad.y + (SettlementBox.height + settlementYSpacing) * count + scroll,
                                 AssignedSquad.width, AssignedSquad.height),
                             "Assigned Squad: " +
-                            settlement.militarySquad.outfit.name); //settlement.militarySquad.name);
+                            MilitaryComp.militarySquad.outfit.name); //settlement.militarySquad.name);
                     }
                     else
                     {
@@ -107,7 +113,7 @@ namespace FactionColonies
 
                 Widgets.Label(
                     new Rect(isBusy.x, isBusy.y + (SettlementBox.height + settlementYSpacing) * count + scroll,
-                        isBusy.width, isBusy.height), "Available: " + (!settlement.isMilitaryBusySilent()));
+                        isBusy.width, isBusy.height), "Available: " + (!MilitaryComp.isMilitaryBusySilent()));
 
                 Text.Font = GameFont.Tiny;
 
@@ -125,9 +131,7 @@ namespace FactionColonies
 
                     List<FloatMenuOption> squads = new List<FloatMenuOption>();
 
-                    squads.AddRange(util.squads
-                        .Select(squad => new FloatMenuOption(squad.name + " - Total Equipment Cost: " +
-                                                             squad.equipmentTotalCost, delegate
+                    squads.AddRange(util.squads.Select(squad => new FloatMenuOption(squad.name + " - Total Equipment Cost: " + squad.equipmentTotalCost, delegate
                         {
                             //Unit is selected
                             util.attemptToAssignSquad(settlement, squad);
@@ -158,15 +162,15 @@ namespace FactionColonies
                         buttonDeploySquad.y + (SettlementBox.height + settlementYSpacing) * count + scroll,
                         buttonDeploySquad.width, buttonDeploySquad.height), "Deploy Squad"))
                 {
-                    if (!settlement.isMilitaryBusy(true) && settlement.isMilitarySquadValid())
+                    if (!MilitaryComp.isMilitaryBusy(true) && MilitaryComp.isMilitarySquadValid())
                     {
                         Find.WindowStack.Add(new FloatMenu(DeploymentOptions(settlement)));
                     }
-                    else if (settlement.isMilitaryBusy(true) && settlement.isMilitarySquadValid() && faction.hasPolicy(FCPolicyDefOf.militaristic))
+                    else if (MilitaryComp.isMilitaryBusy(true) && MilitaryComp.isMilitarySquadValid() && faction.hasPolicy(FCPolicyDefOf.militaristic))
                     {
                         if ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) <= Find.TickManager.TicksGame)
                         {
-                            int cost = (int)Math.Round(settlement.militarySquad.outfit.updateEquipmentTotalCost() *.2);
+                            int cost = (int)Math.Round(MilitaryComp.militarySquad.outfit.updateEquipmentTotalCost() *.2);
                             List<FloatMenuOption> options = new List<FloatMenuOption>();
 
                             options.Add(new FloatMenuOption("Deploy Secondary Squad - $" + cost + " silver",
@@ -212,7 +216,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        settlement.isMilitaryBusy();
+                        MilitaryComp.isMilitaryBusy();
                     }
                 }
 
@@ -224,11 +228,11 @@ namespace FactionColonies
                 {
                     FloatMenuOption confirm = new FloatMenuOption("Are you sure? Click to confirm", delegate
                     {
-                        if (settlement.militarySquad != null)
+                        if (MilitaryComp.militarySquad != null)
                         {
                             Messages.Message("Pawns have been regenerated for the squad",
                                 MessageTypeDefOf.NeutralEvent);
-                            settlement.militarySquad.initiateSquad();
+                            MilitaryComp.militarySquad.initiateSquad();
                         }
                         else
                         {
@@ -259,9 +263,11 @@ namespace FactionColonies
                             if (support.returnTotalCost() <=
                                 MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
                             {
-                                if (settlement.buildings.Contains(BuildingFCDefOf.artilleryOutpost))
+                                //TODO: to follow the new modular design of buildings and buildingcomps/defs, the fire support code should
+                                //      really be refactored to be more modular. Save that for later, though
+                                if (settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == true)
                                 {
-                                    if (settlement.artilleryTimer <= Find.TickManager.TicksGame)
+                                    if (MilitaryComp.artilleryTimer <= Find.TickManager.TicksGame)
                                     {
                                         if (PaymentUtil.getSilver() >= cost)
                                         {
@@ -279,7 +285,7 @@ namespace FactionColonies
                                     {
                                         Messages.Message(
                                             "That firesupport option is on cooldown for another " +
-                                            (settlement.artilleryTimer - Find.TickManager.TicksGame)
+                                            (MilitaryComp.artilleryTimer - Find.TickManager.TicksGame)
                                             .ToStringTicksToDays(), MessageTypeDefOf.RejectInput);
                                     }
                                 }
@@ -322,7 +328,7 @@ namespace FactionColonies
             }
         }
 
-        private FloatMenuOption DropPodDeploymentOption(SettlementFC settlement)
+        private FloatMenuOption DropPodDeploymentOption(WorldSettlementFC settlement)
         {
             bool medievalOnly = FCSettings.medievalTechOnly;
             if (!medievalOnly && (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
@@ -339,7 +345,7 @@ namespace FactionColonies
                         "errorDropPodResearchCouldNotBeFound".Translate())), null);
         }
 
-        private List<FloatMenuOption> DeploymentOptions(SettlementFC settlement) => new List<FloatMenuOption>
+        private List<FloatMenuOption> DeploymentOptions(WorldSettlementFC settlement) => new List<FloatMenuOption>
         {
             new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate 
             { 

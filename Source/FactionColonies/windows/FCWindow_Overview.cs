@@ -393,10 +393,10 @@ namespace FactionColonies
 
             for (int i = 0; i < faction.settlements.Count(); i++)
             {
-                SettlementFC settlement = faction.settlements[i];
+                WorldSettlementFC settlement = faction.settlements[i];
 
                 //settlement name
-                if (Widgets.ButtonTextSubtle(AdjustRect(settlement_1, i), settlement.name))
+                if (Widgets.ButtonTextSubtle(AdjustRect(settlement_1, i), settlement.Name))
                 {
                     Find.WindowStack.Add(new SettlementWindowFc(settlement));
                 }

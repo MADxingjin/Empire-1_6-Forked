@@ -76,7 +76,7 @@ namespace FactionColonies
         public static readonly Texture2D wikiIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/wikilogo");
 
 
-        public static readonly List<KeyValuePair<string, Texture2D>> textures = new List<KeyValuePair<string, Texture2D>>() 
+        /*public static readonly List<KeyValuePair<string, Texture2D>> textures = new List<KeyValuePair<string, Texture2D>>() 
         { 
             new KeyValuePair<string, Texture2D>("food", ContentFinder<Texture2D>.Get("GUI/ProductionFood")), 
             new KeyValuePair<string, Texture2D>("weapons", ContentFinder<Texture2D>.Get("GUI/ProductionWeapons")), 
@@ -89,25 +89,9 @@ namespace FactionColonies
             new KeyValuePair<string, Texture2D>("medicine", ContentFinder<Texture2D>.Get("GUI/ProductionMedicine")),
             new KeyValuePair<string, Texture2D>("power", ContentFinder<Texture2D>.Get("GUI/ProductionPower")),
             new KeyValuePair<string, Texture2D>("research", ContentFinder<Texture2D>.Get("GUI/ProductionResearch"))
-        };
+        };*/
 
         public static List<Texture2D> factionIcons = new List<Texture2D>();
-
-        // Add a method to get the appropriate texture based on settlement type
-        public static Texture2D GetResourceTexture(ResourceType resourceType, SettlementFC settlement)
-        {
-            string resourceName = ResourceUtils.GetResourceDisplayName(resourceType, settlement);
-            
-            var textureEntry = textures.FirstOrDefault(t => t.Key == resourceName);
-            if (textureEntry.Value != null)
-            {
-                return textureEntry.Value;
-            }
-            
-            // Fallback to the original resource type name if specific texture not found
-            var fallbackEntry = textures.FirstOrDefault(t => t.Key == resourceType.ToString().ToLower());
-            return fallbackEntry.Value ?? textures[0].Value; // Final fallback to first texture
-        }
 
     }
 }

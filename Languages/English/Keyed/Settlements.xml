@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <ImpassableMountains>You cannot found a {0} on impassable mountains.</ImpassableMountains>
+	<NotAllowedBiome>You cannot found a {0} in this biome.</NotAllowedBiome>
+</LanguageData>

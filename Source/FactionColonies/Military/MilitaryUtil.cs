@@ -22,7 +22,7 @@ namespace FactionColonies
         /// <param name="squad"></param>
         /// <param name="dropPosition"></param>
         /// <param name="DropPod"></param>
-        private static void SpawnSquad(SettlementFC settlement, MercenarySquadFC squad, IntVec3 dropPosition, bool DropPod)
+        private static void SpawnSquad(WorldSettlementFC settlement, MercenarySquadFC squad, IntVec3 dropPosition, bool DropPod)
         {
             IncidentParms parms = new IncidentParms
             {
@@ -53,12 +53,12 @@ namespace FactionColonies
             squad.isDeployed = true;
             squad.orderLocation = dropPosition;
             squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
+            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
 
-            settlement.SendMilitary(Find.CurrentMap.Index, Find.World.info.name, MilitaryJob.Deploy, 1, null);
+            settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJob.Deploy, 1, null);
             LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
 
-            if (settlement.militarySquad != squad)
+            if (settlement.MilitaryComp.militarySquad != squad)
             {
                 Find.World.GetComponent<FactionFC>().traitMilitaristicTickLastUsedExtraSquad = Find.TickManager.TicksGame;
             }
@@ -70,13 +70,19 @@ namespace FactionColonies
         /// <param name="settlement"></param>
         /// <param name="DropPod"></param>
         /// <param name="overrideSquad"></param>
-        public static void CallinAlliedForces(SettlementFC settlement, bool DropPod, MercenarySquadFC overrideSquad = null)
+        public static void CallinAlliedForces(WorldSettlementFC settlement, bool DropPod, MercenarySquadFC overrideSquad = null)
         {
-            MercenarySquadFC squad = overrideSquad ?? settlement.militarySquad;
+            MercenarySquadFC squad = overrideSquad ?? settlement.MilitaryComp?.militarySquad;
 
             if (Find.CurrentMap.Parent is WorldSettlementFC)
             {
+                // I think this case might be obsolete now that SettlementFC has been phased out. Need to double-check
                 Messages.Message("FCMilitaryTriedDeployingToSettlementFC".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            if (squad == null)
+            {
+                LogUtil.Warning($"Attempted to call in allied forces for settlement {settlement.Name} with NULL MilitaryComp. Skipping");
                 return;
             }
 
@@ -100,7 +106,7 @@ namespace FactionColonies
                     return;
                 }
 
-                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round(settlement.militarySquad.outfit.updateEquipmentTotalCost() * .2));
+                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round(settlement.MilitaryComp.militarySquad.outfit.updateEquipmentTotalCost() * .2));
                 SpawnSquad(settlement, squad, dropPosition, DropPod);
                 DebugTools.curTool = null;
             });
@@ -115,14 +121,14 @@ namespace FactionColonies
         /// <param name="settlement"></param>
         /// <param name="DropPod"></param>
         /// <param name="cost"></param>
-        public static void CallinExtraForces(SettlementFC settlement, bool DropPod)
+        public static void CallinExtraForces(WorldSettlementFC settlement, bool DropPod)
         {
             MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.createMercenarySquad(settlement, true);
-            squad.OutfitSquad(squad.settlement.militarySquad.outfit);
+            squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
 
             CallinAlliedForces(settlement, DropPod, squad);
         }
-        public static void FireSupport(SettlementFC settlement, MilitaryFireSupport support)
+        public static void FireSupport(WorldSettlementFC settlement, MilitaryFireSupport support)
         {
             DebugTool tool = null;
             IntVec3 DropPosition;
@@ -143,7 +149,7 @@ namespace FactionColonies
                     Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.fireSupport.Add(fireSupport);
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
-                    settlement.artilleryTimer = Find.TickManager.TicksGame + 60000;
+                    settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;
                 }
                 else
                 {

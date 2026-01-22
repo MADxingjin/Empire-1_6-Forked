@@ -1,17 +1,20 @@
-﻿using System;
+﻿using FactionColonies.util;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
+using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using FactionColonies.util;
-using HarmonyLib;
-using RimWorld;
-using RimWorld.Planet;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Security.AccessControl;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using Verse.Noise;
 using Verse.Sound;
-using LudeonTK;
 
 namespace FactionColonies
 {
@@ -22,16 +25,171 @@ namespace FactionColonies
     /// </summary>
     public class WorldSettlementFC : Settlement
     {
+        // Tiles being ints is obsolete. Time to actually use PlanetTiles
+        //public int mapLocation;
+        private string name;
+        private string nameShort;
+        private string nameOriginal;
+        public string title = "Hamlet".Translate();
+        public string description = "FCGenericError".Translate();
+
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         * ~        Settlement Base Info         ~ *
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+        public int settlementLevel = 1;
+        /* Workers */
+        public double workers;
+        public double workersMax;
+        public double workersUltraMax;
+        public double workerCost;
+        public double workerTotalUpkeep;
+        /* Social Stats */
+        public double unrest;
+        public double loyalty = 100;
+        public double happiness = 100;
+        public double prosperity = 100;
+
+        //public List<BuildingFCDef> buildings = new List<BuildingFCDef>();
+        /// <summary>
+        /// List of traits that apply to this settlement.
+        /// <para>This field should never be accessed directly. Adding or removing traits should always be done through the addTrait, addTraits, removeTrait, or removeTraits functions.</para>
+        /// </summary>
+        private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        public List<FCTraitEffectDef> Traits => traits;
+        public List<FCPrisoner> prisonerList = new List<FCPrisoner>();
+
+        public float silverIncome;
+        public List<Thing> tithe = new List<Thing>();
+        public int titheEstimatedIncome;
+
+        public string biome;
+        // we're replacing the hilliness biome def with a ResourceProductionExtension
+        //public BiomeResourceDef hillinessDef;
+        public BiomeResourceDef biomeDef;
+
+
+        //ui only
+        public double totalUpkeep;
+        public double totalIncome;
+        public double totalProfit;
+
+        //Trait stuff
+        public int trait_Egalitarian_TaxBreak_Tick;
+        public bool trait_Egalitarian_TaxBreak_Enabled;
+
+        // Jealously guard our resources. Only we can modify them!
+        private List<ResourceFC> resources = new List<ResourceFC>();
+        public List<ResourceFC> Resources => resources;
+
+        // Comp caching for the most-frequently accessed comps
+        private WorldObjectComp_SettlementMilitary cachedMilitaryComp = null;
+        private bool checkedMilitaryComp = false;
+        private WorldObjectComp_SettlementBuildings cachedBuildingsComp = null;
+        private bool checkedBuildingsComp = false;
+        public WorldObjectComp_SettlementMilitary MilitaryComp
+        {
+            get
+            {
+                if (!checkedMilitaryComp)
+                {
+                    cachedMilitaryComp = GetComponent<WorldObjectComp_SettlementMilitary>();
+                    checkedMilitaryComp = true;
+                    if (cachedMilitaryComp == null)
+                    {
+                        LogUtil.Warning($"Attempted to access settlement {Name}'s MilitaryComp, but it doesn't have one");
+                    }
+                }
+                return cachedMilitaryComp;
+            }
+        }
+        public WorldObjectComp_SettlementBuildings BuildingsComp
+        {
+            get
+            {
+                if (!checkedBuildingsComp)
+                {
+                    cachedBuildingsComp = GetComponent<WorldObjectComp_SettlementBuildings>();
+                    checkedBuildingsComp = true;
+                    if (cachedBuildingsComp == null)
+                    {
+                        LogUtil.Warning($"Attempted to access settlement {Name}'s BuildingsComp, but it doesn't have one");
+                    }
+                }
+                return cachedBuildingsComp;
+            }
+        }
+        public int settlementMilitaryLevel
+        {
+            get
+            {
+                if (MilitaryComp != null)
+                {
+                    return MilitaryComp.settlementMilitaryLevel;
+                }
+                return 0;
+            }
+            set
+            {
+                if (MilitaryComp != null)
+                {
+                    MilitaryComp.settlementMilitaryLevel = value;
+                }
+                else
+                {
+                    LogUtil.Warning($"Settlement {Name} does not have a MilitaryComp, but tried to set its settlementMilitaryLevel to {value}");
+                }
+            }
+        }
+
+
+        //public static Biome biome;
+
+        //Settlement Production Information
+        public double productionEfficiency; //Between 0.1 - 1
+
+        public string ShortName
+        {
+            get
+            {
+                if (!nameShort.NullOrEmpty()) return nameShort;
+
+                nameShort = TextGen.ToShortName(name);
+
+                return nameShort;
+            }
+            set => nameShort = value.NullOrEmpty() ? name : value;
+        }
+
+        public string OriginalName
+        {
+            get => nameOriginal;
+            private set => nameOriginal = value;
+        }
+
+        private string cachedlocationText = string.Empty;
+        public string locationText
+        {
+            get
+            {
+                if (cachedlocationText.NullOrEmpty())
+                {
+                    cachedlocationText = settlementDef.GetModExtension<SettlementTypeExtension>().getLocationText(this);
+                }
+                return cachedlocationText;
+            }
+            set
+            {
+                cachedlocationText = value;
+            }
+        }
+
+        public bool IsBeingUpgraded => Find.World.GetComponent<FactionFC>().events.Any(evt => evt.def == FCEventDefOf.upgradeSettlement && evt.location == Tile);
+
         public static readonly FieldInfo traitCachedIcon = typeof(WorldObjectDef).GetField("expandingIconTextureInt",
             BindingFlags.NonPublic | BindingFlags.Instance);
 
         public static readonly FieldInfo traitCachedMaterial = typeof(WorldObjectDef).GetField("material",
             BindingFlags.NonPublic | BindingFlags.Instance);
-
-        public militaryForce attackerForce;
-        public List<Pawn> attackers = new List<Pawn>();
-        public militaryForce defenderForce;
-        public List<Pawn> defenders = new List<Pawn>();
 
         /// <summary>
         ///     A flag meant to indicate whether or not this settlement is meant for actual destruction; used to override
@@ -39,20 +197,15 @@ namespace FactionColonies
         /// </summary>
         private bool destroyFlag;
 
-        public SettlementFC settlement;
-        public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
-
         public new WorldSettlementTraderTracker trader;
 
         public new string Name
         {
             get
             {
-                if (settlement == null) return "";
-
-                return settlement.name ?? (settlement.name = "");
+                return name ?? (name = "");
             }
-            set => settlement.name = value;
+            set => name = value;
         }
 
         public override string Label => Name;
@@ -84,6 +237,7 @@ namespace FactionColonies
         public new bool RestockedSinceLastVisit => trader.RestockedSinceLastVisit;
 
         public new int NextRestockTick => trader.NextRestockTick;
+        public WorldSettlementDef settlementDef => def as WorldSettlementDef;
 
         /// <summary>
         ///     Indicate that this should be destroyed when WorldObject.Destroy() is called
@@ -99,42 +253,120 @@ namespace FactionColonies
         /// </summary>
         public override void Destroy()
         {
+            if (MilitaryComp != null)
+            {
+                MilitaryComp.endBattle(false, 0);
+            }
+
             if (destroyFlag)
+            {
                 base.Destroy();
-
-            else
-                endBattle(false, 0);
-        }
-
-        public IEnumerable<Thing> ColonyThingsWillingToBuy(Pawn playerNegotiator)
-        {
-            return trader?.ColonyThingsWillingToBuy(playerNegotiator);
-        }
-
-        public void GiveSoldThingToTrader(Thing toGive, int countToGive, Pawn playerNegotiator)
-        {
-            trader.GiveSoldThingToTrader(toGive, countToGive, playerNegotiator);
-        }
-
-        public void GiveSoldThingToPlayer(Thing toGive, int countToGive, Pawn playerNegotiator)
-        {
-            trader.GiveSoldThingToPlayer(toGive, countToGive, playerNegotiator);
+            }
         }
 
         public override void PostMake()
         {
             trader = new WorldSettlementTraderTracker(this);
 
+            if (!(def is WorldSettlementDef))
+            { 
+                LogUtil.Error($"Created settlement {name} with an invalid def: {def}! Panic! Defaulting to base def!");
+                def = WorldSettlementDefOf.WorldSettlementDefBase;
+            }
+
+            settlementLevel = 1;
+
+            //Efficiency Multiplier
+            productionEfficiency = 1.0;
+            workers = 0;
+            workersMax = settlementDef.workersMaxBase + (settlementLevel * settlementDef.workersMaxMult) + returnMaxWorkersFromPrisoners();
+            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + (settlementLevel * settlementDef.workersUltraMaxMult) + returnOverMaxWorkersFromPrisoners();
+
+
+            // LogUtil.Message(Find.WorldGrid.tiles[location].biome.ToString());   <= Returns biome
+            //biome info
+            biome = Tile.Tile.PrimaryBiome.defName;
+            bool useTileBiome = true;
+
+            if (settlementDef.biomeResourceOverride != null)
+            {
+                useTileBiome = false;
+                biomeDef = settlementDef.biomeResourceOverride;
+                if (!DefDatabase<BiomeResourceDef>.AllDefs.Contains(biomeDef))
+                {
+                    LogUtil.Error($"Settlement {Name} of type {settlementDef.LabelCap} has invalid override biome. Falling back onto tile biome");
+                    biomeDef = BiomeResourceDefOf.defaultBiome;
+                    useTileBiome = true;
+                }
+            }
+            if (useTileBiome)
+            {
+                //modded biomes handling
+                biomeDef = DefDatabase<BiomeResourceDef>.GetNamed(biome, false) ?? BiomeResourceDefOf.defaultBiome;
+            }
+
+            BuildingsComp?.InitBuildings();
+
+            foreach (ResourceBonuses rtd in settlementDef.resources)
+            {
+                /* ResourceFC initialization takes care of biome bonuses, so no need to handle that up here */
+                resources.Add(new ResourceFC(rtd.resourceDef, this));
+            }
+
             updateTechIcon();
             def.expandingIconTexture = "FactionIcons/" + Find.World.GetComponent<FactionFC>().factionIconPath;
             traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
             base.PostMake();
 
-            attackers = new List<Pawn>();
-            defenders = new List<Pawn>();
-            supporting = new List<CaravanSupporting>();
-
             LogUtil.Message($"Created world settlement {Name} with def {def}");
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Deep.Look(ref trader, "trader");
+            Scribe_Values.Look(ref name, "name");
+            Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
+            Scribe_Values.Look(ref nameOriginal, "nameOriginal", OriginalName);
+            Scribe_Values.Look(ref title, "title");
+            Scribe_Values.Look(ref description, "description");
+            Scribe_Values.Look(ref productionEfficiency, "productionEfficiency");
+            Scribe_Values.Look(ref workers, "workers");
+            Scribe_Values.Look(ref workersMax, "workersMax");
+            Scribe_Values.Look(ref workersUltraMax, "workersUltraMax");
+            Scribe_Values.Look(ref settlementLevel, "settlementLevel");
+            Scribe_Values.Look(ref unrest, "unrest");
+            Scribe_Values.Look(ref loyalty, "loyalty");
+            Scribe_Values.Look(ref happiness, "happiness");
+            Scribe_Values.Look(ref prosperity, "prosperity");
+            Scribe_Values.Look(ref workerCost, "workerCost");
+            Scribe_Values.Look(ref workerTotalUpkeep, "workerTotalUpkeep");
+
+            Scribe_Collections.Look(ref resources, "resources", LookMode.Deep);
+
+            //Taxes
+            Scribe_Collections.Look(ref tithe, "tithe", LookMode.Deep);
+            Scribe_Values.Look(ref titheEstimatedIncome, "titheEstimatedIncome");
+            Scribe_Values.Look(ref silverIncome, "silverIncome");
+
+
+            //Traits
+            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
+
+            //Biome_info
+            Scribe_Values.Look(ref biome, "biome");
+            Scribe_Defs.Look(ref biomeDef, "biomedef");
+
+
+            //Military
+
+
+            //Prisoners
+            Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
+
+            //Traits
+            Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Tick, "trait_Egalitarian_TaxBreak_Tick");
+            Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Enabled, "trait_Egalitarian_TaxBreak_Enabled");
         }
 
         public void updateTechIcon()
@@ -150,16 +382,54 @@ namespace FactionColonies
                 ShaderDatabase.WorldOverlayTransparentLit, WorldMaterials.WorldObjectRenderQueue));
         }
 
-        public override void ExposeData()
+        public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            base.ExposeData();
-            Scribe_References.Look(ref settlement, "settlement");
-            Scribe_Collections.Look(ref attackers, "attackers", LookMode.Reference);
-            Scribe_Collections.Look(ref defenders, "defenders", LookMode.Reference);
-            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Reference);
-            Scribe_Deep.Look(ref defenderForce, "defenderForce");
-            Scribe_Deep.Look(ref attackerForce, "attackerForce");
-            Scribe_Deep.Look(ref trader, "trader");
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+            if (MilitaryComp?.isUnderAttack != true)
+            {
+                trader.settlement = trader.settlement ?? this;
+                var kindDef = trader.TraderKind;
+                var action = (Command_Action)CaravanVisitUtility.TradeCommand(caravan, Faction, kindDef);
+
+                var bestNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, Faction, kindDef);
+                action.action = () =>
+                {
+                    if (!CanTradeNow)
+                        return;
+                    Find.WindowStack.Add(new Dialog_Trade(bestNegotiator, this));
+                    PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(Goods.OfType<Pawn>(),
+                        "LetterRelatedPawnsTradingWithSettlement"
+                            .Translate((NamedArgument)Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent);
+                };
+
+                yield return action;
+            }
+        }
+
+        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
+        {
+            if (MilitaryComp == null || !MilitaryComp.isUnderAttack)
+                foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
+                    yield return option;
+        }
+
+        protected override void Tick()
+        {
+            base.Tick();
+            trader?.TraderTrackerTick();
+
+            //TODO: rework faction traits to be comps or something
+            if (trait_Egalitarian_TaxBreak_Enabled &&
+                Find.TickManager.TicksGame >= trait_Egalitarian_TaxBreak_Tick + GenDate.TicksPerDay * 10)
+                trait_Egalitarian_TaxBreak_Enabled = false;
+        }
+
+        public void PublicTick()
+        {
+            Tick();
         }
         /*public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -172,564 +442,751 @@ namespace FactionColonies
             //if (containsShuttlePort) yield return RequestShuttleForCaravanAction;
         }*/
 
-        public void CaravanDefend(Caravan caravan)
-        {
-            var pawns = caravan.pawns.InnerListForReading.ListFullCopy();
-            AddToDefenceFromList(pawns, caravan.Tile);
-
-            if (!caravan.Destroyed) caravan.Destroy();
-            var enterCell = FindNearEdgeCell(Map);
-            foreach (var pawn in pawns)
-            {
-                var loc =
-                    CellFinder.RandomSpawnCellForPawnNear(enterCell, Map);
-                GenSpawn.Spawn(pawn, loc, Map, Rot4.Random);
-            }
-        }
-
-        public void AddToDefenceFromList(List<Pawn> pawns, int destinationTile)
-        {
-            if (pawns.NullOrEmpty())
-            {
-                LogUtil.Error("Tried to add an empty list of pawns to an FCEvent");
-                return;
-            }
-
-            startDefence(
-                MilitaryUtilFC.returnMilitaryEventByLocation(destinationTile), () =>
-                {
-                    foreach (var pawn in pawns)
-                    {
-                        if (defenders.Contains(pawn)) return;
-                        if (defenders.Any())
-                            defenders[0].GetLord().AddPawn(pawn);
-                        else
-                            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
-                                Map, pawns);
-                    }
-
-                    var caravanSupporting = new CaravanSupporting
-                    {
-                        pawns = pawns
-                    };
-
-                    supporting.Add(caravanSupporting);
-
-                    defenders.AddRange(caravanSupporting.pawns);
-                });
-        }
-
-        public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
-        {
-            foreach (Gizmo gizmo in base.GetGizmos())
-            {
-                yield return gizmo;
-            }
-            if (!settlement.isUnderAttack)
-            {
-                trader.settlement = trader.settlement ?? settlement.worldSettlement;
-                var kindDef = trader.TraderKind;
-                var action = (Command_Action) CaravanVisitUtility.TradeCommand(caravan, Faction, kindDef);
-
-                var bestNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, Faction, kindDef);
-                action.action = () =>
-                {
-                    if (!CanTradeNow)
-                        return;
-                    Find.WindowStack.Add(new Dialog_Trade(bestNegotiator, this));
-                    PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(Goods.OfType<Pawn>(),
-                        "LetterRelatedPawnsTradingWithSettlement"
-                            .Translate((NamedArgument) Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent);
-                };
-
-                yield return action;
-            }
-        }
-
-        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
-        {
-            if (!settlement.isUnderAttack)
-                foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
-                    yield return option;
-            else
-                foreach (var option in WorldSettlementDefendAction.GetFloatMenuOptions(caravan, this))
-                    yield return option;
-        }
-
-        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(
-    IEnumerable<IThingHolder> pods,
-    Action<PlanetTile, TransportersArrivalAction> launchAction)
-{
-    foreach (var floatMenuOption in base.GetTransportersFloatMenuOptions(pods, launchAction))
-    {
-        yield return floatMenuOption;
-    }
-    // Add custom options here if needed, using launchAction to trigger actions
-}
-
-        private void deleteMap()
-        {
-            if (Map == null) return;
-            Map.lordManager.lords.Clear();
-
-            CameraJumper.TryJump(settlement.mapLocation);
-            //Prevent player from zooming back into the settlement
-            Current.Game.CurrentMap = Find.AnyPlayerHomeMap;
-
-            //Ignore any empty caravans
-            var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => !pawn.Downed || !pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(
-                pawn => !pawn.Downed && !pawn.Dead)))
-                CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned),
-                    Faction.OfPlayer, settlement.mapLocation, settlement.mapLocation, -1);
-
-            if (AllDowned && defenders.Any())
-            {
-                var pawns = new HashSet<Thing>();
-                foreach (var caravanSupporting in supporting)
-                foreach (var pawn in caravanSupporting.pawns)
-                    if (!pawn.Dead)
-                    {
-                        pawn.DeSpawn();
-                        pawns.Add(pawn);
-                    }
-
-                foreach (Pawn pawn in pawns)
-                    if (!pawn.Dead)
-                    {
-                        var num2 = 0;
-                        while (pawn.health.HasHediffsNeedingTend())
-                        {
-                            num2++;
-                            if (num2 > 10000)
-                            {
-                                LogUtil.Error("WorldSettlementFC.deleteMap: Too many iterations.");
-                                return;
-                            }
-
-                            TendUtility.DoTend(null, pawn, null);
-                        }
-                    }
-
-                var eventParams = new FCEvent
-                {
-                    location = Find.AnyPlayerHomeMap.Tile,
-                    planetName = settlement.planetName,
-                    source = settlement.mapLocation,
-                    goods = pawns.ToList(),
-                    customDescription = DeliveryEvent.ShuttleEventInjuredString,
-                    timeTillTrigger = Find.TickManager.TicksGame +
-                                      TravelUtil.ReturnTicksToArrive(Tile, Find.AnyPlayerHomeMap.Tile)
-                };
-
-                if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
-            }
-
-            if (Map.mapPawns?.AllPawnsSpawned == null) return;
-
-            //Despawn removes them from AllPawnsSpawned, so we copy it
-            //foreach (var pawn in Map.mapPawns.AllPawnsSpawned.ListFullCopy()) pawn.DeSpawn();
-        }
-
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
             removeWorldObject = false;
-            return !defenders.Any() && !attackers.Any();
+            return MilitaryComp == null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
         }
 
-        public void startDefence(FCEvent evt, Action after)
+        public void addPrisoner(Pawn prisoner)
         {
-            if (FCSettings.settlementsAutoBattle)
+            prisonerList.Add(new FCPrisoner(prisoner, this));
+        }
+
+        public void upgradeSettlement(int times = 1)
+        {
+            settlementLevel += times;
+            if (settlementLevel > FCSettings.settlementMaxLevel) settlementLevel = FCSettings.settlementMaxLevel;
+            if (settlementLevel < 0) settlementLevel = 0;
+            updateStats();
+        }
+
+        public void delevelSettlement(int times = -1)
+        {
+            upgradeSettlement(times);
+        }
+
+        public void GainUnrestWithReason(Message message, double amount)
+        {
+            Messages.Message(message);
+            unrest += amount * TraitUtilsFC.cycleTraits("unrestGainedMultiplier", traits, Operation.Multiplication);
+        }
+        public void GainUnrest(double amount)
+        {
+            unrest += amount * TraitUtilsFC.cycleTraits("unrestGainedMultiplier", traits, Operation.Multiplication);
+        }
+
+        public void GainHappiness(double amount)
+        {
+            happiness += amount * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+        }
+
+        public void updateProfitAndProduction() //updates both profit and production
+        {
+            updateProfit();
+            updateStats();
+        }
+
+        // TODO: will need rework after converting faction traits to comps
+        public void updateStats()
+        {
+            FactionFC factionFc = Find.World.GetComponent<FactionFC>();
+
+            int isolationistExtraWorkers = 0;
+            if (factionFc.hasPolicy(FCPolicyDefOf.isolationist))
+                isolationistExtraWorkers += 3;
+
+            int SlaverExtraWorkers = 0;
+            if (factionFc.hasPolicy(FCPolicyDefOf.slaver))
+                SlaverExtraWorkers += 2;
+
+            //Military Settlement Level
+            settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(TraitUtilsFC.cycleTraits("militaryBaseLevel", traits, Operation.Addition));
+
+            //Worker Stats
+            workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + isolationistExtraWorkers + SlaverExtraWorkers)) +
+                         TraitUtilsFC.cycleTraits("workerBaseMax", traits, Operation.Addition) + returnMaxWorkersFromPrisoners();
+            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase - SlaverExtraWorkers + (settlementLevel * settlementDef.workersUltraMaxMult) +
+                              TraitUtilsFC.cycleTraits("workerBaseOverMax", traits, Operation.Addition) + returnOverMaxWorkersFromPrisoners();
+
+        }
+        public void updateProfit() //updates profit
+        {
+            totalUpkeep = getTotalUpkeep();
+            updateWorkerCost();
+            totalIncome = getTotalIncome();
+            totalProfit = Convert.ToInt32(totalIncome - totalUpkeep);
+        }
+
+        // TODO: will need rework after converting faction traits to comps
+        public void updateHappiness()
+        {
+            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            double happinessGainMultiplier = TraitUtilsFC.cycleTraits("happinessGainedMultiplier", traits, Operation.Multiplication);
+            double happinessLostMultiplier = TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+
+            double policyIncrease = 0;
+            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
+                policyIncrease = 2;
+
+
+            happiness += happinessGainMultiplier * (policyIncrease + FCSettings.happinessBaseGain +
+                                                    TraitUtilsFC.cycleTraits("happinessGainedBase", traits, Operation.Addition));
+            happiness -= happinessLostMultiplier * (FCSettings.happinessBaseLost + TraitUtilsFC.cycleTraits("happinessLostBase", traits, Operation.Addition));
+
+            happiness = Math.Round(happiness, 1);
+
+            if (happiness <= 0)
             {
-                var won = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending) == 1;
-                endBattle(won, (int) evt.militaryForceDefending.forceRemaining);
-                return;
+                happiness = 1;
             }
 
-            if (defenderForce == null)
+            if (happiness > 100)
             {
-                endBattle(false, 0);
-                return;
+                happiness = 100;
+            }
+        }
+
+        public void updateLoyalty()
+        {
+            double loyaltyGainMultiplier = TraitUtilsFC.cycleTraits("loyaltyGainedMultiplier", traits, Operation.Multiplication);
+            double loyaltyLostMultiplier = TraitUtilsFC.cycleTraits("loyaltyLostMultiplier", traits, Operation.Multiplication);
+
+            loyalty += loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + TraitUtilsFC.cycleTraits("loyaltyGainedBase", traits, Operation.Addition));
+            loyalty -= loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + TraitUtilsFC.cycleTraits("loyaltyLostBase", traits, Operation.Addition));
+
+            loyalty = Math.Round(loyalty, 1);
+
+            if (loyalty <= 0)
+            {
+                loyalty = 1;
             }
 
-            LongEventHandler.QueueLongEvent(() =>
+            if (loyalty > 100)
+            {
+                loyalty = 100;
+            }
+        }
+
+        // TODO: will need rework after converting faction traits to comps
+        public void updateProsperity()
+        {
+            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            double policyIncrease = 0;
+            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
+                policyIncrease = 2;
+
+            prosperity += (policyIncrease + FCSettings.prosperityBaseRecovery + TraitUtilsFC.cycleTraits("prosperityBaseRecovery", traits, Operation.Addition)); //Go through traits and add prosperity where needed
+
+            prosperity = Math.Round(prosperity, 1);
+
+            if (prosperity <= 0)
+            {
+                prosperity = 1;
+            }
+
+            if (prosperity > 100)
+            {
+                prosperity = 100;
+            }
+        }
+
+        public void updateUnrest()
+        {
+            double unrestGainMultiplier = TraitUtilsFC.cycleTraits("unrestGainedMultiplier", traits, Operation.Multiplication);
+            double unrestLostMultiplier = TraitUtilsFC.cycleTraits("unrestLostMultiplier", traits, Operation.Multiplication);
+
+            unrest += unrestGainMultiplier * (FCSettings.unrestBaseGain + TraitUtilsFC.cycleTraits("unrestGainedBase", traits, Operation.Addition)); //Go through traits and add unrest where needed
+            unrest -= unrestLostMultiplier * (FCSettings.unrestBaseLost + TraitUtilsFC.cycleTraits("unrestLostBase", traits, Operation.Addition)); //Go through traits and remove unrest where needed
+
+            unrest = Math.Round(unrest, 1);
+
+            if (unrest < 0)
+            {
+                unrest = 0;
+            }
+
+            if (unrest > 100)
+            {
+                unrest = 100;
+            }
+        }
+
+        public double getTotalIncome() //return total income of settlements
+        {
+            double income = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                //TODO: change when tithes are no longer binary
+                if (resource.isTithe == false)
                 {
-                    if (Map == null)
-                        MapGenerator.GenerateMap(new IntVec3(70 + settlement.settlementLevel * 10,
-                                1, 70 + settlement.settlementLevel * 10), this,
-                            MapGeneratorDef, ExtraGenStepDefs).mapDrawer.RegenerateEverythingNow();
-
-                    zoomIntoTile(evt);
-                    after.Invoke();
-                },
-                "GeneratingMap", false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap);
-        }
-
-        protected override void Tick()
-        {
-            base.Tick();
-            trader?.TraderTrackerTick();
-        }
-
-        public void PublicTick()
-        {
-            Tick();
-        }
-
-        private void zoomIntoTile(FCEvent evt)
-        {
-            SoundDefOf.Tick_High.PlayOneShotOnCamera();
-            if (Current.Game.CurrentMap != Map && !defenders.Any())
-            {
-                if (evt == null)
-                {
-                    LogUtil.Warning("Aborting defense, null FCEvent!");
-                    return;
-                }
-
-                evt.timeTillTrigger = Find.TickManager.TicksGame;
-                var force = MilitaryUtilFC.returnDefendingMilitaryForce(evt);
-                if (force == null) return;
-
-                force.homeSettlement.militaryBusy = true;
-
-                foreach (var building in Map.listerBuildings.allBuildingsColonist)
-                    FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
-
-                generateFriendlies(force);
-            }
-
-            if (Current.Game.CurrentMap == Map && Find.World.renderer.wantedMode != WorldRenderMode.Planet) return;
-
-            if (defenders.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(defenders[0]));
-            else if (Map.mapPawns.AllPawnsSpawned.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(Map.mapPawns.AllPawnsSpawned[0]));
-            else
-                CameraJumper.TryJump(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
-        }
-
-        public override void Notify_CaravanFormed(Caravan caravan)
-        {
-            var foundCaravan = new List<CaravanSupporting>();
-            foreach (var found in caravan.pawns)
-            {
-                if (found.GetLord() != null) found.GetLord().ownedPawns.Remove(found);
-
-                foreach (var caravanSupporting in
-                    supporting.Where(caravanSupporting => caravanSupporting.pawns.Contains(found)))
-                {
-                    foundCaravan.Add(caravanSupporting);
-                    caravanSupporting.pawns.Remove(found);
-                    break;
-                }
-            }
-
-            foreach (var caravanSupporting in foundCaravan.Where(caravanSupporting =>
-                    caravanSupporting.pawns.Find(pawn => !pawn.Downed &&
-                                                         !pawn.Dead && !pawn.AnimalOrWildMan()) == null))
-                //Prevent removing while creating end battle caravans
-                if (settlement.isUnderAttack)
-                    supporting.Remove(caravanSupporting);
-            /*It appears vanilla handles this automatically
-                foreach (Pawn animal in caravanSupporting.supporting.FindAll(pawn => pawn.AnimalOrWildMan()))
-                {
-                    animal.holdingOwner = null;
-                    animal.DeSpawn();
-                    Find.WorldPawns.PassToWorld(animal);
-                    caravan.pawns.TryAdd(animal);
-                }*/
-
-            //Appears to not happen sometimes, no clue why
-            foreach (var pawn in caravan.pawns) Map.reservationManager.ReleaseAllClaimedBy(pawn);
-
-            base.Notify_CaravanFormed(caravan);
-        }
-
-        public static IntVec3 FindNearEdgeCell(Map map)
-        {
-            bool BaseValidator(IntVec3 x)
-            {
-                return x.Standable(map) && !x.Fogged(map);
-            }
-
-            var hostFaction = map.ParentFaction;
-            if (CellFinder.TryFindRandomEdgeCellWith(x =>
-            {
-                if (!BaseValidator(x))
-                    return false;
-                if (hostFaction != null && map.reachability.CanReachFactionBase(x, hostFaction))
-                    return true;
-                return hostFaction == null && map.reachability.CanReachBiggestMapEdgeDistrict(x);
-            }, map, CellFinder.EdgeRoadChance_Neutral, out var result))
-                return CellFinder.RandomClosewalkCellNear(result, map, 5);
-            if (CellFinder.TryFindRandomEdgeCellWith(BaseValidator, map, CellFinder.EdgeRoadChance_Neutral, out result))
-                return CellFinder.RandomClosewalkCellNear(result, map, 5);
-            LogUtil.Warning("Could not find any valid edge cell.");
-            return CellFinder.RandomCell(map);
-        }
-
-        private void generateFriendlies(militaryForce force)
-        {
-            var points = (float) (force.militaryLevel * force.militaryEfficiency * 100);
-            List<Pawn> friendlies;
-            var riders = new Dictionary<Pawn, Pawn>();
-            if (force.homeSettlement.militarySquad != null &&
-                force.homeSettlement.militarySquad.mercenaries.Any())
-            {
-                var squad = force.homeSettlement.militarySquad;
-
-                squad.OutfitSquad(squad.settlement.militarySquad.outfit);
-                squad.updateSquadStats(squad.settlement.settlementMilitaryLevel);
-                squad.resetNeeds();
-
-                friendlies = squad.AllEquippedMercenaryPawns.ToList();
-
-                foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
-            }
-            else
-            {
-                var parms = new IncidentParms
-                {
-                    target = Map,
-                    faction = ColonyUtil.getPlayerColonyFaction(),
-                    generateFightersOnly = true,
-                    raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-                };
-                parms.points = IncidentWorker_Raid.AdjustedRaidPoints(points,
-                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                    parms.faction, PawnGroupKindDefOf.Combat,
-                    parms.target // new required parameter
-                );
-                friendlies = PawnGroupMakerUtility.GeneratePawns(
-                    IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
-                        PawnGroupKindDefOf.Combat, parms, true)).ToList();
-                if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-            }
-
-            void tryFindLoc(out IntVec3 loc, Pawn friendly)
-            {
-                var min = (70 + settlement.settlementLevel * 10) / 2 - 5 - 5 * settlement.settlementLevel;
-                var size = 10 + settlement.settlementLevel * 10;
-                CellFinder.TryFindRandomCellInsideWith(new CellRect(min, min, size, size),
-                    testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
-                        TraverseParms.For(TraverseMode.PassDoors)), out loc);
-                if (loc.x == -1000)
-                {
-                    LogUtil.Message("Failed with " + friendly + ", " + loc);
-                    CellFinder.TryFindRandomCellNear(new IntVec3(min + 10 + settlement.settlementLevel, 1,
-                            min + 10 + settlement.settlementLevel), Map, 75,
-                        testing => testing.Standable(Map), out loc);
+                    //if resource is not paid by tithe
+                    income += resource.production * FCSettings.silverPerResource;
                 }
             }
 
-            foreach (var friendly in friendlies)
+            LogUtil.Message($"getTotalIncome: {income}");
+            return income;
+        }
+
+        public int getTotalWorkers()
+        {
+            int totalWorkers = 0;
+            foreach (ResourceFC resource in resources)
             {
-                if (friendly.IsWildMan()) continue;
+                totalWorkers += resource.assignedWorkers;
+            }
 
-                friendly.ApplyIdeologyRitualWounds();
-
-                IntVec3 loc;
-                if (friendly.AnimalOrWildMan())
+            if (totalWorkers > workersUltraMax)
+            {
+                while (totalWorkers > workersUltraMax)
                 {
-                    if (riders.Count > 0)
+                    if (increaseWorkers(null, -1))
                     {
-                        try
-                        {
-                            var owner = riders.First(pair => pair.Value.thingIDNumber == friendly.thingIDNumber).Key;
-                            CellFinder.TryFindRandomCellInsideWith(new CellRect((int) owner.DrawPos.x - 5,
-                                    (int) owner.DrawPos.z - 5, 10, 10),
-                                testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
-                                    TraverseParms.For(TraverseMode.PassDoors)), out loc);
-                        }
-                        catch
-                        {
-                            var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber +
-                                      ", and riders dictionary is not empty!");
-                            continue;
-                        }
+                        totalWorkers -= 1;
                     }
-                    else
+                }
+            }
+
+            return totalWorkers;
+        }
+
+        private bool CanStillModify(ResourceFC resource, int singleMod) => workers + singleMod <= workersUltraMax && workers + singleMod >= 0 && resource.assignedWorkers + singleMod <= workersUltraMax && resource.assignedWorkers + singleMod >= 0;
+
+        public bool increaseWorkers(ResourceFC resource, int numWorkers)
+        {
+            int singleMod = (numWorkers > 0) ? 1 : -1;
+            if (resource == null)
+            {
+                if (numWorkers >= 0 && workers <= workersUltraMax)
+                {
+                    return false;
+                }
+
+                while (workers > workersUltraMax)
+                {
+                    int num = Rand.RangeInclusive(0, resources.Count - 1);
+                    if (resources[num].assignedWorkers > 0)
                     {
-                        LogUtil.Error("Rider Dictionary is empty but animal was still generated?");
+                        resources[num].assignedWorkers -= 1;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                while (CanStillModify(resource, singleMod))
+                {
+                    workers += singleMod;
+                    resource.assignedWorkers += singleMod;
+                    numWorkers -= singleMod;
+                    updateProfitAndProduction();
+                    Find.World.GetComponent<FactionFC>().updateTotalProfit();
+                    if (numWorkers == 0) return true;
+                }
+            }
+
+            return false;
+        }
+
+        public double getBaseWorkerCost()
+        {
+            return (FCSettings.workerCost + TraitUtilsFC.cycleTraits("workerBaseCost", traits, Operation.Addition));
+            //add building/faction modifiers
+        }
+
+        public double getTotalUpkeep() //returns total upkeep of all settlements
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            workers = getTotalWorkers();
+            double upkeep = 0;
+            double overWork;
+            if (workers > workersMax)
+            {
+                overWork = (int)(workers - workersMax);
+            }
+            else
+            {
+                overWork = 0;
+            }
+
+            workerTotalUpkeep = (workers * getBaseWorkerCost()) + ((workers * getBaseWorkerCost()) * (overWork / 20));
+
+            //add building upkeep
+
+            upkeep += (workerTotalUpkeep);
+
+
+            upkeep += BuildingsComp.TotalUpkeep();
+
+            //LogUtil.Message("upkeep " + upkeep.ToString());
+            return upkeep;
+        }
+
+        public void updateWorkerCost() //runs inside updateProfit to attach during updating
+        {
+            workerCost = (workerTotalUpkeep / workers);
+        }
+
+        public double getTotalProfit() //returns total profit (income - upkeep) of all settlements
+        {
+            return (getTotalIncome() - getTotalUpkeep());
+        }
+        /// <summary>
+        /// Compatibility focused: this object should only be destroyed very deliberately, else another object is likely trying to handle negative combat resolution against this settlement.
+        /// </summary>
+        public void PrepareDestroyWorldObject()
+        {
+            PrepareDestroy();
+        }
+
+        public float Happiness
+        {
+            get { return (float)Math.Round(happiness, 1); }
+        }
+
+        public float Unrest
+        {
+            get { return (float)Math.Round(unrest, 1); }
+        }
+
+        public float Loyalty
+        {
+            get { return (float)Math.Round(loyalty, 1); }
+        }
+
+        public float Prosperity
+        {
+            get { return (float)Math.Round(prosperity, 1); }
+        }
+
+        public ResourceFC returnHighestResource()
+        {
+            double highest = -1;
+            ResourceFC highestResource = null;
+
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.production > highest)
+                {
+                    highest = resource.production;
+                    highestResource = resource;
+                }
+            }
+
+            return highestResource;
+        }
+
+        public double getDefenseBonus()
+        {
+            double defenseBonus = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.def.aidsDefense && resource.totalProduction > 0)
+                {
+                    defenseBonus += resource.totalProduction;
+                }
+            }
+            return defenseBonus;
+        }
+
+        public void updateDescription()
+        {
+            //biome
+            //TODO: make sure all translation keys match the biome defs
+            description = ("FCDesc" + biomeDef.defName).Translate();
+
+            /*switch (biomeDef.defName)
+            {
+                case "BorealForest":
+                    description = "FCDescBorealForest".Translate();
+                    break;
+                case "Tundra":
+                    description = "FCDescTundra".Translate();
+                    break;
+                case "ColdBog":
+                    description = "FCDescColdBog".Translate();
+                    break;
+                case "IceSheet":
+                    description = "FCDescIceSheet".Translate();
+                    break;
+                case "SeaIce":
+                    description = "FCDescIceSheet".Translate();
+                    break;
+                case "TemperateForest":
+                    description = "FCDescTemperateForest".Translate();
+                    break;
+                case "TemperateSwamp":
+                    description = "FCDescTemperateSwamp".Translate();
+                    break;
+                case "TropicalRainforest":
+                    description = "FCDescTropicalRainforest".Translate();
+                    break;
+                case "AridShrubland":
+                    description = "FCDescAridShrubland".Translate();
+                    break;
+                case "Desert":
+                    description = "FCDescDesert".Translate();
+                    break;
+                case "ExtremeDesert":
+                    description = "FCDescExtremeDesert".Translate();
+                    break;
+                case "OrbitalSpace":
+                    description = "FCDescOrbitalSpace".Translate();
+                    break;
+                default:
+                    description = "FCDescUnknown".Translate();
+                    break;
+            }*/
+
+
+            //town size
+
+            switch (settlementLevel)
+            {
+                case 1:
+                    description += "FCTownLevel1".Translate();
+                    break;
+                case 2:
+                    description += "FCTownLevel2".Translate();
+                    break;
+                case 3:
+                case 4:
+                    description += "FCTownLevel3".Translate();
+                    break;
+                case 5:
+                case 6:
+                    description += "FCTownLevel4".Translate();
+                    break;
+                case 7:
+                case 8:
+                default:
+                    description += "FCTownLevel5".Translate();
+                    break;
+            }
+        }
+
+        public List<FCTraitEffectDef> returnListSettlementTraits()
+        {
+            List<FCTraitEffectDef> tmpList = new List<FCTraitEffectDef>();
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                tmpList.Add(trait);
+            }
+
+            return tmpList;
+        }
+
+        public void addTrait(FCTraitEffectDef trait, string id = "")
+        {
+            /* Add production bonuses */
+            string traitId = trait.defName + id;
+            foreach (ResourceBonuses resourcebonus in trait.resourceBonuses)
+            {
+                ResourceFC resource = getResource(resourcebonus.resourceDef);
+                if (resource != null)
+                {
+                    if (resourcebonus.additive != 0)
+                    {
+                        resource.addProductionAdditive(traitId, resourcebonus.additive, trait.desc);
+                    }
+                    if (resourcebonus.multiplier != 1)
+                    {
+                        resource.addProductionMultiplier(traitId, resourcebonus.multiplier, trait.desc);
+                    }
+                }
+            }
+            traits.Add(trait);
+        }
+
+        public void addTraits(List<FCTraitEffectDef> traits, string id = "")
+        {
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                addTrait(trait, id);
+            }
+        }
+
+        public bool removeTrait(FCTraitEffectDef trait, string id = "")
+        {
+            /* Remove production bonuses */
+            string traitId = trait.defName + id;
+            if (traits.Contains(trait))
+            {
+                foreach (ResourceBonuses resourcebonus in trait.resourceBonuses)
+                {
+                    ResourceFC resource = getResource(resourcebonus.resourceDef);
+                    if (resource != null)
+                    {
+                        resource.removeProductionAdditiveById(traitId);
+                        resource.removeProductionMultiplierById(traitId);
+                    }
+                }
+                return traits.Remove(trait);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void removeTraits(List<FCTraitEffectDef> traits, string id = "")
+        {
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                removeTrait(trait, id);
+            }
+        }
+        public void clearTraits()
+        {
+            List<FCTraitEffectDef> currentTraits = traits;
+            removeTraits(currentTraits);
+            traits.Clear();
+        }
+
+        public void deconstructBuilding(int buildingSlot)
+        {
+            BuildingsComp?.DeconstructBuilding(buildingSlot);
+        }
+
+        private int returnMaxWorkersFromPrisoners()
+        {
+            int num = 0;
+            foreach (FCPrisoner prisoner in prisonerList)
+            {
+                switch (prisoner.workload)
+                {
+                    case FCWorkLoad.Medium:
+                        num++;
+                        break;
+                    case FCWorkLoad.Heavy:
+                        num += 2;
+                        break;
+                }
+            }
+
+            return num;
+        }
+
+        private int returnOverMaxWorkersFromPrisoners()
+        {
+            //LogUtil.Message("max worker : " + num);
+            return prisonerList.Count(prisoner => prisoner.workload == FCWorkLoad.Light);
+        }
+
+
+        public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
+        {
+            if (BuildingsComp == null)
+            {
+                return false;
+            }
+            return BuildingsComp.validConstructBuilding(building, buildingSlot);
+        }
+
+
+        public void constructBuilding(BuildingFCDef building, int buildingSlot)
+        {
+            if (BuildingsComp == null)
+            {
+                return;
+            }
+            BuildingsComp.ConstructBuilding(building, buildingSlot);
+        }
+
+        //TODO: what is this comment for?
+        //Reference
+        //0 - settlement name
+        //1 - food end production
+        //2 - weapon end pro
+        //3 - apparel end pro
+        //4 - animals end pro
+        //5 - logging end pro
+        //6 - mining end pro
+        //7 - report button
+        //8 - tithe est value
+        //9 - Silver income
+        //10 - location id
+
+        //TODO: will need a rework when tithes are changed to be non-binary
+        public double returnTitheEstimatedValue()
+        {
+            double titheVal = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.isTithe)
+                {
+                    titheVal += resource.production * FCSettings.silverPerResource;
+                }
+            }
+
+            return titheVal;
+        }
+
+        public ResourceFC returnResource(string defName) //used to return the correct resource based on string name
+        {
+            ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def.defName == defName);
+            if (res == null)
+            {
+                LogUtil.Message($"Requested resource {defName} is not in settlement {Name}'s resource list");
+            }
+            return res;
+        }
+
+        public ResourceFC getResource(ResourceTypeDef type) //used to return the correct resource based on string name
+        {
+            ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == type);
+            if (res == null)
+            {
+                LogUtil.Message($"Requested resource {type.defName} is not in settlement {Name}'s resource list");
+            }
+            return res;
+        }
+
+
+        public void taxProductionGoods() //update goods (TAX TAX TAX)   # Not used?
+        {
+            int silver = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.isTithe)
+                {
+                    //if resource is paying via tithe
+                    //generate the tithe things
+                    //run tithe cash evaluation here
+                    //ThingSetMaker gen = new ThingSetMaker();
+                }
+                else
+                {
+                    //if resource is paying via silver
+                    silver += (int)(resource.production * FCSettings.silverPerResource); //Add randomness?
+                }
+            }
+        }
+
+        //UNUSED FUNCTIONS
+        public float getSilverIncome()
+        {
+            return silverIncome;
+        }
+
+        public void resetSilverIncome()
+        {
+            silverIncome = 0;
+        }
+
+        public void addSilverIncome(float amount)
+        {
+            silverIncome += amount;
+        }
+
+        public float returnSilverIncome(bool reset)
+        {
+            float income = silverIncome;
+
+            if (reset)
+            {
+                resetSilverIncome();
+            }
+
+            return income;
+        }
+
+        public List<Thing> getTithe()
+        {
+            return tithe;
+        }
+
+        public void resetTithe()
+        {
+            tithe = new List<Thing>();
+        }
+        //UNUSED FUNCTIONS /END
+
+        public void goTo()
+        {
+            Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+
+            //Select Settlement Tile
+            Find.WorldSelector.ClearSelection();
+            Find.WorldSelector.Select(Find.WorldObjects.MapParentAt(Tile));
+            if (Find.MainButtonsRoot.tabs.OpenTab != null)
+            {
+                Find.MainButtonsRoot.tabs.OpenTab.TabWindow.Close();
+            }
+        }
+        public List<ResourcePool> createResourcePools()
+        {
+            List<ResourcePool> pools = new List<ResourcePool>();
+
+            foreach(ResourceFC resource in resources)
+            {
+                if (resource.def.isPoolResource)
+                {
+                    ResourcePool pool = resource.createPool();
+                    if (pool.pool != 0)
+                    {
+                        pools.Add(pool);
+                    }
+                }
+            }
+
+            return pools;
+        }
+
+        public List<Thing> createTithe(float industriousTaxPercentageBoost)
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+
+
+            List<Thing> list = new List<Thing>();
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.isTithe && !resource.def.isPoolResource)
+                {
+                    if (resource.filter == null)
+                    {
+                        resource.filter = new ThingFilter();
+                        resource.resetThingFilter();
+                    }
+
+                    if (!resource.filter.AllowedThingDefs.Any())
+                    {
+                        Find.LetterStack.ReceiveLetter("No Tithe",
+                            "There are no enabled items in the tithe" + resource + " of settlement " +
+                            name, LetterDefOf.NegativeEvent);
                         continue;
                     }
-                }
-                else
-                {
-                    tryFindLoc(out loc, friendly);
-                }
 
-                GenSpawn.Spawn(friendly, loc, Map, new Rot4());
-                friendly.drafter = new Pawn_DraftController(friendly);
+                    List<Thing> tmpList;
 
+                    double production = resource.production;
+                    production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
+                    int assignedWorkers = resource.assignedWorkers;
 
-                Map.mapPawns.RegisterPawn(friendly);
-                friendly.drafter.Drafted = true;
-            }
+                    //Create Temp Value
+                    double tmpValue = production * FCSettings.silverPerResource;
+                    resource.taxStock += tmpValue;
+                    resource.returnLowestCost();
+                    if (resource.checkMinimum())
+                    {
+                        if (faction.hasPolicy(FCPolicyDefOf.feudal))
+                            resource.taxStock *= 1.2;
+                        tmpList = resource.generateTithe(resource.taxStock, FCSettings.productionTitheMod, resource.assignedWorkers, TraitUtilsFC.cycleTraits("taxBaseRandomModifier", traits, Operation.Addition));
 
-            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
-                friendlies);
+                        foreach (Thing thing in tmpList)
+                        {
+                            list.Add(thing);
+                        }
 
-            defenders = friendlies;
-        }
+                        resource.taxStock = 0;
+                    }
 
-        private void endBattle(bool won, int remaining)
-        {
-            var faction = Find.World.GetComponent<FactionFC>();
-
-            LogUtil.Message("WorldSettlementFC.endBattle: Handling combat resolution...");
-            try
-            {
-                if (won)
-                {
-                    WinBattle(faction);
-                }
-                else
-                {
-                    LoseBattle(faction);
-                }
-                LogUtil.Message("WorldSettlementFC.endBattle: Handling foreign defenders...");
-                CooldownMilitary(remaining);
-            }
-            catch (Exception e)
-            {
-                LogUtil.Error($"Encountered an error while trying to resolve combat in Empire{Environment.NewLine}{e}");
-            }
-            settlement.isUnderAttack = false;
-        }
-
-        private void CooldownMilitary(int remaining)
-        {
-            if (defenderForce?.homeSettlement == settlement)
-            {
-                defenderForce?.homeSettlement?.cooldownMilitary();
-            }
-            else if (defenderForce == null)
-            {
-                LogUtil.Message("Defending force not set-- if the attack came from another mod, this is fine.");
-            }
-            else
-            {
-                // if not the home settlement defending
-                if (remaining >= 7)
-                {
-                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(),
-                        "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
-                    defenderForce.homeSettlement.returnMilitary(true);
-                }
-                else
-                {
-                    defenderForce.homeSettlement.cooldownMilitary();
-                }
-            }
-        }
-
-        private void LoseBattle(FactionFC faction)
-        {
-            //get multipliers
-            var happinessLostMultiplier =
-                TraitUtilsFC.cycleTraits("happinessLostMultiplier",
-                    settlement.traits, Operation.Multiplication) *
-                TraitUtilsFC.cycleTraits("happinessLostMultiplier", faction.traits, Operation.Multiplication);
-            var loyaltyLostMultiplier =
-                TraitUtilsFC.cycleTraits("loyaltyLostMultiplier", settlement.traits,
-                    Operation.Multiplication) * TraitUtilsFC.cycleTraits("loyaltyLostMultiplier",
-                    faction.traits, Operation.Multiplication);
-
-            var muliplier = 1;
-            if (faction.hasPolicy(FCPolicyDefOf.feudal))
-                muliplier = 2;
-            float prosperityMultiplier = 1;
-            var canDestroyBuildings = true;
-            if (faction.hasTrait(FCPolicyDefOf.resilient))
-            {
-                prosperityMultiplier = .5f;
-                canDestroyBuildings = false;
-            }
-
-            // LogUtil.Message("Determined Multipliers for loss penalty");
-            // if winner are enemies
-            settlement.prosperity -= 20 * prosperityMultiplier;
-            settlement.happiness -= 25 * happinessLostMultiplier;
-            settlement.loyalty -= 15 * loyaltyLostMultiplier * muliplier;
-
-            string str = "DefenseFailureFull".Translate(settlement.name);
-
-
-            for (var k = 0; k < 4; k++)
-            {
-                var deconstructRoll = new IntRange(0, 10).RandomInRange;
-                var deconstructChance = 7;
-                if (deconstructRoll < deconstructChance || settlement.buildings[k].defName == "Empty" ||
-                    settlement.buildings[k].defName == "Construction" || !canDestroyBuildings) continue;
-                str += "\n" +
-                       "BuildingDestroyedInRaid".Translate(settlement.buildings[k].label);
-                settlement.deconstructBuilding(k);
-            }
-
-            // LogUtil.Message("Building deconstruction handled");
-            // level remover checker
-            if (settlement.settlementLevel > 1 && canDestroyBuildings)
-            {
-                var num = new IntRange(0, 10).RandomInRange;
-                if (num >= 7)
-                {
-                    str += "\n\n" + "SettlementDeleveledRaid".Translate();
-                    settlement.delevelSettlement();
+                    resource.returnTaxPercentage();
                 }
             }
 
-            // LogUtil.Message("Settlement deleveling handled");
-            Find.LetterStack.ReceiveLetter("DefenseFailure".Translate(), str, LetterDefOf.Death,
-                new LookTargets(this));
-        }
-
-        private void WinBattle(FactionFC faction)
-        {
-            faction.addExperienceToFactionLevel(5f);
-            Find.LetterStack.ReceiveLetter("DefenseSuccessful".Translate(),
-                "DefenseSuccessfulFull".Translate(settlement.name),
-                LetterDefOf.PositiveEvent, new LookTargets(this));
-        }
-
-        private void endAttack()
-        {
-            endBattle(defenders.Any(), defenders.Count);
-              deleteMap();
-
-            supporting.Clear();
-            defenders.Clear();
-            defenderForce = null;
-            attackers.Clear();
-            attackerForce = null;
-        }
-
-        public void removeAttacker(Pawn downed)
-        {
-            attackers.Remove(downed);
-            if (attackers.Any()) return;
-            LongEventHandler.QueueLongEvent(endAttack,
-                "EndingAttack", false, error =>
-                {
-                    DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
-                        "ErrorEndingAttackDescription".Translate());
-                    LogUtil.Error(error.Message);
-                });
-        }
-
-        public void removeDefender(Pawn defender)
-        {
-            defenders.Remove(defender);
-            if (defenders.Any()) return;
-            LongEventHandler.QueueLongEvent(endAttack,
-                "EndingAttack", false, error =>
-                {
-                    DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
-                        "ErrorEndingAttackDescription".Translate());
-                    LogUtil.Error(error.Message);
-                });
+            return list;
         }
     }
 

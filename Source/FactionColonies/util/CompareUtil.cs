@@ -19,47 +19,47 @@ namespace FactionColonies
             return string.Compare(x.label, y.label);
         }
 
-        public static int CompareSettlementName(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementName(WorldSettlementFC x, WorldSettlementFC y)
         {
-            return string.Compare(x.name, y.name);
+            return string.Compare(x.Name, y.Name);
         }
 
-        public static int CompareSettlementLevel(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementLevel(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.settlementLevel.CompareTo(x.settlementLevel);
         }
 
-        public static int CompareSettlementMilitaryLevel(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementMilitaryLevel(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.settlementMilitaryLevel.CompareTo(x.settlementMilitaryLevel);
         }
 
-        public static int CompareSettlementFreeWorkers(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementFreeWorkers(WorldSettlementFC x, WorldSettlementFC y)
         {
             return ((y.workersUltraMax - y.getTotalWorkers()).CompareTo((x.workersUltraMax - x.getTotalWorkers())));
         }
 
-        public static int CompareSettlementUnrest(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementUnrest(WorldSettlementFC x, WorldSettlementFC y)
         {
             return x.unrest.CompareTo(y.unrest);
         }
 
-        public static int CompareSettlementLoyalty(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementLoyalty(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.loyalty.CompareTo(x.loyalty);
         }
 
-        public static int CompareSettlementHappiness(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementHappiness(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.happiness.CompareTo(x.happiness);
         }
 
-        public static int CompareSettlementProsperity(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementProsperity(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.prosperity.CompareTo(x.prosperity);
         }
 
-        public static int CompareSettlementProfit(SettlementFC x, SettlementFC y)
+        public static int CompareSettlementProfit(WorldSettlementFC x, WorldSettlementFC y)
         {
             return y.getTotalProfit().CompareTo(x.getTotalProfit());
         }

@@ -25,7 +25,7 @@ namespace FactionColonies
 
     class FCBuildingWindow : Window
     {
-        readonly SettlementFC settlement;
+        readonly WorldSettlementFC settlement;
         readonly int buildingSlot;
         readonly BuildingFCDef buildingDef;
         readonly List<BuildingFCDef> buildingList;
@@ -187,11 +187,9 @@ namespace FactionColonies
             if (building.traits == null || building.traits.Count == 0)
                 return false;
 
-            foreach (var traitDefName in building.traits)
+            foreach (FCTraitEffectDef traitDef in building.traits)
             {
-                var traitDef = DefDatabase<FCTraitEffectDef>.GetNamedSilentFail(traitDefName.defName);
-                if (traitDef == null) continue;
-
+                ResourceBonuses rtd;
                 switch (currentFilter)
                 {
                     case BuildingFilter.Happiness:
@@ -202,32 +200,38 @@ namespace FactionColonies
                         break;
                     
                     case BuildingFilter.Food:
-                        if (traitDef.productionBaseFood != 0 || Math.Abs(traitDef.productionMultiplierFood - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Food);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
                     case BuildingFilter.Weapons:
-                        if (traitDef.productionBaseWeapons != 0 || Math.Abs(traitDef.productionMultiplierWeapons - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Weapons);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
                     case BuildingFilter.Apparel:
-                        if (traitDef.productionBaseApparel != 0 || Math.Abs(traitDef.productionMultiplierApparel - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Apparel);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
                     case BuildingFilter.Research:
-                        if (traitDef.productionBaseResearch != 0 || Math.Abs(traitDef.productionMultiplierResearch - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Research);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
                     case BuildingFilter.Medicine:
-                        if (traitDef.productionBaseMedicine != 0 || Math.Abs(traitDef.productionMultiplierMedicine - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Medicine);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
                     case BuildingFilter.Power:
-                        if (traitDef.productionBasePower != 0 || Math.Abs(traitDef.productionMultiplierPower - 1.0) > 0.001)
+                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Power);
+                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
                             return true;
                         break;
                     
@@ -303,12 +307,11 @@ namespace FactionColonies
                         //if not the same building
                         list.Add(new FloatMenuOption("Build".Translate(), delegate
                         {
-                            if (!settlement.validConstructBuilding(building, buildingSlot, settlement)) return;
+                            if (settlement.BuildingsComp?.validConstructBuilding(building, buildingSlot) != true) return;
                             FCEvent tmpEvt = new FCEvent(true)
                             {
                                 def = FCEventDefOf.constructBuilding,
-                                source = settlement.mapLocation,
-                                planetName = settlement.planetName,
+                                source = settlement.Tile,
                                 building = building,
                                 buildingSlot = buildingSlot
                             };
@@ -321,9 +324,8 @@ namespace FactionColonies
                             Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
 
                             PaymentUtil.paySilver(Convert.ToInt32(building.cost));
-                            settlement.deconstructBuilding(buildingSlot);
                             Messages.Message(building.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
-                            settlement.buildings[buildingSlot] = BuildingFCDefOf.Construction;
+                            settlement.BuildingsComp.startConstruction(building, buildingSlot, tmpEvt.timeTillTrigger);
                             Find.WindowStack.TryRemove(this);
                             Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
                         }));
@@ -376,14 +378,11 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
         }
 
-        public FCBuildingWindow(SettlementFC settlement, int buildingSlot)
+        public FCBuildingWindow(WorldSettlementFC settlement, int buildingSlot)
         {
             factionfc = Find.World.GetComponent<FactionFC>();
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
-            
-            // Check if this is an orbital platform
-            bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
             
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
             {
@@ -399,18 +398,21 @@ namespace FactionColonies
                             
                             // Check settlement type restrictions
                             bool meetsSettlementTypeRequirement = true;
-                            switch (building.settlementTypeRestriction)
+                            if (building.settlementTypeBlockList?.Count > 0)
                             {
-                                case SettlementTypeRestriction.SurfaceOnly:
-                                    meetsSettlementTypeRequirement = !isOrbitalPlatform;
-                                    break;
-                                case SettlementTypeRestriction.OrbitalOnly:
-                                    meetsSettlementTypeRequirement = isOrbitalPlatform;
-                                    break;
-                                case SettlementTypeRestriction.None:
-                                default:
+                                if (building.settlementTypeBlockList.Contains(settlement.settlementDef))
+                                {
+                                    meetsSettlementTypeRequirement = false;
+                                }
+                            }
+                            if (building.settlementTypeAllowList?.Count > 0)
+                            {
+                                //If we have an allowlist, then the default restriction is false
+                                meetsSettlementTypeRequirement = false;
+                                if (building.settlementTypeAllowList.Contains(settlement.settlementDef))
+                                {
                                     meetsSettlementTypeRequirement = true;
-                                    break;
+                                }
                             }
                             
                             if (meetsSettlementTypeRequirement)
@@ -435,7 +437,7 @@ namespace FactionColonies
 
             this.settlement = settlement;
             this.buildingSlot = buildingSlot;
-            buildingDef = settlement.buildings[buildingSlot];
+            buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
         }
     }
 }

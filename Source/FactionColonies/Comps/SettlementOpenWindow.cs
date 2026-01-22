@@ -51,7 +51,7 @@ namespace FactionColonies
                 icon = ContentFinder<Texture2D>.Get("UI/Icons/QuestionMark"),
                 action = delegate
                 {
-                    Find.WindowStack.Add(new SettlementWindowFc(worldsettlement.settlement));
+                    Find.WindowStack.Add(new SettlementWindowFc(worldsettlement));
                 }
             };
 

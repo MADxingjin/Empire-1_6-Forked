@@ -7,7 +7,7 @@ namespace FactionColonies
         //init variables
         public MilUnitFC loadout;
         public MercenarySquadFC squad;
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public Mercenary handler;
         public Mercenary animal;
         public Pawn pawn;

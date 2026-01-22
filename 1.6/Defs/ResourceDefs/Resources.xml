@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  
+  <FactionColonies.ResourceTypeDef>
+	<defName>RTD_Food</defName>
+	<label>food</label>
+	<description>A resource category for meals, plants, and meat.</description>
+	<iconPath>GUI/ProductionFood</iconPath>
+	<thingAllowList>
+		<li>
+			<ResourceThingDefRestriction>
+				<thingDef>Hay</thingDef>
+			</ResourceThingDefRestriction>
+		</li>
+		<li>
+			<ResourceThingDefRestriction>
+				<thingDef>Kibble</thingDef>
+			</ResourceThingDefRestriction>
+		</li>
+	</thingAllowList>
+	<thingCategoryAllowList>
+		<li>
+			<ResourceThingCategoryDefRestriction>
+				<ThingCategoryDef>Foods</ThingCategoryDef>
+			</ResourceThingCategoryDefRestriction>
+		</li>
+	</thingCategoryAllowList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>5</titheMaxCountBase>
+	<titheMaxCountScaler>1</titheMaxCountScaler>
+  </FactionColonies.ResourceTypeDef>
+
+</Defs>

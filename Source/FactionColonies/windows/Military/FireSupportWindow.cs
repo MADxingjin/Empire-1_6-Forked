@@ -10,7 +10,7 @@ namespace FactionColonies
 {
     public class FireSupportWindow : MilitaryWindow
     {
-        private SettlementFC settlementPointReference;
+        private WorldSettlementFC settlementPointReference;
         private MilitaryFireSupport selectedSupport;
         private MilitaryCustomizationUtil util;
         private float fireSupportMaxScroll;
@@ -164,10 +164,10 @@ namespace FactionColonies
                 {
                     List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
-                    foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+                    foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
                     {
                         settlementList.Add(new FloatMenuOption(
-                            settlement.name + " - Military Level : " + settlement.settlementMilitaryLevel,
+                            settlement.Name + " - Military Level : " + settlement.settlementMilitaryLevel,
                             delegate
                             {
                                 //set points

@@ -40,7 +40,7 @@ namespace FactionColonies
             settlement.updateDescription();
             // Don't recalculate production on UI open - this overwrites saved values
             // settlement.updateProfitAndProduction();
-            maxScroll = (ResourceUtils.GetAvailableResourceTypes(settlement).Length * ScrollSpacing) - ScrollHeight;
+            maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
             //settlement.update description
             factionfc = Find.World.GetComponent<FactionFC>();
         }
@@ -82,9 +82,9 @@ namespace FactionColonies
             "Military".Translate()
         };
 
-        public SettlementFC settlement; //Don't expose
+        private WorldSettlementFC settlement; //Don't expose
 
-        public SettlementWindowFc(SettlementFC settlement)
+        public SettlementWindowFc(WorldSettlementFC settlement)
         {
             if (settlement == null)
             {
@@ -147,13 +147,13 @@ namespace FactionColonies
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="resourceType"></param>
-        private void TitheCustomizationClicked(ResourceFC resource, ResourceType resourceType)
+        private void TitheCustomizationClicked(ResourceFC resource)
         {
             //if click faction customize button
             if (resource.filter == null)
             {
                 resource.filter = new ThingFilter();
-                PaymentUtil.resetThingFilter(settlement, resourceType);
+                resource.resetThingFilter();
             }
 
             List<FloatMenuOption> options = new List<FloatMenuOption>
@@ -161,7 +161,7 @@ namespace FactionColonies
                 new FloatMenuOption("FCTitheEnableAll".Translate(),
                 delegate
                 {
-                    PaymentUtil.resetThingFilter(settlement, resourceType);
+                    resource.resetThingFilter();
                     resource.returnLowestCost();
                 }),
                 new FloatMenuOption("FCTitheDisableAll".Translate(),
@@ -172,20 +172,10 @@ namespace FactionColonies
                 })
             };
 
-            List<ThingDef> things = PaymentUtil.debugGenerateTithe(resourceType, settlement);
+            List<ThingDef> things = resource.generateThingDefList();//PaymentUtil.debugGenerateTithe(resourceType, settlement);
 
-            foreach (ThingDef thing in things.Where(thing => thing.race?.animalType != AnimalType.Dryad))
+            foreach (ThingDef thing in things)
             {
-                // Skip craftability check for orbital platform items (GravlitePanel, Chemfuel)
-                // I'm not sure if this is the best way to do this, but it works for now. Can't say I'm proud of it.
-                bool isOrbitalItem = (thing == ThingDefOf.GravlitePanel) && ResourceUtils.IsOrbitalPlatform(settlement);
-                
-                if (!isOrbitalItem && !CraftUtil.canCraftItem(thing))
-                {
-                    resource.filter.SetAllow(thing, false);
-                    continue;
-                }
-
                 FloatMenuOption option = new FloatMenuOption("FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.filter.Allows(thing))), null, thing);
 
                 //Seperated because the label needs to be modified on press
@@ -226,13 +216,11 @@ namespace FactionColonies
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="spacing"></param>
-        private void DoResourceDescriptionButton(ResourceFC resource, ResourceType resourceType, int x, int y, int spacing)
+        private void DoResourceDescriptionButton(ResourceFC resource, int displayIndex, int x, int y, int spacing)
         {
-            if (Widgets.ButtonImage(new Rect(x + 45, scroll + y + 75 + (int)resourceType * (45 + spacing), 30, 30), resource.getIcon()))
+            if (Widgets.ButtonImage(new Rect(x + 45, scroll + y + 75 + (int)displayIndex * (45 + spacing), 30, 30), resource.def.Icon))
             {
-                Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": "
-                    + ResourceUtils.GetResourceDisplayLabel(resourceType, settlement),
-                    ResourceUtils.GetResourceDisplayLabel(resourceType, settlement)));
+                Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + resource.def.LabelCap, resource.def.LabelCap));
             }
         }
 
@@ -241,29 +229,28 @@ namespace FactionColonies
         /// </summary>
         /// <param name="resourceType"></param>
         /// <param name="negative"></param>
-        private void IncreaseWorkers(ResourceType resourceType, bool negative = false)
+        private void IncreaseWorkers(ResourceFC resource, bool negative = false)
         {
-            if (settlement.isUnderAttack)
+            if (settlement.MilitaryComp?.isUnderAttack == true)
             {
                 Messages.Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
             //if clicked to lower amount of workers
-            settlement.increaseWorkers(resourceType, (negative ? -1 : 1) * Modifiers.GetModifier);
+            settlement.increaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
             windowUpdateFc();
         }
 
-        private bool ShouldTitheBeLockedForResouceType(ResourceType t) => t == ResourceType.Research || t == ResourceType.Power;
+        private bool ShouldTitheBeLockedForResouceType(ResourceTypeDef t) => t.isPoolResource;
 
         private void DrawResources(int x, int y, int spacing)
         {
             // Get the appropriate resource types based on settlement type
-            ResourceType[] availableResources = ResourceUtils.GetAvailableResourceTypes(settlement);
-            
-            for (int i = 0; i < availableResources.Length; i++)
+            List<ResourceFC> availableResources = settlement.Resources;
+
+            for (int i = 0; i < availableResources.Count; i++)
             {
-                ResourceType resourceType = availableResources[i];
-                ResourceFC resource = settlement.getResource(resourceType);
+                ResourceFC resource = availableResources[i];
                 if (resource == null) continue;
                 
                 float rectY = scroll + y + 70 + i * (45 + spacing);
@@ -272,37 +259,42 @@ namespace FactionColonies
                 if (i * ScrollSpacing + scroll < 0) continue;
 
                 bool titheDisabled = false;
-                if (ShouldTitheBeLockedForResouceType(resourceType))
+                if (ShouldTitheBeLockedForResouceType(resource.def))
+                {
                     titheDisabled = true;
-                else if (Widgets.ButtonImage(new Rect(x - 15,scroll + y + 65 + i * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize)) 
-                    TitheCustomizationClicked(resource, resourceType);
+                }
+                else if (Widgets.ButtonImage(new Rect(x - 15, scroll + y + 65 + i * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize))
+                {
+                    TitheCustomizationClicked(resource);
+                }
 
                 Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + i * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
                 DoTitheCheckboxAction(resource.isTithe != resource.isTitheBool, resource);
-                DoResourceDescriptionButton(resource, resourceType, x, y, spacing);
+                //TODO: this function used to use the resourceType enum as a sort of index for mathing out the display. Make sure that switching to 'i' actually works
+                DoResourceDescriptionButton(resource, i, x, y, spacing);
 
                 //Production Efficiency
                 Widgets.DrawBox(new Rect(x + 80, rectY, 100, 20));
-                Widgets.FillableBar(new Rect(x + 80, rectY, 100, 20), (float)Math.Min(resource.baseProductionMultiplier, 1.0));
+                Widgets.FillableBar(new Rect(x + 80, rectY, 100, 20), (float)Math.Min(resource.productionBase, 1.0));
                 Widgets.Label(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
-                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resourceType, true);
-                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resourceType);
+                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resource, true);
+                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resource);
 
                 //Base Production
                 Widgets.Label(new Rect(x + 195, rectY, 45, 40),
-                    TextUtil.FloorStat(resource.baseProduction));
+                    TextUtil.FloorStat(resource.productionBase));
 
                 //Final Modifier
                 Widgets.Label(new Rect(x + 250, rectY, 50, 40),
-                    TextUtil.FloorStat(resource.endProductionMultiplier));
+                    TextUtil.FloorStat(resource.productionMult));
 
                 //Final Base
                 Widgets.Label(new Rect(x + 310, rectY, 45, 40),
-                    (TextUtil.FloorStat(resource.endProduction)));
+                    (TextUtil.FloorStat(resource.totalProduction)));
 
                 //Est Income
                 Widgets.Label(new Rect(x + 365, rectY, 45, 40),
-                    (TextUtil.FloorStat(resource.endProduction * FCSettings.silverPerResource)));
+                    (TextUtil.FloorStat(resource.totalProduction * FCSettings.silverPerResource)));
 
                 //Tithe Percentage
                 resource.returnTaxPercentage();
@@ -368,7 +360,7 @@ namespace FactionColonies
 
             //Draw town name
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(40, 0, 520, 30), settlement.name);
+            Widgets.Label(new Rect(40, 0, 520, 30), settlement.Name);
 
             //Draw town title
             Text.Font = GameFont.Tiny;
@@ -379,33 +371,7 @@ namespace FactionColonies
 
             // Check if this is an orbital platform and show appropriate location text
             // Techdebt - Language support for this would be nice
-            string locationText;
-            if (ResourceUtils.IsOrbitalPlatform(settlement))
-            {
-                // Space-themed location text for orbital platforms - use deterministic selection based on settlement ID
-                // Techdebt - Language support for this would be nice
-                string[] spaceLocations = { 
-                    "Orbiting in deep space", 
-                    "Stationed in low orbit", 
-                    "Floating in the emptiness of space", 
-                    "Anchored in orbit",
-                    "Positioned in low orbit",
-                    "Suspended above the surface",
-                    "Deployed in orbital space"
-                };
-                
-                // Use the settlement's loadID to deterministically select a location text
-                int locationIndex = Math.Abs(settlement.loadID) % spaceLocations.Length;
-                locationText = spaceLocations[locationIndex];
-            }
-            else
-            {
-                // Regular location text for surface settlements
-                locationText = "Located".Translate() + " " +
-                    Find.WorldGrid[settlement.mapLocation].hilliness.GetLabel() + " " +
-                    "LandOf".Translate() + " " +
-                    Find.WorldGrid[settlement.mapLocation].PrimaryBiome.LabelCap.ToLower();
-            }
+            string locationText = settlement.locationText;
 
             Widgets.Label(new Rect(55, 40, 470, 20), locationText);
 
@@ -570,50 +536,49 @@ namespace FactionColonies
                             Find.WindowStack.Add(new FCPrisonerMenu(settlement));
                         }
 
-                        if (buttons[i] == "Military".Translate())
+                        if (buttons[i] == "Military".Translate() && settlement.MilitaryComp != null)
                         {
                             List<FloatMenuOption> list = new List<FloatMenuOption>
                             {
                                 new FloatMenuOption(
-                                "ToggleAutoDefend".Translate(settlement.autoDefend.ToString()),
+                                "ToggleAutoDefend".Translate(settlement.MilitaryComp.autoDefend.ToString()),
                                 delegate
                                 {
-                                    settlement.autoDefend = !settlement.autoDefend;
+                                    settlement.MilitaryComp.autoDefend = !settlement.MilitaryComp.autoDefend;
                                     //Messages.Message("autoDefendWarning".Translate(), MessageTypeDefOf.CautionInput);
                                 })
                             };
 
-                            if (settlement.isUnderAttack)
+                            if (settlement.MilitaryComp.isUnderAttack)
                             {
-                                FCEvent evt = MilitaryUtilFC.returnMilitaryEventByLocation(settlement.mapLocation);
+                                FCEvent evt = MilitaryUtilFC.returnMilitaryEventByLocation(settlement.Tile);
 
                                 list.Add(new FloatMenuOption(
                                     "SettlementDefendingInformation".Translate(
-                                        evt.militaryForceDefending.homeSettlement.name,
+                                        evt.militaryForceDefending.homeSettlement.Name,
                                         evt.militaryForceDefending.militaryLevel), null, MenuOptionPriority.High));
                                 list.Add(new FloatMenuOption("ChangeDefendingForce".Translate(), delegate
                                 {
                                     List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
-                                    SettlementFC homeSettlement = settlement;
+                                    WorldSettlementFC homeSettlement = settlement;
 
                                     settlementList.Add(new FloatMenuOption(
                                         "ResetToHomeSettlement".Translate(homeSettlement.settlementMilitaryLevel),
                                         delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, homeSettlement); },
                                         MenuOptionPriority.High));
 
-                                    foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements
-                                    )
+                                    foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
                                     {
-                                        if (settlement.isMilitaryValid() && settlement != homeSettlement)
+                                        if (settlement.MilitaryComp.isMilitaryValid() && settlement != homeSettlement)
                                         {
                                             //if military is valid to use.
 
                                             settlementList.Add(new FloatMenuOption(
-                                                settlement.name + " " + "ShortMilitary".Translate() + " " +
+                                                settlement.Name + " " + "ShortMilitary".Translate() + " " +
                                                 settlement.settlementMilitaryLevel + " - " + "FCAvailable".Translate() +
-                                                ": " + (!settlement.isMilitaryBusySilent()).ToString(), delegate
+                                                ": " + (!settlement.MilitaryComp.isMilitaryBusySilent()).ToString(), delegate
                                                 {
-                                                    if (settlement.isMilitaryBusy())
+                                                    if (settlement.MilitaryComp.isMilitaryBusy())
                                                     {
                                                         //military is busy
                                                     }
@@ -687,8 +652,15 @@ namespace FactionColonies
 
             int i = 0;
 
-            foreach (BuildingFCDef building in settlement.buildings)
+            if (settlement.BuildingsComp == null)
             {
+                // can't draw what doesn't exist
+                return;
+            }
+
+            foreach (BuildingFC buildingfc in settlement.BuildingsComp.Buildings)
+            {
+                BuildingFCDef building = buildingfc.def;
                 //Update Variables for List
                 row = (int) Math.Floor(i / (double) elementsPerRow);
                 column = i % elementsPerRow;
@@ -703,7 +675,7 @@ namespace FactionColonies
 
                 //Actual UI Code
                 Widgets.DrawMenuSection(nBox);
-                if (i < settlement.NumberBuildings)
+                if (i < settlement.BuildingsComp.NumBuildingSlots)
                 {
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
@@ -806,9 +778,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(new Rect(x + 5, y + 60, 150, 20),
                 "TaxBase".Translate() + ": " + (((100 + egalitarianTaxBoost + isolationistTaxBoost) +
-                                                 TraitUtilsFC.cycleTraits("taxBasePercentage",
-                                                     settlement.traits, Operation.Addition) + TraitUtilsFC.cycleTraits("taxBasePercentage", Find.World.GetComponent<FactionFC>().traits,
-                                                     Operation.Addition))).ToString() + "%");
+                                                 TraitUtilsFC.cycleTraits("taxBasePercentage", settlement.Traits, Operation.Addition))).ToString() + "%");
         }
 
         public void DrawEconomicStats(int x, int y, int length, int size)

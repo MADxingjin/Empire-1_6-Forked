@@ -9,10 +9,7 @@ namespace FactionColonies.util
 {
 	
 	class FCPawnGenerator
-	{
-		public Pawn defaultPawn;
-		public XenotypeDef xenotype;
-		
+	{		
 		// List of pawn kinds known to commonly generate violence-incapable pawns
 		private static readonly HashSet<string> problematicPawnKinds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{

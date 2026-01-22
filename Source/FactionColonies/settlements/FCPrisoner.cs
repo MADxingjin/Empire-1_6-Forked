@@ -20,7 +20,7 @@ namespace FactionColonies
     public class FCPrisoner : ILoadReferenceable, IExposable
     {
         public Pawn prisoner;
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public float unrest;
         public float health;
         public bool isReturning;
@@ -33,7 +33,7 @@ namespace FactionColonies
         {            
         }
 
-        public FCPrisoner (Pawn pawn, SettlementFC settlement)
+        public FCPrisoner (Pawn pawn, WorldSettlementFC settlement)
         {
             prisoner = pawn;
             this.settlement = settlement;
@@ -85,7 +85,7 @@ namespace FactionColonies
             if (health <= 0)
             {
                 settlement.prisonerList.Remove(this);
-                Find.LetterStack.ReceiveLetter("PrisonerHasDiedLetter".Translate(), "PrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.name), LetterDefOf.NeutralEvent);
+                Find.LetterStack.ReceiveLetter("PrisonerHasDiedLetter".Translate(), "PrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.Name), LetterDefOf.NeutralEvent);
                 return true;
             }
             return false;

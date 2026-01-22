@@ -17,10 +17,10 @@ namespace FactionColonies
             return Convert.ToString(Math.Floor((stat * 100)) / 100);
         }
 
-        public static string GetTownTitle(SettlementFC settlement)
+        public static string GetTownTitle(WorldSettlementFC settlement)
         {
             double highest = 0;
-            ResourceType? resourceKey = null;
+            string resourceKey = "";
             int level;
             if (settlement.settlementLevel <= 3)
             {
@@ -35,16 +35,16 @@ namespace FactionColonies
                 level = 3;
             }
 
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceFC resource in settlement.Resources)
             {
-                ResourceFC resource = settlement.getResource(resourceType);
-                if (resource.endProduction > highest)
+                if (resource.production > highest)
                 {
-                    highest = resource.endProduction;
-                    resourceKey = resourceType;
+                    highest = resource.production;
+                    resourceKey = resource.def.defName;
                 }
             }
-
+            //TODO: find these localization keys and make sure they line up with the new def resources
+            //      maybe even find a better way to assmelbe these town titles
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
         }
     }

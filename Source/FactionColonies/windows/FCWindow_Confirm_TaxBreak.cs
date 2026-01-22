@@ -14,7 +14,7 @@ namespace FactionColonies
 
 
 
-		public FCWindow_Confirm_TaxBreak(SettlementFC settlement) : base(settlement)
+		public FCWindow_Confirm_TaxBreak(WorldSettlementFC settlement) : base(settlement)
 		{
 			this.forcePause = false;
 			this.draggable = true;
@@ -30,7 +30,7 @@ namespace FactionColonies
 		{
 			settlement.trait_Egalitarian_TaxBreak_Tick = Find.TickManager.TicksGame;
 			settlement.trait_Egalitarian_TaxBreak_Enabled = true;
-			Messages.Message(TranslatorFormattedStringExtensions.Translate("FCGivingTaxBreak", this.settlement.name), MessageTypeDefOf.NeutralEvent);
+			Messages.Message(TranslatorFormattedStringExtensions.Translate("FCGivingTaxBreak", settlement.Name), MessageTypeDefOf.NeutralEvent);
 		}
 
 

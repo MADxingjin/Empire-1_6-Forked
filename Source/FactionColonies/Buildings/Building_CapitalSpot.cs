@@ -53,17 +53,7 @@ namespace FactionColonies
                 faction.capitalPlanet = Find.World.info.name;
                 lastKnownTile = newTile;
                 
-                // Handle SoS2 ship detection
-                if (Map.Parent.def.defName == "ShipOrbiting")
-                {
-                    faction.SoSShipCapital = true;
-                }
-                else
-                {
-                    faction.SoSShipCapital = false;
-                }
-                
-                LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile} (SoS2: {faction.SoSShipCapital})");
+                LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile}");
             }
             else
             {
@@ -98,18 +88,7 @@ namespace FactionColonies
                         faction.capitalPlanet = Find.World.info.name;
                         lastKnownTile = currentTile;
                         
-                        // Handle SoS2 ship detection
-                        if (Map.Parent.def.defName == "ShipOrbiting")
-                        {
-                            faction.SoSShipCapital = true;
-                        }
-                        else
-                        {
-                            faction.SoSShipCapital = false;
-                        }
-                        
                         LogUtil.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
-                        LogUtil.Message($"Empire SoSShipCapital set to: {faction.SoSShipCapital}");
                         
                         Find.LetterStack.ReceiveLetter(
                             "Empire Relocated", 

@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static Mono.Security.X509.X520;
+using static System.Collections.Specialized.BitVector32;
+using static UnityEngine.ParticleSystem;
+using static Verse.KeyPrefs;
 
 namespace FactionColonies
 {
@@ -32,10 +36,64 @@ namespace FactionColonies
     /// A WorldObjectComp class for use with BuildingFCDefs. When a building is constructed, if it has a SettlementBuildingComp, then
     /// the comp is added to this comp's list and tracked.
     /// </summary>
+    // TODO: use this comp to do *all* building tracking, instead of storing the buildings in the worldsettlementfc itself?
     public class WorldObjectComp_SettlementBuildings : WorldObjectComp
     {
-        List<SettlementBuildingComp> settlementBuildingComps = new List<SettlementBuildingComp>();
-        public SettlementFC settlementfc => (parent as WorldSettlementFC)?.settlement;
+        public const int FC_MAX_BUILDINGS = 8;
+        private List<BuildingFC> buildings = new List<BuildingFC>();
+        private List<SettlementBuildingComp> settlementBuildingComps = new List<SettlementBuildingComp>();
+
+        public List<BuildingFC> Buildings => buildings;
+
+        public int NumBuildingSlots => 3 + (int)Math.Floor((WorldSettlement?.settlementLevel ?? 0) / 2f);
+
+        private WorldSettlementFC cachedWorldSettlementParent = null;
+        public WorldSettlementFC WorldSettlement
+        {
+            get
+            {
+                if (cachedWorldSettlementParent != null)
+                {
+                    return cachedWorldSettlementParent;
+                }
+                if (parent is WorldSettlementFC ws)
+                {
+                    cachedWorldSettlementParent = ws;
+                }
+                else
+                {
+                    cachedWorldSettlementParent = null;
+                    LogUtil.ErrorOnce($"WorldObjectComp_SettlementMilitary has a non-WorldSettlementFC parent", 93512107);
+                }
+                return cachedWorldSettlementParent;
+            }
+        }
+
+        public string buildingID(int buildingSlot)
+        {
+            if (buildingSlot >= buildings.Count)
+            {
+                return "null";
+            }
+            return buildings[buildingSlot].def.defName + buildingSlot.ToString();
+        }
+        public bool hasBuilding(BuildingFCDef building)
+        {
+            foreach(BuildingFC bfc in buildings)
+            {
+                if (bfc.def == building)
+                    return true;
+            }
+            return false;
+        }
+        public BuildingFCDef getBuildingInSlot(int buildingSlot)
+        {
+            if (buildingSlot >= buildings.Count)
+            {
+                return null;
+            }
+            return buildings[buildingSlot].def;
+        }
 
         public SettlementBuildingComp GetComponent(Type type)
         {
@@ -49,7 +107,37 @@ namespace FactionColonies
             return null;
         }
 
-        public static SettlementBuildingComp MakeSettlementBuildingComp(Type compClass, SettlementFC settlement)
+        public bool buildingSlotIsEmpty(int buildingSlot)
+        {
+            return buildings[buildingSlot].def.defName == BuildingFCDefOf.Empty.defName;
+        }
+        public bool buildingSlotIsConstruction(int buildingSlot)
+        {
+            return buildings[buildingSlot].def.defName == BuildingFCDefOf.Construction.defName;
+        }
+        public bool buildingSlotIsBuilding(int buildingSlot)
+        {
+            return !buildingSlotIsEmpty(buildingSlot) && !buildingSlotIsConstruction(buildingSlot);
+        }
+        public string buildingLabel(int buildingsSlot)
+        {
+            return buildings[buildingsSlot].def.LabelCap;
+        }
+
+        public void InitBuildings()
+        {
+            for (int i = 0; i < FC_MAX_BUILDINGS; i++)
+            {
+                buildings.Add(new BuildingFC
+                {
+                    def = BuildingFCDefOf.Empty,
+                    startedTick = -1,
+                    completionTick = Find.TickManager.TicksGame
+                });
+            }
+        }
+
+        public static SettlementBuildingComp MakeSettlementBuildingComp(Type compClass, WorldSettlementFC settlement)
         {
             SettlementBuildingComp comp = (SettlementBuildingComp)Activator.CreateInstance(compClass);
             comp.settlement = settlement;
@@ -59,15 +147,110 @@ namespace FactionColonies
             }
             return comp;
         }
-        /// <summary>
-        /// Handles any special processing when the building is first constructed.
-        /// NOTE: this function is called AFTER the building is added to the building array.
-        /// </summary>
-        public void OnConstruct(int buildingSlot)
+        public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
-            if (parent is WorldSettlementFC && settlementfc?.buildings[buildingSlot].modExtensions != null)
+            bool valid = true;
+
+            foreach (BuildingFC slot in buildings) //check if already a building of that type constructed
             {
-                foreach (BuildingFCExtension ext in settlementfc.buildings[buildingSlot].modExtensions)
+                if (slot.def == building)
+                {
+                    valid = false;
+                    Messages.Message("BuildingAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    break;
+                }
+            }
+
+            if (PaymentUtil.getSilver() < building.cost) //check if the player has enough money
+            {
+                valid = false;
+                Messages.Message("NotEnoughSilverConstructBuilding".Translate() + "!", MessageTypeDefOf.RejectInput);
+            }
+
+            //TODO: rework construction. This info should really be held in this comp here, rather than in the events queue.
+            //      maybe there can still be a "constructing building" event that refers to the SettlementBuilding comp, but
+            //      the comp should be the source of truth, not the event
+            foreach (FCEvent event1 in Find.World.GetComponent<FactionFC>().events) //check if construction would match any already-occuring events
+            {
+                if (WorldSettlement.MilitaryComp?.isUnderAttack == true)
+                {
+                    valid = false;
+                    Messages.Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
+                }
+                if (event1.source == WorldSettlement.Tile && event1.building == building &&
+                    event1.def.defName == "constructBuilding")
+                {
+                    valid = false;
+                    Messages.Message("BuildingBeingBuiltAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    break;
+                }
+
+                if (event1.source == WorldSettlement.Tile && event1.buildingSlot == buildingSlot &&
+                    event1.def.defName == "constructBuilding"
+                ) //check if there is already a building being constructed in that slot
+                {
+                    valid = false;
+                    Messages.Message("BuildingAlreadyConstructed".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    break;
+                }
+            }
+
+            if (building.applicableBiomes.Count != 0)
+            {
+                bool match = building.applicableBiomes.Contains(WorldSettlement.biome);
+
+                //if found no matches
+                if (match == false)
+                {
+                    valid = false;
+                    Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+                }
+            }
+
+            // Check settlement type restrictions
+            //TODO: rework based on def
+            /*bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
+            switch (building.settlementTypeRestriction)
+            {
+                case SettlementTypeRestriction.SurfaceOnly:
+                    if (isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingSurfaceOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
+                case SettlementTypeRestriction.OrbitalOnly:
+                    if (!isOrbitalPlatform)
+                    {
+                        valid = false;
+                        Messages.Message("BuildingOrbitalOnly".Translate(), MessageTypeDefOf.RejectInput);
+                    }
+                    break;
+            }*/
+
+            return valid;
+        }
+        public void startConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
+        {
+            DeconstructBuilding(buildingSlot);
+
+            LogUtil.Message($"Starting construction of building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}. Completes on tick {completionTick}");
+
+            buildings[buildingSlot] = new BuildingFC
+            {
+                def = BuildingFCDefOf.Construction,
+                underConstructionDef = building,
+                startedTick = Find.TickManager.TicksGame,
+                completionTick = completionTick
+            };
+
+            // The Construction def shouldn't have traits or modExtensions, I think. But just in case we decide to do something funky,
+            //   we'll leave this code here.
+            addBuildingTrait(buildingSlot);
+
+            if (buildings[buildingSlot].def.modExtensions != null)
+            {
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
                 {
                     if (ext.compClass != null)
                     {
@@ -75,7 +258,7 @@ namespace FactionColonies
 
                         if (comp == null)
                         {
-                            comp = MakeSettlementBuildingComp(ext.compClass, settlementfc);
+                            comp = MakeSettlementBuildingComp(ext.compClass, WorldSettlement);
                             settlementBuildingComps.Add(comp);
                         }
 
@@ -85,14 +268,56 @@ namespace FactionColonies
             }
         }
         /// <summary>
-        /// Handles any special processing when the building is deconstructed.
-        /// NOTE: this function is called BEFORE the building is actually removed from the building array.
+        /// <para>Handles any special processing when a building is first constructed.</para>
+        /// <para>NOTE: this function is called AFTER the building is added to the building array.</para>
         /// </summary>
-        public void OnDeconstruct(int buildingSlot)
+        public void ConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
-            if (parent is WorldSettlementFC && settlementfc?.buildings[buildingSlot].modExtensions != null)
+            DeconstructBuilding(buildingSlot);
+
+            LogUtil.Message($"Constructing building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}");
+
+            buildings[buildingSlot] = new BuildingFC
             {
-                foreach (BuildingFCExtension ext in settlementfc.buildings[buildingSlot].modExtensions)
+                def = building,
+                startedTick = -1,
+                completionTick = Find.TickManager.TicksGame
+            };
+
+            addBuildingTrait(buildingSlot);
+
+            if (buildings[buildingSlot].def.modExtensions != null)
+            {
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
+                {
+                    if (ext.compClass != null)
+                    {
+                        SettlementBuildingComp comp = GetComponent(ext.compClass);
+
+                        if (comp == null)
+                        {
+                            comp = MakeSettlementBuildingComp(ext.compClass, WorldSettlement);
+                            settlementBuildingComps.Add(comp);
+                        }
+
+                        comp.OnConstruct(buildingSlot);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// <para>Handles any special processing when a building is deconstructed.</para>
+        /// <para>NOTE: this function is called BEFORE the building is actually removed from the building array.</para>
+        /// </summary>
+        public void DeconstructBuilding(int buildingSlot)
+        {
+            LogUtil.Message($"Deconstructing building {buildings[buildingSlot].def.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
+
+            removeBuildingTrait(buildingSlot);
+
+            if (buildings[buildingSlot].def.modExtensions != null)
+            {
+                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions)
                 {
                     if (ext.compClass != null)
                     {
@@ -114,6 +339,68 @@ namespace FactionColonies
                     }
                 }
             }
+
+            buildings[buildingSlot].def = BuildingFCDefOf.Empty;
+        }
+        public void addBuildingTrait(int buildingSlot)
+        {
+            if (buildings[buildingSlot].def.traits != null)
+            {
+                WorldSettlement.addTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
+            }
+            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
+                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
+            {
+                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
+            }
+        }
+        public void removeBuildingTrait(int buildingSlot)
+        {
+            if (buildings[buildingSlot].def.traits != null)
+            {
+                WorldSettlement.removeTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
+            }
+            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
+                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
+            {
+                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
+            }
+        }
+        /// <summary>
+        /// Loops through all constructed buildings and applies their trait to the parent settlement.
+        /// <para>Assumes that the parent settlement's trait list has already been cleared.</para>
+        /// </summary>
+        public void reapplyBuildingTraits()
+        {
+            for (int i = 0; i < FC_MAX_BUILDINGS; i++)
+            {
+                addBuildingTrait(i);
+            }
+        }
+
+        public int TotalUpkeep()
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            int upkeep = 0;
+            foreach (BuildingFC building in buildings)
+            {
+                bool isMilitary = false;
+                foreach (FCTraitEffectDef trait in building.def.traits)
+                {
+                    if (trait.militaryBaseLevel > 0)
+                        isMilitary = true;
+                    if (trait.militaryMultiplierCombatEfficiency > 1)
+                    {
+                        isMilitary = true;
+                    }
+                }
+
+                if (building.def.upkeep != 0 && !isMilitary || !faction.hasPolicy(FCPolicyDefOf.militaristic))
+                    upkeep += building.def.upkeep;
+                else
+                    upkeep += Math.Max(0, building.def.upkeep - 100);
+            }
+            return upkeep;
         }
 
         public override void CompTick()
@@ -144,18 +431,23 @@ namespace FactionColonies
                     }
                 }
             }
+            Scribe_Collections.Look(ref buildings, "buildings", LookMode.Deep);
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (Gizmo gizmo in base.GetGizmos())
+            IEnumerable<Gizmo> gizmos = base.GetGizmos();
+            if (gizmos != null)
             {
-                yield return gizmo;
+                foreach (Gizmo gizmo in base.GetGizmos())
+                {
+                    yield return gizmo;
+                }
             }
             foreach (SettlementBuildingComp comp in settlementBuildingComps)
             {
-                IEnumerable<Gizmo> gizmos = comp.GetGizmos();
+                gizmos = comp.GetGizmos();
                 if (gizmos == null)
                 {
                     continue;

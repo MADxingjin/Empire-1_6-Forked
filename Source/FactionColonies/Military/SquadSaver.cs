@@ -87,7 +87,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error("Failed to load squad at path " + path);
+                    LogUtil.Error($"Failed to load squad at path {path} due to exception: {e.Message}");
                 }
                 finally
                 {
@@ -106,7 +106,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error("Failed to load unit at path " + path);
+                    LogUtil.Error($"Failed to load squad at path {path} due to exception: {e.Message}");
                 }
                 finally
                 {

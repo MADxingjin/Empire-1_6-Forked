@@ -15,10 +15,10 @@ namespace FactionColonies
     /// </summary>
     public abstract class SettlementBuildingComp : IExposable
     {
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public List<int> buildingSlots = new List<int>();
         public bool CanDestroy => buildingSlots.Count == 0;
-        public WorldObjectComp_SettlementBuildings parentComp => settlement.worldSettlement?.GetComponent<WorldObjectComp_SettlementBuildings>();
+        public WorldObjectComp_SettlementBuildings parentComp => settlement.GetComponent<WorldObjectComp_SettlementBuildings>();
         public virtual void ExposeData()
         {
             Scribe_References.Look(ref settlement, "settlement");
@@ -32,9 +32,9 @@ namespace FactionColonies
         public void RefreshBuildingSlots()
         {
             buildingSlots.Clear();
-            for(int i = 0; i < settlement.buildings.Count; i++)
+            for(int i = 0; i < parentComp.Buildings.Count; i++)
             {
-                BuildingFCDef building = settlement.buildings[i];
+                BuildingFCDef building = parentComp.getBuildingInSlot(i);
                 if (building.modExtensions != null)
                 {
                     foreach (BuildingFCExtension ext in building.modExtensions)
@@ -53,7 +53,10 @@ namespace FactionColonies
                 }
             }
         }
-
+        /// <summary>
+        /// Refreshes the building slots array by calling RefreshBuildingSlots(). If the resulting building count is different from the
+        /// initial building count, then we log a warning.
+        /// </summary>
         public void RefreshBuildingSlotsWithErrorDetection()
         {
             int oldSlotCount = buildingSlots.Count;
@@ -65,14 +68,17 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Called on every tick. Meant to handle any special tick-based processing for the building.
+        /// </summary>
         public virtual void Tick()
         {
         }
         /// <summary>
         /// Called when a building is constructed.
-        /// This parent function should be called at the *beginning* of any subclass functions.
+        /// <para>This parent function should be called at the *beginning* of any subclass functions.</para>
         /// </summary>
-        /// <param name="buildingSlot"></param>
+        /// <param name="buildingSlot">Index into the settlement's buildings array, indicating where this building should be constructed.</param>
         public virtual void OnConstruct(int buildingSlot)
         {
             LogUtil.Message("Start of SettlementBuildingComp.OnConstruct");
@@ -80,9 +86,9 @@ namespace FactionColonies
         }
         /// <summary>
         /// Called when a building is deconstructed.
-        /// This parent function should be called at the *end* of any subclass functions.
+        /// <para>This parent function should be called at the *end* of any subclass functions.</para>
         /// </summary>
-        /// <param name="buildingSlot"></param>
+        /// <param name="buildingSlot">Index into the settlement's buildings array, indicating where this building is currently built.</param>
         public virtual void OnDeconstruct(int buildingSlot)
         {
             LogUtil.Message("Start of SettlementBuildingComp.OnDeconstruct");
