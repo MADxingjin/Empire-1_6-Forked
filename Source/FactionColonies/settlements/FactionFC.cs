@@ -1026,6 +1026,9 @@ namespace FactionColonies
             {
                 return;
             }
+            /* If the pool wants to do any pre-adding-to-global-pool shenanigans, let it do so now. */
+            pool.pool = pool.resource.preAddToGlobalPool(pool.pool);
+
             ResourcePool rpool = resourcePools.Find((ResourcePool p) => p.resource == pool.resource);
             if (rpool != null)
             {

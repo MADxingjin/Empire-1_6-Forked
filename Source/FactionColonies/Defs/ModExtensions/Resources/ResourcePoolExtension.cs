@@ -33,8 +33,18 @@ namespace FactionColonies
             return true;
         }
         /// <summary>
+        /// Called right before adding a pool of this resource to the global (faction) pool.
+        /// <para>This can be used to modify the pool value before it's added. If you don't want to modify the value, then be sure to return the same value that the function receives.</para>
+        /// </summary>
+        /// <param name="value">The value that we intend to add to the global pool.</param>
+        /// <returns>A modified value to add to the global pool.</returns>
+        public virtual double preAddToGlobalPool(double value)
+        {
+            return value;
+        }
+        /// <summary>
         /// Called whenever a pool of this resource is added to the global (faction) pool.
-        /// <para>This function is called after the resource is actually added to the pool. This function is meant to be used to send notifications or do similar low-priority processing.</para>
+        /// <para>This function is called after the resource is actually added to the pool.</para>
         /// </summary>
         /// <param name="value">The value that is added to the global pool.</param>
         public virtual void addedToGlobalPool(double value)

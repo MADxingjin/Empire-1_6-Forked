@@ -9,19 +9,10 @@
     <expandingIcon>true</expandingIcon>
     <expandingIconPriority>10</expandingIconPriority>
     <canBePlayerHome>false</canBePlayerHome>
-    <comps>
-      <li Class="WorldObjectCompProperties_TradeRequest" />
-	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
-	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementMilitary" />
-	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementBuildings" />
-    </comps>
-	<modExtensions>
-		<li Class="FactionColonies.SettlementTypeExtension" />
-	</modExtensions>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDefBase">
-    <defName>WorldSettlementDefSettlement</defName>
+  <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Surface" ParentName="WorldSettlementDefBase">
+    <defName>WorldSettlementDef_Surface</defName>
 	<resources>
 		<li>
 			<resourceDef>RTD_Food</resourceDef>
@@ -51,10 +42,22 @@
 			<resourceDef>RTD_Medicine</resourceDef>
 		</li>
 	</resources>
+    <comps>
+      <li Class="WorldObjectCompProperties_TradeRequest" />
+	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
+	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementMilitary" />
+	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementBuildings" />
+    </comps>
+	<modExtensions>
+		<li Class="FactionColonies.SettlementTypeExtension" />
+	</modExtensions>
   </FactionColonies.WorldSettlementDef>
   
   <!-- Orbital Settlements -->
-  <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_OrbitalBase" ParentName="WorldSettlementDefBase" Abstract="True">
+  <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Orbital" ParentName="WorldSettlementDefBase">
+    <defName>WorldSettlementDef_Orbital</defName>
+    <label>basic orbital colony</label>
+    <description>Standard orbital construction capabilities</description>
 	<resources>
 		<li>
 			<resourceDef>RTD_Food</resourceDef>
@@ -90,6 +93,7 @@
 			<resourceDef>RTD_Gravtech</resourceDef>
 		</li>
 	</resources>
+	<biomeResourceOverride>OrbitalSpace</biomeResourceOverride>
     <comps>
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementMilitary" />
@@ -100,26 +104,20 @@
 	</modExtensions>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_OrbitalBase">
-    <defName>WorldSettlementDefOrbital_Basic</defName>
-    <label>basic orbital colony</label>
-    <description>Standard orbital construction capabilities</description>
-  </FactionColonies.WorldSettlementDef>
-  
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_OrbitalBase">
-    <defName>WorldSettlementDefOrbital_Logistics</defName>
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+    <defName>WorldSettlementDef_Orbital_Logistics</defName>
     <label>logistics orbital colony</label>
     <description>50% faster tax delivery and special buildings</description>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_OrbitalBase">
-    <defName>WorldSettlementDefOrbital_Advanced</defName>
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+    <defName>WorldSettlementDef_Orbital_Advanced</defName>
     <label>advanced orbital colony</label>
     <description>25% lower base construction cost, larger size</description>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_OrbitalBase">
-    <defName>WorldSettlementDefOrbital_Glitter</defName>
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+    <defName>WorldSettlementDef_Orbital_Glitter</defName>
     <label>glitterworld orbital colony</label>
     <description>Specialized production buildings with bonuses</description>
   </FactionColonies.WorldSettlementDef>

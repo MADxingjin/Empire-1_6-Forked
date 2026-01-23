@@ -30,17 +30,16 @@ namespace FactionColonies.util
 
 
         //<DevAdd>   Create new seperate function to create a faction
-        //TODO: need a WorldSettlementDefOf for the default settlement type
         public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
             if (settlementType == null)
             {
                 LogUtil.Error($"Tried to create a settlement with null WorldSettlementDef! Using default WorldSettlementDef.");
-                settlementType = WorldSettlementDefOf.WorldSettlementDefSettlement;
+                settlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
 
             /* Do any pre-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().preCreation();
+            settlementType.GetModExtension<SettlementTypeExtension>().preCreation(ref tile, ref settlementType);
 
             LogUtil.Message($"Creating settlement of type {settlementType.defName}");
             Faction faction = getPlayerColonyFaction();
@@ -74,7 +73,7 @@ namespace FactionColonies.util
             worldcomp.roadBuilder.FlagUpdateRoadQueues();
 
             /* Do any post-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().postCreation();
+            settlementType.GetModExtension<SettlementTypeExtension>().postCreation(settlement);
 
             Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(), "TheSettlement".Translate() + " " + settlement.Name + "HasBeenFormed".Translate() + "!", LetterDefOf.PositiveEvent);
 

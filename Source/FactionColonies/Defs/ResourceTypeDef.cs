@@ -248,6 +248,10 @@ namespace FactionColonies
         List<StuffCategoryDef> stuffCategoryAllowList = new List<StuffCategoryDef>();
         List<StuffCategoryDef> stuffCategoryBlockList = new List<StuffCategoryDef>();
 
+        /* biomeAllowList and biomeBlockList are mutually exclusive */
+        List<BiomeResourceDef> biomeAllowList = new List<BiomeResourceDef>();
+        List<BiomeResourceDef> biomeBlockList = new List<BiomeResourceDef>();
+
         /// <summary>
         /// Minimum tech level to access or produce this resource type.
         /// <para>If minTechLevel is not undefined, and the empire faction does not satisfy it, then the resource cannot be produced.</para>
@@ -332,6 +336,17 @@ namespace FactionColonies
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
             return GetModExtension<ResourcePoolExtension>().resetAtTaxTime();
+        }
+        public double preAddToGlobalPool(double value)
+        {
+            if (!isPoolResource)
+            {
+                LogUtil.Error($"Called preAddToGlobalPool() for non-pool resource {this.defName}");
+                return value;
+            }
+            /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
+             * we won't bother with null-checking here. */
+            return GetModExtension<ResourcePoolExtension>().preAddToGlobalPool(value);
         }
         public void addedToGlobalPool(double value)
         {
@@ -431,6 +446,20 @@ namespace FactionColonies
             }
             return mult;
         }
+        public bool resourceAllowedForBiome(BiomeResourceDef bdef)
+        {
+            if (biomeAllowList.Count > 0)
+            {
+                /* If an allowList is specified, then the resource is *only* available in those biomes. */
+                return biomeAllowList.Contains(bdef);
+            }
+            else if (biomeBlockList.Count > 0)
+            {
+                return !(biomeBlockList.Contains(bdef));
+            }
+            /* A resource is allowed in all Biomes by default */
+            return true;
+        }
         public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
         {
             /* Category Allow lists */
@@ -514,15 +543,15 @@ namespace FactionColonies
             {
                 yield return item;
             }
-            if ((thingAllowList?.Count ?? 0) == 0  && (thingCategoryAllowList?.Count ?? 0) == 0 && (stuffCategoryAllowList?.Count ?? 0) == 0 && (modExtensions?.Count ?? 0) == 0)
+            if (thingAllowList.Count == 0  && thingCategoryAllowList.Count == 0 && stuffCategoryAllowList.Count == 0 && (modExtensions?.Count ?? 0) == 0)
             {
                 yield return "ResourceTypeDef " + this.defName + " does not specify any allowed resources";
             }
-            if (isPoolResource && (thingAllowList?.Count > 0 || thingCategoryAllowList?.Count > 0 || stuffCategoryAllowList?.Count > 0))
+            if (isPoolResource && (thingAllowList.Count > 0 || thingCategoryAllowList.Count > 0 || stuffCategoryAllowList.Count > 0))
             {
                 yield return "ResourceTypeDef " + this.defName + " is set as a pool resource, but it also specifies allowlists for things, thingCategories, or stuffCategories";
             }
-            if (thingAllowList?.Count > 0)
+            if (thingAllowList.Count > 0)
             {
                 foreach (ResourceThingDefRestriction thingDefRestriction in thingAllowList)
                 {
@@ -540,7 +569,7 @@ namespace FactionColonies
                     }
                 }
             }
-            if (thingCategoryAllowList?.Count > 0)
+            if (thingCategoryAllowList.Count > 0)
             {
                 foreach (ResourceThingCategoryDefRestriction thingCategoryDefRestriction in thingCategoryAllowList)
                 {
@@ -561,7 +590,7 @@ namespace FactionColonies
                     }
                 }
             }
-            if (stuffCategoryAllowList?.Count > 0 && stuffCategoryBlockList?.Count > 0)    
+            if (stuffCategoryAllowList.Count > 0 && stuffCategoryBlockList.Count > 0)    
             {
                 foreach (StuffCategoryDef stuffCategoryDefAllow in stuffCategoryAllowList)
                 {
@@ -570,6 +599,10 @@ namespace FactionColonies
                         yield return "stuffCategoryDef " + stuffCategoryDefAllow.defName + " appears in both the stuffCategoryAllowList and stuffCategoryBlockList for ResourceTypeDef " + this.defName;
                     }
                 }
+            }
+            if (biomeAllowList.Count > 0 && biomeBlockList.Count > 0)
+            {
+                yield return "biomeAllowList and biomeBlockList are both specified for ResourceTypeDef " + this.defName + ". Only one should be specified";
             }
             if (modExtensions?.Count > 0)
             {
@@ -621,6 +654,32 @@ namespace FactionColonies
         public ResourceTypeDef resourceDef;
         public double additive = 0;
         public double multiplier = 1;
+
+        /// <summary>
+        /// Creates a string description of this resource bonus, of the following form:
+        /// (+/-)[additive] base [resourceDef label]
+        /// x[multiplier] [resourceDef label]
+        /// </summary>
+        /// <returns>A TaggedString with colorized bonus values.</returns>
+        public TaggedString getBonusDesc(string tab = "")
+        {
+            TaggedString desc = "";
+            if (additive != 0)
+            {
+                desc += tab + "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(additive), resourceDef.LabelCap);
+                if (multiplier != 1)
+                {
+                    desc += "\n";
+                }
+            }
+
+            if (multiplier != 1)
+            {
+                desc += tab + "RTDproductionMultiplier".Translate(TextUtil.colorizeMultiplierBonus(multiplier), resourceDef.LabelCap);
+            }
+
+            return desc;
+        }
     }
     //TODO: actually define these
     public class ResourceTypeDefOf

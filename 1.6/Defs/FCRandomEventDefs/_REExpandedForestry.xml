@@ -36,7 +36,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>expandedForestry</defName> <!--Name of Def -->
 		<label>Expanded Forestry</label> <!--Lable of Def -->
-		<productionBaseLogging>+1</productionBaseLogging>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Logging</resourceDef>
+				<additive>1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

@@ -49,13 +49,13 @@ namespace FactionColonies
             //TODO: reconsider how these are priced. "25% discount" for the advanced orbital makes no damn sense when we add a "premimum" anyways
             switch (parentDef.defName)
             {
-                case "WorldSettlementDefOrbital_Basic":
+                case "WorldSettlementDef_Orbital":
                     return baseCost;
-                case "WorldSettlementDefOrbital_Logistics":
+                case "WorldSettlementDef_Orbital_Logistics":
                     return baseCost + 2000;
-                case "WorldSettlementDefOrbital_Advanced":
+                case "WorldSettlementDef_Orbital_Advanced":
                     return (int)(baseCost * 0.75f) + 3000; // 25% discount + premium
-                case "WorldSettlementDefOrbital_Glitter":
+                case "WorldSettlementDef_Orbital_Glitter":
                     return (int)(baseCost * 0.75f) + 5000;
                 default:
                     return baseCost;
@@ -97,13 +97,13 @@ namespace FactionColonies
 
             switch (parentDef.defName)
             {
-                case "WorldSettlementDefOrbital_Basic":
+                case "WorldSettlementDef_Orbital":
                     return baseDays * GenDate.TicksPerDay;
-                case "WorldSettlementDefOrbital_Logistics":
+                case "WorldSettlementDef_Orbital_Logistics":
                     return (baseDays + 5) * GenDate.TicksPerDay;
-                case "WorldSettlementDefOrbital_Advanced":
+                case "WorldSettlementDef_Orbital_Advanced":
                     return (int)((baseDays + 8) * 0.75f * GenDate.TicksPerDay); // 25% faster due to research
-                case "WorldSettlementDefOrbital_Glitter":
+                case "WorldSettlementDef_Orbital_Glitter":
                     return (int)((baseDays + 12) * 0.75f * GenDate.TicksPerDay);
                 default:
                     return baseDays * GenDate.TicksPerDay;

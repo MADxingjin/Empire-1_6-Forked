@@ -6,27 +6,14 @@
 		<label>Label of def</label> <!--Lable of Def -->
 		<desc>Description of the trait goes here !</desc> <!-- Description of trait -->
 		
-		<!--Resource Base Production - These add/subtract to their specificed production base-->
-		<productionBaseFood>0</productionBaseFood>
-		<productionBaseWeapons>0</productionBaseWeapons>
-		<productionBaseApparel>0</productionBaseApparel>
-		<productionBaseAnimals>0</productionBaseAnimals>
-		<productionBaseLogging>0</productionBaseLogging>
-		<productionBaseMining>0</productionBaseMining>
-		<productionBaseResearch>0</productionBaseResearch>
-		<productionBasePower>0</productionBasePower>
-		<productionBaseMedicine>0</productionBaseMedicine>
-		
-		<!-- Resource Multiplier Production - These are multiplied to get the end production -->
-		<productionMultiplierFood>1</productionMultiplierFood>
-		<productionMultiplierWeapons>1</productionMultiplierWeapons>
-		<productionMultiplierApparel>1</productionMultiplierApparel>
-		<productionMultiplierAnimals>1</productionMultiplierAnimals>
-		<productionMultiplierLogging>1</productionMultiplierLogging>
-		<productionMultiplierMining>1</productionMultiplierMining>
-		<productionMultiplierResearch>1</productionMultiplierResearch>
-		<productionMultiplierPower>1</productionMultiplierPower>
-		<productionMultiplierMedicine>1</productionMultiplierMedicine>
+		<!-- List of resource bonuses -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef> <!-- The ResourceTypeDef to apply the bonus to -->
+				<additive>0</additive> <!-- An additive bonus, applied to base production. Defaults to 0 if unspecified -->
+				<multiplier>1</multiplier> <!-- A multiplier bonus, applied to the production multiplier. Defaults to 1 if unspecified -->
+			</li>
+		</resourceBonuses>
 		
 		<!-- Military Stats -->
 		<militaryBaseLevel>0</militaryBaseLevel>  <!--This is added to the military base level -->

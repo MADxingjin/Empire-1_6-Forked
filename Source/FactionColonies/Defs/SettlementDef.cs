@@ -22,6 +22,8 @@ namespace FactionColonies
         public int workersUltraMaxMult = 0;
         public List<BiomeDef> blockedBiomes = new List<BiomeDef>();
         public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
+
+        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
         /// <summary>
         /// If a biomeResourceOverride is specified, then the settlement will use the resources of the given override rather than the resources
         /// of the biome of the tile that it's on.
@@ -143,7 +145,8 @@ namespace FactionColonies
 
     public static class WorldSettlementDefOf
     {
-        public static WorldSettlementDef WorldSettlementDefSettlement;
+        public static WorldSettlementDef WorldSettlementDef_Surface;
+        public static WorldSettlementDef WorldSettlementDef_Orbital;
         static WorldSettlementDefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(WorldSettlementDefOf));

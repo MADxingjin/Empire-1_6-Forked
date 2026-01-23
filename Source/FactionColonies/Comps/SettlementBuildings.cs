@@ -195,7 +195,19 @@ namespace FactionColonies
                 }
             }
 
-            if (building.applicableBiomes.Count != 0)
+            if (building.minhilliness != Hilliness.Undefined && building.minhilliness > WorldSettlement.Tile.Tile.hilliness)
+            {
+                valid = false;
+                Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+            }
+
+            if (building.maxhilliness != Hilliness.Undefined && building.maxhilliness < WorldSettlement.Tile.Tile.hilliness)
+            {
+                valid = false;
+                Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+            }
+
+            if (building.applicableBiomes.Count > 0)
             {
                 bool match = building.applicableBiomes.Contains(WorldSettlement.biome);
 
@@ -269,7 +281,6 @@ namespace FactionColonies
         }
         /// <summary>
         /// <para>Handles any special processing when a building is first constructed.</para>
-        /// <para>NOTE: this function is called AFTER the building is added to the building array.</para>
         /// </summary>
         public void ConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
@@ -307,7 +318,6 @@ namespace FactionColonies
         }
         /// <summary>
         /// <para>Handles any special processing when a building is deconstructed.</para>
-        /// <para>NOTE: this function is called BEFORE the building is actually removed from the building array.</para>
         /// </summary>
         public void DeconstructBuilding(int buildingSlot)
         {

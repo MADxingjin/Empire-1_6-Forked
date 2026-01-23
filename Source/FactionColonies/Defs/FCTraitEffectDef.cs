@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -49,6 +50,63 @@ namespace FactionColonies
         List<TraitDef> forcedFactionPawnTraits = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<TraitDef> factionAllowedRaces = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<Thing> factionUniform = new List<Thing>(); //List of the things pawns in the faction can wear                                        #NEEDS TO BE IMPLEMENTED
+
+        private bool didCacheTraitBonusDesc = false;
+        private TaggedString cachedTraitBonusDesc = "";
+        /// <summary>
+        /// A multi-line TaggedString listing out this trait's resource bonuses.
+        /// </summary>
+        public TaggedString traitBonusDesc
+        {
+            get
+            {
+                if (!didCacheTraitBonusDesc)
+                {
+                    if (resourceBonuses.Count > 0)
+                    {
+                        cachedTraitBonusDesc += "FCTraitDesc_ResourceBonusLabel".Translate() + ":\n";
+                        foreach (ResourceBonuses rb in resourceBonuses)
+                        {
+                            cachedTraitBonusDesc += rb.getBonusDesc("\t") + "\n";
+                        }
+                    }
+                    /* Death and Taxes */
+                    if (militaryBaseLevel != 0) cachedTraitBonusDesc += "FCTraitDesc_MilitaryLevel".Translate(TextUtil.colorizeAdditiveBonus(militaryBaseLevel)) + "\n";
+                    if (militaryMultiplierCombatEfficiency != 1) cachedTraitBonusDesc += "FCTraitDesc_MilitaryCombatEfficiency".Translate(TextUtil.colorizeMultiplierBonus(militaryMultiplierCombatEfficiency)) + "\n";
+                    if (taxBasePercentage != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBasePercentage".Translate(TextUtil.colorizeAdditiveBonus(taxBasePercentage)) + "\n";
+                    if (taxBaseRandomModifier != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBaseRandomModifier".Translate(taxBaseRandomModifier) + "\n";
+                    if (prosperityBaseRecovery != 0) cachedTraitBonusDesc += "FCTraitDesc_prosperityBaseRecovery".Translate(TextUtil.colorizeAdditiveBonus(prosperityBaseRecovery)) + "\n";
+                    /* Workers */
+                    if (workerBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseCost".Translate(TextUtil.colorizeAdditiveBonus(workerBaseCost, true)) + "\n";
+                    if (workerBaseMax != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseMax".Translate(TextUtil.colorizeAdditiveBonus(workerBaseMax)) + "\n";
+                    if (workerBaseOverMax != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseOverMax".Translate(TextUtil.colorizeAdditiveBonus(workerBaseOverMax)) + "\n";
+                    /* Happiness */
+                    if (happinessLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_happinessLostBase".Translate(TextUtil.colorizeAdditiveBonus(happinessLostBase, true)) + "\n";
+                    if (happinessGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_happinessGainedBase".Translate(TextUtil.colorizeAdditiveBonus(happinessGainedBase)) + "\n";
+                    if (happinessLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_happinessLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(happinessLostMultiplier, true)) + "\n";
+                    if (happinessGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_happinessGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(happinessGainedMultiplier)) + "\n";
+                    /* Loyalty */
+                    if (loyaltyLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_loyaltyLostBase".Translate(TextUtil.colorizeAdditiveBonus(loyaltyLostBase, true)) + "\n";
+                    if (loyaltyGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_loyaltyGainedBase".Translate(TextUtil.colorizeAdditiveBonus(loyaltyGainedBase)) + "\n";
+                    if (loyaltyLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_loyaltyLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(loyaltyLostMultiplier, true)) + "\n";
+                    if (loyaltyGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_loyaltyGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(loyaltyGainedMultiplier)) + "\n";
+                    /* Unrest */
+                    if (unrestLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_unrestLostBase".Translate(TextUtil.colorizeAdditiveBonus(unrestLostBase)) + "\n";
+                    if (unrestGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_unrestGainedBase".Translate(TextUtil.colorizeAdditiveBonus(unrestGainedBase, true)) + "\n";
+                    if (unrestLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_unrestLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(unrestLostMultiplier)) + "\n";
+                    if (unrestGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_unrestGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(unrestGainedMultiplier, true)) + "\n";
+                    /* Settlement Cost */
+                    if (createSettlementBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_createSettlementBaseCost".Translate(TextUtil.colorizeAdditiveBonus(createSettlementBaseCost, true)) + "\n";
+                    if (createSettlementMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_createSettlementMultiplier".Translate(TextUtil.colorizeMultiplierBonus(createSettlementMultiplier, true)) + "\n";
+
+                    cachedTraitBonusDesc = cachedTraitBonusDesc.Trim();
+
+                    /* Only want to do all of this crap once. It shouldn't change during gameplay, after all. So cache it */
+                    didCacheTraitBonusDesc = true;
+                }
+                return cachedTraitBonusDesc;
+            }
+        }
 
         public ResourceBonuses getTraitResource(ResourceTypeDef resourceTypeDef)
         {

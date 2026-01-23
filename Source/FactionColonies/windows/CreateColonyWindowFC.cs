@@ -20,7 +20,7 @@ namespace FactionColonies
         public bool traitExpansionistReducedFee;
         public int timeToTravel = -1;
 
-        public WorldSettlementDef currentSettlementType = WorldSettlementDefOf.WorldSettlementDefSettlement;
+        public WorldSettlementDef currentSettlementType;
 
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
@@ -36,6 +36,7 @@ namespace FactionColonies
             doCloseX = true;
             windowRect = new Rect(UI.screenWidth - InitialSize.x, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             faction = Find.World.GetComponent<FactionFC>();
+            currentSettlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
         }
 
 
@@ -202,7 +203,6 @@ namespace FactionColonies
             if (currentTileSelected != -1)
             {
                 List<ResourceFC> resTypes = faction.FactionResources;
-                List<ResourceTypeDef> biomeResourceTypes = currentBiomeSelected.getBiomeResourceTypes();
                 List<ResourceTypeDef> settlementResourceTypes = currentSettlementType.getResourceDefs();
 
                 for (int i = 0; i < resTypes.Count; i++)
@@ -214,6 +214,8 @@ namespace FactionColonies
                         string label = resTypes[i].label;
                         Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + label, label.CapitalizeFirst()));
                     }
+                    /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
+                     * it should accurately represent the resources that the settlement would produce */
                     ResourceBonuses biomeRes = currentBiomeSelected.getBiomeResource(titheType);
                     ResourceBonuses settleRes = currentSettlementType.getSettlementResource(titheType);
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<RTDproductionAdditive>{0} {1} production</RTDproductionAdditive>
+	<RTDproductionMultiplier>{0} {1} production</RTDproductionMultiplier>
+	<RTDproductionAdditiveFrom>{0} {1} production from {2}</RTDproductionAdditiveFrom>
+	<RTDproductionMultiplierFrom>{0} {1} production from {2}</RTDproductionMultiplierFrom>
+	
+	<FCTraitDesc_ResourceBonusLabel>Resource Bonuses</FCTraitDesc_ResourceBonusLabel>
+	
+	<FCTraitDesc_MilitaryLevel>{0} Military Level</FCTraitDesc_MilitaryLevel>
+	<FCTraitDesc_MilitaryCombatEfficiency>{0} Military Combat Efficiency</FCTraitDesc_MilitaryCombatEfficiency>
+	<FCTraitDesc_taxBasePercentage>{0} Base Tax Percentage</FCTraitDesc_taxBasePercentage>
+	<FCTraitDesc_taxBaseRandomModifier>{0} Base Tax Random Modifier</FCTraitDesc_taxBaseRandomModifier>
+	<FCTraitDesc_prosperityBaseRecovery>{0} Base Prosperity Recovery</FCTraitDesc_prosperityBaseRecovery>
+	<FCTraitDesc_workerBaseCost>{0} Worker Cost</FCTraitDesc_workerBaseCost>
+	<FCTraitDesc_workerBaseMax>{0} Worker Cap</FCTraitDesc_workerBaseMax>
+	<FCTraitDesc_workerBaseOverMax>{0} Overmax Worker Cap</FCTraitDesc_workerBaseOverMax>
+	
+	<FCTraitDesc_happinessLostBase>{0} Base Happiness Lost</FCTraitDesc_happinessLostBase>
+	<FCTraitDesc_happinessGainedBase>{0} Base Happiness Gained</FCTraitDesc_happinessGainedBase>
+	<FCTraitDesc_happinessLostMultiplier>{0} Happiness Lost</FCTraitDesc_happinessLostMultiplier>
+	<FCTraitDesc_happinessGainedMultiplier>{0} Happiness Gained</FCTraitDesc_happinessGainedMultiplier>
+	
+	<FCTraitDesc_loyaltyLostBase>{0} Base Loyalty Lost</FCTraitDesc_loyaltyLostBase>
+	<FCTraitDesc_loyaltyGainedBase>{0} Base Loyalty Gained</FCTraitDesc_loyaltyGainedBase>
+	<FCTraitDesc_loyaltyLostMultiplier>{0} Loyalty Lost</FCTraitDesc_loyaltyLostMultiplier>
+	<FCTraitDesc_loyaltyGainedMultiplier>{0} Loyalty Gained</FCTraitDesc_loyaltyGainedMultiplier>
+	
+	<FCTraitDesc_unrestLostBase>{0} Base Unrest Lost</FCTraitDesc_unrestLostBase>
+	<FCTraitDesc_unrestGainedBase>{0} Base Unrest Gained</FCTraitDesc_unrestGainedBase>
+	<FCTraitDesc_unrestLostMultiplier>{0} Unrest Lost</FCTraitDesc_unrestLostMultiplier>
+	<FCTraitDesc_unrestGainedMultiplier>{0} Unrest Gained</FCTraitDesc_unrestGainedMultiplier>
+	
+	<FCTraitDesc_createSettlementBaseCost>{0} Base Settlement Cost</FCTraitDesc_createSettlementBaseCost>
+	<FCTraitDesc_createSettlementMultiplier>{0} Settlement Cost</FCTraitDesc_createSettlementMultiplier>
+	
+	<FCBuildingUpkeep>Upkeep: ${0}</FCBuildingUpkeep>
+</LanguageData>

@@ -19,7 +19,7 @@ namespace FactionColonies
     /// </summary>
     public class ResourceProductionExtension_Hilliness : ResourceProductionExtension
     {
-        public new string extName = "HillinessExtension";
+        public new string extName = "Hilliness";
         public new string extDesc = "Production bonuses from tile hilliness.";
         public List<ResourceHilliness> resourceHilliness = new List<ResourceHilliness>();
         public override double GetAdditiveBonus(PlanetTile tile, WorldSettlementFC settlement = null)

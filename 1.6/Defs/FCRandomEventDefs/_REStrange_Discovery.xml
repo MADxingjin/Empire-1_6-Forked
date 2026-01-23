@@ -217,7 +217,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>strangeDiscovery_2-1_1</defName> <!--Name of Def -->
 		<label>Ore Vein Found</label> <!--Lable of Def -->
-		<productionBaseMining>.25</productionBaseMining>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<additive>0.25</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>	
 	
 	

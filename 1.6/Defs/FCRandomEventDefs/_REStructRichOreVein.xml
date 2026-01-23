@@ -36,7 +36,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>struckRichOreVein</defName> <!--Name of Def -->
 		<label>Struck Rich Ore Vein</label> <!--Lable of Def -->
-		<productionBaseMining>1</productionBaseMining>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<additive>1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

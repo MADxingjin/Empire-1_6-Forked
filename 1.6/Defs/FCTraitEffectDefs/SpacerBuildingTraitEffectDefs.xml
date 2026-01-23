@@ -13,7 +13,12 @@
 		<defName>glitterworldResearchFacility</defName> <!--Name of Def -->
 		<label>Glitterworld Research Facility</label> <!--Lable of Def -->
 		<desc>From this building, researchers equipped with the highest-grade tools search for the answers of the universe. +50% Modifier to research production.</desc> <!-- Description of trait -->
-		<productionMultiplierResearch>1.5</productionMultiplierResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.5</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	<FactionColonies.FCTraitEffectDef>
@@ -29,7 +34,12 @@
 		<label>Food Reconstruction</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierFood>1.5</productionMultiplierFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.5</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -38,7 +48,12 @@
 		<label>Mechanoid Salvage Shop</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionBaseWeapons>0.5</productionBaseWeapons>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 		<militaryMultiplierCombatEfficiency>1.05</militaryMultiplierCombatEfficiency>
 	</FactionColonies.FCTraitEffectDef>
 
@@ -48,7 +63,12 @@
 		<label>Clothing Printers</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierApparel>1.5</productionMultiplierApparel>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<multiplier>1.5</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -57,7 +77,12 @@
 		<label>Synthetic Wood Factory</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionBaseLogging>0.5</productionBaseLogging>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Logging</resourceDef>
+				<multiplier>0.5</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -66,7 +91,12 @@
 		<label>Asteroid Magnet</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierMining>1.2</productionMultiplierMining>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>1.2</multiplier>
+			</li>
+		</resourceBonuses>
 		<happinessLostBase>0.5</happinessLostBase>
 		<unrestGainedBase>0.5</unrestGainedBase>
 	</FactionColonies.FCTraitEffectDef>
@@ -97,8 +127,43 @@
 		<label>Cloning Lab</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierAnimals>1.2</productionMultiplierAnimals>
-		<productionBaseResearch>.25</productionBaseResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>1.2</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<additive>0.25</additive>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>perpetualMotionGenerator</defName> <!--Name of Def -->
+		<label>Perpetual Motion Generator</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<multiplier>1.5</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>bionicsManufacturingPlant</defName> <!--Name of Def -->
+		<label>Bionics Manufacturing Plant</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Medicine</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
+		<militaryMultiplierCombatEfficiency>1.1</militaryMultiplierCombatEfficiency>
 	</FactionColonies.FCTraitEffectDef>
 	
 </Defs>

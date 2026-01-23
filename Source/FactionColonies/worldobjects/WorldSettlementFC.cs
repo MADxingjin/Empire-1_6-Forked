@@ -264,6 +264,32 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Handles the setting up of a settlement's resources. Allows for adding or removing resources after settlement creation (such as if the resource itself has
+        /// a techlevel or research restriction)
+        /// </summary>
+        /// <param name="techlevel"></param>
+        public void PrepareResources(TechLevel techlevel)
+        {
+            foreach (ResourceBonuses rtd in settlementDef.resources)
+            {
+                bool resourceAllowed = biomeDef.getBiomeResource(rtd.resourceDef) != null && rtd.resourceDef.ResourceTypeAllowedByTech(techlevel);
+                ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == rtd.resourceDef);
+                if (res == null && resourceAllowed)
+                {
+                    LogUtil.Message($"Adding resource {rtd.resourceDef.label} to settlement {Name}");
+                    /* ResourceFC initialization takes care of biome bonuses, so no need to handle that up here */
+                    resources.Add(new ResourceFC(rtd.resourceDef, this));
+                }
+                else if (res != null && !resourceAllowed)
+                {
+                    LogUtil.Message($"Removing resource {rtd.resourceDef.label} from settlement {Name}");
+                    resources.Remove(res);
+                }
+            }
+            resources.Sort(ResourceFC.sortForUI);
+        }
+
         public override void PostMake()
         {
             trader = new WorldSettlementTraderTracker(this);
@@ -271,8 +297,9 @@ namespace FactionColonies
             if (!(def is WorldSettlementDef))
             { 
                 LogUtil.Error($"Created settlement {name} with an invalid def: {def}! Panic! Defaulting to base def!");
-                def = WorldSettlementDefOf.WorldSettlementDefSettlement;
+                def = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
 
             settlementLevel = 1;
 
@@ -307,15 +334,16 @@ namespace FactionColonies
 
             BuildingsComp?.InitBuildings();
 
-            foreach (ResourceBonuses rtd in settlementDef.resources)
+            PrepareResources(faction.techLevel);
+
+            /* If the settlement has inherent traits, add them here. */
+            if (settlementDef.traits.Count > 0)
             {
-                /* ResourceFC initialization takes care of biome bonuses, so no need to handle that up here */
-                resources.Add(new ResourceFC(rtd.resourceDef, this));
+                addTraits(settlementDef.traits);
             }
-            resources.Sort(ResourceFC.sortForUI);
 
             updateTechIcon();
-            def.expandingIconTexture = "FactionIcons/" + Find.World.GetComponent<FactionFC>().factionIconPath;
+            def.expandingIconTexture = "FactionIcons/" + faction.factionIconPath;
             traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
             base.PostMake();
 
@@ -889,11 +917,11 @@ namespace FactionColonies
                 {
                     if (resourcebonus.additive != 0)
                     {
-                        resource.addProductionAdditive(traitId, resourcebonus.additive, trait.desc);
+                        resource.addProductionAdditive(traitId, resourcebonus.additive, trait.LabelCap);
                     }
                     if (resourcebonus.multiplier != 1)
                     {
-                        resource.addProductionMultiplier(traitId, resourcebonus.multiplier, trait.desc);
+                        resource.addProductionMultiplier(traitId, resourcebonus.multiplier, trait.LabelCap);
                     }
                 }
             }

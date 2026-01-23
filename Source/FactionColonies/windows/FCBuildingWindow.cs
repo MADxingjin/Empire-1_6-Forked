@@ -345,7 +345,7 @@ namespace FactionColonies
                 Widgets.Label(newBuildingLabel, "  " + building.LabelCap + " - " + "Cost".Translate() + ": " + building.cost);
 
                 Text.Font = GameFont.Tiny;
-                Widgets.Label(newBuildingDesc, building.desc);
+                Widgets.Label(newBuildingDesc, building.Desc);
             }
 
             ls.End();
@@ -368,7 +368,7 @@ namespace FactionColonies
 
             Widgets.DrawMenuSection(new Rect(TopDescription.x - 5, TopDescription.y - 5, TopDescription.width + 10, TopDescription.height));
             Text.Font = GameFont.Small;
-            Widgets.Label(TopDescription, buildingDef.desc);
+            Widgets.Label(TopDescription, buildingDef.Desc);
 
             // Dynamic horizontal line that spans the full width
             Widgets.DrawLineHorizontal(0, TopWindow.y + TopWindow.height, inRect.width);

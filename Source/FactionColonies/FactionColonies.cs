@@ -316,11 +316,12 @@ namespace FactionColonies
         public static void verifyTraits()
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
-            /* Clear the traits for all settlements, and then reapply building traits */
+            /* Clear the traits for all settlements, and then reapply inherent/building traits */
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
                 settlement.clearTraits();
                 settlement.BuildingsComp?.reapplyBuildingTraits();
+                settlement.addTraits(settlement.settlementDef.traits);
             }
             //make new list for factionfc traits
             //loop through events and add traits

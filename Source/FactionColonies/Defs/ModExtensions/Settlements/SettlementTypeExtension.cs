@@ -36,12 +36,12 @@ namespace FactionColonies
             LogUtil.Message($"Calling ResolveReferences in SettlementTypeExtension for def {parentDef.defName}");
             if (parentDef is WorldSettlementDef wpd)
             {
-                parentDef = wpd;
+                this.parentDef = wpd;
             }
             else
             {
                 LogUtil.Error($"SettlementTypeExtension has non-WorldSettlementDef parent {parentDef.defName}! Setting to default");
-                parentDef = WorldSettlementDefOf.WorldSettlementDefSettlement;
+                this.parentDef = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
         }
         /// <summary>
@@ -141,14 +141,14 @@ namespace FactionColonies
         /// <summary>
         /// Called at the very beginning of createPlayerColonySettlement(), before any code has run.
         /// </summary>
-        public virtual void preCreation()
+        public virtual void preCreation(ref PlanetTile tile, ref WorldSettlementDef settlementType)
         {
         }
 
         /// <summary>
         /// Called at the very end of createPlayerColonySettlement(), after all code has run (but before the letter notification is sent).
         /// </summary>
-        public virtual void postCreation()
+        public virtual void postCreation(WorldSettlementFC settlement)
         {
         }
 

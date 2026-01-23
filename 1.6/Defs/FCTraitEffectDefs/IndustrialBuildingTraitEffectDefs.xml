@@ -5,21 +5,36 @@
 		<defName>researchLabs</defName> <!--Name of Def -->
 		<label>Research Labs</label> <!--Lable of Def -->
 		<desc>Scienctists spend their days researching here. +.5 base research production.</desc> <!-- Description of trait -->
-		<productionBaseResearch>.5</productionBaseResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	<FactionColonies.FCTraitEffectDef>
 		<defName>indoorHydroponics</defName> <!--Name of Def -->
 		<label>Indoor Hydroponics</label> <!--Lable of Def -->
 		<desc>Food is produced indoors, protecting it from the harshes from the world. +.5 base food production.</desc> <!-- Description of trait -->
-		<productionBaseFood>.5</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	<FactionColonies.FCTraitEffectDef>
 		<defName>firearmsFactory</defName> <!--Name of Def -->
 		<label>Firearms Factory</label> <!--Lable of Def -->
 		<desc>A factory that produces mass quantities of firearms. +.5 base weapon production.</desc> <!-- Description of trait -->
-		<productionBaseWeapons>.5</productionBaseWeapons>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	<FactionColonies.FCTraitEffectDef>
@@ -67,7 +82,12 @@
 		<label>Junk Food Factory</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierFood>1.25</productionMultiplierFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 		<happinessLostBase>0.5</happinessLostBase>
 		<unrestLostBase>0.5</unrestLostBase>
 	</FactionColonies.FCTraitEffectDef>
@@ -78,7 +98,12 @@
 		<label>Textile Factory</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionBaseApparel>0.5</productionBaseApparel>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -87,7 +112,12 @@
 		<label>Local Zoo</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionBaseAnimals>0.5</productionBaseAnimals>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 		<happinessGainedBase>0.3</happinessGainedBase>
 	</FactionColonies.FCTraitEffectDef>
 
@@ -97,8 +127,13 @@
 		<label>Tree Farm</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionBaseLogging>0.5</productionBaseLogging>
-		<productionMultiplierLogging>1.05</productionMultiplierLogging>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Logging</resourceDef>
+				<additive>0.5</additive>
+				<multiplier>1.05</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -107,7 +142,119 @@
 		<label>Industrial Mining Equipment Depot</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierMining>1.2</productionMultiplierMining>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>1.2</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>soilFixer</defName> <!--Name of Def -->
+		<label>Soil Reclamation Bureau</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>1.5</additive>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>lavaPlant</defName> <!--Name of Def -->
+		<label>Geothermal Power Plant</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>lavaLab</defName> <!--Name of Def -->
+		<label>Volcanology Lab</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>batteryPowerStation</defName> <!--Name of Def -->
+		<label>Battery Power Station</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>solarPlant</defName> <!--Name of Def -->
+		<label>Solar Plant</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
+		<workerBaseCost>10</workerBaseCost>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>cleanEnergyLab</defName> <!--Name of Def -->
+		<label>Clean Energy Lab</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>animalTestingFacility</defName> <!--Name of Def -->
+		<label>Animal Testing Facility</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Medicine</resourceDef>
+				<additive>0.25</additive>
+			</li>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<additive>0.25</additive>
+			</li>
+		</resourceBonuses>
+		<unrestGainedMultiplier>1.25</unrestGainedMultiplier>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>apartmentHousing</defName> <!--Name of Def -->
+		<label>Apartment Housing</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<workerBaseMax>10</workerBaseMax>
+		<workerBaseOverMax>5</workerBaseOverMax>
 	</FactionColonies.FCTraitEffectDef>
 	
 </Defs>

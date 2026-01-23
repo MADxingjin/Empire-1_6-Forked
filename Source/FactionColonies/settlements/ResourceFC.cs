@@ -283,7 +283,13 @@ namespace FactionColonies
             double bonus = 0;
             if (settlement != null)
             {
+                /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
+                 * so we should be good to go here. */
                 ResourceBonuses biomeBonus = settlement.biomeDef.getBiomeResource(def);
+                if (biomeBonus == null)
+                {
+                    LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
+                }
                 bonus = biomeBonus?.additive ?? 0;
                 if (bonus != 0)
                 {
@@ -304,18 +310,19 @@ namespace FactionColonies
                     bonus = ext.GetAdditiveBonus(settlement.Tile);
                     if (bonus != 0)
                     {
-                        addProductionAdditive(def.defName + ext.extName + settlement?.Name ?? "nullsettlement", bonus, $"{ext.extDesc}");
+                        addProductionAdditive(def.defName + ext.extName + settlement?.Name ?? "nullsettlement", bonus, $"{ext.extName}");
                     }
                 }
             }
         }
         public void addProductionAdditive(string id, double value, string desc)
         {
-            ProductionBonus additive = new ProductionBonus(value, desc);
+            TaggedString fulldesc = "RTDproductionAdditiveFrom".Translate(TextUtil.colorizeAdditiveBonus(value), def.LabelCap, desc);
+            ProductionBonus additive = new ProductionBonus(value, fulldesc);
             addProductionAdditive(id, additive);
         }
 
-        public void addProductionAdditive(string id, ProductionBonus additive)
+        private void addProductionAdditive(string id, ProductionBonus additive)
         {
             try
             {
@@ -340,7 +347,13 @@ namespace FactionColonies
             double bonus = 0;
             if (settlement != null)
             {
+                /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
+                 * so we should be good to go here. */
                 ResourceBonuses biomeBonus = settlement.biomeDef.getBiomeResource(def);
+                if (biomeBonus == null)
+                {
+                    LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
+                }
                 bonus = biomeBonus?.multiplier ?? 1;
                 if (bonus != 1)
                 {
@@ -368,11 +381,12 @@ namespace FactionColonies
         }
         public void addProductionMultiplier(string id, double value, string desc)
         {
-            ProductionBonus multiplier = new ProductionBonus(value, desc);
+            TaggedString fulldesc = "RTDproductionMultiplierFrom".Translate(TextUtil.colorizeMultiplierBonus(value), def.LabelCap, desc);
+            ProductionBonus multiplier = new ProductionBonus(value, fulldesc);
             addProductionMultiplier(id, multiplier);
         }
 
-        public void addProductionMultiplier(string id, ProductionBonus multiplier)
+        private void addProductionMultiplier(string id, ProductionBonus multiplier)
         {
             try
             {
@@ -521,12 +535,12 @@ namespace FactionColonies
     public class ProductionBonus : IExposable
     {
         public double value;
-        public string desc;
+        public TaggedString desc;
         public ProductionBonus()
         {
         }
 
-        public ProductionBonus(double value, string desc)
+        public ProductionBonus(double value, TaggedString desc)
         {
             this.value = value;
             this.desc = desc;

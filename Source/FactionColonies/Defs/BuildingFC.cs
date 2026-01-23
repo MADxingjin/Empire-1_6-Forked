@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -21,7 +22,37 @@ namespace FactionColonies
         public List<string> requiredModsID = new List<string>();
         public List<WorldSettlementDef> settlementTypeBlockList = new List<WorldSettlementDef>();
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
+        public Hilliness minhilliness = Hilliness.Undefined;
+        public Hilliness maxhilliness = Hilliness.Undefined;
         //public required research
+
+        private bool didCacheBuildingDesc = false;
+        private TaggedString cachedBuildingDesc = "";
+
+        public TaggedString Desc
+        {
+            get
+            {
+                if (!didCacheBuildingDesc)
+                {
+                    cachedBuildingDesc += desc;
+                    if (upkeep != 0)
+                    {
+                        cachedBuildingDesc += "\n\n" + "FCBuildingUpkeep".Translate(upkeep.ToString());
+                    }
+                    if (traits?.Count > 0)
+                    {
+                        cachedBuildingDesc += "\n\n--------------------\n";
+                        foreach (FCTraitEffectDef trait in traits)
+                        {
+                            cachedBuildingDesc += "\n" + trait.traitBonusDesc;
+                        }
+                    }
+                    didCacheBuildingDesc = true;
+                }
+                return cachedBuildingDesc;
+            }
+        }
 
         public Texture2D Icon
         {
