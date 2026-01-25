@@ -765,17 +765,14 @@ namespace FactionColonies
             int i = 0;
 
             // Show all resource types in faction overview
-            foreach (ResourceFC resource in faction.FactionResources)
+            foreach (ResourceDisplay resource in faction.FactionResources)
             {   
                 k = (int)Math.Floor((int)i / resourcesPerRow);
                 j = (int)((int)i % resourcesPerRow);
                 if (Widgets.ButtonImage(new Rect(5 + x + (j * (resourceSize + 5)), y - 5 + ySpacing * k, resourceSize,
-                    resourceSize), resource.getIcon))
+                    resourceSize), resource.Icon))
                 {
-                    Find.WindowStack.Add(new DescWindowFc("TotalFactionProduction".Translate() + ": " +
-                                                          resource.name,
-                        char.ToUpper(resource.name[0]) +
-                        resource.name.Substring(1)));
+                    Find.WindowStack.Add(new DescWindowFc("TotalFactionProduction".Translate() + ": " + resource.label, resource.label));
                 }
                 Widgets.Label(new Rect(5 + x + j * (resourceSize + 5), y + resourceSize - 10 + ySpacing * k,
                     resourceSize, resourceSize), resource.amount.ToString());

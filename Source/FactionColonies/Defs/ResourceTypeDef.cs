@@ -12,10 +12,9 @@ namespace FactionColonies
 {
     public abstract class ResourceResearchRestriction
     {
-        public TechLevel minTechLevel;
-        public TechLevel maxTechLevel;
+        public TechLevel minTechLevel = TechLevel.Undefined;
+        public TechLevel maxTechLevel = TechLevel.Undefined;
         public List<ResearchProjectDef> researchProjectDefs = new List<ResearchProjectDef>();
-        public bool needsAllResearchRequirements = false;
         public bool restrictByRecipe = true;
         public bool restrictByThingTechLevel = true;
 
@@ -34,42 +33,24 @@ namespace FactionColonies
                 bool satisfiesMinLevel = !hasDefinedMinTechLevel || techlevel >= minTechLevel;
                 bool satisfiesMaxLevel = !hasDefinedMaxTechLevel || techlevel <= maxTechLevel;
                 bool satisfiesDefTechLevel = satisfiesMinLevel && satisfiesMaxLevel;
-                LogUtil.Message($"techlevel {techlevel} satisfies def tech level requirement for ResourceResearchRestriction: {satisfiesDefTechLevel}");
-                if ((!needsAllResearchRequirements && satisfiesDefTechLevel) ||
-                    (needsAllResearchRequirements && !satisfiesDefTechLevel))
+                if (!satisfiesDefTechLevel)
                 {
-                    return satisfiesDefTechLevel;
+                    return false;
                 }
             }
 
             if (hasResearchDefs)
             {
-                bool satisfiesResearchDefs = needsAllResearchRequirements;
                 foreach (ResearchProjectDef projectDef in researchProjectDefs)
                 {
-                    if (projectDef.IsFinished && !needsAllResearchRequirements)
+                    if (!projectDef.IsFinished)
                     {
-                        satisfiesResearchDefs = true;
-                        break;
+                        return false;
                     }
-                    else if (!projectDef.IsFinished && needsAllResearchRequirements)
-                    {
-                        satisfiesResearchDefs = false;
-                        break;
-                    }
-                }
-                LogUtil.Message($"Completed research satisfies the def research requirements for ResourceResearchRestriction: {satisfiesResearchDefs}");
-                if ((!needsAllResearchRequirements && satisfiesResearchDefs) ||
-                    (needsAllResearchRequirements && !satisfiesResearchDefs))
-                {
-                    return satisfiesResearchDefs;
                 }
             }
 
-            /* If we get here and we need to meet all requirements, then that means we've passed all checks, and want to return TRUE.
-             * But if we get here and we do NOT need to meet all requirements, then that means that we failed all checks, and want to return FALSE.
-             * So, we can just return needsAllResearchRequirements itself, since its value is exactly what we want to return right now. */
-            return needsAllResearchRequirements;
+            return true;
         }
         public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
@@ -121,50 +102,40 @@ namespace FactionColonies
             if (noRequirements)
                 return true;
 
-            bool satisfiesTechLevel = base.SatisfiesTechRequirements(techlevel);
-
-            if ((!needsAllResearchRequirements && satisfiesTechLevel) ||
-                (needsAllResearchRequirements && !satisfiesTechLevel))
+            if (!base.SatisfiesTechRequirements(techlevel))
             {
-                return satisfiesTechLevel;
+                return false;
             }
 
             if (restrictByRecipe)
             {
-                bool allowedByRecipe = ThingAllowedByRecipe(thingDef);
-                if ((!needsAllResearchRequirements && allowedByRecipe) ||
-                    (needsAllResearchRequirements && !allowedByRecipe))
+                if (!ThingAllowedByRecipe(thingDef))
                 {
-                    return allowedByRecipe;
+                    return false;
                 }
             }
 
             if (restrictByThingTechLevel)
             {
-                bool allowedByTechLevel = ThingAllowedByThingTechLevel(thingDef, techlevel);
-                if ((!needsAllResearchRequirements && allowedByTechLevel) ||
-                    (needsAllResearchRequirements && !allowedByTechLevel))
+                if (!ThingAllowedByThingTechLevel(thingDef, techlevel))
                 {
-                    return allowedByTechLevel;
+                    return false;
                 }
             }
 
-            /* If we get here and we need to meet all requirements, then that means we've passed all checks, and want to return TRUE.
-             * But if we get here and we do NOT need to meet all requirements, then that means that we failed all checks, and want to return FALSE.
-             * So, we can just return needsAllResearchRequirements itself, since its value is exactly what we want to return right now. */
-            return needsAllResearchRequirements;
+            return true;
         }
         public override void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
             if (SatisfiesTechRequirements(techlevel))
             {
-                filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
+                filter.SetAllow(thingDef, true);
             }
             else
             {
                 /* Thing specifications override Category specifications. So if a category already allowed the thing,
                  * but the Thing's own requirements aren't satisfied, then we need to disallow it. */
-                filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
+                filter.SetAllow(thingDef, false);
             }
         }
     }
@@ -178,53 +149,32 @@ namespace FactionColonies
         {
             if (noRequirements)
             {
-                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), true);
+                filter.SetAllow(thingCategoryDef, true);
                 return;
             }
 
-            bool satisfiesTechRequirements = SatisfiesTechRequirements(techlevel);
-            if (satisfiesTechRequirements)
+            if (SatisfiesTechRequirements(techlevel))
             {
-                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), true);
-                if (!needsAllResearchRequirements)
-                {  
-                    return;
-                }
+                filter.SetAllow(thingCategoryDef, true);
             }
-            else if (needsAllResearchRequirements)
+            else
             {
+                filter.SetAllow(thingCategoryDef, false);
                 return;
             }
 
-            if (restrictByRecipe)
+            foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
             {
-                foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
+                bool allowed = true;
+                if (restrictByRecipe)
                 {
-                    bool allowed = ThingAllowedByRecipe(thingDef);
-                    if (needsAllResearchRequirements && !allowed)
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
-                    }
-                    else if (!needsAllResearchRequirements && allowed)
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
-                    }
+                    allowed &= ThingAllowedByRecipe(thingDef);
                 }
-            }
-            if (restrictByThingTechLevel)
-            {
-                foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
+                if (restrictByThingTechLevel)
                 {
-                    bool allowed = ThingAllowedByThingTechLevel(thingDef, techlevel);
-                    if (needsAllResearchRequirements && !allowed)
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
-                    }
-                    else if (!needsAllResearchRequirements && allowed)
-                    {
-                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), true);
-                    }
+                    allowed &= ThingAllowedByThingTechLevel(thingDef, techlevel);
                 }
+                filter.SetAllow(thingDef, allowed);
             }
         }
     }
@@ -256,12 +206,12 @@ namespace FactionColonies
         /// Minimum tech level to access or produce this resource type.
         /// <para>If minTechLevel is not undefined, and the empire faction does not satisfy it, then the resource cannot be produced.</para>
         /// </summary>
-        public TechLevel minTechLevel;
+        public TechLevel minTechLevel = TechLevel.Undefined;
         /// <summary>
         /// Maximum tech level to access or produce this resource type.
         /// <para>If maxTechLevel is not undefined, and the empire faction does not satisfy it, then the resource cannot be produced.</para>
         /// </summary>
-        public TechLevel maxTechLevel;
+        public TechLevel maxTechLevel = TechLevel.Undefined;
         /// <summary>
         /// A list of research projects required to unlock access to this resource type.
         /// </summary>
@@ -269,7 +219,7 @@ namespace FactionColonies
         /// <summary>
         /// Indicates whether the resource type needs to meet both the techlevel AND researchProjectDefs requirements to become available.
         /// </summary>
-        public bool needsAllResearchRequirements = false;
+        public bool needsAllResearchRequirements = true;
         /// <summary>
         /// Indicates whether or not this resource should accumulate a special point pool instead of actual objects.
         /// E.g. a research point pool, or a power pool.
@@ -463,51 +413,33 @@ namespace FactionColonies
         public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
         {
             /* Category Allow lists */
-            if (thingCategoryAllowList != null)
+            foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
             {
-                foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
-                {
-                    thingCategoryRestriction.SetFilter(filter, techlevel);
-                }
+                thingCategoryRestriction.SetFilter(filter, techlevel);
             }
-            if (stuffCategoryAllowList != null)
+            foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryAllowList)
             {
-                foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryAllowList)
-                {
-                    filter.SetAllow(stuffCategoryDef, true);
-                }
+                filter.SetAllow(stuffCategoryDef, true);
             }
             /* Category Block Lists */
-            if (thingCategoryBlockList != null)
+            foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
             {
-                foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
-                {
-                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail(thingCategoryDef.defName), false);
-                }
+                filter.SetAllow(thingCategoryDef, false);
             }
-            if (stuffCategoryBlockList != null)
+            foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryBlockList)
             {
-                foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryBlockList)
-                {
-                    filter.SetAllow(stuffCategoryDef, false);
-                }
+                filter.SetAllow(stuffCategoryDef, false);
             }
             // Handle Things after the categories. This allows for more fine-grained control over when
             // individual things become available
-            if (thingAllowList != null)
+            foreach (ResourceThingDefRestriction thingDefRestriction in thingAllowList)
             {
-                foreach (ResourceThingDefRestriction thingDefRestriction in thingAllowList)
-                {
-                    thingDefRestriction.SetFilter(filter, techlevel);
-                }
+                thingDefRestriction.SetFilter(filter, techlevel);
             }
             /* Block lists */
-            if (thingBlockList != null)
+            foreach (ThingDef thingDef in thingBlockList)
             {
-                foreach (ThingDef thingDef in thingBlockList)
-                {
-                    filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail(thingDef.defName), false);
-                }
+                filter.SetAllow(thingDef, false);
             }
 
             /* Check for any ResourceExtensions, and process them now. */
@@ -559,10 +491,6 @@ namespace FactionColonies
                     {
                         yield return "maxTechLevel " + thingDefRestriction.maxTechLevel + " is earlier than minTechLevel " + thingDefRestriction.minTechLevel;
                     }
-                    if (thingDefRestriction.noRequirements && thingDefRestriction.needsAllResearchRequirements)
-                    {
-                        yield return "needsAllResearchRequirements is TRUE, but there are no specified research or tech level requirements";
-                    }
                     if (thingBlockList != null && thingBlockList.Contains(thingDefRestriction.thingDef))
                     {
                         yield return "thingDefRestriction " + thingDefRestriction.thingDef.defName + " appears in both thingAllowList and thingBlockList for ResourceTypeDef " + this.defName;
@@ -576,10 +504,6 @@ namespace FactionColonies
                     if (thingCategoryDefRestriction.maxTechLevel != TechLevel.Undefined && thingCategoryDefRestriction.maxTechLevel < thingCategoryDefRestriction.minTechLevel)
                     {
                         yield return "maxTechLevel " + thingCategoryDefRestriction.maxTechLevel + " is earlier than minTechLevel " + thingCategoryDefRestriction.minTechLevel;
-                    }
-                    if (thingCategoryDefRestriction.noRequirements && thingCategoryDefRestriction.needsAllResearchRequirements)
-                    {
-                        yield return "needsAllResearchRequirements is TRUE, but there are no specified research or tech level requirements";
                     }
                     if (thingCategoryBlockList != null)
                     {
@@ -681,7 +605,8 @@ namespace FactionColonies
             return desc;
         }
     }
-    //TODO: actually define these
+
+    [DefOf]
     public class ResourceTypeDefOf
     {
         public static ResourceTypeDef RTD_Food;

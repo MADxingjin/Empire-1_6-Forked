@@ -139,6 +139,7 @@
 	</thingAllowList>
 	<thingBlockList>
 		<li>Silver</li>
+		<li>BlocksVacstone</li>
 	</thingBlockList>
 	<thingCategoryAllowList>
 		<li>

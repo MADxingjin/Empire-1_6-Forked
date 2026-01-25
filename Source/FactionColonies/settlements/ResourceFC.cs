@@ -113,25 +113,6 @@ namespace FactionColonies
         {
         }
 
-        /* Old constructor. Remove once resources have been fully converted to use the new ResourceTypeDef */
-        /*public ResourceFC(double baseProduction, ResourceType type, SettlementFC settlement = null)
-        {
-            this.settlement = settlement;
-            name = ResourceUtils.GetResourceDisplayName(type, settlement);
-            label = ResourceUtils.GetResourceDisplayLabel(type, settlement);
-            this.baseProduction = baseProduction;
-            endProduction = baseProduction;
-            amount = 0;
-            baseProductionMultiplier = 1;
-            baseProductionAdditives.Add(new ProductionAdditive("", 0, ""));
-            baseProductionMultipliers.Add(new ProductionMultiplier("", 0, ""));
-            filter = new ThingFilter();
-            if (settlement != null)
-            {
-                PaymentUtil.resetThingFilter(settlement, type);
-            }
-        }*/
-
         public ResourceFC(ResourceTypeDef resourceDef, WorldSettlementFC settlement = null)
         {
             this.settlement = settlement;
@@ -170,8 +151,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref label, "label");
             Scribe_Values.Look(ref amount, "amount");
-            Scribe_Collections.Look(ref productionAdditives, "productionAdditives", LookMode.Deep);
-            Scribe_Collections.Look(ref productionMultipliers, "productionMultiplers", LookMode.Deep);
+            Scribe_Collections.Look(ref productionAdditives, "productionAdditives", LookMode.Value, LookMode.Deep);
+            Scribe_Collections.Look(ref productionMultipliers, "productionMultiplers", LookMode.Value, LookMode.Deep);
             //A structure for the future, to hold per-item tithe specifications
             // should work on replicating current functionality before *adding* to it, though
             // TODO
@@ -226,7 +207,13 @@ namespace FactionColonies
             {
                 productionMultiplier *= bonus.value;
             }
-            productionMultiplier *= ((100 + egalitarianTaxBoost + isolationistTaxBoost + TraitUtilsFC.cycleTraits("taxBasePercentage", settlement.Traits, Operation.Addition)) / 100);
+            /* The production multiplier only matters for settlement resources, but we use a barren copy of ResourceFC at the FactionFC level to track total production for all resources.
+             * So if settlement == null, then we're at the faction-level resource, and don't need to actually calculate anything.
+             * TODO: find a better way to store resource info at the FactionFC level */
+            if (settlement != null)
+            {
+                productionMultiplier *= ((100 + egalitarianTaxBoost + isolationistTaxBoost + TraitUtilsFC.cycleTraits("taxBasePercentage", settlement.Traits, Operation.Addition)) / 100);
+            }
             return productionMultiplier;
         }
 
@@ -418,17 +405,19 @@ namespace FactionColonies
         }
         public List<ThingDef> generateThingDefList()
         {
-            List<ThingDef> things = new List<ThingDef>();
-            ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
-            ThingSetMakerParams param = new ThingSetMakerParams();
-            param.filter = filter;
-            param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
-
             if (def.isPoolResource)
             {
                 LogUtil.Error($"Attempted to generate thing list for pool resource {def.defName} in settlement {settlement.Name}");
                 return null;
             }
+
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            List<ThingDef> things = new List<ThingDef>();
+            ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
+            ThingSetMakerParams param = new ThingSetMakerParams();
+            param.filter = new ThingFilter();
+            param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+            param.countRange = new IntRange(1, 1);
 
             TechLevel tmplevel = TechLevel.Undefined;
             ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
@@ -437,7 +426,9 @@ namespace FactionColonies
                 thingSetMaker = tmp;
                 param.techLevel = tmplevel;
             }
-            param.countRange = new IntRange(1, 1);
+
+            def.FilterResource(param.filter, faction.techLevel);
+
             /* AllGenerateableThingsDebug(param).ToList() was taken from PaymentUtil.debugGenerateTithe(), which was used to generate the selection float menu
              * in the settlement screen. Is this really the right function to use? TODO: look into this. */
             things = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
@@ -567,54 +558,48 @@ namespace FactionColonies
         }
     }
 
-    /*public class ProductionAdditive : IExposable
+    /// <summary>
+    /// A small class meant for use with FactionFC to display faction-level resource production totals.
+    /// </summary>
+    public class ResourceDisplay : IExposable
     {
-        public ProductionAdditive()
+        public ResourceTypeDef resourceDef;
+        public double amount;
+
+        public Texture2D Icon => resourceDef?.Icon ?? TexLoad.questionmark;
+        public string label => resourceDef?.LabelCap ?? "";
+        public ResourceDisplay()
         {
-
         }
-
-        public ProductionAdditive(string id, double value, string desc)
+        public ResourceDisplay(ResourceTypeDef def)
         {
-            this.id = id;
-            this.value = value;
-            this.desc = desc;
+            resourceDef = def;
+            amount = 0;
         }
-
         public void ExposeData()
         {
-            Scribe_Values.Look(ref id, "id");
-            Scribe_Values.Look(ref value, "value");
-            Scribe_Values.Look(ref desc, "desc");
+            Scribe_Defs.Look(ref resourceDef, "resourcedef");
+            Scribe_Values.Look(ref amount, "amount");
         }
-
-        public string id;
-        public double value;
-        public string desc;
+        public int compareForUI(ResourceDisplay compareDef)
+        {
+            if (compareDef == null)
+            {
+                return -2;
+            }
+            if (compareDef.resourceDef == null)
+            {
+                return -1;
+            }
+            if (this.resourceDef == null)
+            {
+                return 1;
+            }
+            return ResourceTypeDef.sortForUI(this.resourceDef, compareDef.resourceDef);
+        }
+        public static int sortForUI(ResourceDisplay a, ResourceDisplay b)
+        {
+            return a.compareForUI(b);
+        }
     }
-
-    public class ProductionMultiplier : IExposable
-    {
-        public ProductionMultiplier()
-        {
-
-        }
-        public ProductionMultiplier(string id, double value, string desc)
-        {
-            this.id = id;
-            this.value = value;
-            this.desc = desc;
-        }
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref id, "id");
-            Scribe_Values.Look(ref value, "value");
-            Scribe_Values.Look(ref desc, "desc");
-        }
-
-        public string id;
-        public double value;
-        public string desc;
-    }*/
 }

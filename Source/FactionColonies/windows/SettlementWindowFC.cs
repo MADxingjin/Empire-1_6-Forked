@@ -281,7 +281,8 @@ namespace FactionColonies
                 if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resource);
 
                 //Base Production
-                Widgets.Label(new Rect(x + 195, rectY, 45, 40),
+                Rect baseProd = new Rect(x + 195, rectY, 45, 40);
+                Widgets.Label(baseProd,
                     TextUtil.FloorStat(resource.productionBase));
 
                 //Final Modifier

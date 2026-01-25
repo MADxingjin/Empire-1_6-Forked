@@ -91,10 +91,8 @@ namespace FactionColonies
                                 {
                                     //if doesn't require resource or if required resource has more than 1 production
                                     if (cEvent.requiredResource == null
-                                        ? Find.World.GetComponent<FactionFC>().returnResource(cEvent.requiredResource)
-                                            .assignedWorkers > 0
-                                        : true || (cEvent.requiredResource == "research" &&
-                                                   TraitUtilsFC.returnResearchAmount() > 0))
+                                        ? Find.World.GetComponent<FactionFC>().returnResource(cEvent.requiredResource).amount > 0
+                                        : true || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
                                     {
                                         //if event is not incompatible with any currently-running events
                                         foreach (FCEvent evt in Find.World.GetComponent<FactionFC>().events)
@@ -292,16 +290,19 @@ namespace FactionColonies
                 faction.events.RemoveAt(i);
                 WorldSettlementFC settlement;
 
+                LogUtil.Message($"Processing event {evt.def.defName}");
+
                 switch (evt.def.defName)
                 {
                     case "settleNewColony":
                         {
+                            //TODO: BIG BUG HERE, settleNewColony event doesn't actually create a colony!
                             //Settle new colony event
                             faction.addExperienceToFactionLevel(10f);
 
                             ColonyUtil.createPlayerColonySettlement(evt.location, evt.settlementToCreate);
 
-                            faction.settlementCaravansList.Remove(evt.location.ToString());
+                            faction.settlementCaravansList.Remove(evt.location);
                             break;
                         }
                     case "taxColony":
@@ -593,8 +594,8 @@ namespace FactionColonies
             {
                 // FIX: Instead of using -1, use the capital location as both source and destination
                 // This represents taxes being collected locally at the capital
-                int fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? 0;
-                tmp.source = faction.capitalLocation >= 0 ? faction.capitalLocation : fallbackTile;
+                PlanetTile fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? PlanetTile.Invalid;
+                tmp.source = faction.capitalLocation != PlanetTile.Invalid ? faction.capitalLocation : fallbackTile;
                 tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital");
 
                 LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");

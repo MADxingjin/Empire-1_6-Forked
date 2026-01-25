@@ -33,6 +33,11 @@ namespace FactionColonies
         {
             double tempTrait = (int) addOrMultiply;
 
+            if (traits == null || traits.Count == 0)
+            {
+                return tempTrait;
+            }
+
             foreach (FCTraitEffectDef trait in traits)
             {
                 if (addOrMultiply == Operation.Addition)

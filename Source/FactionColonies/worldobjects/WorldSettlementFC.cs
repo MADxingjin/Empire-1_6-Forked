@@ -15,6 +15,7 @@ using Verse;
 using Verse.AI.Group;
 using Verse.Noise;
 using Verse.Sound;
+using static Mono.Security.X509.X520;
 
 namespace FactionColonies
 {
@@ -300,6 +301,23 @@ namespace FactionColonies
                 def = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
             FactionFC faction = Find.World.GetComponent<FactionFC>();
+            Name = settlementDef.getSettlementTypeExtension().getSettlementName();
+
+            updateTechIcon();
+            def.expandingIconTexture = "FactionIcons/" + faction.factionIconPath;
+            traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
+            base.PostMake();
+
+            LogUtil.Message($"Created world settlement {Name} with def {def}");
+        }
+        /// <summary>
+        /// Handles necessary post-PostMake processing that requires the Tile field to be set.
+        /// </summary>
+        /// <param name="tile"></param>
+        public void PostPostMake(PlanetTile tile)
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            this.Tile = tile;
 
             settlementLevel = 1;
 
@@ -309,14 +327,12 @@ namespace FactionColonies
             workersMax = settlementDef.workersMaxBase + (settlementLevel * settlementDef.workersMaxMult) + returnMaxWorkersFromPrisoners();
             workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + (settlementLevel * settlementDef.workersUltraMaxMult) + returnOverMaxWorkersFromPrisoners();
 
-
-            // LogUtil.Message(Find.WorldGrid.tiles[location].biome.ToString());   <= Returns biome
-            //biome info
             biome = Tile.Tile.PrimaryBiome.defName;
             bool useTileBiome = true;
 
             if (settlementDef.biomeResourceOverride != null)
             {
+                LogUtil.Message($"Using biome {settlementDef.biomeResourceOverride.defName} as override for settlement {Name} of type {settlementDef}");
                 useTileBiome = false;
                 biomeDef = settlementDef.biomeResourceOverride;
                 if (!DefDatabase<BiomeResourceDef>.AllDefs.Contains(biomeDef))
@@ -341,13 +357,6 @@ namespace FactionColonies
             {
                 addTraits(settlementDef.traits);
             }
-
-            updateTechIcon();
-            def.expandingIconTexture = "FactionIcons/" + faction.factionIconPath;
-            traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
-            base.PostMake();
-
-            LogUtil.Message($"Created world settlement {Name} with def {def}");
         }
 
         public override void ExposeData()

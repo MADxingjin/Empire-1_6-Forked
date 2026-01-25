@@ -143,6 +143,7 @@ namespace FactionColonies
         }
     }
 
+    [DefOf]
     public static class WorldSettlementDefOf
     {
         public static WorldSettlementDef WorldSettlementDef_Surface;

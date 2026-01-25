@@ -38,7 +38,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref daysBetweenTicks, "daysBetweenTicks");
             Scribe_Values.Look(ref roadBuildingEnabled, "roadBuildingEnabled");
             Scribe_Values.Look(ref wasRoadBuildingDisabled, "wasRoadBuildingDisabled");
-            Scribe_Deep.Look(ref roadQueue, "roadQueue", LookMode.Deep, new object[] { this.roadDef, this.daysBetweenTicks });
+            Scribe_Deep.Look(ref roadQueue, "roadQueue", new object[]{ this.roadDef, this.daysBetweenTicks });
         }
 
         public void FirstTick()

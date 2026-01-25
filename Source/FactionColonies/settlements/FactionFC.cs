@@ -44,7 +44,7 @@ namespace FactionColonies
         public double income;
         public double upkeep;
         public double profit;
-        public int capitalLocation = -1;
+        public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         public Map taxMap;
         public TechLevel techLevel = TechLevel.Undefined;
@@ -60,7 +60,7 @@ namespace FactionColonies
         public ThingWithComps powerOutput;
 
         public List<FCEvent> events = new List<FCEvent>();
-        public List<string> settlementCaravansList = new List<string>(); //list of locations caravans already sent to
+        public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
 
         public List<BillFC> OldBills = new List<BillFC>();
         public List<BillFC> Bills = new List<BillFC>();
@@ -75,10 +75,8 @@ namespace FactionColonies
         public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
         public XenotypeFilter xenotypeFilter;
 
-        public List<ResourceFC> factionResources = new List<ResourceFC>();
-        /* Modify this to only retrieve a list of resources that the player actually has tech for? */
-        /* Eh, that would be pretty expensive... */
-        public List<ResourceFC> FactionResources => factionResources;
+        public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
+        public List<ResourceDisplay> FactionResources => factionResources;
 
         //Update
         public int nextSettlementFCID = 1;
@@ -145,9 +143,7 @@ namespace FactionColonies
                 Map map;
                 if (taxMap == null)
                 {
-                    if (Find.WorldObjects
-                            .SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map ==
-                        null)
+                    if (Find.WorldObjects.SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map == null)
                     {
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
@@ -320,10 +316,10 @@ namespace FactionColonies
             factionResources.Clear();
             foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
             {
-                factionResources.Add(new ResourceFC(resourceTypeDef, null));
-                LogUtil.Message($"Added ResourceFC for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
+                factionResources.Add(new ResourceDisplay(resourceTypeDef));
+                LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
-            factionResources.Sort(ResourceFC.sortForUI);
+            factionResources.Sort(ResourceDisplay.sortForUI);
         }
 
         public void addTrait(FCTraitEffectDef trait, string id = "")
@@ -1088,17 +1084,16 @@ namespace FactionColonies
 
         public void updateTotalResources()
         {
-            foreach (ResourceFC resourcefc in factionResources)
+            foreach (ResourceDisplay rdisplay in factionResources)
             {
                 int resource = 0;
 
                 for (int k = 0; k < settlements.Count(); k++)
                 {
-                    resource += (int)(resourcefc.production);
+                    resource += (int)(settlements[k].getResource(rdisplay.resourceDef)?.production ?? 0);
                 }
 
-                resourcefc.amount = resource;
-                //LogUtil.Message(i + " " + returnResourceByInt(i).amount);  //display total resources by type
+                rdisplay.amount = resource;
             }
         }
 
@@ -1206,6 +1201,8 @@ namespace FactionColonies
             //Add event to events
             events.Add(fcevent);
 
+            LogUtil.Message($"addEvent: adding new fcevent {fcevent.def.defName}");
+
             //check if event has a location, if does, add traits to that specific location;
             if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
             {
@@ -1225,12 +1222,11 @@ namespace FactionColonies
             }
         }
 
-        public bool checkSettlementCaravansList(string location) //list of destinations caravans gone to
+        public bool checkSettlementCaravansList(PlanetTile location) //list of destinations caravans gone to
         {
             for (int i = 0; i < settlementCaravansList.Count(); i++)
             {
-                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(Convert.ToInt32(location),
-                    Convert.ToInt32(settlementCaravansList[i])))
+                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(location, settlementCaravansList[i]))
                 {
                     return true; // is on list
                 }
@@ -1239,9 +1235,9 @@ namespace FactionColonies
             return false; //is not on list
         }
 
-        public ResourceFC returnResource(string name) //used to return the correct resource based on string name
+        public ResourceDisplay returnResource(string name) //used to return the correct resource based on string name
         {
-            ResourceFC res = factionResources.Where((ResourceFC rfc) => rfc.def.defName == name).FirstOrDefault();
+            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef.defName == name).FirstOrDefault();
             if (res == null)
             {
                 /* This should never happen! */
@@ -1250,44 +1246,15 @@ namespace FactionColonies
             return res;
         }
 
-        public ResourceFC returnResource(ResourceTypeDef resourceTypeDef)
+        public ResourceDisplay returnResource(ResourceTypeDef resourceTypeDef)
         {
-            ResourceFC res = factionResources.Where((ResourceFC rfc) => rfc.def == resourceTypeDef).FirstOrDefault();
+            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef).FirstOrDefault();
             if (res == null)
             {
                 /* This should never happen! */
-                LogUtil.Error($"Requested resource {resourceTypeDef} is not in the list of faction resources!");
+                LogUtil.Error($"Requested resource {resourceTypeDef.defName} is not in the list of faction resources!");
             }
             return res;
-            /*switch (type)
-            {
-                case ResourceType.Food:
-                    return food;
-                case ResourceType.Weapons:
-                    return weapons;
-                case ResourceType.Apparel:
-                    return apparel;
-                case ResourceType.Animals:
-                    return animals;
-                case ResourceType.Logging:
-                    return logging;
-                case ResourceType.Mining:
-                    return mining;
-                case ResourceType.Research:
-                    return research;
-                case ResourceType.Power:
-                    return power;
-                case ResourceType.Medicine:
-                    return medicine;
-                case ResourceType.Gravtech:
-                    return gravtech;
-                case ResourceType.Chemfuel:
-                    return chemfuel;
-            }
-
-            / * We should NOT be here * /
-            LogUtil.Error($"Unable to find resource {type} - returnResourceByInt(int name)");
-            return null;*/
         }
 
         public void setCapital()

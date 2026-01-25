@@ -179,7 +179,7 @@ namespace FactionColonies
             int constructionTime = GetConstructionTime(tier);
             
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
-            evt.location = orbitalTile.tileId; // Use the tile ID, not the PlanetTile object
+            evt.location = orbitalTile; // Use the tile ID, not the PlanetTile object
             evt.timeTillTrigger = Find.TickManager.TicksGame + constructionTime;
             evt.source = faction.capitalLocation;
             
@@ -189,7 +189,7 @@ namespace FactionColonies
             evt.customDescription = $"Orbital Platform Construction ({GetTierInfo(tier).name})";
             
             faction.addEvent(evt);
-            faction.settlementCaravansList.Add(orbitalTile.tileId.ToString()); // Use tile ID here too
+            faction.settlementCaravansList.Add(orbitalTile); // Use tile ID here too
             
             string tierName = GetTierInfo(tier).name;
             Messages.Message($"{tierName} construction initiated! Completion in {((float)constructionTime / GenDate.TicksPerDay).ToString("F1")} days", 

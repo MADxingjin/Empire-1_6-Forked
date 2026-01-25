@@ -13,14 +13,16 @@ namespace FactionColonies
 {
     public class CreateColonyWindowFc : Window
     {
-        public sealed override Vector2 InitialSize => new Vector2(300f, 600f);
+        public sealed override Vector2 InitialSize => new Vector2(300f, 650f);
 
-        public PlanetTile currentTileSelected = -1;
+        public PlanetTile currentTileSelected = PlanetTile.Invalid;
+        public PlanetTile oldTileSelected = PlanetTile.Invalid;
         public BiomeResourceDef currentBiomeSelected;
         public bool traitExpansionistReducedFee;
         public int timeToTravel = -1;
 
         public WorldSettlementDef currentSettlementType;
+        public WorldSettlementDef oldSettlementType;
 
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
@@ -28,15 +30,29 @@ namespace FactionColonies
         private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.Traits, Operation.Multiplication) *
                                                         (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.Traits, Operation.Addition))));
 
+        /* UI math stuff! Yaaaay!
+         * what a pain
+         */
+        public const int verticalMargins = 5;
+        public const int newColonyHeader_height = 40;
+        public const int upperBox_height = 50;
+        public const int costConstructionBox_height = 50;
+        public const int productionLabel_height = 40;
+        public int prodBoxHeight = 220;
+        public const int productionHeaders_height = 25;
+        public const int button_height = 32;
+
         public CreateColonyWindowFc()
         {
             forcePause = false;
-            draggable = false;
+            draggable = true;
             preventCameraMotion = false;
             doCloseX = true;
-            windowRect = new Rect(UI.screenWidth - InitialSize.x, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             faction = Find.World.GetComponent<FactionFC>();
+            prodBoxHeight = faction.FactionResources.Count * 22 + 10;
+            windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             currentSettlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
+            oldSettlementType = null;
         }
 
 
@@ -63,33 +79,40 @@ namespace FactionColonies
             //Draw Label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 0, 268, 40), "SettleANewColony".Translate());
+            Rect newColonyHeader = new Rect(0, 0, 260, newColonyHeader_height);
+            Widgets.Label(newColonyHeader, "SettleANewColony".Translate());
 
             //hori line
-            Widgets.DrawLineHorizontal(0, 40, 300);
+            Widgets.DrawLineHorizontal(0, newColonyHeader_height, 300);
 
 
             //Upper menu
-            Widgets.DrawMenuSection(new Rect(5, 45, 258, 220));
+            Rect upperBox = new Rect(5, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 258, upperBox_height);
+            Widgets.DrawMenuSection(upperBox); //height was originally 220
 
-            DrawLabelBox(new Rect(10, 50, 100, 100), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
-            DrawLabelBox(new Rect(153, 50, 100, 100), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
+            DrawLabelBox(new Rect(10, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
+            DrawLabelBox(new Rect(153, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
 
 
             //Lower Menu label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 270, 268, 40), "BaseProductionStats".Translate());
+            Rect productionLabelBox = new Rect(0, UIUtil.getTotalHeight(upperBox) + verticalMargins, 268, productionLabel_height); //0, 270, 268, 40
+            Widgets.Label(productionLabelBox, "BaseProductionStats".Translate());
 
 
             //Lower menu
-            Widgets.DrawMenuSection(new Rect(5, 310, 258, 220));
-
+            Rect prodBox = new Rect(5, UIUtil.getTotalHeight(productionLabelBox) + verticalMargins, 258, prodBoxHeight); //5, 210, 258, 220
+            Widgets.DrawMenuSection(prodBox); 
 
             //Draw production
-            DrawProduction();
-            DrawChooseSettlementTypeButton();
-            DrawCreateSettlementButton();
+            DrawProduction(prodBox);
+
+            float curHeight = UIUtil.getTotalHeight(prodBox);
+            curHeight = DrawChooseSettlementTypeButton(curHeight);
+            curHeight = DrawCreateSettlementButton(curHeight);
+
+            windowRect.height = curHeight + (verticalMargins * 7);
 
             //reset anchor/font
             Text.Font = fontBefore;
@@ -116,6 +139,14 @@ namespace FactionColonies
             {
                 return;
             }
+            /* No need to keep redoing all of the below calculations if the selected tile or settlement type hasn't changed */
+            if (currentTileSelected == oldTileSelected &&
+                currentSettlementType == oldSettlementType)
+            {
+                return;
+            }
+            oldTileSelected = currentTileSelected;
+            oldSettlementType = currentSettlementType;
 
             if (currentSettlementType.biomeResourceOverride != null)
             {
@@ -190,28 +221,29 @@ namespace FactionColonies
             traitExpansionistReducedFee = false;
         }
         
-        private void DrawProduction()
+        private void DrawProduction(Rect prodBox)
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
 
             //Production headers
-            Widgets.Label(new Rect(40, 310, 60, 25), "Base".Translate());
-            Widgets.Label(new Rect(110, 310, 60, 25), "Modifier".Translate());
-            Widgets.Label(new Rect(180, 310, 60, 25), "Final".Translate());
+            Widgets.Label(new Rect(40, prodBox.y, 60, productionHeaders_height), "Base".Translate()); // 40, 190, 60, 25
+            Widgets.Label(new Rect(110, prodBox.y, 60, productionHeaders_height), "Modifier".Translate());
+            Widgets.Label(new Rect(180, prodBox.y, 60, productionHeaders_height), "Final".Translate());
 
             if (currentTileSelected != -1)
             {
-                List<ResourceFC> resTypes = faction.FactionResources;
+                List<ResourceDisplay> resTypes = faction.FactionResources;
                 List<ResourceTypeDef> settlementResourceTypes = currentSettlementType.getResourceDefs();
+                int startHeight = (int)prodBox.y + productionHeaders_height + verticalMargins;
 
                 for (int i = 0; i < resTypes.Count; i++)
                 {
-                    ResourceTypeDef titheType = resTypes[i].def;
+                    ResourceTypeDef titheType = resTypes[i].resourceDef;
                     int baseHeight = 15;
-                    if (Widgets.ButtonImage(new Rect(20, 335 + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].getIcon))
+                    string label = resTypes[i].label;
+                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, label.CapitalizeFirst()))
                     {
-                        string label = resTypes[i].label;
                         Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + label, label.CapitalizeFirst()));
                     }
                     /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
@@ -220,7 +252,7 @@ namespace FactionColonies
                     ResourceBonuses settleRes = currentSettlementType.getSettlementResource(titheType);
 
                     float xMod = 70f;
-                    Rect baseRect = new Rect(40, 335 + i * (5 + baseHeight), 60, baseHeight + 2);
+                    Rect baseRect = new Rect(40, startHeight + i * (5 + baseHeight), 60, baseHeight + 2);
 
                     if (biomeRes == null || settleRes == null || !titheType.ResourceTypeAllowedByTech(faction.techLevel))
                     {
@@ -246,44 +278,17 @@ namespace FactionColonies
                         Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), (total).ToString());
                     }
                 }
+                /* Highlight the total value */
+                Widgets.DrawHighlight(new Rect(180, startHeight - verticalMargins, 60, (resTypes.Count * 20f) + verticalMargins));
             }
         }
-
-        private void DrawCreateSettlementButton()
+        private float DrawChooseSettlementTypeButton(float curHeight)
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             int buttonLength = 130;
-            if (Widgets.ButtonText(new Rect((InitialSize.x - 32 - buttonLength) / 2f, 535, buttonLength, 32), "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
-            {
-                if (!CanCreateSettlementHere()) return;
-
-                PaymentUtil.paySilver(settlementCreationCost);
-
-                //create settle event
-                FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
-                evt.location = currentTileSelected;
-                evt.timeTillTrigger = Find.TickManager.TicksGame + timeToTravel;
-                evt.source = faction.capitalLocation;
-                if (currentSettlementType.isConstructed)
-                {
-                    evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
-                }
-                faction.addEvent(evt);
-
-                faction.settlementCaravansList.Add(evt.location.ToString());
-                Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
-                                 (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
-
-                DoPostEventCreationTraitThings();
-            }
-        }
-        private void DrawChooseSettlementTypeButton()
-        {
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-            int buttonLength = 130;
-            if (Widgets.ButtonText(new Rect((InitialSize.x - 32 - buttonLength) / 2f, 535, buttonLength, 32), currentSettlementType.LabelCap))
+            Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
+            if (Widgets.ButtonText(button, currentSettlementType.LabelCap))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
                 IEnumerable<FloatMenuOption> options = GetAvailableSettlementTypes();
@@ -297,12 +302,48 @@ namespace FactionColonies
                 FloatMenu menu = new FloatMenu(list);
                 Find.WindowStack.Add(menu);
             }
+            return UIUtil.getTotalHeight(button);
+        }
+
+        private float DrawCreateSettlementButton(float curHeight)
+        {
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            int buttonLength = 130;
+            Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
+            if (Widgets.ButtonText(button, "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
+            {
+                if (!CanCreateSettlementHere()) return UIUtil.getTotalHeight(button);
+
+                LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
+
+                PaymentUtil.paySilver(settlementCreationCost);
+
+                //create settle event
+                FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
+                evt.location = currentTileSelected;
+                evt.timeTillTrigger = Find.TickManager.TicksGame + timeToTravel;
+                evt.source = faction.capitalLocation;
+                evt.settlementToCreate = currentSettlementType;
+                if (currentSettlementType.isConstructed)
+                {
+                    evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
+                }
+                faction.addEvent(evt);
+
+                faction.settlementCaravansList.Add(evt.location);
+                Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
+                                 (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
+
+                DoPostEventCreationTraitThings();
+            }
+            return UIUtil.getTotalHeight(button);
         }
 
         private bool CanCreateSettlementHere(bool silent = false)
         {
             StringBuilder reason = new StringBuilder();
-            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, reason) || faction.checkSettlementCaravansList(currentTileSelected.ToString()) || !PlayerHasEnoughSilver(reason))
+            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, reason) || faction.checkSettlementCaravansList(currentTileSelected) || !PlayerHasEnoughSilver(reason))
             {
                 if (!silent)
                 {
@@ -336,11 +377,11 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             //Draw highlight
-            Widgets.DrawHighlight(new Rect(rect.x, rect.y + rect.height /8, rect.width, rect.height / 4f));
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, rect.height / 2f), text1);
+            Widgets.DrawHighlight(new Rect(rect.x, rect.y + rect.height / 8, rect.width, rect.height * 3f / 8f));
+            Widgets.Label(new Rect(rect.x, rect.y + rect.height / 16, rect.width, rect.height / 2f), text1);
 
             //divider
-            Widgets.DrawLineHorizontal(rect.x + 5, rect.y + rect.height / 2, rect.width - 10);
+            //Widgets.DrawLineHorizontal(rect.x + 5, rect.y + rect.height / 2, rect.width - 10);
 
             //Bottom Text - Gamers Rise Up
             Widgets.Label(new Rect(rect.x, rect.y + rect.height / 2, rect.width, rect.height / 2f), text2);

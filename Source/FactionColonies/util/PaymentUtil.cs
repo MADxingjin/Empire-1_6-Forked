@@ -291,6 +291,8 @@ namespace FactionColonies
             return pawn;
         }
 
+        //TODO: this function isn't *really* based on resource types, but look into making this more modular anyways, based
+        //      on resourcetypes
         public static List<Thing> generateThing(double valueBase, string resourceOfThing)
         {
             regen:
@@ -330,7 +332,7 @@ namespace FactionColonies
                         new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 2));
                     break;
                 case "animals": //animals
-                    thingSetMaker = new ThingSetMaker_Animal();
+                    thingSetMaker = new ThingSetMaker_Animals();
                     param.techLevel = TechLevel.Undefined;
                     param.totalMarketValueRange =
                         new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 1.5));
@@ -427,174 +429,6 @@ namespace FactionColonies
             dropSpot = IntVec3.Invalid;
             taxMap = null;
             return false;
-        }
-    }
-
-    public class ThingSetMaker_Animals : ThingSetMaker
-    {
-        protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
-        {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-            int value = 0;
-            foreach (PawnKindDef def in allAnimalDefs)
-            {
-                if (parms.filter.Allows(def.race) && def.race.race.Animal && def.RaceProps.IsFlesh &&
-                    def.race.BaseMarketValue != 0 && def.race.tradeTags != null &&
-                    !def.race.tradeTags.Contains("AnimalMonster") && !def.race.tradeTags.Contains("AnimalGenetic") &&
-                    !def.race.tradeTags.Contains("AnimalAlpha"))
-                {
-                    things.Add(def);
-                }
-            }
-
-            int attempts = 0;
-            //LogUtil.Message("Min: " + parms.totalMarketValueRange.Value.min + " = " + parms.totalMarketValueRange.Value.max + " max");
-
-            while (parms.totalMarketValueRange.Value.min > value && value < parms.totalMarketValueRange.Value.max)
-            {
-                Regen:
-                if (parms.totalMarketValueRange.Value.min < value)
-                {
-                    attempts += 1;
-                    //LogUtil.Message("Attempts +1");
-                }
-
-                PawnGenerationRequest request = new PawnGenerationRequest(kind: things.RandomElement<PawnKindDef>(),
-                    faction: Find.FactionManager.OfPlayer, context: PawnGenerationContext.NonPlayer, tile: -1, 
-                    forceGenerateNewPawn: false, allowDead: false, allowDowned: false, 
-                    canGeneratePawnRelations: true, mustBeCapableOfViolence: false, colonistRelationChanceFactor: 1f, 
-                    forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowFood: true, allowAddictions: false, 
-                    inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, 
-                    worldPawnFactionDoesntMatter: true, biocodeWeaponChance: 0, extraPawnForExtraRelationChance: null, 
-                    relationWithExtraPawnChanceFactor: 1, validatorPreGear: null, validatorPostGear: null, 
-                    forcedTraits: null, prohibitedTraits: null);
-                Pawn pawn = PawnGenerator.GeneratePawn(request);
-                //LogUtil.Message("Pawn generate: " + pawn.LabelCap + " value: " + pawn.MarketValue);
-                if (pawn.MarketValue + value > parms.totalMarketValueRange.Value.max)
-                {
-                    if (attempts >= 5)
-                    {
-                        goto Exit;
-                    }
-                    else
-                    {
-                        goto Regen;
-                    }
-                }
-
-                //LogUtil.Message(pawn.Name + "   " + pawn.MarketValue + "MarketValue: max value" + parms.totalMarketValueRange.Value.max + ", min val: " + parms.totalMarketValueRange.Value.min);
-                value += (int) pawn.MarketValue;
-                outThings.Add(pawn);
-                //LogUtil.Message(pawn.Label + "total cost: " + value);
-                goto Regen;
-                Exit: ;
-            }
-        }
-
-        static List<PawnKindDef> allowedGeneratedList()
-        {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-
-            foreach (PawnKindDef def in allAnimalDefs)
-            {
-                bool flag = def.race.race.Animal && def.RaceProps.IsFlesh && def.race.tradeTags != null &&
-                            !def.race.tradeTags.Contains("AnimalMonster") &&
-                            !def.race.tradeTags.Contains("AnimalGenetic") &&
-                            !def.race.tradeTags.Contains("AnimalAlpha");
-                if (flag)
-                {
-                    things.Add(def);
-                }
-            }
-
-            return things;
-        }
-
-        protected override IEnumerable<ThingDef> AllGeneratableThingsDebugSub(ThingSetMakerParams parms)
-        {
-            List<ThingDef> list = new List<ThingDef>();
-            foreach (PawnKindDef def in ThingSetMaker_Animals.allowedGeneratedList())
-            {
-                list.Add((def.race));
-            }
-
-            return list;
-        }
-    }
-
-    public class ThingSetMaker_Animal : ThingSetMaker
-    {
-        protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
-        {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-
-            foreach (PawnKindDef def in allAnimalDefs)
-            {
-                bool flag = def.race.race.Animal && def.RaceProps.IsFlesh &&
-                            def.race.BaseMarketValue > parms.totalMarketValueRange.Value.min &&
-                            def.race.tradeTags != null && !def.race.tradeTags.Contains("AnimalMonster") &&
-                            !def.race.tradeTags.Contains("AnimalGenetic") &&
-                            !def.race.tradeTags.Contains("AnimalAlpha");
-                if (flag)
-                {
-                    things.Add(def);
-                }
-            }
-
-            regen:
-            PawnGenerationRequest request = new PawnGenerationRequest(kind: things.RandomElement<PawnKindDef>(),
-                faction: Find.FactionManager.OfPlayer, context: PawnGenerationContext.NonPlayer, tile: -1, 
-                forceGenerateNewPawn: false, allowDead: false, allowDowned: false, 
-                canGeneratePawnRelations: true, mustBeCapableOfViolence: false, colonistRelationChanceFactor: 1f,
-                forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowFood: true, allowAddictions: false,
-                inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, 
-                worldPawnFactionDoesntMatter: true, biocodeWeaponChance: 0, extraPawnForExtraRelationChance: null, 
-                relationWithExtraPawnChanceFactor: 1, validatorPreGear: null, validatorPostGear: null, 
-                forcedTraits: null, prohibitedTraits: null);
-            Pawn pawn = PawnGenerator.GeneratePawn(request);
-
-
-            if (pawn.MarketValue > parms.totalMarketValueRange.Value.max)
-            {
-                goto regen;
-            }
-
-            outThings.Add(pawn);
-        }
-
-
-        static List<PawnKindDef> allowedGeneratedList()
-        {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
-
-            foreach (PawnKindDef def in allAnimalDefs)
-            {
-                bool flag = def.race.race.Animal && def.RaceProps.IsFlesh && def.race.tradeTags != null &&
-                            !def.race.tradeTags.Contains("AnimalMonster") &&
-                            !def.race.tradeTags.Contains("AnimalGenetic") &&
-                            !def.race.tradeTags.Contains("AnimalAlpha");
-                if (flag)
-                {
-                    things.Add(def);
-                }
-            }
-
-            return things;
-        }
-
-        protected override IEnumerable<ThingDef> AllGeneratableThingsDebugSub(ThingSetMakerParams parms)
-        {
-            List<ThingDef> list = new List<ThingDef>();
-            foreach (PawnKindDef def in ThingSetMaker_Animal.allowedGeneratedList())
-            {
-                list.Add((def.race));
-            }
-
-            return list;
         }
     }
 }

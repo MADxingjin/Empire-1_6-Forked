@@ -51,15 +51,11 @@ namespace FactionColonies.util
             }
 
             WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldSettlementDef>.GetNamed(settlementType.defName));
-            settlement.Tile = tile;
-
-            settlement.Name = settlementType.getSettlementTypeExtension().getSettlementName();
+            settlement.PostPostMake(tile);
 
             settlement.SetFaction(faction);
             Find.WorldObjects.Add(settlement);
 
-            //TODO: settlement resources should be initialized with bonuses based on biome, hilliness, and settlement type
-            //create settlement data for world object
             if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
                 settlement.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
             if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
