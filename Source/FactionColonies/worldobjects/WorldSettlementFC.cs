@@ -659,7 +659,7 @@ namespace FactionColonies
                 if (resource.isTithe == false)
                 {
                     //if resource is not paid by tithe
-                    income += resource.production * FCSettings.silverPerResource;
+                    income += resource.totalProduction * FCSettings.silverPerResource;
                 }
             }
 

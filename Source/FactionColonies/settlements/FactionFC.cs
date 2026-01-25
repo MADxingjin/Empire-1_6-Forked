@@ -215,7 +215,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref techLevel, "techLevel");
             Scribe_Values.Look(ref factionIconPath, "factionIconPath", "Base");
 
-            Scribe_Collections.Look(ref settlements, "settlements", LookMode.Deep);
+            Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
