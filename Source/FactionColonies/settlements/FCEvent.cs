@@ -724,10 +724,6 @@ namespace FactionColonies
         public WorldSettlementFC settlementFCDefending;
         public bool isMilitaryEvent;
 
-        // Orbital Platform specific fields
-        public bool isOrbitalPlatform = false;
-        public OrbitalPlatformTier orbitalTier = OrbitalPlatformTier.Basic;
-
         public WorldSettlementDef settlementToCreate = null;
         public FCEvent()
         {
@@ -818,10 +814,6 @@ namespace FactionColonies
             Scribe_References.Look(ref militaryForceDefendingFaction, "militaryForceDefendingFaction");
             Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
             Scribe_Values.Look(ref isMilitaryEvent, "isMilitaryEvent");
-
-            // Orbital Platform specific fields
-            Scribe_Values.Look(ref isOrbitalPlatform, "isOrbitalPlatform", false);
-            Scribe_Values.Look(ref orbitalTier, "orbitalTier", OrbitalPlatformTier.Basic);
 
             Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
         }

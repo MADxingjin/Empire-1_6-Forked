@@ -116,9 +116,13 @@ namespace FactionColonies
         }
         public override TaxDeliveryMode getTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
-            // Force drop pods for orbital platform settlements
+            // Force drop pods or shuttles for orbital platform settlements
             if (sourceTile != PlanetTile.Invalid)
             {
+                if (ModsConfig.RoyaltyActive && canUseShuttle)
+                {
+                    return TaxDeliveryMode.Shuttle;
+                }
                 return TaxDeliveryMode.DropPod;
             }
 

@@ -46,7 +46,6 @@ namespace FactionColonies
         }
         /// <summary>
         /// Determines if the given tile is a valid location for a new settlement of this type.
-        /// <para>Assumes that the incoming tile is on the surface layer.</para>
         /// </summary>
         /// <param name="tile">The PlanetTile to check.</param>
         /// <param name="reason">A string stating the reason this tile is not valid.</param>
