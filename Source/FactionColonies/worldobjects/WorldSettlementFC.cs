@@ -805,9 +805,9 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                if (resource.production > highest)
+                if (resource.totalProduction > highest)
                 {
-                    highest = resource.production;
+                    highest = resource.totalProduction;
                     highestResource = resource;
                 }
             }
@@ -1054,7 +1054,7 @@ namespace FactionColonies
             {
                 if (resource.isTithe)
                 {
-                    titheVal += resource.production * FCSettings.silverPerResource;
+                    titheVal += resource.totalProduction * FCSettings.silverPerResource;
                 }
             }
 
@@ -1112,7 +1112,7 @@ namespace FactionColonies
                 else
                 {
                     //if resource is paying via silver
-                    silver += (int)(resource.production * FCSettings.silverPerResource); //Add randomness?
+                    silver += (int)(resource.totalProduction * FCSettings.silverPerResource); //Add randomness?
                 }
             }
         }
@@ -1213,7 +1213,7 @@ namespace FactionColonies
 
                     List<Thing> tmpList;
 
-                    double production = resource.production;
+                    double production = resource.totalProduction;
                     production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
                     int assignedWorkers = resource.assignedWorkers;
 

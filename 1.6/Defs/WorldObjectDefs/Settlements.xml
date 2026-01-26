@@ -109,7 +109,9 @@
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementBuildings" />
     </comps>
 	<modExtensions>
-		<li Class="FactionColonies.SettlementTypeExtension_Orbital" />
+		<li Class="FactionColonies.SettlementTypeExtension_Orbital">
+			<constructionDays>8</constructionDays>
+		</li>
 	</modExtensions>
   </FactionColonies.WorldSettlementDef>
   

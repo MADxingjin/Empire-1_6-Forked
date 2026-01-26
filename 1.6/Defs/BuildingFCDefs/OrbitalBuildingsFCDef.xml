@@ -26,7 +26,7 @@
 			<li>asteroidMiningPlatform</li>
 		</traits>
 		<upkeep>400</upkeep>
-		<iconPath>GUI/Buildings/Orbital/AsteroidMiningPlatform</iconPath>
+		<iconPath>GUI/Buildings/Orbital/asteroidMining</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
@@ -40,7 +40,7 @@
 			<li>solarCollectionArray</li>
 		</traits>
 		<upkeep>650</upkeep>
-		<iconPath>GUI/Buildings/Orbital/solarCollectionArray</iconPath>
+		<iconPath>GUI/Buildings/Orbital/orbitalSolarArray</iconPath>
 	</FactionColonies.BuildingFCDef>
 
 </Defs>

@@ -89,9 +89,9 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in settlement.Resources)
             {
-                if (resource.production > highest)
+                if (resource.totalProduction > highest)
                 {
-                    highest = resource.production;
+                    highest = resource.totalProduction;
                     resourceKey = resource.def.defName;
                 }
             }

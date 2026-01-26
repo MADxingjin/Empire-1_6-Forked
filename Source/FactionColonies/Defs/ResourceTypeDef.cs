@@ -193,8 +193,6 @@ namespace FactionColonies
         List<ResourceThingCategoryDefRestriction> thingCategoryAllowList = new List<ResourceThingCategoryDefRestriction>();
         List<ThingCategoryDef> thingCategoryBlockList = new List<ThingCategoryDef>();
 
-        //TODO: make sure this part actually works. Game code gets stuff categories through stuff like StuffCategoryDefOf.xxx. I'm not sure
-        //      if you can just slap 'xxx' into an xml node called "StuffCategoryDef" and call it a day. Might need to do some stuff with defNames.
         List<StuffCategoryDef> stuffCategoryAllowList = new List<StuffCategoryDef>();
         List<StuffCategoryDef> stuffCategoryBlockList = new List<StuffCategoryDef>();
 

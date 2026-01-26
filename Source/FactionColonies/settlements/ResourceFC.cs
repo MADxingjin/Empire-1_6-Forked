@@ -257,7 +257,7 @@ namespace FactionColonies
             };
             if (def.isPoolResource)
             {
-                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(production, settlement);
+                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(totalProduction, settlement);
             }
             return pool;
         }

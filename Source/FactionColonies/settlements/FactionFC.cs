@@ -1092,7 +1092,7 @@ namespace FactionColonies
 
                 for (int k = 0; k < settlements.Count(); k++)
                 {
-                    resource += (int)(settlements[k].getResource(rdisplay.resourceDef)?.production ?? 0);
+                    resource += (int)(settlements[k].getResource(rdisplay.resourceDef)?.totalProduction ?? 0);
                 }
 
                 rdisplay.amount = resource;
