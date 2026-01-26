@@ -65,9 +65,8 @@ namespace FactionColonies
         {
             var worldGrid = Find.WorldGrid;
             var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
-            PlanetTile orbitalTile = new PlanetTile(tile.tileId, worldGrid.Orbit);
 
-            if (existingObjectTiles.Contains(orbitalTile))
+            if (existingObjectTiles.Contains(tile))
             {
                 reason?.Append("OrbitalTileOccupied".Translate());
                 return false;

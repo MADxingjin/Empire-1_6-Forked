@@ -33,6 +33,8 @@ namespace FactionColonies
         public List<ResearchProjectDef> researchProjects = new List<ResearchProjectDef>();
         public TechLevel techLevel = TechLevel.Undefined;
 
+        public List<PlanetLayerDef> planetLayers = new List<PlanetLayerDef>();
+
         /// <summary>
         /// Entirely flavor. Determines whether time to create is labeled in menus as "Construction Time" or "Travel Time".
         /// </summary>

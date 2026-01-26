@@ -35,9 +35,16 @@ namespace FactionColonies
         private static readonly int offset = 8;
         private Vector2 scrollPosition = Vector2.zero;
         private static readonly int rowHeight = 90;
-        
+
         // Filter state
-        private BuildingFilter currentFilter = BuildingFilter.All;
+        //private BuildingFilter currentFilter = BuildingFilter.All;
+        /* To deal with a variable number of resources (and variable resources in general), we use an int for
+         * the filter. The value of the filter, and the corresponding label, are set in WorldObjectComp_SettlementBuildings
+         */
+        private int currentFilter = 0;
+        private int filterSize = 0;
+        private int filterRows = 2;
+        private const int filterButtonsPerRow = 6;
         private static readonly int filterButtonHeight = 25;
         private static readonly int filterRowHeight = 30;
         
@@ -83,40 +90,39 @@ namespace FactionColonies
             TopIcon = new Rect(15, topWindowHeight - 74, 64, 64);
             TopName = new Rect(15, 15, inRect.width - 30, 30);
             TopDescription = new Rect(95, topWindowHeight - 74, inRect.width - 110, 64);
-            FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * 2 + 5);
+            FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * filterRows + 5);
         }
 
         private void DrawFilterButtons(Rect inRect)
         {
             // Define filter categories
-            var filters = new[]
+            /*var filters = new[]
             {
                 BuildingFilter.All,
                 BuildingFilter.Happiness,
+                BuildingFilter.Military,
+                BuildingFilter.Basetax,
+                BuildingFilter.Workers,
                 BuildingFilter.Food,
                 BuildingFilter.Weapons,
                 BuildingFilter.Apparel,
                 BuildingFilter.Research,
                 BuildingFilter.Medicine,
-                BuildingFilter.Power,
-                BuildingFilter.Military,
-                BuildingFilter.Basetax,
-                BuildingFilter.Workers
-            };
+                BuildingFilter.Power
+            };*/
 
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
             // Calculate button dimensions - 6 per row to fit all 11 filters in 2 rows
-            int buttonsPerRow = 6;
-            float buttonWidth = (FilterArea.width - 10) / buttonsPerRow;
+            float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
-            for (int i = 0; i < filters.Length; i++)
+            for (int i = 0; i < filterSize; i++)
             {
-                int row = i / buttonsPerRow;
-                int col = i % buttonsPerRow;
+                int row = i / filterButtonsPerRow;
+                int col = i % filterButtonsPerRow;
                 
                 Rect buttonRect = new Rect(
                     FilterArea.x + 5 + (col * buttonWidth),
@@ -125,7 +131,7 @@ namespace FactionColonies
                     buttonHeight
                 );
 
-                bool isSelected = currentFilter == filters[i];
+                bool isSelected = currentFilter == i;
                 
                 // Draw button background
                 if (isSelected)
@@ -139,7 +145,7 @@ namespace FactionColonies
                     // Draw normal button background
                     if (Widgets.ButtonInvisible(buttonRect))
                     {
-                        currentFilter = filters[i];
+                        currentFilter = i;
                         ApplyFilter();
                     }
                     Widgets.DrawAtlas(buttonRect, Widgets.ButtonBGAtlas);
@@ -149,14 +155,14 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Color textColor = isSelected ? Color.white : Color.white;
                 GUI.color = textColor;
-                Widgets.Label(buttonRect, filters[i].ToString());
+                Widgets.Label(buttonRect, settlement.BuildingsComp.getLabelForFilter(i));
                 GUI.color = Color.white;
                 
                 // Handle click for selected buttons
                 if (isSelected && Widgets.ButtonInvisible(buttonRect))
                 {
                     // Allow clicking selected button to deselect (go back to All)
-                    currentFilter = BuildingFilter.All;
+                    currentFilter = 0;
                     ApplyFilter();
                 }
             }
@@ -180,79 +186,7 @@ namespace FactionColonies
 
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
-            if (currentFilter == BuildingFilter.All)
-                return true;
-
-            // Get the building's traits
-            if (building.traits == null || building.traits.Count == 0)
-                return false;
-
-            foreach (FCTraitEffectDef traitDef in building.traits)
-            {
-                ResourceBonuses rtd;
-                switch (currentFilter)
-                {
-                    case BuildingFilter.Happiness:
-                        if (traitDef.happinessLostBase != 0 || traitDef.happinessGainedBase != 0 || 
-                            Math.Abs(traitDef.happinessLostMultiplier - 1.0) > 0.001 || 
-                            Math.Abs(traitDef.happinessGainedMultiplier - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Food:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Food);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Weapons:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Weapons);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Apparel:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Apparel);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Research:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Research);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Medicine:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Medicine);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Power:
-                        rtd = traitDef.getTraitResource(ResourceTypeDefOf.RTD_Power);
-                        if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Military:
-                        if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Basetax:
-                        if (traitDef.taxBasePercentage != 0 || traitDef.taxBaseRandomModifier != 0)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Workers:
-                        if (traitDef.workerBaseMax != 0 || traitDef.workerBaseOverMax != 0 || traitDef.workerBaseCost != 0)
-                            return true;
-                        break;
-                }
-            }
-
-            return false;
+            return settlement.BuildingsComp.filterBuilding(currentFilter, building);
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -438,6 +372,9 @@ namespace FactionColonies
             this.settlement = settlement;
             this.buildingSlot = buildingSlot;
             buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
+
+            filterSize = settlement.BuildingsComp.getFilterSize();
+            filterRows = (int)Math.Ceiling((double)filterSize / (double)filterButtonsPerRow);
         }
     }
 }

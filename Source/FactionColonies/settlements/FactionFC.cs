@@ -78,6 +78,8 @@ namespace FactionColonies
         public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
         public List<ResourceDisplay> FactionResources => factionResources;
 
+        public List<PlanetLayerDef> layersForTilePicker = null;
+
         //Update
         public int nextSettlementFCID = 1;
         public int nextMercenarySquadID = 1;

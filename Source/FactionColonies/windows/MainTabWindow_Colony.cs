@@ -221,45 +221,14 @@ namespace FactionColonies
             Faction gfaction = ColonyUtil.getPlayerColonyFaction();
             if (gfaction != null)
             {
-                // Check if orbital research is unlocked
-                bool canCreateOrbital = CanCreateOrbitalPlatforms();
-                
-                if (canCreateOrbital)
+                if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
                 {
-                    // Show dropdown button when orbital research is unlocked and present Orbital and Land Colony options :D
-                    if (Widgets.ButtonText(button, "CreateNewColony".Translate() + " ▼"))
-                    {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>
-                        {
-                            new FloatMenuOption("Create Land Colony", delegate
-                            {
-                                Find.WindowStack.Add(new CreateColonyWindowFc());
-                                //Move player to world map
-                                Find.World.renderer.wantedMode = WorldRenderMode.Planet;
-                                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                            }),
-                            new FloatMenuOption("Create Orbital Colony", delegate
-                            {
-                                Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
-                            })
-                        };
-                        
-                        FloatMenu floatMenu = new FloatMenu(options);
-                        Find.WindowStack.Add(floatMenu);
-                    }
-                }
-                else
-                {
-                    // Show regular button when orbital research is not unlocked
-                    if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
-                    {
-                        Find.WindowStack.Add(new CreateColonyWindowFc());
+                    Find.WindowStack.Add(new CreateColonyWindowFc());
 
-                        //Move player to world map
-                        Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+                    //Move player to world map
+                    Find.World.renderer.wantedMode = WorldRenderMode.Planet;
 
-                        Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                    }
+                    Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
                 }
             }
             else //create new faction
@@ -284,13 +253,6 @@ namespace FactionColonies
                     }
                 }
             }
-        }
-
-        // Add the method to check orbital research
-        private bool CanCreateOrbitalPlatforms()
-        {
-            var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
-            return research != null && research.IsFinished;
         }
 
         private void DrawTabFaction(Rect inRect)

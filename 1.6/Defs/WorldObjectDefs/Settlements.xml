@@ -42,6 +42,9 @@
 			<resourceDef>RTD_Medicine</resourceDef>
 		</li>
 	</resources>
+	<planetLayers>
+		<li>Surface</li>
+	</planetLayers>
     <comps>
       <li Class="WorldObjectCompProperties_TradeRequest" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
@@ -54,7 +57,7 @@
   </FactionColonies.WorldSettlementDef>
   
   <!-- Orbital Settlements -->
-  <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Orbital" ParentName="WorldSettlementDefBase">
+  <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Orbital" ParentName="WorldSettlementDefBase" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital</defName>
     <label>basic orbital colony</label>
     <description>Standard orbital construction capabilities</description>
@@ -97,6 +100,9 @@
 	<researchProjects>
 		<li>OrbitalConstruction</li>
 	</researchProjects>
+	<planetLayers>
+		<li>Orbit</li>
+	</planetLayers>
     <comps>
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementMilitary" />
@@ -107,7 +113,7 @@
 	</modExtensions>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Logistics</defName>
     <label>logistics orbital colony</label>
     <description>50% faster tax delivery and special buildings</description>
@@ -116,7 +122,7 @@
 	</researchProjects>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Advanced</defName>
     <label>advanced orbital colony</label>
     <description>25% lower base construction cost, larger size</description>
@@ -125,7 +131,7 @@
 	</researchProjects>
   </FactionColonies.WorldSettlementDef>
   
-  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital">
+  <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Glitter</defName>
     <label>glitterworld orbital colony</label>
     <description>Specialized production buildings with bonuses</description>

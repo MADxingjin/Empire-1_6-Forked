@@ -15,6 +15,23 @@ namespace FactionColonies.util
                 return false;
             }
 
+            if (settlementdef.planetLayers.Count == 0)
+            {
+                if (tile.Layer != Find.WorldGrid.Surface)
+                {
+                    reason?.Append("InvalidPlanetLayer".Translate());
+                    return false;
+                }
+            }
+            else
+            {
+                if (!settlementdef.planetLayers.Contains(tile.Layer.Def))
+                {
+                    reason?.Append("InvalidPlanetLayer".Translate());
+                    return false;
+                }
+            }
+
             if (!(settlementdef.GetModExtension<SettlementTypeExtension>().tileIsValidForSettlement(tile, reason)))
             {
                 return false;

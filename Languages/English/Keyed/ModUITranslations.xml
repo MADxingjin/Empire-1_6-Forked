@@ -102,6 +102,11 @@
     <WillBeConstructedIn>will be constructed in</WillBeConstructedIn>
     <BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
     <BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
+	<BuildingFilterAll>All</BuildingFilterAll>
+	<BuildingFilterHappiness>Happiness</BuildingFilterHappiness>
+	<BuildingFilterBasetax>Base Tax</BuildingFilterBasetax>
+	<BuildingFilterWorkers>Workers</BuildingFilterWorkers>
+	<BuildingFilterMilitary>Military</BuildingFilterMilitary>
     
     <!-- Building Demolition -->
     <FCDemolish>Demolish</FCDemolish>

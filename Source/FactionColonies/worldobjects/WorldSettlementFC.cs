@@ -1081,6 +1081,21 @@ namespace FactionColonies
             return res;
         }
 
+        public ResourceFC getResourceByIndex(int index)
+        {
+            if (index >= resources.Count || index < 0)
+            {
+                return null;
+            }
+            for (int i = 0; i < resources.Count; i++)
+            {
+                if (i == index)
+                    return resources[i];
+            }
+            LogUtil.Error($"Reached end of WorldSettmentFC.getResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
+            return null;
+        }
+
 
         public void taxProductionGoods() //update goods (TAX TAX TAX)   # Not used?
         {

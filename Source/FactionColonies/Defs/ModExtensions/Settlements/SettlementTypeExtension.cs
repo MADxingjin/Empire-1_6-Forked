@@ -66,7 +66,7 @@ namespace FactionColonies
             /* The default settlement type can't be built on impassable mountains. If you want to change this, then you
              * can define a new settlement type with its own SettlementTypeExtension, and then override this function
              */
-            if (tile.Tile.hilliness == Hilliness.Impassable)
+            if (tile.Tile?.hilliness == Hilliness.Impassable)
             {
                 reason?.Append("ImpassableMountains".Translate(parentDef.LabelCap));
                 return false;

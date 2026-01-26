@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections;
+using RimWorld.Planet;
+using Verse;
+
+namespace FactionColonies
+{
+    public class WorldDrawLayer_OrbitalTileSelector : WorldDrawLayer_RaycastableGrid
+    {
+        private bool activated;
+
+        private static bool ShouldActivate
+        {
+            get
+            {
+                if (Find.TilePicker.Active)
+                {
+                    return Find.World.GetComponent<FactionFC>()?.layersForTilePicker.Contains(Find.WorldGrid.Orbit.Def) ?? false;
+                }
+                return false;
+            }
+        }
+
+        public override bool ShouldRegenerate
+        {
+            get
+            {
+                if (activated == ShouldActivate)
+                {
+                    return base.ShouldRegenerate;
+                }
+                return true;
+            }
+        }
+
+        public override IEnumerable Regenerate()
+        {
+            activated = ShouldActivate;
+            if (activated)
+            {
+                foreach (object item in base.Regenerate())
+                {
+                    yield return item;
+                }
+            }
+            else
+            {
+                Dispose();
+                RegenerateWorldMeshColliders();
+            }
+        }
+    }
+}

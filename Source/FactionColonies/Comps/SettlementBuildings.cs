@@ -412,6 +412,116 @@ namespace FactionColonies
             }
             return upkeep;
         }
+        /// <summary>
+        /// Used by FCBuildingWindow to determine how many entries to the building filter there should be.
+        /// <para>0 = All</para>
+        /// <para>1 = Happiness</para>
+        /// <para>2 = Basetax</para>
+        /// <para>3 = Workers</para>
+        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
+        /// <para>5+ = each settlement resource in order</para>
+        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
+        /// </summary>
+        /// <returns></returns>
+        public int getFilterSize()
+        {
+            if (WorldSettlement.MilitaryComp != null)
+            {
+                return 5 + WorldSettlement.Resources.Count;
+            }
+            else
+            {
+                return 4 + WorldSettlement.Resources.Count;
+            }
+        }
+        /// <summary>
+        /// Used by FCBuildingWindow to determine what label to show for a given filter index.
+        /// <para>0 = All</para>
+        /// <para>1 = Happiness</para>
+        /// <para>2 = Basetax</para>
+        /// <para>3 = Workers</para>
+        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
+        /// <para>5+ = each settlement resource in order</para>
+        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
+        /// </summary>
+        /// <returns></returns>
+        public string getLabelForFilter(int i)
+        {
+            // edge-case protection
+            if (i < 0)
+                return null;
+            else if (i == 0)
+                return "BuildingFilterAll".Translate();
+            else if (i == 1)
+                return "BuildingFilterHappiness".Translate();
+            else if (i == 2)
+                return "BuildingFilterBasetax".Translate();
+            else if (i == 3)
+                return "BuildingFilterWorkers".Translate();
+            else if (i == 4 && WorldSettlement.MilitaryComp != null)
+                return "BuildingFilterMilitary".Translate();
+            else
+            {
+                return WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.label ?? "";
+            }
+        }
+
+        /// <summary>
+        /// Used by FCBuildingWindow to determine if a building should be filtered.
+        /// <para>0 = All</para>
+        /// <para>1 = Happiness</para>
+        /// <para>2 = Basetax</para>
+        /// <para>3 = Workers</para>
+        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
+        /// <para>5+ = each settlement resource in order</para>
+        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
+        /// </summary>
+        /// <returns></returns>
+        /* I feel like there has to be a better way to do this. But with a variable number of resources, we can't use an enum... */
+        public bool filterBuilding(int i, BuildingFCDef building)
+        {
+            if (i == 0 || i < 0)
+                return true;
+
+            // Get the building's traits
+            if (building.traits == null || building.traits.Count == 0)
+                return false;
+
+            foreach (FCTraitEffectDef traitDef in building.traits)
+            {
+                ResourceBonuses rtd;
+                if (i == 1)
+                {
+                    if (traitDef.happinessLostBase != 0 || traitDef.happinessGainedBase != 0 ||
+                        Math.Abs(traitDef.happinessLostMultiplier - 1.0) > 0.001 ||
+                        Math.Abs(traitDef.happinessGainedMultiplier - 1.0) > 0.001)
+                        return true;
+                }
+                else if (i == 2)
+                {
+                    if (traitDef.taxBasePercentage != 0 || traitDef.taxBaseRandomModifier != 0)
+                        return true;
+                }
+                else if (i == 3)
+                {
+                    if (traitDef.workerBaseMax != 0 || traitDef.workerBaseOverMax != 0 || traitDef.workerBaseCost != 0)
+                        return true;
+                }
+                else if (i == 4 && WorldSettlement.MilitaryComp != null)
+                {
+                    if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
+                        return true;
+                }
+                else
+                {
+                    rtd = traitDef.getTraitResource(WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def);
+                    if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
+                        return true;
+                }
+            }
+
+            return false;
+        }
 
         public override void CompTick()
         {

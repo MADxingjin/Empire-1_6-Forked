@@ -32,7 +32,7 @@ namespace FactionColonies
             {
                 return 0;
             }
-            Hilliness hilly = tile.Tile.hilliness;
+            Hilliness hilly = tile.Tile?.hilliness ?? Hilliness.Undefined;
             if (hilly == Hilliness.Undefined)
             {
                 return 0;
@@ -45,7 +45,7 @@ namespace FactionColonies
             {
                 return 1;
             }
-            Hilliness hilly = tile.Tile.hilliness;
+            Hilliness hilly = tile.Tile?.hilliness ?? Hilliness.Undefined;
             if (hilly == Hilliness.Undefined)
             {
                 return 1;

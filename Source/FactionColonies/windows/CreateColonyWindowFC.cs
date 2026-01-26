@@ -60,12 +60,31 @@ namespace FactionColonies
         //Pre-Opening
         public override void PreOpen()
         {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            faction.layersForTilePicker = currentSettlementType.planetLayers;
 
+            Find.TilePicker.StartTargeting_NewTemp(delegate (PlanetTile tile)
+            {
+                if (CanCreateSettlementHere())
+                {
+                    return true;
+                }
+                return false;
+            }, delegate (PlanetTile tile)
+            {
+                Find.World.renderer.wantedMode = WorldRenderMode.None;
+                GetTileData();
+            }, allowEscape: true, showRandomButton: false, showNextButton: false, canCancel: true);
         }
 
         //Drawing
         public override void DoWindowContents(Rect inRect)
         {
+            if (!Find.TilePicker.Active)
+            {
+                Close();
+                return;
+            }
             faction.roadBuilder.DrawPaths();
 
             GetTileData();
@@ -123,14 +142,14 @@ namespace FactionColonies
         private void GetTileData()
         {
             PlanetTile selectedTile = Find.WorldSelector.SelectedTile;
-            if (selectedTile.Valid && selectedTile.tileId != currentTileSelected)
+            if (selectedTile.Valid && selectedTile != currentTileSelected)
             {
-                currentTileSelected = selectedTile.tileId;
+                currentTileSelected = selectedTile;
             }
             else /* If a WorldObject is selected, then get the tile underneath it. */
             {
                 WorldObject obj = Find.WorldSelector.SingleSelectedObject;
-                if (obj != null && obj.Tile != null)
+                if (obj != null && obj.Tile != null && obj.Tile.Valid)
                 {
                     currentTileSelected = obj.Tile;
                 }
@@ -147,6 +166,7 @@ namespace FactionColonies
             }
             oldTileSelected = currentTileSelected;
             oldSettlementType = currentSettlementType;
+            LogUtil.Message($"Called GetTileData on tile {selectedTile}. Valid: {selectedTile.Valid} layer: {selectedTile.Layer} tileid: {selectedTile.tileId}");
 
             if (currentSettlementType.biomeResourceOverride != null)
             {
@@ -191,6 +211,7 @@ namespace FactionColonies
                     yield return new FloatMenuOption(settlementDef.LabelCap, delegate
                     {
                         currentSettlementType = settlementDef;
+                        Find.World.GetComponent<FactionFC>().layersForTilePicker = settlementDef.planetLayers;
                     });
                 }
             }
@@ -231,7 +252,7 @@ namespace FactionColonies
             Widgets.Label(new Rect(110, prodBox.y, 60, productionHeaders_height), "Modifier".Translate());
             Widgets.Label(new Rect(180, prodBox.y, 60, productionHeaders_height), "Final".Translate());
 
-            if (currentTileSelected != -1)
+            if (currentTileSelected != PlanetTile.Invalid)
             {
                 List<ResourceDisplay> resTypes = faction.FactionResources;
                 List<ResourceTypeDef> settlementResourceTypes = currentSettlementType.getResourceDefs();
@@ -380,20 +401,19 @@ namespace FactionColonies
             Widgets.DrawHighlight(new Rect(rect.x, rect.y + rect.height / 8, rect.width, rect.height * 3f / 8f));
             Widgets.Label(new Rect(rect.x, rect.y + rect.height / 16, rect.width, rect.height / 2f), text1);
 
-            //divider
-            //Widgets.DrawLineHorizontal(rect.x + 5, rect.y + rect.height / 2, rect.width - 10);
-
-            //Bottom Text - Gamers Rise Up
+            //Bottom Text
             Widgets.Label(new Rect(rect.x, rect.y + rect.height / 2, rect.width, rect.height / 2f), text2);
         }
 
-        public enum OrbitalPlatformTier
+        public override void PreClose()
         {
-            None,
-            Basic,
-            Logistics,
-            Advanced,
-            Glitter
+            base.PreClose();
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            if (faction != null)
+            {
+                faction.layersForTilePicker = null;
+            }
+            Find.TilePicker.StopTargeting();
         }
     }
 }
