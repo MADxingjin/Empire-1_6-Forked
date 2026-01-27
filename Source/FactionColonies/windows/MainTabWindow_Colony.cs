@@ -79,12 +79,12 @@ namespace FactionColonies
             }
             else
             {
-                Log.Message("WorldComp FactionFC is null - Something is wrong! Empire Mod");
+                LogUtil.Message("WorldComp FactionFC is null - Something is wrong!");
             }
  */
             if(faction == null)
             {
-                Log.Message("WorldComp FactionFC is null - Something is wrong! Empire Mod");
+                LogUtil.Error("WorldComp FactionFC is null - Something is wrong!");
                 return;
             }
             else
@@ -139,7 +139,7 @@ namespace FactionColonies
         {
             if (UIUpdateTimer < Find.TickManager.TicksAbs)
             {
-                UIUpdateTimer = Find.TickManager.TicksAbs + FactionColonies.updateUiTimer;
+                UIUpdateTimer = Find.TickManager.TicksAbs + FCSettings.updateUiTimer;
                 WindowUpdateFC();
             }
         }
@@ -218,7 +218,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Small;
 
-            Faction gfaction = FactionColonies.getPlayerColonyFaction();
+            Faction gfaction = ColonyUtil.getPlayerColonyFaction();
             if (gfaction != null)
             {
                 // Check if orbital research is unlocked
@@ -266,7 +266,7 @@ namespace FactionColonies
             {
                 if (Widgets.ButtonText(button, "Create New Faction"))
                 {
-                    FactionColonies.createPlayerColonyFaction();
+                    ColonyUtil.createPlayerColonyFaction();
                     faction = Find.World.GetComponent<FactionFC>(); // update reference
                     if (faction != null)
                     {
@@ -280,7 +280,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Error("FactionFC world component is still null after creating new faction!");
+                        LogUtil.Error("FactionFC world component is still null after creating new faction!");
                     }
                 }
             }
@@ -328,7 +328,6 @@ namespace FactionColonies
             if (Widgets.ButtonTextSubtle(new Rect(tabSize * 2, 0, tabSize, 30), "Bills".Translate(), 0f, 8f, SoundDefOf.Mouseover_Category, new Vector2(-1f, -1f)))
             {
                 Find.WindowStack.Add(new FCBillWindow());
-                //Log.Message("Try open bills");
 
             }
         }
@@ -387,27 +386,27 @@ namespace FactionColonies
                 {
                     case 0:
                         xspacingUpdated = xspacing + headerSpacing;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementName); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementName); };
                         break;
                     case 1:
                         xspacingUpdated = xspacing - 10;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementLevel); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementLevel); };
                         break;
                     case 2:
                         xspacingUpdated = xspacing;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementFreeWorkers); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementFreeWorkers); };
                         break;
                     case 3:
                         xspacingUpdated = xspacing - 4;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementUnrest); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementUnrest); };
                         break;
                     case 4:
                         xspacingUpdated = xspacing;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementLoyalty); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementLoyalty); };
                         break;
                     case 5:
                         xspacingUpdated = xspacing + 14;
-                        method = delegate { settlementList.Sort(FactionColonies.CompareSettlementProfit); };
+                        method = delegate { settlementList.Sort(CompareUtil.CompareSettlementProfit); };
                         break;
                     default:
                         varString = new GUIContent("ERROR");
@@ -519,8 +518,7 @@ namespace FactionColonies
                 Widgets.Label(new Rect(7, 32, 200, 40), faction.name);
             if (Widgets.ButtonImage(new Rect(210, 37, 20, 20), TexLoad.iconCustomize))
             { //if click faction customize button
-              //Log.Message("Faction customize clicked");
-                Faction fact = FactionColonies.getPlayerColonyFaction();
+                Faction fact = ColonyUtil.getPlayerColonyFaction();
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
                 else
@@ -631,7 +629,7 @@ namespace FactionColonies
 
                     if (buttons[i] == "Military".Translate())
                     {
-                        if (FactionColonies.getPlayerColonyFaction() == null)
+                        if (ColonyUtil.getPlayerColonyFaction() == null)
                         {
                             Messages.Message(new Message("NoFactionForMilitary".Translate(), MessageTypeDefOf.RejectInput));
                         }
@@ -701,7 +699,7 @@ namespace FactionColonies
                                 if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
                                 {
                                     Pawn playerNegotiator = Find.ColonistBar.GetColonistsInOrder()[0];
-                                    //Log.Message(playerNegotiator.Name + " Negotiator");
+                                    //LogUtil.Message(playerNegotiator.Name + " Negotiator");
 
                                     FCTrader_Research trader = new FCTrader_Research();
 
@@ -709,7 +707,7 @@ namespace FactionColonies
                                 }
                                 else
                                 {
-                                    Log.Error("Couldn't find any colonists to trade with");
+                                    LogUtil.Error("Couldn't find any colonists to trade with");
                                 }
                             }));
 
@@ -729,7 +727,7 @@ namespace FactionColonies
                                     IncidentParms parms = new IncidentParms
                                     {
                                         target = Find.CurrentMap,
-                                        faction = FactionColonies.getPlayerColonyFaction(),
+                                        faction = ColonyUtil.getPlayerColonyFaction(),
                                         points = 999,
                                         raidArrivalModeForQuickMilitaryAid = true,
                                         raidNeverFleeIndividual = true,

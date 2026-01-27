@@ -1,7 +1,8 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -168,7 +169,7 @@ namespace FactionColonies
             base.OnAcceptKeyPressed();
             faction.title = title;
             faction.name = name;
-            FactionColonies.getPlayerColonyFaction().Name = name;
+            ColonyUtil.getPlayerColonyFaction().Name = name;
             //Find.World.GetComponent<FactionFC>().name = name;
         }
 
@@ -247,8 +248,7 @@ namespace FactionColonies
                             }
                             else
                             {
-                                Log.Message("Empire Error - Zero xenotypes available for faction - Report this");
-                                Log.Message("Resetting xenotype filter");
+                                LogUtil.Error("Zero xenotypes available for faction - Report this. Resetting xenotype filter");
                                 faction.resetXenotypeFilter();
                             }
                         }));
@@ -260,7 +260,7 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
             {
-                Faction fact = FactionColonies.getPlayerColonyFaction();
+                Faction fact = ColonyUtil.getPlayerColonyFaction();
                 faction.title = title;
                 faction.name = name;
                 fact.Name = name;

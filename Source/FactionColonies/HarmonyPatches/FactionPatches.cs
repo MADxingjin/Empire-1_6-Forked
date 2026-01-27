@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
 using Verse;
 
 namespace FactionColonies
@@ -11,7 +12,7 @@ namespace FactionColonies
     {
         static void Postfix(ref IncidentWorker_RaidFriendly __instance, ref bool __result, IncidentParms parms)
         {
-            if (parms.faction == FactionColonies.getPlayerColonyFaction())
+            if (parms.faction == ColonyUtil.getPlayerColonyFaction())
             {
                 parms.faction = null;
                 __result = false;

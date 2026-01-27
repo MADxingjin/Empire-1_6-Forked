@@ -162,8 +162,6 @@ namespace FactionColonies
                         pawns.Add(merc);
                     }
                 }
-
-                //Log.Message(pawns.Count.ToString());
                 return pawns;
             }
         }
@@ -213,7 +211,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Warning($"Empire: Failed to create mercenary {k + 1}/30 during squad initiation.");
+                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 during squad initiation.");
                     }
                 }
             }
@@ -230,12 +228,12 @@ namespace FactionColonies
                     }
                     else
                     {
-                        Log.Warning($"Empire: Failed to create mercenary {k + 1}/30 for unit {outfit.units[k]?.name ?? "unknown"}.");
+                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 for unit {outfit.units[k]?.name ?? "unknown"}.");
                     }
                 }
             }
 
-            //Log.Message("count : " + mercenaries.Count().ToString());
+            LogUtil.Message($"initiateSquad mercenary count : {mercenaries.Count()}");
             //this.debugMercenarySquad();
             if (loadID == -1)
             {
@@ -303,7 +301,7 @@ namespace FactionColonies
 
             merc.squad = this;
             merc.settlement = settlement;
-            //Log.Message(newPawn.Name + "   State: Dead - " + newPawn.health.Dead + "    Apparel Count: " + newPawn.apparel.WornApparel.Count());
+            //LogUtil.Message($"createNewAnimal | {newPawn.Name}   State: Dead - {newPawn.health.Dead}    Apparel Count: {newPawn.apparel.WornApparel.Count()}");
             merc.pawn = newPawn;
         }
 
@@ -315,7 +313,7 @@ namespace FactionColonies
 
             if (race == null || !factionFc.raceFilter.Allows(raceChoice.race))
             {
-                raceChoice = FactionColonies.getPlayerColonyFaction().RandomPawnKind();
+                raceChoice = ColonyUtil.getPlayerColonyFaction().RandomPawnKind();
             }
 
             // Try to generate pawn with the requested kind
@@ -327,7 +325,7 @@ namespace FactionColonies
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (newPawn != null && newPawn.Faction == null)
                 {
-                    var empireFaction = FactionColonies.getPlayerColonyFaction();
+                    var empireFaction = ColonyUtil.getPlayerColonyFaction();
                     if (empireFaction != null)
                     {
                         newPawn.SetFaction(empireFaction);
@@ -336,13 +334,13 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Warning($"Empire: Failed to generate pawn with kind {raceChoice?.defName}: {ex.Message}");
+                LogUtil.Warning($"Failed to generate pawn with kind {raceChoice?.defName}: {ex.Message}");
             }
             
             // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing)
             if (newPawn == null)
             {
-                Log.Warning($"Empire: Pawn generation failed for {raceChoice?.defName}. Trying Baseliner fallback without faction.");
+                LogUtil.Warning($"Pawn generation failed for {raceChoice?.defName}. Trying Baseliner fallback without faction.");
                 try
                 {
                     var simpleRequest = new PawnGenerationRequest(
@@ -367,7 +365,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (newPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        var empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             newPawn.SetFaction(empireFaction);
@@ -376,14 +374,14 @@ namespace FactionColonies
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"Empire: Baseliner fallback also failed: {ex.Message}");
+                    LogUtil.Warning($"Baseliner fallback also failed: {ex.Message}");
                 }
             }
             
             // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
             if (newPawn == null)
             {
-                Log.Warning("Empire: All standard generation failed. Trying minimal fallback.");
+                LogUtil.Warning("All standard generation failed. Trying minimal fallback.");
                 try
                 {
                     var fallbackRequest = new PawnGenerationRequest(
@@ -407,7 +405,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (newPawn != null)
                     {
-                        var empireFaction = FactionColonies.getPlayerColonyFaction();
+                        var empireFaction = ColonyUtil.getPlayerColonyFaction();
                         if (empireFaction != null)
                         {
                             newPawn.SetFaction(empireFaction);
@@ -416,14 +414,14 @@ namespace FactionColonies
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Empire: Critical - all pawn generation attempts failed: {ex.Message}");
+                    LogUtil.Error($"Critical - all pawn generation attempts failed: {ex.Message}");
                 }
             }
             
             // Final check - if still null, we cannot proceed
             if (newPawn == null)
             {
-                Log.Error("Empire: Critical error - could not generate any pawn for mercenary squad. Skipping this mercenary.");
+                LogUtil.Error("Critical error - could not generate any pawn for mercenary squad. Skipping this mercenary.");
                 return;
             }
             
@@ -476,7 +474,7 @@ namespace FactionColonies
             }
             else
             {
-                Log.Warning("Empire: Failed to replace dead mercenary with new pawn.");
+                LogUtil.Warning("Failed to replace dead mercenary with new pawn.");
             }
         }
 
@@ -523,7 +521,7 @@ namespace FactionColonies
                         }
                         else
                         {
-                            Log.Warning($"Empire: Could not create mercenary for slot {count}.");
+                            LogUtil.Warning($"Could not create mercenary for slot {count}.");
                             break;
                         }
                     }
@@ -531,7 +529,7 @@ namespace FactionColonies
                     // Skip if we still don't have enough mercenaries
                     if (count >= mercenaries.Count || mercenaries[count]?.pawn == null)
                     {
-                        Log.Warning($"Empire: Skipping outfit slot {count} - no valid mercenary available.");
+                        LogUtil.Warning($"Skipping outfit slot {count} - no valid mercenary available.");
                         count++;
                         continue;
                     }
@@ -547,7 +545,7 @@ namespace FactionColonies
                         }
                         else
                         {
-                            Log.Warning($"Empire: Failed to create replacement pawn for slot {count}.");
+                            LogUtil.Warning($"Failed to create replacement pawn for slot {count}.");
                         }
                     }
                     
@@ -593,14 +591,14 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Something went wrong when outfitting a squad: " + e.Message);
+                    LogUtil.Error("Something went wrong when outfitting a squad: " + e.Message);
                     bool isNullOrEmpty = mercenaries.NullOrEmpty();
-                    Log.Error("Mercanaries NullOrEmpty: " + isNullOrEmpty);
+                    LogUtil.Error("Mercanaries NullOrEmpty: " + isNullOrEmpty);
 
                     if (isNullOrEmpty)
                     {
-                        Log.Error("Number of Mercs: " + mercenaries.Count);
-                        Log.Error("Any mercenary or pawn is null: " + mercenaries.Any(mercenary => mercenary?.pawn == null));
+                        LogUtil.Error("Number of Mercs: " + mercenaries.Count);
+                        LogUtil.Error("Any mercenary or pawn is null: " + mercenaries.Any(mercenary => mercenary?.pawn == null));
                     }
                 }
                 count++;
@@ -647,15 +645,15 @@ namespace FactionColonies
                     merc.pawn.equipment.AddEquipment(ThingMaker.MakeThing(weapon.def) as ThingWithComps);
                 }
 
-                if (FactionColonies.IsModLoaded("CETeam.CombatExtended"))
+                if (FCSettings.IsModLoaded("CETeam.CombatExtended"))
                 {
-                    //Log.Message("mod detected");
+                    LogUtil.Message("Combat Extended detected");
                     //CE is loaded
                     foreach (ThingComp comp in merc.pawn.AllComps)
                     {
                         if (comp.GetType().ToString() == "CombatExtended.CompInventory")
                         {
-                            Type typ = FactionColonies.returnUnknownTypeFromName(
+                            Type typ = GenUtil.returnUnknownTypeFromName(
                                 "CombatExtended.LoadoutPropertiesExtension");
 
                             //Method not static, so create instance of object and define the parameters to the method.
@@ -682,7 +680,7 @@ namespace FactionColonies
                     if (weapon.ParentHolder is Pawn_EquipmentTracker)
                     {
                         if ((((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
-                             FactionColonies.getPlayerColonyFaction() ||
+                             ColonyUtil.getPlayerColonyFaction() ||
                              ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
                              Find.FactionManager.OfPlayer) &&
                             ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Dead == false)
@@ -711,12 +709,12 @@ namespace FactionColonies
 
                 foreach (Apparel apparel in UsedApparelList)
                 {
-                    //Log.Message(apparel.ParentHolder.ToString());
-                    //Log.Message(apparel.ParentHolder.ParentHolder.ToString());
+                    //LogUtil.Message(apparel.ParentHolder.ToString());
+                    //LogUtil.Message(apparel.ParentHolder.ParentHolder.ToString());
                     if (apparel.ParentHolder is Pawn_ApparelTracker)
                     {
                         if ((((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
-                             FactionColonies.getPlayerColonyFaction() ||
+                             ColonyUtil.getPlayerColonyFaction() ||
                              ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
                              Find.FactionManager.OfPlayer) &&
                             ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Dead == false)
@@ -740,13 +738,10 @@ namespace FactionColonies
 
         public void debugMercenarySquad()
         {
+            LogUtil.MessageForce("Debug Mercenary Squad");
             foreach (Mercenary merc in mercenaries)
             {
-                Log.Message(merc.pawn.ToString());
-                Log.Message(merc.pawn.health.Dead.ToString());
-                Log.Message(merc.pawn.apparel.WornApparelCount.ToString());
-                Log.Message(merc.pawn.equipment.AllEquipmentListForReading.Count().ToString());
-                //Log.Message(pawn.Name + "   State: Dead - " + pawn.health.Dead + "    Apparel Count: " + pawn.apparel.WornApparel.Count());
+                LogUtil.MessageForce($"\t{merc.pawn.ToString()} \t{merc.pawn.health.Dead.ToString()} \t{merc.pawn.apparel.WornApparelCount} \t{merc.pawn.equipment.AllEquipmentListForReading.Count()}");
             }
         }
 

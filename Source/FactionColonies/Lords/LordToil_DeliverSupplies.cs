@@ -122,9 +122,9 @@ namespace FactionColonies
 						}
 					}
 				}
-				catch (System.Exception ex)
+				catch (Exception ex)
 				{
-					Log.Warning($"[FactionColonies] Error finding delivery cell: {ex.Message}. Using fallback position.");
+					LogUtil.Warning($"Error finding delivery cell: {ex.Message}. Using fallback position.");
 					deliveryCell = fallbackPos.IsValid ? fallbackPos : lord.Map.Center;
 				}
 				

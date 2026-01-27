@@ -11,7 +11,7 @@ namespace FactionColonies
         {
             if (__instance.IsMercenary())
             {
-                if (__instance.Faction != FactionColonies.getPlayerColonyFaction()) __instance.SetFaction(FactionColonies.getPlayerColonyFaction());
+                if (__instance.Faction != ColonyUtil.getPlayerColonyFaction()) __instance.SetFaction(ColonyUtil.getPlayerColonyFaction());
                 MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.returnSquadFromUnit(__instance);
                 if (squad != null)
                 {
@@ -20,7 +20,7 @@ namespace FactionColonies
                     {
                         if (squad.settlement != null)
                         {
-                            if (FactionColonies.Settings().deadPawnsIncreaseMilitaryCooldown)
+                            if (FCSettings.deadPawnsIncreaseMilitaryCooldown)
                             {
                                 squad.dead += 1;
                             }
@@ -35,7 +35,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    Log.Message("Mercenary Errored out. Did not find squad.");
+                    LogUtil.Warning("Mercenary Errored out. Did not find squad.");
                 }
 
                 __instance.equipment?.DestroyAllEquipment();

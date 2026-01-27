@@ -1,13 +1,14 @@
-﻿using System;
+﻿using FactionColonies.util;
+using HarmonyLib;
+using RimWorld;
+using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RimWorld;
-using Verse;
-using RimWorld.Planet;
 using UnityEngine;
-using HarmonyLib;
+using Verse;
 
 namespace FactionColonies
 {
@@ -35,7 +36,7 @@ namespace FactionColonies
                 {
                     foreach (Thing thing in map.listerThings.AllThings)
                     {
-                        if (thing.IsInAnyStorage() == true && thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, this) && !FactionColonies.canCraftItem(thing.def, true))
+                        if (thing.IsInAnyStorage() == true && thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, this) && !CraftUtil.canCraftItem(thing.def, true))
                         {
                             yield return thing;
                         }
@@ -54,7 +55,7 @@ namespace FactionColonies
         {
             Thing thing = toGive.SplitOff(countToGive);
 
-            Log.Message(thing.MarketValue + " added to research pool");
+            LogUtil.Message(thing.MarketValue + " added to research pool");
             factionfc.researchPointPool += thing.MarketValue;
             factionfc.tradedAmount += thing.MarketValue;
             thing.Destroy(DestroyMode.Vanish);
@@ -113,7 +114,7 @@ namespace FactionColonies
         {
             get
             {
-                return FactionColonies.getPlayerColonyFaction();
+                return ColonyUtil.getPlayerColonyFaction();
             }
         }
 
@@ -137,7 +138,7 @@ namespace FactionColonies
         public override bool HandlesThingDef(ThingDef thingDef)
         {
             FactionFC factionfc = Find.World.GetComponent<FactionFC>();
-            return !FactionColonies.canCraftItem(thingDef, true);
+            return !CraftUtil.canCraftItem(thingDef, true);
         }
     }
 }

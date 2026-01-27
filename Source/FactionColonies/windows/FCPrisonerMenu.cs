@@ -195,7 +195,7 @@ namespace FactionColonies
                                 planetName = settlement.planetName,
                                 goods = new List<Thing> { prisoner.prisoner },
                                 customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
-                                timeTillTrigger = Find.TickManager.TicksGame + FactionColonies.ReturnTicksToArrive(settlement.mapLocation, Find.AnyPlayerHomeMap.Tile)
+                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.mapLocation, Find.AnyPlayerHomeMap.Tile)
                         });
 
                         //reset window

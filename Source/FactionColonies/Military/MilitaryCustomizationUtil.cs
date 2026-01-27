@@ -64,7 +64,7 @@ namespace FactionColonies
                 
                 if (squads == null) return;
                 
-                //Log.Message("checking for errors" + Find.TickManager.TicksGame);
+                LogUtil.Message("MilitaryCustomizationUtil: checking for errors on tick " + Find.TickManager.TicksGame);
                 foreach (MilSquadFC squad in squads)
                 {
                     if (squad?.units == null) continue;
@@ -88,7 +88,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Error($"Empire: Error in checkMilitaryUtilForErrors: {ex.Message}");
+                LogUtil.Error($"Error in checkMilitaryUtilForErrors: {ex.Message}");
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace FactionColonies
                     if (squad.settlement != null)
                         settlementMilLevel = squad.settlement.settlementMilitaryLevel;
                     if (squad.outfit == null || !(squad.outfit.equipmentTotalCost >
-                                                  FactionColonies.calculateMilitaryLevelPoints(settlementMilLevel)))
+                                                  calculateMilitaryLevelPoints(settlementMilLevel)))
                         continue;
                     if (squad.settlement != null)
                     {
@@ -132,6 +132,17 @@ namespace FactionColonies
             get { return squads.Select(squadFC => squadFC.getLatestChanged).Prepend(0).Max(); }
         }
 
+        public static double calculateMilitaryLevelPoints(int MilitaryLevel)
+        {
+            double points = 500; //starting points at mil level 0
+            for (int i = 1; i <= MilitaryLevel; i++)
+            {
+                points += (500 * MilitaryLevel);
+            }
+
+            return points;
+        }
+
         public MercenarySquadFC returnSquadFromUnit(Pawn unit)
         {
             foreach (var squad in mercenarySquads.Where(squad => squad.AllDeployedMercenaryPawns.Contains(unit)))
@@ -139,7 +150,7 @@ namespace FactionColonies
                 return squad;
             }
 
-            Log.Message("Empire - MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
+            LogUtil.Message("MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
             return null;
         }
 
@@ -191,7 +202,7 @@ namespace FactionColonies
 
         public void attemptToAssignSquad(SettlementFC settlement, MilSquadFC squad)
         {
-            if (FactionColonies.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
+            if (calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
                 squad.equipmentTotalCost)
             {
                 if (squadExists(settlement))
@@ -226,7 +237,7 @@ namespace FactionColonies
 
             if (settlement.militarySquad == null)
             {
-                Log.Message("Empire - createMercenarySquad fail. Found squad is Null");
+                LogUtil.Warning("createMercenarySquad fail. Found squad is Null");
             }
 
             return findSquad(squad);

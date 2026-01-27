@@ -52,7 +52,7 @@ namespace FactionColonies
                 } 
                 else
                 {
-                    Log.Error("Failed to load icon for building: " + LabelCap + " at " + (iconPath ?? "nullPath") + "!");
+                    LogUtil.Error("Failed to load icon for building: " + LabelCap + " at " + (iconPath ?? "nullPath") + "!");
                     iconLoaded = TexLoad.questionmark;
                 }
                 return iconLoaded;

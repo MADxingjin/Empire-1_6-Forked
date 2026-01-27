@@ -1,7 +1,8 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -115,7 +116,7 @@ namespace FactionColonies
             //Settings button
             if (Widgets.ButtonImage(headerSettings, TexLoad.iconCustomize))
             {
-                Faction fact = FactionColonies.getPlayerColonyFaction();
+                Faction fact = ColonyUtil.getPlayerColonyFaction();
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
             }
@@ -339,49 +340,49 @@ namespace FactionColonies
             Widgets.Label(settlement_1, "Name");
             if (Widgets.ButtonInvisible(settlement_1))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementName);
+                faction.settlements.Sort(CompareUtil.CompareSettlementName);
             }
 
             Widgets.Label(settlement_2, "Level");
             if (Widgets.ButtonInvisible(settlement_2))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementLevel);
+                faction.settlements.Sort(CompareUtil.CompareSettlementLevel);
             }
 
             Widgets.Label(settlement_3, "Mil Level");
             if (Widgets.ButtonInvisible(settlement_3))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementMilitaryLevel);
+                faction.settlements.Sort(CompareUtil.CompareSettlementMilitaryLevel);
             }
 
             Widgets.Label(settlement_4, "Profit");
             if (Widgets.ButtonInvisible(settlement_4))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementProfit);
+                faction.settlements.Sort(CompareUtil.CompareSettlementProfit);
             }
 
             Widgets.Label(settlement_5, "Free Workers");
             if (Widgets.ButtonInvisible(settlement_5))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementFreeWorkers);
+                faction.settlements.Sort(CompareUtil.CompareSettlementFreeWorkers);
             }
 
             Widgets.Label(settlement_6, "Happiness");
             if (Widgets.ButtonInvisible(settlement_6))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementHappiness);
+                faction.settlements.Sort(CompareUtil.CompareSettlementHappiness);
             }
 
             Widgets.Label(settlement_7, "Loyalty");
             if (Widgets.ButtonInvisible(settlement_7))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementLoyalty);
+                faction.settlements.Sort(CompareUtil.CompareSettlementLoyalty);
             }
 
             Widgets.Label(settlement_8, "Unrest");
             if (Widgets.ButtonInvisible(settlement_8))
             {
-                faction.settlements.Sort(FactionColonies.CompareSettlementUnrest);
+                faction.settlements.Sort(CompareUtil.CompareSettlementUnrest);
             }
 
 

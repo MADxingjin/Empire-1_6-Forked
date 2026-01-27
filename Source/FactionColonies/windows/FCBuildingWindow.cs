@@ -57,8 +57,8 @@ namespace FactionColonies
         private static bool hasSavedSize = false;
         
         public override Vector2 InitialSize => new Vector2(
-            FactionColonies.Settings().buildingWindowWidth, 
-            FactionColonies.Settings().buildingWindowHeight
+            FCSettings.buildingWindowWidth,
+            FCSettings.buildingWindowHeight
         );
         
         // Override PreClose to save the current window size
@@ -67,9 +67,8 @@ namespace FactionColonies
             base.PreClose();
             
             // Save the current window size to settings
-            var settings = FactionColonies.Settings();
-            settings.buildingWindowWidth = windowRect.width;
-            settings.buildingWindowHeight = windowRect.height;
+            FCSettings.buildingWindowWidth = windowRect.width;
+            FCSettings.buildingWindowHeight = windowRect.height;
             
             // Write the settings to disk
             LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
@@ -441,7 +440,7 @@ namespace FactionColonies
                 }
             }
 
-            buildingList.Sort(FactionColonies.CompareBuildingDef);
+            buildingList.Sort(CompareUtil.CompareBuildingDef);
 
             // Initialize filtered list with all buildings
             filteredBuildingList.AddRange(buildingList);

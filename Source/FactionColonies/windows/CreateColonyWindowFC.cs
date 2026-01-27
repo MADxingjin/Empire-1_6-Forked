@@ -22,7 +22,7 @@ namespace FactionColonies
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
 
-        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.traits, Operation.Multiplication) * (FactionColonies.silverToCreateSettlement + (500 * (faction.settlements.Count() + faction.settlementCaravansList.Count())) + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.traits, Operation.Addition))));
+        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.traits, Operation.Multiplication) * (FCSettings.silverToCreateSettlement + (500 * (faction.settlements.Count() + faction.settlementCaravansList.Count())) + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.traits, Operation.Addition))));
 
         public CreateColonyWindowFc()
         {
@@ -113,27 +113,27 @@ namespace FactionColonies
 
             if (orbitalWorldObjectDef == null)
             {
-                Log.Warning("FCOrbitalPlatform WorldObjectDef not found. This mod may not be properly installed.");
+                LogUtil.Warning("FCOrbitalPlatform WorldObjectDef not found. This mod may not be properly installed.");
                 Messages.Message("Could not find orbital platform definition. Check mod installation.", MessageTypeDefOf.RejectInput, false);
                 return;
             }
 
-            Log.Message($"=== USING CUSTOM ORBITAL PLATFORM DEF ===");
-            Log.Message($"Using def: {orbitalWorldObjectDef.defName}");
-            Log.Message($"ExpandingIconTexture: {orbitalWorldObjectDef.expandingIconTexture}");
+            LogUtil.Message($"=== USING CUSTOM ORBITAL PLATFORM DEF ===");
+            LogUtil.Message($"Using def: {orbitalWorldObjectDef.defName}");
+            LogUtil.Message($"ExpandingIconTexture: {orbitalWorldObjectDef.expandingIconTexture}");
 
             // DEBUG: Check if the texture actually loads
-            Log.Message($"=== TEXTURE DEBUG ===");
+            LogUtil.Message($"=== TEXTURE DEBUG ===");
             var testTexture = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/SettlementPlatform", false);
-            Log.Message($"Can load SettlementPlatform texture: {testTexture != null}");
+            LogUtil.Message($"Can load SettlementPlatform texture: {testTexture != null}");
 
             if (testTexture != null)
             {
-                Log.Message($"SettlementPlatform texture name: {testTexture.name}");
+                LogUtil.Message($"SettlementPlatform texture name: {testTexture.name}");
             }
             else
             {
-                Log.Warning("SettlementPlatform texture not found! Checking available textures...");
+                LogUtil.Warning("SettlementPlatform texture not found! Checking available textures...");
                 
                 // Test other known expanding textures
                 var availableTextures = new string[]
@@ -147,15 +147,15 @@ namespace FactionColonies
                 foreach (var texPath in availableTextures)
                 {
                     var tex = ContentFinder<Texture2D>.Get(texPath, false);
-                    Log.Message($"  {texPath}: {tex != null}");
+                    LogUtil.Message($"  {texPath}: {tex != null}");
                 }
             }
 
             // DEBUG: Check the def properties
-            Log.Message($"ExpandingIcon enabled: {orbitalWorldObjectDef.expandingIcon}");
-            Log.Message($"UseDynamicDrawer: {orbitalWorldObjectDef.useDynamicDrawer}");
-            Log.Message($"ExpandingIconDrawSize: {orbitalWorldObjectDef.expandingIconDrawSize}");
-            Log.Message($"FullyExpandedInSpace: {orbitalWorldObjectDef.fullyExpandedInSpace}");
+            LogUtil.Message($"ExpandingIcon enabled: {orbitalWorldObjectDef.expandingIcon}");
+            LogUtil.Message($"UseDynamicDrawer: {orbitalWorldObjectDef.useDynamicDrawer}");
+            LogUtil.Message($"ExpandingIconDrawSize: {orbitalWorldObjectDef.expandingIconDrawSize}");
+            LogUtil.Message($"FullyExpandedInSpace: {orbitalWorldObjectDef.fullyExpandedInSpace}");
 
             // Find an empty orbital tile for the platform
             PlanetTile orbitalTile = FindEmptyOrbitalTile();
@@ -182,12 +182,12 @@ namespace FactionColonies
                 if (labelField != null)
                 {
                     labelField.SetValue(orbitalPlatform, platformName);
-                    Log.Message($"Set platform name to: {platformName}");
+                    LogUtil.Message($"Set platform name to: {platformName}");
                 }
             }
             catch (System.Exception ex)
             {
-                Log.Warning($"Could not set orbital platform name: {ex.Message}");
+                LogUtil.Warning($"Could not set orbital platform name: {ex.Message}");
             }
 
             // Add it to the world
@@ -205,7 +205,7 @@ namespace FactionColonies
                 Find.WorldSelector.Select(orbitalPlatform);
             }
 
-            Log.Message($"=== ORBITAL PLATFORM CREATION COMPLETE ===");
+            LogUtil.Message($"=== ORBITAL PLATFORM CREATION COMPLETE ===");
         }
 
         private int ResolveTargetTile()
@@ -253,7 +253,7 @@ namespace FactionColonies
                 currentHillinessSelected = DefDatabase<BiomeResourceDef>.GetNamed(Find.WorldGrid[currentTileSelected].hilliness.ToString());
                 if (currentBiomeSelected.canSettle && currentHillinessSelected.canSettle && currentTileSelected != 1)
                 {
-                    timeToTravel = FactionColonies.ReturnTicksToArrive(faction.capitalLocation, currentTileSelected);
+                    timeToTravel = TravelUtil.ReturnTicksToArrive(faction.capitalLocation, currentTileSelected);
                 }
                 else
                 {

@@ -65,7 +65,7 @@ namespace FactionColonies
 
                 if (modContentPackCached == null)
                 {
-                    Log.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", releaseDay + releaseMonth + releaseYear);
+                    LogUtil.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", releaseDay + (releaseMonth*10) + (releaseYear*1000));
                 }
 
                 return modContentPackCached;
@@ -243,7 +243,7 @@ namespace FactionColonies
 
             if (patchNoteDefs.NullOrEmpty())
             {
-                Log.Error($"Could not find any PatchNoteDefs for {modId}!");
+                LogUtil.Error($"Could not find any PatchNoteDefs for {modId}!");
                 return null;
             }
 

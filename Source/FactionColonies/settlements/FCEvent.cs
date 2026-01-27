@@ -16,7 +16,7 @@ namespace FactionColonies
         {
             float baseChance = option.baseChanceOfSuccess;
             int roll = Rand.Range(1, 100);
-            //Log.Message(roll.ToString());
+            //LogUtil.Message(roll.ToString());
 
             FCEvent tempEvent = new FCEvent(true);
 
@@ -164,7 +164,6 @@ namespace FactionColonies
                     for (int i = 0; i < eventDef.weight; i++)
                     {
                         tmpEventList.Add(eventDef);
-                        //Log.Message(eventDef.label);
                     }
                 }
             }
@@ -209,12 +208,10 @@ namespace FactionColonies
                 {
                     int numSettlements = tempEvent.def.rangeSettlementsAffected.RandomInRange;
 
-                    //Log.Message("Pre- " + numSettlements);
                     //if random number of settlements more than total settlements, reset number settlements.
                     if (numSettlements > Find.World.GetComponent<FactionFC>().settlements.Count())
                     {
                         numSettlements = Find.World.GetComponent<FactionFC>().settlements.Count();
-                        //Log.Message("Post- " + numSettlements);
                     }
 
                     //List of map locations
@@ -259,18 +256,11 @@ namespace FactionColonies
                     else
                     {
                         tempEvent.settlementTraitLocations.AddRange(SettlementTraitLocations);
-                        //Log.Message(tempEvent.settlementTraitLocations.Count().ToString());
                     }
-
-                    //foreach(int loc in tempEvent.settlementTraitLocations)
-                    //{
-                    //Log.Message("Location: " + loc);
-                    //}
                 }
 
                 //if event has options
                 //open event option window
-                //Log.Message("option count: " + tempEvent.def.options.Count().ToString());
                 if (tempEvent.def.options.Count > 0 && tempEvent.def.activateAtStart)
                 {
                     Find.WindowStack.Add(new FCOptionWindow(tempEvent.def, tempEvent));
@@ -278,7 +268,7 @@ namespace FactionColonies
                 }
             } catch(Exception e)
             {
-                Log.Error($"Couldn't create Random Event with def: {def?.defName ?? "NULL"} and list of size: {SettlementTraitLocations?.Count ?? 0}: {e.Message}");
+                LogUtil.Error($"Couldn't create Random Event with def: {def?.defName ?? "NULL"} and list of size: {SettlementTraitLocations?.Count ?? 0}: {e.Message}");
             }
 
             return tempEvent;
@@ -290,7 +280,6 @@ namespace FactionColonies
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             for (int i = 0; i < events.Count; i++)
             {
-                //Log.Message(events[i].timeTillTrigger.ToString());
                 if (events[i].timeTillTrigger > Find.TickManager.TicksGame) continue;
                 //Make custom event functions here
 
@@ -326,11 +315,11 @@ namespace FactionColonies
                             // Regular settlement creation
                             if (Find.World.info.name == evt.planetName)
                             {
-                                FactionColonies.createPlayerColonySettlement(evt.location, true, evt.planetName);
+                                ColonyUtil.createPlayerColonySettlement(evt.location, true, evt.planetName);
                             }
                             else
                             {
-                                FactionColonies.createPlayerColonySettlement(evt.location, false, evt.planetName);
+                                ColonyUtil.createPlayerColonySettlement(evt.location, false, evt.planetName);
                                 faction.createSettlementQueue.Add(new SettlementSoS2Info(evt.planetName, evt.location));
                             }
                         }
@@ -386,7 +375,9 @@ namespace FactionColonies
                         //Process military event
                         if (evt.planetName == null)
                         {
-                            Log.Message(
+                            //TODO: this is a debugging message, but since we show it to the player, it'd be nice to have
+                            // a localization key for it
+                            LogUtil.Warning(
                                 "temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.");
                             Messages.Message(
                                 "temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.",
@@ -407,7 +398,6 @@ namespace FactionColonies
                 }
                 else //if undefined event
                 {
-                    // Log.Message(temp.def.label + " " + temp.def.randomThingValue + " value:thing " + temp.def.randomThingType);
                     if (evt.def.randomThingValue > 0 && evt.def.randomThingType != "")
                     {
                         List<Thing> list = PaymentUtil.generateThing(evt.def.randomThingValue, evt.def.randomThingType);
@@ -464,7 +454,6 @@ namespace FactionColonies
                         {
                             foreach (FCTraitEffectDef trait in evt.traits)
                             {
-                                //Log.Message(trait.label);
                                 while (location.traits.Contains(trait))
                                 {
                                     location.traits.Remove(trait);
@@ -598,7 +587,7 @@ namespace FactionColonies
                     PawnGroupKindDefOf.Combat, parms, true)).ToList();
             if (!attackers.Any())
             {
-                Log.Error("Got no pawns spawning raid from parms " + parms);
+                LogUtil.Error("Got no pawns spawning raid from parms " + parms);
             }
 
             parms.raidArrivalMode.Worker.Arrive(attackers, parms);
@@ -642,7 +631,7 @@ namespace FactionColonies
                 tmp.planetName = Find.World.info.name;
                 tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital");
                 
-                Log.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
+                LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }
 
             tmp.location = faction.capitalLocation;
@@ -655,9 +644,9 @@ namespace FactionColonies
             }
             else
             {
-                int travelTime = FactionColonies.ReturnTicksToArrive(tmp.source, tmp.location);
+                int travelTime = TravelUtil.ReturnTicksToArrive(tmp.source, tmp.location);
                 tmp.timeTillTrigger = Find.TickManager.TicksGame + travelTime;
-                Log.Message($"Tax Event Travel Debug: source={tmp.source}, destination={tmp.location}, travelTime={travelTime} ticks ({travelTime / 60000f:F1} days)");
+                LogUtil.Message($"Tax Event Travel Debug: source={tmp.source}, destination={tmp.location}, travelTime={travelTime} ticks ({travelTime / GenDate.TicksPerDay:F1} days)");
             }
             
             tmp.hasCustomDescription = true;
@@ -710,7 +699,7 @@ namespace FactionColonies
             try
             {
                 // Create orbital platform settlement directly (bypass tile validation)
-                Faction playerFaction = FactionColonies.getPlayerColonyFaction();
+                Faction playerFaction = ColonyUtil.getPlayerColonyFaction();
                 FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
                 
                 if (!worldcomp.settlements.Any())
@@ -723,12 +712,13 @@ namespace FactionColonies
                 
                 if (!orbitalTile.Valid)
                 {
-                    Log.Error("Could not find suitable orbital tile for orbital platform");
+                    //TODO: Localization key
+                    LogUtil.Error("Could not find suitable orbital tile for orbital platform");
                     Messages.Message("Could not find suitable space for orbital platform.", MessageTypeDefOf.RejectInput);
                     return;
                 }
 
-                Log.Message($"Creating orbital platform at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
+                LogUtil.Message($"Creating orbital platform at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
 
                 // Create settlement data using the orbital tile ID
             
@@ -757,7 +747,7 @@ namespace FactionColonies
                 
                 if (orbitalBiomeDef == null || orbitalHillinessDef == null)
                 {
-                    Log.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback. FALLBACK!");
+                    LogUtil.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback. FALLBACK!");
                     orbitalBiomeDef = BiomeResourceDefOf.defaultBiome;
                     orbitalHillinessDef = BiomeResourceDefOf.defaultBiome;
                 }
@@ -787,7 +777,8 @@ namespace FactionColonies
                 var orbitalDef = DefDatabase<WorldObjectDef>.GetNamed("FCOrbitalPlatform");
                 if (orbitalDef == null)
                 {
-                    Log.Error("FCOrbitalPlatform WorldObjectDef not found!");
+                    LogUtil.Error("FCOrbitalPlatform WorldObjectDef not found!");
+                    //TODO Localization key -- although, is it really appropriate to send a top-left message here?
                     Messages.Message("Orbital platform definition missing.", MessageTypeDefOf.RejectInput);
                     return;
                 }
@@ -795,11 +786,11 @@ namespace FactionColonies
                 WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(orbitalDef);
                 if (settlement == null)
                 {
-                    Log.Error("Failed to create WorldSettlementFC object!");
+                    LogUtil.Error("Failed to create WorldSettlementFC object!");
                     return;
                 }
 
-                Log.Message($"Created WorldSettlementFC object successfully, setting tile to {orbitalTile.tileId}");
+                LogUtil.Message($"Created WorldSettlementFC object successfully, setting tile to {orbitalTile.tileId}");
                 
                 settlement.Tile = orbitalTile; // Use the PlanetTile directly
                 settlement.SetFaction(playerFaction);
@@ -809,11 +800,11 @@ namespace FactionColonies
                 {
                     settlement.settlement = settlementfc;
                     settlementfc.worldSettlement = settlement; // Add this line
-                    Log.Message($"Settlement.settlement property linked successfully");
+                    LogUtil.Message($"Settlement.settlement property linked successfully");
                 }
                 else
                 {
-                    Log.Error($"Cannot link settlement property: settlement={settlement != null}, settlementfc={settlementfc != null}");
+                    LogUtil.Error($"Cannot link settlement property: settlement={settlement != null}, settlementfc={settlementfc != null}");
                 }
 
                 // THEN set the name (which now works because settlement.settlement is set)
@@ -823,45 +814,45 @@ namespace FactionColonies
                     finalName = settlementfc.name;
                 }
 
-                Log.Message($"Setting settlement name to: {finalName}");
+                LogUtil.Message($"Setting settlement name to: {finalName}");
 
                 if (settlement != null && !string.IsNullOrEmpty(finalName))
                 {
                     settlement.Name = finalName;
-                    Log.Message($"Settlement name set successfully");
+                    LogUtil.Message($"Settlement name set successfully");
                 }
                 else
                 {
-                    Log.Error($"Cannot set settlement name: settlement={settlement != null}, finalName={finalName}");
+                    LogUtil.Error($"Cannot set settlement name: settlement={settlement != null}, finalName={finalName}");
                 }
                 
                 // Add to world objects
-                Log.Message($"Adding settlement to world objects...");
+                LogUtil.Message($"Adding settlement to world objects...");
                 Find.WorldObjects.Add(settlement);
-                Log.Message($"Added orbital platform to world objects successfully");
+                LogUtil.Message($"Added orbital platform to world objects successfully");
 
                 // Force a world render update
                 Find.World.renderer.RegenerateAllLayersNow();
-                Log.Message($"Forced world renderer update");
+                LogUtil.Message($"Forced world renderer update");
 
                 Find.LetterStack.ReceiveLetter("Orbital Platform Complete", 
                     $"The {platformName} Platform has been completed and is now operational!", 
                     LetterDefOf.PositiveEvent);
                 
-                Log.Message($"Orbital platform created successfully at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
+                LogUtil.Message($"Orbital platform created successfully at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
                 
                 // Debug: List all world objects to see if our platform was added
-                Log.Message($"Total world objects after creation: {Find.WorldObjects.AllWorldObjects.Count()}");
+                LogUtil.Message($"Total world objects after creation: {Find.WorldObjects.AllWorldObjects.Count()}");
                 var orbitalObjects = Find.WorldObjects.AllWorldObjects.Where(wo => wo.def?.defName == "FCOrbitalPlatform").ToList();
-                Log.Message($"Orbital platforms in world: {orbitalObjects.Count}");
+                LogUtil.Message($"Orbital platforms in world: {orbitalObjects.Count}");
                 foreach (var obj in orbitalObjects)
                 {
-                    Log.Message($"  - Platform at tile {obj.Tile} with name {obj.Label}");
+                    LogUtil.Message($"  - Platform at tile {obj.Tile} with name {obj.Label}");
                 }
             }
             catch (System.Exception ex)
             {
-                Log.Error($"Exception in CreateOrbitalPlatformSettlement: {ex.Message}\n{ex.StackTrace}");
+                LogUtil.Error($"Exception in CreateOrbitalPlatformSettlement: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -883,7 +874,7 @@ namespace FactionColonies
         private static string GetOrbitalBaseName()
         {
             // Copy the same logic as the normal settlement name generator
-            Faction faction = FactionColonies.getPlayerColonyFaction();
+            Faction faction = ColonyUtil.getPlayerColonyFaction();
             
             if (faction?.def.settlementNameMaker == null)
             {
@@ -927,7 +918,7 @@ namespace FactionColonies
             }
             
             // Fallback: find any empty surface tile (though this shouldn't happen for orbital platforms) Don't fall from orbit ahh!!!!!!!
-            Log.Warning("Could not find orbital tile, falling back to surface tile");
+            LogUtil.Warning("Could not find orbital tile, falling back to surface tile");
             for (int attempts = 0; attempts < 1000; attempts++)
             {
                 int randomTileId = Rand.Range(0, worldGrid.TilesCount);

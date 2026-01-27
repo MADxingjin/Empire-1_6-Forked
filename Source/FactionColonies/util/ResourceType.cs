@@ -30,7 +30,7 @@ namespace FactionColonies
             
             if (index == -1)
             {
-                Log.Warning("Unknown resource type " + name);
+                LogUtil.Warning("Unknown resource type " + name);
             }
 
             return resourceTypes[index];

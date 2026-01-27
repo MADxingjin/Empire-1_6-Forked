@@ -12,6 +12,7 @@
 	<FCSettingAutoResolveBattles>Automatically Resolve Battles</FCSettingAutoResolveBattles>
 	<FCSettingMinMaxMilitaryAction>Min/Max Days Until Military Action (ex. Settlements being attacked)</FCSettingMinMaxMilitaryAction>
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
+	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
 	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>
 	

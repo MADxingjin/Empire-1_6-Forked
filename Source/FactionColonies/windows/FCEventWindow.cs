@@ -140,7 +140,6 @@ namespace FactionColonies
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
                         if (!settlementString.NullOrEmpty())
                         {
-                            Log.Message(evt.settlementTraitLocations.Count + "");
                             Find.WindowStack.Add(new DescWindowFc($"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}"));
                         }
                         else

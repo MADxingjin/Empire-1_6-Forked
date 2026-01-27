@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using FactionColonies.util;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -15,17 +13,182 @@ using LudeonTK;
 
 namespace FactionColonies
 {
-    
-
-
-    public class FactionColonies : ModSettings
+    public class FCSettings : ModSettings
     {
 
-                // Constants for validation
-        private const int MINIMUM_TAX_INTERVAL = GenDate.TicksPerDay;
-        private const int DEFAULT_TAX_INTERVAL = 5 * 60000; // 5 days in ticks
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
+         *           ~  DEFAULTS  ~
+         * for saving, reseting, and validation
+         * Centralized for ease of editing, and to ensure that all references to these values
+         *   are synced.
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+        /* Defaults by difficulty setting */
+        public const int MINIMUM_TAX_INTERVAL_DAYS = 1;
+        public const EmpireDifficultyLevel DEFAULT_DIFFICULTY_LEVEL = EmpireDifficultyLevel.AdventureStory;
+        //Peaceful
+        public const int DEFAULT_SILVER_PER_RESOURCE_PEACEFUL = 200;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_PEACEFUL = 2;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_PEACEFUL = 50;
+        public const int DEFAULT_WORKER_COST_PEACEFUL = 75;
+        //Community Builder
+        public const int DEFAULT_SILVER_PER_RESOURCE_COMMUNITYBUILDER = 150;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_COMMUNITYBUILDER = 5;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_COMMUNITYBUILDER = 25;
+        public const int DEFAULT_WORKER_COST_COMMUNITYBUILDER = 100;
+        //Adventure Story
+        public const int DEFAULT_SILVER_PER_RESOURCE_ADVENTURESTORY = 100;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_ADVENTURESTORY = 5;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_ADVENTURESTORY = 25;
+        public const int DEFAULT_WORKER_COST_ADVENTURESTORY = 100;
+        //Strive to Survive
+        public const int DEFAULT_SILVER_PER_RESOURCE_STRIVETOSURVIVE = 100;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_STRIVETOSURVIVE = 10;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_STRIVETOSURVIVE = 20;
+        public const int DEFAULT_WORKER_COST_STRIVETOSURVIVE = 125;
+        //Blood and Dust
+        public const int DEFAULT_SILVER_PER_RESOURCE_BLOODANDDUST = 80;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_BLOODANDDUST = 15;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_BLOODANDDUST = 15;
+        public const int DEFAULT_WORKER_COST_BLOODANDDUST = 125;
+        //Losing is Fun
+        public const int DEFAULT_SILVER_PER_RESOURCE_LOSINGISFUN = 70;
+        public const int DEFAULT_TAX_INTERVAL_DAYS_LOSINGISFUN = 30;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD_LOSINGISFUN = 10;
+        public const int DEFAULT_WORKER_COST_LOSINGISFUN = 150;
+        // Global defaults
+        // The default difficulty setting is Adventure Story, so set the global defaults accordingly
+        public const int DEFAULT_SILVER_PER_RESOURCE = DEFAULT_SILVER_PER_RESOURCE_ADVENTURESTORY;
+        public const int DEFAULT_TAX_INTERVAL_DAYS = DEFAULT_TAX_INTERVAL_DAYS_ADVENTURESTORY;
+        public const int DEFAULT_PRODUCTION_TITHE_MOD = DEFAULT_PRODUCTION_TITHE_MOD_ADVENTURESTORY;
+        public const int DEFAULT_WORKER_COST = DEFAULT_WORKER_COST_ADVENTURESTORY;
+        /* Defaults for Research settings */
+        public const bool DEFAULT_MEDIEVAL_TECH_ONLY = false;
+        /* Defaults for Settlement settings */
+        public const TaxDeliveryMode DEFAULT_TAX_DELIVERY_MODE = TaxDeliveryMode.None;
+        public const TaxNotificationMode DEFAULT_TAX_NOTIFICATION_MODE = TaxNotificationMode.All;
+        public static double DEFAULT_SETTLEMENT_FOUNDING_COST = 1000;
+        public static double DEFAULT_SETTLEMENT_BASE_UPGRADE_COST = 1000;
+        public static int DEFAULT_SETTLEMENT_MAX_LEVEL = 10;
+        /* Defaults for Events & Military settings */
+        public const bool DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS = false;
+        public const bool DEFAULT_DISABLE_RANDOM_EVENTS = false;
+        public const bool DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS = true;
+        public const bool DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN = true;
+        public const bool DEFAULT_SETTLEMENTS_AUTO_BATTLE = true;
+        public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
+        public const int DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION = 10;
+        public const int DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT = 0;
+        public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 6;
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
+         *           ~  DEFAULTS END ~
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
         public const int updateUiTimer = 150; // UI update interval in ticks
-        private Faction playerFactionRef = null;
+
+        public static int silverPerResource = DEFAULT_SILVER_PER_RESOURCE;
+        public static double silverToCreateSettlement = DEFAULT_SETTLEMENT_FOUNDING_COST;
+
+        private static int timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
+        public static int timeBetweenTaxes => timeBetweenTaxes_days * GenDate.TicksPerDay;
+
+
+        public static int productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
+        public static int storeReportCount = 4;
+        public static int workerCost = DEFAULT_WORKER_COST;
+
+        public static EmpireDifficultyLevel difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
+
+        public static double settlementBaseUpgradeCost = DEFAULT_SETTLEMENT_BASE_UPGRADE_COST;
+        public static int settlementMaxLevel = DEFAULT_SETTLEMENT_MAX_LEVEL;
+
+        public static bool medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+        public static bool disableHostileMilitaryActions = DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS;
+        public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
+        public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
+        public static bool deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+        public static bool settlementsAutoBattle = DEFAULT_SETTLEMENTS_AUTO_BATTLE;
+        public static TaxDeliveryMode forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
+        public static TaxNotificationMode taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
+
+        public static int minDaysTillMilitaryAction = DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION;
+        public static int maxDaysTillMilitaryAction = DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION;
+        public static IntRange minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
+
+        public static int minDaysTillRandomEvent = DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT;
+        public static int maxDaysTillRandomEvent = DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT;
+        public static IntRange minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
+
+        /* TODO: might be interesting to expose these values in the settings. Might be a bit much
+         * for the user though. Perhaps can add an "advanced settings" tab that lets the user
+         * fine-tune a lot of the smaller values? */
+        public static double unrestBaseGain = 0;
+        public static double unrestBaseLost = 1;
+        public static double loyaltyBaseGain = 1;
+        public static double loyaltyBaseLost = 0;
+        public static double happinessBaseGain = 1;
+        public static double happinessBaseLost = 0;
+        public static double prosperityBaseRecovery = 1;
+        public static int productionResearchBase = 100;
+        public static double militaryAnimalCostMultiplier = 1.5;
+        public static double militaryRaceCostMultiplier = 0.15;
+
+        public static double updateVersion = 0;
+
+        /* Flag for debug/verbose logging. */
+        private static bool printDebug = false;
+        public static bool PrintDebug => printDebug;
+
+        // Window size settings - add these fields
+        public static float buildingWindowWidth = 450f;
+        public static float buildingWindowHeight = 600f;
+
+        // Static variables to remember window size during play session
+        private static Vector2 savedWindowSize = new Vector2(450f, 600f);
+        private static bool hasSavedSize = false;
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref silverPerResource, "silverPerResource", DEFAULT_SILVER_PER_RESOURCE);
+            Scribe_Values.Look(ref timeBetweenTaxes_days, "timeBetweenTaxes_days", DEFAULT_TAX_INTERVAL_DAYS);
+            Scribe_Values.Look(ref productionTitheMod, "productionTitheMod", DEFAULT_PRODUCTION_TITHE_MOD);
+            Scribe_Values.Look(ref workerCost, "workerCost", DEFAULT_WORKER_COST);
+            Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
+            Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
+            Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
+            Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
+            Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
+            Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);
+            Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown", DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN);
+            Scribe_Values.Look(ref settlementsAutoBattle, "settlementsAutoBattle", DEFAULT_SETTLEMENTS_AUTO_BATTLE);
+            Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction", DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION);
+            Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
+            Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT);
+            Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT);
+            Scribe_Values.Look(ref updateVersion, "updateVersion");
+            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
+            Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
+            Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
+            Scribe_Values.Look(ref printDebug, "printDebug", false);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                // Band aid - For existing users upgrading from old system, detect if they have custom values
+                if (difficultyLevel == DEFAULT_DIFFICULTY_LEVEL)
+                {
+                    // Check if current values match Adventure Story defaults
+                    if (silverPerResource != DEFAULT_SILVER_PER_RESOURCE || timeBetweenTaxes_days != DEFAULT_TAX_INTERVAL_DAYS ||
+                        productionTitheMod != DEFAULT_PRODUCTION_TITHE_MOD || workerCost != DEFAULT_WORKER_COST)
+                    {
+                        // User had custom settings, set to Custom mode
+                        difficultyLevel = EmpireDifficultyLevel.Custom;
+                    }
+                }
+                /* Re-construct the intranges */
+                minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
+                minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
+            }
+        }
 
         public static string GetModVersion()
         {
@@ -46,18 +209,9 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                Log.Warning("Empire Mod: Failed to read version from manifest: " + ex.Message);
+                LogUtil.Warning("Failed to read version from manifest: " + ex.Message);
             }
             return "Unknown";
-        }
-        public Faction GetVanillaPlayerFaction()
-        {
-            if (playerFactionRef == null)
-            {
-                playerFactionRef = Find.FactionManager.AllFactions.ToList().Find(faction => faction.IsPlayer);
-            }
-
-            return playerFactionRef;
         }
         public static void UpdateChanges()
         {
@@ -70,7 +224,7 @@ namespace FactionColonies
             // Only log once when first setting up
             if (!factionFC.updateProcessed)
             {
-                Log.Message("Updating Empire to Latest Version");
+                LogUtil.Message("Updating Empire to Latest Version");
                 // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
             }
             //NEW PLACE FOR UPDATE VERSIONS
@@ -79,10 +233,10 @@ namespace FactionColonies
             if (factionFC.factionBackup == null)
             {
                 factionFC.factionBackup = new Faction();
-                factionFC.factionBackup = getPlayerColonyFaction();
-                if (getPlayerColonyFaction() != null)
+                factionFC.factionBackup = ColonyUtil.getPlayerColonyFaction();
+                if (ColonyUtil.getPlayerColonyFaction() != null)
                 {
-                    Log.Message("Faction created");
+                    LogUtil.Message("Faction created");
                     factionFC.factionCreated = true;
                 }
 
@@ -90,7 +244,7 @@ namespace FactionColonies
 
                 if (!wasAlreadyProcessed)
                 {
-                    Log.Message("Resetting faction leaders");
+                    LogUtil.Message("Resetting faction leaders");
                 }
                 SoS2HarmonyPatches.ResetFactionLeaders();
             }
@@ -102,41 +256,42 @@ namespace FactionColonies
                 // Welcome message!
                 Find.WindowStack.Add(new FCWindow_Welcome());
 
-                Log.Message("Empire - Testing for traits with no tie");
+                LogUtil.Message("Testing for traits with no tie");
                 verifyTraits();
             
                 MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
 
-                Log.Message("Empire - Testing for update change");
+                LogUtil.Message("Testing for update change");
                 
                 // Mark as processed AFTER everything is done
                 factionFC.updateProcessed = true;
             }
 
-            if (Settings().updateVersion < 0.370)
+            if (updateVersion < 0.370)
             {
                 Find.LetterStack.ReceiveLetter("FCManualDefenseWarningLabel".Translate(), "FCManualDefenseWarningDesc".Translate(), LetterDefOf.NeutralEvent);
             }
 
             double newVersion = PatchNoteDef.GetLatestForMod("saakra.empire").ToOldEmpireVersion;
             //Add update letter/checker here!!
-            if (Settings().updateVersion < newVersion)
+            if (updateVersion < newVersion)
             {
-                patchNoteSettings.lastVersion = Settings().updateVersion;
+                patchNoteSettings.lastVersion = updateVersion;
                 patchNoteSettings.curVersion = newVersion;
                 patchNoteSettings.Write();
 
                 DebugActionsMisc.PatchNotesDisplayWindow();
 
-                Settings().updateVersion = newVersion;
-                Settings().settlementsAutoBattle = true;
-                Settings().Write();
+                updateVersion = newVersion;
+                settlementsAutoBattle = true;
+                //TODO: we original forced a write here. I don't really think that's necessary, but look into it.
+                //Write();
             }
         }
 
         private static void MessagePlayerAboutConfigErrors(FactionFC factionFC)
         {
-            Log.Message("Empire - Testing for invalid capital map");
+            LogUtil.Message("Testing for invalid capital map");
             //Check for an invalid capital map
             if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null && factionFC.SoSShipCapital == false)
             {
@@ -153,7 +308,7 @@ namespace FactionColonies
                 Find.LetterStack.ReceiveLetter("FCTraits".Translate(), "FCSelectYourTraits".Translate(), LetterDefOf.NeutralEvent);
             }
 
-            if (!Settings().settlementsAutoBattle)
+            if (!settlementsAutoBattle)
             {
                 Messages.Message("FCAutoResolveDisabledWarning".Translate(), MessageTypeDefOf.RejectInput);
             }
@@ -207,1243 +362,53 @@ namespace FactionColonies
 
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);
 
-        public static Type returnUnknownTypeFromName(string name)
-        {
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                var type = a.GetType(name);
-                if (type != null)
-                    return type;
-            }
-
-            return null;
-        }
-
-        public static double calculateMilitaryLevelPoints(int MilitaryLevel)
-        {
-            double points = 500; //starting points at mil level 0
-            for (int i = 1; i <= MilitaryLevel; i++)
-            {
-                points += (500 * MilitaryLevel);
-            }
-
-            return points;
-        }
-
-        public static bool canCraftItem(ThingDef thing, bool includeSingleUse = false)
-        {
-            bool canCraft = true;
-            if (thing.recipeMaker != null)
-            {
-                if (thing.recipeMaker.researchPrerequisites != null)
-                {
-                    foreach (ResearchProjectDef research in thing.recipeMaker.researchPrerequisites)
-                    {
-                        if (!(Find.ResearchManager.GetProgress(research) >= research.baseCost))
-                        {
-                            //research is not good
-                            canCraft = false;
-                        }
-                    }
-                }
-
-                if (thing.recipeMaker.researchPrerequisite != null)
-                {
-                    if (!(Find.ResearchManager.GetProgress(thing.recipeMaker.researchPrerequisite) >=
-                          thing.recipeMaker.researchPrerequisite.baseCost))
-                    {
-                        //research is not good
-                        canCraft = false;
-                    }
-                }
-            }
-            else
-            {
-                if (Find.World.GetComponent<FactionFC>().techLevel < thing.techLevel)
-                {
-                    canCraft = false;
-                }
-            }
-
-            if (thing.thingSetMakerTags != null && thing.thingSetMakerTags.Contains("SingleUseWeapon") &&
-                !includeSingleUse)
-            {
-                canCraft = false;
-            }
-
-
-            return canCraft;
-        }
-
-        public static Faction getPlayerColonyFaction()
-        {
-            return Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed("PColony"));
-        }
-
-
-        //<DevAdd>   Create new seperate function to create a faction
-        public static WorldSettlementFC createPlayerColonySettlement(int tile, bool createWorldObject, string planetName)
-        {
-            //Log.Message("boop");
-            StringBuilder reason = new StringBuilder();
-            if (!TileFinder.IsValidTileForNewSettlement(tile, reason))
-            {
-                //Log.Message("Invalid Tile");
-                //Alert Error to User
-                Messages.Message(reason.ToString(), MessageTypeDefOf.NegativeEvent);
-
-
-                return null;
-                //create alert with reason
-                //AlertsReadout alert = new AlertsReadout()
-            }
-
-            //Log.Message("Colony is being created");
-            Faction faction = getPlayerColonyFaction();
-
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-            if (!worldcomp.settlements.Any())
-            {
-                Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
-            }
-
-            //Log.Message(faction.Name);
-
-            SettlementFC settlementfc;
-            WorldSettlementFC settlement = null;
-            if (createWorldObject)
-            {
-                settlementfc = new SettlementFC(getName(faction), tile);
-                settlement = (WorldSettlementFC) WorldObjectMaker.MakeWorldObject(
-                    DefDatabase<WorldObjectDef>.GetNamed("FactionBaseGenerator"));
-                settlement.Tile = tile;
-
-                List<String> used = new List<string>();
-                List<Settlement> settlements = Find.WorldObjects.Settlements;
-                foreach (Settlement found in settlements)
-                {
-                    used.Add(found.Name);
-                }
-                
-                settlement.settlement = settlementfc;
-                settlement.Name = 
-                    NameGenerator.GenerateName(faction.def.factionNameMaker, used, true);
-                
-                settlement.SetFaction(faction);
-                Find.WorldObjects.Add(settlement);
-                settlementfc.worldSettlement = settlement;
-            }
-            else
-            {
-                settlementfc = new SettlementFC("Settlement", tile);
-            }
-
-            //create settlement data for world object
-            settlementfc.power.isTithe = true;
-            settlementfc.power.isTitheBool = true;
-            settlementfc.research.isTithe = true;
-            settlementfc.research.isTitheBool = true;
-            settlementfc.planetName = planetName;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
-                settlementfc.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
-            if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
-                settlementfc.loyalty = 70;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.egalitarian))
-                settlementfc.happiness = 60;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlementfc.settlementLevel == 1)
-                settlementfc.upgradeSettlement();
-
-            worldcomp.addSettlement(settlementfc);
-            if (createWorldObject)
-            {
-                worldcomp.roadBuilder.FlagUpdateRoadQueues();
-            }
-
-            Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
-                "TheSettlement".Translate() + " " + settlementfc.name + "HasBeenFormed".Translate() + "!",
-                LetterDefOf.PositiveEvent);
-
-            //Example to grab settlement data from FC
-            //Log.Message(settlementfc.ReturnFCSettlement().Name.ToString());
-
-
-            return settlement;
-        }
-
-        private static readonly List<string> usedNames = new List<string>();
-        
-        private static string getName(Faction faction)
-        {
-            if (faction?.def.settlementNameMaker == null)
-            {
-                return "Settlement";
-            }
-
-            RulePackDef rulePack = faction.def.settlementNameMaker;
-            usedNames.Clear();
-            List<Settlement> settlements = Find.WorldObjects.Settlements;
-            for (int index = 0; index < settlements.Count; ++index)
-            {
-                Settlement settlement = settlements[index];
-                if (settlement.Name != null)
-                    usedNames.Add(settlement.Name);
-            }
-
-            return NameGenerator.GenerateName(rulePack, usedNames, true);
-        }
-
-        [DebugAction("Empire", "View Events and ticks till", allowedGameStates = AllowedGameStates.Playing)]
-        private static void ViewEventsAndLog()
-        {
-            Find.World.GetComponent<FactionFC>().events.ForEach(delegate(FCEvent e)
-            {
-                Log.Message(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
-            });
-        }
-
-        [DebugAction("Empire", "Increment Time 5 Days", allowedGameStates = AllowedGameStates.Playing)]
-        private static void incrementTimeFiveDays()
-        {
-            //Log.Message("Debug - Increment Time 5 Days");
-            Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + 300000);
-        }
-
-        [DebugAction("Empire", "Increment Time 1 Year", allowedGameStates = AllowedGameStates.Playing)]
-        private static void incrementTimeOneYear()
-        {
-            //Log.Message("Debug - Increment Time 5 Days");
-            Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + GenDate.TicksPerYear);
-        }
-        
-        [DebugAction("Empire", "Print Races", allowedGameStates = AllowedGameStates.Playing)]
-        private static void PrintRaces()
-        {
-            getPlayerColonyFaction().def.pawnGroupMakers.ForEach(maker =>
-            {
-                Log.Message("Traders: " + maker.traders.Count);
-                foreach (PawnGenOption option in maker.options)
-                {
-                    Log.Message("Race: " + option.kind.race.defName + ", " + option.kind.defName + ", " + 
-                                option.kind.isFighter + ", " + option.kind.trader + " for " + maker.kindDef);   
-                }
-            });
-        }
-
-        [DebugAction("Empire", "Reset All Military Squad Assignments", allowedGameStates = AllowedGameStates.Playing)]
-        private static void resetAllMilitarySquads()
-        {
-            Log.Message("Debug - Reset All Military Squad Assignments");
-            MilitaryCustomizationUtil util = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil;
-            for (int i = util.AllMercenaries.Count - 1; i >= 0; i--)
-            {
-                if (util.AllMercenaries[i].squad.hasLord)
-                {
-                    util.AllMercenaries[i].squad.map.lordManager.RemoveLord(util.AllMercenaries[i].squad.lord);
-                }
-
-                util.AllMercenaries[i].pawn.Destroy();
-                util.AllMercenaries[i].squad.mercenaries.Remove(util.AllMercenaries[i]);
-            }
-
-            for (int k = util.mercenarySquads.Count() - 1; k >= 0; k--)
-            {
-                util.mercenarySquads[k].settlement.militarySquad = null;
-                util.mercenarySquads.RemoveAt(k);
-            }
-
-
-            util.checkMilitaryUtilForErrors();
-        }
-
-
-        [DebugAction("Empire", "Make Random Event", allowedGameStates = AllowedGameStates.Playing)]
-        private static void makeRandomEvent()
-        {
-            List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEventDef evtDef in DefDatabase<FCEventDef>.AllDefsListForReading)
-            {
-                if (evtDef.isRandomEvent)
-                    list.Add(new DebugMenuOption(evtDef.label, DebugMenuOptionMode.Action, delegate
-                        {
-                            Log.Message("Debug - Make Random Event - " + evtDef.label);
-                            FCEvent evt = FCEventMaker.MakeRandomEvent(evtDef, null);
-                            if (evtDef.activateAtStart == false)
-                            {
-                                FCEventMaker.MakeRandomEvent(evtDef, null);
-                                Find.World.GetComponent<FactionFC>().addEvent(evt);
-                            }
-
-                            //letter code
-                            string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
-
-                            if (!settlementString.NullOrEmpty()) Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
-                        }
-                    ));
-            }
-
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
-        }
-
-        [DebugAction("Empire", "Proc MilitaryTimeDue", allowedGameStates = AllowedGameStates.Playing)]
-        private static void procMilitaryTimeDue()
-        {
-            Log.Message("Debug - Proc MilitaryTimeDue");
-            Find.World.GetComponent<FactionFC>().militaryTimeDue = Find.TickManager.TicksGame + 1;
-        }
-
-        [DebugAction("Empire", "Fix Missing Settlements", allowedGameStates = AllowedGameStates.Playing)]
-        private static void checkForMissingSettlements()
-        {
-            Log.Message("Debug - Proc MilitaryTimeDue");
-
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
-
-            foreach (SettlementFC settlement in factionfc.settlementsOnPlanet)
-            {
-                if (Find.WorldObjects.AnyWorldObjectAt(settlement.mapLocation) == false)
-                {
-                    createPlayerColonySettlement(settlement.mapLocation, true, Find.World.info.name);
-                }
-            }
-        }
-
-
-        [DebugAction("Empire", "Reset Faction Leaders", allowedGameStates = AllowedGameStates.Playing)]
-        private static void resetFactionLeadeers()
-        {
-            Log.Message("Debug - Reset Faction Leaders");
-            SoS2HarmonyPatches.ResetFactionLeaders();
-        }
-
-        [DebugAction("Empire", "Attack Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
-        private static void attackPlayerSettlement()
-        {
-            List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
-            {
-                list.Add(new DebugMenuOption(settlement.name, DebugMenuOptionMode.Action, delegate
-                    {
-                        Log.Message("Debug - Attack Player Settlement - " + settlement.name);
-                        Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
-                        MilitaryUtilFC.attackPlayerSettlement(
-                            militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
-                    }
-                ));
-            }
-
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
-        }
-
-
-        [DebugAction("Empire", "Change Settlement Defending Force", allowedGameStates = AllowedGameStates.Playing)]
-        private static void ChangeAttackPlayerSettlementMilitaryForce()
-        {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-            List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEvent evt in worldcomp.events)
-            {
-                if (evt.def == FCEventDefOf.settlementBeingAttacked)
-                {
-                    list.Add(new DebugMenuOption(
-                        worldcomp.returnSettlementByLocation(evt.location, evt.planetName).name,
-                        DebugMenuOptionMode.Action, delegate
-                        {
-                            //when event is selected, select defending force to replace it with
-
-                            List<DebugMenuOption> list2 = new List<DebugMenuOption>();
-                            foreach (SettlementFC settlement in worldcomp.settlements)
-                            {
-                                if (settlement.isMilitaryValid() && settlement.name != evt.settlementFCDefending.name)
-                                {
-                                    list2.Add(new DebugMenuOption(
-                                        settlement.name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
-                                        settlement.isMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
-                                        {
-                                            if (settlement.isMilitaryBusy() == false)
-                                            {
-                                                Log.Message("Debug - Change Player Settlement - " +
-                                                            evt.militaryForceDefending.homeSettlement.name + " to " +
-                                                            settlement.name);
-                                                MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
-                                            }
-                                        }
-                                    ));
-                                }
-                            }
-
-                            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list2));
-                        }
-                    ));
-                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
-                }
-            }
-        }
-
-        [DebugAction("Empire", "Upgrade Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
-        private static void UpgradePlayerSettlementx1() => UpgradePlayerSettlement();
-
-        [DebugAction("Empire", "Upgrade Player Settlement x5", allowedGameStates = AllowedGameStates.Playing)]
-        private static void UpgradePlayerSettlementx5() => UpgradePlayerSettlement(5);
-
-        private static void UpgradePlayerSettlement(int times = 1)
-        {
-            List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
-            {
-                list.Add(new DebugMenuOption(settlement.name, DebugMenuOptionMode.Action, delegate
-                {
-                    if (times > 0)
-                    {
-                        Log.Message("Debug - Upgrade Player Settlement x" + times + "- " + settlement.name);
-                    }
-                    else
-                    {
-                        Log.Message("Debug - Downgrade Player Settlement x" + times + "- " + settlement.name);
-                    }
-                    settlement.upgradeSettlement(times);
-                }
-                ));
-            }
-
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
-        }
-
-        [DebugAction("Empire", "Test Function", allowedGameStates = AllowedGameStates.Playing)]
-        private static void testVariable()
-        {
-            Log.Message("Debug - Test Function - ");
-            Find.World.GetComponent<FactionFC>().roadBuilder.FlagUpdateRoadQueues();
-        }
-
-        [DebugAction("Empire", "De-Level Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
-        private static void DelevelPlayerSettlement() => UpgradePlayerSettlement(-1);
-
-        [DebugAction("Empire", "Reset Military Squads Cooldowns", allowedGameStates = AllowedGameStates.Playing)]
-        private static void ResetMilitarySquads()
-        {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.mercenarySquads =
-                new List<MercenarySquadFC>();
-            Log.Message("Debug - Reset Military Squad Cooldowns");
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
-            {
-                settlement.returnMilitary(false);
-            }
-        }
-
-        [DebugAction("Empire", "Clear Old Bills", allowedGameStates = AllowedGameStates.Playing)]
-        private static void clearOldBills()
-        {
-            Find.World.GetComponent<FactionFC>().OldBills = new List<BillFC>();
-        }
-
-        [DebugAction("Empire", "Clear All Events", allowedGameStates = AllowedGameStates.Playing)]
-        private static void clearAllEvents()
-        {
-            Find.World.GetComponent<FactionFC>().events = new List<FCEvent>();
-        }
-
-        [DebugAction("Empire", "Clear All Bills", allowedGameStates = AllowedGameStates.Playing)]
-        private static void clearAllBills()
-        {
-            Find.World.GetComponent<FactionFC>().Bills = new List<BillFC>();
-        }
-
-        [DebugAction("Empire", "Place 500 Silver", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void PlaceSilverFC() => SilverPlacer(500);
-
-        [DebugAction("Empire", "Place 50000 Silver", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void PlaceALotOfSilverFC() => SilverPlacer(50000);
-
-        private static void SilverPlacer(int amount = 500)
-        {
-            DebugTool tool = null;
-            IntVec3 DropPosition;
-            Map map;
-            tool = new DebugTool("Select Drop Position", delegate
-            {
-                DropPosition = UI.MouseCell();
-                map = Find.CurrentMap;
-
-
-                Thing silver = ThingMaker.MakeThing(ThingDefOf.Silver);
-                silver.stackCount = amount;
-                GenPlace.TryPlaceThing(silver, DropPosition, map, ThingPlaceMode.Near);
-            });
-            DebugTools.curTool = tool;
-        }
-
-        /// <summary>
-        /// Internal method used to spawn a <paramref name="settlement"/>'s squad for military deployment
-        /// </summary>
-        /// <param name="settlement"></param>
-        /// <param name="squad"></param>
-        /// <param name="dropPosition"></param>
-        /// <param name="DropPod"></param>
-        private static void SpawnSquad(SettlementFC settlement, MercenarySquadFC squad, IntVec3 dropPosition, bool DropPod)
-        {
-            IncidentParms parms = new IncidentParms
-            {
-                target = Find.CurrentMap,
-                faction = getPlayerColonyFaction(),
-                podOpenDelay = 140,
-                points = 999,
-                raidArrivalModeForQuickMilitaryAid = true,
-                raidNeverFleeIndividual = true,
-                //raidForceOneIncap = true,
-                raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop,
-                raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-            };
-
-            if (DropPod)
-            {
-                parms.spawnCenter = dropPosition;
-                PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, squad.AllEquippedMercenaryPawns);
-            }
-            else
-            {
-                PawnsArrivalModeWorker_EdgeWalkIn worker = new PawnsArrivalModeWorker_EdgeWalkIn();
-                worker.TryResolveRaidSpawnCenter(parms);
-                worker.Arrive(squad.AllEquippedMercenaryPawns, parms);
-            }
-
-            squad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
-            squad.isDeployed = true;
-            squad.orderLocation = dropPosition;
-            squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
-
-            settlement.SendMilitary(Find.CurrentMap.Index, Find.World.info.name, MilitaryJob.Deploy, 1, null);
-            LordMaker.MakeNewLord(getPlayerColonyFaction(), new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
-
-            if (settlement.militarySquad != squad)
-            {
-                Find.World.GetComponent<FactionFC>().traitMilitaristicTickLastUsedExtraSquad = Find.TickManager.TicksGame;
-            }
-        }
-
-        /// <summary>
-        /// Deploys a <paramref name="settlement"/>'s main force, takes silver if there is an <paramref name="overrideSquad"/>
-        /// </summary>
-        /// <param name="settlement"></param>
-        /// <param name="DropPod"></param>
-        /// <param name="overrideSquad"></param>
-        public static void CallinAlliedForces(SettlementFC settlement, bool DropPod, MercenarySquadFC overrideSquad = null)
-        {
-            MercenarySquadFC squad = overrideSquad ?? settlement.militarySquad;
-
-            if (Find.CurrentMap.Parent is WorldSettlementFC)
-            {
-                Messages.Message("FCMilitaryTriedDeployingToSettlementFC".Translate(), MessageTypeDefOf.RejectInput);
-                return;
-            }
-
-            squad.updateSquadStats(settlement.settlementMilitaryLevel);
-            squad.resetNeeds();
-
-            IntVec3 dropPosition;
-            DebugTool tool = new DebugTool("selectDeploymentPosition".Translate(), delegate
-            {
-                dropPosition = UI.MouseCell();
-                Map curMap = Find.CurrentMap;
-
-                if (!dropPosition.InBounds(curMap)) 
-                { 
-                    Messages.Message("selectedPosOutOfBounds".Translate(), MessageTypeDefOf.RejectInput);
-                    return;
-                }
-                if (dropPosition.CloseToEdge(curMap, 10))
-                {
-                    Messages.Message("selectedPosTooCloseToEdge".Translate(), MessageTypeDefOf.RejectInput);
-                    return;
-                }
-
-                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round(settlement.militarySquad.outfit.updateEquipmentTotalCost() * .2));
-                SpawnSquad(settlement, squad, dropPosition, DropPod);
-                DebugTools.curTool = null;
-            });
-            DebugTools.curTool = tool;
-
-            //UI.UIToMapPosition(UI.MousePositionOnUI).ToIntVec3();
-        }
-
-        /// <summary>
-        /// Deploys the secondary military of the empire from a <paramref name="settlement"/> 
-        /// </summary>
-        /// <param name="settlement"></param>
-        /// <param name="DropPod"></param>
-        /// <param name="cost"></param>
-        public static void CallinExtraForces(SettlementFC settlement, bool DropPod)
-        {
-            MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.createMercenarySquad(settlement, true);
-            squad.OutfitSquad(squad.settlement.militarySquad.outfit);
-
-            CallinAlliedForces(settlement, DropPod, squad);
-        }
-
-        public static void FireSupport(SettlementFC settlement, MilitaryFireSupport support)
-        {
-            DebugTool tool = null;
-            IntVec3 DropPosition;
-            tool = new DebugTool("FCFireSupportSelectPosition".Translate(), delegate
-            {
-                float cost = support.returnTotalCost();
-                if (PaymentUtil.getSilver() > cost)
-                {
-                    PaymentUtil.paySilver((int) Math.Round(cost));
-                    DropPosition = UI.MouseCell();
-                    IntVec3 spawnCenter = DropPosition;
-                    Map map = Find.CurrentMap;
-                    //Make new list
-                    List<ThingDef> projectiles = new List<ThingDef>();
-                    projectiles.AddRange(support.projectiles);
-                    MilitaryFireSupport fireSupport = new MilitaryFireSupport("fireSupport", map, spawnCenter,
-                        projectiles.Count() * 15, 600, support.accuracy, projectiles);
-                    Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.fireSupport.Add(fireSupport);
-
-                    Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
-                    settlement.artilleryTimer = Find.TickManager.TicksGame + 60000;
-                }
-                else
-                {
-                    Messages.Message("FCFireSupportNoSilver".Translate(), MessageTypeDefOf.RejectInput);
-                }
-
-
-                DebugTools.curTool = null;
-            }, delegate { GenDraw.DrawRadiusRing(UI.MouseCell(), support.accuracy, Color.red); });
-            DebugTools.curTool = tool;
-        }
-
-        /// <summary>
-        /// Debug function. Calls in Allied Forces. Doesn't need translations
-        /// </summary>
-        private static void CallInAlliedForcesSelect()
-        {
-            List<FloatMenuOption> list = new List<FloatMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
-            {
-                if (settlement.militarySquad != null)
-                {
-                    list.Add(new FloatMenuOption(settlement.name, delegate
-                        {
-                            IncidentParms parms = new IncidentParms();
-                            parms.target = Find.CurrentMap;
-                            parms.faction = getPlayerColonyFaction();
-                            parms.podOpenDelay = 140;
-                            parms.points = 999;
-                            parms.raidArrivalModeForQuickMilitaryAid = true;
-                            parms.raidNeverFleeIndividual = true;
-                            //parms.raidForceOneIncap = true;
-                            parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
-                            parms.raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly;
-                            parms.raidArrivalModeForQuickMilitaryAid = true;
-
-                            settlement.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
-
-
-                            DebugTool tool = null;
-                            IntVec3 DropPosition;
-                            tool = new DebugTool("Select Drop Position", delegate
-                            {
-                                DropPosition = UI.MouseCell();
-                                parms.spawnCenter = DropPosition;
-
-                                //List<Pawn> list2 = parms.raidStrategy.Worker.SpawnThreats(parms);
-                                //parms.raidArrivalMode.Worker.Arrive(list2, parms);
-                                settlement.militarySquad.isDeployed = true;
-                                settlement.militarySquad.orderLocation = DropPosition;
-                                settlement.militarySquad.timeDeployed = Find.TickManager.TicksGame;
-
-
-                                PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms,
-                                    settlement.militarySquad.AllEquippedMercenaryPawns);
-                                settlement.militarySquad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
-                                settlement.militarySquad.isDeployed = true;
-                                DebugTools.curTool = null;
-                            });
-                            DebugTools.curTool = tool;
-
-                            //UI.UIToMapPosition(UI.MousePositionOnUI).ToIntVec3();
-                        }
-                    ));
-                }
-            }
-
-            Find.WindowStack.Add(new FloatMenu(list));
-        }
-
-
-        [LudeonTK.DebugAction("Empire", "Call In Allied Forces", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void CallInAlliedForcesDebug() => CallInAlliedForcesSelect();
-
-
-        [DebugAction("Empire", "Level Up Faction", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void LevelUpFaction()
-        {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            faction.addExperienceToFactionLevel(faction.factionXPGoal);
-        }
-
-        public static bool returnIsResearched(ResearchProjectDef def)
-        {
-            if (def == null)
-            {
-                return false;
-            }
-
-            return Math.Abs(Find.ResearchManager.GetProgress(def) - def.baseCost) < .1;
-        }
-
-        public static void removePlayerSettlement(SettlementFC settlement)
-        {
-            settlement.PrepareDestroyWorldObject();
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            faction.settlements.Remove(settlement);
-            Messages.Message("SettlementRemoved".Translate(settlement.name), MessageTypeDefOf.NegativeEvent);
-
-            if (Find.World.info.name == settlement.planetName)
-            {
-                Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>
-                    .GetNamed("FactionBaseGenerator"), settlement.mapLocation));
-            }
-            else
-            {
-                faction.deleteSettlementQueue.Add(new SettlementSoS2Info(settlement.planetName,
-                    settlement.mapLocation));
-            }
-
-            //clear military events
-            settlement.returnMilitary(false);
-
-            HashSet<FCEvent> toRemove = new HashSet<FCEvent>();
-
-            foreach (FCEvent evt in faction.events)
-            {
-                //military event removal
-                if (evt.def == FCEventDefOf.captureEnemySettlement || evt.def == FCEventDefOf.raidEnemySettlement)
-                {
-                    if (evt.militaryForceAttacking.homeSettlement == settlement)
-                    {
-                        toRemove.Add(evt);
-                    }
-                }
-
-                if (evt.def == FCEventDefOf.settlementBeingAttacked)
-                {
-                    if (evt.militaryForceDefending.homeSettlement == settlement)
-                    {
-                        if (evt.settlementFCDefending == settlement)
-                        {
-                            toRemove.Add(evt);
-                        }
-
-                        //if not defending settlement
-                        MilitaryUtilFC.changeDefendingMilitaryForce(evt, evt.settlementFCDefending);
-                    }
-                    else
-                    {
-                        //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.cooldownMilitary();
-
-                        toRemove.Add(evt);
-                    }
-                }
-
-
-                //settlement event removal
-                if (evt.def == FCEventDefOf.constructBuilding || evt.def == FCEventDefOf.enactSettlementPolicy ||
-                    evt.def == FCEventDefOf.upgradeSettlement || evt.def == FCEventDefOf.cooldownMilitary)
-                {
-                    if (evt.source == settlement.mapLocation)
-                    {
-                        toRemove.Add(evt);
-                    }
-                }
-
-                if (evt.def.isRandomEvent && evt.settlementTraitLocations.Count() > 0)
-                {
-                    if (evt.settlementTraitLocations.Contains(settlement))
-                    {
-                        evt.settlementTraitLocations.Remove(settlement);
-                        if (evt.settlementTraitLocations.Count() == 0)
-                        {
-                            toRemove.Add(evt);
-                        }
-                    }
-                }
-            }
-
-            foreach(FCEvent evt in toRemove)
-            {
-                faction.events.Remove(evt);
-            }
-        }
-
-        public static int CompareFloatMenuOption(FloatMenuOption x, FloatMenuOption y)
-        {
-            return String.Compare(x.Label, y.Label);
-        }
-
-        public static int CompareBuildingDef(BuildingFCDef x, BuildingFCDef y)
-        {
-            return string.Compare(x.label, y.label);
-        }
-
-        public static int CompareSettlementName(SettlementFC x, SettlementFC y)
-        {
-            return string.Compare(x.name, y.name);
-        }
-
-        public static int CompareSettlementLevel(SettlementFC x, SettlementFC y)
-        {
-            return y.settlementLevel.CompareTo(x.settlementLevel);
-        }
-
-        public static int CompareSettlementMilitaryLevel(SettlementFC x, SettlementFC y)
-        {
-            return y.settlementMilitaryLevel.CompareTo(x.settlementMilitaryLevel);
-        }
-
-        public static int CompareSettlementFreeWorkers(SettlementFC x, SettlementFC y)
-        {
-            return ((y.workersUltraMax - y.getTotalWorkers()).CompareTo((x.workersUltraMax - x.getTotalWorkers())));
-        }
-
-        public static int CompareSettlementUnrest(SettlementFC x, SettlementFC y)
-        {
-            return x.unrest.CompareTo(y.unrest);
-        }
-
-        public static int CompareSettlementLoyalty(SettlementFC x, SettlementFC y)
-        {
-            return y.loyalty.CompareTo(x.loyalty);
-        }
-
-        public static int CompareSettlementHappiness(SettlementFC x, SettlementFC y)
-        {
-            return y.happiness.CompareTo(x.happiness);
-        }
-
-        public static int CompareSettlementProsperity(SettlementFC x, SettlementFC y)
-        {
-            return y.prosperity.CompareTo(x.prosperity);
-        }
-
-        public static int CompareSettlementProfit(SettlementFC x, SettlementFC y)
-        {
-            return y.getTotalProfit().CompareTo(x.getTotalProfit());
-        }
-
-        public static int ReturnTicksToArrive(int currentTile, int destinationTile)
-        {
-            Log.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
-            
-            bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
-            bool medievalOnly = LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().medievalTechOnly;
-            bool podsResearched = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false;
-
-            if (!medievalOnly)
-            {
-                bool tilesValid = (currentTile, destinationTile).AreValidTiles();
-                Log.Message($"ReturnTicksToArrive Debug: tilesValid={tilesValid}, medievalOnly={medievalOnly}, podsResearched={podsResearched}");
-                
-                if (!tilesValid) 
-                {
-                    int fallbackTime = podsResearched ? 30000 : 600000;
-                    Log.Message($"ReturnTicksToArrive Debug: Invalid tiles, returning fallback time: {fallbackTime} ticks ({fallbackTime / 60000f:F1} days)");
-                    return fallbackTime;
-                }
-                if (podsResearched) 
-                {
-                    int multiplier = tilesInShuttleRange ? 5 : 10;
-                    return Find.WorldGrid.TraversalDistanceBetween(currentTile, destinationTile) * multiplier;
-                }
-            }
-
-            var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
-            var fromTile = new PlanetTile(currentTile, mainPlanetLayer);
-            var toTile = new PlanetTile(destinationTile, mainPlanetLayer);
-            using (var pathing = new WorldPathing(mainPlanetLayer))
-            {
-                using (WorldPath tempPath = pathing.FindPath(fromTile, toTile, null))
-                {
-                    if (tempPath == WorldPath.NotFound) return 600000;
-
-                    return CaravanArrivalTimeEstimator.EstimatedTicksToArrive(currentTile, destinationTile, tempPath, 0f, CaravanTicksPerMoveUtility.GetTicksPerMove(null), Find.TickManager.TicksAbs);
-                }
-            }
-        }
-
-        public static void sendPrisoner(Pawn prisoner, SettlementFC settlement)
-        {
-            settlement.addPrisoner(prisoner);
-            prisoner.DeSpawn();
-        }
-
-        public static Faction copyPlayerColonyFaction()
-        {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-
-            worldcomp.setCapital();
-
-            FactionDef facDef = new FactionDef();
-
-
-            facDef = DefDatabase<FactionDef>.GetNamed("PColony");
-            Faction faction = new Faction();
-            faction.def = facDef;
-            faction.def.techLevel = worldcomp.factionBackup.def.techLevel;
-            faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
-            faction.colorFromSpectrum = worldcomp.factionBackup.colorFromSpectrum;
-            faction.Name = worldcomp.factionBackup.Name;
-            //faction. = worldcomp.factionBackup.centralMelanin;
-            //<DevAdd> Copy player faction relationships  
-            foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
-            {
-                faction.TryMakeInitialRelationsWith(other);
-            }
-
-            //faction.GenerateNewLeader();
-            faction.TryGenerateNewLeader();
-
-            //Log.Message(Find.FactionManager.AllFactions.Contains(faction).ToString());
-
-            //Find.FactionManager.Add(faction);
-
-            //check if SoS2 is enabled
-            if (IsModLoaded("kentington.saveourship2"))
-            {
-                Log.Message("SoS2 running - planet changed");
-                //SoS2 is loaded
-
-                Type typ = returnUnknownTypeFromName("SaveOurShip2.WorldSwitchUtility");
-                Type typ2 = returnUnknownTypeFromName("SaveOurShip2.WorldFactionList");
-
-                // Check if SoS2 classes were found
-                // Preview debug - Remove once confirmed ok!
-                if (typ == null || typ2 == null)
-                {
-                    Log.Warning("Empire - SoS2 compatibility: Could not find required SoS2 classes. SoS2 may not be loaded or has a different version.");
-                }
-                else
-                {
-                    try
-                    {
-                        var mainclass = Traverse.CreateWithType(typ.ToString());
-                        var dict = mainclass.Property("PastWorldTracker").Field("WorldFactions").GetValue();
-
-                        var planetfactiondict = Traverse.Create(dict);
-                        var unknownclass = planetfactiondict.Property("Item", new object[] {Find.World.info.name}).GetValue();
-
-                        var factionlist = Traverse.Create(unknownclass);
-                        var list = factionlist.Field("myFactions").GetValue();
-                        List<String> modifiedlist = (List<String>) list;
-                        modifiedlist.Add(faction.GetUniqueLoadID());
-                        factionlist.Field("myFactions").SetValue(modifiedlist);
-                        //Log.Message("Added faction to world list");
-                    // Preview debug - Remove once confirmed ok!
-                    } 
-                    catch (Exception ex)
-                    {
-                        Log.Warning("Empire - SoS2 compatibility: Error adding faction to SoS2 world list: " + ex.Message);
-                    }
-                }
-
-                foreach (Faction other in Find.FactionManager.AllFactionsVisibleInViewOrder)
-                {
-                    faction.TryMakeInitialRelationsWith(other);
-                }
-
-                Find.FactionManager.Add(faction);
-            }
-
-
-            return faction;
-        }
 
         public static void debugMarker(ref int i)
         {
-            Log.Message(i.ToString());
+            LogUtil.Message($"debugMarker: {i}");
             i ++;
         }
 
-        public static Faction createPlayerColonyFaction()
-        {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-            if (worldcomp == null)
-            {
-                Log.Error("FactionFC world component is missing! Cannot create player colony faction.");
-                return null;
-            }
-            //Log.Message("Creating new faction");
-            //Set start time for world component to start tracking your faction;
-            worldcomp.setCapital();
-
-            //Log.Message("Faction is being created");
-            FactionDef facDef = DefDatabase<FactionDef>.GetNamed("PColony");
-            Faction faction = new Faction
-            {
-                def = facDef
-            };
-            faction.def.techLevel = Faction.OfPlayer.def.techLevel;
-            faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
-            faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
-            faction.Name = "PlayerColony".Translate();
-            //faction.centralMelanin = Rand.Value;
-            faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
-            faction.ideos = Faction.OfPlayer.ideos;
-            //<DevAdd> Copy player faction relationships  
-            foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
-            {
-                faction.TryMakeInitialRelationsWith(other);
-            }
-            // Set starting goodwill to Player
-            faction.TryAffectGoodwillWith(Faction.OfPlayer, 200);
-
-            // Generate Leader
-            if(!faction.TryGenerateNewLeader())
-            {
-                Log.Message("Generating Leader failed! Manually Generating . . .");
-                faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
-                faction: faction, context: PawnGenerationContext.NonPlayer, 
-                forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
-                canGeneratePawnRelations: true, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0,
-                forceAddFreeWarmLayerIfNeeded: false,  worldPawnFactionDoesntMatter: false));
-                if(faction.leader == null)
-                {
-                    Log.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
-                }
-            }
-            worldcomp.factionBackup = faction;
-            Find.FactionManager.Add(faction);
-
-            Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);
-            return faction;
-        }
-
-        public static void ChangePlayerColonyFaction(Faction faction)
-        {
-            faction = createPlayerColonyFaction();
-            Log.Message("Faction was updated - " + faction.Name);
-        }
-
-
-        private static List<float> GetAttackPoints()
-        {
-            List<float> list = new List<float>();
-            for (int i = -Convert.ToInt32(plusOrMinusRandomAttackValue * 10);
-                i < plusOrMinusRandomAttackValue * 10;
-                i++)
-            {
-                list.Add((i / 10));
-            }
-
-            return list;
-        }
-
-        public static float RandomAttackModifier()
-        {
-            float y = (from x in GetAttackPoints()
-                select x).RandomElementByWeight(x =>
-                new SimpleCurve
-                        {new CurvePoint(0f, 1f), new CurvePoint(plusOrMinusRandomAttackValue, .1f)}
-                    .Evaluate(Math.Abs(x) - 2));
-            return y;
-        }
-
-
-        public static string FloorStat(double stat)
-        {
-            return Convert.ToString(Math.Floor((stat * 100)) / 100);
-        }
-
-        public static FactionColonies Settings() => LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>();
-
-        public static string GetTownTitle(SettlementFC settlement)
-        {
-            double highest = 0;
-            ResourceType? resourceKey = null;
-            int level;
-            if (settlement.settlementLevel <= 3)
-            {
-                level = 1;
-            }
-            else if (settlement.settlementLevel <= 6)
-            {
-                level = 2;
-            }
-            else
-            {
-                level = 3;
-            }
-
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
-            {
-                ResourceFC resource = settlement.getResource(resourceType);
-                if (resource.endProduction > highest)
-                {
-                    highest = resource.endProduction;
-                    resourceKey = resourceType;
-                }
-            }
-
-            return ("FCTitle_" + resourceKey + "_" + level).Translate();
-        }
-
-        public int silverPerResource = 100;
-        public static double silverToCreateSettlement = 1000;
-        // public int timeBetweenTaxes = GenDate.TicksPerTwelfth;
-        // public static int updateUiTimer = 150;'
-
-        // Tax attempt fix
-        private int _timeBetweenTaxes = DEFAULT_TAX_INTERVAL;
-        public int timeBetweenTaxes
-        {
-            get
-            {
-                // Ensure the value is never 0 or negative
-                if (_timeBetweenTaxes <= 0)
-                {
-                    // Restore based on current difficulty level, not always to default
-                    int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
-                    Log.Warning($"Empire Mod - Settings: timeBetweenTaxes getter detected invalid value ({_timeBetweenTaxes}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
-                    _timeBetweenTaxes = correctValue;
-                }
-                return _timeBetweenTaxes;
-            }
-            set
-            {
-                // Ensure the value is never 0 or negative
-                if (value <= 0)
-                {
-                    // Restore based on current difficulty level, not always to minimum
-                    int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
-                    Log.Warning($"Empire Mod - Settings: Attempted to set timeBetweenTaxes to invalid value ({value}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
-                    _timeBetweenTaxes = correctValue;
-                }
-                else
-                {
-                    _timeBetweenTaxes = value;
-                }
-            }
-        }
-
-
-        public int productionTitheMod = 25;
-        public static int productionResearchBase = 100;
-        public static int storeReportCount = 4;
-        public int workerCost = 100;
-
-        public EmpireDifficultyLevel difficultyLevel = EmpireDifficultyLevel.AdventureStory; // Default to Adventure Story
-
-        public static double unrestBaseGain = 0;
-        public static double unrestBaseLost = 1;
-
-        public static double loyaltyBaseGain = 1;
-        public static double loyaltyBaseLost = 0;
-
-        public static double happinessBaseGain = 1;
-        public static double happinessBaseLost = 0;
-
-        public static double prosperityBaseRecovery = 1;
-
-        public double settlementBaseUpgradeCost = 1000;
-        public int settlementMaxLevel = 10;
-
-        public bool medievalTechOnly;
-        public bool disableHostileMilitaryActions;
-        public bool disableRandomEvents;
-        public bool disableForcedPausingDuringEvents = true;
-        public bool deadPawnsIncreaseMilitaryCooldown;
-        public bool settlementsAutoBattle = true;
-        public TaxDeliveryMode forcedTaxDeliveryMode;
-        public TaxNotificationMode taxNotificationMode = TaxNotificationMode.All;
-
-        public int minDaysTillMilitaryAction = 4;
-        public int maxDaysTillMilitaryAction = 10;
-
-        public int minDaysTillRandomEvent = 0;
-        public int maxDaysTillRandomEvent = 6;
-        public IntRange minMaxDaysTillMilitaryAction = new IntRange(4, 10);
-
-        private static float plusOrMinusRandomAttackValue = 2;
-        public static double militaryAnimalCostMultiplier = 1.5;
-        public static double militaryRaceCostMultiplier = .15;
-
-        public double updateVersion = 0;
-
-        // Window size settings - add these fields
-        public float buildingWindowWidth = 450f;
-        public float buildingWindowHeight = 600f;
-
-        // Static variables to remember window size during play session
-        private static Vector2 savedWindowSize = new Vector2(450f, 600f);
-        private static bool hasSavedSize = false;
-
-        // Helper method to get the correct timeBetweenTaxes for a difficulty level
-        // Used when restoring corrupted values to ensure we use the preset value, not always 1 day
-        private static int GetTimeBetweenTaxesForDifficulty(EmpireDifficultyLevel difficulty)
-        {
-            switch (difficulty)
-            {
-                case EmpireDifficultyLevel.Peaceful:
-                    return 2 * 60000; // 2 days in ticks
-                case EmpireDifficultyLevel.CommunityBuilder:
-                    return 5 * 60000; // 5 days in ticks
-                case EmpireDifficultyLevel.AdventureStory:
-                    return 5 * 60000; // 5 days in ticks
-                case EmpireDifficultyLevel.StriveToSurvive:
-                    return 10 * 60000; // 10 days in ticks
-                case EmpireDifficultyLevel.BloodAndDust:
-                    return 15 * 60000; // 15 days in ticks
-                case EmpireDifficultyLevel.LosingIsFun:
-                    return 30 * 60000; // 30 days in ticks
-                case EmpireDifficultyLevel.Custom:
-                default:
-                    return DEFAULT_TAX_INTERVAL; // 5 days fallback for Custom or unknown
-            }
-        }
-
         // Difficulty preset values
-        public void ApplyDifficultyPreset(EmpireDifficultyLevel difficulty)
+        public static void ApplyDifficultyPreset(EmpireDifficultyLevel difficulty)
         {
             switch (difficulty)
             {
                 case EmpireDifficultyLevel.Peaceful:
-                    silverPerResource = 200;
-                    timeBetweenTaxes = 2 * 60000; // 2 days in ticks
-                    productionTitheMod = 50;
-                    workerCost = 75;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_PEACEFUL;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_PEACEFUL;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_PEACEFUL;
+                    workerCost = DEFAULT_WORKER_COST_PEACEFUL;
                     break;
                 case EmpireDifficultyLevel.CommunityBuilder:
-                    silverPerResource = 150;
-                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
-                    productionTitheMod = 25;
-                    workerCost = 100;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_COMMUNITYBUILDER;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_COMMUNITYBUILDER;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_COMMUNITYBUILDER;
+                    workerCost = DEFAULT_WORKER_COST_COMMUNITYBUILDER;
                     break;
                 case EmpireDifficultyLevel.AdventureStory:
-                    silverPerResource = 100;
-                    timeBetweenTaxes = 5 * 60000; // 5 days in ticks
-                    productionTitheMod = 25;
-                    workerCost = 100;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_ADVENTURESTORY;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_ADVENTURESTORY;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_ADVENTURESTORY;
+                    workerCost = DEFAULT_WORKER_COST_ADVENTURESTORY;
                     break;
                 case EmpireDifficultyLevel.StriveToSurvive:
-                    silverPerResource = 100;
-                    timeBetweenTaxes = 10 * 60000; // 10 days in ticks
-                    productionTitheMod = 20;
-                    workerCost = 125;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_STRIVETOSURVIVE;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_STRIVETOSURVIVE;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_STRIVETOSURVIVE;
+                    workerCost = DEFAULT_WORKER_COST_STRIVETOSURVIVE;
                     break;
                 case EmpireDifficultyLevel.BloodAndDust:
-                    silverPerResource = 80;
-                    timeBetweenTaxes = 15 * 60000; // 15 days in ticks
-                    productionTitheMod = 15;
-                    workerCost = 125;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_BLOODANDDUST;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_BLOODANDDUST;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_BLOODANDDUST;
+                    workerCost = DEFAULT_WORKER_COST_BLOODANDDUST;
                     break;
                 case EmpireDifficultyLevel.LosingIsFun:
-                    silverPerResource = 70;
-                    timeBetweenTaxes = 30 * 60000; // 30 days in ticks
-                    productionTitheMod = 10;
-                    workerCost = 150;
+                    silverPerResource = DEFAULT_SILVER_PER_RESOURCE_LOSINGISFUN;
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS_LOSINGISFUN;
+                    productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD_LOSINGISFUN;
+                    workerCost = DEFAULT_WORKER_COST_LOSINGISFUN;
                     break;
                 case EmpireDifficultyLevel.Custom:
                     // Don't change anything for custom
@@ -1451,70 +416,36 @@ namespace FactionColonies
             }
         }
 
-        public override void ExposeData()
+        public static int DaysBetweenTaxesByDifficulty(EmpireDifficultyLevel difficulty)
         {
-            base.ExposeData();
-            Scribe_Values.Look(ref silverPerResource, "silverPerResource");
-            Scribe_Values.Look(ref _timeBetweenTaxes, "timeBetweenTaxes");
-            
-            // Validate timeBetweenTaxes after loading to prevent corruption issues
-            if (Scribe.mode == LoadSaveMode.LoadingVars && _timeBetweenTaxes <= 0)
+            switch (difficulty)
             {
-                // Restore based on current difficulty level, not always to default
-                int correctValue = GetTimeBetweenTaxesForDifficulty(difficultyLevel);
-                Log.Warning($"Empire Mod - Settings: Detected corrupted timeBetweenTaxes value ({_timeBetweenTaxes}), restoring to difficulty preset ({difficultyLevel} = {correctValue / 60000} days)");
-                _timeBetweenTaxes = correctValue;
-            }
-            Scribe_Values.Look(ref productionTitheMod, "productionTitheMod");
-            Scribe_Values.Look(ref workerCost, "workerCost");
-            Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel");
-            Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly");
-            Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions");
-            Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents");
-            Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", default);
-            Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", TaxNotificationMode.All);
-            Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown");
-            Scribe_Values.Look(ref settlementsAutoBattle, "settlementsAutoBattle");
-            Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction");
-            Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction");
-            Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", 0);
-            Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", 6);
-            Scribe_Values.Look(ref updateVersion, "updateVersion");
-            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
-            Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
-            Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", EmpireDifficultyLevel.AdventureStory);
-            
-            // Band aid - For existing users upgrading from old system, detect if they have custom values
-            if (Scribe.mode == LoadSaveMode.LoadingVars && difficultyLevel == EmpireDifficultyLevel.AdventureStory)
-            {
-                // Check if current values match Adventure Story defaults
-                if (silverPerResource != 100 || (timeBetweenTaxes / 60000) != 5 || productionTitheMod != 25 || workerCost != 100)
-                {
-                    // User had custom settings, set to Custom mode
-                    difficultyLevel = EmpireDifficultyLevel.Custom;
-                }
+                case EmpireDifficultyLevel.Peaceful:
+                    return DEFAULT_TAX_INTERVAL_DAYS_PEACEFUL;
+                case EmpireDifficultyLevel.CommunityBuilder:
+                    return DEFAULT_TAX_INTERVAL_DAYS_COMMUNITYBUILDER;
+                case EmpireDifficultyLevel.AdventureStory:
+                    return DEFAULT_TAX_INTERVAL_DAYS_ADVENTURESTORY;
+                case EmpireDifficultyLevel.StriveToSurvive:
+                    return DEFAULT_TAX_INTERVAL_DAYS_STRIVETOSURVIVE;
+                case EmpireDifficultyLevel.BloodAndDust:
+                    return DEFAULT_TAX_INTERVAL_DAYS_BLOODANDDUST;
+                case EmpireDifficultyLevel.LosingIsFun:
+                    return DEFAULT_TAX_INTERVAL_DAYS_LOSINGISFUN;
+                default:
+                    return DEFAULT_TAX_INTERVAL_DAYS;
             }
         }
-    }
-
-    
-    public class FactionColoniesMod : Mod
-    {
-        public FactionColonies settings = new FactionColonies();
-
-        public FactionColoniesMod(ModContentPack content) : base(content)
+        public static int TicksBetweenTaxesByDifficulty(EmpireDifficultyLevel difficulty)
         {
-            settings = GetSettings<FactionColonies>();
+            return DaysBetweenTaxesByDifficulty(difficulty) * GenDate.TicksPerDay;
         }
 
-        string silverPerResource;
-        string timeBetweenTaxes;
-        string productionTitheMod;
-        string workerCost;
-        string settlementMaxLevel;
-        int daysBetweenTaxes;
-        IntRange minMaxDaysTillMilitaryAction = new IntRange(4, 10);
-        IntRange minMaxDaysTillRandomEvent = new IntRange(0, 6);
+        string silverPerResource_buffer;
+        string timeBetweenTaxes_buffer;
+        string productionTitheMod_buffer;
+        string workerCost_buffer;
+        string settlementMaxLevel_buffer;
 
         private Vector2 scrollVector = new Vector2();
         private float viewRectHeight = -1f;
@@ -1531,11 +462,11 @@ namespace FactionColonies
             {
                 if (ModsConfig.RoyaltyActive)
                 {
-                    return new FloatMenuOption("taxDeliveryModeShuttleDesc".Translate(), delegate () {settings.forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle;});
+                    return new FloatMenuOption("taxDeliveryModeShuttleDesc".Translate(), delegate () { forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle; });
                 }
-                else 
-                { 
-                    return new FloatMenuOption("taxDeliveryModeShuttleUnavailableDesc".Translate(), null); 
+                else
+                {
+                    return new FloatMenuOption("taxDeliveryModeShuttleUnavailableDesc".Translate(), null);
                 }
             }
         }
@@ -1547,12 +478,12 @@ namespace FactionColonies
         {
             get
             {
-                return new List<FloatMenuOption>() 
+                return new List<FloatMenuOption>()
                 {
-                    new FloatMenuOption("taxDeliveryModeDefaultDesc".Translate(), delegate() {settings.forcedTaxDeliveryMode = default;}),
-                    new FloatMenuOption("taxDeliveryModeTaxSpotDesc".Translate(), delegate() {settings.forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
-                    new FloatMenuOption("taxDeliveryModeCaravanDesc".Translate(), delegate() {settings.forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
-                    new FloatMenuOption("taxDeliveryModeDropPodDesc".Translate(), delegate() {settings.forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
+                    new FloatMenuOption("taxDeliveryModeDefaultDesc".Translate(), delegate() {forcedTaxDeliveryMode = default;}),
+                    new FloatMenuOption("taxDeliveryModeTaxSpotDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
+                    new FloatMenuOption("taxDeliveryModeCaravanDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
+                    new FloatMenuOption("taxDeliveryModeDropPodDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
                     ShuttleOption
                 };
             }
@@ -1563,23 +494,22 @@ namespace FactionColonies
         /// </summary>
         private List<FloatMenuOption> TaxNotificationOptions => new List<FloatMenuOption>
         {
-            new FloatMenuOption("FCTaxNotifyAll".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.All),
-            new FloatMenuOption("FCTaxNotifyLetterOnly".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.LetterOnly),
-            new FloatMenuOption("FCTaxNotifyMessageOnly".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.MessageOnly),
-            new FloatMenuOption("FCTaxNotifyNone".Translate(), () => settings.taxNotificationMode = TaxNotificationMode.None)
+            new FloatMenuOption("FCTaxNotifyAll".Translate(), () => taxNotificationMode = TaxNotificationMode.All),
+            new FloatMenuOption("FCTaxNotifyLetterOnly".Translate(), () => taxNotificationMode = TaxNotificationMode.LetterOnly),
+            new FloatMenuOption("FCTaxNotifyMessageOnly".Translate(), () => taxNotificationMode = TaxNotificationMode.MessageOnly),
+            new FloatMenuOption("FCTaxNotifyNone".Translate(), () => taxNotificationMode = TaxNotificationMode.None)
         };
 
-        public override void DoSettingsWindowContents(Rect inRect)
+        public void DoWindowContents(Rect inRect)
         {
-            silverPerResource = settings.silverPerResource.ToString();
-            timeBetweenTaxes = (settings.timeBetweenTaxes / 60000).ToString();
-            productionTitheMod = settings.productionTitheMod.ToString();
-            workerCost = settings.workerCost.ToString();
-            settlementMaxLevel = settings.settlementMaxLevel.ToString();
-            daysBetweenTaxes = settings.timeBetweenTaxes / 60000;
+            silverPerResource_buffer = silverPerResource.ToString();
+            timeBetweenTaxes_buffer = timeBetweenTaxes_days.ToString();
+            productionTitheMod_buffer = productionTitheMod.ToString();
+            workerCost_buffer = workerCost.ToString();
+            settlementMaxLevel_buffer = settlementMaxLevel.ToString();
 
-            minMaxDaysTillMilitaryAction = new IntRange(settings.minDaysTillMilitaryAction, settings.maxDaysTillMilitaryAction);
-            minMaxDaysTillRandomEvent = new IntRange(settings.minDaysTillRandomEvent, settings.maxDaysTillRandomEvent);
+            minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
+            minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
 
             viewRectHeight = viewRectHeight == -1f ? float.MaxValue : viewRectHeight;
             Rect viewRect = new Rect(inRect.x, inRect.y, inRect.width - 17f, viewRectHeight);
@@ -1589,7 +519,7 @@ namespace FactionColonies
             ls.Begin(viewRect);
 
             // Display mod version
-            ls.Label("Empire Mod Version: " + FactionColonies.GetModVersion());
+            ls.Label("Empire Mod Version: " + GetModVersion());
             ls.Gap(10f);
 
             // Empire Difficulty Selection
@@ -1610,16 +540,16 @@ namespace FactionColonies
 
             foreach (var option in difficultyOptions)
             {
-                bool isSelected = settings.difficultyLevel == option.level;
-                
+                bool isSelected = difficultyLevel == option.level;
+
                 if (ls.RadioButton(option.nameKey.Translate(), isSelected))
                 {
                     if (!isSelected) // Only change if not already selected
                     {
-                        settings.difficultyLevel = option.level;
+                        difficultyLevel = option.level;
                         if (option.level != EmpireDifficultyLevel.Custom)
                         {
-                            settings.ApplyDifficultyPreset(option.level);
+                            ApplyDifficultyPreset(option.level);
                         }
                     }
                 }
@@ -1630,78 +560,79 @@ namespace FactionColonies
             ls.Gap(15f);
 
             // Show economic settings only if Custom is selected
-            if (settings.difficultyLevel == EmpireDifficultyLevel.Custom)
+            if (difficultyLevel == EmpireDifficultyLevel.Custom)
             {
                 ls.Label("FCSettingSilverPerResource".Translate());
-                ls.IntEntry(ref settings.silverPerResource, ref silverPerResource);
+                ls.IntEntry(ref silverPerResource, ref silverPerResource_buffer);
                 ls.Label("FCSettingDaysBetweenTax".Translate());
-                ls.IntEntry(ref daysBetweenTaxes, ref timeBetweenTaxes);
-                settings.timeBetweenTaxes = Math.Max(1, daysBetweenTaxes) * 60000;
+                ls.IntEntry(ref timeBetweenTaxes_days, ref timeBetweenTaxes_buffer);
                 ls.Label("FCSettingProductionTitheMod".Translate());
-                ls.IntEntry(ref settings.productionTitheMod, ref productionTitheMod);
+                ls.IntEntry(ref productionTitheMod, ref productionTitheMod_buffer);
                 ls.Label("FCSettingWorkerCost".Translate());
-                ls.IntEntry(ref settings.workerCost, ref workerCost);
+                ls.IntEntry(ref workerCost, ref workerCost_buffer);
             }
             else
             {
                 // Show current values as read-only labels for non-custom difficulties
-                ls.Label($"FCSettingSilverPerResource".Translate() + ": " + settings.silverPerResource);
-                ls.Label($"FCSettingDaysBetweenTax".Translate() + ": " + (settings.timeBetweenTaxes / 60000));
-                ls.Label($"FCSettingProductionTitheMod".Translate() + ": " + settings.productionTitheMod);
-                ls.Label($"FCSettingWorkerCost".Translate() + ": " + settings.workerCost);
+                ls.Label($"FCSettingSilverPerResource".Translate() + ": " + silverPerResource);
+                ls.Label($"FCSettingDaysBetweenTax".Translate() + ": " + timeBetweenTaxes_days);
+                ls.Label($"FCSettingProductionTitheMod".Translate() + ": " + productionTitheMod);
+                ls.Label($"FCSettingWorkerCost".Translate() + ": " + workerCost);
             }
 
             ls.Label("FCSettingMaxSettlementLevel".Translate());
-            ls.IntEntry(ref settings.settlementMaxLevel, ref settlementMaxLevel);
-            ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref settings.medievalTechOnly);
-            ls.CheckboxLabeled("FCSettingDisableHostileMilActions".Translate(), ref settings.disableHostileMilitaryActions);
-            ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref settings.disableRandomEvents);
-            ls.CheckboxLabeled("FCSettingDeadPawnsIncreaseMilCooldown".Translate(), ref settings.deadPawnsIncreaseMilitaryCooldown);
-            ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref settings.disableForcedPausingDuringEvents);
+            ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
+            ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref medievalTechOnly);
+            ls.CheckboxLabeled("FCSettingDisableHostileMilActions".Translate(), ref disableHostileMilitaryActions);
+            ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref disableRandomEvents);
+            ls.CheckboxLabeled("FCSettingDeadPawnsIncreaseMilCooldown".Translate(), ref deadPawnsIncreaseMilitaryCooldown);
+            ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref disableForcedPausingDuringEvents);
+            //TODO: uncomment when auto battle works.
+            //      mostly just adding this "todo" as an easy target for searching
             //ls.CheckboxLabeled("FCSettingAutoResolveBattles".Translate(), ref settings.settlementsAutoBattle);
-            if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + settings.forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
-            if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + settings.taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
+            if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
+            if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
             ls.Label("FCSettingMinMaxMilitaryAction".Translate());
             ls.IntRange(ref minMaxDaysTillMilitaryAction, 1, 30);
-            settings.minDaysTillMilitaryAction = minMaxDaysTillMilitaryAction.min;
-            settings.maxDaysTillMilitaryAction = Math.Max(1, minMaxDaysTillMilitaryAction.max);
+            minDaysTillMilitaryAction = minMaxDaysTillMilitaryAction.min;
+            maxDaysTillMilitaryAction = Math.Max(1, minMaxDaysTillMilitaryAction.max);
 
             ls.Label("FCSettingMinMaxRandomEvent".Translate());
             ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
-            settings.minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
-            settings.maxDaysTillRandomEvent = Math.Max(1, minMaxDaysTillRandomEvent.max);
+            minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
+            maxDaysTillRandomEvent = Math.Max(1, minMaxDaysTillRandomEvent.max);
+
+            ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
 
             if (ls.ButtonText("FCOpenPatchNotes".Translate())) DebugActionsMisc.PatchNotesDisplayWindow();
 
             if (ls.ButtonText("FCSettingResetButton".Translate()))
             {
-                FactionColonies blank = new FactionColonies();
-                settings.silverPerResource = blank.silverPerResource;
-                settings.timeBetweenTaxes = blank.timeBetweenTaxes;
-                settings.productionTitheMod = blank.productionTitheMod;
-                settings.workerCost = blank.workerCost;
-                settings.medievalTechOnly = blank.medievalTechOnly;
-                settings.settlementMaxLevel = blank.settlementMaxLevel;
-                settings.minDaysTillMilitaryAction = blank.minDaysTillMilitaryAction;
-                settings.maxDaysTillMilitaryAction = blank.maxDaysTillMilitaryAction;
-                settings.minDaysTillRandomEvent = blank.minDaysTillRandomEvent;
-                settings.maxDaysTillRandomEvent = blank.maxDaysTillRandomEvent;
-                settings.disableRandomEvents = blank.disableRandomEvents;
-                settings.deadPawnsIncreaseMilitaryCooldown = blank.deadPawnsIncreaseMilitaryCooldown;
-                settings.settlementsAutoBattle = blank.settlementsAutoBattle;
-                settings.disableForcedPausingDuringEvents = blank.disableForcedPausingDuringEvents;
-                settings.forcedTaxDeliveryMode = blank.forcedTaxDeliveryMode;
-                settings.taxNotificationMode = blank.taxNotificationMode;
-                settings.difficultyLevel = blank.difficultyLevel;
-                settings.ApplyDifficultyPreset(settings.difficultyLevel);
+                silverPerResource = DEFAULT_SILVER_PER_RESOURCE;
+                timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
+                productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
+                workerCost = DEFAULT_WORKER_COST;
+                medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+                settlementMaxLevel = DEFAULT_SETTLEMENT_MAX_LEVEL;
+                minDaysTillMilitaryAction = DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION;
+                maxDaysTillMilitaryAction = DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION;
+                minDaysTillRandomEvent = DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT;
+                maxDaysTillRandomEvent = DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT;
+                disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
+                deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+                settlementsAutoBattle = DEFAULT_SETTLEMENTS_AUTO_BATTLE;
+                disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
+                forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
+                taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
+                difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
+                ApplyDifficultyPreset(difficultyLevel);
             }
 
             FixScrollingBug(ls);
             ls.End();
 
             Widgets.EndScrollView();
-            base.DoSettingsWindowContents(inRect);
         }
 
         private void FixScrollingBug(Listing_Standard ls)
@@ -1719,6 +650,17 @@ namespace FactionColonies
                 firstRun = false;
             }
         }
+    }
+
+    
+    public class FactionColoniesMod : Mod
+    {
+        public FCSettings settings = new FCSettings();
+
+        public FactionColoniesMod(ModContentPack content) : base(content)
+        {
+            settings = GetSettings<FCSettings>();
+        }
 
         public override string SettingsCategory()
         {
@@ -1727,13 +669,9 @@ namespace FactionColonies
 
         public override void WriteSettings()
         {
-            // Only update timeBetweenTaxes if daysBetweenTaxes has been properly initialized
-            // (i.e., the settings window was actually opened during this session)
-            if (daysBetweenTaxes > 0)
-            {
-                LoadedModManager.GetMod<FactionColoniesMod>().GetSettings<FactionColonies>().timeBetweenTaxes = daysBetweenTaxes * 60000;
-            }
             base.WriteSettings();
         }
+
+        public override void DoSettingsWindowContents(Rect inRect) => settings.DoWindowContents(inRect);
     }
 }

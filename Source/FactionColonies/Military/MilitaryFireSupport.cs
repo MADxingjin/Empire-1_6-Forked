@@ -1,8 +1,10 @@
-﻿using System;
+﻿using FactionColonies.util;
+using LudeonTK;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -106,11 +108,11 @@ namespace FactionColonies
         {   
             //if CE is on
             ThingDef tempDef = expendProjectile();
-            Type typeDef = FactionColonies.returnUnknownTypeFromName("CombatExtended.AmmoDef");
+            Type typeDef = GenUtil.returnUnknownTypeFromName("CombatExtended.AmmoDef");
             var ammoSetDef = typeDef.GetProperty("AmmoSetDefs", BindingFlags.Public | BindingFlags.Instance).GetValue(tempDef);
-            Type ammoLink = FactionColonies.returnUnknownTypeFromName("CombatExtended.AmmoLink");
+            Type ammoLink = GenUtil.returnUnknownTypeFromName("CombatExtended.AmmoLink");
             var ammoLinkVar = ammoSetDef.GetType().GetProperty("Item").GetValue(ammoSetDef, new object[] { 0 });
-            //  Log.Message(ammoLinkVar.ToString());
+            //  LogUtil.Message(ammoLinkVar.ToString());
             var ammoTypes = ammoLinkVar.GetType().GetField("ammoTypes", BindingFlags.Public | BindingFlags.Instance).GetValue(ammoLinkVar);
             //list of ammotypes
             int count = (int) ammoTypes.GetType().GetProperty("Count").GetValue(ammoTypes, new object[] { });
@@ -124,7 +126,7 @@ namespace FactionColonies
                 }
             }
 
-            Type type2 = FactionColonies.returnUnknownTypeFromName("CombatExtended.ProjectileCE");
+            Type type2 = GenUtil.returnUnknownTypeFromName("CombatExtended.ProjectileCE");
             MethodInfo launch = type2.GetMethod("Launch", new[]
             {
                 typeof(Thing),
@@ -156,7 +158,7 @@ namespace FactionColonies
 
             launch.Invoke(thing, new object[]
             {
-                FactionColonies.getPlayerColonyFaction().leader,
+                ColonyUtil.getPlayerColonyFaction().leader,
                 sourceVec,
                 shotAngle,
                 shotRotation,
@@ -176,7 +178,7 @@ namespace FactionColonies
                     IntVec3 spawnCenter = SemiRandomSpawnCenter;
                     LocalTargetInfo info = new LocalTargetInfo(spawnCenter);
                     ThingDef def = new ThingDef();
-                    if (FactionColonies.IsModLoaded("CETeam.CombatExtended")) 
+                    if (FCSettings.IsModLoaded("CETeam.CombatExtended")) 
                     {
                         DoCombatExtendedLaunch(spawnCenter, def);
                     }

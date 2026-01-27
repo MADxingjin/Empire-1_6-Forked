@@ -1,10 +1,11 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-using RimWorld;
 
 
 namespace FactionColonies
@@ -42,7 +43,7 @@ namespace FactionColonies
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;
             loadID = Find.World.GetComponent<FactionFC>().GetNextPrisonerID();
-            pawn.guest.SetGuestStatus(FactionColonies.getPlayerColonyFaction(), GuestStatus.Prisoner);
+            pawn.guest.SetGuestStatus(ColonyUtil.getPlayerColonyFaction(), GuestStatus.Prisoner);
         }
 
         

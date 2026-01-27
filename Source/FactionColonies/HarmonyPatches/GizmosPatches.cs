@@ -22,7 +22,7 @@ namespace FactionColonies
 				int currentFrame = UnityEngine.Time.frameCount;
 				if (_cacheFrame != currentFrame || _cachedFaction == null)
 				{
-					_cachedFaction = FactionColonies.getPlayerColonyFaction();
+					_cachedFaction = ColonyUtil.getPlayerColonyFaction();
 					_cacheFrame = currentFrame;
 				}
 				return _cachedFaction;
@@ -110,7 +110,7 @@ namespace FactionColonies
 						Command_Toggle action = gizmo as Command_Toggle;
 						if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
 						{
-							action.toggleAction = () => found.SetFaction(FactionColonies.getPlayerColonyFaction());
+							action.toggleAction = () => found.SetFaction(ColonyUtil.getPlayerColonyFaction());
 							break;
 						}
 					}
@@ -141,6 +141,7 @@ namespace FactionColonies
 
 		/// <param name="prisoner"></param>
 		/// <returns>A <c>Command_Action</c> that sends the selected <paramref name="prisoner"/> to an empire settlementFC.</returns>
+		/// TODO: Replace this with needing to actually send the prisoner to the settlement via caravan or droppod? At the very least, the transfer shouldn't be instantaneous
 		private static Command_Action SendPrisonerAction(Pawn prisoner) => new Command_Action
 		{
 			defaultLabel = "SendToSettlement".Translate(),
@@ -157,7 +158,7 @@ namespace FactionColonies
 				List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>().settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
 				{
 					//disappear prisoner
-					FactionColonies.sendPrisoner(prisoner, settlement);
+					TravelUtil.sendPrisoner(prisoner, settlement);
 
 					foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map => map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>().Where(bed => bed.OwnersForReading.Any(bedPawn => bedPawn == prisoner)))
 					{

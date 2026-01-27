@@ -16,7 +16,7 @@ namespace FactionColonies
             factionIcons = icons.ToList();
             if (factionIcons.NullOrEmpty())
             {
-                Log.Error("Empire - No faction icons found, will probably result in Empire not working properly.");
+                LogUtil.Error("No faction icons found, will probably result in Empire not working properly.");
             }
         }
 

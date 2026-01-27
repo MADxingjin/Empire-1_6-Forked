@@ -1,13 +1,14 @@
+using FactionColonies.util;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using HarmonyLib;
-using RimWorld;
 using UnityEngine;
 using Verse;
-using LudeonTK;
 
 namespace FactionColonies
 {
@@ -86,7 +87,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to load squad at path " + path);
+                    LogUtil.Error("Failed to load squad at path " + path);
                 }
                 finally
                 {
@@ -105,7 +106,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to load unit at path " + path);
+                    LogUtil.Error("Failed to load unit at path " + path);
                 }
                 finally
                 {
@@ -134,7 +135,7 @@ namespace FactionColonies
             }
             catch (Exception e)
             {
-                Log.Error($"Failed to save squad {squad.name} {e}");
+                LogUtil.Error($"Failed to save squad {squad.name} {e}");
             }
             finally
             {
@@ -162,7 +163,7 @@ namespace FactionColonies
             }
             catch (Exception e)
             {
-                Log.Error($"Failed to save unit {unit.name} {e}");
+                LogUtil.Error($"Failed to save unit {unit.name} {e}");
             }
             finally
             {
@@ -217,7 +218,7 @@ namespace FactionColonies
             };
             if (!Find.World.GetComponent<FactionFC>().raceFilter.Allows(pawnKind.race))
             {
-                unit.pawnKind = FactionColonies.getPlayerColonyFaction().RandomPawnKind();
+                unit.pawnKind = ColonyUtil.getPlayerColonyFaction().RandomPawnKind();
             }
             unit.defaultPawn.genes.SetXenotype(xenotype);
             unit.generateDefaultPawn();

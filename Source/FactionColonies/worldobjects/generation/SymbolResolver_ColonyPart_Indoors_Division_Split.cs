@@ -18,7 +18,7 @@ namespace FactionColonies
         public override void Resolve(ResolveParams rp)
         {
             if (rp.rect.Width < 9 && rp.rect.Height < 9)
-                Log.Warning("Too small rect. params=" + rp);
+                LogUtil.Warning("Too small rect. params=" + rp);
             else if ((!Rand.Bool || rp.rect.Height < 9 ? (rp.rect.Width < 9 ? 1 : 0) : 1) != 0)
             {
                 int num = Rand.RangeInclusive(4, rp.rect.Height - 5);

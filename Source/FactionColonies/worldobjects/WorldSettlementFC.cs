@@ -93,7 +93,7 @@ namespace FactionColonies
             icon = TexLoad.iconMilitary,
             action = delegate
             {
-                if (FactionColonies.Settings().settlementsAutoBattle)
+                if (FCSettings.settlementsAutoBattle)
                     Messages.Message("autoBattleEnabledNoManualFight".Translate(), MessageTypeDefOf.RejectInput);
                 else
                     startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(settlement.mapLocation), () => { });
@@ -292,7 +292,7 @@ namespace FactionColonies
         public void updateTechIcon()
         {
             var techLevel = Find.World.GetComponent<FactionFC>().techLevel;
-            Log.Message("Got tech level " + techLevel);
+            LogUtil.Message("Got tech level " + techLevel);
             if (techLevel == TechLevel.Animal || techLevel == TechLevel.Neolithic)
                 def.texture = "World/WorldObjects/TribalSettlement";
             else
@@ -345,7 +345,7 @@ namespace FactionColonies
         {
             if (pawns.NullOrEmpty())
             {
-                Log.Error("Tried to add an empty list of pawns to an FCEvent");
+                LogUtil.Error("Tried to add an empty list of pawns to an FCEvent");
                 return;
             }
 
@@ -358,7 +358,7 @@ namespace FactionColonies
                         if (defenders.Any())
                             defenders[0].GetLord().AddPawn(pawn);
                         else
-                            LordMaker.MakeNewLord(FactionColonies.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
+                            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
                                 Map, pawns);
                     }
 
@@ -467,7 +467,7 @@ namespace FactionColonies
                             num2++;
                             if (num2 > 10000)
                             {
-                                Log.Error("Too many iterations.");
+                                LogUtil.Error("WorldSettlementFC.deleteMap: Too many iterations.");
                                 return;
                             }
 
@@ -483,7 +483,7 @@ namespace FactionColonies
                     goods = pawns.ToList(),
                     customDescription = DeliveryEvent.ShuttleEventInjuredString,
                     timeTillTrigger = Find.TickManager.TicksGame +
-                                      FactionColonies.ReturnTicksToArrive(Tile, Find.AnyPlayerHomeMap.Tile)
+                                      TravelUtil.ReturnTicksToArrive(Tile, Find.AnyPlayerHomeMap.Tile)
                 };
 
                 if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
@@ -503,7 +503,7 @@ namespace FactionColonies
 
         public void startDefence(FCEvent evt, Action after)
         {
-            if (FactionColonies.Settings().settlementsAutoBattle)
+            if (FCSettings.settlementsAutoBattle)
             {
                 var won = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending) == 1;
                 endBattle(won, (int) evt.militaryForceDefending.forceRemaining);
@@ -547,7 +547,7 @@ namespace FactionColonies
             {
                 if (evt == null)
                 {
-                    Log.Warning("Aborting defense, null FCEvent!");
+                    LogUtil.Warning("Aborting defense, null FCEvent!");
                     return;
                 }
 
@@ -629,7 +629,7 @@ namespace FactionColonies
                 return CellFinder.RandomClosewalkCellNear(result, map, 5);
             if (CellFinder.TryFindRandomEdgeCellWith(BaseValidator, map, CellFinder.EdgeRoadChance_Neutral, out result))
                 return CellFinder.RandomClosewalkCellNear(result, map, 5);
-            Log.Warning("Could not find any valid edge cell.");
+            LogUtil.Warning("Could not find any valid edge cell.");
             return CellFinder.RandomCell(map);
         }
 
@@ -656,7 +656,7 @@ namespace FactionColonies
                 var parms = new IncidentParms
                 {
                     target = Map,
-                    faction = FactionColonies.getPlayerColonyFaction(),
+                    faction = ColonyUtil.getPlayerColonyFaction(),
                     generateFightersOnly = true,
                     raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
                 };
@@ -668,7 +668,7 @@ namespace FactionColonies
                 friendlies = PawnGroupMakerUtility.GeneratePawns(
                     IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
                         PawnGroupKindDefOf.Combat, parms, true)).ToList();
-                if (!friendlies.Any()) Log.Error("Got no pawns spawning raid from parms " + parms);
+                if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
             }
 
             void tryFindLoc(out IntVec3 loc, Pawn friendly)
@@ -680,7 +680,7 @@ namespace FactionColonies
                         TraverseParms.For(TraverseMode.PassDoors)), out loc);
                 if (loc.x == -1000)
                 {
-                    Log.Message("Failed with " + friendly + ", " + loc);
+                    LogUtil.Message("Failed with " + friendly + ", " + loc);
                     CellFinder.TryFindRandomCellNear(new IntVec3(min + 10 + settlement.settlementLevel, 1,
                             min + 10 + settlement.settlementLevel), Map, 75,
                         testing => testing.Standable(Map), out loc);
@@ -709,14 +709,14 @@ namespace FactionColonies
                         catch
                         {
                             var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            Log.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber +
+                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber +
                                       ", and riders dictionary is not empty!");
                             continue;
                         }
                     }
                     else
                     {
-                        Log.Error("Rider Dictionary is empty but animal was still generated?");
+                        LogUtil.Error("Rider Dictionary is empty but animal was still generated?");
                         continue;
                     }
                 }
@@ -733,7 +733,7 @@ namespace FactionColonies
                 friendly.drafter.Drafted = true;
             }
 
-            LordMaker.MakeNewLord(FactionColonies.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
+            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
                 friendlies);
 
             defenders = friendlies;
@@ -743,7 +743,7 @@ namespace FactionColonies
         {
             var faction = Find.World.GetComponent<FactionFC>();
 
-            // Log.Message("Handling combat resolution...");
+            LogUtil.Message("WorldSettlementFC.endBattle: Handling combat resolution...");
             try
             {
                 if (won)
@@ -754,12 +754,12 @@ namespace FactionColonies
                 {
                     LoseBattle(faction);
                 }
-                // Log.Message("Handling foreign defenders...");
+                LogUtil.Message("WorldSettlementFC.endBattle: Handling foreign defenders...");
                 CooldownMilitary(remaining);
             }
             catch (Exception e)
             {
-                Log.Error($"Encountered an error while trying to resolve combat in Empire{System.Environment.NewLine}{e}");
+                LogUtil.Error($"Encountered an error while trying to resolve combat in Empire{Environment.NewLine}{e}");
             }
             settlement.isUnderAttack = false;
         }
@@ -772,7 +772,7 @@ namespace FactionColonies
             }
             else if (defenderForce == null)
             {
-                // Log.Message("Defending force not set-- if the attack came from another mod, this is fine.");
+                LogUtil.Message("Defending force not set-- if the attack came from another mod, this is fine.");
             }
             else
             {
@@ -813,7 +813,7 @@ namespace FactionColonies
                 canDestroyBuildings = false;
             }
 
-            // Log.Message("Determined Multipliers for loss penalty");
+            // LogUtil.Message("Determined Multipliers for loss penalty");
             // if winner are enemies
             settlement.prosperity -= 20 * prosperityMultiplier;
             settlement.happiness -= 25 * happinessLostMultiplier;
@@ -833,7 +833,7 @@ namespace FactionColonies
                 settlement.deconstructBuilding(k);
             }
 
-            // Log.Message("Building deconstruction handled");
+            // LogUtil.Message("Building deconstruction handled");
             // level remover checker
             if (settlement.settlementLevel > 1 && canDestroyBuildings)
             {
@@ -845,7 +845,7 @@ namespace FactionColonies
                 }
             }
 
-            // Log.Message("Settlement deleveling handled");
+            // LogUtil.Message("Settlement deleveling handled");
             Find.LetterStack.ReceiveLetter("DefenseFailure".Translate(), str, LetterDefOf.Death,
                 new LookTargets(this));
         }
@@ -879,7 +879,7 @@ namespace FactionColonies
                 {
                     DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
                         "ErrorEndingAttackDescription".Translate());
-                    Log.Error(error.Message);
+                    LogUtil.Error(error.Message);
                 });
         }
 
@@ -892,7 +892,7 @@ namespace FactionColonies
                 {
                     DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
                         "ErrorEndingAttackDescription".Translate());
-                    Log.Error(error.Message);
+                    LogUtil.Error(error.Message);
                 });
         }
     }

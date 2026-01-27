@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +38,7 @@ namespace FactionColonies
         public static void Patch(Harmony harmony)
         {
 
-            Type typ = FactionColonies.returnUnknownTypeFromName("AndroidTiers.PawnGroupMakerUtility_Patch");
+            Type typ = GenUtil.returnUnknownTypeFromName("AndroidTiers.PawnGroupMakerUtility_Patch");
 
 
 
@@ -47,11 +47,11 @@ namespace FactionColonies
             Type[] types = typ.GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
             foreach (Type t in types)
             {
-                Log.Message( t.ToString());
+                LogUtil.Message(t.ToString());
                 if (t.ToString() == "AndroidTiers.PawnGroupMakerUtility_Patch+GeneratePawns_Patch")
                 {
                     typ = t;
-                    //Log.Message("found" + t.ToString());
+                    LogUtil.Message("found" + t.ToString());
                     break;
                 }
             }
@@ -59,14 +59,12 @@ namespace FactionColonies
 
             MethodInfo originalpre = typ.GetMethod("Listener", BindingFlags.Static | BindingFlags.NonPublic);
 
-            Log.Message("2");
             //var prefix = typeof(Android_Tiers_Patches).GetMethod("Prefix");
             MethodInfo prefix = typeof(Android_Tiers_Patches).GetMethod("Prefix");
             // List<MethodInfo> list = typeof(Android_Tiers_Patches).GetMethods();
             foreach (MethodInfo info in typeof(Android_Tiers_Patches).GetMethods())
                 if (info.Name == "Prefix")
                     prefix = info;
-            Log.Message("2");
             harmony.Patch(originalpre, prefix: new HarmonyMethod(prefix));
 
 
@@ -87,8 +85,8 @@ namespace FactionColonies
                 var factions = Find.FactionManager.GetType().GetField("allFactions", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Find.FactionManager);
                 list = (List<Faction>)factions;
             }
-            // Log.Message(list.Count().ToString());
-            Log.Message("Resetting faction leaders");
+            LogUtil.MessageForce("Resetting faction leaders");
+            LogUtil.Message(list.Count().ToString());
             //List<Faction> list = (List<Faction>)mainclass                //mainclass.Field("allFactions", ).GetValue();
             foreach (Faction faction in list)
             {
@@ -97,12 +95,12 @@ namespace FactionColonies
                     try
                     {
                         faction.TryGenerateNewLeader();
-                    }
+}
                     catch (NullReferenceException e)
                     {
-                        Log.Message("Empire - Error trying to generate leader for " + faction.Name);
+                        LogUtil.Error($"Received the following error when trying to generate leader for {faction.Name}: {e.Message}");
                     }
-                    //Log.Message("Generated new leader for " + faction.Name);
+                    LogUtil.Message("Generated new leader for " + faction.Name);
                 }
 
             }

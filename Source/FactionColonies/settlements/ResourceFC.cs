@@ -69,10 +69,10 @@ namespace FactionColonies
         {
             double minimum = filter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, 
                 (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
-            //Log.Message(minimum.ToString());
-            taxMinimumToTithe = minimum + FactionColonies.Settings().productionTitheMod + 
-            TraitUtilsFC.cycleTraits("taxBaseRandomModifier", Find.World.GetComponent<FactionFC>().traits, Operation.Addition) + 
-            TraitUtilsFC.cycleTraits("taxBaseRandomModifier", settlement.traits, Operation.Addition);
+            //LogUtil.Message(minimum.ToString());
+            taxMinimumToTithe = minimum + FCSettings.productionTitheMod + 
+                                TraitUtilsFC.cycleTraits("taxBaseRandomModifier", Find.World.GetComponent<FactionFC>().traits, Operation.Addition) + 
+                                TraitUtilsFC.cycleTraits("taxBaseRandomModifier", settlement.traits, Operation.Addition);
             return minimum;
         }
 
