@@ -1,16 +1,17 @@
+using FactionColonies.util;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
+using RimWorld.BaseGen;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using FactionColonies.util;
-using HarmonyLib;
-using RimWorld;
-using RimWorld.BaseGen;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
-using LudeonTK;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
@@ -33,7 +34,7 @@ namespace FactionColonies
         /// <summary>
         /// Used by other mods to find our settlements. Move, rename, or otherwise modify at your own peril
         /// </summary>
-        public List<SettlementFC> settlements = new List<SettlementFC>();
+        public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
         public string name = "PlayerFaction".Translate();
         public string title = "Bastion".Translate();
         public double averageHappiness = 100;
@@ -43,7 +44,7 @@ namespace FactionColonies
         public double income;
         public double upkeep;
         public double profit;
-        public int capitalLocation = -1;
+        public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         public Map taxMap;
         public TechLevel techLevel = TechLevel.Undefined;
@@ -55,11 +56,11 @@ namespace FactionColonies
 
         //New Types of Productions
         public float researchPointPool = 0;
-        public float powerPool;
+        public List<ResourcePool> resourcePools = new List<ResourcePool>();
         public ThingWithComps powerOutput;
 
         public List<FCEvent> events = new List<FCEvent>();
-        public List<string> settlementCaravansList = new List<string>(); //list of locations caravans already sent to
+        public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
 
         public List<BillFC> OldBills = new List<BillFC>();
         public List<BillFC> Bills = new List<BillFC>();
@@ -67,29 +68,17 @@ namespace FactionColonies
         public bool autoResolveBillsChanged = false;
 
         public List<FCPolicy> policies = new List<FCPolicy>();
-        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        //TODO: nothing should try to modify the traits list directly. Should always go through addTrait/removeTrait/clearTraits/assignNewTraits
+        private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        public List<FCTraitEffectDef> Traits => traits;
         public List<int> militaryTargets = new List<int>();
         public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
         public XenotypeFilter xenotypeFilter;
 
-        //Faction resources
-        public ResourceFC food = new ResourceFC(0, ResourceType.Food);
-        public ResourceFC weapons = new ResourceFC(0, ResourceType.Weapons);
-        public ResourceFC apparel = new ResourceFC(0, ResourceType.Apparel);
-        public ResourceFC animals = new ResourceFC(0, ResourceType.Animals);
-        public ResourceFC logging = new ResourceFC(0, ResourceType.Logging);
+        public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
+        public List<ResourceDisplay> FactionResources => factionResources;
 
-        public ResourceFC mining = new ResourceFC(0, ResourceType.Mining);
-
-        //public ResourceFC research = new ResourceFC("researching", "Researching", 1, ResourceType.Research);
-        public ResourceFC power = new ResourceFC(0, ResourceType.Power);
-        public ResourceFC medicine = new ResourceFC(0, ResourceType.Medicine);
-        public ResourceFC research = new ResourceFC(0, ResourceType.Research);
-        public ResourceFC gravtech = new ResourceFC(0, ResourceType.Gravtech); // Orbital tech bases
-        public ResourceFC chemfuel = new ResourceFC(0, ResourceType.Chemfuel);
-
-        //Faction Def
-        public FactionFCDef factionDef = new FactionFCDef();
+        public List<PlanetLayerDef> layersForTilePicker = null;
 
         //Update
         public int nextSettlementFCID = 1;
@@ -107,7 +96,7 @@ namespace FactionColonies
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
 
         //Sos2 Compatibility
-        public Faction factionBackup;
+        /*public Faction factionBackup;
         public int travelTime = 0;
         public string planetName;
         public bool boolChangedPlanet;
@@ -117,7 +106,7 @@ namespace FactionColonies
         public bool SoSShipCapital;
         public bool SoSShipCapitalMoving = false;
         public List<SettlementSoS2Info> createSettlementQueue = new List<SettlementSoS2Info>();
-        public List<SettlementSoS2Info> deleteSettlementQueue = new List<SettlementSoS2Info>();
+        public List<SettlementSoS2Info> deleteSettlementQueue = new List<SettlementSoS2Info>();*/
 
         //Road builder
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
@@ -156,9 +145,7 @@ namespace FactionColonies
                 Map map;
                 if (taxMap == null)
                 {
-                    if (Find.WorldObjects
-                            .SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map ==
-                        null)
+                    if (Find.WorldObjects.SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map == null)
                     {
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
@@ -230,7 +217,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref techLevel, "techLevel");
             Scribe_Values.Look(ref factionIconPath, "factionIconPath", "Base");
 
-            Scribe_Collections.Look(ref settlements, "settlements", LookMode.Deep);
+            Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
@@ -238,26 +225,12 @@ namespace FactionColonies
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
             //New Producitons types
-            Scribe_Values.Look(ref researchPointPool, "researchPointPool");
-            Scribe_Values.Look(ref powerPool, "powerPool");
+            Scribe_Collections.Look(ref resourcePools, "resourcePools", LookMode.Deep);
             Scribe_References.Look(ref powerOutput, "powerOutput");
 
-
             //save resources
-            Scribe_Deep.Look(ref food, "food");
-            Scribe_Deep.Look(ref weapons, "weapons");
-            Scribe_Deep.Look(ref apparel, "apparel");
-            Scribe_Deep.Look(ref animals, "animals");
-            Scribe_Deep.Look(ref logging, "logging");
-            Scribe_Deep.Look(ref mining, "mining");
-            Scribe_Deep.Look(ref research, "research");
-            Scribe_Deep.Look(ref power, "power");
-            Scribe_Deep.Look(ref medicine, "medicine");
-            Scribe_Deep.Look(ref gravtech, "gravtech");
-            Scribe_Deep.Look(ref chemfuel, "chemfuel");
+            Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
-            //Faction Def
-            Scribe_Deep.Look(ref factionDef, "factionDef");
             Scribe_Deep.Look(ref raceFilter, "raceFilter");
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
             Scribe_Values.Look(ref updateProcessed, "updateProcessed", false);
@@ -288,11 +261,11 @@ namespace FactionColonies
 
             //Sos2 compatibility
             //Scribe_Deep.Look<Faction>(ref factionBackup, "factionBackup");
-            Scribe_Values.Look(ref SoSShipCapital, "SoSShipCapital");
+            /*Scribe_Values.Look(ref SoSShipCapital, "SoSShipCapital");
             Scribe_Values.Look(ref SoSShipTaxMap, "SoSShipTaxMap");
             Scribe_Values.Look(ref planetName, "planetName");
             Scribe_Collections.Look(ref createSettlementQueue, "createSettlementQueue", LookMode.Deep);
-            Scribe_Collections.Look(ref deleteSettlementQueue, "deleteSettlementQueue", LookMode.Deep);
+            Scribe_Collections.Look(ref deleteSettlementQueue, "deleteSettlementQueue", LookMode.Deep);*/
 
             //Road builder
             Scribe_Deep.Look(ref roadBuilder, "roadBuilder");
@@ -340,62 +313,99 @@ namespace FactionColonies
                 xenotypeFilter = new XenotypeFilter(this);
             }
             xenotypeFilter.FinalizeInit(this);
+
+            //TODO: seems this will refresh every time the game is loaded. Might be a problem. Keep an eye on this
+            factionResources.Clear();
+            foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
+            {
+                factionResources.Add(new ResourceDisplay(resourceTypeDef));
+                LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
+            }
+            factionResources.Sort(ResourceDisplay.sortForUI);
         }
 
-        [DebugAction("Empire", "Send Pawn To Settlement", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void sendPawnToSettlement()
+        public void addTrait(FCTraitEffectDef trait, string id = "")
         {
-            List<Pawn> selected = Find.Selector.SelectedPawns;
-            if (!selected.Any())
+            if (trait.appliesToSettlements())
             {
-                Messages.Message("No prisoner selected!", MessageTypeDefOf.RejectInput);
-                return;
+                foreach(WorldSettlementFC settlement in settlements)
+                {
+                    settlement.addTrait(trait, id);
+                }
             }
-            List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
-                .settlements.Select(settlement => new FloatMenuOption(settlement.name + " - Settlement Level : " +
-                    settlement.settlementLevel + " - Prisoners: " +
-                    settlement.prisonerList.Count(), delegate
+            traits.Add(trait);
+        }
+        public void addTraits(List<FCTraitEffectDef> traits, string id = "")
+        {
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                addTrait(trait, id);
+            }
+        }
+        public bool removeTrait(FCTraitEffectDef trait, string id = "")
+        {
+            if (traits.Contains(trait))
+            {
+                if (trait.appliesToSettlements())
+                {
+                    foreach(WorldSettlementFC settlement in settlements)
                     {
-                        foreach (Pawn pawn in selected)
-                        {
-                            //disappear colonist
-                            TravelUtil.sendPrisoner(pawn, settlement);
-
-                            foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
-                                map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
-                            {
-                                if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
-                                bed.ForPrisoners = false;
-                                bed.ForPrisoners = true;
-                            }
-                        }
-                    }))
-                .ToList();
-
-            FloatMenu floatMenu2 = new FloatMenu(settlementList);
-            Find.WindowStack.Add(floatMenu2);
+                        settlement.removeTrait(trait, id);
+                    }
+                }
+                return traits.Remove(trait);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public void removeTraits(List<FCTraitEffectDef> traits, string id = "")
+        {
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                removeTrait(trait, id);
+            }
+        }
+        public void clearTraits()
+        {
+            foreach (FCTraitEffectDef trait in traits)
+            {
+                if (trait.appliesToSettlements())
+                {
+                    foreach(WorldSettlementFC settlement in settlements)
+                    {
+                        settlement.removeTrait(trait);
+                    }
+                }
+            }
+            traits.Clear();
+        }
+        /// <summary>
+        /// This function completely replaces the faction's current list of traits with the provided list.
+        /// </summary>
+        /// <param name="traits"></param>
+        /// <param name="id"></param>
+        public void assignNewTraitList(List<FCTraitEffectDef> traits, string id = "")
+        {
+            clearTraits();
+            addTraits(traits, id);
         }
 
         public void GainHappiness(double amount)
         {
-            foreach (SettlementFC settlement in settlements)
+            foreach (WorldSettlementFC settlement in settlements)
             {
-                settlement.happiness += amount *
-                    TraitUtilsFC.cycleTraits("happinessLostMultiplier", settlement.traits,
-                    Operation.Multiplication) * TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+                settlement.GainHappiness(amount);
             }
         }
 
         public void GainUnrestForReason(Message msg, double amount)
         {
             Messages.Message(msg);
-            foreach (SettlementFC settlement in settlements)
+            foreach (WorldSettlementFC settlement in settlements)
             {
-                settlement.unrest += amount *
-                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                    settlement.traits, Operation.Multiplication) *
-                    TraitUtilsFC.cycleTraits("unrestGainedMultiplier",
-                    traits, Operation.Multiplication);
+                settlement.GainUnrest(amount);
             }
         }
 
@@ -449,40 +459,19 @@ namespace FactionColonies
 
             harmony.PatchAll();
 
-            if (FCSettings.IsModLoaded("kentington.saveourship2"))
+            //SOS2 patches are obsolete
+            //TODO: are there even any harmony patches left? maybe just remove the harmony code entirely? Less code = less bugs, after all
+            /*if (FCSettings.IsModLoaded("kentington.saveourship2"))
             {
                 LogUtil.MessageForce("Starting SoS2 patch...");
                 SoS2HarmonyPatches.Patch(harmony);
-            }
+            }*/
 
-            if (FCSettings.IsModLoaded("Krkr.AndroidTiers") || FCSettings.IsModLoaded("Atlas.AndroidTiers"))
+            /*if (FCSettings.IsModLoaded("Krkr.AndroidTiers") || FCSettings.IsModLoaded("Atlas.AndroidTiers"))
             {
                 //TODO: do we still need this patch?
                 //Android_Tiers_Patches.Patch(harmony);
-            }
-
-
-            power.isTithe = true;
-            power.isTitheBool = true;
-            research.isTithe = true;
-            research.isTitheBool = true;
-        }
-
-        public List<SettlementFC> settlementsOnPlanet
-        {
-            get
-            {
-                List<SettlementFC> list = new List<SettlementFC>();
-                foreach (SettlementFC settlement in settlements)
-                {
-                    if (settlement.planetName == Find.World.info.name)
-                    {
-                        list.Add(settlement);
-                    }
-                }
-
-                return list;
-            }
+            }*/
         }
 
         public override void WorldComponentTick()
@@ -491,10 +480,6 @@ namespace FactionColonies
             if (firstTick)
             {
                 FCSettings.UpdateChanges();
-                if (planetName.NullOrEmpty())
-                {
-                    planetName = Find.World.info.name;
-                }
 
                 roadBuilder.FirstTick();
 
@@ -510,7 +495,6 @@ namespace FactionColonies
 
                 militaryCustomizationUtil.checkMilitaryUtilForErrors();
 
-                factionBackup = FCf;
                 firstTick = false;
             }
 
@@ -536,66 +520,16 @@ namespace FactionColonies
                 roadBuilder.RoadTick();
                 TickActions();
             }
-            else if (faction == null && settlements.Count() >= 0 && factionBackup != null)
-            {
-                //LogUtil.Message("Moved to new planet - Adding faction copy");
-                //FactionColonies.createPlayerColonyFaction();
-                //FactionColonies.copyPlayerColonyFaction();
-            }
-
-            if (boolChangedPlanet)
-            {
-                // if (!factionUpdated)
-                // {
-                SoS2HarmonyPatches.updateFactionOnPlanet();
-                factionUpdated = false;
-            // }
-            Reset:
-                //LogUtil.Message("New planet-" + Find.World.info.name);
-                foreach (SettlementSoS2Info entry in createSettlementQueue)
-                {
-                    //LogUtil.Message("key for create-" + entry.Key);
-                    if (entry.planetName == Find.World.info.name)
-                    {
-                        //LogUtil.Message("Match");
-
-
-                        Settlement settlement =
-                            (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-                        settlement.SetFaction(faction);
-                        settlement.Tile = entry.location;
-                        settlement.Name = returnSettlementByLocation(settlement.Tile, Find.World.info.name).name;
-                        Find.WorldObjects.Add(settlement);
-
-                        createSettlementQueue.Remove(entry);
-                        goto Reset;
-                    }
-                }
-
-                roadBuilder.CreateRoadQueue(Find.World.info.name);
-                roadBuilder.FlagUpdateRoadQueues();
-            Reset2:
-                foreach (SettlementSoS2Info entry in deleteSettlementQueue)
-                {
-                    //LogUtil.Message("key for destroy-" + entry.Key);
-                    if (entry.planetName != Find.World.info.name) continue;
-                    //LogUtil.Message("Match");
-                    Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(entry.location));
-                    deleteSettlementQueue.Remove(entry);
-                    goto Reset2;
-                }
-
-                boolChangedPlanet = false;
-            }
         }
 
         public void TickActions()
         {
             int tick = Find.TickManager.TicksGame;
-            foreach (SettlementFC settlement in settlements)
+            // settlements are all worldobjects now, which tick automatically
+            /*foreach (WorldSettlementFC settlement in settlements)
             {
-                settlement.tickSpecialActions(tick);
-            }
+                settlement.Tick(tick);
+            }*/
 
             //Feudal
             if (traitFeudalBoolCanUseMercenary == false &&
@@ -726,16 +660,13 @@ namespace FactionColonies
         public int returnHighestMilitaryLevel()
         {
             int max = 1;
-            foreach (SettlementFC settlement in settlements)
+            foreach (WorldSettlementFC settlement in settlements)
             {
                 max = Math.Max(max, settlement.settlementMilitaryLevel);
             }
 
             return max;
         }
-
-
-        public void updateFaction() => Find.World.GetComponent<FactionFC>().factionDef = Find.World.GetComponent<FactionFC>().factionDef ?? new FactionFCDef();
 
         public void updateFactionRaces()
         {
@@ -772,7 +703,6 @@ namespace FactionColonies
                 DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false).baseCost && techLevel < TechLevel.Ultra)
             {
                 techLevel = TechLevel.Ultra;
-                factionDef.techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
                 raceFilter.FinalizeInit(this);
             }
@@ -782,7 +712,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Spacer)
             {
                 techLevel = TechLevel.Spacer;
-                factionDef.techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
                 raceFilter.FinalizeInit(this);
             }
@@ -792,7 +721,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Industrial)
             {
                 techLevel = TechLevel.Industrial;
-                factionDef.techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
                 raceFilter.FinalizeInit(this);
             }
@@ -802,7 +730,6 @@ namespace FactionColonies
                      techLevel < TechLevel.Medieval)
             {
                 techLevel = TechLevel.Medieval;
-                factionDef.techLevel = TechLevel.Medieval;
                 LogUtil.Message("updateTechLevel: Medieval");
                 raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
@@ -817,9 +744,6 @@ namespace FactionColonies
                     xenotypeFilter.FinalizeInit(this);
                 }
             }
-
-            //update to player colony faction
-            updateFaction();
 
             Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
@@ -836,23 +760,12 @@ namespace FactionColonies
             {
                 if (playerColonyfaction.leader == null || playerColonyfaction.leader.Dead)
                 {
-                    if (!playerColonyfaction.TryGenerateNewLeader())
-                    {
-                        LogUtil.Message("Generating Leader failed! Manually Generating . . .");
-                        playerColonyfaction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
-                        faction: playerColonyfaction, context: PawnGenerationContext.NonPlayer,
-                        forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
-                        canGeneratePawnRelations: true, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0,
-                        forceAddFreeWarmLayerIfNeeded: false, worldPawnFactionDoesntMatter: false));
-                        if (playerColonyfaction.leader == null)
-                        {
-                            LogUtil.Warning("That failed, too! Contacting " + playerColonyfaction.Name + " won't work!");
-                        }
-                    }
+                    ColonyUtil.CreatePlayerFactionLeader(playerColonyfaction);
                 }
             }
         }
 
+        //TODO: this whole function is playing with defs. Doesn't seem great. Not sure if there's another way to set icons, though. Need to investigate
         public void updateFactionIcon(ref Faction faction, string iconPath)
         {
             LogUtil.Message("Updated Icon - " + iconPath);
@@ -860,21 +773,21 @@ namespace FactionColonies
             {
                 faction.def.factionIconPath = iconPath;
             }
-            if (settlements.Any() && settlements[0]?.worldSettlement?.def != null)
+            if (settlements.Any() && settlements[0]?.def != null)
             {
-                WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].worldSettlement.def,
-                    ContentFinder<Texture2D>.Get(iconPath));
+                //TODO: not sure if this will interact wierdly with the new SettlementDef. Keep an eye on this
+                WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].def, ContentFinder<Texture2D>.Get(iconPath));
             }
 
-            foreach (SettlementFC settlement in settlements)
+            foreach (WorldSettlementFC settlement in settlements)
             {
-                if (settlement?.worldSettlement?.def != null)
+                if (settlement?.def != null)
                 {
-                    settlement.worldSettlement.def.expandingIconTexture = iconPath;
+                    settlement.def.expandingIconTexture = iconPath;
                 }
-                if (settlement?.worldSettlement?.Faction?.def != null)
+                if (settlement?.Faction?.def != null)
                 {
-                    settlement.worldSettlement.Faction.def.factionIconPath = iconPath;
+                    settlement.Faction.def.factionIconPath = iconPath;
                 }
             }
         }
@@ -1022,7 +935,7 @@ namespace FactionColonies
 
             if (settlements.Count() > 0)
             {
-                foreach (SettlementFC settlement in settlements)
+                foreach (WorldSettlementFC settlement in settlements)
                 {
                     averageHappinessTmp += Convert.ToInt32(settlement.happiness);
                     averageLoyaltyTmp += Convert.ToInt32(settlement.loyalty);
@@ -1054,7 +967,7 @@ namespace FactionColonies
             this.name = name;
         }
 
-        public void addSettlement(SettlementFC settlement)
+        public void addSettlement(WorldSettlementFC settlement)
         {
             settlements.Add(settlement);
             uiUpdate();
@@ -1103,72 +1016,92 @@ namespace FactionColonies
             profit = income - upkeep;
         }
 
+        /* * * * *
+         * Resource Pools
+         * * * * * */
+        public void addResourcePool(ResourcePool pool)
+        {
+            if (pool == null)
+            {
+                return;
+            }
+            else if (pool.pool == 0)
+            {
+                return;
+            }
+            /* If the pool wants to do any pre-adding-to-global-pool shenanigans, let it do so now. */
+            pool.pool = pool.resource.preAddToGlobalPool(pool.pool);
+
+            ResourcePool rpool = resourcePools.Find((ResourcePool p) => p.resource == pool.resource);
+            if (rpool != null)
+            {
+                rpool.pool += pool.pool;
+            }
+            else
+            {
+                resourcePools.Add(pool);
+            }
+            pool.resource.addedToGlobalPool(pool.pool);
+        }
+        public void addResourcePools(List<ResourcePool> pools)
+        {
+            foreach(ResourcePool pool in pools)
+            {
+                addResourcePool(pool);
+            }
+        }
+        public double getResourcePoolValue(ResourceTypeDef res)
+        {
+            ResourcePool rpool = resourcePools.Find((ResourcePool p) => p.resource == res);
+            if (rpool == null)
+            {
+                LogUtil.Warning($"Tried to get resource pool value for ResourceTypeDef {res}, but there was no faction resource pool");
+                return 0;
+            }
+            return rpool.pool;
+        }
+
+        public IEnumerable<FloatMenuOption> GetFactionMenuResourcePoolFloatMenuOptions()
+        {
+            foreach(ResourcePool pool in resourcePools)
+            {
+                IEnumerable<FloatMenuOption> options = pool.resource.GetFactionMenuFloatMenuOptions(pool);
+                if (options != null)
+                {
+                    foreach (FloatMenuOption option in options)
+                    {
+                        yield return option;
+                    }
+                }
+            }
+        }
+        public void updateDailyResourcePools()
+        {
+            foreach(ResourcePool pool in resourcePools)
+            {
+                LogUtil.Message($"Daily ResourcePool update for resourceTypeDef {pool.resource.defName}. Pool size: {pool.pool}");
+                pool.resource.dailyUpdate(pool);
+                LogUtil.Message($"Post-Daily ResourcePool update for resourceTypeDef {pool.resource.defName}. New Pool size: {pool.pool}");
+            }
+        }
+
+        /* * * * *
+         * End Resource Pool functions
+         * * * * * */
+
         public void updateTotalResources()
         {
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
+            foreach (ResourceDisplay rdisplay in factionResources)
             {
                 int resource = 0;
 
                 for (int k = 0; k < settlements.Count(); k++)
                 {
-                    resource += (int)settlements[k].getResource(resourceType).endProduction;
+                    resource += (int)(settlements[k].getResource(rdisplay.resourceDef)?.totalProduction ?? 0);
                 }
 
-                returnResource(resourceType).amount = resource;
-                //LogUtil.Message(i + " " + returnResourceByInt(i).amount);  //display total resources by type
+                rdisplay.amount = resource;
             }
-        }
-                public void updateDailyResearch()
-                {
-                    //Research adding
-                    if ((Find.ResearchManager.GetProject() == null) && researchPointPool != 0)
-                    {
-                        Messages.Message("NoResearchExpended".Translate(Math.Round(researchPointPool)),MessageTypeDefOf.NeutralEvent);
-                    }
-                    else if (researchPointPool != 0 && Find.ResearchManager.GetProject() != null)
-                    {
-                        //LogUtil.Message(researchTotal.ToString());
-                        float neededPoints;
-                        neededPoints = (float)Math.Ceiling(Find.ResearchManager.GetProject().CostApparent - 
-                            Find.ResearchManager.GetProject().ProgressApparent);
-                        LogUtil.Message("Needed points: " + neededPoints);
-
-                        float expendedPoints;
-                        if (researchPointPool >= neededPoints)
-                        {
-                            researchPointPool -= neededPoints;
-                            expendedPoints = neededPoints;
-                        }
-                        else
-                        {
-                            expendedPoints = researchPointPool;
-                            researchPointPool = 0;
-                            LogUtil.Message("Used all research points in the pool.");
-                        }
-
-                        LogUtil.Message("Expended points: " + expendedPoints);
-
-                        Find.LetterStack.ReceiveLetter(
-                            "ResearchPointsExpended".Translate(), 
-                            "ResearchExpended".Translate(Math.Round(expendedPoints), 
-                            Find.ResearchManager.GetProject().LabelCap, 
-                            Math.Round(researchPointPool)), 
-                            LetterDefOf.PositiveEvent);
-                        if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
-                        {
-                            Pawn pawn = Find.ColonistBar.GetColonistsInOrder()[0];
-                            Find.ResearchManager.ResearchPerformed(
-                                (float)Math.Ceiling(((1 * Find.ResearchManager.GetProject().CostFactor(pawn.Faction.def.techLevel)) / 
-                                    (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints),
-                                pawn);
-                        }
-                        else
-                        {
-                            LogUtil.Message("Could not find colonist to research with");
-                            Find.ResearchManager.ResearchPerformed((float)Math.Ceiling((1 / 
-                                (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints), null);
-                        }
-                }
         }
 
 
@@ -1178,11 +1111,17 @@ namespace FactionColonies
             //{
             //    setCapital();
             //}
-            powerPool = 0;
+            foreach (ResourcePool pool in resourcePools)
+            {
+                if (pool.resource.poolResourceResetsAtTaxTime())
+                {
+                    pool.pool = 0;
+                }
+            }
 
             if (settlements.Count != 0) //if settlements is not zero
             {
-                foreach (SettlementFC settlement in settlements)
+                foreach (WorldSettlementFC settlement in settlements)
                 {
                     //Start Traits
                     addExperienceToFactionLevel(2f);
@@ -1196,7 +1135,7 @@ namespace FactionColonies
                         {
                             trait_Industrious_TaxPercentageBoost = 1f + (Rand.RangeInclusive(20, 50) / 100f);
                             Find.LetterStack.ReceiveLetter("FCIdustriousTaxBoost".Translate(),
-                                "FCIndustriousPop".Translate(settlement.name,
+                                "FCIndustriousPop".Translate(settlement.Name,
                                     ((trait_Industrious_TaxPercentageBoost - 1f) * 100f) + "%"),
                                 LetterDefOf.PositiveEvent);
                         }
@@ -1208,12 +1147,10 @@ namespace FactionColonies
                     List<Thing> list = new List<Thing>();
                     settlement.updateProfitAndProduction();
                     list = settlement.createTithe(trait_Industrious_TaxPercentageBoost);
-                    float researchPool = settlement.createResearchPool();
-                    float electricityAllotted = settlement.createPowerPool();
+                    List<ResourcePool> resourcePools = settlement.createResourcePools();
 
                     BillFC bill = new BillFC(settlement); //Create new bill connected to settlement
-                    bill.taxes.electricityAllotted = electricityAllotted;
-                    bill.taxes.researchCompleted = researchPool;
+                    bill.taxes.resourcePools = resourcePools;
                     bill.taxes.itemTithes.AddRange(list); //Add tithe to bill's tithes
                     bill.taxes.silverAmount =
                         Convert.ToInt32((settlement.totalIncome * trait_Industrious_TaxPercentageBoost) -
@@ -1271,12 +1208,14 @@ namespace FactionColonies
             //Add event to events
             events.Add(fcevent);
 
+            LogUtil.Message($"addEvent: adding new fcevent {fcevent.def.defName}");
+
             //check if event has a location, if does, add traits to that specific location;
             if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
             {
-                foreach (SettlementFC location in fcevent.settlementTraitLocations)
+                foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
-                    location.traits.AddRange(fcevent.def.traits);
+                    location.addTraits(fcevent.def.traits);
                     foreach (FCTraitEffectDef trait in fcevent.def.traits)
                     {
                         //LogUtil.Message(trait.label);
@@ -1286,16 +1225,15 @@ namespace FactionColonies
             else
             {
                 //if no specific location then faction wide
-                traits.AddRange(fcevent.traits);
+                addTraits(fcevent.traits);
             }
         }
 
-        public bool checkSettlementCaravansList(string location) //list of destinations caravans gone to
+        public bool checkSettlementCaravansList(PlanetTile location) //list of destinations caravans gone to
         {
             for (int i = 0; i < settlementCaravansList.Count(); i++)
             {
-                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(Convert.ToInt32(location),
-                    Convert.ToInt32(settlementCaravansList[i])))
+                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(location, settlementCaravansList[i]))
                 {
                     return true; // is on list
                 }
@@ -1304,47 +1242,26 @@ namespace FactionColonies
             return false; //is not on list
         }
 
-        public ResourceFC returnResource(string name) //used to return the correct resource based on string name
+        public ResourceDisplay returnResource(string name) //used to return the correct resource based on string name
         {
-            return returnResource(ResourceUtils.getTypeFromName(name));
-        }
-
-        public ResourceFC returnResourceByInt(int name) //used to return the correct resource based on string name
-        {
-            return returnResource(ResourceUtils.resourceTypes[name]);
-        }
-
-        public ResourceFC returnResource(ResourceType type)
-        {
-            switch (type)
+            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef.defName == name).FirstOrDefault();
+            if (res == null)
             {
-                case ResourceType.Food:
-                    return food;
-                case ResourceType.Weapons:
-                    return weapons;
-                case ResourceType.Apparel:
-                    return apparel;
-                case ResourceType.Animals:
-                    return animals;
-                case ResourceType.Logging:
-                    return logging;
-                case ResourceType.Mining:
-                    return mining;
-                case ResourceType.Research:
-                    return research;
-                case ResourceType.Power:
-                    return power;
-                case ResourceType.Medicine:
-                    return medicine;
-                case ResourceType.Gravtech:
-                    return gravtech;
-                case ResourceType.Chemfuel:
-                    return chemfuel;
+                /* This should never happen! */
+                LogUtil.Error($"Requested resource {name} is not in the list of faction resources!");
             }
+            return res;
+        }
 
-            /* We should NOT be here */
-            LogUtil.Error($"Unable to find resource {type} - returnResourceByInt(int name)");
-            return null;
+        public ResourceDisplay returnResource(ResourceTypeDef resourceTypeDef)
+        {
+            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef).FirstOrDefault();
+            if (res == null)
+            {
+                /* This should never happen! */
+                LogUtil.Error($"Requested resource {resourceTypeDef.defName} is not in the list of faction resources!");
+            }
+            return res;
         }
 
         public void setCapital()
@@ -1364,16 +1281,6 @@ namespace FactionColonies
             if (Find.CurrentMap != null && Find.CurrentMap.IsPlayerHome)
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
-                capitalPlanet = Find.World.info.name;
-
-                if (Find.CurrentMap.Parent.def.defName == "ShipOrbiting")
-                {
-                    SoSShipCapital = true;
-                }
-                else
-                {
-                    SoSShipCapital = false;
-                }
 
                 Messages.Message("SetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap),
                     MessageTypeDefOf.NeutralEvent);
@@ -1415,31 +1322,11 @@ namespace FactionColonies
             return null;
         }
 
-        public int returnSettlementFCIDByLocation(int location, string planetName)
+        public WorldSettlementFC returnSettlementByLocation(PlanetTile location)
         {
             for (int i = 0; i < settlements.Count(); i++)
             {
-                if (settlements[i].mapLocation == location && settlements[i].planetName == planetName)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        public SettlementFC returnSettlementByLocation(int location, string planetName)
-        {
-            if (planetName == null)
-            {
-                LogUtil.Warning(
-                    "Planet name was null. Please report this as well as the military event that the settlement was used for.");
-                planetName = Find.World.info.name;
-            }
-
-            for (int i = 0; i < settlements.Count(); i++)
-            {
-                if (settlements[i].mapLocation == location && settlements[i].planetName == planetName)
+                if (settlements[i].Tile == location)
                 {
                     return settlements[i];
                 }
@@ -1448,35 +1335,14 @@ namespace FactionColonies
             return null;
         }
 
-        public string getSettlementName(int location, string planetName)
+        public string getSettlementName(PlanetTile location)
         {
-            int i = returnSettlementFCIDByLocation(location, planetName);
-            switch (i)
-            {
-                case -1:
-                    return "Null";
-
-                default:
-                    return settlements[returnSettlementFCIDByLocation(location, planetName)].name;
-            }
+            return returnSettlementByLocation(location)?.Name ?? "Null";
         }
-
-        public SettlementFC getSettlement(int location, string planetName)
-        {
-            int i = returnSettlementFCIDByLocation(location, planetName);
-            switch (i)
-            {
-                case -1:
-                    return null;
-                default:
-                    return settlements[returnSettlementFCIDByLocation(location, planetName)];
-            }
-        }
-
 
         public void updateSettlementStats()
         {
-            foreach (SettlementFC settlement in settlements)
+            foreach (WorldSettlementFC settlement in settlements)
             {
                 settlement.updateHappiness();
                 settlement.updateLoyalty();
@@ -1540,7 +1406,7 @@ namespace FactionColonies
             }
         }
 
-        public void TaxTickPrisoner(SettlementFC settlement)
+        public void TaxTickPrisoner(WorldSettlementFC settlement)
         {
         Reset:
             foreach (FCPrisoner prisoner in settlement.prisonerList)
@@ -1586,7 +1452,7 @@ namespace FactionColonies
                     randomEventLastAdded = 0f;
 
                     //letter code
-                    string settlementString = tmpEvt.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
+                    string settlementString = tmpEvt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
 
                     if (!settlementString.NullOrEmpty())
                     {
@@ -1623,8 +1489,7 @@ namespace FactionColonies
                         updateAverages();
                         RelationsUtilFC.resetPlayerColonyRelations();
 
-
-                        updateDailyResearch();
+                        updateDailyResourcePools();
 
                         //Random event creation
                         MakeRandomEvent();
@@ -1660,11 +1525,11 @@ namespace FactionColonies
                     if (settlements.Any())
                     {
                         //if settlements exist
-                        List<SettlementFC> targets = new List<SettlementFC>();
-                        foreach (SettlementFC settlement in settlements)
+                        List<WorldSettlementFC> targets = new List<WorldSettlementFC>();
+                        foreach (WorldSettlementFC settlement in settlements)
                         {
                             //create weight list of settlements
-                            if (settlement.isUnderAttack == false)
+                            if (settlement.MilitaryComp?.isUnderAttack != true)
                             {
                                 //if not underattack, add to list
                                 //get weightvalue of target
@@ -1701,17 +1566,12 @@ namespace FactionColonies
                             Faction enemy = Find.FactionManager.RandomEnemyFaction();
                             if (enemy != null)
                             {
-                                // Limit to settlements on current planet
-                                // TODO: Make it compatible with settlements on different planets instead of excluding
-                                // them
-                                SettlementFC settlement = targets
-                                    .Where(s => s.planetName == Find.World.info.name)
-                                    .RandomElementWithFallback();
+                                WorldSettlementFC settlement = targets.RandomElementWithFallback();
 
                                 if (settlement != null)
-                                    MilitaryUtilFC.attackPlayerSettlement(
-                                        militaryForce.createMilitaryForceFromFaction(enemy, true),
-                                        targets.RandomElement(), enemy);
+                                {
+                                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemy, true), targets.RandomElement(), enemy);
+                                }
                             }
 
                         }

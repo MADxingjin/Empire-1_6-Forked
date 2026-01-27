@@ -12,13 +12,13 @@ namespace FactionColonies.util
 	{
 		protected readonly int Tile = -1;
 		public static readonly int ShuttleRange = 70;
-		public WorldSettlementFC settlementFC = null;
+		public SettlementBuildingComp_Shuttles comp = null;
 		public static readonly int cost = 1;
 
-		public ShuttleSender(int Tile, WorldSettlementFC settlementFC)
+		public ShuttleSender(int Tile, SettlementBuildingComp_Shuttles comp)
 		{
 			this.Tile = Tile;
-			this.settlementFC = settlementFC;
+			this.comp = comp;
 		}
 
 		protected virtual bool TargetHasValidWorldObject(GlobalTargetInfo target) => target.HasWorldObject && target.WorldObject is MapParent mapParent && (mapParent.Map?.mapPawns?.AnyFreeColonistSpawned ?? false);
@@ -40,7 +40,7 @@ namespace FactionColonies.util
 				ShipJobDefOf.FlyAway
 			});
 
-			settlementFC.shuttleUsesRemaining -= cost;
+			comp.shuttleUsesRemaining -= cost;
 			CameraJumper.TryJump(landingCell, target.Map);
 			return transportShip;
 		}

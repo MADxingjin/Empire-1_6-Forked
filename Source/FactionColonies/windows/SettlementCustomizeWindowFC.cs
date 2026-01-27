@@ -15,20 +15,20 @@ namespace FactionColonies
 		public new const float StandardMargin = 10;
 		private const int StandardHeight = 30;
 
-		private readonly SettlementFC settlement;
+		private readonly WorldSettlementFC settlement;
 		private string name;
 		private string shortName;
 
 		public override Vector2 InitialSize => new Vector2(445f, 280f);
 
-		public SettlementCustomizeWindowFc(SettlementFC settlement)
+		public SettlementCustomizeWindowFc(WorldSettlementFC settlement)
 		{
 			forcePause = false;
 			draggable = true;
 			doCloseX = true;
 			preventCameraMotion = false;
 			this.settlement = settlement;
-			name = settlement.name;
+			name = settlement.Name;
 			shortName = settlement.ShortName;
 			doCloseButton = true;
 			doCloseX = false;
@@ -41,7 +41,7 @@ namespace FactionColonies
         public override void Close(bool doCloseSound = true)
         {
             base.Close(doCloseSound);
-			settlement.name = name;
+			settlement.Name = name;
 			settlement.ShortName = shortName;
 		}
 
@@ -75,7 +75,7 @@ namespace FactionColonies
 			Widgets.Label(shortNameLabelRect, "FCSettlementShortName".Translate());
 			shortName = Widgets.TextField(shortNameInputRect, shortName);
 
-			if (Widgets.ButtonImage(resetFullNameButtonRect, TexLoad.refreshIcon)) name = settlement.name;
+			if (Widgets.ButtonImage(resetFullNameButtonRect, TexLoad.refreshIcon)) name = settlement.Name;
 			if (Widgets.ButtonImage(resetShortNameButtonRect, TexLoad.refreshIcon)) shortName = TextGen.ToShortName(name);
 
 			Text.Anchor = TextAnchor.MiddleCenter;

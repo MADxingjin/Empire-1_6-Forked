@@ -12,7 +12,7 @@ namespace FactionColonies
 {
     public static class TravelUtil
     {
-        public static int ReturnTicksToArrive(int currentTile, int destinationTile)
+        public static int ReturnTicksToArrive(PlanetTile currentTile, PlanetTile destinationTile)
         {
             LogUtil.Message($"ReturnTicksToArrive Debug: currentTile={currentTile}, destinationTile={destinationTile}");
 
@@ -52,7 +52,7 @@ namespace FactionColonies
             }
         }
 
-        public static void sendPrisoner(Pawn prisoner, SettlementFC settlement)
+        public static void sendPrisoner(Pawn prisoner, WorldSettlementFC settlement)
         {
             settlement.addPrisoner(prisoner);
             prisoner.DeSpawn();

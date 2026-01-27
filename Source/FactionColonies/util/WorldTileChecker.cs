@@ -7,7 +7,7 @@ namespace FactionColonies.util
 {
     public static class WorldTileChecker
     {
-        public static bool IsValidTileForNewSettlement(PlanetTile tile, StringBuilder reason = null)
+        public static bool IsValidTileForNewSettlement(PlanetTile tile, WorldSettlementDef settlementdef, StringBuilder reason = null)
         {
             if (tile == -1)
             {
@@ -15,15 +15,26 @@ namespace FactionColonies.util
                 return false;
             }
 
-            if (!TileFinder.IsValidTileForNewSettlement(tile, reason)) return false;
-
-            foreach (WorldSettlementFC settlement in Find.WorldObjects.AllWorldObjects.Where(obj => obj.GetType() == typeof(WorldSettlementFC)))
+            if (settlementdef.planetLayers.Count == 0)
             {
-                if (Find.WorldGrid.IsNeighborOrSame(settlement.Tile, tile))
+                if (tile.Layer != Find.WorldGrid.Surface)
                 {
-                    reason?.Append("FactionBaseAdjacent".Translate());
+                    reason?.Append("InvalidPlanetLayer".Translate());
                     return false;
                 }
+            }
+            else
+            {
+                if (!settlementdef.planetLayers.Contains(tile.Layer.Def))
+                {
+                    reason?.Append("InvalidPlanetLayer".Translate());
+                    return false;
+                }
+            }
+
+            if (!(settlementdef.GetModExtension<SettlementTypeExtension>().tileIsValidForSettlement(tile, reason)))
+            {
+                return false;
             }
 
             return true;

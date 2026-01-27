@@ -52,7 +52,7 @@ namespace FactionColonies
                 //letter
 
 
-                string settlementString = tempEvent.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
+                string settlementString = tempEvent.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
 
                 if (!settlementString.NullOrEmpty())
                 {
@@ -91,10 +91,8 @@ namespace FactionColonies
                                 {
                                     //if doesn't require resource or if required resource has more than 1 production
                                     if (cEvent.requiredResource == null
-                                        ? Find.World.GetComponent<FactionFC>().returnResource(cEvent.requiredResource)
-                                            .assignedWorkers > 0
-                                        : true || (cEvent.requiredResource == "research" &&
-                                                   TraitUtilsFC.returnResearchAmount() > 0))
+                                        ? Find.World.GetComponent<FactionFC>().returnResource(cEvent.requiredResource).amount > 0
+                                        : true || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
                                     {
                                         //if event is not incompatible with any currently-running events
                                         foreach (FCEvent evt in Find.World.GetComponent<FactionFC>().events)
@@ -189,16 +187,18 @@ namespace FactionColonies
             return tempEvent;
         }
 
-        public static FCEvent MakeRandomEvent(FCEventDef def, List<SettlementFC> SettlementTraitLocations)
+        public static FCEvent MakeRandomEvent(FCEventDef def, List<WorldSettlementFC> SettlementTraitLocations)
         {
             if (def is null) return null;
+
+            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
 
             FCEvent tempEvent = new FCEvent(true)
             {
                 def = def,
                 timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
                 traits = def.traits,
-                settlementTraitLocations = new List<SettlementFC>()
+                settlementTraitLocations = new List<WorldSettlementFC>()
             };
 
             try
@@ -209,21 +209,20 @@ namespace FactionColonies
                     int numSettlements = tempEvent.def.rangeSettlementsAffected.RandomInRange;
 
                     //if random number of settlements more than total settlements, reset number settlements.
-                    if (numSettlements > Find.World.GetComponent<FactionFC>().settlements.Count())
+                    if (numSettlements > worldcomp.settlements.Count())
                     {
-                        numSettlements = Find.World.GetComponent<FactionFC>().settlements.Count();
+                        numSettlements = worldcomp.settlements.Count();
                     }
 
                     //List of map locations
-                    List<SettlementFC> settlements = new List<SettlementFC>();
+                    List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
                     //temporary list of settlemnts.
-                    List<SettlementFC> tmp = new List<SettlementFC>();
+                    List<WorldSettlementFC> tmp = new List<WorldSettlementFC>();
 
 
                     if (SettlementTraitLocations == null || SettlementTraitLocations.Count == 0)
                     {
-                        foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements.InRandomOrder()
-                        )
+                        foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
                         {
                             if (tempEvent.def.requiredResource != "")
                             {
@@ -242,7 +241,7 @@ namespace FactionColonies
 
                         while (tmp.Count() > 0)
                         {
-                            SettlementFC cSettlement = tmp.RandomElement();
+                            WorldSettlementFC cSettlement = tmp.RandomElement();
                             if (settlements.Count() < numSettlements)
                             {
                                 settlements.Add(cSettlement);
@@ -266,7 +265,8 @@ namespace FactionColonies
                     Find.WindowStack.Add(new FCOptionWindow(tempEvent.def, tempEvent));
                     return null;
                 }
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 LogUtil.Error($"Couldn't create Random Event with def: {def?.defName ?? "NULL"} and list of size: {SettlementTraitLocations?.Count ?? 0}: {e.Message}");
             }
@@ -288,52 +288,32 @@ namespace FactionColonies
                 evt = events[i];
                 //remove event (stop spam?)
                 faction.events.RemoveAt(i);
+                WorldSettlementFC settlement;
+
+                LogUtil.Message($"Processing event {evt.def.defName}");
 
                 switch (evt.def.defName)
                 {
                     case "settleNewColony":
-                    {
-                        //Settle new colony event
-                        faction.addExperienceToFactionLevel(10f);
-                        
-                        // Check if this is an orbital platform
-                        if (evt.isOrbitalPlatform)
                         {
-                            // Create orbital platform
-                            if (Find.World.info.name == evt.planetName)
-                            {
-                                CreateOrbitalPlatformSettlement(evt.location, evt.orbitalTier, evt.planetName);
-                            }
-                            else
-                            {
-                                // Handle SoS2 orbital platforms if needed
-                                CreateOrbitalPlatformSettlement(evt.location, evt.orbitalTier, evt.planetName);
-                            }
-                        }
-                        else
-                        {
-                            // Regular settlement creation
-                            if (Find.World.info.name == evt.planetName)
-                            {
-                                ColonyUtil.createPlayerColonySettlement(evt.location, true, evt.planetName);
-                            }
-                            else
-                            {
-                                ColonyUtil.createPlayerColonySettlement(evt.location, false, evt.planetName);
-                                faction.createSettlementQueue.Add(new SettlementSoS2Info(evt.planetName, evt.location));
-                            }
-                        }
+                            //TODO: BIG BUG HERE, settleNewColony event doesn't actually create a colony!
+                            //Settle new colony event
+                            faction.addExperienceToFactionLevel(10f);
 
-                        faction.settlementCaravansList.Remove(evt.location.ToString());
-                        break;
-                    }
-                    case "taxColony" when faction.returnSettlementFCIDByLocation(evt.source, evt.planetName) == -1:
-                        continue;
+                            ColonyUtil.createPlayerColonySettlement(evt.location, evt.settlementToCreate);
+
+                            faction.settlementCaravansList.Remove(evt.location);
+                            break;
+                        }
                     case "taxColony":
                         {
-                            string str = "TaxesFrom".Translate() + " " +
-                                            faction.getSettlementName(evt.source, evt.planetName) + " " +
-                                            "HaveBeenDelivered".Translate() + "!";
+                            settlement = faction.returnSettlementByLocation(evt.source);
+                            if (settlement == null)
+                            {
+                                continue;
+                            }
+
+                            string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
 
                             Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
 
@@ -342,59 +322,54 @@ namespace FactionColonies
                         }
                     case "constructBuilding":
                         //Create building
-                        faction.settlements[faction.returnSettlementFCIDByLocation(evt.source, evt.planetName)]
-                            .constructBuilding(evt.building, evt.buildingSlot);
-                        Messages.Message(
-                            evt.building.label + " " + "HasBeenConstructedAt".Translate() + " " +
-                            faction.settlements[faction.returnSettlementFCIDByLocation(evt.source, evt.planetName)]
-                                .name + "!", MessageTypeDefOf.PositiveEvent);
+                        settlement = faction.returnSettlementByLocation(evt.source);
+                        if (settlement != null)
+                        {
+                            settlement.constructBuilding(evt.building, evt.buildingSlot);
+                            Messages.Message(evt.building.label + " " + "HasBeenConstructedAt".Translate() + " " + settlement.Name + "!", MessageTypeDefOf.PositiveEvent);
+                        }
+                        else
+                        {
+                            LogUtil.Error($"Attempted to resolve a constructBuilding event for an invalid settlement");
+                        }
                         break;
                     case "upgradeSettlement":
-                    {
-                        if (faction.returnSettlementByLocation(evt.location, evt.planetName) != null)
                         {
-                            //if settlement is not null
-                            SettlementFC settlement =
-                                faction.returnSettlementByLocation(evt.location, evt.planetName);
-                            settlement.upgradeSettlement();
-                            Find.LetterStack.ReceiveLetter("Settlement Upgrade",
-                                settlement.name + " " + "HasBeenUpgraded".Translate() + " " +
-                                settlement.settlementLevel + "!", LetterDefOf.PositiveEvent);
-                        }
+                            if (faction.returnSettlementByLocation(evt.location) != null)
+                            {
+                                //if settlement is not null
+                                settlement = faction.returnSettlementByLocation(evt.location);
+                                settlement.upgradeSettlement();
+                                Find.LetterStack.ReceiveLetter("Settlement Upgrade", settlement.Name + " " + "HasBeenUpgraded".Translate() + " " + settlement.settlementLevel + "!", LetterDefOf.PositiveEvent);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case "captureEnemySettlement":
                     case "raidEnemySettlement":
                     case "enslaveEnemySettlement":
                         //Process military event
-                        faction.returnSettlementByLocation(evt.location, evt.planetName).processMilitaryEvent();
+                        faction.returnSettlementByLocation(evt.location).MilitaryComp?.processMilitaryEvent();
                         break;
                     case "cooldownMilitary":
-                    {
-                        //Process military event
-                        if (evt.planetName == null)
                         {
                             //TODO: this is a debugging message, but since we show it to the player, it'd be nice to have
                             // a localization key for it
-                            LogUtil.Warning(
-                                "temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.");
-                            Messages.Message(
-                                "temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.",
-                                MessageTypeDefOf.NegativeEvent);
-                        }
+                            LogUtil.Warning("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.");
+                            Messages.Message("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.",
+                                             MessageTypeDefOf.NegativeEvent);
 
-                        faction.returnSettlementByLocation(evt.location, evt.planetName).returnMilitary(true);
-                        break;
-                    }
+                            faction.returnSettlementByLocation(evt.location).MilitaryComp?.returnMilitary(true);
+                            break;
+                        }
                 }
 
                 if (evt.def.defName == "settlementBeingAttacked")
                 {
 
-                    WorldSettlementFC worldSettlement = evt.settlementFCDefending.worldSettlement;
+                    WorldSettlementFC worldSettlement = evt.settlementFCDefending;
 
-                    worldSettlement.startDefence(evt, () => setupAttack(worldSettlement, evt));
+                    worldSettlement.MilitaryComp?.startDefence(evt, () => setupAttack(worldSettlement, evt));
                 }
                 else //if undefined event
                 {
@@ -437,26 +412,26 @@ namespace FactionColonies
                 //check if event has a location, if does, add traits to that specific location;
                 if (evt.settlementTraitLocations.Any()) //if has specific locations
                 {
-                    //Remove null settlements
-                    ResetClear:
-                    foreach (SettlementFC settlement in evt.settlementTraitLocations)
+                //Remove null settlements
+                ResetClear:
+                    foreach (WorldSettlementFC worldsettlement in evt.settlementTraitLocations)
                     {
-                        if (settlement == null)
+                        if (worldsettlement == null)
                         {
-                            evt.settlementTraitLocations.Remove(settlement);
+                            evt.settlementTraitLocations.Remove(worldsettlement);
                             goto ResetClear;
                         }
                     }
 
-                    foreach (SettlementFC location in evt.settlementTraitLocations)
+                    foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
                         if (location != null)
                         {
                             foreach (FCTraitEffectDef trait in evt.traits)
                             {
-                                while (location.traits.Contains(trait))
+                                while (location.Traits.Contains(trait))
                                 {
-                                    location.traits.Remove(trait);
+                                    location.Traits.Remove(trait);
                                 }
                             }
 
@@ -469,17 +444,11 @@ namespace FactionColonies
                 {
                     //if no specific location then faction wide
 
-                    foreach (FCTraitEffectDef trait in evt.traits)
-                    {
-                        while (faction.traits.Contains(trait))
-                        {
-                            faction.traits.Remove(trait);
-                        }
-                    }
+                    faction.removeTraits(evt.traits);
 
-                    foreach (SettlementFC settlement in faction.settlements)
+                    foreach (WorldSettlementFC worldsettlement in faction.settlements)
                     {
-                        settlement.prosperity -= evt.prosperityLost;
+                        worldsettlement.prosperity -= evt.prosperityLost;
                     }
                 }
 
@@ -545,7 +514,7 @@ namespace FactionColonies
                     {
                         faction.addEvent(tempEvent);
 
-                        string settlementString = tempEvent.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
+                        string settlementString = tempEvent.settlementTraitLocations.Join((worldsettlement) => $" {worldsettlement.Name}", "\n");
 
                         if (!settlementString.NullOrEmpty())
                         {
@@ -574,7 +543,7 @@ namespace FactionColonies
                 raidNeverFleeIndividual = true
             };
             parms.points = IncidentWorker_Raid.AdjustedRaidPoints(
-                (float) temp.militaryForceAttacking.forceRemaining * 100,
+                (float)temp.militaryForceAttacking.forceRemaining * 100,
                 PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
                 parms.faction, PawnGroupKindDefOf.Combat,
                 parms.target // new required parameter
@@ -592,17 +561,17 @@ namespace FactionColonies
 
             parms.raidArrivalMode.Worker.Arrive(attackers, parms);
 
-            worldSettlement.attackers = attackers;
-            worldSettlement.attackerForce = temp.militaryForceAttacking;
-            worldSettlement.defenderForce = temp.militaryForceDefending;
+            worldSettlement.MilitaryComp.attackers = attackers;
+            worldSettlement.MilitaryComp.attackerForce = temp.militaryForceAttacking;
+            worldSettlement.MilitaryComp.defenderForce = temp.militaryForceDefending;
             LordMaker.MakeNewLord(
-                parms.faction, new LordJob_HuntColonists(parms.raidArrivalMode != PawnsArrivalModeDefOf.CenterDrop), 
+                parms.faction, new LordJob_HuntColonists(parms.raidArrivalMode != PawnsArrivalModeDefOf.CenterDrop),
                 worldSettlement.Map, attackers);
         }
 
         private static PawnsArrivalModeDef ResolveRaidArriveMode(IncidentParms parms)
         {
-            return 
+            return
                 parms.raidStrategy.arriveModes.Where(testing => testing.Worker.CanUseWith(parms))
                     .TryRandomElementByWeight(
                         x => x.Worker.GetSelectionWeight(parms), out PawnsArrivalModeDef output)
@@ -618,24 +587,22 @@ namespace FactionColonies
 
             if (bill.settlement != null && faction.settlements.Contains(bill.settlement))
             {
-                tmp.source = bill.settlement.mapLocation; //source location
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.name);
-                tmp.planetName = bill.settlement.planetName;
+                tmp.source = bill.settlement.Tile; //source location
+                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.Name);
             }
             else
             {
                 // FIX: Instead of using -1, use the capital location as both source and destination
                 // This represents taxes being collected locally at the capital
-                int fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? 0;
-                tmp.source = faction.capitalLocation >= 0 ? faction.capitalLocation : fallbackTile;
-                tmp.planetName = Find.World.info.name;
+                PlanetTile fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? PlanetTile.Invalid;
+                tmp.source = faction.capitalLocation != PlanetTile.Invalid ? faction.capitalLocation : fallbackTile;
                 tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital");
-                
+
                 LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }
 
             tmp.location = faction.capitalLocation;
-            
+
             // FIX: Handle case where source equals destination (local delivery)
             if (tmp.source == tmp.location)
             {
@@ -648,7 +615,7 @@ namespace FactionColonies
                 tmp.timeTillTrigger = Find.TickManager.TicksGame + travelTime;
                 LogUtil.Message($"Tax Event Travel Debug: source={tmp.source}, destination={tmp.location}, travelTime={travelTime} ticks ({travelTime / GenDate.TicksPerDay:F1} days)");
             }
-            
+
             tmp.hasCustomDescription = true;
             //add tithe
             tmp.goods = bill.taxes.itemTithes;
@@ -657,7 +624,7 @@ namespace FactionColonies
             {
                 //add to tithe
                 //tmp.goods.Add()
-                int silverTotal = (int) bill.taxes.silverAmount;
+                int silverTotal = (int)bill.taxes.silverAmount;
                 while (silverTotal > 0)
                 {
                     Thing thing = ThingMaker.MakeThing(ThingDefOf.Silver);
@@ -680,7 +647,7 @@ namespace FactionColonies
             else if (bill.taxes.silverAmount < 0) //if paying money
             {
                 //remove money from colony
-                PaymentUtil.paySilver((int) (-1 * (bill.taxes.silverAmount)));
+                PaymentUtil.paySilver((int)(-1 * (bill.taxes.silverAmount)));
             }
 
 
@@ -692,248 +659,72 @@ namespace FactionColonies
 
             faction.Bills.Remove(bill);
         }
-
-        // Techdebt - This section requires language support. This would just involve switching out the strings below to the language definitions for each case.
-        private static void CreateOrbitalPlatformSettlement(int tile, OrbitalPlatformTier tier, string planetName)
-        {
-            try
-            {
-                // Create orbital platform settlement directly (bypass tile validation)
-                Faction playerFaction = ColonyUtil.getPlayerColonyFaction();
-                FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-                
-                if (!worldcomp.settlements.Any())
-                {
-                    worldcomp.timeStart = Find.TickManager.TicksGame;
-                }
-
-                // Find an empty orbital tile instead of using the passed tile
-                PlanetTile orbitalTile = FindEmptyOrbitalTile();
-                
-                if (!orbitalTile.Valid)
-                {
-                    //TODO: Localization key
-                    LogUtil.Error("Could not find suitable orbital tile for orbital platform");
-                    Messages.Message("Could not find suitable space for orbital platform.", MessageTypeDefOf.RejectInput);
-                    return;
-                }
-
-                LogUtil.Message($"Creating orbital platform at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
-
-                // Create settlement data using the orbital tile ID
-            
-                string platformName = GetTierName(tier);
-                SettlementFC settlementfc = new SettlementFC(platformName, orbitalTile.tileId);
-                
-                // Ensure the name is properly set
-                if (string.IsNullOrEmpty(settlementfc.name))
-                {
-                    settlementfc.name = platformName;
-                }
-                
-                // Set up as orbital platform
-                settlementfc.power.isTithe = true;
-                settlementfc.power.isTitheBool = true;
-                settlementfc.research.isTithe = true;
-                settlementfc.research.isTitheBool = true;
-                settlementfc.planetName = planetName;
-
-                // Ensure orbital platforms start in a good state
-                settlementfc.isUnderAttack = false;
-                
-                // Set up orbital biome definitions
-                var orbitalBiomeDef = DefDatabase<BiomeResourceDef>.GetNamed("OrbitalSpace", false);
-                var orbitalHillinessDef = DefDatabase<BiomeResourceDef>.GetNamed("Orbital", false);
-                
-                if (orbitalBiomeDef == null || orbitalHillinessDef == null)
-                {
-                    LogUtil.Error("Could not find OrbitalSpace or Orbital biome definitions! Using fallback. FALLBACK!");
-                    orbitalBiomeDef = BiomeResourceDefOf.defaultBiome;
-                    orbitalHillinessDef = BiomeResourceDefOf.defaultBiome;
-                }
-                
-                // Override the settlement's biome and hilliness definitions
-                settlementfc.biomeDef = orbitalBiomeDef;
-                settlementfc.hillinessDef = orbitalHillinessDef;
-                settlementfc.biome = "OrbitalSpace";
-                settlementfc.hilliness = "Orbital";
-                
-                // Initialize base production for new orbital settlement
-                settlementfc.initBaseProduction();
-                
-                // Apply policies
-                if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
-                    settlementfc.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
-                if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
-                    settlementfc.loyalty = 70;
-                if (worldcomp.hasPolicy(FCPolicyDefOf.egalitarian))
-                    settlementfc.happiness = 60;
-                if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlementfc.settlementLevel == 1)
-                    settlementfc.upgradeSettlement();
-
-                worldcomp.addSettlement(settlementfc);
-                
-                // Create world object using orbital platform def
-                var orbitalDef = DefDatabase<WorldObjectDef>.GetNamed("FCOrbitalPlatform");
-                if (orbitalDef == null)
-                {
-                    LogUtil.Error("FCOrbitalPlatform WorldObjectDef not found!");
-                    //TODO Localization key -- although, is it really appropriate to send a top-left message here?
-                    Messages.Message("Orbital platform definition missing.", MessageTypeDefOf.RejectInput);
-                    return;
-                }
-
-                WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(orbitalDef);
-                if (settlement == null)
-                {
-                    LogUtil.Error("Failed to create WorldSettlementFC object!");
-                    return;
-                }
-
-                LogUtil.Message($"Created WorldSettlementFC object successfully, setting tile to {orbitalTile.tileId}");
-                
-                settlement.Tile = orbitalTile; // Use the PlanetTile directly
-                settlement.SetFaction(playerFaction);
-
-                // Set the settlement property FIRST
-                if (settlement != null && settlementfc != null)
-                {
-                    settlement.settlement = settlementfc;
-                    settlementfc.worldSettlement = settlement; // Add this line
-                    LogUtil.Message($"Settlement.settlement property linked successfully");
-                }
-                else
-                {
-                    LogUtil.Error($"Cannot link settlement property: settlement={settlement != null}, settlementfc={settlementfc != null}");
-                }
-
-                // THEN set the name (which now works because settlement.settlement is set)
-                string finalName = platformName; // Use platformName directly as fallback
-                if (!string.IsNullOrEmpty(settlementfc?.name))
-                {
-                    finalName = settlementfc.name;
-                }
-
-                LogUtil.Message($"Setting settlement name to: {finalName}");
-
-                if (settlement != null && !string.IsNullOrEmpty(finalName))
-                {
-                    settlement.Name = finalName;
-                    LogUtil.Message($"Settlement name set successfully");
-                }
-                else
-                {
-                    LogUtil.Error($"Cannot set settlement name: settlement={settlement != null}, finalName={finalName}");
-                }
-                
-                // Add to world objects
-                LogUtil.Message($"Adding settlement to world objects...");
-                Find.WorldObjects.Add(settlement);
-                LogUtil.Message($"Added orbital platform to world objects successfully");
-
-                // Force a world render update
-                Find.World.renderer.RegenerateAllLayersNow();
-                LogUtil.Message($"Forced world renderer update");
-
-                Find.LetterStack.ReceiveLetter("Orbital Platform Complete", 
-                    $"The {platformName} Platform has been completed and is now operational!", 
-                    LetterDefOf.PositiveEvent);
-                
-                LogUtil.Message($"Orbital platform created successfully at tile {orbitalTile.tileId} in layer {orbitalTile.Layer?.Def?.label ?? "unknown"}");
-                
-                // Debug: List all world objects to see if our platform was added
-                LogUtil.Message($"Total world objects after creation: {Find.WorldObjects.AllWorldObjects.Count()}");
-                var orbitalObjects = Find.WorldObjects.AllWorldObjects.Where(wo => wo.def?.defName == "FCOrbitalPlatform").ToList();
-                LogUtil.Message($"Orbital platforms in world: {orbitalObjects.Count}");
-                foreach (var obj in orbitalObjects)
-                {
-                    LogUtil.Message($"  - Platform at tile {obj.Tile} with name {obj.Label}");
-                }
-            }
-            catch (System.Exception ex)
-            {
-                LogUtil.Error($"Exception in CreateOrbitalPlatformSettlement: {ex.Message}\n{ex.StackTrace}");
-            }
-        }
-
-        private static string GetTierName(OrbitalPlatformTier tier)
-        {
-            // Space-themed keywords to append to generated names
-            string[] spaceKeywords = { "Space Station", "Station", "Satellite", "Solar Base", "Orbital Hub", "Space Platform", "Cosmic Station", "Stellar Base", "Void Station", "Astral Platform" };
-            
-            // Get the base name using the same logic as regular settlements
-            string baseName = GetOrbitalBaseName();
-            
-            // Get a random space keyword
-            string spaceKeyword = spaceKeywords[Rand.Range(0, spaceKeywords.Length)];
-            
-            // Combine base name with space keyword
-            return $"{baseName} {spaceKeyword}";
-        }
-
-        private static string GetOrbitalBaseName()
-        {
-            // Copy the same logic as the normal settlement name generator
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
-            
-            if (faction?.def.settlementNameMaker == null)
-            {
-                // If no settlementNameMaker, generate a simple name
-                return "Orbital";
-            }
-
-            // Use the same name generation system as regular settlements
-            RulePackDef rulePack = faction.def.settlementNameMaker;
-            List<string> usedNames = new List<string>();
-            List<Settlement> settlements = Find.WorldObjects.Settlements;
-            for (int index = 0; index < settlements.Count; ++index)
-            {
-                Settlement settlement = settlements[index];
-                if (settlement.Name != null)
-                    usedNames.Add(settlement.Name);
-            }
-
-            return NameGenerator.GenerateName(rulePack, usedNames, true);
-        }
-
-
-
-        // Add the FindEmptyOrbitalTile method to the FCEventMaker class
-        private static PlanetTile FindEmptyOrbitalTile()
-        {
-            var worldGrid = Find.WorldGrid;
-            var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
-            
-            // If Odyssey is active and orbit layer exists, try to find a tile in orbit first
-            if (ModsConfig.OdysseyActive && worldGrid.Orbit != null)
-            {
-                for (int attempts = 0; attempts < 1000; attempts++)
-                {
-                    int randomTileId = Rand.Range(0, worldGrid.Orbit.TilesCount);
-                    PlanetTile orbitalTile = new PlanetTile(randomTileId, worldGrid.Orbit);
-                    
-                    if (!existingObjectTiles.Contains(orbitalTile))
-                        return orbitalTile;
-                }
-            }
-            
-            // Fallback: find any empty surface tile (though this shouldn't happen for orbital platforms) Don't fall from orbit ahh!!!!!!!
-            LogUtil.Warning("Could not find orbital tile, falling back to surface tile");
-            for (int attempts = 0; attempts < 1000; attempts++)
-            {
-                int randomTileId = Rand.Range(0, worldGrid.TilesCount);
-                PlanetTile surfaceTile = new PlanetTile(randomTileId, worldGrid.Surface);
-                
-                if (!existingObjectTiles.Contains(surfaceTile))
-                    return surfaceTile;
-            }
-            
-            return PlanetTile.Invalid;
-        }
     }
-
     public class FCEvent : IExposable, ILoadReferenceable
     {
+        public FCEventDef def = new FCEventDef();
+        public PlanetTile location = -1; //destination
+        public int timeTillTrigger = -1;
+        public int loadID = -1;
+        public PlanetTile source = -1; //source location
+        public bool hasDestination; //if has destination
+        public int buildingSlot = -1;
+        public BuildingFCDef building;
+        public List<WorldSettlementFC> settlementTraitLocations = new List<WorldSettlementFC>();
+        public List<Thing> goods = new List<Thing>();
+        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        public bool hasCustomDescription;
+        public string customDescription = "";
+
+        //Delivery things
+        public Message msg = null;
+        public Letter let = null;
+        public bool isDelayed = false;
+
+        //Random Event Information
+        public bool isRandomEvent;
+        public bool perpetual;
+        public bool activateAtStart;
+        public List<Pawn> pawnSpawn = new List<Pawn>();
+        public int requiredWealth;
+        public IntRange rangeSettlementsAffected = new IntRange(0, 0);
+        public bool settlementsCarryOver = true;
+        public int weight;
+        public int minimumHappiness;
+        public int maximumHappiness = 100;
+        public int minimumLoyalty;
+        public int maximumLoyalty = 100;
+        public int minimumUnrest;
+        public int maximumUnrest = 100;
+        public int minimumProsperity;
+        public int maximumProsperity = 100;
+        public List<FCOptionDef> options = new List<FCOptionDef>();
+        public string requiredResource = "";
+        public int randomThingValue;
+        public string randomThingType = "";
+        public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
+        public int prosperityLost;
+        public bool eventFollows;
+        public FCEventDef followingEvent;
+        public FCEventDef followingEvent2;
+        public bool splitEventFollows;
+        public int splitEventChance = 50;
+        public string optionDescription = "";
+        public List<string> applicableBiomes = new List<string>();
+        public List<ThingDef> loot = new List<ThingDef>();
+        public string classToRun = "";
+        public string classMethodToRun = "";
+        public bool passEventToClassMethodToRun;
+
+        //Military Force stuff
+        public militaryForce militaryForceAttacking;
+        public Faction militaryForceAttackingFaction;
+        public militaryForce militaryForceDefending;
+        public Faction militaryForceDefendingFaction;
+        public WorldSettlementFC settlementFCDefending;
+        public bool isMilitaryEvent;
+
+        public WorldSettlementDef settlementToCreate = null;
         public FCEvent()
         {
             //Constructor
@@ -954,7 +745,6 @@ namespace FactionColonies
             this.hasCustomDescription = true;
             this.timeTillTrigger = Find.TickManager.TicksGame + timeToFinish;
             this.location = mapLocation;
-            this.planetName = Find.World.info.name;
             f.addEvent(this);
         }
 
@@ -963,7 +753,6 @@ namespace FactionColonies
             //Ref
             Scribe_Defs.Look(ref def, "def");
             Scribe_Values.Look(ref location, "location");
-            Scribe_Values.Look(ref planetName, "planetName");
             Scribe_Values.Look(ref timeTillTrigger, "timeTillTrigger");
             Scribe_Values.Look(ref source, "source");
             Scribe_Values.Look(ref hasDestination, "hasDestination");
@@ -1026,77 +815,8 @@ namespace FactionColonies
             Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
             Scribe_Values.Look(ref isMilitaryEvent, "isMilitaryEvent");
 
-            // Orbital Platform specific fields
-            Scribe_Values.Look(ref isOrbitalPlatform, "isOrbitalPlatform", false);
-            Scribe_Values.Look(ref orbitalTier, "orbitalTier", OrbitalPlatformTier.Basic);
+            Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
         }
-
-        public FCEventDef def = new FCEventDef();
-        public int location = -1; //destination
-        public string planetName;
-        public int timeTillTrigger = -1;
-        public int loadID = -1;
-        public int source = -1; //source location
-        public bool hasDestination; //if has destination
-        public int buildingSlot = -1;
-        public BuildingFCDef building;
-        public List<SettlementFC> settlementTraitLocations = new List<SettlementFC>();
-        public List<Thing> goods = new List<Thing>();
-        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
-        public bool hasCustomDescription;
-        public string customDescription = "";
-
-        //Delivery things
-        public Message msg = null;
-        public Letter let = null;
-        public bool isDelayed = false;
-
-        //Random Event Information
-        public bool isRandomEvent;
-        public bool perpetual;
-        public bool activateAtStart;
-        public List<Pawn> pawnSpawn = new List<Pawn>();
-        public int requiredWealth;
-        public IntRange rangeSettlementsAffected = new IntRange(0, 0);
-        public bool settlementsCarryOver = true;
-        public int weight;
-        public int minimumHappiness;
-        public int maximumHappiness = 100;
-        public int minimumLoyalty;
-        public int maximumLoyalty = 100;
-        public int minimumUnrest;
-        public int maximumUnrest = 100;
-        public int minimumProsperity;
-        public int maximumProsperity = 100;
-        public List<FCOptionDef> options = new List<FCOptionDef>();
-        public string requiredResource = "";
-        public int randomThingValue;
-        public string randomThingType = "";
-        public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
-        public int prosperityLost;
-        public bool eventFollows;
-        public FCEventDef followingEvent;
-        public FCEventDef followingEvent2;
-        public bool splitEventFollows;
-        public int splitEventChance = 50;
-        public string optionDescription = "";
-        public List<string> applicableBiomes = new List<string>();
-        public List<ThingDef> loot = new List<ThingDef>();
-        public string classToRun = "";
-        public string classMethodToRun = "";
-        public bool passEventToClassMethodToRun;
-
-        //Military Force stuff
-        public militaryForce militaryForceAttacking;
-        public Faction militaryForceAttackingFaction;
-        public militaryForce militaryForceDefending;
-        public Faction militaryForceDefendingFaction;
-        public SettlementFC settlementFCDefending;
-        public bool isMilitaryEvent;
-
-        // Orbital Platform specific fields
-        public bool isOrbitalPlatform = false;
-        public OrbitalPlatformTier orbitalTier = OrbitalPlatformTier.Basic;
 
         public string GetUniqueLoadID()
         {
@@ -1185,7 +905,7 @@ namespace FactionColonies
         public Faction militaryForceAttackingFaction = null;
         public militaryForce militaryForceDefending = null;
         public Faction militaryForceAttackingDefending = null;
-        public SettlementFC settlementFCDefending = null;
+        public WorldSettlementFC settlementFCDefending = null;
         public bool isMilitaryEvent = false;
     }
 

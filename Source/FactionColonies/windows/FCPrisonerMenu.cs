@@ -15,7 +15,7 @@ namespace FactionColonies
     class FCPrisonerMenu : Window
     {
         public List<FCPrisoner> prisoners;
-        public SettlementFC settlement;
+        public WorldSettlementFC settlement;
         public FactionFC faction;
 
         public Vector2 scrollPosition = Vector2.zero;
@@ -28,7 +28,7 @@ namespace FactionColonies
 
 
 
-        public FCPrisonerMenu(SettlementFC settlement)
+        public FCPrisonerMenu(WorldSettlementFC settlement)
         {
             //Window Information
             this.faction = Find.World.GetComponent<FactionFC>();
@@ -191,11 +191,10 @@ namespace FactionColonies
                         DeliveryEvent.CreateDeliveryEvent(new FCEvent
                         {
                                 location = Find.AnyPlayerHomeMap.Tile,
-                                source = settlement.mapLocation,
-                                planetName = settlement.planetName,
+                                source = settlement.Tile,
                                 goods = new List<Thing> { prisoner.prisoner },
                                 customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
-                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.mapLocation, Find.AnyPlayerHomeMap.Tile)
+                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
                         });
 
                         //reset window

@@ -36,7 +36,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>denseWildlife</defName> <!--Name of Def -->
 		<label>Dense Wildlife</label> <!--Lable of Def -->
-		<productionBaseAnimals>+1</productionBaseAnimals>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<additive>1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

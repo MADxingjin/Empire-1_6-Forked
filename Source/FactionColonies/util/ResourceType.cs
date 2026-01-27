@@ -3,6 +3,8 @@ using Verse;
 
 namespace FactionColonies
 {
+    //Time to break shit
+    /*
     public enum ResourceType
     {
         Food,
@@ -17,8 +19,8 @@ namespace FactionColonies
         // New orbital-specific resources independent from overloads
         Gravtech,
         Chemfuel
-    }
-
+    }*/
+    /*
     public static class ResourceUtils
     {
         public static ResourceType[] resourceTypes = (ResourceType[]) Enum.GetValues(typeof(ResourceType));
@@ -86,5 +88,5 @@ namespace FactionColonies
                 ResourceType.Medicine
             };
         }
-    }
+    }*/
 }

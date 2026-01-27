@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,5 +54,123 @@ namespace FactionColonies.util
 
             return canCraft;
         }
+        /*
+        public static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.Food:
+                    filter.SetAllow(ThingCategoryDefOf.Foods, true);
+                    filter.SetAllow(ThingDefOf.Hay, true);
+                    filter.SetAllow(ThingDefOf.Kibble, true);
+                    break;
+                case ResourceType.Weapons:
+                    filter.SetAllow(ThingCategoryDefOf.Weapons, true);
+                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("MortarShells"), true);
+                    if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Ammo") != null)
+                        filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Ammo"), true);
+                    break;
+                case ResourceType.Apparel:
+                    filter.SetAllow(ThingCategoryDefOf.Apparel, true);
+                    filter.SetAllow(ThingDefOf.Cloth, true);
+                    if (ResearchUtil.returnIsResearched(
+                        DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Devilstrand")))
+                    {
+                        filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("DevilstrandCloth"), true);
+                    }
+                    break;
+                case ResourceType.Animals:
+                    List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                    foreach (PawnKindDef def in allAnimalDefs)
+                    {
+                        if (def.IsAnimalAndAllowed())
+                        {
+                            filter.SetAllow(def.race, true);
+                        }
+                    }
+                    break;
+                case ResourceType.Logging:
+                    filter.SetAllow(ThingDefOf.WoodLog, true);
+                    filter.SetAllow(StuffCategoryDefOf.Woody, true);
+                    break;
+                case ResourceType.Mining:
+                    filter.SetAllow(StuffCategoryDefOf.Metallic, true);
+                    filter.SetAllow(StuffCategoryDefOf.Stony, true);
+                    filter.SetAllow(ThingDefOf.Silver, false);
+                    //Android shit?
+                    filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("Teachmat"), false);
+                    //Remove RimBees Beeswax
+                    filter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("RB_Waxy"), false);
+                    //Remove Alpha Animals skysteel
+                    filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("AA_SkySteel"), false);
+                    ThingDef rawMagicyte = DefDatabase<ThingDef>.GetNamedSilentFail("RawMagicyte");
+                    if (rawMagicyte != null)
+                    {
+                        filter.SetAllow(rawMagicyte, true);
+                    }
+                    filter.SetAllow(ThingDefOf.ComponentIndustrial, true);
+                    filter.SetAllow(ThingCategoryDefOf.StoneBlocks, true);
+                    break;
+                case ResourceType.Research:
+                case ResourceType.Power:
+                    break;
+                case ResourceType.Medicine:
+                    filter.SetAllow(ThingCategoryDefOf.Medicine, true);
+                    filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
+                    switch (techLevel)
+                    {
+                        case TechLevel.Archotech:
+                        case TechLevel.Ultra:
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsUltra"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
+                            break;
+                        case TechLevel.Spacer:
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AdvancedProstheses"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("SyntheticOrgans"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("Neurotrainers"), true);
+                            break;
+                        case TechLevel.Industrial:
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsProsthetic"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsNatural"), true);
+                            filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BodyPartsBionic"), true);
+                            if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses") != null)
+                                filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("BionicProstheses"), true);
+                            break;
+                    }
+                    break;
+                case ResourceType.Gravtech:
+                    filter.SetAllow(ThingDefOf.GravlitePanel, true);
+                    break;
+                case ResourceType.Chemfuel:
+                    filter.SetAllow(ThingDefOf.Chemfuel, true);
+                    break;
+            }
+        }*/
     }
 }

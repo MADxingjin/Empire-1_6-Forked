@@ -1,37 +1,58 @@
-﻿using System.Linq;
-using System.Text;
+﻿using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
-using FactionColonies.util;
-using System.Collections.Generic;
+using static UnityEngine.GridBrushBase;
 
 namespace FactionColonies
 {
     public class CreateColonyWindowFc : Window
     {
-        public sealed override Vector2 InitialSize => new Vector2(300f, 600f);
+        public sealed override Vector2 InitialSize => new Vector2(300f, 650f);
 
-        public int currentTileSelected = -1;
-        public BiomeResourceDef currentBiomeSelected; //DefDatabase<BiomeResourceDef>.GetNamed(this.biome)
-        public BiomeResourceDef currentHillinessSelected;
+        public PlanetTile currentTileSelected = PlanetTile.Invalid;
+        public PlanetTile oldTileSelected = PlanetTile.Invalid;
+        public BiomeResourceDef currentBiomeSelected;
         public bool traitExpansionistReducedFee;
         public int timeToTravel = -1;
+
+        public WorldSettlementDef currentSettlementType;
+        public WorldSettlementDef oldSettlementType;
 
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
 
-        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.traits, Operation.Multiplication) * (FCSettings.silverToCreateSettlement + (500 * (faction.settlements.Count() + faction.settlementCaravansList.Count())) + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.traits, Operation.Addition))));
+        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.Traits, Operation.Multiplication) *
+                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.Traits, Operation.Addition))));
+
+        /* UI math stuff! Yaaaay!
+         * what a pain
+         */
+        public const int verticalMargins = 5;
+        public const int newColonyHeader_height = 40;
+        public const int upperBox_height = 50;
+        public const int costConstructionBox_height = 50;
+        public const int productionLabel_height = 40;
+        public int prodBoxHeight = 220;
+        public const int productionHeaders_height = 25;
+        public const int button_height = 32;
 
         public CreateColonyWindowFc()
         {
             forcePause = false;
-            draggable = false;
+            draggable = true;
             preventCameraMotion = false;
             doCloseX = true;
-            windowRect = new Rect(UI.screenWidth - InitialSize.x, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             faction = Find.World.GetComponent<FactionFC>();
+            prodBoxHeight = faction.FactionResources.Count * 22 + 10;
+            windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
+            currentSettlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
+            oldSettlementType = null;
         }
 
 
@@ -39,12 +60,31 @@ namespace FactionColonies
         //Pre-Opening
         public override void PreOpen()
         {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            faction.layersForTilePicker = currentSettlementType.planetLayers;
 
+            Find.TilePicker.StartTargeting_NewTemp(delegate (PlanetTile tile)
+            {
+                if (CanCreateSettlementHere())
+                {
+                    return true;
+                }
+                return false;
+            }, delegate (PlanetTile tile)
+            {
+                Find.World.renderer.wantedMode = WorldRenderMode.None;
+                GetTileData();
+            }, allowEscape: true, showRandomButton: false, showNextButton: false, canCancel: true);
         }
 
         //Drawing
         public override void DoWindowContents(Rect inRect)
         {
+            if (!Find.TilePicker.Active)
+            {
+                Close();
+                return;
+            }
             faction.roadBuilder.DrawPaths();
 
             GetTileData();
@@ -58,206 +98,121 @@ namespace FactionColonies
             //Draw Label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 0, 268, 40), "SettleANewColony".Translate());
+            Rect newColonyHeader = new Rect(0, 0, 260, newColonyHeader_height);
+            Widgets.Label(newColonyHeader, "SettleANewColony".Translate());
 
             //hori line
-            Widgets.DrawLineHorizontal(0, 40, 300);
+            Widgets.DrawLineHorizontal(0, newColonyHeader_height, 300);
 
 
             //Upper menu
-            Widgets.DrawMenuSection(new Rect(5, 45, 258, 220));
+            Rect upperBox = new Rect(5, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 258, upperBox_height);
+            Widgets.DrawMenuSection(upperBox); //height was originally 220
 
-            DrawLabelBox(new Rect(10, 50, 100, 100), "TravelTime".Translate(), timeToTravel.ToTimeString());
-            DrawLabelBox(new Rect(153, 50, 100, 100), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
+            DrawLabelBox(new Rect(10, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
+            DrawLabelBox(new Rect(153, UIUtil.getTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
 
 
             //Lower Menu label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 270, 268, 40), "BaseProductionStats".Translate());
+            Rect productionLabelBox = new Rect(0, UIUtil.getTotalHeight(upperBox) + verticalMargins, 268, productionLabel_height); //0, 270, 268, 40
+            Widgets.Label(productionLabelBox, "BaseProductionStats".Translate());
 
 
             //Lower menu
-            Widgets.DrawMenuSection(new Rect(5, 310, 258, 220));
-
+            Rect prodBox = new Rect(5, UIUtil.getTotalHeight(productionLabelBox) + verticalMargins, 258, prodBoxHeight); //5, 210, 258, 220
+            Widgets.DrawMenuSection(prodBox); 
 
             //Draw production
-            DrawProduction();
-            DrawCreateSettlementButton();
+            DrawProduction(prodBox);
 
-            // // Orbital Platform button (only show if research is complete)
-            // if (CanCreateOrbitalPlatforms())
-            // {
-            //     int orbitalBtnLength = 140;
-            //     if (Widgets.ButtonText(
-            //             new Rect((InitialSize.x - 32 - orbitalBtnLength) / 2f, 535 - 38f, orbitalBtnLength, 32),
-            //             "Create Orbital Platform"))
-            //     {
-            //         Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
-            //     }
-            // }
+            float curHeight = UIUtil.getTotalHeight(prodBox);
+            curHeight = DrawChooseSettlementTypeButton(curHeight);
+            curHeight = DrawCreateSettlementButton(curHeight);
+
+            windowRect.height = curHeight + (verticalMargins * 7);
 
             //reset anchor/font
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
 
-        private void SpawnOrbitalPlatformAboveSelectedTile()
-        {
-            // Resolve a tile even if none is selected
-            int targetTile = ResolveTargetTile();
-            currentTileSelected = targetTile; // keep your UI in sync
-
-            // Use our custom orbital platform definition
-            var orbitalWorldObjectDef = DefDatabase<WorldObjectDef>.GetNamedSilentFail("FCOrbitalPlatform");
-
-            if (orbitalWorldObjectDef == null)
-            {
-                LogUtil.Warning("FCOrbitalPlatform WorldObjectDef not found. This mod may not be properly installed.");
-                Messages.Message("Could not find orbital platform definition. Check mod installation.", MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-
-            LogUtil.Message($"=== USING CUSTOM ORBITAL PLATFORM DEF ===");
-            LogUtil.Message($"Using def: {orbitalWorldObjectDef.defName}");
-            LogUtil.Message($"ExpandingIconTexture: {orbitalWorldObjectDef.expandingIconTexture}");
-
-            // DEBUG: Check if the texture actually loads
-            LogUtil.Message($"=== TEXTURE DEBUG ===");
-            var testTexture = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/SettlementPlatform", false);
-            LogUtil.Message($"Can load SettlementPlatform texture: {testTexture != null}");
-
-            if (testTexture != null)
-            {
-                LogUtil.Message($"SettlementPlatform texture name: {testTexture.name}");
-            }
-            else
-            {
-                LogUtil.Warning("SettlementPlatform texture not found! Checking available textures...");
-                
-                // Test other known expanding textures
-                var availableTextures = new string[]
-                {
-                    "World/WorldObjects/Expanding/Settlement",
-                    "World/WorldObjects/Expanding/Site", 
-                    "World/WorldObjects/Expanding/Caravan",
-                    "World/WorldObjects/Expanding/AsteroidMine"
-                };
-                
-                foreach (var texPath in availableTextures)
-                {
-                    var tex = ContentFinder<Texture2D>.Get(texPath, false);
-                    LogUtil.Message($"  {texPath}: {tex != null}");
-                }
-            }
-
-            // DEBUG: Check the def properties
-            LogUtil.Message($"ExpandingIcon enabled: {orbitalWorldObjectDef.expandingIcon}");
-            LogUtil.Message($"UseDynamicDrawer: {orbitalWorldObjectDef.useDynamicDrawer}");
-            LogUtil.Message($"ExpandingIconDrawSize: {orbitalWorldObjectDef.expandingIconDrawSize}");
-            LogUtil.Message($"FullyExpandedInSpace: {orbitalWorldObjectDef.fullyExpandedInSpace}");
-
-            // Find an empty orbital tile for the platform
-            PlanetTile orbitalTile = FindEmptyOrbitalTile();
-
-            if (!orbitalTile.Valid)
-            {
-                Messages.Message("Could not find suitable empty space for orbital platform.", MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-
-            // Create the orbital platform using our custom def
-            MapParent orbitalPlatform = (MapParent)WorldObjectMaker.MakeWorldObject(orbitalWorldObjectDef);
-            orbitalPlatform.Tile = orbitalTile;  // Use orbital tile, not target tile
-            orbitalPlatform.SetFaction(Faction.OfPlayer);
-
-            // Set the name
-            try
-            {
-                int platformCount = Find.WorldObjects.AllWorldObjects.Count(wo => wo.Label?.Contains("Orbital Platform") == true) + 1;
-                string platformName = $"Orbital Platform {platformCount}";
-                
-                var labelField = orbitalPlatform.GetType().GetField("labelInt", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (labelField != null)
-                {
-                    labelField.SetValue(orbitalPlatform, platformName);
-                    LogUtil.Message($"Set platform name to: {platformName}");
-                }
-            }
-            catch (System.Exception ex)
-            {
-                LogUtil.Warning($"Could not set orbital platform name: {ex.Message}");
-            }
-
-            // Add it to the world
-            Find.WorldObjects.Add(orbitalPlatform);
-
-            // DON'T generate a map - just show success message
-            string layerName = Find.WorldGrid[targetTile].Layer?.Def?.label ?? "space";
-            Messages.Message($"Orbital platform created in {layerName}. Click on it to visit when needed.", 
-                MessageTypeDefOf.PositiveEvent, false);
-
-            // Optional: Switch world view to show the new platform
-            if (Find.WorldSelector != null)
-            {
-                Find.WorldSelector.ClearSelection();
-                Find.WorldSelector.Select(orbitalPlatform);
-            }
-
-            LogUtil.Message($"=== ORBITAL PLATFORM CREATION COMPLETE ===");
-        }
-
-        private int ResolveTargetTile()
-        {
-            // If you already have a selection, use it
-            if (currentTileSelected >= 0)
-                return currentTileSelected;
-
-            // Prefer the player’s current map tile (if in a map)
-            var map = Find.CurrentMap;
-            if (map != null)
-                return map.Tile;
-
-            // Fallback: your faction capital (if set)
-            if (faction != null && faction.capitalLocation >= 0)
-                return faction.capitalLocation;
-
-            // Fallback: any player home map
-            var home = Find.Maps.FirstOrDefault(m => m.IsPlayerHome);
-            if (home != null)
-                return home.Tile;
-
-            // Last resort: pick a random valid settlement tile
-            if (TileFinder.TryFindNewSiteTile(out PlanetTile randomTile))
-                return randomTile;
-
-            // Ultra fallback: tile 0 (should be safe in most seeds)
-            return 0;
-        }
-
 
         private void GetTileData()
         {
-            var selectedTile = Find.WorldSelector.SelectedTile;
-            if (selectedTile.Valid && selectedTile.tileId != currentTileSelected)
+            PlanetTile selectedTile = Find.WorldSelector.SelectedTile;
+            if (selectedTile.Valid && selectedTile != currentTileSelected)
             {
-                currentTileSelected = selectedTile.tileId;
-                currentBiomeSelected = DefDatabase<BiomeResourceDef>.GetNamed(Find.WorldGrid[currentTileSelected].PrimaryBiome.defName, false);
+                currentTileSelected = selectedTile;
+            }
+            else /* If a WorldObject is selected, then get the tile underneath it. */
+            {
+                WorldObject obj = Find.WorldSelector.SingleSelectedObject;
+                if (obj != null && obj.Tile != null && obj.Tile.Valid)
+                {
+                    currentTileSelected = obj.Tile;
+                }
+            }
+            if (currentTileSelected == PlanetTile.Invalid)
+            {
+                return;
+            }
+            /* No need to keep redoing all of the below calculations if the selected tile or settlement type hasn't changed */
+            if (currentTileSelected == oldTileSelected &&
+                currentSettlementType == oldSettlementType)
+            {
+                return;
+            }
+            oldTileSelected = currentTileSelected;
+            oldSettlementType = currentSettlementType;
+            LogUtil.Message($"Called GetTileData on tile {selectedTile}. Valid: {selectedTile.Valid} layer: {selectedTile.Layer} tileid: {selectedTile.tileId}");
+
+            if (currentSettlementType.biomeResourceOverride != null)
+            {
+                currentBiomeSelected = currentSettlementType.biomeResourceOverride;
+                //default biome
+                if (!DefDatabase<BiomeResourceDef>.AllDefs.Contains(currentBiomeSelected))
+                {
+                    LogUtil.Error($"Settlement type {currentSettlementType.LabelCap} has an invalid override biome. Using default biome.");
+                    currentBiomeSelected = BiomeResourceDefOf.defaultBiome;
+                }
+            }
+            else
+            {
+                currentBiomeSelected = DefDatabase<BiomeResourceDef>.GetNamed(currentTileSelected.Tile.PrimaryBiome.defName, false);
                 //default biome
                 if (currentBiomeSelected == default(BiomeResourceDef))
                 {
-                    //Log Modded Biome
+                    LogUtil.Warning($"Selected tile has biome {currentTileSelected.Tile.PrimaryBiome.LabelCap}, which is not defined for Empire settlements. Using default biome.");
                     currentBiomeSelected = BiomeResourceDefOf.defaultBiome;
                 }
-                currentHillinessSelected = DefDatabase<BiomeResourceDef>.GetNamed(Find.WorldGrid[currentTileSelected].hilliness.ToString());
-                if (currentBiomeSelected.canSettle && currentHillinessSelected.canSettle && currentTileSelected != 1)
+            }
+
+            if (CanCreateSettlementHere(true))
+            {
+                currentTileSelected = currentSettlementType.getTileForSettlement(currentTileSelected);
+                timeToTravel = currentSettlementType.getCreationTime(currentTileSelected);
+            }
+            else
+            {
+                timeToTravel = 0;
+            }
+        }
+
+        private IEnumerable<FloatMenuOption> GetAvailableSettlementTypes()
+        {
+            var tiers = new List<WorldSettlementDef>();
+
+            foreach (WorldSettlementDef settlementDef in DefDatabase<WorldSettlementDef>.AllDefs)
+            {
+                if (settlementDef.isUnlocked())
                 {
-                    timeToTravel = TravelUtil.ReturnTicksToArrive(faction.capitalLocation, currentTileSelected);
-                }
-                else
-                {
-                    timeToTravel = 0;
+                    yield return new FloatMenuOption(settlementDef.LabelCap, delegate
+                    {
+                        currentSettlementType = settlementDef;
+                        Find.World.GetComponent<FactionFC>().layersForTilePicker = settlementDef.planetLayers;
+                    });
                 }
             }
         }
@@ -287,89 +242,134 @@ namespace FactionColonies
             traitExpansionistReducedFee = false;
         }
         
-        private void DrawProduction()
+        private void DrawProduction(Rect prodBox)
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
 
             //Production headers
-            Widgets.Label(new Rect(40, 310, 60, 25), "Base".Translate());
-            Widgets.Label(new Rect(110, 310, 60, 25), "Modifier".Translate());
-            Widgets.Label(new Rect(180, 310, 60, 25), "Final".Translate());
+            Widgets.Label(new Rect(40, prodBox.y, 60, productionHeaders_height), "Base".Translate()); // 40, 190, 60, 25
+            Widgets.Label(new Rect(110, prodBox.y, 60, productionHeaders_height), "Modifier".Translate());
+            Widgets.Label(new Rect(180, prodBox.y, 60, productionHeaders_height), "Final".Translate());
 
-            if (currentTileSelected != -1)
+            if (currentTileSelected != PlanetTile.Invalid)
             {
-                // Get the base resource types (excluding orbital-specific ones)
-                ResourceType[] baseTypes = new ResourceType[] {
-                    ResourceType.Food,
-                    ResourceType.Weapons,
-                    ResourceType.Apparel,
-                    ResourceType.Animals,
-                    ResourceType.Logging,
-                    ResourceType.Mining,
-                    ResourceType.Research,
-                    ResourceType.Power,
-                    ResourceType.Medicine
-                };
+                List<ResourceDisplay> resTypes = faction.FactionResources;
+                List<ResourceTypeDef> settlementResourceTypes = currentSettlementType.getResourceDefs();
+                int startHeight = (int)prodBox.y + productionHeaders_height + verticalMargins;
 
-                for (int i = 0; i < baseTypes.Length; i++)
+                for (int i = 0; i < resTypes.Count; i++)
                 {
-                    ResourceType titheType = baseTypes[i];
+                    ResourceTypeDef titheType = resTypes[i].resourceDef;
                     int baseHeight = 15;
-                    if (Widgets.ButtonImage(new Rect(20, 335 + i * (5 + baseHeight), baseHeight, baseHeight), faction.returnResource(titheType).getIcon()))
+                    string label = resTypes[i].label;
+                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, label.CapitalizeFirst()))
                     {
-                        string label = faction.returnResource(titheType).label;
                         Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + label, label.CapitalizeFirst()));
                     }
+                    /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
+                     * it should accurately represent the resources that the settlement would produce */
+                    ResourceBonuses biomeRes = currentBiomeSelected.getBiomeResource(titheType);
+                    ResourceBonuses settleRes = currentSettlementType.getSettlementResource(titheType);
 
                     float xMod = 70f;
-                    Rect baseRect = new Rect(40, 335 + i * (5 + baseHeight), 60, baseHeight + 2);
+                    Rect baseRect = new Rect(40, startHeight + i * (5 + baseHeight), 60, baseHeight + 2);
 
-                    double titheAddBaseProductionCurBiome = currentBiomeSelected.BaseProductionAdditive[i];
-                    double titheAddBaseProductionCurHilli = currentHillinessSelected.BaseProductionAdditive[i];
+                    if (biomeRes == null || settleRes == null || !titheType.ResourceTypeAllowedByTech(faction.techLevel))
+                    {
+                        /* One of the following is true:
+                         *  1. The biome does not support this resource type
+                         *  2. The settlement type does not support this resource type
+                         *  3. The resource type's research requirements have not been met
+                         * So show it as producing nothing.
+                         */
+                        TaggedString na = "N/A".ApplyTag(TagType.Gray);
+                        Widgets.Label(baseRect, na);
+                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), na);
+                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), na);
+                    }
+                    else
+                    {
+                        double baseProduction = biomeRes.additive + settleRes.additive + titheType.getExtensionAdditives(currentTileSelected);
+                        double baseMultiplier = Math.Round(biomeRes.multiplier * settleRes.multiplier * titheType.getExtensionMultipliers(currentTileSelected),2);
+                        double total = Math.Round(baseProduction * baseMultiplier, 2);
 
-                    double titheMultBaseProductionCurBiome = currentBiomeSelected.BaseProductionMultiplicative[i];
-                    double titheMultBaseProductionCurHilli = currentHillinessSelected.BaseProductionMultiplicative[i];
-
-                    Widgets.Label(baseRect, (titheAddBaseProductionCurBiome + titheAddBaseProductionCurHilli).ToString());
-                    Widgets.Label(baseRect.CopyAndShift(xMod, 0f), (titheMultBaseProductionCurBiome * titheMultBaseProductionCurHilli).ToString());
-                    Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), ((titheAddBaseProductionCurBiome + titheAddBaseProductionCurHilli) * (titheMultBaseProductionCurBiome * titheMultBaseProductionCurHilli)).ToString());
+                        Widgets.Label(baseRect, (baseProduction).ToString());
+                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), (baseMultiplier).ToString());
+                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), (total).ToString());
+                    }
                 }
+                /* Highlight the total value */
+                Widgets.DrawHighlight(new Rect(180, startHeight - verticalMargins, 60, (resTypes.Count * 20f) + verticalMargins));
             }
         }
-
-        private void DrawCreateSettlementButton()
+        private float DrawChooseSettlementTypeButton(float curHeight)
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             int buttonLength = 130;
-            if (Widgets.ButtonText(new Rect((InitialSize.x - 32 - buttonLength) / 2f, 535, buttonLength, 32), "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
+            Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
+            if (Widgets.ButtonText(button, currentSettlementType.LabelCap))
             {
-                if (!CanCreateSettlementHere()) return;
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                IEnumerable<FloatMenuOption> options = GetAvailableSettlementTypes();
+                if (options != null)
+                {
+                    foreach (FloatMenuOption option in options)
+                    {
+                        list.Add(option);
+                    }
+                }
+                FloatMenu menu = new FloatMenu(list);
+                Find.WindowStack.Add(menu);
+            }
+            return UIUtil.getTotalHeight(button);
+        }
+
+        private float DrawCreateSettlementButton(float curHeight)
+        {
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            int buttonLength = 130;
+            Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
+            if (Widgets.ButtonText(button, "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
+            {
+                if (!CanCreateSettlementHere()) return UIUtil.getTotalHeight(button);
+
+                LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
 
                 PaymentUtil.paySilver(settlementCreationCost);
 
                 //create settle event
                 FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
                 evt.location = currentTileSelected;
-                evt.planetName = Find.World.info.name;
                 evt.timeTillTrigger = Find.TickManager.TicksGame + timeToTravel;
                 evt.source = faction.capitalLocation;
+                evt.settlementToCreate = currentSettlementType;
+                if (currentSettlementType.isConstructed)
+                {
+                    evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
+                }
                 faction.addEvent(evt);
 
-                faction.settlementCaravansList.Add(evt.location.ToString());
-                Messages.Message("CaravanSentToLocation".Translate() + " " + (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
+                faction.settlementCaravansList.Add(evt.location);
+                Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
+                                 (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
 
                 DoPostEventCreationTraitThings();
             }
+            return UIUtil.getTotalHeight(button);
         }
 
-        private bool CanCreateSettlementHere()
+        private bool CanCreateSettlementHere(bool silent = false)
         {
             StringBuilder reason = new StringBuilder();
-            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, reason) || faction.checkSettlementCaravansList(currentTileSelected.ToString()) || !PlayerHasEnoughSilver(reason))
+            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, reason) || faction.checkSettlementCaravansList(currentTileSelected) || !PlayerHasEnoughSilver(reason))
             {
-                Messages.Message(reason.ToString(), MessageTypeDefOf.RejectInput);
+                if (!silent)
+                {
+                    Messages.Message(reason.ToString(), MessageTypeDefOf.RejectInput);
+                }
                 return false;
             }
 
@@ -398,74 +398,22 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             //Draw highlight
-            Widgets.DrawHighlight(new Rect(rect.x, rect.y + rect.height /8, rect.width, rect.height / 4f));
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, rect.height / 2f), text1);
+            Widgets.DrawHighlight(new Rect(rect.x, rect.y + rect.height / 8, rect.width, rect.height * 3f / 8f));
+            Widgets.Label(new Rect(rect.x, rect.y + rect.height / 16, rect.width, rect.height / 2f), text1);
 
-            //divider
-            Widgets.DrawLineHorizontal(rect.x + 5, rect.y + rect.height / 2, rect.width - 10);
-
-            //Bottom Text - Gamers Rise Up
+            //Bottom Text
             Widgets.Label(new Rect(rect.x, rect.y + rect.height / 2, rect.width, rect.height / 2f), text2);
         }
 
-        private PlanetTile FindEmptyOrbitalTile()
+        public override void PreClose()
         {
-            var worldGrid = Find.WorldGrid;
-            var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
-            
-            // If Odyssey is active and orbit layer exists, try to find a tile in orbit first
-            if (ModsConfig.OdysseyActive && worldGrid.Orbit != null)
+            base.PreClose();
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            if (faction != null)
             {
-                for (int attempts = 0; attempts < 1000; attempts++)
-                {
-                    int randomTileId = Rand.Range(0, worldGrid.Orbit.TilesCount);
-                    PlanetTile orbitalTile = new PlanetTile(randomTileId, worldGrid.Orbit);
-                    
-                    if (!existingObjectTiles.Contains(orbitalTile))
-                        return orbitalTile;
-                }
+                faction.layersForTilePicker = null;
             }
-            
-            // Fallback: find any empty surface tile
-            for (int attempts = 0; attempts < 1000; attempts++)
-            {
-                int randomTileId = Rand.Range(0, worldGrid.TilesCount);
-                PlanetTile surfaceTile = new PlanetTile(randomTileId, worldGrid.Surface);
-                
-                if (!existingObjectTiles.Contains(surfaceTile))
-                    return surfaceTile;
-            }
-            
-            return PlanetTile.Invalid;
-        }
-
-        // private bool CanCreateOrbitalPlatforms()
-        // {
-        //     var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
-        //     return research != null && research.IsFinished;
-        // }
-
-        private OrbitalPlatformTier GetHighestOrbitalTier()
-        {
-            var tiers = new System.Collections.Generic.List<OrbitalPlatformTier>();
-            if (DefDatabase<ResearchProjectDef>.GetNamed("GlitterworldOrbitalSettlements").IsFinished)
-                tiers.Add(OrbitalPlatformTier.Glitter);
-            if (DefDatabase<ResearchProjectDef>.GetNamed("AdvancedOrbitalEngineering").IsFinished)
-                tiers.Add(OrbitalPlatformTier.Advanced);
-            if (DefDatabase<ResearchProjectDef>.GetNamed("OrbitalLogistics").IsFinished)
-                return OrbitalPlatformTier.Logistics;
-            if (DefDatabase<ResearchProjectDef>.GetNamed("OrbitalConstruction").IsFinished)
-                tiers.Add(OrbitalPlatformTier.Basic);
-            return OrbitalPlatformTier.None;
-        }
-
-        public enum OrbitalPlatformTier
-        {
-            None,
-            Basic,
-            Logistics,
-            Advanced,
-            Glitter
+            Find.TilePicker.StopTargeting();
         }
     }
 }

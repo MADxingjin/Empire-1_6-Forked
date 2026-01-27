@@ -7,12 +7,32 @@
 		<label>Archotech Light Converter</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierFood>1.75</productionMultiplierFood>
-		<productionMultiplierWeapons>1.75</productionMultiplierWeapons>
-		<productionMultiplierApparel>1.75</productionMultiplierApparel>
-		<productionMultiplierLogging>1.75</productionMultiplierLogging>
-		<productionMultiplierMining>1.75</productionMultiplierMining>
-		<productionMultiplierMedicine>1.75</productionMultiplierMedicine>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Logging</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Medicine</resourceDef>
+				<multiplier>1.75</multiplier>
+			</li>
+		</resourceBonuses>
 		<militaryBaseLevel>-3</militaryBaseLevel>
 	</FactionColonies.FCTraitEffectDef>
 
@@ -22,7 +42,12 @@
 		<label>Archotech Animal Beacon</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierAnimals>2</productionMultiplierAnimals>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>2.0</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 	<FactionColonies.FCTraitEffectDef>
@@ -31,7 +56,12 @@
 		<label>Trapped Archotech AI</label>
 		<!--Lable of Def -->
 		<desc></desc>
-		<productionMultiplierResearch>2</productionMultiplierResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>2.0</multiplier>
+			</li>
+		</resourceBonuses>
 		<unrestGainedBase>0.5</unrestGainedBase>
 	</FactionColonies.FCTraitEffectDef>
 
@@ -66,6 +96,19 @@
 		<desc></desc>
 		<taxBaseRandomModifier>80</taxBaseRandomModifier>
 		<taxBasePercentage>25</taxBasePercentage>
+	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>archotechGenerator</defName> <!--Name of Def -->
+		<label>Archotech Generator</label> <!--Lable of Def -->
+		<desc></desc> <!-- Description of trait -->
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Power</resourceDef>
+				<multiplier>2.0</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 </Defs>

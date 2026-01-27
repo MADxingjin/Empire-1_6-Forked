@@ -268,7 +268,6 @@ namespace FactionColonies
                 faction.factionIconPath = tempFactionIconPath;
                 faction.factionIcon = tempFactionIcon;
                 faction.updateFactionRaces();
-                faction.factionBackup = fact;
 
                 faction.updateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
 

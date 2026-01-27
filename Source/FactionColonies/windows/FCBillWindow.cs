@@ -135,7 +135,7 @@ namespace FactionColonies
                     Widgets.DrawHighlight(highlight);
                 }
                 String settlementName;
-                if( bill.settlement != null) { settlementName = bill.settlement.name; } else { settlementName = "Null"; }
+                if( bill.settlement != null) { settlementName = bill.settlement.Name; } else { settlementName = "Null"; }
                 if(Widgets.ButtonText(settlement, settlementName))
                 {
                     if (bill.settlement != null)
@@ -156,18 +156,8 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(resolve, "ResolveBill".Translate()))
                 {
-                    if (PaymentUtil.getSilver() >= -1 * (bill.taxes.silverAmount) || bill.taxes.silverAmount >= 0)
-                    { //if have enough silver on the current map to pay  & map belongs to player
-                        FCEventMaker.createTaxEvent(bill);
-                        if (bill.taxes.researchCompleted != 0)
-                        {
-                            faction.researchPointPool += bill.taxes.researchCompleted;
-                            Messages.Message("PointsAddedToResearchPool".Translate(bill.taxes.researchCompleted), MessageTypeDefOf.PositiveEvent);
-                        }
-                        if (bill.taxes.electricityAllotted != 0)
-                        {
-                            faction.powerPool += bill.taxes.electricityAllotted;
-                        }
+                    if (bill.attemptResolve())
+                    {
                         goto Reset;
                     }
 

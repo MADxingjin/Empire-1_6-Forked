@@ -25,7 +25,7 @@ namespace FactionColonies
 
     class FCBuildingWindow : Window
     {
-        readonly SettlementFC settlement;
+        readonly WorldSettlementFC settlement;
         readonly int buildingSlot;
         readonly BuildingFCDef buildingDef;
         readonly List<BuildingFCDef> buildingList;
@@ -35,9 +35,16 @@ namespace FactionColonies
         private static readonly int offset = 8;
         private Vector2 scrollPosition = Vector2.zero;
         private static readonly int rowHeight = 90;
-        
+
         // Filter state
-        private BuildingFilter currentFilter = BuildingFilter.All;
+        //private BuildingFilter currentFilter = BuildingFilter.All;
+        /* To deal with a variable number of resources (and variable resources in general), we use an int for
+         * the filter. The value of the filter, and the corresponding label, are set in WorldObjectComp_SettlementBuildings
+         */
+        private int currentFilter = 0;
+        private int filterSize = 0;
+        private int filterRows = 2;
+        private const int filterButtonsPerRow = 6;
         private static readonly int filterButtonHeight = 25;
         private static readonly int filterRowHeight = 30;
         
@@ -83,40 +90,39 @@ namespace FactionColonies
             TopIcon = new Rect(15, topWindowHeight - 74, 64, 64);
             TopName = new Rect(15, 15, inRect.width - 30, 30);
             TopDescription = new Rect(95, topWindowHeight - 74, inRect.width - 110, 64);
-            FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * 2 + 5);
+            FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * filterRows + 5);
         }
 
         private void DrawFilterButtons(Rect inRect)
         {
             // Define filter categories
-            var filters = new[]
+            /*var filters = new[]
             {
                 BuildingFilter.All,
                 BuildingFilter.Happiness,
+                BuildingFilter.Military,
+                BuildingFilter.Basetax,
+                BuildingFilter.Workers,
                 BuildingFilter.Food,
                 BuildingFilter.Weapons,
                 BuildingFilter.Apparel,
                 BuildingFilter.Research,
                 BuildingFilter.Medicine,
-                BuildingFilter.Power,
-                BuildingFilter.Military,
-                BuildingFilter.Basetax,
-                BuildingFilter.Workers
-            };
+                BuildingFilter.Power
+            };*/
 
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
             // Calculate button dimensions - 6 per row to fit all 11 filters in 2 rows
-            int buttonsPerRow = 6;
-            float buttonWidth = (FilterArea.width - 10) / buttonsPerRow;
+            float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
-            for (int i = 0; i < filters.Length; i++)
+            for (int i = 0; i < filterSize; i++)
             {
-                int row = i / buttonsPerRow;
-                int col = i % buttonsPerRow;
+                int row = i / filterButtonsPerRow;
+                int col = i % filterButtonsPerRow;
                 
                 Rect buttonRect = new Rect(
                     FilterArea.x + 5 + (col * buttonWidth),
@@ -125,7 +131,7 @@ namespace FactionColonies
                     buttonHeight
                 );
 
-                bool isSelected = currentFilter == filters[i];
+                bool isSelected = currentFilter == i;
                 
                 // Draw button background
                 if (isSelected)
@@ -139,7 +145,7 @@ namespace FactionColonies
                     // Draw normal button background
                     if (Widgets.ButtonInvisible(buttonRect))
                     {
-                        currentFilter = filters[i];
+                        currentFilter = i;
                         ApplyFilter();
                     }
                     Widgets.DrawAtlas(buttonRect, Widgets.ButtonBGAtlas);
@@ -149,14 +155,14 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Color textColor = isSelected ? Color.white : Color.white;
                 GUI.color = textColor;
-                Widgets.Label(buttonRect, filters[i].ToString());
+                Widgets.Label(buttonRect, settlement.BuildingsComp.getLabelForFilter(i));
                 GUI.color = Color.white;
                 
                 // Handle click for selected buttons
                 if (isSelected && Widgets.ButtonInvisible(buttonRect))
                 {
                     // Allow clicking selected button to deselect (go back to All)
-                    currentFilter = BuildingFilter.All;
+                    currentFilter = 0;
                     ApplyFilter();
                 }
             }
@@ -180,75 +186,7 @@ namespace FactionColonies
 
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
-            if (currentFilter == BuildingFilter.All)
-                return true;
-
-            // Get the building's traits
-            if (building.traits == null || building.traits.Count == 0)
-                return false;
-
-            foreach (var traitDefName in building.traits)
-            {
-                var traitDef = DefDatabase<FCTraitEffectDef>.GetNamedSilentFail(traitDefName.defName);
-                if (traitDef == null) continue;
-
-                switch (currentFilter)
-                {
-                    case BuildingFilter.Happiness:
-                        if (traitDef.happinessLostBase != 0 || traitDef.happinessGainedBase != 0 || 
-                            Math.Abs(traitDef.happinessLostMultiplier - 1.0) > 0.001 || 
-                            Math.Abs(traitDef.happinessGainedMultiplier - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Food:
-                        if (traitDef.productionBaseFood != 0 || Math.Abs(traitDef.productionMultiplierFood - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Weapons:
-                        if (traitDef.productionBaseWeapons != 0 || Math.Abs(traitDef.productionMultiplierWeapons - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Apparel:
-                        if (traitDef.productionBaseApparel != 0 || Math.Abs(traitDef.productionMultiplierApparel - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Research:
-                        if (traitDef.productionBaseResearch != 0 || Math.Abs(traitDef.productionMultiplierResearch - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Medicine:
-                        if (traitDef.productionBaseMedicine != 0 || Math.Abs(traitDef.productionMultiplierMedicine - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Power:
-                        if (traitDef.productionBasePower != 0 || Math.Abs(traitDef.productionMultiplierPower - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Military:
-                        if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Basetax:
-                        if (traitDef.taxBasePercentage != 0 || traitDef.taxBaseRandomModifier != 0)
-                            return true;
-                        break;
-                    
-                    case BuildingFilter.Workers:
-                        if (traitDef.workerBaseMax != 0 || traitDef.workerBaseOverMax != 0 || traitDef.workerBaseCost != 0)
-                            return true;
-                        break;
-                }
-            }
-
-            return false;
+            return settlement.BuildingsComp.filterBuilding(currentFilter, building);
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -303,12 +241,11 @@ namespace FactionColonies
                         //if not the same building
                         list.Add(new FloatMenuOption("Build".Translate(), delegate
                         {
-                            if (!settlement.validConstructBuilding(building, buildingSlot, settlement)) return;
+                            if (settlement.BuildingsComp?.validConstructBuilding(building, buildingSlot) != true) return;
                             FCEvent tmpEvt = new FCEvent(true)
                             {
                                 def = FCEventDefOf.constructBuilding,
-                                source = settlement.mapLocation,
-                                planetName = settlement.planetName,
+                                source = settlement.Tile,
                                 building = building,
                                 buildingSlot = buildingSlot
                             };
@@ -321,9 +258,8 @@ namespace FactionColonies
                             Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
 
                             PaymentUtil.paySilver(Convert.ToInt32(building.cost));
-                            settlement.deconstructBuilding(buildingSlot);
                             Messages.Message(building.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
-                            settlement.buildings[buildingSlot] = BuildingFCDefOf.Construction;
+                            settlement.BuildingsComp.startConstruction(building, buildingSlot, tmpEvt.timeTillTrigger);
                             Find.WindowStack.TryRemove(this);
                             Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
                         }));
@@ -343,7 +279,7 @@ namespace FactionColonies
                 Widgets.Label(newBuildingLabel, "  " + building.LabelCap + " - " + "Cost".Translate() + ": " + building.cost);
 
                 Text.Font = GameFont.Tiny;
-                Widgets.Label(newBuildingDesc, building.desc);
+                Widgets.Label(newBuildingDesc, building.Desc);
             }
 
             ls.End();
@@ -370,18 +306,7 @@ namespace FactionColonies
             /* If the buildingDef is "Construction", then find the building that's being constructed and list it in the description. */
             if (buildingDef == BuildingFCDefOf.Construction)
             {
-                /* This little snippet was yanked from SettlementFC.validConstructBuilding(). Seems really heavy-handed just to get the building that this
-                 * Construction building represents. There must be a better way to do this.
-                 * Although, given the relative rarity of checking construction (and the total number of events usually being quite low), this is probably fine
-                 * for now. */
-                foreach (FCEvent event1 in Find.World.GetComponent<FactionFC>().events)
-                {
-                    if (event1.source == settlement.mapLocation && event1.buildingSlot == buildingSlot && event1.def.defName == "constructBuilding")
-                    {
-                        desc = "Empire_BuildingWindow_ConstructionDesc".Translate(event1.building.label);
-                        break;
-                    }
-                }
+                desc = "Empire_BuildingWindow_ConstructionDesc".Translate(settlement.BuildingsComp.Buildings[buildingSlot].underConstructionDef.label);
             }
             Widgets.Label(TopDescription, desc);
 
@@ -394,14 +319,11 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
         }
 
-        public FCBuildingWindow(SettlementFC settlement, int buildingSlot)
+        public FCBuildingWindow(WorldSettlementFC settlement, int buildingSlot)
         {
             factionfc = Find.World.GetComponent<FactionFC>();
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
-            
-            // Check if this is an orbital platform
-            bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
             
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
             {
@@ -417,18 +339,21 @@ namespace FactionColonies
                             
                             // Check settlement type restrictions
                             bool meetsSettlementTypeRequirement = true;
-                            switch (building.settlementTypeRestriction)
+                            if (building.settlementTypeBlockList?.Count > 0)
                             {
-                                case SettlementTypeRestriction.SurfaceOnly:
-                                    meetsSettlementTypeRequirement = !isOrbitalPlatform;
-                                    break;
-                                case SettlementTypeRestriction.OrbitalOnly:
-                                    meetsSettlementTypeRequirement = isOrbitalPlatform;
-                                    break;
-                                case SettlementTypeRestriction.None:
-                                default:
+                                if (building.settlementTypeBlockList.Contains(settlement.settlementDef))
+                                {
+                                    meetsSettlementTypeRequirement = false;
+                                }
+                            }
+                            if (building.settlementTypeAllowList?.Count > 0)
+                            {
+                                //If we have an allowlist, then the default restriction is false
+                                meetsSettlementTypeRequirement = false;
+                                if (building.settlementTypeAllowList.Contains(settlement.settlementDef))
+                                {
                                     meetsSettlementTypeRequirement = true;
-                                    break;
+                                }
                             }
                             
                             if (meetsSettlementTypeRequirement)
@@ -453,7 +378,10 @@ namespace FactionColonies
 
             this.settlement = settlement;
             this.buildingSlot = buildingSlot;
-            buildingDef = settlement.buildings[buildingSlot];
+            buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
+
+            filterSize = settlement.BuildingsComp.getFilterSize();
+            filterRows = (int)Math.Ceiling((double)filterSize / (double)filterButtonsPerRow);
         }
     }
 }

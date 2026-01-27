@@ -36,7 +36,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>sparseWildlife</defName> <!--Name of Def -->
 		<label>Sparse Wildlife</label> <!--Lable of Def -->
-		<productionBaseAnimals>-1</productionBaseAnimals>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<additive>-1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

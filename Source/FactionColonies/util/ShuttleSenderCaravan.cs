@@ -13,7 +13,7 @@ namespace FactionColonies.util
     {
         private readonly Caravan caravan;
 
-        public ShuttleSenderCaravan(PlanetTile Tile, Caravan caravan, WorldSettlementFC settlementFC) : base(Tile, settlementFC)
+        public ShuttleSenderCaravan(PlanetTile Tile, Caravan caravan, SettlementBuildingComp_Shuttles comp) : base(Tile, comp)
         {
 			this.caravan = caravan;
         }
@@ -39,7 +39,7 @@ namespace FactionColonies.util
             Find.WorldObjects.Add(travelingTransporters);
 
             caravan.Destroy();
-            settlementFC.shuttleUsesRemaining -= cost;
+            comp.shuttleUsesRemaining -= cost;
         }
 	}
 }

@@ -19,13 +19,13 @@ namespace FactionColonies
         private readonly int settlementUpgradeCost;
         private readonly int maxSettlementLevel;
 
-        private readonly SettlementFC settlement;
+        private readonly WorldSettlementFC settlement;
         private readonly FactionFC factionfc;
 
         public string desc;
         public string header;
 
-        public SettlementUpgradeWindowFc(SettlementFC settlement)
+        public SettlementUpgradeWindowFc(WorldSettlementFC settlement)
         {
             forcePause = false;
             draggable = true;
@@ -34,7 +34,7 @@ namespace FactionColonies
             header = "UpgradeSettlement".Translate();
             this.settlement = settlement;
             settlementUpgradeCost = Convert.ToInt32(FCSettings.settlementBaseUpgradeCost) + (settlement.settlementLevel * 1000);
-            desc = settlement.name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
+            desc = settlement.Name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
             factionfc = Find.World.GetComponent<FactionFC>();
             maxSettlementLevel = FCSettings.settlementMaxLevel;
         }
@@ -47,7 +47,7 @@ namespace FactionColonies
         {
             //failure reasons
             if (settlement.IsBeingUpgraded) return new Message("AlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
-            if (settlement.isUnderAttack) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
+            if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
             if (PaymentUtil.getSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
             //on success
@@ -55,8 +55,7 @@ namespace FactionColonies
             FCEvent tmp = new FCEvent(true)
             {
                 def = FCEventDefOf.upgradeSettlement,
-                location = settlement.mapLocation,
-                planetName = settlement.planetName,
+                location = settlement.Tile,
                 timeTillTrigger = Find.TickManager.TicksGame + (settlement.settlementLevel + 1) * 60000 * (factionfc.hasPolicy(FCPolicyDefOf.isolationist) ? 1 : 2)
             };
                 

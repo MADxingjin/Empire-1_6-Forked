@@ -28,6 +28,7 @@
     <!-- createColonyWindowFC -->
     <SettleANewColony>Settle A New Colony</SettleANewColony>
     <TravelTime>Travel Time</TravelTime>
+	<ConstructionTime>Construction Time</ConstructionTime>
     <InitialCost>Initial Cost</InitialCost>
     <Silver>Silver</Silver>
     <BaseProductionStats>Base Production Stats</BaseProductionStats>
@@ -37,8 +38,10 @@
     <Settle>Settle</Settle>
     <CaravanOnWay>A caravan is already on its way</CaravanOnWay>
     <CaravanSentToLocation>A caravan has been sent to the location! They will arrive in</CaravanSentToLocation>
-    <NotEnoughSilverToSettle>You do not have enough silver on the current map to settle a new colony
-    </NotEnoughSilverToSettle>
+	<ConstructionToLocation>Construction crews have been sent to the location! Their work will complete in</ConstructionToLocation>
+    <NotEnoughSilverToSettle>You do not have enough silver on the current map to settle a new colony</NotEnoughSilverToSettle>
+	<OrbitalTileOccupied>This orbital tile is occupied.</OrbitalTileOccupied>
+	<ColonyConstruction>{0} Construction</ColonyConstruction>
 
     <!-- descWindowFC -->
     <!--<Description>Description</Description>-->
@@ -99,6 +102,11 @@
     <WillBeConstructedIn>will be constructed in</WillBeConstructedIn>
     <BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
     <BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
+	<BuildingFilterAll>All</BuildingFilterAll>
+	<BuildingFilterHappiness>Happiness</BuildingFilterHappiness>
+	<BuildingFilterBasetax>Base Tax</BuildingFilterBasetax>
+	<BuildingFilterWorkers>Workers</BuildingFilterWorkers>
+	<BuildingFilterMilitary>Military</BuildingFilterMilitary>
     
     <!-- Building Demolition -->
     <FCDemolish>Demolish</FCDemolish>

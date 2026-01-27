@@ -101,16 +101,17 @@ namespace FactionColonies
                     //Prevent units being modified when their squads are deployed
                     FactionFC factionFC = Find.World.GetComponent<FactionFC>();
                     List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
-                    List<SettlementFC> settlementsContainingSquad = factionFC?.settlements?.Where(settlement => settlement?.militarySquad?.outfit != null && squadsContainingUnit.Any(squad => settlement.militarySquad.outfit == squad)).ToList();
+                    List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
+                                                                                                         squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
 
                     if ((settlementsContainingSquad?.Count ?? 0) > 0)
                     {
-                        if (settlementsContainingSquad.Any(settlement => settlement.militarySquad.isDeployed))
+                        if (settlementsContainingSquad.Any(settlement => settlement.MilitaryComp.militarySquad.isDeployed))
                         {
                             Units.Add(new FloatMenuOption(unit.name, delegate { Messages.Message("CantBeModified".Translate(unit.name, "ReasonDeployed".Translate()), MessageTypeDefOf.NeutralEvent, false); }));
                             continue;
                         }
-                        else if (settlementsContainingSquad.Any(settlement => settlement.isUnderAttack && settlementsContainingSquad.Contains(settlement.worldSettlement.defenderForce.homeSettlement)))
+                        else if (settlementsContainingSquad.Any(settlement => settlement.MilitaryComp.isUnderAttack && settlementsContainingSquad.Contains(settlement.MilitaryComp.defenderForce.homeSettlement)))
                         {
                             Units.Add(new FloatMenuOption(unit.name, delegate { Messages.Message("CantBeModified".Translate(unit.name, "ReasonDefending".Translate()), MessageTypeDefOf.NeutralEvent, false); }));
                             continue;

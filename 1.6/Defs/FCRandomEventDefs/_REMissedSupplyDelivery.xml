@@ -36,8 +36,16 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>missedSupplyDelivery</defName> <!--Name of Def -->
 		<label>Missed Supply Delivery</label> <!--Lable of Def -->
-		<productionBaseWeapons>-.5</productionBaseWeapons>
-		<productionBaseApparel>-.5</productionBaseApparel>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<additive>-0.5</additive>
+			</li>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<additive>-0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

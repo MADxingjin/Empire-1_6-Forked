@@ -11,7 +11,7 @@ namespace FactionColonies
 {
 	public class FCWindow_Pay_Silver_Loyalty : FCWindow_Pay_Silver
 	{
-		public FCWindow_Pay_Silver_Loyalty(SettlementFC settlement) : base(settlement)
+		public FCWindow_Pay_Silver_Loyalty(WorldSettlementFC settlement) : base(settlement)
 		{
 			this.forcePause = false;
 			this.draggable = true;

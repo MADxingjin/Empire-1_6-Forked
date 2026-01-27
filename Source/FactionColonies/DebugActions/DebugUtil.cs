@@ -52,6 +52,40 @@ namespace FactionColonies
             });
         }
 
+        [DebugAction("Empire", "Send Pawn To Settlement", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void sendPawnToSettlement()
+        {
+            List<Pawn> selected = Find.Selector.SelectedPawns;
+            if (!selected.Any())
+            {
+                Messages.Message("No prisoner selected!", MessageTypeDefOf.RejectInput);
+                return;
+            }
+            List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
+                .settlements.Select(settlement => new FloatMenuOption(settlement.Name + " - Settlement Level : " +
+                    settlement.settlementLevel + " - Prisoners: " +
+                    settlement.prisonerList.Count(), delegate
+                    {
+                        foreach (Pawn pawn in selected)
+                        {
+                            //disappear colonist
+                            TravelUtil.sendPrisoner(pawn, settlement);
+
+                            foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
+                                map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
+                            {
+                                if (!Enumerable.Any(bed.OwnersForReading, found => found == pawn)) continue;
+                                bed.ForPrisoners = false;
+                                bed.ForPrisoners = true;
+                            }
+                        }
+                    }))
+                .ToList();
+
+            FloatMenu floatMenu2 = new FloatMenu(settlementList);
+            Find.WindowStack.Add(floatMenu2);
+        }
+
         [DebugAction("Empire", "Reset All Military Squad Assignments", allowedGameStates = AllowedGameStates.Playing)]
         private static void resetAllMilitarySquads()
         {
@@ -70,7 +104,7 @@ namespace FactionColonies
 
             for (int k = util.mercenarySquads.Count() - 1; k >= 0; k--)
             {
-                util.mercenarySquads[k].settlement.militarySquad = null;
+                util.mercenarySquads[k].settlement.MilitaryComp.militarySquad = null;
                 util.mercenarySquads.RemoveAt(k);
             }
 
@@ -97,7 +131,7 @@ namespace FactionColonies
                         }
 
                         //letter code
-                        string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
+                        string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
 
                         if (!settlementString.NullOrEmpty()) Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
                     }
@@ -114,42 +148,17 @@ namespace FactionColonies
             Find.World.GetComponent<FactionFC>().militaryTimeDue = Find.TickManager.TicksGame + 1;
         }
 
-        [DebugAction("Empire", "Fix Missing Settlements", allowedGameStates = AllowedGameStates.Playing)]
-        private static void checkForMissingSettlements()
-        {
-            LogUtil.MessageForce("Debug - Proc MilitaryTimeDue");
-
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
-
-            foreach (SettlementFC settlement in factionfc.settlementsOnPlanet)
-            {
-                if (Find.WorldObjects.AnyWorldObjectAt(settlement.mapLocation) == false)
-                {
-                    ColonyUtil.createPlayerColonySettlement(settlement.mapLocation, true, Find.World.info.name);
-                }
-            }
-        }
-
-
-        [DebugAction("Empire", "Reset Faction Leaders", allowedGameStates = AllowedGameStates.Playing)]
-        private static void resetFactionLeadeers()
-        {
-            LogUtil.MessageForce("Debug - Reset Faction Leaders");
-            SoS2HarmonyPatches.ResetFactionLeaders();
-        }
-
         [DebugAction("Empire", "Attack Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
         private static void attackPlayerSettlement()
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
-                list.Add(new DebugMenuOption(settlement.name, DebugMenuOptionMode.Action, delegate
+                list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
-                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.name}");
+                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
                     Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
-                    MilitaryUtilFC.attackPlayerSettlement(
-                        militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
+                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
                 }
                 ));
             }
@@ -168,23 +177,23 @@ namespace FactionColonies
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
                     list.Add(new DebugMenuOption(
-                        worldcomp.returnSettlementByLocation(evt.location, evt.planetName).name,
+                        worldcomp.returnSettlementByLocation(evt.location).Name,
                         DebugMenuOptionMode.Action, delegate
                         {
                             //when event is selected, select defending force to replace it with
 
                             List<DebugMenuOption> list2 = new List<DebugMenuOption>();
-                            foreach (SettlementFC settlement in worldcomp.settlements)
+                            foreach (WorldSettlementFC settlement in worldcomp.settlements)
                             {
-                                if (settlement.isMilitaryValid() && settlement.name != evt.settlementFCDefending.name)
+                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && settlement.Name != evt.settlementFCDefending.Name)
                                 {
                                     list2.Add(new DebugMenuOption(
-                                        settlement.name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
-                                        settlement.isMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
+                                        settlement.Name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
+                                        settlement.MilitaryComp.isMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
                                         {
-                                            if (settlement.isMilitaryBusy() == false)
+                                            if (settlement.MilitaryComp.isMilitaryBusy() == false)
                                             {
-                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending.homeSettlement.name} to {settlement.name}");
+                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending.homeSettlement.Name} to {settlement.Name}");
                                                 MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
                                             }
                                         }
@@ -209,17 +218,17 @@ namespace FactionColonies
         private static void UpgradePlayerSettlement(int times = 1)
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
-                list.Add(new DebugMenuOption(settlement.name, DebugMenuOptionMode.Action, delegate
+                list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
                     if (times > 0)
                     {
-                        LogUtil.MessageForce("Debug - Upgrade Player Settlement x" + times + "- " + settlement.name);
+                        LogUtil.MessageForce("Debug - Upgrade Player Settlement x" + times + "- " + settlement.Name);
                     }
                     else
                     {
-                        LogUtil.MessageForce("Debug - Downgrade Player Settlement x" + times + "- " + settlement.name);
+                        LogUtil.MessageForce("Debug - Downgrade Player Settlement x" + times + "- " + settlement.Name);
                     }
                     settlement.upgradeSettlement(times);
                 }
@@ -245,9 +254,9 @@ namespace FactionColonies
             Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.mercenarySquads =
                 new List<MercenarySquadFC>();
             LogUtil.MessageForce("Debug - Reset Military Squad Cooldowns");
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
-                settlement.returnMilitary(false);
+                settlement.MilitaryComp?.returnMilitary(false);
             }
         }
 
@@ -299,11 +308,11 @@ namespace FactionColonies
         private static void CallInAlliedForcesSelect()
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
-                if (settlement.militarySquad != null)
+                if (settlement.MilitaryComp?.militarySquad != null)
                 {
-                    list.Add(new FloatMenuOption(settlement.name, delegate
+                    list.Add(new FloatMenuOption(settlement.Name, delegate
                     {
                         IncidentParms parms = new IncidentParms();
                         parms.target = Find.CurrentMap;
@@ -317,7 +326,7 @@ namespace FactionColonies
                         parms.raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly;
                         parms.raidArrivalModeForQuickMilitaryAid = true;
 
-                        settlement.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
+                        settlement.MilitaryComp.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
 
 
                         DebugTool tool = null;
@@ -329,15 +338,14 @@ namespace FactionColonies
 
                             //List<Pawn> list2 = parms.raidStrategy.Worker.SpawnThreats(parms);
                             //parms.raidArrivalMode.Worker.Arrive(list2, parms);
-                            settlement.militarySquad.isDeployed = true;
-                            settlement.militarySquad.orderLocation = DropPosition;
-                            settlement.militarySquad.timeDeployed = Find.TickManager.TicksGame;
+                            settlement.MilitaryComp.militarySquad.isDeployed = true;
+                            settlement.MilitaryComp.militarySquad.orderLocation = DropPosition;
+                            settlement.MilitaryComp.militarySquad.timeDeployed = Find.TickManager.TicksGame;
 
 
-                            PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms,
-                                settlement.militarySquad.AllEquippedMercenaryPawns);
-                            settlement.militarySquad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
-                            settlement.militarySquad.isDeployed = true;
+                            PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, settlement.MilitaryComp.militarySquad.AllEquippedMercenaryPawns);
+                            settlement.MilitaryComp.militarySquad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
+                            settlement.MilitaryComp.militarySquad.isDeployed = true;
                             DebugTools.curTool = null;
                         });
                         DebugTools.curTool = tool;

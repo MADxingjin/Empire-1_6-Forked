@@ -36,6 +36,8 @@ namespace FactionColonies
 		}
 	}
 
+	//TODO: most, if not all of these patches could be reworked as comps. Look into that
+
 	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	class PawnDraftGizmos
 	{
@@ -86,12 +88,12 @@ namespace FactionColonies
 				return;
 			}
 			
-			if (__instance.Faction == Faction.OfPlayer && __instance.Drafted)
+			if (__instance.Faction == Faction.OfPlayer && __instance.Drafted && settlementFc.MilitaryComp != null)
 			{
 				// Check if pawn is in a supporting caravan (avoid LINQ closure allocations)
 				Pawn found = __instance;
 				bool isSupporting = false;
-				foreach (var caravan in settlementFc.supporting)
+				foreach (var caravan in settlementFc.MilitaryComp.supporting)
 				{
 					if (caravan.pawns.Contains(found))
 					{
@@ -155,7 +157,7 @@ namespace FactionColonies
 					return;
 				}
 
-				List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>().settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
+				List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>().settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
 				{
 					//disappear prisoner
 					TravelUtil.sendPrisoner(prisoner, settlement);
@@ -200,7 +202,7 @@ namespace FactionColonies
 		/// </summary>
 		/// <param name="settlement"></param>
 		/// <returns>true if usable, false otherwise</returns>
-		private static bool SettlementHasUsableMilitary(SettlementFC settlement) => settlement.isMilitaryValid() && !settlement.militaryBusy;
+		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
 
 		/// <summary>
 		/// Takes a <paramref name="job"/> and generates a FloatMenuOptions using the strings in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic
@@ -214,16 +216,16 @@ namespace FactionColonies
 		{
 			List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
-			foreach (SettlementFC settlement in factionFC.settlements)
+			foreach (WorldSettlementFC settlement in factionFC.settlements)
 			{
 				if (SettlementHasUsableMilitary(settlement))
 				{
 					//if military is valid to use.
 
-					settlementList.Add(new FloatMenuOption((MilJobOptionStringsDic[job].Item2 ?? "FCUnsupportedMilJobError").Translate(settlement.name, settlement.settlementMilitaryLevel), delegate
+					settlementList.Add(new FloatMenuOption((MilJobOptionStringsDic[job].Item2 ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
 					{
 						RelationsUtilFC.attackFaction(faction);
-						settlement.SendMilitary(tile, Find.World.info.name, job, 60000, faction);
+						settlement.MilitaryComp?.SendMilitary(tile, job, 60000, faction);
 					}));
 				}
 			}

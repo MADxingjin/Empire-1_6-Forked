@@ -36,7 +36,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>foodSurplus</defName> <!--Name of Def -->
 		<label>Food Surplus</label> <!--Lable of Def -->
-		<productionBaseFood>1</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 </Defs>

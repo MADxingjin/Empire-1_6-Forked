@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -48,22 +49,12 @@ namespace FactionColonies
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             if (faction != null && Map != null)
             {
-                int newTile = Map.Parent.Tile;
+                PlanetTile newTile = Map.Parent.Tile;
                 faction.capitalLocation = newTile;
                 faction.capitalPlanet = Find.World.info.name;
                 lastKnownTile = newTile;
                 
-                // Handle SoS2 ship detection
-                if (Map.Parent.def.defName == "ShipOrbiting")
-                {
-                    faction.SoSShipCapital = true;
-                }
-                else
-                {
-                    faction.SoSShipCapital = false;
-                }
-                
-                LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile} (SoS2: {faction.SoSShipCapital})");
+                LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile}");
             }
             else
             {
@@ -76,7 +67,7 @@ namespace FactionColonies
         {
             if (isActiveCapitalSpot && Map != null)
             {
-                int currentTile = Map.Parent.Tile;
+                PlanetTile currentTile = Map.Parent.Tile;
                 
                 // Initialize lastKnownTile if it's not set (shouldn't happen but just in case)
                 if (lastKnownTile == -1)
@@ -93,23 +84,12 @@ namespace FactionColonies
                     FactionFC faction = Find.World.GetComponent<FactionFC>();
                     if (faction != null)
                     {
-                        int oldCapital = faction.capitalLocation;
+                        PlanetTile oldCapital = faction.capitalLocation;
                         faction.capitalLocation = currentTile;
                         faction.capitalPlanet = Find.World.info.name;
                         lastKnownTile = currentTile;
                         
-                        // Handle SoS2 ship detection
-                        if (Map.Parent.def.defName == "ShipOrbiting")
-                        {
-                            faction.SoSShipCapital = true;
-                        }
-                        else
-                        {
-                            faction.SoSShipCapital = false;
-                        }
-                        
                         LogUtil.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
-                        LogUtil.Message($"Empire SoSShipCapital set to: {faction.SoSShipCapital}");
                         
                         Find.LetterStack.ReceiveLetter(
                             "Empire Relocated", 
@@ -216,7 +196,7 @@ namespace FactionColonies
                 if (faction != null)
                 {
                     //TODO: Localization key
-                    faction.capitalLocation = -1;
+                    faction.capitalLocation = PlanetTile.Invalid;
                     Messages.Message(
                         "Empire capital has been lost! You should establish a new capital seat.",
                         MessageTypeDefOf.NegativeEvent

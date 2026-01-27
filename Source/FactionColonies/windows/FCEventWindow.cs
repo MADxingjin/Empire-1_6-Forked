@@ -137,7 +137,7 @@ namespace FactionColonies
                     {
                         //If desc button clicked
                         
-                        string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.name}", "\n");
+                        string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
                         if (!settlementString.NullOrEmpty())
                         {
                             Find.WindowStack.Add(new DescWindowFc($"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}"));
@@ -157,18 +157,18 @@ namespace FactionColonies
                 {
                     if(evt.hasDestination == true)
                     {
-                        Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location, evt.planetName)));
+                        Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
                     } else
                     {
                         if (evt.settlementTraitLocations.Count() > 0)
                         {
                             //if event affecting colonies
                             List<FloatMenuOption> list = new List<FloatMenuOption>();
-                            foreach (SettlementFC settlement in evt.settlementTraitLocations)
+                            foreach (WorldSettlementFC settlement in evt.settlementTraitLocations)
                             {
                                 if (settlement != null)
                                 {
-                                    list.Add(new FloatMenuOption(settlement.name, delegate { Find.WindowStack.Add(new SettlementWindowFc(settlement)); }));
+                                    list.Add(new FloatMenuOption(settlement.Name, delegate { Find.WindowStack.Add(new SettlementWindowFc(settlement)); }));
                                 }
                             }
                             if (list.Count == 0) { list.Add(new FloatMenuOption("Null", null)); }
@@ -178,7 +178,7 @@ namespace FactionColonies
                         {
                            if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
                             {
-                                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source, evt.planetName)));
+                                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source)));
                             }
                         }
                     }

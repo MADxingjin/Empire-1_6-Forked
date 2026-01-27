@@ -23,8 +23,16 @@
 		<defName>expertCraftsmen</defName> <!--Name of Def -->
 		<label>Expert Craftsmen</label> <!--Lable of Def -->
 		<desc>A faction with a large number of skilled craftsmen in their ranks. +25% production to apparel and weapons.</desc> <!-- Description of trait -->
-		<productionMultiplierWeapons>1.25</productionMultiplierWeapons>
-		<productionMultiplierApparel>1.25</productionMultiplierApparel>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	
@@ -32,8 +40,16 @@
 		<defName>argiculturalRoots</defName> <!--Name of Def -->
 		<label>Argicultural Roots</label> <!--Lable of Def -->
 		<desc>A faction with a strong argicultural background. +15% production to food and +20% to animals.</desc> <!-- Description of trait -->
-		<productionMultiplierAnimals>1.2</productionMultiplierAnimals>
-		<productionMultiplierFood>1.15</productionMultiplierFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 	
 	
@@ -41,7 +57,12 @@
 		<defName>researchers</defName> <!--Name of Def -->
 		<label>Researchers</label> <!--Lable of Def -->
 		<desc>A faction constantly on the verge of developing new technology. +25% research production. +$5 worker cost.</desc> <!-- Description of trait -->
-		<productionMultiplierResearch>1.25</productionMultiplierResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 		<workerBaseCost>5</workerBaseCost>
 	</FactionColonies.FCTraitEffectDef>
 	
@@ -50,7 +71,12 @@
 		<defName>miningGuild</defName> <!--Name of Def -->
 		<label>Mining Guild</label> <!--Lable of Def -->
 		<desc>A faction with a strong culture of miners in its history. +20% bonus to mining.</desc> <!-- Description of trait -->
-		<productionMultiplierMining>1.20</productionMultiplierMining>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>
 
 

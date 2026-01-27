@@ -22,7 +22,7 @@ namespace FactionColonies
 
 		public int silverCount;
 		public int selectedSilver;
-		public SettlementFC settlement;
+		public WorldSettlementFC settlement;
 
 		public string stringEffect;
 
@@ -36,7 +36,7 @@ namespace FactionColonies
 
 
 
-		public FCWindow_Pay_Silver(SettlementFC settlement)
+		public FCWindow_Pay_Silver(WorldSettlementFC settlement)
 		{
 			this.forcePause = false;
 			this.draggable = true;

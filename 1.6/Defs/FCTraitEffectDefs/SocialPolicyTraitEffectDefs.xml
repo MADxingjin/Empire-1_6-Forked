@@ -60,7 +60,12 @@
 		<defName>scienceFoundation</defName> <!--Name of Def -->
 		<label>Science Foundation</label> <!--Lable of Def -->
 		<desc>A society that values knowledge and exploring the unknown. +25% research production. -5% base tax.</desc> <!-- Description of trait -->
-		<productionMultiplierResearch>1.25</productionMultiplierResearch>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.25</multiplier>
+			</li>
+		</resourceBonuses>
 		<taxBasePercentage>-5</taxBasePercentage>
 	</FactionColonies.FCTraitEffectDef>
 

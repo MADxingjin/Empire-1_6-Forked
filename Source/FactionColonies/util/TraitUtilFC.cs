@@ -33,6 +33,11 @@ namespace FactionColonies
         {
             double tempTrait = (int) addOrMultiply;
 
+            if (traits == null || traits.Count == 0)
+            {
+                return tempTrait;
+            }
+
             foreach (FCTraitEffectDef trait in traits)
             {
                 if (addOrMultiply == Operation.Addition)
@@ -51,10 +56,10 @@ namespace FactionColonies
         public static int returnResearchAmount()
         {
             int research = 0;
-            research += Convert.ToInt32(cycleTraits("researchBaseProduction", Find.World.GetComponent<FactionFC>().traits, Operation.Addition));
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            research += Convert.ToInt32(cycleTraits("researchBaseProduction", Find.World.GetComponent<FactionFC>().Traits, Operation.Addition));
+            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
             {
-                research += Convert.ToInt32(cycleTraits("researchBaseProduction", settlement.traits, Operation.Addition));
+                research += Convert.ToInt32(cycleTraits("researchBaseProduction", settlement.Traits, Operation.Addition));
             }
             return research;
         }

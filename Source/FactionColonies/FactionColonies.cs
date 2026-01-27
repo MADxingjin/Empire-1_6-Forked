@@ -230,7 +230,7 @@ namespace FactionColonies
             //NEW PLACE FOR UPDATE VERSIONS
 
             //I think this does things necessary for SOS so I'm gonna keep it
-            if (factionFC.factionBackup == null)
+            /*if (factionFC.factionBackup == null)
             {
                 factionFC.factionBackup = new Faction();
                 factionFC.factionBackup = ColonyUtil.getPlayerColonyFaction();
@@ -247,7 +247,7 @@ namespace FactionColonies
                     LogUtil.Message("Resetting faction leaders");
                 }
                 SoS2HarmonyPatches.ResetFactionLeaders();
-            }
+            }*/
 
             // Only run verification and alerts for new games/first time setup
             if (!wasAlreadyProcessed)
@@ -293,7 +293,7 @@ namespace FactionColonies
         {
             LogUtil.Message("Testing for invalid capital map");
             //Check for an invalid capital map
-            if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null && factionFC.SoSShipCapital == false)
+            if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null)//&& factionFC.SoSShipCapital == false)
             {
                 Messages.Message("FCResetCapitalLocationWarning".Translate(), MessageTypeDefOf.NegativeEvent);
             }
@@ -313,15 +313,24 @@ namespace FactionColonies
                 Messages.Message("FCAutoResolveDisabledWarning".Translate(), MessageTypeDefOf.RejectInput);
             }
         }
-
         public static void verifyTraits()
         {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            /* Clear the traits for all settlements, and then reapply inherent/building traits */
+            foreach (WorldSettlementFC settlement in faction.settlements)
+            {
+                settlement.clearTraits();
+                settlement.BuildingsComp?.reapplyBuildingTraits();
+                settlement.addTraits(settlement.settlementDef.traits);
+            }
             //make new list for factionfc traits
             //loop through events and add traits
             //loop through
+            //if an event trait applies to settlements, then it will be added to applicable settlements automatically.
+            // no need to do a seperate event loop for settlements.
             List<FCTraitEffectDef> factionTraits = new List<FCTraitEffectDef>();
 
-            foreach (FCEvent evt in Find.World.GetComponent<FactionFC>().events)
+            foreach (FCEvent evt in faction.events)
             {
                 if (evt.settlementTraitLocations.Count() <= 0)
                 {
@@ -329,35 +338,7 @@ namespace FactionColonies
                 }
             }
 
-            Find.World.GetComponent<FactionFC>().traits = factionTraits;
-
-            //go through each settlement and make new list for each settlement
-            //loop through each active event and add settlement traits
-            //loop through buildings and add traits
-
-            foreach (SettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
-            {
-                List<FCTraitEffectDef> settlementsTraits = new List<FCTraitEffectDef>();
-
-                foreach (FCEvent evt in Find.World.GetComponent<FactionFC>().events)
-                {
-                    if (evt.settlementTraitLocations.Any())
-                    {
-                        //ignore
-                        if (evt.settlementTraitLocations.Contains(settlement))
-                        {
-                            settlementsTraits.AddRange(evt.traits);
-                        }
-                    }
-                }
-
-                foreach (BuildingFCDef building in settlement.buildings)
-                {
-                    settlementsTraits.AddRange(building.traits);
-                }
-
-                settlement.traits = settlementsTraits;
-            }
+            Find.World.GetComponent<FactionFC>().assignNewTraitList(factionTraits);
         }
 
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);

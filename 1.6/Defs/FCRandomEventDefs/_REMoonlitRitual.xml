@@ -186,7 +186,12 @@
 		<defName>moonlitRitual_4-1-1</defName> <!--Name of Def -->
 		<label>Dread</label> <!--Lable of Def -->
 		<happinessLostBase>2</happinessLostBase>
-		<productionBaseFood>-1</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>-1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>	
 
 	
@@ -217,7 +222,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>moonlitRitual_4-2-1</defName> <!--Name of Def -->
 		<label>FertilityRitual</label> <!--Lable of Def -->
-		<productionBaseFood>1</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>1</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>	
 	
 	
@@ -237,7 +247,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>moonlitRitual_4-3-1</defName> <!--Name of Def -->
 		<label>FertilityRitual</label> <!--Lable of Def -->
-		<productionBaseFood>.5</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>	
 	
 	
@@ -258,7 +273,12 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>moonlitRitual_4-4-1</defName> <!--Name of Def -->
 		<label>FertilityRitual</label> <!--Lable of Def -->
-		<productionBaseFood>-.5</productionBaseFood>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>-0.5</additive>
+			</li>
+		</resourceBonuses>
 	</FactionColonies.FCTraitEffectDef>	
 	
 	

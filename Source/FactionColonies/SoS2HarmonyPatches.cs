@@ -14,7 +14,9 @@ using Verse;
 
 namespace FactionColonies
 {
-
+    //Pretty sure this entire file is obsolete with the current version of SOS2.
+    //Commenting out the whole thing for now. Should remove for good later
+    /*
     public class SoS2HarmonyPatches
     {
         //member took damage
@@ -398,5 +400,5 @@ namespace FactionColonies
             Scribe_Values.Look<int>(ref location, "location");
 
         }
-    }
+    }*/
 }

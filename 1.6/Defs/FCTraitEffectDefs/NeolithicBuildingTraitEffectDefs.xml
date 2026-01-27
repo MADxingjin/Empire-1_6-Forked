@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.FCTraitEffectDef>
+		<defName>cerealFarmland</defName> <!--Name of Def -->
+		<label>Cereal Farmland</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<additive>0.2</additive>
+			</li>
+		</resourceBonuses>
+		<workerBaseMax>-2</workerBaseMax>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>grainMill</defName> <!--Name of Def -->
+		<label>Grain Mill</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.15</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>granary</defName> <!--Name of Def -->
+		<label>Granary</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.10</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>fletcher</defName> <!--Name of Def -->
+		<label>Fletcher</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Weapons</resourceDef>
+				<multiplier>1.15</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>0.85</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>stoneMason</defName> <!--Name of Def -->
+		<label>Stone Mason</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>1.20</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>furrier</defName> <!--Name of Def -->
+		<label>Furrier</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Apparel</resourceDef>
+				<multiplier>1.15</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>0.85</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>huntersHut</defName> <!--Name of Def -->
+		<label>Hunter's Hut</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>1.15</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Animals</resourceDef>
+				<multiplier>0.75</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>brewer</defName> <!--Name of Def -->
+		<label>Brewer</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Food</resourceDef>
+				<multiplier>0.95</multiplier>
+			</li>
+		</resourceBonuses>
+		<happinessGainedBase>0.4</happinessGainedBase>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>carpenter</defName> <!--Name of Def -->
+		<label>Carpenter</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Logging</resourceDef>
+				<multiplier>0.8</multiplier>
+			</li>
+		</resourceBonuses>
+		<happinessGainedBase>0.1</happinessGainedBase>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>apothecary</defName> <!--Name of Def -->
+		<label>Apothecary</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Medicine</resourceDef>
+				<multiplier>1.15</multiplier>
+			</li>
+		</resourceBonuses>
+		<happinessGainedBase>0.2</happinessGainedBase>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>alchemist</defName> <!--Name of Def -->
+		<label>Alchemist</label> <!--Lable of Def -->
+		<desc></desc>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Mining</resourceDef>
+				<multiplier>0.85</multiplier>
+			</li>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<multiplier>1.10</multiplier>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>ancientAcademy</defName> <!--Name of Def -->
+		<label>Ancient Academy</label> <!--Lable of Def -->
+		<desc></desc>
+		<workerBaseCost>2</workerBaseCost>
+		<resourceBonuses>
+			<li>
+				<resourceDef>RTD_Research</resourceDef>
+				<additive>0.2</additive>
+			</li>
+		</resourceBonuses>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>slaveMarket</defName> <!--Name of Def -->
+		<label>Slave Market</label> <!--Lable of Def -->
+		<desc></desc>
+		<workerBaseMax>3</workerBaseMax>
+		<workerBaseOverMax>3</workerBaseOverMax>
+		<happinessLostBase>-0.4</happinessLostBase>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>bailiff</defName> <!--Name of Def -->
+		<label>bailiff</label> <!--Lable of Def -->
+		<desc></desc>
+		<unrestGainedMultiplier>1.10</unrestGainedMultiplier>
+		<taxBasePercentage>10</taxBasePercentage>
+	</FactionColonies.FCTraitEffectDef>
+	
+	<FactionColonies.FCTraitEffectDef>
+		<defName>militia</defName> <!--Name of Def -->
+		<label>Militia</label> <!--Lable of Def -->
+		<desc></desc>
+		<unrestLostMultiplier>0.6</unrestLostMultiplier>
+		<workerBaseMax>-3</workerBaseMax>
+		<militaryBaseLevel>1</militaryBaseLevel>
+		<militaryMultiplierCombatEfficiency>0.8</militaryMultiplierCombatEfficiency>
+	</FactionColonies.FCTraitEffectDef>
+</Defs>

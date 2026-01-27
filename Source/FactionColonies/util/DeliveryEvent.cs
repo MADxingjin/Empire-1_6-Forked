@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -35,14 +36,14 @@ namespace FactionColonies.util
 
 		public static void Action(FCEvent evt)
 		{
-			Action(evt, Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.mapLocation == evt.source)?.traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
+			Action(evt, Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
 		}
 
 		public static void Action(FCEvent evt, Letter let = null, Message msg = null, bool CanUseShuttle = false)
 		{
 			evt.let = let;
 			evt.msg = msg;
-			Action(evt, CanUseShuttle || (Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.mapLocation == evt.source)?.traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
+			Action(evt, CanUseShuttle || (Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
 		}
 
 		private static void MakeDeliveryLetterAndMessage(FCEvent evt)
@@ -447,34 +448,14 @@ namespace FactionColonies.util
 			evt.goods.ForEach(thing => PaymentUtil.placeThing(thing));
 		}
 
-		// Check if the source settlement is an orbital platform
-		private static bool IsOrbitalPlatformSettlement(int sourceTile)
+		public static TaxDeliveryMode TaxDeliveryModeForSettlement(bool canUseShuttle, PlanetTile sourceTile)
 		{
-			var settlement = Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(s => s.mapLocation == sourceTile);
-			return settlement?.worldSettlement?.def?.defName == "FCOrbitalPlatform";
-		}
-
-		public static TaxDeliveryMode TaxDeliveryModeForSettlement(bool canUseShuttle, int sourceTile = -1)
-		{ 
-			// Force drop pods for orbital platform settlements
-			if (sourceTile != -1 && IsOrbitalPlatformSettlement(sourceTile))
+			WorldSettlementFC settlement = Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback((WorldSettlementFC s) => s.Tile == sourceTile);
+			if (settlement != null)
 			{
-				return TaxDeliveryMode.DropPod;
+				return settlement.settlementDef.getTaxDeliveryMode(canUseShuttle, sourceTile);
 			}
-			
-			if (FCSettings.forcedTaxDeliveryMode != default)
-			{
-				return FCSettings.forcedTaxDeliveryMode;
-			}
-
-			if (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod").IsFinished)
-			{
-				if (ModsConfig.RoyaltyActive && canUseShuttle)
-				{
-					return TaxDeliveryMode.Shuttle;
-				}
-				return TaxDeliveryMode.DropPod;
-			}
+			LogUtil.Error($"Trying to deliver taxes for a null settlement!");
 			return TaxDeliveryMode.Caravan;
 		}
 

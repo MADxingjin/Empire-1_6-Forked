@@ -1,57 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace FactionColonies
 {
-    public class FCTraitEffectDef: Def, IExposable
+    public class FCTraitEffectDef: Def
     {
         public string desc = ""; //Description of trait
 
-        //THING + (Base/Multiplier) + STAT
-
-        //Resource Base Production  = Connected
-        public double productionBaseFood;        
-        public double productionBaseWeapons;
-        public double productionBaseApparel;
-        public double productionBaseAnimals;
-        public double productionBaseLogging;
-        public double productionBaseMining;
-        public double productionBaseResearch = 0;
-        public double productionBasePower = 0;
-        public double productionBaseMedicine = 0;
-
-
-        //Resource Multiplier Production = Connected
-        public double productionMultiplierFood = 1;
-        public double productionMultiplierWeapons = 1;
-        public double productionMultiplierApparel = 1;
-        public double productionMultiplierAnimals = 1;
-        public double productionMultiplierLogging = 1;
-        public double productionMultiplierMining = 1;
-        public double productionMultiplierResearch = 1;
-        public double productionMultiplierPower = 1;
-        public double productionMultiplierMedicine = 1;
+        //TODO: modifying all trait defs to use this new system is going to be SO much fun. Ugh
+        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
 
         //Military Stats  = baselevel connected
-        public double militaryBaseLevel;
+        public double militaryBaseLevel = 0;
         public double militaryMultiplierCombatEfficiency = 1;                                                                                          //#NEEDS TO BE IMPLEMENTED
 
         //Economic Stats
-        public double taxBasePercentage; //0.01 - 2.00// Affects the base tax percentage        implemented
-        public double taxBaseRandomModifier;  //Affects the modifier for tithe income            implemented
-        public double prosperityBaseRecovery; //Affects how quickly settlements recover from lost prosperity                                         #NEEDS TO BE IMPLEMENTED
-        public double workerBaseCost; //Affects how much a single worker costs                             implemented
-        public double workerBaseMax; //Affects how many workers you can have (Max) before worker costs start to rise      Implemented
-        public double workerBaseOverMax; //Affects how many workers past the max you can hire       Implemented
+        public double taxBasePercentage = 0; //0.01 - 2.00// Affects the base tax percentage        implemented
+        public double taxBaseRandomModifier = 0;  //Affects the modifier for tithe income            implemented
+        public double prosperityBaseRecovery = 0; //Affects how quickly settlements recover from lost prosperity                                         #NEEDS TO BE IMPLEMENTED
+        public double workerBaseCost = 0; //Affects how much a single worker costs                             implemented
+        public double workerBaseMax = 0; //Affects how many workers you can have (Max) before worker costs start to rise      Implemented
+        public double workerBaseOverMax = 0; //Affects how many workers past the max you can hire       Implemented
 
         //Social Stats Base
-        public double happinessLostBase; //0.0 - 2.0;     Affects how much happiness is lost            Implemented
-        public double happinessGainedBase; //0.0 - 2.0    Affects how much happiness is gained            Implemented
-        public double loyaltyLostBase; //0.0 - 2.0;         Affects how much loyalty is lost            Implemented
-        public double loyaltyGainedBase; //0.0 - 2.0;         Affects how much loyalty is gained            Implemented
-        public double unrestLostBase;  //0.0 - 2.0;         Affects how much unrest is lost            Implemented
-        public double unrestGainedBase; //0.0 - 2.0;         Affects how much loyalty is gained            Implemented
+        public double happinessLostBase = 0; //0.0 - 2.0;     Affects how much happiness is lost            Implemented
+        public double happinessGainedBase = 0; //0.0 - 2.0    Affects how much happiness is gained            Implemented
+        public double loyaltyLostBase = 0; //0.0 - 2.0;         Affects how much loyalty is lost            Implemented
+        public double loyaltyGainedBase = 0; //0.0 - 2.0;         Affects how much loyalty is gained            Implemented
+        public double unrestLostBase = 0;  //0.0 - 2.0;         Affects how much unrest is lost            Implemented
+        public double unrestGainedBase = 0; //0.0 - 2.0;         Affects how much loyalty is gained            Implemented
 
         //Social Stats Multipliers
         public double happinessLostMultiplier = 1; //0.0 - 2.0;     Affects how much happiness is lost            Implemented
@@ -71,74 +51,80 @@ namespace FactionColonies
         List<TraitDef> factionAllowedRaces = new List<TraitDef>();   //Traits that pawns are required to have                                        #NEEDS TO BE IMPLEMENTED
         List<Thing> factionUniform = new List<Thing>(); //List of the things pawns in the faction can wear                                        #NEEDS TO BE IMPLEMENTED
 
-        public void ExposeData()
+        private bool didCacheTraitBonusDesc = false;
+        private TaggedString cachedTraitBonusDesc = "";
+        /// <summary>
+        /// A multi-line TaggedString listing out this trait's resource bonuses.
+        /// </summary>
+        public TaggedString traitBonusDesc
         {
-            //Description
-            Scribe_Values.Look(ref desc, "desc");
+            get
+            {
+                if (!didCacheTraitBonusDesc)
+                {
+                    if (resourceBonuses.Count > 0)
+                    {
+                        cachedTraitBonusDesc += "FCTraitDesc_ResourceBonusLabel".Translate() + ":\n";
+                        foreach (ResourceBonuses rb in resourceBonuses)
+                        {
+                            cachedTraitBonusDesc += rb.getBonusDesc("\t") + "\n";
+                        }
+                    }
+                    /* Death and Taxes */
+                    if (militaryBaseLevel != 0) cachedTraitBonusDesc += "FCTraitDesc_MilitaryLevel".Translate(TextUtil.colorizeAdditiveBonus(militaryBaseLevel)) + "\n";
+                    if (militaryMultiplierCombatEfficiency != 1) cachedTraitBonusDesc += "FCTraitDesc_MilitaryCombatEfficiency".Translate(TextUtil.colorizeMultiplierBonus(militaryMultiplierCombatEfficiency)) + "\n";
+                    if (taxBasePercentage != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBasePercentage".Translate(TextUtil.colorizeAdditiveBonus(taxBasePercentage)) + "\n";
+                    if (taxBaseRandomModifier != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBaseRandomModifier".Translate(taxBaseRandomModifier) + "\n";
+                    if (prosperityBaseRecovery != 0) cachedTraitBonusDesc += "FCTraitDesc_prosperityBaseRecovery".Translate(TextUtil.colorizeAdditiveBonus(prosperityBaseRecovery)) + "\n";
+                    /* Workers */
+                    if (workerBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseCost".Translate(TextUtil.colorizeAdditiveBonus(workerBaseCost, true)) + "\n";
+                    if (workerBaseMax != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseMax".Translate(TextUtil.colorizeAdditiveBonus(workerBaseMax)) + "\n";
+                    if (workerBaseOverMax != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseOverMax".Translate(TextUtil.colorizeAdditiveBonus(workerBaseOverMax)) + "\n";
+                    /* Happiness */
+                    if (happinessLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_happinessLostBase".Translate(TextUtil.colorizeAdditiveBonus(happinessLostBase, true)) + "\n";
+                    if (happinessGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_happinessGainedBase".Translate(TextUtil.colorizeAdditiveBonus(happinessGainedBase)) + "\n";
+                    if (happinessLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_happinessLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(happinessLostMultiplier, true)) + "\n";
+                    if (happinessGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_happinessGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(happinessGainedMultiplier)) + "\n";
+                    /* Loyalty */
+                    if (loyaltyLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_loyaltyLostBase".Translate(TextUtil.colorizeAdditiveBonus(loyaltyLostBase, true)) + "\n";
+                    if (loyaltyGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_loyaltyGainedBase".Translate(TextUtil.colorizeAdditiveBonus(loyaltyGainedBase)) + "\n";
+                    if (loyaltyLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_loyaltyLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(loyaltyLostMultiplier, true)) + "\n";
+                    if (loyaltyGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_loyaltyGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(loyaltyGainedMultiplier)) + "\n";
+                    /* Unrest */
+                    if (unrestLostBase != 0) cachedTraitBonusDesc += "FCTraitDesc_unrestLostBase".Translate(TextUtil.colorizeAdditiveBonus(unrestLostBase)) + "\n";
+                    if (unrestGainedBase != 0) cachedTraitBonusDesc += "FCTraitDesc_unrestGainedBase".Translate(TextUtil.colorizeAdditiveBonus(unrestGainedBase, true)) + "\n";
+                    if (unrestLostMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_unrestLostMultiplier".Translate(TextUtil.colorizeMultiplierBonus(unrestLostMultiplier)) + "\n";
+                    if (unrestGainedMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_unrestGainedMultiplier".Translate(TextUtil.colorizeMultiplierBonus(unrestGainedMultiplier, true)) + "\n";
+                    /* Settlement Cost */
+                    if (createSettlementBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_createSettlementBaseCost".Translate(TextUtil.colorizeAdditiveBonus(createSettlementBaseCost, true)) + "\n";
+                    if (createSettlementMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_createSettlementMultiplier".Translate(TextUtil.colorizeMultiplierBonus(createSettlementMultiplier, true)) + "\n";
 
-        //Resource Base Production
-        Scribe_Values.Look(ref productionBaseFood, "productionBaseFood");
-        Scribe_Values.Look(ref productionBaseWeapons, "productionBaseWeapons");
-        Scribe_Values.Look(ref productionBaseApparel, "productionBaseApparel");
-        Scribe_Values.Look(ref productionBaseAnimals, "productionBaseAnimals");
-        Scribe_Values.Look(ref productionBaseLogging, "productionBaseLogging");
-        Scribe_Values.Look(ref productionBaseMining, "productionBaseMining");
-        Scribe_Values.Look(ref productionBaseAnimals, "productionBaseResearch");
-        Scribe_Values.Look(ref productionBaseLogging, "productionBasePower");
-        Scribe_Values.Look(ref productionBaseMining, "productionBaseMedicine");
+                    cachedTraitBonusDesc = cachedTraitBonusDesc.Trim();
 
-        //Resource Multiplier Production
-        Scribe_Values.Look(ref productionMultiplierFood, "productionMultiplierFood");
-        Scribe_Values.Look(ref productionMultiplierWeapons, "productionMiltiplierWeapons");
-        Scribe_Values.Look(ref productionMultiplierApparel, "productionMultiplierApparel");
-        Scribe_Values.Look(ref productionMultiplierAnimals, "productionMultiplierAnimals");
-        Scribe_Values.Look(ref productionMultiplierLogging, "productionMultiplierLogging");
-        Scribe_Values.Look(ref productionMultiplierMining, "productionMultiplierMining");
-        Scribe_Values.Look(ref productionMultiplierAnimals, "productionMultiplierResearch");
-        Scribe_Values.Look(ref productionMultiplierLogging, "productionMultiplierPower");
-        Scribe_Values.Look(ref productionMultiplierMining, "productionMultiplierMedicine");
-
-            //Military Stats
-            Scribe_Values.Look(ref militaryBaseLevel, "militaryBaseLevel");
-        Scribe_Values.Look(ref militaryMultiplierCombatEfficiency, "militaryMultiplierCombatEfficiency");
-
-        //Economic Stats
-        Scribe_Values.Look(ref taxBasePercentage, "taxBasePercentage"); //0.01 - 2.00// Affects the base tax percentage
-        Scribe_Values.Look(ref taxBaseRandomModifier, "taxBaseRandomModifier");  //Affects the modifier for tithe income
-        Scribe_Values.Look(ref prosperityBaseRecovery, "prosperityBaseRecovery"); //Affects how quickly settlements recover from lost prosperity
-        Scribe_Values.Look(ref workerBaseCost, "workerBaseCost"); //Affects how much a single worker costs
-        Scribe_Values.Look(ref workerBaseMax, "workerBaseMax"); //Affects how many workers you can have (Max) before worker costs start to rise
-        Scribe_Values.Look(ref workerBaseOverMax, "workerBaseOverMax"); //Affects how many workers past the max you can hire
-
-            //Social Stats Base
-        Scribe_Values.Look(ref happinessLostBase, "happinessLostBase"); //0.0 - 2.0;     Affects how much happiness is lost
-        Scribe_Values.Look(ref happinessGainedBase, "happinessGainedBase"); //0.0 - 2.0    Affects how much happiness is gained
-        Scribe_Values.Look(ref loyaltyLostBase, "loyaltyLostBase"); //0.0 - 2.0;         Affects how much loyalty is lost
-        Scribe_Values.Look(ref loyaltyGainedBase, "loyaltyGainedBase"); //0.0 - 2.0;         Affects how much loyalty is gained
-        Scribe_Values.Look(ref unrestLostBase, "unrestLostBase");  //0.0 - 2.0;         Affects how much unrest is lost
-        Scribe_Values.Look(ref unrestGainedBase, "unrestGainedBase"); //0.0 - 2.0;         Affects how much loyalty is gained
-
-        //Social Stats Multipliers
-        Scribe_Values.Look(ref happinessLostMultiplier, "happinessLostMultiplier"); //0.0 - 2.0;     Affects how much happiness is lost
-        Scribe_Values.Look(ref happinessGainedMultiplier, "happinessGainedMultiplier"); //0.0 - 2.0    Affects how much happiness is gained
-        Scribe_Values.Look(ref loyaltyLostMultiplier, "loyaltyLostMultiplier"); //0.0 - 2.0;         Affects how much loyalty is lost
-        Scribe_Values.Look(ref loyaltyGainedMultiplier, "loyaltyGainedMultiplier"); //0.0 - 2.0;         Affects how much loyalty is gained
-        Scribe_Values.Look(ref unrestLostMultiplier, "unrestLostMultiplier");  //0.0 - 2.0;         Affects how much unrest is lost
-        Scribe_Values.Look(ref unrestGainedMultiplier, "unrestGainedMultiplier"); //0.0 - 2.0;         Affects how much loyalty is gained
-
-
-
-            //Create Settlement Stats
-        Scribe_Values.Look(ref createSettlementBaseCost, "createSettlementBaseCost");  //affects how much it costs to create a settlement
-        Scribe_Values.Look(ref createSettlementMultiplier, "createSettlementMultiplier");  //affects how much it costs to create a settlement
-
-            //Faction Pawn Required Traits
-        Scribe_Collections.Look(ref forcedFactionPawnTraits, "forcedFactionPawnTraits", LookMode.Deep);   //Traits that pawns are required to have
-        Scribe_Collections.Look(ref factionAllowedRaces, "factionAllowedRaces", LookMode.Deep);   //Traits that pawns are required to have
-        Scribe_Collections.Look(ref factionUniform, "factionUniform", LookMode.Deep); //List of uniform items for the faction
+                    /* Only want to do all of this crap once. It shouldn't change during gameplay, after all. So cache it */
+                    didCacheTraitBonusDesc = true;
+                }
+                return cachedTraitBonusDesc;
+            }
         }
 
-
+        public ResourceBonuses getTraitResource(ResourceTypeDef resourceTypeDef)
+        {
+            return resourceBonuses.Where((ResourceBonuses b) => b.resourceDef == resourceTypeDef).FirstOrDefault();
+        }
+        public bool appliesToSettlements()
+        {
+            //TODO: surely there's a better way to do this?
+            if (taxBasePercentage == 0 && taxBaseRandomModifier == 0 && prosperityBaseRecovery == 0 && workerBaseCost == 0 && workerBaseMax == 0 &&
+                workerBaseOverMax == 0 && happinessLostBase == 0 && happinessGainedBase == 0 && loyaltyLostBase == 0 && loyaltyGainedBase == 0 &&
+                unrestLostBase == 0 && unrestGainedBase == 0 && happinessLostMultiplier == 1 && happinessGainedMultiplier == 1 &&
+                loyaltyLostMultiplier == 1 && loyaltyGainedMultiplier == 1 && unrestLostMultiplier == 1 && unrestGainedMultiplier == 1 &&
+                militaryBaseLevel == 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 
     [DefOf]

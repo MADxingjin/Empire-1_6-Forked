@@ -31,7 +31,7 @@ namespace FactionColonies
         public int tabSize = 78;
         public int resourceSize;
         public FactionFC faction;
-        public List<SettlementFC> settlementList;
+        public List<WorldSettlementFC> settlementList;
         public int scroll;
         public int maxScroll;
 
@@ -221,45 +221,14 @@ namespace FactionColonies
             Faction gfaction = ColonyUtil.getPlayerColonyFaction();
             if (gfaction != null)
             {
-                // Check if orbital research is unlocked
-                bool canCreateOrbital = CanCreateOrbitalPlatforms();
-                
-                if (canCreateOrbital)
+                if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
                 {
-                    // Show dropdown button when orbital research is unlocked and present Orbital and Land Colony options :D
-                    if (Widgets.ButtonText(button, "CreateNewColony".Translate() + " ▼"))
-                    {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>
-                        {
-                            new FloatMenuOption("Create Land Colony", delegate
-                            {
-                                Find.WindowStack.Add(new CreateColonyWindowFc());
-                                //Move player to world map
-                                Find.World.renderer.wantedMode = WorldRenderMode.Planet;
-                                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                            }),
-                            new FloatMenuOption("Create Orbital Colony", delegate
-                            {
-                                Find.WindowStack.Add(new OrbitalPlatformCreationWindow());
-                            })
-                        };
-                        
-                        FloatMenu floatMenu = new FloatMenu(options);
-                        Find.WindowStack.Add(floatMenu);
-                    }
-                }
-                else
-                {
-                    // Show regular button when orbital research is not unlocked
-                    if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
-                    {
-                        Find.WindowStack.Add(new CreateColonyWindowFc());
+                    Find.WindowStack.Add(new CreateColonyWindowFc());
 
-                        //Move player to world map
-                        Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+                    //Move player to world map
+                    Find.World.renderer.wantedMode = WorldRenderMode.Planet;
 
-                        Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                    }
+                    Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
                 }
             }
             else //create new faction
@@ -286,13 +255,6 @@ namespace FactionColonies
             }
         }
 
-        // Add the method to check orbital research
-        private bool CanCreateOrbitalPlatforms()
-        {
-            var research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("OrbitalConstruction");
-            return research != null && research.IsFinished;
-        }
-
         private void DrawTabFaction(Rect inRect)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -314,7 +276,7 @@ namespace FactionColonies
                 tab = 1;
                 scroll = 0;
                 maxScroll = (settlementList.Count() * yspacing) - 264;
-                foreach (SettlementFC settlement in faction.settlements)
+                foreach (WorldSettlementFC settlement in faction.settlements)
                 {
                     settlement.updateProfitAndProduction();
                 }
@@ -434,7 +396,7 @@ namespace FactionColonies
 
             for (int i = 0; i < settlementList.Count(); i++) //browse through list.  settlementList[i] = a settlement
             {
-                SettlementFC settlement = settlementList[i];
+                WorldSettlementFC settlement = settlementList[i];
                 if (i * yspacing + scroll >= 0 && i * yspacing + scroll <= 264)
                 {
                     if (i % 2 == 0)
@@ -449,7 +411,7 @@ namespace FactionColonies
                         switch (k)
                         {
                             case 0:
-                                varString = new GUIContent(settlement.name);
+                                varString = new GUIContent(settlement.Name);
                                 xspacingUpdated = xspacing + headerSpacing;
                                 break;
                             case 1:
@@ -469,7 +431,7 @@ namespace FactionColonies
                                 xspacingUpdated = xspacing;
                                 break;
                             case 5:
-                                varString = new GUIContent(settlement.totalProfit.ToString(), settlement.returnHighestResource().getIcon());
+                                varString = new GUIContent(settlement.totalProfit.ToString(), settlement.returnHighestResource().getIcon);
                                 xspacingUpdated = xspacing + 20;
                                 break;
                             default:
@@ -679,19 +641,16 @@ namespace FactionColonies
                             // {
                             //     faction.setCapital();
                             // }),
-
-                            new FloatMenuOption("ActivateResearch".Translate(), delegate
-                            {
-                                faction.updateDailyResearch();
-                            }),
-
-                            new FloatMenuOption("ResearchLevel".Translate(), delegate
-                            {
-                                Messages.Message("CurrentResearchLevel".Translate(faction.techLevel.ToString(), faction.returnNextTechToLevel()), MessageTypeDefOf.NeutralEvent);
-                            }),
-
-                            new FloatMenuOption("FCOpenPatchNotes".Translate(), () => DebugActionsMisc.PatchNotesDisplayWindow())
                         };
+                        IEnumerable <FloatMenuOption> resourcePoolOptions = faction.GetFactionMenuResourcePoolFloatMenuOptions();
+                        if (resourcePoolOptions != null)
+                        {
+                            foreach (FloatMenuOption option in resourcePoolOptions)
+                            {
+                                list.Add(option);
+                            }
+                        }
+                        list.Add(new FloatMenuOption("FCOpenPatchNotes".Translate(), () => DebugActionsMisc.PatchNotesDisplayWindow()));
 
                         if (faction.hasPolicy(FCPolicyDefOf.technocratic))
                             list.Add(new FloatMenuOption("FCSendResearchItems".Translate(), delegate
@@ -765,25 +724,21 @@ namespace FactionColonies
             int j;
             float resourcesPerRow = 7;
             int ySpacing = 30;
+            int i = 0;
 
             // Show all resource types in faction overview
-            foreach (ResourceType resourceType in ResourceUtils.resourceTypes)
-            {
-                ResourceFC resource = faction.returnResource(resourceType);
-                if (resource == null) continue;
-                
-                k = (int)Math.Floor((int)resourceType / resourcesPerRow);
-                j = (int)((int)resourceType % resourcesPerRow);
+            foreach (ResourceDisplay resource in faction.FactionResources)
+            {   
+                k = (int)Math.Floor((int)i / resourcesPerRow);
+                j = (int)((int)i % resourcesPerRow);
                 if (Widgets.ButtonImage(new Rect(5 + x + (j * (resourceSize + 5)), y - 5 + ySpacing * k, resourceSize,
-                    resourceSize), resource.getIcon()))
+                    resourceSize), resource.Icon))
                 {
-                    Find.WindowStack.Add(new DescWindowFc("TotalFactionProduction".Translate() + ": " +
-                                                          resource.name,
-                        char.ToUpper(resource.name[0]) +
-                        resource.name.Substring(1)));
+                    Find.WindowStack.Add(new DescWindowFc("TotalFactionProduction".Translate() + ": " + resource.label, resource.label));
                 }
                 Widgets.Label(new Rect(5 + x + j * (resourceSize + 5), y + resourceSize - 10 + ySpacing * k,
                     resourceSize, resourceSize), resource.amount.ToString());
+                i++;
             }
         }
 

@@ -1,29 +1,13 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
 namespace FactionColonies
 {
-    public class BuildingFCDef : Def, IExposable
+    public class BuildingFCDef : Def
     {
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref desc, "desc");
-            Scribe_Values.Look(ref cost, "cost");
-            Scribe_Values.Look(ref techLevel, "techLevel");
-            Scribe_Values.Look(ref constructionDuration, "constructionDuration");
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
-            Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
-            Scribe_Values.Look(ref upkeep, "upkeep");
-            Scribe_Values.Look(ref iconPath, "iconPath");
-            Scribe_Values.Look(ref shuttleUses, "shuttleUses");
-            Scribe_Values.Look(ref requiresRoyality, "requiresRoyality");
-            Scribe_Values.Look(ref requiresIdeology, "requiresIdeology");
-            Scribe_Collections.Look(ref requiredModsID, "requiredMods", LookMode.Value);
-            Scribe_Values.Look(ref settlementTypeRestriction, "settlementTypeRestriction", SettlementTypeRestriction.None);
-        }
-
         public string desc;
         public double cost;
         public int constructionDuration;
@@ -33,12 +17,42 @@ namespace FactionColonies
         public int upkeep;
         public string iconPath = "GUI/unrest";
         public Texture2D iconLoaded;
-        public int shuttleUses = 0;
         public bool requiresRoyality = false;
         public bool requiresIdeology = false;
         public List<string> requiredModsID = new List<string>();
-        public SettlementTypeRestriction settlementTypeRestriction = SettlementTypeRestriction.None;
+        public List<WorldSettlementDef> settlementTypeBlockList = new List<WorldSettlementDef>();
+        public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
+        public Hilliness minhilliness = Hilliness.Undefined;
+        public Hilliness maxhilliness = Hilliness.Undefined;
         //public required research
+
+        private bool didCacheBuildingDesc = false;
+        private TaggedString cachedBuildingDesc = "";
+
+        public TaggedString Desc
+        {
+            get
+            {
+                if (!didCacheBuildingDesc)
+                {
+                    cachedBuildingDesc += desc;
+                    if (upkeep != 0)
+                    {
+                        cachedBuildingDesc += "\n\n" + "FCBuildingUpkeep".Translate(upkeep.ToString());
+                    }
+                    if (traits?.Count > 0)
+                    {
+                        cachedBuildingDesc += "\n\n--------------------\n";
+                        foreach (FCTraitEffectDef trait in traits)
+                        {
+                            cachedBuildingDesc += "\n" + trait.traitBonusDesc;
+                        }
+                    }
+                    didCacheBuildingDesc = true;
+                }
+                return cachedBuildingDesc;
+            }
+        }
 
         public Texture2D Icon
         {
@@ -85,5 +99,21 @@ namespace FactionColonies
         public static RoadDef DirtPath;        
 
         public static object RoadDef { get; internal set; }
+    }
+
+    public class BuildingFC : IExposable
+    {
+        public BuildingFCDef def;
+        public BuildingFCDef underConstructionDef = BuildingFCDefOf.Empty;
+        public int startedTick;
+        public int completionTick;
+
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref def, "buildingdef");
+            Scribe_Defs.Look(ref underConstructionDef, "underConstructionDef");
+            Scribe_Values.Look(ref startedTick, "startedtick");
+            Scribe_Values.Look(ref completionTick, "completionTick");
+        }
     }
 }

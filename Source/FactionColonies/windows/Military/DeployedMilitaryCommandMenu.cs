@@ -56,7 +56,7 @@ namespace FactionColonies
             {
                 if (squad.getSettlement != null)
                 {
-                    list.Add(new FloatMenuOption("selectedDeployedSquad".Translate(squad.getSettlement.name, squad.outfit.name), () => selectedSquad = squad));
+                    list.Add(new FloatMenuOption("selectedDeployedSquad".Translate(squad.getSettlement.Name, squad.outfit.name), () => selectedSquad = squad));
                 }
             }
             if (!list.Any())
@@ -172,7 +172,7 @@ namespace FactionColonies
             Rect commandHeal = new Rect(0, rectBaseHeight * 3, rectWidth, rectBaseHeight);
             Rect commandKillWindow = new Rect(0, rectBaseHeight * 4, rectWidth, rectBaseHeight);
 
-            squadText = (selectedSquad == null) ? "selectDeployedSquad".Translate() : "selectedDeployedSquad".Translate(selectedSquad.getSettlement.name, selectedSquad.outfit.name);
+            squadText = (selectedSquad == null) ? "selectDeployedSquad".Translate() : "selectedDeployedSquad".Translate(selectedSquad.getSettlement.Name, selectedSquad.outfit.name);
 
             if (Widgets.ButtonText(selectSquad, squadText)) DoSelectSquadCommand();
             if (Widgets.ButtonTextSubtle(commandAttack, "commandAttack".Translate())) DoAttackCommand();

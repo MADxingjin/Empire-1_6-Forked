@@ -1,122 +1,106 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>researchLabs</defName> <!--Name of Def -->
 		<label>Research Labs</label> <!--Lable of Def -->
 		<desc>Scienctists spend their days researching here. +.5 base research production.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>researchLabs</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>150</upkeep>
 		<iconPath>GUI/Buildings/ResearchLab</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>indoorHydroponics</defName> <!--Name of Def -->
 		<label>Indoor Hydroponics</label> <!--Lable of Def -->
 		<desc>Food is produced indoors, protecting it from the harshes from the world. +.5 base food production.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>indoorHydroponics</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<iconPath>GUI/Buildings/IndoorHydroponics</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>firearmsFactory</defName> <!--Name of Def -->
 		<label>Firearms Factory</label> <!--Lable of Def -->
 		<desc>A factory that produces mass quantities of firearms. +.5 base weapon production.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>firearmsFactory</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<iconPath>GUI/Buildings/FirearmsFactory</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>rimazonWarehouse</defName> <!--Name of Def -->
 		<label>Rimazon Warehouse</label> <!--Lable of Def -->
 		<desc>A warehouse stocked full of goods marked to be shipped. +20 tithe modifier, +5% base tax.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>rimazonWarehouse</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<iconPath>GUI/Buildings/RimazonWarehouse</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>inhouseMercCompany</defName> <!--Name of Def -->
 		<label>In-House Merc Company</label> <!--Lable of Def -->
 		<desc>Barracks for an in-house mercenary company. They will provide security for the colony. +1 military level, -10% tax. 200 Silver per tax period upkeep.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>inhouseMercCompany</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>200</upkeep>
 		<iconPath>GUI/Buildings/InHouseMercCompany</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>adultEntertainmentCentre</defName> <!--Name of Def -->
 		<label>Adult Entertainment Centre</label> <!--Lable of Def -->
 		<desc>A place for the local people to spend a dime and have a good time. +.5 base happiness a day.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>adultEntertainmentCentre</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<iconPath>GUI/Buildings/AdultEntertainmentCentre</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>forcedWorkCamps</defName> <!--Name of Def -->
 		<label>Forced Work Camps</label> <!--Lable of Def -->
 		<desc>Put those prisoners to work and increase your production! +2 max workers, +.5 unrest a day, -25% unrest loss a day.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
 			<li>forcedWorkCamps</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<iconPath>GUI/Buildings/ForcedWorkCamps</iconPath>
 	</FactionColonies.BuildingFCDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>artilleryOutpost</defName>
 		<label>Artillery Outpost</label>
 		<desc>When this building is built, an artillery strike can be called for a cost in the military menu. +1 Military Level. 300 silver per tax period upkeep.</desc>
 		<cost>2000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<traits>
 			<li>artilleryOutpost</li>
 		</traits>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>300</upkeep>
 		<iconPath>GUI/Buildings/ArtilleryOutpost</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>JunkFoodFactory</defName>
 		<!--Name of Def -->
 		<label>Junk Food Factory</label>
@@ -124,24 +108,18 @@
 		<desc>It's quick, cheap, and unhealthy. The locals will complain about the lack of quality, but they'll be too unhealthy to do anything about it. +25% food production. -.5 base happiness per day. -.5 unrest per day. 400 silver per tax period upkeep.</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<traits>
 			<!-- Put the traits they provide here -->
 			<li>JunkFoodFactory</li>
 		</traits>
-		<applicableBiomes>
-			<!-- If the building requires it to be in a biome, put it here-->
-
-		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>400</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/JunkFood</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>TextileFactory</defName>
 		<!--Name of Def -->
 		<label>Textile Factory</label>
@@ -149,24 +127,18 @@
 		<desc>Making clothes is so much easier when machines do most of the work! +.5 base apparel production. 250 silver per tax period upkeep.</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<traits>
 			<!-- Put the traits they provide here -->
 			<li>TextileFactory</li>
 		</traits>
-		<applicableBiomes>
-			<!-- If the building requires it to be in a biome, put it here-->
-
-		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>250</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/TextileFactory</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>LocalZoo</defName>
 		<!--Name of Def -->
 		<label>Local Zoo</label>
@@ -174,25 +146,19 @@
 		<desc>A place for people to ogle various different animals as they pass through the settlement for fun and profit! +.5 base animal production. +.3 base happiness per day. 350 silver per tax period upkeep.</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<traits>
 			<!-- Put the traits they provide here -->
 			<li>LocalZoo</li>
 		</traits>
-		<applicableBiomes>
-			<!-- If the building requires it to be in a biome, put it here-->
-
-		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>350</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Zoo</iconPath>
 	</FactionColonies.BuildingFCDef>
 
 	<!-- Tree Farm -->
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>TreeFarm</defName>
 		<!--Name of Def -->
 		<label>Tree Farm</label>
@@ -200,24 +166,18 @@
 		<desc>Stop stripping forest of trees and just grow your own! +.5 base logging production. +5% total logging production.</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<traits>
 			<!-- Put the traits they provide here -->
 			<li>TreeFarm</li>
 		</traits>
-		<applicableBiomes>
-			<!-- If the building requires it to be in a biome, put it here-->
-
-		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/TreeFarm</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>IMED</defName>
 		<!--Name of Def -->
 		<label>Industrial Mining Equipment Depot</label>
@@ -225,29 +185,22 @@
 		<desc>Build a place to store and maintain big ugly machines that chew through rock like it's cardboard. +20% mining production. 550 silver per tax period upkeep.</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<traits>
 			<!-- Put the traits they provide here -->
 			<li>IMED</li>
 		</traits>
-		<applicableBiomes>
-			<!-- If the building requires it to be in a biome, put it here-->
-
-		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>550</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/IMED</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>soilFixer</defName> <!--Name of Def -->
 		<label>Soil Reclamation Bureau</label> <!--Lable of Def -->
 		<desc>Restores fertility to the damaged and depleted soil of Scarlands +50% food production, $200 upkeep cost</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
 			<li>soilFixer</li>
@@ -255,23 +208,15 @@
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>Scarlands</li>
 		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>200</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/soilFixer</iconPath>
 	</FactionColonies.BuildingFCDef>
-	<FactionColonies.FCTraitEffectDef>
-		<defName>soilFixer</defName> <!--Name of Def -->
-		<label>Soil Reclamation Bureau</label> <!--Lable of Def -->
-		<desc></desc>
-		<productionBaseFood>1.50</productionBaseFood>
-	</FactionColonies.FCTraitEffectDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>lavaPlant</defName> <!--Name of Def -->
 		<label>Geothermal Power Plant</label> <!--Lable of Def -->
 		<desc>Harness the easily accessible geothermal energy of volcanically active areas for power generation, $100 upkeep cost</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
 			<li>lavaPlant</li>
@@ -280,23 +225,15 @@
 			<li>AB_PyroclasticConflagration</li>
 			<li>LavaField</li>
 		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/lavaPlant</iconPath>
 	</FactionColonies.BuildingFCDef>
-	<FactionColonies.FCTraitEffectDef>
-		<defName>lavaPlant</defName> <!--Name of Def -->
-		<label>Geothermal Power Plant</label> <!--Lable of Def -->
-		<desc></desc>
-		<productionMultiplierPower>1.75</productionMultiplierPower>
-	</FactionColonies.FCTraitEffectDef>
 	
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>lavaLab</defName> <!--Name of Def -->
 		<label>Volcanology Lab</label> <!--Lable of Def -->
 		<desc>A research facility dedicated to studying volcanology and any potential practical applications, $100 upkeep cost</desc> <!-- Description of trait -->
 		<cost>1000</cost>
-		<techLevel>Industrial</techLevel>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
 			<li>lavaPlant</li>
@@ -305,16 +242,76 @@
 			<li>AB_PyroclasticConflagration</li>
 			<li>LavaField</li>
 		</applicableBiomes>
-		<settlementTypeRestriction>SurfaceOnly</settlementTypeRestriction>
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/lavaLab</iconPath>
 	</FactionColonies.BuildingFCDef>
-	<FactionColonies.FCTraitEffectDef>
-		<defName>lavaLab</defName> <!--Name of Def -->
-		<label>Volcanology Lab</label> <!--Lable of Def -->
-		<desc></desc>
-		<productionMultiplierResearch>1.75</productionMultiplierResearch>
-	</FactionColonies.FCTraitEffectDef>
+	
+	
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>batteryPowerStation</defName> <!--Name of Def -->
+		<label>Battery Power Station</label> <!--Lable of Def -->
+		<desc>A power station to store excess energy production. +0.5 power production. $200 upkeep cost.</desc> <!-- Description of trait -->
+		<cost>1000</cost>
+		<constructionDuration>240000</constructionDuration> <!-- Ticks it takes until construction is finished -->
+		<traits> <!-- Put the traits they provide here -->
+			<li>batteryPowerStation</li>
+		</traits>
+		<upkeep>200</upkeep> <!-- cost per week for the building -->
+		<iconPath>GUI/Buildings/BatteryElectricStation</iconPath>
+	</FactionColonies.BuildingFCDef>
+	
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>solarPlant</defName> <!--Name of Def -->
+		<label>Solar Plant</label> <!--Lable of Def -->
+		<desc>A solar powerplant to produce extra energy. +25% power production. +$10 worker cost.</desc> <!-- Description of trait -->
+		<cost>1000</cost>
+		<constructionDuration>240000</constructionDuration> <!-- Ticks it takes until construction is finished -->
+		<traits> <!-- Put the traits they provide here -->
+			<li>solarPlant</li>
+		</traits>
+		<upkeep>0</upkeep> <!-- cost per week for the building -->
+		<iconPath>GUI/Buildings/SolarPlant</iconPath>
+	</FactionColonies.BuildingFCDef>
+	
+	
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>cleanEnergyLab</defName> <!--Name of Def -->
+		<label>Clean Energy Lab</label> <!--Lable of Def -->
+		<desc>A research lab dedicated to researching and producing more efficient clean forms of energy. +25% production to power and research. $100 upkeep cost.</desc> <!-- Description of trait -->
+		<cost>1000</cost>
+		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
+		<traits> <!-- Put the traits they provide here -->
+			<li>cleanEnergyLab</li>
+		</traits>
+		<upkeep>150</upkeep> <!-- cost per week for the building -->
+		<iconPath>GUI/Buildings/CleanEnergyLab</iconPath>
+	</FactionColonies.BuildingFCDef>
+	
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>animalTestingFacility</defName> <!--Name of Def -->
+		<label>Animal Testing Facility</label> <!--Lable of Def -->
+		<desc>A research lab dedicated to testing products on animals. Unethical, but useful. +0.25 production to research and medicine. +25% unrest gain. $100 upkeep cost.</desc> <!-- Description of trait -->
+		<cost>1000</cost>
+		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
+		<traits> <!-- Put the traits they provide here -->
+			<li>animalTestingFacility</li>
+		</traits>
+		<upkeep>100</upkeep> <!-- cost per week for the building -->
+		<iconPath>GUI/Buildings/AnimalTestingFacility</iconPath>
+	</FactionColonies.BuildingFCDef>
+	
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>apartmentHousing</defName> <!--Name of Def -->
+		<label>Apartment Housing</label> <!--Lable of Def -->
+		<desc>A large apartment block to house local workers. +8 max workers, +5 overmax workers. $500 upkeep cost.</desc> <!-- Description of trait -->
+		<cost>5000</cost>
+		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
+		<traits> <!-- Put the traits they provide here -->
+			<li>apartmentHousing</li>
+		</traits>
+		<upkeep>500</upkeep> <!-- cost per week for the building -->
+		<iconPath>GUI/Buildings/ApartmentHousing</iconPath>
+	</FactionColonies.BuildingFCDef>
 	
 	
 </Defs>

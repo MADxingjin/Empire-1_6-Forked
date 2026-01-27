@@ -21,7 +21,7 @@ namespace FactionColonies
 		}
 
 
-		public SettlementFC settlement;
+		public WorldSettlementFC settlement;
 
 		public string stringConfirm;
 
@@ -32,7 +32,7 @@ namespace FactionColonies
 
 
 
-		public FCWindow_Confirm(SettlementFC settlement)
+		public FCWindow_Confirm(WorldSettlementFC settlement)
 		{
 			this.forcePause = false;
 			this.draggable = true;

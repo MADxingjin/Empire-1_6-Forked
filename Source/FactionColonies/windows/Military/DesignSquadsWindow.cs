@@ -9,7 +9,7 @@ namespace FactionColonies
 {
     public class DesignSquadsWindow : MilitaryWindow
     {
-        private SettlementFC settlementPointReference;
+        private WorldSettlementFC settlementPointReference;
         private MilitaryCustomizationUtil util;
         private MilSquadFC selectedSquad;
         
@@ -150,7 +150,7 @@ namespace FactionColonies
                 if (Widgets.ButtonText(PointRefButton, "Set Point Ref"))
                 {
                     List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
-                        .settlements.Select(settlement => new FloatMenuOption(settlement.name + " - Military Level : " +
+                        .settlements.Select(settlement => new FloatMenuOption(settlement.Name + " - Military Level : " +
                                                                               settlement.settlementMilitaryLevel,
                             delegate
                             {

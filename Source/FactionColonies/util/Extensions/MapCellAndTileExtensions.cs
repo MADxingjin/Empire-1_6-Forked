@@ -63,25 +63,25 @@ namespace FactionColonies.util
         /// </summary>
         /// <param name="tile"></param>
         /// <returns>true if the tile >= 0, false otherwise</returns>
-        public static bool IsValidTile(this int tile) => tile >= 0;
+        public static bool IsValidTile(this PlanetTile tile) => tile != PlanetTile.Invalid;
 
         /// <summary>
         /// Checks if all <paramref name="tiles"/> in a touple are valid tiles
         /// </summary>
         /// <param name="tiles"></param>
         /// <returns>true if all tiles are >= 0, false otherwise</returns>
-        public static bool AreValidTiles(this (int, int) tiles) => tiles.Item1.IsValidTile() && tiles.Item2.IsValidTile();
+        public static bool AreValidTiles(this (PlanetTile, PlanetTile) tiles) => tiles.Item1.IsValidTile() && tiles.Item2.IsValidTile();
 
         /// <summary>
         /// Checks if the given <paramref name="tile"/> is inside a shuttle ports range
         /// </summary>
         /// <param name="tile"></param>
         /// <returns>true if it is, false otherwise</returns>
-        public static bool IsInAnyShuttleRange(this int tile) =>
+        public static bool IsInAnyShuttleRange(this PlanetTile tile) =>
             tile.IsValidTile() &&
             Find.World.GetComponent<FactionFC>().settlements.Any(settlement =>
-                settlement.buildings.Contains(BuildingFCDefOf.shuttlePort) &&
-                Find.WorldGrid.TraversalDistanceBetween(settlement.worldSettlement.Tile, tile) <= ShuttleSender.ShuttleRange
+                settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.shuttlePort) == true &&
+                Find.WorldGrid.TraversalDistanceBetween(settlement.Tile, tile) <= ShuttleSender.ShuttleRange
             );
 
         /// <summary>
@@ -89,6 +89,6 @@ namespace FactionColonies.util
         /// </summary>
         /// <param name="tiles"></param>
         /// <returns>true if they are, false otherwise</returns>
-        public static bool AreTilesInAnyShuttleRange(this (int, int) tiles) => tiles.Item1.IsInAnyShuttleRange() && tiles.Item2.IsInAnyShuttleRange();
+        public static bool AreTilesInAnyShuttleRange(this (PlanetTile, PlanetTile) tiles) => tiles.Item1.IsInAnyShuttleRange() && tiles.Item2.IsInAnyShuttleRange();
     }
 }

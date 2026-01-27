@@ -11,6 +11,11 @@ namespace FactionColonies
         {
             FactionFC fc = Find.World.GetComponent<FactionFC>();
             fc.roadBuilder.CheckForTechChanges();
+
+            foreach(WorldSettlementFC settlement in fc.settlements)
+            {
+                settlement.PrepareResources(fc.techLevel);
+            }
         }
     }
 }

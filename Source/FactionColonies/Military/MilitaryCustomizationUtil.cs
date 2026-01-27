@@ -110,7 +110,7 @@ namespace FactionColonies
                     if (squad.settlement != null)
                     {
                         Messages.Message(
-                            "The max allowed equipment cost for the squad assigned to " + squad.settlement.name +
+                            "The max allowed equipment cost for the squad assigned to " + squad.settlement.Name +
                             " has been exceeded. Thus, the settlement's squad has been unassigned.",
                             MessageTypeDefOf.RejectInput);
                     }
@@ -200,23 +200,28 @@ namespace FactionColonies
             }
         }
 
-        public void attemptToAssignSquad(SettlementFC settlement, MilSquadFC squad)
+        public void attemptToAssignSquad(WorldSettlementFC settlement, MilSquadFC squad)
         {
+            if (settlement.MilitaryComp == null)
+            {
+                LogUtil.Message($"Attempted to assign a squad to settlement {settlement.Name} with NULL MilitaryComp");
+                return;
+            }
             if (calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
                 squad.equipmentTotalCost)
             {
                 if (squadExists(settlement))
                 {
-                    settlement.militarySquad.OutfitSquad(squad);
+                    settlement.MilitaryComp.militarySquad.OutfitSquad(squad);
                 }
                 else
                 {
                     //create new squad
                     createMercenarySquad(settlement);
-                    settlement.militarySquad.OutfitSquad(squad);
+                    settlement.MilitaryComp.militarySquad.OutfitSquad(squad);
                 }
 
-                Messages.Message(squad.name + "'s loadout has been assigned to " + settlement.name,
+                Messages.Message(squad.name + "'s loadout has been assigned to " + settlement.Name,
                     MessageTypeDefOf.TaskCompletion);
             }
             else
@@ -225,17 +230,22 @@ namespace FactionColonies
             }
         }
 
-        public MercenarySquadFC createMercenarySquad(SettlementFC settlement, bool isExtra = false)
+        public MercenarySquadFC createMercenarySquad(WorldSettlementFC settlement, bool isExtra = false)
         {
+            if (settlement.MilitaryComp == null)
+            {
+                LogUtil.Warning($"Attempted to create a mercenary squad for settlement {settlement.Name} with NULL MilitaryComp. Skipping");
+                return null;
+            }
             MercenarySquadFC squad = new MercenarySquadFC();
             squad.initiateSquad();
             mercenarySquads.Add(squad);
             if (!isExtra)
-                settlement.militarySquad = findSquad(squad);
+                settlement.MilitaryComp.militarySquad = findSquad(squad);
             squad.settlement = settlement;
             squad.isExtraSquad = isExtra;
 
-            if (settlement.militarySquad == null)
+            if (settlement.MilitaryComp.militarySquad == null)
             {
                 LogUtil.Warning("createMercenarySquad fail. Found squad is Null");
             }
@@ -248,9 +258,9 @@ namespace FactionColonies
             return mercenarySquads.FirstOrDefault(mercSquad => squad == mercSquad);
         }
 
-        public bool squadExists(SettlementFC settlement)
+        public bool squadExists(WorldSettlementFC settlement)
         {
-            return settlement.militarySquad != null;
+            return settlement.MilitaryComp?.militarySquad != null;
         }
 
         public void changeTick()
