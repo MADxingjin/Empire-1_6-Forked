@@ -146,93 +146,17 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-
             //set text anchor and font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
 
-            //Draw tabs
-            DrawTabFaction(inRect);
-            DrawTabColony(inRect);
-            DrawTabReports(inRect);
-            DrawTabEvent(inRect);
-
-            //DrawColonySettlementCreationButton(inRect); //used for debugging
-
-            if (tab == 0)
-            {
-                DrawFactionTopMenu(inRect);
-                DrawFactionMiddleMenu(inRect);
-                DrawFactionBottomMenu(inRect);
-            }
-
-            //Draw window based on tab
-            if (tab == 1)
-            {
-                DrawColonySettlementCreationButton(inRect);
-                DrawSettlementMenu(inRect);
-                //DrawDebugButton(inRect);
-
-                if (Event.current.type == EventType.ScrollWheel)
-                {
-
-                    ScrollWindow(Event.current.delta.y);
-                }
-
-            }
-
-            //draw event select tab
-            if (tab == 2)
-            {
-
-            }
-
-
-            //first tests
-            //DrawHeader(inRect);
-            //DrawColonySettlementCreationButton(inRect);
-
-            //Debug
-            //DrawDebugButton(inRect);
-
-
-            //Reset Text anchor and font
-            Text.Font = fontBefore;
-            Text.Anchor = anchorBefore;
-
-
-        }
-        private void DrawHeader(Rect inRect)
-        {
-            Rect header = new Rect(0, 45, 150, 35);
-            Text.Anchor = TextAnchor.UpperCenter;
-            Text.Font = GameFont.Medium;
-            Widgets.Label(header, "SettlementManager".Translate());
-
-
-        }
-
-        private void DrawColonySettlementCreationButton(Rect inRect)
-        {
-            Rect button = new Rect(InitialSize.x - 215, 40, 190, 20);
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Text.Font = GameFont.Small;
-
+            /* If the Empire faction hasn't yet been created, then show nothing but the "create new faction" button */
             Faction gfaction = ColonyUtil.getPlayerColonyFaction();
-            if (gfaction != null)
+            if (gfaction == null)
             {
-                if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
-                {
-                    Find.WindowStack.Add(new CreateColonyWindowFc());
-
-                    //Move player to world map
-                    Find.World.renderer.wantedMode = WorldRenderMode.Planet;
-
-                    Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                }
-            }
-            else //create new faction
-            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Medium;
+                Rect button = new Rect(10, 40, InitialSize.x - 20, 40);
                 if (Widgets.ButtonText(button, "Create New Faction"))
                 {
                     ColonyUtil.createPlayerColonyFaction();
@@ -252,6 +176,83 @@ namespace FactionColonies
                         LogUtil.Error("FactionFC world component is still null after creating new faction!");
                     }
                 }
+            }
+            else
+            {
+                //Draw tabs
+                DrawTabFaction(inRect);
+                DrawTabColony(inRect);
+                DrawTabReports(inRect);
+                DrawTabEvent(inRect);
+
+                //DrawColonySettlementCreationButton(inRect); //used for debugging
+
+                if (tab == 0)
+                {
+                    DrawFactionTopMenu(inRect);
+                    DrawFactionMiddleMenu(inRect);
+                    DrawFactionBottomMenu(inRect);
+                }
+
+                //Draw window based on tab
+                if (tab == 1)
+                {
+                    DrawColonySettlementCreationButton(inRect);
+                    DrawSettlementMenu(inRect);
+                    //DrawDebugButton(inRect);
+
+                    if (Event.current.type == EventType.ScrollWheel)
+                    {
+
+                        ScrollWindow(Event.current.delta.y);
+                    }
+
+                }
+
+                //draw event select tab
+                if (tab == 2)
+                {
+
+                }
+
+
+                //first tests
+                //DrawHeader(inRect);
+                //DrawColonySettlementCreationButton(inRect);
+
+                //Debug
+                //DrawDebugButton(inRect);
+
+
+                //Reset Text anchor and font
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+            }
+        }
+        private void DrawHeader(Rect inRect)
+        {
+            Rect header = new Rect(0, 45, 150, 35);
+            Text.Anchor = TextAnchor.UpperCenter;
+            Text.Font = GameFont.Medium;
+            Widgets.Label(header, "SettlementManager".Translate());
+
+
+        }
+
+        private void DrawColonySettlementCreationButton(Rect inRect)
+        {
+            Rect button = new Rect(InitialSize.x - 215, 40, 190, 20);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Font = GameFont.Small;
+
+            if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
+            {
+                Find.WindowStack.Add(new CreateColonyWindowFc());
+
+                //Move player to world map
+                Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+
+                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
             }
         }
 

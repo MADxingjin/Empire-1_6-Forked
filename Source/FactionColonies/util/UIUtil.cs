@@ -1,5 +1,7 @@
-﻿using System;
+﻿using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +28,14 @@ namespace FactionColonies
             {
                 TooltipHandler.TipRegion(rect, text);
             }
+        }
+
+        public static void DrawProgressBar(Rect rect, float progress)
+        {
+            Rect baseRect = new Rect(rect.x, rect.y, rect.width, rect.height);
+            Rect progressRect = new Rect(rect.x, rect.y, rect.width * progress, rect.height);
+            Widgets.DrawBoxSolid(baseRect, Color.black);
+            Widgets.DrawBoxSolid(progressRect, Color.cyan);
         }
     }
 }

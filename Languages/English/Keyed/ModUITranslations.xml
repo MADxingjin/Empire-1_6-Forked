@@ -247,6 +247,12 @@
     <Income>Income</Income>
     <Upkeep>Upkeep</Upkeep>
     <CostPerWorker>Cost Per Worker</CostPerWorker>
+	
+	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
+	<closeConstructionBox>Close Constructions List</closeConstructionBox>
+	<openConstructionBox>Open Constructions List</openConstructionBox>
+	<settlementupgrading>Settlement Upgrade</settlementupgrading>
+	<completiontimer>Finishes in: {0}</completiontimer>
 
     <!--MilitaryCustomizationWindowFC Customize Unit-->
     <ExportedUnit>Exported Unit</ExportedUnit>

@@ -976,7 +976,8 @@ namespace FactionColonies
         public void uiUpdate()
         {
             //Pop UI updates
-            updateTotalResources();
+            // We cache the total amount now, and signal to dirty the cache anytime an underlying value is changed. No need to update regularly
+            //updateTotalResources();
             updateTotalProfit();
             updateTechLevel(Find.ResearchManager);
         }
@@ -1089,7 +1090,7 @@ namespace FactionColonies
          * End Resource Pool functions
          * * * * * */
 
-        public void updateTotalResources()
+        /*public void updateTotalResources()
         {
             foreach (ResourceDisplay rdisplay in factionResources)
             {
@@ -1101,6 +1102,14 @@ namespace FactionColonies
                 }
 
                 rdisplay.amount = resource;
+            }
+        }*/
+        public void setDirtyResourceDisplayCache(ResourceTypeDef rdef)
+        {
+            ResourceDisplay rdisplay = factionResources.Find((ResourceDisplay rd) => rd.resourceDef == rdef);
+            if (rdisplay != null)
+            {
+                rdisplay.setDirtyCache();
             }
         }
 

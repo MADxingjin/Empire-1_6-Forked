@@ -3,7 +3,7 @@
   
   <FactionColonies.WorldSettlementDef Name="WorldSettlementDefBase" ParentName="StaticWorldObjectBase" Abstract="True">
     <label>empire settlement</label>
-    <description>A base of the Empire player faction.</description>
+    <description>A base of the Empire player faction</description>
     <worldObjectClass>FactionColonies.WorldSettlementFC</worldObjectClass>
     <fullyExpandedInSpace>true</fullyExpandedInSpace>
     <expandingIcon>true</expandingIcon>

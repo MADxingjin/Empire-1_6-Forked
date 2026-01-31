@@ -1,5 +1,6 @@
 ﻿using FactionColonies.util;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -221,6 +222,7 @@ namespace FactionColonies
         {
             dirtyProductionBaseCache = true;
             dirtyProductionMultCache = true;
+            Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
         }
         
         public bool checkMinimum()
@@ -564,7 +566,27 @@ namespace FactionColonies
     public class ResourceDisplay : IExposable
     {
         public ResourceTypeDef resourceDef;
-        public double amount;
+        private double cachedAmount = 0;
+        private bool dirtyCachedAmount = true;
+        public double amount
+        {
+            get
+            {
+                if (dirtyCachedAmount)
+                {
+                    FactionFC factionFC = Find.World.GetComponent<FactionFC>();
+                    double resource = 0;
+                    for (int k = 0; k < factionFC.settlements.Count(); k++)
+                    {
+                        resource += (int)(factionFC.settlements[k].getResource(resourceDef)?.totalProduction ?? 0);
+                    }
+
+                    cachedAmount = resource;
+                    dirtyCachedAmount = false;
+                }
+                return cachedAmount;
+            }
+        }
 
         public Texture2D Icon => resourceDef?.Icon ?? TexLoad.questionmark;
         public string label => resourceDef?.LabelCap ?? "";
@@ -574,12 +596,14 @@ namespace FactionColonies
         public ResourceDisplay(ResourceTypeDef def)
         {
             resourceDef = def;
-            amount = 0;
         }
         public void ExposeData()
         {
             Scribe_Defs.Look(ref resourceDef, "resourcedef");
-            Scribe_Values.Look(ref amount, "amount");
+        }
+        public void setDirtyCache()
+        {
+            dirtyCachedAmount = true;
         }
         public int compareForUI(ResourceDisplay compareDef)
         {

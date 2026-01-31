@@ -16,6 +16,7 @@ using Verse.AI.Group;
 using Verse.Noise;
 using Verse.Sound;
 using static Mono.Security.X509.X520;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 namespace FactionColonies
 {
@@ -68,6 +69,9 @@ namespace FactionColonies
         //public BiomeResourceDef hillinessDef;
         public BiomeResourceDef biomeDef;
 
+        public bool isUpgrading = false;
+        public int startUpgradeTick = -1;
+        public int finishUpgradeTick = -1;
 
         //ui only
         public double totalUpkeep;
@@ -395,6 +399,10 @@ namespace FactionColonies
             Scribe_Values.Look(ref biome, "biome");
             Scribe_Defs.Look(ref biomeDef, "biomedef");
 
+            Scribe_Values.Look(ref isUpgrading, "isupgrading", defaultValue: false);
+            Scribe_Values.Look(ref startUpgradeTick, "startupgradetick", -1);
+            Scribe_Values.Look(ref finishUpgradeTick, "finishupgradetick", -1);
+
 
             //Military
 
@@ -494,7 +502,11 @@ namespace FactionColonies
         public void upgradeSettlement(int times = 1)
         {
             settlementLevel += times;
-            if (settlementLevel > FCSettings.settlementMaxLevel) settlementLevel = FCSettings.settlementMaxLevel;
+            if (settlementLevel > FCSettings.settlementMaxLevel ||
+                settlementLevel > settlementDef.maxSettlementLevel)
+            {
+                settlementLevel = FCSettings.settlementMaxLevel;
+            }
             if (settlementLevel < 0) settlementLevel = 0;
             updateStats();
         }
@@ -650,7 +662,7 @@ namespace FactionColonies
             }
         }
 
-        public double getTotalIncome() //return total income of settlements
+        public double getTotalIncome() //return total income the of settlement
         {
             double income = 0;
             foreach (ResourceFC resource in resources)
@@ -662,8 +674,6 @@ namespace FactionColonies
                     income += resource.totalProduction * FCSettings.silverPerResource;
                 }
             }
-
-            LogUtil.Message($"getTotalIncome: {income}");
             return income;
         }
 
@@ -733,9 +743,8 @@ namespace FactionColonies
             //add building/faction modifiers
         }
 
-        public double getTotalUpkeep() //returns total upkeep of all settlements
+        public double getTotalUpkeep() //returns total upkeep of the settlement
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
             workers = getTotalWorkers();
             double upkeep = 0;
             double overWork;
@@ -766,7 +775,7 @@ namespace FactionColonies
             workerCost = (workerTotalUpkeep / workers);
         }
 
-        public double getTotalProfit() //returns total profit (income - upkeep) of all settlements
+        public double getTotalProfit() //returns total profit (income - upkeep) of the settlement
         {
             return (getTotalIncome() - getTotalUpkeep());
         }

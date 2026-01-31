@@ -341,6 +341,11 @@ namespace FactionColonies
                                 settlement = faction.returnSettlementByLocation(evt.location);
                                 settlement.upgradeSettlement();
                                 Find.LetterStack.ReceiveLetter("Settlement Upgrade", settlement.Name + " " + "HasBeenUpgraded".Translate() + " " + settlement.settlementLevel + "!", LetterDefOf.PositiveEvent);
+                                /* We set these values here, instead of in upgradeSettlement(), because sometimes upgradeSettlement is called to handle changing a settlement's level outside of the
+                                 * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
+                                settlement.isUpgrading = false;
+                                settlement.startUpgradeTick = -1;
+                                settlement.finishUpgradeTick = -1;
                             }
 
                             break;
