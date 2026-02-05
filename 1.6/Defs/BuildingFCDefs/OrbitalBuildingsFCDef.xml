@@ -4,7 +4,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
 		<defName>orbitalFuelDepot</defName>
 		<label>Orbital Fuel Depot</label>
-		<desc>Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel. +0.5 power production, +0.3 chemfuel production. $400 upkeep cost.</desc>
+		<desc>Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel.</desc>
 		<cost>2000</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
@@ -18,7 +18,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
 		<defName>asteroidMiningPlatform</defName>
 		<label>Asteroid Mining Platform</label>
-		<desc>Automated mining drones harvest resources from nearby asteroids and space debris. Much more efficient than planetary mining. +0.8 base mining production. $400 upkeep cost.</desc>
+		<desc>Automated mining drones harvest resources from nearby asteroids and space debris. Much more efficient than planetary mining.</desc>
 		<cost>3500</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
@@ -32,7 +32,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
 		<defName>solarCollectionArray</defName>
 		<label>Solar Collection Array</label>
-		<desc>Massive solar panel arrays with no atmospheric interference collect energy directly from the star. Powers the station and provides surplus energy. +2.0 base power production. $650 upkeep cost.</desc>
+		<desc>Massive solar panel arrays with no atmospheric interference collect energy directly from the star. Powers the station and provides surplus energy.</desc>
 		<cost>7500</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>

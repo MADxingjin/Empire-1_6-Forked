@@ -982,6 +982,34 @@ namespace FactionColonies
             updateTechLevel(Find.ResearchManager);
         }
 
+        public double getFactionWideTaxBonus()
+        {
+            double bonus = 0;
+            if (hasPolicy(FCPolicyDefOf.isolationist))
+                bonus += 10;
+
+            return bonus;
+        }
+
+        public int buildingUpkeepModifier(BuildingFCDef building)
+        {
+            int reduction = 0;
+            //TODO: find a reasonable way to modularize faction policies
+            if (hasPolicy(FCPolicyDefOf.militaristic))
+            {
+                foreach (FCTraitEffectDef trait in building.traits)
+                {
+                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
+                    {
+                        reduction -= 100;
+                        break;
+                    }
+                }
+            }
+
+            return reduction;
+        }
+
         public double getTotalIncome() //return total income of settlements       ####MAKE UPDATE PER HOUR TICK
         {
             double income = 0;

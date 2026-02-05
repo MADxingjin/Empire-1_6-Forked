@@ -7,7 +7,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>cerealFarmland</defName> <!--Name of Def -->
 		<label>Cereal Farmland</label> <!--Lable of Def -->
-		<desc>Land for growing cereal crops to feed more than a single village. +0.2 base food, -2 max worker.</desc> <!-- Description of trait -->
+		<desc>Land for growing cereal crops to feed more than a single village.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -22,7 +22,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>grainMill</defName> <!--Name of Def -->
 		<label>Grain Mill</label> <!--Lable of Def -->
-		<desc>A mill to process cereal crops with big, grindy rocks. +15% food production, $25 upkeep cost</desc> <!-- Description of trait -->
+		<desc>A mill to process cereal crops with big, grindy rocks.</desc> <!-- Description of trait -->
 		<cost>300</cost>
 		<constructionDuration>45000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -36,7 +36,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>granary</defName> <!--Name of Def -->
 		<label>Granary</label> <!--Lable of Def -->
-		<desc>A safe place to store cereal crops from those pesky rats. +10% food production, $75 upkeep cost</desc> <!-- Description of trait -->
+		<desc>A safe place to store cereal crops from those pesky rats.</desc> <!-- Description of trait -->
 		<cost>150</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -50,7 +50,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>fletcher</defName> <!--Name of Def -->
 		<label>Fletcher</label> <!--Lable of Def -->
-		<desc>A creator of arrows - the best ammuniotion in the neolithic! +15% weapons production, -15% animal production</desc> <!-- Description of trait -->
+		<desc>A creator of arrows - the best ammuniotion in the neolithic!</desc> <!-- Description of trait -->
 		<cost>175</cost>
 		<constructionDuration>40000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -64,7 +64,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>stoneMason</defName> <!--Name of Def -->
 		<label>Stone Mason</label> <!--Lable of Def -->
-		<desc>An artisan of stone by day - rules the world by night. +20% mining, $100 upkeep cost</desc> <!-- Description of trait -->
+		<desc>An artisan of stone by day - rules the world by night.</desc> <!-- Description of trait -->
 		<cost>200</cost>
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -78,7 +78,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>furrier</defName> <!--Name of Def -->
 		<label>Furrier</label> <!--Lable of Def -->
-		<desc>Makes goods from furs and pelts. Ignore the funky smell. +15% apparel production, -15% animal production</desc> <!-- Description of trait -->
+		<desc>Makes goods from furs and pelts. Ignore the funky smell.</desc> <!-- Description of trait -->
 		<cost>225</cost>
 		<constructionDuration>45000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -98,7 +98,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>huntersHut</defName> <!--Name of Def -->
 		<label>Hunter's Hut</label> <!--Lable of Def -->
-		<desc>Hunts the surrounding woods for food. Endangered species are delicious! -25% animal production, +15% food production, $50 upkeep cost</desc> <!-- Description of trait -->
+		<desc>Hunts the surrounding woods for food. Endangered species are delicious!</desc> <!-- Description of trait -->
 		<cost>125</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -118,7 +118,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>brewer</defName> <!--Name of Def -->
 		<label>Brewer</label> <!--Lable of Def -->
-		<desc>Brews the finest ethanols and ethanol biproducts. Please drink responsibly. +0.4 happiness, -5% food production, $150 upkeep cost</desc> <!-- Description of trait -->
+		<desc>Brews the finest ethanols and ethanol biproducts. Please drink responsibly.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -132,7 +132,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>carpenter</defName> <!--Name of Def -->
 		<label>Carpenter</label> <!--Lable of Def -->
-		<desc>Makes wonderful furniture to prevent the most heinous of war crimes. +0.1 happiness, -20% logging production</desc> <!-- Description of trait -->
+		<desc>Makes wonderful furniture to prevent the most heinous of war crimes.</desc> <!-- Description of trait -->
 		<cost>225</cost>
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -146,7 +146,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>apothecary</defName> <!--Name of Def -->
 		<label>Apothecary</label> <!--Lable of Def -->
-		<desc>Makes elixirs to cure all ailments! (Results may vary.) +0.2 happiness, +15% medicine production, $50 upkeep cost</desc> <!-- Description of trait -->
+		<desc>Makes elixirs to cure all ailments! (Results may vary.)</desc> <!-- Description of trait -->
 		<cost>200</cost>
 		<constructionDuration>65000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -160,7 +160,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>alchemist</defName> <!--Name of Def -->
 		<label>Alchemist</label> <!--Lable of Def -->
-		<desc>Turn steel into gold? We'll find a way! +10% research production, -15% mining production</desc> <!-- Description of trait -->
+		<desc>Turn steel into gold? We'll find a way!</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -174,7 +174,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>ancientAcademy</defName> <!--Name of Def -->
 		<label>Ancient Academy</label> <!--Lable of Def -->
-		<desc>Unlocks secrets of the universe which may or may not be true but not both! +0.2 base research, +2 worker cost, $200 upkeep cost</desc> <!-- Description of trait -->
+		<desc>Unlocks secrets of the universe which may or may not be true but not both!</desc> <!-- Description of trait -->
 		<cost>275</cost>
 		<constructionDuration>75000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -188,7 +188,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>slaveMarket</defName> <!--Name of Def -->
 		<label>Slave Market</label> <!--Lable of Def -->
-		<desc>Need some free labour? +3 max worker, +3 overmax worker, -0.4 happiness</desc> <!-- Description of trait -->
+		<desc>Need some free labour?</desc> <!-- Description of trait -->
 		<cost>145</cost>
 		<constructionDuration>45000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -202,7 +202,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>bailiff</defName> <!--Name of Def -->
 		<label>bailiff</label> <!--Lable of Def -->
-		<desc>Does not accept excuses for late rent payments. +10% unrest, 10% tax increase</desc> <!-- Description of trait -->
+		<desc>Does not accept excuses for late rent payments.</desc> <!-- Description of trait -->
 		<cost>220</cost>
 		<constructionDuration>35000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -216,7 +216,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>militia</defName> <!--Name of Def -->
 		<label>Militia</label> <!--Lable of Def -->
-		<desc>Ready to fight for their families, though not very effectively. -3 max worker, -40% unrest, +1 Military Level -20% combat efficiency</desc> <!-- Description of trait -->
+		<desc>Ready to fight for their families, though not very effectively.</desc> <!-- Description of trait -->
 		<cost>300</cost>
 		<constructionDuration>35000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->

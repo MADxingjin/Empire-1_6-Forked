@@ -64,17 +64,17 @@ namespace FactionColonies
                 {
                     if (resourceBonuses.Count > 0)
                     {
-                        cachedTraitBonusDesc += "FCTraitDesc_ResourceBonusLabel".Translate() + ":\n";
+                        //cachedTraitBonusDesc += "FCTraitDesc_ResourceBonusLabel".Translate() + ":\n";
                         foreach (ResourceBonuses rb in resourceBonuses)
                         {
-                            cachedTraitBonusDesc += rb.getBonusDesc("\t") + "\n";
+                            cachedTraitBonusDesc += rb.getBonusDesc("") + "\n";
                         }
                     }
                     /* Death and Taxes */
                     if (militaryBaseLevel != 0) cachedTraitBonusDesc += "FCTraitDesc_MilitaryLevel".Translate(TextUtil.colorizeAdditiveBonus(militaryBaseLevel)) + "\n";
                     if (militaryMultiplierCombatEfficiency != 1) cachedTraitBonusDesc += "FCTraitDesc_MilitaryCombatEfficiency".Translate(TextUtil.colorizeMultiplierBonus(militaryMultiplierCombatEfficiency)) + "\n";
                     if (taxBasePercentage != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBasePercentage".Translate(TextUtil.colorizeAdditiveBonus(taxBasePercentage)) + "\n";
-                    if (taxBaseRandomModifier != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBaseRandomModifier".Translate(taxBaseRandomModifier) + "\n";
+                    if (taxBaseRandomModifier != 0) cachedTraitBonusDesc += "FCTraitDesc_taxBaseRandomModifier".Translate(TextUtil.colorizeAdditiveBonus(taxBaseRandomModifier)) + "\n";
                     if (prosperityBaseRecovery != 0) cachedTraitBonusDesc += "FCTraitDesc_prosperityBaseRecovery".Translate(TextUtil.colorizeAdditiveBonus(prosperityBaseRecovery)) + "\n";
                     /* Workers */
                     if (workerBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_workerBaseCost".Translate(TextUtil.colorizeAdditiveBonus(workerBaseCost, true)) + "\n";

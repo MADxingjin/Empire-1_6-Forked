@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using static FactionColonies.BuildingFCDef;
 
 namespace FactionColonies
 {
@@ -26,31 +28,27 @@ namespace FactionColonies
         public Hilliness maxhilliness = Hilliness.Undefined;
         //public required research
 
-        private bool didCacheBuildingDesc = false;
-        private TaggedString cachedBuildingDesc = "";
+        private bool didCacheBuildingAttributeDesc = false;
+        private TaggedString cachedBuildingAttributeDesc = "";
 
-        public TaggedString Desc
+        public TaggedString AttributeDesc
         {
             get
             {
-                if (!didCacheBuildingDesc)
+                if (!didCacheBuildingAttributeDesc)
                 {
-                    cachedBuildingDesc += desc;
-                    if (upkeep != 0)
-                    {
-                        cachedBuildingDesc += "\n\n" + "FCBuildingUpkeep".Translate(upkeep.ToString());
-                    }
+                    cachedBuildingAttributeDesc = "";
                     if (traits?.Count > 0)
                     {
-                        cachedBuildingDesc += "\n\n--------------------\n";
                         foreach (FCTraitEffectDef trait in traits)
                         {
-                            cachedBuildingDesc += "\n" + trait.traitBonusDesc;
+                            cachedBuildingAttributeDesc += "\n" + trait.traitBonusDesc;
                         }
                     }
-                    didCacheBuildingDesc = true;
+                    cachedBuildingAttributeDesc = cachedBuildingAttributeDesc.Trim();
+                    didCacheBuildingAttributeDesc = true;
                 }
-                return cachedBuildingDesc;
+                return cachedBuildingAttributeDesc;
             }
         }
 

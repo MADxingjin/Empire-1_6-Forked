@@ -35,7 +35,7 @@ namespace FactionColonies
             set
             {
                 savedAssignedWorkers = value;
-                setDirtyCache();
+                Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
             }
         }
         public bool isTithe;
@@ -52,8 +52,12 @@ namespace FactionColonies
 
         private bool dirtyProductionBaseCache = true;
         private bool dirtyProductionMultCache = true;
+        private bool dirtyProductionBaseDescCache = true;
+        private bool dirtyProductionMultDescCache = true;
         private double cachedProductionBase = 1;
         private double cachedProductionMult = 1;
+        private TaggedString cachedProdBaseDesc = "";
+        private TaggedString cachedProdMultDesc = "";
         private Texture2D iconLoaded;
 
         public ThingFilter filter = new ThingFilter();
@@ -188,41 +192,34 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductonMult()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            double egalitarianTaxBoost = 0;
-            if (faction.hasPolicy(FCPolicyDefOf.egalitarian))
-            {
-                egalitarianTaxBoost = Math.Floor(settlement.happiness / 10);
-                if (settlement.trait_Egalitarian_TaxBreak_Enabled)
-                {
-                    egalitarianTaxBoost -= 30;
-                }
-            }
-
-            double isolationistTaxBoost = 0;
-            if (faction.hasPolicy(FCPolicyDefOf.isolationist))
-                isolationistTaxBoost = 10;
-
             double productionMultiplier = 1;
             foreach (ProductionBonus bonus in productionMultipliers.Values)
             {
+                //TODO: should multipliers be additive with each other?
                 productionMultiplier *= bonus.value;
             }
-            /* The production multiplier only matters for settlement resources, but we use a barren copy of ResourceFC at the FactionFC level to track total production for all resources.
-             * So if settlement == null, then we're at the faction-level resource, and don't need to actually calculate anything.
-             * TODO: find a better way to store resource info at the FactionFC level */
-            if (settlement != null)
-            {
-                productionMultiplier *= ((100 + egalitarianTaxBoost + isolationistTaxBoost + TraitUtilsFC.cycleTraits("taxBasePercentage", settlement.Traits, Operation.Addition)) / 100);
-            }
+
+            double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
+            productionMultiplier *= taxBonus;
+
             return productionMultiplier;
         }
 
         public void setDirtyCache()
         {
-            dirtyProductionBaseCache = true;
-            dirtyProductionMultCache = true;
+            setDirtyCacheProdBase();
+            setDirtyCacheProdMult();
             Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
+        }
+        public void setDirtyCacheProdBase()
+        {
+            dirtyProductionBaseCache = true;
+            dirtyProductionBaseDescCache = true;
+        }
+        public void setDirtyCacheProdMult()
+        {
+            dirtyProductionMultCache = true;
+            dirtyProductionMultDescCache = true;
         }
         
         public bool checkMinimum()
@@ -282,14 +279,14 @@ namespace FactionColonies
                 bonus = biomeBonus?.additive ?? 0;
                 if (bonus != 0)
                 {
-                    addProductionAdditive(def.defName + settlement.biomeDef.defName + settlement?.Name ?? "nullsettlement", bonus, $"{settlement.biomeDef.LabelCap}");
+                    addProductionAdditive(def.defName + settlement.biomeDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.biomeDef.LabelCap);
                 }
 
                 ResourceBonuses settleBonus = settlement.settlementDef.getSettlementResource(def);
                 bonus = settleBonus?.additive ?? 0;
                 if (bonus != 0)
                 {
-                    addProductionAdditive(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, $"{settlement.settlementDef.LabelCap}");
+                    addProductionAdditive(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.settlementDef.LabelCap);
                 }
             }
             if (def != null && def.modExtensions != null)
@@ -299,15 +296,14 @@ namespace FactionColonies
                     bonus = ext.GetAdditiveBonus(settlement.Tile);
                     if (bonus != 0)
                     {
-                        addProductionAdditive(def.defName + ext.extName + settlement?.Name ?? "nullsettlement", bonus, $"{ext.extName}");
+                        addProductionAdditive(def.defName + ext.extName + settlement?.Name ?? "nullsettlement", bonus, ext.extName);
                     }
                 }
             }
         }
         public void addProductionAdditive(string id, double value, string desc)
         {
-            TaggedString fulldesc = "RTDproductionAdditiveFrom".Translate(TextUtil.colorizeAdditiveBonus(value), def.LabelCap, desc);
-            ProductionBonus additive = new ProductionBonus(value, fulldesc);
+            ProductionBonus additive = new ProductionBonus(value, desc);
             addProductionAdditive(id, additive);
         }
 
@@ -321,12 +317,26 @@ namespace FactionColonies
             {
                 LogUtil.Error($"Failed when adding ProductionBonus additive with id {id}: {e.Message}");
             }
-            dirtyProductionBaseCache = true;
+            setDirtyCacheProdBase();
         }
         public void removeProductionAdditiveById(string id)
         {
             productionAdditives.Remove(id);
-            dirtyProductionBaseCache = true;
+            setDirtyCacheProdBase();
+        }
+        public TaggedString getProductionAdditivesDesc()
+        {
+            if (dirtyProductionBaseDescCache)
+            {
+                TaggedString desc = "";
+                foreach (ProductionBonus additive in productionAdditives.Values)
+                {
+                    desc += TextUtil.colorizeAdditiveBonus(additive.value) + " - " + additive.desc + "\n";
+                }
+                cachedProdBaseDesc = desc.Trim();
+                dirtyProductionBaseDescCache = false;
+            }
+            return cachedProdBaseDesc;
         }
         /*
          * Production Multiplier functions
@@ -346,14 +356,14 @@ namespace FactionColonies
                 bonus = biomeBonus?.multiplier ?? 1;
                 if (bonus != 1)
                 {
-                    addProductionMultiplier(settlement.biomeDef.defName, bonus, $"{settlement.biomeDef.LabelCap}");
+                    addProductionMultiplier(settlement.biomeDef.defName, bonus, settlement.biomeDef.LabelCap);
                 }
 
                 ResourceBonuses settleBonus = settlement.settlementDef.getSettlementResource(def);
                 bonus = settleBonus?.multiplier ?? 1;
                 if (bonus != 1)
                 {
-                    addProductionMultiplier(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, $"{settlement.settlementDef.LabelCap}");
+                    addProductionMultiplier(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.settlementDef.LabelCap);
                 }
             }
             if (def != null && def.modExtensions != null)
@@ -363,15 +373,14 @@ namespace FactionColonies
                     bonus = ext.GetMultiplierBonus(settlement.Tile);
                     if (bonus != 1)
                     {
-                        addProductionMultiplier(ext.extName, bonus, $"{ext.extDesc}");
+                        addProductionMultiplier(ext.extName, bonus, ext.extDesc);
                     }
                 }
             }
         }
         public void addProductionMultiplier(string id, double value, string desc)
         {
-            TaggedString fulldesc = "RTDproductionMultiplierFrom".Translate(TextUtil.colorizeMultiplierBonus(value), def.LabelCap, desc);
-            ProductionBonus multiplier = new ProductionBonus(value, fulldesc);
+            ProductionBonus multiplier = new ProductionBonus(value, desc);
             addProductionMultiplier(id, multiplier);
         }
 
@@ -385,12 +394,28 @@ namespace FactionColonies
             {
                 LogUtil.Error($"Failed when adding ProductionBonus multiplier with id {id}: {e.Message}");
             }
-            dirtyProductionMultCache = true;
+            setDirtyCacheProdMult();
         }
         public void removeProductionMultiplierById(string id)
         {
             productionMultipliers.Remove(id);
-            dirtyProductionMultCache = true;
+            setDirtyCacheProdMult();
+        }
+        public TaggedString getProductionMultipliersDesc()
+        {
+            if (dirtyProductionMultDescCache)
+            {
+                TaggedString desc = "";
+                foreach (ProductionBonus multiplier in productionMultipliers.Values)
+                {
+                    desc += TextUtil.colorizeMultiplierBonus(multiplier.value) + " - " + multiplier.desc + "\n";
+                }
+                desc += TextUtil.colorizeMultiplierBonus(settlement?.getSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
+
+                cachedProdMultDesc = desc.Trim();
+                dirtyProductionMultDescCache = false;
+            }
+            return cachedProdMultDesc;
         }
 
         /*

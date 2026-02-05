@@ -18,7 +18,7 @@ namespace FactionColonies
     {
         public override Vector2 InitialSize
         {
-            get { return new Vector2(1270f, 645f); }
+            get { return new Vector2(1200f, 645f); }
         }
 
 
@@ -104,9 +104,7 @@ namespace FactionColonies
             "UpgradeTown".Translate(), 
             "FCSpecialActions".Translate(),
             "PrisonersMenu".Translate(), 
-            "Military".Translate(),
-            "example button 6",
-            "example button 7"
+            "Military".Translate()
         };
 
         private WorldSettlementFC settlement; //Don't expose
@@ -136,13 +134,13 @@ namespace FactionColonies
 
             //WIP notes: change these functions to accept a rect, that forms the bounds of that segment of the UI
             Rect leftBox = new Rect(0, 0, buildingPanelWidth, validHeight);
-            Rect centerBox = new Rect(leftBox.xMax + margin, 0, (validWidth * 0.75f) - buildingPanelWidth, validHeight);
-            Rect rightBox = new Rect(centerBox.xMax + margin, 0, (validWidth / 4) - (margin * 2), validHeight);
+            Rect centerBox = new Rect(leftBox.xMax + margin, 0, (validWidth * 0.65f) - buildingPanelWidth, validHeight);
+            Rect rightBox = new Rect(centerBox.xMax + margin*2, 0, (validWidth * 0.35f) - (margin * 3), validHeight);
 
             DrawLeftInfo(leftBox);
             //Widgets.DrawLineVertical(leftBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawCenterInfo(centerBox);
-            //Widgets.DrawLineVertical(centerBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
+            Widgets.DrawLineVertical(centerBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawRightInfo(rightBox);
 
             Text.Font = fontBefore;
@@ -154,7 +152,7 @@ namespace FactionColonies
             Rect infobox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 360); //originally: 520 width, 340 height
             DrawBasicInfobox(infobox);
 
-            Rect miscOverview = new Rect(infobox.x, infobox.yMax + margin, (infobox.width * 0.75f), boundingBox.height - (infobox.height + (margin * 2)));
+            Rect miscOverview = new Rect(infobox.x, infobox.yMax + margin, (infobox.width * 0.75f), boundingBox.height - (infobox.height + margin));
             Rect mainButtons = new Rect(miscOverview.xMax + margin, miscOverview.y, (infobox.width * 0.25f) - margin, miscOverview.height);
 
             DrawMiscOverview(miscOverview);
@@ -175,24 +173,26 @@ namespace FactionColonies
                 //if click faction customize button
                 Find.WindowStack.Add(new SettlementCustomizeWindowFc(settlement));
             }
-            Rect infoBox = new Rect(boundingBox.x, nameRect.yMax + margin, boundingBox.width, boundingBox.height - (nameRect.height + margin*2));
+            // Just used for alignment. Can maybe use this box to draw some background art based on the settlement's biome. Kinda like stellaris, maybe
+            Rect infoBox = new Rect(boundingBox.x, nameRect.yMax, boundingBox.width, boundingBox.height - (nameRect.height + margin*2));
             // box with level, settlement type, location description
-            Widgets.DrawBox(infoBox);
+            //Widgets.DrawBox(infoBox);
 
             /* Town level */
             Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Rect levelBoundingBox = new Rect(infoBox.x + margin, infoBox.y + margin, 60, 60);
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Rect levelBoundingBox = new Rect(infoBox.x, infoBox.y + margin, 60, 60);
             //gotta love aligning text
-            Rect levelBox = new Rect(levelBoundingBox.x + 25, levelBoundingBox.y + 14, 30, 30);
+            Rect levelBox = new Rect(levelBoundingBox.x + 14, levelBoundingBox.y + 14, 30, 30);
             Widgets.DrawShadowAround(levelBox);
             Widgets.DrawHighlight(levelBoundingBox);
             Widgets.DrawBox(levelBoundingBox);
             Widgets.Label(levelBox, settlement.settlementLevel.ToString());
 
-            // Drawn settlement type, basic description (from def), and location text
+            // Draw settlement type, basic description (from def), and location text
             Text.Font = GameFont.Small;
-            float rightSideWidth = boundingBox.width - (margin * 3 + levelBoundingBox.width);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float rightSideWidth = boundingBox.width - (margin + levelBoundingBox.width);
             Rect typeBox = new Rect(levelBoundingBox.xMax + margin, levelBoundingBox.y, rightSideWidth, levelBoundingBox.height / 2);
             Rect typeTextBox = new Rect(typeBox.x + margin, typeBox.y, typeBox.width - (margin * 2), typeBox.height);
             Rect basicDescBox = new Rect(typeBox.x, typeBox.yMax, rightSideWidth * 0.4f, levelBoundingBox.height / 2);
@@ -209,10 +209,10 @@ namespace FactionColonies
             Widgets.Label(locTextBox, settlement.locationText);
 
             //TODO: programmatic way to determine width and height
-            Rect statsBox = new Rect(levelBoundingBox.x, levelBoundingBox.yMax + (margin * 3), 125, infoBox.height - (levelBoundingBox.height + margin * 5));
+            Rect statsBox = new Rect(levelBoundingBox.x, levelBoundingBox.yMax + (margin * 3), 125, infoBox.height - (levelBoundingBox.height + margin * 3));
             DrawSettlementStats(statsBox);
 
-            Rect descBox = new Rect(statsBox.xMax + margin * 2, statsBox.y, infoBox.width - (statsBox.width + margin * 4), statsBox.height);
+            Rect descBox = new Rect(statsBox.xMax + margin * 2, statsBox.y, infoBox.width - (statsBox.width + margin * 2), statsBox.height);
             DrawDescription(descBox); // x = 150, y = 80, length = 370, size = 220
         }
 
@@ -474,7 +474,7 @@ namespace FactionColonies
             else if (constructionOpen == true)
             {
                 // There is active construction, and the production box IS open
-                constructionBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 60 + (margin * 5) + (constructionListItemHeight * 3));
+                constructionBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 60 + (margin * 5) + (constructionListItemHeight * Math.Min(numUnderConstruction, 3)));
             }
             else
             {
@@ -541,6 +541,8 @@ namespace FactionColonies
                     new Vector2(buildingIcon.x + buildingBox.x + ((box.width + buildingSpacing) * column),
                                 buildingIcon.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     buildingIcon.size);
+
+                UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
 
 
                 //Actual UI Code
@@ -672,6 +674,8 @@ namespace FactionColonies
                         DrawConstructionInfoBox(upgradeRect, construction[i].underConstructionDef.Icon, construction[i].underConstructionDef.LabelCap,
                                                 "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
                                                 progress);
+
+                        UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));
                     }
 
 
@@ -716,29 +720,238 @@ namespace FactionColonies
                                          boundingBox.width - (smallMargin * 2),
                                          constructionListProgressBarHeight);
 
-            Widgets.DrawBox(boundingBox);
+            string nulabel = Text.ClampTextWithEllipsis(labelBox, label);
+
+            Widgets.DrawMenuSection(boundingBox);
             if (icon != null)
             {
                 Widgets.ButtonImage(iconBox, icon);
             }
             Widgets.DrawHighlight(labelHighlight);
-            Widgets.Label(labelBox, label);
+            Widgets.Label(labelBox, nulabel);
             Widgets.Label(timeBox, time);
             UIUtil.DrawProgressBar(progressRect, progress);
         }
 
         private void DrawRightInfo(Rect boundingBox)
         {
-            Widgets.Label(boundingBox, "production box");
-            //ProDuctTion
-            /*DrawProductionHeader(550, 0); //x = 550, y = 0
+            Rect bottomButton = new Rect(boundingBox.x, boundingBox.yMax - 30f, boundingBox.width, 30f);
+            Rect prodBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height - (bottomButton.height + margin));
+            DrawProduction(prodBox);
+            /* Bottom button that opens the detailed breakdown. Will need a new window for that */
+            Widgets.ButtonText(bottomButton, "Tithing".Translate());
+        }
+        public void DrawProduction(Rect boundingBox)
+        {
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30f);
+            Rect costs = new Rect(boundingBox.x, header.yMax, boundingBox.width, 73f);
+            Rect workers = new Rect(boundingBox.x, costs.yMax + margin, boundingBox.width, 69f);
 
-            DrawEconomicStats(687, 0, 139, 15); //x=687, y = 0, length = 139, size = 15
-            //lowerProDucTion
-            Widgets.DrawLineHorizontal(601, 80, 422); //x=601, y=80, length=422
-            DrawProductionHeaderLower(550, 80, 5); //x=550, y=90, spacing=5*/
+            DrawProductionHeader(header);
+            DrawCostBreakdown(costs);
+            DrawWorkerBreakdown(workers);
 
-            Widgets.DrawBox(boundingBox);
+            Rect prodOverview = new Rect(boundingBox.x, workers.yMax + margin, boundingBox.width, boundingBox.yMax - (workers.yMax + margin));
+            DrawProductionOverview(prodOverview);
+        }
+        private void DrawProductionHeader(Rect boundingBox)
+        {
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30), "Production".Translate());
+        }
+
+        private void DrawCostBreakdown(Rect boundingBox)
+        {
+            Text.Font = GameFont.Small;
+            float rowHeight = 20f;
+            float labelHeight = rowHeight - (smallMargin * 2);
+            float labelWidth = (boundingBox.width - (margin * 3f)) / 2f;
+
+            Rect profitBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 28f);
+            Rect profitLabel = new Rect(profitBox.x + margin, profitBox.y + smallMargin, labelWidth, 30f - (smallMargin * 2));
+            Rect profitNum = new Rect(profitLabel.xMax, profitLabel.y, labelWidth, 30f - (smallMargin * 2));
+            Widgets.DrawHighlight(profitBox);
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(profitLabel, "Total".Translate() + " " + "Profit".Translate() + ":");
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(profitNum, new GUIContent(settlement.totalProfit.ToString(), ThingDefOf.Silver.uiIcon));
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.LowerCenter;
+            labelWidth = (boundingBox.width - (margin * 12f)) / 3f;
+            Rect incomeBox = new Rect(boundingBox.x + (margin*3), profitBox.yMax + margin, labelWidth, rowHeight*2);
+            Rect costsBox = new Rect(incomeBox.xMax + (margin*3), incomeBox.y, labelWidth, rowHeight*2);
+            Rect taxBonusBox = new Rect(costsBox.xMax + (margin*3), incomeBox.y, labelWidth, rowHeight*2);
+
+            Rect incomeLabel = new Rect(incomeBox.x, incomeBox.y, incomeBox.width, incomeBox.height/2f);
+            Rect costLabel = new Rect(costsBox.x, costsBox.y, costsBox.width, costsBox.height/2f);
+            Rect taxBonusLabel = new Rect(taxBonusBox.x, taxBonusBox.y, taxBonusBox.width, taxBonusBox.height/2f);
+
+            Rect incomeNum = new Rect(incomeLabel.x, incomeLabel.yMax + smallMargin, incomeBox.width, incomeBox.height / 2f);
+            Rect costsNum = new Rect(costLabel.x, costLabel.yMax + smallMargin, costsBox.width, costsBox.height / 2f);
+            Rect taxBonusNum = new Rect(taxBonusLabel.x, taxBonusLabel.yMax + smallMargin, taxBonusBox.width, taxBonusBox.height / 2f);
+
+            Widgets.DrawHighlight(incomeBox);
+            Widgets.DrawHighlight(costsBox);
+            Widgets.DrawHighlight(taxBonusBox);
+
+            Widgets.Label(incomeLabel, "Total".Translate() + " " + "Income".Translate());
+            Widgets.Label(costLabel, "FCUpkeep".Translate());
+            Widgets.Label(taxBonusLabel, "TaxBase".Translate());
+
+            Text.Anchor = TextAnchor.UpperCenter;
+            Widgets.Label(incomeNum, settlement.totalIncome.ToString());
+            Widgets.Label(costsNum, settlement.totalUpkeep.ToString());
+            Widgets.Label(taxBonusNum, (settlement.getSettlementTaxBonus() * 100d).ToString() + "%");
+        }
+
+        private void DrawWorkerBreakdown(Rect boundingBox)
+        {
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float rowHeight = 23f;
+            float labelHeight = rowHeight - (smallMargin * 2);
+            float labelWidth = (boundingBox.width - (margin * 2));
+
+            Rect workerBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, rowHeight);
+            Rect overMaxBox = new Rect(boundingBox.x, workerBox.yMax, boundingBox.width, rowHeight);
+            Rect upkeepBox = new Rect(boundingBox.x, overMaxBox.yMax, boundingBox.width, rowHeight);
+
+            Rect workerLabel = new Rect(workerBox.x + margin, workerBox.y + smallMargin, labelWidth * 0.75f, labelHeight);
+            Rect overMaxLabel = new Rect(overMaxBox.x + margin, overMaxBox.y + smallMargin, labelWidth * 0.75f, labelHeight);
+            Rect upkeepLabel = new Rect(upkeepBox.x + margin, upkeepBox.y + smallMargin, labelWidth * 0.75f, labelHeight);
+
+            Rect workerNum = new Rect(workerLabel.xMax, workerLabel.y, labelWidth * 0.25f, labelHeight);
+            Rect overMaxNum = new Rect(overMaxLabel.xMax, overMaxLabel.y, labelWidth * 0.25f, labelHeight);
+            Rect upkeepNum = new Rect(upkeepLabel.xMax, upkeepLabel.y, labelWidth * 0.25f, labelHeight);
+
+            Widgets.DrawHighlight(workerBox);
+            TooltipHandler.TipRegionByKey(overMaxBox, "AssignedOvermaxWorkersTooltip");
+            Widgets.DrawHighlight(upkeepBox);
+
+            Widgets.Label(workerLabel, "AssignedWorkers".Translate());
+            Widgets.Label(overMaxLabel, "AssignedOvermaxWorkers".Translate());
+            Widgets.Label(upkeepLabel, "CostPerWorker".Translate());
+
+            Text.Anchor = TextAnchor.MiddleRight;
+            int numWorkers = (int)Math.Min(settlement.workers, settlement.workersMax);
+            int numOvermaxWorkers = (int)Math.Max(0, settlement.workers - settlement.workersMax);
+            Widgets.Label(workerNum, "AssignedWorkersValue".Translate(numWorkers, settlement.workersMax));
+            Widgets.Label(overMaxNum, "AssignedOvermaxWorkersValue".Translate(numOvermaxWorkers, settlement.workersUltraMax-settlement.workersMax));
+            Widgets.Label(upkeepNum, settlement.workerCost.ToString());
+        }
+
+        private void DrawProductionOverview(Rect boundingBox)
+        {
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Font = GameFont.Tiny;
+            /* Header */
+            float colWidth = (boundingBox.width - (margin*5)) / 7f;
+            float headerHeight = 44;
+
+            Rect workersBox = new Rect(boundingBox.x + colWidth + margin, boundingBox.y, colWidth, headerHeight);
+            Rect prodHeaderBox = new Rect(workersBox.xMax + margin, boundingBox.y, colWidth * 3 + margin * 2, headerHeight / 2f);
+            Rect prodBaseBox = new Rect(workersBox.xMax + margin, prodHeaderBox.yMax, colWidth, headerHeight / 2f);
+            Rect prodMultBox = new Rect(prodBaseBox.xMax + margin, prodBaseBox.y, colWidth, prodBaseBox.height);
+            Rect prodFinalBox = new Rect(prodMultBox.xMax + margin, prodMultBox.y, colWidth, prodMultBox.height);
+            Rect prodTotalBox = new Rect(prodHeaderBox.xMax + margin, boundingBox.y, colWidth, headerHeight);
+            Rect incomeBox = new Rect(prodTotalBox.xMax + margin, boundingBox.y, colWidth, headerHeight);
+            // make a new rect for the income label to account for some text-alignment issues
+            Rect incomeLabel = new Rect(incomeBox.x - 2, incomeBox.y, incomeBox.width, incomeBox.height);
+
+            Widgets.DrawHighlight(workersBox);
+            Widgets.Label(workersBox, "Workers".Translate());
+
+            Widgets.DrawHighlight(prodHeaderBox);
+            Widgets.Label(prodHeaderBox, "PerWorkerProduction".Translate());
+            Widgets.DrawLineHorizontal(prodHeaderBox.x, prodHeaderBox.yMax, prodHeaderBox.width);
+            Widgets.DrawHighlight(prodBaseBox);
+            Widgets.Label(prodBaseBox, "Base".Translate());
+            Widgets.DrawHighlight(prodMultBox);
+            Widgets.Label(prodMultBox, "Mult".Translate());
+            Widgets.DrawHighlight(prodFinalBox);
+            Widgets.Label(prodFinalBox, "Final".Translate());
+
+            Widgets.DrawHighlight(prodTotalBox);
+            Widgets.Label(prodTotalBox, "TotalProd".Translate());
+
+            Widgets.DrawHighlight(incomeBox);
+            Widgets.Label(incomeLabel, "Income".Translate());
+
+            Rect resourceArea = new Rect(boundingBox.x, incomeBox.yMax + margin, boundingBox.width, boundingBox.yMax - (incomeBox.yMax + margin));
+            DrawResources(resourceArea, colWidth);
+        }
+        private Vector2 scrollVectorResources = new Vector2();
+        private void DrawResources(Rect boundingBox, float colWidth)
+        {
+            float rowHeight = 25f;
+            List<ResourceFC> availableResources = settlement.Resources;
+            float totalHeight = (availableResources.Count * rowHeight) + (availableResources.Count * margin);
+            Rect viewRect = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, totalHeight);
+            Widgets.BeginScrollView(boundingBox, ref scrollVectorResources, viewRect, false);
+            // Get the appropriate resource types based on settlement type
+
+            Rect totalProdCol = new Rect(viewRect.x + (5f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
+            Rect incomeCol = new Rect(viewRect.x + 6f * (colWidth + margin), viewRect.y, colWidth, viewRect.height - (margin / 2f));
+            Widgets.DrawHighlight(totalProdCol);
+            Widgets.DrawHighlight(incomeCol);
+
+            for (int i = 0; i < availableResources.Count; i++)
+            {
+                ResourceFC resource = availableResources[i];
+                if (resource == null) continue;
+
+                float rectY = viewRect.y + (i * (rowHeight + margin));
+                /* Alternating highlights, to make rows easier to read/track */
+                if (i % 2 == 0)
+                {
+                    Rect rowHighlight = new Rect(viewRect.x, rectY - (margin / 2f), viewRect.width, rowHeight + margin);
+                    Widgets.DrawHighlight(rowHighlight);
+                }
+
+                //TODO: this function used to use the resourceType enum as a sort of index for mathing out the display. Make sure that switching to 'i' actually works
+                //DoResourceDescriptionButton(resource, i, x, y, spacing);
+                float resourceImgSize = Math.Min(colWidth, rowHeight);
+                float resourceImxgX = viewRect.x + ((colWidth - resourceImgSize) / 2f);
+                Rect resourceImgRect = new Rect(resourceImxgX, rectY, resourceImgSize, resourceImgSize);
+                Widgets.ButtonImage(resourceImgRect, resource.def.Icon);
+                UIUtil.TipRegionByText(resourceImgRect, resource.def.LabelCap);
+
+                //Production Efficiency
+                float arrowButtonHeight = Math.Min(rowHeight, 20f);
+                float arrowButtonY = rectY + ((rowHeight - arrowButtonHeight) / 2f);
+                Rect workersDecArrow = new Rect(viewRect.x + colWidth + margin, arrowButtonY, colWidth / 3f, arrowButtonHeight);
+                Rect workersNum = new Rect(workersDecArrow.xMax, rectY, workersDecArrow.width, rowHeight);
+                Rect workersIncArrow = new Rect(workersNum.xMax, arrowButtonY, workersDecArrow.width, arrowButtonHeight);
+                Widgets.Label(workersNum, resource.assignedWorkers.ToString());
+                if (Widgets.ButtonText(workersDecArrow, "<")) IncreaseWorkers(resource, true);
+                if (Widgets.ButtonText(workersIncArrow, ">")) IncreaseWorkers(resource);
+
+                //Base Production
+                Rect baseProd = new Rect(workersIncArrow.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(baseProd, TextUtil.FloorStat(resource.productionBase));
+                UIUtil.TipRegionByText(baseProd, resource.getProductionAdditivesDesc());
+
+                //Modifier
+                Rect multProd = new Rect(baseProd.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(multProd, TextUtil.FloorStat(resource.productionMult));
+                UIUtil.TipRegionByText(multProd, resource.getProductionMultipliersDesc());
+
+                //Final Base
+                Rect finalProd = new Rect(multProd.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(finalProd, (TextUtil.FloorStat(resource.production)));
+
+                //Total Production
+                Rect totalProd = new Rect(finalProd.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(totalProd, (TextUtil.FloorStat(resource.totalProduction)));
+
+                //Est Income
+                Rect incomeBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(incomeBox, (TextUtil.FloorStat(resource.totalProduction * FCSettings.silverPerResource)));
+            }
+
+            Widgets.EndScrollView();
         }
 
         /// <summary>
@@ -819,22 +1032,6 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Draws a <paramref name="resource"/>'s description window
-        /// </summary>
-        /// <param name="resource"></param>
-        /// <param name="resourceType"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="spacing"></param>
-        private void DoResourceDescriptionButton(ResourceFC resource, int displayIndex, int x, int y, int spacing)
-        {
-            if (Widgets.ButtonImage(new Rect(x + 45, scroll + y + 75 + (int)displayIndex * (45 + spacing), 30, 30), resource.def.Icon))
-            {
-                Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + resource.def.LabelCap, resource.def.LabelCap));
-            }
-        }
-
-        /// <summary>
         /// Increases the amount of workers in a settlement. Decreases if <paramref name="negative"/> is true. Modifies the amount based on if shift/ctrl are held
         /// </summary>
         /// <param name="resourceType"></param>
@@ -852,172 +1049,5 @@ namespace FactionColonies
         }
 
         private bool ShouldTitheBeLockedForResouceType(ResourceTypeDef t) => t.isPoolResource;
-
-        private void DrawResources(int x, int y, int spacing)
-        {
-            // Get the appropriate resource types based on settlement type
-            List<ResourceFC> availableResources = settlement.Resources;
-
-            for (int i = 0; i < availableResources.Count; i++)
-            {
-                ResourceFC resource = availableResources[i];
-                if (resource == null) continue;
-                
-                float rectY = scroll + y + 70 + i * (45 + spacing);
-
-                //Don't draw if outside view
-                if (i * ScrollSpacing + scroll < 0) continue;
-
-                bool titheDisabled = false;
-                if (ShouldTitheBeLockedForResouceType(resource.def))
-                {
-                    titheDisabled = true;
-                }
-                else if (Widgets.ButtonImage(new Rect(x - 15, scroll + y + 65 + i * (45 + spacing) + 8, 20, 20), TexLoad.iconCustomize))
-                {
-                    TitheCustomizationClicked(resource);
-                }
-
-                Widgets.Checkbox(new Vector2(x + 8, scroll + y + 65 + i * (45 + spacing) + 8), ref resource.isTithe, 24, titheDisabled);
-                DoTitheCheckboxAction(resource.isTithe != resource.isTitheBool, resource);
-                //TODO: this function used to use the resourceType enum as a sort of index for mathing out the display. Make sure that switching to 'i' actually works
-                DoResourceDescriptionButton(resource, i, x, y, spacing);
-
-                //Production Efficiency
-                Widgets.DrawBox(new Rect(x + 80, rectY, 100, 20));
-                Widgets.FillableBar(new Rect(x + 80, rectY, 100, 20), (float)Math.Min(resource.productionBase, 1.0));
-                Widgets.Label(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 100, 20), "Workers".Translate() + ": " + resource.assignedWorkers);
-                if (Widgets.ButtonText(new Rect(x + 80, scroll + y + 90 + i * (45 + spacing), 20, 20), "<")) IncreaseWorkers(resource, true);
-                if (Widgets.ButtonText(new Rect(x + 160, scroll + y + 90 + i * (45 + spacing), 20, 20), ">")) IncreaseWorkers(resource);
-
-                //Base Production
-                Rect baseProd = new Rect(x + 195, rectY, 45, 40);
-                Widgets.Label(baseProd,
-                    TextUtil.FloorStat(resource.productionBase));
-
-                //Final Modifier
-                Widgets.Label(new Rect(x + 250, rectY, 50, 40),
-                    TextUtil.FloorStat(resource.productionMult));
-
-                //Final Base
-                Widgets.Label(new Rect(x + 310, rectY, 45, 40),
-                    (TextUtil.FloorStat(resource.totalProduction)));
-
-                //Est Income
-                Widgets.Label(new Rect(x + 365, rectY, 45, 40),
-                    (TextUtil.FloorStat(resource.totalProduction * FCSettings.silverPerResource)));
-
-                //Tithe Percentage
-                resource.returnTaxPercentage();
-                string taxPercentage = TextUtil.FloorStat(resource.taxPercentage) + "%";
-                Widgets.Label(new Rect(x + 420, rectY, 45, 40), taxPercentage);
-            }
-
-        }
-
-        public void DrawProductionHeaderLower(int x, int y, int spacing)
-        {
-            Text.Anchor = TextAnchor.MiddleRight;
-            Text.Font = GameFont.Small;
-
-            //Assigned workers
-            Widgets.Label(new Rect(x, y, 410, 30), string.Format("{0}: {1}/{2}/{3}", "AssignedWorkers".Translate(), settlement.getTotalWorkers(), settlement.workersMax, settlement.workersUltraMax));
-
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Tiny;
-
-            //Item Headers
-            Widgets.DrawHighlight(new Rect(x, y + 30, 40, 40));
-            Widgets.Label(new Rect(x, y + 30, 40, 40), "IsTithe".Translate() + "?");
-
-            Widgets.DrawHighlight(new Rect(x + 80, y + 30, 100, 40));
-            Widgets.Label(new Rect(x + 80, y + 30, 100, 40), "ProductionEfficiency".Translate());
-
-            Widgets.DrawHighlight(new Rect(x + 195, y + 30, 45, 40));
-            Widgets.Label(new Rect(x + 195, y + 30, 45, 40), "Base".Translate());
-
-            Widgets.DrawHighlight(new Rect(x + 250, y + 30, 50, 40));
-            Widgets.Label(new Rect(x + 250, y + 30, 50, 40), "Modifier".Translate());
-
-            Widgets.DrawHighlight(new Rect(x + 310, y + 30, 45, 40));
-            Widgets.Label(new Rect(x + 310, y + 30, 45, 40), "Final".Translate());
-
-            Widgets.DrawHighlight(new Rect(x + 365, y + 30, 45, 40));
-            Widgets.Label(new Rect(x + 365, y + 30, 45, 40), "EstimatedProfit".Translate());
-
-            Widgets.DrawHighlight(new Rect(x + 420, y + 30, 45, 40));
-            Widgets.Label(new Rect(x + 420, y + 30, 45, 40), "TaxPercentage".Translate());
-
-            DrawResources(x, y, spacing);
-
-            //Scroll window for resources
-            if (Event.current.type == EventType.ScrollWheel)
-            {
-                scrollWindow(Event.current.delta.y);
-            }
-        }
-
-
-
-        public void DrawProductionHeader(int x, int y)
-        {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            double egalitarianTaxBoost = 0;
-            if (faction.hasPolicy(FCPolicyDefOf.egalitarian))
-            {
-                egalitarianTaxBoost = Math.Floor(settlement.happiness / 10);
-                if (settlement.trait_Egalitarian_TaxBreak_Enabled)
-                {
-                    egalitarianTaxBoost -= 30;
-                }
-            }
-
-            double isolationistTaxBoost = 0;
-            if (faction.hasPolicy(FCPolicyDefOf.isolationist))
-                isolationistTaxBoost = 10;
-
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(x, y, 400, 30), "Production".Translate());
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(x + 5, y + 60, 150, 20),
-                "TaxBase".Translate() + ": " + (((100 + egalitarianTaxBoost + isolationistTaxBoost) +
-                                                 TraitUtilsFC.cycleTraits("taxBasePercentage", settlement.Traits, Operation.Addition))).ToString() + "%");
-        }
-
-        public void DrawEconomicStats(int x, int y, int length, int size)
-        {
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-            Widgets.Label(new Rect(x, 0, length, size), "Total".Translate() + " " + "CashSymbol".Translate() + " " + "Income".Translate());
-            Widgets.Label(new Rect(x, size + 3, length, size), settlement.totalIncome.ToString());
-            Widgets.Label(new Rect(x, size * 2 + 6, length, size), "FCUpkeep".Translate());
-            Widgets.Label(new Rect(x, size * 3 + 9, length, size), settlement.totalUpkeep.ToString());
-            Widgets.Label(new Rect(x + length + 10, 0, length, size), "Total".Translate() + " " + "CashSymbol".Translate() + " " + "Profit".Translate());
-            Widgets.Label(new Rect(x + length + 10, size + 3, length, size), settlement.totalProfit.ToString());
-            Widgets.Label(new Rect(x + length + 10, size * 2 + 6, length, size), "CostPerWorker".Translate());
-            Widgets.Label(new Rect(x + length + 10, size * 3 + 9, length, size), settlement.workerCost.ToString());
-        }
-
-
-        private void scrollWindow(float num)
-        {
-            if (scroll - num * 5 < -1 * maxScroll)
-            {
-                scroll = -1 * maxScroll;
-            }
-            else if (scroll - num * 5 > 0)
-            {
-                scroll = 0;
-            }
-            else
-            {
-                scroll -= (int) Event.current.delta.y * 5;
-            }
-
-            Event.current.Use();
-        }
     }
 }

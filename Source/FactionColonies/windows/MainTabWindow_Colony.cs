@@ -156,7 +156,7 @@ namespace FactionColonies
             {
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.Font = GameFont.Medium;
-                Rect button = new Rect(10, 40, InitialSize.x - 20, 40);
+                Rect button = new Rect(10, 40, InitialSize.x - ((Margin+10) * 2), 40);
                 if (Widgets.ButtonText(button, "Create New Faction"))
                 {
                     ColonyUtil.createPlayerColonyFaction();
@@ -222,12 +222,10 @@ namespace FactionColonies
 
                 //Debug
                 //DrawDebugButton(inRect);
-
-
-                //Reset Text anchor and font
-                Text.Font = fontBefore;
-                Text.Anchor = anchorBefore;
             }
+            //Reset Text anchor and font
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
         }
         private void DrawHeader(Rect inRect)
         {

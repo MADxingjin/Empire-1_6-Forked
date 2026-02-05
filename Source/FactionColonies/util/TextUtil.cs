@@ -34,7 +34,7 @@ namespace FactionColonies
                 baseBonus = "+" + baseBonus;
             }
 
-            if (bonus < 0 || (invert && bonus > 0))
+            if ((!invert && bonus < 0) || (invert && bonus > 0))
             {
                 return baseBonus.Colorize(Color.red);
             }
@@ -59,7 +59,7 @@ namespace FactionColonies
                 baseBonus = "x" + baseBonus;
             }
 
-            if (bonus < 1 || (invert && bonus > 1))
+            if ((!invert && bonus < 1) || (invert && bonus > 1))
             {
                 return baseBonus.Colorize(Color.red);
             }

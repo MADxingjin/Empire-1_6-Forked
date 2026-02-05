@@ -3,7 +3,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Spacer">
 		<defName>intergalacticMarket</defName> <!--Name of Def -->
 		<label>Intergalactic Market</label> <!--Lable of Def -->
-		<desc>From here, ships fly in and deposit their goods and replace their cargo before returning home. +40 tithe modifier, +15% basetax.</desc> <!-- Description of trait -->
+		<desc>From here, ships fly in and deposit their goods and replace their cargo before returning home.</desc> <!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -15,7 +15,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Spacer">
 		<defName>glitterworldResearchFacility</defName> <!--Name of Def -->
 		<label>Glitterworld Research Facility</label> <!--Lable of Def -->
-		<desc>From this building, researchers equipped with the highest-grade tools search for the answers of the universe. +50% Modifier to research production.</desc> <!-- Description of trait -->
+		<desc>From this building, researchers equipped with the highest-grade tools search for the answers of the universe.</desc> <!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -28,7 +28,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Spacer">
 		<defName>automatedDefenseSystems</defName> <!--Name of Def -->
 		<label>Automated Defense Systems</label> <!--Lable of Def -->
-		<desc>Androids roam the streets, keeping the colonists safe from external and internal harm. +2 military level. 400 Silver per tax period upkeep.</desc> <!-- Description of trait -->
+		<desc>Androids roam the streets, keeping the colonists safe from external and internal harm.</desc> <!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -43,7 +43,7 @@
 		<!--Name of Def -->
 		<label>Food Reconstruction</label>
 		<!--Lable of Def -->
-		<desc>Nobody likes nutrient paste, but with a little flavoring and cosmetic tweaks, it can look and taste like whatever you want it to! +50% food production. 400 silver per tax period upkeep.</desc>
+		<desc>Nobody likes nutrient paste, but with a little flavoring and cosmetic tweaks, it can look and taste like whatever you want it to!</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -62,7 +62,7 @@
 		<!--Name of Def -->
 		<label>Mechanoid Salvage Shop</label>
 		<!--Lable of Def -->
-		<desc>With the right tools, you can do more than shred dead mechanoids, you can salvage their tech to use against them. +.5 base weapons production. +5% military conbat efficiency.</desc>
+		<desc>With the right tools, you can do more than shred dead mechanoids, you can salvage their tech to use against them.</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -81,7 +81,7 @@
 		<!--Name of Def -->
 		<label>Clothing Printers</label>
 		<!--Lable of Def -->
-		<desc>Remove the human element altogether! Dump raw materials in and watch as each article of clothing is printed as a single, seamless piece! +50% apparel production.</desc>
+		<desc>Remove the human element altogether! Dump raw materials in and watch as each article of clothing is printed as a single, seamless piece!</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -100,7 +100,7 @@
 		<!--Name of Def -->
 		<label>Synthetic Wood Factory</label>
 		<!--Lable of Def -->
-		<desc>It's new! It's space-age! It's just as good as the real thing and it's definitely not vinyl, we swear! +.5 base logging production.</desc>
+		<desc>It's new! It's space-age! It's just as good as the real thing and it's definitely not vinyl, we swear!</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -119,7 +119,7 @@
 		<!--Name of Def -->
 		<label>Asteroid Magnet</label>
 		<!--Lable of Def -->
-		<desc>People may not like it, but it's hard to deny the amount of resources gathered when you just pull the metals you want out of the sky. +20% mining production. -.5 happiness per day. +.5 unrest per day. </desc>
+		<desc>People may not like it, but it's hard to deny the amount of resources gathered when you just pull the metals you want out of the sky.</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -138,7 +138,7 @@
 		<!--Name of Def -->
 		<label>Worker Bots</label>
 		<!--Lable of Def -->
-		<desc>Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere. +10 max workers. +7 overmax workers. 400 silver per tax period upkeep. </desc>
+		<desc>Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere.</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -157,7 +157,7 @@
 		<!--Name of Def -->
 		<label>Subliminal Message Center</label>
 		<!--Lable of Def -->
-		<desc>Weave subliminal messaging into the settlement's local broadcasts. +.5 loyalty per day. -.5 unrest per day. 400 silver per tax period upkeep. </desc>
+		<desc>Weave subliminal messaging into the settlement's local broadcasts.</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -176,7 +176,7 @@
 		<!--Name of Def -->
 		<label>Cloning Lab</label>
 		<!--Lable of Def -->
-		<desc>Why breed or capture animals when you can just grow them in vats? +.5 base animal production. +.25 base research. 400 silver per tax period upkeep. </desc>
+		<desc>Why breed or capture animals when you can just grow them in vats?</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
@@ -194,7 +194,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Spacer">
 		<defName>perpetualMotionGenerator</defName> <!--Name of Def -->
 		<label>Perpetual Motion Generator</label> <!--Lable of Def -->
-		<desc>An impossibility against the laws of physics, a generator that produces extra energy using the concept of perpetual motion. +50% power production, $400 upkeep cost.</desc> <!-- Description of trait -->
+		<desc>An impossibility against the laws of physics, a generator that produces extra energy using the concept of perpetual motion.</desc> <!-- Description of trait -->
 		<cost>3000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -208,7 +208,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Spacer">
 		<defName>bionicsManufacturingPlant</defName> <!--Name of Def -->
 		<label>Bionics Manufacturing Plant</label> <!--Lable of Def -->
-		<desc>A factory dedicated to the development of new bionics. +0.5 medicine production. +10% military combat efficiency. $200 upkeep cost.</desc> <!-- Description of trait -->
+		<desc>A factory dedicated to the development of new bionics.</desc> <!-- Description of trait -->
 		<cost>1500</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->

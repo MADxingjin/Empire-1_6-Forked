@@ -438,6 +438,44 @@ namespace FactionColonies
             }
         }
 
+        public int getBuildingUpkeep(int buildingSlot)
+        {
+            return getBuildingUpkeep(getBuildingInSlot(buildingSlot));
+        }
+        public int getBuildingUpkeep(BuildingFCDef building)
+        {
+            if (building == null)
+                return 0;
+
+            int upkeep = building.upkeep;
+
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            upkeep += faction.buildingUpkeepModifier(building);
+
+            upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
+
+            return Math.Max(upkeep, 0);
+        }
+
+        public TaggedString getBuildingDesc(BuildingFCDef building)
+        {
+            TaggedString desc = building.desc;
+            int buildingUpkeep = getBuildingUpkeep(building);
+            if (buildingUpkeep > 0)
+            {
+                desc += "\n" + "FCBuildingUpkeep".Translate(buildingUpkeep.ToString());
+            }
+
+            desc += "\n" + building.AttributeDesc;
+
+            return desc.Trim();
+        }
+        public TaggedString getBuildingDescFull(BuildingFCDef building)
+        {
+            TaggedString desc = building.LabelCap + "\n-----\n" + getBuildingDesc(building);
+            return desc;
+        }
+
         public int TotalUpkeep()
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
@@ -447,11 +485,10 @@ namespace FactionColonies
                 bool isMilitary = false;
                 foreach (FCTraitEffectDef trait in building.def.traits)
                 {
-                    if (trait.militaryBaseLevel > 0)
-                        isMilitary = true;
-                    if (trait.militaryMultiplierCombatEfficiency > 1)
+                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
                     {
                         isMilitary = true;
+                        break;
                     }
                 }
 

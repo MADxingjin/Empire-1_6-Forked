@@ -247,12 +247,23 @@
     <Income>Income</Income>
     <Upkeep>Upkeep</Upkeep>
     <CostPerWorker>Cost Per Worker</CostPerWorker>
+	<Tithing>Tithing</Tithing>
+	<Mult>Mult</Mult>
+	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
+	<TotalProd>Total</TotalProd>
 	
 	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
 	<closeConstructionBox>Close Constructions List</closeConstructionBox>
 	<openConstructionBox>Open Constructions List</openConstructionBox>
 	<settlementupgrading>Settlement Upgrade</settlementupgrading>
 	<completiontimer>Finishes in: {0}</completiontimer>
+	
+	<AssignedWorkers>Assigned Workers</AssignedWorkers>
+	<AssignedOvermaxWorkers>Assigned Overmax Workers</AssignedOvermaxWorkers>
+	<AssignedWorkersValue>{0}/{1}</AssignedWorkersValue>
+	<AssignedOvermaxWorkersValue>{0}/{1}</AssignedOvermaxWorkersValue>
+	<itemcost>{0}{1}</itemcost>
+	<AssignedOvermaxWorkersTooltip>Each addtional overmax worker increases the cost of all workers by 5.</AssignedOvermaxWorkersTooltip>
 
     <!--MilitaryCustomizationWindowFC Customize Unit-->
     <ExportedUnit>Exported Unit</ExportedUnit>

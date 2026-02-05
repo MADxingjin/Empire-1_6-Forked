@@ -350,6 +350,7 @@ namespace FactionColonies
             {
                 //modded biomes handling
                 biomeDef = DefDatabase<BiomeResourceDef>.GetNamed(biome, false) ?? BiomeResourceDefOf.defaultBiome;
+                LogUtil.Message($"Founding settlement {Name} on biome {biomeDef.LabelCap}");
             }
 
             BuildingsComp?.InitBuildings();
@@ -361,6 +362,8 @@ namespace FactionColonies
             {
                 addTraits(settlementDef.traits);
             }
+
+            updateProfitAndProduction();
         }
 
         public override void ExposeData()
@@ -662,6 +665,28 @@ namespace FactionColonies
             }
         }
 
+        public double getSettlementTaxBonus()
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            double bonus = 0;
+            if (faction.hasPolicy(FCPolicyDefOf.egalitarian))
+            {
+                bonus += Math.Floor(happiness / 10);
+                if (trait_Egalitarian_TaxBreak_Enabled)
+                {
+                    bonus -= 30;
+                }
+            }
+
+            bonus += TraitUtilsFC.cycleTraits("taxBasePercentage", Traits, Operation.Addition);
+
+            bonus += faction.getFactionWideTaxBonus();
+
+            bonus = ((100d + bonus) / 100d);
+
+            return bonus;
+        }
+
         public double getTotalIncome() //return total income the of settlement
         {
             double income = 0;
@@ -743,6 +768,14 @@ namespace FactionColonies
             //add building/faction modifiers
         }
 
+        public int buildingUpkeepModifier(BuildingFCDef building)
+        {
+            int reduction = 0;
+            //For now, this does nothing. But if we add ways to reduce building upkeep at the settlement level, that math should go here.
+
+            return reduction;
+        }
+
         public double getTotalUpkeep() //returns total upkeep of the settlement
         {
             workers = getTotalWorkers();
@@ -764,7 +797,7 @@ namespace FactionColonies
             upkeep += (workerTotalUpkeep);
 
 
-            upkeep += BuildingsComp.TotalUpkeep();
+            upkeep += BuildingsComp?.TotalUpkeep() ?? 0;
 
             //LogUtil.Message("upkeep " + upkeep.ToString());
             return upkeep;
@@ -772,7 +805,7 @@ namespace FactionColonies
 
         public void updateWorkerCost() //runs inside updateProfit to attach during updating
         {
-            workerCost = (workerTotalUpkeep / workers);
+            workerCost = workers == 0 ? getBaseWorkerCost() : (workerTotalUpkeep / workers);
         }
 
         public double getTotalProfit() //returns total profit (income - upkeep) of the settlement
@@ -841,7 +874,7 @@ namespace FactionColonies
         {
             //biome
             //TODO: make sure all translation keys match the biome defs
-            description = ("FCDesc" + biomeDef.defName).Translate();
+            description = ("FCDesc" + biomeDef.defName).Translate() + "\n\n";
 
             /*switch (biomeDef.defName)
             {
