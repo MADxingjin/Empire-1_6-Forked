@@ -31,7 +31,13 @@ namespace FactionColonies
 
         public static double cycleTraits(string field, List<FCTraitEffectDef> traits, Operation addOrMultiply)
         {
-            double tempTrait = (int) addOrMultiply;
+            string dummy = "";
+            return cycleTraits(field, traits, addOrMultiply, false, ref dummy);
+        }
+
+        public static double cycleTraits(string field, List<FCTraitEffectDef> traits, Operation addOrMultiply, bool createDesc, ref string desc, bool invert = false, bool hardinvert = false)
+        {
+            double tempTrait = (int)addOrMultiply;
 
             if (traits == null || traits.Count == 0)
             {
@@ -42,11 +48,29 @@ namespace FactionColonies
             {
                 if (addOrMultiply == Operation.Addition)
                 {
-                    tempTrait += returnVariable(field, trait);
+                    double value = returnVariable(field, trait);
+                    if (value != 0)
+                    {
+                        tempTrait += value;
+
+                        if (createDesc)
+                        {
+                            desc += TextUtil.colorizeAdditiveBonus(value, invert: invert, hardinvert: hardinvert) + " - " + trait.LabelCap + "\n";
+                        }
+                    }
                 }
                 else
                 {
-                    tempTrait *= returnVariable(field, trait);
+                    double value = returnVariable(field, trait);
+                    if (value != 1)
+                    {
+                        tempTrait *= value;
+
+                        if (createDesc)
+                        {
+                            desc += TextUtil.colorizeMultiplierBonus(value, invert: invert) + " - " + trait.LabelCap + "\n";
+                        }
+                    }
                 }
             }
 

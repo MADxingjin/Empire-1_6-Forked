@@ -54,6 +54,27 @@ namespace FactionColonies.util
 
             return canCraft;
         }
+
+        public static bool thingHasQuality(ThingDef thing)
+        {
+            return thing.HasComp<CompQuality>();
+        }
+        public static bool thingIsStuffable(ThingDef thing)
+        {
+            //TODO: implement
+            return true;
+        }
+        /// <summary>
+        /// For the given <paramref name="thing"/>, returns a list of valid stuff ThingDefs.
+        /// </summary>
+        /// <param name="thing">ThingDef to retrieve a list of stuff for.</param>
+        /// <returns>The list of ThingDefs that can be used to stuff the given <paramref name="thing"/>. Returns an empty list if <paramref name="thing"/> is not stuffable.</returns>
+        public static List<ThingDef> getThingStuffs(ThingDef thing)
+        {
+            List<ThingDef> list = new List<ThingDef>();
+            //TODO: implement
+            return list;
+        }
         /*
         public static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
         {

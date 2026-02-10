@@ -221,25 +221,40 @@
     <SettlementLoyalty>Settlement Loyalty</SettlementLoyalty>
     <SettlementUnrest>Settlement Unrest</SettlementUnrest>
     <SettlementProsperity>Settlement Prosperity</SettlementProsperity>
+	<Happiness>happiness</Happiness>
+	<Loyalty>loyalty</Loyalty>
+	<Unrest>unrest</Unrest>
+	<Prosperity>prosperity</Prosperity>
+	<BaseRecovery>Base Recovery</BaseRecovery>
+	<BaseGain>Base Gain</BaseGain>
+	<BaseLoss>Base Loss</BaseLoss>
+	<SettlementStatGain>Gaining {0} {1} per day</SettlementStatGain>
+	<SettlementStatLoss>Losing {0} {1} per day</SettlementStatLoss>
 
-    <SettlementMilitaryLevelDesc>The measure of the settlements's military level. The military level of a town directly
-        affects the town's ability to defend itself as well as attack external threats
+    <SettlementMilitaryLevelDesc>The measure of the settlements's military level.
+
+The military level of a town directly affects the town's ability to defend itself as well as attack external threats
     </SettlementMilitaryLevelDesc>
-    <SettlementHappinessDesc>The measure of the Settlement's overall happiness. A high happiness means that any internal
-        conflict within the settlement will lean heavily to your favor.
+    <SettlementHappinessDesc>The measure of the Settlement's overall happiness.
+
+A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
     </SettlementHappinessDesc>
-    <SettlementLoyaltyDesc>The measure of the Settlement's overall loyalty. The loyalty of a settlement determines how
-        willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
+    <SettlementLoyaltyDesc>The measure of the Settlement's overall loyalty.
+
+The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
     </SettlementLoyaltyDesc>
-    <SettlementUnrestDesc>The measure of the Settlement's overall unrest. The higher unrest grows, the more likely
-        dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may
-        grow.
+    <SettlementUnrestDesc>The measure of the Settlement's overall unrest.
+
+The higher unrest grows, the more likely dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may grow.
     </SettlementUnrestDesc>
-    <SettlementProsperityDesc>The measure of the Settlement's overall prosperity. The prosperity of a town directly
-        correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will
-        slowly accumulate over time.
+    <SettlementProsperityDesc>The measure of the Settlement's overall prosperity.
+
+The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). If prosperity is damaged, it will slowly accumulate over time.
     </SettlementProsperityDesc>
     <BuildingUpgrades>Building Upgrades</BuildingUpgrades>
+	<Buildings>Buildings</Buildings>
+	<Facilities>Facilities</Facilities>
+	<BuildTime>Build Time: {0}</BuildTime>
     <AddedInFuture>This will be added to in the future</AddedInFuture>
     <Production>Production</Production>
     <TaxBase>Tax Base</TaxBase>
@@ -253,6 +268,7 @@
 	<TotalProd>Total</TotalProd>
 	
 	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
+	<ActiveConstruction>Active Construction</ActiveConstruction>
 	<closeConstructionBox>Close Constructions List</closeConstructionBox>
 	<openConstructionBox>Open Constructions List</openConstructionBox>
 	<settlementupgrading>Settlement Upgrade</settlementupgrading>

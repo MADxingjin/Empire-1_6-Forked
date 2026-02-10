@@ -1140,6 +1140,23 @@ namespace FactionColonies
                 rdisplay.setDirtyCache();
             }
         }
+        public double getFactionTitheBonusAdditive(ResourceTypeDef rdef)
+        {
+            double bonus = 0;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusMult(ResourceTypeDef rdef)
+        {
+            double bonus = 1;
+
+            if (hasPolicy(FCPolicyDefOf.feudal))
+            {
+                bonus *= 1.2;
+            }
+
+            return bonus;
+        }
 
 
         public void addTax(bool isUpdating)
@@ -1180,7 +1197,7 @@ namespace FactionColonies
 
 
                     //End Traits
-
+                    //TODO: update for incremental tithing
                     List<Thing> list = new List<Thing>();
                     settlement.updateProfitAndProduction();
                     list = settlement.createTithe(trait_Industrious_TaxPercentageBoost);

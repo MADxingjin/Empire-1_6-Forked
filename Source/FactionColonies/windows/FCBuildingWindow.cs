@@ -112,7 +112,7 @@ namespace FactionColonies
                 float textHeight = Text.CalcHeight(buildingdesc.RawText, width);
                 Text.Font = tmp;
                 float descHeight = Math.Max(64, textHeight);
-                fullScrollHeight += descHeight + 25f;
+                fullScrollHeight += descHeight + 27f;
             }
         }
 
@@ -245,15 +245,13 @@ namespace FactionColonies
                 float textHeight = Text.CalcHeight(buildingdesc.RawText, buildingDescWidth);
                 Text.Font = tmp;
                 float descHeight = Math.Max(64, textHeight);
-                float thisRowHeight = 25f + descHeight;
+                float thisRowHeight = 27f + descHeight;
 
 
                 var newBuildingWindow = ls.GetRect(thisRowHeight);
                 var newBuildingIcon = new Rect(newBuildingWindow.x + offset, newBuildingWindow.y + offset, 64, 64);
-                var newBuildingLabel = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 5,
-                    buildingDescWidth, 20);
-                var newBuildingDesc = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 25,
-                    buildingDescWidth, descHeight);
+                var newBuildingLabel = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 5, buildingDescWidth - 260, 22);
+                var newBuildingDesc = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 27, buildingDescWidth, descHeight);
 
                 if (Widgets.ButtonInvisible(newBuildingWindow))
                 {
@@ -309,8 +307,16 @@ namespace FactionColonies
                 Widgets.ButtonImage(newBuildingIcon, building.Icon);
 
                 Text.Font = GameFont.Small;
+                string costStr = " " + "Cost".Translate() + ": " + building.cost;
+                string buildTimeStr = " " + "BuildTime".Translate(building.constructionDuration.ToTimeString());
+                Rect costRect = new Rect(newBuildingLabel.xMax, newBuildingLabel.y, 100, newBuildingLabel.height);
+                Rect builtTimeRect = new Rect(costRect.xMax, newBuildingLabel.y, 160, newBuildingLabel.height);
                 Widgets.ButtonTextSubtle(newBuildingLabel, "");
-                Widgets.Label(newBuildingLabel, "  " + building.LabelCap + " - " + "Cost".Translate() + ": " + building.cost);
+                Widgets.Label(newBuildingLabel, "  " + building.LabelCap);// + " - " + "Cost".Translate() + ": " + building.cost);
+                Widgets.ButtonTextSubtle(costRect, "");
+                Widgets.Label(costRect, costStr);
+                Widgets.ButtonTextSubtle(builtTimeRect, "");
+                Widgets.Label(builtTimeRect, buildTimeStr);
 
                 Text.Font = GameFont.Tiny;
                 Widgets.Label(newBuildingDesc, settlement.BuildingsComp.getBuildingDesc(building));

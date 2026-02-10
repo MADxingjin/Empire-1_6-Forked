@@ -24,10 +24,15 @@ namespace FactionColonies
         /// </summary>
         /// <param name="bonus">The numeric bonus to colorize</param>
         /// <param name="invert">If true, negative values are colorized as positive, and vice versa. Defaults to false</param>
+        /// <param name="hardinvert">If true, the bonus is multiplied by -1 before being processed.</param>
         /// <param name="addPlusSign">If true, adds a "+" before positive values. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString colorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true)
+        public static TaggedString colorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
         {
+            if (hardinvert)
+            {
+                bonus *= -1;
+            }
             string baseBonus = bonus.ToString();
             if (bonus > 0 && addPlusSign)
             {
@@ -89,9 +94,9 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in settlement.Resources)
             {
-                if (resource.totalProduction > highest)
+                if (resource.actualIncome > highest)
                 {
-                    highest = resource.totalProduction;
+                    highest = resource.actualIncome;
                     resourceKey = resource.def.defName;
                 }
             }

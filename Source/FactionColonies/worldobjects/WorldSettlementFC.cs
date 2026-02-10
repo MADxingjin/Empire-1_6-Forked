@@ -75,7 +75,9 @@ namespace FactionColonies
 
         //ui only
         public double totalUpkeep;
+        public string upkeepExp = "";
         public double totalIncome;
+        public string incomeExp = "";
         public double totalProfit;
 
         //Trait stuff
@@ -572,99 +574,220 @@ namespace FactionColonies
         }
 
         // TODO: will need rework after converting faction traits to comps
-        public void updateHappiness()
+        public double getHappinessGain()
         {
             FactionFC factionfc = Find.World.GetComponent<FactionFC>();
             double happinessGainMultiplier = TraitUtilsFC.cycleTraits("happinessGainedMultiplier", traits, Operation.Multiplication);
-            double happinessLostMultiplier = TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
 
             double policyIncrease = 0;
             if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
                 policyIncrease = 2;
 
 
-            happiness += happinessGainMultiplier * (policyIncrease + FCSettings.happinessBaseGain +
-                                                    TraitUtilsFC.cycleTraits("happinessGainedBase", traits, Operation.Addition));
-            happiness -= happinessLostMultiplier * (FCSettings.happinessBaseLost + TraitUtilsFC.cycleTraits("happinessLostBase", traits, Operation.Addition));
+            return happinessGainMultiplier * (policyIncrease + FCSettings.happinessBaseGain + TraitUtilsFC.cycleTraits("happinessGainedBase", traits, Operation.Addition));
+        }
+        public double getHappinessLoss()
+        {
+            double happinessLostMultiplier = TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication);
+            return happinessLostMultiplier * (FCSettings.happinessBaseLost + TraitUtilsFC.cycleTraits("happinessLostBase", traits, Operation.Addition));
+        }
+        public double getTotalHappinessGain()
+        {
+            return getHappinessGain() - getHappinessLoss();
+        }
+        public void updateHappiness()
+        {
+            happiness += getTotalHappinessGain();
 
-            happiness = Math.Round(happiness, 1);
+            happiness = Math.Round(Math.Clamp(happiness, 1, 100), 1);
+        }
+        public string getHappinessDesc()
+        {
+            double happinessGain = getTotalHappinessGain();
+            string desc = "";
+            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            double policyIncrease = 0;
+            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
+                policyIncrease = 2;
 
-            if (happiness <= 0)
+            if (happinessGain >= 0)
             {
-                happiness = 1;
+                desc = "SettlementStatGain".Translate(Math.Abs(happinessGain), "Happiness".Translate());
             }
-
-            if (happiness > 100)
+            else
             {
-                happiness = 100;
+                desc = "SettlementStatLoss".Translate(Math.Abs(happinessGain), "Happiness".Translate());
             }
+            desc += "\n\n";
+            string gain = "";
+            if (FCSettings.happinessBaseGain != 0)
+            {
+                gain += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
+            }
+            if (policyIncrease > 0)
+            {
+                gain += TextUtil.colorizeAdditiveBonus(policyIncrease) + " - " + FCPolicyDefOf.egalitarian.LabelCap + "\n";
+            }
+            TraitUtilsFC.cycleTraits("happinessGainedBase", traits, Operation.Addition, true, ref gain);
+            TraitUtilsFC.cycleTraits("happinessGainedMultiplier", traits, Operation.Multiplication, true, ref gain);
+            if (!gain.NullOrEmpty())
+            {
+                desc += gain + "\n";
+            }
+            if (FCSettings.happinessBaseLost != 0)
+            {
+                desc += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("happinessLostBase", traits, Operation.Addition, true, ref desc, hardinvert: true);
+            TraitUtilsFC.cycleTraits("happinessLostMultiplier", traits, Operation.Multiplication, true, ref desc, invert: true);
+
+            return desc.Trim();
         }
 
-        public void updateLoyalty()
+        public double getLoyaltyGain()
         {
             double loyaltyGainMultiplier = TraitUtilsFC.cycleTraits("loyaltyGainedMultiplier", traits, Operation.Multiplication);
+            return loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + TraitUtilsFC.cycleTraits("loyaltyGainedBase", traits, Operation.Addition));
+        }
+        public double getLoyaltyLoss()
+        {
             double loyaltyLostMultiplier = TraitUtilsFC.cycleTraits("loyaltyLostMultiplier", traits, Operation.Multiplication);
+            return loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + TraitUtilsFC.cycleTraits("loyaltyLostBase", traits, Operation.Addition));
+        }
+        public double getTotalLoyaltyGain()
+        {
+            return getLoyaltyGain() - getLoyaltyLoss();
+        }
+        public void updateLoyalty()
+        {
+            loyalty += getTotalLoyaltyGain();
 
-            loyalty += loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + TraitUtilsFC.cycleTraits("loyaltyGainedBase", traits, Operation.Addition));
-            loyalty -= loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + TraitUtilsFC.cycleTraits("loyaltyLostBase", traits, Operation.Addition));
-
-            loyalty = Math.Round(loyalty, 1);
-
-            if (loyalty <= 0)
+            loyalty = Math.Round(Math.Clamp(loyalty, 1, 100), 1);
+        }
+        public string getLoyaltyDesc()
+        {
+            double loyaltyGain = getTotalLoyaltyGain();
+            string desc = "";
+            if (loyaltyGain >= 0)
             {
-                loyalty = 1;
+                desc = "SettlementStatGain".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
             }
-
-            if (loyalty > 100)
+            else
             {
-                loyalty = 100;
+                desc = "SettlementStatLoss".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
             }
+            desc += "\n\n";
+            string gain = "";
+            if (FCSettings.loyaltyBaseGain != 0)
+            {
+                gain += TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "BaseGain".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("loyaltyGainedBase", traits, Operation.Addition, true, ref gain);
+            TraitUtilsFC.cycleTraits("loyaltyGainedMultiplier", traits, Operation.Multiplication, true, ref gain);
+            if (!gain.NullOrEmpty())
+            {
+                desc += gain + "\n";
+            }
+            if (FCSettings.loyaltyBaseLost != 0)
+            {
+                desc += "\n" + TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("loyaltyLostBase", traits, Operation.Addition, true, ref desc, hardinvert: true);
+            TraitUtilsFC.cycleTraits("loyaltyLostMultiplier", traits, Operation.Multiplication, true, ref desc, invert: true);
+
+            return desc.Trim();
         }
 
         // TODO: will need rework after converting faction traits to comps
-        public void updateProsperity()
+        public double getProsperityGain()
         {
             FactionFC factionfc = Find.World.GetComponent<FactionFC>();
             double policyIncrease = 0;
             if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
                 policyIncrease = 2;
 
-            prosperity += (policyIncrease + FCSettings.prosperityBaseRecovery + TraitUtilsFC.cycleTraits("prosperityBaseRecovery", traits, Operation.Addition)); //Go through traits and add prosperity where needed
-
-            prosperity = Math.Round(prosperity, 1);
-
-            if (prosperity <= 0)
-            {
-                prosperity = 1;
-            }
-
-            if (prosperity > 100)
-            {
-                prosperity = 100;
-            }
+            return (policyIncrease + FCSettings.prosperityBaseRecovery + TraitUtilsFC.cycleTraits("prosperityBaseRecovery", traits, Operation.Addition)); //Go through traits and add prosperity where needed
         }
+        public void updateProsperity()
+        {
+            prosperity += getProsperityGain();
 
-        public void updateUnrest()
+            prosperity = Math.Round(Math.Clamp(prosperity, 1, 100), 1);
+        }
+        public string getProsperityDesc()
+        {
+            double prosperityGain = getProsperityGain();
+            string desc = "";
+            if (prosperityGain >= 0)
+            {
+                desc = "SettlementStatGain".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
+            }
+            else
+            {
+                desc = "SettlementStatLoss".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
+            }
+            desc += "\n\n";
+            if (FCSettings.prosperityBaseRecovery != 0)
+            {
+                desc += TextUtil.colorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("prosperityBaseRecovery", traits, Operation.Addition, true, ref desc);
+
+            return desc.Trim();
+        }
+        public double getUnrestGain()
         {
             double unrestGainMultiplier = TraitUtilsFC.cycleTraits("unrestGainedMultiplier", traits, Operation.Multiplication);
-            double unrestLostMultiplier = TraitUtilsFC.cycleTraits("unrestLostMultiplier", traits, Operation.Multiplication);
-
-            unrest += unrestGainMultiplier * (FCSettings.unrestBaseGain + TraitUtilsFC.cycleTraits("unrestGainedBase", traits, Operation.Addition)); //Go through traits and add unrest where needed
-            unrest -= unrestLostMultiplier * (FCSettings.unrestBaseLost + TraitUtilsFC.cycleTraits("unrestLostBase", traits, Operation.Addition)); //Go through traits and remove unrest where needed
-
-            unrest = Math.Round(unrest, 1);
-
-            if (unrest < 0)
-            {
-                unrest = 0;
-            }
-
-            if (unrest > 100)
-            {
-                unrest = 100;
-            }
+            return unrestGainMultiplier * (FCSettings.unrestBaseGain + TraitUtilsFC.cycleTraits("unrestGainedBase", traits, Operation.Addition)); //Go through traits and add unrest where needed
         }
+        public double getUnrestLoss()
+        {
+            double unrestLostMultiplier = TraitUtilsFC.cycleTraits("unrestLostMultiplier", traits, Operation.Multiplication);
+            return unrestLostMultiplier * (FCSettings.unrestBaseLost + TraitUtilsFC.cycleTraits("unrestLostBase", traits, Operation.Addition)); //Go through traits and remove unrest where needed
+        }
+        public double getTotalUnrestGain()
+        {
+            return getUnrestGain() - getUnrestLoss();
+        }
+        public void updateUnrest()
+        {
+            unrest += getTotalUnrestGain();
 
+            unrest = Math.Round(Math.Clamp(unrest, 1, 100), 1);
+        }
+        public string getUnrestDesc()
+        {
+            double unrestGain = getTotalUnrestGain();
+            string desc = "";
+            if (unrestGain >= 0)
+            {
+                desc = "SettlementStatGain".Translate(Math.Abs(unrestGain), "Unrest".Translate());
+            }
+            else
+            {
+                desc = "SettlementStatLoss".Translate(Math.Abs(unrestGain), "Unrest".Translate());
+            }
+            desc += "\n\n";
+            string gain = "";
+            if (FCSettings.unrestBaseGain != 0)
+            {
+                gain += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "BaseGain".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("unrestGainedBase", traits, Operation.Addition, true, ref gain, invert: true);
+            TraitUtilsFC.cycleTraits("unrestGainedMultiplier", traits, Operation.Multiplication, true, ref gain, invert: true);
+            if (!gain.NullOrEmpty())
+            {
+                desc += gain + "\n";
+            }
+            if (FCSettings.unrestBaseLost != 0)
+            {
+                desc += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+            }
+            TraitUtilsFC.cycleTraits("unrestLostBase", traits, Operation.Addition, true, ref desc, invert: true, hardinvert: true);
+            TraitUtilsFC.cycleTraits("unrestLostMultiplier", traits, Operation.Multiplication, true, ref desc, invert: true);
+
+            return desc.Trim();
+        }
         public double getSettlementTaxBonus()
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
@@ -690,15 +813,16 @@ namespace FactionColonies
         public double getTotalIncome() //return total income the of settlement
         {
             double income = 0;
+            incomeExp = "";
             foreach (ResourceFC resource in resources)
             {
-                //TODO: change when tithes are no longer binary
-                if (resource.isTithe == false)
+                if (resource.actualIncome > 0)
                 {
-                    //if resource is not paid by tithe
-                    income += resource.totalProduction * FCSettings.silverPerResource;
+                    income += resource.actualIncomeMarketValue;
+                    incomeExp += "+" + (resource.actualIncomeMarketValue).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
                 }
             }
+            incomeExp = incomeExp.Trim();
             return income;
         }
 
@@ -778,6 +902,7 @@ namespace FactionColonies
 
         public double getTotalUpkeep() //returns total upkeep of the settlement
         {
+            upkeepExp = "";
             workers = getTotalWorkers();
             double upkeep = 0;
             double overWork;
@@ -791,15 +916,33 @@ namespace FactionColonies
             }
 
             workerTotalUpkeep = (workers * getBaseWorkerCost()) + ((workers * getBaseWorkerCost()) * (overWork / 20));
+            if (workerTotalUpkeep > 0)
+            {
+                upkeepExp += "+" + workerTotalUpkeep.ToString() + " - " + "Workers".Translate() + "\n";
+            }
 
             //add building upkeep
 
             upkeep += (workerTotalUpkeep);
 
+            double buildingsUpkeep = BuildingsComp?.TotalUpkeep() ?? 0;
+            if (buildingsUpkeep > 0)
+            {
+                upkeep += buildingsUpkeep;
+                upkeepExp += "+" + buildingsUpkeep.ToString() + " - " + "Buildings".Translate() + "\n";
+            }
 
-            upkeep += BuildingsComp?.TotalUpkeep() ?? 0;
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.actualIncome < 0)
+                {
+                    upkeep += (-1) * resource.actualIncomeMarketValue;
+                    upkeepExp += "+" + (-1 * resource.actualIncomeMarketValue).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
+                }
+            }
 
             //LogUtil.Message("upkeep " + upkeep.ToString());
+            upkeepExp = upkeepExp.Trim();
             return upkeep;
         }
 
@@ -847,9 +990,9 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                if (resource.totalProduction > highest)
+                if (resource.actualIncome > highest)
                 {
-                    highest = resource.totalProduction;
+                    highest = resource.actualIncome;
                     highestResource = resource;
                 }
             }
@@ -862,88 +1005,99 @@ namespace FactionColonies
             double defenseBonus = 0;
             foreach (ResourceFC resource in resources)
             {
-                if (resource.def.aidsDefense && resource.totalProduction > 0)
+                if (resource.def.aidsDefense && resource.rawTotalProduction > 0)
                 {
-                    defenseBonus += resource.totalProduction;
+                    defenseBonus += resource.rawTotalProduction;
                 }
             }
             return defenseBonus;
         }
 
-        public void updateDescription()
+        //Seperated into its own function to make it easier to PostFix descriptions for potential submod-added biomes
+        // There *has* to be a better way to dynamically retrieve these descriptions...
+        private string getDescriptionBiome()
         {
-            //biome
-            //TODO: make sure all translation keys match the biome defs
-            description = ("FCDesc" + biomeDef.defName).Translate() + "\n\n";
+            string desc = "";
 
-            /*switch (biomeDef.defName)
+            switch (biomeDef.defName)
             {
                 case "BorealForest":
-                    description = "FCDescBorealForest".Translate();
+                    desc = "FCDescBorealForest".Translate();
                     break;
                 case "Tundra":
-                    description = "FCDescTundra".Translate();
+                    desc = "FCDescTundra".Translate();
                     break;
                 case "ColdBog":
-                    description = "FCDescColdBog".Translate();
+                    desc = "FCDescColdBog".Translate();
                     break;
                 case "IceSheet":
-                    description = "FCDescIceSheet".Translate();
+                    desc = "FCDescIceSheet".Translate();
                     break;
                 case "SeaIce":
-                    description = "FCDescIceSheet".Translate();
+                    desc = "FCDescIceSheet".Translate();
                     break;
                 case "TemperateForest":
-                    description = "FCDescTemperateForest".Translate();
+                    desc = "FCDescTemperateForest".Translate();
                     break;
                 case "TemperateSwamp":
-                    description = "FCDescTemperateSwamp".Translate();
+                    desc = "FCDescTemperateSwamp".Translate();
                     break;
                 case "TropicalRainforest":
-                    description = "FCDescTropicalRainforest".Translate();
+                    desc = "FCDescTropicalRainforest".Translate();
                     break;
                 case "AridShrubland":
-                    description = "FCDescAridShrubland".Translate();
+                    desc = "FCDescAridShrubland".Translate();
                     break;
                 case "Desert":
-                    description = "FCDescDesert".Translate();
+                    desc = "FCDescDesert".Translate();
                     break;
                 case "ExtremeDesert":
-                    description = "FCDescExtremeDesert".Translate();
+                    desc = "FCDescExtremeDesert".Translate();
                     break;
                 case "OrbitalSpace":
-                    description = "FCDescOrbitalSpace".Translate();
+                    desc = "FCDescOrbitalSpace".Translate();
                     break;
                 default:
-                    description = "FCDescUnknown".Translate();
+                    desc = "FCDescUnknown".Translate();
                     break;
-            }*/
-
-
-            //town size
-
+            }
+            return desc;
+        }
+        private string getSettlementLevelDesc()
+        {
+            string desc = "";
             switch (settlementLevel)
             {
                 case 1:
-                    description += "FCTownLevel1".Translate();
+                    desc += "FCTownLevel1".Translate();
                     break;
                 case 2:
-                    description += "FCTownLevel2".Translate();
+                    desc += "FCTownLevel2".Translate();
                     break;
                 case 3:
                 case 4:
-                    description += "FCTownLevel3".Translate();
+                    desc += "FCTownLevel3".Translate();
                     break;
                 case 5:
                 case 6:
-                    description += "FCTownLevel4".Translate();
+                    desc += "FCTownLevel4".Translate();
                     break;
                 case 7:
                 case 8:
                 default:
-                    description += "FCTownLevel5".Translate();
+                    desc += "FCTownLevel5".Translate();
                     break;
             }
+            return desc;
+        }
+
+        public void updateDescription()
+        {
+            //biome
+            description = getDescriptionBiome() + "\n\n";
+
+            //town size
+            description += getSettlementLevelDesc();
         }
 
         public List<FCTraitEffectDef> returnListSettlementTraits()
@@ -1088,21 +1242,6 @@ namespace FactionColonies
         //9 - Silver income
         //10 - location id
 
-        //TODO: will need a rework when tithes are changed to be non-binary
-        public double returnTitheEstimatedValue()
-        {
-            double titheVal = 0;
-            foreach (ResourceFC resource in resources)
-            {
-                if (resource.isTithe)
-                {
-                    titheVal += resource.totalProduction * FCSettings.silverPerResource;
-                }
-            }
-
-            return titheVal;
-        }
-
         public ResourceFC returnResource(string defName) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def.defName == defName);
@@ -1138,27 +1277,6 @@ namespace FactionColonies
             return null;
         }
 
-
-        public void taxProductionGoods() //update goods (TAX TAX TAX)   # Not used?
-        {
-            int silver = 0;
-            foreach (ResourceFC resource in resources)
-            {
-                if (resource.isTithe)
-                {
-                    //if resource is paying via tithe
-                    //generate the tithe things
-                    //run tithe cash evaluation here
-                    //ThingSetMaker gen = new ThingSetMaker();
-                }
-                else
-                {
-                    //if resource is paying via silver
-                    silver += (int)(resource.totalProduction * FCSettings.silverPerResource); //Add randomness?
-                }
-            }
-        }
-
         //UNUSED FUNCTIONS
         public float getSilverIncome()
         {
@@ -1185,16 +1303,6 @@ namespace FactionColonies
             }
 
             return income;
-        }
-
-        public List<Thing> getTithe()
-        {
-            return tithe;
-        }
-
-        public void resetTithe()
-        {
-            tithe = new List<Thing>();
         }
         //UNUSED FUNCTIONS /END
 
@@ -1229,6 +1337,16 @@ namespace FactionColonies
             return pools;
         }
 
+        public double getTitheModifier(ResourceTypeDef rdef)
+        {
+            double modifier = 0;
+
+            modifier += TraitUtilsFC.cycleTraits("taxBaseRandomModifier", traits, Operation.Addition);
+
+            return modifier;
+        }
+
+        //TODO: rewrite to work with incremental tithing
         public List<Thing> createTithe(float industriousTaxPercentageBoost)
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
@@ -1237,7 +1355,7 @@ namespace FactionColonies
             List<Thing> list = new List<Thing>();
             foreach (ResourceFC resource in resources)
             {
-                if (resource.isTithe && !resource.def.isPoolResource)
+                //if (resource.isTithe && !resource.def.isPoolResource)
                 {
                     if (resource.filter == null)
                     {
@@ -1255,9 +1373,9 @@ namespace FactionColonies
 
                     List<Thing> tmpList;
 
-                    double production = resource.totalProduction;
+                    double production = resource.titheMarketValue;
                     production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
-                    int assignedWorkers = resource.assignedWorkers;
+                    //int assignedWorkers = resource.assignedWorkers;
 
                     //Create Temp Value
                     double tmpValue = production * FCSettings.silverPerResource;

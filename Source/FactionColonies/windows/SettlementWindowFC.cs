@@ -1,15 +1,10 @@
 ﻿using FactionColonies.util;
 using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Verse;
-using Verse.Noise;
 using Verse.Sound;
 
 namespace FactionColonies
@@ -36,7 +31,7 @@ namespace FactionColonies
         private FactionFC factionfc;
 
         // Building UI values
-        private const int buildingSpacing = 15;
+        private const int buildingSpacing = margin;//15;
         private const int buildingBoxSide = 72;
 
         private const int constructionListItemLabelHeight = 15;
@@ -44,14 +39,15 @@ namespace FactionColonies
         private const int constructionListItemHeight = (smallMargin * 4) + (constructionListItemLabelHeight * 2) + constructionListProgressBarHeight; // 4 * smallMargin + 2 * label height + progress bar height
         private const int constructionListIconHeight = constructionListItemLabelHeight * 2 + smallMargin;
 
-        private const int buildingSpacingFromSide = 15; // (494 - (spacing + boxSide) * elementsPerRow) / 2;
+        private const int buildingSpacingFromSide = margin; //15; // (494 - (spacing + boxSide) * elementsPerRow) / 2;
 
-        private const int scrollSpacing = 17;
+        private const int scrollSpacing = 16;
 
         private const int buildingPanelWidth = buildingSpacingFromSide * 2 + buildingBoxSide * 2 + buildingSpacing;// + scrollSpacing;
 
         // UI State
         private bool constructionOpen = true;
+        private int overviewTab = 0;
 
         public void windowUpdateFc()
         {
@@ -132,34 +128,67 @@ namespace FactionColonies
             float validWidth = InitialSize.x - (Margin * 2);
             float validHeight = InitialSize.y - (Margin * 2);
 
-            //WIP notes: change these functions to accept a rect, that forms the bounds of that segment of the UI
-            Rect leftBox = new Rect(0, 0, buildingPanelWidth, validHeight);
-            Rect centerBox = new Rect(leftBox.xMax + margin, 0, (validWidth * 0.65f) - buildingPanelWidth, validHeight);
-            Rect rightBox = new Rect(centerBox.xMax + margin*2, 0, (validWidth * 0.35f) - (margin * 3), validHeight);
+            float leftWidth = 150f;
+            float centerWidth = (validWidth * 0.65f) - leftWidth - (margin * 2);
+            float rightWidth = (validWidth * 0.35f);
 
+            Rect headerBox = new Rect(inRect.x, inRect.y, leftWidth + centerWidth + margin, 30 + (margin * 2) + 60);
+            Rect leftBox = new Rect(inRect.x, headerBox.yMax + (margin * 2), leftWidth, validHeight - headerBox.height - (margin * 2));
+            Rect centerBox = new Rect(leftBox.xMax + margin, headerBox.yMax + (margin * 2), centerWidth, validHeight - headerBox.height - (margin * 2));
+            Rect rightBox = new Rect(centerBox.xMax + margin, inRect.y, rightWidth, validHeight);
+
+            DrawCenterHeader(headerBox);
             DrawLeftInfo(leftBox);
             //Widgets.DrawLineVertical(leftBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawCenterInfo(centerBox);
-            Widgets.DrawLineVertical(centerBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
+            //Widgets.DrawLineVertical(centerBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawRightInfo(rightBox);
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
 
-        private void DrawCenterInfo(Rect boundingBox)
+        /* Left side overview */
+        private void DrawLeftInfo(Rect boundingBox)
         {
-            Rect infobox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 360); //originally: 520 width, 340 height
-            DrawBasicInfobox(infobox);
-
-            Rect miscOverview = new Rect(infobox.x, infobox.yMax + margin, (infobox.width * 0.75f), boundingBox.height - (infobox.height + margin));
-            Rect mainButtons = new Rect(miscOverview.xMax + margin, miscOverview.y, (infobox.width * 0.25f) - margin, miscOverview.height);
-
-            DrawMiscOverview(miscOverview);
-            DrawMainButtons(mainButtons);
+            Rect topBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, (boundingBox.height - (margin*2)) / 2f);
+            Rect botBox = new Rect(topBox.x, topBox.yMax + (margin*2), topBox.width, topBox.height);
+            DrawSettlementStats(topBox);
+            Widgets.DrawLineHorizontal(boundingBox.x, topBox.yMax + margin, boundingBox.width);
+            DrawMainButtons(botBox);
         }
 
-        private void DrawBasicInfobox(Rect boundingBox)
+        private void DrawCenterInfo(Rect boundingBox)
+        {
+            //Rect headerBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30 + (margin*2) + 60);
+
+            float nTabs = 2;
+            float tabY = boundingBox.y;
+            float tabHeight = 20f;
+            float tabWidth = boundingBox.width / nTabs;
+            for (int i = 0; i < nTabs; i++)
+            {
+                Rect tabRect = new Rect(boundingBox.x + (tabWidth * i), tabY, tabWidth, tabHeight);
+                TaggedString label = $"text {i}";
+                if (overviewTab != i)
+                {
+                    label.Colorize(Color.gray);
+                }
+                if (Widgets.ButtonText(tabRect, label))
+                {
+                    overviewTab = i;
+                }
+            }
+            //tabs for different sections: Overview, Tithing, sub-mod added windows
+            Rect overviewBounds = new Rect(boundingBox.x, tabY + tabHeight, boundingBox.width, boundingBox.height - tabHeight);
+            Rect infobox = new Rect(overviewBounds.x + margin, overviewBounds.y + margin, overviewBounds.width - (margin*2), overviewBounds.height - (margin*2)); //originally: 520 width, 340 height
+            Widgets.DrawBox(overviewBounds);
+            if (overviewTab == 0)
+            {
+                DrawBasicOverview(infobox);
+            }
+        }
+        private void DrawCenterHeader(Rect boundingBox)
         {
             /* Settlement name on top */
             Text.Font = GameFont.Medium;
@@ -174,9 +203,7 @@ namespace FactionColonies
                 Find.WindowStack.Add(new SettlementCustomizeWindowFc(settlement));
             }
             // Just used for alignment. Can maybe use this box to draw some background art based on the settlement's biome. Kinda like stellaris, maybe
-            Rect infoBox = new Rect(boundingBox.x, nameRect.yMax, boundingBox.width, boundingBox.height - (nameRect.height + margin*2));
-            // box with level, settlement type, location description
-            //Widgets.DrawBox(infoBox);
+            Rect infoBox = new Rect(boundingBox.x, nameRect.yMax, boundingBox.width, boundingBox.height - (nameRect.height + margin * 2));
 
             /* Town level */
             Text.Font = GameFont.Medium;
@@ -207,82 +234,135 @@ namespace FactionColonies
             Widgets.DrawLineVertical(basicDescBox.xMax, basicDescBox.y + margin, basicDescBox.height - (margin * 2));
             //TODO: localize this. LabelCap and description can be localized through def injection, but locationText is derived differently
             Widgets.Label(locTextBox, settlement.locationText);
+        }
+        private void DrawBasicOverview(Rect boundingBox)
+        {
+            float bottomHeight = (buildingBoxSide * 3) + (buildingSpacing * 4) + 30f;
+            Rect topRect = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, (boundingBox.height - margin - bottomHeight));
+            Rect botRect = new Rect(boundingBox.x, topRect.yMax + margin, boundingBox.width, bottomHeight);
 
-            //TODO: programmatic way to determine width and height
-            Rect statsBox = new Rect(levelBoundingBox.x, levelBoundingBox.yMax + (margin * 3), 125, infoBox.height - (levelBoundingBox.height + margin * 3));
-            DrawSettlementStats(statsBox);
-
-            Rect descBox = new Rect(statsBox.xMax + margin * 2, statsBox.y, infoBox.width - (statsBox.width + margin * 2), statsBox.height);
-            DrawDescription(descBox); // x = 150, y = 80, length = 370, size = 220
+            DrawBasicOverviewTop(topRect);
+            DrawBasicOverviewBottom(botRect);
         }
 
-        //125 wide, 215ish tall
+        private void DrawBasicOverviewTop(Rect boundingBox)
+        {
+            // Maybe we'll put more than just the description here. Who knows?
+            // A biome-fitting image might be cool, kind of like Stellaris
+            DrawDescription(boundingBox);
+        }
+
+        private void DrawBasicOverviewBottom(Rect boundingBox)
+        {
+            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 8) ? scrollSpacing : 0;
+            float buildingBoxWidth = Math.Max(boundingBox.x * 0.7f, (buildingSpacingFromSide * 2) + (buildingBoxSide * 4) + (buildingSpacing * 3) + scrollMargin);
+            float constructionBoxWidth = boundingBox.width - buildingBoxWidth;
+            /*int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2)) / (buildingBoxSide + buildingSpacing));
+            float buildingBoxHeight = boundingBox.height - (labelTextBox.height + margin * 2);
+            float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);*/
+
+
+            Rect leftBox = new Rect(boundingBox.x, boundingBox.y, constructionBoxWidth, boundingBox.height);
+            Rect rightBox = new Rect(leftBox.xMax, leftBox.y, buildingBoxWidth, boundingBox.height);
+            
+            int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
+            DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
+            DrawFacilities(rightBox);
+        }
+
+        //Original: 125 wide, 215ish tall
         private void DrawSettlementStats(Rect boundingBox)
         {
             float statBoxHeight = (boundingBox.height - (4 * margin)) / 5;
+            float statGainBoxHeight = 30;
             float statSize = Math.Min(30f, statBoxHeight);
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Text.Font = GameFont.Medium;
             for (int i = 0; i < stats.Count(); i++)
             {
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Text.Font = GameFont.Medium;
                 Rect statBox = new Rect(boundingBox.x, boundingBox.y + (statBoxHeight + margin) * i, boundingBox.width, statBoxHeight);
                 Widgets.DrawMenuSection(statBox);
                 Rect buttonBox = new Rect(statBox.x + margin, statBox.y + margin, statSize + 4, statSize + 4);
                 Rect labelBox = new Rect(buttonBox.xMax + margin, buttonBox.y, statBox.width - (buttonBox.width + margin * 2), buttonBox.height);
+                Rect statGainBox = new Rect(statBox.xMax - statGainBoxHeight - margin, statBox.y + (statBox.height - statGainBoxHeight)/2, statGainBoxHeight, statGainBoxHeight);
+                Rect statGainLabel = new Rect(statGainBox.x + smallMargin, statGainBox.y + smallMargin, statGainBoxHeight - (smallMargin * 2), statGainBoxHeight - (smallMargin * 2));
+                Rect mainToolTipBox = new Rect(statBox.x, statBox.y, statGainBox.x - statBox.x, statBox.height);
+                string tooltip = "";
                 if (stats[i] == "militaryLevel")
                 {
-                    //TODO: it's kinda silly that these are buttons. Turn them into mouseover text instead?
-                    if (Widgets.ButtonImage(buttonBox, TexLoad.iconMilitary))
-                    {
-                        Find.WindowStack.Add(new DescWindowFc("SettlementMilitaryLevelDesc".Translate(),
-                            "SettlementMilitaryLevel".Translate()));
-                    }
-
+                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconMilitary));
                     Widgets.Label(labelBox, settlement.settlementMilitaryLevel.ToString());
+                    tooltip = "SettlementMilitaryLevel".Translate() + "\n-----\n" + "SettlementMilitaryLevelDesc".Translate();
                 }
 
                 if (stats[i] == "happiness")
                 {
-                    if (Widgets.ButtonImage(buttonBox, TexLoad.iconHappiness))
-                    {
-                        Find.WindowStack.Add(new DescWindowFc("SettlementHappinessDesc".Translate(),
-                            "SettlementHappiness".Translate()));
-                    }
-
+                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconHappiness));
                     Widgets.Label(labelBox, settlement.happiness + "%");
+                    tooltip = "SettlementHappiness".Translate() + "\n-----\n" + "SettlementHappinessDesc".Translate();
+
+                    Widgets.DrawHighlight(statGainBox);
+                    double happinessGain = Math.Round(settlement.getTotalHappinessGain());
+                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(happinessGain);
+
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(statGainLabel, statGain);
+                    UIUtil.TipRegionByText(statGainBox, settlement.getHappinessDesc());
                 }
 
                 if (stats[i] == "loyalty")
                 {
-                    if (Widgets.ButtonImage(buttonBox, TexLoad.iconLoyalty))
-                    {
-                        Find.WindowStack.Add(new DescWindowFc("SettlementLoyaltyDesc".Translate(),
-                            "SettlementLoyalty".Translate()));
-                    }
-
+                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconLoyalty));
                     Widgets.Label(labelBox, settlement.loyalty + "%");
+                    tooltip = "SettlementLoyalty".Translate() + "\n-----\n" + "SettlementLoyaltyDesc".Translate();
+
+                    Widgets.DrawHighlight(statGainBox);
+                    double loyaltyGain = Math.Round(settlement.getTotalLoyaltyGain());
+                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(loyaltyGain);
+
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(statGainLabel, statGain);
+                    UIUtil.TipRegionByText(statGainBox, settlement.getLoyaltyDesc());
                 }
 
                 if (stats[i] == "unrest")
                 {
-                    if (Widgets.ButtonImage(buttonBox, TexLoad.iconUnrest))
-                    {
-                        Find.WindowStack.Add(new DescWindowFc("SettlementUnrestDesc".Translate(),
-                            "SettlementUnrest".Translate()));
-                    }
-
+                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconUnrest));
                     Widgets.Label(labelBox, settlement.unrest + "%");
+                    tooltip = "SettlementUnrest".Translate() + "\n-----\n" + "SettlementUnrestDesc".Translate();
+
+                    Widgets.DrawHighlight(statGainBox);
+                    double unrestGain = Math.Round(settlement.getTotalUnrestGain());
+                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(unrestGain, true);
+
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(statGainLabel, statGain);
+                    UIUtil.TipRegionByText(statGainBox, settlement.getUnrestDesc());
                 }
 
-                if (stats[i] != "prosperity") continue;
-                if (Widgets.ButtonImage(buttonBox, TexLoad.iconProsperity))
+                if (stats[i] == "prosperity")
                 {
-                    Find.WindowStack.Add(new DescWindowFc("SettlementProsperityDesc".Translate(),
-                        "SettlementProsperity".Translate()));
+                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconProsperity));
+                    Widgets.Label(labelBox, settlement.prosperity + "%");
+                    tooltip = "SettlementProsperity".Translate() + "\n-----\n" + "SettlementProsperityDesc".Translate();
+
+                    Widgets.DrawHighlight(statGainBox);
+                    double prosperityGain = Math.Round(settlement.getProsperityGain());
+                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(prosperityGain);
+
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(statGainLabel, statGain);
+                    UIUtil.TipRegionByText(statGainBox, settlement.getProsperityDesc());
                 }
 
-                Widgets.Label(labelBox, settlement.prosperity + "%");
+                UIUtil.TipRegionByText(mainToolTipBox, tooltip);
             }
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Font = GameFont.Medium;
         }
 
         private void DrawDescription(Rect boundingBox)
@@ -295,13 +375,6 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(textBox, settlement.description);
-        }
-
-        //TODO
-        private void DrawMiscOverview(Rect boundingBox)
-        {
-            Widgets.DrawMenuSection(boundingBox);
-            Widgets.Label(boundingBox, "insert misc overview here");
         }
 
         private void DrawMainButtons(Rect boundingBox)
@@ -454,41 +527,11 @@ namespace FactionColonies
                 }
             }
         }
-
-        /* Left side overview */
-        private void DrawLeftInfo(Rect boundingBox)
-        {
-            if (settlement.BuildingsComp == null)
-            {
-                Widgets.Label(boundingBox, "no buildings");
-                return;
-            }
-            //getUnderConstructionBuildings() uses caching, so we don't re-compute the list every time we call the function. So calling it here should be fine.
-            int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
-            Rect constructionBox;
-            if (numUnderConstruction == 0)
-            {
-                // There is no active construction
-                constructionBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
-            }
-            else if (constructionOpen == true)
-            {
-                // There is active construction, and the production box IS open
-                constructionBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 60 + (margin * 5) + (constructionListItemHeight * Math.Min(numUnderConstruction, 3)));
-            }
-            else
-            {
-                // There is active construction, but the production box is NOT open
-                constructionBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 60 + (margin * 2));
-            }
-            DrawConstructionBox(constructionBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
-
-            Rect facilitiesBox = new Rect(boundingBox.x, constructionBox.yMax + margin, boundingBox.width, boundingBox.height - (constructionBox.height + margin));
-            DrawFacilities(facilitiesBox);
-        }
         private Vector2 scrollVectorBuildings = new Vector2();
         public void DrawFacilities(Rect boundingBox)
         {
+            Widgets.DrawMenuSection(boundingBox);
+
             if (settlement.BuildingsComp == null)
             {
                 // can't draw what doesn't exist
@@ -496,16 +539,19 @@ namespace FactionColonies
             }
 
             Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 8) ? scrollSpacing : 0;
 
-            Rect labelTextBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2), 30);
-            Widgets.Label(labelTextBox, "BuildingUpgrades".Translate());
+            Rect labelHighlight = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
+            Rect labelTextBox = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin * 2), labelHighlight.height - (smallMargin * 2));
+            Widgets.DrawHighlight(labelHighlight);
+            Widgets.Label(labelTextBox, "Facilities".Translate());
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;
 
-            int elementsPerRow = 2; // (int)((boundingBox.width - (buildingSpacingFromSide * 2)) / (buildingBoxSide + buildingSpacing));
-            float buildingBoxHeight = boundingBox.height - (labelTextBox.height + margin * 2);
+            int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2)) / (buildingBoxSide + buildingSpacing));
+            float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
             float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);
 
             int row;
@@ -517,11 +563,11 @@ namespace FactionColonies
             Rect nBox;
             Rect nBuilding;
 
-            Rect buildingBox = new Rect(boundingBox.x, labelTextBox.yMax + margin, boundingBox.width, buildingBoxHeight);
+            Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
 
-            Rect viewRect = new Rect(buildingBox.x, labelTextBox.yMax + margin, boundingBox.width, totalHeight);
+            Rect viewRect = new Rect(buildingBox.x, labelHighlight.yMax + margin, boundingBox.width - scrollMargin, totalHeight);
 
-            Widgets.BeginScrollView(buildingBox, ref scrollVectorBuildings, viewRect, false);
+            Widgets.BeginScrollView(buildingBox, ref scrollVectorBuildings, viewRect);
 
 
             int i = 0;
@@ -615,83 +661,65 @@ namespace FactionColonies
                 i++;
             }
             Widgets.EndScrollView();
-            Widgets.DrawBox(boundingBox);
         }
         private Vector2 scrollVectorConstruction = new Vector2();
         private void DrawConstructionBox(Rect boundingBox, int numConstruction, List<BuildingFC> construction)
         {
-            Text.Font = GameFont.Small;
+            Widgets.DrawMenuSection(boundingBox);
+
+            Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             /* Draw the construction header */
             Rect conHeader = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
-            Rect conHeaderText = new Rect(conHeader.x, conHeader.y + margin, conHeader.width, conHeader.height - (margin*2));
+            Rect conHeaderText = new Rect(conHeader.x, conHeader.y + smallMargin, conHeader.width, conHeader.height - (smallMargin*2));
             Widgets.DrawHighlight(conHeader);
-            Widgets.Label(conHeaderText, "numUnderConstruction".Translate(numConstruction));
+            Widgets.Label(conHeaderText, "ActiveConstruction".Translate());
 
+            Text.Font = GameFont.Small;
             if (numConstruction > 0)
             {
-                Rect conButton = new Rect(boundingBox.x + margin, conHeader.yMax + margin, boundingBox.width - (margin * 2), 30);
+                /* Scroll view time, baby */
+                float listHeight = boundingBox.height - (conHeader.height + margin);
+                float totalHeight = (constructionListItemHeight * numConstruction) + (margin * (numConstruction - 1));
+                float scrollBarMargin = (totalHeight < listHeight) ? 0 : scrollSpacing;
+                Rect listBox = new Rect(boundingBox.x, conHeader.yMax + margin, boundingBox.width, listHeight);
+                Rect viewRect = new Rect(listBox.x, listBox.y, listBox.width - scrollBarMargin, totalHeight);
 
-                if (constructionOpen)
+                Widgets.BeginScrollView(listBox, ref scrollVectorConstruction, viewRect);
+
+                float initialY = viewRect.y;
+                Text.Anchor = TextAnchor.MiddleLeft;
+
+                if (settlement.isUpgrading)
                 {
-                    if (Widgets.ButtonText(conButton, "closeConstructionBox".Translate()))
-                    {
-                        constructionOpen = false;
-                    }
+                    float progress = (float)(Find.TickManager.TicksGame - settlement.startUpgradeTick) / (float)(settlement.finishUpgradeTick - settlement.startUpgradeTick);
+                    Rect upgradeRect = new Rect(viewRect.x + margin,
+                                                viewRect.y,
+                                                viewRect.width - (margin * 2),
+                                                constructionListItemHeight);
+                    DrawConstructionInfoBox(upgradeRect, null, "settlementupgrading".Translate(),
+                                            "completiontimer".Translate((settlement.finishUpgradeTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
+                                            progress);
 
-                    /* Scroll view time, baby */
-                    float listHeight = boundingBox.height - (conButton.height + conHeader.height + (margin * 3));
-                    float totalHeight = (constructionListItemHeight * numConstruction) + (margin * (numConstruction - 1));
-                    Rect listBox = new Rect(boundingBox.x, conButton.yMax + margin, boundingBox.width, listHeight);
-                    Rect viewRect = new Rect(listBox.x, listBox.y, listBox.width, totalHeight);
-
-                    Widgets.BeginScrollView(listBox, ref scrollVectorConstruction, viewRect, false);
-
-                    float initialY = viewRect.y;
-                    Text.Anchor = TextAnchor.MiddleLeft;
-
-                    if (settlement.isUpgrading)
-                    {
-                        float progress = (float)(Find.TickManager.TicksGame - settlement.startUpgradeTick) / (float)(settlement.finishUpgradeTick - settlement.startUpgradeTick);
-                        Rect upgradeRect = new Rect(viewRect.x + margin,
-                                                    viewRect.y,
-                                                    viewRect.width - (margin * 2),
-                                                    constructionListItemHeight);
-                        DrawConstructionInfoBox(upgradeRect, null, "settlementupgrading".Translate(),
-                                                "completiontimer".Translate((settlement.finishUpgradeTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
-                                                progress);
-
-                        initialY = upgradeRect.yMax + margin;
-                    }
-
-                    for (int i = 0; i < construction.Count; i++)
-                    {
-                        float progress = (float)(Find.TickManager.TicksGame - construction[i].startedTick) / (float)(construction[i].completionTick - construction[i].startedTick);
-                        Rect upgradeRect = new Rect(viewRect.x + margin,
-                                                    initialY + (i * (constructionListItemHeight + margin)),
-                                                    viewRect.width - (margin * 2),
-                                                    constructionListItemHeight);
-                        DrawConstructionInfoBox(upgradeRect, construction[i].underConstructionDef.Icon, construction[i].underConstructionDef.LabelCap,
-                                                "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
-                                                progress);
-
-                        UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));
-                    }
-
-
-                    Widgets.EndScrollView();
-                }
-                else
-                {
-                    if (Widgets.ButtonText(conButton, "openConstructionBox".Translate()))
-                    {
-                        constructionOpen = true;
-                    }
+                    initialY = upgradeRect.yMax + margin;
                 }
 
+                for (int i = 0; i < construction.Count; i++)
+                {
+                    float progress = (float)(Find.TickManager.TicksGame - construction[i].startedTick) / (float)(construction[i].completionTick - construction[i].startedTick);
+                    Rect upgradeRect = new Rect(viewRect.x + margin,
+                                                initialY + (i * (constructionListItemHeight + margin)),
+                                                viewRect.width - (margin * 2),
+                                                constructionListItemHeight);
+                    DrawConstructionInfoBox(upgradeRect, construction[i].underConstructionDef.Icon, construction[i].underConstructionDef.LabelCap,
+                                            "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
+                                            progress);
+
+                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));
+                }
+
+                Widgets.EndScrollView();
             }
-
-            Widgets.DrawBox(boundingBox);
         }
         private void DrawConstructionInfoBox(Rect boundingBox, Texture2D icon, string label, string time, float progress)
         {
@@ -735,11 +763,9 @@ namespace FactionColonies
 
         private void DrawRightInfo(Rect boundingBox)
         {
-            Rect bottomButton = new Rect(boundingBox.x, boundingBox.yMax - 30f, boundingBox.width, 30f);
-            Rect prodBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height - (bottomButton.height + margin));
+            Widgets.DrawBox(boundingBox);
+            Rect prodBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin*2), boundingBox.height - (margin*2));
             DrawProduction(prodBox);
-            /* Bottom button that opens the detailed breakdown. Will need a new window for that */
-            Widgets.ButtonText(bottomButton, "Tithing".Translate());
         }
         public void DrawProduction(Rect boundingBox)
         {
@@ -802,7 +828,9 @@ namespace FactionColonies
 
             Text.Anchor = TextAnchor.UpperCenter;
             Widgets.Label(incomeNum, settlement.totalIncome.ToString());
+            UIUtil.TipRegionByText(incomeNum, settlement.incomeExp);
             Widgets.Label(costsNum, settlement.totalUpkeep.ToString());
+            UIUtil.TipRegionByText(costsNum, settlement.upkeepExp);
             Widgets.Label(taxBonusNum, (settlement.getSettlementTaxBonus() * 100d).ToString() + "%");
         }
 
@@ -847,7 +875,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Tiny;
             /* Header */
-            float colWidth = (boundingBox.width - (margin*5)) / 7f;
+            float colWidth = (boundingBox.width - (margin*6)) / 7f;
             float headerHeight = 44;
 
             Rect workersBox = new Rect(boundingBox.x + colWidth + margin, boundingBox.y, colWidth, headerHeight);
@@ -944,11 +972,11 @@ namespace FactionColonies
 
                 //Total Production
                 Rect totalProd = new Rect(finalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(totalProd, (TextUtil.FloorStat(resource.totalProduction)));
+                Widgets.Label(totalProd, (TextUtil.FloorStat(resource.rawTotalProduction)));
 
                 //Est Income
                 Rect incomeBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(incomeBox, (TextUtil.FloorStat(resource.totalProduction * FCSettings.silverPerResource)));
+                Widgets.Label(incomeBox, (TextUtil.FloorStat(resource.rawTotalProductionMarketValue)));
             }
 
             Widgets.EndScrollView();
@@ -1025,7 +1053,6 @@ namespace FactionColonies
         {
             if (isClicked)
             {
-                resource.isTitheBool = resource.isTithe;
                 settlement.updateProfitAndProduction();
                 windowUpdateFc();
             }
