@@ -265,7 +265,29 @@ The prosperity of a town directly correlates with the production of resources (e
 	<Tithing>Tithing</Tithing>
 	<Mult>Mult</Mult>
 	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
-	<TotalProd>Total</TotalProd>
+	<TotalProd>Total Production</TotalProd>
+	
+	<Raw>Raw</Raw>
+	<RawIncomeDesc>The total income a resource produces, before accounting for tithes.</RawIncomeDesc>
+	<Net>Net</Net>
+	<NetIncomeDesc>The total income a resources produces, after accounting for tithes.</NetIncomeDesc>
+	
+	<RandomTithesEnabled>Random Tithing</RandomTithesEnabled>
+	<ItemSelection>Item Selection</ItemSelection>
+	<RandomTitheSelectionHeader>Random Tithe Item Selection</RandomTitheSelectionHeader>
+	<RandomTitheBudget>Random Tithe Budget</RandomTitheBudget>
+	<TitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</TitheOverBudget>
+	
+	<TitheModifier>Tithe Modifier</TitheModifier>
+	<TotalTitheBudget>Total Tithe Budget</TotalTitheBudget>
+	<AvailableTitheBudget>Available Budget</AvailableTitheBudget>
+	<UsedTitheBudget>Used Budget</UsedTitheBudget>
+	<AddItem>Add Item</AddItem>
+	<NumRatio>{0}/{1}</NumRatio>
+	
+	<PerWorker>Per-Worker</PerWorker>
+	
+	<Overview>Overview</Overview>
 	
 	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
 	<ActiveConstruction>Active Construction</ActiveConstruction>
@@ -495,8 +517,8 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCTitheDisableAll>Disable All</FCTitheDisableAll>
 	
 	<FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption> <!-- Example: "Steel - Cost - 10 | Allowed: true" -->
-	<FCIsAllowed>true</FCIsAllowed>
-	<FCIsNotAllowed>false</FCIsNotAllowed>
+	<FCIsAllowed>Enabled</FCIsAllowed>
+	<FCIsNotAllowed>Disabled</FCIsNotAllowed>
 
 	<!-- Settlement Customization -->
 	<FCCustomizeSettlement>Customize Settlement</FCCustomizeSettlement>

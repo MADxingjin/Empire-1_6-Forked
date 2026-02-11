@@ -10,6 +10,7 @@ using System.Security.Permissions;
 using System.Security.Policy;
 using UnityEngine;
 using Verse;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
@@ -49,12 +50,39 @@ namespace FactionColonies
         public Dictionary<ThingQualityTuple, int> tithes = new Dictionary<ThingQualityTuple, int>();
         private bool dirtyTitheCache = true;
         private double cachedTitheTotalValue = 0;
-        public ThingFilter filter = new ThingFilter();
-        public int randomTitheBudget = 0;
         public double taxStock = 0;
         public double taxMinimumToTithe = 99999;
         public double taxPercentage = 0;
         public WorldSettlementFC settlement;
+
+        public bool hasRandomTithe = false;
+        public ThingFilter randomTitheFilter = new ThingFilter();
+        private bool dirtyRandomTitheCache = true;
+        private List<ThingDef> thingsForRandomTithes = new List<ThingDef>();
+        private bool dirtyFilteredRandomTitheCache = true;
+        private List<ThingDef> filteredThingsForRandomTithes = new List<ThingDef>();
+        public string storedRandomTitheBudgetBuffer = "";
+        public int storedRandomTitheBudget = 0;
+        private int oldStoredRandomTitheBudget = 0;
+        public int randomTitheBudget
+        {
+            get
+            {
+                if (hasRandomTithe)
+                {
+                    return storedRandomTitheBudget;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            set
+            {
+                storedRandomTitheBudget = value;
+                settlement.updateProfitAndProduction();
+            }
+        }
 
         public double production => productionBase * productionMult;
         public double productionBase
@@ -91,9 +119,10 @@ namespace FactionColonies
                     cachedTitheTotalValue = calcTotalTitheValue();
                     dirtyTitheCache = false;
                 }
-                return cachedTitheTotalValue;
+                return cachedTitheTotalValue + randomTitheBudget;
             }
         }
+        public double titheTotalValueNoRandom => titheTotalValue - randomTitheBudget;
         /* NOTE: need to be very careful about which of rawTotalProduction, totalProduction, and actualIncome to use.
          *  * rawTotalProduction is the TOTAL production value of the resource, before accounting for tithes.
          *  * totalProduction is the amount of production leftover after accounting for tithes.
@@ -101,13 +130,11 @@ namespace FactionColonies
          *    greater than the leftover production of the resource.
          */
         public double rawTotalProduction => production * assignedWorkers;
-        public double totalProduction => rawTotalProduction - titheTotalValue;
-        /* We use max to set the floor at 0, as tithe modifiers mean that the titheTotalValue can actually be greater than totalProduction. */
-        public double actualIncome => Math.Max(totalProduction - titheTotalValue, 0);
         public double rawTotalProductionMarketValue => rawTotalProduction * FCSettings.silverPerResource;
-        public double totalProductionMarketValue => totalProduction * FCSettings.silverPerResource;
-        public double titheMarketValue => titheTotalValue * FCSettings.silverPerResource;
-        public double actualIncomeMarketValue => actualIncome * FCSettings.silverPerResource;
+        public double totalProductionMarketValue => rawTotalProductionMarketValue - titheTotalValue;
+        public double actualIncome => totalProductionMarketValue - titheTotalValue;
+
+        public bool canTithe => !def.isPoolResource;
 
         public Texture2D getIcon
         {
@@ -146,7 +173,8 @@ namespace FactionColonies
                 name = resourceDef.label;
                 label = resourceDef.LabelCap;
             }
-            filter = new ThingFilter();
+            randomTitheFilter = new ThingFilter();
+            randomTitheBudget = 0;
             productionAdditives.Clear();
             productionMultipliers.Clear();
             if (settlement != null)
@@ -171,8 +199,9 @@ namespace FactionColonies
             //tithe and income data
             Scribe_Values.Look(ref savedAssignedWorkers, "assignedWorkers");
             Scribe_Collections.Look(ref tithes, "tithes", LookMode.Deep, LookMode.Value);
-            Scribe_Deep.Look(ref filter, "filter");
-            Scribe_Values.Look(ref randomTitheBudget, "randomTitheBudget");
+            Scribe_Deep.Look(ref randomTitheFilter, "filter");
+            Scribe_Values.Look(ref storedRandomTitheBudget, "randomTitheBudget");
+            Scribe_Values.Look(ref hasRandomTithe, "hasRandomTithe");
 
             //Tax Stock
             Scribe_Values.Look(ref taxStock, "taxStock");
@@ -209,23 +238,43 @@ namespace FactionColonies
 
             return productionMultiplier;
         }
-        public double getTitheIncome()
+        public double getTitheModifierAdditive()
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
-            double income = rawTotalProduction;
-
-            double perWorkerAdditive = faction.getFactionTitheBonusAdditive(def) + settlement.getTitheModifier(def);
-            double perWorkerMult = faction.getFactionTitheBonusMult(def);
-            income += (perWorkerAdditive * perWorkerMult) * assignedWorkers;
-
-            return income;
+            return faction.getFactionTitheBonusAdditive(def) + settlement.getTitheModifier(def) + FCSettings.productionTitheMod;
         }
-
+        public double getTitheModifierMult()
+        {
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            return faction.getFactionTitheBonusMult(def);
+        }
+        public double getTitheModifier()
+        {
+            return getTitheModifierAdditive() * getTitheModifierMult();
+        }
+        public double getTotalTitheModifier()
+        {
+            return getTitheModifier() * assignedWorkers;
+        }
+        public double getTitheIncome()
+        {
+            return rawTotalProductionMarketValue + getTotalTitheModifier();
+        }
+        public void refreshOnRandomTitheBudgetChange()
+        {
+            if (storedRandomTitheBudget != oldStoredRandomTitheBudget)
+            {
+                oldStoredRandomTitheBudget = storedRandomTitheBudget;
+                settlement.updateProfitAndProduction();
+            }
+        }
         public void setDirtyCache()
         {
             setDirtyCacheProdBase();
             setDirtyCacheProdMult();
             dirtyTitheCache = true;
+            dirtyRandomTitheCache = true;
+            dirtyFilteredRandomTitheCache = true;
             Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
         }
         public void setDirtyCacheProdBase()
@@ -258,7 +307,7 @@ namespace FactionColonies
 
         public double returnLowestCost()
         {
-            double minimum = filter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, 
+            double minimum = randomTitheFilter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, 
                 (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
             //LogUtil.Message(minimum.ToString());
             taxMinimumToTithe = minimum + FCSettings.productionTitheMod + 
@@ -275,7 +324,7 @@ namespace FactionColonies
             };
             if (def.isPoolResource)
             {
-                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(totalProduction, settlement);
+                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(rawTotalProduction, settlement);
             }
             return pool;
         }
@@ -461,7 +510,7 @@ namespace FactionColonies
             if (def == null)
                 return;
             
-            def.FilterResource(filter, faction.techLevel);
+            def.FilterResource(randomTitheFilter, faction.techLevel);
         }
         public List<ThingDef> generateThingDefList()
         {
@@ -470,29 +519,98 @@ namespace FactionColonies
                 LogUtil.Error($"Attempted to generate thing list for pool resource {def.defName} in settlement {settlement.Name}");
                 return null;
             }
-
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
-            List<ThingDef> things = new List<ThingDef>();
-            ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
-            ThingSetMakerParams param = new ThingSetMakerParams();
-            param.filter = new ThingFilter();
-            param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
-            param.countRange = new IntRange(1, 1);
-
-            TechLevel tmplevel = TechLevel.Undefined;
-            ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
-            if (tmp != null)
+            if (dirtyRandomTitheCache)
             {
-                thingSetMaker = tmp;
-                param.techLevel = tmplevel;
+                if (randomTitheFilter == null)
+                {
+                    randomTitheFilter = new ThingFilter();
+                    resetThingFilter();
+                }
+
+                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
+                ThingSetMakerParams param = new ThingSetMakerParams();
+                param.filter = new ThingFilter();
+                param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+                param.countRange = new IntRange(1, 1);
+
+                TechLevel tmplevel = TechLevel.Undefined;
+                ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
+                if (tmp != null)
+                {
+                    thingSetMaker = tmp;
+                    param.techLevel = tmplevel;
+                }
+
+                def.FilterResource(param.filter, faction.techLevel);
+
+                /* AllGenerateableThingsDebug(param).ToList() was taken from PaymentUtil.debugGenerateTithe(), which was used to generate the selection float menu
+                 * in the settlement screen. Is this really the right function to use? TODO: look into this. */
+                thingsForRandomTithes = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
+                dirtyRandomTitheCache = false;
+            }
+            return thingsForRandomTithes;
+        }
+        public List<ThingDef> getRandomTitheFilterThings()
+        {
+            if (dirtyFilteredRandomTitheCache)
+            {
+                if (randomTitheFilter == null)
+                {
+                    randomTitheFilter = new ThingFilter();
+                    resetThingFilter();
+                }
+
+                filteredThingsForRandomTithes = new List<ThingDef>();
+                List<ThingDef> possibleThings = generateThingDefList();
+
+                foreach(ThingDef thingDef in possibleThings)
+                {
+                    if (randomTitheFilter.Allows(thingDef))
+                    {
+                        filteredThingsForRandomTithes.Add(thingDef);
+                    }
+                }
+
+                dirtyFilteredRandomTitheCache = false;
+            }
+            return filteredThingsForRandomTithes;
+        }
+        public void clearRandomTitheFilter()
+        {
+            if (randomTitheFilter == null)
+            {
+                randomTitheFilter = new ThingFilter();
+            }
+            randomTitheFilter.SetDisallowAll();
+            dirtyRandomTitheCache = true;
+            dirtyFilteredRandomTitheCache = true;
+        }
+        public void setAllRandomTitheFilter()
+        {
+            if (randomTitheFilter == null)
+            {
+                randomTitheFilter = new ThingFilter();
+            }
+            resetThingFilter();
+            dirtyRandomTitheCache = true;
+            dirtyFilteredRandomTitheCache = true;
+        }
+        public void setRandomTitheFilterAllow(ThingDef thing, bool allow)
+        {
+            if (randomTitheFilter == null)
+            {
+                randomTitheFilter = new ThingFilter();
+                resetThingFilter();
             }
 
-            def.FilterResource(param.filter, faction.techLevel);
-
-            /* AllGenerateableThingsDebug(param).ToList() was taken from PaymentUtil.debugGenerateTithe(), which was used to generate the selection float menu
-             * in the settlement screen. Is this really the right function to use? TODO: look into this. */
-            things = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
-            return things;
+            randomTitheFilter.SetAllow(thing, allow);
+            dirtyFilteredRandomTitheCache = true;
+        }
+        // could cache this with a dictionary, but probably best to see if there's an actual performance problem first
+        public bool getRandomTitheFilterAllow(ThingDef thing)
+        {
+            return randomTitheFilter.Allows(thing);
         }
         /* - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - *
          *   Tithe functions                                                                                                                                             *
@@ -654,11 +772,11 @@ namespace FactionColonies
         }
         public bool canAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            return (titheThingTotalValue(thing, quanity) <= getTitheIncome() - titheMarketValue);
+            return (titheThingTotalValue(thing, quanity) <= getTitheIncome() - titheTotalValue);
         }
         public int maxThingCanAfford(ThingQualityTuple thing)
         {
-            return maxThingCanAfford(thing, getTitheIncome() - titheMarketValue);
+            return maxThingCanAfford(thing, getTitheIncome() - titheTotalValue);
         }
         public int maxThingCanAfford(ThingQualityTuple thing, double budget)
         {
@@ -735,6 +853,18 @@ namespace FactionColonies
                     decrementInTitheList(maxValueThing, quantity);
                 }
             }
+            if (totalValue > titheIncome && tithes.Count == 0)
+            {
+                /* In this case, the total tithe value must consist entirely of the random tithe budget. So just cap the random tithe budget at
+                 * titheIncome */
+                randomTitheBudget = (int)titheIncome;
+            }
+
+            /* One final sanity check. Probably not necessary? If this impacts performance too much, then nuke it. Probably fine though */
+            if ((totalValue = calcTotalTitheValue()) > titheIncome)
+            {
+                LogUtil.Error($"Reached end of pruneTitheList() for resource {def.LabelCap}, but total tithe value {totalValue} is still greater than tithe income {titheIncome}!");
+            }
             dirtyTitheCache = true;
         }
         public List<Thing> generateTithe(double valueBase, double valueDiff, int multiplier, double traitValueMod)
@@ -743,7 +873,7 @@ namespace FactionColonies
             ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
             ThingSetMakerParams param = new ThingSetMakerParams();
             param.totalMarketValueRange = new FloatRange((float)(valueBase - (valueDiff + traitValueMod)), (float)(valueBase + (valueDiff + traitValueMod) * multiplier));
-            param.filter = filter;
+            param.filter = randomTitheFilter;
             param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
 
             if (def.isPoolResource)

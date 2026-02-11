@@ -1,5 +1,6 @@
 ﻿using FactionColonies.util;
 using RimWorld;
+using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +44,9 @@ namespace FactionColonies
 
         private const int scrollSpacing = 16;
 
-        private const int buildingPanelWidth = buildingSpacingFromSide * 2 + buildingBoxSide * 2 + buildingSpacing;// + scrollSpacing;
-
         // UI State
-        private bool constructionOpen = true;
         private int overviewTab = 0;
+        private int titheTab = 0;
 
         public void windowUpdateFc()
         {
@@ -85,6 +84,12 @@ namespace FactionColonies
             UiUpdate();
         }
 
+        private List<string> overviewTabs = new List<string>
+        {
+            "Overview".Translate(),
+            "Tithing".Translate()
+        };
+
         private readonly List<string> stats = new List<string>(5) 
         {
             "FCMilitaryLevel".Translate(),
@@ -117,6 +122,9 @@ namespace FactionColonies
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;
+
+            //TODO: add entries to overviewTabs based on settlement comps
+            //TODO: need to actually make an interface for WorldObjectComps to implement overview functionality...
         }
 
 
@@ -162,21 +170,21 @@ namespace FactionColonies
         {
             //Rect headerBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30 + (margin*2) + 60);
 
-            float nTabs = 2;
+            float nTabs = overviewTabs.Count;
             float tabY = boundingBox.y;
             float tabHeight = 20f;
             float tabWidth = boundingBox.width / nTabs;
             for (int i = 0; i < nTabs; i++)
             {
                 Rect tabRect = new Rect(boundingBox.x + (tabWidth * i), tabY, tabWidth, tabHeight);
-                TaggedString label = $"text {i}";
-                if (overviewTab != i)
-                {
-                    label.Colorize(Color.gray);
-                }
+                TaggedString label = overviewTabs[i];
                 if (Widgets.ButtonText(tabRect, label))
                 {
                     overviewTab = i;
+                }
+                if (overviewTab == i)
+                {
+                    Widgets.DrawBox(tabRect);
                 }
             }
             //tabs for different sections: Overview, Tithing, sub-mod added windows
@@ -186,6 +194,10 @@ namespace FactionColonies
             if (overviewTab == 0)
             {
                 DrawBasicOverview(infobox);
+            }
+            else if (overviewTab == 1)
+            {
+                DrawTitheOverview(infobox);
             }
         }
         private void DrawCenterHeader(Rect boundingBox)
@@ -268,6 +280,243 @@ namespace FactionColonies
             int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
             DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
             DrawFacilities(rightBox);
+        }
+        private void DrawTitheOverview(Rect boundingBox)
+        {
+            List<ResourceFC> resources = settlement.getTitheableResources();
+            int numResources = resources.Count;
+            /* Draw resource tabs on the left */
+            float tabWidth = 25f;
+            float tabHeight = boundingBox.height / numResources;
+            for (int i = 0; i < numResources; i++)
+            {
+                Rect tabBox = new Rect(boundingBox.x, boundingBox.y + (tabHeight * i), tabWidth, tabHeight);
+                float imgSize = Math.Min(tabWidth, tabHeight);
+                Rect iconBox = new Rect(tabBox.x + (tabWidth - imgSize) / 2f, tabBox.y + (tabHeight - imgSize) / 2f, imgSize, imgSize);
+                if (Widgets.ButtonText(tabBox, ""))
+                {
+                    titheTab = i;
+                }
+                Text.Font = GameFont.Small;
+                Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
+                UIUtil.TipRegionByText(tabBox, resources[i].def.LabelCap);
+                if (titheTab == i)
+                {
+                    Widgets.DrawBox(tabBox);
+                }
+            }
+
+            ResourceFC titheRes = resources[titheTab];
+
+            /* Calculate heights */
+            float headerHeight = 30 + margin + (23f * 3);//60f;
+            float footerHeight = 23f;
+            float bodyHeight = boundingBox.height - headerHeight - footerHeight - (margin * 2);
+            float randomboxHeight = 0f;
+            if (titheRes.hasRandomTithe)
+            {
+                randomboxHeight = bodyHeight / 2f;
+            }
+            else
+            {
+                randomboxHeight = 23f;
+            }
+            float scrollboxHeight = bodyHeight - randomboxHeight;
+
+            float bodyX = boundingBox.x + tabWidth + margin;
+            float bodyWidth = boundingBox.width - tabWidth - margin;
+
+            /* Header box */
+            Rect headerBox = new Rect(bodyX, boundingBox.y, bodyWidth, headerHeight);
+            DrawTitheHeaderBox(headerBox, titheRes);
+
+            /* Scrollbox */
+            Rect scrollBox = new Rect(bodyX, headerBox.yMax + margin, bodyWidth, scrollboxHeight);
+            DrawTitheScrollBox(scrollBox, titheRes);
+
+            /* Random tithe box */
+            Rect titheBox = new Rect(bodyX, scrollBox.yMax, bodyWidth, randomboxHeight);
+            DrawTitheRandomBox(titheBox, titheRes);
+
+            /* Footer box */
+            Rect footerBox = new Rect(bodyX, titheBox.yMax + margin, bodyWidth, footerHeight);
+            DrawTitheFooterBox(footerBox, titheRes);
+        }
+        private void DrawTitheHeaderBox(Rect boundingBox, ResourceFC res)
+        {
+            Rect iconBox = new Rect(boundingBox.x, boundingBox.y, 30f, 30f);
+            Rect labelHighlight = new Rect(iconBox.xMax + margin, boundingBox.y, boundingBox.width - margin - iconBox.width, 30f);
+            Rect labelText = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin*2), labelHighlight.height - (smallMargin*2));
+
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.DrawHighlight(iconBox);
+            Widgets.Label(iconBox, new GUIContent(res.def.Icon));
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.DrawHighlight(labelHighlight);
+            Widgets.Label(labelText, res.def.LabelCap);
+
+            /* Info boxes */
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float rowHeight = 23f;
+            float labelHeight = rowHeight - (smallMargin * 2);
+
+            Rect titheModBox = new Rect(boundingBox.x, iconBox.yMax + margin, (boundingBox.width - margin)/2f, rowHeight * 3f);
+            Rect prodBox = new Rect(titheModBox.xMax + margin, iconBox.yMax + margin, (boundingBox.width - margin)/2f, rowHeight);
+            Rect budgetBox = new Rect(titheModBox.xMax + margin, prodBox.yMax, (boundingBox.width - margin) / 2f, rowHeight);
+
+            /* Tithe modifier info */
+            Rect titheRow1 = new Rect(titheModBox.x, titheModBox.y, titheModBox.width, rowHeight);
+            Rect trow1label = new Rect(titheRow1.x + smallMargin, titheRow1.y + smallMargin, (titheRow1.width - (smallMargin * 2)), labelHeight);
+            Rect titheRow2 = new Rect(titheModBox.x + (margin * 2), titheRow1.yMax, titheModBox.width - (margin * 2), rowHeight);
+            Rect trow2label = new Rect(titheRow2.x + smallMargin, titheRow2.y + smallMargin, (titheRow2.width - (smallMargin * 2))*0.75f, labelHeight);
+            Rect trow2num = new Rect(trow2label.xMax, trow2label.y, (titheRow2.width - (smallMargin * 2)) * 0.25f, labelHeight);
+            Rect titheRow3 = new Rect(titheRow2.x, titheRow2.yMax, titheRow2.width, rowHeight);
+            Rect trow3label = new Rect(titheRow3.x + smallMargin, titheRow3.y + smallMargin, (titheRow3.width - (smallMargin * 2))*0.75f, labelHeight);
+            Rect trow3num = new Rect(trow3label.xMax, trow3label.y, (titheRow3.width - (smallMargin * 2)) * 0.25f, labelHeight);
+            Widgets.DrawHighlight(titheModBox);
+            Widgets.DrawHighlight(titheRow1);
+            Widgets.Label(trow1label, "TitheModifier".Translate());
+            Widgets.Label(trow2label, "PerWorker".Translate());
+            Widgets.DrawHighlight(titheRow3);
+            Widgets.Label(trow3label, "Total".Translate());
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(trow2num, res.getTitheModifier().ToString());
+            Widgets.Label(trow3num, res.getTotalTitheModifier().ToString());
+
+            /* Production */
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect prodLabel = new Rect(prodBox.x + smallMargin, prodBox.y + smallMargin, (prodBox.width - (margin * 2)) * 0.75f, labelHeight);
+            Rect prodnum = new Rect(prodLabel.xMax, prodLabel.y, (prodBox.width - (margin * 2)) * 0.25f, labelHeight);
+            Widgets.DrawHighlight(prodBox);
+            Widgets.Label(prodLabel, "TotalProd".Translate());
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(prodnum, res.rawTotalProductionMarketValue.ToString());
+
+            /* Tithe Budget */
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect budgetLabel = new Rect(budgetBox.x + smallMargin, budgetBox.y + smallMargin, (budgetBox.width - (margin * 2)) * 0.75f, labelHeight);
+            Rect budgetnum = new Rect(budgetLabel.xMax, budgetLabel.y, (budgetBox.width - (margin * 2)) * 0.25f, labelHeight);
+            Widgets.DrawMenuSection(budgetBox);
+            Widgets.Label(budgetLabel, "TotalTitheBudget".Translate());
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(budgetnum, res.getTitheIncome().ToString());
+        }
+        private Vector2 titheScrollBar = new Vector2();
+        private void DrawTitheScrollBox(Rect boundingBox, ResourceFC res)
+        {
+            Widgets.DrawBox(boundingBox);
+            Widgets.Label(boundingBox, "TODO");
+            //TODO: do
+        }
+        private Vector2 randomTitheScrollBar = new Vector2();
+        private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
+        {
+            Widgets.DrawBox(boundingBox);
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float rowHeight = 23f;
+            float headerHeight = Math.Min(rowHeight, boundingBox.height);
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, headerHeight);
+            Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
+            Widgets.DrawHighlight(header);
+            Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe);
+            if (res.hasRandomTithe)
+            {
+                Rect budgetBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, 23f);
+                Rect budgetTextBox = new Rect(budgetBox.x + margin, budgetBox.y, budgetBox.width - (margin * 2), budgetBox.height);
+                Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.getTitheIncome() - res.titheTotalValueNoRandom));
+                res.refreshOnRandomTitheBudgetChange();
+                Rect selectBox = new Rect(budgetBox.xMax, budgetBox.y, boundingBox.width * 0.4f - margin, budgetBox.height);
+                if (Widgets.ButtonText(selectBox, "ItemSelection".Translate()))
+                {
+                    Find.WindowStack.Add(new SettlementWindowFC_RandomTithe(settlement, res));
+                }
+
+                List<ThingDef> selectedThings = res.getRandomTitheFilterThings();
+
+                /* Doing weird box-in-a-box to try and fix some UI drawing issues */
+                Rect drawBox = new Rect(boundingBox.x + margin, budgetBox.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - budgetBox.yMax - margin);
+                Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
+                float listHeight = selectedThings.Count * rowHeight;
+                float width;
+                if (listHeight > selectedListBox.height)
+                {
+                    width = selectedListBox.width - scrollSpacing;
+                }
+                else
+                {
+                    width = selectedListBox.width;
+                }
+                Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
+
+                Widgets.DrawMenuSection(selectedListBox);
+                Widgets.BeginScrollView(selectedListBox, ref randomTitheScrollBar, innerScrollBox);
+
+                for (int i = 0; i < selectedThings.Count; i++)
+                {
+                    ThingDef iThing = selectedThings[i];
+                    Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
+                    Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
+                    Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
+                    Rect valueLabel = new Rect(xBox.x - margin - 60f, xBox.y, 60f, rowHeight);
+                    Rect label = new Rect(icon.xMax + margin, row.y, row.width - icon.width - xBox.width - valueLabel.width - (margin * 5), rowHeight);
+
+                    if (i % 2 == 0)
+                    {
+                        Widgets.DrawHighlight(row);
+                    }
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(icon, new GUIContent(iThing.uiIcon));
+                    if (Widgets.ButtonText(xBox, "X"))
+                    {
+                        res.setRandomTitheFilterAllow(iThing, false);
+                    }
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(label, iThing.LabelCap);
+                    Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                }
+
+                Widgets.EndScrollView();
+            }
+        }
+        private void DrawTitheFooterBox(Rect boundingBox, ResourceFC res)
+        {
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Rect addItemButton = new Rect(boundingBox.x, boundingBox.y, boundingBox.width * 0.2f, boundingBox.height);
+            if(Widgets.ButtonText(addItemButton, "AddItem".Translate()))
+            {
+                //TODO: open window to select items to add to tithe list
+            }
+
+            /* Available Budget */
+            float budgetWidth = (boundingBox.width * 0.5f);
+            Rect availBudgetBox = new Rect(boundingBox.xMax - budgetWidth, boundingBox.y, budgetWidth, boundingBox.height);
+            Rect availLabel = new Rect(availBudgetBox.x + smallMargin, availBudgetBox.y + smallMargin, (availBudgetBox.width - smallMargin * 2) / 2f, availBudgetBox.height - smallMargin * 2);
+            Rect availNum = new Rect(availLabel.xMax, availLabel.y, availLabel.width, availLabel.height);
+            double totalTithe = res.getTitheIncome();
+            double usedTithe = res.titheTotalValue;
+            TaggedString usedTitheStr = usedTithe.ToString();
+            if (usedTithe > totalTithe)
+            {
+                usedTitheStr = usedTitheStr.Colorize(Color.red);
+                UIUtil.TipRegionByText(availNum, "TitheOverBudget".Translate());
+            }
+            else if (res.actualIncome < 0)
+            {
+                usedTitheStr = usedTitheStr.Colorize(Color.yellow);
+            }
+            else
+            {
+                usedTitheStr = usedTitheStr.Colorize(Color.green);
+            }
+            Widgets.DrawHighlight(availBudgetBox);
+            Widgets.Label(availLabel, "UsedTitheBudget".Translate() + ":");
+            Widgets.Label(availNum, "NumRatio".Translate(usedTitheStr, totalTithe));
         }
 
         //Original: 125 wide, 215ish tall
@@ -828,10 +1077,11 @@ namespace FactionColonies
 
             Text.Anchor = TextAnchor.UpperCenter;
             Widgets.Label(incomeNum, settlement.totalIncome.ToString());
-            UIUtil.TipRegionByText(incomeNum, settlement.incomeExp);
             Widgets.Label(costsNum, settlement.totalUpkeep.ToString());
-            UIUtil.TipRegionByText(costsNum, settlement.upkeepExp);
             Widgets.Label(taxBonusNum, (settlement.getSettlementTaxBonus() * 100d).ToString() + "%");
+
+            UIUtil.TipRegionByText(incomeBox, settlement.incomeExp);
+            UIUtil.TipRegionByText(costsBox, settlement.upkeepExp);
         }
 
         private void DrawWorkerBreakdown(Rect boundingBox)
@@ -875,7 +1125,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Tiny;
             /* Header */
-            float colWidth = (boundingBox.width - (margin*6)) / 7f;
+            float colWidth = (boundingBox.width - (margin*7)) / 8f;
             float headerHeight = 44;
 
             Rect workersBox = new Rect(boundingBox.x + colWidth + margin, boundingBox.y, colWidth, headerHeight);
@@ -884,9 +1134,12 @@ namespace FactionColonies
             Rect prodMultBox = new Rect(prodBaseBox.xMax + margin, prodBaseBox.y, colWidth, prodBaseBox.height);
             Rect prodFinalBox = new Rect(prodMultBox.xMax + margin, prodMultBox.y, colWidth, prodMultBox.height);
             Rect prodTotalBox = new Rect(prodHeaderBox.xMax + margin, boundingBox.y, colWidth, headerHeight);
-            Rect incomeBox = new Rect(prodTotalBox.xMax + margin, boundingBox.y, colWidth, headerHeight);
+
+            Rect incomeBox = new Rect(prodTotalBox.xMax + margin, boundingBox.y, colWidth*2 + margin, headerHeight/2f);
+            Rect incomeRawBox = new Rect(incomeBox.x, incomeBox.yMax, colWidth, headerHeight / 2f);
+            Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, incomeRawBox.y, colWidth, headerHeight/2f);
             // make a new rect for the income label to account for some text-alignment issues
-            Rect incomeLabel = new Rect(incomeBox.x - 2, incomeBox.y, incomeBox.width, incomeBox.height);
+            //Rect incomeLabel = new Rect(incomeBox.x - 2, incomeBox.y, incomeBox.width, incomeBox.height);
 
             Widgets.DrawHighlight(workersBox);
             Widgets.Label(workersBox, "Workers".Translate());
@@ -902,12 +1155,19 @@ namespace FactionColonies
             Widgets.Label(prodFinalBox, "Final".Translate());
 
             Widgets.DrawHighlight(prodTotalBox);
-            Widgets.Label(prodTotalBox, "TotalProd".Translate());
+            Widgets.Label(prodTotalBox, "Total".Translate());
 
             Widgets.DrawHighlight(incomeBox);
-            Widgets.Label(incomeLabel, "Income".Translate());
+            Widgets.Label(incomeBox, "Income".Translate());
+            Widgets.DrawLineHorizontal(incomeBox.x, incomeBox.yMax, incomeBox.width);
+            Widgets.DrawHighlight(incomeRawBox);
+            Widgets.Label(incomeRawBox, "Raw".Translate());
+            UIUtil.TipRegionByText(incomeRawBox, "RawIncomeDesc".Translate());
+            Widgets.DrawHighlight(incomeNetBox);
+            Widgets.Label(incomeNetBox, "Net".Translate());
+            UIUtil.TipRegionByText(incomeNetBox, "NetIncomeDesc".Translate());
 
-            Rect resourceArea = new Rect(boundingBox.x, incomeBox.yMax + margin, boundingBox.width, boundingBox.yMax - (incomeBox.yMax + margin));
+            Rect resourceArea = new Rect(boundingBox.x, workersBox.yMax + margin, boundingBox.width, boundingBox.yMax - (workersBox.yMax + margin));
             DrawResources(resourceArea, colWidth);
         }
         private Vector2 scrollVectorResources = new Vector2();
@@ -921,9 +1181,13 @@ namespace FactionColonies
             // Get the appropriate resource types based on settlement type
 
             Rect totalProdCol = new Rect(viewRect.x + (5f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
-            Rect incomeCol = new Rect(viewRect.x + 6f * (colWidth + margin), viewRect.y, colWidth, viewRect.height - (margin / 2f));
+            Rect incomeRawCol = new Rect(viewRect.x + (6f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
+            Rect incomeNetCol = new Rect(viewRect.x + (7f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
             Widgets.DrawHighlight(totalProdCol);
-            Widgets.DrawHighlight(incomeCol);
+            Widgets.DrawHighlight(incomeRawCol);
+            Widgets.DrawMenuSection(incomeNetCol);
+            UIUtil.TipRegionByText(incomeRawCol, "RawIncomeDesc".Translate());
+            UIUtil.TipRegionByText(incomeNetCol, "NetIncomeDesc".Translate());
 
             for (int i = 0; i < availableResources.Count; i++)
             {
@@ -938,8 +1202,6 @@ namespace FactionColonies
                     Widgets.DrawHighlight(rowHighlight);
                 }
 
-                //TODO: this function used to use the resourceType enum as a sort of index for mathing out the display. Make sure that switching to 'i' actually works
-                //DoResourceDescriptionButton(resource, i, x, y, spacing);
                 float resourceImgSize = Math.Min(colWidth, rowHeight);
                 float resourceImxgX = viewRect.x + ((colWidth - resourceImgSize) / 2f);
                 Rect resourceImgRect = new Rect(resourceImxgX, rectY, resourceImgSize, resourceImgSize);
@@ -975,8 +1237,12 @@ namespace FactionColonies
                 Widgets.Label(totalProd, (TextUtil.FloorStat(resource.rawTotalProduction)));
 
                 //Est Income
-                Rect incomeBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(incomeBox, (TextUtil.FloorStat(resource.rawTotalProductionMarketValue)));
+                Rect incomeRawBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.rawTotalProductionMarketValue)));
+
+                //Net Income, after tithes
+                Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, rectY, colWidth, rowHeight);
+                Widgets.Label(incomeNetBox, (TextUtil.FloorStat(resource.actualIncome)));
             }
 
             Widgets.EndScrollView();
@@ -1001,9 +1267,9 @@ namespace FactionColonies
         private void TitheCustomizationClicked(ResourceFC resource)
         {
             //if click faction customize button
-            if (resource.filter == null)
+            if (resource.randomTitheFilter == null)
             {
-                resource.filter = new ThingFilter();
+                resource.randomTitheFilter = new ThingFilter();
                 resource.resetThingFilter();
             }
 
@@ -1018,7 +1284,7 @@ namespace FactionColonies
                 new FloatMenuOption("FCTitheDisableAll".Translate(),
                 delegate
                 {
-                    resource.filter.SetDisallowAll();
+                    resource.randomTitheFilter.SetDisallowAll();
                     resource.returnLowestCost();
                 })
             };
@@ -1027,14 +1293,14 @@ namespace FactionColonies
 
             foreach (ThingDef thing in things)
             {
-                FloatMenuOption option = new FloatMenuOption("FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.filter.Allows(thing))), null, thing);
+                FloatMenuOption option = new FloatMenuOption("FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.randomTitheFilter.Allows(thing))), null, thing);
 
                 //Seperated because the label needs to be modified on press
                 option.action = delegate
                 {
-                    resource.filter.SetAllow(thing, !resource.filter.Allows(thing));
+                    resource.randomTitheFilter.SetAllow(thing, !resource.randomTitheFilter.Allows(thing));
                     resource.returnLowestCost();
-                    option.Label = "FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.filter.Allows(thing)));
+                    option.Label = "FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.randomTitheFilter.Allows(thing)));
                     SoundDefOf.Click.PlayOneShotOnCamera();
                 };
 

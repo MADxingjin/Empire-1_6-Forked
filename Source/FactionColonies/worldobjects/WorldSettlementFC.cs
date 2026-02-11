@@ -293,6 +293,10 @@ namespace FactionColonies
                     LogUtil.Message($"Removing resource {rtd.resourceDef.label} from settlement {Name}");
                     resources.Remove(res);
                 }
+                else
+                {
+                    res.setDirtyCache();
+                }
             }
             resources.Sort(ResourceFC.sortForUI);
         }
@@ -818,8 +822,8 @@ namespace FactionColonies
             {
                 if (resource.actualIncome > 0)
                 {
-                    income += resource.actualIncomeMarketValue;
-                    incomeExp += "+" + (resource.actualIncomeMarketValue).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
+                    income += resource.actualIncome;
+                    incomeExp += "+" + (resource.actualIncome).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
                 }
             }
             incomeExp = incomeExp.Trim();
@@ -936,13 +940,13 @@ namespace FactionColonies
             {
                 if (resource.actualIncome < 0)
                 {
-                    upkeep += (-1) * resource.actualIncomeMarketValue;
-                    upkeepExp += "+" + (-1 * resource.actualIncomeMarketValue).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
+                    upkeep += (-1) * resource.actualIncome;
+                    upkeepExp += "+" + (-1 * resource.actualIncome).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
                 }
             }
 
-            //LogUtil.Message("upkeep " + upkeep.ToString());
             upkeepExp = upkeepExp.Trim();
+            LogUtil.Message("upkeep " + upkeepExp);
             return upkeep;
         }
 
@@ -1276,6 +1280,18 @@ namespace FactionColonies
             LogUtil.Error($"Reached end of WorldSettmentFC.getResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
             return null;
         }
+        public List<ResourceFC> getTitheableResources()
+        {
+            List<ResourceFC> list = new List<ResourceFC>();
+            foreach (ResourceFC res in Resources)
+            {
+                if (res.canTithe)
+                {
+                    list.Add(res);
+                }
+            }
+            return list;
+        }
 
         //UNUSED FUNCTIONS
         public float getSilverIncome()
@@ -1355,15 +1371,15 @@ namespace FactionColonies
             List<Thing> list = new List<Thing>();
             foreach (ResourceFC resource in resources)
             {
-                //if (resource.isTithe && !resource.def.isPoolResource)
+                if (resource.hasRandomTithe && !resource.def.isPoolResource)
                 {
-                    if (resource.filter == null)
+                    if (resource.randomTitheFilter == null)
                     {
-                        resource.filter = new ThingFilter();
+                        resource.randomTitheFilter = new ThingFilter();
                         resource.resetThingFilter();
                     }
 
-                    if (!resource.filter.AllowedThingDefs.Any())
+                    if (!resource.randomTitheFilter.AllowedThingDefs.Any())
                     {
                         Find.LetterStack.ReceiveLetter("No Tithe",
                             "There are no enabled items in the tithe" + resource + " of settlement " +
@@ -1373,13 +1389,13 @@ namespace FactionColonies
 
                     List<Thing> tmpList;
 
-                    double production = resource.titheMarketValue;
-                    production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
+                    double production = resource.randomTitheBudget;
+                    /*production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
                     //int assignedWorkers = resource.assignedWorkers;
 
                     //Create Temp Value
-                    double tmpValue = production * FCSettings.silverPerResource;
-                    resource.taxStock += tmpValue;
+                    double tmpValue = production * FCSettings.silverPerResource;*/
+                    resource.taxStock += production;
                     resource.returnLowestCost();
                     if (resource.checkMinimum())
                     {
