@@ -87,6 +87,8 @@ namespace FactionColonies
         // Jealously guard our resources. Only we can modify them!
         private List<ResourceFC> resources = new List<ResourceFC>();
         public List<ResourceFC> Resources => resources;
+        private List<ThingDef> grandThingList = new List<ThingDef>();
+        private bool dirtyGrandThingList = true;
 
         // Comp caching for the most-frequently accessed comps
         private WorldObjectComp_SettlementMilitary cachedMilitaryComp = null;
@@ -1292,6 +1294,31 @@ namespace FactionColonies
             }
             return list;
         }
+        /// <summary>
+        /// Returns a list of *all* things that this settlement can produce.
+        /// </summary>
+        /// <returns></returns>
+        public List<ThingDef> getGrandThingList()
+        {
+            if (dirtyGrandThingList)
+            {
+                grandThingList = new List<ThingDef>();
+                foreach (ResourceFC res in resources)
+                {
+                    List<ThingDef> resList = res.generateThingDefList();
+                    if (resList != null && resList.Count > 0)
+                    {
+                        grandThingList.AddRange(resList);
+                    }
+                }
+                dirtyGrandThingList = false;
+            }
+            return grandThingList;
+        }
+        public void dirtyGrantThingList()
+        {
+            dirtyGrandThingList = true;
+        }
 
         //UNUSED FUNCTIONS
         public float getSilverIncome()
@@ -1395,20 +1422,20 @@ namespace FactionColonies
 
                     //Create Temp Value
                     double tmpValue = production * FCSettings.silverPerResource;*/
-                    resource.taxStock += production;
+                    resource.titheStock += production;
                     resource.returnLowestCost();
                     if (resource.checkMinimum())
                     {
                         if (faction.hasPolicy(FCPolicyDefOf.feudal))
-                            resource.taxStock *= 1.2;
-                        tmpList = resource.generateTithe(resource.taxStock, FCSettings.productionTitheMod, resource.assignedWorkers, TraitUtilsFC.cycleTraits("taxBaseRandomModifier", traits, Operation.Addition));
+                            resource.titheStock *= 1.2;
+                        tmpList = resource.generateTithe(resource.titheStock, FCSettings.productionTitheMod, resource.assignedWorkers, TraitUtilsFC.cycleTraits("taxBaseRandomModifier", traits, Operation.Addition));
 
                         foreach (Thing thing in tmpList)
                         {
                             list.Add(thing);
                         }
 
-                        resource.taxStock = 0;
+                        resource.titheStock = 0;
                     }
 
                     resource.returnTaxPercentage();

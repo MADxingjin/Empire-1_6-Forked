@@ -61,18 +61,27 @@ namespace FactionColonies.util
         }
         public static bool thingIsStuffable(ThingDef thing)
         {
-            //TODO: implement
-            return true;
+            return thing.MadeFromStuff;
         }
         /// <summary>
         /// For the given <paramref name="thing"/>, returns a list of valid stuff ThingDefs.
         /// </summary>
         /// <param name="thing">ThingDef to retrieve a list of stuff for.</param>
+        /// <param name="filterList">List of possible things to use for stuff.</param>
         /// <returns>The list of ThingDefs that can be used to stuff the given <paramref name="thing"/>. Returns an empty list if <paramref name="thing"/> is not stuffable.</returns>
-        public static List<ThingDef> getThingStuffs(ThingDef thing)
+        public static List<ThingDef> getThingStuffs(ThingDef thing, List<ThingDef> filterList)
         {
             List<ThingDef> list = new List<ThingDef>();
-            //TODO: implement
+            if (thingIsStuffable(thing) && filterList.Count > 0)
+            {
+                foreach(ThingDef possible in filterList)
+                {
+                    if (possible.IsStuff && possible.stuffProps.CanMake(thing))
+                    {
+                        list.Add(possible);
+                    }
+                }
+            }
             return list;
         }
         /*

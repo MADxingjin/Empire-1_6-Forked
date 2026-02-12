@@ -68,7 +68,6 @@ namespace FactionColonies
         public bool autoResolveBillsChanged = false;
 
         public List<FCPolicy> policies = new List<FCPolicy>();
-        //TODO: nothing should try to modify the traits list directly. Should always go through addTrait/removeTrait/clearTraits/assignNewTraits
         private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
         public List<FCTraitEffectDef> Traits => traits;
         public List<int> militaryTargets = new List<int>();

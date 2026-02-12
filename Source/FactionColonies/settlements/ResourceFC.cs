@@ -19,6 +19,7 @@ namespace FactionColonies
         public ResourceTypeDef def;
         public string name;
         public string label;
+        public WorldSettlementFC settlement;
         private int savedAssignedWorkers;
         public int assignedWorkers
         {
@@ -50,10 +51,14 @@ namespace FactionColonies
         public Dictionary<ThingQualityTuple, int> tithes = new Dictionary<ThingQualityTuple, int>();
         private bool dirtyTitheCache = true;
         private double cachedTitheTotalValue = 0;
-        public double taxStock = 0;
+        /// <summary>
+        /// The amount of budget available to this resource for random tithing. If the lowest-value random tithing thing is still higher in value than the available titheStock,
+        /// then production is rolled over to the next tax period, until enough has accrued to actually produce the tithe.
+        /// </summary>
+        // TODO: alert the player when tithing has rolled over?
+        public double titheStock = 0;
         public double taxMinimumToTithe = 99999;
         public double taxPercentage = 0;
-        public WorldSettlementFC settlement;
 
         public bool hasRandomTithe = false;
         public ThingFilter randomTitheFilter = new ThingFilter();
@@ -125,7 +130,7 @@ namespace FactionColonies
         public double titheTotalValueNoRandom => titheTotalValue - randomTitheBudget;
         /* NOTE: need to be very careful about which of rawTotalProduction, totalProduction, and actualIncome to use.
          *  * rawTotalProduction is the TOTAL production value of the resource, before accounting for tithes.
-         *  * totalProduction is the amount of production leftover after accounting for tithes.
+         *  * totalProductionMarketValue is the amount of production leftover after accounting for tithes.
          *  * actualIncome reports the actual income of the resource, accounting for tithes. This can be negative if the value of the tithes is
          *    greater than the leftover production of the resource.
          */
@@ -204,7 +209,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasRandomTithe, "hasRandomTithe");
 
             //Tax Stock
-            Scribe_Values.Look(ref taxStock, "taxStock");
+            Scribe_Values.Look(ref titheStock, "taxStock");
             Scribe_Values.Look(ref taxMinimumToTithe, "taxMinimumToTithe");
             Scribe_Values.Look(ref taxPercentage, "taxPercentage");
 
@@ -273,9 +278,14 @@ namespace FactionColonies
             setDirtyCacheProdBase();
             setDirtyCacheProdMult();
             dirtyTitheCache = true;
-            dirtyRandomTitheCache = true;
+            setDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
             Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
+        }
+        public void setDirtyRandomTitheCache()
+        {
+            dirtyRandomTitheCache = true;
+            settlement.dirtyGrantThingList();
         }
         public void setDirtyCacheProdBase()
         {
@@ -292,7 +302,7 @@ namespace FactionColonies
         
         public bool checkMinimum()
         {
-            if (taxStock >= taxMinimumToTithe)
+            if (titheStock >= taxMinimumToTithe)
             {
                 return true;
             }
@@ -301,7 +311,7 @@ namespace FactionColonies
         }
         public double returnTaxPercentage()
         {
-            taxPercentage = Math.Round(taxStock / taxMinimumToTithe, 2)*100 ;
+            taxPercentage = Math.Round(titheStock / taxMinimumToTithe, 2)*100 ;
             return taxPercentage;
         }
 
@@ -309,9 +319,7 @@ namespace FactionColonies
         {
             double minimum = randomTitheFilter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, 
                 (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
-            //LogUtil.Message(minimum.ToString());
-            taxMinimumToTithe = minimum + FCSettings.productionTitheMod + 
-                                TraitUtilsFC.cycleTraits("taxBaseRandomModifier", settlement.Traits, Operation.Addition);
+            taxMinimumToTithe = minimum;
             return minimum;
         }
 
@@ -512,6 +520,10 @@ namespace FactionColonies
             
             def.FilterResource(randomTitheFilter, faction.techLevel);
         }
+        /// <summary>
+        /// Generates a list of ThingDefs that can be generated as tithes for this resource.
+        /// </summary>
+        /// <returns></returns>
         public List<ThingDef> generateThingDefList()
         {
             if (def.isPoolResource)
@@ -583,7 +595,7 @@ namespace FactionColonies
                 randomTitheFilter = new ThingFilter();
             }
             randomTitheFilter.SetDisallowAll();
-            dirtyRandomTitheCache = true;
+            setDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
         }
         public void setAllRandomTitheFilter()
@@ -593,7 +605,7 @@ namespace FactionColonies
                 randomTitheFilter = new ThingFilter();
             }
             resetThingFilter();
-            dirtyRandomTitheCache = true;
+            setDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
         }
         public void setRandomTitheFilterAllow(ThingDef thing, bool allow)
@@ -602,6 +614,7 @@ namespace FactionColonies
             {
                 randomTitheFilter = new ThingFilter();
                 resetThingFilter();
+                setDirtyRandomTitheCache();
             }
 
             randomTitheFilter.SetAllow(thing, allow);
@@ -709,19 +722,14 @@ namespace FactionColonies
             maxQuality = QualityCategory.Legendary;
             return true;
         }
-        public List<QualityCategory> getValidTitheQualities()
+        public List<QualityCategory> getValidTitheQualities(QualityCategory maxQuality)
         {
-            List<QualityCategory> list = new List<QualityCategory>();
-            QualityCategory maxQuality = QualityCategory.Legendary;
-            if (canSetTitheQuality(out maxQuality))
+            List<QualityCategory> list = QualityUtility.AllQualityCategories;
+            for (int i = list.Count - 1; i > 0; i--)
             {
-                list = QualityUtility.AllQualityCategories;
-                for (int i = list.Count - 1; i > 0; i--)
+                if (list[i] > maxQuality)
                 {
-                    if (list[i] > maxQuality)
-                    {
-                        list.RemoveAt(i);
-                    }
+                    list.RemoveAt(i);
                 }
             }
 
@@ -734,9 +742,7 @@ namespace FactionColonies
         }
         public List<ThingDef> getStuffListForThingDef(ThingDef thing)
         {
-            List<ThingDef> stuffs = new List<ThingDef>();
-            //TODO: literally the whole function
-            return stuffs;
+            return CraftUtil.getThingStuffs(thing, settlement.getGrandThingList());
         }
         public float titheThingValue(ThingQualityTuple thing)
         {

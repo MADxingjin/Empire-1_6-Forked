@@ -48,6 +48,10 @@ namespace FactionColonies
         private int overviewTab = 0;
         private int titheTab = 0;
 
+        // Tithe buffers
+        private List<string> titheBuffers = new List<string>();
+        private int currentDictSize = 0;
+
         public void windowUpdateFc()
         {
             // Only update description, don't recalculate production unless needed
@@ -296,6 +300,7 @@ namespace FactionColonies
                 if (Widgets.ButtonText(tabBox, ""))
                 {
                     titheTab = i;
+                    updateTitheDictBuffers(resources[i]);
                 }
                 Text.Font = GameFont.Small;
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
@@ -405,11 +410,127 @@ namespace FactionColonies
             Widgets.Label(budgetnum, res.getTitheIncome().ToString());
         }
         private Vector2 titheScrollBar = new Vector2();
+        private void updateTitheDictBuffers(ResourceFC res)
+        {
+            titheBuffers.Clear();
+            if (res != null)
+            {
+                List<ThingQualityTuple> items = res.tithes.Keys.ToList();
+                for (int i = 0; i < items.Count; i ++)
+                {
+                    titheBuffers.Add("");
+                    titheBuffers[i] = res.tithes[items[i]].ToString();
+                }
+            }
+            currentDictSize = titheBuffers.Count;
+        }
+        private void keepTitheDictBuffersUpdated(ResourceFC res)
+        {
+            if (res != null && currentDictSize != res.tithes.Count)
+            {
+                updateTitheDictBuffers(res);
+            }
+        }
         private void DrawTitheScrollBox(Rect boundingBox, ResourceFC res)
         {
             Widgets.DrawBox(boundingBox);
-            Widgets.Label(boundingBox, "TODO");
-            //TODO: do
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float rowHeight = 23f;
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width * 0.8f, rowHeight);
+            Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
+            Widgets.DrawHighlight(header);
+            Widgets.Label(headerText, "TitheSelection".Translate());
+
+            Rect addItemButton = new Rect(header.xMax, header.y, boundingBox.width * 0.2f, header.height);
+            if (Widgets.ButtonText(addItemButton, "AddItem".Translate()))
+            {
+                //TODO: open window to select items to add to tithe list
+            }
+
+            keepTitheDictBuffersUpdated(res);
+
+            List<ThingQualityTuple> titheItems = res.tithes.Keys.ToList();
+
+            /* Doing weird box-in-a-box to try and fix some UI drawing issues */
+            Rect drawBox = new Rect(boundingBox.x + margin, header.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - header.yMax - margin);
+            Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
+            float listHeight = titheItems.Count * rowHeight;
+            float width;
+            if (listHeight > selectedListBox.height)
+            {
+                width = selectedListBox.width - scrollSpacing;
+            }
+            else
+            {
+                width = selectedListBox.width;
+            }
+            Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
+            Widgets.DrawMenuSection(selectedListBox);
+            Widgets.BeginScrollView(selectedListBox, ref titheScrollBar, innerScrollBox);
+            for (int i = 0; i <  titheItems.Count; i++)
+            {
+                ThingQualityTuple thingTuple = titheItems[i];
+                ThingDef iThing = thingTuple.thingDef;
+                QualityCategory iQuality = thingTuple.quality;
+                ThingDef iStuff = thingTuple.stuffDef;
+
+                Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
+                Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
+                Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
+                Rect fieldBox = new Rect(xBox.x - margin - 60f, row.y, 60f, rowHeight);
+                Rect valueLabel = new Rect(fieldBox.x - margin - 60f, fieldBox.y, 60f, rowHeight);
+                Rect stuffBox = new Rect(valueLabel.x - margin - 60f, valueLabel.y, 60f, rowHeight);
+                Rect qualityBox = new Rect(stuffBox.x - 60f, stuffBox.y, 60f, rowHeight);
+                Rect label = new Rect(icon.xMax + margin + 10, row.y, qualityBox.x - icon.xMax - margin - 10, rowHeight);
+                if (i % 2 == 0)
+                {
+                    Widgets.DrawHighlight(row);
+                }
+
+                string nulabel = Text.ClampTextWithEllipsis(label, iThing.LabelCap);
+
+                // Row: icon | info icon | label | quality | stuff | value | decrement/textfield/increment | x button
+                // should probably have buttons/labels for quality and stuff, too
+                // how to handle string buffer for the text field? hmm
+                //    string needs to live beyond the current frame, so need to store it somewhere, not just declare it in the function
+                //TODO
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(icon, new GUIContent(iThing.uiIcon));
+                Widgets.InfoCardButton(icon.xMax + margin, row.y, iThing);
+                if (Widgets.ButtonText(xBox, "X"))
+                {
+                    res.removeFromTitheList(thingTuple);
+                }
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(label, nulabel);
+                Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+
+                QualityCategory maxQuality = QualityCategory.Legendary;
+                if (CraftUtil.thingHasQuality(iThing) && res.canSetTitheQuality(out maxQuality))
+                {
+                    //TODO: quality
+                    List<QualityCategory> categoryList = res.getValidTitheQualities(maxQuality);
+                }
+
+                if (CraftUtil.thingIsStuffable(iThing))
+                {
+                    //TODO: stuff
+                    List<ThingDef> stuffList = res.getStuffListForThingDef(iThing);
+                }
+
+                // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
+                //   keep this in mind when testing...
+                int quantity = res.tithes[thingTuple];
+                int max = quantity + res.maxThingCanAfford(thingTuple);
+                string buf = titheBuffers[i];
+                UIUtil.NumericFieldIncrement(fieldBox, ref quantity, ref buf, 0, max);
+                res.tithes[thingTuple] = quantity;
+                titheBuffers[i] = buf;
+            }
+
+            Widgets.EndScrollView();
         }
         private Vector2 randomTitheScrollBar = new Vector2();
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
@@ -418,12 +539,13 @@ namespace FactionColonies
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
-            float rowHeight = 23f;
+            float rowHeight = 26f;// 23f;
             float headerHeight = Math.Min(rowHeight, boundingBox.height);
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, headerHeight);
             Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
             Widgets.DrawHighlight(header);
             Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe);
+            UIUtil.TipRegionByText(header, "RandomTithesDesc".Translate());
             if (res.hasRandomTithe)
             {
                 Rect budgetBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, 23f);
@@ -463,7 +585,7 @@ namespace FactionColonies
                     Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
                     Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
                     Rect valueLabel = new Rect(xBox.x - margin - 60f, xBox.y, 60f, rowHeight);
-                    Rect label = new Rect(icon.xMax + margin, row.y, row.width - icon.width - xBox.width - valueLabel.width - (margin * 5), rowHeight);
+                    Rect label = new Rect(icon.xMax + margin + 10, row.y, row.width - icon.width - xBox.width - valueLabel.width - (margin * 5) - 10, rowHeight);
 
                     if (i % 2 == 0)
                     {
@@ -478,6 +600,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
                     Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                    Widgets.InfoCardButton(icon.xMax, row.y, iThing);
                 }
 
                 Widgets.EndScrollView();
@@ -487,11 +610,6 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Rect addItemButton = new Rect(boundingBox.x, boundingBox.y, boundingBox.width * 0.2f, boundingBox.height);
-            if(Widgets.ButtonText(addItemButton, "AddItem".Translate()))
-            {
-                //TODO: open window to select items to add to tithe list
-            }
 
             /* Available Budget */
             float budgetWidth = (boundingBox.width * 0.5f);

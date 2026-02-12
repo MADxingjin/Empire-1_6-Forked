@@ -296,7 +296,6 @@ namespace FactionColonies
                 {
                     case "settleNewColony":
                         {
-                            //TODO: BIG BUG HERE, settleNewColony event doesn't actually create a colony!
                             //Settle new colony event
                             faction.addExperienceToFactionLevel(10f);
 

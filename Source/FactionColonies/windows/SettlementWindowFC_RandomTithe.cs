@@ -20,7 +20,7 @@ namespace FactionColonies
 
         private const int margin = 5;
         private const int smallMargin = 3;
-        private const int rowHeight = 23;
+        private const int rowHeight = 26;//23;
         private const int scrollSpacing = 16;
         public override Vector2 InitialSize
         {
@@ -106,7 +106,7 @@ namespace FactionColonies
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
                 Rect enableBox = new Rect(row.xMax - margin - 65f, row.y, 65f, rowHeight);
                 Rect valueLabel = new Rect(enableBox.x - margin - 60f, enableBox.y, 60f, rowHeight);
-                Rect label = new Rect(icon.xMax + margin, row.y, valueLabel.x - icon.xMax - (margin*2), rowHeight);
+                Rect label = new Rect(icon.xMax + margin + 10, row.y, valueLabel.x - icon.xMax - (margin*2) - 10, rowHeight);
 
                 if (i % 2 == 0)
                 {
@@ -121,6 +121,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iThing.LabelCap);
                 Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                Widgets.InfoCardButton(icon.xMax, row.y, iThing);
             }
 
             Widgets.EndScrollView();
