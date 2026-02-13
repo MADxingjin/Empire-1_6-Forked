@@ -882,7 +882,7 @@ namespace FactionColonies
             }
             dirtyTitheCache = true;
         }
-        public List<Thing> generateTithe(out int extraSilver)//(double valueBase, double valueDiff, int multiplier, double traitValueMod)
+        public List<Thing> generateTithe(out int extraSilver)
         {
             int outSilver = 0;
             List<Thing> titheItems = new List<Thing>();

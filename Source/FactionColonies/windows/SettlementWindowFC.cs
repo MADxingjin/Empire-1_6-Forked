@@ -811,7 +811,12 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(textBox, settlement.description);
         }
-
+        private void removeSettlement()
+        {
+            LogUtil.Message($"Removing settlement {settlement.Name}...");
+            Find.WindowStack.TryRemove(this);
+            ColonyUtil.removePlayerSettlement(settlement);
+        }
         private void DrawMainButtons(Rect boundingBox)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -820,6 +825,12 @@ namespace FactionColonies
             for (int i = 0; i < buttons.Count(); i++)
             {
                 Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
+                string label = buttons[i];
+                if (label == "UpgradeTown".Translate() && settlement.isUpgrading)
+                {
+                    label = "SettlementUpgradeInProgress".Translate();
+                    GUI.color = Color.gray;
+                }
                 if (Widgets.ButtonText(buttonRect, buttons[i]))
                 {
                     //If click a button button
@@ -829,17 +840,19 @@ namespace FactionColonies
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
 
-                    if (buttons[i] == "AreYouSureRemove".Translate())
+                    /*if (buttons[i] == "AreYouSureRemove".Translate())
                     {
                         //if click to delete colony
                         Find.WindowStack.TryRemove(this);
                         ColonyUtil.removePlayerSettlement(settlement);
-                    }
+                    }*/
 
                     if (buttons[i] == "DeleteSettlement".Translate())
                     {
                         //if click town log button
-                        buttons[i] = "AreYouSureRemove".Translate();
+                        //buttons[i] = "AreYouSureRemove".Translate();
+
+                        Find.WindowStack.Add(new Dialog_Confirm("DeleteSettlementConfirm".Translate(settlement.Name), removeSettlement));
                     }
 
                     if (buttons[i] == "FCSpecialActions".Translate())
@@ -959,6 +972,10 @@ namespace FactionColonies
                             Find.WindowStack.Add(new FloatMenu(list));
                         }
                     }
+                }
+                if (label == "SettlementUpgradeInProgress".Translate())
+                {
+                    GUI.color = Color.white;
                 }
             }
         }

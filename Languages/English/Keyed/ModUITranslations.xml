@@ -193,14 +193,12 @@
 
     <!-- SettlementUpgradeWindowFC -->
     <UpgradeSettlement>Upgrade Settlement</UpgradeSettlement>
+	<SettlementUpgradeInProgress>Upgrading...</SettlementUpgradeInProgress>
     <CanBeUpgraded>can be upgraded for</CanBeUpgraded>
-    <UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to
-        rise by 3 workers. The military level of this colony will also increase by 1.
-    </UpgradeColonyDesc>
+    <UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
     <HasBeenUpgraded>has been upgraded to level</HasBeenUpgraded>
     <AlreadyMaxLevel>is already max level</AlreadyMaxLevel>
-    <NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.
-    </NotEnoughSilverUpgrade>
+    <NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</NotEnoughSilverUpgrade>
     <CannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</CannotBeUpgradedPastMax>
 
 
@@ -266,6 +264,8 @@ The prosperity of a town directly correlates with the production of resources (e
 	<Mult>Mult</Mult>
 	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
 	<TotalProd>Total Production</TotalProd>
+	
+	<DeleteSettlementConfirm>Remove settlement {0}?</DeleteSettlementConfirm>
 	
 	<Raw>Raw</Raw>
 	<RawIncomeDesc>The total income a resource produces, before accounting for tithes.</RawIncomeDesc>
