@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Security.AccessControl;
+using System.Security.Permissions;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
@@ -60,7 +61,7 @@ namespace FactionColonies
         public List<FCTraitEffectDef> Traits => traits;
         public List<FCPrisoner> prisonerList = new List<FCPrisoner>();
 
-        public float silverIncome;
+        public float oneTimeSilverIncome;
         public List<Thing> tithe = new List<Thing>();
         public int titheEstimatedIncome;
 
@@ -95,6 +96,10 @@ namespace FactionColonies
         private bool checkedMilitaryComp = false;
         private WorldObjectComp_SettlementBuildings cachedBuildingsComp = null;
         private bool checkedBuildingsComp = false;
+
+        // A private state variable
+        private bool calculatingTax = false;
+        public bool IsCalculatingTax => calculatingTax;
         public WorldObjectComp_SettlementMilitary MilitaryComp
         {
             get
@@ -400,7 +405,7 @@ namespace FactionColonies
             //Taxes
             Scribe_Collections.Look(ref tithe, "tithe", LookMode.Deep);
             Scribe_Values.Look(ref titheEstimatedIncome, "titheEstimatedIncome");
-            Scribe_Values.Look(ref silverIncome, "silverIncome");
+            Scribe_Values.Look(ref oneTimeSilverIncome, "silverIncome");
 
 
             //Traits
@@ -948,7 +953,6 @@ namespace FactionColonies
             }
 
             upkeepExp = upkeepExp.Trim();
-            LogUtil.Message("upkeep " + upkeepExp);
             return upkeep;
         }
 
@@ -1305,10 +1309,13 @@ namespace FactionColonies
                 grandThingList = new List<ThingDef>();
                 foreach (ResourceFC res in resources)
                 {
-                    List<ThingDef> resList = res.generateThingDefList();
-                    if (resList != null && resList.Count > 0)
+                    if (!res.def.isPoolResource)
                     {
-                        grandThingList.AddRange(resList);
+                        List<ThingDef> resList = res.generateThingDefList();
+                        if (resList != null && resList.Count > 0)
+                        {
+                            grandThingList.AddRange(resList);
+                        }
                     }
                 }
                 dirtyGrandThingList = false;
@@ -1320,34 +1327,32 @@ namespace FactionColonies
             dirtyGrandThingList = true;
         }
 
-        //UNUSED FUNCTIONS
-        public float getSilverIncome()
+        public float getOneTimeSilverIncome()
         {
-            return silverIncome;
+            return oneTimeSilverIncome;
         }
 
-        public void resetSilverIncome()
+        public void resetOneTimeSilverIncome()
         {
-            silverIncome = 0;
+            oneTimeSilverIncome = 0;
         }
 
-        public void addSilverIncome(float amount)
+        public void addOneTimeSilverIncome(float amount)
         {
-            silverIncome += amount;
+            oneTimeSilverIncome += amount;
         }
 
-        public float returnSilverIncome(bool reset)
+        public float returnOneTimeSilverIncome(bool reset)
         {
-            float income = silverIncome;
+            float income = oneTimeSilverIncome;
 
             if (reset)
             {
-                resetSilverIncome();
+                resetOneTimeSilverIncome();
             }
 
             return income;
         }
-        //UNUSED FUNCTIONS /END
 
         public void goTo()
         {
@@ -1380,7 +1385,7 @@ namespace FactionColonies
             return pools;
         }
 
-        public double getTitheModifier(ResourceTypeDef rdef)
+        public double getTitheModifierPerWorker(ResourceTypeDef rdef)
         {
             double modifier = 0;
 
@@ -1388,61 +1393,114 @@ namespace FactionColonies
 
             return modifier;
         }
+        public double getTitheModifierForTotal(ResourceTypeDef rdef)
+        {
+            double modifier = 1;
 
-        //TODO: rewrite to work with incremental tithing
-        public List<Thing> createTithe(float industriousTaxPercentageBoost)
+            return modifier;
+        }
+        public double getTaxTimeTaxBoostFlat()
+        {
+            double flatBoost = 0;
+            //Nothing here for now, but if we add a flat boost in the future, that code should go here
+            return flatBoost;
+        }
+        public double getTaxTimeTaxBoostMult()
         {
             FactionFC faction = Find.World.GetComponent<FactionFC>();
+            double multBoost = 1;
 
-
-            List<Thing> list = new List<Thing>();
-            foreach (ResourceFC resource in resources)
+            //TODO: would like to modularize faction traits more
+            double trait_Industrious_TaxPercentageBoost = 1;
+            if (faction.hasTrait(FCPolicyDefOf.industrious))
             {
-                if (resource.hasRandomTithe && !resource.def.isPoolResource)
+                int num = Rand.RangeInclusive(1, 20);
+                if (num == 5)
                 {
-                    if (resource.randomTitheFilter == null)
-                    {
-                        resource.randomTitheFilter = new ThingFilter();
-                        resource.resetThingFilter();
-                    }
-
-                    if (!resource.randomTitheFilter.AllowedThingDefs.Any())
-                    {
-                        Find.LetterStack.ReceiveLetter("No Tithe",
-                            "There are no enabled items in the tithe" + resource + " of settlement " +
-                            name, LetterDefOf.NegativeEvent);
-                        continue;
-                    }
-
-                    List<Thing> tmpList;
-
-                    double production = resource.randomTitheBudget;
-                    /*production *= industriousTaxPercentageBoost * ((100 + TraitUtilsFC.cycleTraits("taxBasePercentage", traits, Operation.Addition)) / 100);
-                    //int assignedWorkers = resource.assignedWorkers;
-
-                    //Create Temp Value
-                    double tmpValue = production * FCSettings.silverPerResource;*/
-                    resource.titheStock += production;
-                    resource.returnLowestCost();
-                    if (resource.checkMinimum())
-                    {
-                        if (faction.hasPolicy(FCPolicyDefOf.feudal))
-                            resource.titheStock *= 1.2;
-                        tmpList = resource.generateTithe(resource.titheStock, FCSettings.productionTitheMod, resource.assignedWorkers, TraitUtilsFC.cycleTraits("taxBaseRandomModifier", traits, Operation.Addition));
-
-                        foreach (Thing thing in tmpList)
-                        {
-                            list.Add(thing);
-                        }
-
-                        resource.titheStock = 0;
-                    }
-
-                    resource.returnTaxPercentage();
+                    trait_Industrious_TaxPercentageBoost = 1f + (Rand.RangeInclusive(20, 50) / 100f);
+                    multBoost *= trait_Industrious_TaxPercentageBoost;
+                    Find.LetterStack.ReceiveLetter("FCIdustriousTaxBoost".Translate(), "FCIndustriousPop".Translate(Name, ((trait_Industrious_TaxPercentageBoost - 1f) * 100f) + "%"), LetterDefOf.PositiveEvent);
                 }
             }
 
-            return list;
+            return multBoost;
+        }
+        public void pruneResourceTithes()
+        {
+            foreach (ResourceFC res in resources)
+            {
+                if (res.canTithe)
+                {
+                    res.pruneTitheList();
+                }
+            }
+        }
+        public void dirtyResourceCache(ResourceTypeDef resDef)
+        {
+            ResourceFC res = getResource(resDef);
+            if (!(res is null))
+            {
+                res.setDirtyCache();
+            }
+        }
+        public void dirtyResourceCache(ResourceFC res)
+        {
+            if (!(res is null))
+            {
+                res.setDirtyCache();
+            }
+        }
+        public void dirtyResourceCaches()
+        {
+            foreach (ResourceFC res in resources)
+            {
+                res.setDirtyCache();
+            }
+        }
+        /// <summary>
+        /// Handles any necessary pre-tax preparations to ensure that the tax calculation is up-to-date and accurate.
+        /// </summary>
+        private void preTaxPrep()
+        {
+            dirtyResourceCaches();
+            pruneResourceTithes();
+            updateProfitAndProduction();
+            calculatingTax = true;
+        }
+        private void postTaxPrep()
+        {
+            calculatingTax = false;
+        }
+        /// <summary>
+        /// This function handles the calculations for determing this settlement's taxes at tax time. It handles both tithes and silver taxes.
+        /// </summary>
+        /// <param name="silverAmount">The amount of silver to tax; positive if the player gains silver, negative otherwise.</param>
+        /// <returns>A list of things produced by tithing resources. May be empty if there are no tithes.</returns>
+        public List<Thing> createTax(out int silverAmount)
+        {
+            preTaxPrep();
+
+            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            double flatTaxBoost = getTaxTimeTaxBoostFlat();
+            double multTaxBoost = getTaxTimeTaxBoostMult();
+            List<Thing> titheThings = new List<Thing>();
+            int tmpSilverAmount = (int)((((totalIncome + flatTaxBoost) * multTaxBoost) - totalUpkeep) + returnOneTimeSilverIncome(true));
+
+            foreach (ResourceFC resource in resources)
+            {
+                int resExtraSilver = 0;
+                List<Thing> resTitheThings = resource.generateTithe(out resExtraSilver);
+
+                if (resTitheThings.Count > 0)
+                {
+                    titheThings.AddRange(resTitheThings);
+                }
+                tmpSilverAmount += resExtraSilver;
+            }
+
+            postTaxPrep();
+            silverAmount = tmpSilverAmount;
+            return titheThings;
         }
     }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
+using RimWorld;
 
 namespace FactionColonies
 {
@@ -103,6 +104,11 @@ namespace FactionColonies
             //TODO: find these localization keys and make sure they line up with the new def resources
             //      maybe even find a better way to assmelbe these town titles
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
+        }
+
+        public static string GetQualityLabelCap(QualityCategory cat)
+        {
+            return QualityUtility.GetLabel(cat).CapitalizeFirst();
         }
     }
 }

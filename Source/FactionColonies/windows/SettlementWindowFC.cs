@@ -1,4 +1,4 @@
-﻿using FactionColonies.util;
+using FactionColonies.util;
 using RimWorld;
 using RimWorld.QuestGen;
 using System;
@@ -14,7 +14,7 @@ namespace FactionColonies
     {
         public override Vector2 InitialSize
         {
-            get { return new Vector2(1200f, 645f); }
+            get { return new Vector2(1250f, 645f); }
         }
 
 
@@ -141,8 +141,8 @@ namespace FactionColonies
             float validHeight = InitialSize.y - (Margin * 2);
 
             float leftWidth = 150f;
-            float centerWidth = (validWidth * 0.65f) - leftWidth - (margin * 2);
-            float rightWidth = (validWidth * 0.35f);
+            float centerWidth = (validWidth * 0.7f) - leftWidth - (margin * 2);
+            float rightWidth = (validWidth * 0.3f);
 
             Rect headerBox = new Rect(inRect.x, inRect.y, leftWidth + centerWidth + margin, 30 + (margin * 2) + 60);
             Rect leftBox = new Rect(inRect.x, headerBox.yMax + (margin * 2), leftWidth, validHeight - headerBox.height - (margin * 2));
@@ -324,7 +324,7 @@ namespace FactionColonies
             }
             else
             {
-                randomboxHeight = 23f;
+                randomboxHeight = 23f * 2;
             }
             float scrollboxHeight = bodyHeight - randomboxHeight;
 
@@ -388,8 +388,8 @@ namespace FactionColonies
             Widgets.DrawHighlight(titheRow3);
             Widgets.Label(trow3label, "Total".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(trow2num, res.getTitheModifier().ToString());
-            Widgets.Label(trow3num, res.getTotalTitheModifier().ToString());
+            Widgets.Label(trow2num, res.getTitheModifierPerWorker().ToString());
+            Widgets.Label(trow3num, res.getTotalTitheModifierForWorkers().ToString());
 
             /* Production */
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -415,18 +415,18 @@ namespace FactionColonies
             titheBuffers.Clear();
             if (res != null)
             {
-                List<ThingQualityTuple> items = res.tithes.Keys.ToList();
+                List<ThingQualityTuple> items = res.getTitheListKeys();
                 for (int i = 0; i < items.Count; i ++)
                 {
                     titheBuffers.Add("");
-                    titheBuffers[i] = res.tithes[items[i]].ToString();
+                    titheBuffers[i] = res.getTitheListValue(items[i]).ToString();
                 }
             }
             currentDictSize = titheBuffers.Count;
         }
         private void keepTitheDictBuffersUpdated(ResourceFC res)
         {
-            if (res != null && currentDictSize != res.tithes.Count)
+            if (res != null && currentDictSize != res.getTitheListCount())
             {
                 updateTitheDictBuffers(res);
             }
@@ -446,12 +446,12 @@ namespace FactionColonies
             Rect addItemButton = new Rect(header.xMax, header.y, boundingBox.width * 0.2f, header.height);
             if (Widgets.ButtonText(addItemButton, "AddItem".Translate()))
             {
-                //TODO: open window to select items to add to tithe list
+                Find.WindowStack.Add(new SettlementWindowFC_AddTithe(settlement, res));
             }
 
             keepTitheDictBuffersUpdated(res);
 
-            List<ThingQualityTuple> titheItems = res.tithes.Keys.ToList();
+            List<ThingQualityTuple> titheItems = res.getTitheListKeys();
 
             /* Doing weird box-in-a-box to try and fix some UI drawing issues */
             Rect drawBox = new Rect(boundingBox.x + margin, header.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - header.yMax - margin);
@@ -478,12 +478,13 @@ namespace FactionColonies
 
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
-                Rect fieldBox = new Rect(xBox.x - margin - 60f, row.y, 60f, rowHeight);
-                Rect valueLabel = new Rect(fieldBox.x - margin - 60f, fieldBox.y, 60f, rowHeight);
-                Rect stuffBox = new Rect(valueLabel.x - margin - 60f, valueLabel.y, 60f, rowHeight);
-                Rect qualityBox = new Rect(stuffBox.x - 60f, stuffBox.y, 60f, rowHeight);
-                Rect label = new Rect(icon.xMax + margin + 10, row.y, qualityBox.x - icon.xMax - margin - 10, rowHeight);
+                Rect info = new Rect(icon.xMax, row.y + 1, rowHeight - 2, rowHeight - 2);
+                Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 3, 20f, 20f);
+                Rect fieldBox = new Rect(xBox.x - margin - 160f, row.y+2, 160f, rowHeight-4);
+                Rect valueLabel = new Rect(fieldBox.x - margin - 60f, row.y, 60f, rowHeight);
+                Rect stuffBox = new Rect(valueLabel.x - margin - 60f, row.y, 60f, rowHeight);
+                Rect qualityBox = new Rect(stuffBox.x - 80f, row.y, 80f, rowHeight);
+                Rect label = new Rect(info.xMax + margin, row.y, qualityBox.x - info.xMax - margin, rowHeight);
                 if (i % 2 == 0)
                 {
                     Widgets.DrawHighlight(row);
@@ -491,42 +492,98 @@ namespace FactionColonies
 
                 string nulabel = Text.ClampTextWithEllipsis(label, iThing.LabelCap);
 
-                // Row: icon | info icon | label | quality | stuff | value | decrement/textfield/increment | x button
-                // should probably have buttons/labels for quality and stuff, too
-                // how to handle string buffer for the text field? hmm
-                //    string needs to live beyond the current frame, so need to store it somewhere, not just declare it in the function
-                //TODO
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
-                Widgets.InfoCardButton(icon.xMax + margin, row.y, iThing);
+                UIUtil.InfoCardButton(info, iThing);
+                //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
                 if (Widgets.ButtonText(xBox, "X"))
                 {
                     res.removeFromTitheList(thingTuple);
+                    break;
                 }
+                UIUtil.TipRegionByText(xBox, "TitheXDesc".Translate());
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, nulabel);
-                Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                Widgets.Label(valueLabel, "$" +  res.titheThingValue(thingTuple).ToString());
 
                 QualityCategory maxQuality = QualityCategory.Legendary;
                 if (CraftUtil.thingHasQuality(iThing) && res.canSetTitheQuality(out maxQuality))
                 {
-                    //TODO: quality
                     List<QualityCategory> categoryList = res.getValidTitheQualities(maxQuality);
+                    if (Widgets.ButtonText(qualityBox, TextUtil.GetQualityLabelCap(iQuality)))
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>();
+                        foreach (QualityCategory cat in categoryList)
+                        {
+                            options.Add(new FloatMenuOption(TextUtil.GetQualityLabelCap(cat), delegate
+                            {
+                                int qty = res.getTitheListValue(thingTuple);
+                                ThingQualityTuple newTuple = new ThingQualityTuple
+                                {
+                                    thingDef = iThing,
+                                    quality = cat,
+                                    stuffDef = iStuff
+                                };
+                                if (res.hasTitheListKey(newTuple))
+                                {
+                                    Messages.Message(newTuple.listRejectionMessage(), MessageTypeDefOf.RejectInput);
+                                }
+                                else
+                                {
+                                    res.removeFromTitheList(thingTuple);
+                                    res.addToTitheList(newTuple, qty);
+                                    updateTitheDictBuffers(res);
+                                }
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
                 }
 
                 if (CraftUtil.thingIsStuffable(iThing))
                 {
-                    //TODO: stuff
                     List<ThingDef> stuffList = res.getStuffListForThingDef(iThing);
+                    if (Widgets.ButtonText(stuffBox, iStuff?.LabelCap ?? "None"))
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>();
+                        foreach (ThingDef stuff in stuffList)
+                        {
+                            options.Add(new FloatMenuOption(stuff.LabelCap, delegate
+                            {
+                                int qty = res.getTitheListValue(thingTuple);
+                                ThingQualityTuple newTuple = new ThingQualityTuple
+                                {
+                                    thingDef = iThing,
+                                    quality = iQuality,
+                                    stuffDef = stuff
+                                };
+                                if (res.hasTitheListKey(newTuple))
+                                {
+                                    Messages.Message(newTuple.listRejectionMessage(), MessageTypeDefOf.RejectInput);
+                                }
+                                else
+                                {
+                                    res.removeFromTitheList(thingTuple);
+                                    res.addToTitheList(newTuple, qty);
+                                    updateTitheDictBuffers(res);
+                                }
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
                 }
-
+                //TODO: make this actually work
                 // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
                 //   keep this in mind when testing...
-                int quantity = res.tithes[thingTuple];
+                int quantity = res.getTitheListValue(thingTuple); //res.tithes[thingTuple];
+                int oldQuantity = quantity;
                 int max = quantity + res.maxThingCanAfford(thingTuple);
                 string buf = titheBuffers[i];
-                UIUtil.NumericFieldIncrement(fieldBox, ref quantity, ref buf, 0, max);
-                res.tithes[thingTuple] = quantity;
+                Widgets.IntEntry(fieldBox, ref quantity, ref buf);
+                if (oldQuantity != quantity)
+                {
+                    res.addToTitheList(thingTuple, quantity);
+                }
                 titheBuffers[i] = buf;
             }
 
@@ -539,16 +596,25 @@ namespace FactionColonies
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
-            float rowHeight = 26f;// 23f;
-            float headerHeight = Math.Min(rowHeight, boundingBox.height);
-            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, headerHeight);
+            float rowHeight = 23f;
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, rowHeight);
             Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
             Widgets.DrawHighlight(header);
             Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe);
             UIUtil.TipRegionByText(header, "RandomTithesDesc".Translate());
+
+            Rect accruedBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, rowHeight);
+            Rect accruedTextBox = new Rect(accruedBox.x + smallMargin, accruedBox.y, accruedBox.width - (smallMargin * 2), accruedBox.height);
+            Rect disburseBox = new Rect(accruedBox.xMax, header.yMax, boundingBox.width - accruedBox.width, rowHeight);
+            Rect disbursedTextBox = new Rect(disburseBox.x + smallMargin, disburseBox.y, disburseBox.width - (smallMargin * 2), disburseBox.height);
+            Widgets.Label(accruedTextBox, "RandomTitheAccrued".Translate(res.randomTitheStock));
+            Widgets.CheckboxLabeled(disbursedTextBox, "DisburseAccruedRandomTithe".Translate(), ref res.disburseTitheStock);
+            UIUtil.TipRegionByText(accruedBox, "RandomTitheAccruedDesc".Translate());
+            UIUtil.TipRegionByText(disburseBox, "DisburseAccruedRandomTitheDesc".Translate());
+
             if (res.hasRandomTithe)
             {
-                Rect budgetBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, 23f);
+                Rect budgetBox = new Rect(boundingBox.x, disburseBox.yMax, boundingBox.width * 0.6f, 23f);
                 Rect budgetTextBox = new Rect(budgetBox.x + margin, budgetBox.y, budgetBox.width - (margin * 2), budgetBox.height);
                 Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.getTitheIncome() - res.titheTotalValueNoRandom));
                 res.refreshOnRandomTitheBudgetChange();
@@ -583,9 +649,10 @@ namespace FactionColonies
                     ThingDef iThing = selectedThings[i];
                     Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                     Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
+                    Rect info = new Rect(icon.xMax, row.y + 1, rowHeight - 2, rowHeight - 2);
                     Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
                     Rect valueLabel = new Rect(xBox.x - margin - 60f, xBox.y, 60f, rowHeight);
-                    Rect label = new Rect(icon.xMax + margin + 10, row.y, row.width - icon.width - xBox.width - valueLabel.width - (margin * 5) - 10, rowHeight);
+                    Rect label = new Rect(info.xMax + margin, row.y, valueLabel.x - info.xMax - margin, rowHeight);
 
                     if (i % 2 == 0)
                     {
@@ -600,7 +667,8 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
                     Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
-                    Widgets.InfoCardButton(icon.xMax, row.y, iThing);
+                    //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
+                    UIUtil.InfoCardButton(info, iThing);
                 }
 
                 Widgets.EndScrollView();
@@ -616,8 +684,8 @@ namespace FactionColonies
             Rect availBudgetBox = new Rect(boundingBox.xMax - budgetWidth, boundingBox.y, budgetWidth, boundingBox.height);
             Rect availLabel = new Rect(availBudgetBox.x + smallMargin, availBudgetBox.y + smallMargin, (availBudgetBox.width - smallMargin * 2) / 2f, availBudgetBox.height - smallMargin * 2);
             Rect availNum = new Rect(availLabel.xMax, availLabel.y, availLabel.width, availLabel.height);
-            double totalTithe = res.getTitheIncome();
-            double usedTithe = res.titheTotalValue;
+            double totalTithe = Math.Round(res.getTitheIncome(), 2);
+            double usedTithe = Math.Round(res.titheTotalValue, 2);
             TaggedString usedTitheStr = usedTithe.ToString();
             if (usedTithe > totalTithe)
             {
@@ -1022,8 +1090,6 @@ namespace FactionColonies
                         Messages.Message("That Building is locked", MessageTypeDefOf.RejectInput);
                     }
                 }
-                //Optional Label
-                //Widgets.Label(nBuilding, building.LabelCap);
 
                 i++;
             }
@@ -1367,82 +1433,6 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Transforms the given bool <paramref name="var"/> into it's keyed translation
-        /// </summary>
-        /// <param name="var"></param>
-        /// <returns></returns>
-        private string IsAllowedTranslation(bool var)
-        {
-            if (var) return "FCIsAllowed".Translate();
-            return "FCIsNotAllowed".Translate();
-        }
-
-        /// <summary>
-        /// Handles the tithe cutomization FloatMenuOptions for any given <paramref name="resource"/> with <paramref name="resourceType"/>
-        /// </summary>
-        /// <param name="resource"></param>
-        /// <param name="resourceType"></param>
-        private void TitheCustomizationClicked(ResourceFC resource)
-        {
-            //if click faction customize button
-            if (resource.randomTitheFilter == null)
-            {
-                resource.randomTitheFilter = new ThingFilter();
-                resource.resetThingFilter();
-            }
-
-            List<FloatMenuOption> options = new List<FloatMenuOption>
-            {
-                new FloatMenuOption("FCTitheEnableAll".Translate(),
-                delegate
-                {
-                    resource.resetThingFilter();
-                    resource.returnLowestCost();
-                }),
-                new FloatMenuOption("FCTitheDisableAll".Translate(),
-                delegate
-                {
-                    resource.randomTitheFilter.SetDisallowAll();
-                    resource.returnLowestCost();
-                })
-            };
-
-            List<ThingDef> things = resource.generateThingDefList();//PaymentUtil.debugGenerateTithe(resourceType, settlement);
-
-            foreach (ThingDef thing in things)
-            {
-                FloatMenuOption option = new FloatMenuOption("FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.randomTitheFilter.Allows(thing))), null, thing);
-
-                //Seperated because the label needs to be modified on press
-                option.action = delegate
-                {
-                    resource.randomTitheFilter.SetAllow(thing, !resource.randomTitheFilter.Allows(thing));
-                    resource.returnLowestCost();
-                    option.Label = "FCTitheSingleOption".Translate(thing.LabelCap, thing.BaseMarketValue, IsAllowedTranslation(resource.randomTitheFilter.Allows(thing)));
-                    SoundDefOf.Click.PlayOneShotOnCamera();
-                };
-
-                options.Add(option);
-            }
-
-            Find.WindowStack.Add(new Searchable_FloatMenu(options, true));
-        }
-
-        /// <summary>
-        /// If <paramref name="isClicked"/>, changes the <paramref name="resource"/>'s tithe status and updates some necessary things
-        /// </summary>
-        /// <param name="isClicked"></param>
-        /// <param name="resource"></param>
-        private void DoTitheCheckboxAction(bool isClicked, ResourceFC resource)
-        {
-            if (isClicked)
-            {
-                settlement.updateProfitAndProduction();
-                windowUpdateFc();
-            }
-        }
-
-        /// <summary>
         /// Increases the amount of workers in a settlement. Decreases if <paramref name="negative"/> is true. Modifies the amount based on if shift/ctrl are held
         /// </summary>
         /// <param name="resourceType"></param>
@@ -1458,7 +1448,5 @@ namespace FactionColonies
             settlement.increaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
             windowUpdateFc();
         }
-
-        private bool ShouldTitheBeLockedForResouceType(ResourceTypeDef t) => t.isPoolResource;
     }
 }

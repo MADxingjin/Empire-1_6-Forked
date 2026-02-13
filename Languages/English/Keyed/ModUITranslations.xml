@@ -281,9 +281,19 @@ The prosperity of a town directly correlates with the production of resources (e
 	<TitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</TitheOverBudget>
 	<RandomTithesDesc>At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
 
-If the lowest value item in the list has a higher value than your Random Tithe Budget, then the budget is carried over to the next tax period.
-
-You cannot control quality level or stuff material for Random Tithes.</RandomTithesDesc>
+If the lowest value item in the list has a higher value than your Random Tithe Budget, or if there are no items to select from, then the budget is carried over to the next tax period.</RandomTithesDesc>
+	<RandomTitheAccrued>Accrued Budget: ${0}</RandomTitheAccrued>
+	<RandomTitheAccruedDesc>The amount of leftover Random Tithe Budget that has accrued. This will be added to your Random Tithe Budget to determine the total budget for Random Tithes at tax time.</RandomTitheAccruedDesc>
+	<DisburseAccruedRandomTithe>Disburse Accrued Budget</DisburseAccruedRandomTithe>
+	<DisburseAccruedRandomTitheDesc>If checked, then the Accrued Budget will be disbursed as raw silver come tax time. It will not count towards the Random Tithe Budget.</DisburseAccruedRandomTitheDesc>
+	
+	<NoTitheLetterLabel>No Tithe: {0}</NoTitheLetterLabel>
+	<NoTitheLetterDesc>{0} has a Random Tithe Budget for resource {1}, but no items were enabled. The Random Tithe Budget will be stored for future use.
+	
+Total accrued budget: {2}</NoTitheLetterDesc>
+	<NoTitheLetterDesc2>{0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
+	
+Total accrued budget: {2}</NoTitheLetterDesc2>
 	
 	<TitheModifier>Tithe Modifier</TitheModifier>
 	<TotalTitheBudget>Total Tithe Budget</TotalTitheBudget>
@@ -291,6 +301,13 @@ You cannot control quality level or stuff material for Random Tithes.</RandomTit
 	<UsedTitheBudget>Used Budget</UsedTitheBudget>
 	<AddItem>Add Item</AddItem>
 	<NumRatio>{0}/{1}</NumRatio>
+	<TitheXDesc>Remove this item from the tithes list.</TitheXDesc>
+	<TitheListRejection>{0} already exists in the item selection list.</TitheListRejection>
+	<TitheListRejectionQuality>{0} with quality {1} already exists in the item selection list.</TitheListRejectionQuality>
+	<TitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</TitheListRejectionStuff>
+	<TitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</TitheListRejectionStuffQuality>
+	
+	<NoRan
 	
 	<PerWorker>Per-Worker</PerWorker>
 	
@@ -519,13 +536,22 @@ You cannot control quality level or stuff material for Random Tithes.</RandomTit
 
 	<FCUpkeep>Upkeep</FCUpkeep>
 	
-	<!-- Tithe Customization -->
-	<FCTitheEnableAll>Enable All</FCTitheEnableAll>
-	<FCTitheDisableAll>Disable All</FCTitheDisableAll>
-	
-	<FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption> <!-- Example: "Steel - Cost - 10 | Allowed: true" -->
-	<FCIsAllowed>Enabled</FCIsAllowed>
-	<FCIsNotAllowed>Disabled</FCIsNotAllowed>
+    <!-- Tithe Customization -->
+    <FCTitheEnableAll>Enable All</FCTitheEnableAll>
+    <FCTitheDisableAll>Disable All</FCTitheDisableAll>
+    
+    <FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption> <!-- Example: "Steel - Cost - 10 | Allowed: true" -->
+    <FCIsAllowed>Enabled</FCIsAllowed>
+    <FCIsNotAllowed>Disabled</FCIsNotAllowed>
+    
+    <!-- Add Tithe Item Window -->
+    <AddTitheItemHeader>Add Tithe Item</AddTitheItemHeader>
+	<Selected>Selected</Selected>
+	<Select>Select</Select>
+	<Stuff>Stuff</Stuff>
+    <SelectStuff>Select stuff...</SelectStuff>
+    <MustSelectStuff>Must select a stuff type</MustSelectStuff>
+    <ItemAlreadyInTitheList>This item is already in the tithe list</ItemAlreadyInTitheList>
 
 	<!-- Settlement Customization -->
 	<FCCustomizeSettlement>Customize Settlement</FCCustomizeSettlement>

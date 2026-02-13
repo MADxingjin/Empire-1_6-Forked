@@ -1139,13 +1139,25 @@ namespace FactionColonies
                 rdisplay.setDirtyCache();
             }
         }
-        public double getFactionTitheBonusAdditive(ResourceTypeDef rdef)
+        public double getFactionTitheBonusAdditivePerWorker(ResourceTypeDef rdef)
         {
             double bonus = 0;
 
             return bonus;
         }
-        public double getFactionTitheBonusMult(ResourceTypeDef rdef)
+        public double getFactionTitheBonusAdditiveForTotal(ResourceTypeDef rdef)
+        {
+            double bonus = 0;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusMultPerWorker(ResourceTypeDef rdef)
+        {
+            double bonus = 1;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusMultForTotal(ResourceTypeDef rdef)
         {
             double bonus = 1;
 
@@ -1196,18 +1208,17 @@ namespace FactionColonies
 
 
                     //End Traits
-                    //TODO: update for incremental tithing
+
                     List<Thing> list = new List<Thing>();
-                    settlement.updateProfitAndProduction();
-                    list = settlement.createTithe(trait_Industrious_TaxPercentageBoost);
+                    int silverAmount = 0;
+                    list = settlement.createTax(out silverAmount);
                     List<ResourcePool> resourcePools = settlement.createResourcePools();
 
                     BillFC bill = new BillFC(settlement); //Create new bill connected to settlement
                     bill.taxes.resourcePools = resourcePools;
                     bill.taxes.itemTithes.AddRange(list); //Add tithe to bill's tithes
-                    bill.taxes.silverAmount =
-                        Convert.ToInt32((settlement.totalIncome * trait_Industrious_TaxPercentageBoost) -
-                                        settlement.totalUpkeep) + settlement.returnSilverIncome(true);
+                    bill.taxes.silverAmount = silverAmount;
+
                     Bills.Add(bill);
 
                     TextUtil.GetTownTitle(settlement);

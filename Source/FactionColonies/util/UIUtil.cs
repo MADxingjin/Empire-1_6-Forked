@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace FactionColonies
 {
@@ -38,79 +39,27 @@ namespace FactionColonies
             Widgets.DrawBoxSolid(progressRect, Color.cyan);
         }
 
-        public static void NumericFieldIncrement(Rect rect, ref int increment, ref string buffer, int min = 0, int max = int.MaxValue)
+        public static bool InfoCardButton(float x, float y, float width, float height, Def def)
         {
-            TextAnchor originalAnchor = Text.Anchor;
-            GameFont originalFont = Text.Font;
-
-            float fieldWidth = Math.Min(rect.width / 5f, 40f);
-            float buttonWidth = (rect.width - fieldWidth) / 4f;
-
-            Rect mostDecrementBox = new Rect(rect.x, rect.y, buttonWidth, rect.height);
-            Rect decrementBox = new Rect(mostDecrementBox.xMax, rect.y, buttonWidth, rect.height);
-            Rect fieldBox = new Rect(decrementBox.xMax, rect.y, fieldWidth, rect.height);
-            Rect incrementBox = new Rect(fieldBox.xMax, rect.y, buttonWidth, rect.height);
-            Rect mostIncrementBox = new Rect(incrementBox.xMax, rect.y, buttonWidth, rect.height);
-
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Small;
-            Widgets.TextFieldNumeric(fieldBox, ref increment, ref buffer, min, max);
-            if (Widgets.ButtonText(mostDecrementBox, "-10"))
-            {
-                increment = Math.Max(increment - 10, min);
-            }
-            if (Widgets.ButtonText(decrementBox, "-1"))
-            {
-                increment = Math.Max(increment - 1, min);
-            }
-            if (Widgets.ButtonText(incrementBox, "+1"))
-            {
-                increment = Math.Min(increment + 1, max);
-            }
-            if (Widgets.ButtonText(mostIncrementBox, "+10"))
-            {
-                increment = Math.Min(increment + 10, max);
-            }
-
-            Text.Anchor = originalAnchor;
-            Text.Font = originalFont;
+            Rect infoRect = new Rect(x, y, width, height);
+            return InfoCardButton(infoRect, def);
         }
-        public static void NumericFieldIncrementF(Rect rect, ref float increment, ref string buffer, float min = 0, float max = float.MaxValue)
+        public static bool InfoCardButton(Rect button, Def def)
         {
-            TextAnchor originalAnchor = Text.Anchor;
-            GameFont originalFont = Text.Font;
-
-            float fieldWidth = Math.Min(rect.width / 5f, 40f);
-            float buttonWidth = (rect.width - fieldWidth) / 4f;
-
-            Rect mostDecrementBox = new Rect(rect.x, rect.y, buttonWidth, rect.height);
-            Rect decrementBox = new Rect(mostDecrementBox.xMax, rect.y, buttonWidth, rect.height);
-            Rect fieldBox = new Rect(decrementBox.xMax, rect.y, fieldWidth, rect.height);
-            Rect incrementBox = new Rect(fieldBox.xMax, rect.y, buttonWidth, rect.height);
-            Rect mostIncrementBox = new Rect(incrementBox.xMax, rect.y, buttonWidth, rect.height);
-
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Small;
-            Widgets.TextFieldNumeric(fieldBox, ref increment, ref buffer, min, max);
-            if (Widgets.ButtonText(mostDecrementBox, "-10"))
+            if (CustomInfoCardButtonWorker(button))
             {
-                increment = Math.Max(increment - 10, min);
+                Find.WindowStack.Add(new Dialog_InfoCard(def));
+                return true;
             }
-            if (Widgets.ButtonText(decrementBox, "-1"))
-            {
-                increment = Math.Max(increment - 1, min);
-            }
-            if (Widgets.ButtonText(incrementBox, "+1"))
-            {
-                increment = Math.Min(increment + 1, max);
-            }
-            if (Widgets.ButtonText(mostIncrementBox, "+10"))
-            {
-                increment = Math.Min(increment + 10, max);
-            }
-
-            Text.Anchor = originalAnchor;
-            Text.Font = originalFont;
+            return false;
+        }
+        private static bool CustomInfoCardButtonWorker(Rect rect)
+        {
+            MouseoverSounds.DoRegion(rect);
+            TooltipHandler.TipRegionByKey(rect, "DefInfoTip");
+            bool result = Widgets.ButtonImage(rect, TexButton.Info, GUI.color);
+            UIHighlighter.HighlightOpportunity(rect, "InfoCard");
+            return result;
         }
     }
 }
