@@ -1,5 +1,6 @@
 using FactionColonies.util;
 using RimWorld;
+using RimWorld.Planet;
 using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,9 @@ namespace FactionColonies
         private List<string> titheBuffers = new List<string>();
         private int currentDictSize = 0;
 
+        // Comps with overview tabs
+        private List<ISettlementWindowOverview> overviews = new List<ISettlementWindowOverview>();
+
         public void windowUpdateFc()
         {
             // Only update description, don't recalculate production unless needed
@@ -67,6 +71,26 @@ namespace FactionColonies
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
             //settlement.update description
             factionfc = Find.World.GetComponent<FactionFC>();
+
+            foreach (WorldObjectComp comp in settlement.AllComps)
+            {
+                ISettlementWindowOverview overview = comp as ISettlementWindowOverview;
+                if (!(overview is null))
+                {
+                    overview.PreOpenWindow(settlement);
+                    overviews.Add(overview);
+                    overviewTabs.Add(overview.OverviewTabName());
+                }
+            }
+        }
+        public override void PostClose()
+        {
+            base.PostClose();
+
+            foreach(ISettlementWindowOverview overview in overviews)
+            {
+                overview.PostCloseWindow();
+            }
         }
 
         public void UiUpdate()
@@ -141,8 +165,8 @@ namespace FactionColonies
             float validHeight = InitialSize.y - (Margin * 2);
 
             float leftWidth = 150f;
-            float centerWidth = (validWidth * 0.7f) - leftWidth - (margin * 2);
-            float rightWidth = (validWidth * 0.3f);
+            float rightWidth = 415f;
+            float centerWidth = validWidth - leftWidth - rightWidth - (margin * 2);
 
             Rect headerBox = new Rect(inRect.x, inRect.y, leftWidth + centerWidth + margin, 30 + (margin * 2) + 60);
             Rect leftBox = new Rect(inRect.x, headerBox.yMax + (margin * 2), leftWidth, validHeight - headerBox.height - (margin * 2));
@@ -151,9 +175,7 @@ namespace FactionColonies
 
             DrawCenterHeader(headerBox);
             DrawLeftInfo(leftBox);
-            //Widgets.DrawLineVertical(leftBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawCenterInfo(centerBox);
-            //Widgets.DrawLineVertical(centerBox.xMax + margin, 0, validHeight); // x = 530, y = 0, length = 564
             DrawRightInfo(rightBox);
 
             Text.Font = fontBefore;
@@ -163,45 +185,79 @@ namespace FactionColonies
         /* Left side overview */
         private void DrawLeftInfo(Rect boundingBox)
         {
-            Rect topBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, (boundingBox.height - (margin*2)) / 2f);
-            Rect botBox = new Rect(topBox.x, topBox.yMax + (margin*2), topBox.width, topBox.height);
-            DrawSettlementStats(topBox);
-            Widgets.DrawLineHorizontal(boundingBox.x, topBox.yMax + margin, boundingBox.width);
-            DrawMainButtons(botBox);
+            Rect topBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height / 2f);
+            Rect topBoxInner = new Rect(topBox.x + margin, topBox.y + margin, topBox.width - (margin * 2), topBox.height - (margin * 2));
+            Rect botBox = new Rect(topBox.x, topBox.yMax, topBox.width, topBox.height);
+            Rect botBoxInner = new Rect(botBox.x + margin, botBox.y + margin, botBox.width - (margin * 2), botBox.height - (margin * 2));
+
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.DrawBox(topBox);
+            Widgets.DrawBox(botBox);
+            GUI.color = origColor;
+            DrawSettlementStats(topBoxInner);
+            //Widgets.DrawLineHorizontal(boundingBox.x, topBox.yMax + margin, boundingBox.width);
+            DrawMainButtons(botBoxInner);
         }
 
         private void DrawCenterInfo(Rect boundingBox)
         {
             //Rect headerBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30 + (margin*2) + 60);
 
+            Color origColor = GUI.color;
             float nTabs = overviewTabs.Count;
             float tabY = boundingBox.y;
             float tabHeight = 20f;
             float tabWidth = boundingBox.width / nTabs;
+            Rect chosenRect = new Rect();
             for (int i = 0; i < nTabs; i++)
             {
                 Rect tabRect = new Rect(boundingBox.x + (tabWidth * i), tabY, tabWidth, tabHeight);
                 TaggedString label = overviewTabs[i];
+                string nulabel = Text.ClampTextWithEllipsis(tabRect, label);
+                if (nulabel != label)
+                {
+                    UIUtil.TipRegionByText(tabRect, label);
+                }
                 if (Widgets.ButtonText(tabRect, label))
                 {
                     overviewTab = i;
                 }
                 if (overviewTab == i)
                 {
-                    Widgets.DrawBox(tabRect);
+                    chosenRect = tabRect;
                 }
             }
             //tabs for different sections: Overview, Tithing, sub-mod added windows
             Rect overviewBounds = new Rect(boundingBox.x, tabY + tabHeight, boundingBox.width, boundingBox.height - tabHeight);
             Rect infobox = new Rect(overviewBounds.x + margin, overviewBounds.y + margin, overviewBounds.width - (margin*2), overviewBounds.height - (margin*2)); //originally: 520 width, 340 height
-            Widgets.DrawBox(overviewBounds);
+            GUI.color = Color.gray;
+            //fancy custom tab stuff
+            Widgets.DrawLineHorizontal(boundingBox.x, chosenRect.yMax, chosenRect.x - boundingBox.x);
+            Widgets.DrawLineVertical(chosenRect.x, chosenRect.y, chosenRect.height);
+            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.y, chosenRect.width);
+            Widgets.DrawLineVertical(chosenRect.xMax, chosenRect.y, chosenRect.height);
+            Widgets.DrawLineHorizontal(chosenRect.xMax, chosenRect.yMax, boundingBox.xMax - chosenRect.xMax);
+            Widgets.DrawLineVertical(boundingBox.x, chosenRect.yMax, boundingBox.height - chosenRect.height);
+            Widgets.DrawLineVertical(boundingBox.xMax, chosenRect.yMax, boundingBox.height - chosenRect.height);
+            Widgets.DrawLineHorizontal(boundingBox.x, boundingBox.yMax-1, boundingBox.width);
+            GUI.color = origColor;
+            DrawOverview(infobox);
+        }
+        private void DrawOverview(Rect boundingBox)
+        {
             if (overviewTab == 0)
             {
-                DrawBasicOverview(infobox);
+                DrawBasicOverview(boundingBox);
             }
             else if (overviewTab == 1)
             {
-                DrawTitheOverview(infobox);
+                DrawTitheOverview(boundingBox);
+            }
+            else if (overviews.Count > 0 && overviewTab >= 2 && overviewTab <= (overviews.Count-2))
+            {
+                ISettlementWindowOverview overview = overviews[overviewTab - 2];
+                overview.DrawOverviewTab(boundingBox);
             }
         }
         private void DrawCenterHeader(Rect boundingBox)
@@ -273,10 +329,6 @@ namespace FactionColonies
             float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 8) ? scrollSpacing : 0;
             float buildingBoxWidth = Math.Max(boundingBox.x * 0.7f, (buildingSpacingFromSide * 2) + (buildingBoxSide * 4) + (buildingSpacing * 3) + scrollMargin);
             float constructionBoxWidth = boundingBox.width - buildingBoxWidth;
-            /*int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2)) / (buildingBoxSide + buildingSpacing));
-            float buildingBoxHeight = boundingBox.height - (labelTextBox.height + margin * 2);
-            float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);*/
-
 
             Rect leftBox = new Rect(boundingBox.x, boundingBox.y, constructionBoxWidth, boundingBox.height);
             Rect rightBox = new Rect(leftBox.xMax, leftBox.y, buildingBoxWidth, boundingBox.height);
@@ -287,11 +339,13 @@ namespace FactionColonies
         }
         private void DrawTitheOverview(Rect boundingBox)
         {
+            Color origColor = GUI.color;
             List<ResourceFC> resources = settlement.getTitheableResources();
             int numResources = resources.Count;
             /* Draw resource tabs on the left */
             float tabWidth = 25f;
             float tabHeight = boundingBox.height / numResources;
+            Rect chosenRect = new Rect();
             for (int i = 0; i < numResources; i++)
             {
                 Rect tabBox = new Rect(boundingBox.x, boundingBox.y + (tabHeight * i), tabWidth, tabHeight);
@@ -307,9 +361,18 @@ namespace FactionColonies
                 UIUtil.TipRegionByText(tabBox, resources[i].def.LabelCap);
                 if (titheTab == i)
                 {
-                    Widgets.DrawBox(tabBox);
+                    //Widgets.DrawBox(tabBox);
+                    chosenRect = tabBox;
                 }
             }
+            GUI.color = Color.gray;
+            //fancy custom tab stuff
+            Widgets.DrawLineVertical(chosenRect.xMax, boundingBox.y, chosenRect.y - boundingBox.y);
+            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.y, chosenRect.width);
+            Widgets.DrawLineVertical(chosenRect.x, chosenRect.y, chosenRect.height);
+            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.yMax, chosenRect.width);
+            Widgets.DrawLineVertical(chosenRect.xMax, chosenRect.yMax, boundingBox.yMax - chosenRect.yMax);
+            GUI.color = origColor;
 
             ResourceFC titheRes = resources[titheTab];
 
@@ -433,7 +496,10 @@ namespace FactionColonies
         }
         private void DrawTitheScrollBox(Rect boundingBox, ResourceFC res)
         {
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
             Widgets.DrawBox(boundingBox);
+            GUI.color = origColor;
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -443,7 +509,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(header);
             Widgets.Label(headerText, "TitheSelection".Translate());
 
-            Rect addItemButton = new Rect(header.xMax, header.y, boundingBox.width * 0.2f, header.height);
+            Rect addItemButton = new Rect(header.xMax, header.y, (boundingBox.width * 0.2f)-smallMargin, header.height);
             if (Widgets.ButtonText(addItemButton, "AddItem".Translate()))
             {
                 Find.WindowStack.Add(new SettlementWindowFC_AddTithe(settlement, res));
@@ -475,22 +541,22 @@ namespace FactionColonies
                 ThingDef iThing = thingTuple.thingDef;
                 QualityCategory iQuality = thingTuple.quality;
                 ThingDef iStuff = thingTuple.stuffDef;
+                bool labelExtended = false;
 
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                Rect info = new Rect(icon.xMax, row.y + 1, rowHeight - 2, rowHeight - 2);
-                Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 3, 20f, 20f);
-                Rect fieldBox = new Rect(xBox.x - margin - 160f, row.y+2, 160f, rowHeight-4);
+                Rect info = new Rect(icon.xMax, row.y + 2, rowHeight - 4, rowHeight - 4);
+                Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, rowHeight-4, rowHeight-4);
+                Rect fieldBox = new Rect(xBox.x - margin - 180f, row.y+2, 180f, rowHeight-4);
                 Rect valueLabel = new Rect(fieldBox.x - margin - 60f, row.y, 60f, rowHeight);
-                Rect stuffBox = new Rect(valueLabel.x - margin - 60f, row.y, 60f, rowHeight);
-                Rect qualityBox = new Rect(stuffBox.x - 80f, row.y, 80f, rowHeight);
+                Rect stuffBox = new Rect(valueLabel.x - margin - 80f, row.y+2, 80f, rowHeight-4);
+                Rect qualityBox = new Rect(stuffBox.x - 80f, row.y+2, 80f, rowHeight-4);
                 Rect label = new Rect(info.xMax + margin, row.y, qualityBox.x - info.xMax - margin, rowHeight);
                 if (i % 2 == 0)
                 {
                     Widgets.DrawHighlight(row);
                 }
 
-                string nulabel = Text.ClampTextWithEllipsis(label, iThing.LabelCap);
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
@@ -503,7 +569,6 @@ namespace FactionColonies
                 }
                 UIUtil.TipRegionByText(xBox, "TitheXDesc".Translate());
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(label, nulabel);
                 Widgets.Label(valueLabel, "$" +  res.titheThingValue(thingTuple).ToString());
 
                 QualityCategory maxQuality = QualityCategory.Legendary;
@@ -539,6 +604,11 @@ namespace FactionColonies
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 }
+                else
+                {
+                    label.width += qualityBox.width;
+                    labelExtended = true;
+                }
 
                 if (CraftUtil.thingIsStuffable(iThing))
                 {
@@ -572,6 +642,16 @@ namespace FactionColonies
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 }
+                else if (labelExtended)
+                {
+                    label.width += stuffBox.width;
+                }
+                string nulabel = Text.ClampTextWithEllipsis(label, iThing.LabelCap);
+                Widgets.Label(label, nulabel);
+                if (nulabel != iThing.LabelCap)
+                {
+                    UIUtil.TipRegionByText(label, iThing.LabelCap);
+                }
                 //TODO: make this actually work
                 // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
                 //   keep this in mind when testing...
@@ -580,9 +660,11 @@ namespace FactionColonies
                 int max = quantity + res.maxThingCanAfford(thingTuple);
                 string buf = titheBuffers[i];
                 Widgets.IntEntry(fieldBox, ref quantity, ref buf);
+                quantity = Math.Clamp(quantity, 0, max);
+                buf = quantity.ToString();
                 if (oldQuantity != quantity)
                 {
-                    res.addToTitheList(thingTuple, quantity);
+                    res.addToTitheList(thingTuple, quantity, true);
                 }
                 titheBuffers[i] = buf;
             }
@@ -592,7 +674,10 @@ namespace FactionColonies
         private Vector2 randomTitheScrollBar = new Vector2();
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
         {
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
             Widgets.DrawBox(boundingBox);
+            GUI.color = origColor;
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -649,7 +734,7 @@ namespace FactionColonies
                     ThingDef iThing = selectedThings[i];
                     Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                     Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                    Rect info = new Rect(icon.xMax, row.y + 1, rowHeight - 2, rowHeight - 2);
+                    Rect info = new Rect(icon.xMax, row.y + 2, rowHeight - 4, rowHeight - 4);
                     Rect xBox = new Rect(row.xMax - margin - 20f, row.y + 2, 19f, 19f);
                     Rect valueLabel = new Rect(xBox.x - margin - 60f, xBox.y, 60f, rowHeight);
                     Rect label = new Rect(info.xMax + margin, row.y, valueLabel.x - info.xMax - margin, rowHeight);
@@ -826,15 +911,17 @@ namespace FactionColonies
             {
                 Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
                 string label = buttons[i];
+                bool enabled = true;
                 if (label == "UpgradeTown".Translate() && settlement.isUpgrading)
                 {
                     label = "SettlementUpgradeInProgress".Translate();
                     GUI.color = Color.gray;
+                    enabled = false;
                 }
-                if (Widgets.ButtonText(buttonRect, buttons[i]))
+                if (Widgets.ButtonText(buttonRect, label, active: enabled))
                 {
                     //If click a button button
-                    if (buttons[i] == "UpgradeTown".Translate())
+                    if (label == "UpgradeTown".Translate())
                     {
                         //if click upgrade town button
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
@@ -847,7 +934,7 @@ namespace FactionColonies
                         ColonyUtil.removePlayerSettlement(settlement);
                     }*/
 
-                    if (buttons[i] == "DeleteSettlement".Translate())
+                    if (label == "DeleteSettlement".Translate())
                     {
                         //if click town log button
                         //buttons[i] = "AreYouSureRemove".Translate();
@@ -855,7 +942,7 @@ namespace FactionColonies
                         Find.WindowStack.Add(new Dialog_Confirm("DeleteSettlementConfirm".Translate(settlement.Name), removeSettlement));
                     }
 
-                    if (buttons[i] == "FCSpecialActions".Translate())
+                    if (label == "FCSpecialActions".Translate())
                     {
                         List<FloatMenuOption> list = new List<FloatMenuOption>
                         {
@@ -893,12 +980,12 @@ namespace FactionColonies
                         Find.WindowStack.Add(new FloatMenu(list));
                     }
 
-                    if (buttons[i] == "PrisonersMenu".Translate())
+                    if (label == "PrisonersMenu".Translate())
                     {
                         Find.WindowStack.Add(new FCPrisonerMenu(settlement));
                     }
 
-                    if (buttons[i] == "Military".Translate() && settlement.MilitaryComp != null)
+                    if (label == "Military".Translate() && settlement.MilitaryComp != null)
                     {
                         List<FloatMenuOption> list = new List<FloatMenuOption>
                         {
@@ -1213,7 +1300,10 @@ namespace FactionColonies
 
         private void DrawRightInfo(Rect boundingBox)
         {
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
             Widgets.DrawBox(boundingBox);
+            GUI.color = origColor;
             Rect prodBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin*2), boundingBox.height - (margin*2));
             DrawProduction(prodBox);
         }
@@ -1277,8 +1367,8 @@ namespace FactionColonies
             Widgets.Label(taxBonusLabel, "TaxBase".Translate());
 
             Text.Anchor = TextAnchor.UpperCenter;
-            Widgets.Label(incomeNum, settlement.totalIncome.ToString());
-            Widgets.Label(costsNum, settlement.totalUpkeep.ToString());
+            Widgets.Label(incomeNum, Math.Round(settlement.totalIncome,2).ToString());
+            Widgets.Label(costsNum, Math.Round(settlement.totalUpkeep,2).ToString());
             Widgets.Label(taxBonusNum, (settlement.getSettlementTaxBonus() * 100d).ToString() + "%");
 
             UIUtil.TipRegionByText(incomeBox, settlement.incomeExp);
@@ -1306,7 +1396,7 @@ namespace FactionColonies
             Rect upkeepNum = new Rect(upkeepLabel.xMax, upkeepLabel.y, labelWidth * 0.25f, labelHeight);
 
             Widgets.DrawHighlight(workerBox);
-            TooltipHandler.TipRegionByKey(overMaxBox, "AssignedOvermaxWorkersTooltip");
+            UIUtil.TipRegionByText(overMaxBox, "AssignedOvermaxWorkersTooltip".Translate());
             Widgets.DrawHighlight(upkeepBox);
 
             Widgets.Label(workerLabel, "AssignedWorkers".Translate());

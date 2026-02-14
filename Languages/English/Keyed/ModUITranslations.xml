@@ -307,8 +307,6 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<TitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</TitheListRejectionStuff>
 	<TitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</TitheListRejectionStuffQuality>
 	
-	<NoRan
-	
 	<PerWorker>Per-Worker</PerWorker>
 	
 	<Overview>Overview</Overview>

@@ -830,7 +830,7 @@ namespace FactionColonies
                 if (resource.actualIncome > 0)
                 {
                     income += resource.actualIncome;
-                    incomeExp += "+" + (resource.actualIncome).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
+                    incomeExp += "+" + Math.Round((resource.actualIncome),2).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
                 }
             }
             incomeExp = incomeExp.Trim();
@@ -929,7 +929,7 @@ namespace FactionColonies
             workerTotalUpkeep = (workers * getBaseWorkerCost()) + ((workers * getBaseWorkerCost()) * (overWork / 20));
             if (workerTotalUpkeep > 0)
             {
-                upkeepExp += "+" + workerTotalUpkeep.ToString() + " - " + "Workers".Translate() + "\n";
+                upkeepExp += "+" + Math.Round(workerTotalUpkeep,2).ToString() + " - " + "Workers".Translate() + "\n";
             }
 
             //add building upkeep
@@ -940,7 +940,7 @@ namespace FactionColonies
             if (buildingsUpkeep > 0)
             {
                 upkeep += buildingsUpkeep;
-                upkeepExp += "+" + buildingsUpkeep.ToString() + " - " + "Buildings".Translate() + "\n";
+                upkeepExp += "+" + Math.Round(buildingsUpkeep,2).ToString() + " - " + "Buildings".Translate() + "\n";
             }
 
             foreach (ResourceFC resource in resources)
@@ -948,7 +948,7 @@ namespace FactionColonies
                 if (resource.actualIncome < 0)
                 {
                     upkeep += (-1) * resource.actualIncome;
-                    upkeepExp += "+" + (-1 * resource.actualIncome).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
+                    upkeepExp += "+" + Math.Round((-1 * resource.actualIncome),2).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
                 }
             }
 
@@ -1488,14 +1488,17 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                int resExtraSilver = 0;
-                List<Thing> resTitheThings = resource.generateTithe(out resExtraSilver);
-
-                if (resTitheThings.Count > 0)
+                if (resource.canTithe)
                 {
-                    titheThings.AddRange(resTitheThings);
+                    int resExtraSilver = 0;
+                    List<Thing> resTitheThings = resource.generateTithe(out resExtraSilver);
+
+                    if (resTitheThings.Count > 0)
+                    {
+                        titheThings.AddRange(resTitheThings);
+                    }
+                    tmpSilverAmount += resExtraSilver;
                 }
-                tmpSilverAmount += resExtraSilver;
             }
 
             postTaxPrep();

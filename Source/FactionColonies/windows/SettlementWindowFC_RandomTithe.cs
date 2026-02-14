@@ -104,7 +104,7 @@ namespace FactionColonies
                 ThingDef iThing = allThings[i];
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                Rect info = new Rect(icon.xMax, row.y + 1, rowHeight - 2, rowHeight - 2);
+                Rect info = new Rect(icon.xMax, row.y + 2, rowHeight - 4, rowHeight - 4);
                 Rect enableBox = new Rect(row.xMax - margin - 65f, row.y, 65f, rowHeight);
                 Rect valueLabel = new Rect(enableBox.x - margin - 60f, enableBox.y, 60f, rowHeight);
                 Rect label = new Rect(info.xMax + margin, row.y, valueLabel.x - info.xMax - (margin*2), rowHeight);

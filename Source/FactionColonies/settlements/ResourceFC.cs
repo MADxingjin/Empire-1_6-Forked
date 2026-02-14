@@ -123,8 +123,17 @@ namespace FactionColonies
             {
                 if (dirtyTitheCache)
                 {
-                    pruneTitheList();
-                    cachedTitheTotalValue = calcTotalTitheValue();
+                    // Pool resources are always counted as though they are tithing, since you can't actually get any silver from them.
+                    // TODO: change this? Make it possible to control how much of a pool resources's pool goes into the actual pool, and how much gets shipped as silver?
+                    if (def.isPoolResource)
+                    {
+                        cachedTitheTotalValue = rawTotalProductionMarketValue;
+                    }
+                    else
+                    {
+                        pruneTitheList();
+                        cachedTitheTotalValue = calcTotalTitheValue();
+                    }
                     dirtyTitheCache = false;
                 }
                 return cachedTitheTotalValue + randomTitheBudget;
@@ -139,8 +148,8 @@ namespace FactionColonies
          */
         public double rawTotalProduction => production * assignedWorkers;
         public double rawTotalProductionMarketValue => rawTotalProduction * FCSettings.silverPerResource;
-        public double totalProductionMarketValue => rawTotalProductionMarketValue - titheTotalValue;
-        public double actualIncome => totalProductionMarketValue - titheTotalValue;
+        //public double totalProductionMarketValue => rawTotalProductionMarketValue - titheTotalValue;
+        public double actualIncome => rawTotalProductionMarketValue - titheTotalValue;
 
         public bool canTithe => !def.isPoolResource;
 
@@ -631,18 +640,26 @@ namespace FactionColonies
         /// <param name="thing">A ThingQualityTuple specifying the ThingDef, QualityCategory, and StuffDef of the thing to add.</param>
         /// <param name="quantity">The quantity to add to the tithes list. Should always be a non-zero positive value.</param>
         /// <returns>TRUE if the thing was successfully added to the tithes dictionary, FALSE otherwise.</returns>
-        public bool addToTitheList(ThingQualityTuple thing, int quantity)
+        public bool addToTitheList(ThingQualityTuple thing, int quantity, bool forceToQuantity = false)
         {
             if (quantity < 0)
             {
                 LogUtil.Error($"Tried to add a negative quantity of objects to the tithes list for resource {def.LabelCap}. You should use decrementInTitheList() instead.");
                 return false;
             }
-            LogUtil.Message($"Resource {def.LabelCap} adding new thing to tithe list: {thing.thingDef.LabelCap} | {TextUtil.GetQualityLabelCap(thing.quality)} | {thing.stuffDef?.LabelCap ?? "null stuff"}");
+            LogUtil.Message($"Resource {def.LabelCap} adding new thing to tithe list: [{thing.thingDef.LabelCap} | {TextUtil.GetQualityLabelCap(thing.quality)} | {thing.stuffDef?.LabelCap ?? "null stuff"}] with quantity {quantity}");
 
             if (tithes.ContainsKey(thing))
             {
-                int totalNum = tithes[thing] + quantity;
+                int totalNum;
+                if (forceToQuantity)
+                {
+                    totalNum = quantity;
+                }
+                else
+                {
+                    totalNum = tithes[thing] + quantity;
+                }
                 tithes[thing] = totalNum;
             }
             else
@@ -651,6 +668,7 @@ namespace FactionColonies
             }
 
             dirtyTitheCache = true;
+            settlement.updateProfitAndProduction();
             return true;
         }
         /// <summary>
@@ -686,6 +704,7 @@ namespace FactionColonies
                 LogUtil.Warning($"Tried to remove {thing.thingDef.LabelCap} from tithes list for resource {def.LabelCap}, but it doesn't exist");
             }
             dirtyTitheCache = true;
+            settlement.updateProfitAndProduction();
         }
         /// <summary>
         /// Fully removes the given <paramref name="thing"/> from the tithes list.
@@ -700,6 +719,7 @@ namespace FactionColonies
                 LogUtil.Message($"Resource {def.LabelCap} removing thing from tithe list: {thing.thingDef.LabelCap} | {TextUtil.GetQualityLabelCap(thing.quality)} | {thing.stuffDef?.LabelCap ?? "null stuff"}");
                 tithes.Remove(thing);
                 dirtyTitheCache = true;
+                settlement.updateProfitAndProduction();
             }
         }
         public ThingQualityTuple getTitheListKey(ThingQualityTuple thing)
@@ -777,7 +797,19 @@ namespace FactionColonies
             }
             else
             {
-                value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing.thingDef, thing.stuffDef);
+                if (CraftUtil.thingIsStuffable(thing.thingDef))
+                {
+                    value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing.thingDef, thing.stuffDef);
+                }
+                else
+                {
+                    value = thing.thingDef.BaseMarketValue;
+                }
+            }
+            // Prevent shenanigans
+            if (value <= 0)
+            {
+                value = 100;
             }
             return value;
         }
