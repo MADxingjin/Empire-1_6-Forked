@@ -16,6 +16,8 @@ namespace FactionColonies.util
 
         public IEnumerable<XenotypeDef> AllowedXenotypes => allowedXenotypes;
         public int AllowedXenotypeCount => allowedXenotypes.Count;
+        // Borrowed from RaceThingfilter
+        private bool HasMissingPawnKindDefTypes => !faction.pawnGroupMakers[1].traders.Any() || !faction.pawnGroupMakers[0].options.Any() || !faction.pawnGroupMakers[3].options.Any() || WorldSettlementTraderTracker.BaseTraderKinds == null || !WorldSettlementTraderTracker.BaseTraderKinds.Any();
 
         public XenotypeFilter()
         {
@@ -209,13 +211,18 @@ namespace FactionColonies.util
             };
 
             // Generate pawn options for each allowed xenotype
+            //TODO: this needs work. PawnKindDefs don't store xenotype info (outside of xenotype sets, which only determine the chances of that pawnkind being a given xenotype),
+            //      so all we're actually doing here is storing an identical copy of the pawnkind list for every enabled xenotype
+            //      It also isn't HAR compatible, since HAR works with the actual race ThingDef, not through Xenotypes. Could be argued that HAR compat isn't worth it, but it
+            //        probably is
+            //      Could probably store two lists: one of xenotypes, and one of races. We then store one pawnkind for each race, instead of for each xenotype
+            //        when generating a pawn, check if the pawnkind is for "Human"; if so, can try forcing xenotypes. Otherwise, leave the xenotype be
+            //      Probably exclude pawnkinds that include a banned xenotype in their xenotypeset? (by having a non-zero chance for that xenotype)
+            //      Looking at how pawngen works, we should probably be setting the faction-level xenotypeset. That would allow the game to automatically pull the correct xenotypes. If we set that
+            //        and the pawnGroupMakers correctly, then we shouldn't need any extra pawngeneration handling. The pawn generation functions for delivery events could probably be genericised then
             foreach (var xenotype in allowedXenotypes)
             {
-                var humanPawns = DefDatabase<PawnKindDef>.AllDefsListForReading
-                    .Where(def => def.race == ThingDefOf.Human && 
-                                def.defaultFactionDef != null && 
-                                def.defaultFactionDef.techLevel <= factionFc.techLevel);
-
+                var humanPawns = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(def => (def.race == ThingDefOf.Human || def.IsHumanLikeRace()) && def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel);
                 foreach (var pawnKind in humanPawns)
                 {
                     var pawnOption = new PawnGenOption 

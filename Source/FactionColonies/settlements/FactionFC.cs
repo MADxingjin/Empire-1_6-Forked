@@ -505,6 +505,15 @@ namespace FactionColonies
 
             //If Player Colony Faction does exists
             Faction faction = ColonyUtil.getPlayerColonyFaction();
+            /* Check on the leader */
+            //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
+            if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
+            {
+                if (faction != null && faction.leader == null || faction.leader.Dead)
+                {
+                    ColonyUtil.CreatePlayerFactionLeader(faction);
+                }
+            }
             /* Always call the tick functions, but pass faction into them.
              * We always need to update the interval, even if the faction doesn't exist. Otherwise, if the player delays in creating the faction,
              * then we'll suddenly hit them with a billion back-taxes and back-events as the timers try to catch up.
@@ -692,9 +701,10 @@ namespace FactionColonies
             }
         }
 
-        public void updateTechLevel(ResearchManager researchManager)
+        public void updateTechLevel(ResearchManager researchManager, Faction faction = null)
         {
             bool medievalOnly = FCSettings.medievalTechOnly;
+            TechLevel curTechLevel = techLevel;
 
 
             if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false) != null &&
@@ -703,7 +713,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
-                raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false)) ==
@@ -712,7 +721,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
-                raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false)) ==
@@ -721,7 +729,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
-                raceFilter.FinalizeInit(this);
             }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false)) ==
@@ -730,8 +737,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Medieval;
                 LogUtil.Message("updateTechLevel: Medieval");
-                raceFilter.FinalizeInit(this);
-                xenotypeFilter.FinalizeInit(this);
             }
             else
             {
@@ -739,28 +744,24 @@ namespace FactionColonies
                 {
                     LogUtil.Message("updateTechLevel: Neolithic");
                     techLevel = TechLevel.Neolithic;
-                    raceFilter.FinalizeInit(this);
-                    xenotypeFilter.FinalizeInit(this);
                 }
             }
 
-            Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
+            if (techLevel != curTechLevel)
+            {
+                raceFilter.FinalizeInit(this);
+                xenotypeFilter.FinalizeInit(this);
+            }
+
+            Faction playerColonyfaction = faction ?? ColonyUtil.getPlayerColonyFaction();
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
             {
                 LogUtil.Message("Updating Tech Level");
                 updateFactionDef(techLevel, ref playerColonyfaction);
             }
-            else if (playerColonyfaction.def.techLevel >= techLevel)
+            else if (playerColonyfaction != null && playerColonyfaction.def.techLevel >= techLevel)
             {
                 //LogUtil.Message("Tech Level already matches");
-            }
-            // Check Leader
-            if (playerColonyfaction != null)
-            {
-                if (playerColonyfaction.leader == null || playerColonyfaction.leader.Dead)
-                {
-                    ColonyUtil.CreatePlayerFactionLeader(playerColonyfaction);
-                }
             }
         }
 

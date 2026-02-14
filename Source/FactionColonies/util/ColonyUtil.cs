@@ -256,6 +256,8 @@ namespace FactionColonies.util
             faction.Name = "PlayerColony".Translate();
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
+
+            worldcomp.updateTechLevel(Find.ResearchManager, faction);
             //<DevAdd> Copy player faction relationships  
             foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
             {
@@ -265,11 +267,12 @@ namespace FactionColonies.util
             faction.TryAffectGoodwillWith(Faction.OfPlayer, 200);
 
             // Generate Leader
-            CreatePlayerFactionLeader(faction);
+            if (faction.leader == null || faction.leader.Dead)
+            {
+                CreatePlayerFactionLeader(faction);
+            }
 
             Find.FactionManager.Add(faction);
-
-            Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);
             return faction;
         }
 
