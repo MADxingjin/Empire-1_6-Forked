@@ -121,34 +121,29 @@ namespace FactionColonies
         {
             get
             {
+                // Pool resources are always counted as though they are tithing, since you can't actually get any silver from them.
+                // TODO: change this? Make it possible to control how much of a pool resources's pool goes into the actual pool, and how much gets shipped as silver?
+                if (def.isPoolResource)
+                {
+                    return rawTotalProductionMarketValue;
+                }
                 if (dirtyTitheCache)
                 {
-                    // Pool resources are always counted as though they are tithing, since you can't actually get any silver from them.
-                    // TODO: change this? Make it possible to control how much of a pool resources's pool goes into the actual pool, and how much gets shipped as silver?
-                    if (def.isPoolResource)
-                    {
-                        cachedTitheTotalValue = rawTotalProductionMarketValue;
-                    }
-                    else
-                    {
-                        pruneTitheList();
-                        cachedTitheTotalValue = calcTotalTitheValue();
-                    }
+                    pruneTitheList();
+                    cachedTitheTotalValue = calcTotalTitheValue();
                     dirtyTitheCache = false;
                 }
                 return cachedTitheTotalValue + randomTitheBudget;
             }
         }
         public double titheTotalValueNoRandom => titheTotalValue - randomTitheBudget;
-        /* NOTE: need to be very careful about which of rawTotalProduction, totalProduction, and actualIncome to use.
+        /* NOTE: need to be careful about which of rawTotalProduction and actualIncome to use.
          *  * rawTotalProduction is the TOTAL production value of the resource, before accounting for tithes.
-         *  * totalProductionMarketValue is the amount of production leftover after accounting for tithes.
          *  * actualIncome reports the actual income of the resource, accounting for tithes. This can be negative if the value of the tithes is
-         *    greater than the leftover production of the resource.
+         *    greater than the production of the resource, due to tithing modifiers.
          */
         public double rawTotalProduction => production * assignedWorkers;
         public double rawTotalProductionMarketValue => rawTotalProduction * FCSettings.silverPerResource;
-        //public double totalProductionMarketValue => rawTotalProductionMarketValue - titheTotalValue;
         public double actualIncome => rawTotalProductionMarketValue - titheTotalValue;
 
         public bool canTithe => !def.isPoolResource;
@@ -960,7 +955,8 @@ namespace FactionColonies
                     // Calculate the random tithe
 
                     double minimum = randomTitheFilter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
-                    if (minimum >= randomBudget)
+                    LogUtil.Message($"{settlement.Name}, resource {label}, minimum random tithe: {minimum}, budget: {randomBudget}");
+                    if (minimum <= randomBudget)
                     {
                         List<Thing> randomTitheList = new List<Thing>();
                         ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
@@ -983,9 +979,15 @@ namespace FactionColonies
                         }
                         randomTitheList = thingSetMaker.Generate(param);
 
-                        titheItems.AddRange(randomTitheList);
-
-                        randomTitheStock = 0;
+                        if (randomTitheList is null || randomTitheList.Count == 0)
+                        {
+                            LogUtil.Message($"Resource {label} in settlement {settlement.Name} generated an empty random tithe list");
+                        }
+                        else
+                        {
+                            titheItems.AddRange(randomTitheList);
+                            randomTitheStock = 0;
+                        }
                     }
                     else
                     {
@@ -1003,17 +1005,31 @@ namespace FactionColonies
                 foreach (ThingQualityTuple key in tithes.Keys)
                 {
                     int quantity = tithes[key];
-
-                    for (int i = 0; i < quantity; i++)
+                    if (quantity == 0)
                     {
-                        Thing thing = ThingMaker.MakeThing(key.thingDef, key.stuffDef);
+                        continue;
+                    }
 
-                        if (CraftUtil.thingHasQuality(key.thingDef))
+                    /* Try to generate the list through the resource's ResourceFilterExtension */
+                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, key.quality, key.stuffDef, quantity);
+                    if (things is null)
+                    {
+                        /* If we're here, then the resource doesn't have a ResourceFilterExtension. So try to make things the generic way. */
+                        for (int i = 0; i < quantity; i++)
                         {
-                            CompQuality thingQuality = thing.TryGetComp<CompQuality>();
-                            thingQuality.SetQuality(key.quality, ArtGenerationContext.Outsider);
+                            Thing thing = ThingMaker.MakeThing(key.thingDef, key.stuffDef);
+
+                            if (CraftUtil.thingHasQuality(key.thingDef))
+                            {
+                                CompQuality thingQuality = thing.TryGetComp<CompQuality>();
+                                thingQuality.SetQuality(key.quality, ArtGenerationContext.Outsider);
+                            }
+                            titheItems.Add(thing);
                         }
-                        titheItems.Add(thing);
+                    }
+                    else
+                    {
+                        titheItems.AddRange(things);
                     }
                 }
             }
@@ -1180,7 +1196,7 @@ namespace FactionColonies
                     double resource = 0;
                     for (int k = 0; k < factionFC.settlements.Count(); k++)
                     {
-                        resource += (int)(factionFC.settlements[k].getResource(resourceDef)?.actualIncome ?? 0);
+                        resource += (int)(factionFC.settlements[k].getResource(resourceDef)?.rawTotalProduction ?? 0);
                     }
 
                     cachedAmount = resource;

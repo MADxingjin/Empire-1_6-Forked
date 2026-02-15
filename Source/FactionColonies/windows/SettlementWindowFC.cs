@@ -481,9 +481,9 @@ namespace FactionColonies
                 List<ThingQualityTuple> items = res.getTitheListKeys();
                 for (int i = 0; i < items.Count; i ++)
                 {
-                    titheBuffers.Add("");
-                    titheBuffers[i] = res.getTitheListValue(items[i]).ToString();
+                    titheBuffers.Add(res.getTitheListValue(items[i]).ToString());
                 }
+                res.storedRandomTitheBudgetBuffer = res.storedRandomTitheBudget.ToString();
             }
             currentDictSize = titheBuffers.Count;
         }
@@ -822,7 +822,7 @@ namespace FactionColonies
                     tooltip = "SettlementHappiness".Translate() + "\n-----\n" + "SettlementHappinessDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double happinessGain = Math.Round(settlement.getTotalHappinessGain());
+                    double happinessGain = Math.Round(settlement.getTotalHappinessGain(),1);
                     TaggedString statGain = TextUtil.colorizeAdditiveBonus(happinessGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
@@ -838,7 +838,7 @@ namespace FactionColonies
                     tooltip = "SettlementLoyalty".Translate() + "\n-----\n" + "SettlementLoyaltyDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double loyaltyGain = Math.Round(settlement.getTotalLoyaltyGain());
+                    double loyaltyGain = Math.Round(settlement.getTotalLoyaltyGain(),1);
                     TaggedString statGain = TextUtil.colorizeAdditiveBonus(loyaltyGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
@@ -854,7 +854,7 @@ namespace FactionColonies
                     tooltip = "SettlementUnrest".Translate() + "\n-----\n" + "SettlementUnrestDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double unrestGain = Math.Round(settlement.getTotalUnrestGain());
+                    double unrestGain = Math.Round(settlement.getTotalUnrestGain(),1);
                     TaggedString statGain = TextUtil.colorizeAdditiveBonus(unrestGain, true);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
@@ -870,7 +870,7 @@ namespace FactionColonies
                     tooltip = "SettlementProsperity".Translate() + "\n-----\n" + "SettlementProsperityDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double prosperityGain = Math.Round(settlement.getProsperityGain());
+                    double prosperityGain = Math.Round(settlement.getProsperityGain(),1);
                     TaggedString statGain = TextUtil.colorizeAdditiveBonus(prosperityGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;

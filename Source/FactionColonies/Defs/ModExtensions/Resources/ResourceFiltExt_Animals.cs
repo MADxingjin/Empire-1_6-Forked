@@ -26,6 +26,19 @@ namespace FactionColonies
             tlevel = TechLevel.Undefined;
             return new ThingSetMaker_Animals();
         }
+        public override List<Thing> generateSpecificThings(ThingDef thingDef, QualityCategory quality, ThingDef stuffDef, int quantity)
+        {
+            List<Thing> output = new List<Thing>();
+            for(int i = 0; i < quantity; i++)
+            {
+                Pawn animalPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(thingDef.race.AnyPawnKind, Faction.OfPlayer));
+                if (!(animalPawn is null))
+                {
+                    output.Add(animalPawn);
+                }
+            }
+            return output;
+        }
     }
     /* ThingSetMaker_Animal is used by the Animal resource, so for organization purposes, I'm moving it here,
      * in the ResourceFilterExtension for animals */

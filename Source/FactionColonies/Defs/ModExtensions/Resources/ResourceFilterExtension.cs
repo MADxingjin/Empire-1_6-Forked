@@ -33,5 +33,10 @@ namespace FactionColonies
             tlevel = TechLevel.Undefined;
             return null;
         }
+
+        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, QualityCategory quality, ThingDef stuffDef, int quantity)
+        {
+            return null;
+        }
     }
 }

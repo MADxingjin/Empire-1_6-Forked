@@ -122,7 +122,6 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iThing.LabelCap);
                 Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
-                //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
                 UIUtil.InfoCardButton(info, iThing);
             }
 
