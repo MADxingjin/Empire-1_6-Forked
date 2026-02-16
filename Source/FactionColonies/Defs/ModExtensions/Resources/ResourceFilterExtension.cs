@@ -33,8 +33,17 @@ namespace FactionColonies
             tlevel = TechLevel.Undefined;
             return null;
         }
-
-        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, QualityCategory quality, ThingDef stuffDef, int quantity)
+        /// <summary>
+        /// Returns a list of generated things that satisfy the given <paramref name="thingDef"/>, <paramref name="quality"/>, and <paramref name="stuffDef"/>.
+        /// 
+        /// <para>quality can be ignored if the thingDef does not have a quality comp, and stuffDef can be ignored if the thingDef is not stuffable.</para>
+        /// </summary>
+        /// <param name="thingDef">ThingDef of the thing(s) to generate.</param>
+        /// <param name="quality">QualityCategory of the thing(s) to generate. Can be ignored if the thingDef does not have a quality comp.</param>
+        /// <param name="stuffDef">ThingDef of the stuff for this thing. Can be ignored if the thingDef is not stuffable.</param>
+        /// <param name="quantity">The number of things to generate.</param>
+        /// <returns></returns>
+        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null)
         {
             return null;
         }

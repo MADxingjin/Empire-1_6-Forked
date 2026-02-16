@@ -301,7 +301,7 @@ namespace FactionColonies
         public void setDirtyRandomTitheCache()
         {
             dirtyRandomTitheCache = true;
-            settlement.dirtyGrantThingList();
+            settlement.dirtyGrandThingList();
         }
         public void setDirtyCacheProdBase()
         {
@@ -536,7 +536,7 @@ namespace FactionColonies
                 ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
                 ThingSetMakerParams param = new ThingSetMakerParams();
                 param.filter = new ThingFilter();
-                param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+                param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
                 param.countRange = new IntRange(1, 1);
 
                 TechLevel tmplevel = TechLevel.Undefined;
@@ -621,12 +621,6 @@ namespace FactionColonies
         /* - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - *
          *   Tithe functions                                                                                                                                             *
          * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - */
-        // Braintorming time
-        // On thinking about it, incremental tithing is proving to be trickier than expected, especially if you want to let the user specify the quality level or stuff
-        //   that the item is made of
-        // What exactly do we need?
-        //  - track the thingDef, specified quality, specified stuff, and quanity. At tithe time, can use these to determine value, and then use that value to determine how many of the object are produced
-        //  - need a way to determine if a thingDef CAN have a quality, or a stuff
         /// <summary>
         /// Adds a given quantity of thing to the tithes list.
         /// <para>This function does not check if the given <paramref name="quantity"/> of <paramref name="thing"/> can actually be afforded.</para>
@@ -855,11 +849,6 @@ namespace FactionColonies
         /// <para>This function dirties the tithe cache, forcing a recalculation of the total tithe value.</para>
         /// <para>NOTE: The algorithm is heavy-handed. Calling this function with high frequency is ill-advised.</para>
         /// </summary>
-        /* Should only call this function in one of two places: at tithe time, and if player clicks a button to do so on the tithing screen.
-         * Otherwise, we should let the player set whatever values they want, and merely warn them that the list will be pruned at tithe time.
-         * Actually, to keep income values properly in sync, the tithe list should be pruned every time its changed, or the resource production
-         * changes...
-         */
         // Could probably make the algorithm slightly less heavy by just subtracting values from totalValue instead of constantly re-calling
         //   calcTotalTitheValue(), but I'm paranoid about the values misaligning. So leaving as is. If optimization is necessary, that's a
         //   decent place to start.
@@ -961,10 +950,11 @@ namespace FactionColonies
                         List<Thing> randomTitheList = new List<Thing>();
                         ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
                         ThingSetMakerParams param = new ThingSetMakerParams();
-                        double variance = getTitheModifierPerWorker();
-                        param.totalMarketValueRange = new FloatRange((float)randomBudget, (float)(randomBudget + (variance * assignedWorkers)));
+                        param.totalMarketValueRange = new FloatRange((float)randomBudget, (float)(randomBudget + getTotalTitheModifierForWorkers()));
                         param.filter = randomTitheFilter;
-                        param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+                        param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
+
+                        LogUtil.Message($"  randomTitheFilter has {randomTitheFilter.AllowedDefCount} allowed items");
 
                         TechLevel tmplevel = TechLevel.Undefined;
                         ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
@@ -985,6 +975,10 @@ namespace FactionColonies
                         }
                         else
                         {
+                            for(int i = 0; i < randomTitheList.Count; i++)
+                            {
+                                LogUtil.Message($"  randomTitheList[{i}]: {randomTitheList[i].LabelCap}");
+                            }
                             titheItems.AddRange(randomTitheList);
                             randomTitheStock = 0;
                         }
@@ -1011,10 +1005,10 @@ namespace FactionColonies
                     }
 
                     /* Try to generate the list through the resource's ResourceFilterExtension */
-                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, key.quality, key.stuffDef, quantity);
+                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, quantity, key.quality, key.stuffDef);
                     if (things is null)
                     {
-                        /* If we're here, then the resource doesn't have a ResourceFilterExtension. So try to make things the generic way. */
+                        /* If we're here, then the resource doesn't have a special implementation for generateSpecificThings(). So try to make things the generic way. */
                         for (int i = 0; i < quantity; i++)
                         {
                             Thing thing = ThingMaker.MakeThing(key.thingDef, key.stuffDef);

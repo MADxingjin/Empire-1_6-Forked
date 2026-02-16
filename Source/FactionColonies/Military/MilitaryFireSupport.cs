@@ -158,7 +158,7 @@ namespace FactionColonies
 
             launch.Invoke(thing, new object[]
             {
-                ColonyUtil.getPlayerColonyFaction().leader,
+                FactionCache.PlayerColonyFaction.leader,
                 sourceVec,
                 shotAngle,
                 shotRotation,

@@ -169,7 +169,7 @@ namespace FactionColonies
             base.OnAcceptKeyPressed();
             faction.title = title;
             faction.name = name;
-            ColonyUtil.getPlayerColonyFaction().Name = name;
+            FactionCache.PlayerColonyFaction.Name = name;
             //Find.World.GetComponent<FactionFC>().name = name;
         }
 
@@ -257,7 +257,7 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
             {
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 faction.title = title;
                 faction.name = name;
                 fact.Name = name;

@@ -115,9 +115,10 @@ namespace FactionColonies
                 }
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
-                if (Widgets.ButtonText(enableBox, IsAllowedTranslation(resource.getRandomTitheFilterAllow(iThing))))
+                bool allowed = resource.getRandomTitheFilterAllow(iThing);
+                if (Widgets.ButtonText(enableBox, IsAllowedTranslation(allowed)))
                 {
-                    resource.setRandomTitheFilterAllow(iThing, !resource.getRandomTitheFilterAllow(iThing));
+                    resource.setRandomTitheFilterAllow(iThing, !allowed);
                 }
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iThing.LabelCap);

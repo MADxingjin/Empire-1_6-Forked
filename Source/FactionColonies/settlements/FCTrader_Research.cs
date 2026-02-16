@@ -114,7 +114,7 @@ namespace FactionColonies
         {
             get
             {
-                return ColonyUtil.getPlayerColonyFaction();
+                return FactionCache.PlayerColonyFaction;
             }
         }
 

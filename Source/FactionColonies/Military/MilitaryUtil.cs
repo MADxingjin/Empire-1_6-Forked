@@ -27,7 +27,7 @@ namespace FactionColonies
             IncidentParms parms = new IncidentParms
             {
                 target = Find.CurrentMap,
-                faction = ColonyUtil.getPlayerColonyFaction(),
+                faction = FactionCache.PlayerColonyFaction,
                 podOpenDelay = 140,
                 points = 999,
                 raidArrivalModeForQuickMilitaryAid = true,
@@ -56,7 +56,7 @@ namespace FactionColonies
             Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
 
             settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJob.Deploy, 1, null);
-            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {

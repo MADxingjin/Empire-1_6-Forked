@@ -116,7 +116,7 @@ namespace FactionColonies
             //Settings button
             if (Widgets.ButtonImage(headerSettings, TexLoad.iconCustomize))
             {
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
             }

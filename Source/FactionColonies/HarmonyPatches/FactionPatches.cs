@@ -12,7 +12,7 @@ namespace FactionColonies
     {
         static void Postfix(ref IncidentWorker_RaidFriendly __instance, ref bool __result, IncidentParms parms)
         {
-            if (parms.faction == ColonyUtil.getPlayerColonyFaction())
+            if (parms.faction == FactionCache.PlayerColonyFaction)
             {
                 parms.faction = null;
                 __result = false;

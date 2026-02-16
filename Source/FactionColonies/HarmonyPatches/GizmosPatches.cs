@@ -8,34 +8,6 @@ using Verse;
 
 namespace FactionColonies
 {
-	/// Cached faction reference to avoid expensive lookups every frame
-	internal static class FactionCache
-	{
-		private static Faction _cachedFaction;
-		private static int _cacheFrame = -1;
-		
-		public static Faction PlayerColonyFaction
-		{
-			get
-			{
-				// Cache for one frame to handle hot reloads/game state changes
-				int currentFrame = UnityEngine.Time.frameCount;
-				if (_cacheFrame != currentFrame || _cachedFaction == null)
-				{
-					_cachedFaction = ColonyUtil.getPlayerColonyFaction();
-					_cacheFrame = currentFrame;
-				}
-				return _cachedFaction;
-			}
-		}
-		
-		public static void InvalidateCache()
-		{
-			_cachedFaction = null;
-			_cacheFrame = -1;
-		}
-	}
-
 	//TODO: most, if not all of these patches could be reworked as comps. Look into that
 
 	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
@@ -112,7 +84,7 @@ namespace FactionColonies
 						Command_Toggle action = gizmo as Command_Toggle;
 						if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
 						{
-							action.toggleAction = () => found.SetFaction(ColonyUtil.getPlayerColonyFaction());
+							action.toggleAction = () => found.SetFaction(FactionCache.PlayerColonyFaction);
 							break;
 						}
 					}

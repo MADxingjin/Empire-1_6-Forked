@@ -63,7 +63,7 @@ namespace FactionColonies
                 readded.Add(pawn);
                 return;
             }
-            if (pawn.IsMercenary() && pawn.Faction != ColonyUtil.getPlayerColonyFaction()) pawn.SetFaction(ColonyUtil.getPlayerColonyFaction());
+            if (pawn.IsMercenary() && pawn.Faction != FactionCache.PlayerColonyFaction) pawn.SetFaction(FactionCache.PlayerColonyFaction);
             FactionFC faction = Find.World.GetComponent<FactionFC>();
             //Check if a settlement battle ended
             WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);

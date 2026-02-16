@@ -90,7 +90,7 @@ namespace FactionColonies
             }
             if (techLevel != TechLevel.Undefined)
             {
-                Faction faction = ColonyUtil.getPlayerColonyFaction();
+                Faction faction = FactionCache.PlayerColonyFaction;
                 if (faction.def.techLevel < techLevel)
                 {
                     return false;

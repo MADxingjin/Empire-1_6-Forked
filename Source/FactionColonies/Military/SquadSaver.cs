@@ -218,7 +218,7 @@ namespace FactionColonies
             };
             if (!Find.World.GetComponent<FactionFC>().raceFilter.Allows(pawnKind.race))
             {
-                unit.pawnKind = ColonyUtil.getPlayerColonyFaction().RandomPawnKind();
+                unit.pawnKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }
             unit.defaultPawn.genes.SetXenotype(xenotype);
             unit.generateDefaultPawn();

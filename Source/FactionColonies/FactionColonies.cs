@@ -233,8 +233,8 @@ namespace FactionColonies
             /*if (factionFC.factionBackup == null)
             {
                 factionFC.factionBackup = new Faction();
-                factionFC.factionBackup = ColonyUtil.getPlayerColonyFaction();
-                if (ColonyUtil.getPlayerColonyFaction() != null)
+                factionFC.factionBackup = FactionCache.PlayerColonyFaction;
+                if (FactionCache.PlayerColonyFaction != null)
                 {
                     LogUtil.Message("Faction created");
                     factionFC.factionCreated = true;

@@ -182,7 +182,7 @@ namespace FactionColonies.util
 								// Create request that allows ANY xenotype (including non-violent ones)
 								var request = new PawnGenerationRequest(
 									kind: PawnKindDefOf.Colonist,
-									faction: ColonyUtil.getPlayerColonyFaction(),
+									faction: FactionCache.PlayerColonyFaction,
 									context: PawnGenerationContext.NonPlayer,
 									tile: -1,
 									forceGenerateNewPawn: false,
@@ -308,7 +308,7 @@ namespace FactionColonies.util
 								{
 									var request = new PawnGenerationRequest(
 										kind: PawnKindDefOf.Colonist,
-										faction: ColonyUtil.getPlayerColonyFaction(),
+										faction: FactionCache.PlayerColonyFaction,
 										context: PawnGenerationContext.NonPlayer,
 										tile: -1,
 										forceGenerateNewPawn: false,

@@ -41,7 +41,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Print Races", allowedGameStates = AllowedGameStates.Playing)]
         private static void PrintRaces()
         {
-            ColonyUtil.getPlayerColonyFaction().def.pawnGroupMakers.ForEach(maker =>
+            FactionCache.PlayerColonyFaction.def.pawnGroupMakers.ForEach(maker =>
             {
                 LogUtil.MessageForce("Traders: " + maker.traders.Count);
                 foreach (PawnGenOption option in maker.options)
@@ -316,7 +316,7 @@ namespace FactionColonies
                     {
                         IncidentParms parms = new IncidentParms();
                         parms.target = Find.CurrentMap;
-                        parms.faction = ColonyUtil.getPlayerColonyFaction();
+                        parms.faction = FactionCache.PlayerColonyFaction;
                         parms.podOpenDelay = 140;
                         parms.points = 999;
                         parms.raidArrivalModeForQuickMilitaryAid = true;

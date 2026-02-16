@@ -89,7 +89,7 @@ namespace FactionColonies
         private List<ResourceFC> resources = new List<ResourceFC>();
         public List<ResourceFC> Resources => resources;
         private List<ThingDef> grandThingList = new List<ThingDef>();
-        private bool dirtyGrandThingList = true;
+        private bool dirtyGrandThingListFlag = true;
 
         // Comp caching for the most-frequently accessed comps
         private WorldObjectComp_SettlementMilitary cachedMilitaryComp = null;
@@ -1304,7 +1304,7 @@ namespace FactionColonies
         /// <returns></returns>
         public List<ThingDef> getGrandThingList()
         {
-            if (dirtyGrandThingList)
+            if (dirtyGrandThingListFlag)
             {
                 grandThingList = new List<ThingDef>();
                 foreach (ResourceFC res in resources)
@@ -1318,13 +1318,13 @@ namespace FactionColonies
                         }
                     }
                 }
-                dirtyGrandThingList = false;
+                dirtyGrandThingListFlag = false;
             }
             return grandThingList;
         }
-        public void dirtyGrantThingList()
+        public void dirtyGrandThingList()
         {
-            dirtyGrandThingList = true;
+            dirtyGrandThingListFlag = true;
         }
 
         public float getOneTimeSilverIncome()

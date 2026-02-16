@@ -300,7 +300,7 @@ namespace FactionColonies
                         if (defenders.Any())
                             defenders[0].GetLord().AddPawn(pawn);
                         else
-                            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_ColonistsIdle(),
+                            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(),
                                 WorldSettlement.Map, pawns);
                     }
 
@@ -491,7 +491,7 @@ namespace FactionColonies
                 var parms = new IncidentParms
                 {
                     target = Map,
-                    faction = ColonyUtil.getPlayerColonyFaction(),
+                    faction = FactionCache.PlayerColonyFaction,
                     generateFightersOnly = true,
                     raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
                 };
@@ -568,7 +568,7 @@ namespace FactionColonies
                 friendly.drafter.Drafted = true;
             }
 
-            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DefendColony(riders), Map,
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(riders), Map,
                 friendlies);
 
             defenders = friendlies;

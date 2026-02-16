@@ -53,6 +53,9 @@ namespace FactionColonies
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
 
+        private Faction playerFactionRef = null;
+        private Faction empireFactionRef = null;
+
 
         //New Types of Productions
         public float researchPointPool = 0;
@@ -291,6 +294,14 @@ namespace FactionColonies
 
             //Random Event
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
+
+            /* Clear the static faction cache */
+            /* VERY IMPORTANT THAT THE CACHE BE INVALIDATED ON LOAD, AT *LEAST*.
+             * So don't remove this line unless you have an alternative method of invalidating the cache! */
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                FactionCache.InvalidateCache();
+            }
         }
 
         public override void FinalizeInit(bool fromLoad)
@@ -482,7 +493,7 @@ namespace FactionColonies
 
                 roadBuilder.FirstTick();
 
-                Faction FCf = ColonyUtil.getPlayerColonyFaction();
+                Faction FCf = FactionCache.PlayerColonyFaction;
                 if (FCf != null)
                 {
                     FCf.def.techLevel = TechLevel.Undefined;
@@ -504,7 +515,7 @@ namespace FactionColonies
 
 
             //If Player Colony Faction does exists
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
             /* Check on the leader */
             //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
             if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
@@ -565,7 +576,7 @@ namespace FactionColonies
                 worker.def = IncidentDefOf.TraderCaravanArrival;
                 IncidentParms parms =
                     StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, returnCapitalMap());
-                parms.faction = ColonyUtil.getPlayerColonyFaction();
+                parms.faction = FactionCache.PlayerColonyFaction;
                 RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
                     CellFinder.EdgeRoadChance_Friendly);
                 parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
@@ -678,7 +689,7 @@ namespace FactionColonies
 
         public void updateFactionRaces()
         {
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
             // TODO updateFactionRaces()
         }
 
@@ -753,7 +764,7 @@ namespace FactionColonies
                 xenotypeFilter.FinalizeInit(this);
             }
 
-            Faction playerColonyfaction = faction ?? ColonyUtil.getPlayerColonyFaction();
+            Faction playerColonyfaction = faction ?? FactionCache.PlayerColonyFaction;
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
             {
                 LogUtil.Message("Updating Tech Level");
@@ -955,10 +966,10 @@ namespace FactionColonies
             averageProsperity = averageProsperityTmp;
 
 
-            if (settlements.Any() && ColonyUtil.getPlayerColonyFaction() != null)
+            if (settlements.Any() && FactionCache.PlayerColonyFaction != null)
             {
-                ColonyUtil.getPlayerColonyFaction().TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
-                    (Convert.ToInt32(averageHappiness) - ColonyUtil.getPlayerColonyFaction().PlayerGoodwill));
+                FactionCache.PlayerColonyFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
+                    (Convert.ToInt32(averageHappiness) - FactionCache.PlayerColonyFaction.PlayerGoodwill));
             }
         }
 

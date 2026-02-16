@@ -151,7 +151,7 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
 
             /* If the Empire faction hasn't yet been created, then show nothing but the "create new faction" button */
-            Faction gfaction = ColonyUtil.getPlayerColonyFaction();
+            Faction gfaction = FactionCache.PlayerColonyFaction;
             if (gfaction == null)
             {
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -479,7 +479,7 @@ namespace FactionColonies
                 Widgets.Label(new Rect(7, 32, 200, 40), faction.name);
             if (Widgets.ButtonImage(new Rect(210, 37, 20, 20), TexLoad.iconCustomize))
             { //if click faction customize button
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
                 else
@@ -590,7 +590,7 @@ namespace FactionColonies
 
                     if (buttons[i] == "Military".Translate())
                     {
-                        if (ColonyUtil.getPlayerColonyFaction() == null)
+                        if (FactionCache.PlayerColonyFaction == null)
                         {
                             Messages.Message(new Message("NoFactionForMilitary".Translate(), MessageTypeDefOf.RejectInput));
                         }
@@ -685,7 +685,7 @@ namespace FactionColonies
                                     IncidentParms parms = new IncidentParms
                                     {
                                         target = Find.CurrentMap,
-                                        faction = ColonyUtil.getPlayerColonyFaction(),
+                                        faction = FactionCache.PlayerColonyFaction,
                                         points = 999,
                                         raidArrivalModeForQuickMilitaryAid = true,
                                         raidNeverFleeIndividual = true,

@@ -121,7 +121,7 @@ namespace FactionColonies
 
         public virtual string getSettlementName(string fallback = "Settlement")
         {
-            Faction pfaction = ColonyUtil.getPlayerColonyFaction();
+            Faction pfaction = FactionCache.PlayerColonyFaction;
             if (pfaction?.def.settlementNameMaker == null)
             {
                 return fallback;

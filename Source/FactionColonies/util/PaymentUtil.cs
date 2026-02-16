@@ -276,7 +276,7 @@ namespace FactionColonies
             raceChoice = faction.RandomPawnKind();
 
             pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: raceChoice,
-                faction: ColonyUtil.getPlayerColonyFaction(), context: PawnGenerationContext.NonPlayer, tile: -1, 
+                faction: FactionCache.PlayerColonyFaction, context: PawnGenerationContext.NonPlayer, tile: -1, 
                 forceGenerateNewPawn: false, allowDead: false, allowDowned: false, 
                 canGeneratePawnRelations: false, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0, 
                 forceAddFreeWarmLayerIfNeeded: false, allowGay: false, allowFood: false, allowAddictions: false, 
@@ -301,7 +301,7 @@ namespace FactionColonies
             ThingSetMakerParams param = new ThingSetMakerParams();
             param.totalMarketValueRange = new FloatRange((float) (valueBase - 300), (float) (valueBase + 300));
             param.filter = new ThingFilter();
-            param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+            param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
 
             switch (resourceOfThing)
             {

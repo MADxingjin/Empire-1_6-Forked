@@ -12,23 +12,6 @@ namespace FactionColonies.util
 {
     public static class ColonyUtil
     {
-        private static Faction playerFactionRef = null;
-        public static Faction GetVanillaPlayerFaction()
-        {
-            if (playerFactionRef == null)
-            {
-                playerFactionRef = Find.FactionManager.AllFactions.ToList().Find(faction => faction.IsPlayer);
-            }
-
-            return playerFactionRef;
-        }
-
-        public static Faction getPlayerColonyFaction()
-        {
-            return Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed("PColony"));
-        }
-
-
         //<DevAdd>   Create new seperate function to create a faction
         public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
@@ -42,9 +25,9 @@ namespace FactionColonies.util
             settlementType.GetModExtension<SettlementTypeExtension>().preCreation(ref tile, ref settlementType);
 
             LogUtil.Message($"Creating settlement of type {settlementType.defName}");
-            Faction faction = getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
 
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             if (!worldcomp.settlements.Any())
             {
                 Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
@@ -79,7 +62,7 @@ namespace FactionColonies.util
         public static void removePlayerSettlement(WorldSettlementFC settlement)
         {
             settlement.PrepareDestroyWorldObject();
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             faction.settlements.Remove(settlement);
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
@@ -236,7 +219,7 @@ namespace FactionColonies.util
 
         public static Faction createPlayerColonyFaction()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             if (worldcomp == null)
             {
                 LogUtil.Error("FactionFC world component is missing! Cannot create player colony faction.");

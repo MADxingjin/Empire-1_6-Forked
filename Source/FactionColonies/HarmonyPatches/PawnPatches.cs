@@ -11,7 +11,7 @@ namespace FactionColonies
         {
             if (__instance.IsMercenary())
             {
-                if (__instance.Faction != ColonyUtil.getPlayerColonyFaction()) __instance.SetFaction(ColonyUtil.getPlayerColonyFaction());
+                if (__instance.Faction != FactionCache.PlayerColonyFaction) __instance.SetFaction(FactionCache.PlayerColonyFaction);
                 MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.returnSquadFromUnit(__instance);
                 if (squad != null)
                 {

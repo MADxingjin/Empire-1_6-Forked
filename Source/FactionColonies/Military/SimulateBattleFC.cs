@@ -113,7 +113,7 @@ namespace FactionColonies
             double efficiency = TraitUtilsFC.cycleTraits("militaryMultiplierCombatEfficiency", settlement.Traits, Operation.Multiplication);
             if (isAttacking && faction.hasPolicy(FCPolicyDefOf.militaristic)) 
                 efficiency *= 1.2;
-            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, ColonyUtil.getPlayerColonyFaction());
+            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);
             return returnForce;
             //create and return force.
         }
@@ -252,7 +252,7 @@ namespace FactionColonies
             tmp.hasDestination = true;
             tmp.customDescription = "settlementAboutToBeAttacked".Translate(settlement.Name, enemyFaction.Name);
             tmp.militaryForceDefending = militaryForce.createMilitaryForceFromSettlement(settlement);
-            tmp.militaryForceDefendingFaction = ColonyUtil.getPlayerColonyFaction();
+            tmp.militaryForceDefendingFaction = FactionCache.PlayerColonyFaction;
             tmp.militaryForceAttacking = attackingForce;
             tmp.militaryForceAttackingFaction = enemyFaction;
             tmp.settlementFCDefending = settlement;
@@ -370,7 +370,7 @@ namespace FactionColonies
 
         public static void resetPlayerColonyRelations()
         {
-            Faction PCFaction = ColonyUtil.getPlayerColonyFaction();
+            Faction PCFaction = FactionCache.PlayerColonyFaction;
             foreach (Faction faction in Find.FactionManager.AllFactionsInViewOrder)
             {
                 if (faction != Find.FactionManager.OfPlayer && faction != PCFaction)
