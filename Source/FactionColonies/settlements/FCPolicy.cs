@@ -22,7 +22,7 @@ namespace FactionColonies
         }
         public FCPolicy( FCPolicyDef def)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             this.def = def;
             timeEnacted = Find.TickManager.TicksGame;
 

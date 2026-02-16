@@ -45,7 +45,7 @@ namespace FactionColonies
         public FCEventWindow()
         {
             //Window Information
-            this.faction = Find.World.GetComponent<FactionFC>();
+            this.faction = FactionCache.FactionComp;
             this.events = faction.events;
 
             this.scroll = 0;

@@ -215,7 +215,7 @@ namespace FactionColonies
         }
         public static void UpdateChanges()
         {
-            FactionFC factionFC = Find.World.GetComponent<FactionFC>();
+            FactionFC factionFC = FactionCache.FactionComp;
             PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
 
             // Store the initial state before any modifications
@@ -233,8 +233,8 @@ namespace FactionColonies
             /*if (factionFC.factionBackup == null)
             {
                 factionFC.factionBackup = new Faction();
-                factionFC.factionBackup = ColonyUtil.getPlayerColonyFaction();
-                if (ColonyUtil.getPlayerColonyFaction() != null)
+                factionFC.factionBackup = FactionCache.PlayerColonyFaction;
+                if (FactionCache.PlayerColonyFaction != null)
                 {
                     LogUtil.Message("Faction created");
                     factionFC.factionCreated = true;
@@ -315,7 +315,7 @@ namespace FactionColonies
         }
         public static void verifyTraits()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             /* Clear the traits for all settlements, and then reapply inherent/building traits */
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
@@ -338,7 +338,7 @@ namespace FactionColonies
                 }
             }
 
-            Find.World.GetComponent<FactionFC>().assignNewTraitList(factionTraits);
+            FactionCache.FactionComp.assignNewTraitList(factionTraits);
         }
 
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);

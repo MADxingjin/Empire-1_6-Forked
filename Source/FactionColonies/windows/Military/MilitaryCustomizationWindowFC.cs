@@ -25,8 +25,8 @@ namespace FactionColonies
             doCloseX = true;
             preventCameraMotion = false;
 
-            util = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil;
-            faction = Find.World.GetComponent<FactionFC>();
+            util = FactionCache.FactionComp.militaryCustomizationUtil;
+            faction = FactionCache.FactionComp;
         }
 
         public override void PostClose()

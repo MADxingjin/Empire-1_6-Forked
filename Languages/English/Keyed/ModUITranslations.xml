@@ -193,14 +193,12 @@
 
     <!-- SettlementUpgradeWindowFC -->
     <UpgradeSettlement>Upgrade Settlement</UpgradeSettlement>
+	<SettlementUpgradeInProgress>Upgrading...</SettlementUpgradeInProgress>
     <CanBeUpgraded>can be upgraded for</CanBeUpgraded>
-    <UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to
-        rise by 3 workers. The military level of this colony will also increase by 1.
-    </UpgradeColonyDesc>
+    <UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
     <HasBeenUpgraded>has been upgraded to level</HasBeenUpgraded>
     <AlreadyMaxLevel>is already max level</AlreadyMaxLevel>
-    <NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.
-    </NotEnoughSilverUpgrade>
+    <NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</NotEnoughSilverUpgrade>
     <CannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</CannotBeUpgradedPastMax>
 
 
@@ -221,25 +219,40 @@
     <SettlementLoyalty>Settlement Loyalty</SettlementLoyalty>
     <SettlementUnrest>Settlement Unrest</SettlementUnrest>
     <SettlementProsperity>Settlement Prosperity</SettlementProsperity>
+	<Happiness>happiness</Happiness>
+	<Loyalty>loyalty</Loyalty>
+	<Unrest>unrest</Unrest>
+	<Prosperity>prosperity</Prosperity>
+	<BaseRecovery>Base Recovery</BaseRecovery>
+	<BaseGain>Base Gain</BaseGain>
+	<BaseLoss>Base Loss</BaseLoss>
+	<SettlementStatGain>Gaining {0} {1} per day</SettlementStatGain>
+	<SettlementStatLoss>Losing {0} {1} per day</SettlementStatLoss>
 
-    <SettlementMilitaryLevelDesc>The measure of the settlements's military level. The military level of a town directly
-        affects the town's ability to defend itself as well as attack external threats
+    <SettlementMilitaryLevelDesc>The measure of the settlements's military level.
+
+The military level of a town directly affects the town's ability to defend itself as well as attack external threats
     </SettlementMilitaryLevelDesc>
-    <SettlementHappinessDesc>The measure of the Settlement's overall happiness. A high happiness means that any internal
-        conflict within the settlement will lean heavily to your favor.
+    <SettlementHappinessDesc>The measure of the Settlement's overall happiness.
+
+A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
     </SettlementHappinessDesc>
-    <SettlementLoyaltyDesc>The measure of the Settlement's overall loyalty. The loyalty of a settlement determines how
-        willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
+    <SettlementLoyaltyDesc>The measure of the Settlement's overall loyalty.
+
+The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
     </SettlementLoyaltyDesc>
-    <SettlementUnrestDesc>The measure of the Settlement's overall unrest. The higher unrest grows, the more likely
-        dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may
-        grow.
+    <SettlementUnrestDesc>The measure of the Settlement's overall unrest.
+
+The higher unrest grows, the more likely dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may grow.
     </SettlementUnrestDesc>
-    <SettlementProsperityDesc>The measure of the Settlement's overall prosperity. The prosperity of a town directly
-        correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will
-        slowly accumulate over time.
+    <SettlementProsperityDesc>The measure of the Settlement's overall prosperity.
+
+The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). If prosperity is damaged, it will slowly accumulate over time.
     </SettlementProsperityDesc>
     <BuildingUpgrades>Building Upgrades</BuildingUpgrades>
+	<Buildings>Buildings</Buildings>
+	<Facilities>Facilities</Facilities>
+	<BuildTime>Build Time: {0}</BuildTime>
     <AddedInFuture>This will be added to in the future</AddedInFuture>
     <Production>Production</Production>
     <TaxBase>Tax Base</TaxBase>
@@ -247,6 +260,70 @@
     <Income>Income</Income>
     <Upkeep>Upkeep</Upkeep>
     <CostPerWorker>Cost Per Worker</CostPerWorker>
+	<Tithing>Tithing</Tithing>
+	<Mult>Mult</Mult>
+	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
+	<TotalProd>Total Production</TotalProd>
+	
+	<DeleteSettlementConfirm>Remove settlement {0}?</DeleteSettlementConfirm>
+	
+	<Raw>Raw</Raw>
+	<RawIncomeDesc>The total income a resource produces, before accounting for tithes.</RawIncomeDesc>
+	<Net>Net</Net>
+	<NetIncomeDesc>The total income a resources produces, after accounting for tithes.</NetIncomeDesc>
+	
+	<TitheSelection>Item Selection</TitheSelection>
+	
+	<RandomTithesEnabled>Random Tithing</RandomTithesEnabled>
+	<ItemSelection>Item Selection</ItemSelection>
+	<RandomTitheSelectionHeader>Random Tithe Item Selection</RandomTitheSelectionHeader>
+	<RandomTitheBudget>Random Tithe Budget</RandomTitheBudget>
+	<TitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</TitheOverBudget>
+	<RandomTithesDesc>At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
+
+If the lowest value item in the list has a higher value than your Random Tithe Budget, or if there are no items to select from, then the budget is carried over to the next tax period.</RandomTithesDesc>
+	<RandomTitheAccrued>Accrued Budget: ${0}</RandomTitheAccrued>
+	<RandomTitheAccruedDesc>The amount of leftover Random Tithe Budget that has accrued. This will be added to your Random Tithe Budget to determine the total budget for Random Tithes at tax time.</RandomTitheAccruedDesc>
+	<DisburseAccruedRandomTithe>Disburse Accrued Budget</DisburseAccruedRandomTithe>
+	<DisburseAccruedRandomTitheDesc>If checked, then the Accrued Budget will be disbursed as raw silver come tax time. It will not count towards the Random Tithe Budget.</DisburseAccruedRandomTitheDesc>
+	
+	<NoTitheLetterLabel>No Tithe: {0}</NoTitheLetterLabel>
+	<NoTitheLetterDesc>{0} has a Random Tithe Budget for resource {1}, but no items were enabled. The Random Tithe Budget will be stored for future use.
+	
+Total accrued budget: {2}</NoTitheLetterDesc>
+	<NoTitheLetterDesc2>{0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
+	
+Total accrued budget: {2}</NoTitheLetterDesc2>
+	
+	<TitheModifier>Tithe Modifier</TitheModifier>
+	<TotalTitheBudget>Total Tithe Budget</TotalTitheBudget>
+	<AvailableTitheBudget>Available Budget</AvailableTitheBudget>
+	<UsedTitheBudget>Used Budget</UsedTitheBudget>
+	<AddItem>Add Item</AddItem>
+	<NumRatio>{0}/{1}</NumRatio>
+	<TitheXDesc>Remove this item from the tithes list.</TitheXDesc>
+	<TitheListRejection>{0} already exists in the item selection list.</TitheListRejection>
+	<TitheListRejectionQuality>{0} with quality {1} already exists in the item selection list.</TitheListRejectionQuality>
+	<TitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</TitheListRejectionStuff>
+	<TitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</TitheListRejectionStuffQuality>
+	
+	<PerWorker>Per-Worker</PerWorker>
+	
+	<Overview>Overview</Overview>
+	
+	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
+	<ActiveConstruction>Active Construction</ActiveConstruction>
+	<closeConstructionBox>Close Constructions List</closeConstructionBox>
+	<openConstructionBox>Open Constructions List</openConstructionBox>
+	<settlementupgrading>Settlement Upgrade</settlementupgrading>
+	<completiontimer>Finishes in: {0}</completiontimer>
+	
+	<AssignedWorkers>Assigned Workers</AssignedWorkers>
+	<AssignedOvermaxWorkers>Assigned Overmax Workers</AssignedOvermaxWorkers>
+	<AssignedWorkersValue>{0}/{1}</AssignedWorkersValue>
+	<AssignedOvermaxWorkersValue>{0}/{1}</AssignedOvermaxWorkersValue>
+	<itemcost>{0}{1}</itemcost>
+	<AssignedOvermaxWorkersTooltip>Each addtional overmax worker increases the cost of all workers by 5.</AssignedOvermaxWorkersTooltip>
 
     <!--MilitaryCustomizationWindowFC Customize Unit-->
     <ExportedUnit>Exported Unit</ExportedUnit>
@@ -457,13 +534,22 @@
 
 	<FCUpkeep>Upkeep</FCUpkeep>
 	
-	<!-- Tithe Customization -->
-	<FCTitheEnableAll>Enable All</FCTitheEnableAll>
-	<FCTitheDisableAll>Disable All</FCTitheDisableAll>
-	
-	<FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption> <!-- Example: "Steel - Cost - 10 | Allowed: true" -->
-	<FCIsAllowed>true</FCIsAllowed>
-	<FCIsNotAllowed>false</FCIsNotAllowed>
+    <!-- Tithe Customization -->
+    <FCTitheEnableAll>Enable All</FCTitheEnableAll>
+    <FCTitheDisableAll>Disable All</FCTitheDisableAll>
+    
+    <FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption> <!-- Example: "Steel - Cost - 10 | Allowed: true" -->
+    <FCIsAllowed>Enabled</FCIsAllowed>
+    <FCIsNotAllowed>Disabled</FCIsNotAllowed>
+    
+    <!-- Add Tithe Item Window -->
+    <AddTitheItemHeader>Add Tithe Item</AddTitheItemHeader>
+	<Selected>Selected</Selected>
+	<Select>Select</Select>
+	<Stuff>Stuff</Stuff>
+    <SelectStuff>Select stuff...</SelectStuff>
+    <MustSelectStuff>Must select a stuff type</MustSelectStuff>
+    <ItemAlreadyInTitheList>This item is already in the tithe list</ItemAlreadyInTitheList>
 
 	<!-- Settlement Customization -->
 	<FCCustomizeSettlement>Customize Settlement</FCCustomizeSettlement>

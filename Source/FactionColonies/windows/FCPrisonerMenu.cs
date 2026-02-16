@@ -31,7 +31,7 @@ namespace FactionColonies
         public FCPrisonerMenu(WorldSettlementFC settlement)
         {
             //Window Information
-            this.faction = Find.World.GetComponent<FactionFC>();
+            this.faction = FactionCache.FactionComp;
             this.settlement = settlement;
             this.prisoners = settlement.prisonerList;
 
@@ -158,7 +158,7 @@ namespace FactionColonies
                     list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
                     
                     {
-                        settlement.addSilverIncome(prisoner.prisoner.MarketValue);
+                        settlement.addOneTimeSilverIncome(prisoner.prisoner.MarketValue);
 
                         //reset window
                         prisoners.Remove(prisoner);

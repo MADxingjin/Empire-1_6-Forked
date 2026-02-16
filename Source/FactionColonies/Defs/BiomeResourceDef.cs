@@ -42,6 +42,17 @@ namespace FactionColonies
             }
             return res;
         }
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string item in base.ConfigErrors())
+            {
+                yield return item;
+            }
+            if (label.NullOrEmpty())
+            {
+                yield return "BiomeResourceDef " + this.defName + " has a null or empty label";
+            }
+        }
     }
 
 

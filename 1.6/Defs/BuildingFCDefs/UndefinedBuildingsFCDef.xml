@@ -3,7 +3,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>barracks</defName> <!--Name of Def -->
 		<label>Barracks</label> <!--Lable of Def -->
-		<desc>A buildings to house the local troops. +1 military level. 150 Silver per tax period upkeep.</desc> <!-- Description of trait -->
+		<desc>A buildings to house the local troops.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -16,7 +16,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>tradingPost</defName> <!--Name of Def -->
 		<label>TradingPost</label> <!--Lable of Def -->
-		<desc>A small outpost that roving traders frequent. +10 tithe modifier.</desc> <!-- Description of trait -->
+		<desc>A small outpost that roving traders frequent.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -28,7 +28,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>migrantHousing</defName> <!--Name of Def -->
 		<label>Migrant Housing</label> <!--Lable of Def -->
-		<desc>Local housing for traveling migrants to stay in. +2 Max worker, +2 Over Max worker.</desc> <!-- Description of trait -->
+		<desc>Local housing for traveling migrants to stay in.</desc> <!-- Description of trait -->
 		<cost>1500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -40,7 +40,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>quarry</defName> <!--Name of Def -->
 		<label>Quarry</label> <!--Lable of Def -->
-		<desc>Torn up land being used to mine for valuable ore. +.5 to base mining production.</desc> <!-- Description of trait -->
+		<desc>Torn up land being used to mine for valuable ore.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -52,7 +52,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>trainingYard</defName> <!--Name of Def -->
 		<label>Training Yard</label> <!--Lable of Def -->
-		<desc>A place for your soldiers to train. +15 combat efficiency.</desc> <!-- Description of trait -->
+		<desc>A place for your soldiers to train.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits>
@@ -66,7 +66,7 @@
 		<!--Name of Def -->
 		<label>Fur Hunter Camp</label>
 		<!--Lable of Def -->
-		<desc>A camp for your Fur Hunter. +.5 Animal</desc>
+		<desc>A camp for your Fur Hunter.</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -82,7 +82,7 @@
 		<!--Name of Def -->
 		<label>Flint Storage</label>
 		<!--Lable of Def -->
-		<desc>A Storage for Flint. +.2 Mining</desc>
+		<desc>A Storage for Flint.</desc>
 		<!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -98,7 +98,7 @@
 		<!--Name of Def -->
 		<label>SlavePit</label>
 		<!--Lable of Def -->
-		<desc>A pit where Slaves goes to sleep. +2 base worker</desc>
+		<desc>A pit where Slaves goes to sleep.</desc>
 		<!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -114,7 +114,7 @@
 		<!--Name of Def -->
 		<label>Farmland</label>
 		<!--Lable of Def -->
-		<desc>A section of land deicated to growing edible plants. +.5 base food production.</desc>
+		<desc>A section of land dedicated to growing edible plants.</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -133,7 +133,7 @@
 		<!--Name of Def -->
 		<label>Ammunition Mines</label>
 		<!--Lable of Def -->
-		<desc>From flint for arrows to the materials for bullets and gunpowder, these mines take up space that could be used for other resource mining. +15% weapons production. -15% mining production.</desc>
+		<desc>From flint for arrows to the materials for bullets and gunpowder, these mines take up space that could be used for other resource mining.</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -147,12 +147,13 @@
 		<iconPath>GUI/Buildings/AmmoMines</iconPath>
 	</FactionColonies.BuildingFCDef>
 
+	<!--TODO: change this from flat modifiers to turning animal production into clothing production? -->
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>TanningWorkshop</defName>
 		<!--Name of Def -->
 		<label>Tanning Workshop</label>
 		<!--Lable of Def -->
-		<desc>A workshop designed to turn animal hides into leather. +15% apparel production. -15% animal production.</desc>
+		<desc>A workshop designed to turn animal hides into leather.</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -171,7 +172,7 @@
 		<!--Name of Def -->
 		<label>Psychedelic Drug Den</label>
 		<!--Lable of Def -->
-		<desc>It's amazing the discoveries people make while absurdly high. Sometimes those discoveries are even useful! +5% research production. +.3 happiness per day. -5% medicine production.</desc>
+		<desc>It's amazing the discoveries people make while absurdly high. Sometimes those discoveries are even useful!</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -190,7 +191,7 @@
 		<!--Name of Def -->
 		<label>Giant Hamster Wheel</label>
 		<!--Lable of Def -->
-		<desc>It's not much, but it's better than nothing! +.25 power production. -1 overmax worker.</desc>
+		<desc>It's not much, but it's better than nothing!</desc>
 		<!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
@@ -207,7 +208,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>deforestationCamp</defName> <!--Name of Def -->
 		<label>Deforestation Camp</label> <!--Lable of Def -->
-		<desc>A camp that the local forests are stripped of all their resources and the life within. +25% production to logging and animals. +$10 worker cost.</desc> <!-- Description of trait -->
+		<desc>A camp that the local forests are stripped of all their resources and the life within.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->
@@ -226,7 +227,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>herbalMedicineFarm</defName> <!--Name of Def -->
 		<label>Herbal Medicine Farm</label> <!--Lable of Def -->
-		<desc>A small farm to grow herbal medicine. +.25 medicine production.</desc> <!-- Description of trait -->
+		<desc>A small farm to grow herbal medicine.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<traits> <!-- Put the traits they provide here -->

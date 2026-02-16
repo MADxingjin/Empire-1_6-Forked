@@ -320,6 +320,7 @@
 	
 	<FactionColonies.BiomeResourceDef>
 		<defName>TemperateForest</defName>
+		<label>temperate forest</label>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>

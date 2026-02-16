@@ -115,7 +115,7 @@ namespace FactionColonies
 
         protected override void OnImport(string name)
         {
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = FactionColoniesMilitary.GetSquad(name).Import();
             
             MilitaryCustomizationWindowFc mil = (MilitaryCustomizationWindowFc)Find.WindowStack.Windows.FirstOrFallback(
@@ -150,7 +150,7 @@ namespace FactionColonies
 
         protected override void OnImport(string name)
         {
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             MilUnitFC unit = FactionColoniesMilitary.GetUnit(name).Import();
             
             MilitaryCustomizationWindowFc mil = (MilitaryCustomizationWindowFc)Find.WindowStack.Windows.FirstOrFallback(

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
+using RimWorld;
 
 namespace FactionColonies
 {
@@ -24,17 +25,22 @@ namespace FactionColonies
         /// </summary>
         /// <param name="bonus">The numeric bonus to colorize</param>
         /// <param name="invert">If true, negative values are colorized as positive, and vice versa. Defaults to false</param>
+        /// <param name="hardinvert">If true, the bonus is multiplied by -1 before being processed.</param>
         /// <param name="addPlusSign">If true, adds a "+" before positive values. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString colorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true)
+        public static TaggedString colorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
         {
+            if (hardinvert)
+            {
+                bonus *= -1;
+            }
             string baseBonus = bonus.ToString();
             if (bonus > 0 && addPlusSign)
             {
                 baseBonus = "+" + baseBonus;
             }
 
-            if (bonus < 0 || (invert && bonus > 0))
+            if ((!invert && bonus < 0) || (invert && bonus > 0))
             {
                 return baseBonus.Colorize(Color.red);
             }
@@ -59,7 +65,7 @@ namespace FactionColonies
                 baseBonus = "x" + baseBonus;
             }
 
-            if (bonus < 1 || (invert && bonus > 1))
+            if ((!invert && bonus < 1) || (invert && bonus > 1))
             {
                 return baseBonus.Colorize(Color.red);
             }
@@ -89,15 +95,20 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in settlement.Resources)
             {
-                if (resource.totalProduction > highest)
+                if (resource.actualIncome > highest)
                 {
-                    highest = resource.totalProduction;
+                    highest = resource.actualIncome;
                     resourceKey = resource.def.defName;
                 }
             }
             //TODO: find these localization keys and make sure they line up with the new def resources
             //      maybe even find a better way to assmelbe these town titles
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
+        }
+
+        public static string GetQualityLabelCap(QualityCategory cat)
+        {
+            return QualityUtility.GetLabel(cat).CapitalizeFirst();
         }
     }
 }

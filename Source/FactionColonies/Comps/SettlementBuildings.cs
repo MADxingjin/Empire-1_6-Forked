@@ -39,13 +39,16 @@ namespace FactionColonies
     // TODO: use this comp to do *all* building tracking, instead of storing the buildings in the worldsettlementfc itself?
     public class WorldObjectComp_SettlementBuildings : WorldObjectComp
     {
-        public const int FC_MAX_BUILDINGS = 8;
+        public int FC_MAX_BUILDINGS => (int)Math.Min(3 + Math.Floor(FCSettings.settlementMaxLevel / 2f), WorldSettlement.settlementDef.maxBuildingCount);
         private List<BuildingFC> buildings = new List<BuildingFC>();
         private List<SettlementBuildingComp> settlementBuildingComps = new List<SettlementBuildingComp>();
 
         public List<BuildingFC> Buildings => buildings;
 
-        public int NumBuildingSlots => 3 + (int)Math.Floor((WorldSettlement?.settlementLevel ?? 0) / 2f);
+        public int NumBuildingSlots => Math.Min(3 + (int)Math.Floor((WorldSettlement?.settlementLevel ?? 0) / 2f), WorldSettlement.settlementDef.maxBuildingCount);
+
+        private bool dirtyConstructionCache = true;
+        private List<BuildingFC> constructionCache = new List<BuildingFC>();
 
         private WorldSettlementFC cachedWorldSettlementParent = null;
         public WorldSettlementFC WorldSettlement
@@ -123,6 +126,25 @@ namespace FactionColonies
         {
             return buildings[buildingsSlot].def.LabelCap;
         }
+        public List<BuildingFC> getUnderConstructionBuildings()
+        {
+            if (dirtyConstructionCache)
+            {
+                List<BuildingFC> list = new List<BuildingFC>();
+                foreach (BuildingFC building in buildings)
+                {
+                    if (building.def == BuildingFCDefOf.Construction)
+                    {
+                        list.Add(building);
+                    }
+                }
+
+                constructionCache = list;
+                dirtyConstructionCache = false;
+            }
+
+            return constructionCache;
+        }
 
         public void InitBuildings()
         {
@@ -134,6 +156,31 @@ namespace FactionColonies
                     startedTick = -1,
                     completionTick = Find.TickManager.TicksGame
                 });
+            }
+        }
+        public void ReinitBuildings()
+        {
+            LogUtil.Message($"Reinitializing buildings for settlement {WorldSettlement.Name}. Max buildings: {FC_MAX_BUILDINGS}. Current buildings count: {buildings.Count}");
+            if (buildings.Count > FC_MAX_BUILDINGS)
+            {
+                /* Remove slots, starting at the end and working backwards */
+                for (int i = buildings.Count-1; i >= FC_MAX_BUILDINGS && i >= 0; i--)
+                {
+                    DeconstructBuilding(i);
+                    buildings.RemoveAt(i);
+                }
+            }
+            else if (buildings.Count < FC_MAX_BUILDINGS)
+            {
+                for (int i = buildings.Count; i < FC_MAX_BUILDINGS; i++)
+                {
+                    buildings.Add(new BuildingFC
+                    {
+                        def = BuildingFCDefOf.Empty,
+                        startedTick = -1,
+                        completionTick = Find.TickManager.TicksGame
+                    });
+                }
             }
         }
 
@@ -170,7 +217,7 @@ namespace FactionColonies
             //TODO: rework construction. This info should really be held in this comp here, rather than in the events queue.
             //      maybe there can still be a "constructing building" event that refers to the SettlementBuilding comp, but
             //      the comp should be the source of truth, not the event
-            foreach (FCEvent event1 in Find.World.GetComponent<FactionFC>().events) //check if construction would match any already-occuring events
+            foreach (FCEvent event1 in FactionCache.FactionComp.events) //check if construction would match any already-occuring events
             {
                 if (WorldSettlement.MilitaryComp?.isUnderAttack == true)
                 {
@@ -247,6 +294,7 @@ namespace FactionColonies
             DeconstructBuilding(buildingSlot);
 
             LogUtil.Message($"Starting construction of building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}. Completes on tick {completionTick}");
+            dirtyConstructionCache = true;
 
             buildings[buildingSlot] = new BuildingFC
             {
@@ -287,6 +335,7 @@ namespace FactionColonies
             DeconstructBuilding(buildingSlot);
 
             LogUtil.Message($"Constructing building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}");
+            dirtyConstructionCache = true;
 
             buildings[buildingSlot] = new BuildingFC
             {
@@ -322,6 +371,7 @@ namespace FactionColonies
         public void DeconstructBuilding(int buildingSlot)
         {
             LogUtil.Message($"Deconstructing building {buildings[buildingSlot].def.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
+            dirtyConstructionCache = true;
 
             removeBuildingTrait(buildingSlot);
 
@@ -388,20 +438,57 @@ namespace FactionColonies
             }
         }
 
+        public int getBuildingUpkeep(int buildingSlot)
+        {
+            return getBuildingUpkeep(getBuildingInSlot(buildingSlot));
+        }
+        public int getBuildingUpkeep(BuildingFCDef building)
+        {
+            if (building == null)
+                return 0;
+
+            int upkeep = building.upkeep;
+
+            FactionFC faction = FactionCache.FactionComp;
+            upkeep += faction.buildingUpkeepModifier(building);
+
+            upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
+
+            return Math.Max(upkeep, 0);
+        }
+
+        public TaggedString getBuildingDesc(BuildingFCDef building)
+        {
+            TaggedString desc = building.desc + "\n";
+            int buildingUpkeep = getBuildingUpkeep(building);
+            if (buildingUpkeep > 0)
+            {
+                desc += "\n" + "FCBuildingUpkeep".Translate(buildingUpkeep.ToString());
+            }
+
+            desc += "\n" + building.AttributeDesc;
+
+            return desc.Trim();
+        }
+        public TaggedString getBuildingDescFull(BuildingFCDef building)
+        {
+            TaggedString desc = building.LabelCap + "\n-----\n" + getBuildingDesc(building);
+            return desc;
+        }
+
         public int TotalUpkeep()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
                 bool isMilitary = false;
                 foreach (FCTraitEffectDef trait in building.def.traits)
                 {
-                    if (trait.militaryBaseLevel > 0)
-                        isMilitary = true;
-                    if (trait.militaryMultiplierCombatEfficiency > 1)
+                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
                     {
                         isMilitary = true;
+                        break;
                     }
                 }
 
@@ -550,9 +637,14 @@ namespace FactionColonies
                         settlementBuildingComps.Remove(comp);
                     }
                 }
+                ReinitBuildings();
             }
             Scribe_Collections.Look(ref buildings, "buildings", LookMode.Deep);
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                ReinitBuildings();
+            }
         }
 
         public override IEnumerable<Gizmo> GetGizmos()

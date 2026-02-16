@@ -33,7 +33,7 @@ namespace FactionColonies
             drawShadow = false;
             doWindowBackground = false;
             preventCameraMotion = false;
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
 
             selectedSquad = faction.militaryCustomizationUtil.DeployedSquads.Where(squad => squad.getSettlement != null).RandomElementWithFallback();
             this.lordJob = lordJob;
@@ -142,7 +142,7 @@ namespace FactionColonies
 
             try
             {
-                foreach (Pawn pawn in Find.CurrentMap.mapPawns.SpawnedPawnsInFaction(ColonyUtil.getPlayerColonyFaction()))
+                foreach (Pawn pawn in Find.CurrentMap.mapPawns.SpawnedPawnsInFaction(FactionCache.PlayerColonyFaction))
                 {
                     pawn.Destroy();
                 }

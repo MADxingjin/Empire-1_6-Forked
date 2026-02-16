@@ -29,13 +29,13 @@ namespace FactionColonies
 
         public MilUnitFC(bool blank)
         {
-            loadID = Find.World.GetComponent<FactionFC>().NextUnitID;
+            loadID = FactionCache.FactionComp.NextUnitID;
             isBlank = blank;
             equipmentTotalCost = 0;
 
             try
             {
-                Faction playerFaction = ColonyUtil.getPlayerColonyFaction();
+                Faction playerFaction = FactionCache.PlayerColonyFaction;
                 if (playerFaction != null && playerFaction.def.pawnGroupMakers.Any() && 
                     playerFaction.def.pawnGroupMakers.Any(pgm => pgm.options?.Any() == true))
                 {
@@ -128,7 +128,7 @@ namespace FactionColonies
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (defaultPawn != null && defaultPawn.Faction == null)
                 {
-                    Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
+                    Faction empireFaction = FactionCache.PlayerColonyFaction;
                     if (empireFaction != null)
                     {
                         defaultPawn.SetFaction(empireFaction);
@@ -170,7 +170,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (defaultPawn != null)
                     {
-                        Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
+                        Faction empireFaction = FactionCache.PlayerColonyFaction;
                         if (empireFaction != null)
                         {
                             defaultPawn.SetFaction(empireFaction);
@@ -200,7 +200,7 @@ namespace FactionColonies
                     // Set the faction after generation
                     if (defaultPawn != null)
                     {
-                        Faction empireFaction = ColonyUtil.getPlayerColonyFaction();
+                        Faction empireFaction = FactionCache.PlayerColonyFaction;
                         if (empireFaction != null)
                         {
                             defaultPawn.SetFaction(empireFaction);
@@ -312,7 +312,7 @@ namespace FactionColonies
 
         public void removeUnit()
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.units.Remove(this);
+            FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
         }
 
         public void unequipAllEquipment()

@@ -19,7 +19,7 @@ namespace FactionColonies
             {
                 if (Find.TilePicker.Active)
                 {
-                    return Find.World.GetComponent<FactionFC>()?.layersForTilePicker.Contains(Find.WorldGrid.Orbit.Def) ?? false;
+                    return FactionCache.FactionComp?.layersForTilePicker.Contains(Find.WorldGrid.Orbit.Def) ?? false;
                 }
                 return false;
             }

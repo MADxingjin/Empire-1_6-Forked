@@ -19,7 +19,7 @@ namespace FactionColonies
         {
             get
             {
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
                 if (faction.powerOutput == null || faction.powerOutput.DestroyedOrNull() || faction.powerOutput == this.parent)
                 {
                     faction.powerOutput = this.parent;
@@ -40,7 +40,7 @@ namespace FactionColonies
                 {
                     action = delegate ()
                     {
-                        Find.World.GetComponent<FactionFC>().powerOutput = this.parent;
+                        FactionCache.FactionComp.powerOutput = this.parent;
                         Messages.Message("SetAsOutputSuccess".Translate(), MessageTypeDefOf.NeutralEvent);
                     },
                     defaultDesc = "SetAsEmpirePowerOutput".Translate(),

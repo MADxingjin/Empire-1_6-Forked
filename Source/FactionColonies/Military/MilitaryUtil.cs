@@ -27,7 +27,7 @@ namespace FactionColonies
             IncidentParms parms = new IncidentParms
             {
                 target = Find.CurrentMap,
-                faction = ColonyUtil.getPlayerColonyFaction(),
+                faction = FactionCache.PlayerColonyFaction,
                 podOpenDelay = 140,
                 points = 999,
                 raidArrivalModeForQuickMilitaryAid = true,
@@ -56,11 +56,11 @@ namespace FactionColonies
             Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
 
             settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJob.Deploy, 1, null);
-            LordMaker.MakeNewLord(ColonyUtil.getPlayerColonyFaction(), new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
-                Find.World.GetComponent<FactionFC>().traitMilitaristicTickLastUsedExtraSquad = Find.TickManager.TicksGame;
+                FactionCache.FactionComp.traitMilitaristicTickLastUsedExtraSquad = Find.TickManager.TicksGame;
             }
         }
 
@@ -123,7 +123,7 @@ namespace FactionColonies
         /// <param name="cost"></param>
         public static void CallinExtraForces(WorldSettlementFC settlement, bool DropPod)
         {
-            MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.createMercenarySquad(settlement, true);
+            MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.createMercenarySquad(settlement, true);
             squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
 
             CallinAlliedForces(settlement, DropPod, squad);
@@ -146,7 +146,7 @@ namespace FactionColonies
                     projectiles.AddRange(support.projectiles);
                     MilitaryFireSupport fireSupport = new MilitaryFireSupport("fireSupport", map, spawnCenter,
                         projectiles.Count() * 15, 600, support.accuracy, projectiles);
-                    Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.fireSupport.Add(fireSupport);
+                    FactionCache.FactionComp.militaryCustomizationUtil.fireSupport.Add(fireSupport);
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
                     settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;

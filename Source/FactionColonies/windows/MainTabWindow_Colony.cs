@@ -57,7 +57,7 @@ namespace FactionColonies
             statSize = 25;
             buttons = buttonsTab0;
             resourceSize = 40;
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
  /*           if (faction != null)    // Changed this function to stop NRE
             {
                 settlementList = faction.settlements;
@@ -146,61 +146,86 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-
             //set text anchor and font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
 
-            //Draw tabs
-            DrawTabFaction(inRect);
-            DrawTabColony(inRect);
-            DrawTabReports(inRect);
-            DrawTabEvent(inRect);
-
-            //DrawColonySettlementCreationButton(inRect); //used for debugging
-
-            if (tab == 0)
+            /* If the Empire faction hasn't yet been created, then show nothing but the "create new faction" button */
+            Faction gfaction = FactionCache.PlayerColonyFaction;
+            if (gfaction == null)
             {
-                DrawFactionTopMenu(inRect);
-                DrawFactionMiddleMenu(inRect);
-                DrawFactionBottomMenu(inRect);
-            }
-
-            //Draw window based on tab
-            if (tab == 1)
-            {
-                DrawColonySettlementCreationButton(inRect);
-                DrawSettlementMenu(inRect);
-                //DrawDebugButton(inRect);
-
-                if (Event.current.type == EventType.ScrollWheel)
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Medium;
+                Rect button = new Rect(10, 40, InitialSize.x - ((Margin+10) * 2), 40);
+                if (Widgets.ButtonText(button, "Create New Faction"))
                 {
+                    ColonyUtil.createPlayerColonyFaction();
+                    faction = FactionCache.FactionComp; // update reference
+                    if (faction != null)
+                    {
+                        faction.factionCreated = true;
+                        Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
+                        //Initial release - Autocreate faction
+                        if (Find.CurrentMap.Parent != null && Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile) != null)
+                        {
+                            Messages.Message("SetAsFactionCapital".Translate(Find.WorldObjects.SettlementAt(Find.CurrentMap.Parent.Tile).Name), MessageTypeDefOf.NeutralEvent);
+                        }
+                    }
+                    else
+                    {
+                        LogUtil.Error("FactionFC world component is still null after creating new faction!");
+                    }
+                }
+            }
+            else
+            {
+                //Draw tabs
+                DrawTabFaction(inRect);
+                DrawTabColony(inRect);
+                DrawTabReports(inRect);
+                DrawTabEvent(inRect);
 
-                    ScrollWindow(Event.current.delta.y);
+                //DrawColonySettlementCreationButton(inRect); //used for debugging
+
+                if (tab == 0)
+                {
+                    DrawFactionTopMenu(inRect);
+                    DrawFactionMiddleMenu(inRect);
+                    DrawFactionBottomMenu(inRect);
                 }
 
+                //Draw window based on tab
+                if (tab == 1)
+                {
+                    DrawColonySettlementCreationButton(inRect);
+                    DrawSettlementMenu(inRect);
+                    //DrawDebugButton(inRect);
+
+                    if (Event.current.type == EventType.ScrollWheel)
+                    {
+
+                        ScrollWindow(Event.current.delta.y);
+                    }
+
+                }
+
+                //draw event select tab
+                if (tab == 2)
+                {
+
+                }
+
+
+                //first tests
+                //DrawHeader(inRect);
+                //DrawColonySettlementCreationButton(inRect);
+
+                //Debug
+                //DrawDebugButton(inRect);
             }
-
-            //draw event select tab
-            if (tab == 2)
-            {
-
-            }
-
-
-            //first tests
-            //DrawHeader(inRect);
-            //DrawColonySettlementCreationButton(inRect);
-
-            //Debug
-            //DrawDebugButton(inRect);
-
-
             //Reset Text anchor and font
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
-
-
         }
         private void DrawHeader(Rect inRect)
         {
@@ -218,40 +243,14 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Small;
 
-            Faction gfaction = ColonyUtil.getPlayerColonyFaction();
-            if (gfaction != null)
+            if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
             {
-                if (Widgets.ButtonText(button, "CreateNewColony".Translate()))
-                {
-                    Find.WindowStack.Add(new CreateColonyWindowFc());
+                Find.WindowStack.Add(new CreateColonyWindowFc());
 
-                    //Move player to world map
-                    Find.World.renderer.wantedMode = WorldRenderMode.Planet;
+                //Move player to world map
+                Find.World.renderer.wantedMode = WorldRenderMode.Planet;
 
-                    Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
-                }
-            }
-            else //create new faction
-            {
-                if (Widgets.ButtonText(button, "Create New Faction"))
-                {
-                    ColonyUtil.createPlayerColonyFaction();
-                    faction = Find.World.GetComponent<FactionFC>(); // update reference
-                    if (faction != null)
-                    {
-                        faction.factionCreated = true;
-                        Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
-                        //Initial release - Autocreate faction
-                        if (Find.CurrentMap.Parent != null && Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile) != null)
-                        {
-                            Messages.Message("SetAsFactionCapital".Translate(Find.WorldObjects.SettlementAt(Find.CurrentMap.Parent.Tile).Name), MessageTypeDefOf.NeutralEvent);
-                        }
-                    }
-                    else
-                    {
-                        LogUtil.Error("FactionFC world component is still null after creating new faction!");
-                    }
-                }
+                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
             }
         }
 
@@ -480,7 +479,7 @@ namespace FactionColonies
                 Widgets.Label(new Rect(7, 32, 200, 40), faction.name);
             if (Widgets.ButtonImage(new Rect(210, 37, 20, 20), TexLoad.iconCustomize))
             { //if click faction customize button
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
                 else
@@ -591,7 +590,7 @@ namespace FactionColonies
 
                     if (buttons[i] == "Military".Translate())
                     {
-                        if (ColonyUtil.getPlayerColonyFaction() == null)
+                        if (FactionCache.PlayerColonyFaction == null)
                         {
                             Messages.Message(new Message("NoFactionForMilitary".Translate(), MessageTypeDefOf.RejectInput));
                         }
@@ -686,7 +685,7 @@ namespace FactionColonies
                                     IncidentParms parms = new IncidentParms
                                     {
                                         target = Find.CurrentMap,
-                                        faction = ColonyUtil.getPlayerColonyFaction(),
+                                        faction = FactionCache.PlayerColonyFaction,
                                         points = 999,
                                         raidArrivalModeForQuickMilitaryAid = true,
                                         raidNeverFleeIndividual = true,

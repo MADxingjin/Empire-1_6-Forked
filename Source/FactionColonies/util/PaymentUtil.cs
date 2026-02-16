@@ -236,7 +236,7 @@ namespace FactionColonies
 
         public static List<Thing> generateRaidLoot(int lootLevel, TechLevel techLevel)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             float trait_LootMulitplier = 1f;
             if (faction.hasTrait(FCPolicyDefOf.raiders))
@@ -276,7 +276,7 @@ namespace FactionColonies
             raceChoice = faction.RandomPawnKind();
 
             pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: raceChoice,
-                faction: ColonyUtil.getPlayerColonyFaction(), context: PawnGenerationContext.NonPlayer, tile: -1, 
+                faction: FactionCache.PlayerColonyFaction, context: PawnGenerationContext.NonPlayer, tile: -1, 
                 forceGenerateNewPawn: false, allowDead: false, allowDowned: false, 
                 canGeneratePawnRelations: false, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0, 
                 forceAddFreeWarmLayerIfNeeded: false, allowGay: false, allowFood: false, allowAddictions: false, 
@@ -301,7 +301,7 @@ namespace FactionColonies
             ThingSetMakerParams param = new ThingSetMakerParams();
             param.totalMarketValueRange = new FloatRange((float) (valueBase - 300), (float) (valueBase + 300));
             param.filter = new ThingFilter();
-            param.techLevel = ColonyUtil.getPlayerColonyFaction().def.techLevel;
+            param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
 
             switch (resourceOfThing)
             {
@@ -405,7 +405,7 @@ namespace FactionColonies
             }
             
             // Fallback to existing tax map logic
-            return Find.World.GetComponent<FactionFC>().TaxMap;
+            return FactionCache.FactionComp.TaxMap;
         }
 
         public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)

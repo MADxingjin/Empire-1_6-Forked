@@ -99,7 +99,7 @@ namespace FactionColonies
         public static militaryForce createMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false,
             militaryForce homeDefendingForce = null)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             int militaryLevelBonus = 0;
             if (faction.hasTrait(FCPolicyDefOf.defenseInDepth) && isAttacking == false)
                 militaryLevelBonus += 2;
@@ -113,7 +113,7 @@ namespace FactionColonies
             double efficiency = TraitUtilsFC.cycleTraits("militaryMultiplierCombatEfficiency", settlement.Traits, Operation.Multiplication);
             if (isAttacking && faction.hasPolicy(FCPolicyDefOf.militaristic)) 
                 efficiency *= 1.2;
-            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, ColonyUtil.getPlayerColonyFaction());
+            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);
             return returnForce;
             //create and return force.
         }
@@ -229,7 +229,7 @@ namespace FactionColonies
             {
                 value = Math.Min(value,
                     (2 + Math.Round((double) (Find.TickManager.TicksGame -
-                                              Find.World.GetComponent<FactionFC>().timeStart - GenDate.TicksPerSeason) /
+                                              FactionCache.FactionComp.timeStart - GenDate.TicksPerSeason) /
                                     GenDate.TicksPerSeason)));
                 //LogUtil.Message(value.ToString());
             }
@@ -243,7 +243,7 @@ namespace FactionColonies
     {
         public static void attackPlayerSettlement(militaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
 
             FCEvent tmp = FCEventMaker.MakeEvent(FCEventDefOf.settlementBeingAttacked);
             tmp.hasCustomDescription = true;
@@ -252,7 +252,7 @@ namespace FactionColonies
             tmp.hasDestination = true;
             tmp.customDescription = "settlementAboutToBeAttacked".Translate(settlement.Name, enemyFaction.Name);
             tmp.militaryForceDefending = militaryForce.createMilitaryForceFromSettlement(settlement);
-            tmp.militaryForceDefendingFaction = ColonyUtil.getPlayerColonyFaction();
+            tmp.militaryForceDefendingFaction = FactionCache.PlayerColonyFaction;
             tmp.militaryForceAttacking = attackingForce;
             tmp.militaryForceAttackingFaction = enemyFaction;
             tmp.settlementFCDefending = settlement;
@@ -280,7 +280,7 @@ namespace FactionColonies
                 settlement.MilitaryComp.defenderForce = tmp.militaryForceDefending;
                 settlement.MilitaryComp.attackerForce = tmp.militaryForceAttacking;
 
-                Find.World.GetComponent<FactionFC>().addEvent(tmp);
+                FactionCache.FactionComp.addEvent(tmp);
 
                 tmp.customDescription += "\n\nThe estimated attacking force's power is: " +
                                          tmp.militaryForceAttacking.forceRemaining;
@@ -297,7 +297,7 @@ namespace FactionColonies
 
         public static void changeDefendingMilitaryForce(FCEvent evt, WorldSettlementFC settlementOfMilitaryForce)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             militaryForce tmpMilitaryForce = null;
             WorldSettlementFC homeSettlement = factionfc.returnSettlementByLocation(evt.location);
             if (settlementOfMilitaryForce == evt.militaryForceDefending.homeSettlement)
@@ -351,7 +351,7 @@ namespace FactionColonies
 
         public static FCEvent returnMilitaryEventByLocation(PlanetTile location)
         {
-            return Find.World.GetComponent<FactionFC>().events.FirstOrDefault(evt => evt.def.isMilitaryEvent && evt.location == location);
+            return FactionCache.FactionComp.events.FirstOrDefault(evt => evt.def.isMilitaryEvent && evt.location == location);
         }
     }
 
@@ -370,7 +370,7 @@ namespace FactionColonies
 
         public static void resetPlayerColonyRelations()
         {
-            Faction PCFaction = ColonyUtil.getPlayerColonyFaction();
+            Faction PCFaction = FactionCache.PlayerColonyFaction;
             foreach (Faction faction in Find.FactionManager.AllFactionsInViewOrder)
             {
                 if (faction != Find.FactionManager.OfPlayer && faction != PCFaction)

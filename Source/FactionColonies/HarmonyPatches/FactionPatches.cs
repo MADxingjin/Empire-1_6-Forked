@@ -12,7 +12,7 @@ namespace FactionColonies
     {
         static void Postfix(ref IncidentWorker_RaidFriendly __instance, ref bool __result, IncidentParms parms)
         {
-            if (parms.faction == ColonyUtil.getPlayerColonyFaction())
+            if (parms.faction == FactionCache.PlayerColonyFaction)
             {
                 parms.faction = null;
                 __result = false;
@@ -91,7 +91,7 @@ namespace FactionColonies
                 !PawnGenerator.IsBeingGenerated(member) && map != null && map.IsPlayerHome &&
                 !__instance.HostileTo(Faction.OfPlayer))
             {
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
                 if (!faction.hasPolicy(FCPolicyDefOf.pacifist) && dinfo != null)
                 {
                     if (dinfo.Value.Category == DamageInfo.SourceCategory.Collapse)
@@ -137,7 +137,7 @@ namespace FactionColonies
         {
             if (__instance.def.defName == "PColony" && violator == Faction.OfPlayer && !member.IsSlaveOfColony)
             {
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
                 faction.GainUnrestForReason(new Message("CaptureOfFactionPawn".Translate(), MessageTypeDefOf.NegativeEvent), 15d);
                 faction.GainHappiness(-10d);
 

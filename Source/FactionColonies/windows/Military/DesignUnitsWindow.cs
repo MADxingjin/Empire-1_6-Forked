@@ -99,7 +99,7 @@ namespace FactionColonies
                     }
 
                     //Prevent units being modified when their squads are deployed
-                    FactionFC factionFC = Find.World.GetComponent<FactionFC>();
+                    FactionFC factionFC = FactionCache.FactionComp;
                     List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
                     List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
                                                                                                          squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
@@ -214,7 +214,7 @@ namespace FactionColonies
                 List<string> races = new List<string>();
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
 
-                foreach (PawnKindDef def in DefDatabase<PawnKindDef>.AllDefsListForReading.Where(def => def.IsHumanLikeRace() && !races.Contains(def.race.label) && faction.raceFilter.Allows(def.race)))
+                foreach (PawnKindDef def in FactionCache.AllPawnKindDefs.Where(def => def.IsHumanLikeRace() && !races.Contains(def.race.label) && faction.raceFilter.Allows(def.race)))
                 {
                     if (def.race == ThingDefOf.Human && def.LabelCap != "Colonist") continue;
                     races.Add(def.race.label);

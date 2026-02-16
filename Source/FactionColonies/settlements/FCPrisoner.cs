@@ -42,8 +42,8 @@ namespace FactionColonies
             healthTracker = pawn.health;
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;
-            loadID = Find.World.GetComponent<FactionFC>().GetNextPrisonerID();
-            pawn.guest.SetGuestStatus(ColonyUtil.getPlayerColonyFaction(), GuestStatus.Prisoner);
+            loadID = FactionCache.FactionComp.GetNextPrisonerID();
+            pawn.guest.SetGuestStatus(FactionCache.PlayerColonyFaction, GuestStatus.Prisoner);
         }
 
         

@@ -69,7 +69,7 @@ namespace FactionColonies
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
 
 
             foreground = new Texture2D(1, 1);
@@ -116,7 +116,7 @@ namespace FactionColonies
             //Settings button
             if (Widgets.ButtonImage(headerSettings, TexLoad.iconCustomize))
             {
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 if (fact != null)
                     Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
             }
@@ -323,7 +323,7 @@ namespace FactionColonies
             }
             //End Trait Slot
 
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             Widgets.Label(roadBuilding, "FCBuildRoads".Translate());
             Widgets.Checkbox(roadBuilding.x + roadBuilding.width + 5, roadBuilding.y,
                 ref fc.roadBuilder.roadBuildingEnabled);

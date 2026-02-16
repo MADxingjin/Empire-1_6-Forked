@@ -42,7 +42,7 @@ namespace FactionColonies
         public FCBillWindow()
         {
             //Window Information
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
             bills = faction.Bills;
 
             scroll = 0;

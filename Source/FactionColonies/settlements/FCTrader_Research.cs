@@ -19,7 +19,7 @@ namespace FactionColonies
 
         public FCTrader_Research()
         {
-            factionfc = Find.World.GetComponent<FactionFC>();
+            factionfc = FactionCache.FactionComp;
         }
 
 
@@ -114,7 +114,7 @@ namespace FactionColonies
         {
             get
             {
-                return ColonyUtil.getPlayerColonyFaction();
+                return FactionCache.PlayerColonyFaction;
             }
         }
 
@@ -137,7 +137,7 @@ namespace FactionColonies
 
         public override bool HandlesThingDef(ThingDef thingDef)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             return !CraftUtil.canCraftItem(thingDef, true);
         }
     }

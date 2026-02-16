@@ -68,7 +68,6 @@ namespace FactionColonies
         public bool autoResolveBillsChanged = false;
 
         public List<FCPolicy> policies = new List<FCPolicy>();
-        //TODO: nothing should try to modify the traits list directly. Should always go through addTrait/removeTrait/clearTraits/assignNewTraits
         private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
         public List<FCTraitEffectDef> Traits => traits;
         public List<int> militaryTargets = new List<int>();
@@ -145,7 +144,7 @@ namespace FactionColonies
                 Map map;
                 if (taxMap == null)
                 {
-                    if (Find.WorldObjects.SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map == null)
+                    if (Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map == null)
                     {
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
@@ -292,6 +291,14 @@ namespace FactionColonies
 
             //Random Event
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
+
+            /* Clear the static faction cache */
+            /* VERY IMPORTANT THAT THE CACHE BE INVALIDATED ON LOAD.
+             * So don't remove this line unless you have an alternative method of invalidating the cache! */
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                FactionCache.InvalidateCache();
+            }
         }
 
         public override void FinalizeInit(bool fromLoad)
@@ -483,7 +490,7 @@ namespace FactionColonies
 
                 roadBuilder.FirstTick();
 
-                Faction FCf = ColonyUtil.getPlayerColonyFaction();
+                Faction FCf = FactionCache.PlayerColonyFaction;
                 if (FCf != null)
                 {
                     FCf.def.techLevel = TechLevel.Undefined;
@@ -505,7 +512,16 @@ namespace FactionColonies
 
 
             //If Player Colony Faction does exists
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
+            /* Check on the leader */
+            //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
+            if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
+            {
+                if (faction != null && faction.leader == null || faction.leader.Dead)
+                {
+                    ColonyUtil.CreatePlayerFactionLeader(faction);
+                }
+            }
             /* Always call the tick functions, but pass faction into them.
              * We always need to update the interval, even if the faction doesn't exist. Otherwise, if the player delays in creating the faction,
              * then we'll suddenly hit them with a billion back-taxes and back-events as the timers try to catch up.
@@ -557,7 +573,7 @@ namespace FactionColonies
                 worker.def = IncidentDefOf.TraderCaravanArrival;
                 IncidentParms parms =
                     StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, returnCapitalMap());
-                parms.faction = ColonyUtil.getPlayerColonyFaction();
+                parms.faction = FactionCache.PlayerColonyFaction;
                 RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
                     CellFinder.EdgeRoadChance_Friendly);
                 parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
@@ -670,7 +686,7 @@ namespace FactionColonies
 
         public void updateFactionRaces()
         {
-            Faction faction = ColonyUtil.getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
             // TODO updateFactionRaces()
         }
 
@@ -693,9 +709,10 @@ namespace FactionColonies
             }
         }
 
-        public void updateTechLevel(ResearchManager researchManager)
+        public void updateTechLevel(ResearchManager researchManager, Faction faction = null)
         {
             bool medievalOnly = FCSettings.medievalTechOnly;
+            TechLevel curTechLevel = techLevel;
 
 
             if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false) != null &&
@@ -704,7 +721,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
-                raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false)) ==
@@ -713,7 +729,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
-                raceFilter.FinalizeInit(this);
             }
             else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false)) ==
@@ -722,7 +737,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
-                raceFilter.FinalizeInit(this);
             }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false) != null &&
                      researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false)) ==
@@ -731,8 +745,6 @@ namespace FactionColonies
             {
                 techLevel = TechLevel.Medieval;
                 LogUtil.Message("updateTechLevel: Medieval");
-                raceFilter.FinalizeInit(this);
-                xenotypeFilter.FinalizeInit(this);
             }
             else
             {
@@ -740,28 +752,24 @@ namespace FactionColonies
                 {
                     LogUtil.Message("updateTechLevel: Neolithic");
                     techLevel = TechLevel.Neolithic;
-                    raceFilter.FinalizeInit(this);
-                    xenotypeFilter.FinalizeInit(this);
                 }
             }
 
-            Faction playerColonyfaction = ColonyUtil.getPlayerColonyFaction();
+            if (techLevel != curTechLevel)
+            {
+                raceFilter.FinalizeInit(this);
+                xenotypeFilter.FinalizeInit(this);
+            }
+
+            Faction playerColonyfaction = faction ?? FactionCache.PlayerColonyFaction;
             if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
             {
                 LogUtil.Message("Updating Tech Level");
                 updateFactionDef(techLevel, ref playerColonyfaction);
             }
-            else if (playerColonyfaction.def.techLevel >= techLevel)
+            else if (playerColonyfaction != null && playerColonyfaction.def.techLevel >= techLevel)
             {
                 //LogUtil.Message("Tech Level already matches");
-            }
-            // Check Leader
-            if (playerColonyfaction != null)
-            {
-                if (playerColonyfaction.leader == null || playerColonyfaction.leader.Dead)
-                {
-                    ColonyUtil.CreatePlayerFactionLeader(playerColonyfaction);
-                }
             }
         }
 
@@ -877,7 +885,7 @@ namespace FactionColonies
 
         public bool sendDiplomaticEnvoy(Faction faction)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
 
             if (!faction.def.permanentEnemy)
             {
@@ -955,10 +963,10 @@ namespace FactionColonies
             averageProsperity = averageProsperityTmp;
 
 
-            if (settlements.Any() && ColonyUtil.getPlayerColonyFaction() != null)
+            if (settlements.Any() && FactionCache.PlayerColonyFaction != null)
             {
-                ColonyUtil.getPlayerColonyFaction().TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
-                    (Convert.ToInt32(averageHappiness) - ColonyUtil.getPlayerColonyFaction().PlayerGoodwill));
+                FactionCache.PlayerColonyFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
+                    (Convert.ToInt32(averageHappiness) - FactionCache.PlayerColonyFaction.PlayerGoodwill));
             }
         }
 
@@ -976,9 +984,38 @@ namespace FactionColonies
         public void uiUpdate()
         {
             //Pop UI updates
-            updateTotalResources();
+            // We cache the total amount now, and signal to dirty the cache anytime an underlying value is changed. No need to update regularly
+            //updateTotalResources();
             updateTotalProfit();
             updateTechLevel(Find.ResearchManager);
+        }
+
+        public double getFactionWideTaxBonus()
+        {
+            double bonus = 0;
+            if (hasPolicy(FCPolicyDefOf.isolationist))
+                bonus += 10;
+
+            return bonus;
+        }
+
+        public int buildingUpkeepModifier(BuildingFCDef building)
+        {
+            int reduction = 0;
+            //TODO: find a reasonable way to modularize faction policies
+            if (hasPolicy(FCPolicyDefOf.militaristic))
+            {
+                foreach (FCTraitEffectDef trait in building.traits)
+                {
+                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
+                    {
+                        reduction -= 100;
+                        break;
+                    }
+                }
+            }
+
+            return reduction;
         }
 
         public double getTotalIncome() //return total income of settlements       ####MAKE UPDATE PER HOUR TICK
@@ -1089,7 +1126,7 @@ namespace FactionColonies
          * End Resource Pool functions
          * * * * * */
 
-        public void updateTotalResources()
+        /*public void updateTotalResources()
         {
             foreach (ResourceDisplay rdisplay in factionResources)
             {
@@ -1102,6 +1139,43 @@ namespace FactionColonies
 
                 rdisplay.amount = resource;
             }
+        }*/
+        public void setDirtyResourceDisplayCache(ResourceTypeDef rdef)
+        {
+            ResourceDisplay rdisplay = factionResources.Find((ResourceDisplay rd) => rd.resourceDef == rdef);
+            if (rdisplay != null)
+            {
+                rdisplay.setDirtyCache();
+            }
+        }
+        public double getFactionTitheBonusAdditivePerWorker(ResourceTypeDef rdef)
+        {
+            double bonus = 0;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusAdditiveForTotal(ResourceTypeDef rdef)
+        {
+            double bonus = 0;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusMultPerWorker(ResourceTypeDef rdef)
+        {
+            double bonus = 1;
+
+            return bonus;
+        }
+        public double getFactionTitheBonusMultForTotal(ResourceTypeDef rdef)
+        {
+            double bonus = 1;
+
+            if (hasPolicy(FCPolicyDefOf.feudal))
+            {
+                bonus *= 1.2;
+            }
+
+            return bonus;
         }
 
 
@@ -1145,16 +1219,15 @@ namespace FactionColonies
                     //End Traits
 
                     List<Thing> list = new List<Thing>();
-                    settlement.updateProfitAndProduction();
-                    list = settlement.createTithe(trait_Industrious_TaxPercentageBoost);
+                    int silverAmount = 0;
+                    list = settlement.createTax(out silverAmount);
                     List<ResourcePool> resourcePools = settlement.createResourcePools();
 
                     BillFC bill = new BillFC(settlement); //Create new bill connected to settlement
                     bill.taxes.resourcePools = resourcePools;
                     bill.taxes.itemTithes.AddRange(list); //Add tithe to bill's tithes
-                    bill.taxes.silverAmount =
-                        Convert.ToInt32((settlement.totalIncome * trait_Industrious_TaxPercentageBoost) -
-                                        settlement.totalUpkeep) + settlement.returnSilverIncome(true);
+                    bill.taxes.silverAmount = silverAmount;
+
                     Bills.Add(bill);
 
                     TextUtil.GetTownTitle(settlement);
@@ -1437,7 +1510,7 @@ namespace FactionColonies
 
         private bool CanMakeRandomEventNow() => Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
 
-        private bool RandomEventsDisabledOrNoSettlements() => Find.World.GetComponent<FactionFC>().settlements.Count == 0 || FCSettings.disableRandomEvents;
+        private bool RandomEventsDisabledOrNoSettlements() => FactionCache.FactionComp.settlements.Count == 0 || FCSettings.disableRandomEvents;
 
         private void MakeRandomEvent()
         {
@@ -1448,7 +1521,7 @@ namespace FactionColonies
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.returnRandomEvent(), null);
                 if (tmpEvt != null)
                 {
-                    Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
+                    FactionCache.FactionComp.addEvent(tmpEvt);
                     randomEventLastAdded = 0f;
 
                     //letter code

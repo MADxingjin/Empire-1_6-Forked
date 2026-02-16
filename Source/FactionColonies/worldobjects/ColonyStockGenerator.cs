@@ -11,7 +11,7 @@ namespace FactionColonies
     public class ColonyStockGenerator : StockGenerator
     {
         private StockGenerator parent;
-        private FactionFC faction = Find.World.GetComponent<FactionFC>();
+        private FactionFC faction = FactionCache.FactionComp;
 
         public ColonyStockGenerator(StockGenerator parent)
         {

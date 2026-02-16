@@ -40,7 +40,7 @@ namespace FactionColonies
         //
         public static void Prefix()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             worldcomp.travelTime = Find.TickManager.TicksGame;
             worldcomp.SoSMoving = true;
             if (worldcomp.taxMap != null && worldcomp.taxMap.Parent != null && worldcomp.taxMap.Parent.def.defName == "ShipOrbiting")
@@ -106,15 +106,15 @@ namespace FactionColonies
 
         public static void updateFactionOnPlanet()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
-            Faction faction1 = ColonyUtil.getPlayerColonyFaction();
+            FactionFC worldcomp = FactionCache.FactionComp;
+            Faction faction1 = FactionCache.PlayerColonyFaction;
             //LogUtil.Message((faction1 != null).ToString());
             if (faction1 == null && worldcomp.factionCreated == true)
             {
                 LogUtil.Message("Moved to new planet - Adding faction copy");
                 //FactionColonies.createPlayerColonyFaction();
                 ColonyUtil.copyPlayerColonyFaction();
-                faction1 = ColonyUtil.getPlayerColonyFaction();
+                faction1 = FactionCache.PlayerColonyFaction;
             }
             //LogUtil.Message(((bool)(faction1 != null)).ToString());
             foreach (Faction factionOther in Find.FactionManager.AllFactionsListForReading)
@@ -145,13 +145,13 @@ namespace FactionColonies
 
 
 
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
 
 
-            //FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            //FactionFC worldcomp = FactionCache.FactionComp;
             if (worldcomp != null && worldcomp.planetName != null && worldcomp.planetName != Find.World.info.name && Find.TickManager.TicksGame > 60000)
             {
-                Faction faction1 = ColonyUtil.getPlayerColonyFaction();
+                Faction faction1 = FactionCache.PlayerColonyFaction;
                 updateFactionOnPlanet();
 
                 if (worldcomp.SoSMoving == true)

@@ -12,23 +12,6 @@ namespace FactionColonies.util
 {
     public static class ColonyUtil
     {
-        private static Faction playerFactionRef = null;
-        public static Faction GetVanillaPlayerFaction()
-        {
-            if (playerFactionRef == null)
-            {
-                playerFactionRef = Find.FactionManager.AllFactions.ToList().Find(faction => faction.IsPlayer);
-            }
-
-            return playerFactionRef;
-        }
-
-        public static Faction getPlayerColonyFaction()
-        {
-            return Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed("PColony"));
-        }
-
-
         //<DevAdd>   Create new seperate function to create a faction
         public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
@@ -42,12 +25,12 @@ namespace FactionColonies.util
             settlementType.GetModExtension<SettlementTypeExtension>().preCreation(ref tile, ref settlementType);
 
             LogUtil.Message($"Creating settlement of type {settlementType.defName}");
-            Faction faction = getPlayerColonyFaction();
+            Faction faction = FactionCache.PlayerColonyFaction;
 
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             if (!worldcomp.settlements.Any())
             {
-                Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
+                FactionCache.FactionComp.timeStart = Find.TickManager.TicksGame;
             }
 
             WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldSettlementDef>.GetNamed(settlementType.defName));
@@ -79,7 +62,7 @@ namespace FactionColonies.util
         public static void removePlayerSettlement(WorldSettlementFC settlement)
         {
             settlement.PrepareDestroyWorldObject();
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             faction.settlements.Remove(settlement);
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
@@ -156,7 +139,7 @@ namespace FactionColonies.util
         /*
         public static Faction copyPlayerColonyFaction()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
 
             worldcomp.setCapital();
 
@@ -236,7 +219,7 @@ namespace FactionColonies.util
 
         public static Faction createPlayerColonyFaction()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             if (worldcomp == null)
             {
                 LogUtil.Error("FactionFC world component is missing! Cannot create player colony faction.");
@@ -256,6 +239,8 @@ namespace FactionColonies.util
             faction.Name = "PlayerColony".Translate();
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
+
+            worldcomp.updateTechLevel(Find.ResearchManager, faction);
             //<DevAdd> Copy player faction relationships  
             foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
             {
@@ -265,11 +250,12 @@ namespace FactionColonies.util
             faction.TryAffectGoodwillWith(Faction.OfPlayer, 200);
 
             // Generate Leader
-            CreatePlayerFactionLeader(faction);
+            if (faction.leader == null || faction.leader.Dead)
+            {
+                CreatePlayerFactionLeader(faction);
+            }
 
             Find.FactionManager.Add(faction);
-
-            Find.World.GetComponent<FactionFC>().updateTechLevel(Find.ResearchManager);
             return faction;
         }
 

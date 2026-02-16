@@ -169,8 +169,8 @@ namespace FactionColonies
             base.OnAcceptKeyPressed();
             faction.title = title;
             faction.name = name;
-            ColonyUtil.getPlayerColonyFaction().Name = name;
-            //Find.World.GetComponent<FactionFC>().name = name;
+            FactionCache.PlayerColonyFaction.Name = name;
+            //FactionCache.FactionComp.name = name;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -211,10 +211,7 @@ namespace FactionColonies
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>
                 {
-                    new FloatMenuOption("Empire_XenotypeMenus_EnableAll".Translate(), delegate { faction.xenotypeFilter.ResetToAllXenotypes(); })
-                };
-                List<FloatMenuOption> disableAll = new List<FloatMenuOption>
-                {
+                    new FloatMenuOption("Empire_XenotypeMenus_EnableAll".Translate(), delegate { faction.xenotypeFilter.ResetToAllXenotypes(); }),
                     new FloatMenuOption("Empire_XenotypeMenus_DisableNonBaseliner".Translate(), delegate { faction.xenotypeFilter.ResetToBaselinerXenotypeOnly(); })
                 };
                 List<string> xenotypes = new List<string>();
@@ -260,7 +257,7 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
             {
-                Faction fact = ColonyUtil.getPlayerColonyFaction();
+                Faction fact = FactionCache.PlayerColonyFaction;
                 faction.title = title;
                 faction.name = name;
                 fact.Name = name;

@@ -25,7 +25,7 @@ namespace FactionColonies
             settlementHeight = 120;
             settlementYSpacing = 5;
             settlementMaxScroll =
-                (Find.World.GetComponent<FactionFC>().settlements.Count * (settlementYSpacing + settlementHeight) -
+                (FactionCache.FactionComp.settlements.Count * (settlementYSpacing + settlementHeight) -
                  settlementWindowHeight);
         }
 
@@ -53,7 +53,7 @@ namespace FactionColonies
 
 
             int count = 0;
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 if (settlement.MilitaryComp == null)
                 {

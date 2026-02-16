@@ -47,7 +47,7 @@ namespace FactionColonies
 
             if (tempEvent.def != FCEventDefOf.Null)
             {
-                Find.World.GetComponent<FactionFC>().addEvent(tempEvent);
+                FactionCache.FactionComp.addEvent(tempEvent);
 
                 //letter
 
@@ -67,7 +67,7 @@ namespace FactionColonies
 
         public static bool isValidRandomEvent(FCEventDef cEvent)
         {
-            FactionFC tmp = Find.World.GetComponent<FactionFC>();
+            FactionFC tmp = FactionCache.FactionComp;
 
             if (cEvent.isRandomEvent && Find.World.PlayerWealthForStoryteller >= cEvent.requiredWealth)
             {
@@ -86,16 +86,16 @@ namespace FactionColonies
                             {
                                 if (cEvent.rangeSettlementsAffected.min == 0 &&
                                     cEvent.rangeSettlementsAffected.max == 0 ||
-                                    Find.World.GetComponent<FactionFC>().settlements.Count() >=
+                                    FactionCache.FactionComp.settlements.Count() >=
                                     cEvent.rangeSettlementsAffected.min)
                                 {
                                     //if doesn't require resource or if required resource has more than 1 production
                                     if (cEvent.requiredResource == null
-                                        ? Find.World.GetComponent<FactionFC>().returnResource(cEvent.requiredResource).amount > 0
+                                        ? FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
                                         : true || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
                                     {
                                         //if event is not incompatible with any currently-running events
-                                        foreach (FCEvent evt in Find.World.GetComponent<FactionFC>().events)
+                                        foreach (FCEvent evt in FactionCache.FactionComp.events)
                                         {
                                             if (evt.def != null)
                                             {
@@ -191,7 +191,7 @@ namespace FactionColonies
         {
             if (def is null) return null;
 
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
 
             FCEvent tempEvent = new FCEvent(true)
             {
@@ -277,7 +277,7 @@ namespace FactionColonies
 
         public static void ProcessEvents(in List<FCEvent> events)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             for (int i = 0; i < events.Count; i++)
             {
                 if (events[i].timeTillTrigger > Find.TickManager.TicksGame) continue;
@@ -296,7 +296,6 @@ namespace FactionColonies
                 {
                     case "settleNewColony":
                         {
-                            //TODO: BIG BUG HERE, settleNewColony event doesn't actually create a colony!
                             //Settle new colony event
                             faction.addExperienceToFactionLevel(10f);
 
@@ -341,6 +340,11 @@ namespace FactionColonies
                                 settlement = faction.returnSettlementByLocation(evt.location);
                                 settlement.upgradeSettlement();
                                 Find.LetterStack.ReceiveLetter("Settlement Upgrade", settlement.Name + " " + "HasBeenUpgraded".Translate() + " " + settlement.settlementLevel + "!", LetterDefOf.PositiveEvent);
+                                /* We set these values here, instead of in upgradeSettlement(), because sometimes upgradeSettlement is called to handle changing a settlement's level outside of the
+                                 * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
+                                settlement.isUpgrading = false;
+                                settlement.startUpgradeTick = -1;
+                                settlement.finishUpgradeTick = -1;
                             }
 
                             break;
@@ -581,7 +585,7 @@ namespace FactionColonies
 
         public static void createTaxEvent(BillFC bill)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             FCEvent tmp = MakeEvent(FCEventDefOf.taxColony);
 
@@ -732,7 +736,7 @@ namespace FactionColonies
 
         public FCEvent(bool New)
         {
-            loadID = Find.World.GetComponent<FactionFC>().GetNextEventID();
+            loadID = FactionCache.FactionComp.GetNextEventID();
         }
         
         /// <summary>

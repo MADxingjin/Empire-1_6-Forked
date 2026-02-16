@@ -36,14 +36,14 @@ namespace FactionColonies.util
 
 		public static void Action(FCEvent evt)
 		{
-			Action(evt, Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
+			Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
 		}
 
 		public static void Action(FCEvent evt, Letter let = null, Message msg = null, bool CanUseShuttle = false)
 		{
 			evt.let = let;
 			evt.msg = msg;
-			Action(evt, CanUseShuttle || (Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
+			Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
 		}
 
 		private static void MakeDeliveryLetterAndMessage(FCEvent evt)
@@ -83,7 +83,7 @@ namespace FactionColonies.util
 
 		private static void SendShuttle(FCEvent evt)
 		{
-			Map playerHomeMap = Find.World.GetComponent<FactionFC>().TaxMap;
+			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			List<ShipLandingArea> landingZones = ShipLandingBeaconUtility.GetLandingZones(playerHomeMap);
 
 			IntVec3 landingCell = DropCellFinder.GetBestShuttleLandingSpot(playerHomeMap, Faction.OfPlayer);
@@ -118,14 +118,14 @@ namespace FactionColonies.util
 
 		private static void SendDropPod(FCEvent evt)
 		{
-			Map playerHomeMap = Find.World.GetComponent<FactionFC>().TaxMap;
+			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			MakeDeliveryLetterAndMessage(evt);
 			DropPodUtility.DropThingsNear(DropCellFinder.TradeDropSpot(playerHomeMap), playerHomeMap, evt.goods, 110, false, false, false, false);
 		}
 
 		private static bool DoDelayCaravanDueToDanger(FCEvent evt)
 		{
-			Map playerHomeMap = Find.World.GetComponent<FactionFC>().TaxMap;
+			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			if (playerHomeMap.dangerWatcher.DangerRating != StoryDanger.None)
 			{
 
@@ -147,14 +147,14 @@ namespace FactionColonies.util
 
 		private static void SendCaravan(FCEvent evt)
 		{
-			Map playerHomeMap = Find.World.GetComponent<FactionFC>().TaxMap;
+			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			if (DoDelayCaravanDueToDanger(evt)) return;
 
 			MakeDeliveryLetterAndMessage(evt);
 			List<Pawn> pawns = new List<Pawn>();
 			List<Pawn> securityGuards = new List<Pawn>();
 			
-			var factionFC = Find.World.GetComponent<FactionFC>();
+			var factionFC = FactionCache.FactionComp;
 			
 			// Generate delivery pawns using allowed xenotypes first
 			int maxAttempts = 100; // Prevent infinite loops
@@ -182,7 +182,7 @@ namespace FactionColonies.util
 								// Create request that allows ANY xenotype (including non-violent ones)
 								var request = new PawnGenerationRequest(
 									kind: PawnKindDefOf.Colonist,
-									faction: ColonyUtil.getPlayerColonyFaction(),
+									faction: FactionCache.PlayerColonyFaction,
 									context: PawnGenerationContext.NonPlayer,
 									tile: -1,
 									forceGenerateNewPawn: false,
@@ -235,7 +235,7 @@ namespace FactionColonies.util
 					if (deliveryPawn == null)
 					{
 						LogUtil.Warning("Failed to generate human pawn, falling back to animals");
-						var availableAnimals = DefDatabase<PawnKindDef>.AllDefsListForReading
+						var availableAnimals = FactionCache.AllPawnKindDefs
 							.Where(def => def.race.race.Animal && 
 										def.RaceProps.trainability != null && 
 										def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
@@ -308,7 +308,7 @@ namespace FactionColonies.util
 								{
 									var request = new PawnGenerationRequest(
 										kind: PawnKindDefOf.Colonist,
-										faction: ColonyUtil.getPlayerColonyFaction(),
+										faction: FactionCache.PlayerColonyFaction,
 										context: PawnGenerationContext.NonPlayer,
 										tile: -1,
 										forceGenerateNewPawn: false,
@@ -361,7 +361,7 @@ namespace FactionColonies.util
 			
 			// Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
 			// This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-			var guardAnimals = DefDatabase<PawnKindDef>.AllDefsListForReading
+			var guardAnimals = FactionCache.AllPawnKindDefs
 				.Where(def => def.race.race.Animal && 
 					def.RaceProps.trainability != null && 
 					def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
@@ -450,7 +450,7 @@ namespace FactionColonies.util
 
 		public static TaxDeliveryMode TaxDeliveryModeForSettlement(bool canUseShuttle, PlanetTile sourceTile)
 		{
-			WorldSettlementFC settlement = Find.World.GetComponent<FactionFC>().settlements.FirstOrFallback((WorldSettlementFC s) => s.Tile == sourceTile);
+			WorldSettlementFC settlement = FactionCache.FactionComp.settlements.FirstOrFallback((WorldSettlementFC s) => s.Tile == sourceTile);
 			if (settlement != null)
 			{
 				return settlement.settlementDef.getTaxDeliveryMode(canUseShuttle, sourceTile);
@@ -503,7 +503,7 @@ namespace FactionColonies.util
 			evt.msg = evtParams.msg;
 			evt.isDelayed = evtParams.isDelayed;
 
-			Find.World.GetComponent<FactionFC>().addEvent(evt);
+			FactionCache.FactionComp.addEvent(evt);
 		}
 
 		public static string ShuttleEventInjuredString

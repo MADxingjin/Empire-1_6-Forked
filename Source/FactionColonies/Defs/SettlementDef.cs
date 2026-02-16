@@ -35,6 +35,9 @@ namespace FactionColonies
 
         public List<PlanetLayerDef> planetLayers = new List<PlanetLayerDef>();
 
+        public int maxSettlementLevel = 99;
+        public int maxBuildingCount = 99;
+
         /// <summary>
         /// Entirely flavor. Determines whether time to create is labeled in menus as "Construction Time" or "Travel Time".
         /// </summary>
@@ -87,7 +90,7 @@ namespace FactionColonies
             }
             if (techLevel != TechLevel.Undefined)
             {
-                Faction faction = ColonyUtil.getPlayerColonyFaction();
+                Faction faction = FactionCache.PlayerColonyFaction;
                 if (faction.def.techLevel < techLevel)
                 {
                     return false;

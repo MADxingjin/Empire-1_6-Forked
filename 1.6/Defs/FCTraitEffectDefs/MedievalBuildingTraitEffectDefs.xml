@@ -4,7 +4,7 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>slavePlantation</defName> <!--Name of Def -->
 		<label>Slave Plantation</label> <!--Lable of Def -->
-		<desc>Slaves work the fields here. +20% food production.</desc> <!-- Description of trait -->
+		<desc></desc>
 		<resourceBonuses>
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
@@ -16,7 +16,7 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>adventurersGuild</defName> <!--Name of Def -->
 		<label>Adventurer's Guild</label> <!--Lable of Def -->
-		<desc>A place for traveling adventurers to meet up and spend a night. -15% production to food, weapons, and apparel. +5% basetax. +1 military level.</desc> <!-- Description of trait -->
+		<desc></desc>
 		<taxBasePercentage>5</taxBasePercentage>
 		<militaryBaseLevel>1</militaryBaseLevel>
 		<resourceBonuses>
@@ -39,7 +39,7 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>publicMarket</defName> <!--Name of Def -->
 		<label>Public Market</label> <!--Lable of Def -->
-		<desc>A public market to exchange goods. +15 tithe modifer.</desc> <!-- Description of trait -->
+		<desc></desc>
 		<taxBaseRandomModifier>15</taxBaseRandomModifier>
 		
 	</FactionColonies.FCTraitEffectDef>
@@ -47,7 +47,7 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>jailhouse</defName> <!--Name of Def -->
 		<label>Jailhouse</label> <!--Lable of Def -->
-		<desc>A place to store criminal scum. -25% unrest gain, -5% tax.</desc> <!-- Description of trait -->
+		<desc></desc>
 		<taxBasePercentage>-5</taxBasePercentage>
 		<unrestGainedMultiplier>.75</unrestGainedMultiplier>
 		
@@ -56,7 +56,7 @@
 	<FactionColonies.FCTraitEffectDef>
 		<defName>wildernessGuild</defName> <!--Name of Def -->
 		<label>Wilderness Guild</label> <!--Lable of Def -->
-		<desc>A guild dedicated to taming the wilderness. +25% animal production.</desc> <!-- Description of trait -->
+		<desc></desc>
 		<resourceBonuses>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
@@ -96,7 +96,7 @@
 		<!--Name of Def -->
 		<label>RedlightDistrict</label>
 		<!--Lable of Def -->
-		<desc>A place for Merchant and common people to spend a night with questionable people. +.25 Hapiness and +5% base tax</desc>
+		<desc></desc>
 		<!-- Description of trait -->
 		<taxBasePercentage>5</taxBasePercentage>
 		<happinessGainedBase>.5</happinessGainedBase>

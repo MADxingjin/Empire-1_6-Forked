@@ -39,7 +39,7 @@ namespace FactionColonies.util
             }
             else
             {
-                if (Find.World.GetComponent<FactionFC>().techLevel < thing.techLevel)
+                if (FactionCache.FactionComp.techLevel < thing.techLevel)
                 {
                     canCraft = false;
                 }
@@ -53,6 +53,36 @@ namespace FactionColonies.util
 
 
             return canCraft;
+        }
+
+        public static bool thingHasQuality(ThingDef thing)
+        {
+            return thing.HasComp<CompQuality>();
+        }
+        public static bool thingIsStuffable(ThingDef thing)
+        {
+            return thing.MadeFromStuff;
+        }
+        /// <summary>
+        /// For the given <paramref name="thing"/>, returns a list of valid stuff ThingDefs.
+        /// </summary>
+        /// <param name="thing">ThingDef to retrieve a list of stuff for.</param>
+        /// <param name="filterList">List of possible things to use for stuff.</param>
+        /// <returns>The list of ThingDefs that can be used to stuff the given <paramref name="thing"/>. Returns an empty list if <paramref name="thing"/> is not stuffable.</returns>
+        public static List<ThingDef> getThingStuffs(ThingDef thing, List<ThingDef> filterList)
+        {
+            List<ThingDef> list = new List<ThingDef>();
+            if (thingIsStuffable(thing) && filterList.Count > 0)
+            {
+                foreach(ThingDef possible in filterList)
+                {
+                    if (possible.IsStuff && possible.stuffProps.CanMake(thing))
+                    {
+                        list.Add(possible);
+                    }
+                }
+            }
+            return list;
         }
         /*
         public static void filterResource(ThingFilter filter, ResourceType resourceType, TechLevel techLevel, SettlementFC settlement = null)
@@ -80,7 +110,7 @@ namespace FactionColonies.util
                     }
                     break;
                 case ResourceType.Animals:
-                    List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                    List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
                     foreach (PawnKindDef def in allAnimalDefs)
                     {
                         if (def.IsAnimalAndAllowed())
