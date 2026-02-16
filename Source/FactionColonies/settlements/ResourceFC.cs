@@ -32,7 +32,7 @@ namespace FactionColonies
             set
             {
                 savedAssignedWorkers = value;
-                Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
+                FactionCache.FactionComp?.setDirtyResourceDisplayCache(def);
             }
         }
 
@@ -251,22 +251,22 @@ namespace FactionColonies
         }
         public double getTitheModifierAdditivePerWorker()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             return faction.getFactionTitheBonusAdditivePerWorker(def) + settlement.getTitheModifierPerWorker(def) + FCSettings.productionTitheMod;
         }
         public double getTitheModifierAdditiveForTotal()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             return faction.getFactionTitheBonusAdditiveForTotal(def);
         }
         public double getTitheModifierMultPerWorker()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             return faction.getFactionTitheBonusMultPerWorker(def);
         }
         public double getTitheModifierMultForTotal()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             return faction.getFactionTitheBonusMultForTotal(def);
         }
         public double getTitheModifierPerWorker()
@@ -296,7 +296,7 @@ namespace FactionColonies
             dirtyTitheCache = true;
             setDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
-            Find.World.GetComponent<FactionFC>()?.setDirtyResourceDisplayCache(def);
+            FactionCache.FactionComp?.setDirtyResourceDisplayCache(def);
         }
         public void setDirtyRandomTitheCache()
         {
@@ -506,7 +506,7 @@ namespace FactionColonies
          */
         public void resetThingFilter()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             if (def == null)
                 return;
@@ -532,7 +532,7 @@ namespace FactionColonies
                     resetThingFilter();
                 }
 
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
                 ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
                 ThingSetMakerParams param = new ThingSetMakerParams();
                 param.filter = new ThingFilter();
@@ -1186,7 +1186,7 @@ namespace FactionColonies
             {
                 if (dirtyCachedAmount)
                 {
-                    FactionFC factionFC = Find.World.GetComponent<FactionFC>();
+                    FactionFC factionFC = FactionCache.FactionComp;
                     double resource = 0;
                     for (int k = 0; k < factionFC.settlements.Count(); k++)
                     {

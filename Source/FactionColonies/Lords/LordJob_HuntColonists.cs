@@ -35,7 +35,7 @@ namespace FactionColonies
 
         public override void Notify_PawnLost(Pawn pawn, PawnLostCondition condition)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             //Check if a settlement battle ended
             WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);
             settlement?.MilitaryComp?.removeAttacker(pawn);

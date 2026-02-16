@@ -9,21 +9,28 @@ using Verse;
 
 namespace FactionColonies
 {
+    /// <summary>
+    /// Static cache to hold on to frequently-accessed fields that normally have to touch the Find.* functions.
+    /// 
+    /// <para>This cache needs to be invalidated any time the game loads. Presently, this is done in the ExposeDate() function in the FactionFC WorldComponent.</para>
+    /// <para>NOTE: DefDatabase[PawnKindDef].AllDefsListForReading is cached here. That means that def hotloading is a no-no.</para>
+    /// </summary>
     public static class FactionCache
     {
         private static Faction _cachedColonyFaction = null;
         private static Faction _cachedPlayerFaction = null;
-        private static FactionFC worldcomp = null;
+        private static FactionFC _cachedFactionWorldComp = null;
+        private static List<PawnKindDef> _cachedPawnKindDefs = null;
 
         public static FactionFC FactionComp
         {
             get
             {
-                if (worldcomp == null)
+                if (_cachedFactionWorldComp == null)
                 {
-                    worldcomp = Find.World.GetComponent<FactionFC>();
+                    _cachedFactionWorldComp = Find.World.GetComponent<FactionFC>();
                 }
-                return worldcomp;
+                return _cachedFactionWorldComp;
             }
         }
 
@@ -49,13 +56,25 @@ namespace FactionColonies
                 return _cachedPlayerFaction;
             }
         }
+        public static List<PawnKindDef> AllPawnKindDefs
+        {
+            get
+            {
+                if (_cachedPawnKindDefs == null || _cachedPawnKindDefs.Count == 0)
+                {
+                    _cachedPawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                }
+                return _cachedPawnKindDefs;
+            }
+        }
 
         public static void InvalidateCache()
         {
             LogUtil.Message("Invalidating FactionCache...");
             _cachedColonyFaction = null;
             _cachedPlayerFaction = null;
-            worldcomp = null;
+            _cachedPawnKindDefs = null;
+            _cachedFactionWorldComp = null;
         }
     }
 }

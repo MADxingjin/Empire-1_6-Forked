@@ -197,7 +197,7 @@ namespace FactionColonies
             }
         }
 
-        public bool IsBeingUpgraded => Find.World.GetComponent<FactionFC>().events.Any(evt => evt.def == FCEventDefOf.upgradeSettlement && evt.location == Tile);
+        public bool IsBeingUpgraded => FactionCache.FactionComp.events.Any(evt => evt.def == FCEventDefOf.upgradeSettlement && evt.location == Tile);
 
         public static readonly FieldInfo traitCachedIcon = typeof(WorldObjectDef).GetField("expandingIconTextureInt",
             BindingFlags.NonPublic | BindingFlags.Instance);
@@ -317,7 +317,7 @@ namespace FactionColonies
                 LogUtil.Error($"Created settlement {name} with an invalid def: {def}! Panic! Defaulting to base def!");
                 def = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             Name = settlementDef.getSettlementTypeExtension().getSettlementName();
 
             updateTechIcon();
@@ -333,7 +333,7 @@ namespace FactionColonies
         /// <param name="tile"></param>
         public void PostPostMake(PlanetTile tile)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             this.Tile = tile;
 
             settlementLevel = 1;
@@ -433,7 +433,7 @@ namespace FactionColonies
 
         public void updateTechIcon()
         {
-            var techLevel = Find.World.GetComponent<FactionFC>().techLevel;
+            var techLevel = FactionCache.FactionComp.techLevel;
             LogUtil.Message("Got tech level " + techLevel);
             if (techLevel == TechLevel.Animal || techLevel == TechLevel.Neolithic)
                 def.texture = "World/WorldObjects/TribalSettlement";
@@ -556,7 +556,7 @@ namespace FactionColonies
         // TODO: will need rework after converting faction traits to comps
         public void updateStats()
         {
-            FactionFC factionFc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionFc = FactionCache.FactionComp;
 
             int isolationistExtraWorkers = 0;
             if (factionFc.hasPolicy(FCPolicyDefOf.isolationist))
@@ -587,7 +587,7 @@ namespace FactionColonies
         // TODO: will need rework after converting faction traits to comps
         public double getHappinessGain()
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             double happinessGainMultiplier = TraitUtilsFC.cycleTraits("happinessGainedMultiplier", traits, Operation.Multiplication);
 
             double policyIncrease = 0;
@@ -616,7 +616,7 @@ namespace FactionColonies
         {
             double happinessGain = getTotalHappinessGain();
             string desc = "";
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             double policyIncrease = 0;
             if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
                 policyIncrease = 2;
@@ -712,7 +712,7 @@ namespace FactionColonies
         // TODO: will need rework after converting faction traits to comps
         public double getProsperityGain()
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             double policyIncrease = 0;
             if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
                 policyIncrease = 2;
@@ -801,7 +801,7 @@ namespace FactionColonies
         }
         public double getSettlementTaxBonus()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             double bonus = 0;
             if (faction.hasPolicy(FCPolicyDefOf.egalitarian))
             {
@@ -889,7 +889,7 @@ namespace FactionColonies
                     resource.assignedWorkers += singleMod;
                     numWorkers -= singleMod;
                     updateProfitAndProduction();
-                    Find.World.GetComponent<FactionFC>().updateTotalProfit();
+                    FactionCache.FactionComp.updateTotalProfit();
                     if (numWorkers == 0) return true;
                 }
             }
@@ -1407,7 +1407,7 @@ namespace FactionColonies
         }
         public double getTaxTimeTaxBoostMult()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             double multBoost = 1;
 
             //TODO: would like to modularize faction traits more
@@ -1480,7 +1480,7 @@ namespace FactionColonies
         {
             preTaxPrep();
 
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             double flatTaxBoost = getTaxTimeTaxBoostFlat();
             double multTaxBoost = getTaxTimeTaxBoostMult();
             List<Thing> titheThings = new List<Thing>();

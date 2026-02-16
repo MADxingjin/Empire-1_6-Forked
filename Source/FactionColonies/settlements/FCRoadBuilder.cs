@@ -74,7 +74,7 @@ namespace FactionColonies
             // TODO: Make this a config option
             if(Find.TickManager.TicksGame % 20 == 0)
             {                
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
 
                 if (roadQueue == null)
                 {
@@ -106,7 +106,7 @@ namespace FactionColonies
         // Returns whether or not a settlement would be built to.
         public static bool IsValidRoadTarget(Settlement settlement)
         {
-            FactionFC fC = Find.World.GetComponent<FactionFC>();
+            FactionFC fC = FactionCache.FactionComp;
 
             // If faction exists and is either player or player has roadBuilders and the faction is an ally
             if (settlement.Faction != null)
@@ -141,7 +141,7 @@ namespace FactionColonies
         {
             LogUtil.Message("CheckForTechChanges: Starting tech check...");
             
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             RoadDef def = this.roadDef;
             RoadDef oldDef = def;
 
@@ -307,7 +307,7 @@ namespace FactionColonies
             settlementsFromTiles.Clear();
             settlementsToTiles.Clear();
 
-            FactionFC fC = Find.World.GetComponent<FactionFC>();
+            FactionFC fC = FactionCache.FactionComp;
             foreach (WorldSettlementFC settlement in fC.settlements)
             {
                 settlementsFromTiles.Add(settlement.Tile);

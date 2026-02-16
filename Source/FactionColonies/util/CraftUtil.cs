@@ -39,7 +39,7 @@ namespace FactionColonies.util
             }
             else
             {
-                if (Find.World.GetComponent<FactionFC>().techLevel < thing.techLevel)
+                if (FactionCache.FactionComp.techLevel < thing.techLevel)
                 {
                     canCraft = false;
                 }
@@ -110,7 +110,7 @@ namespace FactionColonies.util
                     }
                     break;
                 case ResourceType.Animals:
-                    List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                    List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
                     foreach (PawnKindDef def in allAnimalDefs)
                     {
                         if (def.IsAnimalAndAllowed())

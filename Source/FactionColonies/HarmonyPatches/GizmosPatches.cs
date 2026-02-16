@@ -129,7 +129,7 @@ namespace FactionColonies
 					return;
 				}
 
-				List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>().settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
+				List<FloatMenuOption> settlementList = FactionCache.FactionComp.settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
 				{
 					//disappear prisoner
 					TravelUtil.sendPrisoner(prisoner, settlement);
@@ -258,7 +258,7 @@ namespace FactionColonies
 			
 			int tile = __instance.Tile;
 			Faction faction = __instance.Faction;
-			FactionFC factionFC = Find.World.GetComponent<FactionFC>();
+			FactionFC factionFC = FactionCache.FactionComp;
 
 			if (factionFC.hasPolicy(FCPolicyDefOf.pacifist))
 			{

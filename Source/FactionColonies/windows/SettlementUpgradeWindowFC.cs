@@ -35,7 +35,7 @@ namespace FactionColonies
             this.settlement = settlement;
             settlementUpgradeCost = Convert.ToInt32(FCSettings.settlementBaseUpgradeCost) + (settlement.settlementLevel * 1000);
             desc = settlement.Name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
-            factionfc = Find.World.GetComponent<FactionFC>();
+            factionfc = FactionCache.FactionComp;
             maxSettlementLevel = FCSettings.settlementMaxLevel;
         }
 
@@ -62,7 +62,7 @@ namespace FactionColonies
             settlement.startUpgradeTick = Find.TickManager.TicksGame;
             settlement.finishUpgradeTick = tmp.timeTillTrigger;
                 
-            Find.World.GetComponent<FactionFC>().addEvent(tmp);
+            FactionCache.FactionComp.addEvent(tmp);
 
             //Close this window and update the SettlementWindowFc
             Find.WindowStack.TryRemove(this);

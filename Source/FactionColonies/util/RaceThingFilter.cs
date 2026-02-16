@@ -65,7 +65,7 @@ namespace FactionColonies.util
             faction = DefDatabase<FactionDef>.GetNamed("PColony");
             faction.pawnGroupMakers = emptyList.ListFullCopy();
 
-            if (AllowedDefCount == 0) SetAllow((animalPawnKindDefsCached ?? (animalPawnKindDefsCached = DefDatabase<PawnKindDef>.AllDefsListForReading)).First(def => def.IsHumanlikeWithLabelRace()).race, true);
+            if (AllowedDefCount == 0) SetAllow((animalPawnKindDefsCached ?? (animalPawnKindDefsCached = FactionCache.AllPawnKindDefs)).First(def => def.IsHumanlikeWithLabelRace()).race, true);
 
             RefreshAnimalRaces();
             RefreshHumanRaces();
@@ -75,7 +75,7 @@ namespace FactionColonies.util
 
         private void RefreshAnimalRaces()
         {
-            foreach (PawnKindDef animalKindDef in DefDatabase<PawnKindDef>.AllDefsListForReading.Where(kind => kind.RaceProps.packAnimal))
+            foreach (PawnKindDef animalKindDef in FactionCache.AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal))
             {
                 faction.pawnGroupMakers[1].carriers.Add(new PawnGenOption { kind = animalKindDef, selectionWeight = 1 });
             }
@@ -84,14 +84,14 @@ namespace FactionColonies.util
         private void RefreshHumanRaces()
         {
             List<string> races = new List<string>();
-            foreach (PawnKindDef def in humanPawnKindDefsCached ?? (humanPawnKindDefsCached = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(def => def.IsHumanlikeWithLabelRace() && !races.Contains(def.race.label) && AllowedThingDefs.Contains(def.race))))
+            foreach (PawnKindDef def in humanPawnKindDefsCached ?? (humanPawnKindDefsCached = FactionCache.AllPawnKindDefs.Where(def => def.IsHumanlikeWithLabelRace() && !races.Contains(def.race.label) && AllowedThingDefs.Contains(def.race))))
             {
                 races.Add(def.race.label);
                 SetAllow(def.race, true);
             }
         }
 
-        private IEnumerable<PawnKindDef> DefaultList => defaultList ?? (defaultList = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(def => def.IsHumanLikeRace() && AllowedThingDefs.Contains(def.race) && def.defaultFactionDef != null && def.defaultFactionDef.defName != "Empire"));
+        private IEnumerable<PawnKindDef> DefaultList => defaultList ?? (defaultList = FactionCache.AllPawnKindDefs.Where(def => def.IsHumanLikeRace() && AllowedThingDefs.Contains(def.race) && def.defaultFactionDef != null && def.defaultFactionDef.defName != "Empire"));
         private IEnumerable<PawnKindDef> PawnKindDefsForTechLevel(TechLevel techLevel) => DefaultList.Where(def => def.defaultFactionDef != null && def.defaultFactionDef.techLevel == techLevel);
 
         private bool FactionProbablyNotGeneratedYet => !AllowedThingDefs.Any() || factionFc.techLevel == TechLevel.Undefined;

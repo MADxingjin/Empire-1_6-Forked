@@ -53,9 +53,6 @@ namespace FactionColonies
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
 
-        private Faction playerFactionRef = null;
-        private Faction empireFactionRef = null;
-
 
         //New Types of Productions
         public float researchPointPool = 0;
@@ -147,7 +144,7 @@ namespace FactionColonies
                 Map map;
                 if (taxMap == null)
                 {
-                    if (Find.WorldObjects.SettlementAt(Find.World.GetComponent<FactionFC>().capitalLocation)?.Map == null)
+                    if (Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map == null)
                     {
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
@@ -296,7 +293,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
 
             /* Clear the static faction cache */
-            /* VERY IMPORTANT THAT THE CACHE BE INVALIDATED ON LOAD, AT *LEAST*.
+            /* VERY IMPORTANT THAT THE CACHE BE INVALIDATED ON LOAD.
              * So don't remove this line unless you have an alternative method of invalidating the cache! */
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -888,7 +885,7 @@ namespace FactionColonies
 
         public bool sendDiplomaticEnvoy(Faction faction)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
 
             if (!faction.def.permanentEnemy)
             {
@@ -1513,7 +1510,7 @@ namespace FactionColonies
 
         private bool CanMakeRandomEventNow() => Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
 
-        private bool RandomEventsDisabledOrNoSettlements() => Find.World.GetComponent<FactionFC>().settlements.Count == 0 || FCSettings.disableRandomEvents;
+        private bool RandomEventsDisabledOrNoSettlements() => FactionCache.FactionComp.settlements.Count == 0 || FCSettings.disableRandomEvents;
 
         private void MakeRandomEvent()
         {
@@ -1524,7 +1521,7 @@ namespace FactionColonies
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.returnRandomEvent(), null);
                 if (tmpEvt != null)
                 {
-                    Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
+                    FactionCache.FactionComp.addEvent(tmpEvt);
                     randomEventLastAdded = 0f;
 
                     //letter code

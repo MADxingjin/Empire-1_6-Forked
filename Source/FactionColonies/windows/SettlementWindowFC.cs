@@ -70,7 +70,7 @@ namespace FactionColonies
             // settlement.updateProfitAndProduction();
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
             //settlement.update description
-            factionfc = Find.World.GetComponent<FactionFC>();
+            factionfc = FactionCache.FactionComp;
 
             foreach (WorldObjectComp comp in settlement.AllComps)
             {
@@ -1016,7 +1016,7 @@ namespace FactionColonies
                                     delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, homeSettlement); },
                                     MenuOptionPriority.High));
 
-                                foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+                                foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                                 {
                                     if (settlement.MilitaryComp.isMilitaryValid() && settlement != homeSettlement)
                                     {

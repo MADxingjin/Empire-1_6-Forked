@@ -186,7 +186,7 @@ namespace FactionColonies
 
         private void ChangeDefendingForceAction(FCEvent evt)
         {
-            var faction = Find.World.GetComponent<FactionFC>();
+            var faction = FactionCache.FactionComp;
             var settlementList = new List<FloatMenuOption>
             {
                 new FloatMenuOption
@@ -576,7 +576,7 @@ namespace FactionColonies
 
         public void endBattle(bool won, int remaining)
         {
-            var faction = Find.World.GetComponent<FactionFC>();
+            var faction = FactionCache.FactionComp;
 
             LogUtil.Message("WorldSettlementFC.endBattle: Handling combat resolution...");
             try
@@ -769,7 +769,7 @@ namespace FactionColonies
 
         public void SendMilitary(PlanetTile location, MilitaryJob job, int timeToFinish, Faction enemy)
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             if (isMilitaryBusy() || isTargetOccupied(location)) return;
 
             militaryBusy = true;
@@ -777,7 +777,7 @@ namespace FactionColonies
             militaryLocation = location;
 
             if (enemy != null) militaryEnemy = enemy;
-            if (job != MilitaryJob.Deploy) Find.World.GetComponent<FactionFC>().militaryTargets.Add(location);
+            if (job != MilitaryJob.Deploy) FactionCache.FactionComp.militaryTargets.Add(location);
 
             FCEvent evt;
             switch (militaryJob)
@@ -815,7 +815,7 @@ namespace FactionColonies
 
         public void processMilitaryEvent()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             //calculate success and all of that shit
 
             //Debug by setting faction automatically
@@ -1029,7 +1029,7 @@ namespace FactionColonies
 
         public void cooldownMilitary()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             int cooldownReduction = 0;
             if (faction.hasTrait(FCPolicyDefOf.raiders) && (militaryJob == MilitaryJob.RaidEnemySettlement || militaryJob == MilitaryJob.EnslaveEnemySettlement))
@@ -1058,7 +1058,7 @@ namespace FactionColonies
             tmp.timeTillTrigger = Find.TickManager.TicksGame + 180000 - cooldownReduction;
             tmp.location = WorldSettlement.Tile;
             tmp.customDescription = "MilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
-            Find.World.GetComponent<FactionFC>().addEvent(tmp);
+            FactionCache.FactionComp.addEvent(tmp);
         }
 
         public bool isMilitaryBusy(bool silent = false)
@@ -1124,7 +1124,7 @@ namespace FactionColonies
 
         public bool isTargetOccupied(int location)
         {
-            if (Find.World.GetComponent<FactionFC>().militaryTargets.Contains(location))
+            if (FactionCache.FactionComp.militaryTargets.Contains(location))
             {
                 Messages.Message("targetAlreadyBeingAttacked".Translate(), MessageTypeDefOf.RejectInput);
                 return true;

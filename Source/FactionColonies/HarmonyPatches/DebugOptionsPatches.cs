@@ -9,7 +9,7 @@ namespace FactionColonies
     {
         static bool Prefix(Pawn pawn, PawnDiscardDecideMode discardMode = PawnDiscardDecideMode.Decide)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             return faction?.militaryCustomizationUtil?.AllMercenaryPawns == null || !faction.militaryCustomizationUtil.AllMercenaryPawns.Contains(pawn);
         }
     }

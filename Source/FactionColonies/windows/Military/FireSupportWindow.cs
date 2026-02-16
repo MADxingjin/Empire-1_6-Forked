@@ -133,7 +133,7 @@ namespace FactionColonies
                     selectedSupport.returnAccuracyCostPercentage() + "%");
                 selectedSupport.accuracy = Widgets.HorizontalSlider(floatRangeAccuracy,
                     selectedSupport.accuracy,
-                    Math.Max(3, (15 - Find.World.GetComponent<FactionFC>().returnHighestMilitaryLevel())), 30,
+                    Math.Max(3, (15 - FactionCache.FactionComp.returnHighestMilitaryLevel())), 30,
                     roundTo: 1);
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.UpperCenter;
@@ -164,7 +164,7 @@ namespace FactionColonies
                 {
                     List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
-                    foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+                    foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                     {
                         settlementList.Add(new FloatMenuOption(
                             settlement.Name + " - Military Level : " + settlement.settlementMilitaryLevel,

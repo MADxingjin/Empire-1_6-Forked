@@ -174,7 +174,7 @@ namespace FactionColonies
                     return settlement;
                 }
 
-                foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+                foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                 {
                     if (settlement.MilitaryComp?.militarySquad != null && settlement.MilitaryComp?.militarySquad == this)
                     {
@@ -237,7 +237,7 @@ namespace FactionColonies
             //this.debugMercenarySquad();
             if (loadID == -1)
             {
-                loadID = Find.World.GetComponent<FactionFC>().GetNextMercenarySquadID();
+                loadID = FactionCache.FactionComp.GetNextMercenarySquadID();
             }
 
             if (outfit != null)
@@ -309,7 +309,7 @@ namespace FactionColonies
         {
             XenotypeDef xenotypeChoice = _xenotype;
             PawnKindDef raceChoice = race;
-            FactionFC factionFc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionFc = FactionCache.FactionComp;
 
             if (race == null || !factionFc.raceFilter.Allows(raceChoice.race))
             {
@@ -451,7 +451,7 @@ namespace FactionColonies
         public void PassPawnToDeadMercenaries(Mercenary merc)
         {
             //If ever add past dead pawns, use this code
-            /*MilitaryCustomizationUtil util = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil;
+            /*MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
             Mercenary pwn = new Mercenary(true);
             if (merc.animal != null)
             {
@@ -499,7 +499,7 @@ namespace FactionColonies
 
         public void OutfitSquad(MilSquadFC outfit)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             int count = 0;
             this.outfit = outfit;
             UsedWeaponList = new List<ThingWithComps>();

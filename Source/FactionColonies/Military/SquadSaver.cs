@@ -216,7 +216,7 @@ namespace FactionColonies
                 pawnKind = pawnKind,
                 xenotype = xenotype
             };
-            if (!Find.World.GetComponent<FactionFC>().raceFilter.Allows(pawnKind.race))
+            if (!FactionCache.FactionComp.raceFilter.Allows(pawnKind.race))
             {
                 unit.pawnKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }
@@ -242,7 +242,7 @@ namespace FactionColonies
 
         public MilUnitFC Import()
         {
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             MilUnitFC unit = this.CreateMilUnit();
             fc.militaryCustomizationUtil.units.Add(unit);
             return unit;
@@ -289,7 +289,7 @@ namespace FactionColonies
             squad.isCivilian = isCivilian;
             squad.isTraderCaravan = isTraderCaravan;
 
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
 
             var milUnits = unitTemplates.Select(unit => unit.CreateMilUnit()).ToList();
 
@@ -305,7 +305,7 @@ namespace FactionColonies
         }
         public MilSquadFC Import()
         {
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = this.CreateMilSquad();
             foreach (MilUnitFC unit in squad.units.Distinct().Where(unit => !unit.isBlank))
             {

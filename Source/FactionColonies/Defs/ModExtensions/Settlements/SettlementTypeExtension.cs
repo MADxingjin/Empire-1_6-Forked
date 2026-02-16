@@ -24,7 +24,7 @@ namespace FactionColonies
             {
                 if (localfaction == null)
                 {
-                    localfaction = Find.World.GetComponent<FactionFC>();
+                    localfaction = FactionCache.FactionComp;
                 }
                 return localfaction;
             }

@@ -142,7 +142,7 @@ namespace FactionColonies.util
 				}
 			}
 			
-			var factionFC = Find.World.GetComponent<FactionFC>();
+			var factionFC = FactionCache.FactionComp;
 			
 			// For military pawns, we need to ensure violence capability
 			// Check if the xenotype needs security guards (is non-violent)
@@ -240,7 +240,7 @@ namespace FactionColonies.util
 				faction = Faction.OfPlayer; // Fallback to player faction
 			}
 			
-			var factionFC = Find.World.GetComponent<FactionFC>();
+			var factionFC = FactionCache.FactionComp;
 			
 			// If no specific xenotype is requested, select from allowed xenotypes
 			if (xenotypeDef == null)

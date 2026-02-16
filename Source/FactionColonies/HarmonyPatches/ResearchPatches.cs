@@ -9,7 +9,7 @@ namespace FactionColonies
     {
         static void Postfix(ResearchProjectDef proj, bool doCompletionDialog = false, Pawn researcher = null)
         {
-            FactionFC fc = Find.World.GetComponent<FactionFC>();
+            FactionFC fc = FactionCache.FactionComp;
             fc.roadBuilder.CheckForTechChanges();
 
             foreach(WorldSettlementFC settlement in fc.settlements)

@@ -48,7 +48,7 @@ namespace FactionColonies
             draggable = true;
             preventCameraMotion = false;
             doCloseX = true;
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
             prodBoxHeight = faction.FactionResources.Count * 22 + 10;
             windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             currentSettlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
@@ -60,7 +60,7 @@ namespace FactionColonies
         //Pre-Opening
         public override void PreOpen()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             faction.layersForTilePicker = currentSettlementType.planetLayers;
 
             Find.TilePicker.StartTargeting_NewTemp(delegate (PlanetTile tile)
@@ -211,7 +211,7 @@ namespace FactionColonies
                     yield return new FloatMenuOption(settlementDef.LabelCap, delegate
                     {
                         currentSettlementType = settlementDef;
-                        Find.World.GetComponent<FactionFC>().layersForTilePicker = settlementDef.planetLayers;
+                        FactionCache.FactionComp.layersForTilePicker = settlementDef.planetLayers;
                     });
                 }
             }
@@ -408,7 +408,7 @@ namespace FactionColonies
         public override void PreClose()
         {
             base.PreClose();
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             if (faction != null)
             {
                 faction.layersForTilePicker = null;

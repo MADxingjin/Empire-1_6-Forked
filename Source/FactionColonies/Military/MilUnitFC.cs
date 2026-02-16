@@ -29,7 +29,7 @@ namespace FactionColonies
 
         public MilUnitFC(bool blank)
         {
-            loadID = Find.World.GetComponent<FactionFC>().NextUnitID;
+            loadID = FactionCache.FactionComp.NextUnitID;
             isBlank = blank;
             equipmentTotalCost = 0;
 
@@ -312,7 +312,7 @@ namespace FactionColonies
 
         public void removeUnit()
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.units.Remove(this);
+            FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
         }
 
         public void unequipAllEquipment()

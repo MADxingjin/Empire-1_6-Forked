@@ -58,7 +58,7 @@ namespace FactionColonies
             {
                 if (reason == "faction")
                 {
-                    Find.World.GetComponent<FactionFC>().name = text;
+                    FactionCache.FactionComp.name = text;
                     FactionCache.PlayerColonyFaction.Name = text;
                 }
                 Find.WindowStack.TryRemove(this);

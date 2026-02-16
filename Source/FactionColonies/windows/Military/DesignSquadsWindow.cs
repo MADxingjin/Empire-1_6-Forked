@@ -149,7 +149,7 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(PointRefButton, "Set Point Ref"))
                 {
-                    List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
+                    List<FloatMenuOption> settlementList = FactionCache.FactionComp
                         .settlements.Select(settlement => new FloatMenuOption(settlement.Name + " - Military Level : " +
                                                                               settlement.settlementMilitaryLevel,
                             delegate

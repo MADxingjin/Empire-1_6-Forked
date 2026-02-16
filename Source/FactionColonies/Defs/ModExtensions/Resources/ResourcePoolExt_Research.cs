@@ -13,7 +13,7 @@ namespace FactionColonies
     {
         public override double createPool(double production, WorldSettlementFC settlement = null)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             double innovativeBonusResearch = 0;
             double technocraticModifier = 1;
@@ -43,7 +43,7 @@ namespace FactionColonies
                     yield return option;
                 }
             }
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             yield return new FloatMenuOption("ActivateResearch".Translate(), delegate
             {

@@ -26,7 +26,7 @@ namespace FactionColonies
 
             if (Settlement == null)
             {
-                FactionFC settlementFaction = Find.World.GetComponent<FactionFC>();
+                FactionFC settlementFaction = FactionCache.FactionComp;
                 Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
             }
             int min = 36 + Settlement.settlementLevel * 2 - 2;
@@ -38,7 +38,7 @@ namespace FactionColonies
         {
             if (Settlement == null)
             {
-                FactionFC settlementFaction = Find.World.GetComponent<FactionFC>();
+                FactionFC settlementFaction = FactionCache.FactionComp;
                 Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
             }
             

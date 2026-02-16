@@ -57,7 +57,7 @@ namespace FactionColonies
             statSize = 25;
             buttons = buttonsTab0;
             resourceSize = 40;
-            faction = Find.World.GetComponent<FactionFC>();
+            faction = FactionCache.FactionComp;
  /*           if (faction != null)    // Changed this function to stop NRE
             {
                 settlementList = faction.settlements;
@@ -160,7 +160,7 @@ namespace FactionColonies
                 if (Widgets.ButtonText(button, "Create New Faction"))
                 {
                     ColonyUtil.createPlayerColonyFaction();
-                    faction = Find.World.GetComponent<FactionFC>(); // update reference
+                    faction = FactionCache.FactionComp; // update reference
                     if (faction != null)
                     {
                         faction.factionCreated = true;

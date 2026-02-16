@@ -217,7 +217,7 @@ namespace FactionColonies
             //TODO: rework construction. This info should really be held in this comp here, rather than in the events queue.
             //      maybe there can still be a "constructing building" event that refers to the SettlementBuilding comp, but
             //      the comp should be the source of truth, not the event
-            foreach (FCEvent event1 in Find.World.GetComponent<FactionFC>().events) //check if construction would match any already-occuring events
+            foreach (FCEvent event1 in FactionCache.FactionComp.events) //check if construction would match any already-occuring events
             {
                 if (WorldSettlement.MilitaryComp?.isUnderAttack == true)
                 {
@@ -449,7 +449,7 @@ namespace FactionColonies
 
             int upkeep = building.upkeep;
 
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             upkeep += faction.buildingUpkeepModifier(building);
 
             upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
@@ -478,7 +478,7 @@ namespace FactionColonies
 
         public int TotalUpkeep()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {

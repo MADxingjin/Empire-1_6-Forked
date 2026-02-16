@@ -80,8 +80,8 @@ namespace FactionColonies
         public static int returnResearchAmount()
         {
             int research = 0;
-            research += Convert.ToInt32(cycleTraits("researchBaseProduction", Find.World.GetComponent<FactionFC>().Traits, Operation.Addition));
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            research += Convert.ToInt32(cycleTraits("researchBaseProduction", FactionCache.FactionComp.Traits, Operation.Addition));
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 research += Convert.ToInt32(cycleTraits("researchBaseProduction", settlement.Traits, Operation.Addition));
             }

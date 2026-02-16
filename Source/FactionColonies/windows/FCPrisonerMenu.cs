@@ -31,7 +31,7 @@ namespace FactionColonies
         public FCPrisonerMenu(WorldSettlementFC settlement)
         {
             //Window Information
-            this.faction = Find.World.GetComponent<FactionFC>();
+            this.faction = FactionCache.FactionComp;
             this.settlement = settlement;
             this.prisoners = settlement.prisonerList;
 

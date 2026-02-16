@@ -52,7 +52,7 @@ namespace FactionColonies
 
         public void setLoadID()
         {
-            loadID = Find.World.GetComponent<FactionFC>().GetNextMilitaryFireSupportID();
+            loadID = FactionCache.FactionComp.GetNextMilitaryFireSupportID();
         }
 
         public float returnAccuracyCostPercentage()
@@ -74,7 +74,7 @@ namespace FactionColonies
 
         public void delete()
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.fireSupportDefs.Remove(this);
+            FactionCache.FactionComp.militaryCustomizationUtil.fireSupportDefs.Remove(this);
         }
 
         public ThingDef expendProjectile()
@@ -91,7 +91,7 @@ namespace FactionColonies
             ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
             ThingSetMakerParams param = new ThingSetMakerParams();
             param.filter = new ThingFilter();
-            param.techLevel = Find.World.GetComponent<FactionFC>().techLevel;
+            param.techLevel = FactionCache.FactionComp.techLevel;
 
             param.filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("MortarShells"), true);
             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AmmoShells") != null)

@@ -287,7 +287,7 @@ namespace FactionColonies
                                 triggerTime /= 2;
 
                             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
-                            Find.World.GetComponent<FactionFC>().addEvent(tmpEvt);
+                            FactionCache.FactionComp.addEvent(tmpEvt);
 
                             PaymentUtil.paySilver(Convert.ToInt32(building.cost));
                             Messages.Message(building.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
@@ -351,7 +351,7 @@ namespace FactionColonies
 
         public FCBuildingWindow(WorldSettlementFC settlement, int buildingSlot)
         {
-            factionfc = Find.World.GetComponent<FactionFC>();
+            factionfc = FactionCache.FactionComp;
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
             

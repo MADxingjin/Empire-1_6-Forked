@@ -20,7 +20,7 @@ namespace FactionColonies
 
         public static void UpdateEquipmentTotalCostOfSquadsContaining(MilUnitFC unit)
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.squads.ForEach(delegate(MilSquadFC squad)
+            FactionCache.FactionComp.militaryCustomizationUtil.squads.ForEach(delegate(MilSquadFC squad)
             {
                 if (squad.units.Contains(unit))
                 {
@@ -56,7 +56,7 @@ namespace FactionColonies
 
         public void setLoadID()
         {
-            loadID = Find.World.GetComponent<FactionFC>().NextSquadID;
+            loadID = FactionCache.FactionComp.NextSquadID;
         }
 
         public int updateEquipmentTotalCost()
@@ -76,7 +76,7 @@ namespace FactionColonies
             units = new List<MilUnitFC>();
             for (int sq = 0; sq < 30; sq++)
             {
-                units.Add(Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.blankUnit);
+                units.Add(FactionCache.FactionComp.militaryCustomizationUtil.blankUnit);
             }
 
             isTraderCaravan = false;
@@ -107,7 +107,7 @@ namespace FactionColonies
 
         public void deleteSquad()
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.squads.Remove(this);
+            FactionCache.FactionComp.militaryCustomizationUtil.squads.Remove(this);
         }
 
         public string GetUniqueLoadID()

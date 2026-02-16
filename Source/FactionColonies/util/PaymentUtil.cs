@@ -236,7 +236,7 @@ namespace FactionColonies
 
         public static List<Thing> generateRaidLoot(int lootLevel, TechLevel techLevel)
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
 
             float trait_LootMulitplier = 1f;
             if (faction.hasTrait(FCPolicyDefOf.raiders))
@@ -405,7 +405,7 @@ namespace FactionColonies
             }
             
             // Fallback to existing tax map logic
-            return Find.World.GetComponent<FactionFC>().TaxMap;
+            return FactionCache.FactionComp.TaxMap;
         }
 
         public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)

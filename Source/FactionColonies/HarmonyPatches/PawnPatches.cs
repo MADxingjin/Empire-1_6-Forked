@@ -12,10 +12,10 @@ namespace FactionColonies
             if (__instance.IsMercenary())
             {
                 if (__instance.Faction != FactionCache.PlayerColonyFaction) __instance.SetFaction(FactionCache.PlayerColonyFaction);
-                MercenarySquadFC squad = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.returnSquadFromUnit(__instance);
+                MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.returnSquadFromUnit(__instance);
                 if (squad != null)
                 {
-                    Mercenary merc = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.returnMercenaryFromUnit(__instance, squad);
+                    Mercenary merc = FactionCache.FactionComp.militaryCustomizationUtil.returnMercenaryFromUnit(__instance, squad);
                     if (merc != null)
                     {
                         if (squad.settlement != null)
@@ -53,7 +53,7 @@ namespace FactionColonies
     {
         static bool Prefix(Corpse corpse)
         {
-            if (Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.AllMercenaryPawns
+            if (FactionCache.FactionComp.militaryCustomizationUtil.AllMercenaryPawns
                 .Contains(corpse.InnerPawn))
             {
                 //corpse.InnerPawn.SetFaction(FactionColonies.getPlayerColonyFaction());
@@ -70,7 +70,7 @@ namespace FactionColonies
     {
         static bool Prefix(Pawn pawn)
         {
-            if (Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.AllMercenaryPawns.Contains(pawn))
+            if (FactionCache.FactionComp.militaryCustomizationUtil.AllMercenaryPawns.Contains(pawn))
             {
                 return false;
             }

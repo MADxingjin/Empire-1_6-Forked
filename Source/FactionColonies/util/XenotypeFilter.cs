@@ -85,7 +85,7 @@ namespace FactionColonies.util
             if (needsSecurityGuards)
             {
                 // Find suitable security guard animals
-                var guardAnimals = DefDatabase<PawnKindDef>.AllDefsListForReading
+                var guardAnimals = FactionCache.AllPawnKindDefs
                     .Where(def => def.race.race.Animal && 
                                 def.RaceProps.trainability != null && 
                                 def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
@@ -222,7 +222,7 @@ namespace FactionColonies.util
             //        and the pawnGroupMakers correctly, then we shouldn't need any extra pawngeneration handling. The pawn generation functions for delivery events could probably be genericised then
             foreach (var xenotype in allowedXenotypes)
             {
-                var humanPawns = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(def => (def.race == ThingDefOf.Human || def.IsHumanLikeRace()) && def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel);
+                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => (def.race == ThingDefOf.Human || def.IsHumanLikeRace()) && def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel);
                 foreach (var pawnKind in humanPawns)
                 {
                     var pawnOption = new PawnGenOption 
@@ -270,7 +270,7 @@ namespace FactionColonies.util
             }
 
             // Add pack animals for caravans
-            foreach (PawnKindDef animalKindDef in DefDatabase<PawnKindDef>.AllDefsListForReading
+            foreach (PawnKindDef animalKindDef in FactionCache.AllPawnKindDefs
                 .Where(kind => kind.RaceProps.packAnimal))
             {
                 faction.pawnGroupMakers[1].carriers.Add(new PawnGenOption { kind = animalKindDef, selectionWeight = 1 });

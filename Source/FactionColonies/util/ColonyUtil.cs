@@ -30,7 +30,7 @@ namespace FactionColonies.util
             FactionFC worldcomp = FactionCache.FactionComp;
             if (!worldcomp.settlements.Any())
             {
-                Find.World.GetComponent<FactionFC>().timeStart = Find.TickManager.TicksGame;
+                FactionCache.FactionComp.timeStart = Find.TickManager.TicksGame;
             }
 
             WorldSettlementFC settlement = (WorldSettlementFC)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldSettlementDef>.GetNamed(settlementType.defName));
@@ -139,7 +139,7 @@ namespace FactionColonies.util
         /*
         public static Faction copyPlayerColonyFaction()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
 
             worldcomp.setCapital();
 

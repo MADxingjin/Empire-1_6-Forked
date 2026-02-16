@@ -55,7 +55,7 @@ namespace FactionColonies
 
         public void SetUniqueLoadID()
         {
-            loadID = Find.World.GetComponent<FactionFC>().GetNextTaxID();
+            loadID = FactionCache.FactionComp.GetNextTaxID();
         }
     }
 
@@ -103,12 +103,12 @@ namespace FactionColonies
 
         public void SetUniqueLoadID()
         {
-            loadID = Find.World.GetComponent<FactionFC>().GetNextBillID();
+            loadID = FactionCache.FactionComp.GetNextBillID();
         }
 
         public bool resolve()
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             if (attemptResolve())
             {
                 return true;
@@ -123,7 +123,7 @@ namespace FactionColonies
 
         public bool attemptResolve()
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             if (PaymentUtil.getSilver() >= -1 * taxes.silverAmount || taxes.silverAmount >= 0)
             { //if have enough silver on the current map to pay  & map belongs to player
 
@@ -147,7 +147,7 @@ namespace FactionColonies
     {
         public static void processBills()
         {
-            FactionFC factionfc = Find.World.GetComponent<FactionFC>();
+            FactionFC factionfc = FactionCache.FactionComp;
             Reset:
             foreach(BillFC bill in factionfc.Bills)
             {

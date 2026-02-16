@@ -12,7 +12,7 @@ namespace FactionColonies
     {
         public override void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
             foreach (PawnKindDef def in allAnimalDefs)
             {
                 if (def.IsAnimalAndAllowed())
@@ -49,7 +49,7 @@ namespace FactionColonies
         protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
         {
             List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
 
             float totalValue = 0;
             foreach (PawnKindDef def in allAnimalDefs)
@@ -109,7 +109,7 @@ namespace FactionColonies
         static List<PawnKindDef> allowedGeneratedList()
         {
             List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
 
             foreach (PawnKindDef def in allAnimalDefs)
             {

@@ -170,7 +170,7 @@ namespace FactionColonies
             faction.title = title;
             faction.name = name;
             FactionCache.PlayerColonyFaction.Name = name;
-            //Find.World.GetComponent<FactionFC>().name = name;
+            //FactionCache.FactionComp.name = name;
         }
 
         public override void DoWindowContents(Rect inRect)

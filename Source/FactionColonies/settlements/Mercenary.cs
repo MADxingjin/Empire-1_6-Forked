@@ -22,7 +22,7 @@ namespace FactionColonies
 
         public Mercenary(bool blank)
         {
-            loadID = Find.World.GetComponent<FactionFC>().GetNextMercenaryID();
+            loadID = FactionCache.FactionComp.GetNextMercenaryID();
         }
 
         public void ExposeData()

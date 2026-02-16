@@ -39,7 +39,7 @@ namespace FactionColonies
 
             if (TradeSession.trader.TraderKind.defName == "FCResearchTrader")
             {
-                FactionFC faction = Find.World.GetComponent<FactionFC>();
+                FactionFC faction = FactionCache.FactionComp;
                 if (__result == true && faction.tradedAmount != 0)
                 {
                     Find.LetterStack.ReceiveLetter("FCFactionResearch".Translate(), TranslatorFormattedStringExtensions.Translate("PointsAddedToResearchPool", faction.tradedAmount), LetterDefOf.PositiveEvent);

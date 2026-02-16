@@ -18,7 +18,7 @@ namespace FactionColonies
         [DebugAction("Empire", "View Events and ticks till", allowedGameStates = AllowedGameStates.Playing)]
         private static void ViewEventsAndLog()
         {
-            Find.World.GetComponent<FactionFC>().events.ForEach(delegate (FCEvent e)
+            FactionCache.FactionComp.events.ForEach(delegate (FCEvent e)
             {
                 LogUtil.MessageForce(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
             });
@@ -61,7 +61,7 @@ namespace FactionColonies
                 Messages.Message("No prisoner selected!", MessageTypeDefOf.RejectInput);
                 return;
             }
-            List<FloatMenuOption> settlementList = Find.World.GetComponent<FactionFC>()
+            List<FloatMenuOption> settlementList = FactionCache.FactionComp
                 .settlements.Select(settlement => new FloatMenuOption(settlement.Name + " - Settlement Level : " +
                     settlement.settlementLevel + " - Prisoners: " +
                     settlement.prisonerList.Count(), delegate
@@ -90,7 +90,7 @@ namespace FactionColonies
         private static void resetAllMilitarySquads()
         {
             LogUtil.MessageForce("Debug - Reset All Military Squad Assignments");
-            MilitaryCustomizationUtil util = Find.World.GetComponent<FactionFC>().militaryCustomizationUtil;
+            MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
             for (int i = util.AllMercenaries.Count - 1; i >= 0; i--)
             {
                 if (util.AllMercenaries[i].squad.hasLord)
@@ -127,7 +127,7 @@ namespace FactionColonies
                         if (evtDef.activateAtStart == false)
                         {
                             FCEventMaker.MakeRandomEvent(evtDef, null);
-                            Find.World.GetComponent<FactionFC>().addEvent(evt);
+                            FactionCache.FactionComp.addEvent(evt);
                         }
 
                         //letter code
@@ -145,14 +145,14 @@ namespace FactionColonies
         private static void procMilitaryTimeDue()
         {
             LogUtil.MessageForce("Debug - Proc MilitaryTimeDue");
-            Find.World.GetComponent<FactionFC>().militaryTimeDue = Find.TickManager.TicksGame + 1;
+            FactionCache.FactionComp.militaryTimeDue = Find.TickManager.TicksGame + 1;
         }
 
         [DebugAction("Empire", "Attack Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
         private static void attackPlayerSettlement()
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
@@ -170,7 +170,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Change Settlement Defending Force", allowedGameStates = AllowedGameStates.Playing)]
         private static void ChangeAttackPlayerSettlementMilitaryForce()
         {
-            FactionFC worldcomp = Find.World.GetComponent<FactionFC>();
+            FactionFC worldcomp = FactionCache.FactionComp;
             List<DebugMenuOption> list = new List<DebugMenuOption>();
             foreach (FCEvent evt in worldcomp.events)
             {
@@ -218,7 +218,7 @@ namespace FactionColonies
         private static void UpgradePlayerSettlement(int times = 1)
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
@@ -242,7 +242,7 @@ namespace FactionColonies
         private static void testVariable()
         {
             LogUtil.MessageForce("Debug - Test Function - ");
-            Find.World.GetComponent<FactionFC>().roadBuilder.FlagUpdateRoadQueues();
+            FactionCache.FactionComp.roadBuilder.FlagUpdateRoadQueues();
         }
 
         [DebugAction("Empire", "De-Level Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
@@ -251,10 +251,10 @@ namespace FactionColonies
         [DebugAction("Empire", "Reset Military Squads Cooldowns", allowedGameStates = AllowedGameStates.Playing)]
         private static void ResetMilitarySquads()
         {
-            Find.World.GetComponent<FactionFC>().militaryCustomizationUtil.mercenarySquads =
+            FactionCache.FactionComp.militaryCustomizationUtil.mercenarySquads =
                 new List<MercenarySquadFC>();
             LogUtil.MessageForce("Debug - Reset Military Squad Cooldowns");
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 settlement.MilitaryComp?.returnMilitary(false);
             }
@@ -263,19 +263,19 @@ namespace FactionColonies
         [DebugAction("Empire", "Clear Old Bills", allowedGameStates = AllowedGameStates.Playing)]
         private static void clearOldBills()
         {
-            Find.World.GetComponent<FactionFC>().OldBills = new List<BillFC>();
+            FactionCache.FactionComp.OldBills = new List<BillFC>();
         }
 
         [DebugAction("Empire", "Clear All Events", allowedGameStates = AllowedGameStates.Playing)]
         private static void clearAllEvents()
         {
-            Find.World.GetComponent<FactionFC>().events = new List<FCEvent>();
+            FactionCache.FactionComp.events = new List<FCEvent>();
         }
 
         [DebugAction("Empire", "Clear All Bills", allowedGameStates = AllowedGameStates.Playing)]
         private static void clearAllBills()
         {
-            Find.World.GetComponent<FactionFC>().Bills = new List<BillFC>();
+            FactionCache.FactionComp.Bills = new List<BillFC>();
         }
 
         [DebugAction("Empire", "Place 500 Silver", allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -308,7 +308,7 @@ namespace FactionColonies
         private static void CallInAlliedForcesSelect()
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
-            foreach (WorldSettlementFC settlement in Find.World.GetComponent<FactionFC>().settlements)
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 if (settlement.MilitaryComp?.militarySquad != null)
                 {
@@ -367,7 +367,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Level Up Faction", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void LevelUpFaction()
         {
-            FactionFC faction = Find.World.GetComponent<FactionFC>();
+            FactionFC faction = FactionCache.FactionComp;
             faction.addExperienceToFactionLevel(faction.factionXPGoal);
         }
     }
