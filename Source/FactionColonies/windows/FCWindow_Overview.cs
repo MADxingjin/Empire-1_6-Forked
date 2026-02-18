@@ -80,7 +80,7 @@ namespace FactionColonies
             background.SetPixel(0, 0, Color.black);
             background.Apply();
 
-            maxScroll = (int) ((faction.settlements.Count() * 25) - settlementsBox.height);
+            maxScroll = (int) ((faction.settlements.Count * 25) - settlementsBox.height);
         }
 
 
@@ -138,7 +138,7 @@ namespace FactionColonies
 
 
             //Policies
-            if (faction.policies.Count() == 2)
+            if (faction.policies.Count == 2)
             {
                 Widgets.ButtonImage(policy_1, faction.policies[0].def.IconLight);
                 if (policy_1.Contains(Event.current.mousePosition))
@@ -391,7 +391,7 @@ namespace FactionColonies
 
             GUI.BeginGroup(settlementsBox);
 
-            for (int i = 0; i < faction.settlements.Count(); i++)
+            for (int i = 0; i < faction.settlements.Count; i++)
             {
                 WorldSettlementFC settlement = faction.settlements[i];
 

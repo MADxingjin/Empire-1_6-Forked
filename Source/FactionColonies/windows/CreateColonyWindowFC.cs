@@ -27,8 +27,8 @@ namespace FactionColonies
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
 
-        private int SettlementCreationBaseCost => (int)(TraitUtilsFC.cycleTraits("createSettlementMultiplier", faction.Traits, Operation.Multiplication) *
-                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + (TraitUtilsFC.cycleTraits("createSettlementBaseCost", faction.Traits, Operation.Addition))));
+        private int SettlementCreationBaseCost => (int)(faction.getFieldValue("createSettlementMultiplier", Operation.Multiplication) *
+                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + (faction.getFieldValue("createSettlementBaseCost", Operation.Addition))));
 
         /* UI math stuff! Yaaaay!
          * what a pain
@@ -61,6 +61,14 @@ namespace FactionColonies
         public override void PreOpen()
         {
             FactionFC faction = FactionCache.FactionComp;
+            if (faction is null)
+            {
+                //panic!
+                // the faction worldcomp should never be null. If it is, something majorly bad has happened. Can't hurt to check, though
+                LogUtil.Error("Attempted to open CreateColonyWindowFC when FactionFC WorldComponent does not exist! Bailing out!");
+                return;
+            }
+
             faction.layersForTilePicker = currentSettlementType.planetLayers;
 
             Find.TilePicker.StartTargeting_NewTemp(delegate (PlanetTile tile)

@@ -70,6 +70,9 @@ namespace FactionColonies
         public List<FCPolicy> policies = new List<FCPolicy>();
         private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
         public List<FCTraitEffectDef> Traits => traits;
+        private Dictionary<(string, Operation), double> cachedTraitValues = new Dictionary<(string, Operation), double>();
+        private Dictionary<(string, Operation), string> cachedTraitDescs = new Dictionary<(string, Operation), string>();
+
         public List<int> militaryTargets = new List<int>();
         public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
         public XenotypeFilter xenotypeFilter;
@@ -341,6 +344,7 @@ namespace FactionColonies
                 }
             }
             traits.Add(trait);
+            InvalidateTraitCache();
         }
         public void addTraits(List<FCTraitEffectDef> traits, string id = "")
         {
@@ -360,6 +364,7 @@ namespace FactionColonies
                         settlement.removeTrait(trait, id);
                     }
                 }
+                InvalidateTraitCache();
                 return traits.Remove(trait);
             }
             else
@@ -387,6 +392,7 @@ namespace FactionColonies
                 }
             }
             traits.Clear();
+            InvalidateTraitCache();
         }
         /// <summary>
         /// This function completely replaces the faction's current list of traits with the provided list.
@@ -397,6 +403,40 @@ namespace FactionColonies
         {
             clearTraits();
             addTraits(traits, id);
+            InvalidateTraitCache();
+        }
+        public double getFieldValue(string field, Operation addOrMultiply)
+        {
+            double value = 0;
+            if (cachedTraitValues.ContainsKey((field, addOrMultiply)))
+            {
+                value = cachedTraitValues[(field, addOrMultiply)];
+            }
+            else
+            {
+                value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
+                cachedTraitValues.Add((field, addOrMultiply), value);
+            }
+            return value;
+        }
+        public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
+        {
+            string desc = "";
+            if (cachedTraitDescs.ContainsKey((field, addOrMultiply)))
+            {
+                desc = cachedTraitDescs[(field, addOrMultiply)];
+            }
+            else
+            {
+                TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
+                cachedTraitDescs.Add((field, addOrMultiply), desc);
+            }
+            return desc;
+        }
+        public void InvalidateTraitCache()
+        {
+            cachedTraitDescs.Clear();
+            cachedTraitValues.Clear();
         }
 
         public void GainHappiness(double amount)

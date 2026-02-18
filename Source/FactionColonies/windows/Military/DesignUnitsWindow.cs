@@ -78,7 +78,7 @@ namespace FactionColonies
                     {
                         MilUnitFC newUnit = new MilUnitFC(false)
                         {
-                            name = $"New Unit {util.units.Count() + 1}"
+                            name = $"New Unit {util.units.Count + 1}"
                         };
                         selectedText = newUnit.name;
                         selectedUnit = newUnit;

@@ -24,18 +24,9 @@ namespace FactionColonies
     [HarmonyPatch(typeof(SettlementProximityGoodwillUtility), "AppendProximityGoodwillOffsets")]
     class GoodwillPatch
     {
-        static void Postfix(PlanetTile tile, List<Pair<Settlement, int>> outOffsets, bool ignoreIfAlreadyMinGoodwill,
-            bool ignorePermanentlyHostile)
+        static void Postfix(PlanetTile tile, List<Pair<Settlement, int>> outOffsets, bool ignoreIfAlreadyMinGoodwill, bool ignorePermanentlyHostile)
         {
-        Pair:
-            foreach (Pair<Settlement, int> pair in outOffsets)
-            {
-                if (pair.First.Faction.def.defName == "PColony")
-                {
-                    outOffsets.Remove(pair);
-                    goto Pair;
-                }
-            }
+            outOffsets.RemoveAll(pair => pair.First.Faction?.def?.defName == "PColony");
         }
     }
 

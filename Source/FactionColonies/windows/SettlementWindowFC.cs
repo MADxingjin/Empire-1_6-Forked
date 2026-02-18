@@ -796,7 +796,7 @@ namespace FactionColonies
             float statBoxHeight = (boundingBox.height - (4 * margin)) / 5;
             float statGainBoxHeight = 30;
             float statSize = Math.Min(30f, statBoxHeight);
-            for (int i = 0; i < stats.Count(); i++)
+            for (int i = 0; i < stats.Count; i++)
             {
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Text.Font = GameFont.Medium;
@@ -906,7 +906,7 @@ namespace FactionColonies
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Tiny;
-            float size = (boundingBox.height - ((buttons.Count() - 1) * margin)) / (buttons.Count());
+            float size = (boundingBox.height - ((buttons.Count - 1) * margin)) / (buttons.Count);
             for (int i = 0; i < buttons.Count(); i++)
             {
                 Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
@@ -975,7 +975,7 @@ namespace FactionColonies
                                         MessageTypeDefOf.RejectInput);
                             }));
 
-                        if (list.Count() == 0)
+                        if (list.Count == 0)
                             list.Add(new FloatMenuOption("No special actions to take", delegate { }));
                         Find.WindowStack.Add(new FloatMenu(list));
                     }

@@ -12,6 +12,7 @@ namespace FactionColonies.util
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
         private List<XenotypeDef> allowedXenotypes = new List<XenotypeDef>();
+        private List<ThingDef> allowedRaces = new List<ThingDef>();
         private Dictionary<XenotypeDef, List<PawnKindDef>> securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
 
         public IEnumerable<XenotypeDef> AllowedXenotypes => allowedXenotypes;

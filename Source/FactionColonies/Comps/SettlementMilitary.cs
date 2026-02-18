@@ -544,8 +544,7 @@ namespace FactionColonies
                         catch
                         {
                             var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber +
-                                      ", and riders dictionary is not empty!");
+                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
                             continue;
                         }
                     }
@@ -614,8 +613,7 @@ namespace FactionColonies
                 // if not the home settlement defending
                 if (remaining >= 7)
                 {
-                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(),
-                        "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
+                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     defenderForce.homeSettlement.MilitaryComp?.returnMilitary(true);
                 }
                 else
@@ -627,8 +625,8 @@ namespace FactionColonies
 
         private void LoseBattle(FactionFC faction)
         {
-            var happinessLostMultiplier = TraitUtilsFC.cycleTraits("happinessLostMultiplier", WorldSettlement.Traits, Operation.Multiplication); ;
-            var loyaltyLostMultiplier = TraitUtilsFC.cycleTraits("loyaltyLostMultiplier", WorldSettlement.Traits, Operation.Multiplication); ;
+            var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
+            var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
 
             var muliplier = 1;
             if (faction.hasPolicy(FCPolicyDefOf.feudal))

@@ -46,7 +46,7 @@ namespace FactionColonies
             bills = faction.Bills;
 
             scroll = 0;
-            maxScroll = (bills.Count() * billHeight) - scrollBoxHeight;
+            maxScroll = (bills.Count * billHeight) - scrollBoxHeight;
 
 
             //Window Properties
@@ -79,7 +79,7 @@ namespace FactionColonies
         public override void WindowUpdate()
         {
             base.WindowUpdate();
-            maxScroll = (bills.Count() * billHeight) - scrollBoxHeight;
+            maxScroll = (bills.Count * billHeight) - scrollBoxHeight;
         }
 
         public override void DoWindowContents(Rect inRect)
