@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using UnityEngine;
@@ -32,9 +33,12 @@ namespace FactionColonies.util
                 if (dirtyXenotypeTotalWeight)
                 {
                     xenotypeTotalWeight = 0;
-                    foreach (float weight in xenotypeWeights.Values)
+                    if (xenotypeWeights.Count > 0)
                     {
-                        xenotypeTotalWeight += weight;
+                        foreach (float weight in xenotypeWeights.Values)
+                        {
+                            xenotypeTotalWeight += weight;
+                        }
                     }
                     dirtyXenotypeTotalWeight = false;
                 }
@@ -54,9 +58,12 @@ namespace FactionColonies.util
                 if (dirtyCustomXenotypeTotalWeight)
                 {
                     customXenotypeTotalWeight = 0;
-                    foreach (float weight in customXenotypeWeights.Values)
+                    if (customXenotypeWeights.Count > 0)
                     {
-                        customXenotypeTotalWeight += weight;
+                        foreach (float weight in customXenotypeWeights.Values)
+                        {
+                            customXenotypeTotalWeight += weight;
+                        }
                     }
                     dirtyCustomXenotypeTotalWeight = false;
                 }
@@ -78,9 +85,12 @@ namespace FactionColonies.util
                 if (dirtyRaceTotalWeight)
                 {
                     raceTotalWeight = 0;
-                    foreach (float weight in raceWeights.Values)
+                    if (raceWeights.Count > 0)
                     {
-                        raceTotalWeight += weight;
+                        foreach (float weight in raceWeights.Values)
+                        {
+                            raceTotalWeight += weight;
+                        }
                     }
                     dirtyRaceTotalWeight = false;
                 }
@@ -111,6 +121,28 @@ namespace FactionColonies.util
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
+            LogUtil.Message("XenotypeFilter FinalizeInit");
+
+            if (xenotypeWeights == null)
+            {
+                xenotypeWeights = new Dictionary<XenotypeDef, float>();
+            }
+            if (customXenotypeWeights == null)
+            {
+                customXenotypeWeights = new Dictionary<CustomXenotype, float>();
+            }
+            if (raceWeights == null)
+            {
+                raceWeights = new Dictionary<ThingDef, float>();
+            }
+            if (securityGuardsByXenotype == null)
+            {
+                securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
+            }
+            if (securityGuardsByCustomXenotype == null)
+            {
+                securityGuardsByCustomXenotype = new Dictionary<CustomXenotype, List<PawnKindDef>>();
+            }
 
             if (XenoCompleteWeight == 0)
             {
@@ -269,6 +301,14 @@ namespace FactionColonies.util
                 }
             }
         }
+        public void CullWeights()
+        {
+            CullXenotypeWeights();
+            CullCustomXenotypeWeights();
+            CullRaceWeights();
+
+            RefreshPawnGroupMakers();
+        }
         public List<XenotypeDef> AllowedXenotype()
         {
             return xenotypeWeights.Keys.ToList();
@@ -330,11 +370,14 @@ namespace FactionColonies.util
         {
             FactionCache.InvalidateCustomXenotypeCache();
             List<CustomXenotype> customs = customXenotypeWeights.Keys.ToList();
-            foreach (CustomXenotype xeno in customs)
+            if (customs.Count > 0)
             {
-                if (!FactionCache.CustomXenotypes.Contains(xeno))
+                foreach (CustomXenotype xeno in customs)
                 {
-                    RemoveCustomXenotype(xeno);
+                    if (!FactionCache.CustomXenotypes.Contains(xeno))
+                    {
+                        RemoveCustomXenotype(xeno);
+                    }
                 }
             }
         }
@@ -369,10 +412,13 @@ namespace FactionColonies.util
             ClearCustomXenotypeWeights();
             if (initAllTypes)
             {
-                foreach (CustomXenotype xenotype in FactionCache.CustomXenotypes)
+                if (FactionCache.CustomXenotypes.Count > 0)
                 {
-                    AddCustomXenotypeWithWeight(xenotype, 1);
-                    SetupSecurityGuards(xenotype);
+                    foreach (CustomXenotype xenotype in FactionCache.CustomXenotypes)
+                    {
+                        AddCustomXenotypeWithWeight(xenotype, 1);
+                        SetupSecurityGuards(xenotype);
+                    }
                 }
             }
         }
@@ -444,15 +490,18 @@ namespace FactionColonies.util
             if (race == ThingDefOf.Human)
             {
                 List<ThingDef> races = raceXenoAssociations.Keys.ToList();
-                foreach (ThingDef irace in races)
+                if (races.Count > 0)
                 {
-                    if (irace == ThingDefOf.Human)
+                    foreach (ThingDef irace in races)
                     {
-                        continue;
-                    }
-                    if (raceXenoAssociations[race].Contains(xenotype))
-                    {
-                        return false;
+                        if (irace == ThingDefOf.Human)
+                        {
+                            continue;
+                        }
+                        if (raceXenoAssociations[race].Contains(xenotype))
+                        {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -625,11 +674,14 @@ namespace FactionColonies.util
         }
         public bool HasViolentXenotype()
         {
-            foreach(XenotypeDef xenotype in xenotypeWeights.Keys)
+            if (xenotypeWeights.Count > 0)
             {
-                if (!XenotypeNeedsSecurityGuards(xenotype))
+                foreach (XenotypeDef xenotype in xenotypeWeights.Keys)
                 {
-                    return true;
+                    if (!XenotypeNeedsSecurityGuards(xenotype))
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -637,11 +689,14 @@ namespace FactionColonies.util
         }
         public bool HasViolentCustomXenotype()
         {
-            foreach(CustomXenotype xenotype in customXenotypeWeights.Keys)
+            if (customXenotypeWeights.Count > 0)
             {
-                if (!CustomXenotypeNeedsSecurityGuards(xenotype))
+                foreach (CustomXenotype xenotype in customXenotypeWeights.Keys)
                 {
-                    return true;
+                    if (!CustomXenotypeNeedsSecurityGuards(xenotype))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -674,40 +729,34 @@ namespace FactionColonies.util
         public List<PawnKindDef> GetAvailableSecurityGuards()
         {
             var allGuards = new List<PawnKindDef>();
-            foreach (var guardList in securityGuardsByXenotype.Values)
+            if (securityGuardsByXenotype.Count > 0)
             {
-                allGuards.AddRange(guardList);
+                foreach (var guardList in securityGuardsByXenotype.Values)
+                {
+                    allGuards.AddRange(guardList);
+                }
             }
-            foreach (var guardList in securityGuardsByCustomXenotype.Values)
+            if (securityGuardsByCustomXenotype.Count > 0)
             {
-                allGuards.AddRange(guardList);
+                foreach (var guardList in securityGuardsByCustomXenotype.Values)
+                {
+                    allGuards.AddRange(guardList);
+                }
             }
             return allGuards.Distinct().ToList();
         }
-
-        private void RefreshPawnGroupMakers()
+        private void SetPawnGroupMakers(bool lockTechLevel)
         {
-            if (faction == null || factionFc == null) return;
-            LogUtil.Message("Refreshing pawn group makers");
-
-            // Clear existing pawn group makers
-            faction.pawnGroupMakers = new List<PawnGroupMaker>
-            {
-                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Combat },
-                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Trader },
-                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Settlement },
-                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Peaceful }
-            };
-            /* Reset the customXenotype cache, just in case xenotypes have been removed or added since the last time we were here */
-            ValidateCustomXenotypes();
-            raceXenoAssociations.Clear();
-
             /* For each allowed race, find all associated PawnKindDefs. Add every such def that does not contain a disallowed Xenotype to the pawnGroupMakers.
              *   Check each associated PawnKindDef for a xenotypeSet. If there is one, add the xenotypes to the raceXenoAssociations dictionary. */
             /* The handling of xenotypes will be done in a prefix patch on PawnGenerator.GeneratePawn(PawnGenerationRequest). */
             foreach (ThingDef race in RaceWeights.Keys)
             {
-                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => def.race == race && def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel);
+                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => def.race == race &&
+                                                                    ((lockTechLevel && ((def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel) ||
+                                                                                        def.defaultFactionDef is null)) ||
+                                                                     !lockTechLevel));
+                LogUtil.Message($"RefreshPawnGroupMakers: found {humanPawns.Count()} PawnKindDefs for race {race.LabelCap}. Tech level lock: {lockTechLevel}");
                 List<XenotypeDef> associatedXenotypes = new List<XenotypeDef>();
                 foreach (PawnKindDef pawnKind in humanPawns)
                 {
@@ -740,7 +789,7 @@ namespace FactionColonies.util
 
                     // Add to all relevant pawn group makers
                     faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
-                    
+
                     if (pawnKind.label != "mercenary")
                     {
                         faction.pawnGroupMakers[1].options.Add(pawnOption); // Trader
@@ -779,29 +828,142 @@ namespace FactionColonies.util
                     }
                 }
             }
-            foreach (CustomXenotype xenotype in CustomXenotypeWeights.Keys)
+            if (customXenotypeWeights.Count > 0)
             {
-                //TODO
-                // Add security guards for xenotypes that need them
-                if (securityGuardsByCustomXenotype.ContainsKey(xenotype) && securityGuardsByCustomXenotype[xenotype].Any())
+                foreach (CustomXenotype xenotype in CustomXenotypeWeights.Keys)
                 {
-                    foreach (var guardAnimal in securityGuardsByCustomXenotype[xenotype])
+                    //TODO
+                    // Add security guards for xenotypes that need them
+                    if (securityGuardsByCustomXenotype.ContainsKey(xenotype) && securityGuardsByCustomXenotype[xenotype].Any())
                     {
-                        var guardOption = new PawnGenOption
+                        foreach (var guardAnimal in securityGuardsByCustomXenotype[xenotype])
                         {
-                            kind = guardAnimal,
-                            selectionWeight = 1
-                        };
+                            var guardOption = new PawnGenOption
+                            {
+                                kind = guardAnimal,
+                                selectionWeight = 1
+                            };
 
-                        faction.pawnGroupMakers[0].options.Add(guardOption); // Combat
-                        faction.pawnGroupMakers[1].guards.Add(guardOption); // Trader guards
+                            faction.pawnGroupMakers[0].options.Add(guardOption); // Combat
+                            faction.pawnGroupMakers[1].guards.Add(guardOption); // Trader guards
+                        }
                     }
                 }
             }
+        }
+        private void RefreshPawnGroupMakers()
+        {
+            if (faction == null || factionFc == null) return;
+            LogUtil.Message("Refreshing pawn group makers");
 
-            //TODO: check that the crucial pawn groups have at least one option (refer to this check:
-            //!faction.pawnGroupMakers[1].traders.Any() || !faction.pawnGroupMakers[0].options.Any() || !faction.pawnGroupMakers[3].options.Any() || WorldSettlementTraderTracker.BaseTraderKinds == null || !WorldSettlementTraderTracker.BaseTraderKinds.Any();
-            //If there are pawnGroupMakers with missing options, then throw an error and try to find a pawnKind with the base human race
+            // Clear existing pawn group makers
+            faction.pawnGroupMakers = new List<PawnGroupMaker>
+            {
+                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Combat },
+                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Trader },
+                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Settlement },
+                new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Peaceful }
+            };
+            /* Reset the customXenotype cache, just in case xenotypes have been removed or added since the last time we were here */
+            ValidateCustomXenotypes();
+            raceXenoAssociations.Clear();
+
+            if (RaceTotalWeight == 0)
+            {
+                InitializeRaces();
+            }
+            if (XenoCompleteWeight == 0)
+            {
+                InitializeXenotypes();
+            }
+
+
+            SetPawnGroupMakers(true);
+
+            /* If there are pawnGroupMakers with missing options, then it is possible that the missing options are due to locking the tech level to that of the Empire facton's or lower.
+             *   This can happen if the player has specified a non-Human race, and that race doesn't have low-tech PawnKindDefs.
+             *   To resolve that potential issue, we'll attempt to regenerate the pawnGroupMakers without the tech level check. */
+            //TODO: also need to modify caravanTraderKinds, visitorTraderKinds, and baseTraderKinds
+            // probably be easiest to grab a faction related to the chosen race(s) and copy their kinds?
+            if (HasMissingPawnKindDefTypes)
+            {
+                LogUtil.Warning("RefreshPawnGroupMakers: missing pawnKindDefs. Attempting to regenerate without tech lock");
+                faction.pawnGroupMakers = new List<PawnGroupMaker>
+                {
+                    new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Combat },
+                    new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Trader },
+                    new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Settlement },
+                    new PawnGroupMaker { kindDef = PawnGroupKindDefOf.Peaceful }
+                };
+                SetPawnGroupMakers(false);
+            }
+
+            /* If there are *still* pawnGroupMakers with missing options, then try to find options using the basic Human race.
+             *   If even that fails, then the player (or their mods) is doing something fucky. Likely. Possibly.
+             */
+            if (!faction.pawnGroupMakers[1].traders.Any())
+            {
+                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any trader PawnKindDefs, attempting human race fallback");
+                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => def.race == ThingDefOf.Human &&
+                                                                    ((def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel) ||
+                                                                     def.defaultFactionDef is null));
+                PawnKindDef trader = humanPawns.FirstOrDefault((PawnKindDef def) => def.trader);
+                if (trader is null)
+                {
+                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for traders, but failed!");
+                }
+                else
+                {
+                    var pawnOption = new PawnGenOption
+                    {
+                        kind = trader,
+                        selectionWeight = 1
+                    };
+                    faction.pawnGroupMakers[1].traders.Add(pawnOption);
+                }
+            }
+            if (!faction.pawnGroupMakers[0].options.Any())
+            {
+                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any combat PawnKindDefs, attempting human race fallback");
+                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => def.race == ThingDefOf.Human &&
+                                                                    ((def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel) ||
+                                                                     def.defaultFactionDef is null));
+                PawnKindDef fighter = humanPawns.FirstOrDefault((PawnKindDef def) => def.isFighter);
+                if (fighter is null)
+                {
+                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for fighters, but failed!");
+                }
+                else
+                {
+                    var pawnOption = new PawnGenOption
+                    {
+                        kind = fighter,
+                        selectionWeight = 1
+                    };
+                    faction.pawnGroupMakers[0].options.Add(pawnOption);
+                }
+            }
+            if (!faction.pawnGroupMakers[3].options.Any())
+            {
+                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any peaceful PawnKindDefs, attempting human race fallback");
+                var humanPawns = FactionCache.AllPawnKindDefs.Where(def => def.race == ThingDefOf.Human &&
+                                                                    ((def.defaultFactionDef != null && def.defaultFactionDef.techLevel <= factionFc.techLevel) ||
+                                                                     def.defaultFactionDef is null));
+                PawnKindDef peaceful = humanPawns.FirstOrDefault((PawnKindDef def) => def.label != "mercenary");
+                if (peaceful is null)
+                {
+                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for peaceful, but failed!");
+                }
+                else
+                {
+                    var pawnOption = new PawnGenOption
+                    {
+                        kind = peaceful,
+                        selectionWeight = 1
+                    };
+                    faction.pawnGroupMakers[3].options.Add(pawnOption);
+                }
+            }
 
             // Add pack animals for caravans
             foreach (PawnKindDef animalKindDef in FactionCache.AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal))
@@ -814,7 +976,7 @@ namespace FactionColonies.util
 
         private void RefreshMercenaryPawnGenOptions()
         {
-            if (militaryUtil?.mercenarySquads == null) return;
+            if (militaryUtil?.mercenarySquads == null || militaryUtil?.mercenarySquads.Count == 0) return;
 
             foreach (MercenarySquadFC mercenarySquadFc in militaryUtil.mercenarySquads)
             {
@@ -834,6 +996,36 @@ namespace FactionColonies.util
                 ? securityGuardsByXenotype[xenotype] 
                 : new List<PawnKindDef>();
         }
+        public void GetFirstXenotypesForRequest(PawnGenerationRequest request, out XenotypeDef xenotype, out CustomXenotype customXenotype)
+        {
+            XenotypeDef chosenXenotype = null;
+            CustomXenotype chosenCustomXenotype = null;
+
+            if (xenotypeWeights.Count > 0)
+            {
+                foreach (XenotypeDef allowedXenotype in XenotypeWeights.Keys)
+                {
+                    if (GetXenotypeWeight(allowedXenotype) > 0 && IsValidXenotypeForRequest(request, allowedXenotype))
+                    {
+                        chosenXenotype = allowedXenotype;
+                        break;
+                    }
+                }
+            }
+            if (customXenotypeWeights.Count > 0)
+            {
+                foreach (CustomXenotype allowedXenotype in CustomXenotypeWeights.Keys)
+                {
+                    if (GetCustomXenotypeWeight(allowedXenotype) > 0 && IsValidCustomXenotypeForRequest(request, allowedXenotype))
+                    {
+                        chosenCustomXenotype = allowedXenotype;
+                        break;
+                    }
+                }
+            }
+            xenotype = chosenXenotype;
+            customXenotype = chosenCustomXenotype;
+        }
 
         public void GetRandomXenotypeForRequest(PawnGenerationRequest request, out XenotypeDef xenotype, out CustomXenotype customXenotype)
         {
@@ -844,21 +1036,32 @@ namespace FactionColonies.util
             float weightTotal = XenoCompleteWeight;
             float xenoRand = Rand.Value;
 
-            foreach (XenotypeDef allowedXenotype in XenotypeWeights.Keys)
+            if (xenotypeWeights.Count > 0)
             {
-                float thisWeight = GetXenotypeWeight(allowedXenotype);
-                if (xenoRand < (cumulative + thisWeight) / weightTotal && IsValidXenotypeForRequest(request, allowedXenotype))
+                foreach (XenotypeDef allowedXenotype in XenotypeWeights.Keys)
                 {
-                    chosenXenotype = allowedXenotype;
-                    break;
+                    float thisWeight = GetXenotypeWeight(allowedXenotype);
+                    if (thisWeight == 0)
+                    {
+                        continue;
+                    }
+                    if (xenoRand < (cumulative + thisWeight) / weightTotal && IsValidXenotypeForRequest(request, allowedXenotype))
+                    {
+                        chosenXenotype = allowedXenotype;
+                        break;
+                    }
+                    cumulative += thisWeight;
                 }
-                cumulative += thisWeight;
             }
-            if (chosenXenotype is null)
+            if (chosenXenotype is null && customXenotypeWeights.Count > 0)
             {
                 foreach (CustomXenotype allowedXenotype in CustomXenotypeWeights.Keys)
                 {
                     float thisWeight = GetCustomXenotypeWeight(allowedXenotype);
+                    if (thisWeight == 0)
+                    {
+                        continue;
+                    }
                     if (xenoRand < (cumulative + thisWeight) / weightTotal && IsValidCustomXenotypeForRequest(request, allowedXenotype))
                     {
                         chosenCustomXenotype = allowedXenotype;
@@ -868,11 +1071,16 @@ namespace FactionColonies.util
                 }
             }
 
-            /* If both chosenXenotype and chosenCustomXenotype are null, then fall back onto baseliner */
             if (chosenXenotype is null && chosenCustomXenotype is null)
             {
-                LogUtil.Warning($"XenotypeFilter.GetRandomXenotypeForRace failed to chose a random xenotype. Falling back onto baseliner");
-                chosenXenotype = XenotypeDefOf.Baseliner;
+                /* Just in case there was some weird ordering issue, try to get the first xenotype in the allowed lists that would satisfy the request */
+                GetFirstXenotypesForRequest(request, out chosenXenotype, out chosenCustomXenotype);
+                /* If both are *still* null, then fall back onto baseliner */
+                if (chosenXenotype is null && chosenCustomXenotype is null)
+                {
+                    LogUtil.Warning($"XenotypeFilter.GetRandomXenotypeForRace failed to chose a random xenotype. Falling back onto baseliner");
+                    chosenXenotype = XenotypeDefOf.Baseliner;
+                }
             }
 
             xenotype = chosenXenotype;
@@ -910,6 +1118,7 @@ namespace FactionColonies.util
                 {
                     raceWeights = new Dictionary<ThingDef, float>();
                 }
+                FinalizeInit(FactionCache.FactionComp);
             }
         }
     }

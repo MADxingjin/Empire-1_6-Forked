@@ -10,16 +10,13 @@ using Verse;
 
 namespace FactionColonies
 {
-    [HarmonyPatch(typeof(PawnGenerator), "GeneratePawn")]
+    [HarmonyPatch(typeof(PawnGenerator), "GeneratePawn", typeof(PawnGenerationRequest))]
     class PawnGenerationPatches
     {
         public static void Prefix(ref PawnGenerationRequest request)
         {
             if (request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)
             {
-                //Debug logging
-                LogUtil.Message("In GeneratePawn prefix for Empire faction humanlikes...");
-
                 XenotypeFilter filter = FactionCache.FactionComp.xenotypeFilter;
                 XenotypeDef chosenXenotype = null;
                 CustomXenotype chosenCustomXenotype = null;
@@ -38,6 +35,11 @@ namespace FactionColonies
                     request.ForcedCustomXenotype = chosenCustomXenotype;
                     //Debug logging
                     LogUtil.Message($"GeneratePawn patch forced custom xenotype: {chosenCustomXenotype.name}");
+                }
+                else
+                {
+                    //Debug Logging
+                    LogUtil.Warning($"GeneratePawn patch failed to force a xenotype or custom xenotype");
                 }
             }
         }

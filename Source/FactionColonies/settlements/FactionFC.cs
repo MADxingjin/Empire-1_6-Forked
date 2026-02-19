@@ -313,16 +313,18 @@ namespace FactionColonies
             {
                 LogUtil.Message("Null raceFilter detected - Recreating");
                 raceFilter = new RaceThingFilter(this);
+                raceFilter.FinalizeInit(this);
             }
-            raceFilter.FinalizeInit(this);
 
             // Initialize xenotype filter
+            // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
+            //   Only finalize it if it doesn't even exist (though that should really be an error case)
             if (xenotypeFilter == null)
             {
-                LogUtil.Message("Null xenotypeFilter detected - Creating new one");
+                LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
+                xenotypeFilter.FinalizeInit(this);
             }
-            xenotypeFilter.FinalizeInit(this);
 
             //TODO: seems this will refresh every time the game is loaded. Might be a problem. Keep an eye on this
             factionResources.Clear();
@@ -954,18 +956,6 @@ namespace FactionColonies
 
             Messages.Message("FCCannotImproveRelationsWithType".Translate(), MessageTypeDefOf.RejectInput);
             return false;
-        }
-
-        public void resetRaceFilter()
-        {
-            raceFilter = new RaceThingFilter(this);
-            raceFilter.FinalizeInit(this);
-        }
-
-        public void resetXenotypeFilter()
-        {
-            xenotypeFilter = new XenotypeFilter(this);
-            xenotypeFilter.FinalizeInit(this);
         }
 
         public void updateAverages()

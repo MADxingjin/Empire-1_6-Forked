@@ -22,7 +22,7 @@ namespace FactionColonies
         private List<string> weightBufXenos = new List<string>();
         private List<string> weightBufCustoms = new List<string>();
         private List<string> weightBufRaces = new List<string>();
-        public override Vector2 InitialSize => windowRect.size;
+        public override Vector2 InitialSize => new Vector2(400f, 500f);
 
         private Vector2 xenoScrollBar = new Vector2();
         private Vector2 raceScrollBar = new Vector2();
@@ -37,7 +37,7 @@ namespace FactionColonies
         {
             forcePause = false;
             draggable = true;
-            doCloseX = false;
+            doCloseX = true;
             preventCameraMotion = false;
             resizeable = true;
             doCloseButton = true;
@@ -45,8 +45,6 @@ namespace FactionColonies
         public override void PreOpen()
         {
             base.PreOpen();
-            windowRect.width = 450f;
-            windowRect.height = 500f;
 
             faction = FactionCache.FactionComp;
             if (faction == null)
@@ -54,18 +52,20 @@ namespace FactionColonies
                 LogUtil.Error("Null FactionFC WorldComponent when opening FCCustomizeXenotypesWindow");
                 Close();
             }
-            filter = faction.xenotypeFilter;
-            filter.ValidateCustomXenotypes();
-
             allXenotypes = FactionCache.XenotypeDefs;
             allCustomXenotypes = FactionCache.CustomXenotypes;
             allRaces = FactionCache.HumanlikeRaces;
-
+            float width = 400f;
             if (allRaces.Count > 1)
             {
                 // increase the width of the window, so that we have the xenotype selection on the left, and race selection on the right
-                windowRect.width *= 2;
+                width *= 2;
             }
+            float height = 500f;
+            windowRect = new Rect(((float)UI.screenWidth - width) / 2f, ((float)UI.screenHeight - height) / 2f, width, height);
+
+            filter = faction.xenotypeFilter;
+            filter.ValidateCustomXenotypes();
             for (int i = 0; i < allXenotypes.Count; i++)
             {
                 weightBufXenos.Add("");
@@ -82,9 +82,7 @@ namespace FactionColonies
         public override void PostClose()
         {
             base.PostClose();
-            filter.CullXenotypeWeights();
-            filter.CullCustomXenotypeWeights();
-            filter.CullRaceWeights();
+            filter.CullWeights();
         }
 
         public override void DoWindowContents(Rect boundingBox)
@@ -112,11 +110,11 @@ namespace FactionColonies
             Rect subHeader = new Rect(boundingBox.x, header.yMax, boundingBox.width, 30f);
             Widgets.Label(subHeader, FactionCache.PlayerColonyFaction.Name);
 
-            float availHeight = boundingBox.yMax - subHeader.yMax - (Margin) - CloseButSize.y - margin;
+            float availHeight = boundingBox.yMax - subHeader.yMax - CloseButSize.y - margin;
 
             if (allRaces.Count > 1)
             {
-                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax + margin, (boundingBox.width - (margin*2)) / 2, availHeight);
+                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax, (boundingBox.width - (margin*2)) / 2, availHeight);
                 Rect raceBox = new Rect(xenoBox.xMax + (margin * 2), xenoBox.y, xenoBox.width, availHeight);
                 Widgets.DrawLineVertical(xenoBox.xMax + margin, xenoBox.y, xenoBox.height);
                 DoXenotypeSelection(xenoBox);
@@ -124,7 +122,7 @@ namespace FactionColonies
             }
             else
             {
-                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax + margin, boundingBox.width, availHeight);
+                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax, boundingBox.width, availHeight);
                 DoXenotypeSelection(xenoBox);
             }
 
@@ -145,17 +143,17 @@ namespace FactionColonies
             if(filter.XenoCompleteWeight == 0)
             {
                 Rect errorBox = new Rect(boundingBox.x, boundingBox.yMax - bigRowHeight, boundingBox.width, bigRowHeight);
-                Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y, errorBox.width - (smallMargin * 2), errorBox.height);
+                Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y+smallMargin, errorBox.width - (smallMargin * 2), errorBox.height - smallMargin);
                 TaggedString errorText = "XenotypeWeightError".Translate();
                 errorText = errorText.Colorize(Color.red);
 
                 Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleLeft;
+                Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(errorLabel, errorText);
                 UIUtil.TipRegionByText(errorBox, "XenotypeWeightErrorDesc".Translate());
 
-                bottomY -= errorBox.height - margin;
+                bottomY -= (errorBox.height + margin);
             }
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
@@ -168,9 +166,9 @@ namespace FactionColonies
             {
                 filter.ResetToBaselinerXenotypeOnly();
             }
-            bottomY -= enableButton.height - margin;
+            bottomY -= (enableButton.height + margin);
 
-            float renderHeight = bottomY - boundingBox.height;
+            float renderHeight = bottomY - boundingBox.y;
             float totalHeight = rowHeight * (allXenotypes.Count + allCustomXenotypes.Count);
             Rect drawBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
@@ -192,8 +190,8 @@ namespace FactionColonies
             {
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                Rect percentLabel = new Rect(row.xMax - 40f, row.y, 40f, rowHeight);
-                Rect inputBox = new Rect(percentLabel.x - 80f, row.y-2, 80f, rowHeight-4);
+                Rect percentLabel = new Rect(row.xMax - 60f, row.y, 60f, rowHeight);
+                Rect inputBox = new Rect(percentLabel.x - 80f, row.y + 2, 80f, rowHeight-4);
                 Rect label = new Rect(icon.x + margin, row.y, inputBox.x - icon.xMax, rowHeight);
                 if (i % 2 == 0)
                 {
@@ -205,8 +203,8 @@ namespace FactionColonies
                     XenotypeDef xenotype = allXenotypes[i];
                     Widgets.Label(icon, new GUIContent(xenotype.Icon));
                     Widgets.Label(label, xenotype.LabelCap);
-                    Widgets.Label(percentLabel, Math.Round(filter.GetXenotypeChance(xenotype), 2).ToString() + "%");
-                    UIUtil.TipRegionByText(row, xenotype.description);
+                    Widgets.Label(percentLabel, Math.Round(filter.GetXenotypeChance(xenotype)*100, 2).ToString() + "%");
+                    UIUtil.TipRegionByText(label, xenotype.description);
 
                     float weight = filter.GetXenotypeWeight(xenotype);
                     float oldWeight = weight;
@@ -229,7 +227,7 @@ namespace FactionColonies
                         Widgets.Label(icon, new GUIContent(xenotype.IconDef.Icon));
 
                     Widgets.Label(label, xenotype.name);
-                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype), 2).ToString() + "%");
+                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype)*100, 2).ToString() + "%");
 
                     float weight = filter.GetCustomXenotypeWeight(xenotype);
                     float oldWeight = weight;
@@ -263,7 +261,21 @@ namespace FactionColonies
                 Widgets.Label(errorLabel, errorText);
                 UIUtil.TipRegionByText(errorBox, "RaceWeightErrorDesc".Translate());
 
-                bottomY -= errorBox.height - margin;
+                bottomY -= (errorBox.height + margin);
+            }
+            else if (filter.GetRaceWeight(ThingDefOf.Human) == 0)
+            {
+                string noticeText = "DisabledHumanWarning".Translate();
+                float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
+                Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight - (smallMargin * 2), boundingBox.width, textHeight + (smallMargin * 2));
+                Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
+
+                Widgets.DrawHighlight(noticeBox);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(noticeLabel, noticeText.Colorize(Color.yellow));
+
+                bottomY -= (noticeBox.height + margin);
             }
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
@@ -276,9 +288,9 @@ namespace FactionColonies
             {
                 filter.ResetToHumanRaceOnly();
             }
-            bottomY -= enableButton.height - margin;
+            bottomY -= (enableButton.height + margin);
 
-            float renderHeight = bottomY - boundingBox.height;
+            float renderHeight = bottomY - boundingBox.y;
             float totalHeight = rowHeight * (allRaces.Count);
             Rect drawBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
@@ -300,8 +312,8 @@ namespace FactionColonies
             {
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
-                Rect percentLabel = new Rect(row.xMax - 40f, row.y, 40f, rowHeight);
-                Rect inputBox = new Rect(percentLabel.x - 80f, row.y - 2, 80f, rowHeight - 4);
+                Rect percentLabel = new Rect(row.xMax - 60f, row.y, 60f, rowHeight);
+                Rect inputBox = new Rect(percentLabel.x - 80f, row.y + 2, 80f, rowHeight - 4);
                 Rect label = new Rect(icon.x + margin, row.y, inputBox.x - icon.xMax, rowHeight);
                 if (i % 2 == 0)
                 {
@@ -311,8 +323,8 @@ namespace FactionColonies
                 ThingDef race = allRaces[i];
                 Widgets.Label(icon, new GUIContent(race.uiIconPath));
                 Widgets.Label(label, race.LabelCap);
-                Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race), 2).ToString() + "%");
-                UIUtil.TipRegionByText(row, race.description);
+                Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race)*100, 2).ToString() + "%");
+                UIUtil.TipRegionByText(label, race.description);
 
                 float weight = filter.GetRaceWeight(race);
                 float oldWeight = weight;

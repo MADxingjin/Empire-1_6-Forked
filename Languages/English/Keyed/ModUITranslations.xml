@@ -568,5 +568,9 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<XenotypeWeightErrorDesc>If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight.</XenotypeWeightErrorDesc>
 	<RaceWeightError>All races have 0 weight!</RaceWeightError>
 	<RaceWeightErrorDesc>If you close this window while all races have 0 weight, then they will all be reset to 1 weight.</RaceWeightErrorDesc>
+	<XenoRaceEnableAll>Enable All</XenoRaceEnableAll>
+	<XenoDisableNonBaseliner>Disable Non-Baseliner</XenoDisableNonBaseliner>
+	<RaceDisableNonHuman>Disable Non-Human</RaceDisableNonHuman>
+	<DisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</DisabledHumanWarning>
 	
 </LanguageData>
