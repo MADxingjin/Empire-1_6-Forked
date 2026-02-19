@@ -724,12 +724,6 @@ namespace FactionColonies
             return max;
         }
 
-        public void updateFactionRaces()
-        {
-            Faction faction = FactionCache.PlayerColonyFaction;
-            // TODO updateFactionRaces()
-        }
-
         public string returnNextTechToLevel()
         {
             switch (techLevel)

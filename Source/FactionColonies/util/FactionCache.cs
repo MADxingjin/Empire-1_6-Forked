@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
@@ -21,8 +23,14 @@ namespace FactionColonies
         private static Faction _cachedColonyFaction = null;
         private static Faction _cachedPlayerFaction = null;
         private static FactionFC _cachedFactionWorldComp = null;
+        private static FactionDef _cachedFactionDef = null;
         private static List<PawnKindDef> _cachedPawnKindDefs = null;
         private static Dictionary<(Type, string), FieldInfo> _cachedFields = new Dictionary<(Type, string), FieldInfo>();
+        private static List<XenotypeDef> _cachedXenotypeList = null;
+        private static List<CustomXenotype> _cachedCustomXenotypeList = null;
+        private static List<ThingDef> _cachedRaceList = null;
+        private static List<PawnKindDef> _cachedAnimalKinds = null;
+        private static List<PawnKindDef> _cachedCombatAnimalKinds = null;
 
         public static FactionFC FactionComp
         {
@@ -35,7 +43,9 @@ namespace FactionColonies
                 return _cachedFactionWorldComp;
             }
         }
-
+        /// <summary>
+        /// The NPC Empire faction that the player created and controls.
+        /// </summary>
         public static Faction PlayerColonyFaction
         {
             get
@@ -47,6 +57,9 @@ namespace FactionColonies
                 return _cachedColonyFaction;
             }
         }
+        /// <summary>
+        /// The player faction itself.
+        /// </summary>
         public static Faction PlayerFaction
         {
             get
@@ -81,6 +94,108 @@ namespace FactionColonies
             FieldCache.Add((typ, field), fieldInfo);
             return fieldInfo;
         }
+        public static FactionDef EmpireFactionDef
+        {
+            get
+            {
+                if (_cachedFactionDef == null)
+                {
+                    _cachedFactionDef = DefDatabase<FactionDef>.GetNamed("PColony");
+                }
+                return _cachedFactionDef;
+            }
+        }
+        public static List<XenotypeDef> XenotypeDefs
+        {
+            get
+            {
+                if (_cachedXenotypeList == null)
+                {
+                    _cachedXenotypeList = DefDatabase<XenotypeDef>.AllDefsListForReading;
+                }
+                return _cachedXenotypeList;
+            }
+        }
+        public static List<CustomXenotype> CustomXenotypes
+        {
+            get
+            {
+                if (_cachedCustomXenotypeList == null)
+                {
+                    _cachedCustomXenotypeList = Current.Game?.customXenotypeDatabase?.customXenotypes;
+                }
+                return _cachedCustomXenotypeList;
+            }
+        }
+        public static List<ThingDef> HumanlikeRaces
+        {
+            get
+            {
+                if (_cachedRaceList == null)
+                {
+                    _cachedRaceList = new List<ThingDef>();
+                    foreach (PawnKindDef pawnKind in AllPawnKindDefs)
+                    {
+                        if (pawnKind.race != null && !_cachedRaceList.Contains(pawnKind.race) && (pawnKind.race == ThingDefOf.Human || pawnKind.IsHumanLikeRace()))
+                        {
+                            _cachedRaceList.Add(pawnKind.race);
+                        }
+                    }
+                }
+                return _cachedRaceList;
+            }
+        }
+        // Technically there should *always* be at least one race: ThingDefOf.Human. But it probably can't hurt to null-check, just in case of edge cases...
+        public static int HumanlikeRacesCount
+        {
+            get
+            {
+                if (HumanlikeRaces == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return HumanlikeRaces.Count;
+                }
+            }
+        }
+        public static List<PawnKindDef> AllAnimalKindDefs
+        {
+            get
+            {
+                if (_cachedAnimalKinds == null)
+                {
+                    _cachedAnimalKinds = new List<PawnKindDef>();
+                    foreach (PawnKindDef def in AllPawnKindDefs)
+                    {
+                        if (def.IsAnimalAndAllowed())
+                        {
+                            _cachedAnimalKinds.Add(def);
+                        }
+                    }
+                }
+                return _cachedAnimalKinds;
+            }
+        }
+        public static List<PawnKindDef> AllCombatAnimalKindDefs
+        {
+            get
+            {
+                if(_cachedCombatAnimalKinds == null)
+                {
+                    _cachedCombatAnimalKinds = new List<PawnKindDef>();
+                    foreach (PawnKindDef def in AllPawnKindDefs)
+                    {
+                        if (def.IsCombatAnimal())
+                        {
+                            _cachedCombatAnimalKinds.Add(def);
+                        }
+                    }
+                }
+                return _cachedCombatAnimalKinds;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -89,7 +204,19 @@ namespace FactionColonies
             _cachedPlayerFaction = null;
             _cachedPawnKindDefs = null;
             _cachedFactionWorldComp = null;
+            _cachedFactionDef = null;
             _cachedFields.Clear();
+            _cachedRaceList = null;
+            _cachedXenotypeList = null;
+            _cachedAnimalKinds = null;
+            _cachedCombatAnimalKinds = null;
+            InvalidateCustomXenotypeCache();
+        }
+        /* Custom xenotypes are actually expected to change while the game is loaded, and thus we may have to refresh that specific cache more frequently than the rest.
+         * Hence, it gets its own function. */
+        public static void InvalidateCustomXenotypeCache()
+        {
+            _cachedCustomXenotypeList = null;
         }
     }
 }

@@ -206,10 +206,11 @@ namespace FactionColonies
                 FloatMenu menu = new FloatMenu(list);
                 Find.WindowStack.Add(menu);
             }
-
+            //TODO: make this a new window, instead
             if (Widgets.ButtonTextSubtle(buttonAllowedRaces, "AllowedXenotypes".Translate()))
             {
-                List<FloatMenuOption> list = new List<FloatMenuOption>
+                Find.WindowStack.Add(new FCCustomizeXenotypesWindow());
+                /*List<FloatMenuOption> list = new List<FloatMenuOption>
                 {
                     new FloatMenuOption("Empire_XenotypeMenus_EnableAll".Translate(), delegate { faction.xenotypeFilter.ResetToAllXenotypes(); }),
                     new FloatMenuOption("Empire_XenotypeMenus_DisableNonBaseliner".Translate(), delegate { faction.xenotypeFilter.ResetToBaselinerXenotypeOnly(); })
@@ -252,7 +253,7 @@ namespace FactionColonies
                 }
 
                 FloatMenu menu = new FloatMenu(list);
-                Find.WindowStack.Add(menu);
+                Find.WindowStack.Add(menu);*/
             }
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
@@ -264,7 +265,6 @@ namespace FactionColonies
                 faction.name = name;
                 faction.factionIconPath = tempFactionIconPath;
                 faction.factionIcon = tempFactionIcon;
-                faction.updateFactionRaces();
 
                 faction.updateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
 

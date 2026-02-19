@@ -652,10 +652,9 @@ namespace FactionColonies
                 {
                     UIUtil.TipRegionByText(label, iThing.LabelCap);
                 }
-                //TODO: make this actually work
                 // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
                 //   keep this in mind when testing...
-                int quantity = res.getTitheListValue(thingTuple); //res.tithes[thingTuple];
+                int quantity = res.getTitheListValue(thingTuple);
                 int oldQuantity = quantity;
                 int max = quantity + res.maxThingCanAfford(thingTuple);
                 string buf = titheBuffers[i];
