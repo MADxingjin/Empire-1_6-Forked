@@ -39,8 +39,6 @@ namespace FactionColonies
 
         private float fullScrollHeight = 90f;
 
-        // Filter state
-        //private BuildingFilter currentFilter = BuildingFilter.All;
         /* To deal with a variable number of resources (and variable resources in general), we use an int for
          * the filter. The value of the filter, and the corresponding label, are set in WorldObjectComp_SettlementBuildings
          */
@@ -118,27 +116,11 @@ namespace FactionColonies
 
         private void DrawFilterButtons(Rect inRect)
         {
-            // Define filter categories
-            /*var filters = new[]
-            {
-                BuildingFilter.All,
-                BuildingFilter.Happiness,
-                BuildingFilter.Military,
-                BuildingFilter.Basetax,
-                BuildingFilter.Workers,
-                BuildingFilter.Food,
-                BuildingFilter.Weapons,
-                BuildingFilter.Apparel,
-                BuildingFilter.Research,
-                BuildingFilter.Medicine,
-                BuildingFilter.Power
-            };*/
-
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            // Calculate button dimensions - 6 per row to fit all 11 filters in 2 rows
+            // Calculate button dimensions
             float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
@@ -312,7 +294,7 @@ namespace FactionColonies
                 Rect costRect = new Rect(newBuildingLabel.xMax, newBuildingLabel.y, 100, newBuildingLabel.height);
                 Rect builtTimeRect = new Rect(costRect.xMax, newBuildingLabel.y, 160, newBuildingLabel.height);
                 Widgets.ButtonTextSubtle(newBuildingLabel, "");
-                Widgets.Label(newBuildingLabel, "  " + building.LabelCap);// + " - " + "Cost".Translate() + ": " + building.cost);
+                Widgets.Label(newBuildingLabel, "  " + building.LabelCap);
                 Widgets.ButtonTextSubtle(costRect, "");
                 Widgets.Label(costRect, costStr);
                 Widgets.ButtonTextSubtle(builtTimeRect, "");

@@ -563,6 +563,7 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	
 	<!-- Xenotype and Race Customization -->
 	<XenotypeSelection>Xenotype Selection</XenotypeSelection>
+	<RaceSelection>Race Selection</RaceSelection>
 	<XenotypeRaceSelection>Xenotype and Race Selection</XenotypeRaceSelection>
 	<XenotypeWeightError>All Xenotypes have 0 weight!</XenotypeWeightError>
 	<XenotypeWeightErrorDesc>If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight.</XenotypeWeightErrorDesc>

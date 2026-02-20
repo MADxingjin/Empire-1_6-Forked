@@ -206,54 +206,9 @@ namespace FactionColonies
                 FloatMenu menu = new FloatMenu(list);
                 Find.WindowStack.Add(menu);
             }
-            //TODO: make this a new window, instead
             if (Widgets.ButtonTextSubtle(buttonAllowedRaces, "AllowedXenotypes".Translate()))
             {
                 Find.WindowStack.Add(new FCCustomizeXenotypesWindow());
-                /*List<FloatMenuOption> list = new List<FloatMenuOption>
-                {
-                    new FloatMenuOption("Empire_XenotypeMenus_EnableAll".Translate(), delegate { faction.xenotypeFilter.ResetToAllXenotypes(); }),
-                    new FloatMenuOption("Empire_XenotypeMenus_DisableNonBaseliner".Translate(), delegate { faction.xenotypeFilter.ResetToBaselinerXenotypeOnly(); })
-                };
-                List<string> xenotypes = new List<string>();
-                foreach (XenotypeDef def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(def => def.IsXenotypeWithLabel() && !xenotypes.Contains(def.label)))
-                {
-                    xenotypes.Add(def.label);
-                    string statusText = faction.xenotypeFilter.Allows(def) ? "Allowed" : "Disallowed";
-                    
-                    // Add security guard info for xenotypes that need it
-                    var securityGuards = faction.xenotypeFilter.GetSecurityGuardsForXenotype(def);
-                    string securityInfo = "";
-                    if (securityGuards.Any())
-                    {
-                        securityInfo = " (Security: " + string.Join(", ", securityGuards.Select(g => g.label.CapitalizeFirst())) + ")";
-                    }
-                    
-                    list.Add(new FloatMenuOption(
-                        def.label.CapitalizeFirst() + " - " + statusText + securityInfo,
-                        delegate
-                        {
-                            if (faction.xenotypeFilter.AllowedXenotypeCount == 1 && faction.xenotypeFilter.Allows(def))
-                            {
-                                Messages.Message("CannotHaveLessThanOneXenotype".Translate(), MessageTypeDefOf.RejectInput);
-                            }
-                            else if (faction.xenotypeFilter.AllowedXenotypeCount > 0)
-                            {
-                                if (!faction.xenotypeFilter.SetAllow(def, !faction.xenotypeFilter.Allows(def)))
-                                {
-                                    Messages.Message(new Message("InvalidFaction".Translate(), MessageTypeDefOf.RejectInput));
-                                }
-                            }
-                            else
-                            {
-                                LogUtil.Error("Zero xenotypes available for faction - Report this. Resetting xenotype filter");
-                                faction.resetXenotypeFilter();
-                            }
-                        }));
-                }
-
-                FloatMenu menu = new FloatMenu(list);
-                Find.WindowStack.Add(menu);*/
             }
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))

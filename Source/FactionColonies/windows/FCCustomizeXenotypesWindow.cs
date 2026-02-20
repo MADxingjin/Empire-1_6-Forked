@@ -130,15 +130,15 @@ namespace FactionColonies
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
-
-        //xenotypes and custom xenotypes in the same list on the left
-        //races in a list on the right
-        //if the total weight in a category is zero, show a red-colored message to the player stating that all options will be reset to 1 on closing the window if they leave it that way
-        // Beneath both lists, have one button to "disable all non-baseliner/non-human", and one button to "enable all"
-        // Perhaps display a percentage chance next to each option, calculated from (weight/total weight)
-        // Have single-increment buttons for the numeric inputs
         private void DoXenotypeSelection(Rect boundingBox)
         {
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, bigRowHeight);
+            Rect headerText = new Rect (header.x + smallMargin, header.y, header.width - (smallMargin * 2), header.height);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.DrawHighlight(header);
+            Widgets.Label(headerText, "XenotypeSelection".Translate());
+
             float bottomY = boundingBox.yMax;
             if(filter.XenoCompleteWeight == 0)
             {
@@ -168,9 +168,9 @@ namespace FactionColonies
             }
             bottomY -= (enableButton.height + margin);
 
-            float renderHeight = bottomY - boundingBox.y;
+            float renderHeight = bottomY - header.yMax - margin;
             float totalHeight = rowHeight * (allXenotypes.Count + allCustomXenotypes.Count);
-            Rect drawBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, renderHeight);
+            Rect drawBox = new Rect(boundingBox.x, header.yMax + margin, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float width;
             if (totalHeight > renderHeight)
@@ -247,6 +247,13 @@ namespace FactionColonies
         }
         private void DoRaceSelection(Rect boundingBox)
         {
+            Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, bigRowHeight);
+            Rect headerText = new Rect(header.x + smallMargin, header.y, header.width - (smallMargin * 2), header.height);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.DrawHighlight(header);
+            Widgets.Label(headerText, "RaceSelection".Translate());
+
             float bottomY = boundingBox.yMax;
             if (filter.RaceTotalWeight == 0)
             {
@@ -290,9 +297,9 @@ namespace FactionColonies
             }
             bottomY -= (enableButton.height + margin);
 
-            float renderHeight = bottomY - boundingBox.y;
+            float renderHeight = bottomY - header.yMax - margin;
             float totalHeight = rowHeight * (allRaces.Count);
-            Rect drawBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, renderHeight);
+            Rect drawBox = new Rect(boundingBox.x, header.yMax + margin, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float width;
             if (totalHeight > renderHeight)

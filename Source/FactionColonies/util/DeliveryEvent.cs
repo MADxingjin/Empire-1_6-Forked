@@ -175,8 +175,7 @@ namespace FactionColonies.util
 						deliveryPawn = PawnGenerator.GeneratePawn(request);
 						if (deliveryPawn != null)
 						{
-							LogUtil.Message($"Successfully generated delivery pawn with with civilian request");
-							break;
+							LogUtil.Message($"Successfully generated delivery pawn with civilian request");
 						}
 					}
 					catch (Exception ex)
@@ -230,6 +229,8 @@ namespace FactionColonies.util
 					evt.goods.RemoveAt(0); // Remove the problematic item
 				}
 			}
+
+			LogUtil.Message($"# Delivery pawns generated: {pawns.Count}");
 			
 			if (attempts >= maxAttempts)
 			{

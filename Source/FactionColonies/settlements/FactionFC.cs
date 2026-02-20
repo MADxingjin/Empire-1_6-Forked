@@ -318,7 +318,7 @@ namespace FactionColonies
 
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
-            //   Only finalize it if it doesn't even exist (though that should really be an error case)
+            //   Only finalize it if it doesn't even exist
             if (xenotypeFilter == null)
             {
                 LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
@@ -611,6 +611,7 @@ namespace FactionColonies
             //Mercantile
             if (hasTrait(FCPolicyDefOf.mercantile) && traitMercantileTradeCaravanTickDue <= Find.TickManager.TicksGame)
             {
+                LogUtil.Message("Attempting to send mercantile trader caravan");
                 IncidentWorker_TraderCaravanArrival worker = new IncidentWorker_TraderCaravanArrival();
                 worker.def = IncidentDefOf.TraderCaravanArrival;
                 IncidentParms parms =
@@ -1529,6 +1530,7 @@ namespace FactionColonies
         public void resetTraitMercantileCaravanTime()
         {
             float days = Rand.RangeInclusive(3, 5);
+            LogUtil.Message($"Resetting Mercantile Caravan Time. New arrival in {days} days.");
             traitMercantileTradeCaravanTickDue = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
         }
 

@@ -28,18 +28,18 @@ namespace FactionColonies
                 {
                     request.ForcedXenotype = chosenXenotype;
                     //Debug logging
-                    LogUtil.Message($"GeneratePawn patch forced xenotype: {chosenXenotype.defName}");
+                    LogUtil.Message($"GeneratePawn patch forced xenotype: {chosenXenotype.defName} for pawnKind: {request.KindDef.defName}");
                 }
                 else if (!(chosenCustomXenotype is null))
                 {
                     request.ForcedCustomXenotype = chosenCustomXenotype;
                     //Debug logging
-                    LogUtil.Message($"GeneratePawn patch forced custom xenotype: {chosenCustomXenotype.name}");
+                    LogUtil.Message($"GeneratePawn patch forced custom xenotype: {chosenCustomXenotype.name} for pawnKind: {request.KindDef.defName}");
                 }
                 else
                 {
                     //Debug Logging
-                    LogUtil.Warning($"GeneratePawn patch failed to force a xenotype or custom xenotype");
+                    LogUtil.Warning($"GeneratePawn patch failed to force a xenotype or custom xenotype for pawnKind: {request.KindDef.defName}");
                 }
             }
         }
