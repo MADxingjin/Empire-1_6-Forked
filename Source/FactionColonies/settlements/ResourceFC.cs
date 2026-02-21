@@ -1188,7 +1188,7 @@ namespace FactionColonies
                 {
                     FactionFC factionFC = FactionCache.FactionComp;
                     double resource = 0;
-                    for (int k = 0; k < factionFC.settlements.Count(); k++)
+                    for (int k = 0; k < factionFC.settlements.Count; k++)
                     {
                         resource += (int)(factionFC.settlements[k].getResource(resourceDef)?.rawTotalProduction ?? 0);
                     }

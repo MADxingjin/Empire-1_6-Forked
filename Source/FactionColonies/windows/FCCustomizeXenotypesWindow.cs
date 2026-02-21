@@ -227,9 +227,9 @@ namespace FactionColonies
                         Widgets.Label(icon, new GUIContent(xenotype.IconDef.Icon));
 
                     Widgets.Label(label, xenotype.name);
-                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype)*100, 2).ToString() + "%");
+                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype.name)*100, 2).ToString() + "%");
 
-                    float weight = filter.GetCustomXenotypeWeight(xenotype);
+                    float weight = filter.GetCustomXenotypeWeight(xenotype.name);
                     float oldWeight = weight;
                     string buf = weightBufCustoms[customIndex];
                     DoWeightField(inputBox, ref weight, ref buf);
@@ -270,7 +270,10 @@ namespace FactionColonies
 
                 bottomY -= (errorBox.height + margin);
             }
-            else if (filter.GetRaceWeight(ThingDefOf.Human) == 0)
+            // This warning does break immersion a bit, and since we assemble a new pawnkind if there are no valid pawnkinds of a given race for a given role,
+            //   we should be much less likely to run into humans when the human race is disabled. So disabling this warning for now.
+            // The pawnkind construction is pretty iffy though, so I'm leaving this code here in case we want to re-enable it at some point
+            /*else if (filter.GetRaceWeight(ThingDefOf.Human) == 0)
             {
                 string noticeText = "DisabledHumanWarning".Translate();
                 float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
@@ -283,7 +286,7 @@ namespace FactionColonies
                 Widgets.Label(noticeLabel, noticeText.Colorize(Color.yellow));
 
                 bottomY -= (noticeBox.height + margin);
-            }
+            }*/
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
             Rect disableButton = new Rect(enableButton.xMax, enableButton.y, enableButton.width, enableButton.height);

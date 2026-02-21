@@ -134,7 +134,7 @@ namespace FactionColonies
 
 		public override void UpdateAllDuties()
 		{
-			for (int i = 0; i < lord.ownedPawns.Count(); i++)
+			for (int i = 0; i < lord.ownedPawns.Count; i++)
 			{
 				SetCell();
 				Pawn pawn = lord.ownedPawns[i];

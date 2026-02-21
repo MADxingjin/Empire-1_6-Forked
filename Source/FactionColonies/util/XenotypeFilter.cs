@@ -25,7 +25,7 @@ namespace FactionColonies.util
 
 
         private Dictionary<XenotypeDef, List<PawnKindDef>> securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
-        private Dictionary<CustomXenotype, List<PawnKindDef>> securityGuardsByCustomXenotype = new Dictionary<CustomXenotype, List<PawnKindDef>>();
+        private Dictionary<string, List<PawnKindDef>> securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
         /* Xenotype Weights */
         /* Set to private to force other classes to go through our functions when interacting with the dictionary, to properly maintain the cache. */
         private Dictionary<XenotypeDef, float> xenotypeWeights = new Dictionary<XenotypeDef, float>();
@@ -53,8 +53,8 @@ namespace FactionColonies.util
         }
         /* Custom Xenotype Weights */
         /* Set to private to force other classes to go through our functions when interacting with the dictionary, to properly maintain the cache. */
-        private Dictionary<CustomXenotype, float> customXenotypeWeights = new Dictionary<CustomXenotype, float>();
-        public Dictionary<CustomXenotype, float> CustomXenotypeWeights => customXenotypeWeights;
+        private Dictionary<string, float> customXenotypeWeights = new Dictionary<string, float>();
+        public Dictionary<string, float> CustomXenotypeWeights => customXenotypeWeights;
         private bool dirtyCustomXenotypeTotalWeight = true;
         private float customXenotypeTotalWeight = 0;
         public float CustomXenotypeTotalWeight
@@ -122,8 +122,6 @@ namespace FactionColonies.util
             origCaravanTraderKinds.AddRange(faction.caravanTraderKinds);
             origVisitorTraderKinds.AddRange(faction.visitorTraderKinds);
             origBaseTraderKinds.AddRange(faction.baseTraderKinds);
-            InitializeXenotypes();
-            InitializeRaces();
         }
 
         public void FinalizeInit(FactionFC factionFc)
@@ -139,7 +137,7 @@ namespace FactionColonies.util
             }
             if (customXenotypeWeights == null)
             {
-                customXenotypeWeights = new Dictionary<CustomXenotype, float>();
+                customXenotypeWeights = new Dictionary<string, float>();
             }
             if (raceWeights == null)
             {
@@ -151,7 +149,7 @@ namespace FactionColonies.util
             }
             if (securityGuardsByCustomXenotype == null)
             {
-                securityGuardsByCustomXenotype = new Dictionary<CustomXenotype, List<PawnKindDef>>();
+                securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
             }
 
             if (XenoCompleteWeight == 0)
@@ -182,13 +180,13 @@ namespace FactionColonies.util
         }
         public void AddCustomXenotypeWithWeight(CustomXenotype xenotype, float weight)
         {
-            if (customXenotypeWeights.ContainsKey(xenotype))
+            if (customXenotypeWeights.ContainsKey(xenotype.name))
             {
-                customXenotypeWeights[xenotype] = weight;
+                customXenotypeWeights[xenotype.name] = weight;
             }
             else
             {
-                customXenotypeWeights.Add(xenotype, weight);
+                customXenotypeWeights.Add(xenotype.name, weight);
             }
             dirtyCustomXenotypeTotalWeight = true;
         }
@@ -214,7 +212,7 @@ namespace FactionColonies.util
             }
             return false;
         }
-        public bool RemoveCustomXenotype(CustomXenotype xenotype)
+        public bool RemoveCustomXenotype(string xenotype)
         {
             if (customXenotypeWeights.ContainsKey(xenotype))
             {
@@ -281,8 +279,8 @@ namespace FactionColonies.util
             }
             else
             {
-                List<CustomXenotype> xenotypes = AllowedCustomXenotypes();
-                foreach (CustomXenotype xenotype in xenotypes)
+                List<string> xenotypes = AllowedCustomXenotypes();
+                foreach (string xenotype in xenotypes)
                 {
                     if (CustomXenotypeWeights.ContainsKey(xenotype) && CustomXenotypeWeights[xenotype] == 0)
                     {
@@ -319,11 +317,32 @@ namespace FactionColonies.util
 
             RefreshPawnGroupMakers();
         }
+        public void DebugPrintXenotypeWeights()
+        {
+            foreach (XenotypeDef def in FactionCache.XenotypeDefs)
+            {
+                LogUtil.Message($"Xenotype: {def.LabelCap}, Weight: {GetXenotypeWeight(def, true)}");
+            }
+        }
+        public void DebugPrintCustomXenotypeWeights()
+        {
+            foreach (CustomXenotype xeno in FactionCache.CustomXenotypes)
+            {
+                LogUtil.Message($"Custom Xenotype: {xeno.name}, Weight: {GetCustomXenotypeWeight(xeno.name, true)}");
+            }
+        }
+        public void DebugPrintRaceWeights()
+        {
+            foreach (ThingDef race in FactionCache.HumanlikeRaces)
+            {
+                LogUtil.Message($"Race: {race.LabelCap}, Weight: {GetRaceWeight(race, true)}");
+            }
+        }
         public List<XenotypeDef> AllowedXenotype()
         {
             return xenotypeWeights.Keys.ToList();
         }
-        public List<CustomXenotype> AllowedCustomXenotypes()
+        public List<string> AllowedCustomXenotypes()
         {
             return customXenotypeWeights.Keys.ToList();
         }
@@ -331,27 +350,39 @@ namespace FactionColonies.util
         {
             return raceWeights.Keys.ToList();
         }
-        public float GetXenotypeWeight(XenotypeDef xenotype)
+        public float GetXenotypeWeight(XenotypeDef xenotype, bool debug = false)
         {
             if (xenotypeWeights.ContainsKey(xenotype))
             {
                 return xenotypeWeights[xenotype];
             }
+            if (debug)
+            {
+                LogUtil.Message($"Xenotype {xenotype.LabelCap} not present in the weights dictionary");
+            }
             return 0f;
         }
-        public float GetCustomXenotypeWeight(CustomXenotype xenotype)
+        public float GetCustomXenotypeWeight(string xenotype, bool debug = false)
         {
             if (customXenotypeWeights.ContainsKey(xenotype))
             {
                 return customXenotypeWeights[xenotype];
             }
+            if (debug)
+            {
+                LogUtil.Message($"Custom Xenotype {xenotype} not present in the weights dictionary");
+            }
             return 0f;
         }
-        public float GetRaceWeight(ThingDef race)
+        public float GetRaceWeight(ThingDef race, bool debug = false)
         {
             if (raceWeights.ContainsKey(race))
             {
                 return raceWeights[race];
+            }
+            if (debug)
+            {
+                LogUtil.Message($"Race {race.LabelCap} not present in the weights dictionary");
             }
             return 0f;
         }
@@ -362,7 +393,7 @@ namespace FactionColonies.util
 
             return GetXenotypeWeight(xenotype) / XenoCompleteWeight;
         }
-        public float GetCustomXenotypeChance(CustomXenotype xenotype)
+        public float GetCustomXenotypeChance(string xenotype)
         {
             if (XenoCompleteWeight == 0)
                 return 0f;
@@ -379,12 +410,12 @@ namespace FactionColonies.util
         public void ValidateCustomXenotypes()
         {
             FactionCache.InvalidateCustomXenotypeCache();
-            List<CustomXenotype> customs = customXenotypeWeights.Keys.ToList();
+            List<string> customs = customXenotypeWeights.Keys.ToList();
             if (customs.Count > 0)
             {
-                foreach (CustomXenotype xeno in customs)
+                foreach (string xeno in customs)
                 {
-                    if (!FactionCache.CustomXenotypes.Contains(xeno))
+                    if (!FactionCache.CustomXenotypesDecoder.ContainsKey(xeno))
                     {
                         RemoveCustomXenotype(xeno);
                     }
@@ -427,7 +458,7 @@ namespace FactionColonies.util
                     foreach (CustomXenotype xenotype in FactionCache.CustomXenotypes)
                     {
                         AddCustomXenotypeWithWeight(xenotype, 1);
-                        SetupSecurityGuards(xenotype);
+                        SetupSecurityGuards(xenotype.name);
                     }
                 }
             }
@@ -458,6 +489,7 @@ namespace FactionColonies.util
 
         private void InitializeXenotypes(bool initAllTypes = true)
         {
+            LogUtil.Message("Initializing Xenotype Weights in XenotypeFilter...");
             InitializeXenotypeWeights(initAllTypes);
             InitializeCustomXenotypeWeights(initAllTypes);
         }
@@ -468,9 +500,14 @@ namespace FactionColonies.util
         public bool IsValidXenotypeForRace(ThingDef inputRace, XenotypeDef xenotype)
         {
             /* If the race is the default Human, then only reject the xenotype if it is associated with a non-human race.
-             *   Meant to handle mods that add xenotypes for HAR races. */
+             *   Meant to handle mods that add xenotypes for HAR races.
+             *   Always allow Baseliner for Humans. */
             if (inputRace == ThingDefOf.Human)
             {
+                if (xenotype == XenotypeDefOf.Baseliner)
+                {
+                    return true;
+                }
                 List<ThingDef> races = raceXenoAssociations.Keys.ToList();
                 if (races.Count > 0)
                 {
@@ -494,7 +531,7 @@ namespace FactionColonies.util
                 return raceXenoAssociations.ContainsKey(inputRace) && raceXenoAssociations[inputRace].Contains(xenotype);
             }
         }
-        public bool IsValidCustomXenotypeForRace(ThingDef race, CustomXenotype xenotype)
+        public bool IsValidCustomXenotypeForRace(ThingDef race, string xenotype)
         {
             /* As far as I'm aware, you can't associated custom xenotypes with non-human races, even with HAR.
              * But just in case I'm wrong, or there's some other way around this, I've included this function as an
@@ -512,10 +549,14 @@ namespace FactionColonies.util
             {
                 return false;
             }
+            if (PawnKindXenotypeChance(request.KindDef, xenotype) <= 0)
+            {
+                return false;
+            }
 
             return true;
         }
-        public bool IsValidCustomXenotypeForRequest(PawnGenerationRequest request, CustomXenotype xenotype)
+        public bool IsValidCustomXenotypeForRequest(PawnGenerationRequest request, string xenotype)
         {
             if (!IsValidCustomXenotypeForRace(request.KindDef.race, xenotype))
             {
@@ -548,7 +589,7 @@ namespace FactionColonies.util
                 securityGuardsByXenotype[xenotype] = guardAnimals.Distinct().ToList();
             }
         }
-        private void SetupSecurityGuards(CustomXenotype xenotype)
+        private void SetupSecurityGuards(string xenotype)
         {
             if (!securityGuardsByCustomXenotype.ContainsKey(xenotype))
             {
@@ -629,8 +670,14 @@ namespace FactionColonies.util
             // For now, assume most xenotypes don't need security guards unless specifically flagged
             return false;
         }
-        public bool CustomXenotypeNeedsSecurityGuards(CustomXenotype xenotype)
+        public bool CustomXenotypeNeedsSecurityGuards(string xenotypeName)
         {
+            if (!FactionCache.CustomXenotypesDecoder.ContainsKey(xenotypeName))
+            {
+                LogUtil.Error($"Custom xenotype {xenotypeName} does not appear in the xenotype decoder dictionary");
+                return false;
+            }
+            CustomXenotype xenotype = FactionCache.CustomXenotypesDecoder[xenotypeName];
             if (xenotype?.genes == null) return false;
 
             // Simple heuristic: Check the xenotype name for known non-violent types
@@ -668,7 +715,7 @@ namespace FactionColonies.util
         {
             if (customXenotypeWeights.Count > 0)
             {
-                foreach (CustomXenotype xenotype in customXenotypeWeights.Keys)
+                foreach (string xenotype in customXenotypeWeights.Keys)
                 {
                     if (!CustomXenotypeNeedsSecurityGuards(xenotype))
                     {
@@ -759,6 +806,29 @@ namespace FactionColonies.util
             {
                 return def.race == race;
             }
+        }
+        private float PawnKindXenotypeChance(PawnKindDef def, XenotypeDef xenotype)
+        {
+            float remainingChance = 1f;
+            int xenoCount = def?.xenotypeSet?.Count ?? 0;
+            if (xenoCount > 0)
+            {
+                for (int i = 0; i < def.xenotypeSet.Count; i++)
+                {
+                    if (def.xenotypeSet[i].xenotype == xenotype)
+                    {
+                        return def.xenotypeSet[i].chance;
+                    }
+                    else
+                    {
+                        remainingChance -= def.xenotypeSet[i].chance;
+                    }
+                }
+            }
+            // Pawnkinds that have a xenotype in their xenotypeSet that is disallowed in the xenotype filter should have been culled by this point.
+            //   So we're going to assume that every xenotype we see in the set is one that would be valid.
+            int numXenosRemaining = xenotypeWeights.Count - xenoCount;
+            return remainingChance / (float)(numXenosRemaining);
         }
         private List<PawnKindDef> GetPawnKindDefsForRace(ThingDef race)
         {
@@ -1002,7 +1072,7 @@ namespace FactionColonies.util
 
             if (customXenotypeWeights.Count > 0)
             {
-                foreach (CustomXenotype xenotype in CustomXenotypeWeights.Keys)
+                foreach (string xenotype in CustomXenotypeWeights.Keys)
                 {
                     //TODO
                     // Add security guards for xenotypes that need them
@@ -1130,12 +1200,15 @@ namespace FactionColonies.util
             }
             if (customXenotypeWeights.Count > 0)
             {
-                foreach (CustomXenotype allowedXenotype in CustomXenotypeWeights.Keys)
+                foreach (string allowedXenotype in CustomXenotypeWeights.Keys)
                 {
                     if (GetCustomXenotypeWeight(allowedXenotype) > 0 && IsValidCustomXenotypeForRequest(request, allowedXenotype))
                     {
-                        chosenCustomXenotype = allowedXenotype;
-                        break;
+                        if (FactionCache.CustomXenotypesDecoder.ContainsKey(allowedXenotype))
+                        {
+                            chosenCustomXenotype = FactionCache.CustomXenotypesDecoder[allowedXenotype];
+                            break;
+                        }
                     }
                 }
             }
@@ -1157,11 +1230,12 @@ namespace FactionColonies.util
                 foreach (XenotypeDef allowedXenotype in XenotypeWeights.Keys)
                 {
                     float thisWeight = GetXenotypeWeight(allowedXenotype);
+                    float thisChance = (cumulative + thisWeight) / weightTotal;
                     if (thisWeight == 0)
                     {
                         continue;
                     }
-                    if (xenoRand < (cumulative + thisWeight) / weightTotal && IsValidXenotypeForRequest(request, allowedXenotype))
+                    if (xenoRand < thisChance && IsValidXenotypeForRequest(request, allowedXenotype))
                     {
                         chosenXenotype = allowedXenotype;
                         break;
@@ -1171,17 +1245,21 @@ namespace FactionColonies.util
             }
             if (chosenXenotype is null && customXenotypeWeights.Count > 0)
             {
-                foreach (CustomXenotype allowedXenotype in CustomXenotypeWeights.Keys)
+                foreach (string allowedXenotype in CustomXenotypeWeights.Keys)
                 {
                     float thisWeight = GetCustomXenotypeWeight(allowedXenotype);
+                    float thisChance = (cumulative + thisWeight) / weightTotal;
                     if (thisWeight == 0)
                     {
                         continue;
                     }
-                    if (xenoRand < (cumulative + thisWeight) / weightTotal && IsValidCustomXenotypeForRequest(request, allowedXenotype))
+                    if (xenoRand < thisChance && IsValidCustomXenotypeForRequest(request, allowedXenotype))
                     {
-                        chosenCustomXenotype = allowedXenotype;
-                        break;
+                        if (FactionCache.CustomXenotypesDecoder.ContainsKey(allowedXenotype))
+                        {
+                            chosenCustomXenotype = FactionCache.CustomXenotypesDecoder[allowedXenotype];
+                            break;
+                        }
                     }
                     cumulative += thisWeight;
                 }
@@ -1232,12 +1310,12 @@ namespace FactionColonies.util
 
         public void ExposeData()
         {
-            Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
-            Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Deep, LookMode.Deep);
-
             Scribe_Collections.Look(ref xenotypeWeights, "xenotypeWeights", LookMode.Def, LookMode.Value);
-            Scribe_Collections.Look(ref customXenotypeWeights, "customXenotypeWeights", LookMode.Deep, LookMode.Value);
+            Scribe_Collections.Look(ref customXenotypeWeights, "customXenotypeWeights", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref raceWeights, "raceWeights", LookMode.Def, LookMode.Value);
+
+            Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
+            Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -1247,7 +1325,7 @@ namespace FactionColonies.util
                 }
                 if (securityGuardsByCustomXenotype == null)
                 {
-                    securityGuardsByCustomXenotype = new Dictionary<CustomXenotype, List<PawnKindDef>>();
+                    securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
                 }
                 if (xenotypeWeights == null)
                 {
@@ -1255,7 +1333,7 @@ namespace FactionColonies.util
                 }
                 if (customXenotypeWeights == null)
                 {
-                    customXenotypeWeights = new Dictionary<CustomXenotype, float>();
+                    customXenotypeWeights = new Dictionary<string, float>();
                 }
                 if (raceWeights == null)
                 {

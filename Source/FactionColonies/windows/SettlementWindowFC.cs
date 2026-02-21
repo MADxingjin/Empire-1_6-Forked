@@ -906,7 +906,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Tiny;
             float size = (boundingBox.height - ((buttons.Count - 1) * margin)) / (buttons.Count);
-            for (int i = 0; i < buttons.Count(); i++)
+            for (int i = 0; i < buttons.Count; i++)
             {
                 Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
                 string label = buttons[i];

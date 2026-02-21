@@ -15,7 +15,7 @@ namespace FactionColonies
     {
         public static void Prefix(ref PawnGenerationRequest request)
         {
-            if (request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)
+            if (!(request.Faction is null) && request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)
             {
                 XenotypeFilter filter = FactionCache.FactionComp.xenotypeFilter;
                 XenotypeDef chosenXenotype = null;

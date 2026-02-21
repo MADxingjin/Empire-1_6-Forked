@@ -15,7 +15,7 @@ namespace FactionColonies
     /// <summary>
     /// Static cache to hold on to frequently-accessed fields that change infrequently, or never.
     /// 
-    /// <para>This cache needs to be invalidated any time the game loads. Presently, this is done in the ExposeDate() function in the FactionFC WorldComponent.</para>
+    /// <para>This cache needs to be invalidated any time the game loads or changes. Presently, this is done through a Harmony Postfix on Game.Dispose().</para>
     /// <para>NOTE: DefDatabase[PawnKindDef].AllDefsListForReading is cached here. That means that def hotloading is a no-no.</para>
     /// </summary>
     public static class FactionCache
@@ -28,6 +28,7 @@ namespace FactionColonies
         private static Dictionary<(Type, string), FieldInfo> _cachedFields = new Dictionary<(Type, string), FieldInfo>();
         private static List<XenotypeDef> _cachedXenotypeList = null;
         private static List<CustomXenotype> _cachedCustomXenotypeList = null;
+        private static Dictionary<string, CustomXenotype> _cachedCustomXenotypeDecoder = null;
         private static List<ThingDef> _cachedRaceList = null;
         private static List<PawnKindDef> _cachedAnimalKinds = null;
         private static List<PawnKindDef> _cachedCombatAnimalKinds = null;
@@ -127,6 +128,21 @@ namespace FactionColonies
                 return _cachedCustomXenotypeList;
             }
         }
+        public static Dictionary<string, CustomXenotype> CustomXenotypesDecoder
+        {
+            get
+            {
+                if (_cachedCustomXenotypeDecoder == null)
+                {
+                    _cachedCustomXenotypeDecoder = new Dictionary<string, CustomXenotype>();
+                    foreach (CustomXenotype xenotype in CustomXenotypes)
+                    {
+                        _cachedCustomXenotypeDecoder.Add(xenotype.name, xenotype);
+                    }
+                }
+                return _cachedCustomXenotypeDecoder;
+            }
+        }
         public static List<ThingDef> HumanlikeRaces
         {
             get
@@ -217,6 +233,7 @@ namespace FactionColonies
         public static void InvalidateCustomXenotypeCache()
         {
             _cachedCustomXenotypeList = null;
+            _cachedCustomXenotypeDecoder = null;
         }
     }
 }

@@ -75,7 +75,7 @@ namespace FactionColonies
 
         /// <summary>
 		/// Creates a shallow clone of the given PawnKindDef. The new PawnKindDef will be its own object, but will reference the fields of the original for non-primitive types.
-        /// Since Defs shouldn't be modified during runtime, this kind of "shallow deep copy" should be fine.
+        /// Since Defs shouldn't be modified during runtime, this kind of "shallow deep copy" should be fine. Maybe. Hopefully.
 		/// <para>You really aren't supposed to create new defs during runtime, so this is a pretty hacky solution. Only use this function as a last resort.</para>
 		/// <para>The things we do for HAR compatibility...</para>
 		/// </summary>

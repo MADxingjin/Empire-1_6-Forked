@@ -8,16 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Security.AccessControl;
-using System.Security.Permissions;
 using UnityEngine;
 using Verse;
-using Verse.AI.Group;
-using Verse.Noise;
-using Verse.Sound;
-using static Mono.Security.X509.X520;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 namespace FactionColonies
 {
@@ -297,18 +289,18 @@ namespace FactionColonies
             {
                 bool resourceAllowed = biomeDef.getBiomeResource(rtd.resourceDef) != null && rtd.resourceDef.ResourceTypeAllowedByTech(techlevel);
                 ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == rtd.resourceDef);
-                if (res == null && resourceAllowed)
+                if (res is null && resourceAllowed)
                 {
                     LogUtil.Message($"Adding resource {rtd.resourceDef.label} to settlement {Name}");
                     /* ResourceFC initialization takes care of biome bonuses, so no need to handle that up here */
                     resources.Add(new ResourceFC(rtd.resourceDef, this));
                 }
-                else if (res != null && !resourceAllowed)
+                else if (!(res is null) && !resourceAllowed)
                 {
                     LogUtil.Message($"Removing resource {rtd.resourceDef.label} from settlement {Name}");
                     resources.Remove(res);
                 }
-                else
+                else if (!(res is null))
                 {
                     res.setDirtyCache();
                 }
