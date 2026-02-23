@@ -50,16 +50,13 @@ namespace FactionColonies
     class GoodwillPatchFunctionsGoodwillAffect
     {
         static bool Prefix(ref Faction __instance, Faction other, int goodwillChange, bool canSendMessage = true,
-            bool canSendHostilityLetter = true, string reason = null, GlobalTargetInfo? lookTarget = null)
+            bool canSendHostilityLetter = true, HistoryEventDef reason = null, GlobalTargetInfo? lookTarget = null)
         {
             if (__instance.def.defName == "PColony" && other == Find.FactionManager.OfPlayer)
             {
-                if (reason == "GoodwillChangedReason_RequestedTrader".Translate())
-                {
-                    return false;
-                }
-
-                if (reason == "GoodwillChangedReason_ReceivedGift".Translate())
+                if (reason == HistoryEventDefOf.RequestedTrader ||
+                    reason == HistoryEventDefOf.GaveGift ||
+                    reason == HistoryEventDefOf.Traded)
                 {
                     return false;
                 }

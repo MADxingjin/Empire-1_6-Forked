@@ -22,7 +22,7 @@ namespace FactionColonies
         private List<string> weightBufXenos = new List<string>();
         private List<string> weightBufCustoms = new List<string>();
         private List<string> weightBufRaces = new List<string>();
-        public override Vector2 InitialSize => new Vector2(400f, 500f);
+        public override Vector2 InitialSize => new Vector2(400f, 600f);
 
         private Vector2 xenoScrollBar = new Vector2();
         private Vector2 raceScrollBar = new Vector2();
@@ -61,7 +61,7 @@ namespace FactionColonies
                 // increase the width of the window, so that we have the xenotype selection on the left, and race selection on the right
                 width *= 2;
             }
-            float height = 500f;
+            float height = 600f;
             windowRect = new Rect(((float)UI.screenWidth - width) / 2f, ((float)UI.screenHeight - height) / 2f, width, height);
 
             filter = faction.xenotypeFilter;
@@ -149,11 +149,40 @@ namespace FactionColonies
 
                 Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(errorLabel, errorText);
                 UIUtil.TipRegionByText(errorBox, "XenotypeWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
+            }
+            if (filter.OnlyNonViolentXenos)
+            {
+                string noticeText = "OnlyNonViolentXenoWarning".Translate();
+                float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
+                Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight, boundingBox.width, textHeight);
+                Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
+                noticeText = noticeText.Colorize(Color.yellow);
+
+                Widgets.DrawHighlight(noticeBox);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(noticeLabel, noticeText);
+
+                bottomY -= (noticeBox.height + margin);
+            }
+            if (FactionCache.NonViolentXenotypesExist)
+            {
+                string noticeText = "* " + "XenoNonViolentIndicatorDesc".Translate();
+                float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
+                Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight, boundingBox.width, textHeight);
+                Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
+
+                Widgets.DrawHighlight(noticeBox);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(noticeLabel, noticeText);
+
+                bottomY -= (noticeBox.height + margin);
             }
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
@@ -202,8 +231,15 @@ namespace FactionColonies
                 {
                     XenotypeDef xenotype = allXenotypes[i];
                     Widgets.Label(icon, new GUIContent(xenotype.Icon));
-                    Widgets.Label(label, xenotype.LabelCap);
-                    Widgets.Label(percentLabel, Math.Round(filter.GetXenotypeChance(xenotype)*100, 2).ToString() + "%");
+                    if (FactionCache.XenotypeIsNonViolent(xenotype))
+                    {
+                        Widgets.Label(label, xenotype.LabelCap + "*");
+                    }
+                    else
+                    {
+                        Widgets.Label(label, xenotype.LabelCap);
+                    }
+                    Widgets.Label(percentLabel, Math.Round(filter.GetXenotypeChance(xenotype) * 100, 2).ToString() + "%");
                     UIUtil.TipRegionByText(label, xenotype.description);
 
                     float weight = filter.GetXenotypeWeight(xenotype);
@@ -226,7 +262,14 @@ namespace FactionColonies
                     if (img != null)
                         Widgets.Label(icon, new GUIContent(xenotype.IconDef.Icon));
 
-                    Widgets.Label(label, xenotype.name);
+                    if (FactionCache.CustomXenotypeIsNonViolent(xenotype))
+                    {
+                        Widgets.Label(label, xenotype.name + "*");
+                    }
+                    else
+                    {
+                        Widgets.Label(label, xenotype.name);
+                    }
                     Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype.name)*100, 2).ToString() + "%");
 
                     float weight = filter.GetCustomXenotypeWeight(xenotype.name);
@@ -264,13 +307,13 @@ namespace FactionColonies
 
                 Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleLeft;
+                Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(errorLabel, errorText);
                 UIUtil.TipRegionByText(errorBox, "RaceWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
             }
-            // This warning does break immersion a bit, and since we assemble a new pawnkind if there are no valid pawnkinds of a given race for a given role,
+            // This warning does break immersion a bit, and since we now assemble a new pawnkind if there are no valid pawnkinds of a given race for a given role,
             //   we should be much less likely to run into humans when the human race is disabled. So disabling this warning for now.
             // The pawnkind construction is pretty iffy though, so I'm leaving this code here in case we want to re-enable it at some point
             /*else if (filter.GetRaceWeight(ThingDefOf.Human) == 0)
@@ -282,7 +325,7 @@ namespace FactionColonies
 
                 Widgets.DrawHighlight(noticeBox);
                 Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleLeft;
+                Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(noticeLabel, noticeText.Colorize(Color.yellow));
 
                 bottomY -= (noticeBox.height + margin);

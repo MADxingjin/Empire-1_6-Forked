@@ -32,6 +32,11 @@ namespace FactionColonies
         private static List<ThingDef> _cachedRaceList = null;
         private static List<PawnKindDef> _cachedAnimalKinds = null;
         private static List<PawnKindDef> _cachedCombatAnimalKinds = null;
+        private static List<PawnKindDef> _cachedPackAnimalKinds = null;
+        private static bool _checkedForNonViolentXenos = false;
+        private static bool _cachedNonViolentXenosExist = false;
+        private static Dictionary<XenotypeDef, bool> _cachedXenotypeViolenceDict = null;
+        private static Dictionary<string, bool> _cachedCustomXenotypeViolenceDict = null;
 
         public static FactionFC FactionComp
         {
@@ -134,10 +139,13 @@ namespace FactionColonies
             {
                 if (_cachedCustomXenotypeDecoder == null)
                 {
-                    _cachedCustomXenotypeDecoder = new Dictionary<string, CustomXenotype>();
-                    foreach (CustomXenotype xenotype in CustomXenotypes)
+                    if (!(CustomXenotypes is null || CustomXenotypes.Count == 0))
                     {
-                        _cachedCustomXenotypeDecoder.Add(xenotype.name, xenotype);
+                        _cachedCustomXenotypeDecoder = new Dictionary<string, CustomXenotype>();
+                        foreach (CustomXenotype xenotype in CustomXenotypes)
+                        {
+                            _cachedCustomXenotypeDecoder.Add(xenotype.name, xenotype);
+                        }
                     }
                 }
                 return _cachedCustomXenotypeDecoder;
@@ -182,14 +190,7 @@ namespace FactionColonies
             {
                 if (_cachedAnimalKinds == null)
                 {
-                    _cachedAnimalKinds = new List<PawnKindDef>();
-                    foreach (PawnKindDef def in AllPawnKindDefs)
-                    {
-                        if (def.IsAnimalAndAllowed())
-                        {
-                            _cachedAnimalKinds.Add(def);
-                        }
-                    }
+                    _cachedAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsAnimalAndAllowed()).ToList();
                 }
                 return _cachedAnimalKinds;
             }
@@ -200,17 +201,104 @@ namespace FactionColonies
             {
                 if(_cachedCombatAnimalKinds == null)
                 {
-                    _cachedCombatAnimalKinds = new List<PawnKindDef>();
-                    foreach (PawnKindDef def in AllPawnKindDefs)
-                    {
-                        if (def.IsCombatAnimal())
-                        {
-                            _cachedCombatAnimalKinds.Add(def);
-                        }
-                    }
+                    _cachedCombatAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsCombatAnimal()).ToList();
                 }
                 return _cachedCombatAnimalKinds;
             }
+        }
+        public static List<PawnKindDef> AllPackAnimalKinds
+        {
+            get
+            {
+                if (_cachedPackAnimalKinds == null)
+                {
+                    _cachedPackAnimalKinds = AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal).ToList();
+                }
+                return _cachedPackAnimalKinds;
+            }
+        }
+        public static bool NonViolentXenotypesExist
+        {
+            get
+            {
+                if(!_checkedForNonViolentXenos)
+                {
+                    if (XenotypeDefs?.Count > 0)
+                    {
+                        foreach (XenotypeDef xenotype in XenotypeDefs)
+                        {
+                            if (XenotypeFilter.XenotypeNeedsSecurityGuards(xenotype))
+                            {
+                                _cachedNonViolentXenosExist = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!_cachedNonViolentXenosExist && CustomXenotypes?.Count > 0)
+                    {
+                        foreach (CustomXenotype xenotype in CustomXenotypes)
+                        {
+                            if (XenotypeFilter.CustomXenotypeNeedsSecurityGuards(xenotype.name))
+                            {
+                                _cachedNonViolentXenosExist = true;
+                                break;
+                            }
+                        }
+                    }
+                    _checkedForNonViolentXenos = true;
+                }
+                return _cachedNonViolentXenosExist;
+            }
+        }
+        public static Dictionary<XenotypeDef, bool> XenotypeViolence
+        {
+            get
+            {
+                if (_cachedXenotypeViolenceDict == null && XenotypeDefs?.Count > 0)
+                {
+                    _cachedXenotypeViolenceDict = new Dictionary<XenotypeDef, bool>();
+                    foreach (XenotypeDef xenotype in XenotypeDefs)
+                    {
+                        _cachedXenotypeViolenceDict.Add(xenotype, !XenotypeFilter.XenotypeNeedsSecurityGuards(xenotype));
+                    }
+                }
+                return _cachedXenotypeViolenceDict;
+            }
+        }
+        public static Dictionary<string, bool> CustomXenotypeViolence
+        {
+            get
+            {
+                if (_cachedCustomXenotypeViolenceDict == null && CustomXenotypes?.Count > 0)
+                {
+                    _cachedCustomXenotypeViolenceDict = new Dictionary<string, bool>();
+                    foreach (CustomXenotype xenotype in CustomXenotypes)
+                    {
+                        _cachedCustomXenotypeViolenceDict.Add(xenotype.name, !XenotypeFilter.CustomXenotypeNeedsSecurityGuards(xenotype.name));
+                    }
+                }
+                return _cachedCustomXenotypeViolenceDict;
+            }
+        }
+        public static bool XenotypeIsNonViolent(XenotypeDef xenotype)
+        {
+            if (XenotypeViolence?.TryGetValue(xenotype, out bool violent) == true)
+            {
+                return !violent;
+            }
+            return false;
+        }
+        public static bool CustomXenotypeIsNonViolent(string xenotypeName)
+        {
+            if (CustomXenotypeViolence?.TryGetValue(xenotypeName, out bool violent) == true)
+            {
+                return !violent;
+            }
+            return false;
+        }
+        public static bool CustomXenotypeIsNonViolent(CustomXenotype xenotype)
+        {
+            return CustomXenotypeIsNonViolent(xenotype.name);
         }
 
         public static void InvalidateCache()
@@ -226,6 +314,8 @@ namespace FactionColonies
             _cachedXenotypeList = null;
             _cachedAnimalKinds = null;
             _cachedCombatAnimalKinds = null;
+            _cachedPackAnimalKinds = null;
+            _cachedXenotypeViolenceDict = null;
             InvalidateCustomXenotypeCache();
         }
         /* Custom xenotypes are actually expected to change while the game is loaded, and thus we may have to refresh that specific cache more frequently than the rest.
@@ -234,6 +324,10 @@ namespace FactionColonies
         {
             _cachedCustomXenotypeList = null;
             _cachedCustomXenotypeDecoder = null;
+            _cachedCustomXenotypeViolenceDict = null;
+
+            _checkedForNonViolentXenos = false;
+            _cachedNonViolentXenosExist = false;
         }
     }
 }

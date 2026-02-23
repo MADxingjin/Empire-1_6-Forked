@@ -147,16 +147,8 @@ namespace FactionColonies
                 Map map;
                 if (taxMap == null)
                 {
-                    if (Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map == null)
-                    {
-                        //if no tax map or no capital map is valid
-                        map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
-
-                        LogUtil.MessageForce(
-                            "Unable to find a player-set tax map or a valid location for the capital. Please open the faction main menu tab and set the capital and tax map. Taxes were sent to the following random PlayerHomeMap " +
-                            map.Parent.LabelCap);
-                    }
-                    else
+                    map = Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map;
+                    if (map is null)
                     {
                         //if no tax map or no capital map is valid
                         map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
@@ -401,12 +393,8 @@ namespace FactionColonies
         public double getFieldValue(string field, Operation addOrMultiply)
         {
             double value = 0;
-            if (cachedTraitValues.ContainsKey((field, addOrMultiply)))
-            {
-                value = cachedTraitValues[(field, addOrMultiply)];
-            }
-            else
-            {
+            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out value))
+            { 
                 value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
                 cachedTraitValues.Add((field, addOrMultiply), value);
             }
@@ -415,11 +403,7 @@ namespace FactionColonies
         public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
         {
             string desc = "";
-            if (cachedTraitDescs.ContainsKey((field, addOrMultiply)))
-            {
-                desc = cachedTraitDescs[(field, addOrMultiply)];
-            }
-            else
+            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out desc))
             {
                 TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
                 cachedTraitDescs.Add((field, addOrMultiply), desc);
@@ -547,7 +531,7 @@ namespace FactionColonies
             //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
             if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
             {
-                if (faction != null && faction.leader == null || faction.leader.Dead)
+                if (faction != null && (faction.leader == null || faction.leader.Dead))
                 {
                     ColonyUtil.CreatePlayerFactionLeader(faction);
                 }
@@ -883,7 +867,7 @@ namespace FactionColonies
         public bool hasPolicy(FCPolicyDef def)
         {
             //Don't game the system
-            if (policies.Count() < 2)
+            if (policies.Count < 2)
             {
                 return false;
             }
@@ -1201,26 +1185,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
-                    //Start Traits
                     addExperienceToFactionLevel(2f);
-
-
-                    float trait_Industrious_TaxPercentageBoost = 1;
-                    if (hasTrait(FCPolicyDefOf.industrious))
-                    {
-                        int num = Rand.RangeInclusive(1, 20);
-                        if (num == 5)
-                        {
-                            trait_Industrious_TaxPercentageBoost = 1f + (Rand.RangeInclusive(20, 50) / 100f);
-                            Find.LetterStack.ReceiveLetter("FCIdustriousTaxBoost".Translate(),
-                                "FCIndustriousPop".Translate(settlement.Name,
-                                    ((trait_Industrious_TaxPercentageBoost - 1f) * 100f) + "%"),
-                                LetterDefOf.PositiveEvent);
-                        }
-                    }
-
-
-                    //End Traits
 
                     List<Thing> list = new List<Thing>();
                     int silverAmount = 0;
@@ -1321,7 +1286,7 @@ namespace FactionColonies
 
         public ResourceDisplay returnResource(string name) //used to return the correct resource based on string name
         {
-            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef.defName == name).FirstOrDefault();
+            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef.defName == name);
             if (res == null)
             {
                 /* This should never happen! */
@@ -1332,7 +1297,7 @@ namespace FactionColonies
 
         public ResourceDisplay returnResource(ResourceTypeDef resourceTypeDef)
         {
-            ResourceDisplay res = factionResources.Where((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef).FirstOrDefault();
+            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef);
             if (res == null)
             {
                 /* This should never happen! */
@@ -1513,7 +1478,17 @@ namespace FactionColonies
             traitMercantileTradeCaravanTickDue = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
         }
 
-        private bool CanMakeRandomEventNow() => Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
+        private bool CanMakeRandomEventNow()
+        {
+            if ((FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent) == 0)
+            {
+                return randomEventLastAdded - FCSettings.minDaysTillRandomEvent <= 0;
+            }
+            else
+            {
+                return Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
+            }
+        }
 
         private bool RandomEventsDisabledOrNoSettlements() => FactionCache.FactionComp.settlements.Count == 0 || FCSettings.disableRandomEvents;
 
@@ -1583,7 +1558,7 @@ namespace FactionColonies
             if (Find.TickManager.TicksGame >= militaryTimeDue)
             {
                 if (faction != null &&
-                    FCSettings.disableHostileMilitaryActions == false &
+                    FCSettings.disableHostileMilitaryActions == false &&
                     Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
                 {
                     //if military actions not disabled or game has not passed through the first season
@@ -1648,7 +1623,7 @@ namespace FactionColonies
 
                                 if (settlement != null)
                                 {
-                                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemy, true), targets.RandomElement(), enemy);
+                                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemy, true), settlement, enemy);
                                 }
                             }
 
@@ -1687,19 +1662,7 @@ namespace FactionColonies
 
         public bool HasActiveCapitalSpot()
         {
-            foreach (Map map in Find.Maps)
-            {
-                if (!map.IsPlayerHome) continue;
-                
-                foreach (Building building in map.listerBuildings.allBuildingsColonist)
-                {
-                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return !(GetActiveCapitalSpot() is null);
         }
 
         public Building_CapitalSpot GetActiveCapitalSpot()

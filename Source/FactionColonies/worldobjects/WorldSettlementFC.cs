@@ -886,10 +886,15 @@ namespace FactionColonies
                     workers += singleMod;
                     resource.assignedWorkers += singleMod;
                     numWorkers -= singleMod;
-                    updateProfitAndProduction();
-                    FactionCache.FactionComp.updateTotalProfit();
-                    if (numWorkers == 0) return true;
+                    if (numWorkers == 0)
+                    {
+                        updateProfitAndProduction();
+                        FactionCache.FactionComp.updateTotalProfit();
+                        return true;
+                    }
                 }
+                updateProfitAndProduction();
+                FactionCache.FactionComp.updateTotalProfit();
             }
 
             return false;
@@ -1184,7 +1189,8 @@ namespace FactionColonies
         }
         public void clearTraits()
         {
-            List<FCTraitEffectDef> currentTraits = traits;
+            List<FCTraitEffectDef> currentTraits = new List<FCTraitEffectDef>();
+            currentTraits.AddRange(traits);
             removeTraits(currentTraits);
             traits.Clear();
             InvalidateTraitCache();
@@ -1192,11 +1198,7 @@ namespace FactionColonies
         public double getFieldValue(string field, Operation addOrMultiply)
         {
             double value = 0;
-            if (cachedTraitValues.ContainsKey((field, addOrMultiply)))
-            {
-                value = cachedTraitValues[(field, addOrMultiply)];
-            }
-            else
+            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out value))
             {
                 value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
                 cachedTraitValues.Add((field, addOrMultiply), value);
@@ -1206,11 +1208,7 @@ namespace FactionColonies
         public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
         {
             string desc = "";
-            if (cachedTraitDescs.ContainsKey((field, addOrMultiply)))
-            {
-                desc = cachedTraitDescs[(field, addOrMultiply)];
-            }
-            else
+            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out desc))
             {
                 TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
                 cachedTraitDescs.Add((field, addOrMultiply), desc);

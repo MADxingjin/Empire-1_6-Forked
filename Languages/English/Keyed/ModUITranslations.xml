@@ -573,5 +573,7 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<XenoDisableNonBaseliner>Disable Non-Baseliner</XenoDisableNonBaseliner>
 	<RaceDisableNonHuman>Disable Non-Human</RaceDisableNonHuman>
 	<DisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</DisabledHumanWarning>
+	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>
+	<OnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</OnlyNonViolentXenoWarning>
 	
 </LanguageData>
