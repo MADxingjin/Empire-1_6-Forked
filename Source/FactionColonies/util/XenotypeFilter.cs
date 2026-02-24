@@ -126,16 +126,9 @@ namespace FactionColonies.util
                 if (!_checkedForNonViolent)
                 {
                     _cachedHasOnlyNonViolent = true;
-                    if (xenotypeWeights?.Count > 0)
+                    if (xenotypeWeights?.Count > 0 && xenotypeWeights.Any(kvp => kvp.Value > 0 && !XenotypeNeedsSecurityGuards(kvp.Key)))
                     {
-                        foreach (XenotypeDef xenotype in xenotypeWeights.Keys)
-                        {
-                            if (xenotypeWeights[xenotype] > 0 && !XenotypeNeedsSecurityGuards(xenotype))
-                            {
-                                _cachedHasOnlyNonViolent = false;
-                                break;
-                            }
-                        }
+                        _cachedHasOnlyNonViolent = false;
                     }
                     if (_cachedHasOnlyNonViolent && customXenotypeWeights?.Count > 0)
                     {

@@ -153,9 +153,7 @@ namespace FactionColonies
 
                 if (tab == 0)
                 {
-                    DrawFactionTopMenu(inRect);
-                    DrawFactionMiddleMenu(inRect);
-                    DrawFactionBottomMenu(inRect);
+                    DrawFactionMenu(inRect);
                 }
 
                 //Draw window based on tab
@@ -167,7 +165,6 @@ namespace FactionColonies
 
                     if (Event.current.type == EventType.ScrollWheel)
                     {
-
                         ScrollWindow(Event.current.delta.y);
                     }
 
@@ -462,7 +459,12 @@ namespace FactionColonies
             Widgets.ButtonImage(new Rect(245, 40, 50, 50), faction.factionIcon);
 
         }
-
+        private void DrawFactionMenu(Rect inRect)
+        {
+            DrawFactionTopMenu(inRect);
+            DrawFactionMiddleMenu(inRect);
+            DrawFactionBottomMenu(inRect);
+        }
         private void DrawFactionTopMenu(Rect inRect)
         {
             Widgets.DrawMenuSection(new Rect(0, 32, 312, 65));

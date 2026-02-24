@@ -672,13 +672,7 @@ namespace FactionColonies
 
         public List<FCTraitEffectDef> returnListFactionTraits()
         {
-            List<FCTraitEffectDef> tmpList = new List<FCTraitEffectDef>();
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                tmpList.Add(trait);
-            }
-
-            return tmpList;
+            return traits.ToList();
         }
 
 
@@ -1029,15 +1023,8 @@ namespace FactionColonies
         }
         public void updateTotalProfit()
         {
-            double thisincome = 0;
-            double thisupkeep = 0;
-            for (int i = 0; i < settlements.Count; i++)
-            {
-                thisincome += settlements[i].getTotalIncome();
-                thisupkeep += settlements[i].getTotalUpkeep();
-            }
-            income = thisincome;
-            upkeep = thisupkeep;
+            income = settlements.Sum(s => s.getTotalIncome());
+            upkeep = settlements.Sum(s => s.getTotalUpkeep());
             profit = income - upkeep;
         }
 
@@ -1450,24 +1437,31 @@ namespace FactionColonies
 
         public void TaxTickPrisoner(WorldSettlementFC settlement)
         {
-        Reset:
-            foreach (FCPrisoner prisoner in settlement.prisonerList)
+            int i = 0;
+            while (i < settlement.prisonerList.Count)
             {
+                FCPrisoner prisoner = settlement.prisonerList[i];
+                bool dead = false;
+
                 switch (prisoner.workload)
                 {
                     case FCWorkLoad.Heavy:
                         if (prisoner.AdjustHealth(-20))
-                            goto Reset;
+                            dead = true;
                         break;
                     case FCWorkLoad.Medium:
                         if (prisoner.AdjustHealth(-10))
-                            goto Reset;
+                            dead = true;
                         break;
                     case FCWorkLoad.Light:
                         if (prisoner.AdjustHealth(4))
-                            goto Reset;
+                            dead = true;
                         break;
                 }
+
+                /* Only increment if the prisoner hasn't died.
+                 * If they *did* die, then AdjustHealth() will have removed them from the list already. So if we increment, then we'll actually skip the next prisoner. */
+                if (!dead) i++;
             }
         }
 

@@ -10,7 +10,10 @@ namespace FactionColonies
 {
     public class FactionCustomizeWindowFc : Window
     {
-        public override Vector2 InitialSize => new Vector2(838f, 538f);
+        private const float fullwidth = 838f;
+        private const float fullheight = 538f;
+        private const float margin = 5f;
+        public override Vector2 InitialSize => new Vector2(fullwidth, fullheight);
 
         //declare variables
 
@@ -25,66 +28,13 @@ namespace FactionColonies
         private Texture2D tempFactionIcon;
         private string tempFactionIconPath;
 
-        Rect labelFaction = new Rect(0, 0, 200, 40);
-
-        Rect labelFactionName = new Rect(0, 70, 100, 40);
-        Rect textfieldName = new Rect(105, 70, 250, 40);
-
-        Rect labelFactionTitle = new Rect(0, 110, 100, 40);
-        Rect textfieldTitle = new Rect(105, 110, 250, 40);
-
-        Rect labelFactionIcon = new Rect(0, 150, 100, 40);
-        Rect buttonIcon = new Rect(105, 150, 40, 40);
-
-        Rect buttonAllowedRaces = new Rect(25, 195, 200, 40);
-
-        Rect labelTraits = new Rect(0, 235, 200, 40);
-        Rect buttonTrait1 = new Rect(25, 260, 200, 40);
-        Rect buttonTrait2 = new Rect(25, 300, 200, 40);
-
-
-        Rect labelPickTrait = new Rect(400, 0, 400, 60);
-
         float circleX = 500;
         float circleY = 20;
         float circleR = 80;
 
-        Rect menusectionTrait = new Rect(400, 200, 400, 300);
-
-        Rect buttonConfirm = new Rect(130, 450, 200, 30);
-
         string alertText = "";
 
         bool traitsChosen;
-
-        private static double traitRotationArc = (double)2 / (double)9; // amount of traits
-
-        Rect buttonMilitaristic = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 0 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 0 * Math.PI)), 30, 30);
-
-        Rect buttonAuthoritarian = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 1 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 1 * Math.PI)), 30, 30);
-
-        Rect buttonIsolationist = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 2 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 2 * Math.PI)), 30, 30);
-
-        Rect buttonFeudal = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 3 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 3 * Math.PI)), 30, 30);
-
-        Rect buttonPacifist = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 4 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 4 * Math.PI)), 30, 30);
-
-        Rect buttonEgalitarian = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 5 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 5 * Math.PI)), 30, 30);
-
-        Rect buttonExpansionist = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 6 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 6 * Math.PI)), 30, 30);
-
-        Rect buttonTechnocrat = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 7 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 7 * Math.PI)), 30, 30);
-
-        Rect buttonSlaver = new Rect((float)(600 + 60 * Math.Cos(traitRotationArc * 8 * Math.PI)),
-            (float)(100 + 60 * Math.Sin(traitRotationArc * 8 * Math.PI)), 30, 30);
 
         int numberTraitsSelected;
         bool boolMilitaristic;
@@ -170,7 +120,6 @@ namespace FactionColonies
             faction.title = title;
             faction.name = name;
             FactionCache.PlayerColonyFaction.Name = name;
-            //FactionCache.FactionComp.name = name;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -179,13 +128,75 @@ namespace FactionColonies
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
 
+            //setup all the rects
+            Rect labelFaction = new Rect(0, 0, 200, 40);
+
+            float headerHeight = labelFaction.yMax + margin;
+
+            Rect labelFactionName = new Rect(0, headerHeight + (margin*3), 100, 30);
+            Rect textfieldName = new Rect(105, labelFactionName.y, 250, 30);
+
+            Rect labelFactionTitle = new Rect(0, labelFactionName.yMax + margin, 100, 30);
+            Rect textfieldTitle = new Rect(105, labelFactionTitle.y, 250, 30);
+
+            Rect labelFactionIcon = new Rect(0, labelFactionTitle.yMax + margin, 100, 30);
+            Rect buttonIcon = new Rect(105, labelFactionIcon.y, 30, 30);
+
+            Rect buttonAllowedRaces = new Rect(25, labelFactionIcon.yMax + margin, 200, 40);
+
+            Rect labelTraits = new Rect(0, 235, 200, 40);
+            Rect buttonTrait1 = new Rect(25, 260, 200, 40);
+            Rect buttonTrait2 = new Rect(25, 300, 200, 40);
+
+            Rect labelPickTrait = new Rect(400, headerHeight + (margin*3), 400, 60);
+
+            Rect menusectionTrait = new Rect(400, 200, 400, 300);
+
+            Rect buttonConfirm = new Rect(130, 450, 200, 30);
+
+            double traitRotationArc = (double)2 / (double)9; // amount of traits
+            float traitButtonXrot = 60f;
+            float traitButtonYrot = 60f;
+            float traitButtonXbase = 600f;
+            float traitButtonYbase = labelPickTrait.yMax + margin + traitButtonXrot;
+            float traitButtonSize = 30f;
+            float traitButtonAreaWidth = 2 * traitButtonXrot + traitButtonSize;
+            float traitButtonAreaHeight = 2 * traitButtonYrot + traitButtonSize;
+
+            Rect buttonMilitaristic = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 0 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 0 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonAuthoritarian = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 1 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 1 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonIsolationist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 2 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 2 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonFeudal = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 3 * Math.PI)),
+                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 3 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonPacifist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 4 * Math.PI)),
+                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 4 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonEgalitarian = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 5 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 5 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonExpansionist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 6 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 6 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonTechnocrat = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 7 * Math.PI)),
+                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 7 * Math.PI)), traitButtonSize, traitButtonSize);
+
+            Rect buttonSlaver = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 8 * Math.PI)),
+                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 8 * Math.PI)), traitButtonSize, traitButtonSize);
+
 
             //Settlement Tax Collection Header
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Medium;
 
-
             Widgets.Label(labelFaction, header);
+            Widgets.DrawLineHorizontal(labelFaction.x, labelFaction.yMax + margin, fullwidth - (Margin * 2));
 
             Text.Font = GameFont.Small;
             Widgets.Label(labelFactionName, "FactionName".Translate() + ":");
@@ -281,7 +292,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonMilitaristic, returnPolicyText(FCPolicyDefOf.militaristic));
             }
 
-            if (Widgets.ButtonImage(buttonMilitaristic, icon))
+            if (Widgets.ButtonImage(buttonMilitaristic, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolMilitaristic)
                 {
@@ -321,7 +332,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonAuthoritarian, returnPolicyText(FCPolicyDefOf.authoritarian));
             }
 
-            if (Widgets.ButtonImage(buttonAuthoritarian, icon))
+            if (Widgets.ButtonImage(buttonAuthoritarian, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolAuthoritarian)
                 {
@@ -361,7 +372,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonIsolationist, returnPolicyText(FCPolicyDefOf.isolationist));
             }
 
-            if (Widgets.ButtonImage(buttonIsolationist, icon))
+            if (Widgets.ButtonImage(buttonIsolationist, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolIsolationist)
                 {
@@ -401,7 +412,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonFeudal, returnPolicyText(FCPolicyDefOf.feudal));
             }
 
-            if (Widgets.ButtonImage(buttonFeudal, icon))
+            if (Widgets.ButtonImage(buttonFeudal, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolFeudal)
                 {
@@ -441,7 +452,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonPacifist, returnPolicyText(FCPolicyDefOf.pacifist));
             }
 
-            if (Widgets.ButtonImage(buttonPacifist, icon))
+            if (Widgets.ButtonImage(buttonPacifist, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolPacifist)
                 {
@@ -481,7 +492,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonEgalitarian, returnPolicyText(FCPolicyDefOf.egalitarian));
             }
 
-            if (Widgets.ButtonImage(buttonEgalitarian, icon))
+            if (Widgets.ButtonImage(buttonEgalitarian, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolEgalitarian)
                 {
@@ -521,7 +532,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonExpansionist, returnPolicyText(FCPolicyDefOf.expansionist));
             }
 
-            if (Widgets.ButtonImage(buttonExpansionist, icon))
+            if (Widgets.ButtonImage(buttonExpansionist, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolExpansionist)
                 {
@@ -561,7 +572,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonTechnocrat, returnPolicyText(FCPolicyDefOf.technocratic));
             }
 
-            if (Widgets.ButtonImage(buttonTechnocrat, icon))
+            if (Widgets.ButtonImage(buttonTechnocrat, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolTechnocrat)
                 {
@@ -600,7 +611,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(buttonSlaver, returnPolicyText(FCPolicyDefOf.slaver));
             }
 
-            if (Widgets.ButtonImage(buttonSlaver, icon))
+            if (Widgets.ButtonImage(buttonSlaver, icon) && !traitsChosen)
             {
                 if (numberTraitsSelected <= 1 || boolSlaver)
                 {
