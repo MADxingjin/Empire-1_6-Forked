@@ -49,7 +49,7 @@ namespace FactionColonies
             this.events = faction.events;
 
             this.scroll = 0;
-            this.maxScroll = (events.Count() * eventHeight) - scrollBoxHeight;
+            this.maxScroll = (events.Count * eventHeight) - scrollBoxHeight;
 
 
             //Window Properties
@@ -79,7 +79,7 @@ namespace FactionColonies
         public override void WindowUpdate()
         {
             base.WindowUpdate();
-            this.maxScroll = (events.Count() * eventHeight) - scrollBoxHeight;
+            this.maxScroll = (events.Count * eventHeight) - scrollBoxHeight;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -160,7 +160,7 @@ namespace FactionColonies
                         Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
                     } else
                     {
-                        if (evt.settlementTraitLocations.Count() > 0)
+                        if (evt.settlementTraitLocations.Count > 0)
                         {
                             //if event affecting colonies
                             List<FloatMenuOption> list = new List<FloatMenuOption>();

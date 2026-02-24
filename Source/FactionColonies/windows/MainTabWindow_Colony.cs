@@ -58,30 +58,6 @@ namespace FactionColonies
             buttons = buttonsTab0;
             resourceSize = 40;
             faction = FactionCache.FactionComp;
- /*           if (faction != null)    // Changed this function to stop NRE
-            {
-                settlementList = faction.settlements;
-                faction.updateAverages();
-
-                //Initial release - Autocreate faction
-                //Faction faction = FactionColonies.getPlayerColonyFaction();
-                //if (faction == null)
-                //{
-                //	FactionColonies.createPlayerColonyFaction();
-                //}
-
-                //if (faction.capitalLocation == -1)
-                //{
-                //	faction.setCapital();
-                //}
-
-                faction.updateTotalProfit();
-            }
-            else
-            {
-                LogUtil.Message("WorldComp FactionFC is null - Something is wrong!");
-            }
- */
             if(faction == null)
             {
                 LogUtil.Error("WorldComp FactionFC is null - Something is wrong!");
@@ -91,18 +67,6 @@ namespace FactionColonies
             {
                 settlementList = faction.settlements;
                 faction.updateAverages();
-
-                //Initial release - Autocreate faction
-                //Faction faction = FactionColonies.getPlayerColonyFaction();
-                //if (faction == null)
-                //{
-                //	FactionColonies.createPlayerColonyFaction();
-                //}
-
-                //if (faction.capitalLocation == -1)
-                //{
-                //	faction.setCapital();
-                //}
 
                 faction.updateTotalProfit();
             }
@@ -132,7 +96,7 @@ namespace FactionColonies
         public void WindowUpdateFC()
         {
             faction.updateAverages();
-            maxScroll = (settlementList.Count() * yspacing) - 264;
+            maxScroll = (settlementList.Count * yspacing) - 264;
         }
 
         public void UiUpdate()
@@ -189,9 +153,7 @@ namespace FactionColonies
 
                 if (tab == 0)
                 {
-                    DrawFactionTopMenu(inRect);
-                    DrawFactionMiddleMenu(inRect);
-                    DrawFactionBottomMenu(inRect);
+                    DrawFactionMenu(inRect);
                 }
 
                 //Draw window based on tab
@@ -203,7 +165,6 @@ namespace FactionColonies
 
                     if (Event.current.type == EventType.ScrollWheel)
                     {
-
                         ScrollWindow(Event.current.delta.y);
                     }
 
@@ -274,7 +235,7 @@ namespace FactionColonies
             {
                 tab = 1;
                 scroll = 0;
-                maxScroll = (settlementList.Count() * yspacing) - 264;
+                maxScroll = (settlementList.Count * yspacing) - 264;
                 foreach (WorldSettlementFC settlement in faction.settlements)
                 {
                     settlement.updateProfitAndProduction();
@@ -339,7 +300,7 @@ namespace FactionColonies
             Action method = delegate { };
 
 
-            for (int i = 0; i < headerList.Count() - 2; i++)  //-2 to exclude location and ID
+            for (int i = 0; i < headerList.Count - 2; i++)  //-2 to exclude location and ID
             {
                 int xspacingUpdated;
                 GUIContent varString;
@@ -393,7 +354,7 @@ namespace FactionColonies
                 adjust2 += xspacingUpdated;
             }
 
-            for (int i = 0; i < settlementList.Count(); i++) //browse through list.  settlementList[i] = a settlement
+            for (int i = 0; i < settlementList.Count; i++) //browse through list.  settlementList[i] = a settlement
             {
                 WorldSettlementFC settlement = settlementList[i];
                 if (i * yspacing + scroll >= 0 && i * yspacing + scroll <= 264)
@@ -498,7 +459,12 @@ namespace FactionColonies
             Widgets.ButtonImage(new Rect(245, 40, 50, 50), faction.factionIcon);
 
         }
-
+        private void DrawFactionMenu(Rect inRect)
+        {
+            DrawFactionTopMenu(inRect);
+            DrawFactionMiddleMenu(inRect);
+            DrawFactionBottomMenu(inRect);
+        }
         private void DrawFactionTopMenu(Rect inRect)
         {
             Widgets.DrawMenuSection(new Rect(0, 32, 312, 65));
@@ -528,7 +494,7 @@ namespace FactionColonies
         {
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Medium;
-            for (int i = 0; i < stats.Count(); i++)
+            for (int i = 0; i < stats.Count; i++)
             {
                 if (stats[i] == "happiness")
                 {

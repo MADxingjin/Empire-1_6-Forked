@@ -144,30 +144,6 @@ namespace FactionColonies.util
 			
 			var factionFC = FactionCache.FactionComp;
 			
-			// For military pawns, we need to ensure violence capability
-			// Check if the xenotype needs security guards (is non-violent)
-			XenotypeDef chosenXenotype = xenotypeDef;
-			bool needsSecurityGuards = false;
-			
-			if (chosenXenotype == null)
-			{
-				// For military, always use Baseliner unless user specifically requested a xenotype
-				// This avoids faction xenotype forcing that causes violence-incapable pawns
-				chosenXenotype = XenotypeDefOf.Baseliner;
-			}
-			else
-			{
-				// Check if the requested xenotype allows violence
-				needsSecurityGuards = factionFC?.xenotypeFilter?.XenotypeNeedsSecurityGuards(chosenXenotype) ?? false;
-				
-				// If the xenotype is non-violent and we need violence, fall back to Baseliner
-				if (needsSecurityGuards)
-				{
-					chosenXenotype = XenotypeDefOf.Baseliner;
-					needsSecurityGuards = false;
-				}
-			}
-			
 			// Get a safe age value
 			float? fixedAge = null;
 			try
@@ -182,15 +158,16 @@ namespace FactionColonies.util
 			
 			// IMPORTANT: Use null faction to prevent faction xenotype forcing
 			// The pawn's faction will be set after generation
+			// NEW NOTE: apparently we used to force a null faction to prevent some kind of shenanigans. Shouldn't be necessary with the prefix patch on GeneratePawn, but keep on the lookout for errors...
 			return new PawnGenerationRequest(
 				kind: kindDef,
-				faction: null, // NO faction - prevents faction xenotype requirements
+				faction: FactionCache.PlayerColonyFaction,
 				context: PawnGenerationContext.NonPlayer,
 				tile: -1,
 				forceGenerateNewPawn: false,
 				allowDead: false,
 				allowDowned: false,
-				canGeneratePawnRelations: false, // No relations for factionless pawn
+				canGeneratePawnRelations: true,
 				mustBeCapableOfViolence: true, // Always require violence for military
 				colonistRelationChanceFactor: 0,
 				forceAddFreeWarmLayerIfNeeded: false,
@@ -208,8 +185,8 @@ namespace FactionColonies.util
 				validatorPostGear: null,
 				forcedTraits: null,
 				prohibitedTraits: null,
-				forcedXenotype: chosenXenotype,
-				fixedBiologicalAge: fixedAge
+                forcedXenotype: xenotypeDef,
+                fixedBiologicalAge: fixedAge
 			);
 		}
 
@@ -235,28 +212,7 @@ namespace FactionColonies.util
 			}
 			
 			var faction = FactionCache.PlayerColonyFaction;
-			if (faction == null)
-			{
-				faction = Faction.OfPlayer; // Fallback to player faction
-			}
-			
 			var factionFC = FactionCache.FactionComp;
-			
-			// If no specific xenotype is requested, select from allowed xenotypes
-			if (xenotypeDef == null)
-			{
-				if (factionFC?.xenotypeFilter != null && factionFC.xenotypeFilter.AllowedXenotypes.Any())
-				{
-					xenotypeDef = factionFC.xenotypeFilter.AllowedXenotypes.RandomElement();
-				}
-				else
-				{
-					xenotypeDef = XenotypeDefOf.Baseliner; // Fallback to default
-				}
-			}
-			
-			// Check if the xenotype needs security guards (is non-violent)
-			bool needsSecurityGuards = factionFC?.xenotypeFilter?.XenotypeNeedsSecurityGuards(xenotypeDef) ?? false;
 			
 			// Get a safe age value
 			float? fixedAge = null;
@@ -279,7 +235,7 @@ namespace FactionColonies.util
 				allowDead: false,
 				allowDowned: false,
 				canGeneratePawnRelations: true,
-				mustBeCapableOfViolence: !needsSecurityGuards, // Allow non-violent pawns if they have security guards
+				mustBeCapableOfViolence: false,
 				colonistRelationChanceFactor: 0,
 				forceAddFreeWarmLayerIfNeeded: false,
 				allowGay: true,
@@ -342,10 +298,6 @@ namespace FactionColonies.util
 		public static PawnGenerationRequest SimpleDeliveryRequest()
 		{
 			var faction = FactionCache.PlayerColonyFaction;
-			if (faction == null)
-			{
-				faction = Faction.OfPlayer; // Fallback to player faction
-			}
 			
 			return new PawnGenerationRequest(
 				kind: PawnKindDefOf.Colonist,
@@ -372,8 +324,7 @@ namespace FactionColonies.util
 				validatorPreGear: null,
 				validatorPostGear: null,
 				forcedTraits: null,
-				prohibitedTraits: null,
-				forcedXenotype: XenotypeDefOf.Baseliner // Force baseliner to avoid xenotype issues
+				prohibitedTraits: null
 			);
 		}
 	}

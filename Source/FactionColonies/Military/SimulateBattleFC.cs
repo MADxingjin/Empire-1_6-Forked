@@ -96,8 +96,7 @@ namespace FactionColonies
             forceRemaining = Math.Round(militaryLevel * militaryEfficiency);
         }
 
-        public static militaryForce createMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false,
-            militaryForce homeDefendingForce = null)
+        public static militaryForce createMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
         {
             FactionFC faction = FactionCache.FactionComp;
             int militaryLevelBonus = 0;
@@ -110,7 +109,7 @@ namespace FactionColonies
             }
 
             double militaryLevel = settlement.settlementMilitaryLevel + militaryLevelBonus + homeForceLevel;
-            double efficiency = TraitUtilsFC.cycleTraits("militaryMultiplierCombatEfficiency", settlement.Traits, Operation.Multiplication);
+            double efficiency = settlement.getFieldValue("militaryMultiplierCombatEfficiency", Operation.Multiplication);
             if (isAttacking && faction.hasPolicy(FCPolicyDefOf.militaristic)) 
                 efficiency *= 1.2;
             militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);

@@ -166,68 +166,28 @@ namespace FactionColonies.util
 				try
 				{
 					Pawn deliveryPawn = null;
-					
-					// First, try to generate a pawn using allowed xenotypes
-					if (factionFC?.xenotypeFilter?.AllowedXenotypes?.Any() == true)
+					// We set the xenotype in a prefix patch on GeneratePawn, so don't bother with setting the xenotype here
+					try
 					{
-						// Randomly select from allowed xenotypes to get variety
-						var availableXenotypes = factionFC.xenotypeFilter.AllowedXenotypes.ToList();
-						var shuffledXenotypes = availableXenotypes.OrderBy(x => Rand.Value).ToList();
-						
-						// Try each allowed xenotype until we find one that works
-						foreach (var xenotype in shuffledXenotypes)
-						{
-							try
-							{
-								// Create request that allows ANY xenotype (including non-violent ones)
-								var request = new PawnGenerationRequest(
-									kind: PawnKindDefOf.Colonist,
-									faction: FactionCache.PlayerColonyFaction,
-									context: PawnGenerationContext.NonPlayer,
-									tile: -1,
-									forceGenerateNewPawn: false,
-									allowDead: false,
-									allowDowned: false,
-									canGeneratePawnRelations: true,
-									mustBeCapableOfViolence: false, // Always allow non-violent xenotypes
-									colonistRelationChanceFactor: 0,
-									forceAddFreeWarmLayerIfNeeded: false,
-									allowGay: true,
-									allowFood: true,
-									allowAddictions: false,
-									inhabitant: false,
-									certainlyBeenInCryptosleep: false,
-									forceRedressWorldPawnIfFormerColonist: false,
-									worldPawnFactionDoesntMatter: false,
-									biocodeWeaponChance: 0,
-									extraPawnForExtraRelationChance: null,
-									relationWithExtraPawnChanceFactor: 0,
-									validatorPreGear: null,
-									validatorPostGear: null,
-									forcedTraits: null,
-									prohibitedTraits: null,
-									forcedXenotype: xenotype
-								);
+						// Create request that allows ANY xenotype (including non-violent ones)
+						var request = FCPawnGenerator.CivilianRequest();
 								
-								deliveryPawn = PawnGenerator.GeneratePawn(request);
-								if (deliveryPawn != null)
-								{
-									LogUtil.Message($"Successfully generated delivery pawn with xenotype: {xenotype.label}");
-									break;
-								}
-							}
-							catch (Exception ex)
-							{
-								LogUtil.Warning($"Failed to generate pawn with xenotype {xenotype.label}: {ex.Message}");
-								continue;
-							}
+						deliveryPawn = PawnGenerator.GeneratePawn(request);
+						if (deliveryPawn != null)
+						{
+							LogUtil.Message($"Successfully generated delivery pawn with civilian request");
 						}
 					}
+					catch (Exception ex)
+					{
+						LogUtil.Warning($"Failed to generate pawn with civilian request: {ex.Message}");
+						continue;
+					}
 					
-					// If no xenotype worked, try a simple civilian request
+					// If no xenotype worked, try a simple delivery request
 					if (deliveryPawn == null)
 					{
-						LogUtil.Warning("Failed to generate pawn with allowed xenotypes, trying simple civilian request");
+						LogUtil.Warning("Failed to generate pawn with CivilianRequest, trying simple delivery request");
 						deliveryPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.SimpleDeliveryRequest());
 					}
 					
@@ -235,14 +195,7 @@ namespace FactionColonies.util
 					if (deliveryPawn == null)
 					{
 						LogUtil.Warning("Failed to generate human pawn, falling back to animals");
-						var availableAnimals = FactionCache.AllPawnKindDefs
-							.Where(def => def.race.race.Animal && 
-										def.RaceProps.trainability != null && 
-										def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
-										def.combatPower > 30f && // Combat-capable animals
-										!def.race.tradeTags.NullOrEmpty() &&
-										!def.race.tradeTags.Contains("AnimalMonster") &&
-										!def.race.tradeTags.Contains("AnimalGenetic"))
+						var availableAnimals = FactionCache.AllCombatAnimalKindDefs
 							.OrderByDescending(def => def.combatPower)
 							.Take(5)
 							.ToList();
@@ -276,6 +229,8 @@ namespace FactionColonies.util
 					evt.goods.RemoveAt(0); // Remove the problematic item
 				}
 			}
+
+			LogUtil.Message($"# Delivery pawns generated: {pawns.Count}");
 			
 			if (attempts >= maxAttempts)
 			{
@@ -294,55 +249,13 @@ namespace FactionColonies.util
 					try
 					{
 						Pawn extraPawn = null;
-						
-						// Try allowed xenotypes first
-						if (factionFC?.xenotypeFilter?.AllowedXenotypes?.Any() == true)
-						{
-							// Randomly select from allowed xenotypes to get variety
-							var availableXenotypes = factionFC.xenotypeFilter.AllowedXenotypes.ToList();
-							var shuffledXenotypes = availableXenotypes.OrderBy(x => Rand.Value).ToList();
-							
-							foreach (var xenotype in shuffledXenotypes)
-							{
-								try
-								{
-									var request = new PawnGenerationRequest(
-										kind: PawnKindDefOf.Colonist,
-										faction: FactionCache.PlayerColonyFaction,
-										context: PawnGenerationContext.NonPlayer,
-										tile: -1,
-										forceGenerateNewPawn: false,
-										allowDead: false,
-										allowDowned: false,
-										canGeneratePawnRelations: true,
-										mustBeCapableOfViolence: false, // Always allow non-violent xenotypes
-										colonistRelationChanceFactor: 0,
-										forceAddFreeWarmLayerIfNeeded: false,
-										allowGay: true,
-										allowFood: true,
-										allowAddictions: false,
-										inhabitant: false,
-										certainlyBeenInCryptosleep: false,
-										forceRedressWorldPawnIfFormerColonist: false,
-										worldPawnFactionDoesntMatter: false,
-										biocodeWeaponChance: 0,
-										extraPawnForExtraRelationChance: null,
-										relationWithExtraPawnChanceFactor: 0,
-										validatorPreGear: null,
-										validatorPostGear: null,
-										forcedTraits: null,
-										prohibitedTraits: null,
-										forcedXenotype: xenotype
-									);
-									extraPawn = PawnGenerator.GeneratePawn(request);
-									if (extraPawn != null) break;
-								}
-								catch { continue; }
-							}
-						}
-						
-						// Fallback to simple request
-						if (extraPawn == null)
+                        // We set the xenotype in a prefix patch on GeneratePawn, so don't bother with setting the xenotype here
+                        // Create request that allows ANY xenotype (including non-violent ones)
+                        var request = FCPawnGenerator.CivilianRequest();
+                        extraPawn = PawnGenerator.GeneratePawn(request);
+
+                        // Fallback to simple request
+                        if (extraPawn == null)
 						{
 							extraPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.SimpleDeliveryRequest());
 						}
@@ -361,17 +274,7 @@ namespace FactionColonies.util
 			
 			// Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
 			// This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-			var guardAnimals = FactionCache.AllPawnKindDefs
-				.Where(def => def.race.race.Animal && 
-					def.RaceProps.trainability != null && 
-					def.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
-					def.race.race.predator &&
-					def.combatPower > 50f && // Strong combat animals
-					!def.race.tradeTags.NullOrEmpty() &&
-					!def.race.tradeTags.Contains("AnimalMonster") &&
-					!def.race.tradeTags.Contains("AnimalGenetic") &&
-					!def.label.ToLower().Contains("bear") && // Exclude bears
-					!def.label.ToLower().Contains("warg")) // Exclude wargs
+			var guardAnimals = FactionCache.AllCombatAnimalKindDefs
 				.OrderByDescending(def => def.combatPower)
 				.Take(5); // Take more options to ensure we can get 2 guards
 

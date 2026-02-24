@@ -116,12 +116,12 @@ namespace FactionColonies.util
                     }
                 }
 
-                if (evt.def.isRandomEvent && evt.settlementTraitLocations.Count() > 0)
+                if (evt.def.isRandomEvent && evt.settlementTraitLocations.Count > 0)
                 {
                     if (evt.settlementTraitLocations.Contains(settlement))
                     {
                         evt.settlementTraitLocations.Remove(settlement);
-                        if (evt.settlementTraitLocations.Count() == 0)
+                        if (evt.settlementTraitLocations.Count == 0)
                         {
                             toRemove.Add(evt);
                         }

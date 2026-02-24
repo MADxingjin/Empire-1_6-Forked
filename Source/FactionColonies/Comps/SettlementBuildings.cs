@@ -652,7 +652,7 @@ namespace FactionColonies
             IEnumerable<Gizmo> gizmos = base.GetGizmos();
             if (gizmos != null)
             {
-                foreach (Gizmo gizmo in base.GetGizmos())
+                foreach (Gizmo gizmo in gizmos)
                 {
                     yield return gizmo;
                 }

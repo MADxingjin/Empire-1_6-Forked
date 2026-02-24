@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using FactionColonies.util;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,9 @@ namespace FactionColonies
     {
         public override void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
-            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
-            foreach (PawnKindDef def in allAnimalDefs)
+            foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)
             {
-                if (def.IsAnimalAndAllowed())
-                {
-                    filter.SetAllow(def.race, true);
-                }
+                filter.SetAllow(def.race, true);
             }
         }
         public override ThingSetMaker getThingSetMaker(out TechLevel tlevel)
@@ -49,18 +46,13 @@ namespace FactionColonies
         protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
         {
             List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
+            List<PawnKindDef> allAnimalDefs = FactionCache.AllAnimalKindDefs;
 
             float totalValue = 0;
             foreach (PawnKindDef def in allAnimalDefs)
             {
                 if (parms.filter.Allows(def.race) &&
-                    def.race.race.Animal && def.RaceProps.IsFlesh &&
-                    def.race.BaseMarketValue >= parms.totalMarketValueRange.Value.min &&
-                    def.race.tradeTags != null &&
-                    !def.race.tradeTags.Contains("AnimalMonster") &&
-                    !def.race.tradeTags.Contains("AnimalGenetic") &&
-                    !def.race.tradeTags.Contains("AnimalAlpha"))
+                    def.race.BaseMarketValue >= parms.totalMarketValueRange.Value.min)
                 {
                     things.Add(def);
                 }
@@ -105,31 +97,10 @@ namespace FactionColonies
                    totalAttempts < MAX_ATTEMPTS); // Stop at max attempts
         }
 
-
-        static List<PawnKindDef> allowedGeneratedList()
-        {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = FactionCache.AllPawnKindDefs;
-
-            foreach (PawnKindDef def in allAnimalDefs)
-            {
-                bool flag = def.race.race.Animal && def.RaceProps.IsFlesh && def.race.tradeTags != null &&
-                            !def.race.tradeTags.Contains("AnimalMonster") &&
-                            !def.race.tradeTags.Contains("AnimalGenetic") &&
-                            !def.race.tradeTags.Contains("AnimalAlpha");
-                if (flag)
-                {
-                    things.Add(def);
-                }
-            }
-
-            return things;
-        }
-
         protected override IEnumerable<ThingDef> AllGeneratableThingsDebugSub(ThingSetMakerParams parms)
         {
             List<ThingDef> list = new List<ThingDef>();
-            foreach (PawnKindDef def in allowedGeneratedList())
+            foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)
             {
                 list.Add((def.race));
             }

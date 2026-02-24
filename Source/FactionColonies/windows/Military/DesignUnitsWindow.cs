@@ -78,7 +78,7 @@ namespace FactionColonies
                     {
                         MilUnitFC newUnit = new MilUnitFC(false)
                         {
-                            name = $"New Unit {util.units.Count() + 1}"
+                            name = $"New Unit {util.units.Count + 1}"
                         };
                         selectedText = newUnit.name;
                         selectedUnit = newUnit;
@@ -302,8 +302,7 @@ namespace FactionColonies
                 //Animal Companion
                 if (Widgets.ButtonInvisible(AnimalCompanion))
                 {
-                    List<FloatMenuOption> list = (from animal in DefDatabase<PawnKindDef>.AllDefs
-                                                  where animal.IsAnimalAndAllowed()
+                    List<FloatMenuOption> list = (from animal in FactionCache.AllAnimalKindDefs
                                                   select new FloatMenuOption(animal.LabelCap + " - Cost: " +
                                                                              Math.Floor(animal.race.BaseMarketValue *
                                                                                         FCSettings.militaryAnimalCostMultiplier),

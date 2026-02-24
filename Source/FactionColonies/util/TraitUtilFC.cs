@@ -18,7 +18,7 @@ namespace FactionColonies
             }
             
             Type typ = def.GetType();
-            FieldInfo fieldInfo = typ.GetField(field);
+            FieldInfo fieldInfo = FactionCache.GetFieldCacheValue(typ, field);
             
             if (fieldInfo == null)
             {
@@ -80,10 +80,10 @@ namespace FactionColonies
         public static int returnResearchAmount()
         {
             int research = 0;
-            research += Convert.ToInt32(cycleTraits("researchBaseProduction", FactionCache.FactionComp.Traits, Operation.Addition));
+            research += Convert.ToInt32(FactionCache.FactionComp.getFieldValue("researchBaseProduction", Operation.Addition));
             foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
-                research += Convert.ToInt32(cycleTraits("researchBaseProduction", settlement.Traits, Operation.Addition));
+                research += Convert.ToInt32(settlement.getFieldValue("researchBaseProduction", Operation.Addition));
             }
             return research;
         }

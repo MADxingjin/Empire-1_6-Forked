@@ -93,6 +93,11 @@ namespace FactionColonies
 
             if (defaultPawn != null)
             {
+                // What is the point of this code? It looks like we're removing every piece of apparel, equipment, and genes. So why can't we just call Clear() on the lists and be done with it?
+                //   Or just let the Destroy() call at the end handle it?
+                //   What is the point of the Reset looping?!
+                // Commenting it all out since it seems unnecessary. But who knows, maybe there's a reason for it, so I don't delete it entirely. Not yet, anyways.
+                /*
                 apparel.AddRange(defaultPawn.apparel.WornApparel);
                 equipment.AddRange(defaultPawn.equipment.AllEquipmentListForReading);
                 gene.AddRange(defaultPawn.genes.GenesListForReading);
@@ -115,7 +120,7 @@ namespace FactionColonies
                     defaultPawn.genes.RemoveGene(xenogene);
                     goto Reset;
                 }
-
+                */
                 defaultPawn.Destroy();
             }
 
@@ -279,6 +284,11 @@ namespace FactionColonies
         public void wearEquipment(Apparel Equipment, bool wear)
         {
             changeTick();
+            // What is the point of this code? It looks like we're pre-emptively removing everything that the new equipment would replace?
+            //   But Pawn_ApparelTracker.Wear already makes this check and handles this case, and in a much cleaner manner. You can even prevent the replaced apparel from dropping.
+            //   So this reset-loop seems unnecessary.
+            // I'm commenting it out for now. But if it proves actually necessary, then I guess we'll come back and take a look.
+            /*
         Reset:
             foreach (ApparelLayerDef layer in Equipment.def.apparel.layers)
             {
@@ -305,7 +315,16 @@ namespace FactionColonies
             else
             {
                 defaultPawn.apparel.Wear(Equipment);
+            }*/
+            /* Call Wear regardless of if wear is true or false. This will force-remove all apparel that would conflict with the incoming apparel. */
+            defaultPawn.apparel.Wear(Equipment, false);
+
+            if (!wear)
+            {
+                /* Now remove the apparel. The end result should be a pawn with nothing on these apparel slots. */
+                defaultPawn.apparel.Remove(Equipment);
             }
+
 
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
