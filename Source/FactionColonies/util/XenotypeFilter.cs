@@ -26,8 +26,8 @@ namespace FactionColonies.util
         private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
 
 
-        private Dictionary<XenotypeDef, List<PawnKindDef>> securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
-        private Dictionary<string, List<PawnKindDef>> securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
+        private Dictionary<XenotypeDef, SecurityGuardList> securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
+        private Dictionary<string, SecurityGuardList> securityGuardsByCustomXenotype = new Dictionary<string, SecurityGuardList>();
         /* Xenotype Weights */
         /* Set to private to force other classes to go through our functions when interacting with the dictionary, to properly maintain the cache. */
         private Dictionary<XenotypeDef, float> xenotypeWeights = new Dictionary<XenotypeDef, float>();
@@ -195,11 +195,11 @@ namespace FactionColonies.util
             }
             if (securityGuardsByXenotype == null)
             {
-                securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
+                securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
             }
             if (securityGuardsByCustomXenotype == null)
             {
-                securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
+                securityGuardsByCustomXenotype = new Dictionary<string, SecurityGuardList>();
             }
 
             if (XenoCompleteWeight == 0)
@@ -634,25 +634,25 @@ namespace FactionColonies.util
         {
             if (!securityGuardsByXenotype.ContainsKey(xenotype))
             {
-                securityGuardsByXenotype[xenotype] = new List<PawnKindDef>();
+                securityGuardsByXenotype[xenotype] = new SecurityGuardList();
             }
             
             if (FactionCache.XenotypeIsNonViolent(xenotype))
             {
                 // Find suitable security guard animals
-                securityGuardsByXenotype[xenotype] = GuardAnimals;
+                securityGuardsByXenotype[xenotype].AddRange(GuardAnimals);
             }
         }
         private void SetupSecurityGuards(string xenotype)
         {
             if (!securityGuardsByCustomXenotype.ContainsKey(xenotype))
             {
-                securityGuardsByCustomXenotype[xenotype] = new List<PawnKindDef>();
+                securityGuardsByCustomXenotype[xenotype] = new SecurityGuardList();
             }
 
             if (FactionCache.CustomXenotypeIsNonViolent(xenotype))
             {
-                securityGuardsByCustomXenotype[xenotype] = GuardAnimals;
+                securityGuardsByCustomXenotype[xenotype].SetRange(GuardAnimals);
             }
         }
 
@@ -814,14 +814,14 @@ namespace FactionColonies.util
             {
                 foreach (var guardList in securityGuardsByXenotype.Values)
                 {
-                    allGuards.AddRange(guardList);
+                    allGuards.AddRange(guardList.List);
                 }
             }
             if (securityGuardsByCustomXenotype.Count > 0)
             {
                 foreach (var guardList in securityGuardsByCustomXenotype.Values)
                 {
-                    allGuards.AddRange(guardList);
+                    allGuards.AddRange(guardList.List);
                 }
             }
             return allGuards.Distinct().ToList();
@@ -1123,9 +1123,9 @@ namespace FactionColonies.util
             {
                 //TODO: see if anything else needs to be done
                 // Add security guards for xenotypes that need them
-                if (securityGuardsByXenotype.ContainsKey(xenotype) && securityGuardsByXenotype[xenotype].Any())
+                if (securityGuardsByXenotype.ContainsKey(xenotype) && securityGuardsByXenotype[xenotype].List.Any())
                 {
-                    foreach (var guardAnimal in securityGuardsByXenotype[xenotype])
+                    foreach (var guardAnimal in securityGuardsByXenotype[xenotype].List)
                     {
                         var guardOption = new PawnGenOption
                         {
@@ -1145,9 +1145,9 @@ namespace FactionColonies.util
                 {
                     //TODO
                     // Add security guards for xenotypes that need them
-                    if (securityGuardsByCustomXenotype.ContainsKey(xenotype) && securityGuardsByCustomXenotype[xenotype].Any())
+                    if (securityGuardsByCustomXenotype.ContainsKey(xenotype) && securityGuardsByCustomXenotype[xenotype].List.Any())
                     {
-                        foreach (var guardAnimal in securityGuardsByCustomXenotype[xenotype])
+                        foreach (var guardAnimal in securityGuardsByCustomXenotype[xenotype].List)
                         {
                             var guardOption = new PawnGenOption
                             {
@@ -1248,7 +1248,7 @@ namespace FactionColonies.util
         public List<PawnKindDef> GetSecurityGuardsForXenotype(XenotypeDef xenotype)
         {
             return securityGuardsByXenotype.ContainsKey(xenotype) 
-                ? securityGuardsByXenotype[xenotype] 
+                ? securityGuardsByXenotype[xenotype].List 
                 : new List<PawnKindDef>();
         }
         public void GetFirstXenotypesForRequest(PawnGenerationRequest request, out XenotypeDef xenotype, out CustomXenotype customXenotype)
@@ -1454,11 +1454,11 @@ namespace FactionColonies.util
             {
                 if (securityGuardsByXenotype == null)
                 {
-                    securityGuardsByXenotype = new Dictionary<XenotypeDef, List<PawnKindDef>>();
+                    securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
                 }
                 if (securityGuardsByCustomXenotype == null)
                 {
-                    securityGuardsByCustomXenotype = new Dictionary<string, List<PawnKindDef>>();
+                    securityGuardsByCustomXenotype = new Dictionary<string, SecurityGuardList>();
                 }
                 if (xenotypeWeights == null)
                 {
@@ -1473,6 +1473,76 @@ namespace FactionColonies.util
                     raceWeights = new Dictionary<ThingDef, float>();
                 }
                 FinalizeInit(FactionCache.FactionComp);
+            }
+        }
+    }
+    /* This class only exists because Scribe_Collections doesn't know what to do with dictionaries of lists... */
+    public class SecurityGuardList : IExposable
+    {
+        private List<PawnKindDef> list = new List<PawnKindDef>();
+
+        public int Count => list.Count;
+        public bool Contains(PawnKindDef def) => list.Contains(def);
+        public void Clear() => list.Clear();
+        public List<PawnKindDef> List => list;
+
+        public void InitList()
+        {
+            list = new List<PawnKindDef>();
+        }
+        public bool Add(PawnKindDef def)
+        {
+            if (Contains(def))
+            {
+                return false;
+            }
+            else
+            {
+                list.Add(def);
+                return true;
+            }
+        }
+        public bool Remove(PawnKindDef def)
+        {
+            if (Contains(def))
+            {
+                list.Remove(def);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public void AddRange(List<PawnKindDef> deflist)
+        {
+            foreach (PawnKindDef def in deflist)
+            {
+                Add(def);
+            }
+        }
+        public void RemoveRange(List<PawnKindDef> deflist)
+        {
+            foreach (PawnKindDef def in deflist)
+            {
+                Remove(def);
+            }
+        }
+        public void SetRange(List<PawnKindDef> deflist)
+        {
+            Clear();
+            AddRange(deflist);
+        }
+        public void ExposeData()
+        {
+            Scribe_Collections.Look(ref list, "guardKindList", LookMode.Def);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (list is null)
+                {
+                    InitList();
+                }
             }
         }
     }

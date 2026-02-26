@@ -60,12 +60,24 @@
 	<InvalidFaction>That faction can't run an empire on its own!</InvalidFaction>
     <ButtonNotAvailable>This button is not available yet</ButtonNotAvailable>
     <ConfirmChanges>Confirm Changes</ConfirmChanges>
+	
+	<!--FactionCustomizePoliciesWindowFC-->
+	<FCPolicySelection>Policy Selection</FCPolicySelection>
+	<FCSelectPolicies>Select Policies</FCSelectPolicies>
+	<FCOverview>Overview</FCOverview>
+	<FCTraits>Traits</FCTraits>
+	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
+	<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>
+	<FCConflictingTraits>You cannot have conflicting faction traits!</FCConflictingTraits>
+	<FCUnselectTrait>You have to unselect one of your current traits to select another!</FCUnselectTrait>
+	<FCTraitsChosen>You have already chosen your traits. You cannot edit them any longer!</FCTraitsChosen>
 
     <!-- FactionFC -->
     <PlayerFaction>Player Faction</PlayerFaction>
     <Bastion>Bastion</Bastion>
     <Food>Food</Food>
     <Weapons>Weapons</Weapons>
+	<FCFoundedOn>Founded on {0}</FCFoundedOn>
     <!--<Apparel>Apparel</Apparel>-->
     <Animals>Animals</Animals>
     <Logging>Logging</Logging>
@@ -156,19 +168,10 @@
     <FactionUnrest>Faction Unrest</FactionUnrest>
     <FactionProsperity>Faction Prosperity</FactionProsperity>
 
-    <FactionHappinessDesc>The measure of the faction's overall happiness. A high happiness means that any internal
-        conflict within the settlement will lean heavily to your favor.
-    </FactionHappinessDesc>
-    <FactionLoyaltyDesc>The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing
-        the settlement is to listen to you. A high loyalty will reduce the chance of defection.
-    </FactionLoyaltyDesc>
-    <FactionUnrestDesc>The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous
-        events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow.
-    </FactionUnrestDesc>
-    <FactionProsperityDesc>The measure of the faction's overall prosperity. The prosperity of a town directly correlates
-        with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly
-        accumulate over time.
-    </FactionProsperityDesc>
+    <FactionHappinessDesc>The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor.</FactionHappinessDesc>
+    <FactionLoyaltyDesc>The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.</FactionLoyaltyDesc>
+    <FactionUnrestDesc>The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow.</FactionUnrestDesc>
+    <FactionProsperityDesc>The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time.</FactionProsperityDesc>
     <Policies-Traits>Policies/Traits</Policies-Traits>
     <TaxReports>Tax Reports</TaxReports>
     <TotalFactionProduction>The total faction-wide production of the resource</TotalFactionProduction>

@@ -59,13 +59,6 @@
 <ToggleAutoDefend>Automatically defending attacked settlements: {0}</ToggleAutoDefend>
 
 
-<FCOverview>Overview</FCOverview>
-<FCTraits>Traits</FCTraits>
-<FCSelectTraits0>Select two traits to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
-<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>
-<FCConflictingTraits>You cannot have conflicting faction traits!</FCConflictingTraits>
-<FCUnselectTrait>You have to unselect one of your current traits to select another!</FCUnselectTrait>
-<FCTraitsChosen>You have already chosen your traits. You cannot edit them any longer!</FCTraitsChosen>
 <NotEnoughSilverToDeploySquad>You do not have enough silver to re-deploy that squad!</NotEnoughSilverToDeploySquad>
 <XDaysToRedeploy>{0} days are left until the ability to re-deploy squads is refreshed</XDaysToRedeploy>
 <FCRelationImproved>Relation Improved!</FCRelationImproved>

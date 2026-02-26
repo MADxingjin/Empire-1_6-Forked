@@ -33,10 +33,14 @@ namespace FactionColonies
 
         public static void DrawProgressBar(Rect rect, float progress)
         {
+            DrawProgressBarColors(rect, progress, Color.black, Color.cyan);
+        }
+        public static void DrawProgressBarColors(Rect rect, float progress, Color background, Color bar)
+        {
             Rect baseRect = new Rect(rect.x, rect.y, rect.width, rect.height);
             Rect progressRect = new Rect(rect.x, rect.y, rect.width * progress, rect.height);
-            Widgets.DrawBoxSolid(baseRect, Color.black);
-            Widgets.DrawBoxSolid(progressRect, Color.cyan);
+            Widgets.DrawBoxSolid(baseRect, background);
+            Widgets.DrawBoxSolid(progressRect, bar);
         }
 
         public static bool InfoCardButton(float x, float y, float width, float height, Def def)

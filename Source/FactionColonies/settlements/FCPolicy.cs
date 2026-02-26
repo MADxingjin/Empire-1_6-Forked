@@ -152,6 +152,49 @@ namespace FactionColonies
                 }
             }
         }
+        public bool HasNegativeEffects()
+        {
+            return negativeEffects != null && negativeEffects.Count > 0;
+        }
+        public bool HasPositiveEffects()
+        {
+            return positiveEffects != null && positiveEffects.Count > 0;
+        }
+        public string PolicyText()
+        {
+            return LabelCap + "\n\n" + CachedPolicyDesc();
+        }
+        public string PolicyDesc()
+        {
+            string str = "";
+
+            if (HasPositiveEffects())
+            {
+                foreach (string positive in positiveEffects)
+                {
+                    str += positive.Colorize(Color.green) + "\n";
+                }
+            }
+
+            if (HasPositiveEffects() && HasNegativeEffects())
+            {
+                str += "==========\n";
+            }
+
+            if (HasNegativeEffects())
+            {
+                foreach (string negative in negativeEffects)
+                {
+                    str += negative.Colorize(Color.red) + "\n";
+                }
+            }
+
+            return str.Trim();
+        }
+        public string CachedPolicyDesc()
+        {
+            return FactionCache.FCPolicyDescs?[this] ?? PolicyDesc();
+        }
     }
 
     [DefOf]

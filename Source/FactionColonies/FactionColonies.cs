@@ -132,6 +132,8 @@ namespace FactionColonies
         public static double militaryAnimalCostMultiplier = 1.5;
         public static double militaryRaceCostMultiplier = 0.15;
 
+        public static int maxPolicyCount = 2;
+
         public static double updateVersion = 0;
 
         /* Flag for debug/verbose logging. */

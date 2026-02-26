@@ -13,6 +13,7 @@ namespace FactionColonies
     [HarmonyPatch(typeof(PawnGenerator), "GeneratePawn", typeof(PawnGenerationRequest))]
     class PawnGenerationPatches
     {
+        //TODO: LIKELY BUG: This will probably (inevitably) hijack the pawn creation for custom military units. Need to find a way to let those pawns respect the xenotype chosen by the player
         public static void Prefix(ref PawnGenerationRequest request)
         {
             if (!(request.Faction is null) && request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)

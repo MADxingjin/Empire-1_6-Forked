@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 using static System.Collections.Specialized.BitVector32;
 
@@ -37,6 +38,8 @@ namespace FactionColonies
         private static bool _cachedNonViolentXenosExist = false;
         private static Dictionary<XenotypeDef, bool> _cachedXenotypeViolenceDict = null;
         private static Dictionary<string, bool> _cachedCustomXenotypeViolenceDict = null;
+        private static List<FCPolicyDef> _cachedFCPolicyDefs = null;
+        private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
 
         public static FactionFC FactionComp
         {
@@ -300,6 +303,32 @@ namespace FactionColonies
         {
             return CustomXenotypeIsNonViolent(xenotype.name);
         }
+        public static List<FCPolicyDef> AllFCPolicies
+        {
+            get
+            {
+                if (_cachedFCPolicyDefs == null)
+                {
+                    _cachedFCPolicyDefs = DefDatabase<FCPolicyDef>.AllDefsListForReading;
+                }
+                return _cachedFCPolicyDefs;
+            }
+        }
+        public static Dictionary<FCPolicyDef, string> FCPolicyDescs
+        {
+            get
+            {
+                if (_cachedFCPolicyDescs == null)
+                {
+                    _cachedFCPolicyDescs = new Dictionary<FCPolicyDef, string>();
+                    foreach (FCPolicyDef policy in AllFCPolicies)
+                    {
+                        _cachedFCPolicyDescs.Add(policy, policy.PolicyDesc());
+                    }
+                }
+                return _cachedFCPolicyDescs;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -316,6 +345,8 @@ namespace FactionColonies
             _cachedCombatAnimalKinds = null;
             _cachedPackAnimalKinds = null;
             _cachedXenotypeViolenceDict = null;
+            _cachedFCPolicyDefs = null;
+            _cachedFCPolicyDescs = null;
             InvalidateCustomXenotypeCache();
         }
         /* Custom xenotypes are actually expected to change while the game is loaded, and thus we may have to refresh that specific cache more frequently than the rest.

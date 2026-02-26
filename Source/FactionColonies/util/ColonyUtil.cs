@@ -256,6 +256,7 @@ namespace FactionColonies.util
             }
 
             Find.FactionManager.Add(faction);
+            worldcomp.OnCreation();
             return faction;
         }
 

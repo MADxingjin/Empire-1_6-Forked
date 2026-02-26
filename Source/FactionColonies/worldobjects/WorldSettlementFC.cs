@@ -20,13 +20,13 @@ namespace FactionColonies
     /// </summary>
     public class WorldSettlementFC : Settlement
     {
-        // Tiles being ints is obsolete. Time to actually use PlanetTiles
-        //public int mapLocation;
         private string name;
         private string nameShort;
         private string nameOriginal;
         public string title = "Hamlet".Translate();
         public string description = "FCGenericError".Translate();
+        private int foundingTick;
+        public int FoundingTick => foundingTick;
 
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
          * ~        Settlement Base Info         ~ *
@@ -376,6 +376,12 @@ namespace FactionColonies
             }
 
             updateProfitAndProduction();
+
+            foundingTick = Find.TickManager.TicksGame;
+        }
+        public string GetFoundingDate()
+        {
+            return GenDate.DateFullStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
         }
 
         public override void ExposeData()
@@ -383,6 +389,7 @@ namespace FactionColonies
             base.ExposeData();
             Scribe_Deep.Look(ref trader, "trader");
             Scribe_Values.Look(ref name, "name");
+            Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
             Scribe_Values.Look(ref nameOriginal, "nameOriginal", OriginalName);
             Scribe_Values.Look(ref title, "title");
@@ -427,6 +434,11 @@ namespace FactionColonies
             //Traits
             Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Tick, "trait_Egalitarian_TaxBreak_Tick");
             Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Enabled, "trait_Egalitarian_TaxBreak_Enabled");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                updateProfitAndProduction();
+            }
         }
 
         public void updateTechIcon()

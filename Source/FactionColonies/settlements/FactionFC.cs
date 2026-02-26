@@ -26,6 +26,11 @@ namespace FactionColonies
         public int mercenaryTick;
         public bool factionCreated;
 
+        private int foundingTick = 0;
+        public int FoundingTick => foundingTick;
+        private Vector2 startingLongLat = new Vector2();
+        public Vector2 StartingLongLat => startingLongLat;
+
         private int nextUnitId;
         private int nextSquadId;
 
@@ -181,13 +186,25 @@ namespace FactionColonies
 
         //    }
         // }
-
+        /// <summary>
+        /// Called when the Empire faction is created.
+        /// </summary>
+        public void OnCreation()
+        {
+            foundingTick = Find.TickManager.TicksGame;
+        }
+        public string GetFoundingDate()
+        {
+            return GenDate.DateFullStringAt(foundingTick, startingLongLat);
+        }
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref title, "title");
+            Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
+            Scribe_Values.Look(ref startingLongLat, "foundingLongLat");
             Scribe_Values.Look(ref capitalLocation, "capitalLocation");
             Scribe_Values.Look(ref capitalPlanet, "capitalPlanet");
             Scribe_References.Look(ref taxMap, "taxMap");
@@ -518,6 +535,18 @@ namespace FactionColonies
                 }
 
                 militaryCustomizationUtil.checkMilitaryUtilForErrors();
+
+                /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
+                Map playerHome = Find.AnyPlayerHomeMap;
+                if (playerHome is null)
+                {
+                    LogUtil.Warning("Found NULL for player map on first tick. This probably shouldn't happen...");
+                    startingLongLat = default(Vector2);
+                }
+                else
+                {
+                    startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
+                }
 
                 firstTick = false;
             }
