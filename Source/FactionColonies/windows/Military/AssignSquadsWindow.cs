@@ -272,7 +272,6 @@ namespace FactionColonies
                                         if (PaymentUtil.getSilver() >= cost)
                                         {
                                             MilitaryUtil.FireSupport(settlement, support);
-                                            Find.WindowStack.TryRemove(typeof(MilitaryCustomizationWindowFc));
                                         }
                                         else
                                         {

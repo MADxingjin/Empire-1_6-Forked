@@ -1334,11 +1334,11 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             float rowHeight = 20f;
             float labelHeight = rowHeight - (smallMargin * 2);
-            float labelWidth = (boundingBox.width - (margin * 3f)) / 2f;
+            float labelWidth = (boundingBox.width - margin) / 2f;
 
             Rect profitBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 28f);
-            Rect profitLabel = new Rect(profitBox.x + margin, profitBox.y + smallMargin, labelWidth, 30f - (smallMargin * 2));
-            Rect profitNum = new Rect(profitLabel.xMax, profitLabel.y, labelWidth, 30f - (smallMargin * 2));
+            Rect profitLabel = new Rect(profitBox.x, profitBox.y, labelWidth, profitBox.height);
+            Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, labelWidth, profitBox.height);
             Widgets.DrawHighlight(profitBox);
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "Total".Translate() + " " + "Profit".Translate() + ":");

@@ -1085,6 +1085,10 @@ namespace FactionColonies
         public ResourcePool()
         {
         }
+        public IEnumerable<FloatMenuOption> GetFactionMenuFloatMenuOptions()
+        {
+            return resource.GetFactionMenuFloatMenuOptions(this);
+        }
         public void ExposeData()
         {
             Scribe_Defs.Look(ref resource, "resource");

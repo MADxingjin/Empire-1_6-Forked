@@ -118,10 +118,10 @@ namespace FactionColonies
             FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = FactionColoniesMilitary.GetSquad(name).Import();
             
-            MilitaryCustomizationWindowFc mil = (MilitaryCustomizationWindowFc)Find.WindowStack.Windows.FirstOrFallback(
-                window => window.GetType() == typeof(MilitaryCustomizationWindowFc));
-            
-            mil.SetActive(squad);
+            MainTabWindow_Colony mainTab = (MainTabWindow_Colony)Find.WindowStack.Windows.FirstOrFallback(
+                window => window.GetType() == typeof(MainTabWindow_Colony));
+
+            mainTab?.SetMilitaryActive(squad);
             
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
             Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
@@ -153,10 +153,10 @@ namespace FactionColonies
             FactionFC fc = FactionCache.FactionComp;
             MilUnitFC unit = FactionColoniesMilitary.GetUnit(name).Import();
             
-            MilitaryCustomizationWindowFc mil = (MilitaryCustomizationWindowFc)Find.WindowStack.Windows.FirstOrFallback(
-                window => window.GetType() == typeof(MilitaryCustomizationWindowFc));
-            
-            mil.SetActive(unit);
+            MainTabWindow_Colony mainTab = (MainTabWindow_Colony)Find.WindowStack.Windows.FirstOrFallback(
+                window => window.GetType() == typeof(MainTabWindow_Colony));
+
+            mainTab?.SetMilitaryActive(unit);
             
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
             Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
