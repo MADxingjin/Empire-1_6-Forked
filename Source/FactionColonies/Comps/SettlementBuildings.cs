@@ -7,10 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static Mono.Security.X509.X520;
-using static System.Collections.Specialized.BitVector32;
-using static UnityEngine.ParticleSystem;
-using static Verse.KeyPrefs;
 
 namespace FactionColonies
 {
@@ -289,23 +285,8 @@ namespace FactionColonies
 
             return valid;
         }
-        public void startConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
+        public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
-            DeconstructBuilding(buildingSlot);
-
-            LogUtil.Message($"Starting construction of building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}. Completes on tick {completionTick}");
-            dirtyConstructionCache = true;
-
-            buildings[buildingSlot] = new BuildingFC
-            {
-                def = BuildingFCDefOf.Construction,
-                underConstructionDef = building,
-                startedTick = Find.TickManager.TicksGame,
-                completionTick = completionTick
-            };
-
-            // The Construction def shouldn't have traits or modExtensions, I think. But just in case we decide to do something funky,
-            //   we'll leave this code here.
             addBuildingTrait(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
@@ -327,6 +308,25 @@ namespace FactionColonies
                 }
             }
         }
+        public void startConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
+        {
+            DeconstructBuilding(buildingSlot);
+
+            LogUtil.Message($"Starting construction of building {building.defName} in slot {buildingSlot} in settlement {WorldSettlement.Name}. Completes on tick {completionTick}");
+            dirtyConstructionCache = true;
+
+            buildings[buildingSlot] = new BuildingFC
+            {
+                def = BuildingFCDefOf.Construction,
+                underConstructionDef = building,
+                startedTick = Find.TickManager.TicksGame,
+                completionTick = completionTick
+            };
+
+            // The Construction def shouldn't have traits or modExtensions, I think. But just in case we decide to do something funky,
+            //   we'll leave this code here.
+            HandleOnConstructionComps(building, buildingSlot);
+        }
         /// <summary>
         /// <para>Handles any special processing when a building is first constructed.</para>
         /// </summary>
@@ -344,26 +344,7 @@ namespace FactionColonies
                 completionTick = Find.TickManager.TicksGame
             };
 
-            addBuildingTrait(buildingSlot);
-
-            if (buildings[buildingSlot].def.modExtensions?.Count > 0)
-            {
-                foreach (BuildingFCExtension ext in buildings[buildingSlot].def.modExtensions.OfType<BuildingFCExtension>())
-                {
-                    if (ext.compClass != null)
-                    {
-                        SettlementBuildingComp comp = GetComponent(ext.compClass);
-
-                        if (comp == null)
-                        {
-                            comp = MakeSettlementBuildingComp(ext.compClass, WorldSettlement);
-                            settlementBuildingComps.Add(comp);
-                        }
-
-                        comp.OnConstruct(buildingSlot);
-                    }
-                }
-            }
+            HandleOnConstructionComps(building, buildingSlot);
         }
         /// <summary>
         /// <para>Handles any special processing when a building is deconstructed.</para>
@@ -483,7 +464,8 @@ namespace FactionColonies
             foreach (BuildingFC building in buildings)
             {
                 bool isMilitary = false;
-                foreach (FCTraitEffectDef trait in building.def.traits)
+
+                foreach (FCTraitEffectDef trait in building.def.traits ?? Enumerable.Empty<FCTraitEffectDef>())
                 {
                     if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
                     {
@@ -492,7 +474,7 @@ namespace FactionColonies
                     }
                 }
 
-                if (building.def.upkeep != 0 && !isMilitary || !faction.hasPolicy(FCPolicyDefOf.militaristic))
+                if (building.def.upkeep != 0 && (!isMilitary || !faction.hasPolicy(FCPolicyDefOf.militaristic)))
                     upkeep += building.def.upkeep;
                 else
                     upkeep += Math.Max(0, building.def.upkeep - 100);
@@ -628,15 +610,11 @@ namespace FactionColonies
                 /* Look through the comps and see if any of them need destroying.
                  * They *should* be destroyed when the associated building is deconstructed. But just in case one gets orphaned somehow,
                  *   we'll destroy it here. Don't want any memory leaks, after all. */
-                List<SettlementBuildingComp> tmpComps = settlementBuildingComps;
-                foreach(SettlementBuildingComp comp in tmpComps)
+                foreach(SettlementBuildingComp comp in settlementBuildingComps)
                 {
                     comp.RefreshBuildingSlotsWithErrorDetection();
-                    if (comp.CanDestroy)
-                    {
-                        settlementBuildingComps.Remove(comp);
-                    }
                 }
+                settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
                 ReinitBuildings();
             }
             Scribe_Collections.Look(ref buildings, "buildings", LookMode.Deep);

@@ -47,7 +47,7 @@ namespace FactionColonies
         public static void FightRound(militaryForce MFA, militaryForce MFB)
         {
             var randA = (Rand.Range(0, 20) * MFA.militaryEfficiency);
-            var randB = (Rand.Range(0, 20) * MFA.militaryEfficiency);
+            var randB = (Rand.Range(0, 20) * MFB.militaryEfficiency);
             // LogUtil.Message("A Begin: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B begin");
             // LogUtil.Message("A Rolled: " + randA.ToString() + " : " + randB.ToString() + " B rolled");
 
@@ -117,12 +117,9 @@ namespace FactionColonies
             //create and return force.
         }
 
-        public static militaryForce createMilitaryForceFromEnemySettlement(Settlement settlement)
+        public static void GetMilitaryLevelAndEfficiencyFromTechLevel(TechLevel techlevel, out double militaryLevel, out double efficiency)
         {
-            double militaryLevel;
-            double efficiency;
-
-            switch (settlement.Faction.def.techLevel)
+            switch (techlevel)
             {
                 case TechLevel.Undefined:
                     militaryLevel = 1;
@@ -160,9 +157,17 @@ namespace FactionColonies
                 default:
                     militaryLevel = 1;
                     efficiency = 1;
-                    LogUtil.Message("Defaulted createMilitaryForceFromEnemyFaction switch case");
+                    LogUtil.Message("Defaulted GetMilitaryLevelAndEfficiencyFromTechLevel switch case");
                     break;
             }
+        }
+
+        public static militaryForce createMilitaryForceFromEnemySettlement(Settlement settlement)
+        {
+            double militaryLevel = 0;
+            double efficiency = 0;
+
+            GetMilitaryLevelAndEfficiencyFromTechLevel(settlement.Faction.def.techLevel, out militaryLevel, out efficiency);
 
             militaryForce returnForce = new militaryForce(militaryLevel, efficiency, null, settlement.Faction);
             return returnForce;
@@ -174,47 +179,7 @@ namespace FactionColonies
             double efficiency = 1;
             if (faction != null && faction.def != null)
             {
-                switch (faction.def.techLevel)
-                {
-                    case TechLevel.Undefined:
-                        militaryLevel = 1;
-                        efficiency = .5;
-                        break;
-                    case TechLevel.Animal:
-                        militaryLevel = 1;
-                        efficiency = .5;
-                        break;
-                    case TechLevel.Neolithic:
-                        militaryLevel = 1;
-                        efficiency = 1;
-                        break;
-                    case TechLevel.Medieval:
-                        militaryLevel = 2;
-                        efficiency = 1.2;
-                        break;
-
-                    case TechLevel.Industrial:
-                        militaryLevel = 3;
-                        efficiency = 1.2;
-                        break;
-                    case TechLevel.Spacer:
-                        militaryLevel = 3;
-                        efficiency = 1.3;
-                        break;
-                    case TechLevel.Ultra:
-                        militaryLevel = 3;
-                        efficiency = 1.3;
-                        break;
-                    case TechLevel.Archotech:
-                        militaryLevel = 4;
-                        efficiency = 1.5;
-                        break;
-                    default:
-                        militaryLevel = 1;
-                        efficiency = 1;
-                        LogUtil.Message("Defaulted createMilitaryForceFromEnemyFaction switch case");
-                        break;
-                }
+                GetMilitaryLevelAndEfficiencyFromTechLevel(faction.def.techLevel, out militaryLevel, out efficiency);
 
                 if (faction.def.defName == "VFEI_Insect")
                 {

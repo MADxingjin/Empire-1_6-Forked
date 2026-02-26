@@ -151,31 +151,28 @@ namespace FactionColonies
                 {
                     if (map.IsPlayerHome)
                     {
-                        List:
-                        foreach (Thing item in map.listerThings.AllThings) //loop through each item in cell
+                    List:
+                        foreach (Thing item in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage() == true))
                         {
-                            if (item.def == ThingDefOf.Silver && item.IsInAnyStorage() == true)
+                            //if silver, add to count
+                            if (amount - item.stackCount < 0) //if removing silver would pay too much
                             {
-                                //if silver, add to count
-                                if (amount - item.stackCount < 0) //if removing silver would pay too much
-                                {
-                                    int overdraw = -1 * (amount - item.stackCount);
-                                    amount -= (item.stackCount - overdraw);
-                                    item.SplitOff(item.stackCount - overdraw).Destroy(DestroyMode.Vanish);
-                                    goto Paid;
-                                }
-                                else if (amount - item.stackCount > 0) //if removing silver would leave some
-                                {
-                                    amount -= item.stackCount;
-                                    item.Destroy(DestroyMode.Vanish);
-                                    goto List;
-                                }
-                                else if (amount - item.stackCount == 0) //if removing silver will make amount = 0
-                                {
-                                    amount -= item.stackCount;
-                                    item.Destroy(DestroyMode.Vanish);
-                                    goto Paid;
-                                }
+                                int overdraw = -1 * (amount - item.stackCount);
+                                amount -= (item.stackCount - overdraw);
+                                item.SplitOff(item.stackCount - overdraw).Destroy(DestroyMode.Vanish);
+                                goto Paid;
+                            }
+                            else if (amount - item.stackCount > 0) //if removing silver would leave some
+                            {
+                                amount -= item.stackCount;
+                                item.Destroy(DestroyMode.Vanish);
+                                goto List;
+                            }
+                            else if (amount - item.stackCount == 0) //if removing silver will make amount = 0
+                            {
+                                amount -= item.stackCount;
+                                item.Destroy(DestroyMode.Vanish);
+                                goto Paid;
                             }
                         }
                     }
@@ -184,26 +181,6 @@ namespace FactionColonies
 
             return true;
         }
-
-        public static bool checkForTaxSpot(Map map, out IntVec3 dropSpot)
-        {
-            foreach (IntVec3 cell in map.AllCells) //loop through all zones
-            {
-                foreach (Thing item in map.thingGrid.ThingsAt(cell)) //loop through each item in cell
-                {
-                    if (item.def.defName == "TaxSpot")
-                    {
-                        //if silver, add to count
-                        dropSpot = cell;
-                        return true;
-                    }
-                }
-            }
-
-            dropSpot = new IntVec3();
-            return false;
-        }
-
         public static int getSilver()
         {
             int silver = 0;
@@ -212,18 +189,30 @@ namespace FactionColonies
             {
                 if (map.IsPlayerHome)
                 {
-                    foreach (Thing thing in map.listerThings.AllThings)
+                    foreach (Thing thing in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage() == true))
                     {
-                        if (thing.def == ThingDefOf.Silver && thing.IsInAnyStorage() == true)
-                        {
-                            silver += thing.stackCount;
-                        }
+                        silver += thing.stackCount;
                     }
                 }
             }
 
             //LogUtil.Message("getSilver {silver}");
             return silver;
+        }
+
+        public static bool checkForTaxSpot(Map map, out IntVec3 dropSpot)
+        {
+            foreach (Building building in map.listerBuildings.allBuildingsColonist.Where(b => b.def.defName == "TaxSpot"))
+            {
+                if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
+                {
+                    dropSpot = taxSpot.Position;
+                    return true;
+                }
+            }
+
+            dropSpot = new IntVec3();
+            return false;
         }
 
         public static ThingSetMakerParams returnThingSetMakerParams(int baseValue, int rangeMod)

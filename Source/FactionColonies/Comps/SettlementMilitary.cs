@@ -3,14 +3,11 @@ using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Verse;
 using Verse.AI.Group;
 using Verse.Sound;
-using static Mono.Security.X509.X520;
 
 namespace FactionColonies
 {
@@ -92,6 +89,7 @@ namespace FactionColonies
             Scribe_References.Look(ref militarySquad, "militarySquad");
             Scribe_Values.Look(ref artilleryTimer, "artilleryTimer");
             Scribe_Values.Look(ref autoDefend, "autoDefend");
+            Scribe_Values.Look(ref settlementMilitaryLevel, "settlementMilitaryLevel");
         }
 
         public override void Initialize(WorldObjectCompProperties props)
@@ -296,7 +294,7 @@ namespace FactionColonies
                 {
                     foreach (var pawn in pawns)
                     {
-                        if (defenders.Contains(pawn)) return;
+                        if (defenders.Contains(pawn)) continue;
                         if (defenders.Any())
                             defenders[0].GetLord().AddPawn(pawn);
                         else
@@ -1041,7 +1039,11 @@ namespace FactionColonies
                 bool authoritarian = policies.Contains("authoritarian");
                 bool pacifist = policies.Contains("pacifist");
 
-                int deadMultiplier = (militarist || authoritarian ? militarist && authoritarian ? 7000 : 8000 : 10000) + (pacifist ? 2000 : 0);
+                // If the faction is militarist AND authortarian: multiplier is 7000
+                // If the faction is militarist OR authortarian: multiplier is 8000
+                // If the faction is neither: multiplier is 10000
+                // If the faction is pacifist: add 2000 to the previous result
+                int deadMultiplier = (militarist || authoritarian ? (militarist && authoritarian ? 7000 : 8000) : 10000) + (pacifist ? 2000 : 0);
 
                 cooldownReduction -= militarySquad.dead * deadMultiplier;
             }
@@ -1053,7 +1055,7 @@ namespace FactionColonies
 
             FCEvent tmp = FCEventMaker.MakeEvent(FCEventDefOf.cooldownMilitary);
             tmp.hasCustomDescription = true;
-            tmp.timeTillTrigger = Find.TickManager.TicksGame + 180000 - cooldownReduction;
+            tmp.timeTillTrigger = Find.TickManager.TicksGame + (GenDate.TicksPerDay * 3) - cooldownReduction;
             tmp.location = WorldSettlement.Tile;
             tmp.customDescription = "MilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
             FactionCache.FactionComp.addEvent(tmp);
@@ -1096,12 +1098,7 @@ namespace FactionColonies
 
         public bool isMilitarySquadValidSilent()
         {
-            if (militarySquad != null)
-            {
-                return true;
-            }
-
-            return false;
+            return !(militarySquad is null);
         }
 
         public bool isMilitaryBusySilent()
@@ -1111,13 +1108,7 @@ namespace FactionColonies
 
         public bool isMilitaryValid()
         {
-            if (WorldSettlement.settlementMilitaryLevel > 0)
-            {
-                //if settlement military is more than level 0
-                return true;
-            }
-
-            return false;
+            return WorldSettlement.settlementMilitaryLevel > 0;
         }
 
         public bool isTargetOccupied(int location)

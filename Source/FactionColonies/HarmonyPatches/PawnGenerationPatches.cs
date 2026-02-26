@@ -13,11 +13,18 @@ namespace FactionColonies
     [HarmonyPatch(typeof(PawnGenerator), "GeneratePawn", typeof(PawnGenerationRequest))]
     class PawnGenerationPatches
     {
-        //TODO: LIKELY BUG: This will probably (inevitably) hijack the pawn creation for custom military units. Need to find a way to let those pawns respect the xenotype chosen by the player
         public static void Prefix(ref PawnGenerationRequest request)
         {
             if (!(request.Faction is null) && request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)
             {
+                /* Respect xenotypes that have already been forced (e.g. from designed military units)
+                 * This has a chance of allowing through forced xenotypes from other sources, which I'm not sure is desirable.
+                 * But this should preserve the xenotype that a player chooses when designing military units, and that's more important. */
+                if (!(request.ForcedXenotype is null) || !(request.ForcedCustomXenotype is null))
+                {
+                    return;
+                }
+
                 XenotypeFilter filter = FactionCache.FactionComp.xenotypeFilter;
                 XenotypeDef chosenXenotype = null;
                 CustomXenotype chosenCustomXenotype = null;

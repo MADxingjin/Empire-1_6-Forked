@@ -90,9 +90,10 @@ namespace FactionColonies
                                     cEvent.rangeSettlementsAffected.min)
                                 {
                                     //if doesn't require resource or if required resource has more than 1 production
-                                    if (cEvent.requiredResource == null
-                                        ? FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
-                                        : true || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
+                                    if (cEvent.requiredResource is null
+                                        ? true 
+                                        : FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
+                                          || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
                                     {
                                         //if event is not incompatible with any currently-running events
                                         foreach (FCEvent evt in FactionCache.FactionComp.events)

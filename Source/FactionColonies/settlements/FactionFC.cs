@@ -639,7 +639,7 @@ namespace FactionColonies
             }
 
             //Other functions
-            militaryCustomizationUtil.fireSupport = militaryCustomizationUtil.fireSupport.Where(support => !support.ShouldBeOver).ToList();
+            militaryCustomizationUtil.fireSupport.RemoveAll(support => support.ShouldBeOver);
             militaryCustomizationUtil.fireSupport.ForEach(support => support.Process());
         }
 

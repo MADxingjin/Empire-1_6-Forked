@@ -27,19 +27,13 @@ namespace FactionColonies
 		{
 			return xenotypeDef?.label != null;
 		}
-        private static List<string> BlackListedTradeTags
-		{
-			get
-			{
-				return new List<string>() 
-				{
-					"AnimalDryad",
-					"AnimalMonster",
-					"AnimalGenetic",
-					"AnimalAlpha"
-				};
-			}
-		}
+        private static readonly List<string> BlackListedTradeTags =  new List<string>() 
+				                                                     {
+					                                                    "AnimalDryad",
+					                                                    "AnimalMonster",
+					                                                    "AnimalGenetic",
+					                                                    "AnimalAlpha"
+				                                                     };
 
 		/// <summary>
 		///		Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is an Animal and if it is not blacklisted by tradeTag 
