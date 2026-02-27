@@ -74,7 +74,7 @@ namespace FactionColonies
             {
                 List<FloatMenuOption> Units = new List<FloatMenuOption>
                 {
-                    new FloatMenuOption("Create New Unit", delegate
+                    new FloatMenuOption("FCCreateNewUnit".Translate(), delegate
                     {
                         MilUnitFC newUnit = new MilUnitFC(false)
                         {

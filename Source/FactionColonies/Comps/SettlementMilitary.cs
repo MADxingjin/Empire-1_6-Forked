@@ -1100,17 +1100,17 @@ namespace FactionColonies
                         return true;
                     }
 
-                    Messages.Message("You can't deploy a squad with no equipped personnel!",
+                    Messages.Message("FCNoSquadEquipped".Translate(),
                         MessageTypeDefOf.RejectInput);
                     return false;
                 }
 
-                Messages.Message("There is no squad loadout assigned to that settlement!",
+                Messages.Message("FCNoSquadLoadoutAssigned".Translate(),
                     MessageTypeDefOf.RejectInput);
                 return false;
             }
 
-            Messages.Message("There is no military squad assigned to that settlement!", MessageTypeDefOf.RejectInput);
+            Messages.Message("FCNoSquadAssigned".Translate(), MessageTypeDefOf.RejectInput);
             return false;
         }
 

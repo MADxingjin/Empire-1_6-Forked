@@ -978,7 +978,7 @@ namespace FactionColonies
                             }));
 
                         if (list.Count == 0)
-                            list.Add(new FloatMenuOption("No special actions to take", delegate { }));
+                            list.Add(new FloatMenuOption("FCNoSpecialActions".Translate(), delegate { }));
                         Find.WindowStack.Add(new FloatMenu(list));
                     }
 
@@ -1193,7 +1193,7 @@ namespace FactionColonies
                 {
                     if (Widgets.ButtonImage(nBuilding, TexLoad.buildingLocked))
                     {
-                        Messages.Message("That Building is locked", MessageTypeDefOf.RejectInput);
+                        Messages.Message("FCBuildingLocked".Translate(), MessageTypeDefOf.RejectInput);
                     }
                 }
 

@@ -133,7 +133,7 @@ namespace FactionColonies
 					else
 					{
 						//TODO: Localization key
-						Messages.Message("You do not have enough silver on the map to pay for that option", MessageTypeDefOf.RejectInput);
+						Messages.Message("FCNotEnoughSilverOption".Translate(), MessageTypeDefOf.RejectInput);
 					}
 				}
 

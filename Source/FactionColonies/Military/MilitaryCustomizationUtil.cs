@@ -226,7 +226,7 @@ namespace FactionColonies
             }
             else
             {
-                Messages.Message("That squad exceeds the settlement's max allotted cost", MessageTypeDefOf.RejectInput);
+                Messages.Message("FCSquadExceedsMaxCost".Translate(), MessageTypeDefOf.RejectInput);
             }
         }
 

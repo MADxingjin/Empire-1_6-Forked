@@ -65,7 +65,7 @@ namespace FactionColonies
 
                 List<FloatMenuOption> squads = new List<FloatMenuOption>
                 {
-                    new FloatMenuOption("Create New Squad", delegate
+                    new FloatMenuOption("FCCreateNewSquad".Translate(), delegate
                     {
                         MilSquadFC newSquad = new MilSquadFC(true)
                         {
@@ -90,7 +90,7 @@ namespace FactionColonies
                 Find.WindowStack.Add(selection);
             }
 
-            if (Widgets.ButtonText(importButton, "Import Squad"))
+            if (Widgets.ButtonText(importButton, "FCImportSquad".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_ManageSquadExportsFC(
                     FactionColoniesMilitary.SavedSquads.ToList()));
@@ -105,18 +105,16 @@ namespace FactionColonies
 
                 if (settlementPointReference != null)
                 {
-                    Widgets.Label(EquipmentTotalCost, "Total Squad Equipment Cost: " +
-                                                      selectedSquad.equipmentTotalCost +
-                                                      " / " + MilitaryCustomizationUtil
+                    Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCost".Translate(
+                                                      selectedSquad.equipmentTotalCost,
+                                                      MilitaryCustomizationUtil
                                                           .calculateMilitaryLevelPoints(settlementPointReference
-                                                              .settlementMilitaryLevel) +
-                                                      " (Max Cost)");
+                                                              .settlementMilitaryLevel)));
                 }
                 else
                 {
-                    Widgets.Label(EquipmentTotalCost, "Total Squad Equipment Cost: " +
-                                                      selectedSquad.equipmentTotalCost +
-                                                      " / " + "No Reference");
+                    Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCostNoRef".Translate(
+                                                      selectedSquad.equipmentTotalCost));
                 }
 
                 Text.Font = GameFont.Tiny;
@@ -129,17 +127,17 @@ namespace FactionColonies
                 //Unit Name
                 selectedSquad.name = Widgets.TextField(nameTextField, selectedSquad.name);
 
-                if (Widgets.ButtonText(ResetButton, "Reset to Default"))
+                if (Widgets.ButtonText(ResetButton, "FCResetToDefault".Translate()))
                 {
                     selectedSquad.newSquad();
                 }
 
-                if (Widgets.ButtonText(DeleteButton, "Delete Squad"))
+                if (Widgets.ButtonText(DeleteButton, "FCDeleteSquad".Translate()))
                 {
                     selectedSquad.deleteSquad();
                     util.checkMilitaryUtilForErrors();
                     selectedSquad = null;
-                    selectedText = "Select A Squad";
+                    selectedText = "FCSelectASquad".Translate();
 
                     //Reset Text anchor and font
                     Text.Font = fontBefore;
@@ -147,10 +145,10 @@ namespace FactionColonies
                     return;
                 }
 
-                if (Widgets.ButtonText(PointRefButton, "Set Point Ref"))
+                if (Widgets.ButtonText(PointRefButton, "FCSetPointRef".Translate()))
                 {
                     List<FloatMenuOption> settlementList = FactionCache.FactionComp
-                        .settlements.Select(settlement => new FloatMenuOption(settlement.Name + " - Military Level : " +
+                        .settlements.Select(settlement => new FloatMenuOption(settlement.Name + "FCMilitaryLevelLabel".Translate() +
                                                                               settlement.settlementMilitaryLevel,
                             delegate
                             {
@@ -161,14 +159,14 @@ namespace FactionColonies
 
                     if (!settlementList.Any())
                     {
-                        settlementList.Add(new FloatMenuOption("No Valid Settlements", null));
+                        settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
                     }
 
                     FloatMenu floatMenu = new FloatMenu(settlementList) {vanishIfMouseDistant = true};
                     Find.WindowStack.Add(floatMenu);
                 }
 
-                if (Widgets.ButtonText(SaveSquadButton, "Export Squad"))
+                if (Widgets.ButtonText(SaveSquadButton, "ExportSquad".Translate()))
                 {
                     // TODO: Confirm if squad with name already exists
                     FactionColoniesMilitary.SaveSquad(new SavedSquadFC(selectedSquad));

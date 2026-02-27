@@ -54,7 +54,7 @@ namespace FactionColonies
 
             Widgets.Label(new Rect(0,0,250,25), label);
            text = Widgets.TextField(new Rect(0,35,150,25), text);
-            if(Widgets.ButtonText(new Rect(155, 35, 60, 25), "Confirm"))
+            if(Widgets.ButtonText(new Rect(155, 35, 60, 25), "FCConfirm".Translate()))
             {
                 if (reason == "faction")
                 {

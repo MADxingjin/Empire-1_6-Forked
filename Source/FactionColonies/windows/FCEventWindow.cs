@@ -131,7 +131,7 @@ namespace FactionColonies
                 }
                 Widgets.Label(name, evt.def.label);
                 //
-                if (Widgets.ButtonText(desc, "Desc"))
+                if (Widgets.ButtonText(desc, "FCDesc".Translate()))
                 {
                     if (evt.hasCustomDescription == false)
                     {
@@ -171,7 +171,7 @@ namespace FactionColonies
                                     list.Add(new FloatMenuOption(settlement.Name, delegate { Find.WindowStack.Add(new SettlementWindowFc(settlement)); }));
                                 }
                             }
-                            if (list.Count == 0) { list.Add(new FloatMenuOption("Null", null)); }
+                            if (list.Count == 0) { list.Add(new FloatMenuOption("None".Translate(), null)); }
                             Find.WindowStack.Add(new FloatMenu(list));
                                 
                         } else

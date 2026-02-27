@@ -41,22 +41,22 @@ namespace FactionColonies
             ls.Gap(20f);
 
             // Welcome message (shortened version for window)
-            ls.Label("Welcome to the Empire Mod!");
+            ls.Label("FCWelcomeTitle".Translate());
             ls.Gap(10f);
-            ls.Label("Build and manage settlements with production, military and loyalty!");
+            ls.Label("FCWelcomeDescription".Translate());
             ls.Gap(15f);
 
             // Quick start guide
             Text.Font = GameFont.Small;
-            ls.Label("📋 QUICK START:");
-            ls.Label("• Select faction traits (you'll get an alert)");
-            ls.Label("• Set your tax collection spot & capital seat"); // Updated this line
-            ls.Label("• Create your first settlement");
-            ls.Label("• Start production of resources, handle military and manage loyalty");
+            ls.Label("FCWelcomeQuickStart".Translate());
+            ls.Label("FCWelcomeStep1".Translate());
+            ls.Label("FCWelcomeStep2".Translate());
+            ls.Label("FCWelcomeStep3".Translate());
+            ls.Label("FCWelcomeStep4".Translate());
             ls.Gap(15f);
 
             // Links section with icons
-            ls.Label("HELPFUL RESOURCES:");
+            ls.Label("FCWelcomeHelpfulResources".Translate());
             ls.Gap(5f);
 
             // Discord link with icon
@@ -66,7 +66,7 @@ namespace FactionColonies
                 Rect iconRect = new Rect(discordRect.x, discordRect.y, 25f, 25f);
                 GUI.DrawTexture(iconRect, TexLoad.discordIcon);
                 Rect textRect = new Rect(discordRect.x + 30f, discordRect.y, discordRect.width - 30f, discordRect.height);
-                if (Widgets.ButtonText(textRect, "Join our Discord Community", true, true, true))
+                if (Widgets.ButtonText(textRect, "FCWelcomeDiscord".Translate(), true, true, true))
                 {
                     Application.OpenURL("https://discord.gg/JKGNMqnVaB");
                 }
@@ -79,7 +79,7 @@ namespace FactionColonies
                 Rect iconRect = new Rect(steamRect.x, steamRect.y, 25f, 25f);
                 GUI.DrawTexture(iconRect, TexLoad.wikiIcon);
                 Rect textRect = new Rect(steamRect.x + 30f, steamRect.y, steamRect.width - 30f, steamRect.height);
-                if (Widgets.ButtonText(textRect, "Empire Guide (Google Docs)", true, true, true))
+                if (Widgets.ButtonText(textRect, "FCWelcomeGuide".Translate(), true, true, true))
                 {
                     Application.OpenURL("https://docs.google.com/document/d/1_b2spgBlr7oYszDlt3vfB5tKCiDfzUXq2xXn69UmXGY/edit?usp=sharing");
                 }
@@ -92,7 +92,7 @@ namespace FactionColonies
                 Rect iconRect = new Rect(githubRect.x, githubRect.y, 25f, 25f);
                 GUI.DrawTexture(iconRect, TexLoad.githubIcon);
                 Rect textRect = new Rect(githubRect.x + 30f, githubRect.y, githubRect.width - 30f, githubRect.height);
-                if (Widgets.ButtonText(textRect, "GitHub Repository", true, true, true))
+                if (Widgets.ButtonText(textRect, "FCWelcomeGitHub".Translate(), true, true, true))
                 {
                     Application.OpenURL("https://github.com/littlertom/Empire-1_6-Continued");
                 }
@@ -101,7 +101,7 @@ namespace FactionColonies
             ls.Gap(20f);
 
             // Tip section
-            ls.Label("💡 TIP: Start with \"Adventure Story\" difficulty for balanced gameplay!");
+            ls.Label("FCWelcomeTip".Translate());
             ls.Gap(20f);
 
             // Bottom buttons
@@ -109,7 +109,7 @@ namespace FactionColonies
             Rect leftButton = new Rect(buttonRect.x, buttonRect.y, (buttonRect.width - 10f) / 2f, buttonRect.height);
             Rect rightButton = new Rect(buttonRect.x + leftButton.width + 10f, buttonRect.y, leftButton.width, buttonRect.height);
 
-            if (Widgets.ButtonText(leftButton, "Begin your Empire"))
+            if (Widgets.ButtonText(leftButton, "FCWelcomeBegin".Translate()))
             {
                 // Close this welcome window first
                 Close();
@@ -122,7 +122,7 @@ namespace FactionColonies
                 }
             }
 
-            if (Widgets.ButtonText(rightButton, "Close"))
+            if (Widgets.ButtonText(rightButton, "FCWelcomeClose".Translate()))
             {
                 Close();
             }

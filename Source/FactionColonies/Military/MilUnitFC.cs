@@ -263,7 +263,7 @@ namespace FactionColonies
             }
             else
             {
-                Messages.Message("You cannot put a weapon on a civilian!", MessageTypeDefOf.RejectInput);
+                Messages.Message("FCNoWeaponOnCivilian".Translate(), MessageTypeDefOf.RejectInput);
             }
 
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Faction Customization -->
+	<CustomizeFaction>Customize Faction</CustomizeFaction>
+	<FactionName>Faction Name</FactionName>
+	<FactionTitle>Faction Title</FactionTitle>
+	<FactionIcon>Faction Icon</FactionIcon>
+	<InvalidFaction>That faction can't run an empire on its own!</InvalidFaction>
+	<PlayerFaction>Player Faction</PlayerFaction>
+	<Bastion>Bastion</Bastion>
+	<FCFoundedOn>Founded on {0}</FCFoundedOn>
+
+	<!-- Faction Stats -->
+	<FactionHappiness>Faction Happiness</FactionHappiness>
+	<FactionLoyalty>Faction Loyalty</FactionLoyalty>
+	<FactionUnrest>Faction Unrest</FactionUnrest>
+	<FactionProsperity>Faction Prosperity</FactionProsperity>
+	<FactionHappinessDesc>The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor.</FactionHappinessDesc>
+	<FactionLoyaltyDesc>The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.</FactionLoyaltyDesc>
+	<FactionUnrestDesc>The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow.</FactionUnrestDesc>
+	<FactionProsperityDesc>The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time.</FactionProsperityDesc>
+
+	<!-- Faction Levels -->
+	<FCLevel>Faction Level: {0}</FCLevel>
+	<FCFactionLevelUp>Faction Level Up</FCFactionLevelUp>
+	<FCFactionLevelUpDesc>Your faction {0} has leveled up to {1}!</FCFactionLevelUpDesc>
+	<ReachedMaxLevel>reached max level</ReachedMaxLevel>
+
+	<!-- Policies -->
+	<Policies-Traits>Policies/Traits</Policies-Traits>
+	<FactionPoliciesAndTraits>Faction Policies and Traits</FactionPoliciesAndTraits>
+	<TaxLaw>Tax Law</TaxLaw>
+	<SocialPolicy>Social Policy</SocialPolicy>
+	<MilitaryPolicy>Military Policy</MilitaryPolicy>
+	<FCPolicySelection>Policy Selection</FCPolicySelection>
+	<FCSelectPolicies>Select Policies</FCSelectPolicies>
+	<PolicyAlreadyEnacted>That policy has already been enacted</PolicyAlreadyEnacted>
+	<AlreadyPolicyTypeBeingEnacted>There is already a policy of that type being enacted</AlreadyPolicyTypeBeingEnacted>
+	<AlreadyPolicyInSlot>There is already a policy being enacted in that slot</AlreadyPolicyInSlot>
+	<Enact>Enact</Enact>
+	<Enacted>Enacted</Enacted>
+	<Repeal>Repeal</Repeal>
+	<WillBeEnactedIn>will be enacted in</WillBeEnactedIn>
+	<EnactPolicy>Enact Policy</EnactPolicy>
+	<HasBeenEnactedAt>has been enacted at</HasBeenEnactedAt>
+	<EnactedInYourFaction>has been enacted in your faction</EnactedInYourFaction>
+
+	<!-- Traits -->
+	<FactionTraits>Faction Traits</FactionTraits>
+	<AddTrait>Add Trait</AddTrait>
+	<FCTraitSelection>Trait Selection</FCTraitSelection>
+	<FCSelectTraits>Select Traits</FCSelectTraits>
+	<FCTraitSlots>Trait Slots</FCTraitSlots>
+	<FCAvailableTraits>Available Traits</FCAvailableTraits>
+	<FCTraitSelectedPreview>{0}</FCTraitSelectedPreview>
+	<FCNoOpenTraitSlots>All available trait slots are filled!</FCNoOpenTraitSlots>
+	<FCAllTraitSlotsFilled>All trait slots have been assigned.</FCAllTraitSlotsFilled>
+	<FCSelectTraitsPrompt>Select {0} more trait(s) from the list above.</FCSelectTraitsPrompt>
+	<FCTraitSelectionReady>Press Confirm to assign the selected traits. This cannot be undone!</FCTraitSelectionReady>
+	<FCHoverTraitForDetails>Hover over a trait to see its details.</FCHoverTraitForDetails>
+	<FCTraits>Traits</FCTraits>
+	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
+	<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>
+	<FCConflictingTraits>You cannot have conflicting faction traits!</FCConflictingTraits>
+	<FCUnselectTrait>You have to unselect one of your current traits to select another!</FCUnselectTrait>
+	<FCTraitsChosen>You have already chosen your traits. You cannot edit them any longer!</FCTraitsChosen>
+	<FCSelectANewTrait>Select a new trait</FCSelectANewTrait>
+	<FCTraitLockedUntilLevel>Locked until level {0}</FCTraitLockedUntilLevel>
+	<FCConfirmTrait>Are you sure you wish to select {0}? You will not be able to reverse this decision</FCConfirmTrait>
+	<FCSelectYourTraits>Your faction's starting traits are not selected. Go to the faction customization tab to select them!</FCSelectYourTraits>
+
+	<!-- Research -->
+	<Researching>Researching</Researching>
+	<ResearchExpended>{0} points of research have been used to research {1}. You have {2} points remaining.</ResearchExpended>
+	<ResearchPointsExpended>Research Expended</ResearchPointsExpended>
+	<NoResearchExpended>No research has been used today. You have {0} points remaining.</NoResearchExpended>
+	<PointsAddedToResearchPool>{0} points have been added to the research pool!</PointsAddedToResearchPool>
+	<ResearchGeneratedWaste>Research points generated by your faction has been wasted as you have no research selected
+	</ResearchGeneratedWaste>
+	<ActivateResearch>Activate Research</ActivateResearch>
+	<FCSendResearchItems>Send Research Items</FCSendResearchItems>
+	<FCFactionResearch>Faction Research</FCFactionResearch>
+	<ResearchLevel>Check Tech Level</ResearchLevel>
+	<CurrentResearchLevel>Your current tech level is {0}. To reach the next tech level you must research {1}</CurrentResearchLevel>
+	<FCShipBasics>Ship Basics</FCShipBasics>
+	<FCFabrication>Fabrication</FCFabrication>
+	<FCElectricity>Electricity</FCElectricity>
+	<FCSmithing>Smithing</FCSmithing>
+
+	<!-- Relations -->
+	<FCRelationImproved>Relation Improved!</FCRelationImproved>
+	<FCRelationImprovedText>Your communications with {0} has led to an improvement in relations of {1}!</FCRelationImprovedText>
+	<FCRelationNotImproved>Failed Relations</FCRelationNotImproved>
+	<FCFailedToImproveRelationship>Your communications with {0} have failed to improve relations.</FCFailedToImproveRelationship>
+	<XDaysToSendDiplomat>{0} days are left until the ability to improve relations is refreshed</XDaysToSendDiplomat>
+	<FCIncreaseRelations>Attempt to Increase Relations</FCIncreaseRelations>
+	<FCCannotImproveRelationsWithType>You cannot improve relations with factions of that type</FCCannotImproveRelationsWithType>
+
+	<!-- Capital -->
+	<CouldNotFindMapOfCapital>Could not find map of capital</CouldNotFindMapOfCapital>
+
+</LanguageData>

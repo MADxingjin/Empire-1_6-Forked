@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Squad Management -->
+	<FCMilitaryTableSquad>Assigned Squad</FCMilitaryTableSquad>
+	<FCMilitaryTableSetSquad>Set Squad</FCMilitaryTableSetSquad>
+	<FCMilitaryTableDeploySquad>Deploy Squad</FCMilitaryTableDeploySquad>
+	<FCMilitaryTableResetSquad>Reset Squad</FCMilitaryTableResetSquad>
+	<FCMilitaryTableButtonCreateSquad>Create Squads</FCMilitaryTableButtonCreateSquad>
+	<FCMilitaryTableButtonCreateUnit>Create Units</FCMilitaryTableButtonCreateUnit>
+	<FCMilitaryTableButtonCreateFireSupport>Create Fire Support</FCMilitaryTableButtonCreateFireSupport>
+	<FCMilTableConfirm>Are you sure? Click to confirm</FCMilTableConfirm>
+	<FCNoSquadAvailable>No Available Squads</FCNoSquadAvailable>
+	<FCResetSquadPawns>Pawns have been regenerated for the squad</FCResetSquadPawns>
+	<FCResetSquadRejected>There are no pawns to reset. Assign a squad first.</FCResetSquadRejected>
+	<selectDeployedSquad>Select Deployed Squad</selectDeployedSquad>
+	<selectedDeployedSquad>{0}'s {1}</selectedDeployedSquad>
+	<noSquadsAvailable>No squads available</noSquadsAvailable>
+
+	<!-- Unit Customization -->
+	<ExportUnit>Exported Unit</ExportUnit>
+	<ExportSquad>Exported Squad</ExportSquad>
+	<CantBeModified>{0} can't be modified: {1}</CantBeModified>
+	<ReasonDeployed>A squad containing it is deployed</ReasonDeployed>
+	<ReasonDefending>A squad containing it is defending a settlement</ReasonDefending>
+	<importUnit>Import Unit</importUnit>
+	<clearUnitSlot>Clear Unit Slot</clearUnitSlot>
+
+	<!-- Outfit Slots -->
+	<fcLabelHead>Head</fcLabelHead>
+	<fcLabelShirt>Shirt</fcLabelShirt>
+	<fcLabelChest>Chest</fcLabelChest>
+	<fcLabelOver>Over</fcLabelOver>
+	<fcLabelBelt>Belt</fcLabelBelt>
+	<fcLabelPants>Pants</fcLabelPants>
+	<fcLabelWeapon>Weapon</fcLabelWeapon>
+	<fcLabelAnimal>Animal</fcLabelAnimal>
+
+	<!-- Unit Buttons -->
+	<resetUnitToDefaultButton>Reset to default</resetUnitToDefaultButton>
+	<deleteUnitButton>Delete unit</deleteUnitButton>
+	<selectAUnitButton>Select a unit</selectAUnitButton>
+	<rollANewUnitButton>Roll a new pawn</rollANewUnitButton>
+	<changeUnitRaceButton>Change race</changeUnitRaceButton>
+	<changeUnitXenoButton>Change Xeno</changeUnitXenoButton>
+	<exportUnitButton>Export unit</exportUnitButton>
+
+	<!-- Unit Checkboxes -->
+	<unitIsCivilianLabel>is Civilian</unitIsCivilianLabel>
+	<unitIsTraderLabel>is Trader</unitIsTraderLabel>
+
+	<!-- Unit Equipment -->
+	<totalEquipmentCostLabel>Total Equipment Cost: </totalEquipmentCostLabel>
+	<unitActionUnequipThing>Unequip</unitActionUnequipThing>
+
+	<!-- Unit Race/PawnKind Errors -->
+	<changeUnitRaceNoRaces>No available races</changeUnitRaceNoRaces>
+	<changeUnitXenoNoXenos>No available Xeno</changeUnitXenoNoXenos>
+	<noPawnKindDefOfTypeOfRaceWarning>Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}.</noPawnKindDefOfTypeOfRaceWarning>
+	<noPawnKindDefOfTypeOfRaceError>Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated!</noPawnKindDefOfTypeOfRaceError>
+	<missingPawnKindDefsCriticalError>The races you selected are missing critical PawnKindDefs! Your faction may generate Humans to fill the gap.</missingPawnKindDefsCriticalError>
+
+	<!-- Squad Design -->
+	<FCCreateNewSquad>Create New Squad</FCCreateNewSquad>
+	<FCImportSquad>Import Squad</FCImportSquad>
+	<FCTotalSquadEquipmentCost>Total Squad Equipment Cost: {0} / {1} (Max Cost)</FCTotalSquadEquipmentCost>
+	<FCTotalSquadEquipmentCostNoRef>Total Squad Equipment Cost: {0} / No Reference</FCTotalSquadEquipmentCostNoRef>
+	<FCDeleteSquad>Delete Squad</FCDeleteSquad>
+	<FCSelectASquad>Select A Squad</FCSelectASquad>
+	<FCMilitaryLevelLabel> - Military Level : </FCMilitaryLevelLabel>
+	<FCNoSquadEquipped>You can't deploy a squad with no equipped personnel!</FCNoSquadEquipped>
+	<FCNoSquadLoadoutAssigned>There is no squad loadout assigned to that settlement!</FCNoSquadLoadoutAssigned>
+	<FCNoSquadAssigned>There is no military squad assigned to that settlement!</FCNoSquadAssigned>
+	<FCSquadExceedsMaxCost>That squad exceeds the settlement's max allotted cost</FCSquadExceedsMaxCost>
+	<FCMustHaveTrader>There must be a trader in the squad to be a trader caravan!</FCMustHaveTrader>
+	<FCTooManyTraders>There cannot be more than one trader in the caravan!</FCTooManyTraders>
+	<FCNoWeaponOnCivilian>You cannot put a weapon on a civilian!</FCNoWeaponOnCivilian>
+	<FCCreateNewUnit>Create New Unit</FCCreateNewUnit>
+
+	<!-- Fire Support Design -->
+	<FCCreateNewFireSupport>Create New Fire Support</FCCreateNewFireSupport>
+	<FCDeleteSupport>Delete Support</FCDeleteSupport>
+	<FCAddNewProjectile>Add new projectile</FCAddNewProjectile>
+	<FCNoProjectilesFound>No available projectiles found</FCNoProjectilesFound>
+	<FCFireSupportOptions>Options</FCFireSupportOptions>
+	<FCInsertProjectileAbove>Insert Projectile Above Slot</FCInsertProjectileAbove>
+	<FCDuplicate>Duplicate</FCDuplicate>
+
+	<!-- Unit Types -->
+	<FCPawns>Pawns</FCPawns>
+	<FCTrader>Trader</FCTrader>
+	<FCFighter>Fighter</FCFighter>
+	<FCNonMercenary>Non Mercenary</FCNonMercenary>
+
+	<!-- Import/Export -->
+	<FCImport>Import</FCImport>
+	<FCImported>Imported {0}</FCImported>
+	<FCDeleted>Deleted {0}</FCDeleted>
+
+	<!-- Prisoners -->
+	<PrisonersMenu>Prisoners</PrisonersMenu>
+	<FCWorkload>workload</FCWorkload>
+	<FCHeavy>heavy</FCHeavy>
+	<FCMedium>medium</FCMedium>
+	<FCLight>light</FCLight>
+	<FCHeavyExplanation>Adds +2 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 20.</FCHeavyExplanation>
+	<FCMediumExplanation>Adds +1 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 10.</FCMediumExplanation>
+	<FCLightExplanation>Adds +1 to worker hard cap (Over-Max Workers). Increases health by 4</FCLightExplanation>
+	<SellPawn>Sell Pawn</SellPawn>
+	<ReturnToPlayer>Return To Player</ReturnToPlayer>
+	<SellPawnInfo>Value will be added to next bill from colony</SellPawnInfo>
+	<PrisonerCaptureInfo>Prisoner: {0} has been enslaved and delivered to {1}</PrisonerCaptureInfo>
+	<cantSendWithDangerLevel>You can't send a prisoner to your settlements when the map has a danger level of {0}!</cantSendWithDangerLevel>
+	<floatMenuOptionSendPrisonerToSettlement>{0} - Settlement Level: {1}, Prisoners: {2}</floatMenuOptionSendPrisonerToSettlement>
+	<aPrisonerIsBeingDeliveredToYou>A prisoner is being delivered to you</aPrisonerIsBeingDeliveredToYou>
+
+	<!-- Mercenary -->
+	<FCRequestMercenary>Request Mercenary</FCRequestMercenary>
+	<FCActionMercenaryRefreshed>The Request Mercenary action is available for use</FCActionMercenaryRefreshed>
+	<FCActionMercenaryOnCooldown>You cannot use that action for until another {0}</FCActionMercenaryOnCooldown>
+
+</LanguageData>

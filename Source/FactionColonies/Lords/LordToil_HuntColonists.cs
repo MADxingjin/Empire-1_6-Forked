@@ -20,7 +20,7 @@ namespace FactionColonies
         public override void UpdateAllDuties()
         {
             Find.SignalManager.SendSignal(new Signal("startAssault"));
-            Messages.Message(new Message("The assault is beginning!", MessageTypeDefOf.ThreatSmall));
+            Messages.Message(new Message("FCAssaultBeginning".Translate(), MessageTypeDefOf.ThreatSmall));
             foreach (Pawn pawn in lord.ownedPawns)
             {
                 pawn.mindState.duty = new PawnDuty(DutyDefOf.AssaultColony); //new PawnDuty(DefDatabase<DutyDef>.GetNamed("HuntColonists"));

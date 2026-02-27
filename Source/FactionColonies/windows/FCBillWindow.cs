@@ -172,21 +172,21 @@ namespace FactionColonies
             Widgets.ButtonTextSubtle(billDescBase, "DueFC".Translate());
             Widgets.ButtonTextSubtle(billLocationBase, "Amount".Translate());
             Widgets.ButtonTextSubtle(billTimeRemaining, "HasTithe".Translate());
-            if(Widgets.ButtonTextSubtle(billResolveBase, "Auto-Resolve"))
+            if(Widgets.ButtonTextSubtle(billResolveBase, "FCAutoResolve".Translate()))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-                FloatMenuOption option = new FloatMenuOption("Auto-Resolving : " + faction.autoResolveBills, delegate 
+                FloatMenuOption option = new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills), delegate
                 {
                     faction.autoResolveBills = !faction.autoResolveBills;
                     switch (faction.autoResolveBills)
                     {
                         case true:
-                            Messages.Message("Bills are now autoresolving!", MessageTypeDefOf.NeutralEvent);
+                            Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
                             PaymentUtil.autoresolveBills(bills);
                             break;
                         case false:
-                            Messages.Message("Bills are now not autoresolving.", MessageTypeDefOf.NeutralEvent);
+                            Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
                             break;
                     }
                     

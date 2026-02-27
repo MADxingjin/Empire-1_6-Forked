@@ -69,7 +69,7 @@ namespace FactionColonies
                 List<FloatMenuOption> supports = new List<FloatMenuOption>();
 
                 //Option to create new firesupport
-                supports.Add(new FloatMenuOption("Create New Fire Support", delegate
+                supports.Add(new FloatMenuOption("FCCreateNewFireSupport".Translate(), delegate
                 {
                     MilitaryFireSupport newFireSupport = new MilitaryFireSupport();
                     newFireSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
@@ -142,17 +142,17 @@ namespace FactionColonies
                 //Unit Name
                 selectedSupport.name = Widgets.TextField(nameTextField, selectedSupport.name);
 
-                if (Widgets.ButtonText(ResetButton, "Reset to Default"))
+                if (Widgets.ButtonText(ResetButton, "FCResetToDefault".Translate()))
                 {
                     selectedSupport.projectiles = new List<ThingDef>();
                 }
 
-                if (Widgets.ButtonText(DeleteButton, "Delete Support"))
+                if (Widgets.ButtonText(DeleteButton, "FCDeleteSupport".Translate()))
                 {
                     selectedSupport.delete();
                     util.checkMilitaryUtilForErrors();
                     selectedSupport = null;
-                    selectedText = "Select A Fire Support";
+                    selectedText = "FCCreateNewFireSupport".Translate();
 
                     //Reset Text anchor and font
                     Text.Font = fontBefore;
@@ -160,14 +160,14 @@ namespace FactionColonies
                     return;
                 }
 
-                if (Widgets.ButtonText(PointRefButton, "Set Point Ref"))
+                if (Widgets.ButtonText(PointRefButton, "FCSetPointRef".Translate()))
                 {
                     List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
                     foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                     {
                         settlementList.Add(new FloatMenuOption(
-                            settlement.Name + " - Military Level : " + settlement.settlementMilitaryLevel,
+                            settlement.Name + "FCMilitaryLevelLabel".Translate() + settlement.settlementMilitaryLevel,
                             delegate
                             {
                                 //set points
@@ -177,7 +177,7 @@ namespace FactionColonies
 
                     if (!settlementList.Any())
                     {
-                        settlementList.Add(new FloatMenuOption("No Valid Settlements", null));
+                        settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
                     }
 
                     FloatMenu floatMenu = new FloatMenu(settlementList);
@@ -231,7 +231,7 @@ namespace FactionColonies
                     //If on last row
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(text, i.ToString());
-                    if (Widgets.ButtonTextSubtle(icon, "Add new projectile"))
+                    if (Widgets.ButtonTextSubtle(icon, "FCAddNewProjectile".Translate()))
                     {
                         //if creating new projectile
                         List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
@@ -249,7 +249,7 @@ namespace FactionColonies
                         if (!thingOptions.Any())
                         {
                             thingOptions.Add(
-                                new FloatMenuOption("No available projectiles found", delegate { }));
+                                new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
                         }
 
                         Find.WindowStack.Add(new Searchable_FloatMenu(thingOptions, true));
@@ -274,7 +274,7 @@ namespace FactionColonies
                         if (!thingOptions.Any())
                         {
                             thingOptions.Add(
-                                new FloatMenuOption("No available projectiles found", delegate { }));
+                                new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
                         }
 
                         Find.WindowStack.Add(new FloatMenu(thingOptions));
@@ -286,13 +286,13 @@ namespace FactionColonies
                             2))); //ADD in future mod setting for firesupport cost
 
                     Widgets.DefLabelWithIcon(icon, selectedSupport.projectiles[i]);
-                    if (Widgets.ButtonTextSubtle(options, "Options"))
+                    if (Widgets.ButtonTextSubtle(options, "FCFireSupportOptions".Translate()))
                     {
                         //If clicked options button
                         int k = i;
                         List<FloatMenuOption> listOptions = new List<FloatMenuOption>
                         {
-                            new FloatMenuOption("Insert Projectile Above Slot", delegate
+                            new FloatMenuOption("FCInsertProjectileAbove".Translate(), delegate
                             {
                                 List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
                                 foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
@@ -307,13 +307,13 @@ namespace FactionColonies
 
                                 if (!thingOptions.Any())
                                 {
-                                    thingOptions.Add(new FloatMenuOption("No available projectiles found",
+                                    thingOptions.Add(new FloatMenuOption("FCNoProjectilesFound".Translate(),
                                         delegate { }));
                                 }
 
                                 Find.WindowStack.Add(new FloatMenu(thingOptions));
                             }),
-                            new FloatMenuOption("Duplicate", delegate
+                            new FloatMenuOption("FCDuplicate".Translate(), delegate
                             {
                                 ThingDef tempDef = selectedSupport.projectiles[k];
                                 List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();

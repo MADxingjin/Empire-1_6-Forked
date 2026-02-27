@@ -114,7 +114,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.Font = GameFont.Medium;
                 Rect btn = new Rect(inRect.x + inRect.width / 2f - 150f, inRect.y + inRect.height / 2f - 20f, 300f, 40f);
-                if (Widgets.ButtonText(btn, "Create New Faction"))
+                if (Widgets.ButtonText(btn, "FCCreateNewFaction".Translate()))
                 {
                     ColonyUtil.createPlayerColonyFaction();
                     faction = FactionCache.FactionComp;
@@ -767,20 +767,20 @@ namespace FactionColonies
             Widgets.ButtonTextSubtle(new Rect(hx + cName + cDue + cAmount,      hy, cTithe,   headerH), "HasTithe".Translate());
 
             Rect autoBtn = new Rect(hx + cName + cDue + cAmount + cTithe, hy, cResolve - 30f, headerH);
-            if (Widgets.ButtonTextSubtle(autoBtn, "Auto-Resolve"))
+            if (Widgets.ButtonTextSubtle(autoBtn, "FCAutoResolve".Translate()))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
-                list.Add(new FloatMenuOption("Auto-Resolving : " + faction.autoResolveBills, delegate
+                list.Add(new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills), delegate
                 {
                     faction.autoResolveBills = !faction.autoResolveBills;
                     if (faction.autoResolveBills)
                     {
-                        Messages.Message("Bills are now autoresolving!", MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
                         PaymentUtil.autoresolveBills(bills);
                     }
                     else
                     {
-                        Messages.Message("Bills are now not autoresolving.", MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
                     }
                 }));
                 Find.WindowStack.Add(new FloatMenu(list));
@@ -886,7 +886,7 @@ namespace FactionColonies
 
                 Widgets.Label(new Rect(rx, ry, cName, rowH), evt.def.label); rx += cName;
 
-                if (Widgets.ButtonText(new Rect(rx, ry, cDesc, rowH), "Desc"))
+                if (Widgets.ButtonText(new Rect(rx, ry, cDesc, rowH), "FCDesc".Translate()))
                 {
                     if (!evt.hasCustomDescription)
                     {
@@ -924,7 +924,7 @@ namespace FactionColonies
                             }
                         }
                         if (list.Count == 0)
-                            list.Add(new FloatMenuOption("Null", null));
+                            list.Add(new FloatMenuOption("None".Translate(), null));
                         Find.WindowStack.Add(new FloatMenu(list));
                     }
                     else if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
@@ -1189,13 +1189,13 @@ namespace FactionColonies
                     int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
                     List<FloatMenuOption> options = new List<FloatMenuOption>
                     {
-                        new FloatMenuOption("Deploy Secondary Squad - $" + cost + " silver", delegate
+                        new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
                         {
                             if (PaymentUtil.getSilver() >= cost)
                             {
                                 List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
                                 {
-                                    new FloatMenuOption("Walk into map", delegate
+                                    new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
                                     {
                                         MilitaryUtil.CallinExtraForces(settlement, false);
                                         Find.WindowStack.currentlyDrawnWindow.Close();
@@ -1205,7 +1205,7 @@ namespace FactionColonies
                                 if (!FCSettings.medievalTechOnly &&
                                     (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
                                 {
-                                    deploymentOptions.Add(new FloatMenuOption("Drop-Pod", delegate
+                                    deploymentOptions.Add(new FloatMenuOption("dropPodDeploymentOption".Translate(), delegate
                                     {
                                         MilitaryUtil.CallinExtraForces(settlement, true);
                                         Find.WindowStack.currentlyDrawnWindow.Close();
@@ -1257,33 +1257,33 @@ namespace FactionColonies
                                 }
                                 else
                                 {
-                                    Messages.Message("You lack the required amount of silver to use that firesupport option!",
+                                    Messages.Message("FCNotEnoughSilverFireSupport".Translate(),
                                         MessageTypeDefOf.RejectInput);
                                 }
                             }
                             else
                             {
-                                Messages.Message("That firesupport option is on cooldown for another " +
-                                    (milComp.artilleryTimer - Find.TickManager.TicksGame).ToStringTicksToDays(),
+                                Messages.Message("FCFireSupportCooldown".Translate(
+                                    (milComp.artilleryTimer - Find.TickManager.TicksGame).ToStringTicksToDays()),
                                     MessageTypeDefOf.RejectInput);
                             }
                         }
                         else
                         {
-                            Messages.Message("The settlement requires an artillery outpost to be built to use that firesupport option",
+                            Messages.Message("FCRequiresArtilleryOutpost".Translate(),
                                 MessageTypeDefOf.RejectInput);
                         }
                     }
                     else
                     {
-                        Messages.Message("The settlement requires a higher military level to use that fire support!",
+                        Messages.Message("FCRequiresHigherMilLevel".Translate(),
                             MessageTypeDefOf.RejectInput);
                     }
                 }));
             }
 
             if (!list.Any())
-                list.Add(new FloatMenuOption("No fire supports currently made. Make one", delegate { }));
+                list.Add(new FloatMenuOption("FCNoFireSupportsMade".Translate(), delegate { }));
 
             Find.WindowStack.Add(new Searchable_FloatMenu(list));
         }

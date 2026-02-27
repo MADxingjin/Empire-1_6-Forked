@@ -601,7 +601,7 @@ namespace FactionColonies
                 // This represents taxes being collected locally at the capital
                 PlanetTile fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? PlanetTile.Invalid;
                 tmp.source = faction.capitalLocation != PlanetTile.Invalid ? faction.capitalLocation : fallbackTile;
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital");
+                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital".Translate());
 
                 LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }

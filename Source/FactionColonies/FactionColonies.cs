@@ -502,7 +502,7 @@ namespace FactionColonies
             ls.Begin(viewRect);
 
             // Display mod version
-            ls.Label("Empire Mod Version: " + GetModVersion());
+            ls.Label("FCModVersion".Translate(GetModVersion()));
             ls.Gap(10f);
 
             // Empire Difficulty Selection

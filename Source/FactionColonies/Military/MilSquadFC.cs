@@ -125,14 +125,14 @@ namespace FactionColonies
 
                 if (hasTraderCount == 0)
                 {
-                    Messages.Message("There must be a trader in the squad to be a trader caravan!",
+                    Messages.Message("FCMustHaveTrader".Translate(),
                         MessageTypeDefOf.RejectInput);
                     return;
                 }
 
                 if (hasTraderCount > 1)
                 {
-                    Messages.Message("There cannot be more than one trader in the caravan!",
+                    Messages.Message("FCTooManyTraders".Translate(),
                         MessageTypeDefOf.RejectInput);
                     return;
                 }
