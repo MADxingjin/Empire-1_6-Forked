@@ -64,6 +64,18 @@
 	<!--FactionCustomizePoliciesWindowFC-->
 	<FCPolicySelection>Policy Selection</FCPolicySelection>
 	<FCSelectPolicies>Select Policies</FCSelectPolicies>
+
+	<!--FactionCustomizeTraitsWindowFC-->
+	<FCTraitSelection>Trait Selection</FCTraitSelection>
+	<FCSelectTraits>Select Traits</FCSelectTraits>
+	<FCTraitSlots>Trait Slots</FCTraitSlots>
+	<FCAvailableTraits>Available Traits</FCAvailableTraits>
+	<FCTraitSelectedPreview>{0}</FCTraitSelectedPreview>
+	<FCNoOpenTraitSlots>All available trait slots are filled!</FCNoOpenTraitSlots>
+	<FCAllTraitSlotsFilled>All trait slots have been assigned.</FCAllTraitSlotsFilled>
+	<FCSelectTraitsPrompt>Select {0} more trait(s) from the list above.</FCSelectTraitsPrompt>
+	<FCTraitSelectionReady>Press Confirm to assign the selected traits. This cannot be undone!</FCTraitSelectionReady>
+	<FCHoverTraitForDetails>Hover over a trait to see its details.</FCHoverTraitForDetails>
 	<FCOverview>Overview</FCOverview>
 	<FCTraits>Traits</FCTraits>
 	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>

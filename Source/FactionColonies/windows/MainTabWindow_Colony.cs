@@ -325,63 +325,50 @@ namespace FactionColonies
             Widgets.DrawLineHorizontal(panel.x + margin, y, panel.width - (margin * 2));
             y += margin;
             float traitH = 30f;
-            List<FCPolicyDef> available = AvailableTraitsList();
 
+            bool hasOpenSlots = false;
             for (int slot = 0; slot < 5; slot++)
             {
-                int capturedSlot = slot;
                 FCPolicy current = faction.factionTraits[slot];
+                bool isLocked = faction.factionLevel < (slot + 1);
+                bool isOpen = !isLocked && current.def == FCPolicyDefOf.empty;
+                if (isOpen) hasOpenSlots = true;
+
                 Rect traitRect = new Rect(panel.x, y, panel.width, traitH);
                 Rect labelRect = new Rect(traitRect.x + (bigMargin * 2), y, traitRect.width - (bigMargin * 2), traitRect.height);
-                Color labelcolor = SlotLocked(slot + 1) ? Color.gray : Color.white;
-                bool highlightLabel = CanChangeTrait(slot + 1, current);
 
-                if (SlotLocked(slot + 1))
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.DrawHighlight(traitRect);
+
+                if (isLocked)
                 {
-                    Text.Anchor = TextAnchor.MiddleLeft;
-                    Widgets.DrawHighlight(traitRect);
-                    Widgets.Label(labelRect, ReturnTraitAvailability(slot + 1, current).Colorize(Color.gray));
+                    Widgets.Label(labelRect, "FCTraitLockedUntilLevel".Translate(slot + 1).Colorize(Color.gray));
+                }
+                else if (current.def != FCPolicyDefOf.empty)
+                {
+                    Widgets.Label(labelRect, current.def.LabelCap);
+                    UIUtil.TipRegionByText(traitRect, current.def.PolicyText());
                 }
                 else
                 {
-                    if (Widgets.ButtonTextSubtle(traitRect, ReturnTraitAvailability(slot + 1, current), labelColor: labelcolor, highlight: highlightLabel))
-                    {
-                        if (CanChangeTrait(slot + 1, current))
-                        {
-                            List<FloatMenuOption> list = new List<FloatMenuOption>();
-                            foreach (FCPolicyDef trait in available)
-                            {
-                                FCPolicyDef capturedTrait = trait;
-                                list.Add(new FloatMenuOption(trait.label,
-                                    delegate
-                                    {
-                                        List<FloatMenuOption> confirm = new List<FloatMenuOption>();
-                                        confirm.Add(new FloatMenuOption(
-                                            "FCConfirmTrait".Translate(capturedTrait.label),
-                                            delegate { faction.factionTraits[capturedSlot] = new FCPolicy(capturedTrait); }));
-                                        Find.WindowStack.Add(new FloatMenu(confirm));
-                                    },
-                                    mouseoverGuiAction: delegate
-                                    {
-                                        TooltipHandler.TipRegion(
-                                            new Rect(Event.current.mousePosition, new Vector2(200f, 200f)),
-                                            capturedTrait.PolicyText());
-                                    }));
-                            }
-                            Find.WindowStack.Add(new FloatMenu(list));
-                        }
-                    }
-                }
-
-                if (Mouse.IsOver(traitRect) && current.def != FCPolicyDefOf.empty)
-                {
-                    TooltipHandler.TipRegion(
-                        new Rect(Event.current.mousePosition, new Vector2(200f, 200f)),
-                        current.def.PolicyText());
+                    Widgets.Label(labelRect, "FCSelectANewTrait".Translate().Colorize(Color.yellow));
                 }
 
                 y += traitH + smallMargin;
             }
+
+            if (hasOpenSlots)
+            {
+                Rect selectButton = new Rect(panel.x, y, panel.width, traitH);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                if (Widgets.ButtonText(selectButton, "FCSelectTraits".Translate()))
+                {
+                    Find.WindowStack.Add(new FactionCustomizeTraitsWindowFC(faction));
+                }
+                y += traitH + smallMargin;
+            }
+
             y += margin - smallMargin;
             Widgets.DrawLineHorizontal(panel.x + margin, y, panel.width - (margin * 2));
 
@@ -402,7 +389,7 @@ namespace FactionColonies
         private void DrawOverviewCenterPanel(Rect panel)
         {
             float x = panel.x;
-            float y = panel.y + margin;
+            float y = panel.y;
             float width = panel.width;
 
             // --- Action Buttons ---
@@ -1015,39 +1002,5 @@ namespace FactionColonies
             militaryWindow.Select(selecting);
         }
 
-        // ===== HELPERS (from FCWindow_Overview) =====
-
-        private string ReturnTraitAvailability(int slot, FCPolicy current)
-        {
-            if (current.def != FCPolicyDefOf.empty)
-                return current.def.label;
-            if (faction.factionLevel >= slot)
-                return "FCSelectANewTrait".Translate();
-            return "FCTraitLockedUntilLevel".Translate(slot);
-        }
-
-        private bool CanChangeTrait(int slot, FCPolicy current)
-        {
-            if (current.def != FCPolicyDefOf.empty)
-                return false;
-            return faction.factionLevel >= slot;
-        }
-        private bool SlotLocked(int slot)
-        {
-            return faction.factionLevel < slot;
-        }
-
-        private List<FCPolicyDef> AvailableTraitsList()
-        {
-            List<FCPolicyDef> list = new List<FCPolicyDef>();
-            if (!faction.hasTrait(FCPolicyDefOf.resilient))      list.Add(FCPolicyDefOf.resilient);
-            if (!faction.hasTrait(FCPolicyDefOf.raiders))        list.Add(FCPolicyDefOf.raiders);
-            if (!faction.hasTrait(FCPolicyDefOf.defenseInDepth)) list.Add(FCPolicyDefOf.defenseInDepth);
-            if (!faction.hasTrait(FCPolicyDefOf.industrious))    list.Add(FCPolicyDefOf.industrious);
-            if (!faction.hasTrait(FCPolicyDefOf.roadBuilders))   list.Add(FCPolicyDefOf.roadBuilders);
-            if (!faction.hasTrait(FCPolicyDefOf.mercantile))     list.Add(FCPolicyDefOf.mercantile);
-            if (!faction.hasTrait(FCPolicyDefOf.innovative))     list.Add(FCPolicyDefOf.innovative);
-            return list;
-        }
     }
 }
