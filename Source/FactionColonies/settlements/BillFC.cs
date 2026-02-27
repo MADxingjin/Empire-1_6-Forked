@@ -13,9 +13,6 @@ namespace FactionColonies
         public List<Thing> itemTithes;
         public float silverAmount;
         public List<ResourcePool> resourcePools;
-        //TODO: on the chopping block
-        public float electricityAllotted;
-        public float researchCompleted;
 
         //ref
         public WorldSettlementFC settlement;

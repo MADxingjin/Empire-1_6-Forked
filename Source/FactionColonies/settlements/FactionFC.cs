@@ -333,7 +333,7 @@ namespace FactionColonies
                 xenotypeFilter.FinalizeInit(this);
             }
 
-            //TODO: seems this will refresh every time the game is loaded. Might be a problem. Keep an eye on this
+            // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
             factionResources.Clear();
             foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
             {
@@ -1335,9 +1335,8 @@ namespace FactionColonies
             Building_CapitalSpot activeCapitalSpot = GetActiveCapitalSpot();
             if (activeCapitalSpot != null)
             {
-                //TODO: Localization key
                 Messages.Message(
-                    $"Empire capital is already established at {activeCapitalSpot.Map.Parent.LabelCap}. Disable the capital seat there first if you want to move it.",
+                    "FCCapitalAlreadyEstablished".Translate(activeCapitalSpot.Map.Parent.LabelCap),
                     MessageTypeDefOf.RejectInput
                 );
                 return;
@@ -1352,9 +1351,8 @@ namespace FactionColonies
             }
             else
             {
-                //TODO: Localization key
                 Messages.Message(
-                    "Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.",
+                    "FCUnableToSetCapitalHere".Translate(),
                     MessageTypeDefOf.NegativeEvent);
             }
         }

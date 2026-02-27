@@ -1286,20 +1286,6 @@ namespace FactionColonies
             BuildingsComp.ConstructBuilding(building, buildingSlot);
         }
 
-        //TODO: what is this comment for?
-        //Reference
-        //0 - settlement name
-        //1 - food end production
-        //2 - weapon end pro
-        //3 - apparel end pro
-        //4 - animals end pro
-        //5 - logging end pro
-        //6 - mining end pro
-        //7 - report button
-        //8 - tithe est value
-        //9 - Silver income
-        //10 - location id
-
         public ResourceFC returnResource(string defName) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def.defName == defName);

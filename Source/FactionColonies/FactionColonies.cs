@@ -286,8 +286,6 @@ namespace FactionColonies
 
                 updateVersion = newVersion;
                 settlementsAutoBattle = true;
-                //TODO: we original forced a write here. I don't really think that's necessary, but look into it.
-                //Write();
             }
         }
 

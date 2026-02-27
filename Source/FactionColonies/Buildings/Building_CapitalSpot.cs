@@ -156,17 +156,15 @@ namespace FactionColonies
                         
                         if (IsActiveCapitalSpot)
                         {
-                            //TODO: Localization key
                             Messages.Message(
-                                $"Empire capital established at {Map.Parent.LabelCap}! This location will be used as the center of your empire.",
+                                "FCCapitalEstablished".Translate(Map.Parent.LabelCap),
                                 MessageTypeDefOf.PositiveEvent
                             );
                         }
                         else
                         {
-                            //TODO: Localization key
                             Messages.Message(
-                                "Capital seat disabled. Empire will use fallback capital location if available.",
+                                "FCCapitalSeatDisabled".Translate(),
                                 MessageTypeDefOf.NeutralEvent
                             );
                         }
@@ -195,10 +193,9 @@ namespace FactionColonies
                 FactionFC faction = FactionCache.FactionComp;
                 if (faction != null)
                 {
-                    //TODO: Localization key
                     faction.capitalLocation = PlanetTile.Invalid;
                     Messages.Message(
-                        "Empire capital has been lost! You should establish a new capital seat.",
+                        "FCCapitalLost".Translate(),
                         MessageTypeDefOf.NegativeEvent
                     );
                 }

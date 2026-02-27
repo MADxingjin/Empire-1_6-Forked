@@ -32,6 +32,11 @@
 	<BuildingFilterWorkers>Workers</BuildingFilterWorkers>
 	<BuildingFilterMilitary>Military</BuildingFilterMilitary>
 
+	<!-- Capital Seat -->
+	<FCCapitalEstablished>Empire capital established at {0}! This location will be used as the center of your empire.</FCCapitalEstablished>
+	<FCCapitalSeatDisabled>Capital seat disabled. Empire will use fallback capital location if available.</FCCapitalSeatDisabled>
+	<FCCapitalLost>Empire capital has been lost! You should establish a new capital seat.</FCCapitalLost>
+
 	<!-- Building Window -->
 	<BuildingUpgrades>Building Upgrades</BuildingUpgrades>
 	<Buildings>Buildings</Buildings>

@@ -10,7 +10,6 @@ namespace FactionColonies
     {
         public string desc = ""; //Description of trait
 
-        //TODO: modifying all trait defs to use this new system is going to be SO much fun. Ugh
         public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
 
         //Military Stats  = baselevel connected

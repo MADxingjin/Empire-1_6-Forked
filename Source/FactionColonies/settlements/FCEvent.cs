@@ -358,8 +358,6 @@ namespace FactionColonies
                         break;
                     case "cooldownMilitary":
                         {
-                            //TODO: this is a debugging message, but since we show it to the player, it'd be nice to have
-                            // a localization key for it
                             LogUtil.Warning("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.");
                             Messages.Message("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.",
                                              MessageTypeDefOf.NegativeEvent);

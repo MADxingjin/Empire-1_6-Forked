@@ -132,7 +132,6 @@ namespace FactionColonies
 					}
 					else
 					{
-						//TODO: Localization key
 						Messages.Message("FCNotEnoughSilverOption".Translate(), MessageTypeDefOf.RejectInput);
 					}
 				}

@@ -325,7 +325,6 @@ namespace FactionColonies
         {
             //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             Find.FactionManager.OfPlayer.TryAffectGoodwillWith(faction, -50);
-            // FIXME Workaround, since method TrySetRelationKind is gone
             TrySetRelationKind(Find.FactionManager.OfPlayer, faction, FactionRelationKind.Hostile);
             resetPlayerColonyRelations();
             //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
@@ -343,7 +342,6 @@ namespace FactionColonies
                     PCFaction.TryAffectGoodwillWith(faction,
                         (Find.FactionManager.OfPlayer.RelationWith(faction).baseGoodwill -
                          PCFaction.RelationWith(faction).baseGoodwill));
-                    // FIXME Workaround, since method TrySetRelationKind is gone
                     TrySetRelationKind(PCFaction, faction, Find.FactionManager.OfPlayer.RelationKindWith(faction));
                     //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony " + PCFaction.RelationWith(faction).goodwill);
                 }
