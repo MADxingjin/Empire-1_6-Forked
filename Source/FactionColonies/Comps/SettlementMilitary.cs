@@ -73,6 +73,8 @@ namespace FactionColonies
         public bool autoDefend = false;
         public int settlementMilitaryLevel;
 
+        private bool endingBattle = false;
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -298,8 +300,7 @@ namespace FactionColonies
                         if (defenders.Any())
                             defenders[0].GetLord().AddPawn(pawn);
                         else
-                            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(),
-                                WorldSettlement.Map, pawns);
+                            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(WorldSettlement), WorldSettlement.Map, pawns);
                     }
 
                     var caravanSupporting = new CaravanSupporting
@@ -323,17 +324,22 @@ namespace FactionColonies
         private void deleteMap()
         {
             if (Map == null) return;
-            Map.lordManager.lords.Clear();
+            var lords = Map.lordManager.lords.ListFullCopy();
+            foreach (var lord in lords)
+            {
+                Map.lordManager.RemoveLord(lord);
+            }
 
             CameraJumper.TryJump(WorldSettlement.Tile);
             //Prevent player from zooming back into the settlement
             Current.Game.CurrentMap = Find.AnyPlayerHomeMap;
 
             //Ignore any empty caravans
-            var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => !pawn.Downed || !pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(
-                pawn => !pawn.Downed && !pawn.Dead)))
+            var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => pawn.Downed || pawn.Dead));
+            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => !pawn.Downed && !pawn.Dead)))
+            {
                 CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
+            }
 
             if (AllDowned && defenders.Any())
             {
@@ -379,7 +385,10 @@ namespace FactionColonies
             if (Map.mapPawns?.AllPawnsSpawned == null) return;
 
             //Despawn removes them from AllPawnsSpawned, so we copy it
-            //foreach (var pawn in Map.mapPawns.AllPawnsSpawned.ListFullCopy()) pawn.DeSpawn();
+            foreach (var pawn in Map.mapPawns.AllPawnsSpawned.ToList())
+            {
+                pawn.DeSpawn();
+            }
         }
 
         public void startDefence(FCEvent evt, Action after)
@@ -565,8 +574,7 @@ namespace FactionColonies
                 friendly.drafter.Drafted = true;
             }
 
-            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(riders), Map,
-                friendlies);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(WorldSettlement, riders), Map, friendlies);
 
             defenders = friendlies;
         }
@@ -696,12 +704,15 @@ namespace FactionColonies
             defenderForce = null;
             attackers.Clear();
             attackerForce = null;
+            endingBattle = false;
         }
 
         public void removeAttacker(Pawn downed)
         {
             attackers.Remove(downed);
-            if (attackers.Any()) return;
+            if (attackers.Any() || endingBattle) return;
+
+            endingBattle = true;
             LongEventHandler.QueueLongEvent(endAttack,
                 "EndingAttack", false, error =>
                 {
@@ -714,7 +725,9 @@ namespace FactionColonies
         public void removeDefender(Pawn defender)
         {
             defenders.Remove(defender);
-            if (defenders.Any()) return;
+            if (defenders.Any() || endingBattle) return;
+
+            endingBattle = true;
             LongEventHandler.QueueLongEvent(endAttack,
                 "EndingAttack", false, error =>
                 {
@@ -724,14 +737,17 @@ namespace FactionColonies
                 });
         }
 
-        //TODO needs to override PostCaravanFormed instead (since this is a comp). Functionally there isn't much difference,
-        //     as MapParent.Notify_CaravanFormed calls PostCaravanFormed on all comps.
         public override void PostCaravanFormed(Caravan caravan)
         {
             var foundCaravan = new List<CaravanSupporting>();
             foreach (var found in caravan.pawns)
             {
-                if (found.GetLord() != null) found.GetLord().ownedPawns.Remove(found);
+                var lord = found.GetLord();
+                if (lord != null)
+                {
+                    //lord.ownedPawns.Remove(found);
+                    lord.Notify_PawnLost(found, PawnLostCondition.LeftVoluntarily);
+                }
 
                 foreach (var caravanSupporting in
                     supporting.Where(caravanSupporting => caravanSupporting.pawns.Contains(found)))
@@ -745,9 +761,11 @@ namespace FactionColonies
             foreach (var caravanSupporting in foundCaravan.Where(caravanSupporting =>
                     caravanSupporting.pawns.Find(pawn => !pawn.Downed &&
                                                          !pawn.Dead && !pawn.AnimalOrWildMan()) == null))
+            {
                 //Prevent removing while creating end battle caravans
                 if (isUnderAttack)
                     supporting.Remove(caravanSupporting);
+            }
             /*It appears vanilla handles this automatically
                 foreach (Pawn animal in caravanSupporting.supporting.FindAll(pawn => pawn.AnimalOrWildMan()))
                 {

@@ -8,6 +8,18 @@ namespace FactionColonies
         public override bool AddFleeToil => false;
         public override bool AllowStartNewGatherings => false;
         public override bool AlwaysShowWeapon => true;
+        private WorldSettlementFC settlement;
+
+        public LordJob_ColonistsIdle() { }
+        public LordJob_ColonistsIdle(WorldSettlementFC settlement)
+        {
+            this.settlement = settlement;
+        }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_References.Look(ref settlement, "settlement");
+        }
 
         public override void LordJobTick()
         {
@@ -23,10 +35,6 @@ namespace FactionColonies
 
         public override void Notify_PawnLost(Pawn pawn, PawnLostCondition condition)
         {
-            FactionFC faction = FactionCache.FactionComp;
-
-            //Check if a settlement battle ended
-            WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);
             settlement?.MilitaryComp?.removeDefender(pawn);
         }
     }

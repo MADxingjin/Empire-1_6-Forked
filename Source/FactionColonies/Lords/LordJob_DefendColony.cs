@@ -12,19 +12,22 @@ namespace FactionColonies
         private List<Pawn> mountsKeys = new List<Pawn>();
         private List<Pawn> mountsValues = new List<Pawn>();
         private readonly HashSet<Pawn> readded = new HashSet<Pawn>();
+        private WorldSettlementFC settlement;
 
         public LordJob_DefendColony()
         {
         }
 
-        public LordJob_DefendColony(Dictionary<Pawn, Pawn> mounts)
+        public LordJob_DefendColony(WorldSettlementFC settlement, Dictionary<Pawn, Pawn> mounts)
         {
+            this.settlement = settlement;
             this.mounts = mounts;
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_References.Look(ref settlement, "settlement");
             Scribe_Collections.Look(ref mounts, "mounts", LookMode.Reference, LookMode.Reference, ref mountsKeys, ref mountsValues);
         }
 
@@ -59,14 +62,15 @@ namespace FactionColonies
         {
             if (condition == PawnLostCondition.ChangedFaction || condition == PawnLostCondition.ExitedMap)
             {
-                lord.AddPawn(pawn);
-                readded.Add(pawn);
+                if (pawn.Spawned)
+                {
+                    lord.AddPawn(pawn);
+                    readded.Add(pawn);
+                }
                 return;
             }
             if (pawn.IsMercenary() && pawn.Faction != FactionCache.PlayerColonyFaction) pawn.SetFaction(FactionCache.PlayerColonyFaction);
-            FactionFC faction = FactionCache.FactionComp;
-            //Check if a settlement battle ended
-            WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);
+            
             settlement?.MilitaryComp?.removeDefender(pawn);
         }
     }

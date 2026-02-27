@@ -8,10 +8,19 @@ namespace FactionColonies
     public class LordJob_HuntColonists : LordJob
     {
         private bool delay;
+        private WorldSettlementFC settlement;
 
-        public LordJob_HuntColonists(bool delay)
+        public LordJob_HuntColonists() { }
+        public LordJob_HuntColonists(WorldSettlementFC settlement, bool delay)
         {
+            this.settlement = settlement;
             this.delay = delay;
+        }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_References.Look(ref settlement, "settlement");
+            Scribe_Values.Look(ref delay, "delay");
         }
         
         public override StateGraph CreateGraph()
@@ -35,9 +44,6 @@ namespace FactionColonies
 
         public override void Notify_PawnLost(Pawn pawn, PawnLostCondition condition)
         {
-            FactionFC faction = FactionCache.FactionComp;
-            //Check if a settlement battle ended
-            WorldSettlementFC settlement = faction.returnSettlementByLocation(pawn.Tile);
             settlement?.MilitaryComp?.removeAttacker(pawn);
         }
     }

@@ -517,7 +517,8 @@ namespace FactionColonies
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
             removeWorldObject = false;
-            return MilitaryComp == null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
+            if (MilitaryComp?.isUnderAttack == true) return false;
+            return MilitaryComp is null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
         }
 
         public void addPrisoner(Pawn prisoner)
