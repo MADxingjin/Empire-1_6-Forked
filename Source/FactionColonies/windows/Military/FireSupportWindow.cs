@@ -61,7 +61,7 @@ namespace FactionColonies
                 DrawFireSupportBox(10, 230, 30);
             }
 
-            Widgets.DrawMenuSection(new Rect(0, 0, 800, 225));
+            Widgets.DrawMenuSection(new Rect(0, 45, 800, 225));
 
             //If firesupport is not selected
             if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black))

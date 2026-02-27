@@ -37,7 +37,7 @@ namespace FactionColonies
         private Vector2 eventsScroll;
 
         // ===== MILITARY STATE =====
-        private MilitaryWindow militaryWindow;
+        private Vector2 militaryScroll;
         private MilitaryCustomizationUtil militaryUtil;
 
         // ===== LIFECYCLE =====
@@ -79,6 +79,7 @@ namespace FactionColonies
             tabs.Add(new TabRecord("Military".Translate(), delegate
             {
                 curTab = EmpireTab.Military;
+                militaryScroll = Vector2.zero;
             }, () => curTab == EmpireTab.Military));
         }
 
@@ -943,63 +944,388 @@ namespace FactionColonies
 
         private void DrawMilitaryTab(Rect rect)
         {
-            GUI.BeginGroup(rect);
-            Rect localRect = new Rect(0, 0, rect.width, rect.height);
+            float x = rect.x;
+            float y = rect.y;
+            float width = rect.width;
 
-            militaryWindow?.DrawTab(localRect);
-            DrawMilitaryHeaderTabs();
+            // --- Create buttons (right-aligned) ---
+            float buttonWidth = 187f;
+            float buttonHeight = 35f;
+            float bx = rect.xMax - buttonWidth * 3 - margin;
 
-            GUI.EndGroup();
+            Rect iconRect = new Rect(x + margin, y + margin, buttonHeight, buttonHeight);
+            Widgets.ButtonImage(iconRect, faction.factionIcon);
+
+            Rect labelBox = new Rect(iconRect.xMax + margin, y + margin, bx - iconRect.xMax - (margin * 2), buttonHeight);
+            Rect labelTextBox = new Rect(labelBox.x + margin, labelBox.y, labelBox.width - (margin * 2), labelBox.height);
+
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.DrawHighlight(labelBox);
+            Widgets.Label(labelTextBox, faction.name ?? "");
+
+            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
+                OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
+            bx += buttonWidth;
+
+            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
+                OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
+            bx += buttonWidth;
+
+            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
+                OpenMilitaryWindow(new FireSupportWindow(militaryUtil), "FCMilitaryTableButtonCreateFireSupport".Translate());
+
+            y += buttonHeight + margin * 2;
+
+            // --- Settlements Table ---
+            float tableH = rect.yMax - y - margin;
+            if (tableH > 0f)
+                DrawMilitarySettlementsTable(new Rect(x + margin, y, width - (margin*2), tableH));
         }
 
-        private void DrawMilitaryHeaderTabs()
+        private void DrawMilitarySettlementsTable(Rect tableRect)
         {
-            Rect milDesignation = new Rect(0, 0, 0, 35);
-            Rect milSetSquad = new Rect(milDesignation.x + milDesignation.width, milDesignation.y, 187,
-                milDesignation.height);
-            Rect milCreateSquad = new Rect(milSetSquad.x + milSetSquad.width, milDesignation.y, 187,
-                milDesignation.height);
-            Rect milCreateUnit = new Rect(milCreateSquad.x + milCreateSquad.width, milDesignation.y, 187,
-                milDesignation.height);
-            Rect milCreateFiresupport = new Rect(milCreateUnit.x + milCreateUnit.width, milDesignation.y, 187,
-                milDesignation.height);
-            Rect helpButton = new Rect(760, 0, 30, 30);
+            const float headerH = 25f;
+            const float rowH = 25f;
+            bool changedColor = false;
 
-            if (Widgets.ButtonTextSubtle(milDesignation, "Military Designations"))
+            // Build list of settlements with military comps
+            List<WorldSettlementFC> settlements = faction.settlements.Where(s => s.MilitaryComp != null).ToList();
+
+            float contentH = settlements.Count * rowH;
+            Rect viewRect = new Rect(tableRect.x, tableRect.y + headerH, tableRect.width, tableRect.height - headerH);
+            float scrollMargin = contentH > viewRect.height ? 16f : 0;
+            Rect scrollRect = new Rect(0f, 0f, tableRect.width - scrollMargin, Mathf.Max(contentH, viewRect.height));
+
+            // Column widths
+            float milLvW = 60f;
+            float maxCostW = 90f;
+            float squadW = 150f;
+            float availW = 100f;
+            float setSquadW = 90f;
+            float deployW = 90f;
+            float resetW = 90f;
+            float fireSupW = 90f;
+            float nameW = tableRect.width - milLvW - maxCostW - squadW - availW - setSquadW - deployW - resetW - fireSupW - scrollMargin;
+            float[] colWidths = { nameW, milLvW, maxCostW, squadW, availW, setSquadW, deployW, resetW, fireSupW };
+            string[] colLabels =
             {
-                militaryWindow = null;
-                militaryUtil.checkMilitaryUtilForErrors();
+                "FCSettlementTableName".Translate(),
+                "FCSettlementTableMilLevel".Translate(),
+                "FCMilitaryTableMilitaryBudget".Translate(),
+                "FCMilitaryTableSquad".Translate(),
+                "FCMilitaryTableAvailable".Translate(),
+                "FCMilitaryTableSetSquad".Translate(),
+                "FCMilitaryTableDeploySquad".Translate(),
+                "FCMilitaryTableResetSquad".Translate(),
+                "FCMilitaryTableFireSupport".Translate()
+            };
+
+            // --- Header ---
+            Rect headerRow = new Rect(tableRect.x, tableRect.y, tableRect.width, headerH);
+            Widgets.DrawMenuSection(headerRow);
+            Widgets.DrawLightHighlight(headerRow);
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            float hx = tableRect.x;
+            for (int c = 0; c < colWidths.Length; c++)
+            {
+                Widgets.Label(new Rect(hx, tableRect.y, colWidths[c], headerH), colLabels[c]);
+                hx += colWidths[c];
             }
 
-            if (Widgets.ButtonTextSubtle(milSetSquad, "Designate Squads"))
+            // --- Rows ---
+            Widgets.BeginScrollView(viewRect, ref militaryScroll, scrollRect);
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            for (int i = 0; i < settlements.Count; i++)
             {
-                militaryWindow = new AssignSquadsWindow(militaryUtil, faction);
-                militaryUtil.checkMilitaryUtilForErrors();
+                WorldSettlementFC settlement = settlements[i];
+                WorldObjectComp_SettlementMilitary milComp = settlement.MilitaryComp;
+                float ry = i * rowH;
+
+                if (i % 2 == 0)
+                    Widgets.DrawHighlight(new Rect(0f, ry, scrollRect.width, rowH));
+
+                float sx = 0f;
+
+                // Name
+                Text.Anchor = TextAnchor.MiddleLeft;
+                if (Widgets.ButtonTextSubtle(new Rect(sx, ry, colWidths[0], rowH), settlement.Name))
+                    Find.WindowStack.Add(new SettlementWindowFc(settlement));
+                sx += colWidths[0];
+
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
+
+                // Mil Level
+                Widgets.Label(new Rect(sx, ry, colWidths[1], rowH), settlement.settlementMilitaryLevel.ToString());
+                sx += colWidths[1];
+
+                // Max Cost
+                Widgets.Label(new Rect(sx, ry, colWidths[2], rowH), "$" + MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel).ToString());
+                sx += colWidths[2];
+
+                // Squad
+                string squadName = milComp.militarySquad?.outfit?.name ?? "None".Translate();
+                Widgets.Label(new Rect(sx, ry, colWidths[3], rowH), squadName);
+                sx += colWidths[3];
+
+                // Available
+                string availText = milComp.isMilitaryBusySilent() ? "No".Translate() : "Yes".Translate();
+                Widgets.Label(new Rect(sx, ry, colWidths[4], rowH), availText);
+                sx += colWidths[4];
+
+                // Set Squad button
+                if ((militaryUtil.squads?.Count ?? 0) == 0)
+                {
+                    GUI.color = Color.gray;
+                    changedColor = true;
+                }
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[5], rowH), "Set".Translate()))
+                {
+                    if (militaryUtil.squads == null) militaryUtil.resetSquads();
+
+                    List<FloatMenuOption> squads = new List<FloatMenuOption>();
+                    squads.AddRange(militaryUtil.squads.Select(squad => new FloatMenuOption(
+                        squad.name + " - " + "Cost".Translate() + ": " + squad.equipmentTotalCost,
+                        delegate { militaryUtil.attemptToAssignSquad(settlement, squad); })));
+
+                    if (!squads.Any())
+                        squads.Add(new FloatMenuOption("FCNoSquadAvailable".Translate(), null));
+
+                    Find.WindowStack.Add(new Searchable_FloatMenu(squads));
+                }
+                if (changedColor)
+                {
+                    GUI.color = Color.white;
+                    changedColor = false;
+                }
+                sx += colWidths[5];
+
+                // Deploy button
+                if (milComp.militarySquad?.outfit?.name is null)
+                {
+                    GUI.color = Color.gray;
+                    changedColor = true;
+                }
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[6], rowH), "Deploy".Translate()))
+                {
+                    HandleDeployClick(settlement, milComp);
+                }
+                if (changedColor)
+                {
+                    GUI.color = Color.white;
+                    changedColor = false;
+                }
+                sx += colWidths[6];
+
+                // Reset button
+                if (milComp.militarySquad?.outfit?.name is null)
+                {
+                    GUI.color = Color.gray;
+                    changedColor = true;
+                }
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[7], rowH), "Reset".Translate()))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption("FCMilTableConfirm".Translate(), delegate
+                        {
+                            if (milComp.militarySquad != null)
+                            {
+                                Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
+                                milComp.militarySquad.initiateSquad();
+                            }
+                            else
+                            {
+                                Messages.Message("FCResetSquadRejected".Translate(), MessageTypeDefOf.RejectInput);
+                            }
+                        })
+                    };
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+                if (changedColor)
+                {
+                    GUI.color = Color.white;
+                    changedColor = false;
+                }
+                sx += colWidths[7];
+
+                // Fire Support button
+                if (militaryUtil.fireSupportDefs.Count == 0)
+                {
+                    GUI.color = Color.gray;
+                    changedColor = true;
+                }
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[8], rowH), "FCMilitaryTableFireSupport".Translate()))
+                {
+                    HandleFireSupportClick(settlement, milComp);
+                }
+                if (changedColor)
+                {
+                    GUI.color = Color.white;
+                    changedColor = false;
+                }
             }
 
-            if (Widgets.ButtonTextSubtle(milCreateSquad, "Create Squads"))
-            {
-                militaryWindow = new DesignSquadsWindow(militaryUtil);
-            }
+            Widgets.EndScrollView();
+        }
 
-            if (Widgets.ButtonTextSubtle(milCreateUnit, "Create Units"))
+        private void HandleDeployClick(WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp)
+        {
+            if (!milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid())
             {
-                militaryWindow = new DesignUnitsWindow(militaryUtil, faction);
+                Find.WindowStack.Add(new FloatMenu(DeploymentOptions(settlement)));
             }
-
-            if (Widgets.ButtonTextSubtle(milCreateFiresupport, "Create Fire Support"))
+            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.hasPolicy(FCPolicyDefOf.militaristic))
             {
-                militaryWindow = new FireSupportWindow(militaryUtil);
+                if ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) <= Find.TickManager.TicksGame)
+                {
+                    int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
+                    List<FloatMenuOption> options = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption("Deploy Secondary Squad - $" + cost + " silver", delegate
+                        {
+                            if (PaymentUtil.getSilver() >= cost)
+                            {
+                                List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
+                                {
+                                    new FloatMenuOption("Walk into map", delegate
+                                    {
+                                        MilitaryUtil.CallinExtraForces(settlement, false);
+                                        Find.WindowStack.currentlyDrawnWindow.Close();
+                                    })
+                                };
+
+                                if (!FCSettings.medievalTechOnly &&
+                                    (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
+                                {
+                                    deploymentOptions.Add(new FloatMenuOption("Drop-Pod", delegate
+                                    {
+                                        MilitaryUtil.CallinExtraForces(settlement, true);
+                                        Find.WindowStack.currentlyDrawnWindow.Close();
+                                    }));
+                                }
+
+                                Find.WindowStack.Add(new FloatMenu(deploymentOptions));
+                            }
+                            else
+                            {
+                                Messages.Message("NotEnoughSilverToDeploySquad".Translate(), MessageTypeDefOf.RejectInput);
+                            }
+                        })
+                    };
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+                else
+                {
+                    Messages.Message("XDaysToRedeploy".Translate(Math.Round(
+                        ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) -
+                         Find.TickManager.TicksGame).TicksToDays(), 1)), MessageTypeDefOf.RejectInput);
+                }
+            }
+            else
+            {
+                milComp.isMilitaryBusy();
             }
         }
 
-        public void SetMilitaryActive(IExposable selecting)
+        private void HandleFireSupportClick(WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp)
         {
-            if (militaryWindow == null)
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+
+            foreach (MilitaryFireSupport support in militaryUtil.fireSupportDefs)
             {
-                throw new ApplicationException("Tried to set active on null");
+                float cost = support.returnTotalCost();
+                list.Add(new FloatMenuOption(support.name + " - $" + cost, delegate
+                {
+                    if (support.returnTotalCost() <=
+                        MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
+                    {
+                        if (settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == true)
+                        {
+                            if (milComp.artilleryTimer <= Find.TickManager.TicksGame)
+                            {
+                                if (PaymentUtil.getSilver() >= cost)
+                                {
+                                    MilitaryUtil.FireSupport(settlement, support);
+                                }
+                                else
+                                {
+                                    Messages.Message("You lack the required amount of silver to use that firesupport option!",
+                                        MessageTypeDefOf.RejectInput);
+                                }
+                            }
+                            else
+                            {
+                                Messages.Message("That firesupport option is on cooldown for another " +
+                                    (milComp.artilleryTimer - Find.TickManager.TicksGame).ToStringTicksToDays(),
+                                    MessageTypeDefOf.RejectInput);
+                            }
+                        }
+                        else
+                        {
+                            Messages.Message("The settlement requires an artillery outpost to be built to use that firesupport option",
+                                MessageTypeDefOf.RejectInput);
+                        }
+                    }
+                    else
+                    {
+                        Messages.Message("The settlement requires a higher military level to use that fire support!",
+                            MessageTypeDefOf.RejectInput);
+                    }
+                }));
             }
-            militaryWindow.Select(selecting);
+
+            if (!list.Any())
+                list.Add(new FloatMenuOption("No fire supports currently made. Make one", delegate { }));
+
+            Find.WindowStack.Add(new Searchable_FloatMenu(list));
+        }
+
+        private List<FloatMenuOption> DeploymentOptions(WorldSettlementFC settlement) => new List<FloatMenuOption>
+        {
+            new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
+            {
+                MilitaryUtil.CallinAlliedForces(settlement, false);
+            }),
+            DropPodDeploymentOption(settlement)
+        };
+
+        private FloatMenuOption DropPodDeploymentOption(WorldSettlementFC settlement)
+        {
+            bool medievalOnly = FCSettings.medievalTechOnly;
+            if (!medievalOnly && (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
+            {
+                return new FloatMenuOption("dropPodDeploymentOption".Translate(),
+                    delegate { MilitaryUtil.CallinAlliedForces(settlement, true); });
+            }
+
+            return new FloatMenuOption(
+                "dropPodDeploymentOption".Translate() + (medievalOnly
+                    ? "dropPodDeploymentOptionUnavailableReasonMedieval".Translate()
+                    : "dropPodDeploymentOptionUnavailableReasonTech".Translate(
+                        DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.label ??
+                        "errorDropPodResearchCouldNotBeFound".Translate())), null);
+        }
+
+        private void OpenMilitaryWindow(MilitaryWindow content, string title)
+        {
+            Window toRemove = Find.WindowStack.Windows.FirstOrDefault(
+                w => w is FCWindow_Military existing &&
+                     existing.GetMilitaryWindow().GetType() == content.GetType());
+
+            if (toRemove != null)
+            {
+                toRemove.Close();
+            }
+
+            Find.WindowStack.Add(new FCWindow_Military(content, title));
         }
 
     }

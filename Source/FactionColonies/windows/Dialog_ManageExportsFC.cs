@@ -117,12 +117,23 @@ namespace FactionColonies
         {
             FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = FactionColoniesMilitary.GetSquad(name).Import();
-            
-            MainTabWindow_Colony mainTab = (MainTabWindow_Colony)Find.WindowStack.Windows.FirstOrFallback(
-                window => window.GetType() == typeof(MainTabWindow_Colony));
 
-            mainTab?.SetMilitaryActive(squad);
-            
+            FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
+                window => window is FCWindow_Military fcw &&
+                          fcw.GetMilitaryWindow() is DesignSquadsWindow);
+
+            if (milWindow != null)
+            {
+                milWindow.SetActive(squad);
+            }
+            else
+            {
+                DesignSquadsWindow dsw = new DesignSquadsWindow(fc.militaryCustomizationUtil);
+                FCWindow_Military newWindow = new FCWindow_Military(dsw, "Create Squads");
+                Find.WindowStack.Add(newWindow);
+                newWindow.SetActive(squad);
+            }
+
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
             Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
             this.Close();
@@ -152,12 +163,23 @@ namespace FactionColonies
         {
             FactionFC fc = FactionCache.FactionComp;
             MilUnitFC unit = FactionColoniesMilitary.GetUnit(name).Import();
-            
-            MainTabWindow_Colony mainTab = (MainTabWindow_Colony)Find.WindowStack.Windows.FirstOrFallback(
-                window => window.GetType() == typeof(MainTabWindow_Colony));
 
-            mainTab?.SetMilitaryActive(unit);
-            
+            FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
+                window => window is FCWindow_Military fcw &&
+                          fcw.GetMilitaryWindow() is DesignUnitsWindow);
+
+            if (milWindow != null)
+            {
+                milWindow.SetActive(unit);
+            }
+            else
+            {
+                DesignUnitsWindow duw = new DesignUnitsWindow(fc.militaryCustomizationUtil, fc);
+                FCWindow_Military newWindow = new FCWindow_Military(duw, "Create Units");
+                Find.WindowStack.Add(newWindow);
+                newWindow.SetActive(unit);
+            }
+
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
             Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
             this.Close();
