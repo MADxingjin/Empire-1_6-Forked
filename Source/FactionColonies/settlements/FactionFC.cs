@@ -102,19 +102,6 @@ namespace FactionColonies
         //Military Customization
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
 
-        //Sos2 Compatibility
-        /*public Faction factionBackup;
-        public int travelTime = 0;
-        public string planetName;
-        public bool boolChangedPlanet;
-        public bool factionUpdated;
-        public bool SoSMoving = false;
-        public bool SoSShipTaxMap;
-        public bool SoSShipCapital;
-        public bool SoSShipCapitalMoving = false;
-        public List<SettlementSoS2Info> createSettlementQueue = new List<SettlementSoS2Info>();
-        public List<SettlementSoS2Info> deleteSettlementQueue = new List<SettlementSoS2Info>();*/
-
         //Road builder
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
 
@@ -275,14 +262,6 @@ namespace FactionColonies
             Scribe_Collections.Look(ref Bills, "Bills", LookMode.Deep);
             Scribe_Collections.Look(ref OldBills, "OldBills", LookMode.Deep);
             Scribe_Values.Look(ref autoResolveBills, "autoResolveBills");
-
-            //Sos2 compatibility
-            //Scribe_Deep.Look<Faction>(ref factionBackup, "factionBackup");
-            /*Scribe_Values.Look(ref SoSShipCapital, "SoSShipCapital");
-            Scribe_Values.Look(ref SoSShipTaxMap, "SoSShipTaxMap");
-            Scribe_Values.Look(ref planetName, "planetName");
-            Scribe_Collections.Look(ref createSettlementQueue, "createSettlementQueue", LookMode.Deep);
-            Scribe_Collections.Look(ref deleteSettlementQueue, "deleteSettlementQueue", LookMode.Deep);*/
 
             //Road builder
             Scribe_Deep.Look(ref roadBuilder, "roadBuilder");
@@ -507,19 +486,6 @@ namespace FactionColonies
 
             harmony.PatchAll();
 
-            //SOS2 patches are obsolete
-            //TODO: are there even any harmony patches left? maybe just remove the harmony code entirely? Less code = less bugs, after all
-            /*if (FCSettings.IsModLoaded("kentington.saveourship2"))
-            {
-                LogUtil.MessageForce("Starting SoS2 patch...");
-                SoS2HarmonyPatches.Patch(harmony);
-            }*/
-
-            /*if (FCSettings.IsModLoaded("Krkr.AndroidTiers") || FCSettings.IsModLoaded("Atlas.AndroidTiers"))
-            {
-                //TODO: do we still need this patch?
-                //Android_Tiers_Patches.Patch(harmony);
-            }*/
         }
 
         public override void WorldComponentTick()

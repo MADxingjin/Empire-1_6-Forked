@@ -231,26 +231,6 @@ namespace FactionColonies
             }
             //NEW PLACE FOR UPDATE VERSIONS
 
-            //I think this does things necessary for SOS so I'm gonna keep it
-            /*if (factionFC.factionBackup == null)
-            {
-                factionFC.factionBackup = new Faction();
-                factionFC.factionBackup = FactionCache.PlayerColonyFaction;
-                if (FactionCache.PlayerColonyFaction != null)
-                {
-                    LogUtil.Message("Faction created");
-                    factionFC.factionCreated = true;
-                }
-
-                factionFC.capitalPlanet = Find.World.info.name;
-
-                if (!wasAlreadyProcessed)
-                {
-                    LogUtil.Message("Resetting faction leaders");
-                }
-                SoS2HarmonyPatches.ResetFactionLeaders();
-            }*/
-
             // Only run verification and alerts for new games/first time setup
             if (!wasAlreadyProcessed)
             {
