@@ -24,7 +24,7 @@ namespace FactionColonies
             {
                 if (squad.units.Contains(unit))
                 {
-                    squad.updateEquipmentTotalCost();
+                    squad.ChangeTick();
                 }
             });
         }
@@ -51,12 +51,28 @@ namespace FactionColonies
             Scribe_Values.Look(ref isCivilian, "isCivilian");
             Scribe_Values.Look(ref tickChanged, "tickChanged");
 
-            updateEquipmentTotalCost();
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                updateEquipmentTotalCost();
+            }
         }
 
         public void setLoadID()
         {
             loadID = FactionCache.FactionComp.NextSquadID;
+        }
+
+        private int _lastCostCalcTick = -1;
+
+        public double GetEquipmentTotalCost()
+        {
+            int latestChange = getLatestChanged;
+            if (_lastCostCalcTick != latestChange)
+            {
+                updateEquipmentTotalCost();
+                _lastCostCalcTick = latestChange;
+            }
+            return equipmentTotalCost;
         }
 
         public int updateEquipmentTotalCost()
@@ -68,6 +84,7 @@ namespace FactionColonies
             }
 
             equipmentTotalCost = totalCost;
+            _lastCostCalcTick = getLatestChanged;
             return (int) equipmentTotalCost;
         }
 

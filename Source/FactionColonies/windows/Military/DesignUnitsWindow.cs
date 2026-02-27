@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Reflection.Emit;
 using FactionColonies.util;
 using RimWorld;
 using UnityEngine;
@@ -16,6 +14,33 @@ namespace FactionColonies
         private readonly FactionFC faction;
         private MilUnitFC selectedUnit;
 
+        /// <summary>
+        /// Describes an apparel equipment slot for the unit designer UI.
+        /// </summary>
+        private struct ApparelSlotDef
+        {
+            public Rect rect;
+            public ApparelLayerDef layer;
+            public BodyPartGroupDef bodyPart; // null = no body part filter
+            public string labelKey;
+
+            public bool ThingFitsSlot(ThingDef thing)
+            {
+                if (!thing.IsApparel) return false;
+                if (!thing.apparel.layers.Contains(layer)) return false;
+                if (bodyPart != null && !thing.apparel.bodyPartGroups.Contains(bodyPart)) return false;
+                return CraftUtil.canCraftItem(thing);
+            }
+
+            public bool ApparelInSlot(ThingDef def)
+            {
+                return MilUnitFC.MatchesSlot(def, layer, bodyPart);
+            }
+        }
+
+        // Populated each frame in DrawTab (rects depend on layout constants)
+        private ApparelSlotDef[] apparelSlots;
+
         public DesignUnitsWindow(MilitaryCustomizationUtil util, FactionFC faction)
         {
             this.util = util;
@@ -28,13 +53,14 @@ namespace FactionColonies
 
         public override void Select(IExposable selecting)
         {
-            MilUnitFC squad = (MilUnitFC)selecting;
-            selectedUnit = squad;
-            selectedText = squad.name;
+            MilUnitFC unit = (MilUnitFC)selecting;
+            selectedUnit = unit;
+            selectedText = unit.name;
         }
 
         public override void DrawTab(Rect rect)
         {
+            // --- Layout Rects ---
             Rect SelectionBar = new Rect(5, 45, 200, 30);
             Rect importButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
             Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
@@ -60,17 +86,27 @@ namespace FactionColonies
 
             Rect ResetButton = new Rect(700, 50, 100, 30);
             Rect DeleteButton = new Rect(ResetButton.x, ResetButton.y + ResetButton.height + 5,
-                ResetButton.width,
-                ResetButton.height);
+                ResetButton.width, ResetButton.height);
             Rect SavePawn = new Rect(DeleteButton.x, DeleteButton.y + DeleteButton.height + 5,
-                DeleteButton.width,
-                DeleteButton.height);
+                DeleteButton.width, DeleteButton.height);
             Rect ChangeRace = new Rect(325, ResetButton.y, SavePawn.width, SavePawn.height);
             Rect ChangeXeno = new Rect(575, DeleteButton.y, SavePawn.width, SavePawn.height);
             Rect RollNewPawn = new Rect(325, ResetButton.y + SavePawn.height + 5, SavePawn.width,
                 SavePawn.height);
 
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, UnityEngine.Color.gray, UnityEngine.Color.white, UnityEngine.Color.black))
+            // Build apparel slot descriptors
+            apparelSlots = new[]
+            {
+                new ApparelSlotDef { rect = ApparelHead, layer = ApparelLayerDefOf.Overhead, bodyPart = null, labelKey = "fcLabelHead" },
+                new ApparelSlotDef { rect = ApparelTorsoShell, layer = ApparelLayerDefOf.Shell, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelOver" },
+                new ApparelSlotDef { rect = ApparelTorsoMiddle, layer = ApparelLayerDefOf.Middle, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelChest" },
+                new ApparelSlotDef { rect = ApparelTorsoSkin, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelShirt" },
+                new ApparelSlotDef { rect = ApparelLegs, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Legs, labelKey = "fcLabelPants" },
+                new ApparelSlotDef { rect = ApparelBelt, layer = ApparelLayerDefOf.Belt, bodyPart = null, labelKey = "fcLabelBelt" },
+            };
+
+            // --- Unit Selection Dropdown ---
+            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black))
             {
                 List<FloatMenuOption> Units = new List<FloatMenuOption>
                 {
@@ -83,13 +119,9 @@ namespace FactionColonies
                         selectedText = newUnit.name;
                         selectedUnit = newUnit;
                         util.units.Add(newUnit);
-                        newUnit.unequipAllEquipment();
                     })
                 };
 
-                //Option to create new unit
-
-                //Create list of selectable units
                 foreach (MilUnitFC unit in util.units)
                 {
                     void action()
@@ -98,11 +130,13 @@ namespace FactionColonies
                         selectedUnit = unit;
                     }
 
-                    //Prevent units being modified when their squads are deployed
+                    // Prevent units being modified when their squads are deployed
                     FactionFC factionFC = FactionCache.FactionComp;
-                    List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
-                    List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
-                                                                                                         squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
+                    List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
+                        .Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
+                    List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements
+                        ?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
+                            squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
 
                     if ((settlementsContainingSquad?.Count ?? 0) > 0)
                     {
@@ -118,9 +152,9 @@ namespace FactionColonies
                         }
                     }
 
-                    if (unit.defaultPawn.equipment.Primary != null)
+                    if (unit.HasWeapon)
                     {
-                        Units.Add(new FloatMenuOption(unit.name, action, unit.defaultPawn.equipment.Primary.def));
+                        Units.Add(new FloatMenuOption(unit.name, action, unit.weapons[0].thing));
                     }
                     else
                     {
@@ -138,56 +172,40 @@ namespace FactionColonies
                     FactionColoniesMilitary.SavedUnits.ToList()));
             }
 
-            //Worn Items
+            // --- Worn Items Section ---
             Widgets.DrawMenuSection(ApparelWornItems);
 
-            //set text anchor and font
+            // Save and set text style
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperCenter;
 
-            //if unit is not selected
-            Widgets.Label(new Rect(new Vector2(ApparelHead.x, ApparelHead.y - 15), ApparelHead.size), "fcLabelHead".Translate());
-            Widgets.DrawMenuSection(ApparelHead);
-            Widgets.Label(
-                new Rect(new Vector2(ApparelTorsoSkin.x, ApparelTorsoSkin.y - 15), ApparelTorsoSkin.size),
-                "fcLabelShirt".Translate());
-            Widgets.DrawMenuSection(ApparelTorsoSkin);
-            Widgets.Label(
-                new Rect(new Vector2(ApparelTorsoMiddle.x, ApparelTorsoMiddle.y - 15), ApparelTorsoMiddle.size),
-                "fcLabelChest".Translate());
-            Widgets.DrawMenuSection(ApparelTorsoMiddle);
-            Widgets.Label(
-                new Rect(new Vector2(ApparelTorsoShell.x, ApparelTorsoShell.y - 15), ApparelTorsoShell.size),
-                "fcLabelOver".Translate());
-            Widgets.DrawMenuSection(ApparelTorsoShell);
-            Widgets.Label(new Rect(new Vector2(ApparelBelt.x, ApparelBelt.y - 15), ApparelBelt.size), "fcLabelBelt".Translate());
-            Widgets.DrawMenuSection(ApparelBelt);
-            Widgets.Label(new Rect(new Vector2(ApparelLegs.x, ApparelLegs.y - 15), ApparelLegs.size), "fcLabelPants".Translate());
-            Widgets.DrawMenuSection(ApparelLegs);
-            Widgets.Label(
-                new Rect(new Vector2(EquipmentWeapon.x, EquipmentWeapon.y - 15), EquipmentWeapon.size),
-                "fcLabelWeapon".Translate());
+            // Draw slot labels and backgrounds
+            foreach (ApparelSlotDef slot in apparelSlots)
+            {
+                Widgets.Label(new Rect(new Vector2(slot.rect.x, slot.rect.y - 15), slot.rect.size), slot.labelKey.Translate());
+                Widgets.DrawMenuSection(slot.rect);
+            }
+
+            Widgets.Label(new Rect(new Vector2(EquipmentWeapon.x, EquipmentWeapon.y - 15), EquipmentWeapon.size), "fcLabelWeapon".Translate());
             Widgets.DrawMenuSection(EquipmentWeapon);
-            Widgets.Label(
-                new Rect(new Vector2(AnimalCompanion.x, AnimalCompanion.y - 15), AnimalCompanion.size),
-                "fcLabelAnimal".Translate());
+            Widgets.Label(new Rect(new Vector2(AnimalCompanion.x, AnimalCompanion.y - 15), AnimalCompanion.size), "fcLabelAnimal".Translate());
             Widgets.DrawMenuSection(AnimalCompanion);
 
-            //Reset Text anchor and font
+            // Restore text style
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
 
-            //if unit is selected
+            // --- Unit Selected Content ---
             if (selectedUnit == null) return;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperCenter;
 
             if (Widgets.ButtonText(ResetButton, "resetUnitToDefaultButton".Translate()))
             {
-                selectedUnit.unequipAllEquipment();
+                selectedUnit.ClearAllEquipment();
             }
 
             if (Widgets.ButtonText(DeleteButton, "deleteUnitButton".Translate()))
@@ -197,7 +215,6 @@ namespace FactionColonies
                 selectedUnit = null;
                 selectedText = "selectAUnitButton".Translate();
 
-                //Reset Text anchor and font
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
                 return;
@@ -205,8 +222,8 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(RollNewPawn, "rollANewUnitButton".Translate()))
             {
-                selectedUnit.generateDefaultPawn();
-                selectedUnit.unequipAllEquipment();
+                selectedUnit.ClearAllEquipment();
+                selectedUnit.RerollPreviewPawn();
             }
 
             if (Widgets.ButtonText(ChangeRace, "changeUnitRaceButton".Translate()))
@@ -223,8 +240,7 @@ namespace FactionColonies
                     options.Add(new FloatMenuOption(optionStr, delegate
                     {
                         selectedUnit.pawnKind = def;
-                        selectedUnit.generateDefaultPawn();
-                        selectedUnit.changeTick();
+                        selectedUnit.RerollPreviewPawn();
                     }));
                 }
 
@@ -250,14 +266,10 @@ namespace FactionColonies
 
                     string optionStr = def.label.CapitalizeFirst() + " - Cost: " + 0;
                     options1.Add(new FloatMenuOption(optionStr, delegate
-
                     {
                         selectedUnit.xenotype = def;
-                        selectedUnit.generateDefaultPawn();
-                        selectedUnit.changeTick();
-
+                        selectedUnit.RerollPreviewPawn();
                     }));
-
                 }
                 if (!options1.Any())
                 {
@@ -269,651 +281,188 @@ namespace FactionColonies
                 Find.WindowStack.Add(menu);
             }
 
+            if (Widgets.ButtonText(SavePawn, "exportUnitButton".Translate()))
+            {
+                FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
+                Messages.Message("ExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
+            }
 
-                if (Widgets.ButtonText(SavePawn, "exportUnitButton".Translate()))
+            // Unit Name
+            selectedUnit.name = Widgets.TextField(nameTextField, selectedUnit.name);
+
+            selectedUnit.setTrader(selectedUnit.isTrader);
+            selectedUnit.setCivilian(selectedUnit.isCivilian);
+
+            // Restore text style
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+
+            // Draw Pawn Preview
+            Pawn preview = selectedUnit.PreviewPawn;
+            if (preview != null)
+            {
+                Widgets.ThingIcon(unitIcon, preview);
+            }
+
+            // --- Animal Companion Slot ---
+            if (Widgets.ButtonInvisible(AnimalCompanion))
+            {
+                List<FloatMenuOption> list = (from animal in FactionCache.AllAnimalKindDefs
+                    select new FloatMenuOption(animal.LabelCap + " - Cost: " +
+                        Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier),
+                        delegate { selectedUnit.animal = animal; selectedUnit.changeTick(); },
+                        animal.race.uiIcon, Color.white)).ToList();
+
+                list.Sort(CompareUtil.CompareFloatMenuOption);
+
+                list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
                 {
-                    // TODO: confirm
-                    FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
-                    Messages.Message("ExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
+                    selectedUnit.animal = null;
+                    selectedUnit.changeTick();
+                }));
+                FloatMenu menu = new Searchable_FloatMenu(list);
+                Find.WindowStack.Add(menu);
+            }
+
+            // --- Weapon Slot ---
+            if (Widgets.ButtonInvisible(EquipmentWeapon))
+            {
+                List<FloatMenuOption> list = (from thing in DefDatabase<ThingDef>.AllDefs
+                    where thing.IsWeapon && thing.BaseMarketValue != 0 && CraftUtil.canCraftItem(thing)
+                    select new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue, delegate
+                    {
+                        ShowStuffMenuOrDirect(thing, stuff => selectedUnit.SetWeapon(thing, stuff));
+                    }, thing)).ToList();
+
+                list.Sort(CompareUtil.CompareFloatMenuOption);
+                list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate { selectedUnit.ClearWeapon(); }));
+
+                FloatMenu menu = new Searchable_FloatMenu(list);
+                Find.WindowStack.Add(menu);
+            }
+
+            // --- Apparel Slots (unified handler) ---
+            foreach (ApparelSlotDef slot in apparelSlots)
+            {
+                HandleApparelSlot(slot, selectedUnit);
+            }
+
+            // --- Worn Items List ---
+            int i = 0;
+            foreach (SavedThing item in selectedUnit.apparel)
+            {
+                if (item.thing == null) continue;
+                Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
+                i++;
+
+                if (Widgets.CustomButtonText(ref tmp, item.thing.LabelCap + " Cost: " + item.MarketValue,
+                    Color.white, Color.black, Color.black))
+                {
+                    Find.WindowStack.Add(new Dialog_InfoCard(item.thing, item.stuff));
                 }
+            }
 
-                //Unit Name
-                selectedUnit.name = Widgets.TextField(nameTextField, selectedUnit.name);
-
-                //Widgets.CheckboxLabeled(isCivilian, "unitIsCivilianLabel".Translate(), ref selectedUnit.isCivilian);
-                //Widgets.CheckboxLabeled(isTrader, "unitIsTraderLabel".Translate(), ref selectedUnit.isTrader);
-                selectedUnit.setTrader(selectedUnit.isTrader);
-                selectedUnit.setCivilian(selectedUnit.isCivilian);
-
-                //Reset Text anchor and font
-                Text.Font = fontBefore;
-                Text.Anchor = anchorBefore;
-                //Draw Pawn
-                if (selectedUnit.defaultPawn != null)
+            foreach (SavedThing w in selectedUnit.weapons)
+            {
+                if (w.thing == null) continue;
+                Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
+                i++;
+                if (Widgets.CustomButtonText(ref tmp, w.thing.LabelCap + " Cost: " + w.MarketValue,
+                    Color.white, Color.black, Color.black))
                 {
-                    if (selectedUnit.animal != null)
-                    {
-                        //Widgets.DrawTextureFitted(animalIcon, selectedUnit.animal.race.graphicData.Graphic.MatNorth.mainTexture, 1);
-                    }
-
-                    Widgets.ThingIcon(unitIcon, selectedUnit.defaultPawn);
+                    Find.WindowStack.Add(new Dialog_InfoCard(w.thing, w.stuff));
                 }
+            }
 
-                //Animal Companion
-                if (Widgets.ButtonInvisible(AnimalCompanion))
+            // Animal icon
+            if (selectedUnit.animal != null)
+            {
+                Widgets.ButtonImage(AnimalCompanion, selectedUnit.animal.race.uiIcon);
+            }
+
+            // Draw equipped icons in slots
+            foreach (ApparelSlotDef slot in apparelSlots)
+            {
+                SavedThing? worn = selectedUnit.apparel
+                    .Cast<SavedThing?>()
+                    .FirstOrDefault(a => slot.ApparelInSlot(a.Value.thing));
+                if (worn.HasValue && worn.Value.thing != null)
                 {
-                    List<FloatMenuOption> list = (from animal in FactionCache.AllAnimalKindDefs
-                                                  select new FloatMenuOption(animal.LabelCap + " - Cost: " +
-                                                                             Math.Floor(animal.race.BaseMarketValue *
-                                                                                        FCSettings.militaryAnimalCostMultiplier),
-                                                      delegate
-                                                      {
-                                                          //Do add animal code here
-                                                          selectedUnit.animal = animal;
-                                                      }, animal.race.uiIcon, UnityEngine.Color.white)).ToList();
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-    {
-        //unequip here
-        selectedUnit.animal = null;
-    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-                    Find.WindowStack.Add(menu);
+                    Widgets.ButtonImage(slot.rect, worn.Value.thing.uiIcon);
                 }
+            }
 
-                //Weapon Equipment
-                if (Widgets.ButtonInvisible(EquipmentWeapon))
+            if (selectedUnit.HasWeapon)
+            {
+                Widgets.ButtonImage(EquipmentWeapon, selectedUnit.weapons[0].thing.uiIcon);
+            }
+
+            float totalCost = (float)selectedUnit.getTotalCost;
+            Widgets.Label(EquipmentTotalCost, "totalEquipmentCostLabel".Translate() + totalCost);
+        }
+
+        // --- Helper Methods ---
+
+        /// <summary>
+        /// Handles the click interaction for a single apparel slot.
+        /// Builds a searchable float menu of matching apparel with stuff sub-menus.
+        /// </summary>
+        private void HandleApparelSlot(ApparelSlotDef slot, MilUnitFC unit)
+        {
+            if (!Widgets.ButtonInvisible(slot.rect)) return;
+
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+
+            foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
+            {
+                if (!slot.ThingFitsSlot(thing)) continue;
+
+                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
+                    delegate
+                    {
+                        ShowStuffMenuOrDirect(thing, stuff => unit.SetApparel(thing, stuff));
+                    }, thing));
+            }
+
+            list.Sort(CompareUtil.CompareFloatMenuOption);
+
+            list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
+            {
+                unit.RemoveApparel(slot.layer, slot.bodyPart);
+            }));
+
+            FloatMenu menu = new Searchable_FloatMenu(list);
+            Find.WindowStack.Add(menu);
+        }
+
+        /// <summary>
+        /// If the item is made from stuff, show a material selection sub-menu.
+        /// Otherwise, call the action directly with null stuff.
+        /// </summary>
+        private void ShowStuffMenuOrDirect(ThingDef thing, Action<ThingDef> onStuffSelected)
+        {
+            if (thing.MadeFromStuff)
+            {
+                List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
+                foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
                 {
-                    List<FloatMenuOption> list = (from thing in DefDatabase<ThingDef>.AllDefs
-                                                  where thing.IsWeapon && thing.BaseMarketValue != 0 && CraftUtil.canCraftItem(thing)
-                                                  where true
-                                                  select new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue, delegate
-                                                  {
-                                                      if (thing.MadeFromStuff)
-                                                      {
-                                                          //If made from stuff
-                                                          List<FloatMenuOption> stuffList = (from stuff in DefDatabase<ThingDef>.AllDefs
-                                                                                             where stuff.IsStuff &&
-                                                                     thing.stuffCategories.SharesElementWith(stuff.stuffProps.categories)
-                                                                                             select new FloatMenuOption(stuff.LabelCap + " - Total Value: " +
-                                                                                          StatWorker_MarketValue.CalculatedBaseMarketValue(
-                                                                                              thing,
-                                                                                              stuff),
-                                                                   delegate
-                                                                   {
-                                                                       selectedUnit.equipWeapon(
-                                                                           ThingMaker.MakeThing(thing, stuff) as ThingWithComps);
-                                                                   })).ToList();
-
-                                                          stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                                          FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                                          Find.WindowStack.Add(stuffWindow);
-                                                      }
-                                                      else
-                                                      {
-                                                          //If not made from stuff
-
-                                                          selectedUnit.equipWeapon(ThingMaker.MakeThing(thing) as ThingWithComps);
-                                                      }
-                                                  }, thing)).ToList();
-
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate { selectedUnit.unequipWeapon(); }));
-
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-                //headgear Slot
-                if (Widgets.ButtonInvisible(ApparelHead))
-                {
-                    List<FloatMenuOption> headgearList = new List<FloatMenuOption>();
-
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
+                    if (stuff.IsStuff && thing.stuffCategories.SharesElementWith(stuff.stuffProps.categories))
                     {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.layers.Contains(ApparelLayerDefOf.Overhead) &&
-                                CraftUtil.canCraftItem(thing))
-                            {
-                                headgearList.Add(new FloatMenuOption(
-                                    thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    headgearList.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    headgearList.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel
-                            .Where(apparel => apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead)))
-                        {
-                            selectedUnit.defaultPawn.apparel.Remove(apparel);
-                            break;
-                        }
-                    }));
-
-                    FloatMenu menu = new Searchable_FloatMenu(headgearList);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //Torso Shell Slot
-                if (Widgets.ButtonInvisible(ApparelTorsoShell))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-                    {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.layers.Contains(ApparelLayerDefOf.Shell) &&
-                                thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
-                            {
-                                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel)
-                        {
-                            if (apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Shell) &&
-                                apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso)) //CHANGE THIS
-                            {
-                                selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                break;
-                            }
-                        }
-                    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //Torso Middle Slot
-                if (Widgets.ButtonInvisible(ApparelTorsoMiddle))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-                    {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.layers.Contains(ApparelLayerDefOf.Middle) &&
-                                thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
-                            {
-                                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel)
-                        {
-                            if (apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Middle) &&
-                                apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso)) //CHANGE THIS
-                            {
-                                selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                break;
-                            }
-                        }
-                    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //Torso Skin Slot
-                if (Widgets.ButtonInvisible(ApparelTorsoSkin))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-                    {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
-                                thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) &&
-                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
-                            {
-                                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel)
-                        {
-                            if (apparel.def.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
-                                apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso)) //CHANGE THIS
-                            {
-                                selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                break;
-                            }
-                        }
-                    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //Pants Slot
-                if (Widgets.ButtonInvisible(ApparelLegs))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-                    {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) &&
-                                thing.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
-                                CraftUtil.canCraftItem(thing)) //CHANGE THIS
-                            {
-                                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel)
-                        {
-                            if (apparel.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) &&
-                                apparel.def.apparel.layers.Contains(ApparelLayerDefOf.OnSkin)) //CHANGE THIS
-                            {
-                                selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                break;
-                            }
-                        }
-                    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //Apparel Belt Slot
-                if (Widgets.ButtonInvisible(ApparelBelt))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-                    foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-                    {
-                        if (thing.IsApparel)
-                        {
-                            if (thing.apparel.layers.Contains(ApparelLayerDefOf.Belt) &&
-                                CraftUtil.canCraftItem(thing))
-                            {
-                                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                                    delegate
-                                    {
-                                        if (thing.MadeFromStuff)
-                                        {
-                                            //If made from stuff
-                                            List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                                            foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                                            {
-                                                if (stuff.IsStuff &&
-                                                    thing.stuffCategories.SharesElementWith(stuff.stuffProps
-                                                        .categories))
-                                                {
-                                                    stuffList.Add(new FloatMenuOption(
-                                                        stuff.LabelCap + " - Total Value: " +
-                                                        (StatWorker_MarketValue.CalculatedBaseMarketValue(thing,
-                                                            stuff)),
-                                                        delegate
-                                                        {
-                                                            selectedUnit.wearEquipment(
-                                                                ThingMaker.MakeThing(thing, stuff) as Apparel,
-                                                                true);
-                                                        }));
-                                                }
-                                            }
-
-                                            stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                                            FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                                            Find.WindowStack.Add(stuffWindow);
-                                        }
-                                        else
-                                        {
-                                            //If not made from stuff
-                                            //Remove old equipment
-                                            foreach (Apparel apparel in selectedUnit.defaultPawn.apparel
-                                                .WornApparel)
-                                            {
-                                                if (apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Belt))
-                                                {
-                                                    selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                                    break;
-                                                }
-                                            }
-
-                                            selectedUnit.wearEquipment(ThingMaker.MakeThing(thing) as Apparel,
-                                                true);
-                                        }
-                                    }, thing));
-                            }
-                        }
-                    }
-
-                    list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                    list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                    {
-                        //Remove old
-                        foreach (Apparel apparel in selectedUnit.defaultPawn.apparel.WornApparel)
-                        {
-                            if (apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Belt))
-                            {
-                                selectedUnit.defaultPawn.apparel.Remove(apparel);
-                                break;
-                            }
-                        }
-                    }));
-                    FloatMenu menu = new Searchable_FloatMenu(list);
-
-                    Find.WindowStack.Add(menu);
-                }
-
-
-                //worn items
-                float totalCost = 0;
-                int i = 0;
-
-                totalCost += (float)Math.Floor(selectedUnit.defaultPawn.def.BaseMarketValue *
-                                                FCSettings.militaryRaceCostMultiplier);
-
-                foreach (Thing thing in selectedUnit.defaultPawn.apparel.WornApparel.Concat(selectedUnit.defaultPawn
-                    .equipment.AllEquipmentListForReading))
-                {
-                    Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width,
-                        25);
-                    i++;
-
-                    totalCost += thing.MarketValue;
-
-                    if (Widgets.CustomButtonText(ref tmp, thing.LabelCap + " Cost: " + thing.MarketValue,
-                        UnityEngine.Color.white,
-                        UnityEngine.Color.black, UnityEngine.Color.black))
-                    {
-                        Find.WindowStack.Add(new Dialog_InfoCard(thing));
+                        stuffList.Add(new FloatMenuOption(
+                            stuff.LabelCap + " - Total Value: " +
+                            StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff),
+                            delegate { onStuffSelected(stuff); }));
                     }
                 }
 
-                if (selectedUnit.animal != null)
-                {
-                    Widgets.ButtonImage(AnimalCompanion, selectedUnit.animal.race.uiIcon);
-                    totalCost += (float)Math.Floor(selectedUnit.animal.race.BaseMarketValue *
-                                                    FCSettings.militaryAnimalCostMultiplier);
-                }
-
-                foreach (Thing thing in selectedUnit.defaultPawn.apparel.WornApparel)
-                {
-                    //LogUtil.Message(thing.Label);
-
-
-                    if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))
-                    {
-                        Widgets.ButtonImage(ApparelHead, thing.def.uiIcon);
-                    }
-
-                    if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.Belt))
-                    {
-                        Widgets.ButtonImage(ApparelBelt, thing.def.uiIcon);
-                    }
-
-                    if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.Shell) &&
-                        thing.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
-                    {
-                        Widgets.ButtonImage(ApparelTorsoShell, thing.def.uiIcon);
-                    }
-
-                    if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.Middle) &&
-                        thing.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
-                    {
-                        Widgets.ButtonImage(ApparelTorsoMiddle, thing.def.uiIcon);
-                    }
-
-                    if (thing.def.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) &&
-                        thing.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
-                    {
-                        Widgets.ButtonImage(ApparelTorsoSkin, thing.def.uiIcon);
-                    }
-
-                    if (thing.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) &&
-                        thing.def.apparel.layers.Contains(ApparelLayerDefOf.OnSkin))
-                    {
-                        Widgets.ButtonImage(ApparelLegs, thing.def.uiIcon);
-                    }
-                }
-
-                foreach (Thing thing in selectedUnit.defaultPawn.equipment.AllEquipmentListForReading)
-                {
-                    Widgets.ButtonImage(EquipmentWeapon, thing.def.uiIcon);
-                }
-
-                totalCost = (float)Math.Ceiling(totalCost);
-                Widgets.Label(EquipmentTotalCost, "totalEquipmentCostLabel".Translate() + totalCost);
+                stuffList.Sort(CompareUtil.CompareFloatMenuOption);
+                FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
+                Find.WindowStack.Add(stuffWindow);
+            }
+            else
+            {
+                onStuffSelected(null);
             }
         }
     }
+}

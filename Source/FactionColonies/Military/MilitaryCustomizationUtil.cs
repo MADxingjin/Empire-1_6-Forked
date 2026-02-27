@@ -104,7 +104,7 @@ namespace FactionColonies
                     int settlementMilLevel = 0;
                     if (squad.settlement != null)
                         settlementMilLevel = squad.settlement.settlementMilitaryLevel;
-                    if (squad.outfit == null || !(squad.outfit.equipmentTotalCost >
+                    if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
                                                   calculateMilitaryLevelPoints(settlementMilLevel)))
                         continue;
                     if (squad.settlement != null)
@@ -208,7 +208,7 @@ namespace FactionColonies
                 return;
             }
             if (calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
-                squad.equipmentTotalCost)
+                squad.GetEquipmentTotalCost())
             {
                 if (squadExists(settlement))
                 {

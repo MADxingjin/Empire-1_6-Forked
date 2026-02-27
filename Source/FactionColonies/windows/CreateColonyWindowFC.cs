@@ -358,6 +358,14 @@ namespace FactionColonies
                 {
                     evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
                 }
+                else
+                {
+                    evt.customDescription = "SettleEventDesc".Translate(
+                        currentSettlementType.LabelCap,
+                        currentTileSelected.Tile.PrimaryBiome.LabelCap,
+                        (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+                }
+                evt.hasCustomDescription = true;
                 faction.addEvent(evt);
 
                 faction.settlementCaravansList.Add(evt.location);

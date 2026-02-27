@@ -54,7 +54,9 @@ namespace FactionColonies.util
             /* Do any post-settlement-creation demanded of the settlement type */
             settlementType.GetModExtension<SettlementTypeExtension>().postCreation(settlement);
 
-            Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(), "TheSettlement".Translate() + " " + settlement.Name + "HasBeenFormed".Translate() + "!", LetterDefOf.PositiveEvent);
+            Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
+                "SettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
+                LetterDefOf.PositiveEvent);
 
             return settlement;
         }

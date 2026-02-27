@@ -184,7 +184,7 @@ namespace FactionColonies
         public bool isCivilian;
         public PawnKindDef animal;
         public PawnKindDef pawnKind;
-        public SavedThing weapon;
+        public List<SavedThing> weapons;
         public List<SavedThing> apparel;
         public XenotypeDef xenotype;
 
@@ -192,12 +192,9 @@ namespace FactionColonies
 
         public SavedUnitFC(MilUnitFC unit)
         {
-            Pawn pawn = unit.defaultPawn;
             name = unit.name;
-            if (pawn.equipment?.Primary != null)
-                weapon = new SavedThing(pawn.equipment.Primary);
-            
-            apparel = pawn.apparel.WornApparel.Select(a => new SavedThing(a)).ToList();
+            weapons = new List<SavedThing>(unit.weapons);
+            apparel = new List<SavedThing>(unit.apparel);
             isTrader = unit.isTrader;
             isCivilian = unit.isCivilian;
             animal = unit.animal;
@@ -207,32 +204,23 @@ namespace FactionColonies
 
         public MilUnitFC CreateMilUnit()
         {
+            PawnKindDef resolvedKind = pawnKind;
+            if (pawnKind != null && !FactionCache.FactionComp.raceFilter.Allows(pawnKind.race))
+            {
+                resolvedKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
+            }
+
             MilUnitFC unit = new MilUnitFC(false)
             {
                 name = name,
                 isCivilian = isCivilian,
                 isTrader = isTrader,
                 animal = animal,
-                pawnKind = pawnKind,
-                xenotype = xenotype
+                pawnKind = resolvedKind,
+                xenotype = xenotype,
+                weapons = weapons?.Where(w => w.thing != null).ToList() ?? new List<SavedThing>(),
+                apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>()
             };
-            if (!FactionCache.FactionComp.raceFilter.Allows(pawnKind.race))
-            {
-                unit.pawnKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
-            }
-            unit.defaultPawn.genes.SetXenotype(xenotype);
-            unit.generateDefaultPawn();
-
-            if (weapon.thing != null)
-                unit.equipWeapon((ThingWithComps) weapon.CreateThing());
-
-            apparel.ForEach(a =>
-            {
-                if (a.thing != null)
-                {
-                    unit.wearEquipment((Apparel) a.CreateThing(), true);
-                }
-            });
 
             unit.changeTick();
             unit.updateEquipmentTotalCost();
@@ -255,7 +243,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref isCivilian, "isCivilian");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref pawnKind, "pawnKind");
-            Scribe_Deep.Look(ref weapon, "weapon");
+            Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
             Scribe_Collections.Look(ref apparel, "apparel", LookMode.Deep);
         }
     }
@@ -329,17 +317,50 @@ namespace FactionColonies
     {
         public ThingDef thing;
         public ThingDef stuff;
+        public QualityCategory? quality; // null = not specified (future feature)
 
-        public SavedThing(Thing thing)
+        public SavedThing(Thing t)
         {
-            this.thing = thing.def;
-            this.stuff = thing.Stuff;
+            thing = t.def;
+            stuff = t.Stuff;
+            quality = t.TryGetQuality(out QualityCategory q) ? q : (QualityCategory?)null;
         }
-        public Thing CreateThing() => thing != null ? ThingMaker.MakeThing(thing, stuff) : null;
+
+        public SavedThing(ThingDef thing, ThingDef stuff)
+        {
+            this.thing = thing;
+            this.stuff = stuff;
+            this.quality = null;
+        }
+
+        public Thing CreateThing()
+        {
+            if (thing == null) return null;
+            Thing t = ThingMaker.MakeThing(thing, stuff);
+            if (quality.HasValue)
+                t.TryGetComp<CompQuality>()?.SetQuality(quality.Value, null);
+            return t;
+        }
+
+        public float MarketValue =>
+            thing != null ? StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff) : 0f;
+
         public void ExposeData()
         {
             Scribe_Defs.Look(ref thing, "thing");
             Scribe_Defs.Look(ref stuff, "stuff");
+            // quality is nullable — save only if set
+            QualityCategory qualityVal = quality ?? QualityCategory.Normal;
+            bool hasQuality = quality.HasValue;
+            Scribe_Values.Look(ref hasQuality, "hasQuality", false);
+            if (hasQuality)
+            {
+                Scribe_Values.Look(ref qualityVal, "quality", QualityCategory.Normal);
+            }
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                quality = hasQuality ? qualityVal : (QualityCategory?)null;
+            }
         }
     }
 }

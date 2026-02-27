@@ -69,86 +69,40 @@ namespace FactionColonies
         {
             FactionFC tmp = FactionCache.FactionComp;
 
-            if (cEvent.isRandomEvent && Find.World.PlayerWealthForStoryteller >= cEvent.requiredWealth)
+            if (!cEvent.isRandomEvent) return false;
+            if (Find.World.PlayerWealthForStoryteller < cEvent.requiredWealth) return false;
+
+            // Stat range checks
+            if (cEvent.minimumHappiness > tmp.averageHappiness || tmp.averageHappiness > cEvent.maximumHappiness) return false;
+            if (cEvent.minimumLoyalty > tmp.averageLoyalty || tmp.averageLoyalty > cEvent.maximumLoyalty) return false;
+            if (cEvent.minimumUnrest > tmp.averageUnrest || tmp.averageUnrest > cEvent.maximumUnrest) return false;
+            if (cEvent.minimumProsperity > tmp.averageProsperity || tmp.averageProsperity > cEvent.maximumProsperity) return false;
+
+            // Settlement count check
+            bool noSettlementRequirement = cEvent.rangeSettlementsAffected.min == 0 && cEvent.rangeSettlementsAffected.max == 0;
+            if (!noSettlementRequirement && FactionCache.FactionComp.settlements.Count() < cEvent.rangeSettlementsAffected.min) return false;
+
+            // Required resource check
+            if (cEvent.requiredResource != null)
             {
-                //If meets happiness requirement
-                if (cEvent.minimumHappiness <= tmp.averageHappiness && tmp.averageHappiness <= cEvent.maximumHappiness)
-                {
-                    //If meets loyalty requirement
-                    if (cEvent.minimumLoyalty <= tmp.averageLoyalty && tmp.averageLoyalty <= cEvent.maximumLoyalty)
-                    {
-                        //If meets unrest requirement
-                        if (cEvent.minimumUnrest <= tmp.averageUnrest && tmp.averageUnrest <= cEvent.maximumUnrest)
-                        {
-                            //If meets prosperity requirement
-                            if (cEvent.minimumProsperity <= tmp.averageProsperity &&
-                                tmp.averageProsperity <= cEvent.maximumProsperity)
-                            {
-                                if (cEvent.rangeSettlementsAffected.min == 0 &&
-                                    cEvent.rangeSettlementsAffected.max == 0 ||
-                                    FactionCache.FactionComp.settlements.Count() >=
-                                    cEvent.rangeSettlementsAffected.min)
-                                {
-                                    //if doesn't require resource or if required resource has more than 1 production
-                                    if (cEvent.requiredResource is null
-                                        ? true 
-                                        : FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
-                                          || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0))
-                                    {
-                                        //if event is not incompatible with any currently-running events
-                                        foreach (FCEvent evt in FactionCache.FactionComp.events)
-                                        {
-                                            if (evt.def != null)
-                                            {
-                                                if (cEvent == evt.def)
-                                                {
-                                                    //if there's already the same event running
-                                                    return false;
-                                                }
-
-                                                foreach (FCEventDef inEvt in evt.def.incompatibleEvents)
-                                                {
-                                                    if (cEvent == inEvt)
-                                                    {
-                                                        //if not compatible
-                                                        return false;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        //If there are no required biomes
-                                        if (cEvent.applicableBiomes.Count() != 0)
-                                        {
-                                            foreach (string biome in cEvent.applicableBiomes)
-                                            {
-                                                // if(cEvent.)
-                                            }
-                                        }
-
-                                        //else if compatible
-                                        return true;
-                                    }
-
-                                    return false;
-                                }
-
-                                return false;
-                            }
-
-                            return false;
-                        }
-
-                        return false;
-                    }
-
-                    return false;
-                }
-
-                return false;
+                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
+                                   || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0);
+                if (!hasResource) return false;
             }
 
-            return false;
+            // Incompatible/duplicate event check
+            foreach (FCEvent evt in FactionCache.FactionComp.events)
+            {
+                if (evt.def == null) continue;
+                if (cEvent == evt.def) return false;
+
+                foreach (FCEventDef inEvt in evt.def.incompatibleEvents)
+                {
+                    if (cEvent == inEvt) return false;
+                }
+            }
+
+            return true;
         }
 
         public static FCEventDef returnRandomEvent()
@@ -279,15 +233,11 @@ namespace FactionColonies
         public static void ProcessEvents(in List<FCEvent> events)
         {
             FactionFC faction = FactionCache.FactionComp;
-            for (int i = 0; i < events.Count; i++)
+            for (int i = events.Count - 1; i >= 0; i--)
             {
                 if (events[i].timeTillTrigger > Find.TickManager.TicksGame) continue;
-                //Make custom event functions here
 
-                FCEvent evt = new FCEvent(true);
-
-                evt = events[i];
-                //remove event (stop spam?)
+                FCEvent evt = events[i];
                 faction.events.RemoveAt(i);
                 WorldSettlementFC settlement;
 
@@ -326,7 +276,7 @@ namespace FactionColonies
                         if (settlement != null)
                         {
                             settlement.constructBuilding(evt.building, evt.buildingSlot);
-                            Messages.Message(evt.building.label + " " + "HasBeenConstructedAt".Translate() + " " + settlement.Name + "!", MessageTypeDefOf.PositiveEvent);
+                            Messages.Message("BuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
                         }
                         else
                         {
@@ -340,7 +290,9 @@ namespace FactionColonies
                                 //if settlement is not null
                                 settlement = faction.returnSettlementByLocation(evt.location);
                                 settlement.upgradeSettlement();
-                                Find.LetterStack.ReceiveLetter("Settlement Upgrade", settlement.Name + " " + "HasBeenUpgraded".Translate() + " " + settlement.settlementLevel + "!", LetterDefOf.PositiveEvent);
+                                Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
+                                    "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
+                                    LetterDefOf.PositiveEvent);
                                 /* We set these values here, instead of in upgradeSettlement(), because sometimes upgradeSettlement is called to handle changing a settlement's level outside of the
                                  * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
                                 settlement.isUpgrading = false;
@@ -415,16 +367,7 @@ namespace FactionColonies
                 //check if event has a location, if does, add traits to that specific location;
                 if (evt.settlementTraitLocations.Any()) //if has specific locations
                 {
-                //Remove null settlements
-                ResetClear:
-                    foreach (WorldSettlementFC worldsettlement in evt.settlementTraitLocations)
-                    {
-                        if (worldsettlement == null)
-                        {
-                            evt.settlementTraitLocations.Remove(worldsettlement);
-                            goto ResetClear;
-                        }
-                    }
+                    evt.settlementTraitLocations.RemoveAll(s => s == null);
 
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
@@ -828,20 +771,24 @@ namespace FactionColonies
 
         public void runAction()
         {
-            if (!classToRun.NullOrEmpty() && !classMethodToRun.NullOrEmpty())
+            if (classToRun.NullOrEmpty() || classMethodToRun.NullOrEmpty()) return;
+
+            Type typ = GenTypes.AllTypes.FirstOrDefault(t => t.FullName == classToRun);
+            if (typ == null)
             {
-                Type typ = null;
-                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    var type1 = a.GetType(classToRun);
-                    if (type1 != null)
-                        typ = type1;
-                }
+                LogUtil.Error($"FCEvent.runAction: Could not find type '{classToRun}'");
+                return;
+            }
 
+            try
+            {
                 var obj = Activator.CreateInstance(typ);
-                object[] paramArgu = passEventToClassMethodToRun ? new object[] {this} : new object[] { };
-
+                object[] paramArgu = passEventToClassMethodToRun ? new object[] { this } : new object[] { };
                 Traverse.Create(obj).Method(classMethodToRun, paramArgu).GetValue();
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"FCEvent.runAction: Failed to invoke {classToRun}.{classMethodToRun}: {e}");
             }
         }
     }

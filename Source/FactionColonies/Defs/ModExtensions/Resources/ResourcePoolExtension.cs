@@ -27,7 +27,7 @@ namespace FactionColonies
         /// <summary>
         /// Controls whether the resource's faction-level pool is reset to 0 at tax time.
         /// </summary>
-        /// <returns>TRUE if the pool should reset every tax period. FALSE otherwise.</returns>
+        /// <returns>TRUE if the pool should reset every tax period. FALSE otherwise. Defaults to TRUE.</returns>
         public virtual bool resetAtTaxTime()
         {
             return true;

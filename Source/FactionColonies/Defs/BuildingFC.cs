@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
-using static FactionColonies.BuildingFCDef;
 
 namespace FactionColonies
 {

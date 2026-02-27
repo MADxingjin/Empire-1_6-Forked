@@ -18,6 +18,8 @@
 	<FCSettlementFormed>Settlement Formed</FCSettlementFormed>
 	<TheSettlement>The settlement</TheSettlement>
 	<HasBeenFormed> has been formed</HasBeenFormed>
+	<SettleEventDesc>A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}.</SettleEventDesc>
+	<SettleEventCompletedDesc>{0} has been established as a new {1} in the {2}.</SettleEventCompletedDesc>
 	<PlayerColony>Player Colony</PlayerColony>
 	<SetCapital>Set Capital</SetCapital>
 	<SetAsFactionCapital>{0} has been set as the faction capital</SetAsFactionCapital>
@@ -30,6 +32,8 @@
 	<CanBeUpgraded>can be upgraded for</CanBeUpgraded>
 	<UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
 	<HasBeenUpgraded>has been upgraded to level</HasBeenUpgraded>
+	<UpgradeEventDesc>{0} is being upgraded from level {1} to level {2}.\n\n{3}</UpgradeEventDesc>
+	<UpgradeEventCompletedDesc>{0} has been upgraded to level {1}!\n\n{2}</UpgradeEventCompletedDesc>
 	<AlreadyMaxLevel>is already max level</AlreadyMaxLevel>
 	<NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</NotEnoughSilverUpgrade>
 	<CannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</CannotBeUpgradedPastMax>

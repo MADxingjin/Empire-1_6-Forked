@@ -58,10 +58,17 @@ namespace FactionColonies
                 location = settlement.Tile,
                 timeTillTrigger = Find.TickManager.TicksGame + (settlement.settlementLevel + 1) * 60000 * (factionfc.hasPolicy(FCPolicyDefOf.isolationist) ? 1 : 2)
             };
+            tmp.customDescription = "UpgradeEventDesc".Translate(
+                settlement.Name,
+                settlement.settlementLevel,
+                settlement.settlementLevel + 1,
+                "UpgradeColonyDesc".Translate());
+            tmp.hasCustomDescription = true;
+
             settlement.isUpgrading = true;
             settlement.startUpgradeTick = Find.TickManager.TicksGame;
             settlement.finishUpgradeTick = tmp.timeTillTrigger;
-                
+
             FactionCache.FactionComp.addEvent(tmp);
 
             //Close this window and update the SettlementWindowFc

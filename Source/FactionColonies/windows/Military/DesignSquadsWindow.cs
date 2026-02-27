@@ -106,7 +106,7 @@ namespace FactionColonies
                 if (settlementPointReference != null)
                 {
                     Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCost".Translate(
-                                                      selectedSquad.equipmentTotalCost,
+                                                      selectedSquad.GetEquipmentTotalCost(),
                                                       MilitaryCustomizationUtil
                                                           .calculateMilitaryLevelPoints(settlementPointReference
                                                               .settlementMilitaryLevel)));
@@ -114,7 +114,7 @@ namespace FactionColonies
                 else
                 {
                     Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCostNoRef".Translate(
-                                                      selectedSquad.equipmentTotalCost));
+                                                      selectedSquad.GetEquipmentTotalCost()));
                 }
 
                 Text.Font = GameFont.Tiny;
@@ -200,11 +200,11 @@ namespace FactionColonies
                         };
 
                         //Create list of selectable units
-                        units.AddRange(util.units.Select(unit => new FloatMenuOption(unit.name +
-                            " - Cost: " + unit.equipmentTotalCost, delegate
+                        units.AddRange(util.units.Select(u => new FloatMenuOption(u.name +
+                            " - Cost: " + u.getTotalCost, delegate
                             {
                                 //Unit is selected
-                                selectedSquad.units[click] = unit;
+                                selectedSquad.units[click] = u;
                                 selectedSquad.updateEquipmentTotalCost();
                                 selectedSquad.ChangeTick();
                             })));
@@ -221,15 +221,20 @@ namespace FactionColonies
                                 60, 60), selectedSquad.units.ElementAt(k).animal.race.uiIcon);
                     }
 
-                    Widgets.ThingIcon(
-                        new Rect(UnitStandBase.x - 5 + ((k % 6) * 80), UnitStandBase.y - 45 + (k - k % 6) / 5 * 70, 60,
-                            60), selectedSquad.units.ElementAt(k).defaultPawn);
-                    if (selectedSquad.units.ElementAt(k).defaultPawn.equipment.AllEquipmentListForReading.Count > 0)
+                    MilUnitFC unit = selectedSquad.units.ElementAt(k);
+                    Pawn previewPawn = unit.PreviewPawn;
+                    if (previewPawn != null)
                     {
                         Widgets.ThingIcon(
+                            new Rect(UnitStandBase.x - 5 + ((k % 6) * 80), UnitStandBase.y - 45 + (k - k % 6) / 5 * 70, 60,
+                                60), previewPawn);
+                    }
+                    if (unit.HasWeapon)
+                    {
+                        Widgets.DefIcon(
                             new Rect(UnitStandBase.x - 5 + ((k % 6) * 80), UnitStandBase.y - 15 + (k - k % 6) / 5 * 70,
                                 40, 40),
-                            selectedSquad.units.ElementAt(k).defaultPawn.equipment.AllEquipmentListForReading[0]);
+                            unit.weapons[0].thing, unit.weapons[0].stuff);
                     }
 
                     Widgets.Label(

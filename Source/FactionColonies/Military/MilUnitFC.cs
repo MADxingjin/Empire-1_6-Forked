@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Threading;
 using FactionColonies.util;
-using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -14,7 +11,6 @@ namespace FactionColonies
     {
         public int loadID;
         public string name;
-        public Pawn defaultPawn;
         public bool isBlank;
         public double equipmentTotalCost;
         public bool isTrader;
@@ -23,6 +19,16 @@ namespace FactionColonies
         public PawnKindDef animal;
         public PawnKindDef pawnKind;
         public XenotypeDef xenotype;
+
+        // Def-based equipment storage
+        public List<SavedThing> weapons = new List<SavedThing>();
+        public List<SavedThing> apparel = new List<SavedThing>();
+        public bool HasWeapon => weapons.Any(w => w.thing != null);
+
+        // Lazy preview pawn for UI rendering only — not serialized
+        private Pawn _previewPawn;
+        private bool _previewPawnDirty = true;
+
         public MilUnitFC()
         {
         }
@@ -36,14 +42,13 @@ namespace FactionColonies
             try
             {
                 Faction playerFaction = FactionCache.PlayerColonyFaction;
-                if (playerFaction != null && playerFaction.def.pawnGroupMakers.Any() && 
+                if (playerFaction != null && playerFaction.def.pawnGroupMakers.Any() &&
                     playerFaction.def.pawnGroupMakers.Any(pgm => pgm.options?.Any() == true))
                 {
                     pawnKind = playerFaction.RandomPawnKind();
                 }
                 else
                 {
-                    // Fallback to PColony faction
                     var pColonyDef = DefDatabase<FactionDef>.GetNamed("PColony");
                     if (pColonyDef?.pawnGroupMakers?.Any(pgm => pgm.options?.Any() == true) == true)
                     {
@@ -51,17 +56,14 @@ namespace FactionColonies
                     }
                     else
                     {
-                        // Ultimate fallback to any colonist pawn kind
                         pawnKind = PawnKindDefOf.Colonist;
                     }
                 }
-                generateDefaultPawn();
             }
             catch (Exception ex)
             {
                 LogUtil.Error($"Error creating MilUnitFC: {ex.Message}");
                 pawnKind = PawnKindDefOf.Colonist;
-                generateDefaultPawn();
             }
         }
 
@@ -73,7 +75,6 @@ namespace FactionColonies
         public void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID");
-            Scribe_Deep.Look(ref defaultPawn, "defaultPawn");
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref isBlank, "blank");
             Scribe_Values.Look(ref equipmentTotalCost, "equipmentTotalCost", -1);
@@ -83,228 +84,171 @@ namespace FactionColonies
             Scribe_Defs.Look(ref pawnKind, "PawnKind");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref xenotype, "xenotype");
+
+            // Def-based equipment storage
+            Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
+            Scribe_Collections.Look(ref apparel, "apparel", LookMode.Deep);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (weapons == null) weapons = new List<SavedThing>();
+                if (apparel == null) apparel = new List<SavedThing>();
+            }
         }
 
-        public void generateDefaultPawn()
+        // --- Preview Pawn (UI only) ---
+
+        public Pawn PreviewPawn
         {
-            List<Apparel> apparel = new List<Apparel>();
-            List<ThingWithComps> equipment = new List<ThingWithComps>();
-            List<Gene> gene = new List<Gene>();
-
-            if (defaultPawn != null)
+            get
             {
-                apparel.AddRange(defaultPawn.apparel.WornApparel);
-                equipment.AddRange(defaultPawn.equipment.AllEquipmentListForReading);
-                gene.AddRange(defaultPawn.genes.GenesListForReading);
-
-                for (int i = defaultPawn.apparel.WornApparel.Count - 1; i >= 0; i--)
-                {
-                    defaultPawn.apparel.Remove(defaultPawn.apparel.WornApparel[i]);
-                }
-                for (int i = defaultPawn.equipment.AllEquipmentListForReading.Count - 1; i >= 0; i--)
-                {
-                    defaultPawn.equipment.Remove(defaultPawn.equipment.AllEquipmentListForReading[i]);
-                }
-                for (int i = defaultPawn.genes.GenesListForReading.Count - 1; i >= 0; i--)
-                {
-                    defaultPawn.genes.RemoveGene(defaultPawn.genes.GenesListForReading[i]);
-                }
-                defaultPawn.Destroy();
+                if (_previewPawn == null || _previewPawnDirty)
+                    RebuildPreviewPawn();
+                return _previewPawn;
             }
+        }
 
+        public void MarkPreviewDirty()
+        {
+            _previewPawnDirty = true;
+        }
 
-            // Try to generate pawn with the requested kind
+        private void RebuildPreviewPawn()
+        {
             try
             {
-                defaultPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
-                
-                // Set faction after generation (since we generate without faction to avoid xenotype forcing)
-                if (defaultPawn != null && defaultPawn.Faction == null)
+                if (_previewPawn != null)
+                {
+                    _previewPawn.apparel?.DestroyAll();
+                    _previewPawn.equipment?.DestroyAllEquipment();
+                    _previewPawn.Destroy();
+                }
+
+                _previewPawn = PawnGenerator.GeneratePawn(
+                    FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
+
+                if (_previewPawn != null && _previewPawn.Faction == null)
                 {
                     Faction empireFaction = FactionCache.PlayerColonyFaction;
                     if (empireFaction != null)
-                    {
-                        defaultPawn.SetFaction(empireFaction);
-                    }
+                        _previewPawn.SetFaction(empireFaction);
                 }
             }
             catch (Exception ex)
             {
-                LogUtil.Warning($"Failed to generate default pawn with kind {pawnKind?.defName}: {ex.Message}");
-                defaultPawn = null;
+                LogUtil.Warning($"Failed to generate preview pawn for {name}: {ex.Message}");
+                _previewPawn = null;
             }
-            
-            // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing) I'll explore this one further as this may break immersion
-            if (defaultPawn == null)
+
+            if (_previewPawn == null)
             {
-                LogUtil.Warning($"Default pawn generation failed for {pawnKind?.defName}. Trying Baseliner fallback without faction.");
-                try
-                {
-                    pawnKind = PawnKindDefOf.Colonist;
-                    var simpleRequest = new PawnGenerationRequest(
-                        kind: PawnKindDefOf.Colonist,
-                        faction: null, // NO faction - this prevents faction xenotype forcing
-                        context: PawnGenerationContext.NonPlayer,
-                        tile: -1,
-                        forceGenerateNewPawn: false,
-                        allowDead: false,
-                        allowDowned: false,
-                        canGeneratePawnRelations: false, // No relations for factionless pawns
-                        mustBeCapableOfViolence: true,
-                        colonistRelationChanceFactor: 0,
-                        forceAddFreeWarmLayerIfNeeded: false,
-                        allowGay: true,
-                        allowFood: true,
-                        allowAddictions: false,
-                        forcedXenotype: XenotypeDefOf.Baseliner // Force Baseliner - guaranteed violence capable
-                    );
-                    defaultPawn = PawnGenerator.GeneratePawn(simpleRequest);
-                    
-                    // Set the faction after generation
-                    if (defaultPawn != null)
-                    {
-                        Faction empireFaction = FactionCache.PlayerColonyFaction;
-                        if (empireFaction != null)
-                        {
-                            defaultPawn.SetFaction(empireFaction);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogUtil.Warning($"Baseliner fallback also failed: {ex.Message}");
-                }
-            }
-            
-            // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
-            if (defaultPawn == null)
-            {
-                LogUtil.Warning("All standard generation failed. Trying minimal fallback.");
-                try
-                {
-                    var fallbackRequest = new PawnGenerationRequest(
-                        kind: PawnKindDefOf.Colonist,
-                        faction: null, // NO faction
-                        context: PawnGenerationContext.NonPlayer,
-                        mustBeCapableOfViolence: false // Allow non-violent as absolute last resort
-                    );
-                    defaultPawn = PawnGenerator.GeneratePawn(fallbackRequest);
-                    
-                    // Set the faction after generation
-                    if (defaultPawn != null)
-                    {
-                        Faction empireFaction = FactionCache.PlayerColonyFaction;
-                        if (empireFaction != null)
-                        {
-                            defaultPawn.SetFaction(empireFaction);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogUtil.Error($"Critical - all pawn generation attempts failed: {ex.Message}");
-                }
-            }
-            
-            // Final check - if still null, we cannot proceed!!!
-            if (defaultPawn == null)
-            {
-                LogUtil.Error("Critical error - could not generate any default pawn for military unit.");
+                _previewPawnDirty = false;
                 return;
             }
-            
-            defaultPawn.mindState.canFleeIndividual = false;
-            defaultPawn.apparel.DestroyAll();
 
-            foreach (Apparel clothes in apparel)
+            _previewPawn.mindState.canFleeIndividual = false;
+            _previewPawn.apparel.DestroyAll();
+            _previewPawn.equipment.DestroyAllEquipment();
+
+            foreach (SavedThing a in apparel)
             {
-                //LogUtil.Message(clothes.Label);
-                defaultPawn.apparel.Wear(clothes);
+                Thing t = a.CreateThing();
+                if (t is Apparel ap)
+                    _previewPawn.apparel.Wear(ap);
             }
 
-            foreach (ThingWithComps weapon in equipment)
+            foreach (SavedThing w in weapons)
             {
-                //LogUtil.Message(weapon.Label);
-                equipWeapon(weapon);
+                Thing wt = w.CreateThing();
+                if (wt is ThingWithComps twc)
+                    _previewPawn.equipment.AddEquipment(twc);
             }
 
-            foreach (Gene xenogene in gene)
-            {
-                //LogUtil.Message(xenogene.Label);
-                GenerateXenotype(xenogene);
-            }
-
+            _previewPawnDirty = false;
         }
+
+        // --- Equipment Mutation Methods ---
 
         public void changeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
         }
 
-        public void equipWeapon(ThingWithComps weapon)
+        public void SetWeapon(ThingDef def, ThingDef stuff)
         {
-            changeTick();
-            if (isCivilian == false)
-            {
-                unequipWeapon();
-                defaultPawn.equipment.AddEquipment(weapon);
-            }
-            else
+            if (isCivilian)
             {
                 Messages.Message("FCNoWeaponOnCivilian".Translate(), MessageTypeDefOf.RejectInput);
+                return;
             }
-
+            weapons.Clear();
+            weapons.Add(new SavedThing(def, stuff));
+            _previewPawnDirty = true;
+            changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
-        public void unequipWeapon()
+        public void ClearWeapon()
         {
+            weapons.Clear();
+            _previewPawnDirty = true;
             changeTick();
-            defaultPawn.equipment.DestroyAllEquipment();
-
-            MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
-        }
-        public void GenerateXenotype(Gene xenogene)
-        {
-            changeTick();
-            defaultPawn.genes.SetXenotype(xenotype);
-        }
-        public void wearEquipment(Apparel Equipment, bool wear)
-        {
-            changeTick();
-
-            /* Call Wear regardless of if wear is true or false. This will force-remove all apparel that would conflict with the incoming apparel. */
-            defaultPawn.apparel.Wear(Equipment, false);
-
-            if (!wear)
-            {
-                /* Now remove the apparel. The end result should be a pawn with nothing on these apparel slots. */
-                defaultPawn.apparel.Remove(Equipment);
-            }
-
-
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
-        public void removeUnit()
+        public void SetApparel(ThingDef def, ThingDef stuff)
         {
-            FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
-        }
-
-        public void unequipAllEquipment()
-        {
+            // Remove conflicting apparel using RimWorld's static check
+            BodyDef body = pawnKind?.race?.race?.body ?? BodyDefOf.Human;
+            apparel.RemoveAll(existing =>
+                !ApparelUtility.CanWearTogether(existing.thing, def, body));
+            apparel.Add(new SavedThing(def, stuff));
+            _previewPawnDirty = true;
             changeTick();
-            defaultPawn.apparel.DestroyAll();
-            defaultPawn.equipment.DestroyAllEquipment();
-
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
+
+        public void RemoveApparel(ApparelLayerDef layer, BodyPartGroupDef bodyPart)
+        {
+            apparel.RemoveAll(s => MatchesSlot(s.thing, layer, bodyPart));
+            _previewPawnDirty = true;
+            changeTick();
+            MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
+        public void ClearAllEquipment()
+        {
+            weapons.Clear();
+            apparel.Clear();
+            _previewPawnDirty = true;
+            changeTick();
+            MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
+        /// <summary>
+        /// Check if a ThingDef matches a given apparel slot (layer + optional body part).
+        /// </summary>
+        public static bool MatchesSlot(ThingDef def, ApparelLayerDef layer, BodyPartGroupDef bodyPart)
+        {
+            if (def?.apparel == null) return false;
+            if (!def.apparel.layers.Contains(layer)) return false;
+            if (bodyPart != null && !def.apparel.bodyPartGroups.Contains(bodyPart)) return false;
+            return true;
+        }
+
+        // --- Cost ---
+
+        private int _lastCostCalcTick = -1;
 
         public double getTotalCost
         {
             get
             {
-                updateEquipmentTotalCost();
+                if (_lastCostCalcTick != tickChanged)
+                {
+                    updateEquipmentTotalCost();
+                    _lastCostCalcTick = tickChanged;
+                }
                 return equipmentTotalCost;
             }
         }
@@ -314,25 +258,31 @@ namespace FactionColonies
             if (isBlank)
             {
                 equipmentTotalCost = 0;
+                return;
             }
-            else
-            {
-                double totalCost = 0;
-                totalCost += Math.Floor(defaultPawn.def.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
 
-                totalCost = defaultPawn.apparel.WornApparel.Aggregate(totalCost,
-                    (current, thing) => current + thing.MarketValue);
+            double totalCost = 0;
 
-                totalCost = defaultPawn.equipment.AllEquipmentListForReading.Aggregate(totalCost,
-                    (current, thing) => current + thing.MarketValue);
+            if (pawnKind?.race != null)
+                totalCost += Math.Floor(pawnKind.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
 
-                if (animal != null)
-                {
-                    totalCost += Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier);
-                }
+            foreach (SavedThing a in apparel)
+                totalCost += a.MarketValue;
 
-                equipmentTotalCost = Math.Ceiling(totalCost);
-            }
+            foreach (SavedThing w in weapons)
+                totalCost += w.MarketValue;
+
+            if (animal != null)
+                totalCost += Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier);
+
+            equipmentTotalCost = Math.Ceiling(totalCost);
+        }
+
+        // --- Unit Management ---
+
+        public void removeUnit()
+        {
+            FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
         }
 
         public void setTrader(bool state)
@@ -351,12 +301,22 @@ namespace FactionColonies
             isCivilian = state;
             if (state)
             {
-                unequipWeapon();
+                ClearWeapon();
             }
             else
             {
                 setTrader(false);
             }
+        }
+
+        /// <summary>
+        /// Re-roll the preview pawn (new appearance) while keeping equipment.
+        /// Used by "Roll New Pawn" and race/xeno change buttons.
+        /// </summary>
+        public void RerollPreviewPawn()
+        {
+            _previewPawnDirty = true;
+            changeTick();
         }
     }
 }

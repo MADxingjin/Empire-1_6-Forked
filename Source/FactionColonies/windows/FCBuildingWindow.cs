@@ -269,6 +269,11 @@ namespace FactionColonies
                                 triggerTime /= 2;
 
                             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
+                            tmpEvt.customDescription = "BuildingEventDesc".Translate(
+                                building.LabelCap,
+                                settlement.Name,
+                                (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+                            tmpEvt.hasCustomDescription = true;
                             FactionCache.FactionComp.addEvent(tmpEvt);
 
                             PaymentUtil.paySilver(Convert.ToInt32(building.cost));

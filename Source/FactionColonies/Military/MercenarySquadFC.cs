@@ -35,7 +35,6 @@ namespace FactionColonies
         public Lord lord;
         public XenotypeDef xenotype1;
         public List<Gene> GeneList;
-        public Pawn defaultPawn;
 
         public void ExposeData()
         {
@@ -618,51 +617,40 @@ namespace FactionColonies
 
         public void EquipPawn(Mercenary merc, MilUnitFC loadout)
         {
-            foreach (Apparel clothes in loadout.defaultPawn.apparel.WornApparel)
+            foreach (SavedThing apparelDef in loadout.apparel)
             {
-                if (clothes.def.MadeFromStuff)
+                Thing thing = apparelDef.CreateThing();
+                if (thing is Apparel ap)
                 {
-                    Thing thing = ThingMaker.MakeThing(clothes.def, clothes.Stuff);
                     thing.SetColor(Color.white);
-                    merc.pawn.apparel.Wear(thing as Apparel);
-                }
-                else
-                {
-                    Thing thing = ThingMaker.MakeThing(clothes.def, clothes.Stuff);
-                    thing.SetColor(Color.white);
-                    merc.pawn.apparel.Wear(thing as Apparel);
+                    merc.pawn.apparel.Wear(ap);
                 }
             }
 
-            foreach (ThingWithComps weapon in loadout.defaultPawn.equipment.AllEquipmentListForReading)
+            foreach (SavedThing weaponDef in loadout.weapons)
             {
-                if (weapon.def.MadeFromStuff)
+                Thing weaponThing = weaponDef.CreateThing();
+                if (weaponThing is ThingWithComps twc)
                 {
-                    merc.pawn.equipment.AddEquipment(ThingMaker.MakeThing(weapon.def, weapon.Stuff) as ThingWithComps);
-                }
-                else
-                {
-                    merc.pawn.equipment.AddEquipment(ThingMaker.MakeThing(weapon.def) as ThingWithComps);
-                }
+                    merc.pawn.equipment.AddEquipment(twc);
 
-                if (FCSettings.IsModLoaded("CETeam.CombatExtended"))
-                {
-                    LogUtil.Message("Combat Extended detected");
-                    //CE is loaded
-                    foreach (ThingComp comp in merc.pawn.AllComps)
+                    if (FCSettings.IsModLoaded("CETeam.CombatExtended"))
                     {
-                        if (comp.GetType().ToString() == "CombatExtended.CompInventory")
+                        LogUtil.Message("Combat Extended detected");
+                        foreach (ThingComp comp in merc.pawn.AllComps)
                         {
-                            Type typ = GenUtil.returnUnknownTypeFromName(
-                                "CombatExtended.LoadoutPropertiesExtension");
+                            if (comp.GetType().ToString() == "CombatExtended.CompInventory")
+                            {
+                                Type typ = GenUtil.returnUnknownTypeFromName(
+                                    "CombatExtended.LoadoutPropertiesExtension");
 
-                            //Method not static, so create instance of object and define the parameters to the method.
-                            var obj = Activator.CreateInstance(typ);
-                            object[] paramArgu = { merc.pawn.equipment.Primary, comp, 1 };
+                                var obj = Activator.CreateInstance(typ);
+                                object[] paramArgu = { merc.pawn.equipment.Primary, comp, 1 };
 
-                            Traverse.Create(obj).Method("TryGenerateAmmoFor", paramArgu).GetValue();
-                            Traverse.Create(obj).Method("LoadWeaponWithRandAmmo", merc.pawn.equipment.Primary)
-                                .GetValue();
+                                Traverse.Create(obj).Method("TryGenerateAmmoFor", paramArgu).GetValue();
+                                Traverse.Create(obj).Method("LoadWeaponWithRandAmmo", merc.pawn.equipment.Primary)
+                                    .GetValue();
+                            }
                         }
                     }
                 }

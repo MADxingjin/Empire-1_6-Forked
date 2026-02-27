@@ -7,6 +7,10 @@
 	<NewLand>New Land</NewLand>
 	<EventAffectingSettlements>This event is affecting the following settlements:</EventAffectingSettlements>
 
+	<!-- Building Events -->
+	<BuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</BuildingEventDesc>
+	<BuildingEventCompletedMsg>{0} has been constructed at {1}!</BuildingEventCompletedMsg>
+
 	<!-- Pawn Events -->
 	<DeathOfFactionPawn>Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements.</DeathOfFactionPawn>
 	<CaptureOfFactionPawn>Capturing one of your settlement's pawns has caused great unrest in your subject settlements!</CaptureOfFactionPawn>

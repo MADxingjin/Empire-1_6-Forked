@@ -1092,7 +1092,7 @@ namespace FactionColonies
 
                     List<FloatMenuOption> squads = new List<FloatMenuOption>();
                     squads.AddRange(militaryUtil.squads.Select(squad => new FloatMenuOption(
-                        squad.name + " - " + "Cost".Translate() + ": " + squad.equipmentTotalCost,
+                        squad.name + " - " + "Cost".Translate() + ": " + squad.GetEquipmentTotalCost(),
                         delegate { militaryUtil.attemptToAssignSquad(settlement, squad); })));
 
                     if (!squads.Any())
