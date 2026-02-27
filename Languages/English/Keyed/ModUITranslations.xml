@@ -152,6 +152,16 @@
 	<NoFactionForMilitary>You cannot make a military without a faction!</NoFactionForMilitary>
 	<selectedInvalidTile>You can't build a settlement here!</selectedInvalidTile>
 	
+	<FCSettlementTableName>Name</FCSettlementTableName>
+	<FCSettlementTableLevel>Level</FCSettlementTableLevel>
+	<FCSettlementTableMilLevel>Mil Level</FCSettlementTableMilLevel>
+	<FCSettlementTableProfit>Profit</FCSettlementTableProfit>
+	<FCSettlementTableWorkers>Free Workers</FCSettlementTableWorkers>
+	<FCSettlementTableHappiness>Happiness</FCSettlementTableHappiness>
+	<FCSettlementTableLoyalty>Loyalty</FCSettlementTableLoyalty>
+	<FCSettlementTableUnrest>Unrest</FCSettlementTableUnrest>
+	<FCSettlementTableFounding>Founding Date</FCSettlementTableFounding>
+	
     <!--<Faction>Faction</Faction>-->
     <Colonies>Colonies</Colonies>
     <Bills>Bills</Bills>

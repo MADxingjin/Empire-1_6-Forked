@@ -193,9 +193,16 @@ namespace FactionColonies
         {
             foundingTick = Find.TickManager.TicksGame;
         }
-        public string GetFoundingDate()
+        public string GetFoundingDate(bool full = true)
         {
-            return GenDate.DateFullStringAt(foundingTick, startingLongLat);
+            if (full)
+            {
+                return GenDate.DateFullStringAt(foundingTick, startingLongLat);
+            }
+            else
+            {
+                return GenDate.DateShortStringAt(foundingTick, startingLongLat);
+            }
         }
 
         public override void ExposeData()

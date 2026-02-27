@@ -379,9 +379,16 @@ namespace FactionColonies
 
             foundingTick = Find.TickManager.TicksGame;
         }
-        public string GetFoundingDate()
+        public string GetFoundingDate(bool full = true)
         {
-            return GenDate.DateFullStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
+            if (full)
+            {
+                return GenDate.DateFullStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
+            }
+            else
+            {
+                return GenDate.DateShortStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
+            }
         }
 
         public override void ExposeData()

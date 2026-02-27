@@ -63,5 +63,9 @@ namespace FactionColonies
         {
             return y.getTotalProfit().CompareTo(x.getTotalProfit());
         }
+        public static int CompareSettlementFoundingDate(WorldSettlementFC x, WorldSettlementFC y)
+        {
+            return y.FoundingTick.CompareTo(x.FoundingTick);
+        }
     }
 }
