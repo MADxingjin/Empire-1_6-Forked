@@ -13,7 +13,8 @@ namespace FactionColonies
     {
         private WorldSettlementFC settlement;
         private ResourceFC resource;
-        private Vector2 scrollBar = new Vector2();
+        private Vector2 scrollBarLeft = new Vector2();
+        private Vector2 scrollBarRight = new Vector2();
 
         private ThingDef selectedThing = null;
         private QualityCategory? selectedQuality = null;
@@ -149,7 +150,7 @@ namespace FactionColonies
                 string totalCost;
                 if (!(selectedThing is null) && (!thingIsStuffable || !(selectedStuff is null)) && (!thingHasQuality || !(selectedQuality is null)))
                 {
-                    totalCost = $"${resource.titheThingValue(selectedThing, selectedStuff, selectedQuality ?? QualityCategory.Normal)}";
+                    totalCost = $"${Math.Round(resource.titheThingValue(selectedThing, selectedStuff, selectedQuality ?? QualityCategory.Normal))}";
                 }
                 else
                 {
@@ -244,7 +245,7 @@ namespace FactionColonies
             Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
-            Widgets.BeginScrollView(outerListBox, ref scrollBar, innerScrollBox);
+            Widgets.BeginScrollView(outerListBox, ref scrollBarLeft, innerScrollBox);
 
             for (int i = 0; i < thingsList.Count; i++)
             {
@@ -323,7 +324,7 @@ namespace FactionColonies
             Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
-            Widgets.BeginScrollView(outerListBox, ref scrollBar, innerScrollBox);
+            Widgets.BeginScrollView(outerListBox, ref scrollBarRight, innerScrollBox);
 
             for (int i = 0; i < stuffList.Count; i++)
             {

@@ -133,7 +133,7 @@ namespace FactionColonies
 
             // Scroll view
             Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
-                panelRect.width, panelRect.height - SearchBarHeight - 5f);
+                panelRect.width, panelRect.height - (SearchBarHeight*2) - (margin*2));
             Widgets.DrawMenuSection(scrollOutRect);
 
             List<ThingDef> filtered = string.IsNullOrEmpty(itemSearchTerm)
@@ -149,7 +149,7 @@ namespace FactionColonies
             for (int i = 0; i < filtered.Count; i++)
             {
                 ThingDef item = filtered[i];
-                Rect row = new Rect(0, i * RowHeight, scrollViewRect.width, RowHeight);
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + (i * RowHeight), scrollViewRect.width, RowHeight);
 
                 if (item == selectedItem)
                     Widgets.DrawHighlightSelected(row);
@@ -212,7 +212,7 @@ namespace FactionColonies
 
             // Scroll view
             Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
-                panelRect.width, panelRect.height - SearchBarHeight - 5f);
+                panelRect.width, panelRect.height - (SearchBarHeight * 2) - (margin * 2));
             Widgets.DrawMenuSection(scrollOutRect);
 
             List<ThingDef> filtered = string.IsNullOrEmpty(stuffSearchTerm)
@@ -228,7 +228,7 @@ namespace FactionColonies
             for (int i = 0; i < filtered.Count; i++)
             {
                 ThingDef stuff = filtered[i];
-                Rect row = new Rect(0, i * RowHeight, scrollViewRect.width, RowHeight);
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + (i * RowHeight), scrollViewRect.width, RowHeight);
 
                 if (stuff == selectedStuff)
                     Widgets.DrawHighlightSelected(row);

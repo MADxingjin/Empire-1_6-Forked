@@ -12,7 +12,6 @@ namespace FactionColonies.util
 {
     public static class ColonyUtil
     {
-        //<DevAdd>   Create new seperate function to create a faction
         public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
             if (settlementType == null)

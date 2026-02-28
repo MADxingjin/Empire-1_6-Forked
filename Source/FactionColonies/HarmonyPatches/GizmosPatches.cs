@@ -8,8 +8,6 @@ using Verse;
 
 namespace FactionColonies
 {
-	//TODO: most, if not all of these patches could be reworked as comps. Look into that
-
 	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	class PawnDraftGizmos
 	{

@@ -6,9 +6,9 @@
 	<FCMilitaryTableSetSquad>Set Squad</FCMilitaryTableSetSquad>
 	<FCMilitaryTableDeploySquad>Deploy Squad</FCMilitaryTableDeploySquad>
 	<FCMilitaryTableResetSquad>Reset Squad</FCMilitaryTableResetSquad>
-	<FCMilitaryTableButtonCreateSquad>Create Squads</FCMilitaryTableButtonCreateSquad>
-	<FCMilitaryTableButtonCreateUnit>Create Units</FCMilitaryTableButtonCreateUnit>
-	<FCMilitaryTableButtonCreateFireSupport>Create Fire Support</FCMilitaryTableButtonCreateFireSupport>
+	<FCMilitaryTableButtonCreateSquad>Manage Squads</FCMilitaryTableButtonCreateSquad>
+	<FCMilitaryTableButtonCreateUnit>Manage Units</FCMilitaryTableButtonCreateUnit>
+	<FCMilitaryTableButtonCreateFireSupport>Manage Fire Support</FCMilitaryTableButtonCreateFireSupport>
 	<FCMilTableConfirm>Are you sure? Click to confirm</FCMilTableConfirm>
 	<FCNoSquadAvailable>No Available Squads</FCNoSquadAvailable>
 	<FCResetSquadPawns>Pawns have been regenerated for the squad</FCResetSquadPawns>

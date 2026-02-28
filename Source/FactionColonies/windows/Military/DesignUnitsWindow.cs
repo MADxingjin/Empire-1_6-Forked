@@ -39,9 +39,6 @@ namespace FactionColonies
             }
         }
 
-        // Populated each frame in DrawTab (rects depend on layout constants)
-        private ApparelSlotDef[] apparelSlots;
-
         public DesignUnitsWindow(MilitaryCustomizationUtil util, FactionFC faction)
         {
             this.util = util;
@@ -61,6 +58,7 @@ namespace FactionColonies
 
         public override void DrawTab(Rect rect)
         {
+            Widgets.DrawLineHorizontal(rect.x, rect.y + 45, rect.width);
             // --- Layout Rects ---
             Rect SelectionBar = new Rect(5, 45, 200, 30);
             Rect createUnitButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
@@ -69,22 +67,6 @@ namespace FactionColonies
             Rect isCivilian = new Rect(5, nameTextField.y + nameTextField.height + 10, 100, 30);
             Rect isTrader = new Rect(isCivilian.x, isCivilian.y + isCivilian.height + 5, isCivilian.width,
                 isCivilian.height);
-
-            Rect unitIcon = new Rect(560, 235, 120, 120);
-            Rect animalIcon = new Rect(560, 335, 120, 120);
-
-            Rect ApparelHead = new Rect(600, 140, 50, 50);
-            Rect ApparelTorsoSkin = new Rect(700, 170, 50, 50);
-            Rect ApparelBelt = new Rect(700, 240, 50, 50);
-            Rect ApparelLegs = new Rect(700, 310, 50, 50);
-
-            Rect AnimalCompanion = new Rect(500, 160, 50, 50);
-            Rect ApparelTorsoShell = new Rect(500, 230, 50, 50);
-            Rect ApparelTorsoMiddle = new Rect(500, 310, 50, 50);
-            Rect EquipmentWeapon = new Rect(440, 230, 50, 50);
-
-            Rect ApparelWornItems = new Rect(440, 385, 330, 175);
-            Rect EquipmentTotalCost = new Rect(450, 50, 350, 40);
 
             Rect ResetButton = new Rect(700, 50, 100, 30);
             Rect DeleteButton = new Rect(ResetButton.x, ResetButton.y + ResetButton.height + 5,
@@ -95,17 +77,6 @@ namespace FactionColonies
             Rect ChangeXeno = new Rect(575, DeleteButton.y, SavePawn.width, SavePawn.height);
             Rect RollNewPawn = new Rect(325, ResetButton.y + SavePawn.height + 5, SavePawn.width,
                 SavePawn.height);
-
-            // Build apparel slot descriptors
-            apparelSlots = new[]
-            {
-                new ApparelSlotDef { rect = ApparelHead, layer = ApparelLayerDefOf.Overhead, bodyPart = null, labelKey = "fcLabelHead" },
-                new ApparelSlotDef { rect = ApparelTorsoShell, layer = ApparelLayerDefOf.Shell, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelOver" },
-                new ApparelSlotDef { rect = ApparelTorsoMiddle, layer = ApparelLayerDefOf.Middle, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelChest" },
-                new ApparelSlotDef { rect = ApparelTorsoSkin, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelShirt" },
-                new ApparelSlotDef { rect = ApparelLegs, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Legs, labelKey = "fcLabelPants" },
-                new ApparelSlotDef { rect = ApparelBelt, layer = ApparelLayerDefOf.Belt, bodyPart = null, labelKey = "fcLabelBelt" },
-            };
 
             // --- Create New Unit Button ---
             if (Widgets.ButtonText(createUnitButton, "FCCreateNewUnit".Translate()))
@@ -174,34 +145,16 @@ namespace FactionColonies
                     FactionColoniesMilitary.SavedUnits.ToList()));
             }
 
-            // --- Worn Items Section ---
-            Widgets.DrawMenuSection(ApparelWornItems);
-
-            // Save and set text style
-            GameFont fontBefore = Text.Font;
-            TextAnchor anchorBefore = Text.Anchor;
-
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperCenter;
-
-            // Draw slot labels and backgrounds
-            foreach (ApparelSlotDef slot in apparelSlots)
-            {
-                Widgets.Label(new Rect(new Vector2(slot.rect.x, slot.rect.y - 15), slot.rect.size), slot.labelKey.Translate());
-                Widgets.DrawMenuSection(slot.rect);
-            }
-
-            Widgets.Label(new Rect(new Vector2(EquipmentWeapon.x, EquipmentWeapon.y - 15), EquipmentWeapon.size), "fcLabelWeapon".Translate());
-            Widgets.DrawMenuSection(EquipmentWeapon);
-            Widgets.Label(new Rect(new Vector2(AnimalCompanion.x, AnimalCompanion.y - 15), AnimalCompanion.size), "fcLabelAnimal".Translate());
-            Widgets.DrawMenuSection(AnimalCompanion);
-
-            // Restore text style
-            Text.Font = fontBefore;
-            Text.Anchor = anchorBefore;
+            // --- Gear Panel ---
+            Rect gearArea = new Rect(440, 140, 310, 315);
+            Widgets.DrawMenuSection(gearArea);
+            DrawGearPanel(gearArea);
 
             // --- Unit Selected Content ---
             if (selectedUnit == null) return;
+
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperCenter;
 
@@ -212,6 +165,7 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(DeleteButton, "deleteUnitButton".Translate()))
             {
+                //TODO: this really needs to open a confirmation box!
                 selectedUnit.removeUnit();
                 util.checkMilitaryUtilForErrors();
                 selectedUnit = null;
@@ -297,6 +251,67 @@ namespace FactionColonies
             // Restore text style
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
+        }
+
+        // --- Helper Methods ---
+
+        private void DrawGearPanel(Rect gearArea)
+        {
+            const float iconSize = 120f;
+            const float slotSize = 50f;
+
+            // Unit and animal icons (positioned relative to gearArea)
+            Rect unitIcon   = new Rect(gearArea.x + 120, gearArea.y + 95, iconSize, iconSize);
+            Rect animalIcon = new Rect(gearArea.x + 120, gearArea.y + 195, iconSize, iconSize);
+
+            // Apparel/equipment slots (positioned relative to unitIcon)
+            Rect ApparelHead        = new Rect(unitIcon.x + (iconSize - slotSize) / 2f, unitIcon.y - 95, slotSize, slotSize);
+            Rect ApparelTorsoSkin   = new Rect(unitIcon.xMax + 20, unitIcon.y - 65, slotSize, slotSize);
+            Rect ApparelBelt        = new Rect(unitIcon.xMax + 20, unitIcon.y + 5,  slotSize, slotSize);
+            Rect ApparelLegs        = new Rect(unitIcon.xMax + 20, unitIcon.y + 75, slotSize, slotSize);
+
+            Rect AnimalCompanion    = new Rect(unitIcon.x - 60,  unitIcon.y - 75, slotSize, slotSize);
+            Rect ApparelTorsoShell  = new Rect(unitIcon.x - 60,  unitIcon.y - 5,  slotSize, slotSize);
+            Rect ApparelTorsoMiddle = new Rect(unitIcon.x - 60,  unitIcon.y + 65, slotSize, slotSize);
+            Rect EquipmentWeapon    = new Rect(unitIcon.x - 120, unitIcon.y - 5,  slotSize, slotSize);
+
+            Rect ApparelWornItems   = new Rect(440, 385, 330, 175);
+            Rect EquipmentTotalCost = new Rect(450, 50, 350, 40);
+
+            ApparelSlotDef[] apparelSlots = new[]
+            {
+                new ApparelSlotDef { rect = ApparelHead, layer = ApparelLayerDefOf.Overhead, bodyPart = null, labelKey = "fcLabelHead" },
+                new ApparelSlotDef { rect = ApparelTorsoShell, layer = ApparelLayerDefOf.Shell, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelOver" },
+                new ApparelSlotDef { rect = ApparelTorsoMiddle, layer = ApparelLayerDefOf.Middle, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelChest" },
+                new ApparelSlotDef { rect = ApparelTorsoSkin, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Torso, labelKey = "fcLabelShirt" },
+                new ApparelSlotDef { rect = ApparelLegs, layer = ApparelLayerDefOf.OnSkin, bodyPart = BodyPartGroupDefOf.Legs, labelKey = "fcLabelPants" },
+                new ApparelSlotDef { rect = ApparelBelt, layer = ApparelLayerDefOf.Belt, bodyPart = null, labelKey = "fcLabelBelt" },
+            };
+
+            // --- Always drawn: slot backgrounds and labels ---
+            Widgets.DrawMenuSection(ApparelWornItems);
+
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperCenter;
+
+            foreach (ApparelSlotDef slot in apparelSlots)
+            {
+                Widgets.Label(new Rect(new Vector2(slot.rect.x, slot.rect.y - 15), slot.rect.size), slot.labelKey.Translate());
+                Widgets.DrawMenuSection(slot.rect);
+            }
+
+            Widgets.Label(new Rect(new Vector2(EquipmentWeapon.x, EquipmentWeapon.y - 15), EquipmentWeapon.size), "fcLabelWeapon".Translate());
+            Widgets.DrawMenuSection(EquipmentWeapon);
+            Widgets.Label(new Rect(new Vector2(AnimalCompanion.x, AnimalCompanion.y - 15), AnimalCompanion.size), "fcLabelAnimal".Translate());
+            Widgets.DrawMenuSection(AnimalCompanion);
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+
+            // --- Unit-selected content ---
+            if (selectedUnit == null) return;
 
             // Draw Pawn Preview
             Pawn preview = selectedUnit.PreviewPawn;
@@ -407,8 +422,6 @@ namespace FactionColonies
             float totalCost = (float)selectedUnit.getTotalCost;
             Widgets.Label(EquipmentTotalCost, "totalEquipmentCostLabel".Translate() + totalCost);
         }
-
-        // --- Helper Methods ---
 
         /// <summary>
         /// Handles the click interaction for a single apparel slot.

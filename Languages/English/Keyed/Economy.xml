@@ -19,6 +19,8 @@
 	<SettlementTax>Settlement Tax</SettlementTax>
 	<WeekOf>week of</WeekOf>
 	<TaxesBilled>Taxes have been billed</TaxesBilled>
+	<TaxesBilledShort>Taxes Billed</TaxesBilledShort>
+	<TaxesBilledDesc>Taxes from your settlements have been billed.</TaxesBilledDesc>
 	<NoSettlementsToTax>No settlements to tax</NoSettlementsToTax>
 	<TaxesFrom>Taxes from</TaxesFrom>
 	<HaveBeenDelivered>have been delivered</HaveBeenDelivered>
