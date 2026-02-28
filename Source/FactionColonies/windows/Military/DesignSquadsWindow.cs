@@ -40,7 +40,8 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
 
             Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect importButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
+            Rect createSquadButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
+            Rect importButton = new Rect(5, createSquadButton.y + createSquadButton.height + 10, 200, 30);
             Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
             Rect isTrader = new Rect(5, nameTextField.y + nameTextField.height + 10, 130, 30);
 
@@ -54,34 +55,33 @@ namespace FactionColonies
             Rect SaveSquadButton = new Rect(DeleteButton.x, PointRefButton.y + DeleteButton.height + 5,
                 DeleteButton.width, DeleteButton.height);
 
-            //If squad is not selected
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black))
+            // --- Create New Squad Button ---
+            if (Widgets.ButtonText(createSquadButton, "FCCreateNewSquad".Translate()))
             {
-                //check null
                 if (util.squads == null)
                 {
                     util.resetSquads();
                 }
 
-                List<FloatMenuOption> squads = new List<FloatMenuOption>
+                MilSquadFC newSquad = new MilSquadFC(true)
                 {
-                    new FloatMenuOption("FCCreateNewSquad".Translate(), delegate
-                    {
-                        MilSquadFC newSquad = new MilSquadFC(true)
-                        {
-                            name = $"New Squad {(util.squads.Count + 1).ToString()}"
-                        };
-                        selectedText = newSquad.name;
-                        selectedSquad = newSquad;
-                        selectedSquad.newSquad();
-                        util.squads.Add(newSquad);
-                    })
+                    name = $"New Squad {(util.squads.Count + 1).ToString()}"
                 };
+                selectedText = newSquad.name;
+                selectedSquad = newSquad;
+                selectedSquad.newSquad();
+                util.squads.Add(newSquad);
+            }
 
-                //Create list of selectable units
+            // --- Squad Selection Dropdown ---
+            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && (util.squads?.Count ?? 0) > 0)
+            {
+                List<FloatMenuOption> squads = new List<FloatMenuOption>();
+
+                //Create list of selectable squads
                 squads.AddRange(util.squads.Select(squad => new FloatMenuOption(squad.name, delegate
                 {
-                    //Unit is selected
+                    //Squad is selected
                     selectedText = squad.name;
                     selectedSquad = squad;
                     selectedSquad.updateEquipmentTotalCost();

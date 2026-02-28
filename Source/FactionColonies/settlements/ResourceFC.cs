@@ -779,20 +779,24 @@ namespace FactionColonies
         }
         public float titheThingValue(ThingQualityTuple thing)
         {
+            return titheThingValue(thing.thingDef, thing.stuffDef, thing.quality);
+        }
+        public float titheThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
+        {
             float value;
-            if (CraftUtil.thingHasQuality(thing.thingDef))
+            if (CraftUtil.thingHasQuality(thing))
             {
-                value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing.thingDef, thing.stuffDef, thing.quality));
+                value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing, stuff, quality));
             }
             else
             {
-                if (CraftUtil.thingIsStuffable(thing.thingDef))
+                if (CraftUtil.thingIsStuffable(thing))
                 {
-                    value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing.thingDef, thing.stuffDef);
+                    value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff);
                 }
                 else
                 {
-                    value = thing.thingDef.BaseMarketValue;
+                    value = thing.BaseMarketValue;
                 }
             }
             // Prevent shenanigans

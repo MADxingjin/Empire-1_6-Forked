@@ -29,6 +29,7 @@ namespace FactionColonies
                 if (!thing.IsApparel) return false;
                 if (!thing.apparel.layers.Contains(layer)) return false;
                 if (bodyPart != null && !thing.apparel.bodyPartGroups.Contains(bodyPart)) return false;
+                if (!thing.apparel.PawnCanWear(Gender.None, DevelopmentalStage.Adult)) return false;
                 return CraftUtil.canCraftItem(thing);
             }
 
@@ -62,7 +63,8 @@ namespace FactionColonies
         {
             // --- Layout Rects ---
             Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect importButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
+            Rect createUnitButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
+            Rect importButton = new Rect(5, createUnitButton.y + createUnitButton.height + 10, 200, 30);
             Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
             Rect isCivilian = new Rect(5, nameTextField.y + nameTextField.height + 10, 100, 30);
             Rect isTrader = new Rect(isCivilian.x, isCivilian.y + isCivilian.height + 5, isCivilian.width,
@@ -105,22 +107,22 @@ namespace FactionColonies
                 new ApparelSlotDef { rect = ApparelBelt, layer = ApparelLayerDefOf.Belt, bodyPart = null, labelKey = "fcLabelBelt" },
             };
 
-            // --- Unit Selection Dropdown ---
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black))
+            // --- Create New Unit Button ---
+            if (Widgets.ButtonText(createUnitButton, "FCCreateNewUnit".Translate()))
             {
-                List<FloatMenuOption> Units = new List<FloatMenuOption>
+                MilUnitFC newUnit = new MilUnitFC(false)
                 {
-                    new FloatMenuOption("FCCreateNewUnit".Translate(), delegate
-                    {
-                        MilUnitFC newUnit = new MilUnitFC(false)
-                        {
-                            name = $"New Unit {util.units.Count + 1}"
-                        };
-                        selectedText = newUnit.name;
-                        selectedUnit = newUnit;
-                        util.units.Add(newUnit);
-                    })
+                    name = $"New Unit {util.units.Count + 1}"
                 };
+                selectedText = newUnit.name;
+                selectedUnit = newUnit;
+                util.units.Add(newUnit);
+            }
+
+            // --- Unit Selection Dropdown ---
+            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && util.units.Count > 0)
+            {
+                List<FloatMenuOption> Units = new List<FloatMenuOption>();
 
                 foreach (MilUnitFC unit in util.units)
                 {
@@ -222,7 +224,6 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(RollNewPawn, "rollANewUnitButton".Translate()))
             {
-                selectedUnit.ClearAllEquipment();
                 selectedUnit.RerollPreviewPawn();
             }
 
@@ -327,18 +328,20 @@ namespace FactionColonies
             // --- Weapon Slot ---
             if (Widgets.ButtonInvisible(EquipmentWeapon))
             {
-                List<FloatMenuOption> list = (from thing in DefDatabase<ThingDef>.AllDefs
-                    where thing.IsWeapon && thing.BaseMarketValue != 0 && CraftUtil.canCraftItem(thing)
-                    select new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue, delegate
-                    {
-                        ShowStuffMenuOrDirect(thing, stuff => selectedUnit.SetWeapon(thing, stuff));
-                    }, thing)).ToList();
+                List<ThingDef> weaponDefs = DefDatabase<ThingDef>.AllDefs
+                    .Where(t => t.IsWeapon && t.BaseMarketValue != 0 && CraftUtil.canCraftItem(t))
+                    .OrderBy(t => t.label)
+                    .ToList();
 
-                list.Sort(CompareUtil.CompareFloatMenuOption);
-                list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate { selectedUnit.ClearWeapon(); }));
-
-                FloatMenu menu = new Searchable_FloatMenu(list);
-                Find.WindowStack.Add(menu);
+                SavedThing? currentWeapon = selectedUnit.HasWeapon ? selectedUnit.weapons[0] : (SavedThing?)null;
+                Find.WindowStack.Add(new FCWindow_ItemStuffPicker(
+                    weaponDefs,
+                    onConfirm: (item, stuff) => selectedUnit.SetWeapon(item, stuff),
+                    onUnequip: () => selectedUnit.ClearWeapon(),
+                    titleKey: "fcPickWeapon",
+                    initialItem: currentWeapon?.thing,
+                    initialStuff: currentWeapon?.stuff
+                ));
             }
 
             // --- Apparel Slots (unified handler) ---
@@ -355,8 +358,10 @@ namespace FactionColonies
                 Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
                 i++;
 
-                if (Widgets.CustomButtonText(ref tmp, item.thing.LabelCap + " Cost: " + item.MarketValue,
-                    Color.white, Color.black, Color.black))
+                string label = item.stuff != null
+                    ? item.thing.LabelCap + " (" + item.stuff.LabelCap + ") Cost: " + item.MarketValue
+                    : item.thing.LabelCap + " Cost: " + item.MarketValue;
+                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
                 {
                     Find.WindowStack.Add(new Dialog_InfoCard(item.thing, item.stuff));
                 }
@@ -367,8 +372,10 @@ namespace FactionColonies
                 if (w.thing == null) continue;
                 Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
                 i++;
-                if (Widgets.CustomButtonText(ref tmp, w.thing.LabelCap + " Cost: " + w.MarketValue,
-                    Color.white, Color.black, Color.black))
+                string label = w.stuff != null
+                    ? w.thing.LabelCap + " (" + w.stuff.LabelCap + ") Cost: " + w.MarketValue
+                    : w.thing.LabelCap + " Cost: " + w.MarketValue;
+                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
                 {
                     Find.WindowStack.Add(new Dialog_InfoCard(w.thing, w.stuff));
                 }
@@ -405,64 +412,29 @@ namespace FactionColonies
 
         /// <summary>
         /// Handles the click interaction for a single apparel slot.
-        /// Builds a searchable float menu of matching apparel with stuff sub-menus.
+        /// Opens an item+stuff picker window for matching apparel.
         /// </summary>
         private void HandleApparelSlot(ApparelSlotDef slot, MilUnitFC unit)
         {
             if (!Widgets.ButtonInvisible(slot.rect)) return;
 
-            List<FloatMenuOption> list = new List<FloatMenuOption>();
+            List<ThingDef> apparelDefs = DefDatabase<ThingDef>.AllDefs
+                .Where(t => slot.ThingFitsSlot(t))
+                .OrderBy(t => t.label)
+                .ToList();
 
-            foreach (ThingDef thing in DefDatabase<ThingDef>.AllDefs)
-            {
-                if (!slot.ThingFitsSlot(thing)) continue;
+            SavedThing? currentApparel = unit.apparel
+                .Cast<SavedThing?>()
+                .FirstOrDefault(a => slot.ApparelInSlot(a.Value.thing));
 
-                list.Add(new FloatMenuOption(thing.LabelCap + " - Cost: " + thing.BaseMarketValue,
-                    delegate
-                    {
-                        ShowStuffMenuOrDirect(thing, stuff => unit.SetApparel(thing, stuff));
-                    }, thing));
-            }
-
-            list.Sort(CompareUtil.CompareFloatMenuOption);
-
-            list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-            {
-                unit.RemoveApparel(slot.layer, slot.bodyPart);
-            }));
-
-            FloatMenu menu = new Searchable_FloatMenu(list);
-            Find.WindowStack.Add(menu);
-        }
-
-        /// <summary>
-        /// If the item is made from stuff, show a material selection sub-menu.
-        /// Otherwise, call the action directly with null stuff.
-        /// </summary>
-        private void ShowStuffMenuOrDirect(ThingDef thing, Action<ThingDef> onStuffSelected)
-        {
-            if (thing.MadeFromStuff)
-            {
-                List<FloatMenuOption> stuffList = new List<FloatMenuOption>();
-                foreach (ThingDef stuff in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if (stuff.IsStuff && thing.stuffCategories.SharesElementWith(stuff.stuffProps.categories))
-                    {
-                        stuffList.Add(new FloatMenuOption(
-                            stuff.LabelCap + " - Total Value: " +
-                            StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff),
-                            delegate { onStuffSelected(stuff); }));
-                    }
-                }
-
-                stuffList.Sort(CompareUtil.CompareFloatMenuOption);
-                FloatMenu stuffWindow = new Searchable_FloatMenu(stuffList);
-                Find.WindowStack.Add(stuffWindow);
-            }
-            else
-            {
-                onStuffSelected(null);
-            }
+            Find.WindowStack.Add(new FCWindow_ItemStuffPicker(
+                apparelDefs,
+                onConfirm: (item, stuff) => unit.SetApparel(item, stuff),
+                onUnequip: () => unit.RemoveApparel(slot.layer, slot.bodyPart),
+                titleKey: "fcPickApparel",
+                initialItem: currentApparel?.thing,
+                initialStuff: currentApparel?.stuff
+            ));
         }
     }
 }

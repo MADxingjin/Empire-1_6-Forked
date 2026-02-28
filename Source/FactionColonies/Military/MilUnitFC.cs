@@ -27,7 +27,8 @@ namespace FactionColonies
 
         // Lazy preview pawn for UI rendering only — not serialized
         private Pawn _previewPawn;
-        private bool _previewPawnDirty = true;
+        private bool _pawnIdentityDirty = true;    // Needs new PawnGenerator call (race/xeno change)
+        private bool _pawnEquipmentDirty = true;   // Needs equipment refresh on same pawn
 
         public MilUnitFC()
         {
@@ -102,15 +103,17 @@ namespace FactionColonies
         {
             get
             {
-                if (_previewPawn == null || _previewPawnDirty)
+                if (_previewPawn == null || _pawnIdentityDirty)
                     RebuildPreviewPawn();
+                else if (_pawnEquipmentDirty)
+                    RefreshPreviewEquipment();
                 return _previewPawn;
             }
         }
 
-        public void MarkPreviewDirty()
+        public void MarkEquipmentDirty()
         {
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
         }
 
         private void RebuildPreviewPawn()
@@ -140,13 +143,22 @@ namespace FactionColonies
                 _previewPawn = null;
             }
 
+            _pawnIdentityDirty = false;
+
             if (_previewPawn == null)
             {
-                _previewPawnDirty = false;
+                _pawnEquipmentDirty = false;
                 return;
             }
 
             _previewPawn.mindState.canFleeIndividual = false;
+            RefreshPreviewEquipment();
+        }
+
+        private void RefreshPreviewEquipment()
+        {
+            if (_previewPawn == null) return;
+
             _previewPawn.apparel.DestroyAll();
             _previewPawn.equipment.DestroyAllEquipment();
 
@@ -164,7 +176,7 @@ namespace FactionColonies
                     _previewPawn.equipment.AddEquipment(twc);
             }
 
-            _previewPawnDirty = false;
+            _pawnEquipmentDirty = false;
         }
 
         // --- Equipment Mutation Methods ---
@@ -183,7 +195,7 @@ namespace FactionColonies
             }
             weapons.Clear();
             weapons.Add(new SavedThing(def, stuff));
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -191,7 +203,7 @@ namespace FactionColonies
         public void ClearWeapon()
         {
             weapons.Clear();
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -203,7 +215,7 @@ namespace FactionColonies
             apparel.RemoveAll(existing =>
                 !ApparelUtility.CanWearTogether(existing.thing, def, body));
             apparel.Add(new SavedThing(def, stuff));
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -211,7 +223,7 @@ namespace FactionColonies
         public void RemoveApparel(ApparelLayerDef layer, BodyPartGroupDef bodyPart)
         {
             apparel.RemoveAll(s => MatchesSlot(s.thing, layer, bodyPart));
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -220,7 +232,7 @@ namespace FactionColonies
         {
             weapons.Clear();
             apparel.Clear();
-            _previewPawnDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -315,7 +327,8 @@ namespace FactionColonies
         /// </summary>
         public void RerollPreviewPawn()
         {
-            _previewPawnDirty = true;
+            _pawnIdentityDirty = true;
+            _pawnEquipmentDirty = true;
             changeTick();
         }
     }

@@ -964,12 +964,12 @@ namespace FactionColonies
             Widgets.DrawHighlight(labelBox);
             Widgets.Label(labelTextBox, faction.name ?? "");
 
-            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
-                OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
-            bx += buttonWidth;
-
             if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
                 OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
+            bx += buttonWidth;
+
+            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
+                OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
             bx += buttonWidth;
 
             if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
@@ -985,7 +985,7 @@ namespace FactionColonies
 
         private void DrawMilitarySettlementsTable(Rect tableRect)
         {
-            const float headerH = 25f;
+            const float headerH = 45f;
             const float rowH = 25f;
             bool changedColor = false;
 
@@ -1001,13 +1001,14 @@ namespace FactionColonies
             float milLvW = 60f;
             float maxCostW = 90f;
             float squadW = 150f;
-            float availW = 100f;
+            float availW = 90f;
+            float underAttackW = 90f;
             float setSquadW = 90f;
             float deployW = 90f;
             float resetW = 90f;
             float fireSupW = 90f;
-            float nameW = tableRect.width - milLvW - maxCostW - squadW - availW - setSquadW - deployW - resetW - fireSupW - scrollMargin;
-            float[] colWidths = { nameW, milLvW, maxCostW, squadW, availW, setSquadW, deployW, resetW, fireSupW };
+            float nameW = tableRect.width - milLvW - maxCostW - squadW - availW - underAttackW - setSquadW - deployW - resetW - fireSupW - scrollMargin;
+            float[] colWidths = { nameW, milLvW, maxCostW, squadW, availW, underAttackW, setSquadW, deployW, resetW, fireSupW };
             string[] colLabels =
             {
                 "FCSettlementTableName".Translate(),
@@ -1015,6 +1016,7 @@ namespace FactionColonies
                 "FCMilitaryTableMilitaryBudget".Translate(),
                 "FCMilitaryTableSquad".Translate(),
                 "FCMilitaryTableAvailable".Translate(),
+                "FCMilitaryTableUnderAttack".Translate(),
                 "FCMilitaryTableSetSquad".Translate(),
                 "FCMilitaryTableDeploySquad".Translate(),
                 "FCMilitaryTableResetSquad".Translate(),
@@ -1080,6 +1082,11 @@ namespace FactionColonies
                 Widgets.Label(new Rect(sx, ry, colWidths[4], rowH), availText);
                 sx += colWidths[4];
 
+                // Under attack
+                string underAttack = milComp.isUnderAttack ? "Yes".Translate().Colorize(Color.red) : "No".Translate().Colorize(Color.white);
+                Widgets.Label(new Rect(sx, ry, colWidths[5], rowH), underAttack);
+                sx += colWidths[5];
+
                 // Set Squad button
                 if ((militaryUtil.squads?.Count ?? 0) == 0)
                 {
@@ -1105,7 +1112,7 @@ namespace FactionColonies
                     GUI.color = Color.white;
                     changedColor = false;
                 }
-                sx += colWidths[5];
+                sx += colWidths[6];
 
                 // Deploy button
                 if (milComp.militarySquad?.outfit?.name is null)
@@ -1113,7 +1120,7 @@ namespace FactionColonies
                     GUI.color = Color.gray;
                     changedColor = true;
                 }
-                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[6], rowH), "Deploy".Translate()))
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[7], rowH), "Deploy".Translate()))
                 {
                     HandleDeployClick(settlement, milComp);
                 }
@@ -1122,7 +1129,7 @@ namespace FactionColonies
                     GUI.color = Color.white;
                     changedColor = false;
                 }
-                sx += colWidths[6];
+                sx += colWidths[7];
 
                 // Reset button
                 if (milComp.militarySquad?.outfit?.name is null)
@@ -1130,7 +1137,7 @@ namespace FactionColonies
                     GUI.color = Color.gray;
                     changedColor = true;
                 }
-                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[7], rowH), "Reset".Translate()))
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[8], rowH), "Reset".Translate()))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>
                     {
@@ -1154,7 +1161,7 @@ namespace FactionColonies
                     GUI.color = Color.white;
                     changedColor = false;
                 }
-                sx += colWidths[7];
+                sx += colWidths[8];
 
                 // Fire Support button
                 if (militaryUtil.fireSupportDefs.Count == 0)
@@ -1162,7 +1169,7 @@ namespace FactionColonies
                     GUI.color = Color.gray;
                     changedColor = true;
                 }
-                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[8], rowH), "FCMilitaryTableFireSupport".Translate()))
+                if (Widgets.ButtonText(new Rect(sx, ry, colWidths[9], rowH), "FCMilitaryTableFireSupport".Translate()))
                 {
                     HandleFireSupportClick(settlement, milComp);
                 }

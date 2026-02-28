@@ -52,6 +52,10 @@
 	<!-- Unit Equipment -->
 	<totalEquipmentCostLabel>Total Equipment Cost: </totalEquipmentCostLabel>
 	<unitActionUnequipThing>Unequip</unitActionUnequipThing>
+	<fcPickWeapon>Select Weapon</fcPickWeapon>
+	<fcPickApparel>Select Apparel</fcPickApparel>
+	<fcNoMaterialNeeded>No material selection needed</fcNoMaterialNeeded>
+	<fcPickerSummary>Selected: {0} - Cost: {1}</fcPickerSummary>
 
 	<!-- Unit Race/PawnKind Errors -->
 	<changeUnitRaceNoRaces>No available races</changeUnitRaceNoRaces>

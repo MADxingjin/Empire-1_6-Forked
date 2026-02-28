@@ -106,9 +106,13 @@ namespace FactionColonies
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
         }
 
-        public static string GetQualityLabelCap(QualityCategory cat)
+        public static string GetQualityLabelCap(QualityCategory? cat)
         {
-            return QualityUtility.GetLabel(cat).CapitalizeFirst();
+            if (cat is null)
+            {
+                return $"({"Select".Translate()})";
+            }
+            return QualityUtility.GetLabel(cat ?? QualityCategory.Normal).CapitalizeFirst();
         }
     }
 }

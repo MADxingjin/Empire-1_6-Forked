@@ -31,7 +31,8 @@ namespace FactionColonies
             
             float projectileBoxHeight = 30;
             Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect nameTextField = new Rect(5, 90, 250, 30);
+            Rect createSupportButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
+            Rect nameTextField = new Rect(5, createSupportButton.y + createSupportButton.height + 10, 250, 30);
             Rect floatRangeAccuracyLabel = new Rect(nameTextField.x, nameTextField.y + nameTextField.height + 5,
                 nameTextField.width, (float) (nameTextField.height * 1.5));
             Rect floatRangeAccuracy = new Rect(floatRangeAccuracyLabel.x,
@@ -63,29 +64,27 @@ namespace FactionColonies
 
             Widgets.DrawMenuSection(new Rect(0, 45, 800, 225));
 
-            //If firesupport is not selected
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black))
+            // --- Create New Fire Support Button ---
+            if (Widgets.ButtonText(createSupportButton, "FCCreateNewFireSupport".Translate()))
+            {
+                MilitaryFireSupport newFireSupport = new MilitaryFireSupport();
+                newFireSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
+                newFireSupport.setLoadID();
+                newFireSupport.projectiles = new List<ThingDef>();
+                selectedText = newFireSupport.name;
+                selectedSupport = newFireSupport;
+                util.fireSupportDefs.Add(newFireSupport);
+            }
+
+            // --- Fire Support Selection Dropdown ---
+            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && util.fireSupportDefs.Count > 0)
             {
                 List<FloatMenuOption> supports = new List<FloatMenuOption>();
 
-                //Option to create new firesupport
-                supports.Add(new FloatMenuOption("FCCreateNewFireSupport".Translate(), delegate
-                {
-                    MilitaryFireSupport newFireSupport = new MilitaryFireSupport();
-                    newFireSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
-                    newFireSupport.setLoadID();
-                    newFireSupport.projectiles = new List<ThingDef>();
-                    selectedText = newFireSupport.name;
-                    selectedSupport = newFireSupport;
-                    util.fireSupportDefs.Add(newFireSupport);
-                }));
-
-                //Create list of selectable firesupports
                 foreach (MilitaryFireSupport support in util.fireSupportDefs)
                 {
                     supports.Add(new FloatMenuOption(support.name, delegate
                     {
-                        //Unit is selected
                         selectedText = support.name;
                         selectedSupport = support;
                     }));

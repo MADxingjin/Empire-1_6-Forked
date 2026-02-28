@@ -16,7 +16,7 @@ namespace FactionColonies
             this.militaryWindow = militaryWindow;
             this.title = title;
 
-            forcePause = false;
+            forcePause = true;
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;

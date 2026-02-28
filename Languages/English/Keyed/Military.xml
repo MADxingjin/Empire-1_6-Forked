@@ -118,6 +118,7 @@
 	<MilitaryLevel>Mil Level</MilitaryLevel>
 	<FCMilitaryTableMilitaryBudget>Military Budget</FCMilitaryTableMilitaryBudget>
 	<FCMilitaryTableAvailable>Military Available?</FCMilitaryTableAvailable>
+	<FCMilitaryTableUnderAttack>Under Attack</FCMilitaryTableUnderAttack>
 	<FCMilitaryTableFireSupport>Fire Support</FCMilitaryTableFireSupport>
 	<NoValidMilitaries>No valid militaries to use.</NoValidMilitaries>
 	<FCAvailable>Available</FCAvailable>

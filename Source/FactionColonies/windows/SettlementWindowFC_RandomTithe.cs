@@ -22,6 +22,9 @@ namespace FactionColonies
         private const int smallMargin = 3;
         private const int rowHeight = 23;
         private const int scrollSpacing = 16;
+        private const float SearchBarHeight = 28f;
+
+        private string thingSearchTerm = "";
         public override Vector2 InitialSize
         {
             get { return new Vector2(450f, 500f); }
@@ -81,10 +84,17 @@ namespace FactionColonies
                 resource.clearRandomTitheFilter();
             }
 
-            List<ThingDef> allThings = resource.generateThingDefList();
-            Rect drawBox = new Rect(boundingBox.x, enableAllBox.yMax + margin, boundingBox.width, boundingBox.yMax - enableAllBox.yMax - margin);
+            // Search bar
+            Rect searchRect = new Rect(boundingBox.x, enableAllBox.yMax + margin, boundingBox.width, SearchBarHeight);
+            thingSearchTerm = Widgets.TextField(searchRect, thingSearchTerm);
+
+            List<ThingDef> thingsList = string.IsNullOrEmpty(thingSearchTerm)
+                ? resource.generateThingDefList()
+                : resource.generateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+            Rect drawBox = new Rect(boundingBox.x, searchRect.yMax + margin, boundingBox.width, boundingBox.yMax - enableAllBox.yMax - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
-            float listHeight = allThings.Count * rowHeight;
+            float listHeight = thingsList.Count * rowHeight;
             float width;
             if (listHeight > outerListBox.height)
             {
@@ -99,9 +109,9 @@ namespace FactionColonies
 
             Widgets.BeginScrollView(outerListBox, ref scrollBar, innerScrollBox);
 
-            for (int i = 0; i < allThings.Count; i++)
+            for (int i = 0; i < thingsList.Count; i++)
             {
-                ThingDef iThing = allThings[i];
+                ThingDef iThing = thingsList[i];
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
                 Rect info = new Rect(icon.xMax, row.y + 2, rowHeight - 4, rowHeight - 4);
@@ -116,13 +126,18 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
                 bool allowed = resource.getRandomTitheFilterAllow(iThing);
+                Color buttonColor = allowed ? Color.green : Color.red;
+                GUI.color = buttonColor;
                 if (Widgets.ButtonText(enableBox, IsAllowedTranslation(allowed)))
                 {
                     resource.setRandomTitheFilterAllow(iThing, !allowed);
                 }
+                GUI.color = Color.white;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iThing.LabelCap);
-                Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue)}");
+                Text.Anchor = TextAnchor.MiddleLeft;
                 UIUtil.InfoCardButton(info, iThing);
             }
 

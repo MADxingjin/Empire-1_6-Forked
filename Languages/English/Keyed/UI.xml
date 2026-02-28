@@ -25,6 +25,7 @@
 	<NumRatio>{0}/{1}</NumRatio>
 	<aSettlement> a settlement </aSettlement>
 	<AddedInFuture>This will be added to in the future</AddedInFuture>
+	<Item>Item</Item>
 
 	<!-- Tab Labels -->
 	<Colonies>Colonies</Colonies>
