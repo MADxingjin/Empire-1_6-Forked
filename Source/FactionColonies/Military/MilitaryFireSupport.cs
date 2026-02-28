@@ -4,8 +4,6 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -104,69 +102,16 @@ namespace FactionColonies
 
         private IntVec3 SemiRandomSpawnCenter => (from x in GenRadial.RadialCellsAround(location, accuracy, true)where x.InBounds(map)select x).RandomElementByWeight(x =>new SimpleCurve { new CurvePoint(0f, 1f), new CurvePoint(accuracy, 0.1f) }.Evaluate(x.DistanceTo(location)));
 
-        private void DoCombatExtendedLaunch(IntVec3 spawnCenter, ThingDef def)
-        {   
-            //if CE is on
-            ThingDef tempDef = expendProjectile();
-            Type typeDef = GenUtil.returnUnknownTypeFromName("CombatExtended.AmmoDef");
-            var ammoSetDef = typeDef.GetProperty("AmmoSetDefs", BindingFlags.Public | BindingFlags.Instance).GetValue(tempDef);
-            Type ammoLink = GenUtil.returnUnknownTypeFromName("CombatExtended.AmmoLink");
-            var ammoLinkVar = ammoSetDef.GetType().GetProperty("Item").GetValue(ammoSetDef, new object[] { 0 });
-            //  LogUtil.Message(ammoLinkVar.ToString());
-            var ammoTypes = ammoLinkVar.GetType().GetField("ammoTypes", BindingFlags.Public | BindingFlags.Instance).GetValue(ammoLinkVar);
-            //list of ammotypes
-            int count = (int) ammoTypes.GetType().GetProperty("Count").GetValue(ammoTypes, new object[] { });
-            for (int k = 0; k < count; k++)
-            {
-                var ammoDefAmmo = ammoTypes.GetType().GetProperty("Item").GetValue(ammoTypes, new object[] { k });
-                if (ammoDefAmmo.GetType().GetField("ammo", BindingFlags.Public | BindingFlags.Instance).GetValue(ammoDefAmmo).ToString() == tempDef.defName)
-                {
-                    def = (ThingDef)ammoDefAmmo.GetType().GetField("projectile", BindingFlags.Public | BindingFlags.Instance).GetValue(ammoDefAmmo);
-                    break;
-                }
-            }
+        /// <summary>
+        /// Launch a fire support projectile using CE's ballistic system.
+        /// Returns true on success, false if caller should fall back to vanilla.
+        /// </summary>
+        private bool DoCombatExtendedLaunch(IntVec3 spawnCenter)
+        {
+            ThingDef ammoDef = expendProjectile();
+            if (ammoDef == null) return false;
 
-            Type type2 = GenUtil.returnUnknownTypeFromName("CombatExtended.ProjectileCE");
-            MethodInfo launch = type2.GetMethod("Launch", new[]
-            {
-                typeof(Thing),
-                typeof(Vector2),
-                typeof(float),
-                typeof(float),
-                typeof(float),
-                typeof(float),
-                typeof(Thing),
-                typeof(float)
-            });
-
-            MethodInfo getShotAngle = type2.GetMethod("GetShotAngle", BindingFlags.Public | BindingFlags.Static);
-            Thing thing = GenSpawn.Spawn(def, sourceLocation, map);
-
-            PropertyInfo gravityProperty = type2.GetProperty("GravityFactor", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            Vector2 sourceVec = new Vector2(sourceLocation.x, sourceLocation.z);
-            Vector2 destVec = new Vector2(spawnCenter.x, spawnCenter.z);
-            Vector3 finalVector = (destVec - sourceVec);
-            float magnitude = finalVector.magnitude;
-
-            float gravity = (float)gravityProperty.GetValue(thing); //1.96f * 5;
-
-            float shotRotation = (-90f + 57.29578f * Mathf.Atan2(finalVector.y, finalVector.x)) % 360; //Vector2Utility.AngleTo(sourceVec, destVec);
-            float shotHeight = 10f;
-            float shotSpeed = 100f;
-            float shotAngle = (float)getShotAngle.Invoke(null, BindingFlags.Public | BindingFlags.Static, null, new object[] { shotSpeed, magnitude, shotHeight, true, gravity }, null);
-
-            launch.Invoke(thing, new object[]
-            {
-                FactionCache.PlayerColonyFaction.leader,
-                sourceVec,
-                shotAngle,
-                shotRotation,
-                shotHeight,
-                shotSpeed,
-                null,
-                -1
-            });
+            return CombatExtendedUtil.LaunchFireSupportProjectile(ammoDef, map, sourceLocation, spawnCenter);
         }
 
         public void Process()
@@ -176,22 +121,34 @@ namespace FactionColonies
                 if (ShouldFire)
                 {
                     IntVec3 spawnCenter = SemiRandomSpawnCenter;
-                    LocalTargetInfo info = new LocalTargetInfo(spawnCenter);
-                    ThingDef def = new ThingDef();
-                    if (FCSettings.IsModLoaded("CETeam.CombatExtended")) 
+
+                    if (CombatExtendedUtil.IsCELoaded)
                     {
-                        DoCombatExtendedLaunch(spawnCenter, def);
+                        if (!DoCombatExtendedLaunch(spawnCenter))
+                        {
+                            // CE launch failed, fall back to vanilla
+                            LaunchVanillaProjectile(spawnCenter);
+                        }
                     }
                     else
                     {
-                        def = expendProjectile().projectileWhenLoaded;
-                        Projectile projectile = (Projectile)GenSpawn.Spawn(def, sourceLocation, map);
-                        projectile.Launch(null, info, info, ProjectileHitFlags.All);
+                        LaunchVanillaProjectile(spawnCenter);
                     }
                 }
             }
 
             timeRunning++;
+        }
+
+        private void LaunchVanillaProjectile(IntVec3 spawnCenter)
+        {
+            ThingDef ammoDef = expendProjectile();
+            if (ammoDef == null) return;
+            ThingDef def = ammoDef.projectileWhenLoaded;
+            if (def == null) return;
+            LocalTargetInfo info = new LocalTargetInfo(spawnCenter);
+            Projectile projectile = (Projectile)GenSpawn.Spawn(def, sourceLocation, map);
+            projectile.Launch(null, info, info, ProjectileHitFlags.All);
         }
 
 
@@ -205,7 +162,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref fireSupportType, "fireSupportType");
             Scribe_References.Look(ref map, "map");
             Scribe_Values.Look(ref location, "location");
-            Scribe_Values.Look(ref location, "sourceLocation");
+            Scribe_Values.Look(ref sourceLocation, "sourceLocation");
             Scribe_Values.Look(ref startupTime, "startupTime");
             Scribe_Collections.Look(ref projectiles, "projectiles", LookMode.Def);
         }

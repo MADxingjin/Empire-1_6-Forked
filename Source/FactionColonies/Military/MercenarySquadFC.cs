@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FactionColonies.util;
-using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -610,9 +609,10 @@ namespace FactionColonies
         public void StripPawn(Mercenary merc)
         {
             if (merc?.pawn == null) return;
-            
+
             merc.pawn.apparel?.DestroyAll();
             merc.pawn.equipment?.DestroyAllEquipment();
+            CombatExtendedUtil.UpdateInventory(merc.pawn);
         }
 
         public void EquipPawn(Mercenary merc, MilUnitFC loadout)
@@ -634,24 +634,9 @@ namespace FactionColonies
                 {
                     merc.pawn.equipment.AddEquipment(twc);
 
-                    if (FCSettings.IsModLoaded("CETeam.CombatExtended"))
+                    if (CombatExtendedUtil.IsCELoaded)
                     {
-                        LogUtil.Message("Combat Extended detected");
-                        foreach (ThingComp comp in merc.pawn.AllComps)
-                        {
-                            if (comp.GetType().ToString() == "CombatExtended.CompInventory")
-                            {
-                                Type typ = GenUtil.returnUnknownTypeFromName(
-                                    "CombatExtended.LoadoutPropertiesExtension");
-
-                                var obj = Activator.CreateInstance(typ);
-                                object[] paramArgu = { merc.pawn.equipment.Primary, comp, 1 };
-
-                                Traverse.Create(obj).Method("TryGenerateAmmoFor", paramArgu).GetValue();
-                                Traverse.Create(obj).Method("LoadWeaponWithRandAmmo", merc.pawn.equipment.Primary)
-                                    .GetValue();
-                            }
-                        }
+                        CombatExtendedUtil.EquipWeaponWithAmmo(merc.pawn, merc.pawn.equipment.Primary);
                     }
                 }
             }
