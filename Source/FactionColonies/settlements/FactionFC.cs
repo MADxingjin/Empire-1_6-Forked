@@ -17,13 +17,10 @@ namespace FactionColonies
 {
     public class FactionFC : WorldComponent
     {
-        public int eventTimeDue;
         public int taxTimeDue = Find.TickManager.TicksGame;
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
-        public int dailyTimer = Find.TickManager.TicksGame;
         public int militaryTimeDue;
-        public int mercenaryTick;
         public bool factionCreated;
 
         private int foundingTick = 0;
@@ -213,12 +210,10 @@ namespace FactionColonies
             Scribe_Values.Look(ref upkeep, "upkeep");
             Scribe_Values.Look(ref profit, "profit");
 
-            Scribe_Values.Look(ref eventTimeDue, "eventTimeDue");
             Scribe_Values.Look(ref taxTimeDue, "taxTimeDue");
             Scribe_Values.Look(ref timeStart, "timeStart", -1);
             Scribe_Values.Look(ref uiTimeUpdate, "uiTimeUpdate");
             Scribe_Values.Look(ref militaryTimeDue, "militaryTimeDue", -1);
-            Scribe_Values.Look(ref dailyTimer, "dailyTimer");
             Scribe_Values.Look(ref techLevel, "techLevel");
             Scribe_Values.Look(ref factionIconPath, "factionIconPath", "Base");
 
@@ -250,8 +245,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref nextSquadId, "nextSquadID", 1);
             Scribe_Values.Look(ref nextMercenaryID, "nextMercenaryID", 1);
             Scribe_Values.Look(ref nextMercenarySquadID, "nextMercenarySquadID", 1);
-            Scribe_Values.Look(ref mercenaryTick, "mercenaryTick", -1);
-            Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
+Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
 
             //New Tax Stuff
             Scribe_Values.Look(ref nextTaxID, "nextTaxID", 1);
@@ -538,11 +532,6 @@ namespace FactionColonies
                     ColonyUtil.CreatePlayerFactionLeader(faction);
                 }
             }
-            /* Always call the tick functions, but pass faction into them.
-             * We always need to update the interval, even if the faction doesn't exist. Otherwise, if the player delays in creating the faction,
-             * then we'll suddenly hit them with a billion back-taxes and back-events as the timers try to catch up.
-             * Question: why even worry about skipping time? What's the point? Is it a debugging tool? Seems ripe for bugs and errors.
-             */
             TaxTick(faction);
             UITick(faction);
             StatTick(faction);
@@ -557,11 +546,6 @@ namespace FactionColonies
         public void TickActions()
         {
             int tick = Find.TickManager.TicksGame;
-            // settlements are all worldobjects now, which tick automatically
-            /*foreach (WorldSettlementFC settlement in settlements)
-            {
-                settlement.Tick(tick);
-            }*/
 
             //Feudal
             if (traitFeudalBoolCanUseMercenary == false &&
@@ -679,9 +663,8 @@ namespace FactionColonies
 
 
         public void setStartTime()
-        {   
+        {
             taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
-            dailyTimer = Find.TickManager.TicksGame + 2000;
         }
 
         public int returnHighestMilitaryLevel()
@@ -1156,12 +1139,8 @@ namespace FactionColonies
         }
 
 
-        public void addTax(bool isUpdating)
+        public void addTax()
         {
-            //if (capitalLocation == -1)
-            //{
-            //    setCapital();
-            //}
             foreach (ResourcePool pool in resourcePools)
             {
                 if (pool.resource.poolResourceResetsAtTaxTime())
@@ -1170,7 +1149,7 @@ namespace FactionColonies
                 }
             }
 
-            if (settlements.Count != 0) //if settlements is not zero
+            if (settlements.Count != 0)
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
@@ -1181,9 +1160,9 @@ namespace FactionColonies
                     list = settlement.createTax(out silverAmount);
                     List<ResourcePool> resourcePools = settlement.createResourcePools();
 
-                    BillFC bill = new BillFC(settlement); //Create new bill connected to settlement
+                    BillFC bill = new BillFC(settlement);
                     bill.taxes.resourcePools = resourcePools;
-                    bill.taxes.itemTithes.AddRange(list); //Add tithe to bill's tithes
+                    bill.taxes.itemTithes.AddRange(list);
                     bill.taxes.silverAmount = silverAmount;
 
                     Bills.Add(bill);
@@ -1192,16 +1171,9 @@ namespace FactionColonies
                     TaxTickPrisoner(settlement);
                 }
 
-
-                if (!isUpdating) //if done updating (timeskip) then send goods/silver etc
-                {
-                    //Messages.Message("TaxesBilled".Translate() + "!", MessageTypeDefOf.PositiveEvent);
-                    Find.LetterStack.ReceiveLetter("Taxes Billed", "Taxes from your settlements have been billed",
-                        LetterDefOf.PositiveEvent);
-                    uiUpdate();
-
-                    //Messages.Message(Find.TickManager.TicksGame.ToString(), MessageTypeDefOf.PositiveEvent);
-                }
+                Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
+                    LetterDefOf.PositiveEvent);
+                uiUpdate();
             }
             else
             {
@@ -1382,57 +1354,14 @@ namespace FactionColonies
 
         public void TaxTick(Faction faction)
         {
-            if (Find.TickManager.TicksGame >= taxTimeDue) // taxTimeDue being used as set interval when skipping time
-            {
-                int maxIterations = 100; // Safety limit to prevent infinite loops
-                int iterations = 0;
+            if (faction == null || Find.TickManager.TicksGame < taxTimeDue)
+                return;
 
-                if (faction == null)
-                {
-                    int timeBetweenTaxes = FCSettings.timeBetweenTaxes;
-                    taxTimeDue += timeBetweenTaxes;
-                    return;
-                }
+            addTax();
+            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
 
-
-                while (Find.TickManager.TicksGame >= taxTimeDue && iterations < maxIterations) //while updating events
-                {
-                    iterations++;
-                    //update events in this order: regular events: tax events.
-
-                    if (Find.TickManager.TicksGame > taxTimeDue)
-                    {
-                        addTax(true);
-                    }
-                    else
-                    {
-                        LogUtil.Message(
-                            "TaxTick - Catching Up - Did you skip time? Report this if you did not");
-                        addTax(false);
-                        //NOT WHERE FINAL UPDATE IS. Go to addTax Function
-                    }
-                    
-                    taxTimeDue += FCSettings.timeBetweenTaxes;
-                    //LogUtil.Message(Find.TickManager.TicksGame + " vs " + taxTimeDue + " - Taxing");
-                }
-                
-                if (iterations >= maxIterations)
-                {
-                    LogUtil.Error($"TaxTick: Hit maximum iteration limit ({maxIterations}), breaking out of loop to prevent freeze. Current tick: {Find.TickManager.TicksGame}, taxTimeDue: {taxTimeDue}");
-                    // Force advance taxTimeDue to break the loop
-                    taxTimeDue = Find.TickManager.TicksGame + GenDate.TicksPerDay;
-                }
-
-                //if Autoresolve bills on, attempt to autoresolve
-                switch (autoResolveBills)
-                {
-                    case true:
-                        PaymentUtil.autoresolveBills(Bills);
-                        break;
-                    case false:
-                        break;
-                }
-            }
+            if (autoResolveBills)
+                PaymentUtil.autoresolveBills(Bills);
         }
 
         public void TaxTickPrisoner(WorldSettlementFC settlement)
@@ -1525,26 +1454,14 @@ namespace FactionColonies
 
         public void StatTick(Faction faction)
         {
-            if (Find.TickManager.TicksGame >= dailyTimer) // taxTimeDue being used as set interval when skipping time
-            {
-                while (Find.TickManager.TicksGame >= dailyTimer) //while updating events
-                {
-                    if (faction != null)
-                    {
-                        //update events in this order: regular events: tax events.
-                        updateSettlementStats();
-                        updateAverages();
-                        RelationsUtilFC.resetPlayerColonyRelations();
+            if (faction == null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
+                return;
 
-                        updateDailyResourcePools();
-
-                        //Random event creation
-                        MakeRandomEvent();
-                    }
-
-                    dailyTimer += GenDate.TicksPerDay;
-                }
-            }
+            updateSettlementStats();
+            updateAverages();
+            RelationsUtilFC.resetPlayerColonyRelations();
+            updateDailyResourcePools();
+            MakeRandomEvent();
         }
 
         public void MilitaryTick(Faction faction)
