@@ -16,6 +16,11 @@ namespace FactionColonies
     public class WorldSettlementDef : WorldObjectDef
     {
         public List<ResourceBonuses> resources = new List<ResourceBonuses>();
+        /// <summary>
+        /// If true, all ResourceTypeDefs with isDefaultResource set to true are automatically added to this settlement's resources list
+        /// (unless already explicitly listed). Explicit entries take priority over defaults.
+        /// </summary>
+        public bool defaultResources = false;
         public int workersMaxBase = 0;
         public int workersMaxMult = 3;
         public int workersUltraMaxBase = 5;
@@ -45,7 +50,7 @@ namespace FactionColonies
 
         public ResourceBonuses getSettlementResource(ResourceTypeDef resourceTypeDef)
         {
-            return resources.Where((ResourceBonuses b) => b.resourceDef == resourceTypeDef).FirstOrDefault();
+            return resources.FirstOrDefault((ResourceBonuses b) => b.resourceDef == resourceTypeDef);
         }
         public List<ResourceTypeDef> getResourceDefs()
         {
@@ -114,6 +119,28 @@ namespace FactionColonies
         public TaxDeliveryMode getTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
             return GetModExtension<SettlementTypeExtension>().getTaxDeliveryMode(canUseShuttle, sourceTile);
+        }
+
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            if (defaultResources)
+            {
+                foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
+                {
+                    if (rtd.isDefaultResource && !resources.Any(rb => rb.resourceDef == rtd))
+                    {
+                        resources.Add(new ResourceBonuses { resourceDef = rtd });
+                    }
+                }
+            }
+            foreach (ResourceBonuses rb in resources)
+            {
+                if (double.IsNaN(rb.additive))
+                {
+                    rb.additive = 0;
+                }
+            }
         }
 
         public override IEnumerable<string> ConfigErrors()

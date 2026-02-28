@@ -8,51 +8,38 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>Glowforest</defName>
 		<label>glowforest</label>
@@ -61,51 +48,26 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Logging</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>0.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>Grasslands</defName>
 		<label>grassland</label>
@@ -114,51 +76,22 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Medicine</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>LavaField</defName>
 		<label>lava field</label>
@@ -167,51 +100,38 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Logging</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>2</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>Scarlands</defName>
 		<label>scarlands</label>
@@ -220,47 +140,30 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0.2</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>

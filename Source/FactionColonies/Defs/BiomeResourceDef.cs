@@ -35,13 +35,25 @@ namespace FactionColonies
                 res = new ResourceBonuses
                 {
                     resourceDef = resourceTypeDef,
-                    additive = 1,
-                    multiplier = 1
+                    additive = resourceTypeDef.defaultBiomeAdditive,
+                    multiplier = resourceTypeDef.defaultBiomeMultiplier
                 };
                 resources.Add(res);
             }
             return res;
         }
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            foreach (ResourceBonuses rb in resources)
+            {
+                if (double.IsNaN(rb.additive))
+                {
+                    rb.additive = rb.resourceDef.defaultBiomeAdditive;
+                }
+            }
+        }
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string item in base.ConfigErrors())

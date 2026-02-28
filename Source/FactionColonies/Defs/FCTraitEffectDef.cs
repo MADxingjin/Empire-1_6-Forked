@@ -107,6 +107,18 @@ namespace FactionColonies
             }
         }
 
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            foreach (ResourceBonuses rb in resourceBonuses)
+            {
+                if (double.IsNaN(rb.additive))
+                {
+                    rb.additive = 0;
+                }
+            }
+        }
+
         public ResourceBonuses getTraitResource(ResourceTypeDef resourceTypeDef)
         {
             return resourceBonuses.Where((ResourceBonuses b) => b.resourceDef == resourceTypeDef).FirstOrDefault();

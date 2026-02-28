@@ -223,6 +223,19 @@ namespace FactionColonies
         /// E.g. a research point pool, or a power pool.
         /// </summary>
         public bool isPoolResource = false;
+        /// <summary>
+        /// If true, this resource is automatically included in any WorldSettlementDef that has defaultResources set to true.
+        /// </summary>
+        public bool isDefaultResource = false;
+
+        /// <summary>
+        /// Default additive production bonus for this resource in biomes that don't specify one.
+        /// </summary>
+        public double defaultBiomeAdditive = 1;
+        /// <summary>
+        /// Default multiplier production bonus for this resource in biomes that don't specify one.
+        /// </summary>
+        public double defaultBiomeMultiplier = 1;
 
         /// <summary>
         /// When generating tithes for this resource, the count range is set to (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is set within
@@ -574,7 +587,7 @@ namespace FactionColonies
     public class ResourceBonuses
     {
         public ResourceTypeDef resourceDef;
-        public double additive = 0;
+        public double additive = double.NaN;
         public double multiplier = 1;
 
         /// <summary>
@@ -586,7 +599,7 @@ namespace FactionColonies
         public TaggedString getBonusDesc(string tab = "")
         {
             TaggedString desc = "";
-            if (additive != 0)
+            if (additive != 0 && !double.IsNaN(additive))
             {
                 desc += tab + "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(additive), resourceDef.LabelCap);
                 if (multiplier != 1)

@@ -7,6 +7,7 @@
 	<description>A resource category for meals, plants, and meat.</description>
 	<iconPath>GUI/ProductionFood</iconPath>
 	<uiPriority>100</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingAllowList>
 		<li>
 			<thingDef>Hay</thingDef>
@@ -45,6 +46,7 @@
 	<description>A resource category for weapons.</description>
 	<iconPath>GUI/ProductionWeapons</iconPath>
 	<uiPriority>200</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Weapons</thingCategoryDef>
@@ -75,6 +77,7 @@
 	<description>A resource category for apparel.</description>
 	<iconPath>GUI/ProductionApparel</iconPath>
 	<uiPriority>300</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingAllowList>
 		<li>
 			<thingDef>Cloth</thingDef>
@@ -102,6 +105,7 @@
 	<description>A resource category for livestock.</description>
 	<iconPath>GUI/ProductionAnimals</iconPath>
 	<uiPriority>400</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<modExtensions>
 		<li Class="FactionColonies.ResourceFilterExtension_Animals" />
 	</modExtensions>
@@ -113,6 +117,7 @@
 	<description>A resource category for logging.</description>
 	<iconPath>GUI/ProductionLogging</iconPath>
 	<uiPriority>500</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingAllowList>
 		<li>
 			<thingDef>WoodLog</thingDef>
@@ -132,6 +137,7 @@
 	<description>A resource category for mining materials.</description>
 	<iconPath>GUI/ProductionMining</iconPath>
 	<uiPriority>600</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingAllowList>
 		<li>
 			<thingDef>ComponentIndustrial</thingDef>
@@ -179,6 +185,7 @@
 	<description>A resource category for medicine.</description>
 	<iconPath>GUI/ProductionMedicine</iconPath>
 	<uiPriority>700</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Medicine</thingCategoryDef>
@@ -210,6 +217,7 @@
 	<description>A resource category for research.</description>
 	<iconPath>GUI/ProductionResearch</iconPath>
 	<uiPriority>800</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
 	<modExtensions>
 		<li Class="FactionColonies.ResourcePoolExt_Research" />
@@ -230,6 +238,7 @@
 	<description>A resource category for power.</description>
 	<iconPath>GUI/ProductionPower</iconPath>
 	<uiPriority>900</uiPriority>
+	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
 	<researchProjectDefs>
 		<li>Electricity</li>

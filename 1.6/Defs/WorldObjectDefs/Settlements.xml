@@ -13,35 +13,7 @@
   
   <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Surface" ParentName="WorldSettlementDefBase">
     <defName>WorldSettlementDef_Surface</defName>
-	<resources>
-		<li>
-			<resourceDef>RTD_Food</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Weapons</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Apparel</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Animals</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Logging</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Mining</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Research</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Power</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Medicine</resourceDef>
-		</li>
-	</resources>
+	<defaultResources>true</defaultResources>
 	<planetLayers>
 		<li>Surface</li>
 	</planetLayers>
@@ -61,34 +33,8 @@
     <defName>WorldSettlementDef_Orbital</defName>
     <label>basic orbital colony</label>
     <description>Standard orbital construction capabilities</description>
+	<defaultResources>true</defaultResources>
 	<resources>
-		<li>
-			<resourceDef>RTD_Food</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Weapons</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Apparel</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Animals</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Logging</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Mining</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Research</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Power</resourceDef>
-		</li>
-		<li>
-			<resourceDef>RTD_Medicine</resourceDef>
-		</li>
 		<li>
 			<resourceDef>RTD_Chemfuel</resourceDef>
 		</li>
