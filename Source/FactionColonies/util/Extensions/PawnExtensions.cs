@@ -8,7 +8,7 @@ namespace FactionColonies.util
 {
     static class PawnExtensions
     {
-        public static bool IsMercenary(this Pawn pawn) => FactionCache.FactionComp.militaryCustomizationUtil.AllMercenaryPawns.Contains(pawn);
+        public static bool IsMercenary(this Pawn pawn) => FactionCache.FactionComp.militaryCustomizationUtil.IsMercenaryPawn(pawn);
 
 		public static void ApplyIdeologyRitualWounds(this Pawn pawn)
 		{

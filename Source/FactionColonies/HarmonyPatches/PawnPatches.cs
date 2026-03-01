@@ -53,8 +53,7 @@ namespace FactionColonies
     {
         static bool Prefix(Corpse corpse)
         {
-            if (FactionCache.FactionComp.militaryCustomizationUtil.AllMercenaryPawns
-                .Contains(corpse.InnerPawn))
+            if (FactionCache.FactionComp.militaryCustomizationUtil.IsMercenaryPawn(corpse.InnerPawn))
             {
                 //corpse.InnerPawn.SetFaction(FactionColonies.getPlayerColonyFaction());
                 corpse.Destroy();
@@ -70,7 +69,7 @@ namespace FactionColonies
     {
         static bool Prefix(Pawn pawn)
         {
-            if (FactionCache.FactionComp.militaryCustomizationUtil.AllMercenaryPawns.Contains(pawn))
+            if (FactionCache.FactionComp.militaryCustomizationUtil.IsMercenaryPawn(pawn))
             {
                 return false;
             }

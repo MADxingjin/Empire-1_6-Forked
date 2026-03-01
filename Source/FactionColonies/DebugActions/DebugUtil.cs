@@ -91,15 +91,16 @@ namespace FactionColonies
         {
             LogUtil.MessageForce("Debug - Reset All Military Squad Assignments");
             MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
-            for (int i = util.AllMercenaries.Count - 1; i >= 0; i--)
+            var allMercs = util.AllMercenaries.ToList();
+            for (int i = allMercs.Count - 1; i >= 0; i--)
             {
-                if (util.AllMercenaries[i].squad.hasLord)
+                if (allMercs[i].squad.hasLord)
                 {
-                    util.AllMercenaries[i].squad.map.lordManager.RemoveLord(util.AllMercenaries[i].squad.lord);
+                    allMercs[i].squad.map.lordManager.RemoveLord(allMercs[i].squad.lord);
                 }
 
-                util.AllMercenaries[i].pawn.Destroy();
-                util.AllMercenaries[i].squad.mercenaries.Remove(util.AllMercenaries[i]);
+                allMercs[i].pawn.Destroy();
+                allMercs[i].squad.mercenaries.Remove(allMercs[i]);
             }
 
             for (int k = util.mercenarySquads.Count() - 1; k >= 0; k--)
@@ -343,8 +344,9 @@ namespace FactionColonies
                             settlement.MilitaryComp.militarySquad.timeDeployed = Find.TickManager.TicksGame;
 
 
-                            PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, settlement.MilitaryComp.militarySquad.AllEquippedMercenaryPawns);
-                            settlement.MilitaryComp.militarySquad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
+                            var debugEquippedPawns = settlement.MilitaryComp.militarySquad.AllEquippedMercenaryPawns.ToList();
+                            PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, debugEquippedPawns);
+                            debugEquippedPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
                             settlement.MilitaryComp.militarySquad.isDeployed = true;
                             DebugTools.curTool = null;
                         });

@@ -37,26 +37,28 @@ namespace FactionColonies
                 raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
             };
 
+            List<Pawn> equippedPawns = squad.AllEquippedMercenaryPawns.ToList();
+
             if (DropPod)
             {
                 parms.spawnCenter = dropPosition;
-                PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, squad.AllEquippedMercenaryPawns);
+                PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, equippedPawns);
             }
             else
             {
                 PawnsArrivalModeWorker_EdgeWalkIn worker = new PawnsArrivalModeWorker_EdgeWalkIn();
                 worker.TryResolveRaidSpawnCenter(parms);
-                worker.Arrive(squad.AllEquippedMercenaryPawns, parms);
+                worker.Arrive(equippedPawns, parms);
             }
 
-            squad.AllEquippedMercenaryPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
+            equippedPawns.ForEach(pawn => pawn.ApplyIdeologyRitualWounds());
             squad.isDeployed = true;
             squad.orderLocation = dropPosition;
             squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(squad.AllEquippedMercenaryPawns));
+            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
 
             settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJob.Deploy, 1, null);
-            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, squad.AllEquippedMercenaryPawns);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, equippedPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {

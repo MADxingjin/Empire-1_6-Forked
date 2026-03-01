@@ -61,106 +61,29 @@ namespace FactionColonies
             return $"MercenarySquadFC_{loadID}";
         }
 
-        public List<Mercenary> EquippedMercenaries
-        {
-            get
-            {
-                return mercenaries.Where(merc => (merc.pawn.apparel.WornApparel.Any()
-                                                  || merc.pawn.equipment.AllEquipmentListForReading.Any()
-                                                  || merc.animal != null) && merc.deployable).ToList();
-            }
-        }
+        public IEnumerable<Mercenary> EquippedMercenaries =>
+            mercenaries.Where(merc => (merc.pawn.apparel.WornApparel.Any()
+                                       || merc.pawn.equipment.AllEquipmentListForReading.Any()
+                                       || merc.animal != null) && merc.deployable);
 
-        public List<Pawn> EquippedMercenaryPawns
-        {
-            get
-            {
-                List<Pawn> list = new List<Pawn>();
-                foreach (Mercenary merc in EquippedMercenaries)
-                {
-                    list.Add(merc.pawn);
-                }
+        public IEnumerable<Pawn> EquippedMercenaryPawns =>
+            EquippedMercenaries.Select(merc => merc.pawn);
 
-                return list;
-            }
-        }
+        public IEnumerable<Pawn> EquippedAnimalMercenaries =>
+            animals.Select(animal => animal.pawn);
 
-        public List<Pawn> EquippedAnimalMercenaries
-        {
-            get
-            {
-                List<Pawn> list = new List<Pawn>();
-                foreach (Mercenary animal in animals)
-                {
-                    list.Add(animal.pawn);
-                }
+        public IEnumerable<Pawn> AllEquippedMercenaryPawns =>
+            EquippedMercenaries.Select(merc => merc.pawn).Concat(EquippedAnimalMercenaries);
 
-                return list;
-            }
-        }
+        public IEnumerable<Pawn> AllDeployedMercenaryPawns =>
+            DeployedMercenaries.Select(merc => merc.pawn)
+                .Concat(DeployedMercenaryAnimals.Select(merc => merc.pawn));
 
-        public List<Pawn> AllEquippedMercenaryPawns
-        {
-            get
-            {
-                List<Pawn> list = EquippedMercenaries.Select(merc => merc.pawn).ToList();
+        public IEnumerable<Mercenary> DeployedMercenaries =>
+            mercenaries.Where(merc => merc.pawn.Map != null);
 
-                list.AddRange(EquippedAnimalMercenaries);
-                return list;
-            }
-        }
-
-        public List<Pawn> AllDeployedMercenaryPawns
-        {
-            get
-            {
-                List<Pawn> list = new List<Pawn>();
-                foreach (Mercenary merc in DeployedMercenaries)
-                {
-                    list.Add(merc.pawn);
-                }
-
-                foreach (Mercenary animal in DeployedMercenaryAnimals)
-                {
-                    list.Add(animal.pawn);
-                }
-
-                return list;
-            }
-        }
-
-        public List<Mercenary> DeployedMercenaries
-        {
-            get
-            {
-                List<Mercenary> pawns = new List<Mercenary>();
-                foreach (Mercenary merc in mercenaries)
-                {
-                    if (merc.pawn.Map != null)
-                    {
-                        pawns.Add(merc);
-                    }
-                }
-
-                return pawns;
-            }
-        }
-
-        public List<Mercenary> DeployedMercenaryAnimals
-        {
-            get
-            {
-                List<Mercenary> pawns = new List<Mercenary>();
-                foreach (Mercenary merc in animals)
-                {
-                    if (merc.pawn.Map != null)
-                    {
-                        pawns.Add(merc);
-                    }
-                }
-                return pawns;
-            }
-        }
+        public IEnumerable<Mercenary> DeployedMercenaryAnimals =>
+            animals.Where(merc => merc.pawn.Map != null);
         public WorldSettlementFC getSettlement
         {
             get
@@ -240,6 +163,10 @@ namespace FactionColonies
             {
                 OutfitSquad(outfit);
             }
+            else
+            {
+                FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
+            }
         }
 
         public void resetNeeds()
@@ -269,24 +196,34 @@ namespace FactionColonies
 
         public void removeDroppedEquipment()
         {
-            while (DroppedApparel.Any())
+            for (int i = UsedApparelList.Count - 1; i >= 0; i--)
             {
-                Apparel apparel = DroppedApparel[0];
-                UsedApparelList.Remove(DroppedApparel[0]);
-                if (apparel != null && apparel.Destroyed == false)
+                Apparel apparel = UsedApparelList[i];
+                if (apparel.ParentHolder is Pawn_ApparelTracker tracker)
                 {
-                    apparel.Destroy();
+                    Pawn pawn = tracker.pawn;
+                    if ((pawn.Faction == FactionCache.PlayerColonyFaction ||
+                         pawn.Faction == Find.FactionManager.OfPlayer) && !pawn.Dead)
+                        continue;
                 }
+                UsedApparelList.RemoveAt(i);
+                if (apparel != null && !apparel.Destroyed)
+                    apparel.Destroy();
             }
 
-            while (DroppedWeapons.Any())
+            for (int i = UsedWeaponList.Count - 1; i >= 0; i--)
             {
-                ThingWithComps weapon = DroppedWeapons[0];
-                UsedWeaponList.Remove(DroppedWeapons[0]);
-                if (weapon != null && weapon.Destroyed == false)
+                ThingWithComps weapon = UsedWeaponList[i];
+                if (weapon.ParentHolder is Pawn_EquipmentTracker tracker)
                 {
-                    weapon.Destroy();
+                    Pawn pawn = tracker.pawn;
+                    if ((pawn.Faction == FactionCache.PlayerColonyFaction ||
+                         pawn.Faction == Find.FactionManager.OfPlayer) && !pawn.Dead)
+                        continue;
                 }
+                UsedWeaponList.RemoveAt(i);
+                if (weapon != null && !weapon.Destroyed)
+                    weapon.Destroy();
             }
         }
 
@@ -472,6 +409,7 @@ namespace FactionColonies
             {
                 LogUtil.Warning("Failed to replace dead mercenary with new pawn.");
             }
+            FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
         }
 
         public void HealPawn(Mercenary merc)
@@ -601,6 +539,7 @@ namespace FactionColonies
             }
 
             //debugMercenarySquad();
+            FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
         }
 
 
@@ -639,73 +578,6 @@ namespace FactionColonies
                 }
             }
         }
-
-        public List<ThingWithComps> DroppedWeapons
-        {
-            get
-            {
-                List<ThingWithComps> tmpList = new List<ThingWithComps>();
-
-                foreach (ThingWithComps weapon in UsedWeaponList)
-                {
-                    if (weapon.ParentHolder is Pawn_EquipmentTracker)
-                    {
-                        if ((((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
-                             FactionCache.PlayerColonyFaction ||
-                             ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Faction ==
-                             Find.FactionManager.OfPlayer) &&
-                            ((Pawn_EquipmentTracker)weapon.ParentHolder).pawn.Dead == false)
-                        {
-                        }
-                        else
-                        {
-                            tmpList.Add(weapon);
-                        }
-                    }
-                    else
-                    {
-                        tmpList.Add(weapon);
-                    }
-                }
-
-                return tmpList;
-            }
-        }
-
-        public List<Apparel> DroppedApparel
-        {
-            get
-            {
-                List<Apparel> tmpList = new List<Apparel>();
-
-                foreach (Apparel apparel in UsedApparelList)
-                {
-                    //LogUtil.Message(apparel.ParentHolder.ToString());
-                    //LogUtil.Message(apparel.ParentHolder.ParentHolder.ToString());
-                    if (apparel.ParentHolder is Pawn_ApparelTracker)
-                    {
-                        if ((((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
-                             FactionCache.PlayerColonyFaction ||
-                             ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Faction ==
-                             Find.FactionManager.OfPlayer) &&
-                            ((Pawn_ApparelTracker)apparel.ParentHolder).pawn.Dead == false)
-                        {
-                        }
-                        else
-                        {
-                            tmpList.Add(apparel);
-                        }
-                    }
-                    else
-                    {
-                        tmpList.Add(apparel);
-                    }
-                }
-
-                return tmpList;
-            }
-        }
-
 
         public void debugMercenarySquad()
         {

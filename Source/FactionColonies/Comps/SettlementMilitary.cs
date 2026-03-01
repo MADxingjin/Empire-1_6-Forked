@@ -1095,7 +1095,7 @@ namespace FactionColonies
             {
                 if (militarySquad.outfit != null)
                 {
-                    if (militarySquad.EquippedMercenaries.Count > 0)
+                    if (militarySquad.EquippedMercenaries.Any())
                     {
                         return true;
                     }

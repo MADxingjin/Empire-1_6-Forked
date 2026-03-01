@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
+using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -18,6 +19,31 @@ namespace FactionColonies
         public MilUnitFC blankUnit;
         public List<Mercenary> deadPawns = new List<Mercenary>();
         public int tickChanged;
+
+        private HashSet<Pawn> _mercenaryPawnSet = new HashSet<Pawn>();
+
+        public bool IsMercenaryPawn(Pawn pawn) => _mercenaryPawnSet.Contains(pawn);
+
+        public void RebuildMercenaryPawnSet()
+        {
+            _mercenaryPawnSet.Clear();
+            foreach (MercenarySquadFC squad in mercenarySquads)
+            {
+                foreach (Mercenary merc in squad.mercenaries)
+                {
+                    if (merc?.pawn != null)
+                        _mercenaryPawnSet.Add(merc.pawn);
+                }
+                if (squad.animals != null)
+                {
+                    foreach (Mercenary animal in squad.animals)
+                    {
+                        if (animal?.pawn != null)
+                            _mercenaryPawnSet.Add(animal.pawn);
+                    }
+                }
+            }
+        }
 
         public MilitaryCustomizationUtil()
         {
@@ -125,6 +151,8 @@ namespace FactionColonies
             {
                 merc.OutfitSquad(merc.outfit);
             }
+
+            RebuildMercenaryPawnSet();
         }
 
         public int GETLatestChange
@@ -145,9 +173,21 @@ namespace FactionColonies
 
         public MercenarySquadFC returnSquadFromUnit(Pawn unit)
         {
-            foreach (var squad in mercenarySquads.Where(squad => squad.AllDeployedMercenaryPawns.Contains(unit)))
+            foreach (var squad in mercenarySquads)
             {
-                return squad;
+                foreach (var merc in squad.mercenaries)
+                {
+                    if (merc.pawn.Map != null && merc.pawn == unit)
+                        return squad;
+                }
+                if (squad.animals != null)
+                {
+                    foreach (var animal in squad.animals)
+                    {
+                        if (animal.pawn.Map != null && animal.pawn == unit)
+                            return squad;
+                    }
+                }
             }
 
             LogUtil.Message("MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
@@ -159,33 +199,17 @@ namespace FactionColonies
             return squad.mercenaries.FirstOrDefault(merc => merc.pawn == unit);
         }
 
-        public List<Mercenary> AllMercenaries
-        {
-            get
-            {
-                List<Mercenary> list = new List<Mercenary>();
-                foreach (MercenarySquadFC squad in mercenarySquads)
-                {
-                    list.AddRange(squad.mercenaries);
-                    if (squad.animals != null && squad.animals.Count > 0)
-                    {
-                        list.AddRange(squad.animals);
-                    }
-                }
+        public IEnumerable<Mercenary> AllMercenaries =>
+            mercenarySquads.SelectMany(squad =>
+                squad.animals?.Count > 0
+                    ? squad.mercenaries.Concat(squad.animals)
+                    : squad.mercenaries);
 
-                return list;
-            }
-        }
+        public IEnumerable<MercenarySquadFC> DeployedSquads =>
+            mercenarySquads.Where(squad => squad.isDeployed);
 
-        public IEnumerable<MercenarySquadFC> DeployedSquads
-        {
-            get { return mercenarySquads.Where(squad => squad.isDeployed).ToList(); }
-        }
-
-        public List<Pawn> AllMercenaryPawns
-        {
-            get { return AllMercenaries.Select(merc => merc.pawn).ToList(); }
-        }
+        public IEnumerable<Pawn> AllMercenaryPawns =>
+            AllMercenaries.Select(merc => merc.pawn);
 
         public void resetSquads()
         {
@@ -250,6 +274,7 @@ namespace FactionColonies
                 LogUtil.Warning("createMercenarySquad fail. Found squad is Null");
             }
 
+            RebuildMercenaryPawnSet();
             return findSquad(squad);
         }
 
@@ -279,6 +304,11 @@ namespace FactionColonies
 
             Scribe_Deep.Look(ref blankUnit, "blankUnit");
             Scribe_Values.Look(ref tickChanged, "tickChanged");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                RebuildMercenaryPawnSet();
+            }
         }
     }
 }
