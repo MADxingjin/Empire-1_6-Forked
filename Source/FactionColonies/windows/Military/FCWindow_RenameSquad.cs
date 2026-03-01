@@ -18,6 +18,7 @@ namespace FactionColonies
             curName = squad.name;
             doCloseX = true;
             forcePause = false;
+            closeOnAccept = false;
             closeOnClickedOutside = true;
             absorbInputAroundWindow = true;
         }

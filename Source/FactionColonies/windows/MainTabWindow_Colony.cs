@@ -494,6 +494,7 @@ namespace FactionColonies
                 Find.WindowStack.Add(new CreateColonyWindowFc());
                 Find.World.renderer.wantedMode = WorldRenderMode.Planet;
                 Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
+                Find.WindowStack.TryRemove(this);
             }
         }
         private Vector2 poolScrollbar = new Vector2();
