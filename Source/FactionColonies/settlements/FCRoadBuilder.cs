@@ -189,7 +189,8 @@ namespace FactionColonies
         /// </summary>
         public void FlagUpdateRoadQueues()
         {
-            roadQueue.shouldUpdateSettlementsToProcess = true;
+            if (roadQueue != null)
+                roadQueue.shouldUpdateSettlementsToProcess = true;
         }
     }
 
@@ -218,11 +219,73 @@ namespace FactionColonies
 
         public List<FCRoadPath> roadPaths = new List<FCRoadPath>();
 
+        private class UnionFind
+        {
+            private int[] parent;
+            private int[] rank;
+
+            public UnionFind(int size)
+            {
+                parent = new int[size];
+                rank = new int[size];
+                for (int i = 0; i < size; i++)
+                    parent[i] = i;
+            }
+
+            public int Find(int x)
+            {
+                if (parent[x] != x)
+                    parent[x] = Find(parent[x]);
+                return parent[x];
+            }
+
+            public bool Union(int x, int y)
+            {
+                int rootX = Find(x);
+                int rootY = Find(y);
+                if (rootX == rootY)
+                    return false;
+                if (rank[rootX] < rank[rootY])
+                    parent[rootX] = rootY;
+                else if (rank[rootX] > rank[rootY])
+                    parent[rootY] = rootX;
+                else
+                {
+                    parent[rootY] = rootX;
+                    rank[rootX]++;
+                }
+                return true;
+            }
+        }
+
+        private struct Edge
+        {
+            public int fromTile;
+            public int toTile;
+            public float cost;
+        }
+
+        private static float ComputePathCost(int from, int to, PlanetLayer layer)
+        {
+            var fromTile = new PlanetTile(from, layer);
+            var toTile = new PlanetTile(to, layer);
+            using (var pathing = new WorldPathing(layer))
+            {
+                WorldPath path = pathing.FindPath(fromTile, toTile, null);
+                float cost = path.Found ? path.TotalCost : float.MaxValue;
+                path.Dispose();
+                return cost;
+            }
+        }
+
         public void ExposeData()
         {
             Scribe_Values.Look(ref nextRoadTick, "nextRoadTick");
             Scribe_Values.Look(ref daysBetweenTicks, "daysBetweenTicks");
             Scribe_Defs.Look(ref roadDef, "roadDef");
+            Scribe_Collections.Look(ref roadPaths, "roadPaths", LookMode.Deep);
+            if (roadPaths == null)
+                roadPaths = new List<FCRoadPath>();
         }
 
         public FCRoadQueue(RoadDef roadDef, int daysBetweenTicks)
@@ -289,16 +352,82 @@ namespace FactionColonies
 
         IEnumerator<FCRoadPath> ProcessPath()
         {
-            foreach (int from in this.settlementsFromTiles)
-            {
-                foreach (int to in this.settlementsToTiles)
-                {
-                    if (this.roadPaths.Any(path => path.From == from && path.To == to))
-                        continue;
+            // Phase 0: Purge incomplete paths so the MST can re-optimize
+            // the network when settlements change. Partially-built road tiles
+            // remain on the world map but no further effort is spent on them.
+            roadPaths.RemoveAll(p => !p.IsCompleted);
 
-                    if (from != to)
-                        yield return new FCRoadPath(from, to);
+            // Phase 1: Collect all unique tile IDs from both settlement lists
+            HashSet<int> allTileSet = new HashSet<int>();
+            foreach (PlanetTile tile in this.settlementsFromTiles)
+                allTileSet.Add(tile.tileId);
+            foreach (PlanetTile tile in this.settlementsToTiles)
+                allTileSet.Add(tile.tileId);
+
+            List<int> allTiles = new List<int>(allTileSet);
+            int n = allTiles.Count;
+
+            if (n < 2)
+                yield break;
+
+            // Build index mapping for Union-Find
+            Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++)
+                tileToIndex[allTiles[i]] = i;
+
+            // Compute all pairwise pathfinding costs (accounts for existing roads)
+            var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
+            List<Edge> edges = new List<Edge>(n * (n - 1) / 2);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = i + 1; j < n; j++)
+                {
+                    float cost = ComputePathCost(allTiles[i], allTiles[j], mainPlanetLayer);
+                    edges.Add(new Edge
+                    {
+                        fromTile = allTiles[i],
+                        toTile = allTiles[j],
+                        cost = cost
+                    });
                 }
+            }
+
+            // Sort edges by cost (Kruskal's algorithm)
+            edges.Sort((a, b) => a.cost.CompareTo(b.cost));
+
+            // Select MST edges using Union-Find
+            UnionFind uf = new UnionFind(n);
+            List<Edge> mstEdges = new List<Edge>(n - 1);
+
+            foreach (Edge edge in edges)
+            {
+                if (edge.cost >= float.MaxValue)
+                    break; // Remaining edges are unreachable (different landmasses)
+
+                int idxA = tileToIndex[edge.fromTile];
+                int idxB = tileToIndex[edge.toTile];
+
+                if (uf.Union(idxA, idxB))
+                {
+                    mstEdges.Add(edge);
+                    if (mstEdges.Count == n - 1)
+                        break;
+                }
+            }
+
+            // Phase 2: Yield MST edges that don't already have completed road paths
+            foreach (Edge edge in mstEdges)
+            {
+                int from = edge.fromTile;
+                int to = edge.toTile;
+
+                bool alreadyExists = this.roadPaths.Any(path =>
+                    path.IsCompleted &&
+                    ((path.From == from && path.To == to) ||
+                     (path.From == to && path.To == from)));
+
+                if (!alreadyExists)
+                    yield return new FCRoadPath(from, to);
             }
         }
 
@@ -344,11 +473,16 @@ namespace FactionColonies
         }
     }
 
-    public class FCRoadPath
+    public class FCRoadPath : IExposable
     {
         public WorldPath Path { get; protected set; }
         public int From { get; protected set; }
         public int To { get; protected set; }
+
+        /// <summary>
+        /// Parameterless constructor required for Scribe deserialization.
+        /// </summary>
+        public FCRoadPath() { }
 
         public FCRoadPath(Settlement from, Settlement to)
         {
@@ -370,6 +504,9 @@ namespace FactionColonies
 
         void SetupPath(int from, int to)
         {
+            this.From = from;
+            this.To = to;
+
             var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
             var fromTile = new PlanetTile(from, mainPlanetLayer);
             var toTile = new PlanetTile(to, mainPlanetLayer);
@@ -381,7 +518,7 @@ namespace FactionColonies
 
             // path belongs to a WorldPathPool that gets very vocal in the error log
             // when theres more WorldPaths than caravans. The workaround to this error
-            // is to copy the path to a new WorldPath object that is not a part of 
+            // is to copy the path to a new WorldPath object that is not a part of
             // the pool and Dispose of the one that is
             this.Path = new WorldPath();
             foreach (int node in path.NodesReversed)
@@ -391,6 +528,47 @@ namespace FactionColonies
             this.Path.SetupFound(path.TotalCost, mainPlanetLayer);
             this.Path.inUse = true;
             path.Dispose();
+        }
+
+        public void ExposeData()
+        {
+            int from = this.From;
+            int to = this.To;
+            Scribe_Values.Look(ref from, "from");
+            Scribe_Values.Look(ref to, "to");
+
+            List<int> nodeIds = null;
+            float totalCost = 0f;
+            int nodesLeft = 0;
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                nodeIds = this.Path.NodesReversed.Select(t => t.tileId).ToList();
+                totalCost = this.Path.TotalCost;
+                nodesLeft = this.Path.NodesLeftCount;
+            }
+
+            Scribe_Collections.Look(ref nodeIds, "pathNodes", LookMode.Value);
+            Scribe_Values.Look(ref totalCost, "totalCost");
+            Scribe_Values.Look(ref nodesLeft, "nodesLeft");
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                this.From = from;
+                this.To = to;
+
+                var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
+                this.Path = new WorldPath();
+                foreach (int nodeId in nodeIds)
+                {
+                    this.Path.AddNodeAtStart(new PlanetTile(nodeId, mainPlanetLayer));
+                }
+                this.Path.SetupFound(totalCost, mainPlanetLayer);
+                this.Path.inUse = true;
+
+                // Restore build progress (curNodeIndex is private in WorldPath)
+                Traverse.Create(this.Path).Field("curNodeIndex").SetValue(nodesLeft - 1);
+            }
         }
 
         /// <summary>

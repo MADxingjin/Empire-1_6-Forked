@@ -65,6 +65,7 @@ namespace FactionColonies.util
             settlement.PrepareDestroyWorldObject();
             FactionFC faction = FactionCache.FactionComp;
             faction.settlements.Remove(settlement);
+            faction.roadBuilder.FlagUpdateRoadQueues();
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
             Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>.GetNamed(settlement.def.defName), settlement.Tile));
