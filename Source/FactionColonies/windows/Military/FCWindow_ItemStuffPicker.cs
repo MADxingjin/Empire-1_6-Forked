@@ -57,7 +57,7 @@ namespace FactionColonies
                 selectedStuff = initialStuff;
                 if (initialItem.MadeFromStuff)
                 {
-                    currentStuffs.AddRange(GenStuff.AllowedStuffsFor(initialItem));
+                    currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(initialItem));
                     currentStuffs.SortBy(s => s.label);
                 }
             }
@@ -182,7 +182,7 @@ namespace FactionColonies
                     currentStuffs.Clear();
                     if (item.MadeFromStuff)
                     {
-                        currentStuffs.AddRange(GenStuff.AllowedStuffsFor(item));
+                        currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(item));
                         currentStuffs.SortBy(s => s.label);
                     }
 
@@ -306,11 +306,18 @@ namespace FactionColonies
             }
 
             // Confirm (left of cancel)
-            bool canConfirm = selectedItem != null && (!selectedItem.MadeFromStuff || selectedStuff != null);
             Rect confirmRect = new Rect(cancelRect.x - buttonWidth - 10f, bar.y, buttonWidth, bar.height);
-            if (Widgets.ButtonText(confirmRect, "FCConfirm".Translate(), active: canConfirm))
+            if (Widgets.ButtonText(confirmRect, "FCConfirm".Translate()))
             {
-                if (canConfirm)
+                if (selectedItem == null)
+                {
+                    Messages.Message("fcPickerSelectItem".Translate(), MessageTypeDefOf.RejectInput, false);
+                }
+                else if (selectedItem.MadeFromStuff && selectedStuff == null)
+                {
+                    Messages.Message("fcPickerSelectStuff".Translate(), MessageTypeDefOf.RejectInput, false);
+                }
+                else
                 {
                     onConfirm(selectedItem, selectedStuff);
                     Close();

@@ -120,6 +120,10 @@ namespace FactionColonies
         //Random Event
         public float randomEventLastAdded = 0f;
 
+        //Caching
+        private bool dirtyGrandThingListFlag = true;
+        private List<ThingDef> grandThingList = null;
+
         public List<FCPolicy> factionTraits = new List<FCPolicy>
         {
             new FCPolicy(FCPolicyDefOf.empty),
@@ -314,6 +318,32 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
                 LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
             factionResources.Sort(ResourceDisplay.sortForUI);
+        }
+        /// <summary>
+        /// Returns a list of *all* things that this faction can produce.
+        /// </summary>
+        /// <returns></returns>
+        public List<ThingDef> getGrandThingList()
+        {
+            if (dirtyGrandThingListFlag)
+            {
+                grandThingList = new List<ThingDef>();
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    grandThingList.AddRange(settlement.getGrandThingList());
+                }
+                grandThingList = grandThingList.Distinct().ToList();
+                dirtyGrandThingListFlag = false;
+            }
+            return grandThingList;
+        }
+        public void dirtyGrandThingList()
+        {
+            dirtyGrandThingListFlag = true;
+        }
+        public List<ThingDef> getStuffListForThingDef(ThingDef thing)
+        {
+            return CraftUtil.getThingStuffs(thing, getGrandThingList());
         }
 
         public void addTrait(FCTraitEffectDef trait, string id = "")

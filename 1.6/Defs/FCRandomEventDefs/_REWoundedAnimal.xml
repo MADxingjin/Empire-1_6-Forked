@@ -27,7 +27,7 @@
 		<settlementsCarryOver>true</settlementsCarryOver> 
 
 
-		<requiredResource>animals</requiredResource> 
+		<requiredResource>RTD_Animals</requiredResource> 
 		
 	</FactionColonies.FCEventDef>
 

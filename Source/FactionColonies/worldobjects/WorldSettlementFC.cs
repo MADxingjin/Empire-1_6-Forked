@@ -1359,6 +1359,7 @@ namespace FactionColonies
         public void dirtyGrandThingList()
         {
             dirtyGrandThingListFlag = true;
+            FactionCache.FactionComp.dirtyGrandThingList();
         }
 
         public float getOneTimeSilverIncome()

@@ -83,10 +83,11 @@ namespace FactionColonies
             float belowHighlight = contentTop + 35f + margin;
             float gearTop = belowHighlight + 61f + margin;
             float gearBottom = gearTop + 305f;
+            float contentBottom = rect.yMax - margin;
 
-            // Left sidebar: search + unit list + CRUD buttons (ends at gear panel bottom)
+            // Left sidebar: search + unit list + action buttons
             Rect sidebarRect = new Rect(rect.x + margin, contentTop,
-                SidebarWidth, gearBottom - contentTop);
+                SidebarWidth, contentBottom - contentTop);
             DrawSidebar(sidebarRect);
 
             // Content area starts after sidebar + gap

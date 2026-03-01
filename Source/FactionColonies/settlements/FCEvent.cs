@@ -86,7 +86,7 @@ namespace FactionColonies
             if (cEvent.requiredResource != null)
             {
                 bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
-                                   || (cEvent.requiredResource == "research" && TraitUtilsFC.returnResearchAmount() > 0);
+                                   || (cEvent.requiredResource == ResourceTypeDefOf.RTD_Research && TraitUtilsFC.returnResearchAmount() > 0);
                 if (!hasResource) return false;
             }
 
@@ -179,10 +179,10 @@ namespace FactionColonies
                     {
                         foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
                         {
-                            if (tempEvent.def.requiredResource != "")
+                            if (tempEvent.def.requiredResource != null)
                             {
                                 //if there is a required resource
-                                if (settlement.returnResource(tempEvent.def.requiredResource).assignedWorkers > 0)
+                                if (settlement.getResource(tempEvent.def.requiredResource).assignedWorkers > 0)
                                 {
                                     //if have someone working on that resource
                                     tmp.Add(settlement);
@@ -645,7 +645,7 @@ namespace FactionColonies
         public int minimumProsperity;
         public int maximumProsperity = 100;
         public List<FCOptionDef> options = new List<FCOptionDef>();
-        public string requiredResource = "";
+        public ResourceTypeDef requiredResource;
         public int randomThingValue;
         public string randomThingType = "";
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
@@ -732,7 +732,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maximumUnrest, "maximumUnrest");
             Scribe_Values.Look(ref minimumProsperity, "minimumProsperity");
             Scribe_Values.Look(ref maximumProsperity, "maximumProsperity");
-            Scribe_Values.Look(ref requiredResource, "requiredResource");
+            Scribe_Defs.Look(ref requiredResource, "requiredResource");
             Scribe_Values.Look(ref randomThingValue, "randomThingValue");
             Scribe_Values.Look(ref randomThingType, "randomThingType");
             Scribe_Collections.Look(ref options, "options", LookMode.Def);
@@ -818,7 +818,7 @@ namespace FactionColonies
         public int minimumProsperity = 0;
         public int maximumProsperity = 100;
         public List<FCOptionDef> options = new List<FCOptionDef>();
-        public string requiredResource = "";
+        public ResourceTypeDef requiredResource;
         public int randomThingValue = 0;
         public string randomThingType = "";
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();

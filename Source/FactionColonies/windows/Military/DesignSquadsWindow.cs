@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
@@ -10,13 +11,26 @@ namespace FactionColonies
     public class DesignSquadsWindow : MilitaryWindow
     {
         private WorldSettlementFC settlementPointReference;
-        private MilitaryCustomizationUtil util;
+        private readonly MilitaryCustomizationUtil util;
         private MilSquadFC selectedSquad;
-        
+
+        private Vector2 squadListScrollPos;
+        private string squadSearchTerm = "";
+        private Vector2 unitListScrollPos;
+
+        // Layout constants (matching DesignUnitsWindow)
+        private const float SidebarWidth = 250f;
+        private const float RowHeight = 30f;
+        private const float SearchBarHeight = 28f;
+        private const float IconSize = 24f;
+        private const float margin = 5f;
+        private const float ButtonHeight = 30f;
+        private const float UnitRowHeight = 50f;
+
         public DesignSquadsWindow(MilitaryCustomizationUtil util)
         {
             this.util = util;
-            selectedText = "Select A Squad";
+            selectedText = "FCSelectASquad".Translate();
 
             if (util.blankUnit == null)
             {
@@ -28,33 +42,128 @@ namespace FactionColonies
 
         public override void Select(IExposable selecting)
         {
-            MilSquadFC squad = (MilSquadFC) selecting;
+            MilSquadFC squad = (MilSquadFC)selecting;
             selectedSquad = squad;
             selectedText = squad.name;
         }
 
         public override void DrawTab(Rect rect)
         {
-            //set text anchor and font
+            Widgets.DrawLineHorizontal(rect.x, rect.y + 45, rect.width);
+
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
 
-            Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect createSquadButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
-            Rect importButton = new Rect(5, createSquadButton.y + createSquadButton.height + 10, 200, 30);
-            Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
-            Rect UnitStandBase = new Rect(170, 220, 50, 30);
-            Rect EquipmentTotalCost = new Rect(350, 50, 450, 40);
-            Rect ResetButton = new Rect(700, 100, 100, 30);
-            Rect DeleteButton = new Rect(ResetButton.x, ResetButton.y + ResetButton.height + 5, ResetButton.width,
-                ResetButton.height);
-            Rect PointRefButton = new Rect(DeleteButton.x, DeleteButton.y + DeleteButton.height + 5, DeleteButton.width,
-                DeleteButton.height);
-            Rect SaveSquadButton = new Rect(DeleteButton.x, PointRefButton.y + DeleteButton.height + 5,
-                DeleteButton.width, DeleteButton.height);
+            float contentTop = rect.y + 45f + margin;
+            float contentBottom = rect.yMax - margin;
+            float rightEdge = rect.xMax - margin;
 
-            // --- Create New Squad Button ---
-            if (Widgets.ButtonText(createSquadButton, "FCCreateNewSquad".Translate()))
+            // Left sidebar
+            Rect sidebarRect = new Rect(rect.x + margin, contentTop,
+                SidebarWidth, contentBottom - contentTop);
+            DrawSidebar(sidebarRect);
+
+            // Content area (right of sidebar)
+            float contentLeft = sidebarRect.xMax + 10f;
+            float contentWidth = rightEdge - contentLeft;
+
+            if (selectedSquad != null)
+            {
+                // Header
+                float headerHeight = 60f;
+                Rect headerRect = new Rect(contentLeft, contentTop, contentWidth, headerHeight);
+                DrawSquadHeader(headerRect);
+
+                // Bottom bar
+                float bottomBarHeight = ButtonHeight;
+                Rect bottomRect = new Rect(contentLeft, contentBottom - bottomBarHeight,
+                    contentWidth, bottomBarHeight);
+                DrawBottomBar(bottomRect);
+
+                // Unit list (between header and bottom bar)
+                float unitListTop = headerRect.yMax + margin;
+                float unitListBottom = bottomRect.y - margin;
+                Rect unitListRect = new Rect(contentLeft, unitListTop,
+                    contentWidth, unitListBottom - unitListTop);
+                DrawUnitList(unitListRect);
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Sidebar ---
+
+        private void DrawSidebar(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Search bar
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect searchRect = new Rect(rect.x, rect.y, rect.width, SearchBarHeight);
+            squadSearchTerm = Widgets.TextField(searchRect, squadSearchTerm);
+
+            // Squad list (fills space between search bar and buttons)
+            float buttonsHeight = ButtonHeight * 2 + margin;
+            float listHeight = rect.yMax - searchRect.yMax - margin - buttonsHeight - margin;
+            Rect listOutRect = new Rect(rect.x, searchRect.yMax + margin, rect.width, listHeight);
+            Widgets.DrawMenuSection(listOutRect);
+
+            List<MilSquadFC> filteredSquads = string.IsNullOrEmpty(squadSearchTerm)
+                ? util.squads ?? new List<MilSquadFC>()
+                : (util.squads ?? new List<MilSquadFC>())
+                    .Where(s => s.name.IndexOf(squadSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+            float viewHeight = filteredSquads.Count * RowHeight;
+            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
+                rect.width - (viewHeight > listHeight ? 16f : 0f),
+                Mathf.Max(viewHeight, listHeight));
+
+            Widgets.BeginScrollView(listOutRect, ref squadListScrollPos, scrollViewRect);
+
+            for (int i = 0; i < filteredSquads.Count; i++)
+            {
+                MilSquadFC squad = filteredSquads[i];
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + i * RowHeight,
+                    scrollViewRect.width, RowHeight);
+
+                if (squad == selectedSquad)
+                    Widgets.DrawHighlightSelected(row);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(row);
+
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Rect labelRect = new Rect(row.x + 4f, row.y, row.width - 6f, RowHeight);
+                Widgets.Label(labelRect, squad.name);
+
+                if (Widgets.ButtonInvisible(row))
+                {
+                    selectedSquad = squad;
+                    selectedText = squad.name;
+                    selectedSquad.updateEquipmentTotalCost();
+                }
+            }
+
+            Widgets.EndScrollView();
+
+            // CRUD buttons (2x2 grid)
+            float btnY = listOutRect.yMax + margin;
+            float buttonW = (rect.width - margin) / 2f;
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            Rect createBtn = new Rect(rect.x, btnY, buttonW, ButtonHeight);
+            Rect importBtn = new Rect(rect.x + buttonW + margin, btnY, buttonW, ButtonHeight);
+            Rect deleteBtn = new Rect(rect.x, btnY + ButtonHeight + margin, buttonW, ButtonHeight);
+            Rect exportBtn = new Rect(rect.x + buttonW + margin, btnY + ButtonHeight + margin,
+                buttonW, ButtonHeight);
+
+            if (Widgets.ButtonText(createBtn, "FCCreateNewSquad".Translate()))
             {
                 if (util.squads == null)
                 {
@@ -71,180 +180,373 @@ namespace FactionColonies
                 util.squads.Add(newSquad);
             }
 
-            // --- Squad Selection Dropdown ---
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && (util.squads?.Count ?? 0) > 0)
-            {
-                List<FloatMenuOption> squads = new List<FloatMenuOption>();
-
-                //Create list of selectable squads
-                squads.AddRange(util.squads.Select(squad => new FloatMenuOption(squad.name, delegate
-                {
-                    //Squad is selected
-                    selectedText = squad.name;
-                    selectedSquad = squad;
-                    selectedSquad.updateEquipmentTotalCost();
-                })));
-                FloatMenu selection = new Searchable_FloatMenu(squads);
-                Find.WindowStack.Add(selection);
-            }
-
-            if (Widgets.ButtonText(importButton, "FCImportSquad".Translate()))
+            if (Widgets.ButtonText(importBtn, "FCImportSquad".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_ManageSquadExportsFC(
                     FactionColoniesMilitary.SavedSquads.ToList()));
             }
 
-
-            //if squad is selected
             if (selectedSquad != null)
             {
-                Text.Anchor = TextAnchor.MiddleLeft;
-                Text.Font = GameFont.Small;
-
-                if (settlementPointReference != null)
+                if (Widgets.ButtonText(deleteBtn, "deleteSquadButton".Translate()))
                 {
-                    Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCost".Translate(
-                                                      selectedSquad.GetEquipmentTotalCost(),
-                                                      MilitaryCustomizationUtil
-                                                          .calculateMilitaryLevelPoints(settlementPointReference
-                                                              .settlementMilitaryLevel)));
-                }
-                else
-                {
-                    Widgets.Label(EquipmentTotalCost, "FCTotalSquadEquipmentCostNoRef".Translate(
-                                                      selectedSquad.GetEquipmentTotalCost()));
-                }
-
-                Text.Font = GameFont.Tiny;
-                Text.Anchor = TextAnchor.UpperCenter;
-
-
-                //Unit Name
-                selectedSquad.name = Widgets.TextField(nameTextField, selectedSquad.name);
-
-                if (Widgets.ButtonText(ResetButton, "FCResetToDefault".Translate()))
-                {
-                    selectedSquad.newSquad();
-                }
-
-                if (Widgets.ButtonText(DeleteButton, "FCDeleteSquad".Translate()))
-                {
-                    selectedSquad.deleteSquad();
-                    util.checkMilitaryUtilForErrors();
-                    selectedSquad = null;
-                    selectedText = "FCSelectASquad".Translate();
-
-                    //Reset Text anchor and font
-                    Text.Font = fontBefore;
-                    Text.Anchor = anchorBefore;
-                    return;
-                }
-
-                if (Widgets.ButtonText(PointRefButton, "FCSetPointRef".Translate()))
-                {
-                    List<FloatMenuOption> settlementList = FactionCache.FactionComp
-                        .settlements.Select(settlement => new FloatMenuOption(settlement.Name + "FCMilitaryLevelLabel".Translate() +
-                                                                              settlement.settlementMilitaryLevel,
-                            delegate
+                    MilSquadFC squadToDelete = selectedSquad;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCConfirmDeleteSquad".Translate((NamedArgument)squadToDelete.name),
+                        delegate
+                        {
+                            squadToDelete.deleteSquad();
+                            util.checkMilitaryUtilForErrors();
+                            if (selectedSquad == squadToDelete)
                             {
-                                //set points
-                                settlementPointReference = settlement;
-                            }))
-                        .ToList();
-
-                    if (!settlementList.Any())
-                    {
-                        settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
-                    }
-
-                    FloatMenu floatMenu = new FloatMenu(settlementList) {vanishIfMouseDistant = true};
-                    Find.WindowStack.Add(floatMenu);
+                                selectedSquad = null;
+                                selectedText = "FCSelectASquad".Translate();
+                            }
+                        }));
                 }
 
-                if (Widgets.ButtonText(SaveSquadButton, "ExportSquad".Translate()))
+                if (Widgets.ButtonText(exportBtn, "exportSquadButton".Translate()))
                 {
-                    // TODO: Confirm if squad with name already exists
                     FactionColoniesMilitary.SaveSquad(new SavedSquadFC(selectedSquad));
                     Messages.Message("ExportSquad".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
-
-                //for (int k = 0; k < 30; k++)
-                //{
-                //	Widgets.ButtonImage(new Rect(UnitStandBase.x + (k * 15), UnitStandBase.y + ((k % 5) * 70), 50, 20), texLoad.unitCircle);
-                //}
-
-
-                for (int k = 0; k < 30; k++)
-                {
-                    if (Widgets.ButtonImage(new Rect(UnitStandBase.x + k % 6 * 80,
-                        UnitStandBase.y + (k - k % 6) / 5 * 70,
-                        50, 20), TexLoad.unitCircle))
-                    {
-                        int click = k;
-                        //Option to clear unit slot
-                        List<FloatMenuOption> units = new List<FloatMenuOption>
-                        {
-                            new FloatMenuOption("clearUnitSlot".Translate(), delegate
-                            {
-                                //LogUtil.Message(selectedSquad.units.Count().ToString());
-                                //LogUtil.Message(click.ToString());
-                                selectedSquad.units[click] = new MilUnitFC(true);
-                                selectedSquad.updateEquipmentTotalCost();
-                                selectedSquad.ChangeTick();
-                            })
-                        };
-
-                        //Create list of selectable units
-                        units.AddRange(util.units.Select(u => new FloatMenuOption(u.name +
-                            " - Cost: " + u.getTotalCost, delegate
-                            {
-                                //Unit is selected
-                                selectedSquad.units[click] = u;
-                                selectedSquad.updateEquipmentTotalCost();
-                                selectedSquad.ChangeTick();
-                            })));
-
-                        FloatMenu selection = new Searchable_FloatMenu(units);
-                        Find.WindowStack.Add(selection);
-                    }
-
-                    if (selectedSquad.units[k].isBlank) continue;
-                    if (selectedSquad.units.ElementAt(k).animal != null)
-                    {
-                        Widgets.ButtonImage(
-                            new Rect(UnitStandBase.x + 15 + ((k % 6) * 80), UnitStandBase.y - 45 + (k - k % 6) / 5 * 70,
-                                60, 60), selectedSquad.units.ElementAt(k).animal.race.uiIcon);
-                    }
-
-                    MilUnitFC unit = selectedSquad.units.ElementAt(k);
-                    Pawn previewPawn = unit.PreviewPawn;
-                    if (previewPawn != null)
-                    {
-                        Widgets.ThingIcon(
-                            new Rect(UnitStandBase.x - 5 + ((k % 6) * 80), UnitStandBase.y - 45 + (k - k % 6) / 5 * 70, 60,
-                                60), previewPawn);
-                    }
-                    if (unit.HasWeapon)
-                    {
-                        Widgets.DefIcon(
-                            new Rect(UnitStandBase.x - 5 + ((k % 6) * 80), UnitStandBase.y - 15 + (k - k % 6) / 5 * 70,
-                                40, 40),
-                            unit.weapons[0].thing, unit.weapons[0].stuff);
-                    }
-
-                    Widgets.Label(
-                        new Rect(UnitStandBase.x - 15 + ((k % 6) * 80), UnitStandBase.y - 65 + (k - k % 6) / 5 * 70, 80,
-                            60), selectedSquad.units.ElementAt(k).name);
-                }
-
-                //Reset Text anchor and font
-                Text.Font = fontBefore;
-                Text.Anchor = anchorBefore;
             }
 
-            //Reset Text anchor and font
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
+        }
+
+        // --- Squad Header ---
+
+        private void DrawSquadHeader(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Highlight banner
+            Rect highlightBar = new Rect(rect.x, rect.y, rect.width, 35f);
+            Widgets.DrawHighlight(highlightBar);
+
+            // Squad name
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect nameRect = new Rect(rect.x + margin, rect.y, 400f, 30f);
+            Widgets.Label(nameRect, selectedSquad.name);
+
+            // Pencil icon
+            float nameTextWidth = Text.CalcSize(selectedSquad.name).x;
+            Rect pencilRect = new Rect(
+                rect.x + Mathf.Min(nameTextWidth + 8f + margin, rect.width - 22f),
+                rect.y + 4f, 22f, 22f);
+            if (Widgets.ButtonImage(pencilRect, TexButton.Rename))
+            {
+                Find.WindowStack.Add(new FCWindow_RenameSquad(selectedSquad));
+            }
+
+            // Cost line
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect costRect = new Rect(rect.x, highlightBar.yMax + margin, rect.width, 20f);
+
+            if (settlementPointReference != null)
+            {
+                Widgets.Label(costRect, "FCTotalSquadEquipmentCost".Translate(
+                    selectedSquad.GetEquipmentTotalCost(),
+                    MilitaryCustomizationUtil.calculateMilitaryLevelPoints(
+                        settlementPointReference.settlementMilitaryLevel)));
+            }
+            else
+            {
+                Widgets.Label(costRect, "FCTotalSquadEquipmentCostNoRef".Translate(
+                    selectedSquad.GetEquipmentTotalCost()));
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Unit List ---
+
+        private void DrawUnitList(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            Widgets.DrawMenuSection(rect);
+
+            var groups = BuildUnitGroups(selectedSquad);
+
+            float viewHeight = groups.Count * UnitRowHeight;
+            Rect scrollViewRect = new Rect(rect.x, rect.y,
+                rect.width - (viewHeight > rect.height ? 16f : 0f),
+                Mathf.Max(viewHeight, rect.height));
+
+            Widgets.BeginScrollView(rect, ref unitListScrollPos, scrollViewRect);
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + i * UnitRowHeight,
+                    scrollViewRect.width, UnitRowHeight);
+                DrawUnitRow(row, groups[i].unit, groups[i].count, i);
+            }
+
+            Widgets.EndScrollView();
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        private void DrawUnitRow(Rect row, MilUnitFC unit, int count, int index)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            if (index % 2 == 0)
+                Widgets.DrawHighlight(row);
+
+            float x = row.x + margin;
+
+            // Pawn preview icon
+            Rect pawnRect = new Rect(x, row.y + 2f, UnitRowHeight - 4f, UnitRowHeight - 4f);
+            Pawn preview = unit.PreviewPawn;
+            if (preview != null)
+            {
+                UIUtil.DrawPawnPortrait(pawnRect, preview);
+            }
+            else if (unit.animal != null)
+            {
+                Widgets.ButtonImage(pawnRect, unit.animal.race.uiIcon);
+            }
+            x = pawnRect.xMax + 4f;
+
+            // Weapon icon
+            if (unit.HasWeapon)
+            {
+                Rect weaponRect = new Rect(x, row.y + (UnitRowHeight - IconSize) / 2f,
+                    IconSize, IconSize);
+                Widgets.DefIcon(weaponRect, unit.weapons[0].thing, unit.weapons[0].stuff);
+                x = weaponRect.xMax + 4f;
+            }
+
+            // Unit name
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect nameRect = new Rect(x, row.y, 130f, UnitRowHeight);
+            Widgets.Label(nameRect, unit.name);
+            x = nameRect.xMax + 4f;
+
+            // Xenotype
+            string xenoLabel = unit.xenotype?.label?.CapitalizeFirst();
+            if (!string.IsNullOrEmpty(xenoLabel))
+            {
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Rect xenoRect = new Rect(x, row.y, 80f, UnitRowHeight);
+                Widgets.Label(xenoRect, xenoLabel);
+            }
+
+            // Cost (per-unit and line total) — right-aligned before controls
+            float perUnitCost = (float)unit.getTotalCost;
+            float lineTotalCost = perUnitCost * count;
+            string costText = $"${(int)perUnitCost} ea. / ${(int)lineTotalCost}";
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Rect costRect = new Rect(row.xMax - 246f, row.y, 100f, UnitRowHeight);
+            Widgets.Label(costRect, costText);
+
+            // +/- controls
+            float btnSize = 24f;
+            float btnY = row.y + (UnitRowHeight - btnSize) / 2f;
+            float controlX = row.xMax - 141f;
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            // [-] button
+            if (Widgets.ButtonText(new Rect(controlX, btnY, btnSize, btnSize), "-"))
+            {
+                DecrementUnit(unit);
+            }
+
+            // Count label
+            Rect countRect = new Rect(controlX + btnSize + 2f, row.y, 26f, UnitRowHeight);
+            Widgets.Label(countRect, count.ToString());
+
+            // [+] button
+            if (Widgets.ButtonText(new Rect(countRect.xMax + 2f, btnY, btnSize, btnSize), "+"))
+            {
+                IncrementUnit(unit);
+            }
+
+            // [X] remove-all button
+            Rect removeRect = new Rect(row.xMax - 54f, btnY, 22f, 22f);
+            if (Widgets.ButtonImage(removeRect, TexLoad.deleteX))
+            {
+                RemoveAllOfUnit(unit);
+            }
+
+            // Gear icon — open unit in editor
+            Rect gearRect = new Rect(row.xMax - 28f, btnY, 22f, 22f);
+            TooltipHandler.TipRegion(gearRect, "FCEditUnitTooltip".Translate());
+            if (Widgets.ButtonImage(gearRect, TexLoad.iconCustomize))
+            {
+                OpenUnitEditor(unit);
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        private void OpenUnitEditor(MilUnitFC unit)
+        {
+            Window currentWindow = Find.WindowStack.Windows
+                .FirstOrDefault(w => w is FCWindow_Military);
+            currentWindow?.Close();
+
+            FactionFC fc = FactionCache.FactionComp;
+            DesignUnitsWindow duw = new DesignUnitsWindow(fc.militaryCustomizationUtil, fc);
+            FCWindow_Military newWindow = new FCWindow_Military(
+                duw, "FCMilitaryTableButtonCreateUnit".Translate());
+            Find.WindowStack.Add(newWindow);
+            newWindow.SetActive(unit);
+        }
+
+        // --- Bottom Bar ---
+
+        private void DrawBottomBar(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            float btnW = (rect.width - margin * 3) / 4f;
+
+            // Add Unit button
+            Rect addUnitBtn = new Rect(rect.x, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(addUnitBtn, "FCAddUnit".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_UnitPicker(util, AddUnitToSquad));
+            }
+
+            // Set Point Ref button
+            Rect pointRefBtn = new Rect(addUnitBtn.xMax + margin, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(pointRefBtn, "FCSetPointRef".Translate()))
+            {
+                List<FloatMenuOption> settlementList = FactionCache.FactionComp
+                    .settlements.Select(settlement => new FloatMenuOption(
+                        settlement.Name + "FCMilitaryLevelLabel".Translate() +
+                        settlement.settlementMilitaryLevel,
+                        delegate
+                        {
+                            settlementPointReference = settlement;
+                        }))
+                    .ToList();
+
+                if (!settlementList.Any())
+                {
+                    settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
+                }
+
+                FloatMenu floatMenu = new FloatMenu(settlementList) { vanishIfMouseDistant = true };
+                Find.WindowStack.Add(floatMenu);
+            }
+
+            // Reset button
+            Rect resetBtn = new Rect(pointRefBtn.xMax + margin, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(resetBtn, "FCResetToDefault".Translate()))
+            {
+                selectedSquad.newSquad();
+                selectedSquad.updateEquipmentTotalCost();
+                selectedSquad.ChangeTick();
+            }
+
+            // Unit count label
+            int totalUnits = selectedSquad.units.Count(u => !u.isBlank);
+            Text.Anchor = TextAnchor.MiddleRight;
+            Rect countLabel = new Rect(resetBtn.xMax + margin, rect.y, btnW, ButtonHeight);
+            Widgets.Label(countLabel, "FCSquadUnitCount".Translate(totalUnits));
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Grouping Logic ---
+
+        private struct UnitGroup
+        {
+            public MilUnitFC unit;
+            public int count;
+        }
+
+        private List<UnitGroup> BuildUnitGroups(MilSquadFC squad)
+        {
+            return squad.units
+                .Where(u => !u.isBlank)
+                .GroupBy(u => u)
+                .Select(g => new UnitGroup { unit = g.Key, count = g.Count() })
+                .ToList();
+        }
+
+        // --- Unit Mutation ---
+
+        private void AddUnitToSquad(MilUnitFC unit)
+        {
+            int blankIndex = selectedSquad.units.FindIndex(u => u.isBlank);
+            if (blankIndex == -1)
+            {
+                Messages.Message("FCSquadFull".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            selectedSquad.units[blankIndex] = unit;
+            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.ChangeTick();
+        }
+
+        private void IncrementUnit(MilUnitFC unit)
+        {
+            int blankIndex = selectedSquad.units.FindIndex(u => u.isBlank);
+            if (blankIndex == -1)
+            {
+                Messages.Message("FCSquadFull".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            selectedSquad.units[blankIndex] = unit;
+            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.ChangeTick();
+        }
+
+        private void DecrementUnit(MilUnitFC unit)
+        {
+            int lastIndex = -1;
+            for (int i = selectedSquad.units.Count - 1; i >= 0; i--)
+            {
+                if (ReferenceEquals(selectedSquad.units[i], unit))
+                {
+                    lastIndex = i;
+                    break;
+                }
+            }
+            if (lastIndex == -1) return;
+
+            selectedSquad.units[lastIndex] = util.blankUnit;
+            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.ChangeTick();
+        }
+
+        private void RemoveAllOfUnit(MilUnitFC unit)
+        {
+            for (int i = 0; i < selectedSquad.units.Count; i++)
+            {
+                if (ReferenceEquals(selectedSquad.units[i], unit))
+                {
+                    selectedSquad.units[i] = util.blankUnit;
+                }
+            }
+            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.ChangeTick();
         }
     }
 }

@@ -55,6 +55,8 @@
 	<fcPickAnimal>Select Animal</fcPickAnimal>
 	<fcNoMaterialNeeded>No material selection needed</fcNoMaterialNeeded>
 	<fcPickerSummary>Selected: {0} - Cost: {1}</fcPickerSummary>
+	<fcPickerSelectItem>Select an item first</fcPickerSelectItem>
+	<fcPickerSelectStuff>Select a material for this item</fcPickerSelectStuff>
 
 	<!-- Unit Race/PawnKind Errors -->
 	<changeUnitRaceNoRaces>No available races</changeUnitRaceNoRaces>
@@ -66,6 +68,13 @@
 	<!-- Squad Design -->
 	<FCCreateNewSquad>Create New Squad</FCCreateNewSquad>
 	<FCImportSquad>Import Squad</FCImportSquad>
+	<FCRenameSquad>Rename Squad</FCRenameSquad>
+	<FCConfirmDeleteSquad>Are you sure you want to delete "{0}"?</FCConfirmDeleteSquad>
+	<FCSquadFull>Squad is full (30/30 units)</FCSquadFull>
+	<FCAddUnit>Add Unit</FCAddUnit>
+	<FCSquadUnitCount>Units: {0} / 30</FCSquadUnitCount>
+	<exportSquadButton>Export squad</exportSquadButton>
+	<deleteSquadButton>Delete squad</deleteSquadButton>
 	<FCTotalSquadEquipmentCost>Total Squad Equipment Cost: {0} / {1} (Max Cost)</FCTotalSquadEquipmentCost>
 	<FCTotalSquadEquipmentCostNoRef>Total Squad Equipment Cost: {0} / No Reference</FCTotalSquadEquipmentCostNoRef>
 	<FCDeleteSquad>Delete Squad</FCDeleteSquad>
@@ -81,10 +90,25 @@
 	<FCCreateNewFireSupport>Create New Fire Support</FCCreateNewFireSupport>
 	<FCDeleteSupport>Delete Support</FCDeleteSupport>
 	<FCAddNewProjectile>Add new projectile</FCAddNewProjectile>
+	<FCRenameFireSupport>Rename Fire Support</FCRenameFireSupport>
+	<FCConfirmDeleteFireSupport>Are you sure you want to delete "{0}"?</FCConfirmDeleteFireSupport>
+	<deleteFireSupportButton>Delete</deleteFireSupportButton>
+	<FCFireSupportCostLabel>Cost: {0}</FCFireSupportCostLabel>
+	<FCFireSupportCostRefLabel>Cost: {0} / {1} (Max)</FCFireSupportCostRefLabel>
+	<FCFireSupportProjectileCount>Projectiles: {0}</FCFireSupportProjectileCount>
+	<FCFireSupportDuration>Duration: {0}s</FCFireSupportDuration>
+	<FCFireSupportAccuracyLabel>Accuracy (tile radius): {0}  ·  Cost modifier: +{1}%</FCFireSupportAccuracyLabel>
+	<FCSelectAFireSupport>Select a fire support</FCSelectAFireSupport>
 	<FCNoProjectilesFound>No available projectiles found</FCNoProjectilesFound>
 	<FCFireSupportOptions>Options</FCFireSupportOptions>
 	<FCInsertProjectileAbove>Insert Projectile Above Slot</FCInsertProjectileAbove>
 	<FCDuplicate>Duplicate</FCDuplicate>
+
+	<!-- Navigation Buttons -->
+	<FCNavUnits>Units</FCNavUnits>
+	<FCNavSquads>Squads</FCNavSquads>
+	<FCNavFireSupport>Fire Support</FCNavFireSupport>
+	<FCEditUnitTooltip>Edit this unit's equipment</FCEditUnitTooltip>
 
 	<!-- Unit Types -->
 	<FCPawns>Pawns</FCPawns>

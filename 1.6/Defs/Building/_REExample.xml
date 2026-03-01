@@ -46,8 +46,8 @@
 		<minimumProsperity>0</minimumProsperity>
 		<maximumProsperity>100</maximumProsperity>
 		
-		<requiredResource><!--ResourceName--></requiredResource> 
-		<!-- Resource names:  food, apparel, weapons, animals, mining, logging -->
+		<requiredResource><!--ResourceTypeDef defName--></requiredResource>
+		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
 		
 		<randomThingType>food</randomThingType>
 		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->

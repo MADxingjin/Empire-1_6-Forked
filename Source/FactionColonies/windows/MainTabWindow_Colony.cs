@@ -964,16 +964,21 @@ namespace FactionColonies
             Widgets.DrawHighlight(labelBox);
             Widgets.Label(labelTextBox, faction.name ?? "");
 
-            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
-                OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
-            bx += buttonWidth;
+            // Only allow the creation of units, squads, and fire support if there is at least one settlement. Required due to the fact that
+            //   the design units menu pulls the list of possible material stuffs from the list of things that settlements can produce.
+            if (faction.settlements?.Count > 0)
+            {
+                if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
+                    OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
+                bx += buttonWidth;
 
-            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
-                OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
-            bx += buttonWidth;
+                if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
+                    OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
+                bx += buttonWidth;
 
-            if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
-                OpenMilitaryWindow(new FireSupportWindow(militaryUtil), "FCMilitaryTableButtonCreateFireSupport".Translate());
+                if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
+                    OpenMilitaryWindow(new FireSupportWindow(militaryUtil), "FCMilitaryTableButtonCreateFireSupport".Translate());
+            }
 
             y += buttonHeight + margin * 2;
 
@@ -1164,7 +1169,7 @@ namespace FactionColonies
                 sx += colWidths[8];
 
                 // Fire Support button
-                if (militaryUtil.fireSupportDefs.Count == 0)
+                if (militaryUtil.fireSupportDefs.Count == 0 || settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == false)
                 {
                     GUI.color = Color.gray;
                     changedColor = true;

@@ -64,6 +64,11 @@ namespace FactionColonies
                 LogUtil.Error($"Error creating MilUnitFC: {ex.Message}");
                 pawnKind = PawnKindDefOf.Colonist;
             }
+
+            if (!isBlank)
+            {
+                xenotype = XenotypeDefOf.Baseliner;
+            }
         }
 
         public string GetUniqueLoadID()

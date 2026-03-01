@@ -25,7 +25,7 @@
 		<rangeSettlementsAffected>0~0</rangeSettlementsAffected> 
 		<settlementsCarryOver>true</settlementsCarryOver> 
 
-		<requiredResource>weapons</requiredResource> 
+		<requiredResource>RTD_Weapons</requiredResource> 
 		
 	</FactionColonies.FCEventDef>
 

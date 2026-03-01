@@ -39,7 +39,7 @@ namespace FactionColonies
             this.lordJob = lordJob;
         }
 
-        public override Vector2 InitialSize => new Vector2(200f, 240f);
+        public override Vector2 InitialSize => new Vector2(200f, 300f);
 
         protected override void SetInitialSizeAndPosition()
         {
@@ -167,19 +167,28 @@ namespace FactionColonies
             float rectWidth = 160f;
 
             Rect selectSquad = new Rect(0, 0, rectWidth, rectBaseHeight);
-            Rect commandAttack = new Rect(0, rectBaseHeight, rectWidth, rectBaseHeight);
-            Rect commandMove = new Rect(0, rectBaseHeight * 2, rectWidth, rectBaseHeight);
-            Rect commandHeal = new Rect(0, rectBaseHeight * 3, rectWidth, rectBaseHeight);
-            Rect commandKillWindow = new Rect(0, rectBaseHeight * 4, rectWidth, rectBaseHeight);
+            Rect settlementName = new Rect(0, selectSquad.yMax, rectWidth, rectBaseHeight * 0.75f);
+            Rect squadName = new Rect(0, settlementName.yMax, rectWidth, rectBaseHeight * 0.75f);
+            Rect commandAttack = new Rect(0, squadName.yMax, rectWidth, rectBaseHeight);
+            Rect commandMove = new Rect(0, commandAttack.yMax, rectWidth, rectBaseHeight);
+            Rect commandHeal = new Rect(0, commandMove.yMax, rectWidth, rectBaseHeight);
+            Rect commandKillWindow = new Rect(0, commandHeal.yMax, rectWidth, rectBaseHeight);
 
-            squadText = (selectedSquad == null) ? "selectDeployedSquad".Translate() : "selectedDeployedSquad".Translate(selectedSquad.getSettlement.Name, selectedSquad.outfit.name);
+            squadText = "selectDeployedSquad".Translate();
 
             if (Widgets.ButtonText(selectSquad, squadText)) DoSelectSquadCommand();
-            if (Widgets.ButtonTextSubtle(commandAttack, "commandAttack".Translate())) DoAttackCommand();
-            if (Widgets.ButtonTextSubtle(commandMove, "commandMove".Translate())) DoMoveCommand();
-            if (Widgets.ButtonTextSubtle(commandHeal, "commandLeave".Translate())) DoLeaveCommand();
+            if (selectedSquad != null)
+            {
+                Widgets.DrawHighlight(settlementName);
+                Widgets.DrawHighlight(squadName);
+                Widgets.Label(settlementName, selectedSquad.getSettlement.Name);
+                Widgets.Label(squadName, selectedSquad.outfit.name);
+                if (Widgets.ButtonTextSubtle(commandAttack, "commandAttack".Translate())) DoAttackCommand();
+                if (Widgets.ButtonTextSubtle(commandMove, "commandMove".Translate())) DoMoveCommand();
+                if (Widgets.ButtonTextSubtle(commandHeal, "commandLeave".Translate())) DoLeaveCommand();
 
-            if (Prefs.DevMode) if (Widgets.ButtonTextSubtle(commandKillWindow, "debugRemoveAllCommand".Translate())) DoDebugCommand();
+                if (Prefs.DevMode) if (Widgets.ButtonTextSubtle(commandKillWindow, "debugRemoveAllCommand".Translate())) DoDebugCommand();
+            }
 
             Text.Font = prevFont;
             Text.Anchor = prevAnchor;

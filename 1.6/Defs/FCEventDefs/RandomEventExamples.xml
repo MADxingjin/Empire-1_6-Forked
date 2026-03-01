@@ -55,8 +55,8 @@
 		<minimumProsperity>0</minimumProsperity> <!-- The minimum Prosperity required for this event to proc -->
 		<maximumProsperity>100</maximumProsperity> <!-- The maximum Prosperity allowed for this event to proc -->
 		
-		<requiredResource><!--ResourceName--></requiredResource> <!-- if you want an event to require that a specific resource is being produced, put the resource name in this tag. If you use this along with the rangeSettlementsAffected, the event will only occur in settlements that is producing that resource! -->
-		<!-- Resource names:  food, apparel, weapons, animals, mining, logging, research, power, medicine -->
+		<requiredResource><!--ResourceTypeDef defName--></requiredResource> <!-- if you want an event to require that a specific resource is being produced, put the ResourceTypeDef defName in this tag. If you use this along with the rangeSettlementsAffected, the event will only occur in settlements that is producing that resource! -->
+		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
 		
 		<randomThingType>food</randomThingType> <!-- if you want the event to give the player a random item when the event completes (Or at the end of the 'step' in a chain of events) put the type here. Note, if you have <activateAtStart>true</activateAtStart>, this will not generate an item to give to the player. -->
 		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
@@ -113,8 +113,8 @@
 		<minimumProsperity>0</minimumProsperity>
 		<maximumProsperity>100</maximumProsperity>
 		
-		<requiredResource><!--ResourceName--></requiredResource> 
-		<!-- Resource names:  food, apparel, weapons, animals, mining, logging -->
+		<requiredResource><!--ResourceTypeDef defName--></requiredResource>
+		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
 		
 		<randomThingType>food</randomThingType>
 		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using FactionColonies.util;
 using RimWorld;
 using UnityEngine;
@@ -12,453 +13,465 @@ namespace FactionColonies
     {
         private WorldSettlementFC settlementPointReference;
         private MilitaryFireSupport selectedSupport;
-        private MilitaryCustomizationUtil util;
-        private float fireSupportMaxScroll;
+        private readonly MilitaryCustomizationUtil util;
+
+        private Vector2 supportListScrollPos;
+        private string supportSearchTerm = "";
+        private Vector2 projectileListScrollPos;
+        private Dictionary<ThingDef, string> quantityBuffers = new Dictionary<ThingDef, string>();
+
+        // Layout constants (matching DesignUnitsWindow/DesignSquadsWindow)
+        private const float SidebarWidth = 250f;
+        private const float RowHeight = 30f;
+        private const float SearchBarHeight = 28f;
+        private const float IconSize = 24f;
+        private const float margin = 5f;
+        private const float ButtonHeight = 30f;
+        private const float ProjectileRowHeight = 30f;
 
         public FireSupportWindow(MilitaryCustomizationUtil util)
         {
             this.util = util;
-            selectedText = "Select a fire support";
-
+            selectedText = "FCSelectAFireSupport".Translate();
             util.checkMilitaryUtilForErrors();
         }
 
         public override void DrawTab(Rect rect)
         {
-            //set text anchor and font
+            Widgets.DrawLineHorizontal(rect.x, rect.y + 45, rect.width);
+
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
-            
-            float projectileBoxHeight = 30;
-            Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect createSupportButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
-            Rect nameTextField = new Rect(5, createSupportButton.y + createSupportButton.height + 10, 250, 30);
-            Rect floatRangeAccuracyLabel = new Rect(nameTextField.x, nameTextField.y + nameTextField.height + 5,
-                nameTextField.width, (float) (nameTextField.height * 1.5));
-            Rect floatRangeAccuracy = new Rect(floatRangeAccuracyLabel.x,
-                floatRangeAccuracyLabel.y + floatRangeAccuracyLabel.height + 5, floatRangeAccuracyLabel.width,
-                floatRangeAccuracyLabel.height);
 
+            float contentTop = rect.y + 45f + margin;
+            float contentBottom = rect.yMax - margin;
+            float rightEdge = rect.xMax - margin;
 
-            Rect UnitStandBase = new Rect(140, 200, 50, 30);
-            Rect TotalCost = new Rect(325, 50, 450, 20);
-            Rect numberProjectiles = new Rect(TotalCost.x, TotalCost.y + TotalCost.height + 5, TotalCost.width,
-                TotalCost.height);
-            Rect duration = new Rect(numberProjectiles.x, numberProjectiles.y + numberProjectiles.height + 5,
-                numberProjectiles.width, numberProjectiles.height);
+            // Left sidebar
+            Rect sidebarRect = new Rect(rect.x + margin, contentTop,
+                SidebarWidth, contentBottom - contentTop);
+            DrawSidebar(sidebarRect);
 
-            Rect ResetButton = new Rect(700 - 2, 100, 100, 30);
-            Rect DeleteButton = new Rect(ResetButton.x, ResetButton.y + ResetButton.height + 5,
-                ResetButton.width,
-                ResetButton.height);
-            Rect PointRefButton = new Rect(DeleteButton.x, DeleteButton.y + DeleteButton.height + 5,
-                DeleteButton.width,
-                DeleteButton.height);
+            // Content area (right of sidebar)
+            float contentLeft = sidebarRect.xMax + 10f;
+            float contentWidth = rightEdge - contentLeft;
 
-
-            //Up here to make sure it goes behind other layers
             if (selectedSupport != null)
             {
-                DrawFireSupportBox(10, 260, 30);
+                // Header (name + cost + accuracy info + slider)
+                float headerHeight = 120f;
+                Rect headerRect = new Rect(contentLeft, contentTop, contentWidth, headerHeight);
+                DrawHeader(headerRect);
+
+                // Bottom bar
+                float bottomBarHeight = ButtonHeight;
+                Rect bottomRect = new Rect(contentLeft, contentBottom - bottomBarHeight,
+                    contentWidth, bottomBarHeight);
+                DrawBottomBar(bottomRect);
+
+                // Projectile list (between header and bottom bar)
+                float listTop = headerRect.yMax + margin;
+                float listBottom = bottomRect.y - margin;
+                Rect listRect = new Rect(contentLeft, listTop,
+                    contentWidth, listBottom - listTop);
+                DrawProjectileList(listRect);
             }
 
-            Widgets.DrawMenuSection(new Rect(0, 45, 800, 225));
-
-            // --- Create New Fire Support Button ---
-            if (Widgets.ButtonText(createSupportButton, "FCCreateNewFireSupport".Translate()))
-            {
-                MilitaryFireSupport newFireSupport = new MilitaryFireSupport();
-                newFireSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
-                newFireSupport.setLoadID();
-                newFireSupport.projectiles = new List<ThingDef>();
-                selectedText = newFireSupport.name;
-                selectedSupport = newFireSupport;
-                util.fireSupportDefs.Add(newFireSupport);
-            }
-
-            // --- Fire Support Selection Dropdown ---
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && util.fireSupportDefs.Count > 0)
-            {
-                List<FloatMenuOption> supports = new List<FloatMenuOption>();
-
-                foreach (MilitaryFireSupport support in util.fireSupportDefs)
-                {
-                    supports.Add(new FloatMenuOption(support.name, delegate
-                    {
-                        selectedText = support.name;
-                        selectedSupport = support;
-                    }));
-                }
-
-                FloatMenu selection = new Searchable_FloatMenu(supports);
-                Find.WindowStack.Add(selection);
-            }
-
-
-            //if firesupport is selected
-            if (selectedSupport != null)
-            {
-                //Need to adjust
-                fireSupportMaxScroll =
-                    selectedSupport.projectiles.Count * projectileBoxHeight - 10 * projectileBoxHeight;
-
-                Text.Anchor = TextAnchor.MiddleLeft;
-                Text.Font = GameFont.Small;
-
-
-                if (settlementPointReference != null)
-                {
-                    Widgets.Label(TotalCost,
-                        "Total Fire Support Silver Cost: " + selectedSupport.returnTotalCost() + " / " +
-                        MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlementPointReference
-                            .settlementMilitaryLevel) +
-                        " (Max Cost)");
-                }
-                else
-                {
-                    Widgets.Label(TotalCost,
-                        "Total Fire Support Silver Cost: " + selectedSupport.returnTotalCost() + " / " +
-                        "No Reference");
-                }
-
-                Widgets.Label(numberProjectiles,
-                    "Number of Projectiles: " + selectedSupport.projectiles.Count);
-                Widgets.Label(duration,
-                    "Duration of fire support: " + Math.Round(selectedSupport.projectiles.Count * .25, 2) +
-                    " seconds");
-                Widgets.Label(floatRangeAccuracyLabel,
-                    selectedSupport.accuracy +
-                    " = Accuracy of fire support (In tiles radius): Affecting cost by : " +
-                    selectedSupport.returnAccuracyCostPercentage() + "%");
-                selectedSupport.accuracy = Widgets.HorizontalSlider(floatRangeAccuracy,
-                    selectedSupport.accuracy,
-                    Math.Max(3, (15 - FactionCache.FactionComp.returnHighestMilitaryLevel())), 30,
-                    roundTo: 1);
-                Text.Font = GameFont.Tiny;
-                Text.Anchor = TextAnchor.UpperCenter;
-
-
-                //Unit Name
-                selectedSupport.name = Widgets.TextField(nameTextField, selectedSupport.name);
-
-                if (Widgets.ButtonText(ResetButton, "FCResetToDefault".Translate()))
-                {
-                    selectedSupport.projectiles = new List<ThingDef>();
-                }
-
-                if (Widgets.ButtonText(DeleteButton, "FCDeleteSupport".Translate()))
-                {
-                    selectedSupport.delete();
-                    util.checkMilitaryUtilForErrors();
-                    selectedSupport = null;
-                    selectedText = "FCCreateNewFireSupport".Translate();
-
-                    //Reset Text anchor and font
-                    Text.Font = fontBefore;
-                    Text.Anchor = anchorBefore;
-                    return;
-                }
-
-                if (Widgets.ButtonText(PointRefButton, "FCSetPointRef".Translate()))
-                {
-                    List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
-
-                    foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
-                    {
-                        settlementList.Add(new FloatMenuOption(
-                            settlement.Name + "FCMilitaryLevelLabel".Translate() + settlement.settlementMilitaryLevel,
-                            delegate
-                            {
-                                //set points
-                                settlementPointReference = settlement;
-                            }));
-                    }
-
-                    if (!settlementList.Any())
-                    {
-                        settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
-                    }
-
-                    FloatMenu floatMenu = new FloatMenu(settlementList);
-                    Find.WindowStack.Add(floatMenu);
-                }
-
-                //Reset Text anchor and font
-                Text.Font = fontBefore;
-                Text.Anchor = anchorBefore;
-            }
-
-            if (Event.current.type == EventType.ScrollWheel)
-            {
-                scrollWindow(Event.current.delta.y, fireSupportMaxScroll);
-            }
-
-            //Reset Text anchor and font
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
-        
-        public void DrawFireSupportBox(float x, float y, float rowHeight)
+
+        // --- Sidebar ---
+
+        private void DrawSidebar(Rect rect)
         {
-            //Set Text anchor and font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
-            Text.Anchor = TextAnchor.MiddleCenter;
+
+            // Search bar
             Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect searchRect = new Rect(rect.x, rect.y, rect.width, SearchBarHeight);
+            supportSearchTerm = Widgets.TextField(searchRect, supportSearchTerm);
 
+            // Button area: Create + conditionally Delete (stacked full-width)
+            int buttonCount = selectedSupport != null ? 2 : 1;
+            float buttonsHeight = ButtonHeight * buttonCount + margin * (buttonCount - 1);
 
-            for (int i = 0; i <= selectedSupport.projectiles.Count; i++)
+            // Support list (fills space between search bar and buttons)
+            float listHeight = rect.yMax - searchRect.yMax - margin - buttonsHeight - margin;
+            Rect listOutRect = new Rect(rect.x, searchRect.yMax + margin, rect.width, listHeight);
+            Widgets.DrawMenuSection(listOutRect);
+
+            List<MilitaryFireSupport> filteredSupports = string.IsNullOrEmpty(supportSearchTerm)
+                ? util.fireSupportDefs ?? new List<MilitaryFireSupport>()
+                : (util.fireSupportDefs ?? new List<MilitaryFireSupport>())
+                    .Where(s => s.name.IndexOf(supportSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+            float viewHeight = filteredSupports.Count * RowHeight;
+            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
+                rect.width - (viewHeight > listHeight ? 16f : 0f),
+                Mathf.Max(viewHeight, listHeight));
+
+            Widgets.BeginScrollView(listOutRect, ref supportListScrollPos, scrollViewRect);
+
+            for (int i = 0; i < filteredSupports.Count; i++)
             {
-                //Declare Rects
-                Rect text = new Rect(x + 2, y + 2 + i * rowHeight + scroll, rowHeight - 4, rowHeight - 4);
-                Rect cost = deriveRectRow(text, 2, 0, 150);
-                Rect icon = deriveRectRow(cost, 2, 0, 250);
-                //Rect name = deriveRectRow(icon, 2, 0, 150);
-                Rect options = deriveRectRow(icon, 2, 0, 74);
-                Rect upArrow = deriveRectRow(options, 12, 0, rowHeight - 4, rowHeight - 4);
-                Rect downArrow = deriveRectRow(upArrow, 4);
-                Rect delete = deriveRectRow(downArrow, 12);
-                //Create outside box last to encapsulate entirety
-                Rect box = new Rect(x, y + i * rowHeight + scroll, delete.x + delete.width + 4 - x, rowHeight);
+                MilitaryFireSupport support = filteredSupports[i];
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + i * RowHeight,
+                    scrollViewRect.width, RowHeight);
 
+                if (support == selectedSupport)
+                    Widgets.DrawHighlightSelected(row);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(row);
 
-                Widgets.DrawHighlight(box);
-                Widgets.DrawMenuSection(box);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Rect labelRect = new Rect(row.x + 4f, row.y, row.width - 6f, RowHeight);
+                Widgets.Label(labelRect, support.name);
 
-                if (i == selectedSupport.projectiles.Count)
+                if (Widgets.ButtonInvisible(row))
                 {
-                    //If on last row
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(text, i.ToString());
-                    if (Widgets.ButtonTextSubtle(icon, "FCAddNewProjectile".Translate()))
-                    {
-                        //if creating new projectile
-                        List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
-                        foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
-                        {
-                            thingOptions.Add(new FloatMenuOption(
-                                def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2).ToString(),
-                                delegate 
-                                {
-                                    selectedSupport.projectiles.Add(def);
-                                    SoundDefOf.Click.PlayOneShotOnCamera();
-                                }, def));
-                        }
-
-                        if (!thingOptions.Any())
-                        {
-                            thingOptions.Add(
-                                new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
-                        }
-
-                        Find.WindowStack.Add(new Searchable_FloatMenu(thingOptions, true));
-                    }
-                }
-                else
-                {
-                    //if on row with projectile
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(text, i.ToString());
-                    if (Widgets.ButtonTextSubtle(icon, ""))
-                    {
-                        List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
-                        foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
-                        {
-                            int k = i;
-                            thingOptions.Add(new FloatMenuOption(
-                                def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2).ToString(),
-                                delegate { selectedSupport.projectiles[k] = def; }, def));
-                        }
-
-                        if (!thingOptions.Any())
-                        {
-                            thingOptions.Add(
-                                new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
-                        }
-
-                        Find.WindowStack.Add(new FloatMenu(thingOptions));
-                    }
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(cost,
-                        "$ " + (Math.Round(selectedSupport.projectiles[i].BaseMarketValue * 1.5,
-                            2))); //ADD in future mod setting for firesupport cost
-
-                    Widgets.DefLabelWithIcon(icon, selectedSupport.projectiles[i]);
-                    if (Widgets.ButtonTextSubtle(options, "FCFireSupportOptions".Translate()))
-                    {
-                        //If clicked options button
-                        int k = i;
-                        List<FloatMenuOption> listOptions = new List<FloatMenuOption>
-                        {
-                            new FloatMenuOption("FCInsertProjectileAbove".Translate(), delegate
-                            {
-                                List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
-                                foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
-                                {
-                                    thingOptions.Add(new FloatMenuOption(
-                                        def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2).ToString(),
-                                        delegate
-                                        {
-                                            selectedSupport.projectiles.Insert(k, def);
-                                        }, def));
-                                }
-
-                                if (!thingOptions.Any())
-                                {
-                                    thingOptions.Add(new FloatMenuOption("FCNoProjectilesFound".Translate(),
-                                        delegate { }));
-                                }
-
-                                Find.WindowStack.Add(new FloatMenu(thingOptions));
-                            }),
-                            new FloatMenuOption("FCDuplicate".Translate(), delegate
-                            {
-                                ThingDef tempDef = selectedSupport.projectiles[k];
-                                List<FloatMenuOption> thingOptions = new List<FloatMenuOption>();
-
-                                thingOptions.Add(new FloatMenuOption("1x", delegate
-                                {
-                                    for (int l = 0; l < 1; l++)
-                                    {
-                                        if (k == selectedSupport.projectiles.Count - 1)
-                                        {
-                                            selectedSupport.projectiles.Add(tempDef);
-                                        }
-                                        else
-                                        {
-                                            selectedSupport.projectiles.Insert(k + 1, tempDef);
-                                        }
-                                    }
-                                }));
-                                thingOptions.Add(new FloatMenuOption("5x", delegate
-                                {
-                                    for (int l = 0; l < 5; l++)
-                                    {
-                                        if (k == selectedSupport.projectiles.Count - 1)
-                                        {
-                                            selectedSupport.projectiles.Add(tempDef);
-                                        }
-                                        else
-                                        {
-                                            selectedSupport.projectiles.Insert(k + 1, tempDef);
-                                        }
-                                    }
-                                }));
-                                thingOptions.Add(new FloatMenuOption("10x", delegate
-                                {
-                                    for (int l = 0; l < 10; l++)
-                                    {
-                                        if (k == selectedSupport.projectiles.Count - 1)
-                                        {
-                                            selectedSupport.projectiles.Add(tempDef);
-                                        }
-                                        else
-                                        {
-                                            selectedSupport.projectiles.Insert(k + 1, tempDef);
-                                        }
-                                    }
-                                }));
-                                thingOptions.Add(new FloatMenuOption("20x", delegate
-                                {
-                                    for (int l = 0; l < 20; l++)
-                                    {
-                                        if (k == selectedSupport.projectiles.Count - 1)
-                                        {
-                                            selectedSupport.projectiles.Add(tempDef);
-                                        }
-                                        else
-                                        {
-                                            selectedSupport.projectiles.Insert(k + 1, tempDef);
-                                        }
-                                    }
-                                }));
-                                thingOptions.Add(new FloatMenuOption("50x", delegate
-                                {
-                                    for (int l = 0; l < 50; l++)
-                                    {
-                                        if (k == selectedSupport.projectiles.Count - 1)
-                                        {
-                                            selectedSupport.projectiles.Add(tempDef);
-                                        }
-                                        else
-                                        {
-                                            selectedSupport.projectiles.Insert(k + 1, tempDef);
-                                        }
-                                    }
-                                }));
-                                Find.WindowStack.Add(new FloatMenu(thingOptions));
-                            })
-                        };
-                        Find.WindowStack.Add(new FloatMenu(listOptions));
-                    }
-
-                    if (Widgets.ButtonTextSubtle(upArrow, ""))
-                    {
-                        //if click up arrow button
-                        if (i != 0)
-                        {
-                            ThingDef temp = selectedSupport.projectiles[i];
-                            selectedSupport.projectiles[i] = selectedSupport.projectiles[i - 1];
-                            selectedSupport.projectiles[i - 1] = temp;
-                        }
-                    }
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(upArrow, "^");
-                    if (Widgets.ButtonTextSubtle(downArrow, ""))
-                    {
-                        //if click down arrow button
-                        if (i != selectedSupport.projectiles.Count - 1)
-                        {
-                            ThingDef temp = selectedSupport.projectiles[i];
-                            selectedSupport.projectiles[i] = selectedSupport.projectiles[i + 1];
-                            selectedSupport.projectiles[i + 1] = temp;
-                        }
-                    }
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(downArrow, "v");
-                    if (Widgets.ButtonTextSubtle(delete, ""))
-                    {
-                        //if click delete  button
-                        selectedSupport.projectiles.RemoveAt(i);
-                    }
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(delete, "X");
+                    selectedSupport = support;
+                    selectedText = support.name;
                 }
             }
-            
-            //Reset Text anchor and font
+
+            Widgets.EndScrollView();
+
+            // Buttons (stacked full-width)
+            float btnY = listOutRect.yMax + margin;
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            Rect createBtn = new Rect(rect.x, btnY, rect.width, ButtonHeight);
+            if (Widgets.ButtonText(createBtn, "FCCreateNewFireSupport".Translate()))
+            {
+                MilitaryFireSupport newSupport = new MilitaryFireSupport();
+                newSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
+                newSupport.setLoadID();
+                newSupport.projectiles = new List<ThingDef>();
+                selectedText = newSupport.name;
+                selectedSupport = newSupport;
+                util.fireSupportDefs.Add(newSupport);
+            }
+
+            if (selectedSupport != null)
+            {
+                Rect deleteBtn = new Rect(rect.x, createBtn.yMax + margin, rect.width, ButtonHeight);
+                if (Widgets.ButtonText(deleteBtn, "deleteFireSupportButton".Translate()))
+                {
+                    MilitaryFireSupport supportToDelete = selectedSupport;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCConfirmDeleteFireSupport".Translate((NamedArgument)supportToDelete.name),
+                        delegate
+                        {
+                            supportToDelete.delete();
+                            util.checkMilitaryUtilForErrors();
+                            if (selectedSupport == supportToDelete)
+                            {
+                                selectedSupport = null;
+                                selectedText = "FCSelectAFireSupport".Translate();
+                            }
+                        }));
+                }
+            }
+
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
-        
-        public Rect deriveRectRow(Rect rect, float x, float y = 0, float width = 0, float height = 0)
+
+        // --- Header ---
+
+        private void DrawHeader(Rect rect)
         {
-            float inputWidth;
-            float inputHeight;
-            if (width == 0)
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Highlight banner
+            Rect highlightBar = new Rect(rect.x, rect.y, rect.width, 35f);
+            Widgets.DrawHighlight(highlightBar);
+
+            // Fire support name
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect nameRect = new Rect(rect.x + margin, rect.y, 400f, 30f);
+            Widgets.Label(nameRect, selectedSupport.name);
+
+            // Pencil icon
+            float nameTextWidth = Text.CalcSize(selectedSupport.name).x;
+            Rect pencilRect = new Rect(
+                rect.x + Mathf.Min(nameTextWidth + 8f + margin, rect.width - 22f),
+                rect.y + 4f, 22f, 22f);
+            if (Widgets.ButtonImage(pencilRect, TexButton.Rename))
             {
-                inputWidth = rect.width;
+                Find.WindowStack.Add(new FCWindow_RenameFireSupport(selectedSupport));
+            }
+
+            // Info line 1: Cost + projectile count
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float infoY = highlightBar.yMax + margin;
+            float halfWidth = rect.width / 2f;
+
+            Rect costRect = new Rect(rect.x, infoY, halfWidth, 18f);
+            if (settlementPointReference != null)
+            {
+                Widgets.Label(costRect, "FCFireSupportCostRefLabel".Translate(
+                    selectedSupport.returnTotalCost(),
+                    MilitaryCustomizationUtil.calculateMilitaryLevelPoints(
+                        settlementPointReference.settlementMilitaryLevel)));
             }
             else
             {
-                inputWidth = width;
+                Widgets.Label(costRect, "FCFireSupportCostLabel".Translate(
+                    selectedSupport.returnTotalCost()));
             }
 
-            if (height == 0)
-            {
-                inputHeight = rect.height;
-            }
-            else
-            {
-                inputHeight = height;
-            }
+            Rect countRect = new Rect(rect.x + halfWidth, infoY, halfWidth, 18f);
+            Widgets.Label(countRect, "FCFireSupportProjectileCount".Translate(
+                selectedSupport.projectiles.Count));
 
-            Rect newRect = new Rect(rect.x + rect.width + x, rect.y + y, inputWidth, inputHeight);
-            return newRect;
+            // Info line 2: Duration
+            float line2Y = infoY + 18f + 2f;
+            Rect durationRect = new Rect(rect.x, line2Y, rect.width, 18f);
+            Widgets.Label(durationRect, "FCFireSupportDuration".Translate(
+                Math.Round(selectedSupport.projectiles.Count * 0.25, 2)));
+
+            // Info line 3: Accuracy label
+            float line3Y = line2Y + 18f + 2f;
+            Rect accuracyLabelRect = new Rect(rect.x, line3Y, rect.width, 18f);
+            Widgets.Label(accuracyLabelRect, "FCFireSupportAccuracyLabel".Translate(
+                selectedSupport.accuracy,
+                selectedSupport.returnAccuracyCostPercentage()));
+
+            // Accuracy slider
+            float sliderY = line3Y + 18f + 2f;
+            Rect sliderRect = new Rect(rect.x, sliderY, rect.width, 20f);
+            selectedSupport.accuracy = Widgets.HorizontalSlider(sliderRect,
+                selectedSupport.accuracy,
+                Math.Max(3, 15 - FactionCache.FactionComp.returnHighestMilitaryLevel()), 30,
+                roundTo: 1);
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
         }
+
+        // --- Projectile List ---
+
+        private struct ProjectileGroup
+        {
+            public ThingDef def;
+            public int count;
+        }
+
+        private List<ProjectileGroup> BuildProjectileGroups(MilitaryFireSupport support)
+        {
+            return support.projectiles
+                .GroupBy(p => p)
+                .Select(g => new ProjectileGroup { def = g.Key, count = g.Count() })
+                .ToList();
+        }
+
+        private void DrawProjectileList(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            Widgets.DrawMenuSection(rect);
+
+            List<ProjectileGroup> groups = BuildProjectileGroups(selectedSupport);
+
+            // Clean stale buffer entries
+            HashSet<ThingDef> activeKeys = new HashSet<ThingDef>(groups.Select(g => g.def));
+            List<ThingDef> staleKeys = quantityBuffers.Keys.Where(k => !activeKeys.Contains(k)).ToList();
+            foreach (ThingDef key in staleKeys) quantityBuffers.Remove(key);
+
+            float viewHeight = groups.Count * ProjectileRowHeight;
+            Rect scrollViewRect = new Rect(rect.x, rect.y,
+                rect.width - (viewHeight > rect.height ? 16f : 0f),
+                Mathf.Max(viewHeight, rect.height));
+
+            Widgets.BeginScrollView(rect, ref projectileListScrollPos, scrollViewRect);
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + i * ProjectileRowHeight,
+                    scrollViewRect.width, ProjectileRowHeight);
+                DrawProjectileRow(row, groups[i], i);
+            }
+
+            Widgets.EndScrollView();
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        private void DrawProjectileRow(Rect row, ProjectileGroup group, int rowIndex)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            if (rowIndex % 2 == 0)
+                Widgets.DrawHighlight(row);
+
+            ThingDef def = group.def;
+            float x = row.x + 2f;
+            float btnSize = ProjectileRowHeight - 4f;
+            float btnY = row.y + 2f;
+
+            // Projectile icon + name
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            float iconNameWidth = 220f;
+            Rect iconNameRect = new Rect(x, row.y, iconNameWidth, ProjectileRowHeight);
+            Widgets.DefLabelWithIcon(iconNameRect, def);
+            x = iconNameRect.xMax + 2f;
+
+            // Cost (per unit ea. / total)
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            float perCost = (float)Math.Round(def.BaseMarketValue * 1.5, 2);
+            float totalCost = perCost * group.count;
+            Rect costRect = new Rect(x, row.y, 120f, ProjectileRowHeight);
+            Widgets.Label(costRect, "$" + perCost + " ea. / $" + totalCost);
+            x = costRect.xMax + 4f;
+
+            int count = group.count;
+            quantityBuffers[def] = count.ToString();
+            string buffer = quantityBuffers[def];
+
+            // [-] button
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Rect minusRect = new Rect(x, btnY, btnSize, btnSize);
+            if (Widgets.ButtonText(minusRect, "-"))
+            {
+                //selectedSupport.projectiles.Remove(def);
+                count = Math.Max(0, count-1);
+            }
+            x = minusRect.xMax + 2f;
+
+            // Numeric text field
+
+            Rect numFieldRect = new Rect(x, row.y + 2f, 40f, ProjectileRowHeight - 4f);
+            Widgets.TextFieldNumeric(numFieldRect, ref count, ref buffer, 1, 999);
+            quantityBuffers[def] = buffer;
+            x = numFieldRect.xMax + 2f;
+
+            // [+] button
+            Rect plusRect = new Rect(x, btnY, btnSize, btnSize);
+            if (Widgets.ButtonText(plusRect, "+"))
+            {
+                //selectedSupport.projectiles.Add(def);
+                count++;
+            }
+            x = plusRect.xMax + 4f;
+
+            group.count = count;
+
+            // Sync flat list if count changed
+            int actual = selectedSupport.projectiles.Count(p => p == def);
+            if (count != actual)
+            {
+                if (count > actual)
+                    for (int j = 0; j < count - actual; j++) selectedSupport.projectiles.Add(def);
+                else
+                    for (int j = 0; j < actual - count; j++) selectedSupport.projectiles.Remove(def);
+            }
+
+            // [X] delete all
+            Rect deleteRect = new Rect(x, btnY, btnSize, btnSize);
+            if (Widgets.ButtonImage(deleteRect, TexLoad.deleteX))
+            {
+                selectedSupport.projectiles.RemoveAll(p => p == def);
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Bottom Bar ---
+
+        private void DrawBottomBar(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            float btnW = (rect.width - margin * 2) / 3f;
+
+            // Add Projectile button
+            Rect addBtn = new Rect(rect.x, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(addBtn, "FCAddNewProjectile".Translate()))
+            {
+                List<FloatMenuOption> options = BuildProjectileMenu(def =>
+                {
+                    selectedSupport.projectiles.Add(def);
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                });
+                Find.WindowStack.Add(new Searchable_FloatMenu(options, true));
+            }
+
+            // Set Point Ref button
+            Rect pointRefBtn = new Rect(addBtn.xMax + margin, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(pointRefBtn, "FCSetPointRef".Translate()))
+            {
+                List<FloatMenuOption> settlementList = FactionCache.FactionComp
+                    .settlements.Select(settlement => new FloatMenuOption(
+                        settlement.Name + "FCMilitaryLevelLabel".Translate() +
+                        settlement.settlementMilitaryLevel,
+                        delegate
+                        {
+                            settlementPointReference = settlement;
+                        }))
+                    .ToList();
+
+                if (!settlementList.Any())
+                {
+                    settlementList.Add(new FloatMenuOption("FCNoValidSettlements".Translate(), null));
+                }
+
+                FloatMenu floatMenu = new FloatMenu(settlementList) { vanishIfMouseDistant = true };
+                Find.WindowStack.Add(floatMenu);
+            }
+
+            // Reset button
+            Rect resetBtn = new Rect(pointRefBtn.xMax + margin, rect.y, btnW, ButtonHeight);
+            if (Widgets.ButtonText(resetBtn, "FCResetToDefault".Translate()))
+            {
+                selectedSupport.projectiles = new List<ThingDef>();
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Helper Methods ---
+
+        private List<FloatMenuOption> BuildProjectileMenu(Action<ThingDef> onSelect)
+        {
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
+            {
+                ThingDef capturedDef = def;
+                options.Add(new FloatMenuOption(
+                    def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2),
+                    delegate { onSelect(capturedDef); }, def));
+            }
+
+            if (!options.Any())
+            {
+                options.Add(new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
+            }
+
+            return options;
+        }
+
     }
 }
