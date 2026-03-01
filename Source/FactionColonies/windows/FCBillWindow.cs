@@ -176,7 +176,7 @@ namespace FactionColonies
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-                FloatMenuOption option = new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills), delegate
+                FloatMenuOption option = new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills ? "Yes".Translate() : "No".Translate()), delegate
                 {
                     faction.autoResolveBills = !faction.autoResolveBills;
                     switch (faction.autoResolveBills)

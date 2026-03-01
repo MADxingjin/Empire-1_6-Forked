@@ -14,8 +14,6 @@ namespace FactionColonies
         public string name;
         public List<MilUnitFC> units = new List<MilUnitFC>();
         public double equipmentTotalCost;
-        public bool isTraderCaravan;
-        public bool isCivilian;
         public int tickChanged;
 
         public static void UpdateEquipmentTotalCostOfSquadsContaining(MilUnitFC unit)
@@ -47,8 +45,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Collections.Look(ref units, "units", LookMode.Reference);
             Scribe_Values.Look(ref equipmentTotalCost, "equipmentTotalCost", -1);
-            Scribe_Values.Look(ref isTraderCaravan, "isTraderCaravan");
-            Scribe_Values.Look(ref isCivilian, "isCivilian");
             Scribe_Values.Look(ref tickChanged, "tickChanged");
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -96,9 +92,6 @@ namespace FactionColonies
                 units.Add(FactionCache.FactionComp.militaryCustomizationUtil.blankUnit);
             }
 
-            isTraderCaravan = false;
-            isCivilian = false;
-
             updateEquipmentTotalCost();
         }
 
@@ -132,45 +125,5 @@ namespace FactionColonies
             return $"MilSquadFC_{loadID}";
         }
 
-        public void setTraderCaravan(bool state)
-        {
-            ChangeTick();
-            isTraderCaravan = state;
-            if (state)
-            {
-                int hasTraderCount = units.Count(unit => unit.isTrader);
-
-                if (hasTraderCount == 0)
-                {
-                    Messages.Message("FCMustHaveTrader".Translate(),
-                        MessageTypeDefOf.RejectInput);
-                    return;
-                }
-
-                if (hasTraderCount > 1)
-                {
-                    Messages.Message("FCTooManyTraders".Translate(),
-                        MessageTypeDefOf.RejectInput);
-                    return;
-                }
-
-                setCivilian(true);
-            }
-            else
-            {
-                setCivilian(false);
-            }
-
-            isTraderCaravan = state;
-        }
-
-        public void setCivilian(bool state)
-        {
-            ChangeTick();
-            isCivilian = state;
-            if (state)
-            {
-            }
-        }
     }
 }

@@ -14,6 +14,19 @@ namespace FactionColonies
         private readonly FactionFC faction;
         private MilUnitFC selectedUnit;
 
+        private Vector2 unitListScrollPos;
+        private string unitSearchTerm = "";
+        private Vector2 wornItemsScrollPos;
+
+        // Layout sizing constants
+        private const float SidebarWidth = 250f;
+        private const float GearWidth = 310f;
+        private const float RowHeight = 30f;
+        private const float SearchBarHeight = 28f;
+        private const float IconSize = 24f;
+        private const float margin = 5f;
+        private const float ButtonHeight = 30f;
+
         /// <summary>
         /// Describes an apparel equipment slot for the unit designer UI.
         /// </summary>
@@ -59,27 +72,138 @@ namespace FactionColonies
         public override void DrawTab(Rect rect)
         {
             Widgets.DrawLineHorizontal(rect.x, rect.y + 45, rect.width);
-            // --- Layout Rects ---
-            Rect SelectionBar = new Rect(5, 45, 200, 30);
-            Rect createUnitButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
-            Rect importButton = new Rect(5, createUnitButton.y + createUnitButton.height + 10, 200, 30);
-            Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
-            Rect isCivilian = new Rect(5, nameTextField.y + nameTextField.height + 10, 100, 30);
-            Rect isTrader = new Rect(isCivilian.x, isCivilian.y + isCivilian.height + 5, isCivilian.width,
-                isCivilian.height);
 
-            Rect ResetButton = new Rect(700, 50, 100, 30);
-            Rect DeleteButton = new Rect(ResetButton.x, ResetButton.y + ResetButton.height + 5,
-                ResetButton.width, ResetButton.height);
-            Rect SavePawn = new Rect(DeleteButton.x, DeleteButton.y + DeleteButton.height + 5,
-                DeleteButton.width, DeleteButton.height);
-            Rect ChangeRace = new Rect(325, ResetButton.y, SavePawn.width, SavePawn.height);
-            Rect ChangeXeno = new Rect(575, DeleteButton.y, SavePawn.width, SavePawn.height);
-            Rect RollNewPawn = new Rect(325, ResetButton.y + SavePawn.height + 5, SavePawn.width,
-                SavePawn.height);
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
 
-            // --- Create New Unit Button ---
-            if (Widgets.ButtonText(createUnitButton, "FCCreateNewUnit".Translate()))
+            float contentTop = rect.y + 45f + margin;
+            float rightEdge = rect.xMax - margin;
+
+            // Layout Y metrics
+            float belowHighlight = contentTop + 35f + margin;
+            float gearTop = belowHighlight + 61f + margin;
+            float gearBottom = gearTop + 305f;
+
+            // Left sidebar: search + unit list + CRUD buttons (ends at gear panel bottom)
+            Rect sidebarRect = new Rect(rect.x + margin, contentTop,
+                SidebarWidth, gearBottom - contentTop);
+            DrawSidebar(sidebarRect);
+
+            // Content area starts after sidebar + gap
+            float contentLeft = sidebarRect.xMax + 10f;
+            Rect gearRect = new Rect(contentLeft, gearTop, GearWidth, 305f);
+
+            if (selectedUnit != null)
+            {
+                Rect headerRect = new Rect(contentLeft, contentTop,
+                    rightEdge - contentLeft, 85f);
+                DrawUnitHeader(headerRect);
+
+                Rect buttonsRect = new Rect(contentLeft + GearWidth + 10f, belowHighlight,
+                    rightEdge - contentLeft - GearWidth - 10f, 61f);
+                DrawActionButtons(buttonsRect);
+
+                //Widgets.DrawMenuSection(gearRect);
+                DrawGearPanel(gearRect);
+            }
+
+
+            Rect wornRect = new Rect(gearRect.xMax + 10f, gearRect.y,
+                rightEdge - gearRect.xMax - 10f, gearRect.height);
+            DrawWornItemsSidebar(wornRect);
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Sidebar ---
+
+        private void DrawSidebar(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Search bar
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect searchRect = new Rect(rect.x, rect.y, rect.width, SearchBarHeight);
+            unitSearchTerm = Widgets.TextField(searchRect, unitSearchTerm);
+
+            // Unit list (fills space between search bar and buttons)
+            float buttonsHeight = ButtonHeight * 2 + margin;
+            float listHeight = rect.yMax - searchRect.yMax - margin - buttonsHeight - margin;
+            Rect listOutRect = new Rect(rect.x, searchRect.yMax + margin, rect.width, listHeight);
+            Widgets.DrawMenuSection(listOutRect);
+
+            List<MilUnitFC> filteredUnits = string.IsNullOrEmpty(unitSearchTerm)
+                ? util.units
+                : util.units.Where(u => u.name.IndexOf(unitSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+            float viewHeight = filteredUnits.Count * RowHeight;
+            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
+                rect.width - (viewHeight > listHeight ? 16f : 0f),
+                Mathf.Max(viewHeight, listHeight));
+
+            Widgets.BeginScrollView(listOutRect, ref unitListScrollPos, scrollViewRect);
+
+            for (int i = 0; i < filteredUnits.Count; i++)
+            {
+                MilUnitFC unit = filteredUnits[i];
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + i * RowHeight, scrollViewRect.width, RowHeight);
+
+                bool isDeployed = IsUnitDeployed(unit, out string deployReason);
+
+                if (unit == selectedUnit)
+                    Widgets.DrawHighlightSelected(row);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(row);
+
+                Color colorBefore = GUI.color;
+                if (isDeployed) GUI.color = Color.gray;
+
+                // Weapon icon
+                Rect iconRect = new Rect(row.x + 2f, row.y + 3f, IconSize, IconSize);
+                if (unit.HasWeapon)
+                    Widgets.DefIcon(iconRect, unit.weapons[0].thing, unit.weapons[0].stuff);
+
+                // Name label
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Rect labelRect = new Rect(iconRect.xMax + 4f, row.y, row.xMax - iconRect.xMax - 6f, RowHeight);
+                Widgets.Label(labelRect, unit.name);
+
+                if (isDeployed) GUI.color = colorBefore;
+
+                if (Widgets.ButtonInvisible(row))
+                {
+                    if (isDeployed)
+                    {
+                        Messages.Message("CantBeModified".Translate(unit.name, deployReason),
+                            MessageTypeDefOf.NeutralEvent, false);
+                    }
+                    else
+                    {
+                        selectedUnit = unit;
+                        selectedText = unit.name;
+                    }
+                }
+            }
+
+            Widgets.EndScrollView();
+
+            // Action buttons (2x2 grid)
+            float btnY = listOutRect.yMax + margin;
+            float buttonW = (rect.width - margin) / 2f;
+
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            Rect createBtn = new Rect(rect.x, btnY, buttonW, ButtonHeight);
+            Rect importBtn = new Rect(rect.x + buttonW + margin, btnY, buttonW, ButtonHeight);
+            Rect deleteBtn = new Rect(rect.x, btnY + ButtonHeight + margin, buttonW, ButtonHeight);
+            Rect exportBtn = new Rect(rect.x + buttonW + margin, btnY + ButtonHeight + margin, buttonW, ButtonHeight);
+
+            if (Widgets.ButtonText(createBtn, "FCCreateNewUnit".Translate()))
             {
                 MilUnitFC newUnit = new MilUnitFC(false)
                 {
@@ -90,170 +214,157 @@ namespace FactionColonies
                 util.units.Add(newUnit);
             }
 
-            // --- Unit Selection Dropdown ---
-            if (Widgets.CustomButtonText(ref SelectionBar, selectedText, Color.gray, Color.white, Color.black) && util.units.Count > 0)
-            {
-                List<FloatMenuOption> Units = new List<FloatMenuOption>();
-
-                foreach (MilUnitFC unit in util.units)
-                {
-                    void action()
-                    {
-                        selectedText = unit.name;
-                        selectedUnit = unit;
-                    }
-
-                    // Prevent units being modified when their squads are deployed
-                    FactionFC factionFC = FactionCache.FactionComp;
-                    List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
-                        .Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
-                    List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements
-                        ?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
-                            squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
-
-                    if ((settlementsContainingSquad?.Count ?? 0) > 0)
-                    {
-                        if (settlementsContainingSquad.Any(settlement => settlement.MilitaryComp.militarySquad.isDeployed))
-                        {
-                            Units.Add(new FloatMenuOption(unit.name, delegate { Messages.Message("CantBeModified".Translate(unit.name, "ReasonDeployed".Translate()), MessageTypeDefOf.NeutralEvent, false); }));
-                            continue;
-                        }
-                        else if (settlementsContainingSquad.Any(settlement => settlement.MilitaryComp.isUnderAttack && settlementsContainingSquad.Contains(settlement.MilitaryComp.defenderForce.homeSettlement)))
-                        {
-                            Units.Add(new FloatMenuOption(unit.name, delegate { Messages.Message("CantBeModified".Translate(unit.name, "ReasonDefending".Translate()), MessageTypeDefOf.NeutralEvent, false); }));
-                            continue;
-                        }
-                    }
-
-                    if (unit.HasWeapon)
-                    {
-                        Units.Add(new FloatMenuOption(unit.name, action, unit.weapons[0].thing));
-                    }
-                    else
-                    {
-                        Units.Add(new FloatMenuOption(unit.name, action));
-                    }
-                }
-
-                FloatMenu selection = new Searchable_FloatMenu(Units);
-                Find.WindowStack.Add(selection);
-            }
-
-            if (Widgets.ButtonText(importButton, "importUnit".Translate()))
+            if (Widgets.ButtonText(importBtn, "importUnit".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_ManageUnitExportsFC(
                     FactionColoniesMilitary.SavedUnits.ToList()));
             }
 
-            // --- Gear Panel ---
-            Rect gearArea = new Rect(440, 140, 310, 315);
-            Widgets.DrawMenuSection(gearArea);
-            DrawGearPanel(gearArea);
-
-            // --- Unit Selected Content ---
-            if (selectedUnit == null) return;
-
-            GameFont fontBefore = Text.Font;
-            TextAnchor anchorBefore = Text.Anchor;
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperCenter;
-
-            if (Widgets.ButtonText(ResetButton, "resetUnitToDefaultButton".Translate()))
+            if (selectedUnit != null)
             {
-                selectedUnit.ClearAllEquipment();
-            }
-
-            if (Widgets.ButtonText(DeleteButton, "deleteUnitButton".Translate()))
-            {
-                //TODO: this really needs to open a confirmation box!
-                selectedUnit.removeUnit();
-                util.checkMilitaryUtilForErrors();
-                selectedUnit = null;
-                selectedText = "selectAUnitButton".Translate();
-
-                Text.Font = fontBefore;
-                Text.Anchor = anchorBefore;
-                return;
-            }
-
-            if (Widgets.ButtonText(RollNewPawn, "rollANewUnitButton".Translate()))
-            {
-                selectedUnit.RerollPreviewPawn();
-            }
-
-            if (Widgets.ButtonText(ChangeRace, "changeUnitRaceButton".Translate()))
-            {
-                List<string> races = new List<string>();
-                List<FloatMenuOption> options = new List<FloatMenuOption>();
-
-                foreach (PawnKindDef def in FactionCache.AllPawnKindDefs.Where(def => def.IsHumanLikeRace() && !races.Contains(def.race.label) && faction.raceFilter.Allows(def.race)))
+                if (Widgets.ButtonText(deleteBtn, "deleteUnitButton".Translate()))
                 {
-                    if (def.race == ThingDefOf.Human && def.LabelCap != "Colonist") continue;
-                    races.Add(def.race.label);
-
-                    string optionStr = def.race.label.CapitalizeFirst() + " - Cost: " + Math.Floor(def.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
-                    options.Add(new FloatMenuOption(optionStr, delegate
-                    {
-                        selectedUnit.pawnKind = def;
-                        selectedUnit.RerollPreviewPawn();
-                    }));
+                    MilUnitFC unitToDelete = selectedUnit;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCConfirmDeleteUnit".Translate((NamedArgument)unitToDelete.name),
+                        delegate
+                        {
+                            unitToDelete.removeUnit();
+                            util.checkMilitaryUtilForErrors();
+                            if (selectedUnit == unitToDelete)
+                            {
+                                selectedUnit = null;
+                                selectedText = "selectAUnitButton".Translate();
+                            }
+                        }));
                 }
 
-                if (!options.Any())
+                if (Widgets.ButtonText(exportBtn, "exportUnitButton".Translate()))
                 {
-                    options.Add(new FloatMenuOption("changeUnitRaceNoRaces".Translate(), null));
+                    FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
+                    Messages.Message("ExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
-
-                options.Sort(CompareUtil.CompareFloatMenuOption);
-                FloatMenu menu = new Searchable_FloatMenu(options);
-                Find.WindowStack.Add(menu);
             }
 
-            if (Widgets.ButtonText(ChangeXeno, "changeUnitXenoButton".Translate()))
-            {
-                List<string> xeno = new List<string>();
-                List<FloatMenuOption> options1 = new List<FloatMenuOption>();
-
-                foreach (XenotypeDef def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(def => !xeno.Contains(def.label)))
-                {
-                    if (def == XenotypeDefOf.Baseliner && def.LabelCap != "Colonist") continue;
-                    xeno.Add(def.label);
-
-                    string optionStr = def.label.CapitalizeFirst() + " - Cost: " + 0;
-                    options1.Add(new FloatMenuOption(optionStr, delegate
-                    {
-                        selectedUnit.xenotype = def;
-                        selectedUnit.RerollPreviewPawn();
-                    }));
-                }
-                if (!options1.Any())
-                {
-                    options1.Add(new FloatMenuOption("changeUnitXenoNoXenos".Translate(), null));
-                }
-
-                options1.Sort(CompareUtil.CompareFloatMenuOption);
-                FloatMenu menu = new Searchable_FloatMenu(options1);
-                Find.WindowStack.Add(menu);
-            }
-
-            if (Widgets.ButtonText(SavePawn, "exportUnitButton".Translate()))
-            {
-                FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
-                Messages.Message("ExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
-            }
-
-            // Unit Name
-            selectedUnit.name = Widgets.TextField(nameTextField, selectedUnit.name);
-
-            selectedUnit.setTrader(selectedUnit.isTrader);
-            selectedUnit.setCivilian(selectedUnit.isCivilian);
-
-            // Restore text style
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
 
-        // --- Helper Methods ---
+        // --- Unit Header ---
+
+        private void DrawUnitHeader(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Highlight banner behind unit name
+            Rect highlightBar = new Rect(rect.x, rect.y, rect.width, 35f);
+            Widgets.DrawHighlight(highlightBar);
+
+            // Unit name (large label)
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect nameRect = new Rect(rect.x + margin, rect.y, 400f, 30f);
+            Widgets.Label(nameRect, selectedUnit.name);
+
+            // Pencil icon to trigger rename
+            float nameTextWidth = Text.CalcSize(selectedUnit.name).x;
+            Rect pencilRect = new Rect(rect.x + Mathf.Min(nameTextWidth + 8f + margin, rect.width - 22f), rect.y + 4f, 22f, 22f);
+            if (Widgets.ButtonImage(pencilRect, TexButton.Rename))
+            {
+                Find.WindowStack.Add(new FCWindow_RenameUnit(selectedUnit));
+            }
+
+            // Race / Xeno info line
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            string raceName = selectedUnit.pawnKind?.race?.label?.CapitalizeFirst() ?? "Unknown";
+            string xenoName = selectedUnit.xenotype?.label?.CapitalizeFirst() ?? "None";
+            Rect infoRect = new Rect(rect.x, highlightBar.yMax + margin, rect.width, 20f);
+            Widgets.Label(infoRect, "Race".Translate() + ": " + raceName + "   ·   " + "Xenotype".Translate() + ": " + xenoName);
+
+            // Equipment cost
+            float totalCost = (float)selectedUnit.getTotalCost;
+            Rect costRect = new Rect(rect.x, infoRect.yMax + margin, rect.width, 20f);
+            Widgets.Label(costRect, "totalEquipmentCostLabel".Translate() + totalCost);
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Action Buttons ---
+
+        private void DrawActionButtons(Rect rect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            float btnH = 28f;
+            float gap = 5f;
+            float btnW = (rect.width - gap) / 2f;
+
+            if (Widgets.ButtonText(new Rect(rect.x, rect.y, btnW, btnH), "changeUnitRaceButton".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_RacePicker(selectedUnit, faction));
+            }
+
+            if (Widgets.ButtonText(new Rect(rect.x + btnW + gap, rect.y, btnW, btnH), "changeUnitXenoButton".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_XenoPicker(selectedUnit));
+            }
+
+            float y2 = rect.y + btnH + gap;
+
+            if (Widgets.ButtonText(new Rect(rect.x, y2, btnW, btnH), "rollANewUnitButton".Translate()))
+            {
+                selectedUnit.RerollPreviewPawn();
+            }
+
+            if (Widgets.ButtonText(new Rect(rect.x + btnW + gap, y2, btnW, btnH), "resetUnitToDefaultButton".Translate()))
+            {
+                selectedUnit.ClearAllEquipment();
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        // --- Deployment Check ---
+
+        private bool IsUnitDeployed(MilUnitFC unit, out string reason)
+        {
+            reason = "";
+            FactionFC factionFC = FactionCache.FactionComp;
+            List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
+                ?.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
+
+            if (squadsContainingUnit == null || squadsContainingUnit.Count == 0) return false;
+
+            List<WorldSettlementFC> settlementsContainingSquad = factionFC?.settlements
+                ?.FindAll(settlement => settlement?.MilitaryComp?.militarySquad?.outfit != null &&
+                    squadsContainingUnit.Any(squad => settlement.MilitaryComp.militarySquad.outfit == squad));
+
+            if (settlementsContainingSquad == null || settlementsContainingSquad.Count == 0) return false;
+
+            if (settlementsContainingSquad.Any(s => s.MilitaryComp.militarySquad.isDeployed))
+            {
+                reason = "ReasonDeployed".Translate();
+                return true;
+            }
+
+            if (settlementsContainingSquad.Any(s => s.MilitaryComp.isUnderAttack
+                && settlementsContainingSquad.Contains(s.MilitaryComp.defenderForce.homeSettlement)))
+            {
+                reason = "ReasonDefending".Translate();
+                return true;
+            }
+
+            return false;
+        }
+
+        // --- Gear Panel ---
 
         private void DrawGearPanel(Rect gearArea)
         {
@@ -261,22 +372,19 @@ namespace FactionColonies
             const float slotSize = 50f;
 
             // Unit and animal icons (positioned relative to gearArea)
-            Rect unitIcon   = new Rect(gearArea.x + 120, gearArea.y + 95, iconSize, iconSize);
-            Rect animalIcon = new Rect(gearArea.x + 120, gearArea.y + 195, iconSize, iconSize);
+            Rect unitIcon   = new Rect(gearArea.x + 120, gearArea.y + 100f, iconSize, iconSize + 20f);
+            //Rect animalIcon = new Rect(gearArea.x + 120, gearArea.y + 195, iconSize, iconSize);
 
             // Apparel/equipment slots (positioned relative to unitIcon)
-            Rect ApparelHead        = new Rect(unitIcon.x + (iconSize - slotSize) / 2f, unitIcon.y - 95, slotSize, slotSize);
-            Rect ApparelTorsoSkin   = new Rect(unitIcon.xMax + 20, unitIcon.y - 65, slotSize, slotSize);
-            Rect ApparelBelt        = new Rect(unitIcon.xMax + 20, unitIcon.y + 5,  slotSize, slotSize);
-            Rect ApparelLegs        = new Rect(unitIcon.xMax + 20, unitIcon.y + 75, slotSize, slotSize);
+            Rect ApparelHead        = new Rect(unitIcon.x + (iconSize - slotSize) / 2f, unitIcon.y - 75, slotSize, slotSize);
+            Rect ApparelTorsoSkin   = new Rect(unitIcon.xMax + 20, unitIcon.y - 55, slotSize, slotSize);
+            Rect ApparelBelt        = new Rect(unitIcon.xMax + 20, unitIcon.y + 15,  slotSize, slotSize);
+            Rect ApparelLegs        = new Rect(unitIcon.xMax + 20, unitIcon.y + 85, slotSize, slotSize);
 
-            Rect AnimalCompanion    = new Rect(unitIcon.x - 60,  unitIcon.y - 75, slotSize, slotSize);
-            Rect ApparelTorsoShell  = new Rect(unitIcon.x - 60,  unitIcon.y - 5,  slotSize, slotSize);
-            Rect ApparelTorsoMiddle = new Rect(unitIcon.x - 60,  unitIcon.y + 65, slotSize, slotSize);
-            Rect EquipmentWeapon    = new Rect(unitIcon.x - 120, unitIcon.y - 5,  slotSize, slotSize);
-
-            Rect ApparelWornItems   = new Rect(440, 385, 330, 175);
-            Rect EquipmentTotalCost = new Rect(450, 50, 350, 40);
+            Rect AnimalCompanion    = new Rect(unitIcon.x - 60,  unitIcon.y - 55, slotSize, slotSize);
+            Rect ApparelTorsoShell  = new Rect(unitIcon.x - 60,  unitIcon.y + 15,  slotSize, slotSize);
+            Rect ApparelTorsoMiddle = new Rect(unitIcon.x - 60,  unitIcon.y + 85, slotSize, slotSize);
+            Rect EquipmentWeapon    = new Rect(unitIcon.x - 120, unitIcon.y + 15,  slotSize, slotSize);
 
             ApparelSlotDef[] apparelSlots = new[]
             {
@@ -289,8 +397,6 @@ namespace FactionColonies
             };
 
             // --- Always drawn: slot backgrounds and labels ---
-            Widgets.DrawMenuSection(ApparelWornItems);
-
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
@@ -317,27 +423,13 @@ namespace FactionColonies
             Pawn preview = selectedUnit.PreviewPawn;
             if (preview != null)
             {
-                Widgets.ThingIcon(unitIcon, preview);
+                UIUtil.DrawPawnPortrait(unitIcon, preview, 1.2f);
             }
 
             // --- Animal Companion Slot ---
             if (Widgets.ButtonInvisible(AnimalCompanion))
             {
-                List<FloatMenuOption> list = (from animal in FactionCache.AllAnimalKindDefs
-                    select new FloatMenuOption(animal.LabelCap + " - Cost: " +
-                        Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier),
-                        delegate { selectedUnit.animal = animal; selectedUnit.changeTick(); },
-                        animal.race.uiIcon, Color.white)).ToList();
-
-                list.Sort(CompareUtil.CompareFloatMenuOption);
-
-                list.Insert(0, new FloatMenuOption("unitActionUnequipThing".Translate(), delegate
-                {
-                    selectedUnit.animal = null;
-                    selectedUnit.changeTick();
-                }));
-                FloatMenu menu = new Searchable_FloatMenu(list);
-                Find.WindowStack.Add(menu);
+                Find.WindowStack.Add(new FCWindow_AnimalPicker(selectedUnit));
             }
 
             // --- Weapon Slot ---
@@ -365,37 +457,6 @@ namespace FactionColonies
                 HandleApparelSlot(slot, selectedUnit);
             }
 
-            // --- Worn Items List ---
-            int i = 0;
-            foreach (SavedThing item in selectedUnit.apparel)
-            {
-                if (item.thing == null) continue;
-                Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
-                i++;
-
-                string label = item.stuff != null
-                    ? item.thing.LabelCap + " (" + item.stuff.LabelCap + ") Cost: " + item.MarketValue
-                    : item.thing.LabelCap + " Cost: " + item.MarketValue;
-                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
-                {
-                    Find.WindowStack.Add(new Dialog_InfoCard(item.thing, item.stuff));
-                }
-            }
-
-            foreach (SavedThing w in selectedUnit.weapons)
-            {
-                if (w.thing == null) continue;
-                Rect tmp = new Rect(ApparelWornItems.x, ApparelWornItems.y + i * 25, ApparelWornItems.width, 25);
-                i++;
-                string label = w.stuff != null
-                    ? w.thing.LabelCap + " (" + w.stuff.LabelCap + ") Cost: " + w.MarketValue
-                    : w.thing.LabelCap + " Cost: " + w.MarketValue;
-                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
-                {
-                    Find.WindowStack.Add(new Dialog_InfoCard(w.thing, w.stuff));
-                }
-            }
-
             // Animal icon
             if (selectedUnit.animal != null)
             {
@@ -418,9 +479,54 @@ namespace FactionColonies
             {
                 Widgets.ButtonImage(EquipmentWeapon, selectedUnit.weapons[0].thing.uiIcon);
             }
+        }
 
-            float totalCost = (float)selectedUnit.getTotalCost;
-            Widgets.Label(EquipmentTotalCost, "totalEquipmentCostLabel".Translate() + totalCost);
+        // --- Worn Items Sidebar ---
+
+        private void DrawWornItemsSidebar(Rect rect)
+        {
+            if (selectedUnit == null) return;
+
+            Widgets.DrawMenuSection(rect);
+
+            List<(string label, ThingDef thing, ThingDef stuff)> wornEntries = new List<(string, ThingDef, ThingDef)>();
+
+            foreach (SavedThing item in selectedUnit.apparel)
+            {
+                if (item.thing == null) continue;
+                string label = item.stuff != null
+                    ? item.thing.LabelCap + " (" + item.stuff.LabelCap + ") Cost: " + item.MarketValue
+                    : item.thing.LabelCap + " Cost: " + item.MarketValue;
+                wornEntries.Add((label, item.thing, item.stuff));
+            }
+
+            foreach (SavedThing w in selectedUnit.weapons)
+            {
+                if (w.thing == null) continue;
+                string label = w.stuff != null
+                    ? w.thing.LabelCap + " (" + w.stuff.LabelCap + ") Cost: " + w.MarketValue
+                    : w.thing.LabelCap + " Cost: " + w.MarketValue;
+                wornEntries.Add((label, w.thing, w.stuff));
+            }
+
+            float wornViewHeight = wornEntries.Count * 25f;
+            Rect scrollViewRect = new Rect(0f, 0f,
+                rect.width - (wornViewHeight > rect.height ? 16f : 0f),
+                Mathf.Max(wornViewHeight, rect.height));
+
+            Widgets.BeginScrollView(rect, ref wornItemsScrollPos, scrollViewRect);
+
+            for (int i = 0; i < wornEntries.Count; i++)
+            {
+                var (label, thing, stuff) = wornEntries[i];
+                Rect tmp = new Rect(scrollViewRect.x, scrollViewRect.y + i * 25f, scrollViewRect.width, 25f);
+                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
+                {
+                    Find.WindowStack.Add(new Dialog_InfoCard(thing, stuff));
+                }
+            }
+
+            Widgets.EndScrollView();
         }
 
         /// <summary>

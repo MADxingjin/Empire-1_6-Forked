@@ -37,23 +37,22 @@
 	<fcLabelAnimal>Animal</fcLabelAnimal>
 
 	<!-- Unit Buttons -->
+	<FCRenameUnit>Rename Unit</FCRenameUnit>
+	<FCConfirmDeleteUnit>Are you sure you want to delete "{0}"?</FCConfirmDeleteUnit>
 	<resetUnitToDefaultButton>Reset to default</resetUnitToDefaultButton>
 	<deleteUnitButton>Delete unit</deleteUnitButton>
 	<selectAUnitButton>Select a unit</selectAUnitButton>
 	<rollANewUnitButton>Roll a new pawn</rollANewUnitButton>
-	<changeUnitRaceButton>Change race</changeUnitRaceButton>
-	<changeUnitXenoButton>Change Xeno</changeUnitXenoButton>
+	<changeUnitRaceButton>Change Race</changeUnitRaceButton>
+	<changeUnitXenoButton>Change Xenotype</changeUnitXenoButton>
 	<exportUnitButton>Export unit</exportUnitButton>
-
-	<!-- Unit Checkboxes -->
-	<unitIsCivilianLabel>is Civilian</unitIsCivilianLabel>
-	<unitIsTraderLabel>is Trader</unitIsTraderLabel>
 
 	<!-- Unit Equipment -->
 	<totalEquipmentCostLabel>Total Equipment Cost: </totalEquipmentCostLabel>
 	<unitActionUnequipThing>Unequip</unitActionUnequipThing>
 	<fcPickWeapon>Select Weapon</fcPickWeapon>
 	<fcPickApparel>Select Apparel</fcPickApparel>
+	<fcPickAnimal>Select Animal</fcPickAnimal>
 	<fcNoMaterialNeeded>No material selection needed</fcNoMaterialNeeded>
 	<fcPickerSummary>Selected: {0} - Cost: {1}</fcPickerSummary>
 
@@ -76,9 +75,6 @@
 	<FCNoSquadLoadoutAssigned>There is no squad loadout assigned to that settlement!</FCNoSquadLoadoutAssigned>
 	<FCNoSquadAssigned>There is no military squad assigned to that settlement!</FCNoSquadAssigned>
 	<FCSquadExceedsMaxCost>That squad exceeds the settlement's max allotted cost</FCSquadExceedsMaxCost>
-	<FCMustHaveTrader>There must be a trader in the squad to be a trader caravan!</FCMustHaveTrader>
-	<FCTooManyTraders>There cannot be more than one trader in the caravan!</FCTooManyTraders>
-	<FCNoWeaponOnCivilian>You cannot put a weapon on a civilian!</FCNoWeaponOnCivilian>
 	<FCCreateNewUnit>Create New Unit</FCCreateNewUnit>
 
 	<!-- Fire Support Design -->

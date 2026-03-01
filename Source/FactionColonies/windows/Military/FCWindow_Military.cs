@@ -9,7 +9,7 @@ namespace FactionColonies
         private readonly MilitaryWindow militaryWindow;
         private readonly string title;
 
-        public override Vector2 InitialSize => new Vector2(838f, 600f);
+        public override Vector2 InitialSize => new Vector2(950f, 530f);
 
         public FCWindow_Military(MilitaryWindow militaryWindow, string title)
         {

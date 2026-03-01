@@ -28,7 +28,6 @@ namespace FactionColonies
 
         //time variables
         private int uiUpdateTimer;
-        private int scroll;
         private int maxScroll;
         private FactionFC factionfc;
 

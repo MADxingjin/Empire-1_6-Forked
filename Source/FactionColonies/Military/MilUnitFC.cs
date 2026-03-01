@@ -13,8 +13,6 @@ namespace FactionColonies
         public string name;
         public bool isBlank;
         public double equipmentTotalCost;
-        public bool isTrader;
-        public bool isCivilian;
         public int tickChanged = -1;
         public PawnKindDef animal;
         public PawnKindDef pawnKind;
@@ -79,8 +77,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref isBlank, "blank");
             Scribe_Values.Look(ref equipmentTotalCost, "equipmentTotalCost", -1);
-            Scribe_Values.Look(ref isTrader, "isTrader");
-            Scribe_Values.Look(ref isCivilian, "isCivilian");
             Scribe_Values.Look(ref tickChanged, "tickChanged");
             Scribe_Defs.Look(ref pawnKind, "PawnKind");
             Scribe_Defs.Look(ref animal, "animal");
@@ -188,11 +184,6 @@ namespace FactionColonies
 
         public void SetWeapon(ThingDef def, ThingDef stuff)
         {
-            if (isCivilian)
-            {
-                Messages.Message("FCNoWeaponOnCivilian".Translate(), MessageTypeDefOf.RejectInput);
-                return;
-            }
             weapons.Clear();
             weapons.Add(new SavedThing(def, stuff));
             _pawnEquipmentDirty = true;
@@ -276,7 +267,13 @@ namespace FactionColonies
             double totalCost = 0;
 
             if (pawnKind?.race != null)
-                totalCost += Math.Floor(pawnKind.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
+            {
+                float xenoFactor = 1f;
+                if (xenotype?.genes != null)
+                    foreach (GeneDef gene in xenotype.genes)
+                        xenoFactor *= gene.marketValueFactor;
+                totalCost += Math.Floor(pawnKind.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier * xenoFactor);
+            }
 
             foreach (SavedThing a in apparel)
                 totalCost += a.MarketValue;
@@ -295,30 +292,6 @@ namespace FactionColonies
         public void removeUnit()
         {
             FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
-        }
-
-        public void setTrader(bool state)
-        {
-            changeTick();
-            isTrader = state;
-            if (state)
-            {
-                setCivilian(true);
-            }
-        }
-
-        public void setCivilian(bool state)
-        {
-            changeTick();
-            isCivilian = state;
-            if (state)
-            {
-                ClearWeapon();
-            }
-            else
-            {
-                setTrader(false);
-            }
         }
 
         /// <summary>

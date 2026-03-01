@@ -28,7 +28,9 @@ namespace FactionColonies
         private static List<PawnKindDef> _cachedPawnKindDefs = null;
         private static Dictionary<(Type, string), FieldInfo> _cachedFields = new Dictionary<(Type, string), FieldInfo>();
         private static List<XenotypeDef> _cachedXenotypeList = null;
+        private static List<XenotypeDef> _cachedViolentXenotypeList = null;
         private static List<CustomXenotype> _cachedCustomXenotypeList = null;
+        private static List<CustomXenotype> _cachedViolentCustomXenotypeList = null;
         private static Dictionary<string, CustomXenotype> _cachedCustomXenotypeDecoder = null;
         private static List<ThingDef> _cachedRaceList = null;
         private static List<PawnKindDef> _cachedAnimalKinds = null;
@@ -329,6 +331,28 @@ namespace FactionColonies
                 return _cachedFCPolicyDescs;
             }
         }
+        public static List<XenotypeDef> ViolentXenotypeDefs
+        {
+            get
+            {
+                if (_cachedViolentXenotypeList == null)
+                {
+                    _cachedViolentXenotypeList = XenotypeDefs.Where(x => !XenotypeIsNonViolent(x)).ToList();
+                }
+                return _cachedViolentXenotypeList;
+            }
+        }
+        public static List<CustomXenotype> ViolentCustomXenotypes
+        {
+            get
+            {
+                if (_cachedViolentCustomXenotypeList == null)
+                {
+                    _cachedViolentCustomXenotypeList = CustomXenotypes.Where(x => !CustomXenotypeIsNonViolent(x)).ToList();
+                }
+                return _cachedViolentCustomXenotypeList;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -341,12 +365,14 @@ namespace FactionColonies
             _cachedFields.Clear();
             _cachedRaceList = null;
             _cachedXenotypeList = null;
+            _cachedViolentXenotypeList = null;
             _cachedAnimalKinds = null;
             _cachedCombatAnimalKinds = null;
             _cachedPackAnimalKinds = null;
             _cachedXenotypeViolenceDict = null;
             _cachedFCPolicyDefs = null;
             _cachedFCPolicyDescs = null;
+
             InvalidateCustomXenotypeCache();
         }
         /* Custom xenotypes are actually expected to change while the game is loaded, and thus we may have to refresh that specific cache more frequently than the rest.
@@ -354,6 +380,7 @@ namespace FactionColonies
         public static void InvalidateCustomXenotypeCache()
         {
             _cachedCustomXenotypeList = null;
+            _cachedViolentCustomXenotypeList = null;
             _cachedCustomXenotypeDecoder = null;
             _cachedCustomXenotypeViolenceDict = null;
 

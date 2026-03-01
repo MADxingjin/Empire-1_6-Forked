@@ -180,8 +180,6 @@ namespace FactionColonies
     public class SavedUnitFC : IExposable
     {
         public string name;
-        public bool isTrader;
-        public bool isCivilian;
         public PawnKindDef animal;
         public PawnKindDef pawnKind;
         public List<SavedThing> weapons;
@@ -195,8 +193,6 @@ namespace FactionColonies
             name = unit.name;
             weapons = new List<SavedThing>(unit.weapons);
             apparel = new List<SavedThing>(unit.apparel);
-            isTrader = unit.isTrader;
-            isCivilian = unit.isCivilian;
             animal = unit.animal;
             pawnKind = unit.pawnKind;
             xenotype = unit.xenotype;
@@ -213,8 +209,6 @@ namespace FactionColonies
             MilUnitFC unit = new MilUnitFC(false)
             {
                 name = name,
-                isCivilian = isCivilian,
-                isTrader = isTrader,
                 animal = animal,
                 pawnKind = resolvedKind,
                 xenotype = xenotype,
@@ -239,8 +233,6 @@ namespace FactionColonies
         public void ExposeData()
         {
             Scribe_Values.Look(ref name, "name");
-            Scribe_Values.Look(ref isTrader, "isTrader");
-            Scribe_Values.Look(ref isCivilian, "isCivilian");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref pawnKind, "pawnKind");
             Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
@@ -253,15 +245,11 @@ namespace FactionColonies
         public string name;
         public List<SavedUnitFC> unitTemplates = new List<SavedUnitFC>();
         public List<int> units = new List<int>(30);
-        public bool isTraderCaravan;
-        public bool isCivilian;
         public SavedSquadFC() {}
 
         public SavedSquadFC(MilSquadFC squad)
         {
             name = squad.name;
-            isTraderCaravan = squad.isTraderCaravan;
-            isCivilian = squad.isCivilian;
 
             // Dont store blank units
             var squadTemplates = squad.units.Distinct().Where(u => !u.isBlank).ToList();
@@ -274,8 +262,6 @@ namespace FactionColonies
         {
             MilSquadFC squad = new MilSquadFC(true);
             squad.name = name;
-            squad.isCivilian = isCivilian;
-            squad.isTraderCaravan = isTraderCaravan;
 
             FactionFC fc = FactionCache.FactionComp;
 
@@ -306,8 +292,6 @@ namespace FactionColonies
         public void ExposeData()
         {
             Scribe_Values.Look(ref name, "name");
-            Scribe_Values.Look(ref isCivilian, "isCivilian");
-            Scribe_Values.Look(ref isTraderCaravan, "isTraderCaravan");
             Scribe_Collections.Look(ref unitTemplates, "unitTemplates", LookMode.Deep);
             Scribe_Collections.Look(ref units, "units", LookMode.Value);
         }

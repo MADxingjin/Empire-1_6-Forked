@@ -770,7 +770,7 @@ namespace FactionColonies
             if (Widgets.ButtonTextSubtle(autoBtn, "FCAutoResolve".Translate()))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
-                list.Add(new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills), delegate
+                list.Add(new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills ? "Yes".Translate() : "No".Translate()), delegate
                 {
                     faction.autoResolveBills = !faction.autoResolveBills;
                     if (faction.autoResolveBills)

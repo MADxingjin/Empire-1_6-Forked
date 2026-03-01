@@ -18,7 +18,6 @@ namespace FactionColonies
         public List<Mercenary> mercenaries = new List<Mercenary>();
         public List<Mercenary> animals = new List<Mercenary>();
         public WorldSettlementFC settlement;
-        public bool isTraderCaravan;
         public bool isDeployed;
         public bool isExtraSquad;
         public int timeDeployed;
@@ -41,7 +40,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Collections.Look(ref mercenaries, "mercenaries", LookMode.Deep);
             Scribe_Collections.Look(ref animals, "animals", LookMode.Deep);
-            Scribe_Values.Look(ref isTraderCaravan, "isTraderCaravan");
             Scribe_Values.Look(ref isDeployed, "isDeployed");
             Scribe_Values.Look(ref isExtraSquad, "isExtraSquad");
             Scribe_Values.Look(ref hitMap, "hitMap");

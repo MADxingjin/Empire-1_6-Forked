@@ -1,4 +1,5 @@
-﻿using RimWorld.Planet;
+﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -57,6 +58,12 @@ namespace FactionColonies
             }
             return false;
         }
+        public static void DrawPawnPortrait(Rect rect, Pawn pawn, float cameraZoom = 1f)
+        {
+            RenderTexture portrait = PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), Rot4.South, cameraZoom: cameraZoom);
+            GUI.DrawTexture(rect, portrait);
+        }
+
         private static bool CustomInfoCardButtonWorker(Rect rect)
         {
             MouseoverSounds.DoRegion(rect);

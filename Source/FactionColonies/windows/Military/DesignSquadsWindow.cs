@@ -43,8 +43,6 @@ namespace FactionColonies
             Rect createSquadButton = new Rect(5, SelectionBar.y + SelectionBar.height + 10, 200, 30);
             Rect importButton = new Rect(5, createSquadButton.y + createSquadButton.height + 10, 200, 30);
             Rect nameTextField = new Rect(5, importButton.y + importButton.height + 10, 250, 30);
-            Rect isTrader = new Rect(5, nameTextField.y + nameTextField.height + 10, 130, 30);
-
             Rect UnitStandBase = new Rect(170, 220, 50, 30);
             Rect EquipmentTotalCost = new Rect(350, 50, 450, 40);
             Rect ResetButton = new Rect(700, 100, 100, 30);
@@ -121,9 +119,6 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.UpperCenter;
 
 
-                //Widgets.CheckboxLabeled(isTrader, "is Trader Caravan", ref selectedSquad.isTraderCaravan);
-                selectedSquad.setTraderCaravan(selectedSquad.isTraderCaravan);
-                
                 //Unit Name
                 selectedSquad.name = Widgets.TextField(nameTextField, selectedSquad.name);
 

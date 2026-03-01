@@ -156,15 +156,23 @@ namespace FactionColonies
                 else if (i % 2 == 0)
                     Widgets.DrawHighlight(row);
 
-                // Icon
-                Rect iconRect = new Rect(row.x + 2f, row.y + 3f, IconSize, IconSize);
+                // Row layout: Icon | Info | Label | Cost
+                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
                 Widgets.ThingIcon(iconRect, item);
 
-                // Label + cost
+                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                UIUtil.InfoCardButton(infoRect, item);
+
+                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
+                    costRect.x - infoRect.xMax - (margin * 2), RowHeight);
+
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Rect labelRect = new Rect(iconRect.xMax + 5f, row.y, row.width - IconSize - 40f, RowHeight);
-                Widgets.Label(labelRect, item.LabelCap + " - " + item.BaseMarketValue.ToString("F0"));
+                Widgets.Label(labelRect, item.LabelCap);
+
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(costRect, "$" + item.BaseMarketValue.ToString("F0"));
 
                 // Click to select
                 if (Widgets.ButtonInvisible(row))
@@ -183,13 +191,6 @@ namespace FactionColonies
                     {
                         selectedStuff = null;
                     }
-                }
-
-                // Info button
-                Rect infoRect = new Rect(row.xMax - 26f, row.y + 3f, IconSize, IconSize);
-                if (Widgets.ButtonImage(infoRect, TexButton.Info))
-                {
-                    Find.WindowStack.Add(new Dialog_InfoCard(item));
                 }
             }
 
@@ -235,16 +236,24 @@ namespace FactionColonies
                 else if (i % 2 == 0)
                     Widgets.DrawHighlight(row);
 
-                // Icon
-                Rect iconRect = new Rect(row.x + 2f, row.y + 3f, IconSize, IconSize);
+                // Row layout: Icon | Info | Label | Cost
+                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
                 Widgets.ThingIcon(iconRect, stuff);
 
-                // Label + calculated value
+                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                UIUtil.InfoCardButton(infoRect, stuff);
+
+                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
+                    costRect.x - infoRect.xMax - (margin * 2), RowHeight);
+
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(labelRect, stuff.LabelCap);
+
+                Text.Anchor = TextAnchor.MiddleRight;
                 float totalValue = StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, stuff);
-                Rect labelRect = new Rect(iconRect.xMax + 5f, row.y, row.width - IconSize - 10f, RowHeight);
-                Widgets.Label(labelRect, stuff.LabelCap + " - " + totalValue.ToString("F0"));
+                Widgets.Label(costRect, "$" + totalValue.ToString("F0"));
 
                 // Click to select
                 if (Widgets.ButtonInvisible(row))

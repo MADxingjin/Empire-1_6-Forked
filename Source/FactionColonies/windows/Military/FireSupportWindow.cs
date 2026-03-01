@@ -59,7 +59,7 @@ namespace FactionColonies
             //Up here to make sure it goes behind other layers
             if (selectedSupport != null)
             {
-                DrawFireSupportBox(10, 230, 30);
+                DrawFireSupportBox(10, 260, 30);
             }
 
             Widgets.DrawMenuSection(new Rect(0, 45, 800, 225));
