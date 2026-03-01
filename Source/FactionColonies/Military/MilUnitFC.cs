@@ -185,6 +185,7 @@ namespace FactionColonies
         public void changeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
+            _costDirty = true;
         }
 
         public void SetWeapon(ThingDef def, ThingDef stuff)
@@ -246,16 +247,16 @@ namespace FactionColonies
 
         // --- Cost ---
 
-        private int _lastCostCalcTick = -1;
+        private bool _costDirty = true;
 
         public double getTotalCost
         {
             get
             {
-                if (_lastCostCalcTick != tickChanged)
+                if (_costDirty)
                 {
                     updateEquipmentTotalCost();
-                    _lastCostCalcTick = tickChanged;
+                    _costDirty = false;
                 }
                 return equipmentTotalCost;
             }
@@ -275,8 +276,14 @@ namespace FactionColonies
             {
                 float xenoFactor = 1f;
                 if (xenotype?.genes != null)
+                {
                     foreach (GeneDef gene in xenotype.genes)
-                        xenoFactor *= gene.marketValueFactor;
+                    {
+                        /* Don't include genes that have 0 value (mostly just cosmetic genes) */
+                        if (gene.marketValueFactor > 0)
+                            xenoFactor *= gene.marketValueFactor;
+                    }
+                }
                 totalCost += Math.Floor(pawnKind.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier * xenoFactor);
             }
 
