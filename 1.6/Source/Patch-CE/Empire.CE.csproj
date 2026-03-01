@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <TargetFramework>net472</TargetFramework>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-        <OutputPath>..\Optional\CombatExtended\Assemblies</OutputPath>
+        <OutputPath>..\..\..\Patches\1.6\CombatExtended\Assemblies</OutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <BaseOutputPath>..\Optional\CombatExtended\Assemblies</BaseOutputPath>
+        <BaseOutputPath>..\..\..\Patches\1.6\CombatExtended\Assemblies</BaseOutputPath>
         <Configurations>Debug;Release;Testing</Configurations>
         <PlatformTarget>x64</PlatformTarget>
         <RootNamespace>FactionColonies.CE</RootNamespace>
@@ -19,10 +19,9 @@
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
-        <!-- Main Empire project (for ICombatExtendedBridge, LogUtil, FactionCache, etc.) -->
-        <ProjectReference Include="..\Source\Empire.csproj">
-            <Private>False</Private>
-        </ProjectReference>
+      <ProjectReference Include="..\Core\Empire.csproj">
+        <Private>False</Private>
+      </ProjectReference>
     </ItemGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
@@ -30,7 +29,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="CombatExtended">
-          <HintPath>..\Common\References\CombatExtended.dll</HintPath>
+          <HintPath>..\..\..\Common\References\CombatExtended.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine">
