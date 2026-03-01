@@ -1,4 +1,4 @@
-﻿using FactionColonies.util;
+using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,13 @@ namespace FactionColonies
         }
         public override List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null)
         {
+            // Only handle animal race ThingDefs. For regular items (animal products),
+            // return null so the generic path in ResourceFC.cs handles them.
+            if (thingDef.race == null)
+            {
+                return null;
+            }
+
             List<Thing> output = new List<Thing>();
             for(int i = 0; i < quantity; i++)
             {
@@ -45,64 +52,117 @@ namespace FactionColonies
         private const int MAX_ATTEMPTS_FEW = 100;
         protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
         {
-            List<PawnKindDef> things = new List<PawnKindDef>();
-            List<PawnKindDef> allAnimalDefs = FactionCache.AllAnimalKindDefs;
-
-            float totalValue = 0;
-            foreach (PawnKindDef def in allAnimalDefs)
+            // Build animal pawn pool
+            List<PawnKindDef> animalDefs = new List<PawnKindDef>();
+            foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)
             {
-                if (parms.filter.Allows(def.race) &&
-                    def.race.BaseMarketValue >= parms.totalMarketValueRange.Value.min)
+                if (parms.filter.Allows(def.race))
                 {
-                    things.Add(def);
+                    animalDefs.Add(def);
                 }
             }
-            if (things.Count == 0)
+
+            // Build animal product pool (non-race ThingDefs allowed by the filter)
+            List<ThingDef> productDefs = new List<ThingDef>();
+            foreach (ThingDef def in parms.filter.AllowedThingDefs)
             {
-                LogUtil.Warning($"Attempted to generate things in ThingSetMaker_Animals, but no PawnKindDefs satisfied the criteria");
+                if (def.race == null)
+                {
+                    productDefs.Add(def);
+                }
+            }
+
+            int totalOptions = animalDefs.Count + productDefs.Count;
+            if (totalOptions == 0)
+            {
+                LogUtil.Warning($"Attempted to generate things in ThingSetMaker_Animals, but no defs satisfied the criteria");
                 return;
             }
 
-            Pawn pawn;
+            float totalValue = 0;
             int totalAttempts = 0;
             int minCount = parms.countRange?.min ?? 0;
             int maxCount = parms.countRange?.max ?? MAX_ATTEMPTS;
+            float maxBudget = parms.totalMarketValueRange.Value.max;
+
             do
             {
-                int attempts = 0;
-                do
-                {
-                    PawnGenerationRequest request = new PawnGenerationRequest(kind: things.RandomElement(),
-                                                                              faction: Find.FactionManager.OfPlayer,
-                                                                              allowAddictions: false,
-                                                                              worldPawnFactionDoesntMatter: true);
-                    pawn = PawnGenerator.GeneratePawn(request);
-                    attempts++;
-                }
-                while (pawn.MarketValue + totalValue > parms.totalMarketValueRange.Value.max && attempts < MAX_ATTEMPTS_FEW);
+                // Randomly decide: animal or product, weighted by pool size
+                bool pickAnimal = animalDefs.Count > 0
+                    && (productDefs.Count == 0 || Rand.Range(0, totalOptions) < animalDefs.Count);
 
-                if (attempts >= MAX_ATTEMPTS_FEW)
+                if (pickAnimal)
                 {
-                    LogUtil.Warning($"ThingSetMaker_Animals: Attempted to generate valid animal pawn {MAX_ATTEMPTS_FEW} times, but failed. Moving on");
+                    // Generate animal pawn
+                    Pawn pawn = null;
+                    int attempts = 0;
+                    do
+                    {
+                        PawnGenerationRequest request = new PawnGenerationRequest(kind: animalDefs.RandomElement(),
+                                                                                  faction: Find.FactionManager.OfPlayer,
+                                                                                  allowAddictions: false,
+                                                                                  worldPawnFactionDoesntMatter: true);
+                        pawn = PawnGenerator.GeneratePawn(request);
+                        attempts++;
+                    }
+                    while (pawn.MarketValue + totalValue > maxBudget && attempts < MAX_ATTEMPTS_FEW);
+
+                    if (attempts >= MAX_ATTEMPTS_FEW)
+                    {
+                        LogUtil.Warning($"ThingSetMaker_Animals: Attempted to generate valid animal pawn {MAX_ATTEMPTS_FEW} times, but failed. Moving on");
+                    }
+                    else
+                    {
+                        totalValue += pawn.MarketValue;
+                        outThings.Add(pawn);
+                    }
                 }
-                else
+                else if (productDefs.Count > 0)
                 {
-                    totalValue += pawn.MarketValue;
-                    outThings.Add(pawn);
+                    // Generate animal product
+                    ThingDef productDef = productDefs.RandomElement();
+                    float remainingBudget = maxBudget - totalValue;
+
+                    if (productDef.BaseMarketValue <= remainingBudget)
+                    {
+                        int stackCount = Math.Max(1, Math.Min(
+                            (int)(remainingBudget / productDef.BaseMarketValue),
+                            productDef.stackLimit));
+
+                        Thing thing = ThingMaker.MakeThing(productDef);
+                        thing.stackCount = stackCount;
+                        totalValue += productDef.BaseMarketValue * stackCount;
+                        outThings.Add(thing);
+                    }
                 }
+
                 totalAttempts++;
             }
             while ((outThings.Count < minCount || totalValue < parms.totalMarketValueRange.Value.min) && // If we don't have enough things or value, keep going
-                   !(outThings.Count >= maxCount || totalValue >= parms.totalMarketValueRange.Value.max) && // If we have too many things or too much value, stop
+                   !(outThings.Count >= maxCount || totalValue >= maxBudget) && // If we have too many things or too much value, stop
                    totalAttempts < MAX_ATTEMPTS); // Stop at max attempts
         }
 
         protected override IEnumerable<ThingDef> AllGeneratableThingsDebugSub(ThingSetMakerParams parms)
         {
             List<ThingDef> list = new List<ThingDef>();
+
+            // Add animal race ThingDefs
             foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)
             {
-                list.Add((def.race));
+                list.Add(def.race);
+            }
+
+            // Add non-race ThingDefs (animal products) from the filter
+            if (parms.filter != null)
+            {
+                foreach (ThingDef def in parms.filter.AllowedThingDefs)
+                {
+                    if (def.race == null)
+                    {
+                        list.Add(def);
+                    }
+                }
             }
 
             return list;

@@ -4,7 +4,7 @@
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Food</defName>
 	<label>food</label>
-	<description>A resource category for meals, plants, and meat.</description>
+	<description>A resource category for meals and plant foods.</description>
 	<iconPath>GUI/ProductionFood</iconPath>
 	<uiPriority>100</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
@@ -21,6 +21,10 @@
 			<thingCategoryDef>Foods</thingCategoryDef>
 		</li>
 	</thingCategoryAllowList>
+	<thingCategoryBlockList>
+		<li>MeatRaw</li>
+		<li>AnimalProductRaw</li>
+	</thingCategoryBlockList>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
@@ -102,10 +106,31 @@
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Animals</defName>
 	<label>animals</label>
-	<description>A resource category for livestock.</description>
+	<description>A resource category for livestock and animal products.</description>
 	<iconPath>GUI/ProductionAnimals</iconPath>
 	<uiPriority>400</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<thingCategoryAllowList>
+		<li>
+			<thingCategoryDef>MeatRaw</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>AnimalProductRaw</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>Leathers</thingCategoryDef>
+		</li>
+		<li>
+			<thingCategoryDef>Wools</thingCategoryDef>
+		</li>
+	</thingCategoryAllowList>
+	<thingBlockList>
+		<li>Meat_Human</li>
+		<li>Leather_Human</li>
+	</thingBlockList>
+	<titheMinCount>1</titheMinCount>
+	<titheMaxCountBase>3</titheMaxCountBase>
+	<titheMaxCountScaler>1</titheMaxCountScaler>
 	<modExtensions>
 		<li Class="FactionColonies.ResourceFilterExtension_Animals" />
 	</modExtensions>
