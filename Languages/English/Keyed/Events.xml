@@ -6,6 +6,9 @@
 	<TimeRemaining>Time Remaining</TimeRemaining>
 	<NewLand>New Land</NewLand>
 	<EventAffectingSettlements>This event is affecting the following settlements:</EventAffectingSettlements>
+	<FCNoActiveEvents>No active events.</FCNoActiveEvents>
+	<FCActiveEventsCount>{0} active events</FCActiveEventsCount>
+	<FCMultipleSettlements>Multiple ({0})</FCMultipleSettlements>
 
 	<!-- Building Events -->
 	<BuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</BuildingEventDesc>

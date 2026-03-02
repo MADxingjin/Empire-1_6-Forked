@@ -838,107 +838,271 @@ namespace FactionColonies
 
         // ===== EVENTS TAB =====
 
+        private static readonly Color CategorySettlement   = new Color(0.2f, 0.9f, 0.85f);
+        private static readonly Color CategoryConstruction = new Color(1.0f, 0.65f, 0.1f);
+        private static readonly Color CategoryEconomy      = new Color(1.0f, 0.85f, 0.1f);
+        private static readonly Color CategoryPolicy       = new Color(0.4f, 0.55f, 1.0f);
+        private static readonly Color CategoryMilitary     = new Color(1.0f, 0.25f, 0.25f);
+        private static readonly Color CategoryOther        = new Color(0.65f, 0.65f, 0.65f);
+
         private void DrawEventsTab(Rect rect)
         {
             List<FCEvent> events = faction.events;
-            const float pad     = 8f;
-            const float headerH = 30f;
-            const float rowH    = 30f;
+            const float pad       = 8f;
+            const float rowH      = 44f;
+            const float accentW   = 4f;
+            const float rowGap    = 2f;
+            const float progressW = 160f;
+            const float progressH = 14f;
+            const float summaryH  = 24f;
 
-            float cName = 350f;
-            float cDesc = 150f;
-            float cLoc  = 150f;
-            float cTime = rect.width - cName - cDesc - cLoc - pad * 2f;
+            float innerX = rect.x + pad;
+            float innerW = rect.width - pad * 2f;
 
-            float hx = rect.x + pad;
-            float hy = rect.y + pad;
+            // Summary line
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.Label(new Rect(innerX, rect.y + pad, innerW, summaryH),
+                "FCActiveEventsCount".Translate(events.Count));
+            GUI.color = origColor;
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
 
-            // Header row
-            Text.Font   = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-            Widgets.DrawMenuSection(new Rect(rect.x + pad, hy, rect.width - pad * 2f, headerH));
-
-            Widgets.ButtonTextSubtle(new Rect(hx,                         hy, cName, headerH), "Name".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName,                  hy, cDesc, headerH), "Description".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName + cDesc,          hy, cLoc,  headerH), "Source".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName + cDesc + cLoc,   hy, cTime, headerH), "TimeRemaining".Translate());
+            // Empty state
+            if (events.Count == 0)
+            {
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                origColor = GUI.color;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(rect.x, rect.y + rect.height * 0.35f, rect.width, 40f),
+                    "FCNoActiveEvents".Translate());
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                return;
+            }
 
             // Scrollable event list
-            float listY    = hy + headerH + 2f;
+            float listY    = rect.y + pad + summaryH + 4f;
             float viewH    = rect.yMax - listY - pad;
-            Rect viewRect  = new Rect(rect.x + pad, listY, rect.width - pad * 2f, viewH);
-            float contentH = events.Count * rowH;
+            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float contentH = events.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
 
             Widgets.BeginScrollView(viewRect, ref eventsScroll, scrollRect);
 
-            Text.Font   = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-            for (int i = 0; i < events.Count; i++)
+            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
+            for (int i = 0; i < sorted.Count; i++)
             {
-                FCEvent evt = events[i];
-                float ry = i * rowH;
-                float rx = 0f;
+                FCEvent evt = sorted[i];
+                float ry = i * (rowH + rowGap);
+                float rowW = scrollRect.width;
+                Rect rowRect = new Rect(0f, ry, rowW, rowH);
 
+                // Alternating row background
                 if (i % 2 == 0)
-                    Widgets.DrawHighlight(new Rect(rx, ry, scrollRect.width, rowH));
+                    Widgets.DrawHighlight(rowRect);
 
-                Widgets.Label(new Rect(rx, ry, cName, rowH), evt.def.label); rx += cName;
+                // Category accent strip
+                Color catColor = GetEventCategoryColor(evt);
+                Widgets.DrawBoxSolid(new Rect(0f, ry, accentW, rowH), catColor);
 
-                if (Widgets.ButtonText(new Rect(rx, ry, cDesc, rowH), "FCDesc".Translate()))
+                float contentX = accentW + 6f;
+                float contentW = rowW - contentX - 4f;
+                float topY = ry;
+                float botY = ry + rowH / 2f;
+                float lineH = rowH / 2f;
+
+                // Top-left: Event name (colored by category for emphasis)
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                origColor = GUI.color;
+                GUI.color = catColor;
+                Widgets.Label(new Rect(contentX, topY, contentW - progressW - 10f, lineH), evt.def.label);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Top-right: Clickable location label
+                string locLabel = GetEventLocationLabel(evt);
+                if (locLabel != null)
                 {
-                    if (!evt.hasCustomDescription)
-                    {
-                        string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
-                        if (!settlementString.NullOrEmpty())
-                            Find.WindowStack.Add(new DescWindowFc($"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}"));
-                        else
-                            Find.WindowStack.Add(new DescWindowFc(evt.def.desc));
-                    }
-                    else
-                    {
-                        Find.WindowStack.Add(new DescWindowFc(evt.customDescription));
-                    }
+                    fontBefore = Text.Font;
+                    anchorBefore = Text.Anchor;
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleRight;
+                    float locW = Mathf.Min(Text.CalcSize(locLabel).x + 8f, contentW * 0.4f);
+                    Rect locRect = new Rect(contentX + contentW - locW, topY, locW, lineH);
+                    origColor = GUI.color;
+                    GUI.color = new Color(0.7f, 0.8f, 0.9f);
+                    Widgets.Label(locRect, locLabel);
+                    GUI.color = origColor;
+                    if (Widgets.ButtonInvisible(locRect))
+                        HandleLocationClick(evt);
+                    if (Mouse.IsOver(locRect))
+                        Widgets.DrawHighlight(locRect);
+                    Text.Font = fontBefore;
+                    Text.Anchor = anchorBefore;
                 }
-                rx += cDesc;
 
-                if (Widgets.ButtonText(new Rect(rx, ry, cLoc, rowH), "Location".Translate().CapitalizeFirst()))
-                {
-                    if (evt.hasDestination)
-                    {
-                        Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
-                    }
-                    else if (evt.settlementTraitLocations.Count > 0)
-                    {
-                        List<FloatMenuOption> list = new List<FloatMenuOption>();
-                        foreach (WorldSettlementFC settlement in evt.settlementTraitLocations)
-                        {
-                            if (settlement != null)
-                            {
-                                WorldSettlementFC cap = settlement;
-                                list.Add(new FloatMenuOption(settlement.Name, delegate
-                                {
-                                    Find.WindowStack.Add(new SettlementWindowFc(cap));
-                                }));
-                            }
-                        }
-                        if (list.Count == 0)
-                            list.Add(new FloatMenuOption("None".Translate(), null));
-                        Find.WindowStack.Add(new FloatMenu(list));
-                    }
-                    else if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
-                    {
-                        Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source)));
-                    }
-                }
-                rx += cLoc;
+                // Bottom-left: Description text (white for readability)
+                string desc = GetEventDescription(evt);
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(contentX, botY, contentW - progressW - 10f, lineH), desc);
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
 
-                Widgets.Label(new Rect(rx, ry, cTime, rowH), (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+                // Bottom-right: Progress bar + time label
+                int ticksLeft = evt.timeTillTrigger - Find.TickManager.TicksGame;
+                string timeStr = Math.Max(ticksLeft, 0).ToTimeString();
+                float progress = evt.Progress;
+
+                float barX = contentX + contentW - progressW;
+                float barY = botY + (lineH - progressH) / 2f;
+                Color barBg = new Color(catColor.r * 0.25f, catColor.g * 0.25f, catColor.b * 0.25f);
+                Color barFill = new Color(catColor.r * 0.7f, catColor.g * 0.7f, catColor.b * 0.7f);
+                UIUtil.DrawProgressBarColors(new Rect(barX, barY, progressW, progressH), progress, barBg, barFill);
+
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(new Rect(barX, barY, progressW, progressH), timeStr);
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Row tooltip
+                string tooltip = GetEventFullTooltip(evt);
+                UIUtil.TipRegionByText(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
+        }
+
+        private static Color GetEventCategoryColor(FCEvent evt)
+        {
+            string name = evt.def.defName ?? "";
+            if (name == "settleNewColony" || name == "upgradeSettlement")
+                return CategorySettlement;
+            if (name == "constructBuilding")
+                return CategoryConstruction;
+            if (name == "taxColony" || name == "deliveryArrival")
+                return CategoryEconomy;
+            if (name == "enactSettlementPolicy" || name == "enactFactionPolicy")
+                return CategoryPolicy;
+            if (evt.isMilitaryEvent || name.StartsWith("raid") || name.StartsWith("enslave")
+                || name.StartsWith("capture") || name == "cooldownMilitary" || name == "settlementBeingAttacked")
+                return CategoryMilitary;
+            return CategoryOther;
+        }
+
+        private string GetEventLocationLabel(FCEvent evt)
+        {
+            if (evt.hasDestination)
+            {
+                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.location);
+                return settlement?.Name;
+            }
+            if (evt.settlementTraitLocations.Count == 1)
+                return evt.settlementTraitLocations[0]?.Name;
+            if (evt.settlementTraitLocations.Count > 1)
+                return "FCMultipleSettlements".Translate(evt.settlementTraitLocations.Count);
+            if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
+            {
+                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.source);
+                return settlement?.Name;
+            }
+            // Generic fallback: try location, then source
+            if (evt.location != -1)
+            {
+                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.location);
+                if (settlement != null) return settlement.Name;
+            }
+            if (evt.source != -1)
+            {
+                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.source);
+                if (settlement != null) return settlement.Name;
+            }
+            return null;
+        }
+
+        private static string GetEventDescription(FCEvent evt)
+        {
+            if (evt.hasCustomDescription && !evt.customDescription.NullOrEmpty())
+                return evt.customDescription;
+            return evt.def.desc ?? "";
+        }
+
+        private string GetEventFullTooltip(FCEvent evt)
+        {
+            string desc = GetEventDescription(evt);
+            string tooltip = $"{evt.def.label}\n\n{desc}";
+            if (evt.settlementTraitLocations.Count > 0)
+            {
+                string settlements = evt.settlementTraitLocations
+                    .Where(s => s != null)
+                    .Join(s => s.Name, ", ");
+                if (!settlements.NullOrEmpty())
+                    tooltip += $"\n\n{"EventAffectingSettlements".Translate()}\n{settlements}";
+            }
+            return tooltip;
+        }
+
+        private void HandleLocationClick(FCEvent evt)
+        {
+            if (evt.hasDestination)
+            {
+                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
+            }
+            else if (evt.settlementTraitLocations.Count > 0)
+            {
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                foreach (WorldSettlementFC settlement in evt.settlementTraitLocations)
+                {
+                    if (settlement != null)
+                    {
+                        WorldSettlementFC cap = settlement;
+                        list.Add(new FloatMenuOption(settlement.Name, delegate
+                        {
+                            Find.WindowStack.Add(new SettlementWindowFc(cap));
+                        }));
+                    }
+                }
+                if (list.Count == 0)
+                    list.Add(new FloatMenuOption("None".Translate(), null));
+
+                if (list.Count == 1 && list[0].action != null)
+                    list[0].action();
+                else
+                    Find.WindowStack.Add(new FloatMenu(list));
+            }
+            else if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
+            {
+                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source)));
+            }
+            else
+            {
+                // Generic fallback: try location, then source
+                WorldSettlementFC fallback = null;
+                if (evt.location != -1)
+                    fallback = faction.returnSettlementByLocation(evt.location);
+                if (fallback == null && evt.source != -1)
+                    fallback = faction.returnSettlementByLocation(evt.source);
+                if (fallback != null)
+                    Find.WindowStack.Add(new SettlementWindowFc(fallback));
+            }
         }
 
         // ===== MILITARY TAB =====

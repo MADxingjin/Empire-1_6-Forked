@@ -138,6 +138,7 @@ namespace FactionColonies
 
             FCEvent tempEvent = new FCEvent(true);
             tempEvent.def = def;
+            tempEvent.tickStarted = Find.TickManager.TicksGame;
             tempEvent.timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame;
             return tempEvent;
         }
@@ -151,6 +152,7 @@ namespace FactionColonies
             FCEvent tempEvent = new FCEvent(true)
             {
                 def = def,
+                tickStarted = Find.TickManager.TicksGame,
                 timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
                 traits = def.traits,
                 settlementTraitLocations = new List<WorldSettlementFC>()
@@ -530,6 +532,7 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
 
             FCEvent tmp = MakeEvent(FCEventDefOf.taxColony);
+            tmp.tickStarted = Find.TickManager.TicksGame;
 
             if (bill.settlement != null && faction.settlements.Contains(bill.settlement))
             {
@@ -611,6 +614,7 @@ namespace FactionColonies
         public FCEventDef def = new FCEventDef();
         public PlanetTile location = -1; //destination
         public int timeTillTrigger = -1;
+        public int tickStarted = -1;
         public int loadID = -1;
         public PlanetTile source = -1; //source location
         public bool hasDestination; //if has destination
@@ -671,6 +675,18 @@ namespace FactionColonies
         public bool isMilitaryEvent;
 
         public WorldSettlementDef settlementToCreate = null;
+
+        public float Progress
+        {
+            get
+            {
+                if (tickStarted < 0 || timeTillTrigger <= tickStarted) return 1f;
+                int now = Find.TickManager.TicksGame;
+                if (now >= timeTillTrigger) return 1f;
+                return (float)(now - tickStarted) / (timeTillTrigger - tickStarted);
+            }
+        }
+
         public FCEvent()
         {
             //Constructor
@@ -689,6 +705,7 @@ namespace FactionColonies
         /// <param name="timeToFinish">Time of event's completion</param>
         public void DefineEvent(FactionFC f, int mapLocation, int timeToFinish) {
             this.hasCustomDescription = true;
+            this.tickStarted = Find.TickManager.TicksGame;
             this.timeTillTrigger = Find.TickManager.TicksGame + timeToFinish;
             this.location = mapLocation;
             f.addEvent(this);
@@ -700,6 +717,7 @@ namespace FactionColonies
             Scribe_Defs.Look(ref def, "def");
             Scribe_Values.Look(ref location, "location");
             Scribe_Values.Look(ref timeTillTrigger, "timeTillTrigger");
+            Scribe_Values.Look(ref tickStarted, "tickStarted", -1);
             Scribe_Values.Look(ref source, "source");
             Scribe_Values.Look(ref hasDestination, "hasDestination");
             Scribe_Collections.Look(ref settlementTraitLocations, "settlementTraitLocations", LookMode.Reference);

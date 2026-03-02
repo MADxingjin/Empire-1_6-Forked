@@ -259,6 +259,7 @@ namespace FactionColonies
                             FCEvent tmpEvt = new FCEvent(true)
                             {
                                 def = FCEventDefOf.constructBuilding,
+                                tickStarted = Find.TickManager.TicksGame,
                                 source = settlement.Tile,
                                 building = building,
                                 buildingSlot = buildingSlot

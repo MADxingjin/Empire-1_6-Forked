@@ -55,6 +55,7 @@ namespace FactionColonies
             FCEvent tmp = new FCEvent(true)
             {
                 def = FCEventDefOf.upgradeSettlement,
+                tickStarted = Find.TickManager.TicksGame,
                 location = settlement.Tile,
                 timeTillTrigger = Find.TickManager.TicksGame + (settlement.settlementLevel + 1) * 60000 * (factionfc.hasPolicy(FCPolicyDefOf.isolationist) ? 1 : 2)
             };
