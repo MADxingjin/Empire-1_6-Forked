@@ -68,7 +68,7 @@ namespace FactionColonies
             File.Delete(GetUnitPath(unit.name));
         }
 
-        [DebugAction("Empire", "Reload Saved Military")]
+        [DebugAction("Empire", "Reload Saved Military", allowedGameStates = AllowedGameStates.Playing)]
         public static void Read()
         {
             if (Scribe.mode != LoadSaveMode.Inactive)

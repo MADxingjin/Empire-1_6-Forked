@@ -15,7 +15,7 @@ namespace FactionColonies
 {
 	public static class DebugActionsMisc
 	{
-		[DebugAction("Mods", "Display Empire patch notes", false, false, allowedGameStates = AllowedGameStates.Entry)]
+		[DebugAction("Mods", "Display Empire patch notes", allowedGameStates = AllowedGameStates.Entry)]
 		public static void PatchNotesDisplayWindow() => Find.WindowStack.Add(new PatchNotesDisplayWindow());
 	}
 
