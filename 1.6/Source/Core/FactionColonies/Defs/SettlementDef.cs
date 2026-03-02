@@ -44,6 +44,13 @@ namespace FactionColonies
         public int maxBuildingCount = 99;
 
         /// <summary>
+        /// Optional key used for settlement-type-specific town titles.
+        /// When set, GetTownTitle tries FCTitle_{titleKey}_{resourceDefName}_{level} first,
+        /// falling back to FCTitle_{resourceDefName}_{level} if the type-specific key doesn't exist.
+        /// </summary>
+        public string titleKey;
+
+        /// <summary>
         /// Entirely flavor. Determines whether time to create is labeled in menus as "Construction Time" or "Travel Time".
         /// </summary>
         public bool isConstructed = false;

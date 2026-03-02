@@ -86,22 +86,12 @@ namespace FactionColonies
 
         public static string GetTownTitle(WorldSettlementFC settlement)
         {
-            double highest = 0;
-            string resourceKey = "";
-            int level;
-            if (settlement.settlementLevel <= 3)
-            {
-                level = 1;
-            }
-            else if (settlement.settlementLevel <= 6)
-            {
-                level = 2;
-            }
-            else
-            {
-                level = 3;
-            }
+            int level = settlement.settlementLevel <= 3 ? 1
+                      : settlement.settlementLevel <= 6 ? 2
+                      : 3;
 
+            string resourceKey = "";
+            double highest = 0;
             foreach (ResourceFC resource in settlement.Resources)
             {
                 if (resource.actualIncome > highest)
@@ -110,6 +100,15 @@ namespace FactionColonies
                     resourceKey = resource.def.defName;
                 }
             }
+
+            string titleKey = (settlement.def as WorldSettlementDef)?.titleKey;
+            if (titleKey != null)
+            {
+                string typeSpecificKey = "FCTitle_" + titleKey + "_" + resourceKey + "_" + level;
+                if (typeSpecificKey.CanTranslate())
+                    return typeSpecificKey.Translate();
+            }
+
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
         }
 

@@ -33,6 +33,7 @@
     <defName>WorldSettlementDef_Orbital</defName>
     <label>basic orbital colony</label>
     <description>Standard orbital construction capabilities</description>
+	<titleKey>Orbital</titleKey>
 	<defaultResources>true</defaultResources>
 	<resources>
 		<li>
