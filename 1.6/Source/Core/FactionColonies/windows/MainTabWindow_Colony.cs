@@ -740,100 +740,203 @@ namespace FactionColonies
 
         // ===== BILLS TAB =====
 
+        private static readonly Color BillIncome  = new Color(0.2f, 0.85f, 0.3f);
+        private static readonly Color BillExpense = new Color(1.0f, 0.35f, 0.3f);
+
         private void DrawBillsTab(Rect rect)
         {
             List<BillFC> bills = faction.Bills;
-            const float pad     = 8f;
-            const float headerH = 30f;
-            const float rowH    = 30f;
+            const float pad       = 8f;
+            const float rowH      = 44f;
+            const float accentW   = 4f;
+            const float rowGap    = 2f;
+            const float resolveW  = 100f;
+            const float summaryH  = 24f;
 
-            float cName    = 280f;
-            float cDue     = 130f;
-            float cAmount  = 120f;
-            float cTithe   = 110f;
-            float cResolve = rect.width - cName - cDue - cAmount - cTithe - pad * 2f;
+            float innerX = rect.x + pad;
+            float innerW = rect.width - pad * 2f;
 
-            float hx = rect.x + pad;
-            float hy = rect.y + pad;
+            // Summary line (left): bill count + tax countdown | auto-resolve toggle (right)
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
+            string taxCountdown = "TimeTillTax".Translate() + ": "
+                + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString();
+            Widgets.Label(new Rect(innerX, rect.y + pad, innerW * 0.6f, summaryH),
+                "FCPendingBillsCount".Translate(bills.Count) + "    |    " + taxCountdown);
+            GUI.color = origColor;
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
 
-            // Header row
-            Text.Font   = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-            Widgets.DrawMenuSection(new Rect(rect.x + pad, hy, rect.width - pad * 2f, headerH));
-
-            Widgets.ButtonTextSubtle(new Rect(hx,                               hy, cName,    headerH), "Settlement".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName,                       hy, cDue,     headerH), "DueFC".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName + cDue,                hy, cAmount,  headerH), "Amount".Translate());
-            Widgets.ButtonTextSubtle(new Rect(hx + cName + cDue + cAmount,      hy, cTithe,   headerH), "HasTithe".Translate());
-
-            Rect autoBtn = new Rect(hx + cName + cDue + cAmount + cTithe, hy, cResolve - 30f, headerH);
-            if (Widgets.ButtonTextSubtle(autoBtn, "FCAutoResolve".Translate()))
+            // Auto-resolve checkbox (right side of summary)
+            float autoX = innerX + innerW - 180f;
+            fontBefore = Text.Font;
+            anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleRight;
+            origColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.Label(new Rect(autoX, rect.y + pad, 150f, summaryH), "FCAutoResolve".Translate());
+            GUI.color = origColor;
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+            bool prevAutoResolve = faction.autoResolveBills;
+            Widgets.Checkbox(new Vector2(autoX + 153f, rect.y + pad + 1f), ref faction.autoResolveBills, 22);
+            if (faction.autoResolveBills && !prevAutoResolve)
             {
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-                list.Add(new FloatMenuOption("FCAutoResolving".Translate(faction.autoResolveBills ? "Yes".Translate() : "No".Translate()), delegate
-                {
-                    faction.autoResolveBills = !faction.autoResolveBills;
-                    if (faction.autoResolveBills)
-                    {
-                        Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
-                        PaymentUtil.autoresolveBills(bills);
-                    }
-                    else
-                    {
-                        Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
-                    }
-                }));
-                Find.WindowStack.Add(new FloatMenu(list));
+                Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
+                PaymentUtil.autoresolveBills(bills);
             }
-            Widgets.Checkbox(new Vector2(autoBtn.xMax + 3f, hy + 3f), ref faction.autoResolveBills, 24, true);
+            else if (!faction.autoResolveBills && prevAutoResolve)
+            {
+                Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
+            }
+
+            // Empty state
+            if (bills.Count == 0)
+            {
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                origColor = GUI.color;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(rect.x, rect.y + rect.height * 0.35f, rect.width, 40f),
+                    "FCNoPendingBills".Translate());
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                return;
+            }
 
             // Scrollable bill list
-            float listY = hy + headerH + 2f;
-            float viewH = rect.yMax - listY - pad;
-            Rect viewRect  = new Rect(rect.x + pad, listY, rect.width - pad * 2f, viewH);
-            float contentH = bills.Count * rowH;
+            float listY    = rect.y + pad + summaryH + 4f;
+            float viewH    = rect.yMax - listY - pad;
+            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float contentH = bills.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
 
             Widgets.BeginScrollView(viewRect, ref billsScroll, scrollRect);
 
-            Text.Font   = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
+            List<BillFC> sorted = bills.OrderBy(b => b.dueTick).ToList();
             bool billResolved = false;
-            for (int i = 0; i < bills.Count; i++)
+            for (int i = 0; i < sorted.Count; i++)
             {
-                BillFC bill = bills[i];
-                float ry = i * rowH;
-                float rx = 0f;
+                BillFC bill = sorted[i];
+                float ry = i * (rowH + rowGap);
+                float rowW = scrollRect.width;
+                Rect rowRect = new Rect(0f, ry, rowW, rowH);
 
+                // Alternating row background
                 if (i % 2 == 0)
-                    Widgets.DrawHighlight(new Rect(rx, ry, scrollRect.width, rowH));
+                    Widgets.DrawHighlight(rowRect);
 
+                // Accent strip (green = income, red = expense)
+                Color accent = GetBillAccentColor(bill);
+                Widgets.DrawBoxSolid(new Rect(0f, ry, accentW, rowH), accent);
+
+                float contentX = accentW + 6f;
+                float contentW = rowW - contentX - 4f;
+                float topY = ry;
+                float botY = ry + rowH / 2f;
+                float lineH = rowH / 2f;
+
+                // Top-left: Settlement name (clickable, colored by bill type)
                 string settleName = bill.settlement != null ? bill.settlement.Name : "Null";
-                if (Widgets.ButtonText(new Rect(rx, ry, cName, rowH), settleName))
-                {
-                    if (bill.settlement != null)
-                        Find.WindowStack.Add(new SettlementWindowFc(bill.settlement));
-                }
-                rx += cName;
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                origColor = GUI.color;
+                GUI.color = accent;
+                float nameW = contentW - resolveW - 160f;
+                Rect nameRect = new Rect(contentX, topY, nameW, lineH);
+                Widgets.Label(nameRect, settleName);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                if (Widgets.ButtonInvisible(nameRect) && bill.settlement != null)
+                    Find.WindowStack.Add(new SettlementWindowFc(bill.settlement));
+                if (Mouse.IsOver(nameRect))
+                    Widgets.DrawHighlight(nameRect);
 
-                Widgets.Label(new Rect(rx, ry, cDue,    rowH), (bill.dueTick - Find.TickManager.TicksGame).ToTimeString()); rx += cDue;
-                Widgets.Label(new Rect(rx, ry, cAmount,  rowH), bill.taxes.silverAmount.ToString()); rx += cAmount;
+                // Top-right: Silver amount (colored) + Resolve button
+                float silverW = 140f;
+                float silverX = contentX + contentW - resolveW - silverW - 6f;
+                string silverStr = bill.taxes.silverAmount.ToString("F0") + " " + "Silver".Translate();
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleRight;
+                origColor = GUI.color;
+                GUI.color = bill.taxes.silverAmount >= 0 ? BillIncome : BillExpense;
+                Widgets.Label(new Rect(silverX, topY, silverW, lineH), silverStr);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
 
-                bool hasTithe = bill.taxes.itemTithes.Count > 0;
-                Widgets.Checkbox(new Vector2(rx + cTithe / 2f - 12f, ry), ref hasTithe); rx += cTithe;
-
-                if (Widgets.ButtonText(new Rect(rx, ry, cResolve, rowH), "ResolveBill".Translate()))
+                // Resolve button (right side, full row height)
+                Rect resolveRect = new Rect(contentX + contentW - resolveW, ry + 4f, resolveW, rowH - 8f);
+                if (Widgets.ButtonText(resolveRect, "ResolveBill".Translate()))
                 {
                     if (!bill.attemptResolve())
                         Messages.Message("NotEnoughSilverOnMapToPayBill".Translate() + "!", MessageTypeDefOf.RejectInput);
                     billResolved = true;
                     break;
                 }
+
+                // Bottom-left: Tithe summary
+                string titheSummary = GetBillTitheSummary(bill);
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(contentX, botY, contentW - 160f, lineH), titheSummary);
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Bottom-right: Due time with urgency coloring
+                int ticksLeft = bill.dueTick - Find.TickManager.TicksGame;
+                string dueStr = ticksLeft <= 0 ? "FCOverdue".Translate().ToString() : Math.Max(ticksLeft, 0).ToTimeString();
+                Color dueColor = ticksLeft <= 0 ? new Color(1f, 0.3f, 0.3f)
+                    : ticksLeft < GenDate.TicksPerDay ? new Color(1f, 0.7f, 0.2f)
+                    : Color.white;
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleRight;
+                origColor = GUI.color;
+                GUI.color = dueColor;
+                Widgets.Label(new Rect(contentX + contentW - resolveW - 166f, botY, 160f, lineH), dueStr);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Tooltip
+                string tooltip = settleName + "\n\n"
+                    + "Silver".Translate() + ": " + bill.taxes.silverAmount.ToString("F0") + "\n"
+                    + titheSummary + "\n"
+                    + "DueFC".Translate() + ": " + dueStr;
+                UIUtil.TipRegionByText(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
+        }
+
+        private static Color GetBillAccentColor(BillFC bill)
+        {
+            return bill.taxes.silverAmount >= 0 ? BillIncome : BillExpense;
+        }
+
+        private static string GetBillTitheSummary(BillFC bill)
+        {
+            int count = bill.taxes.itemTithes.Count;
+            return count > 0
+                ? "FCTitheItemCount".Translate(count)
+                : "FCNoTithes".Translate();
         }
 
         // ===== EVENTS TAB =====
@@ -954,13 +1057,15 @@ namespace FactionColonies
                     Text.Anchor = anchorBefore;
                 }
 
-                // Bottom-left: Description text (white for readability)
-                string desc = GetEventDescription(evt);
+                // Bottom-left: Description text (white, truncated with ellipsis)
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(new Rect(contentX, botY, contentW - progressW - 10f, lineH), desc);
+                float descW = contentW - progressW - 10f;
+                Rect descRect = new Rect(contentX, botY, descW, lineH);
+                string desc = Text.ClampTextWithEllipsis(descRect, TextUtil.CleaveAtNewline(GetEventDescription(evt)));
+                Widgets.Label(descRect, desc);
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
 

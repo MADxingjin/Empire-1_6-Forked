@@ -13,6 +13,11 @@
 	<NotEnoughSilverOnMapToPayBill>You do not have enough silver on the current map to pay the bill</NotEnoughSilverOnMapToPayBill>
 	<NumberTaxesHasBeenSolved>{0} bills have been auto-resolved!</NumberTaxesHasBeenSolved>
 	<DueFC>Due</DueFC>
+	<FCNoPendingBills>No pending bills.</FCNoPendingBills>
+	<FCPendingBillsCount>{0} pending bills</FCPendingBillsCount>
+	<FCTitheItemCount>{0} tithe items</FCTitheItemCount>
+	<FCNoTithes>No tithes</FCNoTithes>
+	<FCOverdue>Overdue</FCOverdue>
 	<UnpaidTitheEffect>Unrest has increased by 10 and happiness has decreased in the settlement! </UnpaidTitheEffect>
 
 	<!-- Taxes -->

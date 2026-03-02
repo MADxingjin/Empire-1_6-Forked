@@ -49,6 +49,15 @@ namespace FactionColonies
                 return baseBonus.Colorize(Color.green);
             }
         }
+        public static string CleaveAtNewline(string input)
+        {
+            int newline = input.IndexOf('\n');
+            if (newline > 0)
+            {
+                return input.Substring(0, newline);
+            }
+            return input;
+        }
         /// <summary>
         /// Takes a multiplier bonus and colorizes it: red for a negative bonus, green for a positive bonus.
         /// <para>By default, a bonus that is less than 1 is considered negative, while a bonus that is greater than 1 is considered positive. This can be reversed by passing in 'true' for the 'invert' parameter.</para>
