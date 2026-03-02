@@ -3,6 +3,6 @@
     <v1.6>
         <li>/</li>
         <li>1.6</li>
-        <li IfModActive="CETeam.CombatExtended">Patches/1.6/CombatExtended</li>
+        <li IfModActive="CETeam.CombatExtended">Compat/1.6/CombatExtended</li>
     </v1.6>
 </loadFolders>

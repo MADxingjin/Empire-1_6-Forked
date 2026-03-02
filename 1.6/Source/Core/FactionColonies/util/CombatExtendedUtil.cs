@@ -11,6 +11,7 @@ namespace FactionColonies
         void EquipWeaponWithAmmo(Pawn pawn, ThingWithComps weapon);
         void UpdateInventory(Pawn pawn);
         bool LaunchFireSupportProjectile(ThingDef ammoDef, Map map, IntVec3 source, IntVec3 target);
+        bool IsIndirectFireAmmo(ThingDef ammoDef);
     }
 
     /// <summary>
@@ -40,5 +41,12 @@ namespace FactionColonies
 
         public static bool LaunchFireSupportProjectile(ThingDef ammoDef, Map map, IntVec3 source, IntVec3 target)
             => Bridge?.LaunchFireSupportProjectile(ammoDef, map, source, target) ?? false;
+
+        /// <summary>
+        /// Whether the given ThingDef is compatible with indirect fire (mortar/howitzer).
+        /// Returns true when CE is not loaded (vanilla shells always pass).
+        /// </summary>
+        public static bool IsIndirectFireAmmo(ThingDef ammoDef)
+            => Bridge?.IsIndirectFireAmmo(ammoDef) ?? true;
     }
 }

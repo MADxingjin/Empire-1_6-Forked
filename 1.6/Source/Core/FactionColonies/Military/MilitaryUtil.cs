@@ -148,7 +148,7 @@ namespace FactionColonies
                     List<ThingDef> projectiles = new List<ThingDef>();
                     projectiles.AddRange(support.projectiles);
                     MilitaryFireSupport fireSupport = new MilitaryFireSupport("fireSupport", map, spawnCenter,
-                        projectiles.Count() * 15, 600, support.accuracy, projectiles);
+                        projectiles.Count() * 15, 600, support.accuracy, projectiles, settlement.Tile);
                     FactionCache.FactionComp.militaryCustomizationUtil.fireSupport.Add(fireSupport);
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);

@@ -1,6 +1,7 @@
 ﻿using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace FactionColonies
         }
 
         public MilitaryFireSupport(string fireSupportType, Map map, IntVec3 location, int ticksTillEnd, int startupTime,
-            float accuracy, List<ThingDef> projectiles = null)
+            float accuracy, List<ThingDef> projectiles = null, int settlementTile = -1)
         {
             this.fireSupportType = fireSupportType;
             this.ticksTillEnd = Find.TickManager.TicksGame + ticksTillEnd + startupTime;
@@ -39,7 +40,15 @@ namespace FactionColonies
             this.map = map;
             this.location = location;
             this.startupTime = startupTime;
-            sourceLocation = CellFinder.RandomEdgeCell(map);
+            if (settlementTile >= 0)
+            {
+                Rot4 direction = Find.WorldGrid.GetRotFromTo(map.Tile, settlementTile);
+                sourceLocation = CellFinder.RandomEdgeCell(direction, map);
+            }
+            else
+            {
+                sourceLocation = CellFinder.RandomEdgeCell(map);
+            }
             this.projectiles = projectiles;
         }
 
@@ -95,6 +104,14 @@ namespace FactionColonies
             if (DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AmmoShells") != null)
                 param.filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamedSilentFail("AmmoShells"), true);
             List<ThingDef> list = thingSetMaker.AllGeneratableThingsDebug(param).ToList();
+
+            // When CE is loaded, filter out direct-fire cannon shells (90mm, 37mm, etc.)
+            // and only keep shells whose AmmoSetDef has isMortarAmmoSet = true.
+            if (CombatExtendedUtil.IsCELoaded)
+            {
+                list = list.Where(def => CombatExtendedUtil.IsIndirectFireAmmo(def)).ToList();
+            }
+
             return list;
         }
 
@@ -106,11 +123,8 @@ namespace FactionColonies
         /// Launch a fire support projectile using CE's ballistic system.
         /// Returns true on success, false if caller should fall back to vanilla.
         /// </summary>
-        private bool DoCombatExtendedLaunch(IntVec3 spawnCenter)
+        private bool DoCombatExtendedLaunch(ThingDef ammoDef, IntVec3 spawnCenter)
         {
-            ThingDef ammoDef = expendProjectile();
-            if (ammoDef == null) return false;
-
             return CombatExtendedUtil.LaunchFireSupportProjectile(ammoDef, map, sourceLocation, spawnCenter);
         }
 
@@ -121,18 +135,20 @@ namespace FactionColonies
                 if (ShouldFire)
                 {
                     IntVec3 spawnCenter = SemiRandomSpawnCenter;
+                    ThingDef ammoDef = expendProjectile();
+                    if (ammoDef == null) return;
 
                     if (CombatExtendedUtil.IsCELoaded)
                     {
-                        if (!DoCombatExtendedLaunch(spawnCenter))
+                        if (!DoCombatExtendedLaunch(ammoDef, spawnCenter))
                         {
                             // CE launch failed, fall back to vanilla
-                            LaunchVanillaProjectile(spawnCenter);
+                            LaunchVanillaProjectile(ammoDef, spawnCenter);
                         }
                     }
                     else
                     {
-                        LaunchVanillaProjectile(spawnCenter);
+                        LaunchVanillaProjectile(ammoDef, spawnCenter);
                     }
                 }
             }
@@ -140,10 +156,8 @@ namespace FactionColonies
             timeRunning++;
         }
 
-        private void LaunchVanillaProjectile(IntVec3 spawnCenter)
+        private void LaunchVanillaProjectile(ThingDef ammoDef, IntVec3 spawnCenter)
         {
-            ThingDef ammoDef = expendProjectile();
-            if (ammoDef == null) return;
             ThingDef def = ammoDef.projectileWhenLoaded;
             if (def == null) return;
             LocalTargetInfo info = new LocalTargetInfo(spawnCenter);

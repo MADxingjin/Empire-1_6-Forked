@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using CombatExtended;
 using HarmonyLib;
 using UnityEngine;
@@ -70,50 +71,63 @@ namespace FactionColonies.CE
         {
             try
             {
-                // Resolve the AmmoDef to a CE projectile
                 ThingDef projectileDef = ResolveAmmoProjectile(ammoDef);
                 if (projectileDef == null) return false;
 
-                // Spawn the projectile at the source (map edge)
+                var ceProps = projectileDef.projectile as ProjectilePropertiesCE;
+                if (ceProps == null) return false;
+
+                // Match CE's TravelingShell pattern: off-map artillery arriving from altitude
+                float shotSpeed = 20f;
+                float shotHeight = 200f;
+
+                Vector3 source3D = new Vector3(source.x, shotHeight, source.z);
+                Vector3 target3D = target.ToVector3Shifted();
+
+                float shotRotation = ceProps.TrajectoryWorker.ShotRotation(ceProps, source3D, target3D);
+                float shotAngle = ceProps.TrajectoryWorker.ShotAngle(ceProps, source3D, target3D, shotSpeed);
+
                 var projectile = (ProjectileCE)GenSpawn.Spawn(projectileDef, source, map);
                 if (projectile == null) return false;
-
-                // Read gravity from the spawned instance (set during Spawn from ProjectilePropertiesCE)
-                float gravity = (float)projectile.gravity;
-                if (gravity <= 0f) gravity = 9.8f;
-
-                // Calculate trajectory
-                Vector2 sourceVec = new Vector2(source.x, source.z);
-                Vector2 destVec = new Vector2(target.x, target.z);
-                Vector3 delta = destVec - sourceVec;
-                float range = delta.magnitude;
-
-                float shotSpeed = 100f;
-                float shotHeight = 10f;
-                float shotRotation = (-90f + 57.29578f * Mathf.Atan2(delta.y, delta.x)) % 360;
-                float shotAngle = CE_Utility.GetShotAngle(shotSpeed, range, shotHeight, true, gravity);
+                projectile.canTargetSelf = false;
 
                 projectile.Launch(
                     FactionCache.PlayerColonyFaction?.leader,
-                    sourceVec,
+                    new Vector2(source.x, source.z),
                     shotAngle,
                     shotRotation,
                     shotHeight,
-                    shotSpeed,
-                    null,
-                    -1f);
+                    shotSpeed);
+
+                // Override the internally-computed Destination with the exact target.
+                // CE's Lerped trajectory interpolates toward Destination, so this
+                // guarantees the shell lands at the target regardless of ballistic math.
+                Traverse.Create(projectile).Property("Destination")
+                    .SetValue(new Vector2(target.x + 0.5f, target.z + 0.5f));
 
                 return true;
             }
             catch (Exception e)
             {
-                LogUtil.Error($"CE fire support launch failed: {e.Message}");
+                LogUtil.Error($"CE fire support launch failed: {e}");
                 return false;
             }
         }
 
+        public bool IsIndirectFireAmmo(ThingDef ammoDef)
+        {
+            // Non-CE ammo (vanilla shells) — always allowed
+            if (!(ammoDef is AmmoDef ceAmmo)) return true;
+            // CE ammo — only allow if it belongs to a mortar ammo set
+            var ammoSets = ceAmmo.AmmoSetDefs;
+            return ammoSets != null && ammoSets.Any(set => set.isMortarAmmoSet);
+        }
+
         /// <summary>
-        /// Resolve an AmmoDef to the ThingDef of its CE projectile via direct API.
+        /// Resolve an AmmoDef to the ThingDef of its mortar projectile.
+        /// The same ammo maps to different projectile defs per weapon type (mortar vs rifle).
+        /// Fire support is mortar bombardment, so prefer mortar ammo sets (isMortarAmmoSet)
+        /// with flyOverhead projectiles.
         /// </summary>
         private static ThingDef ResolveAmmoProjectile(ThingDef ammoDef)
         {
@@ -122,12 +136,33 @@ namespace FactionColonies.CE
             var ammoSetDefs = ceAmmo.AmmoSetDefs;
             if (ammoSetDefs == null || ammoSetDefs.Count == 0) return null;
 
+            // Prefer mortar ammo sets with flyOverhead projectiles (indirect fire)
+            foreach (AmmoSetDef ammoSet in ammoSetDefs)
+            {
+                if (!ammoSet.isMortarAmmoSet) continue;
+                foreach (AmmoLink link in ammoSet.ammoTypes)
+                {
+                    if (link.ammo == ceAmmo && link.projectile?.projectile?.flyOverhead == true)
+                        return link.projectile;
+                }
+            }
+
+            // Fallback: any mortar set, any matching projectile
+            foreach (AmmoSetDef ammoSet in ammoSetDefs)
+            {
+                if (!ammoSet.isMortarAmmoSet) continue;
+                foreach (AmmoLink link in ammoSet.ammoTypes)
+                {
+                    if (link.ammo == ceAmmo)
+                        return link.projectile;
+                }
+            }
+
+            // Last resort: first set, first match (original behavior)
             foreach (AmmoLink link in ammoSetDefs[0].ammoTypes)
             {
                 if (link.ammo == ceAmmo)
-                {
                     return link.projectile;
-                }
             }
 
             return null;
