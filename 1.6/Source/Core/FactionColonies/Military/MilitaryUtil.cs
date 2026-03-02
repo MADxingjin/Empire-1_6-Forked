@@ -88,6 +88,7 @@ namespace FactionColonies
                 return;
             }
 
+            squad.CheckInitialization();
             squad.updateSquadStats(settlement.settlementMilitaryLevel);
             squad.resetNeeds();
 

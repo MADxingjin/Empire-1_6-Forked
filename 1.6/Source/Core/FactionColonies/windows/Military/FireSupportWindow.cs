@@ -410,12 +410,13 @@ namespace FactionColonies
             Rect addBtn = new Rect(rect.x, rect.y, btnW, ButtonHeight);
             if (Widgets.ButtonText(addBtn, "FCAddNewProjectile".Translate()))
             {
-                List<FloatMenuOption> options = BuildProjectileMenu(def =>
-                {
-                    selectedSupport.projectiles.Add(def);
-                    SoundDefOf.Click.PlayOneShotOnCamera();
-                });
-                Find.WindowStack.Add(new Searchable_FloatMenu(options, true));
+                Find.WindowStack.Add(new FCWindow_ProjectilePicker(
+                    selectedSupport.returnFireSupportOptions(),
+                    def =>
+                    {
+                        selectedSupport.projectiles.Add(def);
+                        SoundDefOf.Click.PlayOneShotOnCamera();
+                    }));
             }
 
             // Set Point Ref button
@@ -450,27 +451,6 @@ namespace FactionColonies
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
-        }
-
-        // --- Helper Methods ---
-
-        private List<FloatMenuOption> BuildProjectileMenu(Action<ThingDef> onSelect)
-        {
-            List<FloatMenuOption> options = new List<FloatMenuOption>();
-            foreach (ThingDef def in selectedSupport.returnFireSupportOptions())
-            {
-                ThingDef capturedDef = def;
-                options.Add(new FloatMenuOption(
-                    def.LabelCap + " - " + Math.Round(def.BaseMarketValue * 1.5, 2),
-                    delegate { onSelect(capturedDef); }, def));
-            }
-
-            if (!options.Any())
-            {
-                options.Add(new FloatMenuOption("FCNoProjectilesFound".Translate(), delegate { }));
-            }
-
-            return options;
         }
 
     }

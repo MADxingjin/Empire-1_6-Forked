@@ -111,6 +111,8 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<TitheListRejectionQuality>{0} with quality {1} already exists in the item selection list.</TitheListRejectionQuality>
 	<TitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</TitheListRejectionStuff>
 	<TitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</TitheListRejectionStuffQuality>
+	<TitheBudgetNoWorkers>Add workers to this resource to generate tithe budget.</TitheBudgetNoWorkers>
+	<TitheBudgetInsufficient>The max tithe budget isn't high enough.</TitheBudgetInsufficient>
 
 	<!-- Add Tithe Item Window -->
 	<AddTitheItemHeader>Add Tithe Item</AddTitheItemHeader>

@@ -267,6 +267,7 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
+                UIUtil.InfoCardButton(info, iThing);
                 if (Widgets.ButtonInvisible(row))
                 {
                     selectedThing = iThing;
@@ -293,7 +294,6 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue)}");
                 Text.Anchor = TextAnchor.MiddleLeft;
-                UIUtil.InfoCardButton(info, iThing);
             }
 
             Widgets.EndScrollView();
@@ -346,6 +346,7 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iStuff.uiIcon));
+                UIUtil.InfoCardButton(info, iStuff);
                 if (Widgets.ButtonInvisible(row))
                 {
                     selectedStuff = iStuff;
@@ -355,7 +356,6 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(valueLabel, $"${Math.Round(StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, iStuff))}");
                 Text.Anchor = TextAnchor.MiddleLeft;
-                UIUtil.InfoCardButton(info, iStuff);
             }
 
             Widgets.EndScrollView();

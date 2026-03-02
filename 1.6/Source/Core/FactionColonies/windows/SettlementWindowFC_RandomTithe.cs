@@ -92,7 +92,7 @@ namespace FactionColonies
                 ? resource.generateThingDefList()
                 : resource.generateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
-            Rect drawBox = new Rect(boundingBox.x, searchRect.yMax + margin, boundingBox.width, boundingBox.yMax - enableAllBox.yMax - margin);
+            Rect drawBox = new Rect(boundingBox.x, searchRect.yMax + margin, boundingBox.width, boundingBox.yMax - searchRect.yMax - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = thingsList.Count * rowHeight;
             float width;
@@ -136,7 +136,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iThing.LabelCap);
                 Text.Anchor = TextAnchor.MiddleRight;
-                Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue)}");
+                Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue,2)}");
                 Text.Anchor = TextAnchor.MiddleLeft;
                 UIUtil.InfoCardButton(info, iThing);
             }

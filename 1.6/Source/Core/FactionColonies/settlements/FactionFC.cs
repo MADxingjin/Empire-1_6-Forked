@@ -777,6 +777,7 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             {
                 raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
+                DirtyAllTitheCaches();
             }
 
             Faction playerColonyfaction = faction ?? FactionCache.PlayerColonyFaction;
@@ -788,6 +789,17 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             else if (playerColonyfaction != null && playerColonyfaction.def.techLevel >= techLevel)
             {
                 //LogUtil.Message("Tech Level already matches");
+            }
+        }
+
+        public void DirtyAllTitheCaches()
+        {
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                foreach (ResourceFC resource in settlement.Resources)
+                {
+                    resource.setDirtyRandomTitheCache();
+                }
             }
         }
 

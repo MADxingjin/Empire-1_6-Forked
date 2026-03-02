@@ -1254,6 +1254,9 @@ namespace FactionColonies
 
             foreach (MilitaryFireSupport support in militaryUtil.fireSupportDefs)
             {
+                if (support.projectiles == null || support.projectiles.Count == 0)
+                    continue;
+
                 float cost = support.returnTotalCost();
                 list.Add(new FloatMenuOption(support.name + " - $" + cost, delegate
                 {

@@ -33,6 +33,7 @@ namespace FactionColonies
         public Lord lord;
         public XenotypeDef xenotype1;
         public List<Gene> GeneList;
+        private bool squadInitialized = false;
 
         public void ExposeData()
         {
@@ -54,6 +55,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasLord, "hasLord");
             Scribe_References.Look(ref map, "map");
             Scribe_References.Look(ref lord, "lord");
+            Scribe_Values.Look(ref squadInitialized, "squadInitialized", defaultValue: false);
         }
 
         public string GetUniqueLoadID()
@@ -166,6 +168,17 @@ namespace FactionColonies
             else
             {
                 FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
+            }
+            squadInitialized = true;
+        }
+        /// <summary>
+        /// Checks if the squad is initialized, and initializes it if it isn't.
+        /// </summary>
+        public void CheckInitialization()
+        {
+            if (!squadInitialized)
+            {
+                initiateSquad();
             }
         }
 

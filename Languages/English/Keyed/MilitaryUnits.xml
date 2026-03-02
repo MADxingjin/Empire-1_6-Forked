@@ -23,6 +23,8 @@
 	<CantBeModified>{0} can't be modified: {1}</CantBeModified>
 	<ReasonDeployed>A squad containing it is deployed</ReasonDeployed>
 	<ReasonDefending>A squad containing it is defending a settlement</ReasonDefending>
+	<ReasonDeployedSquad>The squad is currently deployed</ReasonDeployedSquad>
+	<ReasonDefendingSquad>The squad is currently defending a settlement</ReasonDefendingSquad>
 	<importUnit>Import Unit</importUnit>
 	<clearUnitSlot>Clear Unit Slot</clearUnitSlot>
 

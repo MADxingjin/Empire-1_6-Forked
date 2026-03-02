@@ -163,7 +163,7 @@ namespace FactionColonies
                 return;
             }
 
-            foreach (ThingDef thingDef in thingCategoryDef.childThingDefs)
+            foreach (ThingDef thingDef in thingCategoryDef.DescendantThingDefs)
             {
                 bool allowed = true;
                 if (restrictByRecipe)

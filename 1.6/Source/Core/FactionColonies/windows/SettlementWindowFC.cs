@@ -571,7 +571,7 @@ namespace FactionColonies
                 }
                 UIUtil.TipRegionByText(xBox, "TitheXDesc".Translate());
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(valueLabel, "$" +  res.titheThingValue(thingTuple).ToString());
+                Widgets.Label(valueLabel, $"${Math.Round(res.titheThingValue(thingTuple),2)}");
 
                 QualityCategory maxQuality = QualityCategory.Legendary;
                 if (CraftUtil.thingHasQuality(iThing) && res.canSetTitheQuality(out maxQuality))
@@ -661,8 +661,16 @@ namespace FactionColonies
                 int max = quantity + res.maxThingCanAfford(thingTuple);
                 string buf = titheBuffers[i];
                 Widgets.IntEntry(fieldBox, ref quantity, ref buf);
+                int unclamped = quantity;
                 quantity = Math.Clamp(quantity, 0, max);
                 buf = quantity.ToString();
+                if (unclamped > max)
+                {
+                    if (res.getTitheIncome() <= 0)
+                        Messages.Message("TitheBudgetNoWorkers".Translate(), MessageTypeDefOf.RejectInput);
+                    else
+                        Messages.Message("TitheBudgetInsufficient".Translate(), MessageTypeDefOf.RejectInput);
+                }
                 if (oldQuantity != quantity)
                 {
                     res.addToTitheList(thingTuple, quantity, true);
@@ -752,7 +760,7 @@ namespace FactionColonies
                     }
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
-                    Widgets.Label(valueLabel, "$" + iThing.BaseMarketValue.ToString());
+                    Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue,2)}");
                     //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
                     UIUtil.InfoCardButton(info, iThing);
                 }
