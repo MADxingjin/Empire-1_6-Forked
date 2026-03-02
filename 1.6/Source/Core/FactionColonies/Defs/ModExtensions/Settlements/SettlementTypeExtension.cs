@@ -187,7 +187,7 @@ namespace FactionColonies
                 return FCSettings.forcedTaxDeliveryMode;
             }
 
-            if (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod").IsFinished)
+            if (FactionCache.TechTransportPods.IsFinished)
             {
                 if (ModsConfig.RoyaltyActive && canUseShuttle)
                 {

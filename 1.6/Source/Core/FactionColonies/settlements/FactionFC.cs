@@ -733,32 +733,28 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             TechLevel curTechLevel = techLevel;
 
 
-            if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false) != null &&
-                researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false)) ==
-                DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false).baseCost && techLevel < TechLevel.Ultra)
+            if (!medievalOnly && FactionCache.TechLevelBarrierUltra != null &&
+                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) == FactionCache.TechLevelBarrierUltra.baseCost && techLevel < TechLevel.Ultra)
             {
                 techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
             }
-            else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false) != null &&
-                     researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false)) ==
-                     DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false).baseCost &&
+            else if (!medievalOnly && FactionCache.TechLevelBarrierSpacer != null &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) == FactionCache.TechLevelBarrierSpacer.baseCost &&
                      techLevel < TechLevel.Spacer)
             {
                 techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
             }
-            else if (!medievalOnly && DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false) != null &&
-                     researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false)) ==
-                     DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false).baseCost &&
+            else if (!medievalOnly && FactionCache.TechLevelBarrierIndustrial != null &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) == FactionCache.TechLevelBarrierIndustrial.baseCost &&
                      techLevel < TechLevel.Industrial)
             {
                 techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
             }
-            else if (DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false) != null &&
-                     researchManager.GetProgress(DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false)) ==
-                     DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false).baseCost &&
+            else if (FactionCache.TechLevelBarrierMedieval != null &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) == FactionCache.TechLevelBarrierMedieval.baseCost &&
                      techLevel < TechLevel.Medieval)
             {
                 techLevel = TechLevel.Medieval;

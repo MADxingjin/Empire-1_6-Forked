@@ -1216,7 +1216,7 @@ namespace FactionColonies
                                 };
 
                                 if (!FCSettings.medievalTechOnly &&
-                                    (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
+                                    (FactionCache.TechTransportPods?.IsFinished ?? false))
                                 {
                                     deploymentOptions.Add(new FloatMenuOption("dropPodDeploymentOption".Translate(), delegate
                                     {
@@ -1316,7 +1316,7 @@ namespace FactionColonies
         private FloatMenuOption DropPodDeploymentOption(WorldSettlementFC settlement)
         {
             bool medievalOnly = FCSettings.medievalTechOnly;
-            if (!medievalOnly && (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false))
+            if (!medievalOnly && (FactionCache.TechTransportPods?.IsFinished ?? false))
             {
                 return new FloatMenuOption("dropPodDeploymentOption".Translate(),
                     delegate { MilitaryUtil.CallinAlliedForces(settlement, true); });
@@ -1326,7 +1326,7 @@ namespace FactionColonies
                 "dropPodDeploymentOption".Translate() + (medievalOnly
                     ? "dropPodDeploymentOptionUnavailableReasonMedieval".Translate()
                     : "dropPodDeploymentOptionUnavailableReasonTech".Translate(
-                        DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.label ??
+                        FactionCache.TechTransportPods?.label ??
                         "errorDropPodResearchCouldNotBeFound".Translate())), null);
         }
 

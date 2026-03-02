@@ -42,6 +42,12 @@ namespace FactionColonies
         private static Dictionary<string, bool> _cachedCustomXenotypeViolenceDict = null;
         private static List<FCPolicyDef> _cachedFCPolicyDefs = null;
         private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
+        // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
+        private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
+        private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
+        private static ResearchProjectDef _cachedTechLevelBarrierIndustrial = null;
+        private static ResearchProjectDef _cachedTechLevelBarrierMedieval = null;
+        private static ResearchProjectDef _cachedTransportPods = null;
 
         public static FactionFC FactionComp
         {
@@ -354,6 +360,63 @@ namespace FactionColonies
             }
         }
 
+        /* Tech caching */
+        public static ResearchProjectDef TechLevelBarrierUltra
+        {
+            get
+            {
+                if (_cachedTechLevelBarrierUltra == null)
+                {
+                    _cachedTechLevelBarrierUltra = DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false);
+                }
+                return _cachedTechLevelBarrierUltra;
+            }
+        }
+        public static ResearchProjectDef TechLevelBarrierSpacer
+        {
+            get
+            {
+                if (_cachedTechLevelBarrierSpacer == null)
+                {
+                    _cachedTechLevelBarrierSpacer = DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false);
+                }
+                return _cachedTechLevelBarrierSpacer;
+            }
+        }
+        public static ResearchProjectDef TechLevelBarrierIndustrial
+        {
+            get
+            {
+                if (_cachedTechLevelBarrierIndustrial == null)
+                {
+                    _cachedTechLevelBarrierIndustrial = DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false);
+                }
+                return _cachedTechLevelBarrierIndustrial;
+            }
+        }
+        public static ResearchProjectDef TechLevelBarrierMedieval
+        {
+            get
+            {
+                if (_cachedTechLevelBarrierMedieval == null)
+                {
+                    _cachedTechLevelBarrierMedieval = DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false);
+                }
+                return _cachedTechLevelBarrierMedieval;
+            }
+        }
+        public static ResearchProjectDef TechTransportPods
+        {
+            get
+            {
+                if (_cachedTransportPods == null)
+                {
+                    _cachedTransportPods = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false);
+                }
+                return _cachedTransportPods;
+            }
+        }
+
         public static void InvalidateCache()
         {
             LogUtil.Message("Invalidating FactionCache...");
@@ -372,6 +435,13 @@ namespace FactionColonies
             _cachedXenotypeViolenceDict = null;
             _cachedFCPolicyDefs = null;
             _cachedFCPolicyDescs = null;
+
+
+            _cachedTechLevelBarrierUltra = null;
+            _cachedTechLevelBarrierSpacer = null;
+            _cachedTechLevelBarrierIndustrial = null;
+            _cachedTechLevelBarrierMedieval = null;
+            _cachedTransportPods = null;
 
             InvalidateCustomXenotypeCache();
         }

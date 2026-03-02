@@ -18,7 +18,7 @@ namespace FactionColonies
 
             bool tilesInShuttleRange = (currentTile, destinationTile).AreTilesInAnyShuttleRange();
             bool medievalOnly = FCSettings.medievalTechOnly;
-            bool podsResearched = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false)?.IsFinished ?? false;
+            bool podsResearched = FactionCache.TechTransportPods?.IsFinished ?? false;
 
             if (!medievalOnly)
             {

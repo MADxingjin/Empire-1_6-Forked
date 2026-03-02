@@ -413,7 +413,7 @@ namespace FactionColonies.util
 		{
 			get
 			{
-				if (DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false).IsFinished)
+				if (FactionCache.TechTransportPods.IsFinished)
 				{
 					if (ModsConfig.RoyaltyActive)
 					{
