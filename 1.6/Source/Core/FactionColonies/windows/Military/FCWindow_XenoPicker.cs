@@ -93,7 +93,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Rect labelRect = new Rect(iconRect.xMax + 5f, row.y, row.width - IconSize - 10f, RowHeight);
                 float xenoFactor = def.genes.Aggregate(1f, (acc, g) => acc * g.marketValueFactor);
-                string costText = xenoFactor != 1f ? " (x" + xenoFactor.ToString("F2") + ")" : "";
+                string costText = xenoFactor != 1f ? " (x" + xenoFactor.ToString("F2") + $" {"Cost".Translate()})" : "";
                 Widgets.Label(labelRect, label + costText);
 
                 if (Widgets.ButtonInvisible(row))

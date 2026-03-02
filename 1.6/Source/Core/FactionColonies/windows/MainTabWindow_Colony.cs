@@ -36,6 +36,9 @@ namespace FactionColonies
         private Vector2 billsScroll;
         private Vector2 eventsScroll;
 
+        // ===== SETTLEMENT SORT =====
+        private int currentSettlementSortIndex = 0;
+
         // ===== MILITARY STATE =====
         private Vector2 militaryScroll;
         private MilitaryCustomizationUtil militaryUtil;
@@ -255,33 +258,42 @@ namespace FactionColonies
                 Rect iconBox = new Rect(statBox.x + smallMargin, y + smallMargin, iconSize, iconSize);
                 Rect valueBox = new Rect(statBox.x + iconSize + bigMargin, y, statBox.width - iconSize - bigMargin, statH);
                 Widgets.DrawMenuSection(statBox);
-                Widgets.DrawHighlight(statBox);
 
                 Texture2D icon;
                 string value;
                 string tooltip;
+                float statVal;
+                bool inverted;
 
                 switch (statKey)
                 {
                     case "happiness":
                         icon      = TexLoad.iconHappiness;
-                        value     = Convert.ToInt32(faction.averageHappiness) + "%";
-                        tooltip = "FactionHappiness".Translate() + "\n-----\n" + "FactionHappinessDesc".Translate();
+                        statVal   = (float)faction.averageHappiness;
+                        value     = Convert.ToInt32(statVal) + "%";
+                        tooltip   = "FactionHappiness".Translate() + "\n-----\n" + "FactionHappinessDesc".Translate();
+                        inverted  = false;
                         break;
                     case "loyalty":
                         icon      = TexLoad.iconLoyalty;
-                        value     = Convert.ToInt32(faction.averageLoyalty) + "%";
-                        tooltip = "FactionLoyalty".Translate() + "\n-----\n" + "FactionLoyaltyDesc".Translate();
+                        statVal   = (float)faction.averageLoyalty;
+                        value     = Convert.ToInt32(statVal) + "%";
+                        tooltip   = "FactionLoyalty".Translate() + "\n-----\n" + "FactionLoyaltyDesc".Translate();
+                        inverted  = false;
                         break;
                     case "unrest":
                         icon      = TexLoad.iconUnrest;
-                        value     = Convert.ToInt32(faction.averageUnrest) + "%";
-                        tooltip = "FactionUnrest".Translate() + "\n-----\n" + "FactionUnrestDesc".Translate();
+                        statVal   = (float)faction.averageUnrest;
+                        value     = Convert.ToInt32(statVal) + "%";
+                        tooltip   = "FactionUnrest".Translate() + "\n-----\n" + "FactionUnrestDesc".Translate();
+                        inverted  = true;
                         break;
                     default: // prosperity
                         icon      = TexLoad.iconProsperity;
-                        value     = Convert.ToInt32(faction.averageProsperity) + "%";
-                        tooltip = "FactionProsperity".Translate() + "\n-----\n" + "FactionProsperityDesc".Translate();
+                        statVal   = (float)faction.averageProsperity;
+                        value     = Convert.ToInt32(statVal) + "%";
+                        tooltip   = "FactionProsperity".Translate() + "\n-----\n" + "FactionProsperityDesc".Translate();
+                        inverted  = false;
                         break;
                 }
 
@@ -289,7 +301,10 @@ namespace FactionColonies
 
                 Text.Font   = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
+                Color origStatColor = GUI.color;
+                GUI.color = GetStatColor(statVal, inverted);
                 Widgets.Label(valueBox, value);
+                GUI.color = origStatColor;
 
                 UIUtil.TipRegionByText(statBox, tooltip);
 
@@ -515,7 +530,8 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "EstimatedProfit".Translate() + ": ");
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString(), ThingDefOf.Silver.uiIcon));
+            Color profitColor = faction.profit >= 0 ? BillIncome : BillExpense;
+            Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
@@ -638,104 +654,243 @@ namespace FactionColonies
             }
         }
 
+        private static readonly string[] settlementSortLabels =
+        {
+            "FCSettlementTableName",
+            "FCSettlementTableLevel",
+            "FCSettlementTableMilLevel",
+            "FCSettlementTableProfit",
+            "FCSettlementTableWorkers",
+            "FCSettlementTableHappiness",
+            "FCSettlementTableLoyalty",
+            "FCSettlementTableUnrest",
+            "FCSettlementTableFounding"
+        };
+
+        private static readonly Comparison<WorldSettlementFC>[] settlementSortActions =
+        {
+            CompareUtil.CompareSettlementName,
+            CompareUtil.CompareSettlementLevel,
+            CompareUtil.CompareSettlementMilitaryLevel,
+            CompareUtil.CompareSettlementProfit,
+            CompareUtil.CompareSettlementFreeWorkers,
+            CompareUtil.CompareSettlementHappiness,
+            CompareUtil.CompareSettlementLoyalty,
+            CompareUtil.CompareSettlementUnrest,
+            CompareUtil.CompareSettlementFoundingDate
+        };
+
         private void DrawSettlementsTable(Rect tableRect)
         {
-            const float headerH = 25f;
-            const float rowH = 25f;
-            // Scrollable rows
-            float contentH = faction.settlements.Count * rowH;
-            Rect viewRect = new Rect(tableRect.x, tableRect.y + headerH, tableRect.width, tableRect.height - headerH);
-            float scrollMargin = contentH > viewRect.height ? 16f : 0;
-            Rect scrollRect = new Rect(0f, 0f, tableRect.width - scrollMargin, Mathf.Max(contentH, viewRect.height));
-            // math time, baby. Don't you love UI coding?
-            float levelw = 50f;
-            float millevelw = 60f;
-            float profitw = 60f;
-            float workerw = 75f;
-            float happyw = 65f;
-            float loyalw = 60f;
-            float unrestw = 55f;
-            float foundw = 90f;
-            float namew = tableRect.width - levelw - millevelw - profitw - workerw - happyw - loyalw - unrestw - foundw - scrollMargin;
-            float[] colWidths = { namew, levelw, millevelw, profitw, workerw, happyw, loyalw, unrestw, foundw };
-            string[] colLabels =
-            {
-                "FCSettlementTableName".Translate(),
-                "FCSettlementTableLevel".Translate(),
-                "FCSettlementTableMilLevel".Translate(),
-                "FCSettlementTableProfit".Translate(),
-                "FCSettlementTableWorkers".Translate(),
-                "FCSettlementTableHappiness".Translate(),
-                "FCSettlementTableLoyalty".Translate(),
-                "FCSettlementTableUnrest".Translate(),
-                "FCSettlementTableFounding".Translate()
-            };
-            Action[] colSorts =
-            {
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementName),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementLevel),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementMilitaryLevel),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementProfit),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementFreeWorkers),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementHappiness),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementLoyalty),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementUnrest),
-                () => faction.settlements.Sort(CompareUtil.CompareSettlementFoundingDate)
-            };
+            const float rowH      = 44f;
+            const float accentW   = 4f;
+            const float rowGap    = 2f;
+            const float pad       = 4f;
+            const float summaryH  = 24f;
+            const float iconSz    = 18f;
 
-            // Header
-            Rect headerRow = new Rect(tableRect.x, tableRect.y, tableRect.width, headerH);
-            Widgets.DrawMenuSection(headerRow);
-            Widgets.DrawLightHighlight(headerRow);
+            float innerX = tableRect.x + pad;
+            float innerW = tableRect.width - pad * 2f;
 
-            Text.Font   = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleCenter;
+            // Summary header — left: count
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.Label(new Rect(innerX, tableRect.y + pad, innerW * 0.5f, summaryH),
+                "FCSettlementCount".Translate(faction.settlements.Count));
+            GUI.color = origColor;
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
 
-            float hx = tableRect.x;
-            for (int c = 0; c < colWidths.Length; c++)
+            // Summary header — right: sort dropdown
+            float sortBtnW = 180f;
+            Rect sortBtnRect = new Rect(innerX + innerW - sortBtnW, tableRect.y + pad, sortBtnW, summaryH);
+            if (Widgets.ButtonText(sortBtnRect, "FCSortBy".Translate(settlementSortLabels[currentSettlementSortIndex].Translate())))
             {
-                Rect cell = new Rect(hx, tableRect.y, colWidths[c], headerH);
-                Widgets.Label(cell, colLabels[c]);
-                int capturedC = c;
-                if (Widgets.ButtonInvisible(cell))
-                    colSorts[capturedC]();
-                hx += colWidths[c];
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int i = 0; i < settlementSortLabels.Length; i++)
+                {
+                    int captured = i;
+                    options.Add(new FloatMenuOption(settlementSortLabels[i].Translate(), () =>
+                    {
+                        currentSettlementSortIndex = captured;
+                        faction.settlements.Sort(settlementSortActions[captured]);
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
             }
 
-            Widgets.BeginScrollView(viewRect, ref settlementScroll, scrollRect);
+            // Empty state
+            if (faction.settlements.Count == 0)
+            {
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                origColor = GUI.color;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(tableRect.x, tableRect.y + tableRect.height * 0.35f, tableRect.width, 40f),
+                    "FCNoSettlements".Translate());
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                return;
+            }
 
-            Text.Font   = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleCenter;
+            // Scrollable settlement list
+            float listY    = tableRect.y + pad + summaryH + 4f;
+            float viewH    = tableRect.yMax - listY - pad;
+            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float contentH = faction.settlements.Count * (rowH + rowGap);
+            Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
+
+            Widgets.BeginScrollView(viewRect, ref settlementScroll, scrollRect);
 
             for (int i = 0; i < faction.settlements.Count; i++)
             {
                 WorldSettlementFC s = faction.settlements[i];
-                float ry = i * rowH;
+                float ry = i * (rowH + rowGap);
+                float rowW = scrollRect.width;
+                Rect rowRect = new Rect(0f, ry, rowW, rowH);
 
+                // Alternating row background
                 if (i % 2 == 0)
-                    Widgets.DrawHighlight(new Rect(0f, ry, scrollRect.width, rowH));
+                    Widgets.DrawHighlight(rowRect);
 
-                float sx = 0f;
+                // Accent strip (green = profit, red = loss)
+                Color accent = GetSettlementAccentColor(s);
+                Widgets.DrawBoxSolid(new Rect(0f, ry, accentW, rowH), accent);
 
+                float contentX = accentW + 6f;
+                float contentW = rowW - contentX - 4f;
+                float topY = ry;
+                float botY = ry + rowH / 2f;
+                float lineH = rowH / 2f;
+
+                // Top-left: Settlement name (clickable, accent-colored)
+                float profitDisplayW = 80f;
+                float badgeW = 110f;
+                float nameW = contentW - profitDisplayW - badgeW;
+
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                if (Widgets.ButtonTextSubtle(new Rect(sx, ry, colWidths[0], rowH), s.Name))
+                origColor = GUI.color;
+                GUI.color = accent;
+                Rect nameRect = new Rect(contentX, topY, nameW, lineH);
+                Widgets.Label(nameRect, s.Name);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                if (Widgets.ButtonInvisible(nameRect))
                     Find.WindowStack.Add(new SettlementWindowFc(s));
-                sx += colWidths[0];
+                if (Mouse.IsOver(nameRect))
+                    Widgets.DrawHighlight(nameRect);
 
-                /* Need to reset because ButtonTextSubtle changes both the Anchor and the Font without reseting them */
+                // Top-center: "Lv N • Mil N" badges (gray, Tiny)
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(sx, ry, colWidths[1], rowH), s.settlementLevel.ToString());         sx += colWidths[1];
-                Widgets.Label(new Rect(sx, ry, colWidths[2], rowH), s.settlementMilitaryLevel.ToString()); sx += colWidths[2];
-                Widgets.Label(new Rect(sx, ry, colWidths[3], rowH), ((int)s.getTotalProfit()).ToString()); sx += colWidths[3];
-                Widgets.Label(new Rect(sx, ry, colWidths[4], rowH), (s.workersUltraMax - s.getTotalWorkers()).ToString()); sx += colWidths[4];
-                Widgets.Label(new Rect(sx, ry, colWidths[5], rowH), ((int)s.Happiness).ToString()); sx += colWidths[5];
-                Widgets.Label(new Rect(sx, ry, colWidths[6], rowH), ((int)s.Loyalty).ToString());  sx += colWidths[6];
-                Widgets.Label(new Rect(sx, ry, colWidths[7], rowH), ((int)s.Unrest).ToString()); sx += colWidths[7];
-                Widgets.Label(new Rect(sx, ry, colWidths[8], rowH), s.GetFoundingDate(false));
+                Text.Anchor = TextAnchor.MiddleRight;
+                origColor = GUI.color;
+                //GUI.color = Color.gray;
+                Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH),
+                    "Lv " + s.settlementLevel + "  •  Mil " + s.settlementMilitaryLevel);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Top-right: Profit value (colored green/red)
+                int profit = (int)s.getTotalProfit();
+                string profitStr = "$" + (profit >= 0 ? "+" : "") + profit;
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleRight;
+                origColor = GUI.color;
+                GUI.color = profit >= 0 ? BillIncome : BillExpense;
+                Widgets.Label(new Rect(contentX + contentW - profitDisplayW, topY, profitDisplayW, lineH), profitStr);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Bottom-left: Town title + free workers
+                string townTitle = TextUtil.GetTownTitle(s);
+                int freeWorkers = (int)(s.workersUltraMax - s.getTotalWorkers());
+                string bottomLeftStr = townTitle + "  •  " + freeWorkers + " " + "FCSettlementTableWorkers".Translate();
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                float statsW = 130f;
+                Widgets.Label(new Rect(contentX, botY, contentW - statsW, lineH), bottomLeftStr);
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Bottom-right: Stat icons (happiness, loyalty, unrest)
+                float statGroupW = 43f;
+                float statsStartX = contentX + contentW - (statGroupW * 3);
+                DrawStatIcon(statsStartX, botY, lineH, iconSz, TexLoad.iconHappiness,
+                    ((int)s.Happiness).ToString(), GetStatColor(s.Happiness, false));
+                DrawStatIcon(statsStartX + statGroupW, botY, lineH, iconSz, TexLoad.iconLoyalty,
+                    ((int)s.Loyalty).ToString(), GetStatColor(s.Loyalty, false));
+                DrawStatIcon(statsStartX + statGroupW * 2, botY, lineH, iconSz, TexLoad.iconUnrest,
+                    ((int)s.Unrest).ToString(), GetStatColor(s.Unrest, true));
+
+                // Tooltip with full details
+                string tooltip = s.Name + "\n\n"
+                    + "FCSettlementTableLevel".Translate() + ": " + s.settlementLevel + "\n"
+                    + "FCSettlementTableMilLevel".Translate() + ": " + s.settlementMilitaryLevel + "\n"
+                    + "FCSettlementTableProfit".Translate() + ": " + profit + "\n"
+                    + "FCSettlementTableWorkers".Translate() + ": " + freeWorkers + "/" + (int)s.workersUltraMax + "\n"
+                    + "FCSettlementTableHappiness".Translate() + ": " + (int)s.Happiness + "\n"
+                    + "FCSettlementTableLoyalty".Translate() + ": " + (int)s.Loyalty + "\n"
+                    + "FCSettlementTableUnrest".Translate() + ": " + (int)s.Unrest + "\n"
+                    + "FactionProsperity".Translate() + ": " + (int)s.Prosperity + "\n"
+                    + "FCSettlementTableFounding".Translate() + ": " + s.GetFoundingDate(false);
+                UIUtil.TipRegionByText(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
+        }
+
+        private static Color GetSettlementAccentColor(WorldSettlementFC s)
+        {
+            return s.getTotalProfit() >= 0 ? BillIncome : BillExpense;
+        }
+
+        private static Color GetStatColor(float value, bool inverted)
+        {
+            if (inverted)
+            {
+                if (value <= 10f) return new Color(0.2f, 0.85f, 0.3f);
+                if (value <= 30f) return new Color(1f, 0.7f, 0.2f);
+                return new Color(1f, 0.35f, 0.3f);
+            }
+            if (value >= 80f) return new Color(0.2f, 0.85f, 0.3f);
+            if (value >= 50f) return new Color(1f, 0.7f, 0.2f);
+            return new Color(1f, 0.35f, 0.3f);
+        }
+
+        private static void DrawStatIcon(float x, float y, float lineH, float iconSz, Texture2D icon, string value, Color color)
+        {
+            float iconY = y + (lineH - iconSz) / 2f;
+            GUI.DrawTexture(new Rect(x, iconY, iconSz, iconSz), icon);
+
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.Label(new Rect(x + iconSz + 2f, y, 28f, lineH), value);
+            GUI.color = origColor;
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
         }
 
         // ===== BILLS TAB =====

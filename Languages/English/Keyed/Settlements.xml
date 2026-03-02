@@ -94,13 +94,16 @@ The prosperity of a town directly correlates with the production of resources (e
 	<SettlementManager>Settlement Manager</SettlementManager>
 	<FCSettlementTableName>Name</FCSettlementTableName>
 	<FCSettlementTableLevel>Level</FCSettlementTableLevel>
-	<FCSettlementTableMilLevel>Mil Level</FCSettlementTableMilLevel>
+	<FCSettlementTableMilLevel>Military Level</FCSettlementTableMilLevel>
 	<FCSettlementTableProfit>Profit</FCSettlementTableProfit>
 	<FCSettlementTableWorkers>Free Workers</FCSettlementTableWorkers>
 	<FCSettlementTableHappiness>Happiness</FCSettlementTableHappiness>
 	<FCSettlementTableLoyalty>Loyalty</FCSettlementTableLoyalty>
 	<FCSettlementTableUnrest>Unrest</FCSettlementTableUnrest>
 	<FCSettlementTableFounding>Founding Date</FCSettlementTableFounding>
+	<FCNoSettlements>No settlements.</FCNoSettlements>
+	<FCSettlementCount>{0} settlements</FCSettlementCount>
+	<FCSortBy>Sort: {0}</FCSortBy>
 	<ColonyLevel>Colony Level</ColonyLevel>
 	<Hamlet>hamlet</Hamlet>
 

@@ -110,8 +110,6 @@ namespace FactionColonies
                     resourceKey = resource.def.defName;
                 }
             }
-            //TODO: find these localization keys and make sure they line up with the new def resources
-            //      maybe even find a better way to assmelbe these town titles
             return ("FCTitle_" + resourceKey + "_" + level).Translate();
         }
 
