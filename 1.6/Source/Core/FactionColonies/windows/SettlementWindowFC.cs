@@ -128,11 +128,11 @@ namespace FactionColonies
 
         private readonly List<string> buttons = new List<string>(5)
         {
-            "DeleteSettlement".Translate(), 
-            "UpgradeTown".Translate(), 
+            "UpgradeTown".Translate(),
             "FCSpecialActions".Translate(),
-            "PrisonersMenu".Translate(), 
-            "Military".Translate()
+            "PrisonersMenu".Translate(),
+            "Military".Translate(),
+            "DeleteSettlement".Translate()
         };
 
         private WorldSettlementFC settlement; //Don't expose
@@ -304,7 +304,7 @@ namespace FactionColonies
             Widgets.Label(foundTextBox, "FCFoundedOn".Translate(settlement.GetFoundingDate()));
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(basicDescTextBox, settlement.settlementDef.description);
+            Widgets.Label(basicDescTextBox, TextUtil.GetTownTitle(settlement));
             Widgets.DrawLineVertical(basicDescBox.xMax, basicDescBox.y + margin, basicDescBox.height - (margin * 2));
             //TODO: localize this. LabelCap and description can be localized through def injection, but locationText is derived differently
             Widgets.Label(locTextBox, settlement.locationText);
@@ -353,7 +353,8 @@ namespace FactionColonies
                 Rect tabBox = new Rect(boundingBox.x, boundingBox.y + (tabHeight * i), tabWidth, tabHeight);
                 float imgSize = Math.Min(tabWidth, tabHeight);
                 Rect iconBox = new Rect(tabBox.x + (tabWidth - imgSize) / 2f, tabBox.y + (tabHeight - imgSize) / 2f, imgSize, imgSize);
-                if (Widgets.ButtonText(tabBox, ""))
+                //if (Widgets.ButtonText(tabBox, ""))
+                if (UIUtil.ButtonFlat(tabBox, ""))
                 {
                     titheTab = i;
                     updateTitheDictBuffers(resources[i]);
@@ -936,18 +937,8 @@ namespace FactionColonies
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
 
-                    /*if (buttons[i] == "AreYouSureRemove".Translate())
-                    {
-                        //if click to delete colony
-                        Find.WindowStack.TryRemove(this);
-                        ColonyUtil.removePlayerSettlement(settlement);
-                    }*/
-
                     if (label == "DeleteSettlement".Translate())
                     {
-                        //if click town log button
-                        //buttons[i] = "AreYouSureRemove".Translate();
-
                         Find.WindowStack.Add(new Dialog_Confirm("DeleteSettlementConfirm".Translate(settlement.Name), removeSettlement));
                     }
 
@@ -1136,13 +1127,11 @@ namespace FactionColonies
                                 buildingIcon.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     buildingIcon.size);
 
-                UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
-
-
                 //Actual UI Code
                 Widgets.DrawMenuSection(nBox);
                 if (i < settlement.BuildingsComp.NumBuildingSlots)
                 {
+                    UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
                         // Check if this is an actual built building (not Empty or Construction)
@@ -1198,6 +1187,11 @@ namespace FactionColonies
                 }
                 else
                 {
+                    bool isCapLocked = settlement.BuildingsComp.NumBuildingSlots >= settlement.settlementDef.maxBuildingCount;
+                    string lockTooltip = isCapLocked
+                        ? "FCBuildingLockedMax".Translate()
+                        : "FCBuildingLockedLevel".Translate(2 * (i - 2));
+                    UIUtil.TipRegionByText(nBox, lockTooltip);
                     if (Widgets.ButtonImage(nBuilding, TexLoad.buildingLocked))
                     {
                         Messages.Message("FCBuildingLocked".Translate(), MessageTypeDefOf.RejectInput);
@@ -1244,7 +1238,7 @@ namespace FactionColonies
                                                 viewRect.width - (margin * 2),
                                                 constructionListItemHeight);
                     DrawConstructionInfoBox(upgradeRect, null, "settlementupgrading".Translate(),
-                                            "completiontimer".Translate((settlement.finishUpgradeTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
+                                            "completiontimer".Translate((settlement.finishUpgradeTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
                     initialY = upgradeRect.yMax + margin;
@@ -1258,7 +1252,7 @@ namespace FactionColonies
                                                 viewRect.width - (margin * 2),
                                                 constructionListItemHeight);
                     DrawConstructionInfoBox(upgradeRect, construction[i].underConstructionDef.Icon, construction[i].underConstructionDef.LabelCap,
-                                            "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: true)),
+                                            "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
                     UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));

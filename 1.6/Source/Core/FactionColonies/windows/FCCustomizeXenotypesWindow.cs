@@ -1,12 +1,8 @@
 ﻿using FactionColonies.util;
 using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -374,7 +370,7 @@ namespace FactionColonies
                 }
 
                 ThingDef race = allRaces[i];
-                Widgets.Label(icon, new GUIContent(race.uiIconPath));
+                Widgets.Label(icon, new GUIContent(race.uiIcon));
                 Widgets.Label(label, race.LabelCap);
                 Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race)*100, 2).ToString() + "%");
                 UIUtil.TipRegionByText(label, race.description);

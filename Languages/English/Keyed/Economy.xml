@@ -89,6 +89,13 @@
 	<FCTitheDisableAll>Disable All</FCTitheDisableAll>
 	<FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption>
 
+	<!-- Random Tithe Item Selection Window -->
+	<FCTitheEnabledCount>{0} / {1} enabled</FCTitheEnabledCount>
+	<FCTitheShowAll>All</FCTitheShowAll>
+	<FCTitheShowEnabled>Enabled</FCTitheShowEnabled>
+	<FCTitheShowDisabled>Disabled</FCTitheShowDisabled>
+	<FCTitheShowFilter>Show: {0}</FCTitheShowFilter>
+
 	<!-- Random Tithes -->
 	<RandomTithesEnabled>Random Tithing</RandomTithesEnabled>
 	<RandomTitheSelectionHeader>Random Tithe Item Selection</RandomTitheSelectionHeader>
@@ -127,6 +134,18 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<SelectStuff>Select stuff...</SelectStuff>
 	<MustSelectStuff>Must select a stuff type</MustSelectStuff>
 	<ItemAlreadyInTitheList>This item is already in the tithe list</ItemAlreadyInTitheList>
+	<FCClearSelection>Clear Selection</FCClearSelection>
+	<FCTitheBudgetRemaining>Remaining Budget: {0} / {1} total</FCTitheBudgetRemaining>
+	<FCTitheItems>Items</FCTitheItems>
+	<FCTitheStuff>Materials</FCTitheStuff>
+	<FCTitheBasePrice>Base $</FCTitheBasePrice>
+	<FCTitheMaterialPrice>Est. Cost</FCTitheMaterialPrice>
+	<FCSearchItems>Search items...</FCSearchItems>
+	<FCSearchMaterials>Search materials...</FCSearchMaterials>
+	<FCTitheSortNameAZ>Name A-Z</FCTitheSortNameAZ>
+	<FCTitheSortNameZA>Name Z-A</FCTitheSortNameZA>
+	<FCTitheSortPriceLow>Price: Low</FCTitheSortPriceLow>
+	<FCTitheSortPriceHigh>Price: High</FCTitheSortPriceHigh>
 
 	<!-- Production -->
 	<BaseProductionStats>Base Production Stats</BaseProductionStats>

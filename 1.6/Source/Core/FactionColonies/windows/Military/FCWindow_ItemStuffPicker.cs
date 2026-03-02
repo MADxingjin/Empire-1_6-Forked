@@ -26,6 +26,10 @@ namespace FactionColonies
         private string itemSearchTerm = "";
         private string stuffSearchTerm = "";
 
+        private int itemSortIndex = 0;
+        private int stuffSortIndex = 0;
+        private static readonly string[] sortLabelKeys = { "FCTitheSortNameAZ", "FCTitheSortNameZA", "FCTitheSortPriceLow", "FCTitheSortPriceHigh" };
+
         private Vector2 itemScrollPos;
         private Vector2 stuffScrollPos;
 
@@ -120,16 +124,41 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Small;
 
-            // Title bar
-            Text.Anchor = TextAnchor.MiddleCenter;
+            // Title bar with sort + price label
             Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
             Widgets.DrawHighlight(titleBox);
-            Widgets.Label(titleBox, "Item".Translate());
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Item".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[itemSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        itemSortIndex = captured;
+                        itemScrollPos = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
 
             Text.Anchor = TextAnchor.MiddleLeft;
             // Search bar
             Rect searchRect = new Rect(panelRect.x, titleBox.yMax + margin, panelRect.width, SearchBarHeight);
             itemSearchTerm = Widgets.TextField(searchRect, itemSearchTerm);
+            if (string.IsNullOrEmpty(itemSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchItems".Translate());
+                GUI.color = prevColor;
+            }
 
             // Scroll view
             Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
@@ -139,9 +168,14 @@ namespace FactionColonies
             List<ThingDef> filtered = string.IsNullOrEmpty(itemSearchTerm)
                 ? items
                 : items.Where(t => t.label.IndexOf(itemSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            filtered = ApplySort(filtered, itemSortIndex);
 
             float viewHeight = filtered.Count * RowHeight;
             float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheBasePrice".Translate());
+            Text.Font = GameFont.Small;
             Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
 
             Widgets.BeginScrollView(scrollOutRect, ref itemScrollPos, scrollViewRect);
@@ -201,15 +235,41 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Small;
 
-            Text.Anchor = TextAnchor.MiddleCenter;
+            // Title bar with sort + price label
             Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
             Widgets.DrawHighlight(titleBox);
-            Widgets.Label(titleBox, "Stuff".Translate());
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Stuff".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[stuffSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        stuffSortIndex = captured;
+                        stuffScrollPos = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
 
             Text.Anchor = TextAnchor.MiddleLeft;
             // Search bar
             Rect searchRect = new Rect(panelRect.x, titleBox.yMax + margin, panelRect.width, SearchBarHeight);
             stuffSearchTerm = Widgets.TextField(searchRect, stuffSearchTerm);
+            if (string.IsNullOrEmpty(stuffSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchMaterials".Translate());
+                GUI.color = prevColor;
+            }
 
             // Scroll view
             Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
@@ -219,9 +279,14 @@ namespace FactionColonies
             List<ThingDef> filtered = string.IsNullOrEmpty(stuffSearchTerm)
                 ? currentStuffs
                 : currentStuffs.Where(s => s.label.IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            filtered = ApplySort(filtered, stuffSortIndex, isStuffList: true);
 
             float viewHeight = filtered.Count * RowHeight;
             float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheMaterialPrice".Translate());
+            Text.Font = GameFont.Small;
             Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
 
             Widgets.BeginScrollView(scrollOutRect, ref stuffScrollPos, scrollViewRect);
@@ -322,6 +387,25 @@ namespace FactionColonies
                     onConfirm(selectedItem, selectedStuff);
                     Close();
                 }
+            }
+        }
+
+        private List<ThingDef> ApplySort(List<ThingDef> list, int sortIndex, bool isStuffList = false)
+        {
+            switch (sortIndex)
+            {
+                case 1: // Name Z-A
+                    return list.OrderByDescending(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
+                case 2: // Price Low-High
+                    if (isStuffList && selectedItem != null)
+                        return list.OrderBy(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                    return list.OrderBy(t => t.BaseMarketValue).ToList();
+                case 3: // Price High-Low
+                    if (isStuffList && selectedItem != null)
+                        return list.OrderByDescending(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                    return list.OrderByDescending(t => t.BaseMarketValue).ToList();
+                default: // 0: Name A-Z
+                    return list.OrderBy(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
             }
         }
     }

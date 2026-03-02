@@ -64,6 +64,8 @@
 	<FCNoValidSettlements>No Valid Settlements</FCNoValidSettlements>
 	<FCNoSpecialActions>No special actions to take</FCNoSpecialActions>
 	<FCBuildingLocked>That Building is locked</FCBuildingLocked>
+	<FCBuildingLockedLevel>Unlocks at settlement level {0}.</FCBuildingLockedLevel>
+	<FCBuildingLockedMax>Maximum building slots reached for this settlement type.</FCBuildingLockedMax>
 	<Capital>Capital</Capital>
 
 	<!-- Float Menu -->

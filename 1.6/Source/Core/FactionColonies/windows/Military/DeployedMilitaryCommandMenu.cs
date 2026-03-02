@@ -1,12 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FactionColonies.util;
 using Verse;
+using Verse.Sound;
 using RimWorld;
 using UnityEngine;
 using LudeonTK;
+using RimWorld.Planet;
 
 
 namespace FactionColonies
@@ -21,6 +23,7 @@ namespace FactionColonies
         private LordJob_DeployMilitary lordJob;
         public Dictionary<MercenarySquadFC, IntVec3> currentOrderPositionDic = new Dictionary<MercenarySquadFC, IntVec3>();
         public Dictionary<MercenarySquadFC, MilitaryOrder> squadMilitaryOrderDic = new Dictionary<MercenarySquadFC, MilitaryOrder>();
+        private Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
         public DeployedMilitaryCommandMenu(LordJob_DeployMilitary lordJob)
         {
@@ -30,8 +33,8 @@ namespace FactionColonies
             closeOnCancel = false;
             doCloseX = false;
             draggable = true;
-            drawShadow = false;
-            doWindowBackground = false;
+            drawShadow = true;
+            doWindowBackground = true;
             preventCameraMotion = false;
             faction = FactionCache.FactionComp;
 
@@ -39,13 +42,15 @@ namespace FactionColonies
             this.lordJob = lordJob;
         }
 
-        public override Vector2 InitialSize => new Vector2(200f, 300f);
+        public override Vector2 InitialSize => new Vector2(216f, 300f);
+
+        protected override float Margin => 8f;
 
         protected override void SetInitialSizeAndPosition()
         {
             windowRect = new Rect(UI.screenWidth - InitialSize.x, 0f, InitialSize.x, InitialSize.y);
         }
-        
+
         /// <summary>
         /// Lets the user select a squad from the squads active on the map
         /// </summary>
@@ -153,45 +158,182 @@ namespace FactionColonies
             squad.InitiateCooldownEvent();
         }
 
-        public override void DoWindowContents(Rect rect) 
+        /// <summary>
+        /// Draws a flat button with an icon on the left and a text label.
+        /// Matches the visual style of UIUtil.ButtonFlat.
+        /// </summary>
+        private static bool DrawIconButton(Rect rect, string label, Texture2D icon, float iconSize, float iconMargin)
         {
-            if (faction.militaryCustomizationUtil.DeployedSquads.Count() == 0) Close();
+            bool hovered = Mouse.IsOver(rect);
+            float bg = hovered ? 0.35f : 0.22f;
+            Widgets.DrawBoxSolid(rect, new Color(bg, bg, bg));
+
+            float iconY = rect.y + (rect.height - iconSize) / 2f;
+            Rect iconRect = new Rect(rect.x + iconMargin, iconY, iconSize, iconSize);
+            GUI.DrawTexture(iconRect, icon);
+
+            float textX = iconRect.xMax + 4f;
+            Rect labelRect = new Rect(textX, rect.y, rect.xMax - textX - 4f, rect.height);
+            TextAnchor prevAnchor = Text.Anchor;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(labelRect, label);
+            Text.Anchor = prevAnchor;
+
+            if (Widgets.ButtonInvisible(rect))
+            {
+                SoundDefOf.Click.PlayOneShotOnCamera();
+                return true;
+            }
+            return false;
+        }
+
+        public override void DoWindowContents(Rect rect)
+        {
+            if (faction.militaryCustomizationUtil.DeployedSquads.Count() == 0)
+            {
+                Close();
+                return;
+            }
 
             GameFont prevFont = Text.Font;
             TextAnchor prevAnchor = Text.Anchor;
+            bool prevWordWrap = Text.WordWrap;
+            Color prevColor = GUI.color;
 
+            float contentWidth = rect.width;
+            float buttonHeight = 36f;
+            float infoRowHeight = 24f;
+            float iconSize = 20f;
+            float iconMargin = 6f;
+            float separatorGap = 8f;
+            float accentLineThickness = 2f;
+            float spacing = 2f;
+
+            float curY = rect.y;
+
+            // --- Header: Select Squad button ---
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            float rectBaseHeight = 40f;
-            float rectWidth = 160f;
-
-            Rect selectSquad = new Rect(0, 0, rectWidth, rectBaseHeight);
-            Rect settlementName = new Rect(0, selectSquad.yMax, rectWidth, rectBaseHeight * 0.75f);
-            Rect squadName = new Rect(0, settlementName.yMax, rectWidth, rectBaseHeight * 0.75f);
-            Rect commandAttack = new Rect(0, squadName.yMax, rectWidth, rectBaseHeight);
-            Rect commandMove = new Rect(0, commandAttack.yMax, rectWidth, rectBaseHeight);
-            Rect commandHeal = new Rect(0, commandMove.yMax, rectWidth, rectBaseHeight);
-            Rect commandKillWindow = new Rect(0, commandHeal.yMax, rectWidth, rectBaseHeight);
-
+            Rect selectSquadRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
             squadText = "selectDeployedSquad".Translate();
+            if (Widgets.ButtonText(selectSquadRect, squadText))
+            {
+                DoSelectSquadCommand();
+            }
+            curY = selectSquadRect.yMax;
 
-            if (Widgets.ButtonText(selectSquad, squadText)) DoSelectSquadCommand();
+            // --- Red accent separator line ---
+            float lineY = curY + (separatorGap / 2f) - (accentLineThickness / 2f);
+            Widgets.DrawBoxSolid(new Rect(rect.x + 4f, lineY, contentWidth - 8f, accentLineThickness), AccentUtil.EventMilitary);
+            curY += separatorGap;
+
             if (selectedSquad != null)
             {
-                Widgets.DrawHighlight(settlementName);
-                Widgets.DrawHighlight(squadName);
-                Widgets.Label(settlementName, selectedSquad.getSettlement.Name);
-                Widgets.Label(squadName, selectedSquad.outfit.name);
-                if (Widgets.ButtonTextSubtle(commandAttack, "commandAttack".Translate())) DoAttackCommand();
-                if (Widgets.ButtonTextSubtle(commandMove, "commandMove".Translate())) DoMoveCommand();
-                if (Widgets.ButtonTextSubtle(commandHeal, "commandLeave".Translate())) DoLeaveCommand();
+                // --- Settlement name (dimmer, smaller font, clickable) ---
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.WordWrap = false;
 
-                if (Prefs.DevMode) if (Widgets.ButtonTextSubtle(commandKillWindow, "debugRemoveAllCommand".Translate())) DoDebugCommand();
+                Rect settlementRect = new Rect(rect.x, curY, contentWidth, infoRowHeight);
+                bool settlementHovered = Mouse.IsOver(settlementRect);
+                Widgets.DrawHighlight(settlementRect);
+                if (settlementHovered) Widgets.DrawHighlight(settlementRect);
+
+                string settlementFullName = selectedSquad.getSettlement.Name;
+                string settlementTruncated = settlementFullName.Truncate(contentWidth - 10f, truncateCache);
+                GUI.color = settlementHovered ? Color.white : new Color(0.8f, 0.8f, 0.8f);
+                Widgets.Label(settlementRect, settlementTruncated);
+                GUI.color = prevColor;
+
+                if (settlementTruncated != settlementFullName)
+                {
+                    UIUtil.TipRegionByText(settlementRect, settlementFullName);
+                }
+
+                if (Widgets.ButtonInvisible(settlementRect))
+                {
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                    Find.WindowStack.Add(new SettlementWindowFc(selectedSquad.getSettlement));
+                }
+                curY = settlementRect.yMax;
+
+                // --- Squad name (normal white, clickable) ---
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+
+                Rect squadNameRect = new Rect(rect.x, curY, contentWidth, infoRowHeight);
+                bool squadHovered = Mouse.IsOver(squadNameRect);
+                Widgets.DrawHighlight(squadNameRect);
+                if (squadHovered) Widgets.DrawHighlight(squadNameRect);
+
+                string squadFullName = selectedSquad.outfit.name;
+                string squadTruncated = squadFullName.Truncate(contentWidth - 10f, truncateCache);
+                Widgets.Label(squadNameRect, squadTruncated);
+
+                if (squadTruncated != squadFullName)
+                {
+                    UIUtil.TipRegionByText(squadNameRect, squadFullName);
+                }
+
+                if (Widgets.ButtonInvisible(squadNameRect))
+                {
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                    Pawn pawn = selectedSquad.DeployedMercenaries.FirstOrDefault()?.pawn;
+                    if (pawn != null)
+                    {
+                        CameraJumper.TryJump(new GlobalTargetInfo(pawn));
+                    }
+                }
+                curY = squadNameRect.yMax;
+
+                // --- Faint separator between info and commands ---
+                curY += 4f;
+                GUI.color = new Color(1f, 1f, 1f, 0.3f);
+                Widgets.DrawLineHorizontal(rect.x + 8f, curY, contentWidth - 16f);
+                GUI.color = prevColor;
+                curY += 4f;
+
+                // --- Command buttons with icons ---
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.WordWrap = false;
+
+                Rect attackRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
+                if (DrawIconButton(attackRect, "commandAttack".Translate(), TexCommand.Attack, iconSize, iconMargin))
+                {
+                    DoAttackCommand();
+                }
+                curY = attackRect.yMax + spacing;
+
+                Rect moveRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
+                if (DrawIconButton(moveRect, "commandMove".Translate(), TexCommand.Draft, iconSize, iconMargin))
+                {
+                    DoMoveCommand();
+                }
+                curY = moveRect.yMax + spacing;
+
+                Rect leaveRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
+                if (DrawIconButton(leaveRect, "commandLeave".Translate(), TexCommand.PauseCaravan, iconSize, iconMargin))
+                {
+                    DoLeaveCommand();
+                }
+                curY = leaveRect.yMax + spacing;
+
+                if (Prefs.DevMode)
+                {
+                    Rect debugRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
+                    if (UIUtil.ButtonFlat(debugRect, "debugRemoveAllCommand".Translate()))
+                    {
+                        DoDebugCommand();
+                    }
+                }
             }
 
             Text.Font = prevFont;
             Text.Anchor = prevAnchor;
+            Text.WordWrap = prevWordWrap;
+            GUI.color = prevColor;
 
             if (Find.TickManager.TicksGame % 60 == 0)
             {

@@ -31,9 +31,13 @@ namespace FactionColonies
         private string thingSearchTerm = "";
         private string stuffSearchTerm = "";
 
+        private int itemSortIndex = 0;
+        private int stuffSortIndex = 0;
+        private static readonly string[] sortLabelKeys = { "FCTitheSortNameAZ", "FCTitheSortNameZA", "FCTitheSortPriceLow", "FCTitheSortPriceHigh" };
+
         public override Vector2 InitialSize
         {
-            get { return new Vector2(780f, 500f); }
+            get { return new Vector2(780f, 560f); }
         }
 
         public SettlementWindowFC_AddTithe(WorldSettlementFC settlement, ResourceFC resource)
@@ -93,8 +97,28 @@ namespace FactionColonies
             Widgets.DrawHighlight(labelHighlight);
             Widgets.Label(labelText, resource.def.LabelCap);
 
-            Rect drawBox = new Rect(boundingBox.x, iconBox.yMax + margin, boundingBox.width, boundingBox.yMax - iconBox.yMax - margin - selectionPanelHeight);
-            Rect leftPanel = new Rect(boundingBox.x, iconBox.yMax + margin, (boundingBox.width - margin) / 2f, boundingBox.yMax - iconBox.yMax - margin - selectionPanelHeight);
+            // Budget indicator
+            Rect budgetRow = new Rect(boundingBox.x, iconBox.yMax + margin, boundingBox.width, 22f);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            double totalBudget = Math.Round(resource.getTitheIncome(), 2);
+            double usedBudget = Math.Round(resource.titheTotalValue, 2);
+            double remaining = Math.Round(totalBudget - usedBudget, 2);
+            string remainingStr;
+            if (remaining < 0)
+                remainingStr = $"${remaining}".Colorize(Color.red);
+            else if (remaining <= 0)
+                remainingStr = $"${remaining}".Colorize(Color.yellow);
+            else
+                remainingStr = $"${remaining}".Colorize(Color.green);
+            Widgets.DrawHighlight(budgetRow);
+            Widgets.Label(new Rect(budgetRow.x + smallMargin, budgetRow.y, budgetRow.width - (smallMargin * 2), budgetRow.height),
+                "FCTitheBudgetRemaining".Translate(remainingStr, $"${totalBudget}"));
+            Text.Font = GameFont.Small;
+
+            float panelTopY = budgetRow.yMax + margin;
+            Rect drawBox = new Rect(boundingBox.x, panelTopY, boundingBox.width, boundingBox.yMax - panelTopY - selectionPanelHeight);
+            Rect leftPanel = new Rect(boundingBox.x, panelTopY, (boundingBox.width - margin) / 2f, boundingBox.yMax - panelTopY - selectionPanelHeight);
             Rect rightPanel = new Rect(leftPanel.xMax + margin, leftPanel.y, leftPanel.width, leftPanel.height);
             DrawLeftPanel(leftPanel);
 
@@ -163,9 +187,11 @@ namespace FactionColonies
                 Rect cancelButton = new Rect(selectionPanel.x + margin, panelY, buttonWidth, rowHeight);
                 Rect confirmButton = new Rect(cancelButton.xMax + margin, panelY, buttonWidth, rowHeight);
 
-                if (Widgets.ButtonText(cancelButton, "Cancel".Translate()))
+                if (Widgets.ButtonText(cancelButton, "FCClearSelection".Translate()))
                 {
                     selectedThing = null;
+                    selectedStuff = null;
+                    selectedQuality = null;
                 }
 
                 bool canConfirm = true;
@@ -206,7 +232,8 @@ namespace FactionColonies
                             resource.addToTitheList(tuple, 0);
                         }
                         selectedThing = null;
-                        Close();
+                        selectedStuff = null;
+                        selectedQuality = null;
                     }
                 }
                 if (!canConfirm)
@@ -221,27 +248,62 @@ namespace FactionColonies
         }
         private void DrawLeftPanel(Rect boundingBox)
         {
+            float curY = boundingBox.y;
+
+            // Panel header
+            Rect headerRow = new Rect(boundingBox.x, curY, boundingBox.width, SearchBarHeight);
+            Widgets.DrawHighlight(headerRow);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Font = GameFont.Small;
+            Widgets.Label(new Rect(headerRow.x + margin, headerRow.y, 60f, headerRow.height), "FCTitheItems".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(headerRow.xMax - margin - 65f - margin - sortBtnW, headerRow.y + 2, sortBtnW, headerRow.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[itemSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        itemSortIndex = captured;
+                        scrollBarLeft = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
+            curY = headerRow.yMax;
+
             // Search bar
-            Rect searchRect = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, SearchBarHeight);
+            Rect searchRect = new Rect(boundingBox.x, curY, boundingBox.width, SearchBarHeight);
             thingSearchTerm = Widgets.TextField(searchRect, thingSearchTerm);
+            if (string.IsNullOrEmpty(thingSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchItems".Translate());
+                GUI.color = prevColor;
+            }
+            curY = searchRect.yMax;
 
             List<ThingDef> thingsList = string.IsNullOrEmpty(thingSearchTerm)
                 ? resource.generateThingDefList()
                 : resource.generateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
+            // Apply sort
+            thingsList = ApplySort(thingsList, itemSortIndex);
+
             // Actual scrollbox
-            Rect drawBox = new Rect(boundingBox.x, searchRect.yMax + margin, boundingBox.width, boundingBox.height - margin - searchRect.height);
+            Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = thingsList.Count * rowHeight;
-            float width;
-            if (listHeight > outerListBox.height)
-            {
-                width = outerListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = outerListBox.width;
-            }
+            float width = listHeight > outerListBox.height ? outerListBox.width - scrollSpacing : outerListBox.width;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(headerRow.xMax - margin - 65f - (listHeight > outerListBox.height ? scrollSpacing : 0), headerRow.y, 60f, headerRow.height), "FCTitheBasePrice".Translate());
+            Text.Font = GameFont.Small;
             Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
@@ -284,7 +346,14 @@ namespace FactionColonies
                     {
                         selectedStuff = null;
                     }
-                    if (selectedQuality != null && !CraftUtil.thingHasQuality(iThing))
+                    if (CraftUtil.thingHasQuality(iThing))
+                    {
+                        if (selectedQuality == null)
+                        {
+                            selectedQuality = QualityCategory.Normal;
+                        }
+                    }
+                    else
                     {
                         selectedQuality = null;
                     }
@@ -300,27 +369,62 @@ namespace FactionColonies
         }
         private void DrawRightPanel(Rect boundingBox)
         {
+            float curY = boundingBox.y;
+
+            // Panel header
+            Rect headerRow = new Rect(boundingBox.x, curY, boundingBox.width, SearchBarHeight);
+            Widgets.DrawHighlight(headerRow);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Font = GameFont.Small;
+            Widgets.Label(new Rect(headerRow.x + margin, headerRow.y, 80f, headerRow.height), "FCTitheStuff".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(headerRow.xMax - margin - 75f - margin - sortBtnW, headerRow.y + 2, sortBtnW, headerRow.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[stuffSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        stuffSortIndex = captured;
+                        scrollBarRight = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
+            curY = headerRow.yMax;
+
             // Search bar
-            Rect searchRect = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, SearchBarHeight);
+            Rect searchRect = new Rect(boundingBox.x, curY, boundingBox.width, SearchBarHeight);
             stuffSearchTerm = Widgets.TextField(searchRect, stuffSearchTerm);
+            if (string.IsNullOrEmpty(stuffSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchMaterials".Translate());
+                GUI.color = prevColor;
+            }
+            curY = searchRect.yMax;
 
             List<ThingDef> stuffList = string.IsNullOrEmpty(stuffSearchTerm)
                 ? currentStuffs
                 : currentStuffs.Where(t => t.label.IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
+            // Apply sort
+            stuffList = ApplySort(stuffList, stuffSortIndex, isStuffList: true);
+
             // Actual scrollbox
-            Rect drawBox = new Rect(boundingBox.x, searchRect.yMax + margin, boundingBox.width, boundingBox.height - margin - searchRect.height);
+            Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = stuffList.Count * rowHeight;
-            float width;
-            if (listHeight > outerListBox.height)
-            {
-                width = outerListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = outerListBox.width;
-            }
+            float width = listHeight > outerListBox.height ? outerListBox.width - scrollSpacing : outerListBox.width;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(headerRow.xMax - margin - 65f - (listHeight > outerListBox.height ? scrollSpacing : 0), headerRow.y, 60f, headerRow.height), "FCTitheMaterialPrice".Translate());
+            Text.Font = GameFont.Small;
             Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
@@ -354,11 +458,33 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iStuff.LabelCap);
                 Text.Anchor = TextAnchor.MiddleRight;
-                Widgets.Label(valueLabel, $"${Math.Round(StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, iStuff))}");
+                float stuffPrice = selectedQuality != null
+                    ? resource.titheThingValue(selectedThing, iStuff, selectedQuality ?? QualityCategory.Normal)
+                    : StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, iStuff);
+                Widgets.Label(valueLabel, $"${Math.Round(stuffPrice)}");
                 Text.Anchor = TextAnchor.MiddleLeft;
             }
 
             Widgets.EndScrollView();
+        }
+
+        private List<ThingDef> ApplySort(List<ThingDef> list, int sortIndex, bool isStuffList = false)
+        {
+            switch (sortIndex)
+            {
+                case 1: // Name Z-A
+                    return list.OrderByDescending(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
+                case 2: // Price Low-High
+                    if (isStuffList && selectedThing != null)
+                        return list.OrderBy(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, t)).ToList();
+                    return list.OrderBy(t => t.BaseMarketValue).ToList();
+                case 3: // Price High-Low
+                    if (isStuffList && selectedThing != null)
+                        return list.OrderByDescending(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, t)).ToList();
+                    return list.OrderByDescending(t => t.BaseMarketValue).ToList();
+                default: // 0: Name A-Z
+                    return list.OrderBy(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
+            }
         }
     }
 }
