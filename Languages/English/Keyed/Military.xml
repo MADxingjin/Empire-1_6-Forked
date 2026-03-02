@@ -128,4 +128,26 @@
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
 	<debugRemoveAllCommand>[Debug] Remove all</debugRemoveAllCommand>
 
+	<!-- Military Card UI -->
+	<FCMilSquadPrefix>Squad</FCMilSquadPrefix>
+	<FCMilFireSupportCooldownShort>Fire Support</FCMilFireSupportCooldownShort>
+	<FCMilitarySettlementCount>{0} settlements</FCMilitarySettlementCount>
+	<FCNoMilitarySettlements>No settlements with military components</FCNoMilitarySettlements>
+	<FCMilStatusUnderAttack>UNDER ATTACK</FCMilStatusUnderAttack>
+	<FCMilStatusDeployed>Deployed</FCMilStatusDeployed>
+	<FCMilStatusRaiding>Raiding</FCMilStatusRaiding>
+	<FCMilStatusEnslaving>Enslaving</FCMilStatusEnslaving>
+	<FCMilStatusCapturing>Capturing</FCMilStatusCapturing>
+	<FCMilStatusDefending>Defending</FCMilStatusDefending>
+	<FCMilStatusCooldown>Deployment Cooldown</FCMilStatusCooldown>
+	<FCMilStatusBusy>Busy</FCMilStatusBusy>
+	<FCMilStatusReady>Ready</FCMilStatusReady>
+	<FCMilStatusNoSquad>No Squad</FCMilStatusNoSquad>
+	<FCMilAutoDefend>Auto-Defend</FCMilAutoDefend>
+	<FCMilBtnSetSquadTip>Assign a military squad to this settlement</FCMilBtnSetSquadTip>
+	<FCMilBtnDeployTip>Deploy the assigned squad to a map location</FCMilBtnDeployTip>
+	<FCMilBtnResetTip>Reset and regenerate squad members</FCMilBtnResetTip>
+	<FCMilBtnFireSupportTip>Call in artillery fire support</FCMilBtnFireSupportTip>
+	<FCMilBtnAutoDefendTip>Automatically send this settlement's forces to defend other settlements under attack</FCMilBtnAutoDefendTip>
+
 </LanguageData>

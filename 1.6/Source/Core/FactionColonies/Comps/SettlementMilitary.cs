@@ -484,6 +484,7 @@ namespace FactionColonies
                 force.homeSettlement.MilitaryComp.militarySquad.mercenaries.Any())
             {
                 var squad = force.homeSettlement.MilitaryComp.militarySquad;
+                squad.CheckInitialization();
 
                 squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
                 squad.updateSquadStats(squad.settlement.settlementMilitaryLevel);
@@ -1093,6 +1094,7 @@ namespace FactionColonies
         {
             if (militarySquad != null)
             {
+                militarySquad.CheckInitialization();
                 if (militarySquad.outfit != null)
                 {
                     if (militarySquad.EquippedMercenaries.Any())

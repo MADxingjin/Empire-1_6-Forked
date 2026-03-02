@@ -315,6 +315,7 @@ namespace FactionColonies
                         parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
                         parms.raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly;
 
+                        settlement.MilitaryComp.militarySquad.CheckInitialization();
                         settlement.MilitaryComp.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
 
                         DebugTools.curTool = new DebugTool("Select Drop Position", delegate

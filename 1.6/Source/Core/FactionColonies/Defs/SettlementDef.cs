@@ -1,5 +1,6 @@
 ﻿using FactionColonies.util;
 using RimWorld;
+using UnityEngine;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,8 @@ namespace FactionColonies
         /// Entirely flavor. Determines whether time to create is labeled in menus as "Construction Time" or "Travel Time".
         /// </summary>
         public bool isConstructed = false;
+
+        public Color? accentColor;
 
         public ResourceBonuses getSettlementResource(ResourceTypeDef resourceTypeDef)
         {

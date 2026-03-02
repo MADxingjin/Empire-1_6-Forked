@@ -63,15 +63,18 @@ namespace FactionColonies
         }
 
         public IEnumerable<Mercenary> EquippedMercenaries =>
-            mercenaries.Where(merc => (merc.pawn.apparel.WornApparel.Any()
-                                       || merc.pawn.equipment.AllEquipmentListForReading.Any()
-                                       || merc.animal != null) && merc.deployable);
+            mercenaries.Where(merc => merc?.pawn?.apparel != null
+                                       && merc.pawn.equipment != null
+                                       && (merc.pawn.apparel.WornApparel.Any()
+                                           || merc.pawn.equipment.AllEquipmentListForReading.Any()
+                                           || merc.animal != null)
+                                       && merc.deployable);
 
         public IEnumerable<Pawn> EquippedMercenaryPawns =>
             EquippedMercenaries.Select(merc => merc.pawn);
 
         public IEnumerable<Pawn> EquippedAnimalMercenaries =>
-            animals.Select(animal => animal.pawn);
+            animals.Where(animal => animal?.pawn != null).Select(animal => animal.pawn);
 
         public IEnumerable<Pawn> AllEquippedMercenaryPawns =>
             EquippedMercenaries.Select(merc => merc.pawn).Concat(EquippedAnimalMercenaries);
@@ -81,10 +84,10 @@ namespace FactionColonies
                 .Concat(DeployedMercenaryAnimals.Select(merc => merc.pawn));
 
         public IEnumerable<Mercenary> DeployedMercenaries =>
-            mercenaries.Where(merc => merc.pawn.Map != null);
+            mercenaries.Where(merc => merc?.pawn?.Map != null);
 
         public IEnumerable<Mercenary> DeployedMercenaryAnimals =>
-            animals.Where(merc => merc.pawn.Map != null);
+            animals.Where(merc => merc?.pawn?.Map != null);
         public WorldSettlementFC getSettlement
         {
             get
@@ -175,10 +178,11 @@ namespace FactionColonies
         /// </summary>
         public void CheckInitialization()
         {
-            if (!squadInitialized)
+            if (mercenaries == null || !mercenaries.Any(m => m?.pawn != null))
             {
                 initiateSquad();
             }
+            squadInitialized = true;
         }
 
         public void resetNeeds()
