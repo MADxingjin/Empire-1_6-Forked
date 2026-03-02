@@ -55,7 +55,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasLord, "hasLord");
             Scribe_References.Look(ref map, "map");
             Scribe_References.Look(ref lord, "lord");
-            Scribe_Values.Look(ref squadInitialized, "squadInitialized", defaultValue: false);
         }
 
         public string GetUniqueLoadID()
@@ -457,6 +456,12 @@ namespace FactionColonies
             {
                 try
                 {
+                    if (loadout == null)
+                    {
+                        count++;
+                        continue;
+                    }
+
                     // Ensure we have enough mercenaries in the list
                     while (mercenaries.Count <= count)
                     {
@@ -520,7 +525,8 @@ namespace FactionColonies
                         }
 
                         mercenaries[count].loadout = loadout;
-                        mercenaries[count].deployable = mercenaries[count].loadout != faction.militaryCustomizationUtil.blankUnit;
+                        mercenaries[count].deployable = faction?.militaryCustomizationUtil != null
+                            && mercenaries[count].loadout != faction.militaryCustomizationUtil.blankUnit;
                     }
 
                     if (mercenaries[count]?.pawn?.equipment?.AllEquipmentListForReading != null)
@@ -538,21 +544,17 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error("Something went wrong when outfitting a squad: " + e.Message);
-                    bool isNullOrEmpty = mercenaries.NullOrEmpty();
-                    LogUtil.Error("Mercanaries NullOrEmpty: " + isNullOrEmpty);
-
-                    if (isNullOrEmpty)
+                    LogUtil.Error($"Something went wrong when outfitting a squad (slot {count}): {e}");
+                    if (!mercenaries.NullOrEmpty())
                     {
-                        LogUtil.Error("Number of Mercs: " + mercenaries.Count);
-                        LogUtil.Error("Any mercenary or pawn is null: " + mercenaries.Any(mercenary => mercenary?.pawn == null));
+                        LogUtil.Error($"Number of Mercs: {mercenaries.Count}, Any null pawn: {mercenaries.Any(m => m?.pawn == null)}");
                     }
                 }
                 count++;
             }
 
             //debugMercenarySquad();
-            FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
+            FactionCache.FactionComp?.militaryCustomizationUtil?.RebuildMercenaryPawnSet();
         }
 
 
@@ -567,27 +569,35 @@ namespace FactionColonies
 
         public void EquipPawn(Mercenary merc, MilUnitFC loadout)
         {
-            foreach (SavedThing apparelDef in loadout.apparel)
+            if (merc?.pawn == null || loadout == null) return;
+
+            if (merc.pawn.apparel != null)
             {
-                Thing thing = apparelDef.CreateThing();
-                if (thing is Apparel ap)
+                foreach (SavedThing apparelDef in loadout.apparel)
                 {
-                    thing.SetColor(Color.white);
-                    merc.pawn.apparel.Wear(ap);
+                    Thing thing = apparelDef.CreateThing();
+                    if (thing is Apparel ap)
+                    {
+                        thing.SetColor(Color.white);
+                        merc.pawn.apparel.Wear(ap);
+                    }
                 }
             }
 
-            foreach (SavedThing weaponDef in loadout.weapons)
+            if (merc.pawn.equipment != null)
             {
-                Thing weaponThing = weaponDef.CreateThing();
-                if (weaponThing is ThingWithComps twc)
+                foreach (SavedThing weaponDef in loadout.weapons)
                 {
-                    merc.pawn.equipment.AddEquipment(twc);
-
-                    if (CombatExtendedUtil.IsCELoaded)
+                    Thing weaponThing = weaponDef.CreateThing();
+                    if (weaponThing is ThingWithComps twc)
                     {
-                        CombatExtendedUtil.EquipWeaponWithAmmo(merc.pawn, merc.pawn.equipment.Primary);
+                        merc.pawn.equipment.AddEquipment(twc);
                     }
+                }
+
+                if (CombatExtendedUtil.IsCELoaded && merc.pawn.equipment.Primary != null)
+                {
+                    CombatExtendedUtil.EquipWeaponWithAmmo(merc.pawn, merc.pawn.equipment.Primary);
                 }
             }
         }

@@ -1289,6 +1289,7 @@ namespace FactionColonies
                             Messages.Message("FCRequiresArtilleryOutpost".Translate(),
                                 MessageTypeDefOf.RejectInput);
                         }
+                        Find.WindowStack.TryRemove(this);
                     }
                     else
                     {
