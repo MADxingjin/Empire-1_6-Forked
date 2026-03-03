@@ -755,7 +755,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref eventFollows, "eventFollows");
             Scribe_Defs.Look(ref followingEvent, "followingEvent");
             Scribe_Defs.Look(ref followingEvent2, "followingEvent2");
-            Scribe_Values.Look(ref splitEventFollows, "splitEventFol*lows");
+            Scribe_Values.Look(ref splitEventFollows, "splitEventFollows");
             Scribe_Values.Look(ref splitEventChance, "splitEventChance");
             Scribe_Values.Look(ref optionDescription, "optionDescription");
             Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
