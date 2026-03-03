@@ -25,7 +25,14 @@ namespace FactionColonies
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         public Hilliness minhilliness = Hilliness.Undefined;
         public Hilliness maxhilliness = Hilliness.Undefined;
-        //public required research
+        /// <summary>
+        /// Determines if the building can be built directly from the building window, into an empty building slot.
+        /// </summary>
+        public bool baseBuilding = true;
+        /// <summary>
+        /// A list of buildings that this building can upgrade into.
+        /// </summary>
+        public List<BuildingFCDef> upgrades = new List<BuildingFCDef>();
 
         private bool didCacheBuildingAttributeDesc = false;
         private TaggedString cachedBuildingAttributeDesc = "";

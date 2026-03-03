@@ -221,6 +221,11 @@ namespace FactionColonies
                 if (Widgets.ButtonText(tabRect, label))
                 {
                     overviewTab = i;
+                    if (overviews.Count > 0 && overviewTab >= 2 && overviewTab <= (overviews.Count - 2))
+                    {
+                        ISettlementWindowOverview overview = overviews[overviewTab - 2];
+                        overview.OnTabSwitch();
+                    }
                 }
                 if (overviewTab == i)
                 {

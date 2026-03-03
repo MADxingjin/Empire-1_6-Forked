@@ -355,7 +355,7 @@ namespace FactionColonies
             
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
             {
-                if(building.defName != "Empty" && building.defName != "Construction")
+                if(building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {
                     //If not a building that shouldn't appear on the list
                     if (building.techLevel <= factionfc.techLevel)

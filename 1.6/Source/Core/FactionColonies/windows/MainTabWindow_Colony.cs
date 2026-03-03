@@ -17,9 +17,17 @@ namespace FactionColonies
         private const float bigMargin = 8f;
 
         // ===== TAB STATE =====
-        private enum EmpireTab { Overview, Bills, Events, Military }
-        private EmpireTab curTab = EmpireTab.Overview;
+        private string curTab = "Overview".Translate();
         private List<TabRecord> tabs = new List<TabRecord>();
+
+        private List<string> overviewTabs = new List<string>
+        {
+            "Overview".Translate(),
+            "Bills".Translate(),
+            "Events".Translate(),
+            "Military".Translate()
+        };
+        private Dictionary<string, Action<Rect>> overviewFuncs = new Dictionary<string, Action<Rect>>();
 
         // ===== WINDOW SIZE =====
         public override Vector2 InitialSize => new Vector2(1010f, 640f);
@@ -60,30 +68,45 @@ namespace FactionColonies
             militaryUtil = faction.militaryCustomizationUtil;
 
             // Build tab list
+            // Main overview tab
             tabs.Clear();
-            tabs.Add(new TabRecord("Overview".Translate(), delegate
+            tabs.Add(new TabRecord(overviewTabs[0], delegate
             {
-                curTab = EmpireTab.Overview;
+                curTab = overviewTabs[0];
                 faction.updateTotalProfit();
-            }, () => curTab == EmpireTab.Overview));
-
-            tabs.Add(new TabRecord("Bills".Translate(), delegate
+            }, () => curTab == overviewTabs[0]));
+            overviewFuncs.Add(overviewTabs[0], DrawOverviewTab);
+            // Bills tab
+            tabs.Add(new TabRecord(overviewTabs[1], delegate
             {
-                curTab = EmpireTab.Bills;
+                curTab = overviewTabs[1];
                 billsScroll = Vector2.zero;
-            }, () => curTab == EmpireTab.Bills));
-
-            tabs.Add(new TabRecord("Events".Translate(), delegate
+            }, () => curTab == overviewTabs[1]));
+            overviewFuncs.Add(overviewTabs[1], DrawBillsTab);
+            // Events tab
+            tabs.Add(new TabRecord(overviewTabs[2], delegate
             {
-                curTab = EmpireTab.Events;
+                curTab = overviewTabs[2];
                 eventsScroll = Vector2.zero;
-            }, () => curTab == EmpireTab.Events));
-
-            tabs.Add(new TabRecord("Military".Translate(), delegate
+            }, () => curTab == overviewTabs[2]));
+            overviewFuncs.Add(overviewTabs[2], DrawEventsTab);
+            // Military tab
+            tabs.Add(new TabRecord(overviewTabs[3], delegate
             {
-                curTab = EmpireTab.Military;
+                curTab = overviewTabs[3];
                 militaryScroll = Vector2.zero;
-            }, () => curTab == EmpireTab.Military));
+            }, () => curTab == overviewTabs[3]));
+            overviewFuncs.Add(overviewTabs[3], DrawMilitaryTab);
+            // Mod-added tabs
+            foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
+            {
+                tabs.Add(new TabRecord(itab.TabName(), delegate
+                {
+                    curTab = itab.TabName();
+                    itab.OnTabSwitch();
+                }, () => curTab == itab.TabName()));
+                overviewFuncs.Add(itab.TabName(), itab.DrawOverviewTab);
+            }
         }
 
         public override void PostClose()
@@ -148,21 +171,7 @@ namespace FactionColonies
             Widgets.DrawMenuSection(contentRect);
             TabDrawer.DrawTabs(contentRect, tabs);
 
-            switch (curTab)
-            {
-                case EmpireTab.Overview:
-                    DrawOverviewTab(contentRect);
-                    break;
-                case EmpireTab.Bills:
-                    DrawBillsTab(contentRect);
-                    break;
-                case EmpireTab.Events:
-                    DrawEventsTab(contentRect);
-                    break;
-                case EmpireTab.Military:
-                    DrawMilitaryTab(contentRect);
-                    break;
-            }
+            overviewFuncs[curTab](contentRect);
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

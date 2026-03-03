@@ -8,14 +8,14 @@ using UnityEngine;
 namespace FactionColonies
 {
     /// <summary>
-    /// Defines an interface that WorldObjectComps can implement in order to add a new overview tab to the settlement window.
+    /// Defines an interface to let classes specify additional tabs to add to the main tab window.
     /// </summary>
-    public interface ISettlementWindowOverview
+    public interface IMainTabWindowOverview
     {
-        void PreOpenWindow(WorldSettlementFC settlement);
+        void PreOpenWindow(FactionFC faction);
         void OnTabSwitch();
         void DrawOverviewTab(Rect boundingBox);
         void PostCloseWindow();
-        string OverviewTabName();
+        string TabName();
     }
 }
