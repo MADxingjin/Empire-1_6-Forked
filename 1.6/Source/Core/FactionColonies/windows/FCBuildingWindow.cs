@@ -371,27 +371,9 @@ namespace FactionColonies
                         if (building.applicableBiomes.Count == 0 || building.applicableBiomes.Any() 
                             && building.applicableBiomes.Contains(settlement.biome)){
                             //If building meets the biome requirements
-                            
+
                             // Check settlement type restrictions
-                            bool meetsSettlementTypeRequirement = true;
-                            if (building.settlementTypeBlockList?.Count > 0)
-                            {
-                                if (building.settlementTypeBlockList.Contains(settlement.settlementDef))
-                                {
-                                    meetsSettlementTypeRequirement = false;
-                                }
-                            }
-                            if (building.settlementTypeAllowList?.Count > 0)
-                            {
-                                //If we have an allowlist, then the default restriction is false
-                                meetsSettlementTypeRequirement = false;
-                                if (building.settlementTypeAllowList.Contains(settlement.settlementDef))
-                                {
-                                    meetsSettlementTypeRequirement = true;
-                                }
-                            }
-                            
-                            if (meetsSettlementTypeRequirement)
+                            if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
                             {
                                 buildingList.Add(building);
                             }

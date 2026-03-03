@@ -264,6 +264,11 @@ namespace FactionColonies
             }
 
             // Check settlement type restrictions
+            if (!building.CanBeBuiltForSettlementType(WorldSettlement.settlementDef))
+            {
+                valid = false;
+                Messages.Message("BuildingInvalidSettlement".Translate(building.LabelCap, WorldSettlement.settlementDef.LabelCap), MessageTypeDefOf.RejectInput);
+            }
             //TODO: rework based on def
             /*bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
             switch (building.settlementTypeRestriction)

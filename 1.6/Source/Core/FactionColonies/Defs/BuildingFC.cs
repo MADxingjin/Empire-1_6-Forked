@@ -78,13 +78,39 @@ namespace FactionColonies
         }
 
         public bool RequiredModsLoaded => (ModsConfig.RoyaltyActive || !requiresRoyality) && (ModsConfig.IdeologyActive || !requiresIdeology) && requiredModsID.TrueForAll(mod => ModsConfig.IsActive(mod));
-    }
+        public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)
+        {
+            bool meetsSettlementTypeRequirement = true;
+            if (settlementTypeBlockList?.Count > 0)
+            {
+                if (settlementTypeBlockList.Contains(settlement))
+                {
+                    meetsSettlementTypeRequirement = false;
+                }
+            }
+            if (settlementTypeAllowList?.Count > 0)
+            {
+                //If we have an allowlist, then the default restriction is false
+                meetsSettlementTypeRequirement = false;
+                if (settlementTypeAllowList.Contains(settlement))
+                {
+                    meetsSettlementTypeRequirement = true;
+                }
+            }
+            return meetsSettlementTypeRequirement;
+        }
 
-    public enum SettlementTypeRestriction
-    {
-        None,           // Available to all settlement types
-        SurfaceOnly,    // Only available to surface settlements
-        OrbitalOnly     // Only available to orbital platforms
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var err in base.ConfigErrors())
+            {
+                yield return err;
+            }
+            if (settlementTypeAllowList?.Count > 0 && settlementTypeBlockList?.Count > 0)
+            {
+                yield return $"BuildingFCDef {defName} has both a settlementTypeAllowList and a settlementTypeBlockList";
+            }
+        }
     }
 
     [DefOf]

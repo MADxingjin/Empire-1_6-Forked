@@ -44,7 +44,6 @@ namespace FactionColonies
         public double happiness = 100;
         public double prosperity = 100;
 
-        //public List<BuildingFCDef> buildings = new List<BuildingFCDef>();
         /// <summary>
         /// List of traits that apply to this settlement.
         /// <para>This field should never be accessed directly. Adding or removing traits should always be done through the addTrait, addTraits, removeTrait, or removeTraits functions.</para>
@@ -431,10 +430,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref startUpgradeTick, "startupgradetick", -1);
             Scribe_Values.Look(ref finishUpgradeTick, "finishupgradetick", -1);
 
-
-            //Military
-
-
             //Prisoners
             Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
 
@@ -520,16 +515,6 @@ namespace FactionColonies
         {
             Tick();
         }
-        /*public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (var gizmo in base.GetGizmos()) yield return gizmo;
-            //yield return OpenSettlementWindowAction;
-            //if (settlement.isUnderAttack) yield return DefendColonyAction;
-            //if (settlement.isUnderAttack && !attackers.Any()) yield return ChangeDefenderAction;
-            //var containsShuttlePort = settlement.buildings.Contains(BuildingFCDefOf.shuttlePort);
-            //if (containsShuttlePort) yield return RequestShuttleAction;
-            //if (containsShuttlePort) yield return RequestShuttleForCaravanAction;
-        }*/
 
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {

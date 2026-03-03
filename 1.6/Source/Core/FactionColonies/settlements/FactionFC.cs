@@ -1141,21 +1141,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /* * * * *
          * End Resource Pool functions
          * * * * * */
-
-        /*public void updateTotalResources()
-        {
-            foreach (ResourceDisplay rdisplay in factionResources)
-            {
-                int resource = 0;
-
-                for (int k = 0; k < settlements.Count; k++)
-                {
-                    resource += (int)(settlements[k].getResource(rdisplay.resourceDef)?.totalProduction ?? 0);
-                }
-
-                rdisplay.amount = resource;
-            }
-        }*/
         public void setDirtyResourceDisplayCache(ResourceTypeDef rdef)
         {
             ResourceDisplay rdisplay = factionResources.Find((ResourceDisplay rd) => rd.resourceDef == rdef);

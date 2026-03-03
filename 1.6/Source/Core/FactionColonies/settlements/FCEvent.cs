@@ -861,7 +861,6 @@ namespace FactionColonies
     public class FCEventDefOf
     {
         //List Events here - loads events at start
-        //public static FCEventDef settleNewColony;
         public static FCEventDef Null;
         public static FCEventDef settleNewColony;
         public static FCEventDef taxColony;
