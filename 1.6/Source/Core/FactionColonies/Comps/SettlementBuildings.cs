@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using FactionColonies.util;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace FactionColonies
 
         public List<BuildingFC> Buildings => buildings;
 
-        public int NumBuildingSlots => Math.Min(3 + (int)Math.Floor((WorldSettlement?.settlementLevel ?? 0) / 2f), WorldSettlement.settlementDef.maxBuildingCount);
+        public int NumBuildingSlots => SettlementFormulas.CalculateBuildingSlots(WorldSettlement?.settlementLevel ?? 0, WorldSettlement.settlementDef.maxBuildingCount);
 
         private bool dirtyConstructionCache = true;
         private List<BuildingFC> constructionCache = new List<BuildingFC>();
@@ -474,10 +475,7 @@ namespace FactionColonies
                     }
                 }
 
-                if (building.def.upkeep != 0 && (!isMilitary || !faction.hasPolicy(FCPolicyDefOf.militaristic)))
-                    upkeep += building.def.upkeep;
-                else
-                    upkeep += Math.Max(0, building.def.upkeep - 100);
+                upkeep += SettlementFormulas.CalculateBuildingUpkeep(building.def.upkeep, isMilitary, faction.hasPolicy(FCPolicyDefOf.militaristic));
             }
             return upkeep;
         }

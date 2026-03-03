@@ -635,22 +635,17 @@ namespace FactionColonies
             var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
             var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
 
-            var muliplier = 1;
-            if (faction.hasPolicy(FCPolicyDefOf.feudal))
-                muliplier = 2;
-            float prosperityMultiplier = 1;
-            var canDestroyBuildings = true;
-            if (faction.hasTrait(FCPolicyDefOf.resilient))
-            {
-                prosperityMultiplier = .5f;
-                canDestroyBuildings = false;
-            }
+            bool hasFeudalPolicy = faction.hasPolicy(FCPolicyDefOf.feudal);
+            bool hasResilientTrait = faction.hasTrait(FCPolicyDefOf.resilient);
+            var canDestroyBuildings = !hasResilientTrait;
 
-            // LogUtil.Message("Determined Multipliers for loss penalty");
-            // if winner are enemies
-            WorldSettlement.prosperity -= 20 * prosperityMultiplier;
-            WorldSettlement.happiness -= 25 * happinessLostMultiplier;
-            WorldSettlement.loyalty -= 15 * loyaltyLostMultiplier * muliplier;
+            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(
+                happinessLostMultiplier, loyaltyLostMultiplier,
+                hasFeudalPolicy, hasResilientTrait);
+
+            WorldSettlement.prosperity -= prosperityLoss;
+            WorldSettlement.happiness -= happinessLoss;
+            WorldSettlement.loyalty -= loyaltyLoss;
 
             string str = "DefenseFailureFull".Translate(WorldSettlement.Name);
 

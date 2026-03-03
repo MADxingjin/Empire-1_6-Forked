@@ -9,7 +9,7 @@ namespace FactionColonies
 {
     class SimulateBattleFc
     {
-        public static int FightBattle(militaryForce MFA, militaryForce MFB)
+        public static int FightBattle(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
         {
             int result = 0;
             try
@@ -18,7 +18,7 @@ namespace FactionColonies
                 while (MFA.forceRemaining > 0 && MFB.forceRemaining > 0)
                 {
                     // One number should always be reduced to 0
-                    FightRound(MFA, MFB);
+                    FightRound(MFA, MFB, rand);
                 }
 
                 if (MFA.forceRemaining <= 0)
@@ -44,10 +44,11 @@ namespace FactionColonies
             return result;
         }
 
-        public static void FightRound(militaryForce MFA, militaryForce MFB)
+        public static void FightRound(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
         {
-            var randA = (Rand.Range(0, 20) * MFA.militaryEfficiency);
-            var randB = (Rand.Range(0, 20) * MFB.militaryEfficiency);
+            rand = rand ?? new RimWorldRandProvider();
+            var randA = (rand.Range(0, 20) * MFA.militaryEfficiency);
+            var randB = (rand.Range(0, 20) * MFB.militaryEfficiency);
             // LogUtil.Message("A Begin: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B begin");
             // LogUtil.Message("A Rolled: " + randA.ToString() + " : " + randB.ToString() + " B rolled");
 
@@ -69,7 +70,7 @@ namespace FactionColonies
         public double militaryLevel;
         public double militaryEfficiency;
         public double forceRemaining;
-        public int random = Rand.Range(0, 0);
+        public int random;
         public WorldSettlementFC homeSettlement;
         public Faction homeFaction;
 
@@ -290,8 +291,13 @@ namespace FactionColonies
                 militaryForce.createMilitaryForceFromSettlement(settlementOfMilitaryForce,
                     homeDefendingForce: tmpMilitaryForce);
 
+            if (target.MilitaryComp == null)
+            {
+                LogUtil.Warning($"changeDefendingMilitaryForce: target settlement {target?.Name} has no MilitaryComp. Aborting.");
+                return;
+            }
             target.MilitaryComp.defenderForce = evt.militaryForceDefending;
-            
+
             if (settlementOfMilitaryForce == homeSettlement)
             {
                 //if home settlement is reseting to defense

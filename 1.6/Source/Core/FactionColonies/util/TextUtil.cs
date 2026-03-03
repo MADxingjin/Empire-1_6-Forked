@@ -52,6 +52,19 @@ namespace FactionColonies
         public static string CleaveAtNewline(string input)
         {
             int newline = input.IndexOf('\n');
+            if (newline == 0)
+            {
+                // If the first character in the string is a newline, then skip over it and return the next line of text.
+                // If the newline is the only character in the string, though, then just return an empty string.
+                if (input.Length > 1)
+                {
+                    return CleaveAtNewline(input.Substring(1, input.Length - 1));
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
             if (newline > 0)
             {
                 return input.Substring(0, newline);

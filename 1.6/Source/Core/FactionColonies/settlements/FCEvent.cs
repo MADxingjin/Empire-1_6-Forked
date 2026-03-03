@@ -478,6 +478,12 @@ namespace FactionColonies
 
         private static void setupAttack(WorldSettlementFC worldSettlement, FCEvent temp)
         {
+            if (worldSettlement.MilitaryComp == null)
+            {
+                LogUtil.Warning($"setupAttack called on {worldSettlement?.Name} with no MilitaryComp. Aborting.");
+                return;
+            }
+
             IncidentParms parms = new IncidentParms
             {
                 target = worldSettlement.Map,

@@ -105,7 +105,8 @@ namespace FactionColonies
 
             for (int k = util.mercenarySquads.Count() - 1; k >= 0; k--)
             {
-                util.mercenarySquads[k].settlement.MilitaryComp.militarySquad = null;
+                if (util.mercenarySquads[k].settlement.MilitaryComp != null)
+                    util.mercenarySquads[k].settlement.MilitaryComp.militarySquad = null;
                 util.mercenarySquads.RemoveAt(k);
             }
 

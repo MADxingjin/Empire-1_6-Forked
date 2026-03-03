@@ -627,9 +627,7 @@ namespace FactionColonies
         }
         public void updateHappiness()
         {
-            happiness += getTotalHappinessGain();
-
-            happiness = Math.Round(Math.Clamp(happiness, 1, 100), 1);
+            happiness = SettlementFormulas.ClampStat(happiness, getTotalHappinessGain());
         }
         public string getHappinessDesc()
         {
@@ -690,9 +688,7 @@ namespace FactionColonies
         }
         public void updateLoyalty()
         {
-            loyalty += getTotalLoyaltyGain();
-
-            loyalty = Math.Round(Math.Clamp(loyalty, 1, 100), 1);
+            loyalty = SettlementFormulas.ClampStat(loyalty, getTotalLoyaltyGain());
         }
         public string getLoyaltyDesc()
         {
@@ -740,9 +736,7 @@ namespace FactionColonies
         }
         public void updateProsperity()
         {
-            prosperity += getProsperityGain();
-
-            prosperity = Math.Round(Math.Clamp(prosperity, 1, 100), 1);
+            prosperity = SettlementFormulas.ClampStat(prosperity, getProsperityGain());
         }
         public string getProsperityDesc()
         {
@@ -940,17 +934,8 @@ namespace FactionColonies
             upkeepExp = "";
             workers = getTotalWorkers();
             double upkeep = 0;
-            double overWork;
-            if (workers > workersMax)
-            {
-                overWork = (int)(workers - workersMax);
-            }
-            else
-            {
-                overWork = 0;
-            }
 
-            workerTotalUpkeep = (workers * getBaseWorkerCost()) + ((workers * getBaseWorkerCost()) * (overWork / 20));
+            workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(workers, workersMax, getBaseWorkerCost());
             if (workerTotalUpkeep > 0)
             {
                 upkeepExp += "+" + Math.Round(workerTotalUpkeep,2).ToString() + " - " + "Workers".Translate() + "\n";
