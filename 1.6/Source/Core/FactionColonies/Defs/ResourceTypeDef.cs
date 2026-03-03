@@ -215,6 +215,10 @@ namespace FactionColonies
         /// </summary>
         public List<ResearchProjectDef> researchProjectDefs = new List<ResearchProjectDef>();
         /// <summary>
+        /// The pawn skills associated with producing this resource type. May be empty.
+        /// </summary>
+        public List<SkillDef> associatedSkills = new List<SkillDef>();
+        /// <summary>
         /// Indicates whether the resource type needs to meet both the techlevel AND researchProjectDefs requirements to become available.
         /// </summary>
         public bool needsAllResearchRequirements = true;
@@ -538,6 +542,13 @@ namespace FactionColonies
             if (biomeAllowList.Count > 0 && biomeBlockList.Count > 0)
             {
                 yield return "biomeAllowList and biomeBlockList are both specified for ResourceTypeDef " + this.defName + ". Only one should be specified";
+            }
+            foreach (SkillDef skillDef in associatedSkills)
+            {
+                if (skillDef == null)
+                {
+                    yield return "associatedSkills contains an unresolved SkillDef entry in ResourceTypeDef " + this.defName;
+                }
             }
             if (modExtensions?.Count > 0)
             {

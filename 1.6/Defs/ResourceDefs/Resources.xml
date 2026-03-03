@@ -25,6 +25,10 @@
 		<li>MeatRaw</li>
 		<li>AnimalProductRaw</li>
 	</thingCategoryBlockList>
+	<associatedSkills>
+		<li>Plants</li>
+		<li>Cooking</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
@@ -43,7 +47,7 @@
 		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Weapons</defName>
 	<label>weapons</label>
@@ -59,6 +63,9 @@
 			<thingCategoryDef>MortarShells</thingCategoryDef>
 		</li>
 	</thingCategoryAllowList>
+	<associatedSkills>
+		<li>Crafting</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>4</titheMaxCountBase>
 	<titheMaxCountScaler>2</titheMaxCountScaler>
@@ -98,11 +105,14 @@
 			<thingCategoryDef>Apparel</thingCategoryDef>
 		</li>
 	</thingCategoryAllowList>
+	<associatedSkills>
+		<li>Crafting</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Animals</defName>
 	<label>animals</label>
@@ -128,6 +138,9 @@
 		<li>Meat_Human</li>
 		<li>Leather_Human</li>
 	</thingBlockList>
+	<associatedSkills>
+		<li>Animals</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>3</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
@@ -151,6 +164,9 @@
 	<stuffCategoryAllowList>
 		<li>Woody</li>
 	</stuffCategoryAllowList>
+	<associatedSkills>
+		<li>Plants</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>5</titheMaxCountScaler>
@@ -181,6 +197,9 @@
 		<li>Metallic</li>
 		<li>Stony</li>
 	</stuffCategoryAllowList>
+	<associatedSkills>
+		<li>Mining</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>2</titheMaxCountScaler>
@@ -231,11 +250,14 @@
 			<minTechLevel>Ultra</minTechLevel>
 		</li>
 	</thingCategoryAllowList>
+	<associatedSkills>
+		<li>Medicine</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>2</titheMaxCountScaler>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Research</defName>
 	<label>research</label>
@@ -244,6 +266,9 @@
 	<uiPriority>800</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
+	<associatedSkills>
+		<li>Intellectual</li>
+	</associatedSkills>
 	<modExtensions>
 		<li Class="FactionColonies.ResourcePoolExt_Research" />
 		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
@@ -265,6 +290,9 @@
 	<uiPriority>900</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
+	<associatedSkills>
+		<li>Construction</li>
+	</associatedSkills>
 	<researchProjectDefs>
 		<li>Electricity</li>
 	</researchProjectDefs>
@@ -299,6 +327,9 @@
 	<researchProjectDefs>
 		<li>BiofuelRefining</li>
 	</researchProjectDefs>
+	<associatedSkills>
+		<li>Crafting</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>4</titheMaxCountScaler>
@@ -321,6 +352,11 @@
 			<thingDef>BlocksVacstone</thingDef>
 		</li>
 	</thingAllowList>
+	<associatedSkills>
+		<li>Intellectual</li>
+		<li>Crafting</li>
+		<li>Mining</li>
+	</associatedSkills>
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>3</titheMaxCountScaler>
