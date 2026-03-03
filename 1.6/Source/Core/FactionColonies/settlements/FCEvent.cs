@@ -312,10 +312,6 @@ namespace FactionColonies
                         break;
                     case "cooldownMilitary":
                         {
-                            LogUtil.Warning("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.");
-                            Messages.Message("temp.planetName null in FCEvent.ProcessEvents. Please report to Empire Mod with what you used this settlement for.",
-                                             MessageTypeDefOf.NegativeEvent);
-
                             faction.returnSettlementByLocation(evt.location).MilitaryComp?.returnMilitary(true);
                             break;
                         }
