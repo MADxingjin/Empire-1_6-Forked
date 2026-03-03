@@ -1,0 +1,412 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using FactionColonies.util;
+using RimWorld;
+using UnityEngine;
+using Verse;
+
+namespace FactionColonies
+{
+    /// <summary>
+    /// A modal picker window that shows items on the left and stuff materials
+    /// on the right. Used for weapon and apparel selection in the unit designer.
+    /// </summary>
+    public class FCWindow_ItemStuffPicker : Window
+    {
+        private readonly List<ThingDef> items;
+        private readonly Action<ThingDef, ThingDef> onConfirm;
+        private readonly Action onUnequip;
+        private readonly string titleKey;
+
+        private ThingDef selectedItem;
+        private ThingDef selectedStuff;
+        private List<ThingDef> currentStuffs = new List<ThingDef>();
+
+        private string itemSearchTerm = "";
+        private string stuffSearchTerm = "";
+
+        private int itemSortIndex = 0;
+        private int stuffSortIndex = 0;
+        private static readonly string[] sortLabelKeys = { "FCTitheSortNameAZ", "FCTitheSortNameZA", "FCTitheSortPriceLow", "FCTitheSortPriceHigh" };
+
+        private Vector2 itemScrollPos;
+        private Vector2 stuffScrollPos;
+
+        private const float RowHeight = 30f;
+        private const float IconSize = 24f;
+        private const float SearchBarHeight = 28f;
+        private const float ButtonHeight = 35f;
+        private const float PanelGap = 10f;
+        private const float margin = 5f;
+
+        public override Vector2 InitialSize => new Vector2(700f, 550f);
+
+        public FCWindow_ItemStuffPicker(
+            List<ThingDef> items,
+            Action<ThingDef, ThingDef> onConfirm,
+            Action onUnequip = null,
+            string titleKey = "fcPickItem",
+            ThingDef initialItem = null,
+            ThingDef initialStuff = null)
+        {
+            this.items = items;
+            this.onConfirm = onConfirm;
+            this.onUnequip = onUnequip;
+            this.titleKey = titleKey;
+
+            if (initialItem != null)
+            {
+                selectedItem = initialItem;
+                selectedStuff = initialStuff;
+                if (initialItem.MadeFromStuff)
+                {
+                    currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(initialItem));
+                    currentStuffs.SortBy(s => s.label);
+                }
+            }
+
+            forcePause = false;
+            draggable = true;
+            doCloseX = true;
+            preventCameraMotion = false;
+            absorbInputAroundWindow = true;
+            resizeable = true;
+        }
+
+        public override void DoWindowContents(Rect inRect)
+        {
+            GameFont fontBefore = Text.Font;
+            TextAnchor anchorBefore = Text.Anchor;
+
+            // Title
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Widgets.Label(new Rect(0, 0, inRect.width, 35f), titleKey.Translate());
+
+            float contentTop = 40f;
+            float summaryHeight = 25f;
+            float contentHeight = inRect.height - contentTop - ButtonHeight - summaryHeight - 20f;
+            float panelWidth = (inRect.width - PanelGap) / 2f;
+
+            // Left panel: Items
+            Rect itemPanelRect = new Rect(0, contentTop, panelWidth, contentHeight);
+            DrawItemPanel(itemPanelRect);
+
+            // Right panel: Stuff
+            Rect stuffPanelRect = new Rect(panelWidth + PanelGap, contentTop, panelWidth, contentHeight);
+            if (selectedItem != null && selectedItem.MadeFromStuff)
+            {
+                DrawStuffPanel(stuffPanelRect);
+            }
+            else if (selectedItem != null)
+            {
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(stuffPanelRect, "fcNoMaterialNeeded".Translate());
+            }
+
+            // Selection summary
+            Rect summaryBox = new Rect(inRect.x, contentTop + contentHeight + 5f, inRect.width, summaryHeight);
+            Rect summaryRect = new Rect(summaryBox.x + margin, contentTop + contentHeight + 5f, inRect.width - (margin*2), summaryHeight);
+            Widgets.DrawHighlight(summaryBox);
+            DrawSummary(summaryRect);
+
+            // Bottom buttons
+            Rect buttonBar = new Rect(0, inRect.height - ButtonHeight - 5f, inRect.width, ButtonHeight);
+            DrawButtons(buttonBar);
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        private void DrawItemPanel(Rect panelRect)
+        {
+            Text.Font = GameFont.Small;
+
+            // Title bar with sort + price label
+            Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
+            Widgets.DrawHighlight(titleBox);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Item".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[itemSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        itemSortIndex = captured;
+                        itemScrollPos = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            // Search bar
+            Rect searchRect = new Rect(panelRect.x, titleBox.yMax + margin, panelRect.width, SearchBarHeight);
+            itemSearchTerm = Widgets.TextField(searchRect, itemSearchTerm);
+            if (string.IsNullOrEmpty(itemSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchItems".Translate());
+                GUI.color = prevColor;
+            }
+
+            // Scroll view
+            Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
+                panelRect.width, panelRect.height - (SearchBarHeight*2) - (margin*2));
+            Widgets.DrawMenuSection(scrollOutRect);
+
+            List<ThingDef> filtered = string.IsNullOrEmpty(itemSearchTerm)
+                ? items
+                : items.Where(t => t.label.IndexOf(itemSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            filtered = ApplySort(filtered, itemSortIndex);
+
+            float viewHeight = filtered.Count * RowHeight;
+            float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheBasePrice".Translate());
+            Text.Font = GameFont.Small;
+            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
+
+            Widgets.BeginScrollView(scrollOutRect, ref itemScrollPos, scrollViewRect);
+
+            for (int i = 0; i < filtered.Count; i++)
+            {
+                ThingDef item = filtered[i];
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + (i * RowHeight), scrollViewRect.width, RowHeight);
+
+                if (item == selectedItem)
+                    Widgets.DrawHighlightSelected(row);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(row);
+
+                // Row layout: Icon | Info | Label | Cost
+                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
+                Widgets.ThingIcon(iconRect, item);
+
+                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                UIUtil.InfoCardButton(infoRect, item);
+
+                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
+                    costRect.x - infoRect.xMax - (margin * 2), RowHeight);
+
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(labelRect, item.LabelCap);
+
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(costRect, "$" + item.BaseMarketValue.ToString("F0"));
+
+                // Click to select
+                if (Widgets.ButtonInvisible(row))
+                {
+                    selectedItem = item;
+
+                    currentStuffs.Clear();
+                    if (item.MadeFromStuff)
+                    {
+                        currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(item));
+                        currentStuffs.SortBy(s => s.label);
+                    }
+
+                    // Keep selectedStuff if it's still valid for the new item
+                    if (selectedStuff != null && (currentStuffs.Count == 0 || !currentStuffs.Contains(selectedStuff)))
+                    {
+                        selectedStuff = null;
+                    }
+                }
+            }
+
+            Widgets.EndScrollView();
+        }
+
+        private void DrawStuffPanel(Rect panelRect)
+        {
+            Text.Font = GameFont.Small;
+
+            // Title bar with sort + price label
+            Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
+            Widgets.DrawHighlight(titleBox);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Stuff".Translate());
+            float sortBtnW = 120f;
+            Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
+            if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[stuffSortIndex].Translate())))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                for (int s = 0; s < sortLabelKeys.Length; s++)
+                {
+                    int captured = s;
+                    options.Add(new FloatMenuOption(sortLabelKeys[s].Translate(), () =>
+                    {
+                        stuffSortIndex = captured;
+                        stuffScrollPos = Vector2.zero;
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            // Search bar
+            Rect searchRect = new Rect(panelRect.x, titleBox.yMax + margin, panelRect.width, SearchBarHeight);
+            stuffSearchTerm = Widgets.TextField(searchRect, stuffSearchTerm);
+            if (string.IsNullOrEmpty(stuffSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(searchRect.x + 5f, searchRect.y, searchRect.width - 10f, searchRect.height),
+                    "FCSearchMaterials".Translate());
+                GUI.color = prevColor;
+            }
+
+            // Scroll view
+            Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
+                panelRect.width, panelRect.height - (SearchBarHeight * 2) - (margin * 2));
+            Widgets.DrawMenuSection(scrollOutRect);
+
+            List<ThingDef> filtered = string.IsNullOrEmpty(stuffSearchTerm)
+                ? currentStuffs
+                : currentStuffs.Where(s => s.label.IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            filtered = ApplySort(filtered, stuffSortIndex, isStuffList: true);
+
+            float viewHeight = filtered.Count * RowHeight;
+            float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheMaterialPrice".Translate());
+            Text.Font = GameFont.Small;
+            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
+
+            Widgets.BeginScrollView(scrollOutRect, ref stuffScrollPos, scrollViewRect);
+
+            for (int i = 0; i < filtered.Count; i++)
+            {
+                ThingDef stuff = filtered[i];
+                Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + (i * RowHeight), scrollViewRect.width, RowHeight);
+
+                if (stuff == selectedStuff)
+                    Widgets.DrawHighlightSelected(row);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(row);
+
+                // Row layout: Icon | Info | Label | Cost
+                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
+                Widgets.ThingIcon(iconRect, stuff);
+
+                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                UIUtil.InfoCardButton(infoRect, stuff);
+
+                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
+                    costRect.x - infoRect.xMax - (margin * 2), RowHeight);
+
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(labelRect, stuff.LabelCap);
+
+                Text.Anchor = TextAnchor.MiddleRight;
+                float totalValue = StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, stuff);
+                Widgets.Label(costRect, "$" + totalValue.ToString("F0"));
+
+                // Click to select
+                if (Widgets.ButtonInvisible(row))
+                {
+                    selectedStuff = stuff;
+                }
+            }
+
+            Widgets.EndScrollView();
+        }
+
+        private void DrawSummary(Rect rect)
+        {
+            if (selectedItem == null) return;
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+
+            string itemName = selectedItem.LabelCap;
+            if (selectedStuff != null)
+                itemName += " (" + selectedStuff.LabelCap + ")";
+
+            float cost = selectedStuff != null
+                ? StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, selectedStuff)
+                : selectedItem.BaseMarketValue;
+
+            Widgets.Label(rect, "fcPickerSummary".Translate(itemName, cost.ToString("F0")));
+        }
+
+        private void DrawButtons(Rect bar)
+        {
+            float buttonWidth = 120f;
+
+            // Unequip (left)
+            if (onUnequip != null)
+            {
+                Rect unequipRect = new Rect(bar.x, bar.y, buttonWidth, bar.height);
+                if (Widgets.ButtonText(unequipRect, "unitActionUnequipThing".Translate()))
+                {
+                    onUnequip();
+                    Close();
+                }
+            }
+
+            // Cancel (right)
+            Rect cancelRect = new Rect(bar.xMax - buttonWidth, bar.y, buttonWidth, bar.height);
+            if (Widgets.ButtonText(cancelRect, "CancelButton".Translate()))
+            {
+                Close();
+            }
+
+            // Confirm (left of cancel)
+            Rect confirmRect = new Rect(cancelRect.x - buttonWidth - 10f, bar.y, buttonWidth, bar.height);
+            if (Widgets.ButtonText(confirmRect, "FCConfirm".Translate()))
+            {
+                if (selectedItem == null)
+                {
+                    Messages.Message("fcPickerSelectItem".Translate(), MessageTypeDefOf.RejectInput, false);
+                }
+                else if (selectedItem.MadeFromStuff && selectedStuff == null)
+                {
+                    Messages.Message("fcPickerSelectStuff".Translate(), MessageTypeDefOf.RejectInput, false);
+                }
+                else
+                {
+                    onConfirm(selectedItem, selectedStuff);
+                    Close();
+                }
+            }
+        }
+
+        private List<ThingDef> ApplySort(List<ThingDef> list, int sortIndex, bool isStuffList = false)
+        {
+            switch (sortIndex)
+            {
+                case 1: // Name Z-A
+                    return list.OrderByDescending(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
+                case 2: // Price Low-High
+                    if (isStuffList && selectedItem != null)
+                        return list.OrderBy(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                    return list.OrderBy(t => t.BaseMarketValue).ToList();
+                case 3: // Price High-Low
+                    if (isStuffList && selectedItem != null)
+                        return list.OrderByDescending(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                    return list.OrderByDescending(t => t.BaseMarketValue).ToList();
+                default: // 0: Name A-Z
+                    return list.OrderBy(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+        }
+    }
+}

@@ -4,108 +4,28 @@
 		<defName>defaultBiome</defName>
 		<label>Default Biome</label>
 		<canSettle>true</canSettle>
-		<resources>
-			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Animals</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Logging</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Medicine</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>BorealForest</defName>
 		<label>boreal forest</label>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Medicine</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>Tundra</defName>
 		<label>tundra</label>
@@ -114,51 +34,18 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Logging</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Medicine</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>ColdBog</defName>
 		<label>cold bog</label>
@@ -166,52 +53,31 @@
 		<resources>
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
 				<multiplier>0.75</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
-				<additive>1</additive>
 				<multiplier>0.75</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>IceSheet</defName>
 		<label>ice sheet</label>
@@ -220,32 +86,26 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
@@ -255,16 +115,14 @@
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>SeaIce</defName>
 		<label>sea ice</label>
@@ -273,32 +131,26 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
@@ -308,16 +160,14 @@
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>TemperateForest</defName>
 		<label>temperate forest</label>
@@ -326,51 +176,22 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>1.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Medicine</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>TemperateSwamp</defName>
 		<label>temperate swamp</label>
@@ -378,23 +199,11 @@
 		<resources>
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
 				<multiplier>0.75</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
@@ -402,28 +211,20 @@
 				<multiplier>0.75</multiplier>
 			</li>
 			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.3</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>TropicalRainforest</defName>
 		<label>tropical rainforest</label>
@@ -435,48 +236,28 @@
 				<multiplier>0.75</multiplier>
 			</li>
 			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
 				<multiplier>0.5</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>TropicalSwamp</defName>
 		<label>tropical swamp</label>
@@ -484,23 +265,11 @@
 		<resources>
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
 				<multiplier>0.75</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
@@ -508,28 +277,20 @@
 				<multiplier>0.75</multiplier>
 			</li>
 			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>AridShrubland</defName>
 		<label>arid shrubland</label>
@@ -538,51 +299,30 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0.75</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>Desert</defName>
 		<label>desert</label>
@@ -591,51 +331,30 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>1.25</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>ExtremeDesert</defName>
 		<label>extreme desert</label>
@@ -644,51 +363,34 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.25</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>1.75</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>1.5</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<resourceDef>RTD_Research</resourceDef>
-				<additive>1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
-				<additive>1</additive>
 				<multiplier>1.25</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>0.5</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>
-	
+
 	<FactionColonies.BiomeResourceDef>
 		<defName>OrbitalSpace</defName>
 		<label>orbital space</label>
@@ -697,57 +399,46 @@
 			<li>
 				<resourceDef>RTD_Food</resourceDef>
 				<additive>0.8</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Weapons</resourceDef>
 				<additive>1.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Apparel</resourceDef>
 				<additive>1.1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Animals</resourceDef>
 				<additive>0.9</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Logging</resourceDef>
 				<additive>0.7</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Mining</resourceDef>
 				<additive>1.3</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Research</resourceDef>
 				<additive>1.4</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Power</resourceDef>
 				<additive>1.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Medicine</resourceDef>
 				<additive>1.1</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Chemfuel</resourceDef>
 				<additive>1.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 			<li>
 				<resourceDef>RTD_Gravtech</resourceDef>
 				<additive>1.2</additive>
-				<multiplier>1</multiplier>
 			</li>
 		</resources>
 	</FactionColonies.BiomeResourceDef>

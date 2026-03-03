@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Mod Settings -->
+	<FCSettingSilverPerResource>Silver amount gained per resource</FCSettingSilverPerResource>
+	<FCSettingDaysBetweenTax>Days between tax time</FCSettingDaysBetweenTax>
+	<FCSettingProductionTitheMod>Production Tithe Modifier</FCSettingProductionTitheMod>
+	<FCSettingWorkerCost>Cost Per Worker</FCSettingWorkerCost>
+	<FCSettingMaxSettlementLevel>Max Settlement Level</FCSettingMaxSettlementLevel>
+	<FCSettingDisableHostileMilActions>Disable Hostile Military Actions</FCSettingDisableHostileMilActions>
+	<FCSettingDisableRandomEvents>Disable Random Events</FCSettingDisableRandomEvents>
+	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
+	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
+	<FCSettingAutoResolveBattles>Automatically Resolve Battles</FCSettingAutoResolveBattles>
+	<FCSettingMinMaxMilitaryAction>Min/Max Days Until Military Action (ex. Settlements being attacked)</FCSettingMinMaxMilitaryAction>
+	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
+	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
+	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
+	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>
+
+	<!-- Difficulty Settings -->
+	<FCSettingEmpireDifficulty>Empire Difficulty</FCSettingEmpireDifficulty>
+	<FCDifficultyPeaceful>Peaceful</FCDifficultyPeaceful>
+	<FCDifficultyCommunityBuilder>Community Builder</FCDifficultyCommunityBuilder>
+	<FCDifficultyAdventureStory>(Default) Adventure Story</FCDifficultyAdventureStory>
+	<FCDifficultyStriveToSurvive>Strive To Survive</FCDifficultyStriveToSurvive>
+	<FCDifficultyBloodAndDust>Blood and Dust</FCDifficultyBloodAndDust>
+	<FCDifficultyLosingIsFun>Losing Is Fun</FCDifficultyLosingIsFun>
+	<FCDifficultyCustom>Custom</FCDifficultyCustom>
+	<FCDifficultyPeacefulDesc>For players who want a relaxed empire management experience with generous resource gains and frequent tax collection.</FCDifficultyPeacefulDesc>
+	<FCDifficultyCommunityBuilderDesc>Easy difficulty with good resource gains and moderate tax frequency.</FCDifficultyCommunityBuilderDesc>
+	<FCDifficultyAdventureStoryDesc>Balanced difficulty for most players.Moderate resource gains with reasonable tax intervals.</FCDifficultyAdventureStoryDesc>
+	<FCDifficultyStriveToSurviveDesc>Challenging difficulty with reduced resources and longer tax intervals.</FCDifficultyStriveToSurviveDesc>
+	<FCDifficultyBloodAndDustDesc>Hard difficulty with limited resources and infrequent tax collection.</FCDifficultyBloodAndDustDesc>
+	<FCDifficultyLosingIsFunDesc>Brutal difficulty for masochists. Minimal resources and very long tax intervals.</FCDifficultyLosingIsFunDesc>
+	<FCDifficultyCustomDesc>Customize all empire settings manually.</FCDifficultyCustomDesc>
+
+	<!-- Welcome Window -->
+	<FCWelcomeTitle>Welcome to the Empire Mod!</FCWelcomeTitle>
+	<FCWelcomeMessage>Welcome to the Empire Mod! Build and manage settlements with production, military and loyalty!</FCWelcomeMessage>
+	<FCWelcomeDescription>Build and manage settlements with production, military and loyalty!</FCWelcomeDescription>
+	<FCWelcomeQuickStart>QUICK START:</FCWelcomeQuickStart>
+	<FCWelcomeStep1>Select faction traits (you'll get an alert)</FCWelcomeStep1>
+	<FCWelcomeStep2>Set your tax collection spot &amp; capital seat</FCWelcomeStep2>
+	<FCWelcomeStep3>Create your first settlement</FCWelcomeStep3>
+	<FCWelcomeStep4>Start production of resources, handle military and manage loyalty</FCWelcomeStep4>
+	<FCWelcomeHelpfulResources>HELPFUL RESOURCES:</FCWelcomeHelpfulResources>
+	<FCWelcomeDiscord>Join our Discord Community</FCWelcomeDiscord>
+	<FCWelcomeGuide>Empire Guide (Google Docs)</FCWelcomeGuide>
+	<FCWelcomeGitHub>GitHub Repository</FCWelcomeGitHub>
+	<FCWelcomeTip>TIP: Start with "Adventure Story" difficulty for balanced gameplay!</FCWelcomeTip>
+	<FCWelcomeBegin>Begin your Empire</FCWelcomeBegin>
+	<FCWelcomeClose>Close</FCWelcomeClose>
+	<FCModVersion>Empire Mod Version: {0}</FCModVersion>
+
+	<!-- Warnings -->
+	<FCResetCapitalLocationWarning>Please reset your capital location. If you continue to see this after reseting, please report it.</FCResetCapitalLocationWarning>
+	<FCTaxMapNotSetWarning>Your tax map has not been set. Please set it using the faction menu.</FCTaxMapNotSetWarning>
+	<FCAutoResolveDisabledWarning>Auto resolve is disabled, this setting can cause map generation errors on settlement defense. If you encounter map generation errors turn it back on!</FCAutoResolveDisabledWarning>
+	<FCManualDefenseWarningLabel>Manual Settlement Defence is now disabled by default</FCManualDefenseWarningLabel>
+	<FCManualDefenseWarningDesc>Manual settlement defence has been disabled by default because it has many bugs that can make the game unplayable. The team has decided to completely rework this part of the mod instead of fixing the various issues. As such, enabling settlement defence happens at your own risk. Please do not report issues concerning manual settlement defence.</FCManualDefenseWarningDesc>
+	<FCTaxDeliveryNotSetWarning>No tax delivery location set. Either set a tax delivery map or enable tax delivery on a tax spot.</FCTaxDeliveryNotSetWarning>
+	<FCCapitalNotSetWarning>No empire capital established. Either use 'Set Capital' in the Empire menu or build and activate a Capital Seat.</FCCapitalNotSetWarning>
+
+</LanguageData>

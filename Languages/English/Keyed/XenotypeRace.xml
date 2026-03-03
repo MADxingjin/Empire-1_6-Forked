@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Xenotype/Race Selection -->
+	<XenotypeSelection>Xenotype Selection</XenotypeSelection>
+	<RaceSelection>Race Selection</RaceSelection>
+	<XenotypeRaceSelection>Xenotype and Race Selection</XenotypeRaceSelection>
+	<AllowedRaces>Allowed Races</AllowedRaces>
+	<CannotHaveLessThanOneRace>Cannot have less than one race in your faction</CannotHaveLessThanOneRace>
+	<AllowedXenotypes>Allowed Xenotypes</AllowedXenotypes>
+	<CannotHaveLessThanOneXenotype>Cannot have less than one xenotype in your faction</CannotHaveLessThanOneXenotype>
+	<SecurityGuardsIncluded>Security guards will be provided for non-violent xenotypes</SecurityGuardsIncluded>
+
+	<!-- Weight Errors -->
+	<XenotypeWeightError>All Xenotypes have 0 weight!</XenotypeWeightError>
+	<XenotypeWeightErrorDesc>If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight.</XenotypeWeightErrorDesc>
+	<RaceWeightError>All races have 0 weight!</RaceWeightError>
+	<RaceWeightErrorDesc>If you close this window while all races have 0 weight, then they will all be reset to 1 weight.</RaceWeightErrorDesc>
+
+	<!-- Enable/Disable Options -->
+	<XenoRaceEnableAll>Enable All</XenoRaceEnableAll>
+	<XenoDisableNonBaseliner>Disable Non-Baseliner</XenoDisableNonBaseliner>
+	<RaceDisableNonHuman>Disable Non-Human</RaceDisableNonHuman>
+	<Empire_XenotypeMenus_EnableAll>Enable All</Empire_XenotypeMenus_EnableAll>
+	<Empire_XenotypeMenus_DisableNonBaseliner>Disable Non-Baseliner</Empire_XenotypeMenus_DisableNonBaseliner>
+
+	<!-- Warnings -->
+	<DisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</DisabledHumanWarning>
+	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>
+	<OnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</OnlyNonViolentXenoWarning>
+
+</LanguageData>

@@ -1,15 +1,141 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-    <ImpassableMountains>You cannot found a {0} on impassable mountains.</ImpassableMountains>
+
+	<!-- Settlement Creation -->
+	<SettleANewColony>Settle A New Colony</SettleANewColony>
+	<CreateNewColony>Create New Colony</CreateNewColony>
+	<SelectTile>Select a tile to create the colony</SelectTile>
+	<selectedInvalidTile>You can't build a settlement here!</selectedInvalidTile>
+	<Settle>Settle</Settle>
+	<CaravanOnWay>A caravan is already on its way</CaravanOnWay>
+	<CaravanSentToLocation>A caravan has been sent to the location! They will arrive in</CaravanSentToLocation>
+	<ConstructionToLocation>Construction crews have been sent to the location! Their work will complete in</ConstructionToLocation>
+	<ColonyConstruction>{0} Construction</ColonyConstruction>
+	<ImpassableMountains>You cannot found a {0} on impassable mountains.</ImpassableMountains>
 	<NotAllowedBiome>You cannot found a {0} in this biome.</NotAllowedBiome>
 	<InvalidPlanetLayer>Invalid planet layer.</InvalidPlanetLayer>
-	
-	
+	<OrbitalTileOccupied>This orbital tile is occupied.</OrbitalTileOccupied>
+	<FCSettlementFormed>Settlement Formed</FCSettlementFormed>
+	<TheSettlement>The settlement</TheSettlement>
+	<HasBeenFormed> has been formed</HasBeenFormed>
+	<SettleEventDesc>A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}.</SettleEventDesc>
+	<SettleEventCompletedDesc>{0} has been established as a new {1} in the {2}.</SettleEventCompletedDesc>
+	<PlayerColony>Player Colony</PlayerColony>
+	<SetCapital>Set Capital</SetCapital>
+	<SetAsFactionCapital>{0} has been set as the faction capital</SetAsFactionCapital>
+
+	<!-- Settlement Upgrading -->
 	<AlreadyUpgradeSettlement>This settlement is already being upgraded!</AlreadyUpgradeSettlement>
 	<StartUpgradeSettlement>The settlement is now being upgraded...</StartUpgradeSettlement>
+	<UpgradeSettlement>Upgrade Settlement</UpgradeSettlement>
+	<SettlementUpgradeInProgress>Upgrading...</SettlementUpgradeInProgress>
+	<CanBeUpgraded>can be upgraded for</CanBeUpgraded>
+	<UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
+	<HasBeenUpgraded>has been upgraded to level</HasBeenUpgraded>
+	<UpgradeEventDesc>{0} is being upgraded from level {1} to level {2}.\n\n{3}</UpgradeEventDesc>
+	<UpgradeEventCompletedDesc>{0} has been upgraded to level {1}!\n\n{2}</UpgradeEventCompletedDesc>
+	<AlreadyMaxLevel>is already max level</AlreadyMaxLevel>
+	<NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</NotEnoughSilverUpgrade>
+	<CannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</CannotBeUpgradedPastMax>
+	<UpgradeTown>Upgrade Town</UpgradeTown>
 
-	<BuildingInvalidEnvironment>That building cannot be built on this settlement's biome!</BuildingInvalidEnvironment>
+	<!-- Settlement Window -->
+	<TownLog>Town Log</TownLog>
+	<GoToLocation>Go To Location</GoToLocation>
+	<Located>Located in the</Located>
+	<LandOf>land of a</LandOf>
+	<openSettlementWindowDefaultLabel>See settlement information</openSettlementWindowDefaultLabel>
+	<openSettlementWindowDefaultDesc>Opens the settlements colony window</openSettlementWindowDefaultDesc>
+	<FCBuildRoads>Build Roads</FCBuildRoads>
 
+	<!-- Settlement Stats -->
+	<SettlementMilitaryLevel>Settlement Military Level</SettlementMilitaryLevel>
+	<SettlementHappiness>Settlement Happiness</SettlementHappiness>
+	<SettlementLoyalty>Settlement Loyalty</SettlementLoyalty>
+	<SettlementUnrest>Settlement Unrest</SettlementUnrest>
+	<SettlementProsperity>Settlement Prosperity</SettlementProsperity>
+	<FCHappiness>happiness</FCHappiness>
+	<FCLoyality>loyalty</FCLoyality>
+	<FCUnrest>unrest</FCUnrest>
+	<FCProsperity>prosperity</FCProsperity>
+	<Happiness>happiness</Happiness>
+	<Loyalty>loyalty</Loyalty>
+	<Unrest>unrest</Unrest>
+	<Prosperity>prosperity</Prosperity>
+	<BaseRecovery>Base Recovery</BaseRecovery>
+	<BaseGain>Base Gain</BaseGain>
+	<BaseLoss>Base Loss</BaseLoss>
+	<SettlementStatGain>Gaining {0} {1} per day</SettlementStatGain>
+	<SettlementStatLoss>Losing {0} {1} per day</SettlementStatLoss>
+
+	<!-- Settlement Stat Descriptions -->
+	<SettlementMilitaryLevelDesc>The measure of the settlements's military level.
+
+The military level of a town directly affects the town's ability to defend itself as well as attack external threats
+	</SettlementMilitaryLevelDesc>
+	<SettlementHappinessDesc>The measure of the Settlement's overall happiness.
+
+A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
+	</SettlementHappinessDesc>
+	<SettlementLoyaltyDesc>The measure of the Settlement's overall loyalty.
+
+The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
+	</SettlementLoyaltyDesc>
+	<SettlementUnrestDesc>The measure of the Settlement's overall unrest.
+
+The higher unrest grows, the more likely dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may grow.
+	</SettlementUnrestDesc>
+	<SettlementProsperityDesc>The measure of the Settlement's overall prosperity.
+
+The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). If prosperity is damaged, it will slowly accumulate over time.
+	</SettlementProsperityDesc>
+
+	<!-- Settlement Table -->
+	<SettlementManager>Settlement Manager</SettlementManager>
+	<FCSettlementTableName>Name</FCSettlementTableName>
+	<FCSettlementTableLevel>Level</FCSettlementTableLevel>
+	<FCSettlementTableMilLevel>Military Level</FCSettlementTableMilLevel>
+	<FCSettlementTableProfit>Profit</FCSettlementTableProfit>
+	<FCSettlementTableWorkers>Free Workers</FCSettlementTableWorkers>
+	<FCSettlementTableHappiness>Happiness</FCSettlementTableHappiness>
+	<FCSettlementTableLoyalty>Loyalty</FCSettlementTableLoyalty>
+	<FCSettlementTableUnrest>Unrest</FCSettlementTableUnrest>
+	<FCSettlementTableProsperity>Prosperity</FCSettlementTableProsperity>
+	<FCSettlementTableFounding>Founding Date</FCSettlementTableFounding>
+	<FCNoSettlements>No settlements.</FCNoSettlements>
+	<FCSettlementCount>{0} settlements</FCSettlementCount>
+	<FCSortBy>Sort: {0}</FCSortBy>
+	<ColonyLevel>Colony Level</ColonyLevel>
+	<Hamlet>hamlet</Hamlet>
+
+	<!-- Settlement Delete -->
+	<DeleteSettlement>Delete Settlement</DeleteSettlement>
+	<DeleteSettlementConfirm>Remove settlement {0}?</DeleteSettlementConfirm>
+	<AreYouSureRemove>Are you sure?</AreYouSureRemove>
+	<SettlementRemoved>The settlement {0} has been removed.</SettlementRemoved>
+
+	<!-- Settlement Customization -->
+	<FCCustomizeSettlement>Customize Settlement</FCCustomizeSettlement>
+	<FCSettlementFullName>Full name:</FCSettlementFullName>
+	<FCSettlementShortName>Short name:</FCSettlementShortName>
+	<FCUnsupportedSettlementFaction>The faction of this settlement has no name or something went terribly wrong.</FCUnsupportedSettlementFaction>
+
+	<!-- Settlement Special Actions -->
+	<FCSpecialActions>Special Actions</FCSpecialActions>
+	<FCBuyLoyalty>Buy Loyalty</FCBuyLoyalty>
+	<SendSilverToColony>Send Silver to Colony</SendSilverToColony>
+	<SendingXSilver>Sending {0} silver</SendingXSilver>
+	<SettlementGainsXLoyalty>Settlement will gain {0} loyalty</SettlementGainsXLoyalty>
+
+	<!-- Construction Status -->
+	<numUnderConstruction>Active Construction: {0}</numUnderConstruction>
+	<ActiveConstruction>Active Construction</ActiveConstruction>
+	<closeConstructionBox>Close Constructions List</closeConstructionBox>
+	<openConstructionBox>Open Constructions List</openConstructionBox>
+	<settlementupgrading>Settlement Upgrade</settlementupgrading>
+	<completiontimer>Finishes in: {0}</completiontimer>
+
+	<!-- Biome Descriptions -->
 	<FCDescSeaIce>Endless sheets of ice unbroken by nothing but small, sparse wildlife. No food grows except within heated rooms. Only the most tenacious of life survives here.</FCDescSeaIce>
 	<FCDescIceSheet>Bleak, unending frost blankets the land, interrupted only by outcroppings of stone and ruins. The only source of food is the hardy wildlife which calls this place its home.</FCDescIceSheet>
 	<FCDescTundra>The hinterland houses a variety of rugged flora and fauna eking out an existance on the moss-covered landscape. When the summer comes, the land blooms into life, if only briefly.</FCDescTundra>
@@ -25,10 +151,14 @@
 	<FCDescUnknown>Little is widely known about the surrounding land, but the colony manages to survive and prosper in their present conditions.</FCDescUnknown>
 	<FCDescOrbitalSpace>The vast emptiness of space stretches in all directions, broken only by the distant twinkle of stars and the occasional passing asteroid. Solar panels gleam in the eternal sunlight, while life support systems hum quietly in the artificial environment. The station floats in the void, a beacon of civilization in the cosmic wilderness.</FCDescOrbitalSpace>
 
-
+	<!-- Town Level Descriptions -->
 	<FCTownLevel1>The settlement itself is simply a small cluster of buildings grouped around a central structure.</FCTownLevel1>
 	<FCTownLevel2>The settlement is dominated by a few large structures, but it is still quite small. A number of sandbags and barricades ring the outside.</FCTownLevel2>
 	<FCTownLevel3>The settlement has a good number of structures — largely production oriented — as well as dedicated storehouses, and busy workers scurry between them. A modest wall protects the settlement.</FCTownLevel3>
 	<FCTownLevel4>The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack.</FCTownLevel4>
 	<FCTownLevel5>Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints.</FCTownLevel5>
+
+	<!-- Building Environment Restrictions -->
+	<BuildingInvalidEnvironment>That building cannot be built on this settlement's biome!</BuildingInvalidEnvironment>
+
 </LanguageData>

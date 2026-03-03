@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<LanguageData>
-    <!-- Orbital Space Desc -->
-    <FCDescOrbitalSpace>The vast emptiness of space stretches in all directions, broken only by the distant twinkle of stars and the occasional passing asteroid. Solar panels gleam in the eternal sunlight, while life support systems hum quietly in the artificial environment. The station floats in the void, a beacon of civilization in the cosmic wilderness.</FCDescOrbitalSpace>
-    <!-- Building -->
-    <BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
-    <BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
-</LanguageData>

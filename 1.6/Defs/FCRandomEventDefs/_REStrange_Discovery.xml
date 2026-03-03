@@ -35,8 +35,8 @@
 		
 		<!-- Random Event Prerequisites -->
 		
-		<requiredResource>mining</requiredResource> 
-		<!-- Resource names:  food, apparel, weapons, animals, mining, logging -->
+		<requiredResource>RTD_Mining</requiredResource>
+		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
 		
 	</FactionColonies.FCEventDef>
 		

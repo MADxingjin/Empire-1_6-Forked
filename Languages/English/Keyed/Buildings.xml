@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Building Construction -->
+	<ConstructBuilding>Construct Building</ConstructBuilding>
+	<Construct>Construct</Construct>
+	<Build>Build</Build>
+	<Built>Built</Built>
+	<WillBeConstructedIn>will be constructed in</WillBeConstructedIn>
+	<HasBeenConstructedAt>has been constructed at</HasBeenConstructedAt>
+	<Empire_BuildingWindow_ConstructionDesc>Currently under construction: {0}</Empire_BuildingWindow_ConstructionDesc>
+	<BuildTime>Build Time: {0}</BuildTime>
+
+	<!-- Building Restrictions -->
+	<BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
+	<BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
+	<BuildingAlreadyType>There is already a building of that type</BuildingAlreadyType>
+	<BuildingBeingBuiltAlreadyType>There is already a building of that type being built</BuildingBeingBuiltAlreadyType>
+	<BuildingAlreadyConstructed>There is already a building being constructed there</BuildingAlreadyConstructed>
+
+	<!-- Building Demolition -->
+	<Destroy>Destroy</Destroy>
+	<FCDemolish>Demolish</FCDemolish>
+	<FCDemolishConfirmation>Are you sure you want to demolish {0}? This will cost {1} silver.</FCDemolishConfirmation>
+	<FCBuildingDemolished>{0} has been demolished</FCBuildingDemolished>
+	<FCChangeBuildingButton>Change Building</FCChangeBuildingButton>
+
+	<!-- Building Filters -->
+	<BuildingFilterAll>All</BuildingFilterAll>
+	<BuildingFilterHappiness>Happiness</BuildingFilterHappiness>
+	<BuildingFilterBasetax>Base Tax</BuildingFilterBasetax>
+	<BuildingFilterWorkers>Workers</BuildingFilterWorkers>
+	<BuildingFilterMilitary>Military</BuildingFilterMilitary>
+
+	<!-- Capital Seat -->
+	<FCCapitalEstablished>Empire capital established at {0}! This location will be used as the center of your empire.</FCCapitalEstablished>
+	<FCCapitalSeatDisabled>Capital seat disabled. Empire will use fallback capital location if available.</FCCapitalSeatDisabled>
+	<FCCapitalLost>Empire capital has been lost! You should establish a new capital seat.</FCCapitalLost>
+
+	<!-- Building Window -->
+	<BuildingUpgrades>Building Upgrades</BuildingUpgrades>
+	<Buildings>Buildings</Buildings>
+	<Facilities>Facilities</Facilities>
+
+</LanguageData>

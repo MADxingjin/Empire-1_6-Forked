@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Generic Labels -->
+	<Name>Name</Name>
+	<None>None</None>
+	<No>No</No>
+	<Yes>Yes</Yes>
+	<Set>Set</Set>
+	<Deploy>Deploy</Deploy>
+	<Reset>Reset</Reset>
+	<Base>Base</Base>
+	<Modifier>Modifier</Modifier>
+	<Final>Final</Final>
+	<Effect>Effect</Effect>
+	<Info>Info</Info>
+	<Total>Total</Total>
+	<Mult>Mult</Mult>
+	<Date>Date</Date>
+	<Selected>Selected</Selected>
+	<Select>Select</Select>
+	<FCIsAllowed>Enabled</FCIsAllowed>
+	<FCIsNotAllowed>Disabled</FCIsNotAllowed>
+	<PerWorker>Per-Worker</PerWorker>
+	<NumRatio>{0}/{1}</NumRatio>
+	<aSettlement> a settlement </aSettlement>
+	<AddedInFuture>This will be added to in the future</AddedInFuture>
+	<Item>Item</Item>
+
+	<!-- Tab Labels -->
+	<Colonies>Colonies</Colonies>
+	<Bills>Bills</Bills>
+	<Events>Events</Events>
+	<Settlement>Settlement</Settlement>
+	<Settlements>Settlements</Settlements>
+	<Overview>Overview</Overview>
+	<FCOverview>Overview</FCOverview>
+	<TravelTime>Travel Time</TravelTime>
+	<ConstructionTime>Construction Time</ConstructionTime>
+
+	<!-- Buttons -->
+	<ButtonNotAvailable>This button is not available yet</ButtonNotAvailable>
+	<ConfirmChanges>Confirm Changes</ConfirmChanges>
+	<FCConfirm>Confirm</FCConfirm>
+	<FCConfirmDecision>Confirm Decision</FCConfirmDecision>
+	<View>View</View>
+	<GoTo>Go To</GoTo>
+	<Report>Report</Report>
+	<Reports>Reports</Reports>
+	<Actions>Actions</Actions>
+	<ViewInfo>View Info</ViewInfo>
+	<SetMap>Set Map</SetMap>
+	<FCActionAvailable>Action Available</FCActionAvailable>
+
+	<!-- Generic Actions -->
+	<FCAutoResolve>Auto-Resolve</FCAutoResolve>
+	<FCAutoResolving>Auto-Resolving : {0}</FCAutoResolving>
+	<FCBillsAutoResolving>Bills are now autoresolving!</FCBillsAutoResolving>
+	<FCBillsNotAutoResolving>Bills are now not autoresolving.</FCBillsNotAutoResolving>
+	<FCDesc>Desc</FCDesc>
+	<FCCreateNewFaction>Create New Faction</FCCreateNewFaction>
+	<FCResetToDefault>Reset to Default</FCResetToDefault>
+	<FCSetPointRef>Set Point Ref</FCSetPointRef>
+	<FCNoValidSettlements>No Valid Settlements</FCNoValidSettlements>
+	<FCNoSpecialActions>No special actions to take</FCNoSpecialActions>
+	<FCBuildingLocked>That Building is locked</FCBuildingLocked>
+	<FCBuildingLockedLevel>Unlocks at settlement level {0}.</FCBuildingLockedLevel>
+	<FCBuildingLockedMax>Maximum building slots reached for this settlement type.</FCBuildingLockedMax>
+	<Capital>Capital</Capital>
+
+	<!-- Float Menu -->
+	<FloatMenuSearchable>Type to search:</FloatMenuSearchable>
+	<FCSMFForceOpen>Force Open</FCSMFForceOpen>
+
+	<!-- Errors -->
+	<FCGenericError>If you can read this, something went wrong.</FCGenericError>
+	<FCNotEnoughSilverOption>You do not have enough silver on the map to pay for that option</FCNotEnoughSilverOption>
+
+</LanguageData>
