@@ -508,10 +508,12 @@ namespace FactionColonies
             base.Tick();
             trader?.TraderTrackerTick();
 
-            //TODO: rework faction traits to be comps or something
             if (trait_Egalitarian_TaxBreak_Enabled &&
                 Find.TickManager.TicksGame >= trait_Egalitarian_TaxBreak_Tick + GenDate.TicksPerDay * 10)
                 trait_Egalitarian_TaxBreak_Enabled = false;
+
+            foreach (FCTraitEffectDef trait in traits)
+                trait.GetModExtension<FCTraitEffectModExtension>()?.Tick(this);
         }
 
         public void PublicTick()
@@ -1157,6 +1159,12 @@ namespace FactionColonies
                 }
             }
             traits.Add(trait);
+            FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+            if (traitExt != null)
+            {
+                try { traitExt.OnAppliedToSettlement(this); }
+                catch (Exception e) { LogUtil.Error($"WorldSettlementFC.addTrait: OnAppliedToSettlement threw for '{trait.defName}': {e}"); }
+            }
             InvalidateTraitCache();
         }
 
@@ -1183,6 +1191,12 @@ namespace FactionColonies
                         resource.removeProductionAdditiveById(traitId);
                         resource.removeProductionMultiplierById(traitId);
                     }
+                }
+                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+                if (traitExt != null)
+                {
+                    try { traitExt.OnRemovedFromSettlement(this); }
+                    catch (Exception e) { LogUtil.Error($"WorldSettlementFC.removeTrait: OnRemovedFromSettlement threw for '{trait.defName}': {e}"); }
                 }
                 InvalidateTraitCache();
                 return traits.Remove(trait);

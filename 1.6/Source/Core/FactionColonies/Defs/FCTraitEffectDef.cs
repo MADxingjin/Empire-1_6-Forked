@@ -98,6 +98,15 @@ namespace FactionColonies
                     if (createSettlementBaseCost != 0) cachedTraitBonusDesc += "FCTraitDesc_createSettlementBaseCost".Translate(TextUtil.colorizeAdditiveBonus(createSettlementBaseCost, true)) + "\n";
                     if (createSettlementMultiplier != 1) cachedTraitBonusDesc += "FCTraitDesc_createSettlementMultiplier".Translate(TextUtil.colorizeMultiplierBonus(createSettlementMultiplier, true)) + "\n";
 
+                    if (modExtensions != null)
+                        foreach (DefModExtension ext in modExtensions)
+                            if (ext is FCTraitEffectModExtension te)
+                            {
+                                TaggedString d = te.GetDescription();
+                                if (!d.RawText.NullOrEmpty())
+                                    cachedTraitBonusDesc += d + "\n";
+                            }
+
                     cachedTraitBonusDesc = cachedTraitBonusDesc.Trim();
 
                     /* Only want to do all of this crap once. It shouldn't change during gameplay, after all. So cache it */
@@ -125,16 +134,23 @@ namespace FactionColonies
         }
         public bool appliesToSettlements()
         {
-            //TODO: surely there's a better way to do this?
-            if (taxBasePercentage == 0 && taxBaseRandomModifier == 0 && prosperityBaseRecovery == 0 && workerBaseCost == 0 && workerBaseMax == 0 &&
-                workerBaseOverMax == 0 && happinessLostBase == 0 && happinessGainedBase == 0 && loyaltyLostBase == 0 && loyaltyGainedBase == 0 &&
-                unrestLostBase == 0 && unrestGainedBase == 0 && happinessLostMultiplier == 1 && happinessGainedMultiplier == 1 &&
-                loyaltyLostMultiplier == 1 && loyaltyGainedMultiplier == 1 && unrestLostMultiplier == 1 && unrestGainedMultiplier == 1 &&
-                militaryBaseLevel == 0)
-            {
-                return false;
-            }
-            return true;
+            if (taxBasePercentage != 0 || taxBaseRandomModifier != 0 || prosperityBaseRecovery != 0 ||
+                workerBaseCost != 0 || workerBaseMax != 0 || workerBaseOverMax != 0 ||
+                happinessLostBase != 0 || happinessGainedBase != 0 ||
+                loyaltyLostBase != 0 || loyaltyGainedBase != 0 ||
+                unrestLostBase != 0 || unrestGainedBase != 0 ||
+                happinessLostMultiplier != 1 || happinessGainedMultiplier != 1 ||
+                loyaltyLostMultiplier != 1 || loyaltyGainedMultiplier != 1 ||
+                unrestLostMultiplier != 1 || unrestGainedMultiplier != 1 ||
+                militaryBaseLevel != 0)
+                return true;
+
+            if (modExtensions != null)
+                foreach (DefModExtension ext in modExtensions)
+                    if (ext is FCTraitEffectModExtension te && te.AppliesToSettlements())
+                        return true;
+
+            return false;
         }
     }
 

@@ -356,6 +356,12 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
                 }
             }
             traits.Add(trait);
+            FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+            if (traitExt != null)
+            {
+                try { traitExt.OnAppliedToFaction(this); }
+                catch (Exception e) { LogUtil.Error($"FactionFC.addTrait: OnAppliedToFaction threw for '{trait.defName}': {e}"); }
+            }
             InvalidateTraitCache();
         }
         public void addTraits(List<FCTraitEffectDef> traits, string id = "")
@@ -375,6 +381,12 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
                     {
                         settlement.removeTrait(trait, id);
                     }
+                }
+                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+                if (traitExt != null)
+                {
+                    try { traitExt.OnRemovedFromFaction(this); }
+                    catch (Exception e) { LogUtil.Error($"FactionFC.removeTrait: OnRemovedFromFaction threw for '{trait.defName}': {e}"); }
                 }
                 InvalidateTraitCache();
                 return traits.Remove(trait);
@@ -401,6 +413,12 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
                     {
                         settlement.removeTrait(trait);
                     }
+                }
+                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+                if (traitExt != null)
+                {
+                    try { traitExt.OnRemovedFromFaction(this); }
+                    catch (Exception e) { LogUtil.Error($"FactionFC.clearTraits: OnRemovedFromFaction threw for '{trait.defName}': {e}"); }
                 }
             }
             traits.Clear();

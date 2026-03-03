@@ -664,10 +664,6 @@ namespace FactionColonies
         public string optionDescription = "";
         public List<string> applicableBiomes = new List<string>();
         public List<ThingDef> loot = new List<ThingDef>();
-        public string classToRun = "";
-        public string classMethodToRun = "";
-        public bool passEventToClassMethodToRun;
-
         //Military Force stuff
         public militaryForce militaryForceAttacking;
         public Faction militaryForceAttackingFaction;
@@ -766,9 +762,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref optionDescription, "optionDescription");
             Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
             Scribe_Collections.Look(ref loot, "loot", LookMode.Def);
-            Scribe_Values.Look(ref classToRun, "classToRun");
-            Scribe_Values.Look(ref classMethodToRun, "classMethodToRun");
-            Scribe_Values.Look(ref passEventToClassMethodToRun, "passEventToClassMethodToRun");
             Scribe_Deep.Look(ref msg, "msg");
             Scribe_Deep.Look(ref let, "let");
             Scribe_Values.Look(ref isDelayed, "isDelayed", false);
@@ -791,24 +784,13 @@ namespace FactionColonies
 
         public void runAction()
         {
-            if (classToRun.NullOrEmpty() || classMethodToRun.NullOrEmpty()) return;
-
-            Type typ = GenTypes.AllTypes.FirstOrDefault(t => t.FullName == classToRun);
-            if (typ == null)
-            {
-                LogUtil.Error($"FCEvent.runAction: Could not find type '{classToRun}'");
-                return;
-            }
-
             try
             {
-                var obj = Activator.CreateInstance(typ);
-                object[] paramArgu = passEventToClassMethodToRun ? new object[] { this } : new object[] { };
-                Traverse.Create(obj).Method(classMethodToRun, paramArgu).GetValue();
+                def?.GetModExtension<FCEventHandlerExtension>()?.OnEventTriggered(this);
             }
             catch (Exception e)
             {
-                LogUtil.Error($"FCEvent.runAction: Failed to invoke {classToRun}.{classMethodToRun}: {e}");
+                LogUtil.Error($"FCEvent.runAction: OnEventTriggered threw for '{def?.defName ?? "NULL"}': {e}");
             }
         }
     }
@@ -853,10 +835,6 @@ namespace FactionColonies
         public List<ThingDef> loot = new List<ThingDef>();
         public bool hasCustomDescription = false;
         public string customDescription = "";
-        public string classToRun;
-        public string classMethodToRun;
-        public bool passEventToClassMethodToRun;
-
 
         //Map info
         public int location = -1;

@@ -1,0 +1,37 @@
+using System;
+using FactionColonies.util;
+using Verse;
+
+namespace FactionColonies
+{
+    /// <summary>
+    /// A DefModExtension for FCEventDef that provides a type-safe hook into event
+    /// processing without Harmony patches.
+    ///
+    /// Usage in XML:
+    ///   <modExtensions>
+    ///     <li Class="MyMod.MyEventHandler"/>
+    ///   </modExtensions>
+    ///
+    /// In C#, subclass this and override the virtual methods you need.
+    /// </summary>
+    public class FCEventHandlerExtension : DefModExtension
+    {
+        /// <summary>
+        /// Called after all standard event processing has completed (loot delivery,
+        /// trait removal, prosperity changes, following events).
+        /// </summary>
+        public virtual void OnEventTriggered(FCEvent evt)
+        {
+        }
+    }
+
+    /// <summary>Internal handler for the deliveryArrival event.</summary>
+    internal class FCEventHandlerExtension_DeliveryArrival : FCEventHandlerExtension
+    {
+        public override void OnEventTriggered(FCEvent evt)
+        {
+            DeliveryEvent.Action(evt);
+        }
+    }
+}
