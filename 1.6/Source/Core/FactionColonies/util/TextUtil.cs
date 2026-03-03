@@ -104,12 +104,12 @@ namespace FactionColonies
                       : 3;
 
             string resourceKey = "";
-            double highest = 0;
+            double highest = -1;
             foreach (ResourceFC resource in settlement.Resources)
             {
-                if (resource.actualIncome > highest)
+                if (resource.rawTotalProduction > highest)
                 {
-                    highest = resource.actualIncome;
+                    highest = resource.rawTotalProduction;
                     resourceKey = resource.def.defName;
                 }
             }

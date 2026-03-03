@@ -221,7 +221,7 @@ namespace FactionColonies
                 if (Widgets.ButtonText(tabRect, label))
                 {
                     overviewTab = i;
-                    if (overviews.Count > 0 && overviewTab >= 2 && overviewTab <= (overviews.Count - 2))
+                    if (overviews.Count > 0 && overviewTab >= 2 && (overviewTab - 2) <= overviews.Count)
                     {
                         ISettlementWindowOverview overview = overviews[overviewTab - 2];
                         overview.OnTabSwitch();
@@ -258,7 +258,7 @@ namespace FactionColonies
             {
                 DrawTitheOverview(boundingBox);
             }
-            else if (overviews.Count > 0 && overviewTab >= 2 && overviewTab <= (overviews.Count-2))
+            else if (overviews.Count > 0 && overviewTab >= 2 && (overviewTab - 2) <= overviews.Count)
             {
                 ISettlementWindowOverview overview = overviews[overviewTab - 2];
                 overview.DrawOverviewTab(boundingBox);

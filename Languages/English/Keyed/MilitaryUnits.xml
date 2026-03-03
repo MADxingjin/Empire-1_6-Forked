@@ -37,6 +37,8 @@
 	<fcLabelPants>Pants</fcLabelPants>
 	<fcLabelWeapon>Weapon</fcLabelWeapon>
 	<fcLabelAnimal>Animal</fcLabelAnimal>
+	<fcLabelAmmo>Ammo</fcLabelAmmo>
+	<fcAmmoAny>Any</fcAmmoAny>
 
 	<!-- Unit Buttons -->
 	<FCRenameUnit>Rename Unit</FCRenameUnit>

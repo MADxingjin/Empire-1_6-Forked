@@ -568,6 +568,7 @@ namespace FactionColonies
 
             merc.pawn.apparel?.DestroyAll();
             merc.pawn.equipment?.DestroyAllEquipment();
+            merc.pawn.inventory.innerContainer.ClearAndDestroyContents();
             CombatExtendedUtil.UpdateInventory(merc.pawn);
         }
 
@@ -601,7 +602,10 @@ namespace FactionColonies
 
                 if (CombatExtendedUtil.IsCELoaded && merc.pawn.equipment.Primary != null)
                 {
-                    CombatExtendedUtil.EquipWeaponWithAmmo(merc.pawn, merc.pawn.equipment.Primary);
+                    if (loadout.preferredAmmo != null)
+                        CombatExtendedUtil.EquipWeaponWithSpecificAmmo(merc.pawn, merc.pawn.equipment.Primary, loadout.preferredAmmo);
+                    else
+                        CombatExtendedUtil.EquipWeaponWithAmmo(merc.pawn, merc.pawn.equipment.Primary);
                 }
             }
         }

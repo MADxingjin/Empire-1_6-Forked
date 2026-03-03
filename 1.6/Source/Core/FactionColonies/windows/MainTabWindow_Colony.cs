@@ -30,7 +30,7 @@ namespace FactionColonies
         private Dictionary<string, Action<Rect>> overviewFuncs = new Dictionary<string, Action<Rect>>();
 
         // ===== WINDOW SIZE =====
-        public override Vector2 InitialSize => new Vector2(1010f, 640f);
+        public override Vector2 InitialSize => new Vector2(1060f, 640f);
 
         // ===== DATA =====
         public bool selectingColonyFC;
@@ -70,6 +70,7 @@ namespace FactionColonies
             // Build tab list
             // Main overview tab
             tabs.Clear();
+            overviewFuncs.Clear();
             tabs.Add(new TabRecord(overviewTabs[0], delegate
             {
                 curTab = overviewTabs[0];

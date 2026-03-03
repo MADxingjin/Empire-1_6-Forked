@@ -423,6 +423,18 @@ namespace FactionColonies
             Widgets.Label(new Rect(new Vector2(AnimalCompanion.x, AnimalCompanion.y - 15), AnimalCompanion.size), "fcLabelAnimal".Translate());
             Widgets.DrawMenuSection(AnimalCompanion);
 
+            // CE ammo slot — only drawn when CE is loaded, a unit is selected, has a weapon, and the weapon has CE ammo options
+            Rect AmmoSlot = new Rect(EquipmentWeapon.x, EquipmentWeapon.yMax + 20f, slotSize, slotSize);
+            bool showAmmoSlot = CombatExtendedUtil.IsCELoaded
+                && selectedUnit != null
+                && selectedUnit.HasWeapon
+                && CombatExtendedUtil.GetAmmoOptionsForWeapon(selectedUnit.weapons[0].thing).Count > 0;
+            if (showAmmoSlot)
+            {
+                Widgets.Label(new Rect(AmmoSlot.x, AmmoSlot.y - 15f, AmmoSlot.width, 15f), "fcLabelAmmo".Translate());
+                Widgets.DrawMenuSection(AmmoSlot);
+            }
+
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
 
@@ -459,6 +471,44 @@ namespace FactionColonies
                     initialItem: currentWeapon?.thing,
                     initialStuff: currentWeapon?.stuff
                 ));
+            }
+
+            // --- CE Ammo Slot ---
+            if (showAmmoSlot)
+            {
+                // Click handler must come before icon draw so it can consume the event first
+                if (!isSelectedUnitDeployed && Widgets.ButtonInvisible(AmmoSlot))
+                {
+                    var ammoOptions = CombatExtendedUtil.GetAmmoOptionsForWeapon(selectedUnit.weapons[0].thing);
+                    var menuOptions = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption("fcAmmoAny".Translate(), () => selectedUnit.ClearPreferredAmmo())
+                    };
+                    foreach (ThingDef ammo in ammoOptions)
+                    {
+                        ThingDef captured = ammo;
+                        menuOptions.Add(new FloatMenuOption(
+                            captured.LabelCap,
+                            () => selectedUnit.SetPreferredAmmo(captured),
+                            captured.uiIcon,
+                            Color.white));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(menuOptions));
+                }
+
+                // Display icon or "Any" label
+                if (selectedUnit.preferredAmmo != null)
+                {
+                    GUI.DrawTexture(AmmoSlot, selectedUnit.preferredAmmo.uiIcon);
+                }
+                else
+                {
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(AmmoSlot, "fcAmmoAny".Translate());
+                    Text.Font = fontBefore;
+                    Text.Anchor = anchorBefore;
+                }
             }
 
             // --- Apparel Slots (unified handler) ---
@@ -520,6 +570,12 @@ namespace FactionColonies
                     ? w.thing.LabelCap + " (" + w.stuff.LabelCap + ") Cost: " + w.MarketValue
                     : w.thing.LabelCap + " Cost: " + w.MarketValue;
                 wornEntries.Add((label, w.thing, w.stuff));
+            }
+
+            if (CombatExtendedUtil.IsCELoaded && selectedUnit.preferredAmmo != null)
+            {
+                string ammoLabel = "fcLabelAmmo".Translate() + ": " + selectedUnit.preferredAmmo.LabelCap;
+                wornEntries.Add((ammoLabel, selectedUnit.preferredAmmo, null));
             }
 
             float wornViewHeight = wornEntries.Count * 25f;
