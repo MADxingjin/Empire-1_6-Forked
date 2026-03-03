@@ -86,6 +86,20 @@ namespace FactionColonies
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
+        [DebugAction("Empire", "Clear faction traits and policies", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ClearFactionTraitsAndPolicies()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            for (int i = 0; i < faction.factionTraits.Count; i++)
+                faction.factionTraits[i] = new FCPolicy(FCPolicyDefOf.empty);
+
+            faction.policies.Clear();
+
+            LogUtil.Message("Cleared faction traits and policies.");
+        }
+
         [DebugAction("Empire", "Reset All Military Squad Assignments", allowedGameStates = AllowedGameStates.Playing)]
         private static void ResetAllMilitarySquads()
         {

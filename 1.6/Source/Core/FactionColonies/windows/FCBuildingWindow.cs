@@ -39,6 +39,12 @@ namespace FactionColonies
 
         private float fullScrollHeight = 90f;
 
+        // Layout cache — only recomputed when width changes or filter is changed
+        private float _lastLayoutWidth = -1f;
+        private bool _layoutDirty = true;
+        private float _cachedTopDescHeight = 64f;
+        private readonly List<float> _cachedRowHeights = new List<float>();
+
         /* To deal with a variable number of resources (and variable resources in general), we use an int for
          * the filter. The value of the filter, and the corresponding label, are set in WorldObjectComp_SettlementBuildings
          */
@@ -95,13 +101,17 @@ namespace FactionColonies
         // Calculate dynamic layout based on current window size
         private void CalculateLayout(Rect inRect)
         {
-            float descHeight = Math.Max(64, Text.CalcHeight(buildingDesc.RawText, inRect.width - 110));
-            float topWindowHeight = Math.Max(120f, descHeight + 45); // 20% of window height, minimum 120px
-            
+            if (inRect.width == _lastLayoutWidth && !_layoutDirty) return;
+            _lastLayoutWidth = inRect.width;
+            _layoutDirty = false;
+
+            _cachedTopDescHeight = Math.Max(64, Text.CalcHeight(buildingDesc.RawText, inRect.width - 110));
+            float topWindowHeight = Math.Max(120f, _cachedTopDescHeight + 45);
+
             TopWindow = new Rect(0, 0, inRect.width, topWindowHeight);
             TopName = new Rect(15, 15, inRect.width - 30, 30);
             TopIcon = new Rect(15, TopName.yMax + 5, 64, 64);
-            TopDescription = new Rect(95, TopIcon.y + 5, inRect.width - 115, descHeight);
+            TopDescription = new Rect(95, TopIcon.y + 5, inRect.width - 115, _cachedTopDescHeight);
             FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * filterRows);
 
             CalculateScrollHeight(inRect);
@@ -109,18 +119,19 @@ namespace FactionColonies
         private void CalculateScrollHeight(Rect inRect)
         {
             float width = inRect.width - 96f;
+            _cachedRowHeights.Clear();
             fullScrollHeight = 0;
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
                 BuildingFCDef building = filteredBuildingList[i];
                 TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
-                // fancy math to size the description box to fit the description text
                 GameFont tmp = Text.Font;
                 Text.Font = GameFont.Tiny;
                 float textHeight = Text.CalcHeight(buildingdesc.RawText, width);
                 Text.Font = tmp;
-                float descHeight = Math.Max(64, textHeight);
-                fullScrollHeight += descHeight + 27f;
+                float rowHeight = Math.Max(64, textHeight) + 27f;
+                _cachedRowHeights.Add(rowHeight);
+                fullScrollHeight += rowHeight;
             }
         }
 
@@ -189,7 +200,7 @@ namespace FactionColonies
         private void ApplyFilter()
         {
             filteredBuildingList.Clear();
-            
+
             foreach (var building in buildingList)
             {
                 if (ShouldShowBuilding(building))
@@ -197,6 +208,8 @@ namespace FactionColonies
                     filteredBuildingList.Add(building);
                 }
             }
+
+            _layoutDirty = true;
         }
 
         private bool ShouldShowBuilding(BuildingFCDef building)
@@ -230,15 +243,9 @@ namespace FactionColonies
             {
                 BuildingFCDef building = filteredBuildingList[i];
                 TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
-                // fancy math to size the description box to fit the description text
+                float thisRowHeight = _cachedRowHeights[i];
+                float descHeight = thisRowHeight - 27f;
                 float buildingDescWidth = ls.ColumnWidth - 80;
-                GameFont tmp = Text.Font;
-                Text.Font = GameFont.Tiny;
-                float textHeight = Text.CalcHeight(buildingdesc.RawText, buildingDescWidth);
-                Text.Font = tmp;
-                float descHeight = Math.Max(64, textHeight);
-                float thisRowHeight = 27f + descHeight;
-
 
                 var newBuildingWindow = ls.GetRect(thisRowHeight);
                 var newBuildingIcon = new Rect(newBuildingWindow.x + offset, newBuildingWindow.y + offset, 64, 64);
@@ -317,7 +324,7 @@ namespace FactionColonies
                 Widgets.Label(builtTimeRect, buildTimeStr);
 
                 Text.Font = GameFont.Tiny;
-                Widgets.Label(newBuildingDesc, settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty);
+                Widgets.Label(newBuildingDesc, buildingdesc);
             }
 
             ls.End();
