@@ -208,7 +208,7 @@ namespace FactionColonies
                 rect.y + 4f, 22f, 22f);
             if (Widgets.ButtonImage(pencilRect, TexButton.Rename))
             {
-                Find.WindowStack.Add(new FCWindow_RenameFireSupport(selectedSupport));
+                Find.WindowStack.Add(new FCWindow_Rename(selectedSupport.name, "FCRenameFireSupport", name => selectedSupport.name = name));
             }
 
             // Info line 1: Cost + projectile count

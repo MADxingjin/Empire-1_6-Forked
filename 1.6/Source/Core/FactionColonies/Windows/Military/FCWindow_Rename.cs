@@ -1,21 +1,24 @@
+using System;
 using UnityEngine;
 using Verse;
 using RimWorld;
 
 namespace FactionColonies
 {
-    public class FCWindow_RenameFireSupport : Window
+    public class FCWindow_Rename : Window
     {
-        private readonly MilitaryFireSupport support;
+        private readonly string titleKey;
+        private readonly Action<string> onConfirm;
         private string curName;
         private bool focusedField;
 
         public override Vector2 InitialSize => new Vector2(300f, 175f);
 
-        public FCWindow_RenameFireSupport(MilitaryFireSupport support)
+        public FCWindow_Rename(string currentName, string titleKey, Action<string> onConfirm)
         {
-            this.support = support;
-            curName = support.name;
+            this.curName = currentName;
+            this.titleKey = titleKey;
+            this.onConfirm = onConfirm;
             doCloseX = true;
             forcePause = false;
             closeOnAccept = false;
@@ -30,7 +33,7 @@ namespace FactionColonies
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(0, 0, inRect.width, 35f), "FCRenameFireSupport".Translate());
+            Widgets.Label(new Rect(0, 0, inRect.width, 35f), titleKey.Translate());
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -55,7 +58,7 @@ namespace FactionColonies
             {
                 if (curName.Length > 0)
                 {
-                    support.name = curName;
+                    onConfirm(curName);
                     Close();
                 }
                 else

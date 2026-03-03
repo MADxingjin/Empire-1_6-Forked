@@ -270,7 +270,7 @@ namespace FactionColonies
             Rect pencilRect = new Rect(rect.x + Mathf.Min(nameTextWidth + 8f + margin, rect.width - 22f), rect.y + 4f, 22f, 22f);
             if (!isSelectedUnitDeployed && Widgets.ButtonImage(pencilRect, TexButton.Rename))
             {
-                Find.WindowStack.Add(new FCWindow_RenameUnit(selectedUnit));
+                Find.WindowStack.Add(new FCWindow_Rename(selectedUnit.name, "FCRenameUnit", name => selectedUnit.name = name));
             }
 
             // Race / Xeno info line
