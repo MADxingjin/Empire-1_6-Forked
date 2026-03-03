@@ -81,6 +81,16 @@ namespace FactionColonies
             // Write the settings to disk
             LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
         }
+        public override void PreOpen()
+        {
+            base.PreOpen();
+
+            if (settlement.BuildingsComp is null)
+            {
+                LogUtil.Warning($"Attempted to open buildings window for settlement {settlement.Name} with NULL BuildingsComp");
+                this.Close();
+            }
+        }
         
         // Calculate dynamic layout based on current window size
         private void CalculateLayout(Rect inRect)
@@ -103,7 +113,7 @@ namespace FactionColonies
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
                 BuildingFCDef building = filteredBuildingList[i];
-                TaggedString buildingdesc = settlement.BuildingsComp.getBuildingDesc(building);
+                TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
                 // fancy math to size the description box to fit the description text
                 GameFont tmp = Text.Font;
                 Text.Font = GameFont.Tiny;
@@ -160,7 +170,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Color textColor = isSelected ? Color.white : Color.white;
                 GUI.color = textColor;
-                Widgets.Label(buttonRect, settlement.BuildingsComp.getLabelForFilter(i));
+                Widgets.Label(buttonRect, settlement.BuildingsComp?.getLabelForFilter(i) ?? "");
                 GUI.color = Color.white;
                 
                 // Handle click for selected buttons
@@ -191,7 +201,7 @@ namespace FactionColonies
 
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
-            return settlement.BuildingsComp.filterBuilding(currentFilter, building);
+            return settlement.BuildingsComp?.filterBuilding(currentFilter, building) ?? true;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -219,7 +229,7 @@ namespace FactionColonies
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
                 BuildingFCDef building = filteredBuildingList[i];
-                TaggedString buildingdesc = settlement.BuildingsComp.getBuildingDesc(building);
+                TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
                 // fancy math to size the description box to fit the description text
                 float buildingDescWidth = ls.ColumnWidth - 80;
                 GameFont tmp = Text.Font;
@@ -307,7 +317,7 @@ namespace FactionColonies
                 Widgets.Label(builtTimeRect, buildTimeStr);
 
                 Text.Font = GameFont.Tiny;
-                Widgets.Label(newBuildingDesc, settlement.BuildingsComp.getBuildingDesc(building));
+                Widgets.Label(newBuildingDesc, settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty);
             }
 
             ls.End();
@@ -398,16 +408,16 @@ namespace FactionColonies
             this.buildingSlot = buildingSlot;
             buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
             /* If the buildingDef is "Construction", then find the building that's being constructed and list it in the description. */
-            if (buildingDef == BuildingFCDefOf.Construction)
+            if (buildingDef == BuildingFCDefOf.Construction && settlement.BuildingsComp != null)
             {
                 buildingDesc = "Empire_BuildingWindow_ConstructionDesc".Translate(settlement.BuildingsComp.Buildings[buildingSlot].underConstructionDef.label);
             }
             else
             {
-                buildingDesc = settlement.BuildingsComp.getBuildingDesc(buildingDef);
+                buildingDesc = settlement.BuildingsComp?.getBuildingDesc(buildingDef) ?? TaggedString.Empty;
             }
 
-            filterSize = settlement.BuildingsComp.getFilterSize();
+            filterSize = settlement.BuildingsComp?.getFilterSize() ?? 0;
             filterRows = (int)Math.Ceiling((double)filterSize / (double)filterButtonsPerRow);
             fullScrollHeight = filteredBuildingList.Count * rowHeight;
         }

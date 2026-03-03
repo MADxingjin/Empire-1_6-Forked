@@ -32,6 +32,11 @@ namespace FactionColonies
         public void RefreshBuildingSlots()
         {
             buildingSlots.Clear();
+            if (parentComp == null)
+            {
+                LogUtil.Error($"SettlementBuildingComp {this.ToStringSafe()} has null parentComp during RefreshBuildingSlots");
+                return;
+            }
             for(int i = 0; i < parentComp.Buildings.Count; i++)
             {
                 BuildingFCDef building = parentComp.getBuildingInSlot(i);

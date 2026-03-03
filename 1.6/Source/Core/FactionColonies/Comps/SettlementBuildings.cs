@@ -619,6 +619,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                settlementBuildingComps?.RemoveAll(c => c == null);
                 ReinitBuildings();
             }
         }

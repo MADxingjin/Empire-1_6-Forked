@@ -228,8 +228,7 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductionBase()
         {
-            double productionBase = productionAdditives.Values.Sum(p => p.value);
-            return productionBase;
+            return ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
         }
         /// <summary>
         /// Calculates the total production multiplier.
@@ -237,17 +236,8 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductonMult()
         {
-            double productionMultiplier = 1;
-            foreach (ProductionBonus bonus in productionMultipliers.Values)
-            {
-                //TODO: should multipliers be additive with each other?
-                productionMultiplier *= bonus.value;
-            }
-
             double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
-            productionMultiplier *= taxBonus;
-
-            return productionMultiplier;
+            return ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), taxBonus);
         }
         public double getTitheModifierAdditivePerWorker()
         {
@@ -271,15 +261,15 @@ namespace FactionColonies
         }
         public double getTitheModifierPerWorker()
         {
-            return getTitheModifierAdditivePerWorker() * getTitheModifierMultPerWorker();
+            return ResourceFormulas.CalculateTitheModifierPerWorker(getTitheModifierAdditivePerWorker(), getTitheModifierMultPerWorker());
         }
         public double getTotalTitheModifierForWorkers()
         {
-            return getTitheModifierPerWorker() * assignedWorkers;
+            return ResourceFormulas.CalculateTotalTitheModifierForWorkers(getTitheModifierPerWorker(), assignedWorkers);
         }
         public double getTitheIncome()
         {
-            return (rawTotalProductionMarketValue + getTotalTitheModifierForWorkers() + getTitheModifierAdditiveForTotal()) * getTitheModifierMultForTotal();
+            return ResourceFormulas.CalculateTitheIncome(rawTotalProductionMarketValue, getTotalTitheModifierForWorkers(), getTitheModifierAdditiveForTotal(), getTitheModifierMultForTotal());
         }
         public void refreshOnRandomTitheBudgetChange()
         {
@@ -812,7 +802,7 @@ namespace FactionColonies
         }
         public bool canAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            return (titheThingTotalValue(thing, quanity) <= getTitheIncome() - titheTotalValue);
+            return ResourceFormulas.CanAffordThingAmount(titheThingTotalValue(thing, quanity), getTitheIncome() - titheTotalValue);
         }
         public int maxThingCanAfford(ThingQualityTuple thing)
         {
@@ -820,8 +810,7 @@ namespace FactionColonies
         }
         public int maxThingCanAfford(ThingQualityTuple thing, double budget)
         {
-            float value = titheThingValue(thing);
-            return (int)(budget / value);
+            return ResourceFormulas.MaxThingCanAfford(budget, titheThingValue(thing));
         }
         public float calcTotalTitheValue()
         {
@@ -1058,6 +1047,98 @@ namespace FactionColonies
         public static int sortForUI(ResourceFC a, ResourceFC b)
         {
             return a.compareForUI(b);
+        }
+    }
+
+    /// <summary>
+    /// Pure calculation methods for resource production and tithe economics.
+    /// These methods have zero RimWorld dependencies, making them unit-testable.
+    /// </summary>
+    public static class ResourceFormulas
+    {
+        /// <summary>
+        /// Calculates the total production base from additive bonuses.
+        /// </summary>
+        public static double CalculateProductionBase(IEnumerable<double> additiveValues)
+        {
+            return additiveValues.Sum();
+        }
+
+        /// <summary>
+        /// Calculates the total production multiplier from multiplier bonuses and tax bonus.
+        /// </summary>
+        public static double CalculateProductionMult(IEnumerable<double> multiplierValues, double taxBonus)
+        {
+            double result = 1;
+            foreach (double value in multiplierValues)
+            {
+                result *= value;
+            }
+            return result * taxBonus;
+        }
+
+        /// <summary>
+        /// Calculates total production: base × multiplier.
+        /// </summary>
+        public static double CalculateProduction(double productionBase, double productionMult)
+        {
+            return productionBase * productionMult;
+        }
+
+        /// <summary>
+        /// Calculates raw total production: production per worker × assigned workers.
+        /// </summary>
+        public static double CalculateRawTotalProduction(double production, int assignedWorkers)
+        {
+            return production * assignedWorkers;
+        }
+
+        /// <summary>
+        /// Converts raw production to market value.
+        /// </summary>
+        public static double CalculateMarketValue(double rawTotalProduction, double silverPerResource)
+        {
+            return rawTotalProduction * silverPerResource;
+        }
+
+        /// <summary>
+        /// Calculates the per-worker tithe modifier: additive × multiplicative.
+        /// </summary>
+        public static double CalculateTitheModifierPerWorker(double additive, double multiplicative)
+        {
+            return additive * multiplicative;
+        }
+
+        /// <summary>
+        /// Calculates total tithe modifier for all workers: modifier per worker × worker count.
+        /// </summary>
+        public static double CalculateTotalTitheModifierForWorkers(double modifierPerWorker, int assignedWorkers)
+        {
+            return modifierPerWorker * assignedWorkers;
+        }
+
+        /// <summary>
+        /// Calculates tithe income: (rawMarketValue + workerMods + additiveForTotal) × multForTotal.
+        /// </summary>
+        public static double CalculateTitheIncome(double rawMarketValue, double totalWorkerMod, double additiveForTotal, double multForTotal)
+        {
+            return (rawMarketValue + totalWorkerMod + additiveForTotal) * multForTotal;
+        }
+
+        /// <summary>
+        /// Calculates how many of a thing can be afforded within a budget.
+        /// </summary>
+        public static int MaxThingCanAfford(double budget, float thingValue)
+        {
+            return (int)(budget / thingValue);
+        }
+
+        /// <summary>
+        /// Checks whether a thing amount fits within the available budget.
+        /// </summary>
+        public static bool CanAffordThingAmount(float thingTotalValue, double availableBudget)
+        {
+            return thingTotalValue <= availableBudget;
         }
     }
 

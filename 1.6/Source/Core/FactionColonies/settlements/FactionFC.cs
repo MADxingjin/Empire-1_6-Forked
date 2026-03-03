@@ -1221,8 +1221,7 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
 
         public float updateFactionLevelGoalXP(int currentLevel)
         {
-            float newGoal = 100 + (currentLevel * 150);
-            return newGoal;
+            return SettlementFormulas.CalculateFactionLevelGoalXP(currentLevel);
         }
 
         public bool addExperienceToFactionLevel(float xp)

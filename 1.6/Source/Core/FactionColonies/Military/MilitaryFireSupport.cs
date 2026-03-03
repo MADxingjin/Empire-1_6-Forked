@@ -62,20 +62,30 @@ namespace FactionColonies
             loadID = FactionCache.FactionComp.GetNextMilitaryFireSupportID();
         }
 
+        public static float CalculateAccuracyCostPercentage(float accuracy)
+        {
+            return (float)Math.Round((Math.Max(0, 15 - accuracy) / 15) * 100);
+        }
+
+        public static float CalculateTotalCost(float accuracy, IEnumerable<float> projectileMarketValues)
+        {
+            float cost = 0;
+            float accuracyMult = 1 + CalculateAccuracyCostPercentage(accuracy) / 100;
+            foreach (float marketValue in projectileMarketValues)
+            {
+                cost += marketValue * 1.5f * accuracyMult;
+            }
+            return (float)Math.Round(cost);
+        }
+
         public float returnAccuracyCostPercentage()
         {
-            return (float) Math.Round((Math.Max(0, 15 - accuracy) / 15) * 100);
+            return CalculateAccuracyCostPercentage(accuracy);
         }
 
         public float returnTotalCost()
         {
-            float cost = 0;
-            foreach (ThingDef def in projectiles)
-            {
-                cost += def.BaseMarketValue * 1.5f * (1 + returnAccuracyCostPercentage() / 100);
-            }
-
-            totalCost = (float) Math.Round(cost);
+            totalCost = CalculateTotalCost(accuracy, projectiles.Select(def => def.BaseMarketValue));
             return totalCost;
         }
 

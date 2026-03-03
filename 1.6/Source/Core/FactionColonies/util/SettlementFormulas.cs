@@ -60,6 +60,14 @@ namespace FactionColonies.util
         }
 
         /// <summary>
+        /// Calculates the XP goal for the next faction level.
+        /// </summary>
+        public static float CalculateFactionLevelGoalXP(int currentLevel)
+        {
+            return 100 + (currentLevel * 150);
+        }
+
+        /// <summary>
         /// Calculates stat penalties when a settlement loses a battle.
         /// Feudal policy doubles loyalty loss. Resilient trait halves prosperity loss.
         /// </summary>

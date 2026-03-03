@@ -40,7 +40,10 @@ namespace FactionColonies.util
 				ShipJobDefOf.FlyAway
 			});
 
-			comp.shuttleUsesRemaining -= cost;
+			if (comp != null)
+			{
+				comp.shuttleUsesRemaining -= cost;
+			}
 			CameraJumper.TryJump(landingCell, target.Map);
 			return transportShip;
 		}

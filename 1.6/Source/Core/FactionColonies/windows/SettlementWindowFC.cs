@@ -334,7 +334,13 @@ namespace FactionColonies
 
             Rect leftBox = new Rect(boundingBox.x, boundingBox.y, constructionBoxWidth, boundingBox.height);
             Rect rightBox = new Rect(leftBox.xMax, leftBox.y, buildingBoxWidth, boundingBox.height);
-            
+
+            if (settlement.BuildingsComp == null)
+            {
+                DrawFacilities(rightBox);
+                return;
+            }
+
             int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
             DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
             DrawFacilities(rightBox);
@@ -1255,7 +1261,7 @@ namespace FactionColonies
                                             "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
-                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));
+                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp?.getBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
                 Widgets.EndScrollView();
