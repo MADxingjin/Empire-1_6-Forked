@@ -80,6 +80,7 @@ namespace FactionColonies
         {
             get
             {
+                if (settlement == null) return null;
                 return BaseTraderKinds.Any() ? BaseTraderKinds[Mathf.Abs(settlement.HashOffset()) % BaseTraderKinds.Count] : null;
             }
         }
@@ -140,7 +141,6 @@ namespace FactionColonies
             Scribe_Deep.Look(ref stock, "stock", Array.Empty<object>());
             Scribe_Values.Look(ref lastStockGenerationTicks, "lastStockGenerationTicks");
             Scribe_Values.Look(ref everGeneratedStock, "wasStockGeneratedYet");
-            Scribe_References.Look(ref settlement, "settlement");
             if (Scribe.mode != LoadSaveMode.PostLoadInit && Scribe.mode != LoadSaveMode.Saving)
                 return;
             foreach (Pawn pawn in tmpSavedPawns)

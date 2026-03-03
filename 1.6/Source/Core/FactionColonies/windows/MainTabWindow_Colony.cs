@@ -22,7 +22,7 @@ namespace FactionColonies
         private List<TabRecord> tabs = new List<TabRecord>();
 
         // ===== WINDOW SIZE =====
-        public override Vector2 InitialSize => new Vector2(1210f, 640f);
+        public override Vector2 InitialSize => new Vector2(1010f, 640f);
 
         // ===== DATA =====
         public bool selectingColonyFC;

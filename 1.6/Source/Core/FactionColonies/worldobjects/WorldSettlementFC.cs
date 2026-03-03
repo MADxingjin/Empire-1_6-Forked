@@ -394,7 +394,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look(ref trader, "trader");
+            Scribe_Deep.Look(ref trader, "trader", this);
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
@@ -444,6 +444,7 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                if (trader != null && trader.settlement == null) trader.settlement = this;
                 updateProfitAndProduction();
             }
         }
