@@ -475,7 +475,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(prodBox);
             Widgets.Label(prodLabel, "TotalProd".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(prodnum, res.rawTotalProductionMarketValue.ToString());
+            Widgets.Label(prodnum, res.taxableProductionMarketValue.ToString());
 
             /* Tithe Budget */
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1541,9 +1541,9 @@ namespace FactionColonies
                 Rect totalProd = new Rect(finalProd.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(totalProd, (TextUtil.FloorStat(resource.rawTotalProduction)));
 
-                //Est Income
+                //Est Income (taxable production as silver, after stockpile diversions but before tithes)
                 Rect incomeRawBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.rawTotalProductionMarketValue)));
+                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.taxableProductionMarketValue)));
 
                 //Net Income, after tithes
                 Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, rectY, colWidth, rowHeight);

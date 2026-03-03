@@ -464,7 +464,7 @@ namespace FactionColonies
 
         public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            foreach (Gizmo gizmo in base.GetGizmos())
+            foreach (Gizmo gizmo in base.GetCaravanGizmos(caravan))
             {
                 yield return gizmo;
             }
@@ -486,6 +486,13 @@ namespace FactionColonies
                 };
 
                 yield return action;
+            }
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                foreach (Gizmo gizmo in comp.GetCaravanGizmos(caravan))
+                {
+                    yield return gizmo;
+                }
             }
         }
 
@@ -1024,9 +1031,9 @@ namespace FactionColonies
             double defenseBonus = 0;
             foreach (ResourceFC resource in resources)
             {
-                if (resource.def.aidsDefense && resource.rawTotalProduction > 0)
+                if (resource.def.aidsDefense && resource.effectiveRawTotalProduction > 0)
                 {
-                    defenseBonus += resource.rawTotalProduction;
+                    defenseBonus += resource.effectiveRawTotalProduction;
                 }
             }
             return defenseBonus;
@@ -1209,6 +1216,16 @@ namespace FactionColonies
                 value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
                 cachedTraitValues.Add((field, addOrMultiply), value);
             }
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is IStatModifierProvider provider)
+                {
+                    if (addOrMultiply == Operation.Addition)
+                        value += provider.GetStatModifier(field, addOrMultiply);
+                    else
+                        value *= provider.GetStatModifier(field, addOrMultiply);
+                }
+            }
             return value;
         }
         public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
@@ -1218,6 +1235,14 @@ namespace FactionColonies
             {
                 TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
                 cachedTraitDescs.Add((field, addOrMultiply), desc);
+            }
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is IStatModifierProvider provider)
+                {
+                    desc += "\n" + provider.GetStatModifier(field, addOrMultiply);
+                 
+                }
             }
             return desc;
         }
@@ -1484,6 +1509,8 @@ namespace FactionColonies
         private void preTaxPrep()
         {
             dirtyResourceCaches();
+            foreach (ResourceFC res in resources)
+                res.PruneStockpileAllocations();
             pruneResourceTithes();
             updateProfitAndProduction();
             calculatingTax = true;
