@@ -130,7 +130,7 @@ namespace FactionColonies
             float textHeight = Text.CalcHeight(desc.RawText, descWidth);
             Text.Font = tmp;
             float bodyHeight = Math.Max(listIconSize, textHeight);
-            return margin + 22f + smallMargin + bodyHeight + margin;
+            return 22f + smallMargin + bodyHeight + margin;
         }
 
         private void CalculateScrollHeight(float panelWidth)
@@ -140,7 +140,7 @@ namespace FactionColonies
             fullScrollHeight = 0;
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
-                float rowH = CalculateBuildingCardHeight(filteredBuildingList[i], cardWidth);
+                float rowH = CalculateBuildingCardHeight(filteredBuildingList[i], cardWidth) + smallMargin;
                 _cachedRowHeights.Add(rowH);
                 fullScrollHeight += rowH;
             }
@@ -165,6 +165,7 @@ namespace FactionColonies
         private void DrawCollapsibleHeader(float x, float curY, float width, string label, ref bool expanded)
         {
             Rect headerRect = new Rect(x, curY, width, collapsibleHeaderHeight);
+            Widgets.DrawHighlight(headerRect);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             GUI.color = new Color(1f, 1f, 1f, 0.7f);
@@ -176,6 +177,17 @@ namespace FactionColonies
                 expanded = !expanded;
                 _layoutDirty = true;
             }
+        }
+
+        private bool HasUnmetRequirements(BuildingFCDef building)
+        {
+            if (building.requiredBuildings.Count == 0) return false;
+            foreach (BuildingFCDef req in building.requiredBuildings)
+            {
+                if (!settlement.BuildingsComp.hasBuilding(req)) return true;
+                if (req == buildingDef) return true;
+            }
+            return false;
         }
 
         #endregion
@@ -299,9 +311,6 @@ namespace FactionColonies
             DrawLeftPanel(leftPanel);
             DrawRightPanel(rightPanel);
 
-            // Vertical separator
-            Widgets.DrawLineVertical(leftPanel.xMax + (panelGap / 2f), leftPanel.y, leftPanel.height);
-
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
@@ -352,7 +361,6 @@ namespace FactionColonies
                     }
                 }
 
-                Widgets.DrawLineHorizontal(panel.x, FilterArea.y - margin, panel.width);
             }
 
             DrawFilterButtons();
@@ -381,6 +389,12 @@ namespace FactionColonies
                 GUI.color = prevColor;
             }
 
+            // Recalculate if filter changed mid-frame
+            if (_layoutDirty)
+            {
+                CalculateLayout(panel.width);
+            }
+
             float scrollTop = SearchBarArea.yMax + margin;
             Rect outRect = new Rect(panel.x, scrollTop, panel.width, panel.yMax - scrollTop);
             float scrollMargin = fullScrollHeight > outRect.height ? 16f : 0f;
@@ -406,7 +420,7 @@ namespace FactionColonies
         private void DrawBuildingCard(Rect row, BuildingFCDef building)
         {
             // Full-width name row with cost right-aligned
-            Rect nameRect = new Rect(row.x, row.y + margin, row.width, 22f);
+            Rect nameRect = new Rect(row.x, row.y, row.width, 22f);
             Rect nameText = new Rect(nameRect.x + margin, nameRect.y, nameRect.width - (margin * 2), nameRect.height);
             Widgets.DrawHighlight(nameRect);
             Text.Font = GameFont.Small;
@@ -435,9 +449,11 @@ namespace FactionColonies
         private void DrawBuildingListItem(Listing_Standard ls, BuildingFCDef building, int index)
         {
             float thisRowHeight = _cachedRowHeights[index];
-            Rect row = ls.GetRect(thisRowHeight);
+            Rect fullrow = ls.GetRect(thisRowHeight);
+            Rect row = new Rect(fullrow.x, fullrow.y + smallMargin, fullrow.width, fullrow.height - smallMargin);
 
             bool isSelected = selectedBuilding == building;
+            bool unmetReqs = HasUnmetRequirements(building);
 
             // Background layers
             Widgets.DrawHighlight(row);
@@ -466,7 +482,10 @@ namespace FactionColonies
                 }
             }
 
+            if (unmetReqs)
+                GUI.color = new Color(1f, 1f, 1f, 0.4f);
             DrawBuildingCard(row, building);
+            GUI.color = Color.white;
         }
 
         #endregion
@@ -526,12 +545,8 @@ namespace FactionColonies
                 nextY = demolishRect.yMax;
             }
 
-            // Divider
-            float dividerY = nextY + margin;
-            Widgets.DrawLineHorizontal(panel.x, dividerY, panel.width);
-
             // Section B: Selected Building Detail (scrollable)
-            float detailTop = dividerY + margin;
+            float detailTop = nextY + margin * 2;
             Rect detailRect = new Rect(panel.x, detailTop, panel.width, panel.yMax - detailTop);
             DrawSelectedBuildingDetail(detailRect);
         }
@@ -668,6 +683,26 @@ namespace FactionColonies
             Widgets.Label(descRect, selectedBuilding.desc);
             curY = descRect.yMax + margin;
 
+            // C3.25: Required buildings prerequisite status
+            if (selectedBuilding.requiredBuildings.Count > 0)
+            {
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                foreach (BuildingFCDef req in selectedBuilding.requiredBuildings)
+                {
+                    bool has = settlement.BuildingsComp?.hasBuilding(req) == true;
+                    bool isSlotBuilding = req == buildingDef;
+                    bool satisfied = has && !isSlotBuilding;
+                    Rect statusRect = new Rect(scrollViewRect.x + margin, curY, w - margin * 2, 18f);
+                    GUI.color = satisfied ? Color.green : Color.red;
+                    string checkmark = satisfied ? "✓ " : "✗ ";
+                    Widgets.Label(statusRect, checkmark + "Empire_BuildingWindow_Requires".Translate(req.LabelCap));
+                    GUI.color = Color.white;
+                    curY += 18f;
+                }
+                curY += smallMargin;
+            }
+
             // Centered width for Modifiers + Settlement Impact
             float impactWidth = w * 0.8f;
             float impactMargin = w - impactWidth;
@@ -704,6 +739,9 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             h += Text.CalcHeight(selectedBuilding.desc, width) + margin;
             Text.Font = tmp;
+            // Required buildings prereqs
+            if (selectedBuilding.requiredBuildings.Count > 0)
+                h += selectedBuilding.requiredBuildings.Count * 18f + smallMargin;
             // Modifiers
             h += CalculateModifiersHeight(width * 0.8f);
             // Settlement impact
@@ -727,21 +765,28 @@ namespace FactionColonies
 
             curY += smallMargin;
             Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleLeft;
+            float contentWidth = width - (smallMargin * 2);
+            float textHeight = Text.CalcHeight(modifiers.RawText, contentWidth);
+            float blockHeight = 22f + smallMargin + textHeight;
+
+            // Block background
+            Rect blockRect = new Rect(x, curY, width, blockHeight);
+            Widgets.DrawHighlight(blockRect);
+
+            // Header (double highlight)
             Rect headerRect = new Rect(x, curY, width, 22f);
-            Rect headerText = new Rect(headerRect.x + smallMargin, headerRect.y,
-                headerRect.width - (smallMargin * 2), headerRect.height);
             Widgets.DrawHighlight(headerRect);
+            Text.Anchor = TextAnchor.MiddleLeft;
             GUI.color = new Color(1f, 1f, 1f, 0.7f);
-            Widgets.Label(headerText, "Empire_BuildingWindow_Modifiers".Translate());
+            Widgets.Label(new Rect(x + smallMargin, curY, contentWidth, 22f),
+                "Empire_BuildingWindow_Modifiers".Translate());
             GUI.color = Color.white;
             curY = headerRect.yMax + smallMargin;
 
+            // Content
             Text.Anchor = TextAnchor.UpperLeft;
-            float textHeight = Text.CalcHeight(modifiers.RawText, width);
-            Rect textRect = new Rect(x, curY, width, textHeight);
-            Widgets.Label(textRect, modifiers);
-            curY = textRect.yMax + margin;
+            Widgets.Label(new Rect(x + smallMargin, curY, contentWidth, textHeight), modifiers);
+            curY = blockRect.yMax + margin;
 
             return curY;
         }
@@ -753,7 +798,7 @@ namespace FactionColonies
             GameFont tmp = Text.Font;
             Text.Font = GameFont.Small;
             float h = smallMargin + 22f + smallMargin
-                + Text.CalcHeight(modifiers.RawText, width) + margin;
+                + Text.CalcHeight(modifiers.RawText, width - (smallMargin * 2)) + margin;
             Text.Font = tmp;
             return h;
         }
@@ -786,16 +831,22 @@ namespace FactionColonies
 
             if (affectedResources.Count == 0) return curY;
 
-            // Section header
-            //Widgets.DrawLineHorizontal(x, curY, width);
             curY += smallMargin;
             Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleLeft;
+            float contentHeight = affectedResources.Count * (22f + smallMargin);
+            float blockHeight = 22f + smallMargin + contentHeight;
+
+            // Block background
+            Rect blockRect = new Rect(x, curY, width, blockHeight);
+            Widgets.DrawHighlight(blockRect);
+
+            // Header (double highlight)
             Rect headerRect = new Rect(x, curY, width, 22f);
-            Rect headerText = new Rect(headerRect.x + smallMargin, headerRect.y, headerRect.width - (smallMargin * 2), headerRect.height);
             Widgets.DrawHighlight(headerRect);
+            Text.Anchor = TextAnchor.MiddleLeft;
             GUI.color = new Color(1f, 1f, 1f, 0.7f);
-            Widgets.Label(headerText, "Empire_BuildingWindow_SettlementImpact".Translate());
+            Widgets.Label(new Rect(x + smallMargin, curY, width - smallMargin * 2, 22f),
+                "Empire_BuildingWindow_SettlementImpact".Translate());
             GUI.color = Color.white;
             curY = headerRect.yMax + smallMargin;
 
@@ -869,8 +920,7 @@ namespace FactionColonies
                 curY = rowRect.yMax + smallMargin;
             }
 
-            curY += margin;
-            return curY;
+            return blockRect.yMax + margin;
         }
 
         private float CalculateImpactHeight()
@@ -909,13 +959,19 @@ namespace FactionColonies
                 e => e.def.CanBeBuiltForSettlementType(settlement.settlementDef)).ToList();
             if (filtered.Count == 0) return curY;
 
-            Widgets.DrawLineHorizontal(x, curY, width);
             curY += smallMargin;
+
+            // Block background
+            float blockHeight = CalculateUpgradesHeight(width) - smallMargin - margin;
+            Rect blockRect = new Rect(x, curY, width, blockHeight);
+            Widgets.DrawHighlight(blockRect);
+
+            // Header (double highlight via DrawCollapsibleHeader)
             DrawCollapsibleHeader(x, curY, width,
                 "Empire_BuildingWindow_Upgrades".Translate(), ref upgradesExpanded);
             curY += collapsibleHeaderHeight + smallMargin;
 
-            if (!upgradesExpanded) return curY + margin;
+            if (!upgradesExpanded) return blockRect.yMax + margin;
 
             for (int i = 0; i < filtered.Count; i++)
             {
@@ -949,8 +1005,7 @@ namespace FactionColonies
                 curY = cardRect.yMax + smallMargin;
             }
 
-            curY += margin;
-            return curY;
+            return blockRect.yMax + margin;
         }
 
         private float CalculateUpgradesHeight(float width)
@@ -989,13 +1044,19 @@ namespace FactionColonies
             if (!FactionCache.RequiredByMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
                 return curY;
 
-            Widgets.DrawLineHorizontal(x, curY, width);
             curY += smallMargin;
+
+            // Block background
+            float blockHeight = CalculateRequiredByHeight(width) - smallMargin - margin;
+            Rect blockRect = new Rect(x, curY, width, blockHeight);
+            Widgets.DrawHighlight(blockRect);
+
+            // Header (double highlight via DrawCollapsibleHeader)
             DrawCollapsibleHeader(x, curY, width,
                 "Empire_BuildingWindow_RequiredBy".Translate(), ref requiredByExpanded);
             curY += collapsibleHeaderHeight + smallMargin;
 
-            if (!requiredByExpanded) return curY + margin;
+            if (!requiredByExpanded) return blockRect.yMax + margin;
 
             for (int i = 0; i < requiredBy.Count; i++)
             {
@@ -1039,8 +1100,7 @@ namespace FactionColonies
                 curY += smallMargin;
             }
 
-            curY += margin;
-            return curY;
+            return blockRect.yMax + margin;
         }
 
         private float CalculateRequiredByHeight(float width)
@@ -1089,7 +1149,14 @@ namespace FactionColonies
             }
             else
             {
-                if (Widgets.ButtonText(buttonRect, "Build".Translate()))
+                bool canBuild = !HasUnmetRequirements(selectedBuilding);
+                if (!canBuild)
+                {
+                    GUI.color = new Color(1f, 1f, 1f, 0.4f);
+                    Widgets.ButtonText(buttonRect, "Build".Translate());
+                    GUI.color = Color.white;
+                }
+                else if (Widgets.ButtonText(buttonRect, "Build".Translate()))
                 {
                     ExecuteBuild();
                 }
@@ -1161,14 +1228,6 @@ namespace FactionColonies
 
                             if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
                             {
-                                if (building.requiredBuildings.Count > 0)
-                                {
-                                    bool hasAllRequired = building.requiredBuildings.TrueForAll(
-                                        req => settlement.BuildingsComp.hasBuilding(req));
-                                    bool slotHasRequired = buildingDef != null
-                                        && building.requiredBuildings.Contains(buildingDef);
-                                    if (!hasAllRequired || slotHasRequired) continue;
-                                }
                                 buildingList.Add(building);
                             }
                         }
