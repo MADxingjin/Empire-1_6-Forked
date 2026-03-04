@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
@@ -33,17 +33,27 @@ namespace FactionColonies
         readonly FactionFC factionfc;
         readonly TaggedString buildingDesc;
 
-        private static readonly int offset = 8;
+        // Selection state
+        private BuildingFCDef selectedBuilding = null;
         private Vector2 scrollPosition = Vector2.zero;
-        private static readonly int rowHeight = 90;
+        private Vector2 rightPanelScroll = Vector2.zero;
 
         private float fullScrollHeight = 90f;
+
+        // Slot upgrade list (upgrades available for the current slot's building)
+        private readonly List<BuildingUpgradeEntry> slotUpgradeList = new List<BuildingUpgradeEntry>();
+
+        // Collapsible section state
+        private bool slotUpgradesExpanded = true;
+        private bool upgradesExpanded = true;
+        private bool requiredByExpanded = true;
 
         // Layout cache — only recomputed when width changes or filter is changed
         private float _lastLayoutWidth = -1f;
         private bool _layoutDirty = true;
-        private float _cachedTopDescHeight = 64f;
         private readonly List<float> _cachedRowHeights = new List<float>();
+        private float _slotUpgradesHeight = 0f;
+        private string buildingSearchTerm = "";
 
         /* To deal with a variable number of resources (and variable resources in general), we use an int for
          * the filter. The value of the filter, and the corresponding label, are set in WorldObjectComp_SettlementBuildings
@@ -51,97 +61,133 @@ namespace FactionColonies
         private int currentFilter = 0;
         private int filterSize = 0;
         private int filterRows = 2;
-        private const int filterButtonsPerRow = 6;
+        private const int filterButtonsPerRow = 4;
         private static readonly int filterButtonHeight = 25;
         private static readonly int filterRowHeight = 30;
-        
-        // Dynamic rectangles that will be calculated based on window size
-        Rect TopWindow;
-        Rect TopIcon;
-        Rect TopName;
-        Rect TopDescription;
-        Rect FilterArea;
 
-        // Window size settings - add these fields
-        public float buildingWindowWidth = 450f;
-        public float buildingWindowHeight = 600f;
-        
-        // Static variables to remember window size during play session
-        private static Vector2 savedWindowSize = new Vector2(450f, 600f);
-        private static bool hasSavedSize = false;
-        
+        // Layout constants
+        private const float margin = 5f;
+        private const float smallMargin = 3f;
+        private const float panelGap = 10f;
+        private const float leftPanelRatio = 0.45f;
+        private const float listIconSize = 48f;
+        private const float detailIconSize = 64f;
+        private const float actionButtonHeight = 35f;
+        private const float actionButtonWidth = 200f;
+        private const float minWindowWidth = 600f;
+        private const float headerHeight = 30f;
+        private static readonly Color selectionColor = new Color(0.2f, 0.5f, 0.8f, 0.8f);
+        private const float indentWidth = 20f;
+        private const float collapsibleHeaderHeight = 22f;
+        private const float SearchBarHeight = 28f;
+
+        Rect FilterArea;
+        Rect SearchBarArea;
+
         public override Vector2 InitialSize => new Vector2(
-            FCSettings.buildingWindowWidth,
-            FCSettings.buildingWindowHeight
+            Math.Max(FCSettings.buildingWindowWidth, minWindowWidth),
+            Math.Max(FCSettings.buildingWindowHeight, 400f)
         );
-        
-        // Override PreClose to save the current window size
+
         public override void PreClose()
         {
             base.PreClose();
-            
-            // Save the current window size to settings
             FCSettings.buildingWindowWidth = windowRect.width;
             FCSettings.buildingWindowHeight = windowRect.height;
-            
-            // Write the settings to disk
             LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
         }
+
         public override void PreOpen()
         {
             base.PreOpen();
-
             if (settlement.BuildingsComp is null)
             {
                 LogUtil.Warning($"Attempted to open buildings window for settlement {settlement.Name} with NULL BuildingsComp");
                 this.Close();
             }
         }
-        
-        // Calculate dynamic layout based on current window size
-        private void CalculateLayout(Rect inRect)
+
+        #region Layout Calculation
+
+        private void CalculateLayout(float leftPanelWidth)
         {
-            if (inRect.width == _lastLayoutWidth && !_layoutDirty) return;
-            _lastLayoutWidth = inRect.width;
+            if (leftPanelWidth == _lastLayoutWidth && !_layoutDirty) return;
+            _lastLayoutWidth = leftPanelWidth;
             _layoutDirty = false;
 
-            _cachedTopDescHeight = Math.Max(64, Text.CalcHeight(buildingDesc.RawText, inRect.width - 110));
-            float topWindowHeight = Math.Max(120f, _cachedTopDescHeight + 45);
-
-            TopWindow = new Rect(0, 0, inRect.width, topWindowHeight);
-            TopName = new Rect(15, 15, inRect.width - 30, 30);
-            TopIcon = new Rect(15, TopName.yMax + 5, 64, 64);
-            TopDescription = new Rect(95, TopIcon.y + 5, inRect.width - 115, _cachedTopDescHeight);
-            FilterArea = new Rect(5, topWindowHeight + 5, inRect.width - 10, filterRowHeight * filterRows);
-
-            CalculateScrollHeight(inRect);
+            _slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
+            FilterArea = new Rect(margin, margin + headerHeight + _slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
+            SearchBarArea = new Rect(0, FilterArea.yMax + smallMargin, leftPanelWidth, SearchBarHeight);
+            CalculateScrollHeight(leftPanelWidth);
         }
-        private void CalculateScrollHeight(Rect inRect)
+
+        private float CalculateBuildingCardHeight(BuildingFCDef building, float cardWidth)
         {
-            float width = inRect.width - 96f;
+            float descWidth = cardWidth - listIconSize - margin * 3;
+            TaggedString desc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
+            GameFont tmp = Text.Font;
+            Text.Font = GameFont.Tiny;
+            float textHeight = Text.CalcHeight(desc.RawText, descWidth);
+            Text.Font = tmp;
+            float bodyHeight = Math.Max(listIconSize, textHeight);
+            return margin + 22f + smallMargin + bodyHeight + margin;
+        }
+
+        private void CalculateScrollHeight(float panelWidth)
+        {
+            float cardWidth = panelWidth - 16f; // account for scrollbar
             _cachedRowHeights.Clear();
             fullScrollHeight = 0;
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
-                BuildingFCDef building = filteredBuildingList[i];
-                TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
-                GameFont tmp = Text.Font;
-                Text.Font = GameFont.Tiny;
-                float textHeight = Text.CalcHeight(buildingdesc.RawText, width);
-                Text.Font = tmp;
-                float rowHeight = Math.Max(64, textHeight) + 27f;
-                _cachedRowHeights.Add(rowHeight);
-                fullScrollHeight += rowHeight;
+                float rowH = CalculateBuildingCardHeight(filteredBuildingList[i], cardWidth);
+                _cachedRowHeights.Add(rowH);
+                fullScrollHeight += rowH;
             }
         }
 
-        private void DrawFilterButtons(Rect inRect)
+        private float CalculateSlotUpgradesHeight(float panelWidth)
+        {
+            if (slotUpgradeList.Count == 0) return 0;
+            float h = collapsibleHeaderHeight;
+            if (slotUpgradesExpanded)
+            {
+                float cardWidth = panelWidth - 16f;
+                foreach (var entry in slotUpgradeList)
+                {
+                    h += CalculateBuildingCardHeight(entry.def, cardWidth) + smallMargin;
+                }
+            }
+            h += margin * 2;
+            return h;
+        }
+
+        private void DrawCollapsibleHeader(float x, float curY, float width, string label, ref bool expanded)
+        {
+            Rect headerRect = new Rect(x, curY, width, collapsibleHeaderHeight);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            GUI.color = new Color(1f, 1f, 1f, 0.7f);
+            string arrow = expanded ? "▼ " : "▶ ";
+            Widgets.Label(new Rect(x + margin, curY, width - margin * 2, collapsibleHeaderHeight), arrow + label);
+            GUI.color = Color.white;
+            if (Widgets.ButtonInvisible(headerRect))
+            {
+                expanded = !expanded;
+                _layoutDirty = true;
+            }
+        }
+
+        #endregion
+
+        #region Filter Buttons
+
+        private void DrawFilterButtons()
         {
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            // Calculate button dimensions
             float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
@@ -149,7 +195,7 @@ namespace FactionColonies
             {
                 int row = i / filterButtonsPerRow;
                 int col = i % filterButtonsPerRow;
-                
+
                 Rect buttonRect = new Rect(
                     FilterArea.x + 5 + (col * buttonWidth),
                     FilterArea.y + (row * (buttonHeight + 5)),
@@ -158,17 +204,14 @@ namespace FactionColonies
                 );
 
                 bool isSelected = currentFilter == i;
-                
-                // Draw button background
+
                 if (isSelected)
                 {
-                    // Draw selected state with blue background
-                    Widgets.DrawBoxSolid(buttonRect, new Color(0.2f, 0.5f, 0.8f, 0.8f));
+                    Widgets.DrawBoxSolid(buttonRect, selectionColor);
                     Widgets.DrawBox(buttonRect, 1);
                 }
                 else
                 {
-                    // Draw normal button background
                     if (Widgets.ButtonInvisible(buttonRect))
                     {
                         currentFilter = i;
@@ -176,18 +219,14 @@ namespace FactionColonies
                     }
                     Widgets.DrawAtlas(buttonRect, Widgets.ButtonBGAtlas);
                 }
-                
-                // Draw text manually with consistent centering
+
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Color textColor = isSelected ? Color.white : Color.white;
-                GUI.color = textColor;
+                GUI.color = Color.white;
                 Widgets.Label(buttonRect, settlement.BuildingsComp?.getLabelForFilter(i) ?? "");
                 GUI.color = Color.white;
-                
-                // Handle click for selected buttons
+
                 if (isSelected && Widgets.ButtonInvisible(buttonRect))
                 {
-                    // Allow clicking selected button to deselect (go back to All)
                     currentFilter = 0;
                     ApplyFilter();
                 }
@@ -197,10 +236,13 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
         }
 
+        #endregion
+
+        #region Filter Logic
+
         private void ApplyFilter()
         {
             filteredBuildingList.Clear();
-
             foreach (var building in buildingList)
             {
                 if (ShouldShowBuilding(building))
@@ -209,172 +251,924 @@ namespace FactionColonies
                 }
             }
 
+            if (selectedBuilding != null && !filteredBuildingList.Contains(selectedBuilding)
+                && !slotUpgradeList.Any(e => e.def == selectedBuilding))
+            {
+                selectedBuilding = null;
+            }
+
             _layoutDirty = true;
         }
 
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
+            if (!string.IsNullOrEmpty(buildingSearchTerm)
+                && building.label.IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
+                return false;
             return settlement.BuildingsComp?.filterBuilding(currentFilter, building) ?? true;
         }
 
+        #endregion
+
+        #region Main DoWindowContents
+
         public override void DoWindowContents(Rect inRect)
         {
-            // Calculate dynamic layout
-            CalculateLayout(inRect);
-            
-            //grab before anchor/font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
-            
-            // Draw filter buttons
-            DrawFilterButtons(inRect);
-            
-            // Dynamic scroll area that adjusts to window size and accounts for filter area
-            var scrollAreaTop = FilterArea.yMax + 5;
-            var outRect = new Rect(0f, scrollAreaTop, inRect.width, inRect.height - scrollAreaTop);
-            var viewRect = new Rect(outRect.x, outRect.y, outRect.width - 16f, fullScrollHeight);
-            
-            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-            var ls = new Listing_Standard();
-            ls.Begin(viewRect);
-            
-            //Buildings
-            for (int i = 0; i < filteredBuildingList.Count; i++)
-            {
-                BuildingFCDef building = filteredBuildingList[i];
-                TaggedString buildingdesc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
-                float thisRowHeight = _cachedRowHeights[i];
-                float descHeight = thisRowHeight - 27f;
-                float buildingDescWidth = ls.ColumnWidth - 80;
 
-                var newBuildingWindow = ls.GetRect(thisRowHeight);
-                var newBuildingIcon = new Rect(newBuildingWindow.x + offset, newBuildingWindow.y + offset, 64, 64);
-                var newBuildingLabel = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 5, buildingDescWidth - 260, 22);
-                var newBuildingDesc = new Rect(newBuildingWindow.x + 80, newBuildingWindow.y + 27, buildingDescWidth, descHeight);
-
-                if (Widgets.ButtonInvisible(newBuildingWindow))
-                {
-                    //If click on building
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-                    if (building == buildingDef)
-                    {
-                        //if the same building
-                        list.Add(new FloatMenuOption("Destroy".Translate(), delegate
-                        {
-                            settlement.deconstructBuilding(buildingSlot);
-                            Find.WindowStack.TryRemove(this);
-                            Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
-                        }));
-                    }
-                    else
-                    {
-                        //if not the same building
-                        list.Add(new FloatMenuOption("Build".Translate(), delegate
-                        {
-                            if (settlement.BuildingsComp?.validConstructBuilding(building, buildingSlot) != true) return;
-                            FCEvent tmpEvt = new FCEvent(true)
-                            {
-                                def = FCEventDefOf.constructBuilding,
-                                tickStarted = Find.TickManager.TicksGame,
-                                source = settlement.Tile,
-                                building = building,
-                                buildingSlot = buildingSlot
-                            };
-
-                            int triggerTime = building.constructionDuration;
-                            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
-                                triggerTime /= 2;
-
-                            tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
-                            tmpEvt.customDescription = "BuildingEventDesc".Translate(
-                                building.LabelCap,
-                                settlement.Name,
-                                (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
-                            tmpEvt.hasCustomDescription = true;
-                            FactionCache.FactionComp.addEvent(tmpEvt);
-
-                            PaymentUtil.paySilver(Convert.ToInt32(building.cost));
-                            Messages.Message(building.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
-                            settlement.BuildingsComp.startConstruction(building, buildingSlot, tmpEvt.timeTillTrigger);
-                            Find.WindowStack.TryRemove(this);
-                            Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
-                        }));
-                    }
-
-                    FloatMenu menu = new FloatMenu(list);
-                    Find.WindowStack.Add(menu);
-                }
-
-                Widgets.DrawMenuSection(newBuildingWindow);
-                Widgets.DrawMenuSection(newBuildingIcon);
-                Widgets.DrawLightHighlight(newBuildingIcon);
-                Widgets.ButtonImage(newBuildingIcon, building.Icon);
-
-                Text.Font = GameFont.Small;
-                string costStr = " " + "Cost".Translate() + ": " + building.cost;
-                string buildTimeStr = " " + "BuildTime".Translate(building.constructionDuration.ToTimeString());
-                Rect costRect = new Rect(newBuildingLabel.xMax, newBuildingLabel.y, 100, newBuildingLabel.height);
-                Rect builtTimeRect = new Rect(costRect.xMax, newBuildingLabel.y, 160, newBuildingLabel.height);
-                Widgets.ButtonTextSubtle(newBuildingLabel, "");
-                Widgets.Label(newBuildingLabel, "  " + building.LabelCap);
-                Widgets.ButtonTextSubtle(costRect, "");
-                Widgets.Label(costRect, costStr);
-                Widgets.ButtonTextSubtle(builtTimeRect, "");
-                Widgets.Label(builtTimeRect, buildTimeStr);
-
-                Text.Font = GameFont.Tiny;
-                Widgets.Label(newBuildingDesc, buildingdesc);
-            }
-
-            ls.End();
-            Widgets.EndScrollView();
-
-            //Top Window - now using dynamic sizing
-            Widgets.DrawMenuSection(TopWindow);
-            Widgets.DrawHighlight(TopWindow);
-            Widgets.DrawMenuSection(TopIcon);
-            Widgets.DrawLightHighlight(TopIcon);
-
-            // Dynamic border that adjusts to window width
-            Widgets.DrawBox(new Rect(0, 0, inRect.width, TopWindow.height));
-            Widgets.ButtonImage(TopIcon, buildingDef.Icon);
-
-            Widgets.ButtonTextSubtle(TopName, "");
+            // Window header
+            Rect headerRect = new Rect(inRect.x, inRect.y, inRect.width, headerHeight);
+            Widgets.DrawHighlight(headerRect);
+            Widgets.DrawHighlight(headerRect);
             Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(TopName.x + 5, TopName.y, TopName.width, TopName.height), buildingDef.LabelCap);
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(headerRect, "Empire_BuildingWindow_Header".Translate(settlement.Name));
 
-            Widgets.DrawMenuSection(new Rect(TopDescription.x - 5, TopDescription.y - 5, TopDescription.width + 10, TopDescription.height));
-            Text.Font = GameFont.Small;
-            Widgets.Label(TopDescription, buildingDesc);
-            
-            //reset anchor/font
+            float bodyTop = headerRect.yMax + margin;
+            float bodyHeight = inRect.height - headerHeight - margin;
+
+            float leftWidth = (inRect.width - panelGap) * leftPanelRatio;
+            float rightWidth = inRect.width - leftWidth - panelGap;
+
+            Rect leftPanel = new Rect(inRect.x, bodyTop, leftWidth, bodyHeight);
+            Rect rightPanel = new Rect(leftPanel.xMax + panelGap, bodyTop, rightWidth, bodyHeight);
+
+            CalculateLayout(leftWidth);
+
+            DrawLeftPanel(leftPanel);
+            DrawRightPanel(rightPanel);
+
+            // Vertical separator
+            Widgets.DrawLineVertical(leftPanel.xMax + (panelGap / 2f), leftPanel.y, leftPanel.height);
+
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
         }
 
+        #endregion
+
+        #region Left Panel
+
+        private void DrawLeftPanel(Rect panel)
+        {
+            // Slot upgrades section (above filters)
+            if (slotUpgradeList.Count > 0)
+            {
+                float upgradeY = panel.y;
+                DrawCollapsibleHeader(panel.x, upgradeY, panel.width,
+                    "Empire_BuildingWindow_SlotUpgrades".Translate(), ref slotUpgradesExpanded);
+                upgradeY += collapsibleHeaderHeight;
+
+                if (slotUpgradesExpanded)
+                {
+                    float cardWidth = panel.width - 16f;
+                    for (int i = 0; i < slotUpgradeList.Count; i++)
+                    {
+                        upgradeY += smallMargin;
+                        BuildingUpgradeEntry entry = slotUpgradeList[i];
+                        float cardHeight = CalculateBuildingCardHeight(entry.def, cardWidth);
+                        Rect cardRect = new Rect(panel.x, upgradeY, cardWidth, cardHeight);
+
+                        bool isSelected = selectedBuilding == entry.def;
+                        Widgets.DrawHighlight(cardRect);
+                        if (isSelected)
+                            Widgets.DrawBoxSolid(cardRect, selectionColor);
+                        else if (i % 2 == 0)
+                            Widgets.DrawHighlight(cardRect);
+                        if (Mouse.IsOver(cardRect))
+                            Widgets.DrawHighlight(cardRect);
+                        if (Widgets.ButtonInvisible(cardRect))
+                        {
+                            if (selectedBuilding != entry.def)
+                            {
+                                selectedBuilding = entry.def;
+                                rightPanelScroll = Vector2.zero;
+                            }
+                        }
+
+                        DrawBuildingCard(cardRect, entry.def);
+                        upgradeY += cardHeight;
+                    }
+                }
+
+                Widgets.DrawLineHorizontal(panel.x, FilterArea.y - margin, panel.width);
+            }
+
+            DrawFilterButtons();
+
+            // Recalculate if filter changed mid-frame
+            if (_layoutDirty)
+            {
+                CalculateLayout(panel.width);
+            }
+
+            // Search bar
+            string prevSearch = buildingSearchTerm;
+            Text.Font = GameFont.Small;
+            buildingSearchTerm = Widgets.TextField(SearchBarArea, buildingSearchTerm);
+            if (buildingSearchTerm != prevSearch)
+                ApplyFilter();
+            if (string.IsNullOrEmpty(buildingSearchTerm))
+            {
+                Color prevColor = GUI.color;
+                GUI.color = Color.gray;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(SearchBarArea.x + 5f, SearchBarArea.y,
+                    SearchBarArea.width - 10f, SearchBarArea.height),
+                    "FCSearchBuildings".Translate());
+                GUI.color = prevColor;
+            }
+
+            float scrollTop = SearchBarArea.yMax + margin;
+            Rect outRect = new Rect(panel.x, scrollTop, panel.width, panel.yMax - scrollTop);
+            float scrollMargin = fullScrollHeight > outRect.height ? 16f : 0f;
+            Rect viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, fullScrollHeight);
+
+            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+            var ls = new Listing_Standard();
+            ls.Begin(viewRect);
+
+            for (int i = 0; i < filteredBuildingList.Count; i++)
+            {
+                DrawBuildingListItem(ls, filteredBuildingList[i], i);
+            }
+
+            ls.End();
+            Widgets.EndScrollView();
+        }
+
+        /// <summary>
+        /// Draws a building card: full-width name row (highlighted, name left, cost right),
+        /// icon below left, description to the right of the icon.
+        /// </summary>
+        private void DrawBuildingCard(Rect row, BuildingFCDef building)
+        {
+            // Full-width name row with cost right-aligned
+            Rect nameRect = new Rect(row.x, row.y + margin, row.width, 22f);
+            Rect nameText = new Rect(nameRect.x + margin, nameRect.y, nameRect.width - (margin * 2), nameRect.height);
+            Widgets.DrawHighlight(nameRect);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(nameText, building.LabelCap);
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(nameText, "Cost".Translate() + ": " + building.cost);
+
+            // Icon below the name row
+            float contentY = nameRect.yMax + smallMargin;
+            Rect iconRect = new Rect(row.x + margin, contentY, listIconSize, listIconSize);
+            Widgets.DrawMenuSection(iconRect);
+            Widgets.DrawLightHighlight(iconRect);
+            Widgets.ButtonImage(iconRect, building.Icon);
+
+            // Description to the right of the icon
+            float descX = iconRect.xMax + margin;
+            float descWidth = row.xMax - descX - margin;
+            TaggedString desc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
+            Rect descRect = new Rect(descX, contentY, descWidth, row.yMax - contentY - margin);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Widgets.Label(descRect, desc);
+        }
+
+        private void DrawBuildingListItem(Listing_Standard ls, BuildingFCDef building, int index)
+        {
+            float thisRowHeight = _cachedRowHeights[index];
+            Rect row = ls.GetRect(thisRowHeight);
+
+            bool isSelected = selectedBuilding == building;
+
+            // Background layers
+            Widgets.DrawHighlight(row);
+            if (isSelected)
+            {
+                Widgets.DrawBoxSolid(row, selectionColor);
+            }
+            else if (index % 2 == 0)
+            {
+                Widgets.DrawHighlight(row);
+            }
+
+            // Hover highlight
+            if (Mouse.IsOver(row))
+            {
+                Widgets.DrawHighlight(row);
+            }
+
+            // Click handler
+            if (Widgets.ButtonInvisible(row))
+            {
+                if (selectedBuilding != building)
+                {
+                    selectedBuilding = building;
+                    rightPanelScroll = Vector2.zero;
+                }
+            }
+
+            DrawBuildingCard(row, building);
+        }
+
+        #endregion
+
+        #region Right Panel
+
+        private void DrawRightPanel(Rect panel)
+        {
+            // Section A: Current Slot (dynamic height)
+            float slotHeight = CalculateCurrentSlotHeight(panel.width);
+            Rect currentSlotRect = new Rect(panel.x, panel.y, panel.width, slotHeight);
+            DrawCurrentSlot(currentSlotRect);
+
+            float nextY = currentSlotRect.yMax;
+
+            // Demolish button (only for actual buildings, not Empty or Construction)
+            bool canDemolish = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction;
+            if (canDemolish)
+            {
+                nextY += smallMargin;
+                Rect demolishRect = new Rect(
+                    panel.x + (panel.width - actionButtonWidth) / 2f,
+                    nextY,
+                    actionButtonWidth,
+                    actionButtonHeight
+                );
+                bool isRequired = settlement.BuildingsComp?.IsBuildingRequiredByOther(buildingDef) == true;
+                if (isRequired)
+                {
+                    GUI.color = new Color(1f, 1f, 1f, 0.4f);
+                    Widgets.ButtonText(demolishRect, "FCDemolish".Translate());
+                    GUI.color = Color.white;
+                    List<BuildingFCDef> dependents = settlement.BuildingsComp.GetBuildingsDependingOn(buildingDef);
+                    string depNames = string.Join(", ", dependents.Select(d => d.LabelCap.ToString()));
+                    TooltipHandler.TipRegion(demolishRect, "Empire_BuildingWindow_CannotDemolishRequired".Translate(depNames));
+                }
+                else if (Widgets.ButtonText(demolishRect, "FCDemolish".Translate()))
+                {
+                    int demolishCost = (int)Math.Round(buildingDef.cost * 0.5);
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCDemolishConfirmation".Translate(buildingDef.LabelCap, demolishCost),
+                        delegate
+                        {
+                            if (PaymentUtil.getSilver() < demolishCost)
+                            {
+                                Messages.Message("FCNotEnoughSilverDemolish".Translate(), MessageTypeDefOf.RejectInput);
+                                return;
+                            }
+                            PaymentUtil.paySilver(demolishCost);
+                            settlement.deconstructBuilding(buildingSlot);
+                            Messages.Message("FCBuildingDemolished".Translate(buildingDef.LabelCap), MessageTypeDefOf.PositiveEvent);
+                            Find.WindowStack.TryRemove(this);
+                            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
+                        }
+                    ));
+                }
+                nextY = demolishRect.yMax;
+            }
+
+            // Divider
+            float dividerY = nextY + margin;
+            Widgets.DrawLineHorizontal(panel.x, dividerY, panel.width);
+
+            // Section B: Selected Building Detail (scrollable)
+            float detailTop = dividerY + margin;
+            Rect detailRect = new Rect(panel.x, detailTop, panel.width, panel.yMax - detailTop);
+            DrawSelectedBuildingDetail(detailRect);
+        }
+
+        private float CalculateCurrentSlotHeight(float panelWidth)
+        {
+            float inner = margin * 2;
+            float contentWidth = panelWidth - inner * 2;
+            // label(18) + smallMargin + max(icon, name(30) + smallMargin + descHeight) + bottom padding
+            float nameWidth = contentWidth - detailIconSize - margin;
+            GameFont tmp = Text.Font;
+            Text.Font = GameFont.Tiny;
+            float descHeight = Text.CalcHeight(buildingDesc.RawText, nameWidth);
+            Text.Font = tmp;
+            float rightSide = 30f + smallMargin + descHeight;
+            float bodyHeight = Math.Max(detailIconSize, rightSide);
+            return margin + 18f + smallMargin + bodyHeight + inner;
+        }
+
+        private void DrawCurrentSlot(Rect rect)
+        {
+            Widgets.DrawMenuSection(rect);
+            Widgets.DrawHighlight(rect);
+
+            float inner = margin * 2;
+            float contentX = rect.x + inner;
+            float contentWidth = rect.width - inner * 2;
+
+            // Section label
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperLeft;
+            string slotLabel = (buildingDef == BuildingFCDefOf.Empty)
+                ? "Empire_BuildingWindow_EmptySlot".Translate()
+                : "Empire_BuildingWindow_CurrentBuilding".Translate();
+            Rect labelRect = new Rect(contentX, rect.y + margin, contentWidth, 18f);
+            GUI.color = new Color(1f, 1f, 1f, 0.7f);
+            Widgets.Label(labelRect, slotLabel);
+            GUI.color = Color.white;
+
+            // Icon
+            float iconY = labelRect.yMax + smallMargin;
+            Rect iconRect = new Rect(contentX, iconY, detailIconSize, detailIconSize);
+            Widgets.DrawMenuSection(iconRect);
+            Widgets.DrawLightHighlight(iconRect);
+            Widgets.ButtonImage(iconRect, buildingDef.Icon);
+
+            // Name
+            float nameX = iconRect.xMax + margin;
+            float nameWidth = rect.xMax - inner - nameX;
+            Rect nameRect = new Rect(nameX, iconY, nameWidth, 30f);
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(nameRect, buildingDef.LabelCap);
+
+            // Description (compact)
+            Rect descRect = new Rect(nameX, nameRect.yMax + smallMargin, nameWidth, rect.yMax - nameRect.yMax - smallMargin - inner);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Widgets.Label(descRect, buildingDesc);
+        }
+
+        private void DrawSelectedBuildingDetail(Rect rect)
+        {
+            if (selectedBuilding == null)
+            {
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                GUI.color = new Color(1f, 1f, 1f, 0.5f);
+                Widgets.Label(rect, "Empire_BuildingWindow_SelectBuilding".Translate());
+                GUI.color = Color.white;
+                return;
+            }
+
+            // Calculate total content height for scrolling
+            float contentHeight = CalculateDetailContentHeight(rect.width - 16f);
+
+            // Reserve space for the button at the bottom (outside scroll)
+            Rect buttonArea = new Rect(rect.x, rect.yMax - actionButtonHeight - margin, rect.width, actionButtonHeight + margin);
+            Rect scrollOutRect = new Rect(rect.x, rect.y, rect.width, rect.height - buttonArea.height);
+            float scrollMargin = contentHeight > scrollOutRect.height ? 16f : 0f;
+            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, contentHeight);
+
+            Widgets.BeginScrollView(scrollOutRect, ref rightPanelScroll, scrollViewRect);
+
+            float curY = scrollViewRect.y;
+            float w = scrollViewRect.width;
+
+            // C1: Building name
+            Rect nameRect = new Rect(scrollViewRect.x, curY, w, 30f);
+            Rect nameText = new Rect(nameRect.x + margin, nameRect.y, nameRect.width - (margin * 2), nameRect.height);
+            Widgets.DrawHighlight(nameRect);
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(nameText, selectedBuilding.LabelCap);
+            curY = nameRect.yMax + margin;
+
+            // C2: Icon + stats
+            Rect iconRect = new Rect(scrollViewRect.x, curY, detailIconSize, detailIconSize);
+            Widgets.DrawMenuSection(iconRect);
+            Widgets.DrawLightHighlight(iconRect);
+            Widgets.ButtonImage(iconRect, selectedBuilding.Icon);
+
+            float statsX = iconRect.xMax + margin;
+            float statsW = w - detailIconSize - margin;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+
+            Rect costRect = new Rect(statsX, curY, statsW, 22f);
+            Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
+
+            int buildTime = selectedBuilding.constructionDuration;
+            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
+                buildTime /= 2;
+            Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
+            Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
+
+            float statsBottom = timeRect.yMax;
+
+            int upkeep = settlement.BuildingsComp?.getBuildingUpkeep(selectedBuilding) ?? 0;
+            if (upkeep > 0)
+            {
+                Rect upkeepRect = new Rect(statsX, timeRect.yMax + smallMargin, statsW, 22f);
+                Widgets.Label(upkeepRect, "FCBuildingUpkeep".Translate(upkeep.ToString()));
+                statsBottom = upkeepRect.yMax;
+            }
+
+            curY = Math.Max(iconRect.yMax, statsBottom) + margin;
+
+            // C3: Description (def text only)
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+            float descHeight = Text.CalcHeight(selectedBuilding.desc, w);
+            Rect descRect = new Rect(scrollViewRect.x, curY, w, descHeight);
+            Widgets.Label(descRect, selectedBuilding.desc);
+            curY = descRect.yMax + margin;
+
+            // Centered width for Modifiers + Settlement Impact
+            float impactWidth = w * 0.8f;
+            float impactMargin = w - impactWidth;
+
+            // C3.5: Modifiers
+            curY = DrawModifiers(scrollViewRect.x + (impactMargin / 2f), curY, impactWidth);
+
+            // C4: Settlement Impact
+            curY = DrawSettlementImpact(scrollViewRect.x + (impactMargin / 2f), curY, impactWidth);
+
+            // C5: Upgrades
+            curY = DrawUpgrades(scrollViewRect.x, curY, w);
+
+            // C6: Required By
+            curY = DrawRequiredBy(scrollViewRect.x, curY, w);
+
+            Widgets.EndScrollView();
+
+            // C7: Build/Destroy button
+            DrawBuildButton(buttonArea);
+        }
+
+        private float CalculateDetailContentHeight(float width)
+        {
+            if (selectedBuilding == null) return 0;
+
+            float h = 0;
+            // Name
+            h += 30f + margin;
+            // Icon + stats
+            h += detailIconSize + margin;
+            // Description
+            GameFont tmp = Text.Font;
+            Text.Font = GameFont.Small;
+            h += Text.CalcHeight(selectedBuilding.desc, width) + margin;
+            Text.Font = tmp;
+            // Modifiers
+            h += CalculateModifiersHeight(width * 0.8f);
+            // Settlement impact
+            h += CalculateImpactHeight();
+            // Upgrades
+            h += CalculateUpgradesHeight(width);
+            // Required By
+            h += CalculateRequiredByHeight(width);
+
+            return h;
+        }
+
+        #endregion
+
+        #region Modifiers
+
+        private float DrawModifiers(float x, float curY, float width)
+        {
+            TaggedString modifiers = selectedBuilding.AttributeDesc;
+            if (modifiers.RawText.NullOrEmpty()) return curY;
+
+            curY += smallMargin;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect headerRect = new Rect(x, curY, width, 22f);
+            Rect headerText = new Rect(headerRect.x + smallMargin, headerRect.y,
+                headerRect.width - (smallMargin * 2), headerRect.height);
+            Widgets.DrawHighlight(headerRect);
+            GUI.color = new Color(1f, 1f, 1f, 0.7f);
+            Widgets.Label(headerText, "Empire_BuildingWindow_Modifiers".Translate());
+            GUI.color = Color.white;
+            curY = headerRect.yMax + smallMargin;
+
+            Text.Anchor = TextAnchor.UpperLeft;
+            float textHeight = Text.CalcHeight(modifiers.RawText, width);
+            Rect textRect = new Rect(x, curY, width, textHeight);
+            Widgets.Label(textRect, modifiers);
+            curY = textRect.yMax + margin;
+
+            return curY;
+        }
+
+        private float CalculateModifiersHeight(float width)
+        {
+            TaggedString modifiers = selectedBuilding.AttributeDesc;
+            if (modifiers.RawText.NullOrEmpty()) return 0;
+            GameFont tmp = Text.Font;
+            Text.Font = GameFont.Small;
+            float h = smallMargin + 22f + smallMargin
+                + Text.CalcHeight(modifiers.RawText, width) + margin;
+            Text.Font = tmp;
+            return h;
+        }
+
+        #endregion
+
+        #region Settlement Impact
+
+        private float DrawSettlementImpact(float x, float curY, float width)
+        {
+            if (selectedBuilding.traits == null || selectedBuilding.traits.Count == 0) return curY;
+
+            // Gather all affected resources from both old and new building
+            HashSet<ResourceTypeDef> affectedResources = new HashSet<ResourceTypeDef>();
+            if (selectedBuilding.traits != null)
+            {
+                foreach (var trait in selectedBuilding.traits)
+                    foreach (var rb in trait.resourceBonuses)
+                        if (rb.resourceDef != null)
+                            affectedResources.Add(rb.resourceDef);
+            }
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
+            if (isReplacing)
+            {
+                foreach (var trait in buildingDef.traits)
+                    foreach (var rb in trait.resourceBonuses)
+                        if (rb.resourceDef != null)
+                            affectedResources.Add(rb.resourceDef);
+            }
+
+            if (affectedResources.Count == 0) return curY;
+
+            // Section header
+            //Widgets.DrawLineHorizontal(x, curY, width);
+            curY += smallMargin;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect headerRect = new Rect(x, curY, width, 22f);
+            Rect headerText = new Rect(headerRect.x + smallMargin, headerRect.y, headerRect.width - (smallMargin * 2), headerRect.height);
+            Widgets.DrawHighlight(headerRect);
+            GUI.color = new Color(1f, 1f, 1f, 0.7f);
+            Widgets.Label(headerText, "Empire_BuildingWindow_SettlementImpact".Translate());
+            GUI.color = Color.white;
+            curY = headerRect.yMax + smallMargin;
+
+            // Draw each affected resource
+            foreach (ResourceTypeDef resDef in affectedResources)
+            {
+                ResourceFC resource = settlement.getResource(resDef);
+                if (resource == null) continue;
+
+                double currentProd = resource.production;
+                double projectedBase = resource.productionBase;
+                double projectedMult = resource.productionMult;
+
+                // Subtract old building contributions
+                if (isReplacing)
+                {
+                    foreach (var trait in buildingDef.traits)
+                    {
+                        ResourceBonuses rb = trait.getTraitResource(resDef);
+                        if (rb != null)
+                        {
+                            if (rb.additive != 0) projectedBase -= rb.additive;
+                            if (rb.multiplier != 1 && rb.multiplier != 0) projectedMult /= rb.multiplier;
+                        }
+                    }
+                }
+
+                // Add new building contributions
+                foreach (var trait in selectedBuilding.traits)
+                {
+                    ResourceBonuses rb = trait.getTraitResource(resDef);
+                    if (rb != null)
+                    {
+                        if (rb.additive != 0) projectedBase += rb.additive;
+                        if (rb.multiplier != 1) projectedMult *= rb.multiplier;
+                    }
+                }
+
+                double projectedProd = projectedBase * projectedMult;
+                double delta = projectedProd - currentProd;
+
+                // Draw row: [icon] Label: current → projected (delta)
+                Rect rowRect = new Rect(x, curY, width, 22f);
+
+                // Resource icon
+                Rect iconRect = new Rect(x, curY, 20f, 20f);
+                GUI.DrawTexture(iconRect, resource.getIcon);
+
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+
+                string currentStr = currentProd.ToString("F1");
+                string projectedStr = projectedProd.ToString("F1");
+                string deltaStr = (delta >= 0 ? "+" : "") + delta.ToString("F1");
+                Color deltaColor = delta >= 0 ? Color.green : Color.red;
+
+                Rect textRect = new Rect(iconRect.xMax + smallMargin, curY, width - 20f - smallMargin, 22f);
+                string label = resource.label + ": " + currentStr + " → " + projectedStr + " (";
+                Widgets.Label(textRect, label);
+
+                // Draw delta with color
+                float labelWidth = Text.CalcSize(label).x;
+                Rect deltaRect = new Rect(textRect.x + labelWidth, curY, Text.CalcSize(deltaStr).x, 22f);
+                GUI.color = deltaColor;
+                Widgets.Label(deltaRect, deltaStr);
+                GUI.color = Color.white;
+
+                Rect closeParenRect = new Rect(deltaRect.xMax, curY, 20f, 22f);
+                Widgets.Label(closeParenRect, ")");
+
+                curY = rowRect.yMax + smallMargin;
+            }
+
+            curY += margin;
+            return curY;
+        }
+
+        private float CalculateImpactHeight()
+        {
+            if (selectedBuilding?.traits == null || selectedBuilding.traits.Count == 0) return 0;
+
+            HashSet<ResourceTypeDef> affected = new HashSet<ResourceTypeDef>();
+            foreach (var trait in selectedBuilding.traits)
+                foreach (var rb in trait.resourceBonuses)
+                    if (rb.resourceDef != null)
+                        affected.Add(rb.resourceDef);
+
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
+            if (isReplacing)
+                foreach (var trait in buildingDef.traits)
+                    foreach (var rb in trait.resourceBonuses)
+                        if (rb.resourceDef != null)
+                            affected.Add(rb.resourceDef);
+
+            if (affected.Count == 0) return 0;
+
+            // header line + header text + per-resource rows + bottom margin
+            return smallMargin + 22f + smallMargin + affected.Count * (22f + smallMargin) + margin;
+        }
+
+        #endregion
+
+        #region Upgrades
+
+        private float DrawUpgrades(float x, float curY, float width)
+        {
+            if (!FactionCache.UpgradeTrees.TryGetValue(selectedBuilding, out List<BuildingUpgradeEntry> tree) || tree.Count == 0)
+                return curY;
+
+            List<BuildingUpgradeEntry> filtered = tree.Where(
+                e => e.def.CanBeBuiltForSettlementType(settlement.settlementDef)).ToList();
+            if (filtered.Count == 0) return curY;
+
+            Widgets.DrawLineHorizontal(x, curY, width);
+            curY += smallMargin;
+            DrawCollapsibleHeader(x, curY, width,
+                "Empire_BuildingWindow_Upgrades".Translate(), ref upgradesExpanded);
+            curY += collapsibleHeaderHeight + smallMargin;
+
+            if (!upgradesExpanded) return curY + margin;
+
+            for (int i = 0; i < filtered.Count; i++)
+            {
+                BuildingUpgradeEntry entry = filtered[i];
+                float indent = entry.depth * indentWidth;
+                float cardWidth = width - indent;
+
+                // "Requires: parent" label for non-direct upgrades
+                if (entry.depth > 0)
+                {
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    GUI.color = new Color(1f, 1f, 1f, 0.5f);
+                    Rect reqRect = new Rect(x + indent + margin, curY, cardWidth, 18f);
+                    Widgets.Label(reqRect, "Empire_BuildingWindow_Requires".Translate(entry.parent.LabelCap));
+                    GUI.color = Color.white;
+                    curY += 18f;
+                }
+
+                float cardHeight = CalculateBuildingCardHeight(entry.def, cardWidth);
+                Rect cardRect = new Rect(x + indent, curY, cardWidth, cardHeight);
+
+                bool isSelected = selectedBuilding == entry.def;
+                Widgets.DrawHighlight(cardRect);
+                if (isSelected)
+                    Widgets.DrawBoxSolid(cardRect, selectionColor);
+                else if (i % 2 == 0)
+                    Widgets.DrawHighlight(cardRect);
+
+                DrawBuildingCard(cardRect, entry.def);
+                curY = cardRect.yMax + smallMargin;
+            }
+
+            curY += margin;
+            return curY;
+        }
+
+        private float CalculateUpgradesHeight(float width)
+        {
+            if (selectedBuilding == null) return 0;
+            if (!FactionCache.UpgradeTrees.TryGetValue(selectedBuilding, out List<BuildingUpgradeEntry> tree) || tree.Count == 0)
+                return 0;
+
+            List<BuildingUpgradeEntry> filtered = tree.Where(
+                e => e.def.CanBeBuiltForSettlementType(settlement.settlementDef)).ToList();
+            if (filtered.Count == 0) return 0;
+
+            float h = smallMargin + collapsibleHeaderHeight + smallMargin;
+
+            if (!upgradesExpanded) return h + margin;
+
+            for (int i = 0; i < filtered.Count; i++)
+            {
+                BuildingUpgradeEntry entry = filtered[i];
+                float indent = entry.depth * indentWidth;
+                float cardWidth = width - indent;
+                if (entry.depth > 0) h += 18f;
+                h += CalculateBuildingCardHeight(entry.def, cardWidth) + smallMargin;
+            }
+
+            h += margin;
+            return h;
+        }
+
+        #endregion
+
+        #region Required By
+
+        private float DrawRequiredBy(float x, float curY, float width)
+        {
+            if (!FactionCache.RequiredByMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
+                return curY;
+
+            Widgets.DrawLineHorizontal(x, curY, width);
+            curY += smallMargin;
+            DrawCollapsibleHeader(x, curY, width,
+                "Empire_BuildingWindow_RequiredBy".Translate(), ref requiredByExpanded);
+            curY += collapsibleHeaderHeight + smallMargin;
+
+            if (!requiredByExpanded) return curY + margin;
+
+            for (int i = 0; i < requiredBy.Count; i++)
+            {
+                BuildingFCDef building = requiredBy[i];
+                bool canBuild = building.techLevel <= factionfc.techLevel
+                    && building.CanBeBuiltForSettlementType(settlement.settlementDef)
+                    && building.RequiredModsLoaded
+                    && (building.applicableBiomes.Count == 0
+                        || building.applicableBiomes.Contains(settlement.biome));
+
+                float cardHeight = CalculateBuildingCardHeight(building, width);
+                Rect cardRect = new Rect(x, curY, width, cardHeight);
+
+                if (!canBuild)
+                    GUI.color = new Color(1f, 1f, 1f, 0.4f);
+
+                Widgets.DrawHighlight(cardRect);
+                if (i % 2 == 0) Widgets.DrawHighlight(cardRect);
+
+                DrawBuildingCard(cardRect, building);
+                GUI.color = Color.white;
+                curY = cardRect.yMax;
+
+                // Prerequisite status (checkmark/cross)
+                if (building.requiredBuildings.Count > 0)
+                {
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    foreach (BuildingFCDef req in building.requiredBuildings)
+                    {
+                        bool has = settlement.BuildingsComp?.hasBuilding(req) == true;
+                        Rect statusRect = new Rect(x + margin * 2, curY, width - margin * 4, 18f);
+                        GUI.color = has ? Color.green : Color.red;
+                        string checkmark = has ? "✓ " : "✗ ";
+                        Widgets.Label(statusRect, checkmark + req.LabelCap);
+                        GUI.color = Color.white;
+                        curY += 18f;
+                    }
+                }
+
+                curY += smallMargin;
+            }
+
+            curY += margin;
+            return curY;
+        }
+
+        private float CalculateRequiredByHeight(float width)
+        {
+            if (selectedBuilding == null) return 0;
+            if (!FactionCache.RequiredByMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
+                return 0;
+
+            float h = smallMargin + collapsibleHeaderHeight + smallMargin;
+
+            if (!requiredByExpanded) return h + margin;
+
+            for (int i = 0; i < requiredBy.Count; i++)
+            {
+                h += CalculateBuildingCardHeight(requiredBy[i], width);
+                if (requiredBy[i].requiredBuildings.Count > 0)
+                    h += requiredBy[i].requiredBuildings.Count * 18f;
+                h += smallMargin;
+            }
+
+            h += margin;
+            return h;
+        }
+
+        #endregion
+
+        #region Build / Destroy Actions
+
+        private void DrawBuildButton(Rect area)
+        {
+            Rect buttonRect = new Rect(
+                area.x + (area.width - actionButtonWidth) / 2f,
+                area.y + margin,
+                actionButtonWidth,
+                actionButtonHeight
+            );
+
+            bool isSameBuilding = selectedBuilding == buildingDef;
+
+            if (isSameBuilding)
+            {
+                if (Widgets.ButtonText(buttonRect, "Destroy".Translate()))
+                {
+                    ExecuteDestroy();
+                }
+            }
+            else
+            {
+                if (Widgets.ButtonText(buttonRect, "Build".Translate()))
+                {
+                    ExecuteBuild();
+                }
+            }
+        }
+
+        private void ExecuteDestroy()
+        {
+            settlement.deconstructBuilding(buildingSlot);
+            Find.WindowStack.TryRemove(this);
+            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
+        }
+
+        private void ExecuteBuild()
+        {
+            if (selectedBuilding == null) return;
+            if (settlement.BuildingsComp?.validConstructBuilding(selectedBuilding, buildingSlot) != true) return;
+
+            FCEvent tmpEvt = new FCEvent(true)
+            {
+                def = FCEventDefOf.constructBuilding,
+                tickStarted = Find.TickManager.TicksGame,
+                source = settlement.Tile,
+                building = selectedBuilding,
+                buildingSlot = buildingSlot
+            };
+
+            int triggerTime = selectedBuilding.constructionDuration;
+            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
+                triggerTime /= 2;
+
+            tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
+            tmpEvt.customDescription = "BuildingEventDesc".Translate(
+                selectedBuilding.LabelCap,
+                settlement.Name,
+                (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+            tmpEvt.hasCustomDescription = true;
+            FactionCache.FactionComp.addEvent(tmpEvt);
+
+            PaymentUtil.paySilver(Convert.ToInt32(selectedBuilding.cost));
+            Messages.Message(selectedBuilding.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
+            settlement.BuildingsComp.startConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
+            Find.WindowStack.TryRemove(this);
+            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
+        }
+
+        #endregion
+
+        #region Constructor
+
         public FCBuildingWindow(WorldSettlementFC settlement, int buildingSlot)
         {
             factionfc = FactionCache.FactionComp;
+            this.settlement = settlement;
+            this.buildingSlot = buildingSlot;
+            buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
+
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
-            
+
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
             {
                 if(building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {
-                    //If not a building that shouldn't appear on the list
                     if (building.techLevel <= factionfc.techLevel)
                     {
-                        //If building techlevel requirement is met
-                        if (building.applicableBiomes.Count == 0 || building.applicableBiomes.Any() 
+                        if (building.applicableBiomes.Count == 0 || building.applicableBiomes.Any()
                             && building.applicableBiomes.Contains(settlement.biome)){
-                            //If building meets the biome requirements
 
-                            // Check settlement type restrictions
                             if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
                             {
+                                if (building.requiredBuildings.Count > 0)
+                                {
+                                    bool hasAllRequired = building.requiredBuildings.TrueForAll(
+                                        req => settlement.BuildingsComp.hasBuilding(req));
+                                    bool slotHasRequired = buildingDef != null
+                                        && building.requiredBuildings.Contains(buildingDef);
+                                    if (!hasAllRequired || slotHasRequired) continue;
+                                }
                                 buildingList.Add(building);
                             }
                         }
@@ -383,20 +1177,28 @@ namespace FactionColonies
             }
 
             buildingList.Sort(CompareUtil.CompareBuildingDef);
-
-            // Initialize filtered list with all buildings
             filteredBuildingList.AddRange(buildingList);
+
+            // Populate slot upgrade list
+            if (buildingDef != null && buildingDef != BuildingFCDefOf.Empty
+                && buildingDef != BuildingFCDefOf.Construction)
+            {
+                if (FactionCache.UpgradeTrees.TryGetValue(buildingDef, out List<BuildingUpgradeEntry> tree))
+                {
+                    foreach (var entry in tree)
+                    {
+                        if (entry.depth == 0 && entry.def.CanBeBuiltForSettlementType(settlement.settlementDef))
+                            slotUpgradeList.Add(entry);
+                    }
+                }
+            }
 
             forcePause = false;
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;
-            resizeable = true;  // Enable window resizing
+            resizeable = true;
 
-            this.settlement = settlement;
-            this.buildingSlot = buildingSlot;
-            buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
-            /* If the buildingDef is "Construction", then find the building that's being constructed and list it in the description. */
             if (buildingDef == BuildingFCDefOf.Construction && settlement.BuildingsComp != null)
             {
                 buildingDesc = "Empire_BuildingWindow_ConstructionDesc".Translate(settlement.BuildingsComp.Buildings[buildingSlot].underConstructionDef.label);
@@ -408,7 +1210,9 @@ namespace FactionColonies
 
             filterSize = settlement.BuildingsComp?.getFilterSize() ?? 0;
             filterRows = (int)Math.Ceiling((double)filterSize / (double)filterButtonsPerRow);
-            fullScrollHeight = filteredBuildingList.Count * rowHeight;
+            fullScrollHeight = filteredBuildingList.Count * 90f;
         }
+
+        #endregion
     }
 }

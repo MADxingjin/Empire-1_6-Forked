@@ -1145,55 +1145,7 @@ namespace FactionColonies
                     UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
-                        // Check if this is an actual built building (not Empty or Construction)
-                        if (building.defName != "Empty" && building.defName != "Construction")
-                        {
-                            // Show demolish menu for built buildings
-                            int demolishCost = (int)Math.Round(building.cost * 0.5);
-                            int buildingSlot = i;
-
-                            List<FloatMenuOption> list = new List<FloatMenuOption>
-                            {
-                                new FloatMenuOption("FCDemolish".Translate() + " (" + "Cost".Translate() + ": " + demolishCost + " " + "Silver".Translate() + ")", delegate
-                                {
-                                    // Show confirmation dialog
-                                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                                        "FCDemolishConfirmation".Translate(building.LabelCap, demolishCost),
-                                        delegate
-                                        {
-                                            // Check if player has enough silver
-                                            if (PaymentUtil.getSilver() < demolishCost)
-                                            {
-                                                Messages.Message("FCNotEnoughSilverDemolish".Translate(), MessageTypeDefOf.RejectInput);
-                                                return;
-                                            }
-                                            
-                                            // Pay the demolition cost
-                                            PaymentUtil.paySilver(demolishCost);
-                                            
-                                            // Deconstruct the building
-                                            settlement.deconstructBuilding(buildingSlot);
-                                            
-                                            // Update the window
-                                            windowUpdateFc();
-
-                                            Messages.Message("FCBuildingDemolished".Translate(building.LabelCap), MessageTypeDefOf.PositiveEvent);
-                                        }
-                                    ));
-                                }),
-                                new FloatMenuOption("FCChangeBuildingButton".Translate(), delegate
-                                {
-                                    Find.WindowStack.Add(new FCBuildingWindow(settlement, buildingSlot));
-                                })
-                            };
-
-                            Find.WindowStack.Add(new FloatMenu(list));
-                        }
-                        else
-                        {
-                            // Empty or Construction slot - open building window to build
-                            Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
-                        }
+                        Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
                     }
                 }
                 else

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>testWorkshop</defName>
+		<label>Test Workshop</label>
+		<desc>A basic workshop for testing the building upgrades system.</desc>
+		<cost>500</cost>
+		<constructionDuration>60000</constructionDuration>
+		<traits>
+			<li>testWorkshop</li>
+		</traits>
+		<upkeep>50</upkeep>
+		<iconPath>GUI/Buildings/FirearmsFactory</iconPath>
+		<upgrades>
+			<li>testWorkshopAdvanced</li>
+		</upgrades>
+	</FactionColonies.BuildingFCDef>
+
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>testWorkshopAdvanced</defName>
+		<label>Advanced Test Workshop</label>
+		<desc>An upgraded workshop with improved equipment and better output.</desc>
+		<cost>1500</cost>
+		<constructionDuration>120000</constructionDuration>
+		<traits>
+			<li>testWorkshopAdvanced</li>
+		</traits>
+		<upkeep>150</upkeep>
+		<iconPath>GUI/Buildings/FirearmsFactory</iconPath>
+		<baseBuilding>false</baseBuilding>
+		<upgrades>
+			<li>testWorkshopElite</li>
+		</upgrades>
+	</FactionColonies.BuildingFCDef>
+
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>testWorkshopElite</defName>
+		<label>Elite Test Workshop</label>
+		<desc>A top-tier workshop with cutting edge machinery and a research wing.</desc>
+		<cost>3000</cost>
+		<constructionDuration>240000</constructionDuration>
+		<traits>
+			<li>testWorkshopElite</li>
+		</traits>
+		<upkeep>300</upkeep>
+		<iconPath>GUI/Buildings/FirearmsFactory</iconPath>
+		<baseBuilding>false</baseBuilding>
+	</FactionColonies.BuildingFCDef>
+
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
+		<defName>testResearchLab</defName>
+		<label>Test Research Lab</label>
+		<desc>A research lab that can only be built if a Test Workshop exists in the settlement.</desc>
+		<cost>1000</cost>
+		<constructionDuration>90000</constructionDuration>
+		<traits>
+			<li>testResearchLab</li>
+		</traits>
+		<upkeep>100</upkeep>
+		<iconPath>GUI/Buildings/Library</iconPath>
+		<requiredBuildings>
+			<li>testWorkshop</li>
+		</requiredBuildings>
+	</FactionColonies.BuildingFCDef>
+
+</Defs>

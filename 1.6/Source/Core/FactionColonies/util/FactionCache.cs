@@ -37,6 +37,8 @@ namespace FactionColonies
         private static Dictionary<string, bool> _cachedCustomXenotypeViolenceDict = null;
         private static List<FCPolicyDef> _cachedFCPolicyDefs = null;
         private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
+        private static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> _cachedUpgradeTrees = null;
+        private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
         // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
         private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
         private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
@@ -412,6 +414,66 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// For each building, a flattened list of all upgrades reachable through the upgrade tree.
+        /// </summary>
+        public static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> UpgradeTrees
+        {
+            get
+            {
+                if (_cachedUpgradeTrees == null)
+                {
+                    _cachedUpgradeTrees = new Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>>();
+                    foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+                    {
+                        if (building.upgrades == null || building.upgrades.Count == 0) continue;
+                        List<BuildingUpgradeEntry> tree = new List<BuildingUpgradeEntry>();
+                        CollectUpgradeTree(building, 0, null, tree);
+                        _cachedUpgradeTrees[building] = tree;
+                    }
+                }
+                return _cachedUpgradeTrees;
+            }
+        }
+
+        private static void CollectUpgradeTree(BuildingFCDef building, int depth, BuildingFCDef parent, List<BuildingUpgradeEntry> result)
+        {
+            if (building.upgrades == null) return;
+            foreach (BuildingFCDef upgrade in building.upgrades)
+            {
+                result.Add(new BuildingUpgradeEntry { def = upgrade, depth = depth, parent = parent ?? building });
+                CollectUpgradeTree(upgrade, depth + 1, upgrade, result);
+            }
+        }
+
+        /// <summary>
+        /// Reverse lookup: for each building, all buildings that list it in their requiredBuildings.
+        /// </summary>
+        public static Dictionary<BuildingFCDef, List<BuildingFCDef>> RequiredByMap
+        {
+            get
+            {
+                if (_cachedRequiredByMap == null)
+                {
+                    _cachedRequiredByMap = new Dictionary<BuildingFCDef, List<BuildingFCDef>>();
+                    foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+                    {
+                        if (building.requiredBuildings == null) continue;
+                        foreach (BuildingFCDef req in building.requiredBuildings)
+                        {
+                            if (!_cachedRequiredByMap.TryGetValue(req, out List<BuildingFCDef> list))
+                            {
+                                list = new List<BuildingFCDef>();
+                                _cachedRequiredByMap[req] = list;
+                            }
+                            list.Add(building);
+                        }
+                    }
+                }
+                return _cachedRequiredByMap;
+            }
+        }
+
         public static void InvalidateCache()
         {
             LogUtil.Message("Invalidating FactionCache...");
@@ -430,7 +492,8 @@ namespace FactionColonies
             _cachedXenotypeViolenceDict = null;
             _cachedFCPolicyDefs = null;
             _cachedFCPolicyDescs = null;
-
+            _cachedUpgradeTrees = null;
+            _cachedRequiredByMap = null;
 
             _cachedTechLevelBarrierUltra = null;
             _cachedTechLevelBarrierSpacer = null;

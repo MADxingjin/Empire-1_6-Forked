@@ -86,6 +86,34 @@ namespace FactionColonies
             }
             return false;
         }
+        /// <summary>
+        /// Returns true if any currently-built building in this settlement
+        /// lists the given building in its requiredBuildings.
+        /// </summary>
+        public bool IsBuildingRequiredByOther(BuildingFCDef building)
+        {
+            foreach (BuildingFC bfc in buildings)
+            {
+                if (bfc.def == BuildingFCDefOf.Empty || bfc.def == BuildingFCDefOf.Construction) continue;
+                if (bfc.def.requiredBuildings != null && bfc.def.requiredBuildings.Contains(building))
+                    return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns all currently-built buildings that directly require the given building.
+        /// </summary>
+        public List<BuildingFCDef> GetBuildingsDependingOn(BuildingFCDef building)
+        {
+            List<BuildingFCDef> result = new List<BuildingFCDef>();
+            foreach (BuildingFC bfc in buildings)
+            {
+                if (bfc.def == BuildingFCDefOf.Empty || bfc.def == BuildingFCDefOf.Construction) continue;
+                if (bfc.def.requiredBuildings != null && bfc.def.requiredBuildings.Contains(building))
+                    result.Add(bfc.def);
+            }
+            return result;
+        }
         public BuildingFCDef getBuildingInSlot(int buildingSlot)
         {
             if (buildingSlot >= buildings.Count)

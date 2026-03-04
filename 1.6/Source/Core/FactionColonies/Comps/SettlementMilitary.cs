@@ -651,6 +651,8 @@ namespace FactionColonies
 
             if (canDestroyBuildings && WorldSettlement?.BuildingsComp != null)
             {
+                // Collect candidate slots for demolition
+                List<int> candidates = new List<int>();
                 for (var k = 0; k < 4; k++)
                 {
                     var deconstructRoll = new IntRange(0, 10).RandomInRange;
@@ -660,6 +662,26 @@ namespace FactionColonies
                     {
                         continue;
                     }
+                    candidates.Add(k);
+                }
+
+                // Sort so buildings that depend on other buildings are demolished first
+                candidates.Sort((a, b) =>
+                {
+                    BuildingFCDef defA = WorldSettlement.BuildingsComp.getBuildingInSlot(a);
+                    BuildingFCDef defB = WorldSettlement.BuildingsComp.getBuildingInSlot(b);
+                    bool aRequiresB = defA.requiredBuildings != null && defA.requiredBuildings.Contains(defB);
+                    bool bRequiresA = defB.requiredBuildings != null && defB.requiredBuildings.Contains(defA);
+                    if (aRequiresB) return -1; // a depends on b, demolish a first
+                    if (bRequiresA) return 1;  // b depends on a, demolish b first
+                    // Buildings with any requirements go before those without
+                    int aReqCount = defA.requiredBuildings?.Count ?? 0;
+                    int bReqCount = defB.requiredBuildings?.Count ?? 0;
+                    return bReqCount.CompareTo(aReqCount);
+                });
+
+                foreach (int k in candidates)
+                {
                     str += "\n" + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.buildingLabel(k));
                     WorldSettlement.deconstructBuilding(k);
                 }

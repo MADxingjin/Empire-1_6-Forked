@@ -141,12 +141,8 @@ namespace FactionColonies
         public static bool PrintDebug => printDebug;
 
         // Window size settings - add these fields
-        public static float buildingWindowWidth = 450f;
+        public static float buildingWindowWidth = 800f;
         public static float buildingWindowHeight = 600f;
-
-        // Static variables to remember window size during play session
-        private static Vector2 savedWindowSize = new Vector2(450f, 600f);
-        private static bool hasSavedSize = false;
 
         public override void ExposeData()
         {
@@ -168,7 +164,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT);
             Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT);
             Scribe_Values.Look(ref updateVersion, "updateVersion");
-            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 450f);
+            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
             Scribe_Values.Look(ref printDebug, "printDebug", false);
