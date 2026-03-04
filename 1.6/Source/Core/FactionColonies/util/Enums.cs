@@ -33,4 +33,16 @@
         Minor,
         Major
     }
+
+    /// <summary>
+    /// Action types that FCPolicyModExtension can block or enable.
+    /// </summary>
+    public enum FCActionType
+    {
+        CaptureSettlement,
+        RaidSettlement,
+        EnslaveSettlement,
+        DeployMilitary,
+        SendDiplomat
+    }
 }

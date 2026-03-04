@@ -59,6 +59,9 @@
 	<FCSelectTraitsPrompt>Select {0} more trait(s) from the list above.</FCSelectTraitsPrompt>
 	<FCTraitSelectionReady>Press Confirm to assign the selected traits. This cannot be undone!</FCTraitSelectionReady>
 	<FCHoverTraitForDetails>Hover over a trait to see its details.</FCHoverTraitForDetails>
+	<FCSelectedPolicies>Selected ({0}/{1})</FCSelectedPolicies>
+	<FCAvailablePolicies>Available Policies</FCAvailablePolicies>
+	<FCConflictsWith>Conflicts with: {0}</FCConflictsWith>
 	<FCTraits>Traits</FCTraits>
 	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
 	<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>

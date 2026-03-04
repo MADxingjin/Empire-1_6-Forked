@@ -927,6 +927,117 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             return false;
         }
 
+        // ── Policy Extension Cache ────────────────────────────────
+
+        private List<(FCPolicyModExtension ext, FCPolicy policy)> cachedPolicyExtensions;
+
+        /// <summary>
+        /// Rebuilds the flat cached list of active policy extensions. Call this whenever
+        /// policies or factionTraits change (faction creation, level-up trait assignment).
+        /// </summary>
+        public void RebuildPolicyExtensionCache()
+        {
+            cachedPolicyExtensions = new List<(FCPolicyModExtension, FCPolicy)>();
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def == null) continue;
+                foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
+                    cachedPolicyExtensions.Add((ext, p));
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
+                    cachedPolicyExtensions.Add((ext, p));
+            }
+        }
+
+        /// <summary>
+        /// Iterates all active policy/trait extensions, calling the action on each.
+        /// Uses a cached flat list — no GetModExtension overhead per call.
+        /// </summary>
+        public void ForEachPolicyExtension(Action<FCPolicyModExtension, FCPolicy> action)
+        {
+            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
+            foreach (var (ext, policy) in cachedPolicyExtensions)
+            {
+                try
+                {
+                    action(ext, policy);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy extension error for '{policy.def?.defName}': {e}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Aggregation helper: applies a modifier chain across all active policy extensions.
+        /// </summary>
+        public double ApplyPolicyModifier(double baseValue, Func<FCPolicyModExtension, double, double> modifier)
+        {
+            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
+            double result = baseValue;
+            foreach (var (ext, _) in cachedPolicyExtensions)
+            {
+                try
+                {
+                    result = modifier(ext, result);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy modifier error: {e}");
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Aggregation helper for int modifiers.
+        /// </summary>
+        public int ApplyPolicyModifier(int baseValue, Func<FCPolicyModExtension, int, int> modifier)
+        {
+            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
+            int result = baseValue;
+            foreach (var (ext, _) in cachedPolicyExtensions)
+            {
+                try
+                {
+                    result = modifier(ext, result);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy modifier error: {e}");
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if any active policy extension blocks the given action.
+        /// </summary>
+        public bool AnyPolicyBlocks(FCActionType action)
+        {
+            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
+            foreach (var (ext, _) in cachedPolicyExtensions)
+                if (ext.BlocksAction(action))
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if any active policy extension enables the given action.
+        /// </summary>
+        public bool AnyPolicyEnables(FCActionType action)
+        {
+            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
+            foreach (var (ext, _) in cachedPolicyExtensions)
+                if (ext.EnablesAction(action))
+                    return true;
+            return false;
+        }
+
         public bool sendDiplomaticEnvoy(Faction faction)
         {
             FactionFC factionfc = FactionCache.FactionComp;

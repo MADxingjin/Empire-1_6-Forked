@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -18,29 +19,46 @@ namespace FactionColonies
     {
         public FCPolicy()
         {
-
         }
-        public FCPolicy( FCPolicyDef def)
+
+        public FCPolicy(FCPolicyDef def)
         {
             FactionFC faction = FactionCache.FactionComp;
             this.def = def;
             timeEnacted = Find.TickManager.TicksGame;
 
+            // Create extension state and fire OnEnacted callbacks
+            foreach (FCPolicyModExtension ext in def.PolicyExtensions)
+            {
+                if (state == null)
+                    state = ext.CreateState();
+                try
+                {
+                    ext.OnEnacted(faction, this);
+                }
+                catch (System.Exception e)
+                {
+                    LogUtil.Error($"FCPolicyModExtension.OnEnacted error for '{def.defName}': {e}");
+                }
+            }
 
-            //Road Builder Trait
+            // Apply passive trait effects
+            if (def.traitEffects != null && faction != null)
+            {
+                foreach (FCTraitEffectDef effect in def.traitEffects)
+                    faction.addTrait(effect);
+            }
+
+            // Legacy hard-coded effects (will be moved to extensions in Phase 3)
             if (def == FCPolicyDefOf.roadBuilders)
             {
                 ResearchProjectDef researchdef = DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false);
                 if (researchdef == null)
                     LogUtil.Error("Road research returned Null");
-                if (!(Find.ResearchManager.GetProgress(researchdef) == researchdef.baseCost))
-                {
+                else if (Find.ResearchManager.GetProgress(researchdef) != researchdef.baseCost)
                     Find.ResearchManager.FinishProject(researchdef);
-                }
-
             }
 
-            //Mercantile Trait
             if (def == FCPolicyDefOf.mercantile)
             {
                 faction.resetTraitMercantileCaravanTime();
@@ -49,12 +67,13 @@ namespace FactionColonies
 
         public FCPolicyDef def;
         public int timeEnacted;
+        public FCPolicyState state;
 
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
             Scribe_Values.Look(ref timeEnacted, "timeEnacted");
-            
+            Scribe_Deep.Look(ref state, "state");
         }
 
 
@@ -83,7 +102,7 @@ namespace FactionColonies
         public int factionLevelRequirement;
         public List<string> positiveEffects;
         public List<string> negativeEffects;
-        
+
         // Additional fields for XML compatibility
         public int cost;
         public string type;
@@ -91,34 +110,36 @@ namespace FactionColonies
         public int enactDuration;
         public List<string> traits = new List<string>();
 
+        // Icon paths — set in XML, resolved lazily to textures
+        public string iconPathLight;
+        public string iconPathDark;
+
+        // Passive stat effects applied to the faction when this policy/trait is enacted
+        public List<FCTraitEffectDef> traitEffects = new List<FCTraitEffectDef>();
+
+        // Policies/traits that are incompatible with this one (mutual exclusion in selection UI)
+        public List<FCPolicyDef> incompatiblePolicies = new List<FCPolicyDef>();
+
+        [Unsaved] private Texture2D resolvedIconLight;
+        [Unsaved] private Texture2D resolvedIconDark;
+        [Unsaved] private bool triedResolveLight;
+        [Unsaved] private bool triedResolveDark;
+
         public Texture2D IconLight
         {
             get
             {
-                switch (defName)
+                if (!triedResolveLight)
                 {
-                    case "militaristic":
-                        return TexLoad.traitMilitaristicLight;
-                    case "pacifist":
-                        return TexLoad.traitPacifistLight;
-                    case "authoritarian":
-                        return TexLoad.traitAuthoritarianLight;
-                    case "egalitarian":
-                        return TexLoad.traitEgalitarianLight;
-                    case "isolationist":
-                        return TexLoad.traitIsolationistLight;
-                    case "expansionist":
-                        return TexLoad.traitExpansionistLight;
-                    case "technocratic":
-                        return TexLoad.traitTechnocraticLight;
-                    case "feudal":
-                        return TexLoad.traitFeudalLight;
-                    case "slaver":
-                        return TexLoad.traitSlaverLight;
-                    default:
-                        LogUtil.Warning("Could not find icon for " + defName);
-                        return null;
+                    triedResolveLight = true;
+                    if (!iconPathLight.NullOrEmpty())
+                    {
+                        resolvedIconLight = ContentFinder<Texture2D>.Get(iconPathLight, false);
+                        if (resolvedIconLight == null)
+                            LogUtil.Warning("Could not resolve light icon at '" + iconPathLight + "' for " + defName);
+                    }
                 }
+                return resolvedIconLight;
             }
         }
 
@@ -126,30 +147,31 @@ namespace FactionColonies
         {
             get
             {
-                switch (defName)
+                if (!triedResolveDark)
                 {
-                    case "militaristic":
-                        return TexLoad.traitMilitaristicDark;
-                    case "pacifist":
-                        return TexLoad.traitPacifistDark;
-                    case "authoritarian":
-                        return TexLoad.traitAuthoritarianDark;
-                    case "egalitarian":
-                        return TexLoad.traitEgalitarianDark;
-                    case "isolationist":
-                        return TexLoad.traitIsolationistDark;
-                    case "expansionist":
-                        return TexLoad.traitExpansionistDark;
-                    case "technocratic":
-                        return TexLoad.traitTechnocraticDark;
-                    case "feudal":
-                        return TexLoad.traitFeudalDark;
-                    case "slaver":
-                        return TexLoad.traitSlaverDark;
-                    default:
-                        LogUtil.Warning("Could not find icon for " + defName);
-                        return null;
+                    triedResolveDark = true;
+                    if (!iconPathDark.NullOrEmpty())
+                    {
+                        resolvedIconDark = ContentFinder<Texture2D>.Get(iconPathDark, false);
+                        if (resolvedIconDark == null)
+                            LogUtil.Warning("Could not resolve dark icon at '" + iconPathDark + "' for " + defName);
+                    }
                 }
+                return resolvedIconDark;
+            }
+        }
+
+        /// <summary>
+        /// Returns all FCPolicyModExtension instances attached to this def.
+        /// </summary>
+        public IEnumerable<FCPolicyModExtension> PolicyExtensions
+        {
+            get
+            {
+                if (modExtensions == null) yield break;
+                foreach (DefModExtension ext in modExtensions)
+                    if (ext is FCPolicyModExtension policyExt)
+                        yield return policyExt;
             }
         }
         public bool HasNegativeEffects()
