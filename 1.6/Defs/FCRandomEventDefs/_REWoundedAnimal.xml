@@ -65,8 +65,7 @@
 		<timeTillTrigger>1500</timeTillTrigger> 
 		
 		
-		<randomThingType>animals</randomThingType>
-		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
+		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
 		<randomThingValue>700</randomThingValue>
 	</FactionColonies.FCEventDef>
 	

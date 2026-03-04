@@ -87,8 +87,7 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
 		<settlementsCarryOver>true</settlementsCarryOver> 
 		
-		<randomThingType>weapons</randomThingType>
-		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>500</randomThingValue>
 	</FactionColonies.FCEventDef>
 	
@@ -104,8 +103,7 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
 		<settlementsCarryOver>true</settlementsCarryOver> 
 		
-		<randomThingType>weapons</randomThingType>
-		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>1000</randomThingValue>
 	</FactionColonies.FCEventDef>
 	
@@ -121,8 +119,7 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
 		<settlementsCarryOver>true</settlementsCarryOver> 
 		
-		<randomThingType>weapons</randomThingType>
-		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>2000</randomThingValue>
 	</FactionColonies.FCEventDef>
 

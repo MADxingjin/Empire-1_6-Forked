@@ -257,9 +257,11 @@ namespace FactionColonies
         /// </summary>
         public int titheMaxCountScaler = 1;
         /// <summary>
-        /// Determines if the production value of this resource should be considered when generating defense for a settlement.
+        /// Weight applied to this resource's production when calculating a settlement's defense bonus.
+        /// A value of 0 means the resource does not contribute to defense. A value of 1.0 means it contributes
+        /// its full effectiveRawTotalProduction. Values greater or less than 1.0 scale the contribution accordingly.
         /// </summary>
-        public bool aidsDefense = false;
+        public float defenseWeight = 0f;
 
         /// <summary>
         /// Determines the order that the resource is listed in the UI. Lower values = ealier in the list. Ties are broken randomly.
@@ -571,6 +573,20 @@ namespace FactionColonies
                         if (ext != ext2)
                         {
                             yield return "ResourceFilterExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
+                        }
+                    }
+                }
+                foreach (ResourceTaxExtension ext in modExtensions.OfType<ResourceTaxExtension>())
+                {
+                    if (isPoolResource)
+                    {
+                        yield return "ResourceTaxExtension is specified for pool resource " + this.defName + ". ResourceTaxExtension only applies to non-pool resources.";
+                    }
+                    foreach (ResourceTaxExtension ext2 in modExtensions.OfType<ResourceTaxExtension>())
+                    {
+                        if (ext != ext2)
+                        {
+                            yield return "ResourceTaxExtension " + ext.ToStringSafe() + " appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }

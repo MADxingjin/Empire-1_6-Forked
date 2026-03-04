@@ -85,8 +85,7 @@ namespace FactionColonies
             // Required resource check
             if (cEvent.requiredResource != null)
             {
-                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
-                                   || (cEvent.requiredResource == ResourceTypeDefOf.RTD_Research && TraitUtilsFC.returnResearchAmount() > 0);
+                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0);
                 if (!hasResource) return false;
             }
 
@@ -326,9 +325,9 @@ namespace FactionColonies
                 }
                 else //if undefined event
                 {
-                    if (evt.def.randomThingValue > 0 && evt.def.randomThingType != "")
+                    if (evt.def.randomThingValue > 0 && evt.def.randomThingRewardDef != null)
                     {
-                        List<Thing> list = PaymentUtil.generateThing(evt.def.randomThingValue, evt.def.randomThingType);
+                        List<Thing> list = PaymentUtil.generateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
 
                         string str = "GoodsReceivedFollowing".Translate(evt.def.label);
 
@@ -653,7 +652,7 @@ namespace FactionColonies
         public List<FCOptionDef> options = new List<FCOptionDef>();
         public ResourceTypeDef requiredResource;
         public int randomThingValue;
-        public string randomThingType = "";
+        public ResourceEventRewardDef randomThingRewardDef;
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
         public int prosperityLost;
         public bool eventFollows;
@@ -750,7 +749,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maximumProsperity, "maximumProsperity");
             Scribe_Defs.Look(ref requiredResource, "requiredResource");
             Scribe_Values.Look(ref randomThingValue, "randomThingValue");
-            Scribe_Values.Look(ref randomThingType, "randomThingType");
+            Scribe_Defs.Look(ref randomThingRewardDef, "randomThingRewardDef");
             Scribe_Collections.Look(ref options, "options", LookMode.Def);
             Scribe_Collections.Look(ref incompatibleEvents, "incompatibleEvents", LookMode.Def);
             Scribe_Values.Look(ref prosperityLost, "prosperityLost");
@@ -822,7 +821,7 @@ namespace FactionColonies
         public List<FCOptionDef> options = new List<FCOptionDef>();
         public ResourceTypeDef requiredResource;
         public int randomThingValue = 0;
-        public string randomThingType = "";
+        public ResourceEventRewardDef randomThingRewardDef;
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
         public int prosperityLost = 0;
         public bool eventFollows = false;

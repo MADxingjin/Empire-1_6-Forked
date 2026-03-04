@@ -1018,9 +1018,9 @@ namespace FactionColonies
             double defenseBonus = 0;
             foreach (ResourceFC resource in resources)
             {
-                if (resource.def.aidsDefense && resource.effectiveRawTotalProduction > 0)
+                if (resource.def.defenseWeight > 0f && resource.effectiveRawTotalProduction > 0)
                 {
-                    defenseBonus += resource.effectiveRawTotalProduction;
+                    defenseBonus += resource.effectiveRawTotalProduction * resource.def.defenseWeight;
                 }
             }
             return defenseBonus;

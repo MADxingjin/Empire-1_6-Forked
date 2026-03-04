@@ -964,6 +964,9 @@ namespace FactionColonies
                 return null;
             }
 
+            // Pre-tax generation hook
+            def.GetModExtension<ResourceTaxExtension>()?.OnPreTaxGeneration(this, settlement);
+
             // Prepare the tithe filter. I don't think it should ever be null here, but we'll account for that, just in case.
             if (randomTitheFilter == null)
             {
@@ -1073,6 +1076,9 @@ namespace FactionColonies
                     }
                 }
             }
+
+            // Post-tax generation hook
+            def.GetModExtension<ResourceTaxExtension>()?.OnPostTaxGeneration(this, settlement, titheItems, ref outSilver);
 
             extraSilver = outSilver;
             return titheItems;
