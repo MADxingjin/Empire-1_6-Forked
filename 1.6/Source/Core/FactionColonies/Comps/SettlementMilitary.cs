@@ -103,10 +103,10 @@ namespace FactionColonies
             supporting = new List<CaravanSupporting>();
         }
 
-        private string FoundSettlementString()
+        private static string FoundSettlementString(WorldSettlementFC settlement)
         {
-            return WorldSettlement.Name + " " + "ShortMilitary".Translate() + " " + WorldSettlement.settlementMilitaryLevel +
-                   " - " + "FCAvailable".Translate() + ": " + (!isMilitaryBusySilent()).ToString();
+            return settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel +
+                   " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.isMilitaryBusySilent() != true).ToString();
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -191,7 +191,7 @@ namespace FactionColonies
             {
                 new FloatMenuOption
                 (
-                    "ResetToHomeSettlement".Translate(WorldSettlement.settlementMilitaryLevel),
+                    "ResetToHomeSettlement".Translate(settlementMilitaryLevel),
                     delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, WorldSettlement); },
                     MenuOptionPriority.High
                 )
@@ -204,11 +204,11 @@ namespace FactionColonies
                 where foundSettlement != WorldSettlement && foundSettlement.MilitaryComp?.isMilitaryValid() == true
                 select new FloatMenuOption
                 (
-                    FoundSettlementString(),
+                    FoundSettlementString(foundSettlement),
                     delegate
                     {
                         if (foundSettlement.MilitaryComp?.isMilitaryBusy() != true)
-                            MilitaryUtilFC.changeDefendingMilitaryForce(evt, WorldSettlement);
+                            MilitaryUtilFC.changeDefendingMilitaryForce(evt, foundSettlement);
                     }
                 )
             );
@@ -486,8 +486,8 @@ namespace FactionColonies
                 var squad = force.homeSettlement.MilitaryComp.militarySquad;
                 squad.CheckInitialization();
 
-                squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
-                squad.updateSquadStats(squad.settlement.settlementMilitaryLevel);
+                squad.OutfitSquad(squad.outfit);
+                squad.updateSquadStats(force.homeSettlement.settlementMilitaryLevel);
                 squad.resetNeeds();
 
                 friendlies = squad.AllEquippedMercenaryPawns.ToList();
@@ -1145,7 +1145,7 @@ namespace FactionColonies
 
         public bool isMilitaryValid()
         {
-            return WorldSettlement.settlementMilitaryLevel > 0;
+            return settlementMilitaryLevel > 0;
         }
 
         public bool isTargetOccupied(int location)
