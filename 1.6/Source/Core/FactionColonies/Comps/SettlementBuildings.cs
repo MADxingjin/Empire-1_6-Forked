@@ -462,14 +462,14 @@ namespace FactionColonies
             if (building == null)
                 return 0;
 
-            int upkeep = building.upkeep;
+            double upkeep = building.upkeep;
 
             FactionFC faction = FactionCache.FactionComp;
-            upkeep += faction.buildingUpkeepModifier(building);
+            upkeep = faction.ApplyPolicyModifier(upkeep, (ext, val) => ext.ModifyBuildingUpkeep(val, building));
 
             upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
 
-            return Math.Max(upkeep, 0);
+            return Math.Max((int)upkeep, 0);
         }
 
         public TaggedString getBuildingDesc(BuildingFCDef building)
@@ -497,18 +497,7 @@ namespace FactionColonies
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
-                bool isMilitary = false;
-
-                foreach (FCTraitEffectDef trait in building.def.traits ?? Enumerable.Empty<FCTraitEffectDef>())
-                {
-                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
-                    {
-                        isMilitary = true;
-                        break;
-                    }
-                }
-
-                upkeep += SettlementFormulas.CalculateBuildingUpkeep(building.def.upkeep, isMilitary, faction.hasPolicy(FCPolicyDefOf.militaristic));
+                upkeep += Math.Max((int)faction.ApplyPolicyModifier((double)building.def.upkeep, (ext, val) => ext.ModifyBuildingUpkeep(val, building.def)), 0);
             }
             return upkeep;
         }

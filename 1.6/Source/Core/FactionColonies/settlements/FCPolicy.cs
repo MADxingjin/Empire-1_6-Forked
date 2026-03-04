@@ -49,20 +49,8 @@ namespace FactionColonies
                     faction.addTrait(effect);
             }
 
-            // Legacy hard-coded effects (will be moved to extensions in Phase 3)
-            if (def == FCPolicyDefOf.roadBuilders)
-            {
-                ResearchProjectDef researchdef = DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false);
-                if (researchdef == null)
-                    LogUtil.Error("Road research returned Null");
-                else if (Find.ResearchManager.GetProgress(researchdef) != researchdef.baseCost)
-                    Find.ResearchManager.FinishProject(researchdef);
-            }
-
-            if (def == FCPolicyDefOf.mercantile)
-            {
-                faction.resetTraitMercantileCaravanTime();
-            }
+            // Legacy enactment blocks removed — roadBuilders research unlock is now in
+            // FCPolicyExt_RoadBuilders.OnEnacted, mercantile caravan init is in FCPolicyExt_Mercantile.OnEnacted.
         }
 
         public FCPolicyDef def;

@@ -657,9 +657,7 @@ namespace FactionColonies
             Rect costRect = new Rect(statsX, curY, statsW, 22f);
             Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
 
-            int buildTime = selectedBuilding.constructionDuration;
-            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
-                buildTime /= 2;
+            int buildTime = factionfc.ApplyPolicyModifier(selectedBuilding.constructionDuration, (ext, val) => ext.ModifyBuildTime(val));
             Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
             Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
 
@@ -1184,9 +1182,7 @@ namespace FactionColonies
                 buildingSlot = buildingSlot
             };
 
-            int triggerTime = selectedBuilding.constructionDuration;
-            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
-                triggerTime /= 2;
+            int triggerTime = factionfc.ApplyPolicyModifier(selectedBuilding.constructionDuration, (ext, val) => ext.ModifyBuildTime(val));
 
             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
             tmpEvt.customDescription = "BuildingEventDesc".Translate(

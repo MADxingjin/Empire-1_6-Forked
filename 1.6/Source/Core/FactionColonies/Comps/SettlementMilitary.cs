@@ -635,13 +635,9 @@ namespace FactionColonies
             var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
             var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
 
-            bool hasFeudalPolicy = faction.hasPolicy(FCPolicyDefOf.feudal);
-            bool hasResilientTrait = faction.hasTrait(FCPolicyDefOf.resilient);
-            var canDestroyBuildings = !hasResilientTrait;
-
-            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(
-                happinessLostMultiplier, loyaltyLostMultiplier,
-                hasFeudalPolicy, hasResilientTrait);
+            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(happinessLostMultiplier, loyaltyLostMultiplier);
+            faction.ForEachPolicyExtension((ext, _) => ext.ModifyBattlePenalties(ref prosperityLoss, ref happinessLoss, ref loyaltyLoss));
+            var canDestroyBuildings = !faction.AnyPolicyPreventsBuildingDestruction();
 
             WorldSettlement.prosperity -= prosperityLoss;
             WorldSettlement.happiness -= happinessLoss;
@@ -1063,26 +1059,16 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            int cooldownReduction = 0;
-            if (faction.hasTrait(FCPolicyDefOf.raiders) && (militaryJob == MilitaryJob.RaidEnemySettlement || militaryJob == MilitaryJob.EnslaveEnemySettlement))
-            {
-                cooldownReduction += 60000;
-            }
-            else if (militaryJob == MilitaryJob.Deploy && FCSettings.deadPawnsIncreaseMilitaryCooldown)
-            {
-                List<string> policies = faction.policies.ConvertAll(policy => policy.def.defName);
-                bool militarist = policies.Contains("militaristic");
-                bool authoritarian = policies.Contains("authoritarian");
-                bool pacifist = policies.Contains("pacifist");
+            int cooldown = GenDate.TicksPerDay * 3;
+            cooldown = faction.ApplyPolicyModifier(cooldown, (ext, val) => ext.ModifyMilitaryCooldown(val, militaryJob));
 
-                // If the faction is militarist AND authortarian: multiplier is 7000
-                // If the faction is militarist OR authortarian: multiplier is 8000
-                // If the faction is neither: multiplier is 10000
-                // If the faction is pacifist: add 2000 to the previous result
-                int deadMultiplier = (militarist || authoritarian ? (militarist && authoritarian ? 7000 : 8000) : 10000) + (pacifist ? 2000 : 0);
-
-                cooldownReduction -= militarySquad.dead * deadMultiplier;
+            if (militaryJob == MilitaryJob.Deploy && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            {
+                int deadMultiplier = 10000;
+                deadMultiplier = faction.ApplyPolicyModifier(deadMultiplier, (ext, val) => ext.ModifyDeadPawnCooldownMultiplier(val));
+                cooldown += militarySquad.dead * deadMultiplier;
             }
+            cooldown = Math.Max(cooldown, 0);
 
             militaryJob = MilitaryJob.Cooldown;
             militaryBusy = true;
@@ -1091,7 +1077,7 @@ namespace FactionColonies
 
             FCEvent tmp = FCEventMaker.MakeEvent(FCEventDefOf.cooldownMilitary);
             tmp.hasCustomDescription = true;
-            tmp.timeTillTrigger = Find.TickManager.TicksGame + (GenDate.TicksPerDay * 3) - cooldownReduction;
+            tmp.timeTillTrigger = Find.TickManager.TicksGame + cooldown;
             tmp.location = WorldSettlement.Tile;
             tmp.customDescription = "MilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
             FactionCache.FactionComp.addEvent(tmp);

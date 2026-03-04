@@ -435,7 +435,17 @@ namespace FactionColonies
         }
         private void DrawActionButtons(Rect panel)
         {
-            int numButtons = 1 + (faction.hasPolicy(FCPolicyDefOf.technocratic) ? 1 : 0) + (faction.hasPolicy(FCPolicyDefOf.feudal) ? 1 : 0);
+            // Collect action buttons from all active policy/trait extensions
+            List<(TaggedString label, System.Action onClick)> actionButtons = new List<(TaggedString, System.Action)>();
+            faction.ForEachPolicyExtension((ext, _) =>
+            {
+                var buttons = ext.GetMainTabActionButtons(faction);
+                if (buttons != null)
+                    foreach (var btn in buttons)
+                        actionButtons.Add(btn);
+            });
+
+            int numButtons = 1 + actionButtons.Count;
             // The "Create New Colony" button is more important than all the rest, so we'll make it as wide as two of the other buttons. Keep that in mind for the following math
             float calcButtonWidth = (panel.width - (margin * (numButtons - 1))) / (numButtons + 1);
             float y = panel.y;
@@ -445,72 +455,12 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            // TODO: would really like to generalize the faction policy code
-            if (faction.hasPolicy(FCPolicyDefOf.technocratic))
+            foreach (var (label, onClick) in actionButtons)
             {
-                Rect techButton = new Rect(x, y, calcButtonWidth, height);
-                if (Widgets.ButtonText(techButton, "FCSendResearchItems".Translate()))
-                {
-                    if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
-                    {
-                        Pawn playerNegotiator = Find.ColonistBar.GetColonistsInOrder()[0];
-                        FCTrader_Research trader = new FCTrader_Research();
-                        Find.WindowStack.Add(new Dialog_Trade(playerNegotiator, trader));
-                    }
-                    else
-                    {
-                        LogUtil.Error("Couldn't find any colonists to trade with");
-                    }
-                }
-                x += techButton.width + margin;
-            }
-
-            if (faction.hasPolicy(FCPolicyDefOf.feudal))
-            {
-                Rect feudalButton = new Rect(x, y, calcButtonWidth, height);
-                if (Widgets.ButtonText(feudalButton, "FCRequestMercenary".Translate()))
-                {
-                    if (faction.traitFeudalBoolCanUseMercenary)
-                    {
-                        faction.traitFeudalBoolCanUseMercenary = false;
-                        faction.traitFeudalTickLastUsedMercenary = Find.TickManager.TicksGame;
-
-                        PawnGenerationRequest request = FCPawnGenerator.WorkerOrMilitaryRequest();
-                        request.ColonistRelationChanceFactor = 20f;
-                        Pawn pawn = PawnGenerator.GeneratePawn(request);
-
-                        IncidentParms parms = new IncidentParms
-                        {
-                            target = Find.CurrentMap,
-                            faction = FactionCache.PlayerColonyFaction,
-                            points = 999,
-                            raidArrivalModeForQuickMilitaryAid = true,
-                            raidNeverFleeIndividual = true,
-                            raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop,
-                            raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-                        };
-                        parms.raidArrivalModeForQuickMilitaryAid = true;
-
-                        PawnsArrivalModeWorker_EdgeWalkIn worker = new PawnsArrivalModeWorker_EdgeWalkIn();
-                        worker.TryResolveRaidSpawnCenter(parms);
-                        worker.Arrive(new List<Pawn> { pawn }, parms);
-
-                        Find.LetterStack.ReceiveLetter(
-                            "FCMercenaryJoined".Translate(),
-                            "FCMercenaryJoinedText".Translate(pawn.NameFullColored),
-                            LetterDefOf.PositiveEvent,
-                            new LookTargets(pawn));
-                        pawn.SetFaction(Faction.OfPlayer);
-                    }
-                    else
-                    {
-                        Messages.Message(
-                            "FCActionMercenaryOnCooldown".Translate(
-                                ((faction.traitFeudalTickLastUsedMercenary + GenDate.TicksPerSeason) - Find.TickManager.TicksGame).ToTimeString()),
-                            MessageTypeDefOf.RejectInput);
-                    }
-                }
-                x += feudalButton.width + margin;
+                Rect btnRect = new Rect(x, y, calcButtonWidth, height);
+                if (Widgets.ButtonText(btnRect, label))
+                    onClick();
+                x += btnRect.width + margin;
             }
 
             Rect newColonyButton = new Rect(x, y, calcButtonWidth * 2, height);
@@ -1642,52 +1592,16 @@ namespace FactionColonies
             {
                 Find.WindowStack.Add(new FloatMenu(DeploymentOptions(settlement)));
             }
-            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.hasPolicy(FCPolicyDefOf.militaristic))
+            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.AnyPolicyEnables(FCActionType.DeployExtraSquad))
             {
-                if ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) <= Find.TickManager.TicksGame)
+                List<FloatMenuOption> extraOptions = new List<FloatMenuOption>();
+                faction.ForEachPolicyExtension((ext, policy) =>
                 {
-                    int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
-                    List<FloatMenuOption> options = new List<FloatMenuOption>
-                    {
-                        new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
-                        {
-                            if (PaymentUtil.getSilver() >= cost)
-                            {
-                                List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
-                                {
-                                    new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
-                                    {
-                                        MilitaryUtil.CallinExtraForces(settlement, false);
-                                        Find.WindowStack.currentlyDrawnWindow.Close();
-                                    })
-                                };
-
-                                if (!FCSettings.medievalTechOnly &&
-                                    (FactionCache.TechTransportPods?.IsFinished ?? false))
-                                {
-                                    deploymentOptions.Add(new FloatMenuOption("dropPodDeploymentOption".Translate(), delegate
-                                    {
-                                        MilitaryUtil.CallinExtraForces(settlement, true);
-                                        Find.WindowStack.currentlyDrawnWindow.Close();
-                                    }));
-                                }
-
-                                Find.WindowStack.Add(new FloatMenu(deploymentOptions));
-                            }
-                            else
-                            {
-                                Messages.Message("NotEnoughSilverToDeploySquad".Translate(), MessageTypeDefOf.RejectInput);
-                            }
-                        })
-                    };
-                    Find.WindowStack.Add(new FloatMenu(options));
-                }
-                else
-                {
-                    Messages.Message("XDaysToRedeploy".Translate(Math.Round(
-                        ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) -
-                         Find.TickManager.TicksGame).TicksToDays(), 1)), MessageTypeDefOf.RejectInput);
-                }
+                    var options = ext.GetExtraDeploymentOptions(faction, policy, settlement, milComp);
+                    if (options != null) extraOptions.AddRange(options);
+                });
+                if (extraOptions.Any())
+                    Find.WindowStack.Add(new FloatMenu(extraOptions));
             }
             else
             {

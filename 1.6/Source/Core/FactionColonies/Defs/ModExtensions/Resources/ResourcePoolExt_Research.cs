@@ -14,14 +14,9 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            double innovativeBonusResearch = 0;
-            double technocraticModifier = 1;
-            if (faction.hasPolicy(FCPolicyDefOf.technocratic))
-                technocraticModifier = 2;
-            if (faction.hasTrait(FCPolicyDefOf.innovative))
-                innovativeBonusResearch = ((settlement?.getTotalProfit() ?? 0) * .05) * technocraticModifier;
-
-            return (float)Math.Max(Math.Round((production * FCSettings.productionResearchBase) + innovativeBonusResearch), 0);
+            double result = Math.Max(Math.Round(production * FCSettings.productionResearchBase), 0);
+            result = faction.ApplyPolicyModifier(result, (ext, val) => ext.ModifyResearchContribution(val, settlement));
+            return (float)result;
         }
         public override bool resetAtTaxTime()
         {

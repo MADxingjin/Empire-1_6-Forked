@@ -218,9 +218,9 @@ namespace FactionColonies
 			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-				if (!factionFC.hasPolicy(FCPolicyDefOf.isolationist)) list.Add(NewOption(factionFC, faction, tile, MilitaryJob.CaptureEnemySettlement));
+				if (!factionFC.AnyPolicyBlocks(FCActionType.CaptureSettlement)) list.Add(NewOption(factionFC, faction, tile, MilitaryJob.CaptureEnemySettlement));
 				list.Add(NewOption(factionFC, faction, tile, MilitaryJob.RaidEnemySettlement));
-				if (factionFC.hasPolicy(FCPolicyDefOf.authoritarian) && faction.def.defName != "VFEI_Insect") list.Add(NewOption(factionFC, faction, tile, MilitaryJob.EnslaveEnemySettlement));
+				if (factionFC.AnyPolicyEnables(FCActionType.EnslaveSettlement) && faction.def.defName != "VFEI_Insect") list.Add(NewOption(factionFC, faction, tile, MilitaryJob.EnslaveEnemySettlement));
 
 				Find.WindowStack.Add(new FloatMenu(list));
 			}
@@ -258,13 +258,11 @@ namespace FactionColonies
 			Faction faction = __instance.Faction;
 			FactionFC factionFC = FactionCache.FactionComp;
 
-			if (factionFC.hasPolicy(FCPolicyDefOf.pacifist))
-			{
+			if (factionFC.AnyPolicyEnables(FCActionType.SendDiplomat))
 				__result = __result.AddItem(PeacefulAction(factionFC, faction));
-				return;
-			}
 
-			__result = __result.AddItem(HostileAction(factionFC, faction, tile));
+			if (!factionFC.AnyPolicyBlocks(FCActionType.RaidSettlement))
+				__result = __result.AddItem(HostileAction(factionFC, faction, tile));
 		}
 	}
 }

@@ -68,7 +68,8 @@ namespace FactionColonies
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
-                FactionCache.FactionComp.traitMilitaristicTickLastUsedExtraSquad = Find.TickManager.TicksGame;
+                FactionCache.FactionComp.ForEachPolicyExtension((ext, policy) =>
+                    ext.OnSquadDeployed(FactionCache.FactionComp, policy, settlement, true));
             }
         }
 

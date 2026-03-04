@@ -18,7 +18,7 @@ namespace FactionColonies
         public PlanetTile currentTileSelected = PlanetTile.Invalid;
         public PlanetTile oldTileSelected = PlanetTile.Invalid;
         public BiomeResourceDef currentBiomeSelected;
-        public bool traitExpansionistReducedFee;
+        public bool settlementCostModified;
         public int timeToTravel = -1;
 
         public WorldSettlementDef currentSettlementType;
@@ -227,27 +227,10 @@ namespace FactionColonies
 
         private void CalculateSettlementCreationCost()
         {
-            settlementCreationCost = SettlementCreationBaseCost;
+            double baseCost = SettlementCreationBaseCost;
+            settlementCreationCost = (int)faction.ApplyPolicyModifier(baseCost, (ext, val) => ext.ModifySettlementCost(val));
 
-            if (faction.hasPolicy(FCPolicyDefOf.isolationist)) settlementCreationCost *= 2;
-
-            if (!faction.hasPolicy(FCPolicyDefOf.expansionist)) return;
-
-            if (!faction.settlements.Any() && !faction.settlementCaravansList.Any())
-            {
-                traitExpansionistReducedFee = false;
-                settlementCreationCost = 0;
-                return;
-            }
-
-            if (faction.traitExpansionistTickLastUsedSettlementFeeReduction == -1 || (faction.traitExpansionistBoolCanUseSettlementFeeReduction))
-            {
-                traitExpansionistReducedFee = true;
-                settlementCreationCost /= 2;
-                return;
-            }
-
-            traitExpansionistReducedFee = false;
+            settlementCostModified = settlementCreationCost != (int)baseCost;
         }
         
         private void DrawProduction(Rect prodBox)
@@ -394,10 +377,9 @@ namespace FactionColonies
 
         private void DoPostEventCreationTraitThings()
         {
-            if (traitExpansionistReducedFee)
+            if (settlementCostModified)
             {
-                faction.traitExpansionistTickLastUsedSettlementFeeReduction = Find.TickManager.TicksGame;
-                faction.traitExpansionistBoolCanUseSettlementFeeReduction = false;
+                faction.ForEachPolicyExtension((ext, policy) => ext.OnSettlementCostPaid(faction, policy));
             }
         }
 

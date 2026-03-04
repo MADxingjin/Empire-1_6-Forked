@@ -68,16 +68,13 @@ namespace FactionColonies.util
         }
 
         /// <summary>
-        /// Calculates stat penalties when a settlement loses a battle.
-        /// Feudal policy doubles loyalty loss. Resilient trait halves prosperity loss.
+        /// Calculates base stat penalties when a settlement loses a battle.
+        /// Policy-specific modifiers (e.g. feudal, resilient) are applied via FCPolicyModExtension.ModifyBattlePenalties.
         /// </summary>
         public static (double prosperity, double happiness, double loyalty) CalculateBattleLossPenalties(
-            double happinessLostMultiplier, double loyaltyLostMultiplier,
-            bool hasFeudalPolicy, bool hasResilientTrait)
+            double happinessLostMultiplier, double loyaltyLostMultiplier)
         {
-            int feudalMult = hasFeudalPolicy ? 2 : 1;
-            float prosperityMult = hasResilientTrait ? 0.5f : 1f;
-            return (20 * prosperityMult, 25 * happinessLostMultiplier, 15 * loyaltyLostMultiplier * feudalMult);
+            return (20, 25 * happinessLostMultiplier, 15 * loyaltyLostMultiplier);
         }
     }
 }

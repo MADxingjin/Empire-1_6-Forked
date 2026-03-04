@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FactionColonies.util;
+using RimWorld;
 using Verse;
 
 namespace FactionColonies
@@ -13,13 +14,13 @@ namespace FactionColonies
     /// cached flat list of active extensions — no per-call GetModExtension overhead.
     ///
     /// Example XML:
-    ///   &lt;FactionColonies.FCPolicyDef&gt;
-    ///     &lt;defName&gt;myPolicy&lt;/defName&gt;
-    ///     &lt;category&gt;Core&lt;/category&gt;
-    ///     &lt;modExtensions&gt;
-    ///       &lt;li Class="MyMod.MyPolicyExtension" /&gt;
-    ///     &lt;/modExtensions&gt;
-    ///   &lt;/FactionColonies.FCPolicyDef&gt;
+    ///   <FactionColonies.FCPolicyDef>
+    ///     <defName>myPolicy</defName>
+    ///     <category>Core</category>
+    ///     <modExtensions>
+    ///       <li Class="MyMod.MyPolicyExtension" />
+    ///     </modExtensions>
+    ///   </FactionColonies.FCPolicyDef>
     /// </summary>
     public abstract class FCPolicyModExtension : DefModExtension
     {
@@ -41,6 +42,9 @@ namespace FactionColonies
 
         /// <summary>Modify the silver cost to create a new settlement.</summary>
         public virtual double ModifySettlementCost(double cost) => cost;
+
+        /// <summary>Called after the player pays for a new settlement and the cost was modified by a policy.</summary>
+        public virtual void OnSettlementCostPaid(FactionFC faction, FCPolicy policy) { }
 
         // ── Buildings ──────────────────────────────────────────────
 
@@ -64,6 +68,19 @@ namespace FactionColonies
         /// <summary>Modify the loot value multiplier from raids/battles.</summary>
         public virtual double ModifyLootMultiplier(double mult) => mult;
 
+        /// <summary>Modify the per-dead-pawn cooldown multiplier when returning from deployment.
+        /// Default is 10000 ticks per dead pawn. Return a modified value.</summary>
+        public virtual int ModifyDeadPawnCooldownMultiplier(int multiplier) => multiplier;
+
+        /// <summary>Return true to prevent building and level destruction when a settlement loses a battle.</summary>
+        public virtual bool PreventBuildingDestruction() => false;
+
+        /// <summary>Called after a squad is deployed from a settlement.</summary>
+        public virtual void OnSquadDeployed(FactionFC faction, FCPolicy policy, WorldSettlementFC settlement, bool isExtraSquad) { }
+
+        /// <summary>Return extra deployment options when a settlement's main squad is already deployed. Null means none.</summary>
+        public virtual IEnumerable<FloatMenuOption> GetExtraDeploymentOptions(FactionFC faction, FCPolicy policy, WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp) => null;
+
         // ── Economy ────────────────────────────────────────────────
 
         /// <summary>Modify the total tithe value multiplier.</summary>
@@ -78,6 +95,18 @@ namespace FactionColonies
         /// <summary>Modify the additional workers above the base softcap.</summary>
         public virtual int ModifyExtraWorkersSoftcap(int extra) => extra;
 
+        /// <summary>Modify the flat adjustment to overmax workers (workers allowed above the softcap). Default 0.</summary>
+        public virtual int ModifyOverMaxWorkers(int adjustment) => adjustment;
+
+        /// <summary>Modify the per-settlement tax-time multiplier (called once per settlement per tax collection).</summary>
+        public virtual double ModifyTaxTimeMultiplier(double mult, WorldSettlementFC settlement) => mult;
+
+        /// <summary>Return additional base happiness gain for a settlement. Default 0.</summary>
+        public virtual double GetSettlementHappinessBonus(WorldSettlementFC settlement) => 0;
+
+        /// <summary>Return additional base prosperity recovery for a settlement. Default 0.</summary>
+        public virtual double GetSettlementProsperityBonus(WorldSettlementFC settlement) => 0;
+
         // ── Permissions ────────────────────────────────────────────
 
         /// <summary>Return true to block the given action type (e.g., isolationist blocks capture).</summary>
@@ -86,10 +115,21 @@ namespace FactionColonies
         /// <summary>Return true to enable the given action type (e.g., authoritarian enables enslave).</summary>
         public virtual bool EnablesAction(FCActionType action) => false;
 
+        /// <summary>Return true to suppress happiness/unrest penalties from faction member deaths.</summary>
+        public virtual bool SuppressMemberDeathPenalty() => false;
+
+        // ── Diplomacy ─────────────────────────────────────────────
+
+        /// <summary>Handle sending a diplomatic envoy to a target faction. Return true if handled.</summary>
+        public virtual bool HandleDiplomaticEnvoy(FactionFC faction, FCPolicy policy, Faction targetFaction) => false;
+
         // ── UI ─────────────────────────────────────────────────────
 
         /// <summary>Return extra gizmos/buttons for the main faction tab. Null means none.</summary>
         public virtual IEnumerable<Gizmo> GetMainTabGizmos(FactionFC faction) => null;
+
+        /// <summary>Return labeled action buttons to render in the main tab button bar. Null means no buttons.</summary>
+        public virtual IEnumerable<(TaggedString label, System.Action onClick)> GetMainTabActionButtons(FactionFC faction) => null;
 
         /// <summary>Return extra float menu options for a settlement's context menu. Null means none.</summary>
         public virtual IEnumerable<FloatMenuOption> GetSettlementActions(FactionFC faction, WorldSettlementFC settlement) => null;

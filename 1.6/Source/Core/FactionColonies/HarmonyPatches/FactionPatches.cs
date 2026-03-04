@@ -80,7 +80,7 @@ namespace FactionColonies
                 !__instance.HostileTo(Faction.OfPlayer))
             {
                 FactionFC faction = FactionCache.FactionComp;
-                if (!faction.hasPolicy(FCPolicyDefOf.pacifist) && dinfo != null)
+                if (!faction.AnyPolicySuppressesMemberDeathPenalty() && dinfo != null)
                 {
                     if (dinfo.Value.Category == DamageInfo.SourceCategory.Collapse)
                     {

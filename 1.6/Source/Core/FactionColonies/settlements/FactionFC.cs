@@ -102,16 +102,6 @@ namespace FactionColonies
         //Road builder
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
 
-        public int traitMilitaristicTickLastUsedExtraSquad = -1;
-
-        //Traits
-        public int traitPacifistTickLastUsedDiplomat = -1;
-        public int traitExpansionistTickLastUsedSettlementFeeReduction = -1;
-        public bool traitExpansionistBoolCanUseSettlementFeeReduction = true;
-        public int traitFeudalTickLastUsedMercenary = -1;
-        public bool traitFeudalBoolCanUseMercenary = true;
-        public int traitMercantileTradeCaravanTickDue = -1;
-
         //Settlement Leveling
         public int factionLevel = 1;
         public float factionXPCurrent = 0;
@@ -249,7 +239,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref nextSquadId, "nextSquadID", 1);
             Scribe_Values.Look(ref nextMercenaryID, "nextMercenaryID", 1);
             Scribe_Values.Look(ref nextMercenarySquadID, "nextMercenarySquadID", 1);
-Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
+            Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
 
             //New Tax Stuff
             Scribe_Values.Look(ref nextTaxID, "nextTaxID", 1);
@@ -264,16 +254,8 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             //Road builder
             Scribe_Deep.Look(ref roadBuilder, "roadBuilder");
 
-            //Traits
-            Scribe_Values.Look(ref traitMilitaristicTickLastUsedExtraSquad, "traitMilitaristicTickLastUsedExtraSquad");
-            Scribe_Values.Look(ref traitPacifistTickLastUsedDiplomat, "traitPacifistTickLastUsedDiplomat");
-            Scribe_Values.Look(ref traitExpansionistTickLastUsedSettlementFeeReduction,
-                "traitExpansionistTickLastUsedSettlementFeeReduction");
-            Scribe_Values.Look(ref traitExpansionistBoolCanUseSettlementFeeReduction,
-                "traitExpansionistBoolCanUseSettlementReduction");
-            Scribe_Values.Look(ref traitFeudalTickLastUsedMercenary, "traitFeudalTickLastUsedMercenary");
-            Scribe_Values.Look(ref traitFeudalBoolCanUseMercenary, "traitFeudalBoolCanUseMercenary");
-            Scribe_Values.Look(ref traitMercantileTradeCaravanTickDue, "traitMercantileTradeCaravanTickDue");
+            // Legacy trait Scribe_Values removed — state is now in FCPolicyState subclasses,
+            // serialized via FCPolicy.ExposeData -> FCPolicyState.ExposeData.
 
             //Settlement Leveling
             Scribe_Values.Look(ref factionLevel, "factionLevel");
@@ -595,45 +577,9 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         {
             int tick = Find.TickManager.TicksGame;
 
-            //Feudal
-            if (traitFeudalBoolCanUseMercenary == false &&
-                (traitFeudalTickLastUsedMercenary + GenDate.TicksPerSeason) <= Find.TickManager.TicksGame)
-            {
-                traitFeudalBoolCanUseMercenary = true;
-                Find.LetterStack.ReceiveLetter("FCActionAvailable".Translate(),
-                    "FCActionMercenaryRefreshed".Translate(), LetterDefOf.PositiveEvent);
-            }
-
-            //Expansionist
-            if (traitExpansionistBoolCanUseSettlementFeeReduction == false &&
-                (traitExpansionistTickLastUsedSettlementFeeReduction + GenDate.TicksPerYear) <=
-                Find.TickManager.TicksGame)
-            {
-                traitExpansionistBoolCanUseSettlementFeeReduction = true;
-                Find.LetterStack.ReceiveLetter("FCActionAvailable".Translate(),
-                    "FCActionSettlementFeeReduction".Translate(), LetterDefOf.PositiveEvent);
-            }
-
-            //Mercantile
-            if (hasTrait(FCPolicyDefOf.mercantile) && traitMercantileTradeCaravanTickDue <= Find.TickManager.TicksGame)
-            {
-                LogUtil.Message("Attempting to send mercantile trader caravan");
-                IncidentWorker_TraderCaravanArrival worker = new IncidentWorker_TraderCaravanArrival();
-                worker.def = IncidentDefOf.TraderCaravanArrival;
-                IncidentParms parms =
-                    StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, returnCapitalMap());
-                parms.faction = FactionCache.PlayerColonyFaction;
-                RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
-                    CellFinder.EdgeRoadChance_Friendly);
-                parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
-                if (parms.spawnCenter.IsValid)
-                    worker.TryExecute(parms);
-                else
-                    LogUtil.Warning("Mercantile - Spawn Center not valid");
-
-
-                resetTraitMercantileCaravanTime();
-            }
+            // Dispatch Tick to all active policy/trait extensions
+            // (feudal mercenary cooldown, expansionist fee reduction cooldown, mercantile caravans, etc.)
+            ForEachPolicyExtension((ext, policy) => ext.Tick(this, policy));
         }
 
         public void FireSupportTick()
@@ -929,7 +875,18 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
 
         // ── Policy Extension Cache ────────────────────────────────
 
-        private List<(FCPolicyModExtension ext, FCPolicy policy)> cachedPolicyExtensions;
+        private List<(FCPolicyModExtension ext, FCPolicy policy)> _cachedPolicyExtensions;
+        private List<(FCPolicyModExtension ext, FCPolicy policy)> cachedPolicyExtensions
+        {
+            get
+            {
+                if (_cachedPolicyExtensions == null)
+                {
+                    RebuildPolicyExtensionCache();
+                }
+                return _cachedPolicyExtensions;
+            }
+        }
 
         /// <summary>
         /// Rebuilds the flat cached list of active policy extensions. Call this whenever
@@ -937,18 +894,18 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public void RebuildPolicyExtensionCache()
         {
-            cachedPolicyExtensions = new List<(FCPolicyModExtension, FCPolicy)>();
+            _cachedPolicyExtensions = new List<(FCPolicyModExtension, FCPolicy)>();
             foreach (FCPolicy p in policies)
             {
                 if (p?.def == null) continue;
                 foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
-                    cachedPolicyExtensions.Add((ext, p));
+                    _cachedPolicyExtensions.Add((ext, p));
             }
             foreach (FCPolicy p in factionTraits)
             {
                 if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
                 foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
-                    cachedPolicyExtensions.Add((ext, p));
+                    _cachedPolicyExtensions.Add((ext, p));
             }
         }
 
@@ -958,7 +915,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public void ForEachPolicyExtension(Action<FCPolicyModExtension, FCPolicy> action)
         {
-            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
             foreach (var (ext, policy) in cachedPolicyExtensions)
             {
                 try
@@ -977,7 +933,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public double ApplyPolicyModifier(double baseValue, Func<FCPolicyModExtension, double, double> modifier)
         {
-            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
             double result = baseValue;
             foreach (var (ext, _) in cachedPolicyExtensions)
             {
@@ -998,7 +953,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public int ApplyPolicyModifier(int baseValue, Func<FCPolicyModExtension, int, int> modifier)
         {
-            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
             int result = baseValue;
             foreach (var (ext, _) in cachedPolicyExtensions)
             {
@@ -1019,7 +973,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public bool AnyPolicyBlocks(FCActionType action)
         {
-            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
             foreach (var (ext, _) in cachedPolicyExtensions)
                 if (ext.BlocksAction(action))
                     return true;
@@ -1031,50 +984,60 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         /// </summary>
         public bool AnyPolicyEnables(FCActionType action)
         {
-            if (cachedPolicyExtensions == null) RebuildPolicyExtensionCache();
             foreach (var (ext, _) in cachedPolicyExtensions)
                 if (ext.EnablesAction(action))
                     return true;
             return false;
         }
 
+        /// <summary>
+        /// Returns true if any active policy extension prevents building destruction on battle loss.
+        /// </summary>
+        public bool AnyPolicyPreventsBuildingDestruction()
+        {
+            foreach (var (ext, _) in cachedPolicyExtensions)
+                if (ext.PreventBuildingDestruction())
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if any active policy extension suppresses member death penalties.
+        /// </summary>
+        public bool AnyPolicySuppressesMemberDeathPenalty()
+        {
+            foreach (var (ext, _) in cachedPolicyExtensions)
+                if (ext.SuppressMemberDeathPenalty())
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the state of the first active policy/trait whose state is of type T, or null.
+        /// </summary>
+        public T GetPolicyState<T>() where T : FCPolicyState
+        {
+            foreach (var (_, policy) in cachedPolicyExtensions)
+                if (policy.state is T state)
+                    return state;
+            return null;
+        }
+
         public bool sendDiplomaticEnvoy(Faction faction)
         {
-            FactionFC factionfc = FactionCache.FactionComp;
-
-            if (!faction.def.permanentEnemy)
+            if (faction.def.permanentEnemy)
             {
-                if (Find.TickManager.TicksGame >=
-                    (factionfc.traitPacifistTickLastUsedDiplomat + GenDate.TicksPerDay * 5))
-                {
-                    factionfc.traitPacifistTickLastUsedDiplomat = Find.TickManager.TicksGame;
-                    int random = Rand.Range(1, 10);
-                    if (random > 5)
-                    {
-                        int relationImprovement = Rand.Range(5, 15);
-                        faction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer, relationImprovement);
-                        Find.LetterStack.ReceiveLetter("FCRelationImproved".Translate(),
-                            "FCRelationImprovedText".Translate(faction.Name, relationImprovement),
-                            LetterDefOf.PositiveEvent);
-                    }
-                    else
-                    {
-                        Find.LetterStack.ReceiveLetter("FCRelationNotImproved".Translate(),
-                            "FCFailedToImproveRelationship".Translate(faction.Name), LetterDefOf.NeutralEvent);
-                    }
-
-                    return true;
-                }
-
-                Messages.Message(
-                    "XDaysToSendDiplomat".Translate(Math.Round(
-                        ((factionfc.traitPacifistTickLastUsedDiplomat + GenDate.TicksPerDay * 5) -
-                         Find.TickManager.TicksGame).TicksToDays(), 1)), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCCannotImproveRelationsWithType".Translate(), MessageTypeDefOf.RejectInput);
                 return false;
             }
 
-            Messages.Message("FCCannotImproveRelationsWithType".Translate(), MessageTypeDefOf.RejectInput);
-            return false;
+            bool handled = false;
+            ForEachPolicyExtension((ext, policy) =>
+            {
+                if (!handled)
+                    handled = ext.HandleDiplomaticEnvoy(this, policy, faction);
+            });
+            return handled;
         }
 
         public void updateAverages()
@@ -1131,34 +1094,6 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             //updateTotalResources();
             updateTotalProfit();
             updateTechLevel(Find.ResearchManager);
-        }
-
-        public double getFactionWideTaxBonus()
-        {
-            double bonus = 0;
-            if (hasPolicy(FCPolicyDefOf.isolationist))
-                bonus += 10;
-
-            return bonus;
-        }
-
-        public int buildingUpkeepModifier(BuildingFCDef building)
-        {
-            int reduction = 0;
-            //TODO: find a reasonable way to modularize faction policies
-            if (hasPolicy(FCPolicyDefOf.militaristic))
-            {
-                foreach (FCTraitEffectDef trait in building.traits)
-                {
-                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
-                    {
-                        reduction -= 100;
-                        break;
-                    }
-                }
-            }
-
-            return reduction;
         }
 
         public double getTotalIncome() //return total income of settlements       ####MAKE UPDATE PER HOUR TICK
@@ -1280,14 +1215,7 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
         }
         public double getFactionTitheBonusMultForTotal(ResourceTypeDef rdef)
         {
-            double bonus = 1;
-
-            if (hasPolicy(FCPolicyDefOf.feudal))
-            {
-                bonus *= 1.2;
-            }
-
-            return bonus;
+            return ApplyPolicyModifier(1d, (ext, val) => ext.ModifyTitheMultiplier(val));
         }
 
 
@@ -1545,12 +1473,8 @@ Scribe_Values.Look(ref nextPrisonerID, "nextPrisonerID", 1);
             }
         }
 
-        public void resetTraitMercantileCaravanTime()
-        {
-            float days = Rand.RangeInclusive(3, 5);
-            LogUtil.Message($"Resetting Mercantile Caravan Time. New arrival in {days} days.");
-            traitMercantileTradeCaravanTickDue = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
-        }
+        // resetTraitMercantileCaravanTime removed — mercantile caravan scheduling
+        // is now handled by FCPolicyExt_Mercantile.Tick/OnEnacted via FCPolicyState_Mercantile.
 
         private bool CanMakeRandomEventNow()
         {

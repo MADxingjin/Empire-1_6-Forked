@@ -100,19 +100,15 @@ namespace FactionColonies
         public static militaryForce createMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
         {
             FactionFC faction = FactionCache.FactionComp;
-            int militaryLevelBonus = 0;
-            if (faction.hasTrait(FCPolicyDefOf.defenseInDepth) && isAttacking == false)
-                militaryLevelBonus += 2;
             double homeForceLevel = 0;
             if (homeDefendingForce != null)
             {
                 homeForceLevel = homeDefendingForce.militaryLevel;
             }
 
-            double militaryLevel = settlement.settlementMilitaryLevel + militaryLevelBonus + homeForceLevel;
+            double militaryLevel = settlement.settlementMilitaryLevel + homeForceLevel;
             double efficiency = settlement.getFieldValue("militaryMultiplierCombatEfficiency", Operation.Multiplication);
-            if (isAttacking && faction.hasPolicy(FCPolicyDefOf.militaristic)) 
-                efficiency *= 1.2;
+            faction.ForEachPolicyExtension((ext, _) => ext.ModifyMilitaryForce(ref militaryLevel, ref efficiency, isAttacking));
             militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);
             return returnForce;
             //create and return force.

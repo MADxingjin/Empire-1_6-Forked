@@ -43,6 +43,8 @@
         RaidSettlement,
         EnslaveSettlement,
         DeployMilitary,
-        SendDiplomat
+        SendDiplomat,
+        DeployExtraSquad,
+        BuildRoadsToAllies
     }
 }

@@ -192,32 +192,21 @@ namespace FactionColonies
         // --- CalculateBattleLossPenalties ---
 
         [EmpireTest("Formula")]
-        public static void BattleLoss_NoTraits_ReturnsBaseValues()
+        public static void BattleLoss_BaseValues()
         {
-            var (prosperity, happiness, loyalty) = SettlementFormulas.CalculateBattleLossPenalties(
-                happinessLostMultiplier: 1.0, loyaltyLostMultiplier: 1.0,
-                hasFeudalPolicy: false, hasResilientTrait: false);
+            var (prosperity, happiness, loyalty) = SettlementFormulas.CalculateBattleLossPenalties(happinessLostMultiplier: 1.0, loyaltyLostMultiplier: 1.0);
             TestAssert.AreEqual(20.0, prosperity);
             TestAssert.AreEqual(25.0, happiness);
             TestAssert.AreEqual(15.0, loyalty);
         }
 
         [EmpireTest("Formula")]
-        public static void BattleLoss_Feudal_DoublesLoyaltyLoss()
+        public static void BattleLoss_WithMultipliers_ScalesHappinessAndLoyalty()
         {
-            var (_, _, loyalty) = SettlementFormulas.CalculateBattleLossPenalties(
-                happinessLostMultiplier: 1.0, loyaltyLostMultiplier: 1.0,
-                hasFeudalPolicy: true, hasResilientTrait: false);
-            TestAssert.AreEqual(30.0, loyalty); // 15 * 1 * 2
-        }
-
-        [EmpireTest("Formula")]
-        public static void BattleLoss_Resilient_HalvesProsperityLoss()
-        {
-            var (prosperity, _, _) = SettlementFormulas.CalculateBattleLossPenalties(
-                happinessLostMultiplier: 1.0, loyaltyLostMultiplier: 1.0,
-                hasFeudalPolicy: false, hasResilientTrait: true);
-            TestAssert.AreEqual(10.0, prosperity); // 20 * 0.5
+            var (prosperity, happiness, loyalty) = SettlementFormulas.CalculateBattleLossPenalties(happinessLostMultiplier: 2.0, loyaltyLostMultiplier: 1.5);
+            TestAssert.AreEqual(20.0, prosperity);
+            TestAssert.AreEqual(50.0, happiness); // 25 * 2.0
+            TestAssert.AreEqual(22.5, loyalty);    // 15 * 1.5
         }
     }
 }

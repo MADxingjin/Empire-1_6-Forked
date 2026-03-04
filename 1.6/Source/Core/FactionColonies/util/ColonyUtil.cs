@@ -38,14 +38,7 @@ namespace FactionColonies.util
             settlement.SetFaction(faction);
             Find.WorldObjects.Add(settlement);
 
-            if (worldcomp.hasPolicy(FCPolicyDefOf.militaristic))
-                settlement.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
-            if (worldcomp.hasPolicy(FCPolicyDefOf.authoritarian))
-                settlement.loyalty = 70;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.egalitarian))
-                settlement.happiness = 60;
-            if (worldcomp.hasPolicy(FCPolicyDefOf.expansionist) && settlement.settlementLevel == 1)
-                settlement.upgradeSettlement();
+            worldcomp.ForEachPolicyExtension((ext, _) => ext.OnSettlementCreated(worldcomp, settlement));
 
             worldcomp.addSettlement(settlement);
             worldcomp.roadBuilder.FlagUpdateRoadQueues();

@@ -966,25 +966,12 @@ namespace FactionColonies
                         };
 
 
-                        if (factionfc.hasPolicy(FCPolicyDefOf.authoritarian))
-                            list.Add(new FloatMenuOption("FCBuyLoyalty".Translate(),
-                                delegate { Find.WindowStack.Add(new FCWindow_Pay_Silver_Loyalty(settlement)); }));
-
-                        if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian))
-                            list.Add(new FloatMenuOption("FCGiveTaxBreak".Translate(), delegate
-                            {
-                                if (settlement.trait_Egalitarian_TaxBreak_Enabled == false)
-                                {
-                                    Find.WindowStack.Add(new FCWindow_Confirm_TaxBreak(settlement));
-                                }
-                                else
-                                    Messages.Message(
-                                        "FCAlreadyGivingTaxBreak".Translate(Math.Round(
-                                            (settlement.trait_Egalitarian_TaxBreak_Tick +
-                                                GenDate.TicksPerDay * 10 -
-                                                Find.TickManager.TicksGame) / (double)GenDate.TicksPerDay, 1)),
-                                        MessageTypeDefOf.RejectInput);
-                            }));
+                        factionfc.ForEachPolicyExtension((ext, _) =>
+                        {
+                            var actions = ext.GetSettlementActions(factionfc, settlement);
+                            if (actions != null)
+                                list.AddRange(actions);
+                        });
 
                         if (list.Count == 0)
                             list.Add(new FloatMenuOption("FCNoSpecialActions".Translate(), delegate { }));

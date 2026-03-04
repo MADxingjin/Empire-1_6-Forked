@@ -227,15 +227,13 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            float trait_LootMulitplier = 1f;
-            if (faction.hasTrait(FCPolicyDefOf.raiders))
-                trait_LootMulitplier = 1.2f;
+            float lootMultiplier = (float)faction.ApplyPolicyModifier(1d, (ext, val) => ext.ModifyLootMultiplier(val));
 
             List<Thing> things = new List<Thing>();
             ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
             ThingSetMakerParams param = new ThingSetMakerParams();
-            param.totalMarketValueRange = new FloatRange((500 + (lootLevel * 200)) * trait_LootMulitplier,
-                (1000 + (lootLevel * 500)) * trait_LootMulitplier);
+            param.totalMarketValueRange = new FloatRange((500 + (lootLevel * 200)) * lootMultiplier,
+                (1000 + (lootLevel * 500)) * lootMultiplier);
             param.filter = new ThingFilter();
             param.techLevel = techLevel;
             param.countRange = new IntRange(3, 20);

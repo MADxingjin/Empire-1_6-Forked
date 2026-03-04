@@ -73,10 +73,6 @@ namespace FactionColonies
         public string incomeExp = "";
         public double totalProfit;
 
-        //Trait stuff
-        public int trait_Egalitarian_TaxBreak_Tick;
-        public bool trait_Egalitarian_TaxBreak_Enabled;
-
         // Jealously guard our resources. Only we can modify them!
         private List<ResourceFC> resources = new List<ResourceFC>();
         public List<ResourceFC> Resources => resources;
@@ -433,10 +429,6 @@ namespace FactionColonies
             //Prisoners
             Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
 
-            //Traits
-            Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Tick, "trait_Egalitarian_TaxBreak_Tick");
-            Scribe_Values.Look(ref trait_Egalitarian_TaxBreak_Enabled, "trait_Egalitarian_TaxBreak_Enabled");
-
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (trader != null && trader.settlement == null) trader.settlement = this;
@@ -502,10 +494,6 @@ namespace FactionColonies
         {
             base.Tick();
             trader?.TraderTrackerTick();
-
-            if (trait_Egalitarian_TaxBreak_Enabled &&
-                Find.TickManager.TicksGame >= trait_Egalitarian_TaxBreak_Tick + GenDate.TicksPerDay * 10)
-                trait_Egalitarian_TaxBreak_Enabled = false;
 
             foreach (FCTraitEffectDef trait in traits)
                 trait.GetModExtension<FCTraitEffectModExtension>()?.Tick(this);
@@ -573,21 +561,16 @@ namespace FactionColonies
         {
             FactionFC factionFc = FactionCache.FactionComp;
 
-            int isolationistExtraWorkers = 0;
-            if (factionFc.hasPolicy(FCPolicyDefOf.isolationist))
-                isolationistExtraWorkers += 3;
-
-            int SlaverExtraWorkers = 0;
-            if (factionFc.hasPolicy(FCPolicyDefOf.slaver))
-                SlaverExtraWorkers += 2;
+            int extraWorkersSoftcap = factionFc.ApplyPolicyModifier(0, (ext, val) => ext.ModifyExtraWorkersSoftcap(val));
+            int overMaxAdjustment = factionFc.ApplyPolicyModifier(0, (ext, val) => ext.ModifyOverMaxWorkers(val));
 
             //Military Settlement Level
             settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(getFieldValue("militaryBaseLevel", Operation.Addition));
 
             //Worker Stats
-            workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + isolationistExtraWorkers + SlaverExtraWorkers)) +
+            workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + extraWorkersSoftcap)) +
                          getFieldValue("workerBaseMax", Operation.Addition) + returnMaxWorkersFromPrisoners();
-            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase - SlaverExtraWorkers + (settlementLevel * settlementDef.workersUltraMaxMult) +
+            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + overMaxAdjustment + (settlementLevel * settlementDef.workersUltraMaxMult) +
                               getFieldValue("workerBaseOverMax", Operation.Addition) + returnOverMaxWorkersFromPrisoners();
 
         }
@@ -599,16 +582,13 @@ namespace FactionColonies
             totalProfit = Convert.ToInt32(totalIncome - totalUpkeep);
         }
 
-        // TODO: will need rework after converting faction traits to comps
         public double getHappinessGain()
         {
             FactionFC factionfc = FactionCache.FactionComp;
             double happinessGainMultiplier = getFieldValue("happinessGainedMultiplier", Operation.Multiplication);
 
             double policyIncrease = 0;
-            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
-                policyIncrease = 2;
-
+            factionfc.ForEachPolicyExtension((ext, _) => { policyIncrease += ext.GetSettlementHappinessBonus(this); });
 
             return happinessGainMultiplier * (policyIncrease + FCSettings.happinessBaseGain + getFieldValue("happinessGainedBase", Operation.Addition));
         }
@@ -630,9 +610,6 @@ namespace FactionColonies
             double happinessGain = getTotalHappinessGain();
             string desc = "";
             FactionFC factionfc = FactionCache.FactionComp;
-            double policyIncrease = 0;
-            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
-                policyIncrease = 2;
 
             if (happinessGain >= 0)
             {
@@ -648,10 +625,12 @@ namespace FactionColonies
             {
                 gain += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
             }
-            if (policyIncrease > 0)
+            factionfc.ForEachPolicyExtension((ext, policy) =>
             {
-                gain += TextUtil.colorizeAdditiveBonus(policyIncrease) + " - " + FCPolicyDefOf.egalitarian.LabelCap + "\n";
-            }
+                double bonus = ext.GetSettlementHappinessBonus(this);
+                if (bonus != 0)
+                    gain += TextUtil.colorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
+            });
             gain += getFieldDesc("happinessGainedBase", Operation.Addition);
             gain += getFieldDesc("happinessGainedMultiplier", Operation.Multiplication);
             if (!gain.NullOrEmpty())
@@ -720,15 +699,13 @@ namespace FactionColonies
             return desc.Trim();
         }
 
-        // TODO: will need rework after converting faction traits to comps
         public double getProsperityGain()
         {
             FactionFC factionfc = FactionCache.FactionComp;
             double policyIncrease = 0;
-            if (factionfc.hasPolicy(FCPolicyDefOf.egalitarian) && trait_Egalitarian_TaxBreak_Enabled)
-                policyIncrease = 2;
+            factionfc.ForEachPolicyExtension((ext, _) => { policyIncrease += ext.GetSettlementProsperityBonus(this); });
 
-            return (policyIncrease + FCSettings.prosperityBaseRecovery + getFieldValue("prosperityBaseRecovery", Operation.Addition)); //Go through traits and add prosperity where needed
+            return (policyIncrease + FCSettings.prosperityBaseRecovery + getFieldValue("prosperityBaseRecovery", Operation.Addition));
         }
         public void updateProsperity()
         {
@@ -811,19 +788,9 @@ namespace FactionColonies
         public double getSettlementTaxBonus()
         {
             FactionFC faction = FactionCache.FactionComp;
-            double bonus = 0;
-            if (faction.hasPolicy(FCPolicyDefOf.egalitarian))
-            {
-                bonus += Math.Floor(happiness / 10);
-                if (trait_Egalitarian_TaxBreak_Enabled)
-                {
-                    bonus -= 30;
-                }
-            }
+            double bonus = faction.ApplyPolicyModifier(0d, (ext, val) => ext.ModifyTaxBonus(val, this));
 
             bonus += getFieldValue("taxBasePercentage", Operation.Addition);
-
-            bonus += faction.getFactionWideTaxBonus();
 
             bonus = ((100d + bonus) / 100d);
 
@@ -1387,21 +1354,7 @@ namespace FactionColonies
         public double getTaxTimeTaxBoostMult()
         {
             FactionFC faction = FactionCache.FactionComp;
-            double multBoost = 1;
-
-            //TODO: would like to modularize faction traits more
-            double trait_Industrious_TaxPercentageBoost = 1;
-            if (faction.hasTrait(FCPolicyDefOf.industrious))
-            {
-                int num = Rand.RangeInclusive(1, 20);
-                if (num == 5)
-                {
-                    trait_Industrious_TaxPercentageBoost = 1f + (Rand.RangeInclusive(20, 50) / 100f);
-                    multBoost *= trait_Industrious_TaxPercentageBoost;
-                    Find.LetterStack.ReceiveLetter("FCIdustriousTaxBoost".Translate(), "FCIndustriousPop".Translate(Name, ((trait_Industrious_TaxPercentageBoost - 1f) * 100f) + "%"), LetterDefOf.PositiveEvent);
-                }
-            }
-
+            double multBoost = faction.ApplyPolicyModifier(1d, (ext, val) => ext.ModifyTaxTimeMultiplier(val, this));
             return multBoost;
         }
         public void pruneResourceTithes()
