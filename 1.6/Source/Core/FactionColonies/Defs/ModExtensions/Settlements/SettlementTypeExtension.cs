@@ -197,5 +197,55 @@ namespace FactionColonies
             }
             return TaxDeliveryMode.Caravan;
         }
+
+        /// <summary>
+        /// Returns a description of the settlement's current level for display in the settlement window.
+        /// </summary>
+        public virtual string getSettlementLevelDesc(int level)
+        {
+            switch (level)
+            {
+                case 1:
+                    return "FCTownLevel1".Translate();
+                case 2:
+                    return "FCTownLevel2".Translate();
+                case 3:
+                case 4:
+                    return "FCTownLevel3".Translate();
+                case 5:
+                case 6:
+                    return "FCTownLevel4".Translate();
+                default:
+                    return "FCTownLevel5".Translate();
+            }
+        }
+
+        /// <summary>
+        /// Called after a settlement's level changes (upgrade or delevel) and stats have been updated.
+        /// </summary>
+        public virtual void onUpgrade(WorldSettlementFC settlement, int oldLevel, int newLevel)
+        {
+        }
+
+        /// <summary>
+        /// Called before a settlement is removed from the world.
+        /// </summary>
+        public virtual void preDestruction(WorldSettlementFC settlement)
+        {
+        }
+
+        /// <summary>
+        /// Called at the start of tax collection, after pre-tax preparation (cache invalidation, resource pruning).
+        /// </summary>
+        public virtual void preTax(WorldSettlementFC settlement)
+        {
+        }
+
+        /// <summary>
+        /// Called at the end of tax collection, after all calculations are complete.
+        /// </summary>
+        public virtual void postTax(WorldSettlementFC settlement, int silverAmount, List<Thing> titheThings)
+        {
+        }
     }
 }

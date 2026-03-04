@@ -85,7 +85,7 @@ namespace FactionColonies
             // Required resource check
             if (cEvent.requiredResource != null)
             {
-                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0);
+                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0;
                 if (!hasResource) return false;
             }
 

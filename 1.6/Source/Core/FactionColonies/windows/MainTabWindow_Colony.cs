@@ -967,7 +967,6 @@ namespace FactionColonies
             Widgets.BeginScrollView(viewRect, ref billsScroll, scrollRect);
 
             List<BillFC> sorted = bills.OrderBy(b => b.dueTick).ToList();
-            bool billResolved = false;
             for (int i = 0; i < sorted.Count; i++)
             {
                 BillFC bill = sorted[i];
@@ -1029,7 +1028,6 @@ namespace FactionColonies
                 {
                     if (!bill.attemptResolve())
                         Messages.Message("NotEnoughSilverOnMapToPayBill".Translate() + "!", MessageTypeDefOf.RejectInput);
-                    billResolved = true;
                     break;
                 }
 

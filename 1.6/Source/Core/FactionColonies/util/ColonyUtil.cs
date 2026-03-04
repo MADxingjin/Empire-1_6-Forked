@@ -62,6 +62,7 @@ namespace FactionColonies.util
 
         public static void removePlayerSettlement(WorldSettlementFC settlement)
         {
+            settlement.settlementDef.getSettlementTypeExtension()?.preDestruction(settlement);
             settlement.PrepareDestroyWorldObject();
             FactionFC faction = FactionCache.FactionComp;
             faction.settlements.Remove(settlement);

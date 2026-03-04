@@ -530,6 +530,7 @@ namespace FactionColonies
 
         public void upgradeSettlement(int times = 1)
         {
+            int oldLevel = settlementLevel;
             settlementLevel += times;
             if (settlementLevel > FCSettings.settlementMaxLevel ||
                 settlementLevel > settlementDef.maxSettlementLevel)
@@ -538,6 +539,7 @@ namespace FactionColonies
             }
             if (settlementLevel < 0) settlementLevel = 0;
             updateStats();
+            settlementDef.getSettlementTypeExtension()?.onUpgrade(this, oldLevel, settlementLevel);
         }
 
         public void delevelSettlement(int times = -1)
@@ -1026,82 +1028,16 @@ namespace FactionColonies
             return defenseBonus;
         }
 
-        //Seperated into its own function to make it easier to PostFix descriptions for potential submod-added biomes
-        // There *has* to be a better way to dynamically retrieve these descriptions...
         private string getDescriptionBiome()
         {
-            string desc = "";
-
-            switch (biomeDef.defName)
-            {
-                case "BorealForest":
-                    desc = "FCDescBorealForest".Translate();
-                    break;
-                case "Tundra":
-                    desc = "FCDescTundra".Translate();
-                    break;
-                case "ColdBog":
-                    desc = "FCDescColdBog".Translate();
-                    break;
-                case "IceSheet":
-                    desc = "FCDescIceSheet".Translate();
-                    break;
-                case "SeaIce":
-                    desc = "FCDescIceSheet".Translate();
-                    break;
-                case "TemperateForest":
-                    desc = "FCDescTemperateForest".Translate();
-                    break;
-                case "TemperateSwamp":
-                    desc = "FCDescTemperateSwamp".Translate();
-                    break;
-                case "TropicalRainforest":
-                    desc = "FCDescTropicalRainforest".Translate();
-                    break;
-                case "AridShrubland":
-                    desc = "FCDescAridShrubland".Translate();
-                    break;
-                case "Desert":
-                    desc = "FCDescDesert".Translate();
-                    break;
-                case "ExtremeDesert":
-                    desc = "FCDescExtremeDesert".Translate();
-                    break;
-                case "OrbitalSpace":
-                    desc = "FCDescOrbitalSpace".Translate();
-                    break;
-                default:
-                    desc = "FCDescUnknown".Translate();
-                    break;
-            }
-            return desc;
+            if (!biomeDef.descriptionKey.NullOrEmpty())
+                return biomeDef.descriptionKey.Translate();
+            return "FCDescUnknown".Translate();
         }
         private string getSettlementLevelDesc()
         {
-            string desc = "";
-            switch (settlementLevel)
-            {
-                case 1:
-                    desc += "FCTownLevel1".Translate();
-                    break;
-                case 2:
-                    desc += "FCTownLevel2".Translate();
-                    break;
-                case 3:
-                case 4:
-                    desc += "FCTownLevel3".Translate();
-                    break;
-                case 5:
-                case 6:
-                    desc += "FCTownLevel4".Translate();
-                    break;
-                case 7:
-                case 8:
-                default:
-                    desc += "FCTownLevel5".Translate();
-                    break;
-            }
-            return desc;
+            return settlementDef.getSettlementTypeExtension()?.getSettlementLevelDesc(settlementLevel)
+                ?? "FCTownLevel5".Translate();
         }
 
         public void updateDescription()
@@ -1209,39 +1145,37 @@ namespace FactionColonies
         }
         public double getFieldValue(string field, Operation addOrMultiply)
         {
-            double value = 0;
-            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out value))
+            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out double value))
             {
                 value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
-                cachedTraitValues.Add((field, addOrMultiply), value);
-            }
-            foreach (WorldObjectComp comp in AllComps)
-            {
-                if (comp is IStatModifierProvider provider)
+                foreach (WorldObjectComp comp in AllComps)
                 {
-                    if (addOrMultiply == Operation.Addition)
-                        value += provider.GetStatModifier(field, addOrMultiply);
-                    else
-                        value *= provider.GetStatModifier(field, addOrMultiply);
+                    if (comp is IStatModifierProvider provider)
+                    {
+                        if (addOrMultiply == Operation.Addition)
+                            value += provider.GetStatModifier(field, addOrMultiply);
+                        else
+                            value *= provider.GetStatModifier(field, addOrMultiply);
+                    }
                 }
+                cachedTraitValues.Add((field, addOrMultiply), value);
             }
             return value;
         }
         public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
         {
-            string desc = "";
-            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out desc))
+            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out string desc))
             {
+                desc = "";
                 TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
-                cachedTraitDescs.Add((field, addOrMultiply), desc);
-            }
-            foreach (WorldObjectComp comp in AllComps)
-            {
-                if (comp is IStatModifierProvider provider)
+                foreach (WorldObjectComp comp in AllComps)
                 {
-                    desc += "\n" + provider.GetStatModifier(field, addOrMultiply);
-                 
+                    if (comp is IStatModifierProvider provider)
+                    {
+                        desc += provider.GetStatModifierDesc(field, addOrMultiply);
+                    }
                 }
+                cachedTraitDescs.Add((field, addOrMultiply), desc);
             }
             return desc;
         }
@@ -1526,6 +1460,7 @@ namespace FactionColonies
         public List<Thing> createTax(out int silverAmount)
         {
             preTaxPrep();
+            settlementDef.getSettlementTypeExtension()?.preTax(this);
 
             FactionFC faction = FactionCache.FactionComp;
             double flatTaxBoost = getTaxTimeTaxBoostFlat();
@@ -1550,6 +1485,7 @@ namespace FactionColonies
 
             postTaxPrep();
             silverAmount = tmpSilverAmount;
+            settlementDef.getSettlementTypeExtension()?.postTax(this, silverAmount, titheThings);
             return titheThings;
         }
     }
