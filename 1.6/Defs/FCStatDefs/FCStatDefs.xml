@@ -56,14 +56,6 @@
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
-        <defName>militaryBuildingUpkeepDiscount</defName>
-        <label>military building upkeep discount</label>
-        <defaultValue>0</defaultValue>
-        <aggregation>Additive</aggregation>
-        <appliesToSettlements>false</appliesToSettlements>
-    </FactionColonies.FCStatDef>
-
-    <FactionColonies.FCStatDef>
         <defName>militaryCooldownOffset</defName>
         <label>military cooldown offset</label>
         <defaultValue>0</defaultValue>
@@ -362,6 +354,154 @@
         <aggregation>Multiplicative</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_unrestGainedMultiplier</descriptionKey>
+    </FactionColonies.FCStatDef>
+
+    <!-- ── Resource Production ───────────────────────────────────
+         Two stats per ResourceTypeDef: additive base and multiplier.
+         linkedResource ties the stat to its resource for UI formatting.
+         ──────────────────────────────────────────────────────────── -->
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Food_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Food</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Food_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Food</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Weapons_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Weapons</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Weapons_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Weapons</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Apparel_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Apparel</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Apparel_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Apparel</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Animals_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Animals</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Animals_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Animals</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Logging_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Logging</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Logging_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Logging</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Mining_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Mining</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Mining_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Mining</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Medicine_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Medicine</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Medicine_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Medicine</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Research_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Research</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Research_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Research</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Power_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Power</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Power_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Power</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Chemfuel_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Chemfuel</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef>
+        <defName>RTD_Chemfuel_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Chemfuel</linkedResource>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef MayRequire="Ludeon.RimWorld.Odyssey">
+        <defName>RTD_Gravtech_ProductionAdditive</defName>
+        <defaultValue>0</defaultValue>
+        <aggregation>Additive</aggregation>
+        <linkedResource>RTD_Gravtech</linkedResource>
+    </FactionColonies.FCStatDef>
+    <FactionColonies.FCStatDef MayRequire="Ludeon.RimWorld.Odyssey">
+        <defName>RTD_Gravtech_ProductionMultiplier</defName>
+        <defaultValue>1</defaultValue>
+        <aggregation>Multiplicative</aggregation>
+        <linkedResource>RTD_Gravtech</linkedResource>
     </FactionColonies.FCStatDef>
 
 </Defs>

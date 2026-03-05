@@ -11,16 +11,14 @@
 		<cost>120000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.75</multiplier></li>
-			<li><resourceDef>RTD_Weapons</resourceDef><multiplier>1.75</multiplier></li>
-			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>1.75</multiplier></li>
-			<li><resourceDef>RTD_Logging</resourceDef><multiplier>1.75</multiplier></li>
-			<li><resourceDef>RTD_Mining</resourceDef><multiplier>1.75</multiplier></li>
-			<li><resourceDef>RTD_Medicine</resourceDef><multiplier>1.75</multiplier></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>militaryBaseLevel</stat><value>-3</value></li>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Weapons_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Medicine_ProductionMultiplier</stat><value>1.75</value></li>
 		</statModifiers>
 		<upkeep>4000</upkeep>
 		<!-- cost per week for the building -->
@@ -37,9 +35,9 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>2.0</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>2.0</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/BaconBeacon</iconPath>
@@ -55,11 +53,9 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Research</resourceDef><multiplier>2.0</multiplier></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>unrestGainedBase</stat><value>0.5</value></li>
+			<li><stat>RTD_Research_ProductionMultiplier</stat><value>2.0</value></li>
 		</statModifiers>
 		<upkeep>2000</upkeep>
 		<!-- cost per week for the building -->
@@ -132,9 +128,9 @@
 		<desc>An arcane generator that even the maintainers can't hope to understand, but have acquired.</desc> <!-- Description of trait -->
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Power</resourceDef><multiplier>2.0</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionMultiplier</stat><value>2.0</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/ArchotechGenerator</iconPath>
 	</FactionColonies.BuildingFCDef>

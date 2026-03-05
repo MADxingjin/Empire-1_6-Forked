@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -17,19 +18,12 @@ namespace FactionColonies
             settlement.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
         }
 
-        public override double ModifyStat(FCStatDef stat, double currentValue, WorldSettlementFC settlement)
+        public override double ModifyBuildingUpkeep(BuildingFCDef building, double currentUpkeep, WorldSettlementFC settlement)
         {
-            // Military building upkeep discount: -100 for buildings with military stats
-            if (stat == FCStatDefOf.militaryBuildingUpkeepDiscount)
-                return currentValue - 100;
-            return currentValue;
-        }
-
-        public override string GetStatDescription(FCStatDef stat, WorldSettlementFC settlement)
-        {
-            if (stat == FCStatDefOf.militaryBuildingUpkeepDiscount)
-                return TextUtil.colorizeAdditiveBonus(-100, invert: true) + " - " + policy.def.LabelCap + "\n";
-            return null;
+            if (building.statModifiers.Any(m => m.stat == FCStatDefOf.militaryBaseLevel
+                                             || m.stat == FCStatDefOf.militaryCombatEfficiency))
+                return Math.Max(currentUpkeep - 100, 0);
+            return currentUpkeep;
         }
 
         public override void OnSquadDeployed(FactionFC faction, WorldSettlementFC settlement, bool isExtraSquad)

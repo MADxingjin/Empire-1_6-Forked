@@ -242,6 +242,17 @@ namespace FactionColonies
         public double defaultBiomeMultiplier = 1;
 
         /// <summary>
+        /// The FCStatDef used for additive production bonuses from buildings, events, and policies.
+        /// Aggregated via the stat system; value is added to the base production from biome/extensions.
+        /// </summary>
+        public FCStatDef productionAdditiveStat;
+        /// <summary>
+        /// The FCStatDef used for multiplicative production bonuses from buildings, events, and policies.
+        /// Aggregated via the stat system; value multiplies the final production alongside biome multipliers.
+        /// </summary>
+        public FCStatDef productionMultiplierStat;
+
+        /// <summary>
         /// When generating tithes for this resource, the count range is set to (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is set within
         /// the code.
         /// </summary>
@@ -606,42 +617,33 @@ namespace FactionColonies
                     yield return "isPoolResource is TRUE but there is no ResourcePoolExtension in defModExtensions for ResourceTypeDef " + this.defName;
                 }
             }
+            if (productionAdditiveStat == null)
+            {
+                yield return "productionAdditiveStat is not set for ResourceTypeDef " + this.defName;
+            }
+            else if (productionAdditiveStat.aggregation != FCStatAggregation.Additive)
+            {
+                yield return "productionAdditiveStat must have Additive aggregation for ResourceTypeDef " + this.defName;
+            }
+            if (productionMultiplierStat == null)
+            {
+                yield return "productionMultiplierStat is not set for ResourceTypeDef " + this.defName;
+            }
+            else if (productionMultiplierStat.aggregation != FCStatAggregation.Multiplicative)
+            {
+                yield return "productionMultiplierStat must have Multiplicative aggregation for ResourceTypeDef " + this.defName;
+            }
         }
     }
     /// <summary>
-    /// Class for use in other defs.
+    /// Defines resource availability and base production bonuses for biomes and settlement types.
+    /// Unlike FCStatModifier, this determines WHETHER a resource exists at a location, not just its bonus.
     /// </summary>
-    public class ResourceBonuses
+    public class ResourceAvailability
     {
         public ResourceTypeDef resourceDef;
         public double additive = double.NaN;
         public double multiplier = 1;
-
-        /// <summary>
-        /// Creates a string description of this resource bonus, of the following form:
-        /// (+/-)[additive] base [resourceDef label]
-        /// x[multiplier] [resourceDef label]
-        /// </summary>
-        /// <returns>A TaggedString with colorized bonus values.</returns>
-        public TaggedString getBonusDesc(string tab = "")
-        {
-            TaggedString desc = "";
-            if (additive != 0 && !double.IsNaN(additive))
-            {
-                desc += tab + "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(additive), resourceDef.LabelCap);
-                if (multiplier != 1)
-                {
-                    desc += "\n";
-                }
-            }
-
-            if (multiplier != 1)
-            {
-                desc += tab + "RTDproductionMultiplier".Translate(TextUtil.colorizeMultiplierBonus(multiplier), resourceDef.LabelCap);
-            }
-
-            return desc;
-        }
     }
 
     [DefOf]

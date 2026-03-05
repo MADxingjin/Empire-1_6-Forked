@@ -764,7 +764,7 @@ namespace FactionColonies
             curY += smallMargin;
             Text.Font = GameFont.Small;
             float contentWidth = width - (smallMargin * 2);
-            float textHeight = Text.CalcHeight(modifiers.RawText, contentWidth);
+            float textHeight = Text.CalcHeight(modifiers, contentWidth);
             float blockHeight = 22f + smallMargin + textHeight;
 
             // Block background
@@ -795,8 +795,7 @@ namespace FactionColonies
             if (modifiers.RawText.NullOrEmpty()) return 0;
             GameFont tmp = Text.Font;
             Text.Font = GameFont.Small;
-            float h = smallMargin + 22f + smallMargin
-                + Text.CalcHeight(modifiers.RawText, width - (smallMargin * 2)) + margin;
+            float h = smallMargin + 22f + smallMargin + Text.CalcHeight(modifiers, width - (smallMargin * 2)) + margin;
             Text.Font = tmp;
             return h;
         }
@@ -807,20 +806,20 @@ namespace FactionColonies
 
         private float DrawSettlementImpact(float x, float curY, float width)
         {
-            if (selectedBuilding.resourceBonuses == null || selectedBuilding.resourceBonuses.Count == 0) return curY;
+            if (selectedBuilding.statModifiers == null || !selectedBuilding.statModifiers.Any(m => m.stat != null && m.stat.linkedResource != null)) return curY;
 
             // Gather all affected resources from both old and new building
             HashSet<ResourceTypeDef> affectedResources = new HashSet<ResourceTypeDef>();
-            foreach (var rb in selectedBuilding.resourceBonuses)
-                if (rb.resourceDef != null)
-                    affectedResources.Add(rb.resourceDef);
+            foreach (FCStatModifier mod in selectedBuilding.statModifiers)
+                if (mod.stat != null && mod.stat.linkedResource != null)
+                    affectedResources.Add(mod.stat.linkedResource);
 
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.resourceBonuses != null;
-            if (isReplacing)
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction;
+            if (isReplacing && buildingDef.statModifiers != null)
             {
-                foreach (var rb in buildingDef.resourceBonuses)
-                    if (rb.resourceDef != null)
-                        affectedResources.Add(rb.resourceDef);
+                foreach (FCStatModifier mod in buildingDef.statModifiers)
+                    if (mod.stat != null && mod.stat.linkedResource != null)
+                        affectedResources.Add(mod.stat.linkedResource);
             }
 
             if (affectedResources.Count == 0) return curY;
@@ -855,28 +854,32 @@ namespace FactionColonies
                 double projectedMult = resource.productionMult;
 
                 // Subtract old building contributions
-                if (isReplacing)
+                if (isReplacing && buildingDef.statModifiers != null)
                 {
-                    ResourceBonuses oldRb = buildingDef.resourceBonuses.FirstOrDefault(r => r.resourceDef == resDef);
-                    if (oldRb != null)
+                    foreach (FCStatModifier mod in buildingDef.statModifiers)
                     {
-                        if (oldRb.additive != 0) projectedBase -= oldRb.additive;
-                        if (oldRb.multiplier != 1 && oldRb.multiplier != 0) projectedMult /= oldRb.multiplier;
+                        if (mod.stat == null || mod.stat.linkedResource != resDef) continue;
+                        if (mod.stat.aggregation == FCStatAggregation.Additive)
+                            projectedBase -= mod.value;
+                        else if (mod.value != 0)
+                            projectedMult /= mod.value;
                     }
                 }
 
                 // Add new building contributions
-                ResourceBonuses newRb = selectedBuilding.resourceBonuses.FirstOrDefault(r => r.resourceDef == resDef);
-                if (newRb != null)
+                foreach (FCStatModifier mod in selectedBuilding.statModifiers)
                 {
-                    if (newRb.additive != 0) projectedBase += newRb.additive;
-                    if (newRb.multiplier != 1) projectedMult *= newRb.multiplier;
+                    if (mod.stat == null || mod.stat.linkedResource != resDef) continue;
+                    if (mod.stat.aggregation == FCStatAggregation.Additive)
+                        projectedBase += mod.value;
+                    else
+                        projectedMult *= mod.value;
                 }
 
                 double projectedProd = projectedBase * projectedMult;
                 double delta = projectedProd - currentProd;
 
-                // Draw row: [icon] Label: current → projected (delta)
+                // Draw row: [icon] Label: current -> projected (delta)
                 Rect rowRect = new Rect(x, curY, width, 22f);
 
                 // Resource icon
@@ -913,18 +916,18 @@ namespace FactionColonies
 
         private float CalculateImpactHeight()
         {
-            if (selectedBuilding?.resourceBonuses == null || selectedBuilding.resourceBonuses.Count == 0) return 0;
+            if (selectedBuilding?.statModifiers == null || !selectedBuilding.statModifiers.Any(m => m.stat != null && m.stat.linkedResource != null)) return 0;
 
             HashSet<ResourceTypeDef> affected = new HashSet<ResourceTypeDef>();
-            foreach (var rb in selectedBuilding.resourceBonuses)
-                if (rb.resourceDef != null)
-                    affected.Add(rb.resourceDef);
+            foreach (FCStatModifier mod in selectedBuilding.statModifiers)
+                if (mod.stat != null && mod.stat.linkedResource != null)
+                    affected.Add(mod.stat.linkedResource);
 
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.resourceBonuses != null;
-            if (isReplacing)
-                foreach (var rb in buildingDef.resourceBonuses)
-                    if (rb.resourceDef != null)
-                        affected.Add(rb.resourceDef);
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction;
+            if (isReplacing && buildingDef.statModifiers != null)
+                foreach (FCStatModifier mod in buildingDef.statModifiers)
+                    if (mod.stat != null && mod.stat.linkedResource != null)
+                        affected.Add(mod.stat.linkedResource);
 
             if (affected.Count == 0) return 0;
 

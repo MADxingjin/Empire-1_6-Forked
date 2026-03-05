@@ -260,8 +260,8 @@ namespace FactionColonies
                     }
                     /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
                      * it should accurately represent the resources that the settlement would produce */
-                    ResourceBonuses biomeRes = currentBiomeSelected.getBiomeResource(titheType);
-                    ResourceBonuses settleRes = currentSettlementType.getSettlementResource(titheType);
+                    ResourceAvailability biomeRes = currentBiomeSelected.getBiomeResource(titheType);
+                    ResourceAvailability settleRes = currentSettlementType.getSettlementResource(titheType);
 
                     float xMod = 70f;
                     Rect baseRect = new Rect(40, startHeight + i * (5 + baseHeight), 60, baseHeight + 2);

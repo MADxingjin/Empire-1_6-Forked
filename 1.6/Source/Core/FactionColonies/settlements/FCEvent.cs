@@ -154,7 +154,6 @@ namespace FactionColonies
                 tickStarted = Find.TickManager.TicksGame,
                 timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
                 statModifiers = def.statModifiers,
-                resourceBonuses = def.resourceBonuses,
                 settlementTraitLocations = new List<WorldSettlementFC>()
             };
 
@@ -371,7 +370,7 @@ namespace FactionColonies
                     {
                         if (location != null)
                         {
-                            location.removeStatModifiers(evt.statModifiers, evt.resourceBonuses, "event_" + evt.def.defName);
+                            location.removeStatModifiers(evt.statModifiers, "event_" + evt.def.defName);
 
                             //prosperity loss calculation
                             location.prosperity -= evt.prosperityLost;
@@ -383,7 +382,7 @@ namespace FactionColonies
                     //if no specific location then faction wide
                     foreach (WorldSettlementFC worldsettlement in faction.settlements)
                     {
-                        worldsettlement.removeStatModifiers(evt.statModifiers, evt.resourceBonuses, "event_" + evt.def.defName);
+                        worldsettlement.removeStatModifiers(evt.statModifiers, "event_" + evt.def.defName);
                         worldsettlement.prosperity -= evt.prosperityLost;
                     }
                 }
@@ -617,7 +616,6 @@ namespace FactionColonies
         public List<WorldSettlementFC> settlementTraitLocations = new List<WorldSettlementFC>();
         public List<Thing> goods = new List<Thing>();
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
-        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
         public bool hasCustomDescription;
         public string customDescription = "";
 
@@ -772,7 +770,6 @@ namespace FactionColonies
             if (Scribe.mode == LoadSaveMode.PostLoadInit && def != null)
             {
                 statModifiers = def.statModifiers;
-                resourceBonuses = def.resourceBonuses;
             }
         }
 
@@ -842,7 +839,6 @@ namespace FactionColonies
 
         //Stat modifiers during event
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
-        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
 
 
         //Benefits after eventtime info
@@ -855,6 +851,14 @@ namespace FactionColonies
         public Faction militaryForceAttackingDefending = null;
         public WorldSettlementFC settlementFCDefending = null;
         public bool isMilitaryEvent = false;
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string err in base.ConfigErrors())
+                yield return err;
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
+        }
     }
 
     [DefOf]

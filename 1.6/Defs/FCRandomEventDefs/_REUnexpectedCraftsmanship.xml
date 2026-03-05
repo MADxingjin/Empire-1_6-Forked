@@ -9,16 +9,10 @@
 		<timeTillTrigger>300000</timeTillTrigger>
 		<perpetual>false</perpetual>
 
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Weapons</resourceDef>
-				<additive>0.5</additive>
-			</li>
-			<li>
-				<resourceDef>RTD_Apparel</resourceDef>
-				<additive>0.5</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>0.5</value></li>
+			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>0.5</value></li>
+		</statModifiers>
 
 		<options>
 		</options>

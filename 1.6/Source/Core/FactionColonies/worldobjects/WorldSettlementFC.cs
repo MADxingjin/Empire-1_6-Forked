@@ -270,6 +270,30 @@ namespace FactionColonies
         {
             cachedStatDescs.Clear();
             cachedStatValues.Clear();
+            InvalidateResourceCaches();
+        }
+
+        /// <summary>
+        /// Clears cached stat descriptions without clearing stat value caches.
+        /// Called when faction-level modifiers change (desc includes faction contributions).
+        /// </summary>
+        public void InvalidateDescCache()
+        {
+            cachedStatDescs.Clear();
+        }
+
+        /// <summary>
+        /// Dirties resource production caches without clearing stat caches.
+        /// Called by FactionFC.InvalidateFactionStatCache when faction-level modifiers change
+        /// (settlement stat caches are unaffected, but final combined values change).
+        /// </summary>
+        public void InvalidateResourceCaches()
+        {
+            foreach (ResourceFC resource in resources)
+            {
+                resource.setDirtyCacheProdBase();
+                resource.setDirtyCacheProdMult();
+            }
         }
 
         /// <summary>
@@ -279,7 +303,7 @@ namespace FactionColonies
         /// <param name="techlevel"></param>
         public void PrepareResources(TechLevel techlevel)
         {
-            foreach (ResourceBonuses rtd in settlementDef.resources)
+            foreach (ResourceAvailability rtd in settlementDef.resources)
             {
                 bool resourceAllowed = biomeDef.getBiomeResource(rtd.resourceDef) != null && rtd.resourceDef.ResourceTypeAllowedByTech(techlevel);
                 ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == rtd.resourceDef);
@@ -364,7 +388,7 @@ namespace FactionColonies
             PrepareResources(faction.techLevel);
 
             /* If the settlement type has inherent stat modifiers, add them here. */
-            addStatModifiers(settlementDef.statModifiers, settlementDef.settlementResourceBonuses, "settlementType");
+            addStatModifiers(settlementDef.statModifiers, "settlementType");
 
             updateProfitAndProduction();
 
@@ -965,61 +989,33 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Adds stat modifiers and resource bonuses from a source (building, settlement type, etc).
+        /// Adds stat modifiers from a source (building, settlement type, etc).
+        /// Resource production bonuses are now handled via FCStatDef's linkedResource on ResourceFC.
         /// </summary>
-        public void addStatModifiers(List<FCStatModifier> mods, List<ResourceBonuses> resBonuses, string sourceId, string sourceLabel = null)
+        public void addStatModifiers(List<FCStatModifier> mods, string sourceId, string sourceLabel = null)
         {
             if (mods != null)
                 statModifiers.AddRange(mods);
-
-            if (resBonuses != null)
-            {
-                foreach (ResourceBonuses rb in resBonuses)
-                {
-                    ResourceFC resource = getResource(rb.resourceDef);
-                    if (resource != null)
-                    {
-                        if (rb.additive != 0)
-                            resource.addProductionAdditive(sourceId, rb.additive, sourceLabel ?? sourceId);
-                        if (rb.multiplier != 1)
-                            resource.addProductionMultiplier(sourceId, rb.multiplier, sourceLabel ?? sourceId);
-                    }
-                }
-            }
             InvalidateStatCache();
         }
 
         /// <summary>
-        /// Removes stat modifiers and resource bonuses previously added by the given source.
+        /// Removes stat modifiers previously added by the given source.
         /// mods must be the exact same FCStatModifier object references that were passed to
         /// addStatModifiers, since removal uses reference equality (the def's objects stored via AddRange).
         /// </summary>
-        public void removeStatModifiers(List<FCStatModifier> mods, List<ResourceBonuses> resBonuses, string sourceId)
+        public void removeStatModifiers(List<FCStatModifier> mods, string sourceId)
         {
             if (mods != null)
             {
                 foreach (FCStatModifier mod in mods)
                     statModifiers.Remove(mod);
             }
-
-            if (resBonuses != null)
-            {
-                foreach (ResourceBonuses rb in resBonuses)
-                {
-                    ResourceFC resource = getResource(rb.resourceDef);
-                    if (resource != null)
-                    {
-                        resource.removeProductionAdditiveById(sourceId);
-                        resource.removeProductionMultiplierById(sourceId);
-                    }
-                }
-            }
             InvalidateStatCache();
         }
 
         /// <summary>
         /// Clears all settlement-level stat modifiers (from buildings, settlement type).
-        /// Resource production bonuses from those sources are NOT cleared; use clearResourceBonuses for that.
         /// </summary>
         public void clearStatModifiers()
         {
@@ -1028,30 +1024,63 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// The settlement-level stat modifier list. Used by FactionFC.GetStatValue for aggregation.
+        /// The settlement-level stat modifier list.
         /// </summary>
         public IReadOnlyList<FCStatModifier> StatModifiers => statModifiers;
 
         /// <summary>
-        /// Computes the final value for a stat at this settlement, combining settlement-local modifiers,
-        /// IStatModifierProvider comps, faction-level policy/trait modifiers, and behavior ModifyStat.
-        /// Results are cached; call InvalidateStatCache() when local modifiers change.
+        /// Computes and caches the settlement-level stat partial (buildings, settlement type, events, IStatModifierProvider comps).
+        /// Does NOT include faction-level modifiers or behavior adjustments.
+        /// Called by FactionFC.GetStatValue to get the settlement contribution for aggregation.
+        /// </summary>
+        public double GetSettlementStatValue(FCStatDef stat)
+        {
+            if (cachedStatValues.TryGetValue(stat, out double cached))
+                return cached;
+
+            double value = stat.defaultValue;
+
+            foreach (FCStatModifier mod in statModifiers)
+            {
+                if (mod.stat == stat)
+                {
+                    if (stat.aggregation == FCStatAggregation.Additive)
+                        value += mod.value;
+                    else
+                        value *= mod.value;
+                }
+            }
+
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is IStatModifierProvider provider)
+                {
+                    double compValue = provider.GetStatModifier(stat);
+                    if (stat.aggregation == FCStatAggregation.Additive)
+                        value += compValue;
+                    else
+                        value *= compValue;
+                }
+            }
+
+            cachedStatValues[stat] = value;
+            return value;
+        }
+
+        /// <summary>
+        /// Returns the final combined stat value at this settlement.
+        /// Delegates to FactionFC.GetStatValue which combines settlement + faction partials + behaviors.
         /// </summary>
         public double getStatValue(FCStatDef stat)
         {
             if (!stat.appliesToSettlements)
                 return FactionCache.FactionComp.GetStatValue(stat);
-
-            if (!cachedStatValues.TryGetValue(stat, out double value))
-            {
-                value = FactionCache.FactionComp.GetStatValue(stat, this);
-                cachedStatValues[stat] = value;
-            }
-            return value;
+            return FactionCache.FactionComp.GetStatValue(stat, this);
         }
 
         /// <summary>
         /// Builds a per-source breakdown description for a stat at this settlement.
+        /// Combines settlement-level, faction-level, and behavior contributions.
         /// </summary>
         public string getStatDesc(FCStatDef stat, bool hardinvert = false)
         {
@@ -1062,11 +1091,10 @@ namespace FactionColonies
                 bool isAdditive = stat.aggregation == FCStatAggregation.Additive;
                 bool invert = stat.invertedForDisplay;
 
-                // Settlement-level modifiers (from buildings, settlement type)
+                // Settlement-level modifiers (buildings, settlement type, events)
                 foreach (FCStatModifier mod in statModifiers)
                 {
                     if (mod.stat != stat) continue;
-                    // For settlement-level, we show building/type labels from the source defs
                     if (isAdditive)
                         desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
                     else
@@ -1080,32 +1108,9 @@ namespace FactionColonies
                         desc += provider.GetStatModifierDesc(stat);
                 }
 
-                // Faction-level policy/trait modifiers
+                // Faction-level policy/trait modifiers (delegated to FactionFC)
                 FactionFC faction = FactionCache.FactionComp;
-                foreach (FCPolicy p in faction.policies)
-                {
-                    if (p?.def == null) continue;
-                    foreach (FCStatModifier mod in p.def.statModifiers)
-                    {
-                        if (mod.stat != stat) continue;
-                        if (isAdditive)
-                            desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
-                        else
-                            desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
-                    }
-                }
-                foreach (FCPolicy p in faction.factionTraits)
-                {
-                    if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                    foreach (FCStatModifier mod in p.def.statModifiers)
-                    {
-                        if (mod.stat != stat) continue;
-                        if (isAdditive)
-                            desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
-                        else
-                            desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
-                    }
-                }
+                desc += faction.GetFactionStatDesc(stat, hardinvert);
 
                 // Behavior runtime contributions (e.g., Egalitarian happiness bonus, Expansionist discount)
                 faction.ForEachBehavior(b =>

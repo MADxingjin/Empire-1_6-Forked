@@ -41,6 +41,12 @@ namespace FactionColonies
         /// If true, lower values are "better" for UI coloring purposes (e.g., costs, losses).
         /// </summary>
         public bool invertedForDisplay;
+
+        /// <summary>
+        /// If non-null, this stat is a resource production stat linked to this ResourceTypeDef.
+        /// Used for description formatting (resource name + icon instead of generic descriptionKey).
+        /// </summary>
+        public ResourceTypeDef linkedResource;
     }
 
     /// <summary>
@@ -52,25 +58,46 @@ namespace FactionColonies
         public double value;
 
         /// <summary>
-        /// Builds a human-readable description string from a list of stat modifiers and optional resource bonuses.
+        /// Yields ConfigError strings for any stat modifier with a null stat reference (unresolved defName in XML).
         /// </summary>
-        public static string GetDescription(List<FCStatModifier> modifiers, List<ResourceBonuses> resourceBonuses = null)
+        public static IEnumerable<string> ConfigErrors(List<FCStatModifier> modifiers, string ownerDefName)
         {
-            string desc = "";
-            if (resourceBonuses?.Count > 0)
+            if (modifiers == null) yield break;
+            for (int i = 0; i < modifiers.Count; i++)
             {
-                foreach (ResourceBonuses rb in resourceBonuses)
-                    desc += rb.getBonusDesc("") + "\n";
+                if (modifiers[i].stat == null)
+                    yield return $"{ownerDefName}: statModifiers[{i}] has null stat (unresolved defName?)";
             }
+        }
+
+        /// <summary>
+        /// Builds a human-readable description string from a list of stat modifiers.
+        /// Resource-linked stats use resource-specific translation keys; other stats use descriptionKey.
+        /// </summary>
+        public static TaggedString GetDescription(List<FCStatModifier> modifiers)
+        {
+            TaggedString desc = "";
             if (modifiers?.Count > 0)
             {
                 foreach (FCStatModifier mod in modifiers)
                 {
-                    if (mod.stat?.descriptionKey.NullOrEmpty() != false) continue;
-                    if (mod.stat.aggregation == FCStatAggregation.Additive)
-                        desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeAdditiveBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                    if (mod.stat == null) continue;
+
+                    if (mod.stat.linkedResource != null)
+                    {
+                        if (mod.stat.aggregation == FCStatAggregation.Additive)
+                            desc += "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                        else
+                            desc += "RTDproductionMultiplier".Translate(TextUtil.colorizeMultiplierBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                    }
                     else
-                        desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeMultiplierBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                    {
+                        if (mod.stat.descriptionKey.NullOrEmpty()) continue;
+                        if (mod.stat.aggregation == FCStatAggregation.Additive)
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeAdditiveBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                        else
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeMultiplierBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                    }
                 }
             }
             return desc.Trim();

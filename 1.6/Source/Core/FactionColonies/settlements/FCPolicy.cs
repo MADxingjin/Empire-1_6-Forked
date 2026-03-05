@@ -83,8 +83,6 @@ namespace FactionColonies
         public List<FCActionType> enabledActions = new List<FCActionType>();
         public bool preventBuildingDestruction;
         public bool suppressMemberDeathPenalty;
-        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
-
         // Optional behavior class for policies that need procedural logic.
         // Must be a subclass of FCPolicyBehavior. Null for pure-XML policies.
         public Type behaviorClass;
@@ -170,7 +168,7 @@ namespace FactionColonies
                 }
             }
 
-            string statDesc = FCStatModifier.GetDescription(statModifiers, resourceBonuses);
+            string statDesc = FCStatModifier.GetDescription(statModifiers);
             if (!statDesc.NullOrEmpty())
             {
                 if (str.Length > 0) str += "\n";
@@ -182,6 +180,16 @@ namespace FactionColonies
         public string CachedPolicyDesc()
         {
             return FactionCache.FCPolicyDescs?[this] ?? PolicyDesc();
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string err in base.ConfigErrors())
+                yield return err;
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
+            if (behaviorClass != null && !typeof(FCPolicyBehavior).IsAssignableFrom(behaviorClass))
+                yield return defName + ": behaviorClass " + behaviorClass.Name + " is not a subclass of FCPolicyBehavior";
         }
     }
 

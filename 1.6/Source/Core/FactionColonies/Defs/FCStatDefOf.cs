@@ -13,7 +13,6 @@ namespace FactionColonies
         public static FCStatDef militaryLevelBonusAttacking;
         public static FCStatDef militaryEfficiencyBonusAttacking;
         public static FCStatDef militaryEfficiencyBonusDefending;
-        public static FCStatDef militaryBuildingUpkeepDiscount;
         public static FCStatDef militaryCooldownOffset;
         public static FCStatDef raidCooldownOffset;
         public static FCStatDef deadPawnCooldownOffset;

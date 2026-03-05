@@ -74,6 +74,7 @@ namespace FactionColonies
                             var data = GetOrCreate(settlement.Tile);
                             data.startTick = Find.TickManager.TicksGame;
                             data.enabled = true;
+                            settlement.InvalidateStatCache();
                             Messages.Message(
                                 TranslatorFormattedStringExtensions.Translate("FCGivingTaxBreak", settlement.Name),
                                 MessageTypeDefOf.NeutralEvent);
@@ -98,7 +99,10 @@ namespace FactionColonies
             foreach (var kvp in taxBreaks)
             {
                 if (kvp.Value.enabled && (kvp.Value.startTick + GenDate.TicksPerDay * 10) <= currentTick)
+                {
                     kvp.Value.enabled = false;
+                    faction.returnSettlementByLocation(kvp.Key)?.InvalidateStatCache();
+                }
             }
         }
 

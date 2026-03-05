@@ -12,10 +12,8 @@
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-2</value></li>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.2</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><additive>0.2</additive></li>
-		</resourceBonuses>
 		<maxhilliness>Flat</maxhilliness>
 		<upkeep>0</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/cerealFarmland</iconPath>
@@ -28,9 +26,9 @@
 		<desc>A mill to process cereal crops with big, grindy rocks.</desc> <!-- Description of trait -->
 		<cost>300</cost>
 		<constructionDuration>45000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.15</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.15</value></li>
+		</statModifiers>
 		<upkeep>25</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/grainMill</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -42,9 +40,9 @@
 		<desc>A safe place to store cereal crops from those pesky rats.</desc> <!-- Description of trait -->
 		<cost>150</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.10</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.10</value></li>
+		</statModifiers>
 		<upkeep>75</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/granary</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -56,10 +54,10 @@
 		<desc>A creator of arrows - the best ammuniotion in the neolithic!</desc> <!-- Description of trait -->
 		<cost>175</cost>
 		<constructionDuration>40000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Weapons</resourceDef><multiplier>1.15</multiplier></li>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>0.85</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Weapons_ProductionMultiplier</stat><value>1.15</value></li>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>0.85</value></li>
+		</statModifiers>
 		<upkeep></upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/fletcher</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -71,9 +69,9 @@
 		<desc>An artisan of stone by day - rules the world by night.</desc> <!-- Description of trait -->
 		<cost>200</cost>
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Mining</resourceDef><multiplier>1.20</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>1.20</value></li>
+		</statModifiers>
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/stoneMason</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -85,10 +83,10 @@
 		<desc>Makes goods from furs and pelts. Ignore the funky smell.</desc> <!-- Description of trait -->
 		<cost>225</cost>
 		<constructionDuration>45000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>1.15</multiplier></li>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>0.85</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>1.15</value></li>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>0.85</value></li>
+		</statModifiers>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>BorealForest</li>
 			<li>TemperateForest</li>
@@ -106,10 +104,10 @@
 		<desc>Hunts the surrounding woods for food. Endangered species are delicious!</desc> <!-- Description of trait -->
 		<cost>125</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.15</multiplier></li>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>0.75</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.15</value></li>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>0.75</value></li>
+		</statModifiers>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>BorealForest</li>
 			<li>TemperateForest</li>
@@ -129,10 +127,8 @@
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>happinessGainedBase</stat><value>0.4</value></li>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>0.95</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>0.95</multiplier></li>
-		</resourceBonuses>
 		<upkeep>150</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/brewer</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -146,10 +142,8 @@
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>happinessGainedBase</stat><value>0.1</value></li>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>0.8</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Logging</resourceDef><multiplier>0.8</multiplier></li>
-		</resourceBonuses>
 		<upkeep></upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/carpenter</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -163,10 +157,8 @@
 		<constructionDuration>65000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>happinessGainedBase</stat><value>0.2</value></li>
+			<li><stat>RTD_Medicine_ProductionMultiplier</stat><value>1.15</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Medicine</resourceDef><multiplier>1.15</multiplier></li>
-		</resourceBonuses>
 		<upkeep>50</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/apothecary</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -178,10 +170,10 @@
 		<desc>Turn steel into gold? We'll find a way!</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>50000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Mining</resourceDef><multiplier>0.85</multiplier></li>
-			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.10</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>0.85</value></li>
+			<li><stat>RTD_Research_ProductionMultiplier</stat><value>1.10</value></li>
+		</statModifiers>
 		<upkeep></upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/alchemist</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -195,10 +187,8 @@
 		<constructionDuration>75000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>workerBaseCost</stat><value>2</value></li>
+			<li><stat>RTD_Research_ProductionAdditive</stat><value>0.2</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Research</resourceDef><additive>0.2</additive></li>
-		</resourceBonuses>
 		<upkeep>200</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/ancientAcademy</iconPath>
 	</FactionColonies.BuildingFCDef>

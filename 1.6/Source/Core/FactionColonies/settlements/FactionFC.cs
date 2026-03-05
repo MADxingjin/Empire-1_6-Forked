@@ -746,9 +746,13 @@ namespace FactionColonies
             return false;
         }
 
+        // ── Stat Cache ────────────────────────────────────────────
+
+        private Dictionary<FCStatDef, double> cachedFactionStatValues = new Dictionary<FCStatDef, double>();
+
         // ── Behavior Cache ────────────────────────────────────────
 
-        private List<FCPolicyBehavior> _cachedBehaviors;
+        private List<FCPolicyBehavior> _cachedBehaviors = null;
         private List<FCPolicyBehavior> cachedBehaviors
         {
             get
@@ -766,6 +770,7 @@ namespace FactionColonies
         /// </summary>
         public void RebuildBehaviorCache()
         {
+            LogUtil.Message($"Rebuilding faction behavior cache");
             _cachedBehaviors = new List<FCPolicyBehavior>();
             foreach (FCPolicy p in policies)
             {
@@ -778,6 +783,9 @@ namespace FactionColonies
                 if (p.behavior != null)
                     _cachedBehaviors.Add(p.behavior);
             }
+
+            // Policy/trait changes affect faction-level stat values and behavior ModifyStat results
+            InvalidateFactionStatCache();
         }
 
         public void ForEachBehavior(Action<FCPolicyBehavior> action)
@@ -793,6 +801,22 @@ namespace FactionColonies
                     LogUtil.Error($"Policy behavior error: {e}");
                 }
             }
+        }
+
+        public T FoldBehaviors<T>(T seed, Func<FCPolicyBehavior, T, T> folder)
+        {
+            foreach (FCPolicyBehavior b in cachedBehaviors)
+            {
+                try
+                {
+                    seed = folder(b, seed);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy behavior fold error: {e}");
+                }
+            }
+            return seed;
         }
 
         /// <summary>
@@ -813,44 +837,54 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Computes the final value for a stat by aggregating:
-        /// 1. Settlement-level modifiers (buildings, settlement type) + IStatModifierProvider comps (if settlement provided)
-        /// 2. Faction-level policy/trait statModifiers
-        /// 3. Behavior ModifyStat for runtime-dependent adjustments
+        /// Entry point for stat queries. Combines settlement-level and faction-level cached partials,
+        /// then applies uncached behavior ModifyStat adjustments.
         /// </summary>
         public double GetStatValue(FCStatDef stat, WorldSettlementFC settlement = null)
         {
-            double value = stat.defaultValue;
+            double value;
+            double factionPart = GetFactionStatValue(stat);
 
-            // Settlement-level modifiers (from buildings, settlement type, events)
-            if (settlement != null)
+            if (settlement != null && stat.appliesToSettlements)
             {
-                foreach (FCStatModifier mod in settlement.StatModifiers)
-                {
-                    if (mod.stat == stat)
-                    {
-                        if (stat.aggregation == FCStatAggregation.Additive)
-                            value += mod.value;
-                        else
-                            value *= mod.value;
-                    }
-                }
+                double settlementPart = settlement.GetSettlementStatValue(stat);
+                if (stat.aggregation == FCStatAggregation.Additive)
+                    value = settlementPart + factionPart;
+                else
+                    value = settlementPart * factionPart;
+            }
+            else
+            {
+                value = factionPart;
+            }
 
-                // IStatModifierProvider comps on the settlement
-                foreach (WorldObjectComp comp in settlement.AllComps)
+            // Apply runtime-dependent behavior modifiers (uncached — may depend on settlement state)
+            foreach (FCPolicyBehavior b in cachedBehaviors)
+            {
+                try
                 {
-                    if (comp is IStatModifierProvider provider)
-                    {
-                        double compValue = provider.GetStatModifier(stat);
-                        if (stat.aggregation == FCStatAggregation.Additive)
-                            value += compValue;
-                        else
-                            value *= compValue;
-                    }
+                    value = b.ModifyStat(stat, value, settlement);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Behavior ModifyStat error for stat '{stat.defName}': {e}");
                 }
             }
 
-            // Faction-level policy/trait statModifiers
+            return value;
+        }
+
+        /// <summary>
+        /// Computes and caches the faction-level stat partial (policies + traits only).
+        /// Starts from stat.defaultValue, applies only faction-level static modifiers.
+        /// </summary>
+        public double GetFactionStatValue(FCStatDef stat)
+        {
+            if (cachedFactionStatValues.TryGetValue(stat, out double cached))
+                return cached;
+
+            double value = stat.defaultValue;
+
             foreach (FCPolicy p in policies)
             {
                 if (p?.def == null) continue;
@@ -880,20 +914,61 @@ namespace FactionColonies
                 }
             }
 
-            // Apply runtime-dependent behavior modifiers
-            foreach (FCPolicyBehavior b in cachedBehaviors)
+            cachedFactionStatValues[stat] = value;
+            return value;
+        }
+
+        /// <summary>
+        /// Clears the faction-level stat cache and dirties resource/desc caches on all settlements
+        /// (since final combined stat values have changed).
+        /// Does NOT clear settlement stat value caches — settlement-level modifiers are unaffected.
+        /// </summary>
+        public void InvalidateFactionStatCache()
+        {
+            cachedFactionStatValues.Clear();
+            foreach (WorldSettlementFC s in settlements)
             {
-                try
+                s.InvalidateDescCache();
+                s.InvalidateResourceCaches();
+            }
+        }
+
+        /// <summary>
+        /// Builds a description string for faction-level stat contributions (policies + traits).
+        /// Not cached — only used for UI tooltips.
+        /// </summary>
+        public string GetFactionStatDesc(FCStatDef stat, bool hardinvert = false)
+        {
+            string desc = "";
+            bool isAdditive = stat.aggregation == FCStatAggregation.Additive;
+            bool invert = stat.invertedForDisplay;
+
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def == null) continue;
+                foreach (FCStatModifier mod in p.def.statModifiers)
                 {
-                    value = b.ModifyStat(stat, value, settlement);
+                    if (mod.stat != stat) continue;
+                    if (isAdditive)
+                        desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
+                    else
+                        desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
                 }
-                catch (Exception e)
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                foreach (FCStatModifier mod in p.def.statModifiers)
                 {
-                    LogUtil.Error($"Behavior ModifyStat error for stat '{stat.defName}': {e}");
+                    if (mod.stat != stat) continue;
+                    if (isAdditive)
+                        desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
+                    else
+                        desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
                 }
             }
 
-            return value;
+            return desc;
         }
 
         /// <summary>
@@ -1203,6 +1278,7 @@ namespace FactionColonies
 
                     TextUtil.GetTownTitle(settlement);
                     TaxTickPrisoner(settlement);
+                    ForEachBehavior(b => b.OnTaxCollected(this, settlement));
                 }
 
                 Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
@@ -1253,7 +1329,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
-                    location.addStatModifiers(fcevent.def.statModifiers, fcevent.def.resourceBonuses, sourceId);
+                    location.addStatModifiers(fcevent.def.statModifiers, sourceId);
                 }
             }
             else
@@ -1261,7 +1337,7 @@ namespace FactionColonies
                 //if no specific location then faction wide — apply to all settlements
                 foreach (WorldSettlementFC settlement in settlements)
                 {
-                    settlement.addStatModifiers(fcevent.statModifiers, fcevent.resourceBonuses, sourceId);
+                    settlement.addStatModifiers(fcevent.statModifiers, sourceId);
                 }
             }
         }

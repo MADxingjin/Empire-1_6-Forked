@@ -7,9 +7,9 @@
 		<desc>Slaves work the fields here.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.2</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.2</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/SlavePlantation</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -22,12 +22,10 @@
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>5</value></li>
 			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>0.85</value></li>
+			<li><stat>RTD_Weapons_ProductionMultiplier</stat><value>0.85</value></li>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>0.85</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>0.85</multiplier></li>
-			<li><resourceDef>RTD_Weapons</resourceDef><multiplier>0.85</multiplier></li>
-			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>0.85</multiplier></li>
-		</resourceBonuses>
 		<upkeep>250</upkeep>
 		<iconPath>GUI/Buildings/AdventurersGuild</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -63,9 +61,9 @@
 		<desc>A guild dedicated to taming the wilderness.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>1.25</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>1.25</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/WildernessGuild</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -75,9 +73,9 @@
 		<desc>A place to work slaves and colonists alike!</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Apparel</resourceDef><additive>0.5</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>0.5</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/ApparelSweatshop</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -87,9 +85,9 @@
 		<desc>A camp dedicated to the logging industry. Includes a lumber mill and everything!</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Logging</resourceDef><additive>0.5</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Logging_ProductionAdditive</stat><value>0.5</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/LoggingCamp</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -121,10 +119,10 @@
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Weapons</resourceDef><additive>0.5</additive></li>
-			<li><resourceDef>RTD_Mining</resourceDef><multiplier>0.95</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>0.5</value></li>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>0.95</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Smithy</iconPath>
@@ -140,10 +138,10 @@
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Mining</resourceDef><additive>0.5</additive></li>
-			<li><resourceDef>RTD_Logging</resourceDef><multiplier>0.95</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Mining_ProductionAdditive</stat><value>0.5</value></li>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>0.95</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/UndergroundMine</iconPath>
@@ -159,13 +157,13 @@
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Power</resourceDef><additive>0.25</additive></li>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.05</multiplier></li>
-			<li><resourceDef>RTD_Weapons</resourceDef><multiplier>1.05</multiplier></li>
-			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>1.05</multiplier></li>
-			<li><resourceDef>RTD_Logging</resourceDef><multiplier>1.05</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionAdditive</stat><value>0.25</value></li>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.05</value></li>
+			<li><stat>RTD_Weapons_ProductionMultiplier</stat><value>1.05</value></li>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>1.05</value></li>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>1.05</value></li>
+		</statModifiers>
 		<upkeep>300</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Mills</iconPath>
@@ -200,11 +198,9 @@
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-3</value></li>
 			<li><stat>workerBaseOverMax</stat><value>-2</value></li>
+			<li><stat>RTD_Research_ProductionAdditive</stat><value>0.4</value></li>
+			<li><stat>RTD_Medicine_ProductionAdditive</stat><value>0.4</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Research</resourceDef><additive>0.4</additive></li>
-			<li><resourceDef>RTD_Medicine</resourceDef><additive>0.4</additive></li>
-		</resourceBonuses>
 		<upkeep>0</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/PlagueCamps</iconPath>
 	</FactionColonies.BuildingFCDef>

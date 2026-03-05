@@ -8,10 +8,10 @@
 		<cost>2000</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Power</resourceDef><additive>0.5</additive></li>
-			<li><resourceDef>RTD_Chemfuel</resourceDef><additive>0.3</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionAdditive</stat><value>0.5</value></li>
+			<li><stat>RTD_Chemfuel_ProductionAdditive</stat><value>0.3</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<iconPath>GUI/Buildings/Orbital/OrbitalFuelDepot</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -23,9 +23,9 @@
 		<cost>3500</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Mining</resourceDef><additive>0.8</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Mining_ProductionAdditive</stat><value>0.8</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<iconPath>GUI/Buildings/Orbital/asteroidMining</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -37,9 +37,9 @@
 		<cost>7500</cost>
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
-		<resourceBonuses>
-			<li><resourceDef>RTD_Power</resourceDef><additive>2</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionAdditive</stat><value>2</value></li>
+		</statModifiers>
 		<upkeep>650</upkeep>
 		<iconPath>GUI/Buildings/Orbital/orbitalSolarArray</iconPath>
 	</FactionColonies.BuildingFCDef>

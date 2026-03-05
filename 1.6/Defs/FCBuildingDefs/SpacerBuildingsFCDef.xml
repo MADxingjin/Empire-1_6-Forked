@@ -19,9 +19,9 @@
 		<desc>From this building, researchers equipped with the highest-grade tools search for the answers of the universe.</desc> <!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.5</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Research_ProductionMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<iconPath>GUI/Buildings/GlitterworldResearchFacility</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -49,9 +49,9 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.5</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/TastyPaste</iconPath>
@@ -67,11 +67,9 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Weapons</resourceDef><additive>0.5</additive></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>militaryCombatEfficiency</stat><value>1.05</value></li>
+			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
@@ -88,9 +86,9 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>1.5</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Printer</iconPath>
@@ -106,9 +104,9 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Logging</resourceDef><multiplier>0.5</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>0.5</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Vinyl</iconPath>
@@ -124,12 +122,10 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Mining</resourceDef><multiplier>1.2</multiplier></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>happinessLostBase</stat><value>0.5</value></li>
 			<li><stat>unrestGainedBase</stat><value>0.5</value></li>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>1.2</value></li>
 		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
@@ -184,10 +180,10 @@
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Animals</resourceDef><multiplier>1.2</multiplier></li>
-			<li><resourceDef>RTD_Research</resourceDef><additive>0.25</additive></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>1.2</value></li>
+			<li><stat>RTD_Research_ProductionAdditive</stat><value>0.25</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/CloningLab</iconPath>
@@ -200,9 +196,9 @@
 		<desc>An impossibility against the laws of physics, a generator that produces extra energy using the concept of perpetual motion.</desc> <!-- Description of trait -->
 		<cost>3000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Power</resourceDef><multiplier>1.5</multiplier></li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/PerpetualMotionGenerator</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -214,11 +210,9 @@
 		<desc>A factory dedicated to the development of new bionics.</desc> <!-- Description of trait -->
 		<cost>1500</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Medicine</resourceDef><additive>0.5</additive></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>militaryCombatEfficiency</stat><value>1.1</value></li>
+			<li><stat>RTD_Medicine_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
 		<upkeep>200</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/BionicsManufacturingPlant</iconPath>

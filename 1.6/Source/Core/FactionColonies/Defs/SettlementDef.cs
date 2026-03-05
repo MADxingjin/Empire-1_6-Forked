@@ -16,7 +16,7 @@ namespace FactionColonies
     /// </summary>
     public class WorldSettlementDef : WorldObjectDef
     {
-        public List<ResourceBonuses> resources = new List<ResourceBonuses>();
+        public List<ResourceAvailability> resources = new List<ResourceAvailability>();
         /// <summary>
         /// If true, all ResourceTypeDefs with isDefaultResource set to true are automatically added to this settlement's resources list
         /// (unless already explicitly listed). Explicit entries take priority over defaults.
@@ -30,7 +30,6 @@ namespace FactionColonies
         public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
 
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
-        public List<ResourceBonuses> settlementResourceBonuses = new List<ResourceBonuses>();
         /// <summary>
         /// If a biomeResourceOverride is specified, then the settlement will use the resources of the given override rather than the resources
         /// of the biome of the tile that it's on.
@@ -59,16 +58,16 @@ namespace FactionColonies
 
         public Color? accentColor;
 
-        public ResourceBonuses getSettlementResource(ResourceTypeDef resourceTypeDef)
+        public ResourceAvailability getSettlementResource(ResourceTypeDef resourceTypeDef)
         {
-            return resources.FirstOrDefault((ResourceBonuses b) => b.resourceDef == resourceTypeDef);
+            return resources.FirstOrDefault((ResourceAvailability b) => b.resourceDef == resourceTypeDef);
         }
         public List<ResourceTypeDef> getResourceDefs()
         {
             List<ResourceTypeDef> list = new List<ResourceTypeDef>();
             if (resources != null)
             {
-                foreach (ResourceBonuses rb in resources)
+                foreach (ResourceAvailability rb in resources)
                 {
                     list.Add(rb.resourceDef);
                 }
@@ -80,7 +79,7 @@ namespace FactionColonies
             List<string> list = new List<string>();
             if (resources != null)
             {
-                foreach (ResourceBonuses rb in resources)
+                foreach (ResourceAvailability rb in resources)
                 {
                     list.Add(rb.resourceDef.defName);
                 }
@@ -141,11 +140,11 @@ namespace FactionColonies
                 {
                     if (rtd.isDefaultResource && !resources.Any(rb => rb.resourceDef == rtd))
                     {
-                        resources.Add(new ResourceBonuses { resourceDef = rtd });
+                        resources.Add(new ResourceAvailability { resourceDef = rtd });
                     }
                 }
             }
-            foreach (ResourceBonuses rb in resources)
+            foreach (ResourceAvailability rb in resources)
             {
                 if (double.IsNaN(rb.additive))
                 {
@@ -167,9 +166,9 @@ namespace FactionColonies
 
             if (resources != null)
             {
-                foreach (ResourceBonuses rb in resources)
+                foreach (ResourceAvailability rb in resources)
                 {
-                    if (resources.Any((ResourceBonuses b) => b != rb && b.resourceDef == rb.resourceDef))
+                    if (resources.Any((ResourceAvailability b) => b != rb && b.resourceDef == rb.resourceDef))
                     {
                         yield return "ResourceTypeDef " + rb.resourceDef.defName + " is listed multiple times in WorldSettlmentDef " + defName;
                     }
@@ -183,6 +182,8 @@ namespace FactionColonies
             {
                 yield return "WorldSettlementDef " + defName + " does not specify a SettlementTypeExtension_Base";
             }
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
         }
     }
 

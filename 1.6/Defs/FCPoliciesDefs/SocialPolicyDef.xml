@@ -89,11 +89,9 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<resourceBonuses>
-			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.25</multiplier></li>
-		</resourceBonuses>
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>-5</value></li>
+			<li><stat>RTD_Research_ProductionMultiplier</stat><value>1.25</value></li>
 		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 

@@ -8,6 +8,8 @@
 	<iconPath>GUI/ProductionFood</iconPath>
 	<uiPriority>100</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Food_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Food_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>Hay</thingDef>
@@ -55,6 +57,8 @@
 	<iconPath>GUI/ProductionWeapons</iconPath>
 	<uiPriority>200</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Weapons_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Weapons_ProductionMultiplier</productionMultiplierStat>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Weapons</thingCategoryDef>
@@ -89,6 +93,8 @@
 	<iconPath>GUI/ProductionApparel</iconPath>
 	<uiPriority>300</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Apparel_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Apparel_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>Cloth</thingDef>
@@ -120,6 +126,8 @@
 	<iconPath>GUI/ProductionAnimals</iconPath>
 	<uiPriority>400</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Animals_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Animals_ProductionMultiplier</productionMultiplierStat>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>MeatRaw</thingCategoryDef>
@@ -156,6 +164,8 @@
 	<iconPath>GUI/ProductionLogging</iconPath>
 	<uiPriority>500</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Logging_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Logging_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>WoodLog</thingDef>
@@ -179,6 +189,8 @@
 	<iconPath>GUI/ProductionMining</iconPath>
 	<uiPriority>600</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Mining_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Mining_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>ComponentIndustrial</thingDef>
@@ -230,6 +242,8 @@
 	<iconPath>GUI/ProductionMedicine</iconPath>
 	<uiPriority>700</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
+	<productionAdditiveStat>RTD_Medicine_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Medicine_ProductionMultiplier</productionMultiplierStat>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Medicine</thingCategoryDef>
@@ -266,6 +280,8 @@
 	<uiPriority>800</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
+	<productionAdditiveStat>RTD_Research_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Research_ProductionMultiplier</productionMultiplierStat>
 	<associatedSkills>
 		<li>Intellectual</li>
 	</associatedSkills>
@@ -290,6 +306,8 @@
 	<uiPriority>900</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
+	<productionAdditiveStat>RTD_Power_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Power_ProductionMultiplier</productionMultiplierStat>
 	<associatedSkills>
 		<li>Construction</li>
 	</associatedSkills>
@@ -319,6 +337,8 @@
 	<description>A resource category for chemfuel.</description>
 	<iconPath>GUI/ProductionChemfuel</iconPath>
 	<uiPriority>1000</uiPriority>
+	<productionAdditiveStat>RTD_Chemfuel_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Chemfuel_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>Chemfuel</thingDef>
@@ -341,6 +361,8 @@
 	<description>A resource category for gravtech resources.</description>
 	<iconPath>GUI/ProductionGravtech</iconPath>
 	<uiPriority>1100</uiPriority>
+	<productionAdditiveStat>RTD_Gravtech_ProductionAdditive</productionAdditiveStat>
+	<productionMultiplierStat>RTD_Gravtech_ProductionMultiplier</productionMultiplierStat>
 	<thingAllowList>
 		<li>
 			<thingDef>GravlitePanel</thingDef>

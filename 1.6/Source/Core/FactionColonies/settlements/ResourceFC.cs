@@ -281,7 +281,10 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductionBase()
         {
-            return ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
+            double dictBase = ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
+            double statBase = (settlement != null && def.productionAdditiveStat != null)
+                ? settlement.getStatValue(def.productionAdditiveStat) : 0;
+            return dictBase + statBase;
         }
         /// <summary>
         /// Calculates the total production multiplier.
@@ -290,7 +293,10 @@ namespace FactionColonies
         private double calculateProductonMult()
         {
             double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
-            return ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), taxBonus);
+            double dictMult = ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), 1.0);
+            double statMult = (settlement != null && def.productionMultiplierStat != null)
+                ? settlement.getStatValue(def.productionMultiplierStat) : 1;
+            return dictMult * statMult * taxBonus;
         }
         public double getTitheModifierAdditivePerWorker()
         {
@@ -383,7 +389,7 @@ namespace FactionColonies
             {
                 /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
                  * so we should be good to go here. */
-                ResourceBonuses biomeBonus = settlement.biomeDef.getBiomeResource(def);
+                ResourceAvailability biomeBonus = settlement.biomeDef.getBiomeResource(def);
                 if (biomeBonus == null)
                 {
                     LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
@@ -397,7 +403,7 @@ namespace FactionColonies
                     }
                 }
 
-                ResourceBonuses settleBonus = settlement.settlementDef.getSettlementResource(def);
+                ResourceAvailability settleBonus = settlement.settlementDef.getSettlementResource(def);
                 bonus = settleBonus?.additive ?? 0;
                 if (bonus != 0)
                 {
@@ -453,6 +459,10 @@ namespace FactionColonies
                 {
                     desc += TextUtil.colorizeAdditiveBonus(additive.value) + " - " + additive.desc + "\n";
                 }
+                if (def.productionAdditiveStat != null && settlement != null)
+                {
+                    desc += settlement.getStatDesc(def.productionAdditiveStat);
+                }
                 cachedProdBaseDesc = desc.Trim();
                 dirtyProductionBaseDescCache = false;
             }
@@ -469,7 +479,7 @@ namespace FactionColonies
             {
                 /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
                  * so we should be good to go here. */
-                ResourceBonuses biomeBonus = settlement.biomeDef.getBiomeResource(def);
+                ResourceAvailability biomeBonus = settlement.biomeDef.getBiomeResource(def);
                 if (biomeBonus == null)
                 {
                     LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
@@ -480,7 +490,7 @@ namespace FactionColonies
                     addProductionMultiplier(settlement.biomeDef.defName, bonus, settlement.biomeDef.LabelCap);
                 }
 
-                ResourceBonuses settleBonus = settlement.settlementDef.getSettlementResource(def);
+                ResourceAvailability settleBonus = settlement.settlementDef.getSettlementResource(def);
                 bonus = settleBonus?.multiplier ?? 1;
                 if (bonus != 1)
                 {
@@ -535,6 +545,10 @@ namespace FactionColonies
                 foreach (ProductionBonus multiplier in productionMultipliers.Values)
                 {
                     desc += TextUtil.colorizeMultiplierBonus(multiplier.value) + " - " + multiplier.desc + "\n";
+                }
+                if (def.productionMultiplierStat != null && settlement != null)
+                {
+                    desc += settlement.getStatDesc(def.productionMultiplierStat);
                 }
                 desc += TextUtil.colorizeMultiplierBonus(settlement?.getSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
 

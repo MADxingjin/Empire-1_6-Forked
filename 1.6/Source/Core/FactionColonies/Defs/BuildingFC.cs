@@ -25,7 +25,6 @@ namespace FactionColonies
         public int constructionDuration;
         public TechLevel techLevel = TechLevel.Undefined;
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
-        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
         public List<string> applicableBiomes = new List<string>();
         public int upkeep;
         public string iconPath = "GUI/unrest";
@@ -59,7 +58,7 @@ namespace FactionColonies
             {
                 if (!didCacheBuildingAttributeDesc)
                 {
-                    cachedBuildingAttributeDesc = FCStatModifier.GetDescription(statModifiers, resourceBonuses);
+                    cachedBuildingAttributeDesc = FCStatModifier.GetDescription(statModifiers);
                     didCacheBuildingAttributeDesc = true;
                 }
                 return cachedBuildingAttributeDesc;
@@ -126,6 +125,8 @@ namespace FactionColonies
             {
                 yield return $"BuildingFCDef {defName} has a circular reference in its requiredBuildings chain";
             }
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
         }
 
         private static bool HasCycle(BuildingFCDef start, Func<BuildingFCDef, List<BuildingFCDef>> getChildren)

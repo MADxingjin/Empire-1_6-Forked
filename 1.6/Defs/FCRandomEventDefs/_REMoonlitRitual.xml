@@ -163,13 +163,8 @@
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>happinessLostBase</stat><value>2</value></li>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>-1</additive>
-			</li>
-		</resourceBonuses>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -191,12 +186,9 @@
 		<label>A Moonlit Ritual</label>
 		<desc>The investigator reported back early in the morning looking quite disheaveled. However, his story says otherwise. They expected him this time and gave an invintation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to enjoyed himself! \n +1 food base production.</desc>
 		<timeTillTrigger>300000</timeTillTrigger>
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>1</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>1</value></li>
+		</statModifiers>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -207,12 +199,9 @@
 		<label>A Moonlit Ritual</label>
 		<desc>This week's harvests seem to be unnaturally more plentiful than usual... +.5 food base production.</desc>
 		<timeTillTrigger>300000</timeTillTrigger>
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>0.5</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>
+		</statModifiers>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -223,12 +212,9 @@
 		<label>A Moonlit Ritual</label>
 		<desc>This week's harvests seem to be unnaturally less plentiful than usual... -.5 food base production.</desc>
 		<timeTillTrigger>300000</timeTillTrigger>
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Food</resourceDef>
-				<additive>-0.5</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>-0.5</value></li>
+		</statModifiers>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

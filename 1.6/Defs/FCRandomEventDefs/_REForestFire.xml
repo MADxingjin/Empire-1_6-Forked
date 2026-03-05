@@ -9,12 +9,9 @@
 		<timeTillTrigger>300000</timeTillTrigger>
 		<perpetual>false</perpetual>
 
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Logging</resourceDef>
-				<additive>-1</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-1</value></li>
+		</statModifiers>
 
 		<options>
 		</options>

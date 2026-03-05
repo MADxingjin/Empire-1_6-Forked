@@ -510,7 +510,7 @@ namespace FactionColonies
                         double value = localStat.aggregation == FCStatAggregation.Additive ? 5 : 1.5;
                         settlement.addStatModifiers(
                             new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = value } },
-                            null, "debug");
+                            "debug");
                         LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {value} to {settlement.Name}");
                     }));
                 }
@@ -523,7 +523,7 @@ namespace FactionColonies
         {
             WithSettlementChoice(settlement =>
             {
-                settlement.removeStatModifiers(null, null, "debug");
+                settlement.removeStatModifiers(null, "debug");
                 LogUtil.MessageForce($"Debug - Cleared debug stat modifiers from {settlement.Name}");
             });
         }

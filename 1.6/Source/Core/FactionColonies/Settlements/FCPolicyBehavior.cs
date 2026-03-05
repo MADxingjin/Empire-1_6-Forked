@@ -48,11 +48,12 @@ namespace FactionColonies
         /// genuinely depend on game state at query time (e.g., Egalitarian happiness-based
         /// tax bonus, Expansionist first-settlement-free). For static modifiers, use
         /// FCPolicyDef.statModifiers XML instead.
-        ///
-        /// Aggregation contract:
-        /// - For Additive stats (defaultValue=0): add/subtract from currentValue
-        /// - For Multiplicative stats (defaultValue=1): multiply currentValue
-        /// Check stat.aggregation if uncertain.
+        ///<para>Aggregation contract:</para>
+        /// <list type="bullet">
+        ///   <item>For Additive stats (defaultValue=0): add/subtract from currentValue</item>
+        ///   <item>For Multiplicative stats (defaultValue=1): multiply currentValue</item>
+        /// </list>
+        /// <para>Check stat.aggregation if uncertain.</para>
         /// </summary>
         public virtual double ModifyStat(FCStatDef stat, double currentValue, WorldSettlementFC settlement)
             => currentValue;
@@ -62,6 +63,15 @@ namespace FactionColonies
         /// Return null or empty for stats this behavior doesn't modify.
         /// </summary>
         public virtual string GetStatDescription(FCStatDef stat, WorldSettlementFC settlement) => null;
+
+        // ── Building ────────────────────────────────────────────────
+
+        /// <summary>
+        /// Called when calculating a building's upkeep. Behaviors can modify the upkeep
+        /// based on the building's properties (e.g., discount military buildings).
+        /// </summary>
+        public virtual double ModifyBuildingUpkeep(BuildingFCDef building, double currentUpkeep, WorldSettlementFC settlement)
+            => currentUpkeep;
 
         // ── Military Events ──────────────────────────────────────────
 
@@ -91,7 +101,7 @@ namespace FactionColonies
 
         /// <summary>Return extra deployment options when a settlement's main squad is already deployed. Null means none.</summary>
         public virtual IEnumerable<FloatMenuOption> GetExtraDeploymentOptions(FactionFC faction, WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp) => null;
-
+        
         /// <summary>Return additional description lines to append to the policy's tooltip.</summary>
         public virtual TaggedString GetDescription() => TaggedString.Empty;
 

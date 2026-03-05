@@ -429,13 +429,13 @@ namespace FactionColonies
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.addStatModifiers(def.statModifiers, def.resourceBonuses, buildingID(buildingSlot), def.LabelCap);
+            WorldSettlement.addStatModifiers(def.statModifiers, buildingID(buildingSlot), def.LabelCap);
         }
         public void removeBuildingStatModifiers(int buildingSlot)
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.removeStatModifiers(def.statModifiers, def.resourceBonuses, buildingID(buildingSlot));
+            WorldSettlement.removeStatModifiers(def.statModifiers, buildingID(buildingSlot));
         }
         /// <summary>
         /// Loops through all constructed buildings and applies their stat modifiers to the parent settlement.
@@ -461,9 +461,7 @@ namespace FactionColonies
             double upkeep = building.upkeep;
 
             FactionFC faction = FactionCache.FactionComp;
-            double discount = faction.GetStatValue(FCStatDefOf.militaryBuildingUpkeepDiscount, WorldSettlement);
-            if (discount != 0)
-                upkeep = Math.Max(upkeep - discount, 0);
+            upkeep = faction.FoldBehaviors(upkeep, (b, u) => b.ModifyBuildingUpkeep(building, u, WorldSettlement));
 
             upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
 
@@ -570,9 +568,7 @@ namespace FactionColonies
             if (i == 0 || i < 0)
                 return true;
 
-            // Check stat modifiers and resource bonuses on the building
-            if ((building.statModifiers == null || building.statModifiers.Count == 0) &&
-                (building.resourceBonuses == null || building.resourceBonuses.Count == 0))
+            if (building.statModifiers == null || building.statModifiers.Count == 0)
                 return false;
 
             if (i == 1) // Happiness
@@ -598,10 +594,9 @@ namespace FactionColonies
             }
             // Resource filter
             ResourceTypeDef resDef = WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def;
-            if (resDef != null && building.resourceBonuses != null)
+            if (resDef != null)
             {
-                ResourceBonuses rtd = building.resourceBonuses.FirstOrDefault(rb => rb.resourceDef == resDef);
-                if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
+                if (building.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef))
                     return true;
             }
 

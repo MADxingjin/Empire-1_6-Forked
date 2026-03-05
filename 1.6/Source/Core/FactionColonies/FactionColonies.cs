@@ -297,7 +297,7 @@ namespace FactionColonies
             {
                 settlement.clearStatModifiers();
                 settlement.BuildingsComp?.reapplyBuildingStatModifiers();
-                settlement.addStatModifiers(settlement.settlementDef.statModifiers, settlement.settlementDef.settlementResourceBonuses, "settlementType");
+                settlement.addStatModifiers(settlement.settlementDef.statModifiers, "settlementType");
             }
 
             // Re-apply active event stat modifiers to settlements
@@ -309,14 +309,14 @@ namespace FactionColonies
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
                         if (location != null)
-                            location.addStatModifiers(evt.statModifiers, evt.resourceBonuses, sourceId);
+                            location.addStatModifiers(evt.statModifiers, sourceId);
                     }
                 }
                 else
                 {
                     foreach (WorldSettlementFC settlement in faction.settlements)
                     {
-                        settlement.addStatModifiers(evt.statModifiers, evt.resourceBonuses, sourceId);
+                        settlement.addStatModifiers(evt.statModifiers, sourceId);
                     }
                 }
             }

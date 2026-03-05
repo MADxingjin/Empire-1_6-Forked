@@ -119,12 +119,9 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 
-		<resourceBonuses>
-			<li>
-				<resourceDef>RTD_Mining</resourceDef>
-				<additive>0.25</additive>
-			</li>
-		</resourceBonuses>
+		<statModifiers>
+			<li><stat>RTD_Mining_ProductionAdditive</stat><value>0.25</value></li>
+		</statModifiers>
 
 		<randomThingRewardDef>RERD_Mining</randomThingRewardDef>
 		<randomThingValue>175</randomThingValue>
