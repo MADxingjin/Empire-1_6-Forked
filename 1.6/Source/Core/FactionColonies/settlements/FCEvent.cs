@@ -244,99 +244,105 @@ namespace FactionColonies
 
                 LogUtil.Message($"Processing event {evt.def.defName}");
 
-                switch (evt.def.defName)
+                FCEventHandlerExtension handler = evt.def.GetModExtension<FCEventHandlerExtension>();
+                bool handled = handler != null && handler.ResolveEvent(evt, faction);
+
+                if (!handled)
                 {
-                    case "settleNewColony":
-                        {
-                            //Settle new colony event
-                            faction.addExperienceToFactionLevel(10f);
-
-                            ColonyUtil.createPlayerColonySettlement(evt.location, evt.settlementToCreate);
-
-                            faction.settlementCaravansList.Remove(evt.location);
-                            break;
-                        }
-                    case "taxColony":
-                        {
-                            settlement = faction.returnSettlementByLocation(evt.source);
-                            if (settlement == null)
-                            {
-                                continue;
-                            }
-
-                            string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
-
-                            Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
-
-                            PaymentUtil.deliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
-                            break;
-                        }
-                    case "constructBuilding":
-                        //Create building
-                        settlement = faction.returnSettlementByLocation(evt.source);
-                        if (settlement != null)
-                        {
-                            settlement.constructBuilding(evt.building, evt.buildingSlot);
-                            Messages.Message("BuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
-                        }
-                        else
-                        {
-                            LogUtil.Error($"Attempted to resolve a constructBuilding event for an invalid settlement");
-                        }
-                        break;
-                    case "upgradeSettlement":
-                        {
-                            if (faction.returnSettlementByLocation(evt.location) != null)
-                            {
-                                //if settlement is not null
-                                settlement = faction.returnSettlementByLocation(evt.location);
-                                settlement.upgradeSettlement();
-                                Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
-                                    "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
-                                    LetterDefOf.PositiveEvent);
-                                /* We set these values here, instead of in upgradeSettlement(), because sometimes upgradeSettlement is called to handle changing a settlement's level outside of the
-                                 * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
-                                settlement.isUpgrading = false;
-                                settlement.startUpgradeTick = -1;
-                                settlement.finishUpgradeTick = -1;
-                            }
-
-                            break;
-                        }
-                    case "captureEnemySettlement":
-                    case "raidEnemySettlement":
-                    case "enslaveEnemySettlement":
-                        //Process military event
-                        faction.returnSettlementByLocation(evt.location).MilitaryComp?.processMilitaryEvent();
-                        break;
-                    case "cooldownMilitary":
-                        {
-                            faction.returnSettlementByLocation(evt.location).MilitaryComp?.returnMilitary(true);
-                            break;
-                        }
-                }
-
-                if (evt.def.defName == "settlementBeingAttacked")
-                {
-
-                    WorldSettlementFC worldSettlement = evt.settlementFCDefending;
-
-                    worldSettlement.MilitaryComp?.startDefence(evt, () => setupAttack(worldSettlement, evt));
-                }
-                else //if undefined event
-                {
-                    if (evt.def.randomThingValue > 0 && evt.def.randomThingRewardDef != null)
+                    switch (evt.def.defName)
                     {
-                        List<Thing> list = PaymentUtil.generateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
+                        case "settleNewColony":
+                            {
+                                //Settle new colony event
+                                faction.addExperienceToFactionLevel(10f);
 
-                        string str = "GoodsReceivedFollowing".Translate(evt.def.label);
+                                ColonyUtil.createPlayerColonySettlement(evt.location, evt.settlementToCreate);
 
-                        str = list.Aggregate(str, (before, after) => before + "\n" + after.LabelCap);
+                                faction.settlementCaravansList.Remove(evt.location);
+                                break;
+                            }
+                        case "taxColony":
+                            {
+                                settlement = faction.returnSettlementByLocation(evt.source);
+                                if (settlement == null)
+                                {
+                                    continue;
+                                }
 
-                        evt.goods.AddRange(list);
+                                string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
 
-                        evt.let = LetterMaker.MakeLetter("GoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
-                        if (list.Count > 0) DeliveryEvent.CreateDeliveryEvent(evt);
+                                Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
+
+                                PaymentUtil.deliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                                break;
+                            }
+                        case "constructBuilding":
+                            //Create building
+                            settlement = faction.returnSettlementByLocation(evt.source);
+                            if (settlement != null)
+                            {
+                                settlement.constructBuilding(evt.building, evt.buildingSlot);
+                                Messages.Message("BuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
+                            }
+                            else
+                            {
+                                LogUtil.Error($"Attempted to resolve a constructBuilding event for an invalid settlement");
+                            }
+                            break;
+                        case "upgradeSettlement":
+                            {
+                                if (faction.returnSettlementByLocation(evt.location) != null)
+                                {
+                                    //if settlement is not null
+                                    settlement = faction.returnSettlementByLocation(evt.location);
+                                    settlement.upgradeSettlement();
+                                    Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
+                                        "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
+                                        LetterDefOf.PositiveEvent);
+                                    /* We set these values here, instead of in upgradeSettlement(), because sometimes upgradeSettlement is called to handle changing a settlement's level outside of the
+                                     * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
+                                    settlement.isUpgrading = false;
+                                    settlement.startUpgradeTick = -1;
+                                    settlement.finishUpgradeTick = -1;
+                                }
+
+                                break;
+                            }
+                        case "captureEnemySettlement":
+                        case "raidEnemySettlement":
+                        case "enslaveEnemySettlement":
+                            //Process military event
+                            faction.returnSettlementByLocation(evt.location).MilitaryComp?.processMilitaryEvent();
+                            break;
+                        case "cooldownMilitary":
+                            {
+                                faction.returnSettlementByLocation(evt.location).MilitaryComp?.returnMilitary(true);
+                                break;
+                            }
+                    }
+
+                    if (evt.def.defName == "settlementBeingAttacked")
+                    {
+
+                        WorldSettlementFC worldSettlement = evt.settlementFCDefending;
+
+                        worldSettlement.MilitaryComp?.startDefence(evt, () => setupAttack(worldSettlement, evt));
+                    }
+                    else //if undefined event
+                    {
+                        if (evt.def.randomThingValue > 0 && evt.def.randomThingRewardDef != null)
+                        {
+                            List<Thing> list = PaymentUtil.generateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
+
+                            string str = "GoodsReceivedFollowing".Translate(evt.def.label);
+
+                            str = list.Aggregate(str, (before, after) => before + "\n" + after.LabelCap);
+
+                            evt.goods.AddRange(list);
+
+                            evt.let = LetterMaker.MakeLetter("GoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
+                            if (list.Count > 0) DeliveryEvent.CreateDeliveryEvent(evt);
+                        }
                     }
                 }
 
