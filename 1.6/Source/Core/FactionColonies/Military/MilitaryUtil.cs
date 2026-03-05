@@ -68,9 +68,7 @@ namespace FactionColonies
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
-                FactionCache.FactionComp.ForEachBehavior(b =>
-                    b.OnSquadDeployed(FactionCache.FactionComp, settlement, true));
-                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJob.Deploy);
+                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJob.Deploy, true);
             }
         }
 

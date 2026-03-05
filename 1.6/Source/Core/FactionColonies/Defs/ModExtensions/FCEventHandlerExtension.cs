@@ -24,6 +24,15 @@ namespace FactionColonies
         public virtual void OnEventTriggered(FCEvent evt)
         {
         }
+
+        /// <summary>
+        /// Called during settlement removal for each active event that wasn't already
+        /// handled by the core cleanup logic. Return true to cancel this event.
+        /// </summary>
+        public virtual bool ShouldCancelOnSettlementRemoval(FCEvent evt, WorldSettlementFC settlement)
+        {
+            return false;
+        }
     }
 
     /// <summary>Internal handler for the deliveryArrival event.</summary>

@@ -14,6 +14,9 @@ namespace FactionColonies
             int result = 0;
             try
             {
+                BattleModifierRegistry.InvokeModifyForce(MFA, true);
+                BattleModifierRegistry.InvokeModifyForce(MFB, false);
+
                 LogUtil.Message("SimulateBattleFc.FightBattle: Starting battle");
                 while (MFA.forceRemaining > 0 && MFB.forceRemaining > 0)
                 {

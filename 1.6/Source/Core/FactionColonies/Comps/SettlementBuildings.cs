@@ -394,9 +394,10 @@ namespace FactionColonies
         /// </summary>
         public void DeconstructBuilding(int buildingSlot)
         {
-            LogUtil.Message($"Deconstructing building {buildings[buildingSlot].def.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
+            BuildingFCDef deconstructedDef = buildings[buildingSlot].def;
+            LogUtil.Message($"Deconstructing building {deconstructedDef.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
             dirtyConstructionCache = true;
-            BuildingLifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, buildings[buildingSlot].def, buildingSlot);
+            BuildingLifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, deconstructedDef, buildingSlot);
 
             removeBuildingStatModifiers(buildingSlot);
 

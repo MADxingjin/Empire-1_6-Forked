@@ -15,7 +15,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
-    public class FactionFC : WorldComponent, ISettlementLifecycleParticipant
+    public class FactionFC : WorldComponent, ISettlementLifecycleParticipant, IBuildingLifecycleParticipant, IMilitaryEventParticipant, IResearchParticipant
     {
         public int taxTimeDue = Find.TickManager.TicksGame;
         public int timeStart = Find.TickManager.TicksGame;
@@ -297,6 +297,9 @@ namespace FactionColonies
             factionResources.Sort(ResourceDisplay.sortForUI);
 
             SettlementLifecycleRegistry.Register(this);
+            BuildingLifecycleRegistry.Register(this);
+            MilitaryEventRegistry.Register(this);
+            ResearchRegistry.Register(this);
         }
         /// <summary>
         /// Returns a list of *all* things that this faction can produce.
@@ -816,6 +819,47 @@ namespace FactionColonies
         void ISettlementLifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
         {
             ForEachBehavior(b => b.OnSettlementRemoved(this, settlement));
+        }
+
+        void ISettlementLifecycleParticipant.OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
+        {
+            ForEachBehavior(b => b.OnSettlementUpgraded(this, settlement, newLevel));
+        }
+
+        // ── IBuildingLifecycleParticipant ──────────────────────────────
+
+        void IBuildingLifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        {
+            ForEachBehavior(b => b.OnBuildingConstructed(this, settlement, building, slot));
+        }
+
+        void IBuildingLifecycleParticipant.OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        {
+            ForEachBehavior(b => b.OnBuildingDeconstructed(this, settlement, building, slot));
+        }
+
+        // ── IMilitaryEventParticipant ─────────────────────────────────
+
+        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad)
+        {
+            ForEachBehavior(b => b.OnSquadDeployed(this, settlement, isExtraSquad));
+        }
+
+        void IMilitaryEventParticipant.OnSquadRecalled(WorldSettlementFC settlement)
+        {
+            ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
+        }
+
+        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory)
+        {
+            ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
+        }
+
+        // ── IResearchParticipant ──────────────────────────────────────
+
+        void IResearchParticipant.OnResearchCompleted(ResearchProjectDef project)
+        {
+            ForEachBehavior(b => b.OnResearchCompleted(this, project));
         }
 
         public T FoldBehaviors<T>(T seed, Func<FCPolicyBehavior, T, T> folder)

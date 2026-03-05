@@ -1059,7 +1059,6 @@ namespace FactionColonies
             militaryLocation = -1;
             militaryEnemy = null;
 
-            FactionCache.FactionComp.ForEachBehavior(b => b.OnSquadRecalled(FactionCache.FactionComp, WorldSettlement));
             MilitaryEventRegistry.InvokeOnSquadRecalled(WorldSettlement);
 
             if (alert)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
+using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -80,6 +81,27 @@ namespace FactionColonies
 
         /// <summary>Called when a squad is recalled/returned to a settlement.</summary>
         public virtual void OnSquadRecalled(FactionFC faction, WorldSettlementFC settlement) { }
+
+        /// <summary>Called after a battle has been resolved, before the squad enters cooldown.</summary>
+        public virtual void OnBattleResolved(FactionFC faction, WorldSettlementFC settlement, MilitaryJob job, bool victory) { }
+
+        // ── Building Events ────────────────────────────────────────
+
+        /// <summary>Called after a building has been fully constructed in a settlement.</summary>
+        public virtual void OnBuildingConstructed(FactionFC faction, WorldSettlementFC settlement, BuildingFCDef building, int slot) { }
+
+        /// <summary>Called before a building is deconstructed from a settlement.</summary>
+        public virtual void OnBuildingDeconstructed(FactionFC faction, WorldSettlementFC settlement, BuildingFCDef building, int slot) { }
+
+        // ── Settlement Upgrade ─────────────────────────────────────
+
+        /// <summary>Called after a settlement has been upgraded (or deleveled).</summary>
+        public virtual void OnSettlementUpgraded(FactionFC faction, WorldSettlementFC settlement, int newLevel) { }
+
+        // ── Research ───────────────────────────────────────────────
+
+        /// <summary>Called after a research project has been completed.</summary>
+        public virtual void OnResearchCompleted(FactionFC faction, ResearchProjectDef project) { }
 
         // ── Tax Events ───────────────────────────────────────────────
 

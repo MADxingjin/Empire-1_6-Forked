@@ -15,11 +15,11 @@ namespace FactionColonies
         public static void Unregister(IMilitaryEventParticipant participant) => _participants.Remove(participant);
         public static IReadOnlyList<IMilitaryEventParticipant> Participants => _participants;
 
-        public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job)
+        public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad = false)
         {
             foreach (IMilitaryEventParticipant participant in _participants)
             {
-                try { participant.OnSquadDeployed(settlement, job); }
+                try { participant.OnSquadDeployed(settlement, job, isExtraSquad); }
                 catch (Exception e) { LogUtil.Error($"IMilitaryEventParticipant {participant.GetType().Name} threw in OnSquadDeployed: {e}"); }
             }
         }

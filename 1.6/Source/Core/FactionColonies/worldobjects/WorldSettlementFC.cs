@@ -550,6 +550,7 @@ namespace FactionColonies
             if (settlementLevel < 0) settlementLevel = 0;
             updateStats();
             settlementDef.getSettlementTypeExtension()?.onUpgrade(this, oldLevel, settlementLevel);
+            SettlementLifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
         }
 
         public void delevelSettlement(int times = -1)

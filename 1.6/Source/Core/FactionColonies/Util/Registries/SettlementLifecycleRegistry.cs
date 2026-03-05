@@ -32,5 +32,14 @@ namespace FactionColonies
                 catch (Exception e) { LogUtil.Error($"ISettlementLifecycleParticipant {participant.GetType().Name} threw in OnSettlementRemoved: {e}"); }
             }
         }
+
+        public static void InvokeOnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
+        {
+            foreach (ISettlementLifecycleParticipant participant in _participants)
+            {
+                try { participant.OnSettlementUpgraded(settlement, oldLevel, newLevel); }
+                catch (Exception e) { LogUtil.Error($"ISettlementLifecycleParticipant {participant.GetType().Name} threw in OnSettlementUpgraded: {e}"); }
+            }
+        }
     }
 }

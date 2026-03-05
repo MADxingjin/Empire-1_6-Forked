@@ -16,6 +16,8 @@ namespace FactionColonies
             {
                 settlement.PrepareResources(fc.techLevel);
             }
+
+            ResearchRegistry.InvokeOnResearchCompleted(proj);
         }
     }
 }

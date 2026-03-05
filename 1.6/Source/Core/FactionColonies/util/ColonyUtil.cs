@@ -124,6 +124,16 @@ namespace FactionColonies.util
                         }
                     }
                 }
+
+                // Let extensions cancel their own custom events
+                if (!toRemove.Contains(evt))
+                {
+                    FCEventHandlerExtension handler = evt.def.GetModExtension<FCEventHandlerExtension>();
+                    if (handler != null && handler.ShouldCancelOnSettlementRemoval(evt, settlement))
+                    {
+                        toRemove.Add(evt);
+                    }
+                }
             }
 
             foreach (FCEvent evt in toRemove)

@@ -1,5 +1,6 @@
 ﻿using FactionColonies;
 using FactionColonies.util;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,10 @@ namespace FactionColonies
         /// Called when a settlement is being removed, before cleanup (military return, event removal) begins.
         /// </summary>
         void OnSettlementRemoved(WorldSettlementFC settlement);
+        /// <summary>
+        /// Called after a settlement has been upgraded or deleveled.
+        /// </summary>
+        void OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel);
     }
     /// <summary>
     /// Defines an interface to let classes hook into building construction and deconstruction.
@@ -95,7 +100,7 @@ namespace FactionColonies
         /// <summary>
         /// Called after a military squad has been deployed from a settlement.
         /// </summary>
-        void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job);
+        void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad);
         /// <summary>
         /// Called when a military squad is recalled to its settlement.
         /// </summary>
@@ -104,5 +109,23 @@ namespace FactionColonies
         /// Called after a battle has been resolved, before the squad enters cooldown.
         /// </summary>
         void OnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory);
+    }
+    /// <summary>
+    /// Defines an interface to let classes hook into research project completion.
+    /// </summary>
+    public interface IResearchParticipant
+    {
+        void OnResearchCompleted(ResearchProjectDef project);
+    }
+    /// <summary>
+    /// Defines an interface to let classes modify military forces before a battle is resolved.
+    /// </summary>
+    public interface IBattleModifier
+    {
+        /// <summary>
+        /// Called before the battle loop begins. Modify the force's militaryLevel, militaryEfficiency,
+        /// or forceRemaining to affect the outcome.
+        /// </summary>
+        void ModifyForce(militaryForce force, bool isAttacker);
     }
 }
