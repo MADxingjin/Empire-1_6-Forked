@@ -44,6 +44,9 @@ namespace FactionColonies
         private Vector2 billsScroll;
         private Vector2 eventsScroll;
 
+        // ===== EVENT FILTER STATE =====
+        private static readonly HashSet<FCEventCategoryDef> hiddenEventCategories = new HashSet<FCEventCategoryDef>();
+
         // ===== SETTLEMENT SORT =====
         private int currentSettlementSortIndex = 0;
 
@@ -1041,6 +1044,50 @@ namespace FactionColonies
         // ===== EVENTS TAB =====
 
 
+        private void DrawEventFilterBar(Rect barRect)
+        {
+            List<FCEventCategoryDef> categories = FactionCache.FCEventCategoryDefs.OrderBy(c => c.displayOrder).ToList();
+            int count = categories.Count + 1; // +1 for "All" button
+            float gap = 3f;
+            float btnW = (barRect.width - gap * (count - 1)) / count;
+
+            GameFont fontBefore = Text.Font;
+            Text.Font = GameFont.Tiny;
+
+            // "All" button
+            Rect allRect = new Rect(barRect.x, barRect.y, btnW, barRect.height);
+            bool allActive = hiddenEventCategories.Count == 0;
+            Color allColor = allActive ? Color.white : Color.gray;
+            if (UIUtil.ButtonFlat(allRect, "FCEventCatAll".Translate(), labelColor: allColor, highlighted: allActive))
+            {
+                hiddenEventCategories.Clear();
+            }
+
+            // Category toggle buttons
+            for (int i = 0; i < categories.Count; i++)
+            {
+                FCEventCategoryDef cat = categories[i];
+                float x = barRect.x + (i + 1) * (btnW + gap);
+                Rect btnRect = new Rect(x, barRect.y, btnW, barRect.height);
+
+                bool visible = !hiddenEventCategories.Contains(cat);
+                Color catColor = cat.color;
+                Color labelColor = visible
+                    ? catColor
+                    : new Color(catColor.r * 0.4f, catColor.g * 0.4f, catColor.b * 0.4f);
+
+                if (UIUtil.ButtonFlat(btnRect, cat.label.CapitalizeFirst(), labelColor: labelColor, highlighted: visible))
+                {
+                    if (visible)
+                        hiddenEventCategories.Add(cat);
+                    else
+                        hiddenEventCategories.Remove(cat);
+                }
+            }
+
+            Text.Font = fontBefore;
+        }
+
         private void DrawEventsTab(Rect rect)
         {
             List<FCEvent> events = faction.events;
@@ -1051,6 +1098,7 @@ namespace FactionColonies
             const float progressW = 160f;
             const float progressH = 14f;
             const float summaryH  = 24f;
+            const float filterH   = 24f;
 
             float innerX = rect.x + pad;
             float innerW = rect.width - pad * 2f;
@@ -1062,11 +1110,21 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color origColor = GUI.color;
             GUI.color = Color.gray;
-            Widgets.Label(new Rect(innerX, rect.y + pad, innerW, summaryH),
-                "FCActiveEventsCount".Translate(events.Count));
+            bool filtering = hiddenEventCategories.Count > 0;
+            int filteredCount = filtering
+                ? events.Count(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e)))
+                : events.Count;
+            string summaryText = filtering
+                ? "FCActiveEventsFiltered".Translate(filteredCount, events.Count)
+                : "FCActiveEventsCount".Translate(events.Count);
+            Widgets.Label(new Rect(innerX, rect.y + pad, innerW, summaryH), summaryText);
             GUI.color = origColor;
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
+
+            // Filter bar
+            Rect filterBar = new Rect(innerX, rect.y + pad + summaryH + 2f, innerW, filterH);
+            DrawEventFilterBar(filterBar);
 
             // Empty state
             if (events.Count == 0)
@@ -1085,16 +1143,39 @@ namespace FactionColonies
                 return;
             }
 
+            // Build sorted + filtered list
+            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
+            if (filtering)
+            {
+                sorted = sorted.Where(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e))).ToList();
+            }
+
             // Scrollable event list
-            float listY    = rect.y + pad + summaryH + 4f;
+            float listY    = rect.y + pad + summaryH + filterH + 6f;
             float viewH    = rect.yMax - listY - pad;
             Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
-            float contentH = events.Count * (rowH + rowGap);
+            float contentH = sorted.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
+
+            // Filtered empty state
+            if (sorted.Count == 0)
+            {
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                origColor = GUI.color;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(rect.x, listY + viewH * 0.25f, rect.width, 40f),
+                    "FCNoEventsMatchFilter".Translate());
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                return;
+            }
 
             Widgets.BeginScrollView(viewRect, ref eventsScroll, scrollRect);
 
-            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
             for (int i = 0; i < sorted.Count; i++)
             {
                 FCEvent evt = sorted[i];

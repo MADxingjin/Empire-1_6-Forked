@@ -12,14 +12,6 @@ namespace FactionColonies
         public static readonly Color Income  = new Color(0.2f, 0.85f, 0.3f);
         public static readonly Color Expense = new Color(1.0f, 0.35f, 0.3f);
 
-        // === Event Categories ===
-        public static readonly Color EventSettlement   = new Color(0.2f, 0.9f, 0.85f);
-        public static readonly Color EventConstruction = new Color(1.0f, 0.65f, 0.1f);
-        public static readonly Color EventEconomy      = new Color(1.0f, 0.85f, 0.1f);
-        public static readonly Color EventPolicy       = new Color(0.4f, 0.55f, 1.0f);
-        public static readonly Color EventMilitary     = new Color(1.0f, 0.25f, 0.25f);
-        public static readonly Color EventOther        = new Color(0.65f, 0.65f, 0.65f);
-
         // === Military Status ===
         public static readonly Color MilUnderAttack   = new Color(1.0f, 0.25f, 0.25f);
         public static readonly Color MilActiveMission = new Color(1.0f, 0.65f, 0.1f);
@@ -31,6 +23,9 @@ namespace FactionColonies
         public static readonly Color StatGood   = new Color(0.2f, 0.85f, 0.3f);
         public static readonly Color StatMedium = new Color(1f, 0.7f, 0.2f);
         public static readonly Color StatBad    = new Color(1f, 0.35f, 0.3f);
+
+        // === Generic Color settings ===
+        public static readonly Color Military = new Color(1.0f, 0.25f, 0.25f);
 
         public static Color GetSettlementAccent(WorldSettlementFC s)
         {
@@ -50,21 +45,14 @@ namespace FactionColonies
             return StatBad;
         }
 
+        public static FCEventCategoryDef GetEventCategory(FCEvent evt)
+        {
+            return evt.def?.category ?? FCEventCategoryDefOf.EC_Other;
+        }
+
         public static Color GetEventCategoryColor(FCEvent evt)
         {
-            string name = evt.def.defName ?? "";
-            if (name == "settleNewColony" || name == "upgradeSettlement")
-                return EventSettlement;
-            if (name == "constructBuilding")
-                return EventConstruction;
-            if (name == "taxColony" || name == "deliveryArrival")
-                return EventEconomy;
-            if (name == "enactSettlementPolicy" || name == "enactFactionPolicy")
-                return EventPolicy;
-            if (evt.isMilitaryEvent || name.StartsWith("raid") || name.StartsWith("enslave")
-                || name.StartsWith("capture") || name == "cooldownMilitary" || name == "settlementBeingAttacked")
-                return EventMilitary;
-            return EventOther;
+            return GetEventCategory(evt).color;
         }
 
         public static Color GetMilitaryAccent(WorldObjectComp_SettlementMilitary milComp)

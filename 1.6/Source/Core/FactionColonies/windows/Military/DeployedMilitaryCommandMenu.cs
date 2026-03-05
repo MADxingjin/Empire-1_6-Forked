@@ -225,7 +225,7 @@ namespace FactionColonies
 
             // --- Red accent separator line ---
             float lineY = curY + (separatorGap / 2f) - (accentLineThickness / 2f);
-            Widgets.DrawBoxSolid(new Rect(rect.x + 4f, lineY, contentWidth - 8f, accentLineThickness), AccentUtil.EventMilitary);
+            Widgets.DrawBoxSolid(new Rect(rect.x + 4f, lineY, contentWidth - 8f, accentLineThickness), AccentUtil.Military);
             curY += separatorGap;
 
             if (selectedSquad != null)

@@ -39,6 +39,7 @@ namespace FactionColonies
         private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
         private static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> _cachedUpgradeTrees = null;
         private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
+        private static List<FCEventCategoryDef> _cachedEventCategoryDefs = null;
         // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
         private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
         private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
@@ -473,6 +474,17 @@ namespace FactionColonies
                 return _cachedRequiredByMap;
             }
         }
+        public static List<FCEventCategoryDef> FCEventCategoryDefs
+        {
+            get
+            {
+                if (_cachedEventCategoryDefs == null)
+                {
+                    _cachedEventCategoryDefs = DefDatabase<FCEventCategoryDef>.AllDefsListForReading;
+                }
+                return _cachedEventCategoryDefs;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -494,6 +506,7 @@ namespace FactionColonies
             _cachedFCPolicyDescs = null;
             _cachedUpgradeTrees = null;
             _cachedRequiredByMap = null;
+            _cachedEventCategoryDefs = null;
 
             _cachedTechLevelBarrierUltra = null;
             _cachedTechLevelBarrierSpacer = null;

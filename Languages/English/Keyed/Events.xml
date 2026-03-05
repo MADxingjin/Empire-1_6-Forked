@@ -8,6 +8,9 @@
 	<EventAffectingSettlements>This event is affecting the following settlements:</EventAffectingSettlements>
 	<FCNoActiveEvents>No active events.</FCNoActiveEvents>
 	<FCActiveEventsCount>{0} active events</FCActiveEventsCount>
+	<FCActiveEventsFiltered>{0} of {1} active events</FCActiveEventsFiltered>
+	<FCEventCatAll>All</FCEventCatAll>
+	<FCNoEventsMatchFilter>No events match the current filters.</FCNoEventsMatchFilter>
 	<FCMultipleSettlements>Multiple ({0})</FCMultipleSettlements>
 
 	<!-- Building Events -->

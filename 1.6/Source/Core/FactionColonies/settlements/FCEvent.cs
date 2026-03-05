@@ -852,6 +852,8 @@ namespace FactionColonies
         public WorldSettlementFC settlementFCDefending = null;
         public bool isMilitaryEvent = false;
 
+        public FCEventCategoryDef category;
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string err in base.ConfigErrors())
