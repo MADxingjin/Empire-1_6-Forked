@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Verse;
 
 namespace FactionColonies
 {
@@ -41,5 +42,21 @@ namespace FactionColonies
     {
         double GetStatModifier(FCStatDef stat);
         string GetStatModifierDesc(FCStatDef stat);
+    }
+    /// <summary>
+    /// Defines an interface to let classes hook into the tax system.
+    /// </summary>
+    public interface ITaxTickParticipant
+    {
+        void PreTaxResolution(FactionFC faction);
+        void PostTaxResolution(FactionFC faction);
+        /// <summary>
+        /// Called at the start of tax collection, after pre-tax preparation (cache invalidation, resource pruning) and SettlementTypeExtension.preTax.
+        /// </summary>
+        void PreSettlementCreateTax(WorldSettlementFC settlement);
+        /// <summary>
+        /// Called at the end of tax collection, after all calculations are complete and SettlementTypeExtension.postTax.
+        /// </summary>
+        void PostSettlementCreateTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings);
     }
 }

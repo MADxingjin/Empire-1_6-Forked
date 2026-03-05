@@ -244,7 +244,7 @@ namespace FactionColonies
         /// <summary>
         /// Called at the end of tax collection, after all calculations are complete.
         /// </summary>
-        public virtual void postTax(WorldSettlementFC settlement, int silverAmount, List<Thing> titheThings)
+        public virtual void postTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)
         {
         }
     }

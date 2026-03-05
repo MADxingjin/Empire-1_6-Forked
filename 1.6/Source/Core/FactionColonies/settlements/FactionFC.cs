@@ -1250,6 +1250,10 @@ namespace FactionColonies
 
         public void addTax()
         {
+            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
+            {
+                taxer.PreTaxResolution(this);
+            }
             foreach (ResourcePool pool in resourcePools)
             {
                 if (pool.resource.poolResourceResetsAtTaxTime())
@@ -1288,6 +1292,10 @@ namespace FactionColonies
             else
             {
                 Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
+            }
+            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
+            {
+                taxer.PostTaxResolution(this);
             }
         }
 

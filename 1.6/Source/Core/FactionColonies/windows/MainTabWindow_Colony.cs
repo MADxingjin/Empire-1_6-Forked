@@ -101,6 +101,7 @@ namespace FactionColonies
             // Mod-added tabs
             foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
             {
+                itab.PreOpenWindow(faction);
                 tabs.Add(new TabRecord(itab.TabName(), delegate
                 {
                     curTab = itab.TabName();
@@ -113,6 +114,11 @@ namespace FactionColonies
         public override void PostClose()
         {
             base.PostClose();
+            // Mod-added tabs
+            foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
+            {
+                itab.PostCloseWindow();
+            }
             selectingColonyFC = false;
             militaryUtil?.checkMilitaryUtilForErrors();
         }
