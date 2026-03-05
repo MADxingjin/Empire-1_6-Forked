@@ -47,8 +47,14 @@ namespace FactionColonies
         /// <summary>
         /// Stat modifiers from buildings, settlement type, and events that apply to this settlement.
         /// Use addStatModifiers/removeStatModifiers to modify.
+        /// Each entry tracks the sourceId that added it for removal by source.
         /// </summary>
-        private List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        private struct TaggedStatModifier
+        {
+            public string sourceId;
+            public FCStatModifier mod;
+        }
+        private List<TaggedStatModifier> statModifiers = new List<TaggedStatModifier>();
         private Dictionary<FCStatDef, double> cachedStatValues = new Dictionary<FCStatDef, double>();
         private Dictionary<FCStatDef, string> cachedStatDescs = new Dictionary<FCStatDef, string>();
 
@@ -995,7 +1001,10 @@ namespace FactionColonies
         public void addStatModifiers(List<FCStatModifier> mods, string sourceId, string sourceLabel = null)
         {
             if (mods != null)
-                statModifiers.AddRange(mods);
+            {
+                foreach (FCStatModifier mod in mods)
+                    statModifiers.Add(new TaggedStatModifier { sourceId = sourceId, mod = mod });
+            }
             InvalidateStatCache();
         }
 
@@ -1009,7 +1018,29 @@ namespace FactionColonies
             if (mods != null)
             {
                 foreach (FCStatModifier mod in mods)
-                    statModifiers.Remove(mod);
+                {
+                    for (int i = statModifiers.Count - 1; i >= 0; i--)
+                    {
+                        if (statModifiers[i].mod == mod)
+                        {
+                            statModifiers.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// Removes all stat modifiers that were added with the given sourceId.
+        /// </summary>
+        public void removeStatModifiersBySource(string sourceId)
+        {
+            for (int i = statModifiers.Count - 1; i >= 0; i--)
+            {
+                if (statModifiers[i].sourceId == sourceId)
+                    statModifiers.RemoveAt(i);
             }
             InvalidateStatCache();
         }
@@ -1024,9 +1055,18 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// The settlement-level stat modifier list.
+        /// The settlement-level stat modifier list (unwrapped from tagged entries).
         /// </summary>
-        public IReadOnlyList<FCStatModifier> StatModifiers => statModifiers;
+        public List<FCStatModifier> StatModifiers
+        {
+            get
+            {
+                var result = new List<FCStatModifier>(statModifiers.Count);
+                foreach (TaggedStatModifier tagged in statModifiers)
+                    result.Add(tagged.mod);
+                return result;
+            }
+        }
 
         /// <summary>
         /// Computes and caches the settlement-level stat partial (buildings, settlement type, events, IStatModifierProvider comps).
@@ -1040,14 +1080,14 @@ namespace FactionColonies
 
             double value = stat.defaultValue;
 
-            foreach (FCStatModifier mod in statModifiers)
+            foreach (TaggedStatModifier tagged in statModifiers)
             {
-                if (mod.stat == stat)
+                if (tagged.mod.stat == stat)
                 {
                     if (stat.aggregation == FCStatAggregation.Additive)
-                        value += mod.value;
+                        value += tagged.mod.value;
                     else
-                        value *= mod.value;
+                        value *= tagged.mod.value;
                 }
             }
 
@@ -1092,13 +1132,13 @@ namespace FactionColonies
                 bool invert = stat.invertedForDisplay;
 
                 // Settlement-level modifiers (buildings, settlement type, events)
-                foreach (FCStatModifier mod in statModifiers)
+                foreach (TaggedStatModifier tagged in statModifiers)
                 {
-                    if (mod.stat != stat) continue;
+                    if (tagged.mod.stat != stat) continue;
                     if (isAdditive)
-                        desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.colorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
                     else
-                        desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.colorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
                 }
 
                 // IStatModifierProvider comps

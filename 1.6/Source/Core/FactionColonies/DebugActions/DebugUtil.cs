@@ -507,11 +507,25 @@ namespace FactionColonies
                     FCStatDef localStat = stat;
                     list.Add(new DebugMenuOption(localStat.defName, DebugMenuOptionMode.Action, () =>
                     {
-                        double value = localStat.aggregation == FCStatAggregation.Additive ? 5 : 1.5;
-                        settlement.addStatModifiers(
-                            new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = value } },
-                            "debug");
-                        LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {value} to {settlement.Name}");
+                        List<DebugMenuOption> values = new List<DebugMenuOption>();
+                        double[] options = localStat.aggregation == FCStatAggregation.Additive
+                            ? new double[] { -10, -5, -1, 1, 5, 10 }
+                            : new double[] { 0.5, 0.75, 1.25, 1.5, 2.0 };
+                        foreach (double val in options)
+                        {
+                            double localVal = val;
+                            string label = localStat.aggregation == FCStatAggregation.Additive
+                                ? (localVal > 0 ? $"+{localVal}" : $"{localVal}")
+                                : $"x{localVal}";
+                            values.Add(new DebugMenuOption(label, DebugMenuOptionMode.Action, () =>
+                            {
+                                settlement.addStatModifiers(
+                                    new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = localVal } },
+                                    "debug");
+                                LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {localVal} to {settlement.Name}");
+                            }));
+                        }
+                        Find.WindowStack.Add(new Dialog_DebugOptionListLister(values));
                     }));
                 }
                 Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
@@ -523,9 +537,142 @@ namespace FactionColonies
         {
             WithSettlementChoice(settlement =>
             {
-                settlement.removeStatModifiers(null, "debug");
+                settlement.removeStatModifiersBySource("debug");
                 LogUtil.MessageForce($"Debug - Cleared debug stat modifiers from {settlement.Name}");
             });
+        }
+
+        [DebugAction("Empire", "Log All Stat Values", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogAllStatValues()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                FactionFC faction = FactionCache.FactionComp;
+                LogUtil.MessageForce($"--- Stat Values for {settlement.Name} ---");
+                int defaultCount = 0;
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
+                {
+                    if (stat.appliesToSettlements)
+                    {
+                        double final = faction.GetStatValue(stat, settlement);
+                        double settlementPart = settlement.GetSettlementStatValue(stat);
+                        double factionPart = faction.GetFactionStatValue(stat);
+                        if (Math.Abs(final - stat.defaultValue) < 0.001
+                            && Math.Abs(settlementPart - stat.defaultValue) < 0.001
+                            && Math.Abs(factionPart - stat.defaultValue) < 0.001)
+                        {
+                            defaultCount++;
+                            continue;
+                        }
+                        string agg = stat.aggregation == FCStatAggregation.Additive ? "Add" : "Mult";
+                        LogUtil.MessageForce($"  {stat.defName}: Final={final:F2} | Settlement={settlementPart:F2} | Faction={factionPart:F2} ({agg})");
+                    }
+                    else
+                    {
+                        double val = faction.GetFactionStatValue(stat);
+                        if (Math.Abs(val - stat.defaultValue) < 0.001)
+                        {
+                            defaultCount++;
+                            continue;
+                        }
+                        LogUtil.MessageForce($"  {stat.defName}: {val:F2} (faction-only)");
+                    }
+                }
+                LogUtil.MessageForce($"  ({defaultCount} stats at default value)");
+            });
+        }
+
+        [DebugAction("Empire", "Log Stat Breakdown", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogStatBreakdown()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
+                {
+                    FCStatDef localStat = stat;
+                    list.Add(new DebugMenuOption(localStat.defName, DebugMenuOptionMode.Action, () =>
+                    {
+                        FactionFC faction = FactionCache.FactionComp;
+                        string agg = localStat.aggregation == FCStatAggregation.Additive ? "Additive" : "Multiplicative";
+                        LogUtil.MessageForce($"--- Stat Breakdown: {localStat.defName} ({agg}, default={localStat.defaultValue}) ---");
+
+                        // Settlement-level modifiers
+                        foreach (FCStatModifier mod in settlement.StatModifiers)
+                        {
+                            if (mod.stat == localStat)
+                                LogUtil.MessageForce($"  Settlement modifier: {mod.value:F2}");
+                        }
+
+                        // IStatModifierProvider comps
+                        foreach (WorldObjectComp comp in settlement.AllComps)
+                        {
+                            if (comp is IStatModifierProvider provider)
+                            {
+                                double compVal = provider.GetStatModifier(localStat);
+                                if (Math.Abs(compVal - (localStat.aggregation == FCStatAggregation.Additive ? 0 : 1)) > 0.001)
+                                    LogUtil.MessageForce($"  Comp ({comp.GetType().Name}): {compVal:F2}");
+                            }
+                        }
+                        LogUtil.MessageForce($"  Settlement partial = {settlement.GetSettlementStatValue(localStat):F2}");
+
+                        // Faction-level (policies + traits)
+                        foreach (FCPolicy p in faction.policies)
+                        {
+                            if (p?.def == null) continue;
+                            foreach (FCStatModifier mod in p.def.statModifiers)
+                            {
+                                if (mod.stat == localStat)
+                                    LogUtil.MessageForce($"  Policy ({p.def.defName}): {mod.value:F2}");
+                            }
+                        }
+                        foreach (FCPolicy p in faction.factionTraits)
+                        {
+                            if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                            foreach (FCStatModifier mod in p.def.statModifiers)
+                            {
+                                if (mod.stat == localStat)
+                                    LogUtil.MessageForce($"  Trait ({p.def.defName}): {mod.value:F2}");
+                            }
+                        }
+                        LogUtil.MessageForce($"  Faction partial = {faction.GetFactionStatValue(localStat):F2}");
+
+                        // Behavior contributions
+                        foreach (FCPolicyBehavior b in faction.cachedBehaviors)
+                        {
+                            string desc = b.GetStatDescription(localStat, settlement);
+                            if (!desc.NullOrEmpty())
+                                LogUtil.MessageForce($"  Behavior ({b.GetType().Name}): {desc.TrimEnd()}");
+                        }
+
+                        double final = faction.GetStatValue(localStat, settlement);
+                        LogUtil.MessageForce($"  FINAL = {final:F2}");
+                    }));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+            });
+        }
+
+        [DebugAction("Empire", "Log Faction Stats", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogFactionStatValues()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            LogUtil.MessageForce("--- Faction-Level Stat Values ---");
+            int defaultCount = 0;
+            foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
+            {
+                double val = faction.GetFactionStatValue(stat);
+                if (Math.Abs(val - stat.defaultValue) < 0.001)
+                {
+                    defaultCount++;
+                    continue;
+                }
+                string agg = stat.aggregation == FCStatAggregation.Additive ? "Add" : "Mult";
+                LogUtil.MessageForce($"  {stat.defName} = {val:F2} ({agg}, default={stat.defaultValue})");
+            }
+            LogUtil.MessageForce($"  ({defaultCount} stats at default value)");
         }
 
         // ============================
