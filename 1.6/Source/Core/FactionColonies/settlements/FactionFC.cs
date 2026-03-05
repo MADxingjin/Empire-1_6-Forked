@@ -753,7 +753,7 @@ namespace FactionColonies
         // ── Behavior Cache ────────────────────────────────────────
 
         private List<FCPolicyBehavior> _cachedBehaviors = null;
-        private List<FCPolicyBehavior> cachedBehaviors
+        public List<FCPolicyBehavior> cachedBehaviors
         {
             get
             {

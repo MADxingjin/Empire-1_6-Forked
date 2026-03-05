@@ -67,5 +67,10 @@ namespace FactionColonies
                 cooldownMessageKey = "FCActionMercenaryOnCooldown"
             };
         }
+
+        // Debug accessors
+        public bool DebugCooldownReady() => mercenaryCooldown.IsReady;
+        public float DebugCooldownDays() => mercenaryCooldown.DaysRemaining;
+        public void DebugResetCooldown() => mercenaryCooldown.tickLastUsed = -1;
     }
 }

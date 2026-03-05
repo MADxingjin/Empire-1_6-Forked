@@ -46,5 +46,10 @@ namespace FactionColonies
             Scribe_Deep.Look(ref diplomatCooldown, "diplomatCooldown");
             diplomatCooldown = diplomatCooldown ?? new CooldownAbility { cooldownTicks = GenDate.TicksPerDay * 5 };
         }
+
+        // Debug accessors
+        public bool DebugCooldownReady() => diplomatCooldown.IsReady;
+        public float DebugCooldownDays() => diplomatCooldown.DaysRemaining;
+        public void DebugResetCooldown() => diplomatCooldown.tickLastUsed = -1;
     }
 }

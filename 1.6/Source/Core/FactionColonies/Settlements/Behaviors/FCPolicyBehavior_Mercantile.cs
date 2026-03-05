@@ -38,5 +38,9 @@ namespace FactionColonies
         {
             Scribe_Values.Look(ref nextCaravanTick, "nextCaravanTick");
         }
+
+        // Debug accessors
+        public int DebugNextCaravanTick() => nextCaravanTick;
+        public void DebugResetNextCaravan() => nextCaravanTick = Find.TickManager.TicksGame;
     }
 }

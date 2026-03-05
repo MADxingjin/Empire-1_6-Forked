@@ -80,5 +80,10 @@ namespace FactionColonies
             Scribe_Deep.Look(ref extraSquadCooldown, "extraSquadCooldown");
             extraSquadCooldown = extraSquadCooldown ?? new CooldownAbility { cooldownTicks = GenDate.TicksPerDay * 5 };
         }
+
+        // Debug accessors
+        public bool DebugCooldownReady() => extraSquadCooldown.IsReady;
+        public float DebugCooldownDays() => extraSquadCooldown.DaysRemaining;
+        public void DebugResetCooldown() => extraSquadCooldown.tickLastUsed = -1;
     }
 }

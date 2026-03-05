@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -123,5 +124,9 @@ namespace FactionColonies
             Scribe_Collections.Look(ref taxBreaks, "taxBreaks", LookMode.Value, LookMode.Deep);
             taxBreaks = taxBreaks ?? new Dictionary<int, TaxBreakData>();
         }
+
+        // Debug accessors
+        public int DebugTaxBreakCount() => taxBreaks.Count;
+        public int DebugActiveTaxBreakCount() => taxBreaks.Count(kvp => kvp.Value.enabled);
     }
 }

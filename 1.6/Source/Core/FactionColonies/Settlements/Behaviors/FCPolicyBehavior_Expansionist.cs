@@ -67,5 +67,10 @@ namespace FactionColonies
                 readyLetterKey = "FCActionAvailable"
             };
         }
+
+        // Debug accessors
+        public bool DebugCooldownReady() => feeReductionCooldown.IsReady;
+        public float DebugCooldownDays() => feeReductionCooldown.DaysRemaining;
+        public void DebugResetCooldown() => feeReductionCooldown.tickLastUsed = -1;
     }
 }
