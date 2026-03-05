@@ -59,4 +59,50 @@ namespace FactionColonies
         /// </summary>
         void PostSettlementCreateTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings);
     }
+    /// <summary>
+    /// Defines an interface to let classes hook into settlement creation and removal.
+    /// </summary>
+    public interface ISettlementLifecycleParticipant
+    {
+        /// <summary>
+        /// Called after a settlement has been fully created, added to the world, and registered with the faction.
+        /// </summary>
+        void OnSettlementCreated(WorldSettlementFC settlement);
+        /// <summary>
+        /// Called when a settlement is being removed, before cleanup (military return, event removal) begins.
+        /// </summary>
+        void OnSettlementRemoved(WorldSettlementFC settlement);
+    }
+    /// <summary>
+    /// Defines an interface to let classes hook into building construction and deconstruction.
+    /// </summary>
+    public interface IBuildingLifecycleParticipant
+    {
+        /// <summary>
+        /// Called after a building has been fully constructed and its comps initialized.
+        /// </summary>
+        void OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot);
+        /// <summary>
+        /// Called before a building is deconstructed and its stat modifiers removed.
+        /// </summary>
+        void OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot);
+    }
+    /// <summary>
+    /// Defines an interface to let classes hook into military deployment, recall, and battle resolution events.
+    /// </summary>
+    public interface IMilitaryEventParticipant
+    {
+        /// <summary>
+        /// Called after a military squad has been deployed from a settlement.
+        /// </summary>
+        void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job);
+        /// <summary>
+        /// Called when a military squad is recalled to its settlement.
+        /// </summary>
+        void OnSquadRecalled(WorldSettlementFC settlement);
+        /// <summary>
+        /// Called after a battle has been resolved, before the squad enters cooldown.
+        /// </summary>
+        void OnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory);
+    }
 }

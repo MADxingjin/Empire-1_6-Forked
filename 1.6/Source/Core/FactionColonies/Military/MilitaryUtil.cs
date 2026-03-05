@@ -70,6 +70,7 @@ namespace FactionColonies
             {
                 FactionCache.FactionComp.ForEachBehavior(b =>
                     b.OnSquadDeployed(FactionCache.FactionComp, settlement, true));
+                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJob.Deploy);
             }
         }
 

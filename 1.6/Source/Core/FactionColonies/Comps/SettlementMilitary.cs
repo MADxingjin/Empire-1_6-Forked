@@ -836,6 +836,8 @@ namespace FactionColonies
                 default:
                     break;
             }
+
+            MilitaryEventRegistry.InvokeOnSquadDeployed(WorldSettlement, job);
         }
 
         public Settlement returnMilitaryTarget()
@@ -858,12 +860,16 @@ namespace FactionColonies
             //Process end result here
             //attacker == 0; defender == 1;
 
+            bool victory = false;
+            MilitaryJob resolvedJob = militaryJob;
+
             switch (militaryJob)
             {
                 case MilitaryJob.RaidEnemySettlement:
                     {
                         int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
                             militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
+                        victory = winner == 0;
                         if (winner == 0)
                         {
                             //if won
@@ -945,6 +951,7 @@ namespace FactionColonies
                     {
                         int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
                             militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
+                        victory = winner == 0;
                         if (winner == 0)
                         {
                             //if won
@@ -980,6 +987,7 @@ namespace FactionColonies
                     {
                         int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
                             militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
+                        victory = winner == 0;
                         if (winner == 0)
                         {
                             faction.addExperienceToFactionLevel(5f);
@@ -1040,6 +1048,7 @@ namespace FactionColonies
                     }
             }
 
+            MilitaryEventRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
             cooldownMilitary();
         }
 
@@ -1051,6 +1060,7 @@ namespace FactionColonies
             militaryEnemy = null;
 
             FactionCache.FactionComp.ForEachBehavior(b => b.OnSquadRecalled(FactionCache.FactionComp, WorldSettlement));
+            MilitaryEventRegistry.InvokeOnSquadRecalled(WorldSettlement);
 
             if (alert)
             {

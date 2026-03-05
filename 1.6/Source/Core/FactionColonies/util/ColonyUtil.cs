@@ -38,13 +38,13 @@ namespace FactionColonies.util
             settlement.SetFaction(faction);
             Find.WorldObjects.Add(settlement);
 
-            worldcomp.ForEachBehavior(b => b.OnSettlementCreated(worldcomp, settlement));
-
             worldcomp.addSettlement(settlement);
             worldcomp.roadBuilder.FlagUpdateRoadQueues();
 
             /* Do any post-settlement-creation demanded of the settlement type */
             settlementType.GetModExtension<SettlementTypeExtension>().postCreation(settlement);
+
+            SettlementLifecycleRegistry.InvokeOnSettlementCreated(settlement);
 
             Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
                 "SettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
@@ -58,7 +58,7 @@ namespace FactionColonies.util
             settlement.settlementDef.getSettlementTypeExtension()?.preDestruction(settlement);
             settlement.PrepareDestroyWorldObject();
             FactionFC faction = FactionCache.FactionComp;
-            faction.ForEachBehavior(b => b.OnSettlementRemoved(faction, settlement));
+            SettlementLifecycleRegistry.InvokeOnSettlementRemoved(settlement);
             faction.settlements.Remove(settlement);
             faction.roadBuilder.FlagUpdateRoadQueues();
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);

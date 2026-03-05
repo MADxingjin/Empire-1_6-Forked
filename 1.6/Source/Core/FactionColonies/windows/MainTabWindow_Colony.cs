@@ -117,11 +117,7 @@ namespace FactionColonies
         public override void PostClose()
         {
             base.PostClose();
-            // Mod-added tabs
-            foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
-            {
-                itab.PostCloseWindow();
-            }
+            MainTableRegistry.InvokePostCloseWindow();
             selectingColonyFC = false;
             militaryUtil?.checkMilitaryUtilForErrors();
         }

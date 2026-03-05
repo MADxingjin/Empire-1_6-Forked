@@ -1426,10 +1426,7 @@ namespace FactionColonies
         {
             preTaxPrep();
             settlementDef.getSettlementTypeExtension()?.preTax(this);
-            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
-            {
-                taxer.PreSettlementCreateTax(this);
-            }
+            TaxTickRegistry.InvokePreSettlementCreateTax(this);
 
             FactionFC faction = FactionCache.FactionComp;
             double flatTaxBoost = getTaxTimeTaxBoostFlat();
@@ -1455,10 +1452,7 @@ namespace FactionColonies
             postTaxPrep();
             silverAmount = tmpSilverAmount;
             settlementDef.getSettlementTypeExtension()?.postTax(this, ref silverAmount, titheThings);
-            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
-            {
-                taxer.PostSettlementCreateTax(this, ref silverAmount, titheThings);
-            }
+            TaxTickRegistry.InvokePostSettlementCreateTax(this, ref silverAmount, titheThings);
             return titheThings;
         }
     }

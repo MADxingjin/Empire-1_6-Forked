@@ -15,7 +15,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
-    public class FactionFC : WorldComponent
+    public class FactionFC : WorldComponent, ISettlementLifecycleParticipant
     {
         public int taxTimeDue = Find.TickManager.TicksGame;
         public int timeStart = Find.TickManager.TicksGame;
@@ -295,6 +295,8 @@ namespace FactionColonies
                 LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
             factionResources.Sort(ResourceDisplay.sortForUI);
+
+            SettlementLifecycleRegistry.Register(this);
         }
         /// <summary>
         /// Returns a list of *all* things that this faction can produce.
@@ -803,6 +805,19 @@ namespace FactionColonies
             }
         }
 
+        // ── ISettlementLifecycleParticipant ──────────────────────────
+        // Bridges registry dispatch to policy behaviors so ColonyUtil only needs one call path.
+
+        void ISettlementLifecycleParticipant.OnSettlementCreated(WorldSettlementFC settlement)
+        {
+            ForEachBehavior(b => b.OnSettlementCreated(this, settlement));
+        }
+
+        void ISettlementLifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
+        {
+            ForEachBehavior(b => b.OnSettlementRemoved(this, settlement));
+        }
+
         public T FoldBehaviors<T>(T seed, Func<FCPolicyBehavior, T, T> folder)
         {
             foreach (FCPolicyBehavior b in cachedBehaviors)
@@ -1250,10 +1265,7 @@ namespace FactionColonies
 
         public void addTax()
         {
-            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
-            {
-                taxer.PreTaxResolution(this);
-            }
+            TaxTickRegistry.InvokePreTaxResolution(this);
             foreach (ResourcePool pool in resourcePools)
             {
                 if (pool.resource.poolResourceResetsAtTaxTime())
@@ -1293,10 +1305,7 @@ namespace FactionColonies
             {
                 Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
             }
-            foreach (ITaxTickParticipant taxer in TaxTickRegistry.Taxers)
-            {
-                taxer.PostTaxResolution(this);
-            }
+            TaxTickRegistry.InvokePostTaxResolution(this);
         }
 
         public float updateFactionLevelGoalXP(int currentLevel)
