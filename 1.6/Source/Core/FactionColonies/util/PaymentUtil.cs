@@ -227,7 +227,7 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            float lootMultiplier = (float)faction.ApplyPolicyModifier(1d, (ext, val) => ext.ModifyLootMultiplier(val));
+            float lootMultiplier = (float)faction.GetStatValue(FCStatDefOf.lootMultiplier);
 
             List<Thing> things = new List<Thing>();
             ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();

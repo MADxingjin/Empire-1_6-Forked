@@ -35,7 +35,7 @@
     }
 
     /// <summary>
-    /// Action types that FCPolicyModExtension can block or enable.
+    /// Action types that policies can block or enable via FCPolicyDef.blockedActions/enabledActions.
     /// </summary>
     public enum FCActionType
     {

@@ -657,7 +657,7 @@ namespace FactionColonies
             Rect costRect = new Rect(statsX, curY, statsW, 22f);
             Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
 
-            int buildTime = factionfc.ApplyPolicyModifier(selectedBuilding.constructionDuration, (ext, val) => ext.ModifyBuildTime(val));
+            int buildTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
             Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
             Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
 
@@ -807,24 +807,20 @@ namespace FactionColonies
 
         private float DrawSettlementImpact(float x, float curY, float width)
         {
-            if (selectedBuilding.traits == null || selectedBuilding.traits.Count == 0) return curY;
+            if (selectedBuilding.resourceBonuses == null || selectedBuilding.resourceBonuses.Count == 0) return curY;
 
             // Gather all affected resources from both old and new building
             HashSet<ResourceTypeDef> affectedResources = new HashSet<ResourceTypeDef>();
-            if (selectedBuilding.traits != null)
-            {
-                foreach (var trait in selectedBuilding.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affectedResources.Add(rb.resourceDef);
-            }
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
+            foreach (var rb in selectedBuilding.resourceBonuses)
+                if (rb.resourceDef != null)
+                    affectedResources.Add(rb.resourceDef);
+
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.resourceBonuses != null;
             if (isReplacing)
             {
-                foreach (var trait in buildingDef.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affectedResources.Add(rb.resourceDef);
+                foreach (var rb in buildingDef.resourceBonuses)
+                    if (rb.resourceDef != null)
+                        affectedResources.Add(rb.resourceDef);
             }
 
             if (affectedResources.Count == 0) return curY;
@@ -861,26 +857,20 @@ namespace FactionColonies
                 // Subtract old building contributions
                 if (isReplacing)
                 {
-                    foreach (var trait in buildingDef.traits)
+                    ResourceBonuses oldRb = buildingDef.resourceBonuses.FirstOrDefault(r => r.resourceDef == resDef);
+                    if (oldRb != null)
                     {
-                        ResourceBonuses rb = trait.getTraitResource(resDef);
-                        if (rb != null)
-                        {
-                            if (rb.additive != 0) projectedBase -= rb.additive;
-                            if (rb.multiplier != 1 && rb.multiplier != 0) projectedMult /= rb.multiplier;
-                        }
+                        if (oldRb.additive != 0) projectedBase -= oldRb.additive;
+                        if (oldRb.multiplier != 1 && oldRb.multiplier != 0) projectedMult /= oldRb.multiplier;
                     }
                 }
 
                 // Add new building contributions
-                foreach (var trait in selectedBuilding.traits)
+                ResourceBonuses newRb = selectedBuilding.resourceBonuses.FirstOrDefault(r => r.resourceDef == resDef);
+                if (newRb != null)
                 {
-                    ResourceBonuses rb = trait.getTraitResource(resDef);
-                    if (rb != null)
-                    {
-                        if (rb.additive != 0) projectedBase += rb.additive;
-                        if (rb.multiplier != 1) projectedMult *= rb.multiplier;
-                    }
+                    if (newRb.additive != 0) projectedBase += newRb.additive;
+                    if (newRb.multiplier != 1) projectedMult *= newRb.multiplier;
                 }
 
                 double projectedProd = projectedBase * projectedMult;
@@ -923,20 +913,18 @@ namespace FactionColonies
 
         private float CalculateImpactHeight()
         {
-            if (selectedBuilding?.traits == null || selectedBuilding.traits.Count == 0) return 0;
+            if (selectedBuilding?.resourceBonuses == null || selectedBuilding.resourceBonuses.Count == 0) return 0;
 
             HashSet<ResourceTypeDef> affected = new HashSet<ResourceTypeDef>();
-            foreach (var trait in selectedBuilding.traits)
-                foreach (var rb in trait.resourceBonuses)
+            foreach (var rb in selectedBuilding.resourceBonuses)
+                if (rb.resourceDef != null)
+                    affected.Add(rb.resourceDef);
+
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.resourceBonuses != null;
+            if (isReplacing)
+                foreach (var rb in buildingDef.resourceBonuses)
                     if (rb.resourceDef != null)
                         affected.Add(rb.resourceDef);
-
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
-            if (isReplacing)
-                foreach (var trait in buildingDef.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affected.Add(rb.resourceDef);
 
             if (affected.Count == 0) return 0;
 
@@ -1182,7 +1170,7 @@ namespace FactionColonies
                 buildingSlot = buildingSlot
             };
 
-            int triggerTime = factionfc.ApplyPolicyModifier(selectedBuilding.constructionDuration, (ext, val) => ext.ModifyBuildTime(val));
+            int triggerTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
 
             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
             tmpEvt.customDescription = "BuildingEventDesc".Translate(

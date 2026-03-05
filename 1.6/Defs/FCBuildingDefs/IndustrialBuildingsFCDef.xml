@@ -7,95 +7,99 @@
 		<desc>Scienctists spend their days researching here.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>researchLabs</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Research</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<upkeep>150</upkeep>
 		<iconPath>GUI/Buildings/ResearchLab</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>indoorHydroponics</defName> <!--Name of Def -->
 		<label>Indoor Hydroponics</label> <!--Lable of Def -->
 		<desc>Food is produced indoors, protecting it from the harshes from the world.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>indoorHydroponics</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Food</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<iconPath>GUI/Buildings/IndoorHydroponics</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>firearmsFactory</defName> <!--Name of Def -->
 		<label>Firearms Factory</label> <!--Lable of Def -->
 		<desc>A factory that produces mass quantities of firearms.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>firearmsFactory</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Weapons</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<iconPath>GUI/Buildings/FirearmsFactory</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>rimazonWarehouse</defName> <!--Name of Def -->
 		<label>Rimazon Warehouse</label> <!--Lable of Def -->
 		<desc>A warehouse stocked full of goods marked to be shipped.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>rimazonWarehouse</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>5</value></li>
+			<li><stat>taxBaseRandomModifier</stat><value>20</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/RimazonWarehouse</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>inhouseMercCompany</defName> <!--Name of Def -->
 		<label>In-House Merc Company</label> <!--Lable of Def -->
 		<desc>Barracks for an in-house mercenary company. They will provide security for the colony.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>inhouseMercCompany</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+			<li><stat>taxBasePercentage</stat><value>-10</value></li>
+		</statModifiers>
 		<upkeep>200</upkeep>
 		<iconPath>GUI/Buildings/InHouseMercCompany</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>adultEntertainmentCentre</defName> <!--Name of Def -->
 		<label>Adult Entertainment Centre</label> <!--Lable of Def -->
 		<desc>A place for the local people to spend a dime and have a good time.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>adultEntertainmentCentre</li>
-		</traits>
+		<statModifiers>
+			<li><stat>happinessGainedBase</stat><value>0.5</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/AdultEntertainmentCentre</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>forcedWorkCamps</defName> <!--Name of Def -->
 		<label>Forced Work Camps</label> <!--Lable of Def -->
 		<desc>Put those prisoners to work and increase your production!</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>forcedWorkCamps</li>
-		</traits>
+		<statModifiers>
+			<li><stat>unrestGainedBase</stat><value>0.5</value></li>
+			<li><stat>unrestLostMultiplier</stat><value>0.75</value></li>
+			<li><stat>workerBaseMax</stat><value>2</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/ForcedWorkCamps</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>artilleryOutpost</defName>
 		<label>Artillery Outpost</label>
 		<desc>When this building is built, an artillery strike can be called for a cost in the military menu.</desc>
 		<cost>2000</cost>
 		<constructionDuration>120000</constructionDuration>
-		<traits>
-			<li>artilleryOutpost</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+		</statModifiers>
 		<upkeep>300</upkeep>
 		<iconPath>GUI/Buildings/ArtilleryOutpost</iconPath>
 	</FactionColonies.BuildingFCDef>
@@ -110,10 +114,13 @@
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>JunkFoodFactory</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Food</resourceDef><multiplier>1.25</multiplier></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>happinessLostBase</stat><value>0.5</value></li>
+			<li><stat>unrestLostBase</stat><value>0.5</value></li>
+		</statModifiers>
 		<upkeep>400</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/JunkFood</iconPath>
@@ -129,10 +136,9 @@
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>TextileFactory</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Apparel</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<upkeep>250</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/TextileFactory</iconPath>
@@ -148,10 +154,12 @@
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>LocalZoo</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Animals</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>happinessGainedBase</stat><value>0.3</value></li>
+		</statModifiers>
 		<upkeep>350</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Zoo</iconPath>
@@ -168,10 +176,9 @@
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>TreeFarm</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Logging</resourceDef><additive>0.5</additive><multiplier>1.05</multiplier></li>
+		</resourceBonuses>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/TreeFarm</iconPath>
@@ -187,10 +194,9 @@
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>IMED</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Mining</resourceDef><multiplier>1.2</multiplier></li>
+		</resourceBonuses>
 		<upkeep>550</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/IMED</iconPath>
@@ -202,25 +208,25 @@
 		<desc>Restores fertility to the damaged and depleted soil of Scarlands.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>soilFixer</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Food</resourceDef><additive>1.5</additive></li>
+		</resourceBonuses>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>Scarlands</li>
 		</applicableBiomes>
 		<upkeep>200</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/soilFixer</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>lavaPlant</defName> <!--Name of Def -->
 		<label>Geothermal Power Plant</label> <!--Lable of Def -->
 		<desc>Harness the easily accessible geothermal energy of volcanically active areas for power generation.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>lavaPlant</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Power</resourceDef><multiplier>1.75</multiplier></li>
+		</resourceBonuses>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>AB_PyroclasticConflagration</li>
 			<li>LavaField</li>
@@ -228,16 +234,16 @@
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/lavaPlant</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>lavaLab</defName> <!--Name of Def -->
 		<label>Volcanology Lab</label> <!--Lable of Def -->
 		<desc>A research facility dedicated to studying volcanology and any potential practical applications.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>30000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>lavaPlant</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.75</multiplier></li>
+		</resourceBonuses>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>AB_PyroclasticConflagration</li>
 			<li>LavaField</li>
@@ -245,73 +251,82 @@
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/lavaLab</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
-	
+
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>batteryPowerStation</defName> <!--Name of Def -->
 		<label>Battery Power Station</label> <!--Lable of Def -->
 		<desc>A power station to store excess energy production.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>240000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>batteryPowerStation</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Power</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<upkeep>200</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/BatteryElectricStation</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>solarPlant</defName> <!--Name of Def -->
 		<label>Solar Plant</label> <!--Lable of Def -->
 		<desc>A solar powerplant to produce extra energy.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>240000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>solarPlant</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Power</resourceDef><multiplier>1.25</multiplier></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>workerBaseCost</stat><value>10</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/SolarPlant</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
-	
+
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>cleanEnergyLab</defName> <!--Name of Def -->
 		<label>Clean Energy Lab</label> <!--Lable of Def -->
 		<desc>A research lab dedicated to researching and producing more efficient clean forms of energy.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>cleanEnergyLab</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Power</resourceDef><multiplier>1.25</multiplier></li>
+			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.25</multiplier></li>
+		</resourceBonuses>
 		<upkeep>150</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/CleanEnergyLab</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>animalTestingFacility</defName> <!--Name of Def -->
 		<label>Animal Testing Facility</label> <!--Lable of Def -->
 		<desc>A research lab dedicated to testing products on animals. Unethical, but useful.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>animalTestingFacility</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Medicine</resourceDef><additive>0.25</additive></li>
+			<li><resourceDef>RTD_Research</resourceDef><additive>0.25</additive></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>unrestGainedMultiplier</stat><value>1.25</value></li>
+		</statModifiers>
 		<upkeep>100</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/AnimalTestingFacility</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>apartmentHousing</defName> <!--Name of Def -->
 		<label>Apartment Housing</label> <!--Lable of Def -->
 		<desc>A large apartment block to house local workers.</desc> <!-- Description of trait -->
 		<cost>5000</cost>
 		<constructionDuration>300000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>apartmentHousing</li>
-		</traits>
+		<statModifiers>
+			<li><stat>workerBaseMax</stat><value>10</value></li>
+			<li><stat>workerBaseOverMax</stat><value>5</value></li>
+		</statModifiers>
 		<upkeep>500</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/ApartmentHousing</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
-	
+
+
 </Defs>

@@ -27,8 +27,8 @@ namespace FactionColonies
         private int settlementCreationCost = 0;
         private readonly FactionFC faction = null;
 
-        private int SettlementCreationBaseCost => (int)(faction.getFieldValue("createSettlementMultiplier", Operation.Multiplication) *
-                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + (faction.getFieldValue("createSettlementBaseCost", Operation.Addition))));
+        private int SettlementCreationBaseCost => (int)(faction.GetStatValue(FCStatDefOf.createSettlementMultiplier) *
+                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().getCreationCost() + faction.GetStatValue(FCStatDefOf.createSettlementBaseCost)));
 
         /* UI math stuff! Yaaaay!
          * what a pain
@@ -228,7 +228,7 @@ namespace FactionColonies
         private void CalculateSettlementCreationCost()
         {
             double baseCost = SettlementCreationBaseCost;
-            settlementCreationCost = (int)faction.ApplyPolicyModifier(baseCost, (ext, val) => ext.ModifySettlementCost(val));
+            settlementCreationCost = (int)(baseCost * faction.GetStatValue(FCStatDefOf.settlementCostMultiplier));
 
             settlementCostModified = settlementCreationCost != (int)baseCost;
         }
@@ -379,7 +379,7 @@ namespace FactionColonies
         {
             if (settlementCostModified)
             {
-                faction.ForEachPolicyExtension((ext, policy) => ext.OnSettlementCostPaid(faction, policy));
+                faction.ForEachBehavior(b => b.OnSettlementCostPaid(faction));
             }
         }
 

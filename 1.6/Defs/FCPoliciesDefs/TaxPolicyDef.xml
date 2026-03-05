@@ -9,11 +9,13 @@
 		<type>taxPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>minimizeTaxation</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>-35</value></li>
+			<li><stat>happinessGainedBase</stat><value>0.5</value></li>
+			<li><stat>unrestLostBase</stat><value>1</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
+
 	<FactionColonies.FCPolicyDef>
 		<defName>heavyTaxation</defName> <!--Name of Def -->
 		<label>Heavy Taxation</label> <!--Lable of Def -->
@@ -22,9 +24,13 @@
 		<type>taxPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>heavyTaxation</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>25</value></li>
+			<li><stat>happinessLostBase</stat><value>0.5</value></li>
+			<li><stat>unrestGainedBase</stat><value>1</value></li>
+			<li><stat>happinessGainedMultiplier</stat><value>0.5</value></li>
+			<li><stat>unrestLostMultiplier</stat><value>0.5</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
+
 </Defs>

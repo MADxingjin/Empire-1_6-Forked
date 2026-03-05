@@ -36,14 +36,14 @@ namespace FactionColonies.util
 
 		public static void Action(FCEvent evt)
 		{
-			Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
+			Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
 		}
 
 		public static void Action(FCEvent evt, Letter let = null, Message msg = null, bool CanUseShuttle = false)
 		{
 			evt.let = let;
 			evt.msg = msg;
-			Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
+			Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
 		}
 
 		private static void MakeDeliveryLetterAndMessage(FCEvent evt)

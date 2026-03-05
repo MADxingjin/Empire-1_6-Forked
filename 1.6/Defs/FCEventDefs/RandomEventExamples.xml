@@ -10,9 +10,9 @@
 		<timeTillTrigger>300000</timeTillTrigger> <!-- The time the event will last (or until it goes to the next stage) 300000 covers a whole tax period, so is recommended for events affecting production -->
 		<perpetual>false</perpetual> <!-- this currently has no use right now. -->
 		
-		<traits> <!-- Every def of FCTraitEffectDef name that you want to affect either (faction/specific settlements) goes in here -->
-		<!-- <li>exampleTraitDef</li> -->	
-		</traits>
+		<statModifiers> <!-- FCStatModifier entries that affect either faction or specific settlements -->
+		<!-- <li><stat>taxBonusFlat</stat><value>5</value></li> -->
+		</statModifiers>
 		
 		<options> <!-- If you want the player to have any clickable options, put the FCOptionDef name in here and it will prompt it-->
 			<!-- <li>exampleOptionDef</li> -->
@@ -80,8 +80,8 @@
 		<timeTillTrigger>300000</timeTillTrigger> 
 		<perpetual>false</perpetual> 
 		
-		<traits> 
-		</traits>
+		<statModifiers>
+		</statModifiers>
 		
 		<options> 
 		</options>

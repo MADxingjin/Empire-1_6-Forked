@@ -8,13 +8,10 @@
 		<cost>0</cost>
 		<techLevel>Undefined</techLevel>
 		<constructionDuration>0</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-		
-		</traits>
 		<upkeep></upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Empty</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef>
 		<defName>Construction</defName> <!--Name of Def -->
 		<label>Under Construction</label> <!--Lable of Def -->
@@ -22,9 +19,6 @@
 		<cost>0</cost>
 		<techLevel>Undefined</techLevel>
 		<constructionDuration>0</constructionDuration>
-		<traits>
-		
-		</traits>
 		<upkeep></upkeep>
 		<iconPath>GUI/Buildings/Construction</iconPath>
 	</FactionColonies.BuildingFCDef>

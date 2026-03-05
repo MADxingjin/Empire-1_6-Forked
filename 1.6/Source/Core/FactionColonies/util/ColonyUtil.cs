@@ -38,7 +38,7 @@ namespace FactionColonies.util
             settlement.SetFaction(faction);
             Find.WorldObjects.Add(settlement);
 
-            worldcomp.ForEachPolicyExtension((ext, _) => ext.OnSettlementCreated(worldcomp, settlement));
+            worldcomp.ForEachBehavior(b => b.OnSettlementCreated(worldcomp, settlement));
 
             worldcomp.addSettlement(settlement);
             worldcomp.roadBuilder.FlagUpdateRoadQueues();
@@ -58,6 +58,7 @@ namespace FactionColonies.util
             settlement.settlementDef.getSettlementTypeExtension()?.preDestruction(settlement);
             settlement.PrepareDestroyWorldObject();
             FactionFC faction = FactionCache.FactionComp;
+            faction.ForEachBehavior(b => b.OnSettlementRemoved(faction, settlement));
             faction.settlements.Remove(settlement);
             faction.roadBuilder.FlagUpdateRoadQueues();
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);

@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using RimWorld;
 using Verse;
+using RimWorld;
 
 namespace FactionColonies
 {
-    public class FCPolicyExt_Technocratic : FCPolicyModExtension
+    public class FCPolicyBehavior_Technocratic : FCPolicyBehavior
     {
-        public override double ModifyResearchContribution(double contribution, WorldSettlementFC settlement) => contribution * 2;
-
         public override IEnumerable<(TaggedString label, Action onClick)> GetMainTabActionButtons(FactionFC faction)
         {
             yield return ("FCSendResearchItems".Translate(), () =>

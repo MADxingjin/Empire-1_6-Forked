@@ -61,7 +61,7 @@ namespace FactionColonies
             else
             {
                 traitsChosen = false;
-                faction.policies = new List<FCPolicy>();
+                faction.RemoveAllPolicies(faction.policies);
             }
         }
 
@@ -134,7 +134,7 @@ namespace FactionColonies
                             faction.policies.Add(new FCPolicy(policy));
                         }
                     }
-                    faction.RebuildPolicyExtensionCache();
+                    faction.RebuildBehaviorCache();
                 }
 
                 Find.WindowStack.TryRemove(this);

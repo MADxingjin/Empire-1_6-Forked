@@ -153,7 +153,8 @@ namespace FactionColonies
                 def = def,
                 tickStarted = Find.TickManager.TicksGame,
                 timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
-                traits = def.traits,
+                statModifiers = def.statModifiers,
+                resourceBonuses = def.resourceBonuses,
                 settlementTraitLocations = new List<WorldSettlementFC>()
             };
 
@@ -361,7 +362,7 @@ namespace FactionColonies
                 }
 
 
-                //check if event has a location, if does, add traits to that specific location;
+                //check if event has a location, if does, remove stat modifiers from that specific location;
                 if (evt.settlementTraitLocations.Any()) //if has specific locations
                 {
                     evt.settlementTraitLocations.RemoveAll(s => s == null);
@@ -370,13 +371,7 @@ namespace FactionColonies
                     {
                         if (location != null)
                         {
-                            foreach (FCTraitEffectDef trait in evt.traits)
-                            {
-                                while (location.Traits.Contains(trait))
-                                {
-                                    location.Traits.Remove(trait);
-                                }
-                            }
+                            location.removeStatModifiers(evt.statModifiers, evt.resourceBonuses, "event_" + evt.def.defName);
 
                             //prosperity loss calculation
                             location.prosperity -= evt.prosperityLost;
@@ -386,11 +381,9 @@ namespace FactionColonies
                 else
                 {
                     //if no specific location then faction wide
-
-                    faction.removeTraits(evt.traits);
-
                     foreach (WorldSettlementFC worldsettlement in faction.settlements)
                     {
+                        worldsettlement.removeStatModifiers(evt.statModifiers, evt.resourceBonuses, "event_" + evt.def.defName);
                         worldsettlement.prosperity -= evt.prosperityLost;
                     }
                 }
@@ -623,7 +616,8 @@ namespace FactionColonies
         public BuildingFCDef building;
         public List<WorldSettlementFC> settlementTraitLocations = new List<WorldSettlementFC>();
         public List<Thing> goods = new List<Thing>();
-        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
         public bool hasCustomDescription;
         public string customDescription = "";
 
@@ -719,7 +713,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasDestination, "hasDestination");
             Scribe_Collections.Look(ref settlementTraitLocations, "settlementTraitLocations", LookMode.Reference);
             Scribe_Collections.Look(ref goods, "goods", LookMode.Deep);
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
+            // stat modifiers are not serialized; they are rebuilt from def on load
             Scribe_Values.Look(ref loadID, "loadID");
 
             Scribe_Values.Look(ref buildingSlot, "buildingSlot");
@@ -774,6 +768,12 @@ namespace FactionColonies
             Scribe_Values.Look(ref isMilitaryEvent, "isMilitaryEvent");
 
             Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && def != null)
+            {
+                statModifiers = def.statModifiers;
+                resourceBonuses = def.resourceBonuses;
+            }
         }
 
         public string GetUniqueLoadID()
@@ -840,8 +840,9 @@ namespace FactionColonies
         public bool hasDestination = false;
 
 
-        //Traits during event
-        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        //Stat modifiers during event
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
 
 
         //Benefits after eventtime info

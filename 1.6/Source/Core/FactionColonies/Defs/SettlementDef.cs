@@ -29,7 +29,8 @@ namespace FactionColonies
         public List<BiomeDef> blockedBiomes = new List<BiomeDef>();
         public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
 
-        public List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<ResourceBonuses> settlementResourceBonuses = new List<ResourceBonuses>();
         /// <summary>
         /// If a biomeResourceOverride is specified, then the settlement will use the resources of the given override rather than the resources
         /// of the biome of the tile that it's on.

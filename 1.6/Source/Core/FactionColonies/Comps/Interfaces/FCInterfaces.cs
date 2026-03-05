@@ -34,12 +34,12 @@ namespace FactionColonies
     }
     /// <summary>
     /// A simple interface that a WorldObjectComp -- attached to a WorldSettlementFC -- can implement to affect non-resource stats.
-    /// <para>Results are cached alongside trait modifiers. When the comp's modifier values change, the comp must call
-    /// <c>((WorldSettlementFC)parent).InvalidateTraitCache()</c> to flush the cache.</para>
+    /// <para>Results are cached alongside stat modifiers. When the comp's modifier values change, the comp must call
+    /// <c>((WorldSettlementFC)parent).InvalidateStatCache()</c> to flush the cache.</para>
     /// </summary>
     public interface IStatModifierProvider
     {
-        double GetStatModifier(string field, Operation operation);
-        string GetStatModifierDesc(string field, Operation operation);
+        double GetStatModifier(FCStatDef stat);
+        string GetStatModifierDesc(FCStatDef stat);
     }
 }

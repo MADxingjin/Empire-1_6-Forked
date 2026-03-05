@@ -21,9 +21,14 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Militaristic" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Militaristic</behaviorClass>
+		<statModifiers>
+			<li><stat>militaryEfficiencyBonusAttacking</stat><value>1.2</value></li>
+			<li><stat>deadPawnCooldownOffset</stat><value>-2000</value></li>
+		</statModifiers>
+		<enabledActions>
+			<li>DeployExtraSquad</li>
+		</enabledActions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -45,9 +50,20 @@
 		<negativeEffects>
 			<li>- Cannot use military forces to raid or to capture other faction's settlements</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Pacifist" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Pacifist</behaviorClass>
+		<statModifiers>
+			<li><stat>deadPawnCooldownOffset</stat><value>2000</value></li>
+		</statModifiers>
+		<blockedActions>
+			<li>CaptureSettlement</li>
+			<li>RaidSettlement</li>
+			<li>EnslaveSettlement</li>
+			<li>DeployMilitary</li>
+		</blockedActions>
+		<enabledActions>
+			<li>SendDiplomat</li>
+		</enabledActions>
+		<suppressMemberDeathPenalty>true</suppressMemberDeathPenalty>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -69,9 +85,13 @@
 		<negativeEffects>
 			<li>- Loyalty starts at 70%</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Authoritarian" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Authoritarian</behaviorClass>
+		<statModifiers>
+			<li><stat>deadPawnCooldownOffset</stat><value>-2000</value></li>
+		</statModifiers>
+		<enabledActions>
+			<li>EnslaveSettlement</li>
+		</enabledActions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -94,9 +114,7 @@
 		<negativeEffects>
 			<li>- Happiness starts at 60%</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Egalitarian" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Egalitarian</behaviorClass>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -120,9 +138,15 @@
 			<li>- The cost to create new settlements is increased by 100%</li>
 			<li>- Cannot use your military forces to capture other faction's settlements</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Isolationist" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>settlementCostMultiplier</stat><value>2</value></li>
+			<li><stat>buildTimeMultiplier</stat><value>0.5</value></li>
+			<li><stat>extraWorkersSoftcap</stat><value>3</value></li>
+			<li><stat>taxBonusFlat</stat><value>10</value></li>
+		</statModifiers>
+		<blockedActions>
+			<li>CaptureSettlement</li>
+		</blockedActions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -144,9 +168,7 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Expansionist" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Expansionist</behaviorClass>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -167,9 +189,10 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Technocratic" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Technocratic</behaviorClass>
+		<statModifiers>
+			<li><stat>researchContributionMultiplier</stat><value>2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -191,9 +214,11 @@
 		<negativeEffects>
 			<li>- Failing to protect your settlements against a raid causes loyalty to drop significantly</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Feudal" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Feudal</behaviorClass>
+		<statModifiers>
+			<li><stat>battleLoyaltyLossMultiplier</stat><value>2</value></li>
+			<li><stat>titheValueMultiplier</stat><value>1.2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -215,9 +240,10 @@
 		<negativeEffects>
 			<li>- -2 Over Max Workers</li>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Slaver" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>extraWorkersSoftcap</stat><value>2</value></li>
+			<li><stat>overMaxWorkersAdjustment</stat><value>-2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 </Defs>

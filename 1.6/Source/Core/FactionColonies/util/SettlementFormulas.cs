@@ -69,7 +69,7 @@ namespace FactionColonies.util
 
         /// <summary>
         /// Calculates base stat penalties when a settlement loses a battle.
-        /// Policy-specific modifiers (e.g. feudal, resilient) are applied via FCPolicyModExtension.ModifyBattlePenalties.
+        /// Policy-specific modifiers (e.g. feudal, resilient) are applied via FCStatDef stats.
         /// </summary>
         public static (double prosperity, double happiness, double loyalty) CalculateBattleLossPenalties(
             double happinessLostMultiplier, double loyaltyLostMultiplier)

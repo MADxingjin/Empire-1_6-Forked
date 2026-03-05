@@ -11,9 +11,10 @@
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>shuttlePort</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBaseRandomModifier</stat><value>10</value></li>
+			<li><stat>taxBasePercentage</stat><value>5</value></li>
+		</statModifiers>
 		<upkeep>600</upkeep>
 		<iconPath>GUI/Buildings/ShuttlePort</iconPath>
 		<requiresRoyality>true</requiresRoyality>

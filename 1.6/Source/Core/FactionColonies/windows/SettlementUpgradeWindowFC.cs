@@ -57,7 +57,7 @@ namespace FactionColonies
                 def = FCEventDefOf.upgradeSettlement,
                 tickStarted = Find.TickManager.TicksGame,
                 location = settlement.Tile,
-                timeTillTrigger = Find.TickManager.TicksGame + factionfc.ApplyPolicyModifier((settlement.settlementLevel + 1) * 60000 * 2, (ext, val) => ext.ModifyBuildTime(val))
+                timeTillTrigger = Find.TickManager.TicksGame + (int)((settlement.settlementLevel + 1) * 60000 * 2 * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier))
             };
             tmp.customDescription = "UpgradeEventDesc".Translate(
                 settlement.Name,

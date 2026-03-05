@@ -9,12 +9,14 @@
 		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>heavyConscription</li>
-		</traits>
+		<statModifiers>
+			<li><stat>happinessGainedMultiplier</stat><value>0.5</value></li>
+			<li><stat>unrestGainedMultiplier</stat><value>1.5</value></li>
+			<li><stat>militaryBaseLevel</stat><value>2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>volunteerService</defName> <!--Name of Def -->
 		<label>Volunteer Service</label> <!--Lable of Def -->
@@ -23,12 +25,14 @@
 		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>volunteerService</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>1.2</value></li>
+			<li><stat>unrestGainedMultiplier</stat><value>0.75</value></li>
+			<li><stat>loyaltyLostMultiplier</stat><value>0.75</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>aFactionDisarmed</defName> <!--Name of Def -->
 		<label>A Faction Disarmed</label> <!--Lable of Def -->
@@ -37,12 +41,13 @@
 		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>aFactionDisarmed</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>0.6</value></li>
+			<li><stat>taxBasePercentage</stat><value>10</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>slaveArmy</defName> <!--Name of Def -->
 		<label>Slave Army</label> <!--Lable of Def -->
@@ -51,9 +56,10 @@
 		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>slaveArmy</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>0.8</value></li>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
+
 </Defs>

@@ -94,9 +94,17 @@ namespace FactionColonies
             if (faction == null) return;
 
             for (int i = 0; i < faction.factionTraits.Count; i++)
+            {
+                if (faction.factionTraits[i]?.behavior != null)
+                {
+                    try { faction.factionTraits[i].behavior.OnRemoved(faction); }
+                    catch (Exception e) { LogUtil.Error($"FCPolicyBehavior.OnRemoved error: {e}"); }
+                }
                 faction.factionTraits[i] = new FCPolicy(FCPolicyDefOf.empty);
+            }
 
-            faction.policies.Clear();
+            faction.RemoveAllPolicies(faction.policies);
+            faction.RebuildBehaviorCache();
 
             LogUtil.Message("Cleared faction traits and policies.");
         }
@@ -394,7 +402,7 @@ namespace FactionColonies
         {
             foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
             {
-                LogUtil.MessageForce($"[{s.Name}] Lv{s.settlementLevel} | Happy:{s.happiness:F0} Loyal:{s.loyalty:F0} Unrest:{s.unrest:F0} Prosper:{s.prosperity:F0} | Workers:{s.workers}/{s.workersMax} Prisoners:{s.prisonerList.Count} Traits:{s.Traits.Count}");
+                LogUtil.MessageForce($"[{s.Name}] Lv{s.settlementLevel} | Happy:{s.happiness:F0} Loyal:{s.loyalty:F0} Unrest:{s.unrest:F0} Prosper:{s.prosperity:F0} | Workers:{s.workers}/{s.workersMax} Prisoners:{s.prisonerList.Count}");
             }
         }
 
@@ -488,42 +496,35 @@ namespace FactionColonies
             });
         }
 
-        [DebugAction("Empire", "Add Settlement Trait", allowedGameStates = AllowedGameStates.Playing)]
-        private static void AddSettlementTrait()
+        [DebugAction("Empire", "Add Stat Modifier", allowedGameStates = AllowedGameStates.Playing)]
+        private static void AddStatModifier()
         {
             WithSettlementChoice(settlement =>
             {
                 List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (FCTraitEffectDef trait in DefDatabase<FCTraitEffectDef>.AllDefsListForReading)
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
                 {
-                    if (settlement.Traits.Contains(trait)) continue;
-                    FCTraitEffectDef localTrait = trait;
-                    list.Add(new DebugMenuOption(localTrait.defName, DebugMenuOptionMode.Action, () =>
+                    FCStatDef localStat = stat;
+                    list.Add(new DebugMenuOption(localStat.defName, DebugMenuOptionMode.Action, () =>
                     {
-                        settlement.addTrait(localTrait);
-                        LogUtil.MessageForce($"Debug - Added trait {localTrait.defName} to {settlement.Name}");
+                        double value = localStat.aggregation == FCStatAggregation.Additive ? 5 : 1.5;
+                        settlement.addStatModifiers(
+                            new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = value } },
+                            null, "debug");
+                        LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {value} to {settlement.Name}");
                     }));
                 }
                 Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
             });
         }
 
-        [DebugAction("Empire", "Remove Settlement Trait", allowedGameStates = AllowedGameStates.Playing)]
-        private static void RemoveSettlementTrait()
+        [DebugAction("Empire", "Clear Debug Stat Modifiers", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ClearDebugStatModifiers()
         {
             WithSettlementChoice(settlement =>
             {
-                List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (FCTraitEffectDef trait in settlement.Traits)
-                {
-                    FCTraitEffectDef localTrait = trait;
-                    list.Add(new DebugMenuOption(localTrait.defName, DebugMenuOptionMode.Action, () =>
-                    {
-                        settlement.removeTrait(localTrait);
-                        LogUtil.MessageForce($"Debug - Removed trait {localTrait.defName} from {settlement.Name}");
-                    }));
-                }
-                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+                settlement.removeStatModifiers(null, null, "debug");
+                LogUtil.MessageForce($"Debug - Cleared debug stat modifiers from {settlement.Name}");
             });
         }
 
@@ -586,10 +587,14 @@ namespace FactionColonies
             LogUtil.MessageForce($"Settlements:{f.settlements.Count} | Income:{f.income:F0} Upkeep:{f.upkeep:F0} Profit:{f.profit:F0}");
             LogUtil.MessageForce($"TaxDue:{f.taxTimeDue - Find.TickManager.TicksGame} ticks | MilDue:{f.militaryTimeDue - Find.TickManager.TicksGame} ticks");
             LogUtil.MessageForce($"AvgHappy:{f.averageHappiness:F0} AvgLoyal:{f.averageLoyalty:F0} AvgUnrest:{f.averageUnrest:F0} AvgProsper:{f.averageProsperity:F0}");
-            LogUtil.MessageForce($"Policies:{f.policies.Count} | Traits:{f.Traits.Count} | ResearchPool:{f.researchPointPool:F0}");
-            if (f.Traits.Any())
+            LogUtil.MessageForce($"Policies:{f.policies.Count} | Traits:{f.factionTraits.Count} | ResearchPool:{f.researchPointPool:F0}");
+            if (f.factionTraits.Any())
             {
-                LogUtil.MessageForce($"Trait list: {f.Traits.Select(t => t.defName).ToCommaList()}");
+                LogUtil.MessageForce($"Trait list: {f.factionTraits.Select(t => t.def?.defName).ToCommaList()}");
+            }
+            if (f.policies.Any())
+            {
+                LogUtil.MessageForce($"Policy list: {f.policies.Select(t => t.def?.defName).ToCommaList()}");
             }
         }
 

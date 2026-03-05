@@ -9,12 +9,14 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>onePeopleUnited</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+			<li><stat>taxBasePercentage</stat><value>-10</value></li>
+			<li><stat>happinessGainedMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>diversityWeEmbrace</defName> <!--Name of Def -->
 		<label>Diversity We Embrace</label> <!--Lable of Def -->
@@ -23,12 +25,14 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>diversityWeEmbrace</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>15</value></li>
+			<li><stat>prosperityBaseRecovery</stat><value>0.5</value></li>
+			<li><stat>unrestGainedMultiplier</stat><value>1.5</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>royalHeritage</defName> <!--Name of Def -->
 		<label>Royal Heritage</label> <!--Lable of Def -->
@@ -37,12 +41,14 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>royalHeritage</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBaseRandomModifier</stat><value>25</value></li>
+			<li><stat>createSettlementBaseCost</stat><value>-500</value></li>
+			<li><stat>createSettlementMultiplier</stat><value>0.9</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>companyUnion</defName> <!--Name of Def -->
 		<label>Company Union</label> <!--Lable of Def -->
@@ -51,12 +57,14 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>companyUnion</li>
-		</traits>
+		<statModifiers>
+			<li><stat>workerBaseCost</stat><value>-10</value></li>
+			<li><stat>workerBaseMax</stat><value>1</value></li>
+			<li><stat>workerBaseOverMax</stat><value>2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>tradersFederation</defName> <!--Name of Def -->
 		<label>Trader's Federation</label> <!--Lable of Def -->
@@ -65,12 +73,14 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>tradersFederation</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>10</value></li>
+			<li><stat>taxBaseRandomModifier</stat><value>25</value></li>
+			<li><stat>workerBaseCost</stat><value>15</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
+
 	<FactionColonies.FCPolicyDef>
 		<defName>scienceFoundation</defName> <!--Name of Def -->
 		<label>Science Foundation</label> <!--Lable of Def -->
@@ -79,9 +89,12 @@
 		<type>socialPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>scienceFoundation</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.25</multiplier></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>taxBasePercentage</stat><value>-5</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
+
 </Defs>

@@ -15,7 +15,7 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
 
             double result = Math.Max(Math.Round(production * FCSettings.productionResearchBase), 0);
-            result = faction.ApplyPolicyModifier(result, (ext, val) => ext.ModifyResearchContribution(val, settlement));
+            result *= faction.GetStatValue(FCStatDefOf.researchContributionMultiplier, settlement);
             return (float)result;
         }
         public override bool resetAtTaxTime()

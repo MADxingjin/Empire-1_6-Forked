@@ -24,7 +24,8 @@ namespace FactionColonies
         public double cost;
         public int constructionDuration;
         public TechLevel techLevel = TechLevel.Undefined;
-        public List<FCTraitEffectDef> traits;
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
         public List<string> applicableBiomes = new List<string>();
         public int upkeep;
         public string iconPath = "GUI/unrest";
@@ -58,15 +59,7 @@ namespace FactionColonies
             {
                 if (!didCacheBuildingAttributeDesc)
                 {
-                    cachedBuildingAttributeDesc = "";
-                    if (traits?.Count > 0)
-                    {
-                        foreach (FCTraitEffectDef trait in traits)
-                        {
-                            cachedBuildingAttributeDesc += "\n" + trait.traitBonusDesc;
-                        }
-                    }
-                    cachedBuildingAttributeDesc = cachedBuildingAttributeDesc.Trim();
+                    cachedBuildingAttributeDesc = FCStatModifier.GetDescription(statModifiers, resourceBonuses);
                     didCacheBuildingAttributeDesc = true;
                 }
                 return cachedBuildingAttributeDesc;

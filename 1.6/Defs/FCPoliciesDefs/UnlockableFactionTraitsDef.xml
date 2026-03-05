@@ -27,9 +27,10 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Resilient" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>battleProsperityLossMultiplier</stat><value>0.5</value></li>
+		</statModifiers>
+		<preventBuildingDestruction>true</preventBuildingDestruction>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -45,9 +46,10 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Raiders" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>lootMultiplier</stat><value>1.2</value></li>
+			<li><stat>raidCooldownOffset</stat><value>-60000</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -62,9 +64,9 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_DefenseInDepth" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>militaryLevelBonusDefending</stat><value>2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -75,13 +77,13 @@
 		<factionLevelRequirement>0</factionLevelRequirement>
 		<techLevelRequirement>Undefined</techLevelRequirement>
 		<positiveEffects>
-			<li>- 5% chance every time a settlement is billed to receive a significant boost in revenue</li>
+			<li>- All settlements receive a steady +5 to base tax</li>
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Industrious" />
-		</modExtensions>
+		<statModifiers>
+			<li><stat>taxBonusFlat</stat><value>5</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -92,15 +94,16 @@
 		<factionLevelRequirement>0</factionLevelRequirement>
 		<techLevelRequirement>Undefined</techLevelRequirement>
 		<positiveEffects>
-			<li>- Authomatically unlocks the first road technology</li>
-			<li>- Roads are constructed in 33% of the require time</li>
+			<li>- Automatically unlocks the first road technology</li>
+			<li>- Roads are constructed in 33% of the required time</li>
 			<li>- Roads will also be constructed to connect to allied faction's settlements</li>
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_RoadBuilders" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_RoadBuilders</behaviorClass>
+		<enabledActions>
+			<li>BuildRoadsToAllies</li>
+		</enabledActions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -115,9 +118,7 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Mercantile" />
-		</modExtensions>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Mercantile</behaviorClass>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -132,9 +133,6 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<modExtensions>
-			<li Class="FactionColonies.FCPolicyExt_Innovative" />
-		</modExtensions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>

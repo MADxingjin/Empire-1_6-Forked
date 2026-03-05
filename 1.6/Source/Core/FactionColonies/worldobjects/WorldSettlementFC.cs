@@ -45,13 +45,12 @@ namespace FactionColonies
         public double prosperity = 100;
 
         /// <summary>
-        /// List of traits that apply to this settlement.
-        /// <para>This field should never be accessed directly. Adding or removing traits should always be done through the addTrait, addTraits, removeTrait, or removeTraits functions.</para>
+        /// Stat modifiers from buildings, settlement type, and events that apply to this settlement.
+        /// Use addStatModifiers/removeStatModifiers to modify.
         /// </summary>
-        private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
-        public List<FCTraitEffectDef> Traits => traits;
-        private Dictionary<(string, Operation), double> cachedTraitValues = new Dictionary<(string, Operation), double>();
-        private Dictionary<(string, Operation), string> cachedTraitDescs = new Dictionary<(string, Operation), string>();
+        private List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        private Dictionary<FCStatDef, double> cachedStatValues = new Dictionary<FCStatDef, double>();
+        private Dictionary<FCStatDef, string> cachedStatDescs = new Dictionary<FCStatDef, string>();
 
         public List<FCPrisoner> prisonerList = new List<FCPrisoner>();
 
@@ -260,17 +259,17 @@ namespace FactionColonies
 
         public void InvalidateCache()
         {
-            InvalidateTraitCache();
+            InvalidateStatCache();
             cachedlocationText = null;
             cachedBuildingsComp = null;
             checkedBuildingsComp = false;
             cachedMilitaryComp = null;
             checkedMilitaryComp = false;
         }
-        public void InvalidateTraitCache()
+        public void InvalidateStatCache()
         {
-            cachedTraitDescs.Clear();
-            cachedTraitValues.Clear();
+            cachedStatDescs.Clear();
+            cachedStatValues.Clear();
         }
 
         /// <summary>
@@ -364,11 +363,8 @@ namespace FactionColonies
 
             PrepareResources(faction.techLevel);
 
-            /* If the settlement has inherent traits, add them here. */
-            if (settlementDef.traits.Count > 0)
-            {
-                addTraits(settlementDef.traits);
-            }
+            /* If the settlement type has inherent stat modifiers, add them here. */
+            addStatModifiers(settlementDef.statModifiers, settlementDef.settlementResourceBonuses, "settlementType");
 
             updateProfitAndProduction();
 
@@ -415,8 +411,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref oneTimeSilverIncome, "silverIncome");
 
 
-            //Traits
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
+            //Stat modifiers — not serialized directly; rebuilt from buildings/settlement type on load
 
             //Biome_info
             Scribe_Values.Look(ref biome, "biome");
@@ -494,9 +489,6 @@ namespace FactionColonies
         {
             base.Tick();
             trader?.TraderTrackerTick();
-
-            foreach (FCTraitEffectDef trait in traits)
-                trait.GetModExtension<FCTraitEffectModExtension>()?.Tick(this);
         }
 
         public void PublicTick()
@@ -538,16 +530,16 @@ namespace FactionColonies
         public void GainUnrestWithReason(Message message, double amount)
         {
             Messages.Message(message);
-            unrest += amount * getFieldValue("unrestGainedMultiplier", Operation.Multiplication);
+            unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
         }
         public void GainUnrest(double amount)
         {
-            unrest += amount * getFieldValue("unrestGainedMultiplier", Operation.Multiplication);
+            unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
         }
 
         public void GainHappiness(double amount)
         {
-            happiness += amount * getFieldValue("happinessLostMultiplier", Operation.Multiplication);
+            happiness += amount * getStatValue(FCStatDefOf.happinessLostMultiplier);
         }
 
         public void updateProfitAndProduction() //updates both profit and production
@@ -556,22 +548,21 @@ namespace FactionColonies
             updateStats();
         }
 
-        // TODO: will need rework after converting faction traits to comps
         public void updateStats()
         {
             FactionFC factionFc = FactionCache.FactionComp;
 
-            int extraWorkersSoftcap = factionFc.ApplyPolicyModifier(0, (ext, val) => ext.ModifyExtraWorkersSoftcap(val));
-            int overMaxAdjustment = factionFc.ApplyPolicyModifier(0, (ext, val) => ext.ModifyOverMaxWorkers(val));
+            int extraWorkersSoftcap = (int)factionFc.GetStatValue(FCStatDefOf.extraWorkersSoftcap, this);
+            int overMaxAdjustment = (int)factionFc.GetStatValue(FCStatDefOf.overMaxWorkersAdjustment, this);
 
             //Military Settlement Level
-            settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(getFieldValue("militaryBaseLevel", Operation.Addition));
+            settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(getStatValue(FCStatDefOf.militaryBaseLevel));
 
             //Worker Stats
             workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + extraWorkersSoftcap)) +
-                         getFieldValue("workerBaseMax", Operation.Addition) + returnMaxWorkersFromPrisoners();
+                         getStatValue(FCStatDefOf.workerBaseMax) + returnMaxWorkersFromPrisoners();
             workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + overMaxAdjustment + (settlementLevel * settlementDef.workersUltraMaxMult) +
-                              getFieldValue("workerBaseOverMax", Operation.Addition) + returnOverMaxWorkersFromPrisoners();
+                              getStatValue(FCStatDefOf.workerBaseOverMax) + returnOverMaxWorkersFromPrisoners();
 
         }
         public void updateProfit() //updates profit
@@ -584,18 +575,13 @@ namespace FactionColonies
 
         public double getHappinessGain()
         {
-            FactionFC factionfc = FactionCache.FactionComp;
-            double happinessGainMultiplier = getFieldValue("happinessGainedMultiplier", Operation.Multiplication);
-
-            double policyIncrease = 0;
-            factionfc.ForEachPolicyExtension((ext, _) => { policyIncrease += ext.GetSettlementHappinessBonus(this); });
-
-            return happinessGainMultiplier * (policyIncrease + FCSettings.happinessBaseGain + getFieldValue("happinessGainedBase", Operation.Addition));
+            double happinessGainMultiplier = getStatValue(FCStatDefOf.happinessGainedMultiplier);
+            return happinessGainMultiplier * (FCSettings.happinessBaseGain + getStatValue(FCStatDefOf.happinessGainedBase));
         }
         public double getHappinessLoss()
         {
-            double happinessLostMultiplier = getFieldValue("happinessLostMultiplier", Operation.Multiplication);
-            return happinessLostMultiplier * (FCSettings.happinessBaseLost + getFieldValue("happinessLostBase", Operation.Addition));
+            double happinessLostMultiplier = getStatValue(FCStatDefOf.happinessLostMultiplier);
+            return happinessLostMultiplier * (FCSettings.happinessBaseLost + getStatValue(FCStatDefOf.happinessLostBase));
         }
         public double getTotalHappinessGain()
         {
@@ -609,53 +595,40 @@ namespace FactionColonies
         {
             double happinessGain = getTotalHappinessGain();
             string desc = "";
-            FactionFC factionfc = FactionCache.FactionComp;
 
             if (happinessGain >= 0)
-            {
                 desc = "SettlementStatGain".Translate(Math.Abs(happinessGain), "Happiness".Translate());
-            }
             else
-            {
                 desc = "SettlementStatLoss".Translate(Math.Abs(happinessGain), "Happiness".Translate());
-            }
+
             desc += "\n\n";
             string gain = "";
             if (FCSettings.happinessBaseGain != 0)
-            {
                 gain += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
-            }
-            factionfc.ForEachPolicyExtension((ext, policy) =>
-            {
-                double bonus = ext.GetSettlementHappinessBonus(this);
-                if (bonus != 0)
-                    gain += TextUtil.colorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
-            });
-            gain += getFieldDesc("happinessGainedBase", Operation.Addition);
-            gain += getFieldDesc("happinessGainedMultiplier", Operation.Multiplication);
+
+            gain += getStatDesc(FCStatDefOf.happinessGainedBase);
+            gain += getStatDesc(FCStatDefOf.happinessGainedMultiplier);
             if (!gain.NullOrEmpty())
-            {
                 desc += gain + "\n";
-            }
+
             if (FCSettings.happinessBaseLost != 0)
-            {
                 desc += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
-            }
-            desc += getFieldDesc("happinessLostBase", Operation.Addition, hardinvert: true);
-            desc += getFieldDesc("happinessLostMultiplier", Operation.Multiplication, invert: true);
+
+            desc += getStatDesc(FCStatDefOf.happinessLostBase, hardinvert: true);
+            desc += getStatDesc(FCStatDefOf.happinessLostMultiplier);
 
             return desc.Trim();
         }
 
         public double getLoyaltyGain()
         {
-            double loyaltyGainMultiplier = getFieldValue("loyaltyGainedMultiplier", Operation.Multiplication);
-            return loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + getFieldValue("loyaltyGainedBase", Operation.Addition));
+            double loyaltyGainMultiplier = getStatValue(FCStatDefOf.loyaltyGainedMultiplier);
+            return loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + getStatValue(FCStatDefOf.loyaltyGainedBase));
         }
         public double getLoyaltyLoss()
         {
-            double loyaltyLostMultiplier = getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
-            return loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + getFieldValue("loyaltyLostBase", Operation.Addition));
+            double loyaltyLostMultiplier = getStatValue(FCStatDefOf.loyaltyLostMultiplier);
+            return loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + getStatValue(FCStatDefOf.loyaltyLostBase));
         }
         public double getTotalLoyaltyGain()
         {
@@ -670,42 +643,32 @@ namespace FactionColonies
             double loyaltyGain = getTotalLoyaltyGain();
             string desc = "";
             if (loyaltyGain >= 0)
-            {
                 desc = "SettlementStatGain".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
-            }
             else
-            {
                 desc = "SettlementStatLoss".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
-            }
+
             desc += "\n\n";
             string gain = "";
             if (FCSettings.loyaltyBaseGain != 0)
-            {
                 gain += TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "BaseGain".Translate() + "\n";
-            }
-            gain += getFieldDesc("loyaltyGainedBase", Operation.Addition);
-            gain += getFieldDesc("loyaltyGainedMultiplier", Operation.Multiplication);
+
+            gain += getStatDesc(FCStatDefOf.loyaltyGainedBase);
+            gain += getStatDesc(FCStatDefOf.loyaltyGainedMultiplier);
             if (!gain.NullOrEmpty())
-            {
                 desc += gain + "\n";
-            }
+
             if (FCSettings.loyaltyBaseLost != 0)
-            {
                 desc += "\n" + TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
-            }
-            desc += getFieldDesc("loyaltyLostBase", Operation.Addition, hardinvert: true);
-            desc += getFieldDesc("loyaltyLostMultiplier", Operation.Multiplication, invert: true);
+
+            desc += getStatDesc(FCStatDefOf.loyaltyLostBase, hardinvert: true);
+            desc += getStatDesc(FCStatDefOf.loyaltyLostMultiplier);
 
             return desc.Trim();
         }
 
         public double getProsperityGain()
         {
-            FactionFC factionfc = FactionCache.FactionComp;
-            double policyIncrease = 0;
-            factionfc.ForEachPolicyExtension((ext, _) => { policyIncrease += ext.GetSettlementProsperityBonus(this); });
-
-            return (policyIncrease + FCSettings.prosperityBaseRecovery + getFieldValue("prosperityBaseRecovery", Operation.Addition));
+            return FCSettings.prosperityBaseRecovery + getStatValue(FCStatDefOf.prosperityBaseRecovery);
         }
         public void updateProsperity()
         {
@@ -716,31 +679,27 @@ namespace FactionColonies
             double prosperityGain = getProsperityGain();
             string desc = "";
             if (prosperityGain >= 0)
-            {
                 desc = "SettlementStatGain".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
-            }
             else
-            {
                 desc = "SettlementStatLoss".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
-            }
+
             desc += "\n\n";
             if (FCSettings.prosperityBaseRecovery != 0)
-            {
                 desc += TextUtil.colorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
-            }
-            desc += getFieldDesc("prosperityBaseRecovery", Operation.Addition);
+
+            desc += getStatDesc(FCStatDefOf.prosperityBaseRecovery);
 
             return desc.Trim();
         }
         public double getUnrestGain()
         {
-            double unrestGainMultiplier = getFieldValue("unrestGainedMultiplier", Operation.Multiplication);
-            return unrestGainMultiplier * (FCSettings.unrestBaseGain + getFieldValue("unrestGainedBase", Operation.Addition)); //Go through traits and add unrest where needed
+            double unrestGainMultiplier = getStatValue(FCStatDefOf.unrestGainedMultiplier);
+            return unrestGainMultiplier * (FCSettings.unrestBaseGain + getStatValue(FCStatDefOf.unrestGainedBase));
         }
         public double getUnrestLoss()
         {
-            double unrestLostMultiplier = getFieldValue("unrestLostMultiplier", Operation.Multiplication);
-            return unrestLostMultiplier * (FCSettings.unrestBaseLost + getFieldValue("unrestLostBase", Operation.Addition)); //Go through traits and remove unrest where needed
+            double unrestLostMultiplier = getStatValue(FCStatDefOf.unrestLostMultiplier);
+            return unrestLostMultiplier * (FCSettings.unrestBaseLost + getStatValue(FCStatDefOf.unrestLostBase));
         }
         public double getTotalUnrestGain()
         {
@@ -749,7 +708,6 @@ namespace FactionColonies
         public void updateUnrest()
         {
             unrest += getTotalUnrestGain();
-
             unrest = Math.Round(Math.Clamp(unrest, 1, 100), 1);
         }
         public string getUnrestDesc()
@@ -757,43 +715,34 @@ namespace FactionColonies
             double unrestGain = getTotalUnrestGain();
             string desc = "";
             if (unrestGain >= 0)
-            {
                 desc = "SettlementStatGain".Translate(Math.Abs(unrestGain), "Unrest".Translate());
-            }
             else
-            {
                 desc = "SettlementStatLoss".Translate(Math.Abs(unrestGain), "Unrest".Translate());
-            }
+
             desc += "\n\n";
             string gain = "";
             if (FCSettings.unrestBaseGain != 0)
-            {
                 gain += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "BaseGain".Translate() + "\n";
-            }
-            gain += getFieldDesc("unrestGainedBase", Operation.Addition, invert: true);
-            gain += getFieldDesc("unrestGainedMultiplier", Operation.Multiplication, invert: true);
+
+            gain += getStatDesc(FCStatDefOf.unrestGainedBase);
+            gain += getStatDesc(FCStatDefOf.unrestGainedMultiplier);
             if (!gain.NullOrEmpty())
-            {
                 desc += gain + "\n";
-            }
+
             if (FCSettings.unrestBaseLost != 0)
-            {
                 desc += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
-            }
-            desc += getFieldDesc("unrestLostBase", Operation.Addition, invert: true, hardinvert: true);
-            desc += getFieldDesc("unrestLostMultiplier", Operation.Multiplication, invert: true);
+
+            desc += getStatDesc(FCStatDefOf.unrestLostBase, hardinvert: true);
+            desc += getStatDesc(FCStatDefOf.unrestLostMultiplier);
 
             return desc.Trim();
         }
         public double getSettlementTaxBonus()
         {
             FactionFC faction = FactionCache.FactionComp;
-            double bonus = faction.ApplyPolicyModifier(0d, (ext, val) => ext.ModifyTaxBonus(val, this));
-
-            bonus += getFieldValue("taxBasePercentage", Operation.Addition);
-
+            double bonus = faction.GetStatValue(FCStatDefOf.taxBonusFlat, this);
+            bonus += getStatValue(FCStatDefOf.taxBasePercentage);
             bonus = ((100d + bonus) / 100d);
-
             return bonus;
         }
 
@@ -880,8 +829,7 @@ namespace FactionColonies
 
         public double getBaseWorkerCost()
         {
-            return (FCSettings.workerCost + getFieldValue("workerBaseCost", Operation.Addition));
-            //add building/faction modifiers
+            return FCSettings.workerCost + getStatValue(FCStatDefOf.workerBaseCost);
         }
 
         public int buildingUpkeepModifier(BuildingFCDef building)
@@ -1016,133 +964,158 @@ namespace FactionColonies
             description += getSettlementLevelDesc();
         }
 
-        public List<FCTraitEffectDef> returnListSettlementTraits()
+        /// <summary>
+        /// Adds stat modifiers and resource bonuses from a source (building, settlement type, etc).
+        /// </summary>
+        public void addStatModifiers(List<FCStatModifier> mods, List<ResourceBonuses> resBonuses, string sourceId, string sourceLabel = null)
         {
-            List<FCTraitEffectDef> tmpList = new List<FCTraitEffectDef>();
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                tmpList.Add(trait);
-            }
+            if (mods != null)
+                statModifiers.AddRange(mods);
 
-            return tmpList;
-        }
-
-        public void addTrait(FCTraitEffectDef trait, string id = "")
-        {
-            /* Add production bonuses */
-            string traitId = trait.defName + id;
-            foreach (ResourceBonuses resourcebonus in trait.resourceBonuses)
+            if (resBonuses != null)
             {
-                ResourceFC resource = getResource(resourcebonus.resourceDef);
-                if (resource != null)
+                foreach (ResourceBonuses rb in resBonuses)
                 {
-                    if (resourcebonus.additive != 0)
-                    {
-                        resource.addProductionAdditive(traitId, resourcebonus.additive, trait.LabelCap);
-                    }
-                    if (resourcebonus.multiplier != 1)
-                    {
-                        resource.addProductionMultiplier(traitId, resourcebonus.multiplier, trait.LabelCap);
-                    }
-                }
-            }
-            traits.Add(trait);
-            FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
-            if (traitExt != null)
-            {
-                try { traitExt.OnAppliedToSettlement(this); }
-                catch (Exception e) { LogUtil.Error($"WorldSettlementFC.addTrait: OnAppliedToSettlement threw for '{trait.defName}': {e}"); }
-            }
-            InvalidateTraitCache();
-        }
-
-        public void addTraits(List<FCTraitEffectDef> traits, string id = "")
-        {
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                addTrait(trait, id);
-            }
-            InvalidateTraitCache();
-        }
-
-        public bool removeTrait(FCTraitEffectDef trait, string id = "")
-        {
-            /* Remove production bonuses */
-            string traitId = trait.defName + id;
-            if (traits.Contains(trait))
-            {
-                foreach (ResourceBonuses resourcebonus in trait.resourceBonuses)
-                {
-                    ResourceFC resource = getResource(resourcebonus.resourceDef);
+                    ResourceFC resource = getResource(rb.resourceDef);
                     if (resource != null)
                     {
-                        resource.removeProductionAdditiveById(traitId);
-                        resource.removeProductionMultiplierById(traitId);
+                        if (rb.additive != 0)
+                            resource.addProductionAdditive(sourceId, rb.additive, sourceLabel ?? sourceId);
+                        if (rb.multiplier != 1)
+                            resource.addProductionMultiplier(sourceId, rb.multiplier, sourceLabel ?? sourceId);
                     }
                 }
-                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
-                if (traitExt != null)
-                {
-                    try { traitExt.OnRemovedFromSettlement(this); }
-                    catch (Exception e) { LogUtil.Error($"WorldSettlementFC.removeTrait: OnRemovedFromSettlement threw for '{trait.defName}': {e}"); }
-                }
-                InvalidateTraitCache();
-                return traits.Remove(trait);
             }
-            else
-            {
-                return false;
-            }
+            InvalidateStatCache();
         }
 
-        public void removeTraits(List<FCTraitEffectDef> traits, string id = "")
+        /// <summary>
+        /// Removes stat modifiers and resource bonuses previously added by the given source.
+        /// mods must be the exact same FCStatModifier object references that were passed to
+        /// addStatModifiers, since removal uses reference equality (the def's objects stored via AddRange).
+        /// </summary>
+        public void removeStatModifiers(List<FCStatModifier> mods, List<ResourceBonuses> resBonuses, string sourceId)
         {
-            foreach (FCTraitEffectDef trait in traits)
+            if (mods != null)
             {
-                removeTrait(trait, id);
+                foreach (FCStatModifier mod in mods)
+                    statModifiers.Remove(mod);
             }
-        }
-        public void clearTraits()
-        {
-            List<FCTraitEffectDef> currentTraits = new List<FCTraitEffectDef>();
-            currentTraits.AddRange(traits);
-            removeTraits(currentTraits);
-            traits.Clear();
-            InvalidateTraitCache();
-        }
-        public double getFieldValue(string field, Operation addOrMultiply)
-        {
-            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out double value))
+
+            if (resBonuses != null)
             {
-                value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
-                foreach (WorldObjectComp comp in AllComps)
+                foreach (ResourceBonuses rb in resBonuses)
                 {
-                    if (comp is IStatModifierProvider provider)
+                    ResourceFC resource = getResource(rb.resourceDef);
+                    if (resource != null)
                     {
-                        if (addOrMultiply == Operation.Addition)
-                            value += provider.GetStatModifier(field, addOrMultiply);
-                        else
-                            value *= provider.GetStatModifier(field, addOrMultiply);
+                        resource.removeProductionAdditiveById(sourceId);
+                        resource.removeProductionMultiplierById(sourceId);
                     }
                 }
-                cachedTraitValues.Add((field, addOrMultiply), value);
+            }
+            InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// Clears all settlement-level stat modifiers (from buildings, settlement type).
+        /// Resource production bonuses from those sources are NOT cleared; use clearResourceBonuses for that.
+        /// </summary>
+        public void clearStatModifiers()
+        {
+            statModifiers.Clear();
+            InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// The settlement-level stat modifier list. Used by FactionFC.GetStatValue for aggregation.
+        /// </summary>
+        public IReadOnlyList<FCStatModifier> StatModifiers => statModifiers;
+
+        /// <summary>
+        /// Computes the final value for a stat at this settlement, combining settlement-local modifiers,
+        /// IStatModifierProvider comps, faction-level policy/trait modifiers, and behavior ModifyStat.
+        /// Results are cached; call InvalidateStatCache() when local modifiers change.
+        /// </summary>
+        public double getStatValue(FCStatDef stat)
+        {
+            if (!stat.appliesToSettlements)
+                return FactionCache.FactionComp.GetStatValue(stat);
+
+            if (!cachedStatValues.TryGetValue(stat, out double value))
+            {
+                value = FactionCache.FactionComp.GetStatValue(stat, this);
+                cachedStatValues[stat] = value;
             }
             return value;
         }
-        public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
+
+        /// <summary>
+        /// Builds a per-source breakdown description for a stat at this settlement.
+        /// </summary>
+        public string getStatDesc(FCStatDef stat, bool hardinvert = false)
         {
-            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out string desc))
+            if (!stat.appliesToSettlements) return "";
+            if (!cachedStatDescs.TryGetValue(stat, out string desc))
             {
                 desc = "";
-                TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
+                bool isAdditive = stat.aggregation == FCStatAggregation.Additive;
+                bool invert = stat.invertedForDisplay;
+
+                // Settlement-level modifiers (from buildings, settlement type)
+                foreach (FCStatModifier mod in statModifiers)
+                {
+                    if (mod.stat != stat) continue;
+                    // For settlement-level, we show building/type labels from the source defs
+                    if (isAdditive)
+                        desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
+                    else
+                        desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
+                }
+
+                // IStatModifierProvider comps
                 foreach (WorldObjectComp comp in AllComps)
                 {
                     if (comp is IStatModifierProvider provider)
+                        desc += provider.GetStatModifierDesc(stat);
+                }
+
+                // Faction-level policy/trait modifiers
+                FactionFC faction = FactionCache.FactionComp;
+                foreach (FCPolicy p in faction.policies)
+                {
+                    if (p?.def == null) continue;
+                    foreach (FCStatModifier mod in p.def.statModifiers)
                     {
-                        desc += provider.GetStatModifierDesc(field, addOrMultiply);
+                        if (mod.stat != stat) continue;
+                        if (isAdditive)
+                            desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
+                        else
+                            desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
                     }
                 }
-                cachedTraitDescs.Add((field, addOrMultiply), desc);
+                foreach (FCPolicy p in faction.factionTraits)
+                {
+                    if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                    foreach (FCStatModifier mod in p.def.statModifiers)
+                    {
+                        if (mod.stat != stat) continue;
+                        if (isAdditive)
+                            desc += TextUtil.colorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
+                        else
+                            desc += TextUtil.colorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
+                    }
+                }
+
+                // Behavior runtime contributions (e.g., Egalitarian happiness bonus, Expansionist discount)
+                faction.ForEachBehavior(b =>
+                {
+                    string behaviorDesc = b.GetStatDescription(stat, this);
+                    if (!behaviorDesc.NullOrEmpty())
+                        desc += behaviorDesc;
+                });
+
+                cachedStatDescs[stat] = desc;
             }
             return desc;
         }
@@ -1333,11 +1306,7 @@ namespace FactionColonies
 
         public double getTitheModifierPerWorker(ResourceTypeDef rdef)
         {
-            double modifier = 0;
-
-            modifier += getFieldValue("taxBaseRandomModifier", Operation.Addition);
-
-            return modifier;
+            return getStatValue(FCStatDefOf.taxBaseRandomModifier);
         }
         public double getTitheModifierForTotal(ResourceTypeDef rdef)
         {
@@ -1353,9 +1322,8 @@ namespace FactionColonies
         }
         public double getTaxTimeTaxBoostMult()
         {
-            FactionFC faction = FactionCache.FactionComp;
-            double multBoost = faction.ApplyPolicyModifier(1d, (ext, val) => ext.ModifyTaxTimeMultiplier(val, this));
-            return multBoost;
+            // Previously used for Industrious random boost; now a flat stat bonus via taxBonusFlat
+            return 1d;
         }
         public void pruneResourceTithes()
         {

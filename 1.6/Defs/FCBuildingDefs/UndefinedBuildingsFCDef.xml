@@ -6,58 +6,59 @@
 		<desc>A buildings to house the local troops.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>barracks</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+		</statModifiers>
 		<upkeep>150</upkeep>
 		<iconPath>GUI/Buildings/Barracks</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>tradingPost</defName> <!--Name of Def -->
 		<label>TradingPost</label> <!--Lable of Def -->
 		<desc>A small outpost that roving traders frequent.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>tradingPost</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBaseRandomModifier</stat><value>10</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/TradingPost</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>migrantHousing</defName> <!--Name of Def -->
 		<label>Migrant Housing</label> <!--Lable of Def -->
 		<desc>Local housing for traveling migrants to stay in.</desc> <!-- Description of trait -->
 		<cost>1500</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>migrantHousing</li>
-		</traits>
+		<statModifiers>
+			<li><stat>workerBaseMax</stat><value>2</value></li>
+			<li><stat>workerBaseOverMax</stat><value>2</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/MigrantHousing</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>quarry</defName> <!--Name of Def -->
 		<label>Quarry</label> <!--Lable of Def -->
 		<desc>Torn up land being used to mine for valuable ore.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>quarry</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Mining</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<iconPath>GUI/Buildings/Quarry</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>trainingYard</defName> <!--Name of Def -->
 		<label>Training Yard</label> <!--Lable of Def -->
 		<desc>A place for your soldiers to train.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>trainingYard</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>1.1</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/TrainingYard</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -71,9 +72,9 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>FurHunterCamp</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Animals</resourceDef><multiplier>1.5</multiplier></li>
+		</resourceBonuses>
 		<iconPath>GUI/Buildings/WildernessGuild</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -87,9 +88,9 @@
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>FlintStorage</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Mining</resourceDef><additive>0.2</additive></li>
+		</resourceBonuses>
 		<iconPath>GUI/Buildings/Quarry</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -103,9 +104,9 @@
 		<cost>500</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>SlavePit</li>
-		</traits>
+		<statModifiers>
+			<li><stat>workerBaseMax</stat><value>2</value></li>
+		</statModifiers>
 		<iconPath>GUI/Buildings/ForcedWorkCamps</iconPath>
 	</FactionColonies.BuildingFCDef>
 
@@ -119,10 +120,9 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>Farmland</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Food</resourceDef><additive>0.5</additive></li>
+		</resourceBonuses>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Farmland</iconPath>
@@ -138,10 +138,10 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>AmmunitionMines</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Weapons</resourceDef><multiplier>1.15</multiplier></li>
+			<li><resourceDef>RTD_Mining</resourceDef><multiplier>0.85</multiplier></li>
+		</resourceBonuses>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/AmmoMines</iconPath>
@@ -158,10 +158,10 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>TanningWorkshop</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Apparel</resourceDef><multiplier>1.15</multiplier></li>
+			<li><resourceDef>RTD_Animals</resourceDef><multiplier>0.85</multiplier></li>
+		</resourceBonuses>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/Tanning</iconPath>
@@ -177,10 +177,13 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>DrugDen</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Research</resourceDef><multiplier>1.05</multiplier></li>
+			<li><resourceDef>RTD_Medicine</resourceDef><multiplier>0.95</multiplier></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>happinessGainedBase</stat><value>0.3</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/DrugDen</iconPath>
@@ -196,10 +199,12 @@
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>HamsterWheel</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Power</resourceDef><additive>0.25</additive></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>workerBaseOverMax</stat><value>-1</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/HamsterWheel</iconPath>
@@ -211,9 +216,13 @@
 		<desc>A camp that the local forests are stripped of all their resources and the life within.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>deforestationCamp</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Logging</resourceDef><multiplier>1.25</multiplier></li>
+			<li><resourceDef>RTD_Animals</resourceDef><multiplier>1.25</multiplier></li>
+		</resourceBonuses>
+		<statModifiers>
+			<li><stat>workerBaseCost</stat><value>10</value></li>
+		</statModifiers>
 		<applicableBiomes> <!-- If the building requires it to be in a biome, put it here-->
 			<li>BorealForest</li>
 			<li>TemperateForest</li>
@@ -223,16 +232,16 @@
 		<upkeep>0</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/DeforestationCamp</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>herbalMedicineFarm</defName> <!--Name of Def -->
 		<label>Herbal Medicine Farm</label> <!--Lable of Def -->
 		<desc>A small farm to grow herbal medicine.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>herbalMedicineFarm</li>
-		</traits>
+		<resourceBonuses>
+			<li><resourceDef>RTD_Medicine</resourceDef><additive>0.25</additive></li>
+		</resourceBonuses>
 		<upkeep>0</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/HerbalMedicineFarm</iconPath>
 	</FactionColonies.BuildingFCDef>

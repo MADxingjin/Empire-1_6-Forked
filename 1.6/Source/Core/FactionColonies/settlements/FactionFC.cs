@@ -70,10 +70,6 @@ namespace FactionColonies
         public bool autoResolveBillsChanged = false;
 
         public List<FCPolicy> policies = new List<FCPolicy>();
-        private List<FCTraitEffectDef> traits = new List<FCTraitEffectDef>();
-        public List<FCTraitEffectDef> Traits => traits;
-        private Dictionary<(string, Operation), double> cachedTraitValues = new Dictionary<(string, Operation), double>();
-        private Dictionary<(string, Operation), string> cachedTraitDescs = new Dictionary<(string, Operation), string>();
 
         public List<int> militaryTargets = new List<int>();
         public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
@@ -215,7 +211,6 @@ namespace FactionColonies
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Def);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
             //New Producitons types
@@ -254,8 +249,8 @@ namespace FactionColonies
             //Road builder
             Scribe_Deep.Look(ref roadBuilder, "roadBuilder");
 
-            // Legacy trait Scribe_Values removed — state is now in FCPolicyState subclasses,
-            // serialized via FCPolicy.ExposeData -> FCPolicyState.ExposeData.
+            // Legacy trait Scribe_Values removed — state is now in FCPolicyBehavior subclasses,
+            // serialized via FCPolicy.ExposeData -> FCPolicyBehavior.ExposeData.
 
             //Settlement Leveling
             Scribe_Values.Look(ref factionLevel, "factionLevel");
@@ -326,121 +321,6 @@ namespace FactionColonies
         public List<ThingDef> getStuffListForThingDef(ThingDef thing)
         {
             return CraftUtil.getThingStuffs(thing, getGrandThingList());
-        }
-
-        public void addTrait(FCTraitEffectDef trait, string id = "")
-        {
-            if (trait.appliesToSettlements())
-            {
-                foreach(WorldSettlementFC settlement in settlements)
-                {
-                    settlement.addTrait(trait, id);
-                }
-            }
-            traits.Add(trait);
-            FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
-            if (traitExt != null)
-            {
-                try { traitExt.OnAppliedToFaction(this); }
-                catch (Exception e) { LogUtil.Error($"FactionFC.addTrait: OnAppliedToFaction threw for '{trait.defName}': {e}"); }
-            }
-            InvalidateTraitCache();
-        }
-        public void addTraits(List<FCTraitEffectDef> traits, string id = "")
-        {
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                addTrait(trait, id);
-            }
-        }
-        public bool removeTrait(FCTraitEffectDef trait, string id = "")
-        {
-            if (traits.Contains(trait))
-            {
-                if (trait.appliesToSettlements())
-                {
-                    foreach(WorldSettlementFC settlement in settlements)
-                    {
-                        settlement.removeTrait(trait, id);
-                    }
-                }
-                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
-                if (traitExt != null)
-                {
-                    try { traitExt.OnRemovedFromFaction(this); }
-                    catch (Exception e) { LogUtil.Error($"FactionFC.removeTrait: OnRemovedFromFaction threw for '{trait.defName}': {e}"); }
-                }
-                InvalidateTraitCache();
-                return traits.Remove(trait);
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public void removeTraits(List<FCTraitEffectDef> traits, string id = "")
-        {
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                removeTrait(trait, id);
-            }
-        }
-        public void clearTraits()
-        {
-            foreach (FCTraitEffectDef trait in traits)
-            {
-                if (trait.appliesToSettlements())
-                {
-                    foreach(WorldSettlementFC settlement in settlements)
-                    {
-                        settlement.removeTrait(trait);
-                    }
-                }
-                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
-                if (traitExt != null)
-                {
-                    try { traitExt.OnRemovedFromFaction(this); }
-                    catch (Exception e) { LogUtil.Error($"FactionFC.clearTraits: OnRemovedFromFaction threw for '{trait.defName}': {e}"); }
-                }
-            }
-            traits.Clear();
-            InvalidateTraitCache();
-        }
-        /// <summary>
-        /// This function completely replaces the faction's current list of traits with the provided list.
-        /// </summary>
-        /// <param name="traits"></param>
-        /// <param name="id"></param>
-        public void assignNewTraitList(List<FCTraitEffectDef> traits, string id = "")
-        {
-            clearTraits();
-            addTraits(traits, id);
-            InvalidateTraitCache();
-        }
-        public double getFieldValue(string field, Operation addOrMultiply)
-        {
-            double value = 0;
-            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out value))
-            { 
-                value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
-                cachedTraitValues.Add((field, addOrMultiply), value);
-            }
-            return value;
-        }
-        public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
-        {
-            string desc = "";
-            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out desc))
-            {
-                TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
-                cachedTraitDescs.Add((field, addOrMultiply), desc);
-            }
-            return desc;
-        }
-        public void InvalidateTraitCache()
-        {
-            cachedTraitDescs.Clear();
-            cachedTraitValues.Clear();
         }
 
         public void GainHappiness(double amount)
@@ -577,9 +457,8 @@ namespace FactionColonies
         {
             int tick = Find.TickManager.TicksGame;
 
-            // Dispatch Tick to all active policy/trait extensions
-            // (feudal mercenary cooldown, expansionist fee reduction cooldown, mercantile caravans, etc.)
-            ForEachPolicyExtension((ext, policy) => ext.Tick(this, policy));
+            // Dispatch Tick to all active behavior instances
+            ForEachBehavior(b => b.Tick(this));
         }
 
         public void FireSupportTick()
@@ -649,12 +528,6 @@ namespace FactionColonies
             nextPrisonerID++;
             return nextPrisonerID;
         }
-
-        public List<FCTraitEffectDef> returnListFactionTraits()
-        {
-            return traits.ToList();
-        }
-
 
         public void setStartTime()
         {
@@ -873,154 +746,234 @@ namespace FactionColonies
             return false;
         }
 
-        // ── Policy Extension Cache ────────────────────────────────
+        // ── Behavior Cache ────────────────────────────────────────
 
-        private List<(FCPolicyModExtension ext, FCPolicy policy)> _cachedPolicyExtensions;
-        private List<(FCPolicyModExtension ext, FCPolicy policy)> cachedPolicyExtensions
+        private List<FCPolicyBehavior> _cachedBehaviors;
+        private List<FCPolicyBehavior> cachedBehaviors
         {
             get
             {
-                if (_cachedPolicyExtensions == null)
-                {
-                    RebuildPolicyExtensionCache();
-                }
-                return _cachedPolicyExtensions;
+                if (_cachedBehaviors == null)
+                    RebuildBehaviorCache();
+                return _cachedBehaviors;
             }
         }
 
         /// <summary>
-        /// Rebuilds the flat cached list of active policy extensions. Call this whenever
-        /// policies or factionTraits change (faction creation, level-up trait assignment).
+        /// Rebuilds the cached behavior list from active policies and traits.
+        /// Order: policies first (in list order), then traits (in slot order).
+        /// This order determines ModifyStat chaining — currently no two behaviors modify the same stat.
         /// </summary>
-        public void RebuildPolicyExtensionCache()
+        public void RebuildBehaviorCache()
         {
-            _cachedPolicyExtensions = new List<(FCPolicyModExtension, FCPolicy)>();
+            _cachedBehaviors = new List<FCPolicyBehavior>();
             foreach (FCPolicy p in policies)
             {
-                if (p?.def == null) continue;
-                foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
-                    _cachedPolicyExtensions.Add((ext, p));
+                if (p?.behavior != null)
+                    _cachedBehaviors.Add(p.behavior);
             }
             foreach (FCPolicy p in factionTraits)
             {
                 if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                foreach (FCPolicyModExtension ext in p.def.PolicyExtensions)
-                    _cachedPolicyExtensions.Add((ext, p));
+                if (p.behavior != null)
+                    _cachedBehaviors.Add(p.behavior);
             }
         }
 
-        /// <summary>
-        /// Iterates all active policy/trait extensions, calling the action on each.
-        /// Uses a cached flat list — no GetModExtension overhead per call.
-        /// </summary>
-        public void ForEachPolicyExtension(Action<FCPolicyModExtension, FCPolicy> action)
+        public void ForEachBehavior(Action<FCPolicyBehavior> action)
         {
-            foreach (var (ext, policy) in cachedPolicyExtensions)
+            foreach (FCPolicyBehavior b in cachedBehaviors)
             {
                 try
                 {
-                    action(ext, policy);
+                    action(b);
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error($"Policy extension error for '{policy.def?.defName}': {e}");
+                    LogUtil.Error($"Policy behavior error: {e}");
                 }
             }
         }
 
         /// <summary>
-        /// Aggregation helper: applies a modifier chain across all active policy extensions.
+        /// Calls OnRemoved on all behaviors in the given policy list, then clears it.
+        /// Use this instead of directly clearing/replacing policy lists.
         /// </summary>
-        public double ApplyPolicyModifier(double baseValue, Func<FCPolicyModExtension, double, double> modifier)
+        public void RemoveAllPolicies(List<FCPolicy> policyList)
         {
-            double result = baseValue;
-            foreach (var (ext, _) in cachedPolicyExtensions)
+            foreach (FCPolicy p in policyList)
+            {
+                if (p?.behavior != null)
+                {
+                    try { p.behavior.OnRemoved(this); }
+                    catch (Exception e) { LogUtil.Error($"FCPolicyBehavior.OnRemoved error for '{p.def?.defName}': {e}"); }
+                }
+            }
+            policyList.Clear();
+        }
+
+        /// <summary>
+        /// Computes the final value for a stat by aggregating:
+        /// 1. Settlement-level modifiers (buildings, settlement type) + IStatModifierProvider comps (if settlement provided)
+        /// 2. Faction-level policy/trait statModifiers
+        /// 3. Behavior ModifyStat for runtime-dependent adjustments
+        /// </summary>
+        public double GetStatValue(FCStatDef stat, WorldSettlementFC settlement = null)
+        {
+            double value = stat.defaultValue;
+
+            // Settlement-level modifiers (from buildings, settlement type, events)
+            if (settlement != null)
+            {
+                foreach (FCStatModifier mod in settlement.StatModifiers)
+                {
+                    if (mod.stat == stat)
+                    {
+                        if (stat.aggregation == FCStatAggregation.Additive)
+                            value += mod.value;
+                        else
+                            value *= mod.value;
+                    }
+                }
+
+                // IStatModifierProvider comps on the settlement
+                foreach (WorldObjectComp comp in settlement.AllComps)
+                {
+                    if (comp is IStatModifierProvider provider)
+                    {
+                        double compValue = provider.GetStatModifier(stat);
+                        if (stat.aggregation == FCStatAggregation.Additive)
+                            value += compValue;
+                        else
+                            value *= compValue;
+                    }
+                }
+            }
+
+            // Faction-level policy/trait statModifiers
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def == null) continue;
+                foreach (FCStatModifier mod in p.def.statModifiers)
+                {
+                    if (mod.stat == stat)
+                    {
+                        if (stat.aggregation == FCStatAggregation.Additive)
+                            value += mod.value;
+                        else
+                            value *= mod.value;
+                    }
+                }
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                foreach (FCStatModifier mod in p.def.statModifiers)
+                {
+                    if (mod.stat == stat)
+                    {
+                        if (stat.aggregation == FCStatAggregation.Additive)
+                            value += mod.value;
+                        else
+                            value *= mod.value;
+                    }
+                }
+            }
+
+            // Apply runtime-dependent behavior modifiers
+            foreach (FCPolicyBehavior b in cachedBehaviors)
             {
                 try
                 {
-                    result = modifier(ext, result);
+                    value = b.ModifyStat(stat, value, settlement);
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error($"Policy modifier error: {e}");
+                    LogUtil.Error($"Behavior ModifyStat error for stat '{stat.defName}': {e}");
                 }
             }
-            return result;
+
+            return value;
         }
 
         /// <summary>
-        /// Aggregation helper for int modifiers.
-        /// </summary>
-        public int ApplyPolicyModifier(int baseValue, Func<FCPolicyModExtension, int, int> modifier)
-        {
-            int result = baseValue;
-            foreach (var (ext, _) in cachedPolicyExtensions)
-            {
-                try
-                {
-                    result = modifier(ext, result);
-                }
-                catch (Exception e)
-                {
-                    LogUtil.Error($"Policy modifier error: {e}");
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Returns true if any active policy extension blocks the given action.
+        /// Returns true if any active policy/trait blocks the given action.
+        /// Uses the new data-driven blockedActions lists on FCPolicyDef.
         /// </summary>
         public bool AnyPolicyBlocks(FCActionType action)
         {
-            foreach (var (ext, _) in cachedPolicyExtensions)
-                if (ext.BlocksAction(action))
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def?.blockedActions != null && p.def.blockedActions.Contains(action))
                     return true;
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.blockedActions != null && p.def.blockedActions.Contains(action))
+                    return true;
+            }
             return false;
         }
 
         /// <summary>
-        /// Returns true if any active policy extension enables the given action.
+        /// Returns true if any active policy/trait enables the given action.
+        /// Uses the new data-driven enabledActions lists on FCPolicyDef.
         /// </summary>
         public bool AnyPolicyEnables(FCActionType action)
         {
-            foreach (var (ext, _) in cachedPolicyExtensions)
-                if (ext.EnablesAction(action))
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def?.enabledActions != null && p.def.enabledActions.Contains(action))
                     return true;
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.enabledActions != null && p.def.enabledActions.Contains(action))
+                    return true;
+            }
             return false;
         }
 
         /// <summary>
-        /// Returns true if any active policy extension prevents building destruction on battle loss.
+        /// Returns true if any active policy prevents building destruction on battle loss.
+        /// Uses the new data-driven preventBuildingDestruction flag on FCPolicyDef.
         /// </summary>
         public bool AnyPolicyPreventsBuildingDestruction()
         {
-            foreach (var (ext, _) in cachedPolicyExtensions)
-                if (ext.PreventBuildingDestruction())
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def != null && p.def.preventBuildingDestruction)
                     return true;
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.preventBuildingDestruction)
+                    return true;
+            }
             return false;
         }
 
         /// <summary>
-        /// Returns true if any active policy extension suppresses member death penalties.
+        /// Returns true if any active policy suppresses member death penalties.
+        /// Uses the new data-driven suppressMemberDeathPenalty flag on FCPolicyDef.
         /// </summary>
         public bool AnyPolicySuppressesMemberDeathPenalty()
         {
-            foreach (var (ext, _) in cachedPolicyExtensions)
-                if (ext.SuppressMemberDeathPenalty())
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def != null && p.def.suppressMemberDeathPenalty)
                     return true;
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.suppressMemberDeathPenalty)
+                    return true;
+            }
             return false;
-        }
-
-        /// <summary>
-        /// Returns the state of the first active policy/trait whose state is of type T, or null.
-        /// </summary>
-        public T GetPolicyState<T>() where T : FCPolicyState
-        {
-            foreach (var (_, policy) in cachedPolicyExtensions)
-                if (policy.state is T state)
-                    return state;
-            return null;
         }
 
         public bool sendDiplomaticEnvoy(Faction faction)
@@ -1031,11 +984,12 @@ namespace FactionColonies
                 return false;
             }
 
+            // Try new behavior system first
             bool handled = false;
-            ForEachPolicyExtension((ext, policy) =>
+            ForEachBehavior(b =>
             {
                 if (!handled)
-                    handled = ext.HandleDiplomaticEnvoy(this, policy, faction);
+                    handled = b.HandleDiplomaticEnvoy(this, faction);
             });
             return handled;
         }
@@ -1215,7 +1169,7 @@ namespace FactionColonies
         }
         public double getFactionTitheBonusMultForTotal(ResourceTypeDef rdef)
         {
-            return ApplyPolicyModifier(1d, (ext, val) => ext.ModifyTitheMultiplier(val));
+            return GetStatValue(FCStatDefOf.titheValueMultiplier);
         }
 
 
@@ -1292,22 +1246,23 @@ namespace FactionColonies
 
             LogUtil.Message($"addEvent: adding new fcevent {fcevent.def.defName}");
 
-            //check if event has a location, if does, add traits to that specific location;
+            string sourceId = "event_" + fcevent.def.defName;
+
+            //check if event has a location, if does, add stat modifiers to that specific location;
             if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
             {
                 foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
-                    location.addTraits(fcevent.def.traits);
-                    foreach (FCTraitEffectDef trait in fcevent.def.traits)
-                    {
-                        //LogUtil.Message(trait.label);
-                    }
+                    location.addStatModifiers(fcevent.def.statModifiers, fcevent.def.resourceBonuses, sourceId);
                 }
             }
             else
             {
-                //if no specific location then faction wide
-                addTraits(fcevent.traits);
+                //if no specific location then faction wide — apply to all settlements
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    settlement.addStatModifiers(fcevent.statModifiers, fcevent.resourceBonuses, sourceId);
+                }
             }
         }
 
@@ -1474,7 +1429,7 @@ namespace FactionColonies
         }
 
         // resetTraitMercantileCaravanTime removed — mercantile caravan scheduling
-        // is now handled by FCPolicyExt_Mercantile.Tick/OnEnacted via FCPolicyState_Mercantile.
+        // is now handled by FCPolicyBehavior_Mercantile.Tick/OnEnacted.
 
         private bool CanMakeRandomEventNow()
         {

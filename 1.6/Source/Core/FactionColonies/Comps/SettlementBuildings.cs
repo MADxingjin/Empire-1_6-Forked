@@ -219,6 +219,14 @@ namespace FactionColonies
             }
             return comp;
         }
+        public bool HasBuilding(BuildingFCDef building)
+        {
+            foreach (BuildingFC slot in buildings)
+            {
+                if (slot.def == building) return true;
+            }
+            return false;
+        }
         public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             bool valid = true;
@@ -321,7 +329,7 @@ namespace FactionColonies
         }
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
-            addBuildingTrait(buildingSlot);
+            addBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -388,7 +396,7 @@ namespace FactionColonies
             LogUtil.Message($"Deconstructing building {buildings[buildingSlot].def.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
             dirtyConstructionCache = true;
 
-            removeBuildingTrait(buildingSlot);
+            removeBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -417,39 +425,27 @@ namespace FactionColonies
 
             buildings[buildingSlot].def = BuildingFCDefOf.Empty;
         }
-        public void addBuildingTrait(int buildingSlot)
+        public void addBuildingStatModifiers(int buildingSlot)
         {
-            if (buildings[buildingSlot].def.traits != null)
-            {
-                WorldSettlement.addTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
-            }
-            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
-                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
-            {
-                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
-            }
+            BuildingFCDef def = buildings[buildingSlot].def;
+            if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
+            WorldSettlement.addStatModifiers(def.statModifiers, def.resourceBonuses, buildingID(buildingSlot), def.LabelCap);
         }
-        public void removeBuildingTrait(int buildingSlot)
+        public void removeBuildingStatModifiers(int buildingSlot)
         {
-            if (buildings[buildingSlot].def.traits != null)
-            {
-                WorldSettlement.removeTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
-            }
-            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
-                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
-            {
-                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
-            }
+            BuildingFCDef def = buildings[buildingSlot].def;
+            if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
+            WorldSettlement.removeStatModifiers(def.statModifiers, def.resourceBonuses, buildingID(buildingSlot));
         }
         /// <summary>
-        /// Loops through all constructed buildings and applies their trait to the parent settlement.
-        /// <para>Assumes that the parent settlement's trait list has already been cleared.</para>
+        /// Loops through all constructed buildings and applies their stat modifiers to the parent settlement.
+        /// <para>Assumes that the parent settlement's stat modifier list has already been cleared.</para>
         /// </summary>
-        public void reapplyBuildingTraits()
+        public void reapplyBuildingStatModifiers()
         {
             for (int i = 0; i < FC_MAX_BUILDINGS; i++)
             {
-                addBuildingTrait(i);
+                addBuildingStatModifiers(i);
             }
         }
 
@@ -465,7 +461,9 @@ namespace FactionColonies
             double upkeep = building.upkeep;
 
             FactionFC faction = FactionCache.FactionComp;
-            upkeep = faction.ApplyPolicyModifier(upkeep, (ext, val) => ext.ModifyBuildingUpkeep(val, building));
+            double discount = faction.GetStatValue(FCStatDefOf.militaryBuildingUpkeepDiscount, WorldSettlement);
+            if (discount != 0)
+                upkeep = Math.Max(upkeep - discount, 0);
 
             upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
 
@@ -497,7 +495,7 @@ namespace FactionColonies
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
-                upkeep += Math.Max((int)faction.ApplyPolicyModifier((double)building.def.upkeep, (ext, val) => ext.ModifyBuildingUpkeep(val, building.def)), 0);
+                upkeep += getBuildingUpkeep(building.def);
             }
             return upkeep;
         }
@@ -572,41 +570,39 @@ namespace FactionColonies
             if (i == 0 || i < 0)
                 return true;
 
-            // Get the building's traits
-            if (building.traits == null || building.traits.Count == 0)
+            // Check stat modifiers and resource bonuses on the building
+            if ((building.statModifiers == null || building.statModifiers.Count == 0) &&
+                (building.resourceBonuses == null || building.resourceBonuses.Count == 0))
                 return false;
 
-            foreach (FCTraitEffectDef traitDef in building.traits)
+            if (i == 1) // Happiness
             {
-                ResourceBonuses rtd;
-                if (i == 1)
-                {
-                    if (traitDef.happinessLostBase != 0 || traitDef.happinessGainedBase != 0 ||
-                        Math.Abs(traitDef.happinessLostMultiplier - 1.0) > 0.001 ||
-                        Math.Abs(traitDef.happinessGainedMultiplier - 1.0) > 0.001)
-                        return true;
-                }
-                else if (i == 2)
-                {
-                    if (traitDef.taxBasePercentage != 0 || traitDef.taxBaseRandomModifier != 0)
-                        return true;
-                }
-                else if (i == 3)
-                {
-                    if (traitDef.workerBaseMax != 0 || traitDef.workerBaseOverMax != 0 || traitDef.workerBaseCost != 0)
-                        return true;
-                }
-                else if (i == 4 && WorldSettlement.MilitaryComp != null)
-                {
-                    if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
-                        return true;
-                }
-                else
-                {
-                    rtd = traitDef.getTraitResource(WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def);
-                    if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                        return true;
-                }
+                return building.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
+                    m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier);
+            }
+            if (i == 2) // Tax
+            {
+                return building.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier);
+            }
+            if (i == 3) // Workers
+            {
+                return building.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost);
+            }
+            if (i == 4 && WorldSettlement.MilitaryComp != null) // Military
+            {
+                return building.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency);
+            }
+            // Resource filter
+            ResourceTypeDef resDef = WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def;
+            if (resDef != null && building.resourceBonuses != null)
+            {
+                ResourceBonuses rtd = building.resourceBonuses.FirstOrDefault(rb => rb.resourceDef == resDef);
+                if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
+                    return true;
             }
 
             return false;

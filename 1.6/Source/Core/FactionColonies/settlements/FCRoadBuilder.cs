@@ -8,6 +8,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using HarmonyLib;
+using FactionColonies.util;
 
 namespace FactionColonies
 {

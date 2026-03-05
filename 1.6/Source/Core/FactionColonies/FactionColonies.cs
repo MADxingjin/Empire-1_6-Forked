@@ -292,29 +292,34 @@ namespace FactionColonies
         public static void verifyTraits()
         {
             FactionFC faction = FactionCache.FactionComp;
-            /* Clear the traits for all settlements, and then reapply inherent/building traits */
+            /* Clear stat modifiers for all settlements, and then reapply inherent/building modifiers */
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
-                settlement.clearTraits();
-                settlement.BuildingsComp?.reapplyBuildingTraits();
-                settlement.addTraits(settlement.settlementDef.traits);
+                settlement.clearStatModifiers();
+                settlement.BuildingsComp?.reapplyBuildingStatModifiers();
+                settlement.addStatModifiers(settlement.settlementDef.statModifiers, settlement.settlementDef.settlementResourceBonuses, "settlementType");
             }
-            //make new list for factionfc traits
-            //loop through events and add traits
-            //loop through
-            //if an event trait applies to settlements, then it will be added to applicable settlements automatically.
-            // no need to do a seperate event loop for settlements.
-            List<FCTraitEffectDef> factionTraits = new List<FCTraitEffectDef>();
 
+            // Re-apply active event stat modifiers to settlements
             foreach (FCEvent evt in faction.events)
             {
-                if (evt.settlementTraitLocations.Count() <= 0)
+                string sourceId = "event_" + evt.def.defName;
+                if (evt.settlementTraitLocations.Count() > 0)
                 {
-                    factionTraits.AddRange(evt.traits);
+                    foreach (WorldSettlementFC location in evt.settlementTraitLocations)
+                    {
+                        if (location != null)
+                            location.addStatModifiers(evt.statModifiers, evt.resourceBonuses, sourceId);
+                    }
+                }
+                else
+                {
+                    foreach (WorldSettlementFC settlement in faction.settlements)
+                    {
+                        settlement.addStatModifiers(evt.statModifiers, evt.resourceBonuses, sourceId);
+                    }
                 }
             }
-
-            FactionCache.FactionComp.assignNewTraitList(factionTraits);
         }
 
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);

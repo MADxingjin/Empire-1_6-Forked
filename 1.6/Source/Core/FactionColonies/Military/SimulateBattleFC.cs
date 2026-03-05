@@ -107,8 +107,17 @@ namespace FactionColonies
             }
 
             double militaryLevel = settlement.settlementMilitaryLevel + homeForceLevel;
-            double efficiency = settlement.getFieldValue("militaryMultiplierCombatEfficiency", Operation.Multiplication);
-            faction.ForEachPolicyExtension((ext, _) => ext.ModifyMilitaryForce(ref militaryLevel, ref efficiency, isAttacking));
+            double efficiency = settlement.getStatValue(FCStatDefOf.militaryCombatEfficiency);
+            if (isAttacking)
+            {
+                militaryLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
+                efficiency *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
+            }
+            else
+            {
+                militaryLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
+                efficiency *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
+            }
             militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);
             return returnForce;
             //create and return force.

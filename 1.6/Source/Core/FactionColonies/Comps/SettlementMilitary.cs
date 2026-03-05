@@ -632,11 +632,13 @@ namespace FactionColonies
 
         private void LoseBattle(FactionFC faction)
         {
-            var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
-            var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
+            var happinessLostMultiplier = WorldSettlement.getStatValue(FCStatDefOf.happinessLostMultiplier);
+            var loyaltyLostMultiplier = WorldSettlement.getStatValue(FCStatDefOf.loyaltyLostMultiplier);
 
             var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(happinessLostMultiplier, loyaltyLostMultiplier);
-            faction.ForEachPolicyExtension((ext, _) => ext.ModifyBattlePenalties(ref prosperityLoss, ref happinessLoss, ref loyaltyLoss));
+            prosperityLoss *= faction.GetStatValue(FCStatDefOf.battleProsperityLossMultiplier);
+            happinessLoss *= faction.GetStatValue(FCStatDefOf.battleHappinessLossMultiplier);
+            loyaltyLoss *= faction.GetStatValue(FCStatDefOf.battleLoyaltyLossMultiplier);
             var canDestroyBuildings = !faction.AnyPolicyPreventsBuildingDestruction();
 
             WorldSettlement.prosperity -= prosperityLoss;
@@ -1048,6 +1050,8 @@ namespace FactionColonies
             militaryLocation = -1;
             militaryEnemy = null;
 
+            FactionCache.FactionComp.ForEachBehavior(b => b.OnSquadRecalled(FactionCache.FactionComp, WorldSettlement));
+
             if (alert)
             {
                 Find.LetterStack.ReceiveLetter("Military Cooldown", "FCMilitaryCooldown".Translate(WorldSettlement.Name),
@@ -1060,12 +1064,13 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
 
             int cooldown = GenDate.TicksPerDay * 3;
-            cooldown = faction.ApplyPolicyModifier(cooldown, (ext, val) => ext.ModifyMilitaryCooldown(val, militaryJob));
+            cooldown += (int)faction.GetStatValue(FCStatDefOf.militaryCooldownOffset);
+            if (militaryJob == MilitaryJob.RaidEnemySettlement || militaryJob == MilitaryJob.EnslaveEnemySettlement)
+                cooldown += (int)faction.GetStatValue(FCStatDefOf.raidCooldownOffset);
 
             if (militaryJob == MilitaryJob.Deploy && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
-                int deadMultiplier = 10000;
-                deadMultiplier = faction.ApplyPolicyModifier(deadMultiplier, (ext, val) => ext.ModifyDeadPawnCooldownMultiplier(val));
+                int deadMultiplier = 10000 + (int)faction.GetStatValue(FCStatDefOf.deadPawnCooldownOffset);
                 cooldown += militarySquad.dead * deadMultiplier;
             }
             cooldown = Math.Max(cooldown, 0);

@@ -436,10 +436,10 @@ namespace FactionColonies
         private void DrawActionButtons(Rect panel)
         {
             // Collect action buttons from all active policy/trait extensions
-            List<(TaggedString label, System.Action onClick)> actionButtons = new List<(TaggedString, System.Action)>();
-            faction.ForEachPolicyExtension((ext, _) =>
+            List<(TaggedString label, Action onClick)> actionButtons = new List<(TaggedString, Action)>();
+            faction.ForEachBehavior(b =>
             {
-                var buttons = ext.GetMainTabActionButtons(faction);
+                var buttons = b.GetMainTabActionButtons(faction);
                 if (buttons != null)
                     foreach (var btn in buttons)
                         actionButtons.Add(btn);
@@ -1595,9 +1595,9 @@ namespace FactionColonies
             else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.AnyPolicyEnables(FCActionType.DeployExtraSquad))
             {
                 List<FloatMenuOption> extraOptions = new List<FloatMenuOption>();
-                faction.ForEachPolicyExtension((ext, policy) =>
+                faction.ForEachBehavior(b =>
                 {
-                    var options = ext.GetExtraDeploymentOptions(faction, policy, settlement, milComp);
+                    var options = b.GetExtraDeploymentOptions(faction, settlement, milComp);
                     if (options != null) extraOptions.AddRange(options);
                 });
                 if (extraOptions.Any())

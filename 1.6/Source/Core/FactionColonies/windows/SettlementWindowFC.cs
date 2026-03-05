@@ -966,9 +966,9 @@ namespace FactionColonies
                         };
 
 
-                        factionfc.ForEachPolicyExtension((ext, _) =>
+                        factionfc.ForEachBehavior(b =>
                         {
-                            var actions = ext.GetSettlementActions(factionfc, settlement);
+                            var actions = b.GetSettlementActions(factionfc, settlement);
                             if (actions != null)
                                 list.AddRange(actions);
                         });

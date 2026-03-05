@@ -117,7 +117,7 @@ namespace FactionColonies
                             traitIndex++;
                         }
                     }
-                    faction.RebuildPolicyExtensionCache();
+                    faction.RebuildBehaviorCache();
                 }
 
                 Find.WindowStack.TryRemove(this);

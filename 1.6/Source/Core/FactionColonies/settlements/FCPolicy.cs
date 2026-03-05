@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using FactionColonies.util;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -27,63 +28,40 @@ namespace FactionColonies
             this.def = def;
             timeEnacted = Find.TickManager.TicksGame;
 
-            // Create extension state and fire OnEnacted callbacks
-            foreach (FCPolicyModExtension ext in def.PolicyExtensions)
+            // Create behavior instance if this policy has procedural logic
+            if (def.behaviorClass != null)
             {
-                if (state == null)
-                    state = ext.CreateState();
+                behavior = (FCPolicyBehavior)Activator.CreateInstance(def.behaviorClass);
+                behavior.policy = this;
                 try
                 {
-                    ext.OnEnacted(faction, this);
+                    behavior.OnEnacted(faction);
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
-                    LogUtil.Error($"FCPolicyModExtension.OnEnacted error for '{def.defName}': {e}");
+                    LogUtil.Error($"FCPolicyBehavior.OnEnacted error for '{def.defName}': {e}");
                 }
             }
 
-            // Apply passive trait effects
-            if (def.traitEffects != null && faction != null)
-            {
-                foreach (FCTraitEffectDef effect in def.traitEffects)
-                    faction.addTrait(effect);
-            }
-
-            // Legacy enactment blocks removed — roadBuilders research unlock is now in
-            // FCPolicyExt_RoadBuilders.OnEnacted, mercantile caravan init is in FCPolicyExt_Mercantile.OnEnacted.
         }
 
         public FCPolicyDef def;
         public int timeEnacted;
-        public FCPolicyState state;
+        public FCPolicyBehavior behavior;
 
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
             Scribe_Values.Look(ref timeEnacted, "timeEnacted");
-            Scribe_Deep.Look(ref state, "state");
+            Scribe_Deep.Look(ref behavior, "behavior");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && behavior != null)
+                behavior.policy = this;
         }
-
-
     }
 
-    public class FCPolicyDef : Def, IExposable
+    public class FCPolicyDef : Def
     {
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref factionLevelRequirement, "factionLevelRequirement");
-            Scribe_Values.Look(ref techLevelRequirement, "techLevelRequirement");
-            Scribe_Values.Look(ref desc, "desc");
-            Scribe_Values.Look(ref category, "category");
-            Scribe_Values.Look(ref cost, "cost");
-            Scribe_Values.Look(ref type, "type");
-            Scribe_Values.Look(ref techLevel, "techLevel");
-            Scribe_Values.Look(ref enactDuration, "enactDuration");
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Value);
-            Scribe_Collections.Look(ref positiveEffects, "positiveEffects", LookMode.Value);
-            Scribe_Collections.Look(ref negativeEffects, "negativeEffects", LookMode.Value);
-        }
-
         public string desc;
         public FCPolicyCategory category;
         public TechLevel techLevelRequirement;
@@ -96,14 +74,20 @@ namespace FactionColonies
         public string type;
         public TechLevel techLevel = TechLevel.Undefined;
         public int enactDuration;
-        public List<string> traits = new List<string>();
-
         // Icon paths — set in XML, resolved lazily to textures
         public string iconPathLight;
         public string iconPathDark;
 
-        // Passive stat effects applied to the faction when this policy/trait is enacted
-        public List<FCTraitEffectDef> traitEffects = new List<FCTraitEffectDef>();
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<FCActionType> blockedActions = new List<FCActionType>();
+        public List<FCActionType> enabledActions = new List<FCActionType>();
+        public bool preventBuildingDestruction;
+        public bool suppressMemberDeathPenalty;
+        public List<ResourceBonuses> resourceBonuses = new List<ResourceBonuses>();
+
+        // Optional behavior class for policies that need procedural logic.
+        // Must be a subclass of FCPolicyBehavior. Null for pure-XML policies.
+        public Type behaviorClass;
 
         // Policies/traits that are incompatible with this one (mutual exclusion in selection UI)
         public List<FCPolicyDef> incompatiblePolicies = new List<FCPolicyDef>();
@@ -149,19 +133,6 @@ namespace FactionColonies
             }
         }
 
-        /// <summary>
-        /// Returns all FCPolicyModExtension instances attached to this def.
-        /// </summary>
-        public IEnumerable<FCPolicyModExtension> PolicyExtensions
-        {
-            get
-            {
-                if (modExtensions == null) yield break;
-                foreach (DefModExtension ext in modExtensions)
-                    if (ext is FCPolicyModExtension policyExt)
-                        yield return policyExt;
-            }
-        }
         public bool HasNegativeEffects()
         {
             return negativeEffects != null && negativeEffects.Count > 0;
@@ -197,6 +168,13 @@ namespace FactionColonies
                 {
                     str += negative.Colorize(Color.red) + "\n";
                 }
+            }
+
+            string statDesc = FCStatModifier.GetDescription(statModifiers, resourceBonuses);
+            if (!statDesc.NullOrEmpty())
+            {
+                if (str.Length > 0) str += "\n";
+                str += statDesc;
             }
 
             return str.Trim();

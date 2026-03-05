@@ -8,9 +8,6 @@
 		<type>Null</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
 		<techLevel>Undefined</techLevel>
 		<enactDuration>0</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-		
-		</traits>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -21,8 +18,5 @@
 		<type>Null</type>
 		<techLevel>Undefined</techLevel>
 		<enactDuration>0</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-		
-		</traits>
 	</FactionColonies.FCPolicyDef>
 </Defs>
