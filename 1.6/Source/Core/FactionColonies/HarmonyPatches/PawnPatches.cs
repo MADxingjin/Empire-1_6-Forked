@@ -25,7 +25,7 @@ namespace FactionColonies
                                 squad.dead += 1;
                             }
 
-                            squad.settlement.happiness -= 1;
+                            squad.settlement.GainHappiness(-1d);
                         }
 
                         squad.PassPawnToDeadMercenaries(merc);

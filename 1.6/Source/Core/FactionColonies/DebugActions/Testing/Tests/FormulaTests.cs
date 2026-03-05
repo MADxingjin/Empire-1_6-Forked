@@ -5,79 +5,6 @@ namespace FactionColonies
 {
     public static class FormulaTests
     {
-        // --- CalculateStatChange ---
-
-        [EmpireTest("Formula")]
-        public static void StatChange_BaseGainOnly_ReturnsBaseGain()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 1.0, baseLoss: 0,
-                gainTraitAdditive: 0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 1.0);
-            TestAssert.AreEqual(1.0, result);
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_BaseLossOnly_ReturnsNegative()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 0, baseLoss: 2.0,
-                gainTraitAdditive: 0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 1.0);
-            TestAssert.AreEqual(-2.0, result);
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_GainAndLoss_ReturnsNetDifference()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 3.0, baseLoss: 1.0,
-                gainTraitAdditive: 0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 1.0);
-            TestAssert.AreEqual(2.0, result);
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_WithTraitAdditives_AddsToBase()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 1.0, baseLoss: 0,
-                gainTraitAdditive: 2.0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 1.0);
-            TestAssert.AreEqual(3.0, result);
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_WithMultiplier_MultipliesGainSum()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 1.0, baseLoss: 0,
-                gainTraitAdditive: 1.0, lossTraitAdditive: 0,
-                gainMultiplier: 1.5, lossMultiplier: 1.0);
-            TestAssert.AreEqual(3.0, result); // 1.5 * (1 + 1) = 3
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_WithPolicyBonus_AddsToGain()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 1.0, baseLoss: 0,
-                gainTraitAdditive: 0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 1.0,
-                policyBonus: 2.0);
-            TestAssert.AreEqual(3.0, result);
-        }
-
-        [EmpireTest("Formula")]
-        public static void StatChange_LossMultiplierAffectsLossOnly()
-        {
-            double result = SettlementFormulas.CalculateStatChange(
-                baseGain: 1.0, baseLoss: 1.0,
-                gainTraitAdditive: 0, lossTraitAdditive: 0,
-                gainMultiplier: 1.0, lossMultiplier: 2.0);
-            TestAssert.AreEqual(-1.0, result); // 1*1 - 2*1 = -1
-        }
-
         // --- ClampStat ---
 
         [EmpireTest("Formula")]
@@ -207,6 +134,43 @@ namespace FactionColonies
             TestAssert.AreEqual(20.0, prosperity);
             TestAssert.AreEqual(50.0, happiness); // 25 * 2.0
             TestAssert.AreEqual(22.5, loyalty);    // 15 * 1.5
+        }
+
+        // --- CalculateUpgradeCost ---
+
+        [EmpireTest("Formula")]
+        public static void UpgradeCost_Level0_ReturnsBaseCost()
+        {
+            TestAssert.AreEqual(1000, SettlementFormulas.CalculateUpgradeCost(0, 1000));
+        }
+
+        [EmpireTest("Formula")]
+        public static void UpgradeCost_Level3_AddsLevelScaling()
+        {
+            TestAssert.AreEqual(4000, SettlementFormulas.CalculateUpgradeCost(3, 1000));
+        }
+
+        // --- CalculateUpgradeTime ---
+
+        [EmpireTest("Formula")]
+        public static void UpgradeTime_Level0_ReturnsBaseTime()
+        {
+            // (0 + 1) * 60000 * 2 * 1.0 = 120000
+            TestAssert.AreEqual(120000, SettlementFormulas.CalculateUpgradeTime(0, 1.0));
+        }
+
+        [EmpireTest("Formula")]
+        public static void UpgradeTime_Level2_ScalesWithLevel()
+        {
+            // (2 + 1) * 60000 * 2 * 1.0 = 360000
+            TestAssert.AreEqual(360000, SettlementFormulas.CalculateUpgradeTime(2, 1.0));
+        }
+
+        [EmpireTest("Formula")]
+        public static void UpgradeTime_WithMultiplier_ScalesTime()
+        {
+            // (1 + 1) * 60000 * 2 * 0.5 = 120000
+            TestAssert.AreEqual(120000, SettlementFormulas.CalculateUpgradeTime(1, 0.5));
         }
     }
 }

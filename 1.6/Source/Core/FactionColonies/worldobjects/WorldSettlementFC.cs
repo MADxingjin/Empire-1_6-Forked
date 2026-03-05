@@ -569,7 +569,7 @@ namespace FactionColonies
 
         public void GainHappiness(double amount)
         {
-            happiness += amount * getStatValue(FCStatDefOf.happinessLostMultiplier);
+            happiness += amount * getStatValue(FCStatDefOf.happinessGainedMultiplier);
         }
 
         public void updateProfitAndProduction() //updates both profit and production
@@ -737,8 +737,7 @@ namespace FactionColonies
         }
         public void updateUnrest()
         {
-            unrest += getTotalUnrestGain();
-            unrest = Math.Round(Math.Clamp(unrest, 1, 100), 1);
+            unrest = SettlementFormulas.ClampStat(unrest, getTotalUnrestGain());
         }
         public string getUnrestDesc()
         {

@@ -9,20 +9,6 @@ namespace FactionColonies.util
     public static class SettlementFormulas
     {
         /// <summary>
-        /// Calculates the net stat change (gain - loss) for a settlement stat like happiness, loyalty, or unrest.
-        /// </summary>
-        public static double CalculateStatChange(
-            double baseGain, double baseLoss,
-            double gainTraitAdditive, double lossTraitAdditive,
-            double gainMultiplier, double lossMultiplier,
-            double policyBonus = 0)
-        {
-            double gain = gainMultiplier * (policyBonus + baseGain + gainTraitAdditive);
-            double loss = lossMultiplier * (baseLoss + lossTraitAdditive);
-            return gain - loss;
-        }
-
-        /// <summary>
         /// Clamps a stat value after applying a change, rounding to 1 decimal place.
         /// </summary>
         public static double ClampStat(double current, double change, double min = 1, double max = 100)
@@ -75,6 +61,22 @@ namespace FactionColonies.util
             double happinessLostMultiplier, double loyaltyLostMultiplier)
         {
             return (20, 25 * happinessLostMultiplier, 15 * loyaltyLostMultiplier);
+        }
+
+        /// <summary>
+        /// Calculates the silver cost to upgrade a settlement to the next level.
+        /// </summary>
+        public static int CalculateUpgradeCost(int settlementLevel, int baseUpgradeCost)
+        {
+            return baseUpgradeCost + (settlementLevel * 1000);
+        }
+
+        /// <summary>
+        /// Calculates the duration in ticks for a settlement upgrade to complete.
+        /// </summary>
+        public static int CalculateUpgradeTime(int settlementLevel, double buildTimeMultiplier)
+        {
+            return (int)((settlementLevel + 1) * 60000 * 2 * buildTimeMultiplier);
         }
     }
 }
