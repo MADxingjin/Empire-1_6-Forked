@@ -8,9 +8,6 @@
 	<defName>myCustomStat</defName>
 	<label>My Custom Stat</label>
 	<description>A brief description of what this stat represents.</description>
-	<!-- The default/identity value when no modifiers apply.
-	     For Additive stats this should be 0. For Multiplicative stats this should be 1. -->
-	<defaultValue>0</defaultValue>
 	<!-- How multiple modifiers combine:
 	     Additive: all values are summed together
 	     Multiplicative: all values are multiplied together

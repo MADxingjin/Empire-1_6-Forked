@@ -1075,14 +1075,14 @@ namespace FactionColonies
 
         /// <summary>
         /// Computes and caches the faction-level stat partial (policies + traits only).
-        /// Starts from stat.defaultValue, applies only faction-level static modifiers.
+        /// Starts from stat.IdentityValue, applies only faction-level static modifiers.
         /// </summary>
         public double GetFactionStatValue(FCStatDef stat)
         {
             if (cachedFactionStatValues.TryGetValue(stat, out double cached))
                 return cached;
 
-            double value = stat.defaultValue;
+            double value = stat.IdentityValue;
 
             foreach (FCPolicy p in policies)
             {

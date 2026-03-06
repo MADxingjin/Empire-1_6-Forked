@@ -102,13 +102,20 @@ namespace FactionColonies
             // Mod-added tabs
             foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
             {
-                itab.PreOpenWindow(faction);
-                tabs.Add(new TabRecord(itab.TabName(), delegate
+                try
                 {
-                    curTab = itab.TabName();
-                    itab.OnTabSwitch();
-                }, () => curTab == itab.TabName()));
-                overviewFuncs.Add(itab.TabName(), itab.DrawOverviewTab);
+                    itab.PreOpenWindow(faction);
+                    tabs.Add(new TabRecord(itab.TabName(), delegate
+                    {
+                        curTab = itab.TabName();
+                        itab.OnTabSwitch();
+                    }, () => curTab == itab.TabName()));
+                    overviewFuncs.Add(itab.TabName(), itab.DrawOverviewTab);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"IMainTabWindowOverview {itab.GetType().Name} threw during registration: {e}");
+                }
             }
         }
 
@@ -164,7 +171,15 @@ namespace FactionColonies
             Widgets.DrawMenuSection(contentRect);
             TabDrawer.DrawTabs(contentRect, tabs);
 
-            overviewFuncs[curTab](contentRect);
+            try
+            {
+                overviewFuncs[curTab](contentRect);
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error drawing tab '{curTab}': {e}");
+                curTab = overviewTabs[0];
+            }
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

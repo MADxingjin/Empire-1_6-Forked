@@ -10,7 +10,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryBaseLevel</defName>
         <label>military base level</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_MilitaryLevel</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -18,7 +17,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryCombatEfficiency</defName>
         <label>military combat efficiency</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <descriptionKey>FCTraitDesc_MilitaryCombatEfficiency</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -26,7 +24,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryLevelBonusDefending</defName>
         <label>military level bonus (defending)</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -34,7 +31,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryLevelBonusAttacking</defName>
         <label>military level bonus (attacking)</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -42,7 +38,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryEfficiencyBonusAttacking</defName>
         <label>military efficiency bonus (attacking)</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -50,7 +45,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryEfficiencyBonusDefending</defName>
         <label>military efficiency bonus (defending)</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -58,7 +52,6 @@
     <FactionColonies.FCStatDef>
         <defName>militaryCooldownOffset</defName>
         <label>military cooldown offset</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -66,7 +59,6 @@
     <FactionColonies.FCStatDef>
         <defName>raidCooldownOffset</defName>
         <label>raid cooldown offset</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -74,7 +66,6 @@
     <FactionColonies.FCStatDef>
         <defName>deadPawnCooldownOffset</defName>
         <label>dead pawn cooldown offset</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -84,7 +75,6 @@
     <FactionColonies.FCStatDef>
         <defName>battleProsperityLossMultiplier</defName>
         <label>battle prosperity loss multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -93,7 +83,6 @@
     <FactionColonies.FCStatDef>
         <defName>battleHappinessLossMultiplier</defName>
         <label>battle happiness loss multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -102,7 +91,6 @@
     <FactionColonies.FCStatDef>
         <defName>battleLoyaltyLossMultiplier</defName>
         <label>battle loyalty loss multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -113,7 +101,6 @@
     <FactionColonies.FCStatDef>
         <defName>taxBasePercentage</defName>
         <label>tax base percentage</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_taxBasePercentage</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -121,7 +108,6 @@
     <FactionColonies.FCStatDef>
         <defName>taxBaseRandomModifier</defName>
         <label>tax base random modifier</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_taxBaseRandomModifier</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -129,7 +115,6 @@
     <FactionColonies.FCStatDef>
         <defName>taxBonusFlat</defName>
         <label>flat tax bonus</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -137,7 +122,6 @@
     <FactionColonies.FCStatDef>
         <defName>titheValueMultiplier</defName>
         <label>tithe value multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -145,7 +129,6 @@
     <FactionColonies.FCStatDef>
         <defName>lootMultiplier</defName>
         <label>loot multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -153,7 +136,6 @@
     <FactionColonies.FCStatDef>
         <defName>settlementCostMultiplier</defName>
         <label>settlement cost multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -162,7 +144,6 @@
     <FactionColonies.FCStatDef>
         <defName>buildTimeMultiplier</defName>
         <label>build time multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -170,7 +151,6 @@
     <FactionColonies.FCStatDef>
         <defName>createSettlementBaseCost</defName>
         <label>settlement creation base cost</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -180,7 +160,6 @@
     <FactionColonies.FCStatDef>
         <defName>createSettlementMultiplier</defName>
         <label>settlement creation cost multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
@@ -190,7 +169,6 @@
     <FactionColonies.FCStatDef>
         <defName>researchContributionMultiplier</defName>
         <label>research contribution multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -200,7 +178,6 @@
     <FactionColonies.FCStatDef>
         <defName>workerBaseCost</defName>
         <label>worker base cost</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_workerBaseCost</descriptionKey>
@@ -209,7 +186,6 @@
     <FactionColonies.FCStatDef>
         <defName>workerBaseMax</defName>
         <label>worker base max</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_workerBaseMax</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -217,7 +193,6 @@
     <FactionColonies.FCStatDef>
         <defName>workerBaseOverMax</defName>
         <label>worker base over max</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_workerBaseOverMax</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -225,7 +200,6 @@
     <FactionColonies.FCStatDef>
         <defName>extraWorkersSoftcap</defName>
         <label>extra workers softcap</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -233,7 +207,6 @@
     <FactionColonies.FCStatDef>
         <defName>overMaxWorkersAdjustment</defName>
         <label>over-max workers adjustment</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
     </FactionColonies.FCStatDef>
@@ -243,7 +216,6 @@
     <FactionColonies.FCStatDef>
         <defName>prosperityBaseRecovery</defName>
         <label>prosperity base recovery</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_prosperityBaseRecovery</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -253,7 +225,6 @@
     <FactionColonies.FCStatDef>
         <defName>happinessLostBase</defName>
         <label>happiness lost base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_happinessLostBase</descriptionKey>
@@ -262,7 +233,6 @@
     <FactionColonies.FCStatDef>
         <defName>happinessGainedBase</defName>
         <label>happiness gained base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_happinessGainedBase</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -270,7 +240,6 @@
     <FactionColonies.FCStatDef>
         <defName>happinessLostMultiplier</defName>
         <label>happiness lost multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_happinessLostMultiplier</descriptionKey>
@@ -279,7 +248,6 @@
     <FactionColonies.FCStatDef>
         <defName>happinessGainedMultiplier</defName>
         <label>happiness gained multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <descriptionKey>FCTraitDesc_happinessGainedMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -289,7 +257,6 @@
     <FactionColonies.FCStatDef>
         <defName>loyaltyLostBase</defName>
         <label>loyalty lost base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_loyaltyLostBase</descriptionKey>
@@ -298,7 +265,6 @@
     <FactionColonies.FCStatDef>
         <defName>loyaltyGainedBase</defName>
         <label>loyalty gained base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_loyaltyGainedBase</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -306,7 +272,6 @@
     <FactionColonies.FCStatDef>
         <defName>loyaltyLostMultiplier</defName>
         <label>loyalty lost multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_loyaltyLostMultiplier</descriptionKey>
@@ -315,7 +280,6 @@
     <FactionColonies.FCStatDef>
         <defName>loyaltyGainedMultiplier</defName>
         <label>loyalty gained multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <descriptionKey>FCTraitDesc_loyaltyGainedMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -325,7 +289,6 @@
     <FactionColonies.FCStatDef>
         <defName>unrestLostBase</defName>
         <label>unrest lost base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <descriptionKey>FCTraitDesc_unrestLostBase</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -333,7 +296,6 @@
     <FactionColonies.FCStatDef>
         <defName>unrestGainedBase</defName>
         <label>unrest gained base</label>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_unrestGainedBase</descriptionKey>
@@ -342,7 +304,6 @@
     <FactionColonies.FCStatDef>
         <defName>unrestLostMultiplier</defName>
         <label>unrest lost multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <descriptionKey>FCTraitDesc_unrestLostMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
@@ -350,7 +311,6 @@
     <FactionColonies.FCStatDef>
         <defName>unrestGainedMultiplier</defName>
         <label>unrest gained multiplier</label>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_unrestGainedMultiplier</descriptionKey>
@@ -363,143 +323,121 @@
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Food_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Food</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Food_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Food</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Weapons_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Weapons</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Weapons_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Weapons</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Apparel_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Apparel</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Apparel_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Apparel</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Animals_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Animals</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Animals_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Animals</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Logging_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Logging</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Logging_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Logging</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Mining_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Mining</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Mining_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Mining</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Medicine_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Medicine</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Medicine_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Medicine</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Research_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Research</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Research_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Research</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Power_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Power</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Power_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Power</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
         <defName>RTD_Chemfuel_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Chemfuel</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef>
         <defName>RTD_Chemfuel_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Chemfuel</linkedResource>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef MayRequire="Ludeon.RimWorld.Odyssey">
         <defName>RTD_Gravtech_ProductionAdditive</defName>
-        <defaultValue>0</defaultValue>
         <aggregation>Additive</aggregation>
         <linkedResource>RTD_Gravtech</linkedResource>
     </FactionColonies.FCStatDef>
     <FactionColonies.FCStatDef MayRequire="Ludeon.RimWorld.Odyssey">
         <defName>RTD_Gravtech_ProductionMultiplier</defName>
-        <defaultValue>1</defaultValue>
         <aggregation>Multiplicative</aggregation>
         <linkedResource>RTD_Gravtech</linkedResource>
     </FactionColonies.FCStatDef>

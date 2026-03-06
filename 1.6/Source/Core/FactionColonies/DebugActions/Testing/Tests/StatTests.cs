@@ -47,32 +47,6 @@ namespace FactionColonies
         // ============================
 
         [EmpireTest("Stat")]
-        public static void Def_AllAdditiveStats_HaveDefaultValueZero()
-        {
-            foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
-            {
-                if (stat.aggregation == FCStatAggregation.Additive)
-                {
-                    TestAssert.AreEqual(0.0, stat.defaultValue,
-                        message: $"{stat.defName}: additive stat should have defaultValue 0");
-                }
-            }
-        }
-
-        [EmpireTest("Stat")]
-        public static void Def_AllMultiplicativeStats_HaveDefaultValueOne()
-        {
-            foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
-            {
-                if (stat.aggregation == FCStatAggregation.Multiplicative)
-                {
-                    TestAssert.AreEqual(1.0, stat.defaultValue,
-                        message: $"{stat.defName}: multiplicative stat should have defaultValue 1");
-                }
-            }
-        }
-
-        [EmpireTest("Stat")]
         public static void Def_AllStats_HaveUniqueDefNames()
         {
             var allStats = DefDatabase<FCStatDef>.AllDefsListForReading;

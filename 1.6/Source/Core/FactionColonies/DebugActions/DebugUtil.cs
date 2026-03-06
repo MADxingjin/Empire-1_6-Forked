@@ -562,9 +562,9 @@ namespace FactionColonies
                         double final = faction.GetStatValue(stat, settlement);
                         double settlementPart = settlement.GetSettlementStatValue(stat);
                         double factionPart = faction.GetFactionStatValue(stat);
-                        if (Math.Abs(final - stat.defaultValue) < 0.001
-                            && Math.Abs(settlementPart - stat.defaultValue) < 0.001
-                            && Math.Abs(factionPart - stat.defaultValue) < 0.001)
+                        if (Math.Abs(final - stat.IdentityValue) < 0.001
+                            && Math.Abs(settlementPart - stat.IdentityValue) < 0.001
+                            && Math.Abs(factionPart - stat.IdentityValue) < 0.001)
                         {
                             defaultCount++;
                             continue;
@@ -575,7 +575,7 @@ namespace FactionColonies
                     else
                     {
                         double val = faction.GetFactionStatValue(stat);
-                        if (Math.Abs(val - stat.defaultValue) < 0.001)
+                        if (Math.Abs(val - stat.IdentityValue) < 0.001)
                         {
                             defaultCount++;
                             continue;
@@ -600,7 +600,7 @@ namespace FactionColonies
                     {
                         FactionFC faction = FactionCache.FactionComp;
                         string agg = localStat.aggregation == FCStatAggregation.Additive ? "Additive" : "Multiplicative";
-                        LogUtil.MessageForce($"--- Stat Breakdown: {localStat.defName} ({agg}, default={localStat.defaultValue}) ---");
+                        LogUtil.MessageForce($"--- Stat Breakdown: {localStat.defName} ({agg}, default={localStat.IdentityValue}) ---");
 
                         // Settlement-level modifiers
                         foreach (FCStatModifier mod in settlement.StatModifiers)
@@ -669,13 +669,13 @@ namespace FactionColonies
             foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
             {
                 double val = faction.GetFactionStatValue(stat);
-                if (Math.Abs(val - stat.defaultValue) < 0.001)
+                if (Math.Abs(val - stat.IdentityValue) < 0.001)
                 {
                     defaultCount++;
                     continue;
                 }
                 string agg = stat.aggregation == FCStatAggregation.Additive ? "Add" : "Mult";
-                LogUtil.MessageForce($"  {stat.defName} = {val:F2} ({agg}, default={stat.defaultValue})");
+                LogUtil.MessageForce($"  {stat.defName} = {val:F2} ({agg}, default={stat.IdentityValue})");
             }
             LogUtil.MessageForce($"  ({defaultCount} stats at default value)");
         }

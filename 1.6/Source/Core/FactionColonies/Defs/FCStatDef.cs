@@ -17,10 +17,9 @@ namespace FactionColonies
     public class FCStatDef : Def
     {
         /// <summary>
-        /// The default/identity value when no modifiers apply.
-        /// For additive stats this should be 0. For multiplicative stats this should be 1.
+        /// The identity value for this stat's aggregation: 0 for Additive, 1 for Multiplicative.
         /// </summary>
-        public double defaultValue;
+        public double IdentityValue => aggregation == FCStatAggregation.Multiplicative ? 1.0 : 0.0;
 
         /// <summary>
         /// How multiple modifiers combine: Additive sums values, Multiplicative multiplies them.
@@ -48,6 +47,20 @@ namespace FactionColonies
         /// Used for description formatting (resource name + icon instead of generic descriptionKey).
         /// </summary>
         public ResourceTypeDef linkedResource;
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string err in base.ConfigErrors())
+                yield return err;
+
+            if (linkedResource != null)
+            {
+                if (linkedResource.productionAdditiveStat == this && aggregation != FCStatAggregation.Additive)
+                    yield return defName + ": linked as productionAdditiveStat on " + linkedResource.defName + " but aggregation is not Additive";
+                if (linkedResource.productionMultiplierStat == this && aggregation != FCStatAggregation.Multiplicative)
+                    yield return defName + ": linked as productionMultiplierStat on " + linkedResource.defName + " but aggregation is not Multiplicative";
+            }
+        }
     }
 
     /// <summary>

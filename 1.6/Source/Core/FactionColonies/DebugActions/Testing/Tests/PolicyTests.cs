@@ -110,7 +110,7 @@ namespace FactionColonies
             try
             {
                 PolicyTestHelper.ClearAll(faction);
-                // taxBonusFlat is additive with defaultValue 0
+                // taxBonusFlat is additive with IdentityValue 0
                 double val = faction.GetFactionStatValue(FCStatDefOf.taxBonusFlat);
                 TestAssert.AreEqual(0.0, val, 0.001, "Additive stat with no policies should be 0");
             }
@@ -130,7 +130,7 @@ namespace FactionColonies
             try
             {
                 PolicyTestHelper.ClearAll(faction);
-                // happinessGainedMultiplier is multiplicative with defaultValue 1
+                // happinessGainedMultiplier is multiplicative with IdentityValue 1
                 double val = faction.GetFactionStatValue(FCStatDefOf.happinessGainedMultiplier);
                 TestAssert.AreEqual(1.0, val, 0.001, "Multiplicative stat with no policies should be 1");
             }
@@ -163,9 +163,9 @@ namespace FactionColonies
                 {
                     double expected;
                     if (mod.stat.aggregation == FCStatAggregation.Additive)
-                        expected = mod.stat.defaultValue + mod.value;
+                        expected = mod.stat.IdentityValue + mod.value;
                     else
-                        expected = mod.stat.defaultValue * mod.value;
+                        expected = mod.stat.IdentityValue * mod.value;
 
                     double actual = faction.GetFactionStatValue(mod.stat);
                     TestAssert.AreEqual(expected, actual, 0.001,
@@ -204,7 +204,7 @@ namespace FactionColonies
 
                 double mod0 = defs[0].statModifiers.First(m => m.stat == sharedStat).value;
                 double mod1 = defs[1].statModifiers.First(m => m.stat == sharedStat).value;
-                double expected = sharedStat.defaultValue + mod0 + mod1;
+                double expected = sharedStat.IdentityValue + mod0 + mod1;
 
                 double actual = faction.GetFactionStatValue(sharedStat);
                 TestAssert.AreEqual(expected, actual, 0.001,

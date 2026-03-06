@@ -42,6 +42,9 @@ namespace FactionColonies
                 yield break;
             }
 
+            if (milComp.militarySquad?.outfit == null)
+                yield break;
+
             int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
             yield return new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
             {

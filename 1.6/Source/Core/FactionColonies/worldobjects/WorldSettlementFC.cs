@@ -1159,7 +1159,7 @@ namespace FactionColonies
             if (cachedStatValues.TryGetValue(stat, out double cached))
                 return cached;
 
-            double value = stat.defaultValue;
+            double value = stat.IdentityValue;
 
             foreach (TaggedStatModifier tagged in statModifiers)
             {

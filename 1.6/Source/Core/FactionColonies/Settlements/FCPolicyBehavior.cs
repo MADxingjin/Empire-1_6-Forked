@@ -51,8 +51,8 @@ namespace FactionColonies
         /// FCPolicyDef.statModifiers XML instead.
         ///<para>Aggregation contract:</para>
         /// <list type="bullet">
-        ///   <item>For Additive stats (defaultValue=0): add/subtract from currentValue</item>
-        ///   <item>For Multiplicative stats (defaultValue=1): multiply currentValue</item>
+        ///   <item>For Additive stats (IdentityValue=0): add/subtract from currentValue</item>
+        ///   <item>For Multiplicative stats (IdentityValue=1): multiply currentValue</item>
         /// </list>
         /// <para>Check stat.aggregation if uncertain.</para>
         /// </summary>
