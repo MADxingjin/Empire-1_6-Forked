@@ -138,7 +138,7 @@ namespace FactionColonies
             set
             {
                 storedRandomTitheBudget = value;
-                settlement.updateProfitAndProduction();
+                settlement.DirtyProfitCache();
             }
         }
 
@@ -335,7 +335,7 @@ namespace FactionColonies
             if (storedRandomTitheBudget != oldStoredRandomTitheBudget)
             {
                 oldStoredRandomTitheBudget = storedRandomTitheBudget;
-                settlement.updateProfitAndProduction();
+                settlement.DirtyProfitCache();
             }
         }
         public void setDirtyCache()
@@ -714,7 +714,7 @@ namespace FactionColonies
             }
 
             dirtyTitheCache = true;
-            settlement.updateProfitAndProduction();
+            settlement.DirtyProfitCache();
             return true;
         }
         /// <summary>
@@ -750,7 +750,7 @@ namespace FactionColonies
                 LogUtil.Warning($"Tried to remove {thing.thingDef.LabelCap} from tithes list for resource {def.LabelCap}, but it doesn't exist");
             }
             dirtyTitheCache = true;
-            settlement.updateProfitAndProduction();
+            settlement.DirtyProfitCache();
         }
         /// <summary>
         /// Fully removes the given <paramref name="thing"/> from the tithes list.
@@ -765,7 +765,7 @@ namespace FactionColonies
                 LogUtil.Message($"Resource {def.LabelCap} removing thing from tithe list: {thing.thingDef.LabelCap} | {TextUtil.GetQualityLabelCap(thing.quality)} | {thing.stuffDef?.LabelCap ?? "null stuff"}");
                 tithes.Remove(thing);
                 dirtyTitheCache = true;
-                settlement.updateProfitAndProduction();
+                settlement.DirtyProfitCache();
             }
         }
         public ThingQualityTuple getTitheListKey(ThingQualityTuple thing)

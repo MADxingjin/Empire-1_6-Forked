@@ -57,14 +57,12 @@ namespace FactionColonies
 
         public void windowUpdateFc()
         {
-            // Only update description, don't recalculate production unless needed
-            settlement.updateDescription();
+            // description is now lazily cached — no action needed
         }
 
         public override void PreOpen()
         {
             base.PreOpen();
-            settlement.updateDescription();
             // Don't recalculate production on UI open - this overwrites saved values
             // settlement.updateProfitAndProduction();
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;

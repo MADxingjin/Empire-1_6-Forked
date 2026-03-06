@@ -21,7 +21,16 @@ namespace FactionColonies
         private string nameShort;
         private string nameOriginal;
         public string title = "Hamlet".Translate();
-        public string description = "FCGenericError".Translate();
+        private string _description = "FCGenericError".Translate();
+        private bool dirtyDescriptionCache = true;
+        public string description
+        {
+            get
+            {
+                if (dirtyDescriptionCache) recomputeDescription();
+                return _description;
+            }
+        }
         private int foundingTick;
         public int FoundingTick => foundingTick;
 
@@ -45,12 +54,20 @@ namespace FactionColonies
             return settlementDef.getSettlementTypeExtension().GetUpgradeTime(settlementLevel, buildTimeMult);
         }
 
-        /* Workers */
-        public double workers;
-        public double workersMax;
-        public double workersUltraMax;
-        public double workerCost;
-        public double workerTotalUpkeep;
+        /* Workers — lazy-cached, use DirtyStatsCache()/DirtyProfitCache() to invalidate */
+        private double _workers;
+        private double _workersMax;
+        private double _workersUltraMax;
+        private double _workerCost;
+        private double _workerTotalUpkeep;
+        private bool dirtyStatsCache = true;
+        private bool dirtyProfitCache = true;
+
+        public double workers { get { if (dirtyProfitCache) recomputeProfit(); return _workers; } }
+        public double workersMax { get { if (dirtyStatsCache) recomputeStats(); return _workersMax; } }
+        public double workersUltraMax { get { if (dirtyStatsCache) recomputeStats(); return _workersUltraMax; } }
+        public double workerCost { get { if (dirtyProfitCache) recomputeProfit(); return _workerCost; } }
+        public double workerTotalUpkeep { get { if (dirtyProfitCache) recomputeProfit(); return _workerTotalUpkeep; } }
         /* Social Stats */
         public double unrest;
         public double loyalty = 100;
@@ -84,12 +101,18 @@ namespace FactionColonies
         public int startUpgradeTick = -1;
         public int finishUpgradeTick = -1;
 
-        //ui only
-        public double totalUpkeep;
-        public string upkeepExp = "";
-        public double totalIncome;
-        public string incomeExp = "";
-        public double totalProfit;
+        //ui only — lazy-cached via dirtyProfitCache
+        private double _totalUpkeep;
+        private string _upkeepExp = "";
+        private double _totalIncome;
+        private string _incomeExp = "";
+        private double _totalProfit;
+
+        public double totalUpkeep { get { if (dirtyProfitCache) recomputeProfit(); return _totalUpkeep; } }
+        public string upkeepExp { get { if (dirtyProfitCache) recomputeProfit(); return _upkeepExp; } }
+        public double totalIncome { get { if (dirtyProfitCache) recomputeProfit(); return _totalIncome; } }
+        public string incomeExp { get { if (dirtyProfitCache) recomputeProfit(); return _incomeExp; } }
+        public double totalProfit { get { if (dirtyProfitCache) recomputeProfit(); return _totalProfit; } }
 
         // Jealously guard our resources. Only we can modify them!
         private List<ResourceFC> resources = new List<ResourceFC>();
@@ -279,6 +302,7 @@ namespace FactionColonies
         public void InvalidateCache()
         {
             InvalidateStatCache();
+            DirtyDescriptionCache();
             cachedlocationText = null;
             cachedBuildingsComp = null;
             checkedBuildingsComp = false;
@@ -290,6 +314,7 @@ namespace FactionColonies
             cachedStatDescs.Clear();
             cachedStatValues.Clear();
             InvalidateResourceCaches();
+            DirtyStatsCache();
         }
 
         /// <summary>
@@ -376,10 +401,7 @@ namespace FactionColonies
 
             settlementLevel = 1;
 
-            //Efficiency Multiplier
-            workers = 0;
-            workersMax = settlementDef.workersMaxBase + (settlementLevel * settlementDef.workersMaxMult) + returnMaxWorkersFromPrisoners();
-            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + (settlementLevel * settlementDef.workersUltraMaxMult) + returnOverMaxWorkersFromPrisoners();
+            _workers = 0;
 
             biome = Tile.Tile.PrimaryBiome.defName;
             bool useTileBiome = true;
@@ -408,9 +430,8 @@ namespace FactionColonies
             PrepareResources(faction.techLevel);
 
             /* If the settlement type has inherent stat modifiers, add them here. */
+            // addStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
             addStatModifiers(settlementDef.statModifiers, "settlementType");
-
-            updateProfitAndProduction();
 
             foundingTick = Find.TickManager.TicksGame;
         }
@@ -435,17 +456,17 @@ namespace FactionColonies
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
             Scribe_Values.Look(ref nameOriginal, "nameOriginal", OriginalName);
             Scribe_Values.Look(ref title, "title");
-            Scribe_Values.Look(ref description, "description");
-            Scribe_Values.Look(ref workers, "workers");
-            Scribe_Values.Look(ref workersMax, "workersMax");
-            Scribe_Values.Look(ref workersUltraMax, "workersUltraMax");
+            Scribe_Values.Look(ref _description, "description");
+            Scribe_Values.Look(ref _workers, "workers");
+            Scribe_Values.Look(ref _workersMax, "workersMax");
+            Scribe_Values.Look(ref _workersUltraMax, "workersUltraMax");
             Scribe_Values.Look(ref settlementLevel, "settlementLevel");
             Scribe_Values.Look(ref unrest, "unrest");
             Scribe_Values.Look(ref loyalty, "loyalty");
             Scribe_Values.Look(ref happiness, "happiness");
             Scribe_Values.Look(ref prosperity, "prosperity");
-            Scribe_Values.Look(ref workerCost, "workerCost");
-            Scribe_Values.Look(ref workerTotalUpkeep, "workerTotalUpkeep");
+            Scribe_Values.Look(ref _workerCost, "workerCost");
+            Scribe_Values.Look(ref _workerTotalUpkeep, "workerTotalUpkeep");
 
             Scribe_Collections.Look(ref resources, "resources", LookMode.Deep);
 
@@ -477,9 +498,9 @@ namespace FactionColonies
                 // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
                 clearStatModifiers();
                 BuildingsComp?.reapplyBuildingStatModifiers();
+                // addStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
                 addStatModifiers(settlementDef.statModifiers, "settlementType");
-
-                updateProfitAndProduction();
+                DirtyDescriptionCache();
             }
         }
 
@@ -570,7 +591,8 @@ namespace FactionColonies
                 settlementLevel = FCSettings.settlementMaxLevel;
             }
             if (settlementLevel < 0) settlementLevel = 0;
-            updateStats();
+            DirtyStatsCache();
+            DirtyDescriptionCache();
             settlementDef.getSettlementTypeExtension()?.onUpgrade(this, oldLevel, settlementLevel);
             SettlementLifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
         }
@@ -595,13 +617,41 @@ namespace FactionColonies
             happiness += amount * getStatValue(FCStatDefOf.happinessGainedMultiplier);
         }
 
-        public void updateProfitAndProduction() //updates both profit and production
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         * ~     Lazy Cache Invalidation        ~ *
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+        /// <summary>
+        /// Marks the stats cache (workersMax, workersUltraMax, militaryLevel) as dirty.
+        /// Also cascades to dirty the profit cache since profit depends on stats.
+        /// </summary>
+        public void DirtyStatsCache()
         {
-            updateProfit();
-            updateStats();
+            dirtyStatsCache = true;
+            dirtyProfitCache = true;
         }
 
-        public void updateStats()
+        /// <summary>
+        /// Marks the profit cache (income, upkeep, profit, workerCost) as dirty.
+        /// </summary>
+        public void DirtyProfitCache()
+        {
+            dirtyProfitCache = true;
+        }
+
+        /// <summary>
+        /// Marks the description cache as dirty.
+        /// </summary>
+        public void DirtyDescriptionCache()
+        {
+            dirtyDescriptionCache = true;
+        }
+
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         * ~     Lazy Cache Recomputation       ~ *
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+        private void recomputeStats()
         {
             FactionFC factionFc = FactionCache.FactionComp;
 
@@ -612,18 +662,69 @@ namespace FactionColonies
             settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(getStatValue(FCStatDefOf.militaryBaseLevel));
 
             //Worker Stats
-            workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + extraWorkersSoftcap)) +
+            _workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + extraWorkersSoftcap)) +
                          getStatValue(FCStatDefOf.workerBaseMax) + returnMaxWorkersFromPrisoners();
-            workersUltraMax = workersMax + settlementDef.workersUltraMaxBase + overMaxAdjustment + (settlementLevel * settlementDef.workersUltraMaxMult) +
+            _workersUltraMax = _workersMax + settlementDef.workersUltraMaxBase + overMaxAdjustment + (settlementLevel * settlementDef.workersUltraMaxMult) +
                               getStatValue(FCStatDefOf.workerBaseOverMax) + returnOverMaxWorkersFromPrisoners();
 
+            dirtyStatsCache = false;
+            dirtyProfitCache = true;
         }
-        public void updateProfit() //updates profit
+
+        private void recomputeProfit()
         {
-            totalUpkeep = getTotalUpkeep();
-            updateWorkerCost();
-            totalIncome = getTotalIncome();
-            totalProfit = Convert.ToInt32(totalIncome - totalUpkeep);
+            if (dirtyStatsCache) recomputeStats();
+
+            _upkeepExp = "";
+            _incomeExp = "";
+            _workers = getTotalWorkers_Internal();
+            double upkeep = 0;
+
+            _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, getBaseWorkerCost());
+            if (_workerTotalUpkeep > 0)
+            {
+                _upkeepExp += "+" + Math.Round(_workerTotalUpkeep, 2).ToString() + " - " + "Workers".Translate() + "\n";
+            }
+
+            upkeep += _workerTotalUpkeep;
+
+            double buildingsUpkeep = BuildingsComp?.TotalUpkeep() ?? 0;
+            if (buildingsUpkeep > 0)
+            {
+                upkeep += buildingsUpkeep;
+                _upkeepExp += "+" + Math.Round(buildingsUpkeep, 2).ToString() + " - " + "Buildings".Translate() + "\n";
+            }
+
+            double income = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                if (resource.actualIncome > 0)
+                {
+                    income += resource.actualIncome;
+                    _incomeExp += "+" + Math.Round(resource.actualIncome, 2).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
+                }
+                else if (resource.actualIncome < 0)
+                {
+                    upkeep += (-1) * resource.actualIncome;
+                    _upkeepExp += "+" + Math.Round(-1 * resource.actualIncome, 2).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
+                }
+            }
+
+            _upkeepExp = _upkeepExp.Trim();
+            _incomeExp = _incomeExp.Trim();
+
+            _totalUpkeep = upkeep;
+            _totalIncome = income;
+            _workerCost = _workers == 0 ? getBaseWorkerCost() : (_workerTotalUpkeep / _workers);
+            _totalProfit = Convert.ToInt32(_totalIncome - _totalUpkeep);
+
+            dirtyProfitCache = false;
+        }
+
+        private void recomputeDescription()
+        {
+            _description = getDescriptionBiome() + "\n\n" + getSettlementLevelDesc();
+            dirtyDescriptionCache = false;
         }
 
         public double getHappinessGain()
@@ -798,21 +899,7 @@ namespace FactionColonies
             return bonus;
         }
 
-        public double getTotalIncome() //return total income the of settlement
-        {
-            double income = 0;
-            incomeExp = "";
-            foreach (ResourceFC resource in resources)
-            {
-                if (resource.actualIncome > 0)
-                {
-                    income += resource.actualIncome;
-                    incomeExp += "+" + Math.Round((resource.actualIncome),2).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
-                }
-            }
-            incomeExp = incomeExp.Trim();
-            return income;
-        }
+        public double getTotalIncome() => totalIncome;
 
         public int getTotalWorkers()
         {
@@ -822,33 +909,55 @@ namespace FactionColonies
                 totalWorkers += resource.assignedWorkers;
             }
 
-            if (totalWorkers > workersUltraMax)
+            while (totalWorkers > workersUltraMax)
             {
-                while (totalWorkers > workersUltraMax)
+                if (increaseWorkers(null, -1))
                 {
-                    if (increaseWorkers(null, -1))
-                    {
-                        totalWorkers -= 1;
-                    }
+                    totalWorkers -= 1;
                 }
             }
 
             return totalWorkers;
         }
 
-        private bool CanStillModify(ResourceFC resource, int singleMod) => workers + singleMod <= workersUltraMax && workers + singleMod >= 0 && resource.assignedWorkers + singleMod <= workersUltraMax && resource.assignedWorkers + singleMod >= 0;
+        /// <summary>
+        /// Internal worker count for use inside recomputeProfit. Reads backing fields directly
+        /// and sheds workers without triggering profit recalculation.
+        /// </summary>
+        private int getTotalWorkers_Internal()
+        {
+            int totalWorkers = 0;
+            foreach (ResourceFC resource in resources)
+            {
+                totalWorkers += resource.assignedWorkers;
+            }
+
+            while (totalWorkers > _workersUltraMax)
+            {
+                int idx = Rand.RangeInclusive(0, resources.Count - 1);
+                if (resources[idx].assignedWorkers > 0)
+                {
+                    resources[idx].assignedWorkers -= 1;
+                    totalWorkers -= 1;
+                }
+            }
+
+            return totalWorkers;
+        }
+
+        private bool CanStillModify(ResourceFC resource, int singleMod) => _workers + singleMod <= workersUltraMax && _workers + singleMod >= 0 && resource.assignedWorkers + singleMod <= workersUltraMax && resource.assignedWorkers + singleMod >= 0;
 
         public bool increaseWorkers(ResourceFC resource, int numWorkers)
         {
             int singleMod = (numWorkers > 0) ? 1 : -1;
             if (resource == null)
             {
-                if (numWorkers >= 0 && workers <= workersUltraMax)
+                if (numWorkers >= 0 && _workers <= workersUltraMax)
                 {
                     return false;
                 }
 
-                while (workers > workersUltraMax)
+                while (_workers > workersUltraMax)
                 {
                     int num = Rand.RangeInclusive(0, resources.Count - 1);
                     if (resources[num].assignedWorkers > 0)
@@ -862,17 +971,17 @@ namespace FactionColonies
             {
                 while (CanStillModify(resource, singleMod))
                 {
-                    workers += singleMod;
+                    _workers += singleMod;
                     resource.assignedWorkers += singleMod;
                     numWorkers -= singleMod;
                     if (numWorkers == 0)
                     {
-                        updateProfitAndProduction();
+                        DirtyProfitCache();
                         FactionCache.FactionComp.updateTotalProfit();
                         return true;
                     }
                 }
-                updateProfitAndProduction();
+                DirtyProfitCache();
                 FactionCache.FactionComp.updateTotalProfit();
             }
 
@@ -892,51 +1001,9 @@ namespace FactionColonies
             return reduction;
         }
 
-        public double getTotalUpkeep() //returns total upkeep of the settlement
-        {
-            upkeepExp = "";
-            workers = getTotalWorkers();
-            double upkeep = 0;
+        public double getTotalUpkeep() => totalUpkeep;
 
-            workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(workers, workersMax, getBaseWorkerCost());
-            if (workerTotalUpkeep > 0)
-            {
-                upkeepExp += "+" + Math.Round(workerTotalUpkeep,2).ToString() + " - " + "Workers".Translate() + "\n";
-            }
-
-            //add building upkeep
-
-            upkeep += (workerTotalUpkeep);
-
-            double buildingsUpkeep = BuildingsComp?.TotalUpkeep() ?? 0;
-            if (buildingsUpkeep > 0)
-            {
-                upkeep += buildingsUpkeep;
-                upkeepExp += "+" + Math.Round(buildingsUpkeep,2).ToString() + " - " + "Buildings".Translate() + "\n";
-            }
-
-            foreach (ResourceFC resource in resources)
-            {
-                if (resource.actualIncome < 0)
-                {
-                    upkeep += (-1) * resource.actualIncome;
-                    upkeepExp += "+" + Math.Round((-1 * resource.actualIncome),2).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
-                }
-            }
-
-            upkeepExp = upkeepExp.Trim();
-            return upkeep;
-        }
-
-        public void updateWorkerCost() //runs inside updateProfit to attach during updating
-        {
-            workerCost = workers == 0 ? getBaseWorkerCost() : (workerTotalUpkeep / workers);
-        }
-
-        public double getTotalProfit() //returns total profit (income - upkeep) of the settlement
-        {
-            return (getTotalIncome() - getTotalUpkeep());
-        }
+        public double getTotalProfit() => totalProfit;
         /// <summary>
         /// Compatibility focused: this object should only be destroyed very deliberately, else another object is likely trying to handle negative combat resolution against this settlement.
         /// </summary>
@@ -1005,15 +1072,6 @@ namespace FactionColonies
         {
             return settlementDef.getSettlementTypeExtension()?.getSettlementLevelDesc(settlementLevel)
                 ?? "FCTownLevel5".Translate();
-        }
-
-        public void updateDescription()
-        {
-            //biome
-            description = getDescriptionBiome() + "\n\n";
-
-            //town size
-            description += getSettlementLevelDesc();
         }
 
         /// <summary>
@@ -1433,7 +1491,7 @@ namespace FactionColonies
             foreach (ResourceFC res in resources)
                 res.PruneStockpileAllocations();
             pruneResourceTithes();
-            updateProfitAndProduction();
+            DirtyStatsCache();
             calculatingTax = true;
         }
         private void postTaxPrep()

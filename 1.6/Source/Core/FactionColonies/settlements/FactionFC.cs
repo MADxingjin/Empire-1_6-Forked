@@ -322,11 +322,8 @@ namespace FactionColonies
                     }
                 }
 
-                // Recalculate stats now that event modifiers are applied
-                foreach (WorldSettlementFC settlement in settlements)
-                {
-                    settlement.updateProfitAndProduction();
-                }
+                // addStatModifiers already calls InvalidateStatCache -> DirtyStatsCache,
+                // so values will recompute lazily on next access
             }
         }
         /// <summary>
@@ -1243,8 +1240,8 @@ namespace FactionColonies
         }
         public void updateTotalProfit()
         {
-            income = settlements.Sum(s => s.getTotalIncome());
-            upkeep = settlements.Sum(s => s.getTotalUpkeep());
+            income = settlements.Sum(s => s.totalIncome);
+            upkeep = settlements.Sum(s => s.totalUpkeep);
             profit = income - upkeep;
         }
 
