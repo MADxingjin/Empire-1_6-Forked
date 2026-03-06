@@ -60,6 +60,8 @@ namespace FactionColonies.util
             FactionFC faction = FactionCache.FactionComp;
             SettlementLifecycleRegistry.InvokeOnSettlementRemoved(settlement);
             faction.settlements.Remove(settlement);
+            faction.DirtyFactionProfitCache();
+            faction.DirtyAveragesCache();
             faction.roadBuilder.FlagUpdateRoadQueues();
             Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
@@ -164,7 +166,7 @@ namespace FactionColonies.util
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
 
-            worldcomp.updateTechLevel(Find.ResearchManager, faction);
+            worldcomp.DirtyTechLevelCache();
             //<DevAdd> Copy player faction relationships  
             foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
             {

@@ -35,17 +35,41 @@ namespace FactionColonies
         public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
         public string name = "PlayerFaction".Translate();
         public string title = "Bastion".Translate();
-        public double averageHappiness = 100;
-        public double averageLoyalty = 100;
-        public double averageUnrest;
-        public double averageProsperity = 100;
-        public double income;
-        public double upkeep;
-        public double profit;
+        /* Faction averages — lazy-cached via dirtyAveragesCache */
+        private double _averageHappiness = 100;
+        private double _averageLoyalty = 100;
+        private double _averageUnrest = 0;
+        private double _averageProsperity = 100;
+        private bool dirtyAveragesCache = true;
+        public double averageHappiness { get { if (dirtyAveragesCache) recomputeAverages(); return _averageHappiness; } }
+        public double averageLoyalty { get { if (dirtyAveragesCache) recomputeAverages(); return _averageLoyalty; } }
+        public double averageUnrest { get { if (dirtyAveragesCache) recomputeAverages(); return _averageUnrest; } }
+        public double averageProsperity { get { if (dirtyAveragesCache) recomputeAverages(); return _averageProsperity; } }
+
+        /* Faction profit — lazy-cached via dirtyFactionProfitCache */
+        private double _income;
+        private double _upkeep;
+        private double _profit;
+        private bool dirtyFactionProfitCache = true;
+        public double income { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _income; } }
+        public double upkeep { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _upkeep; } }
+        public double profit { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _profit; } }
+
         public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         public Map taxMap;
-        public TechLevel techLevel = TechLevel.Undefined;
+
+        /* Tech level — lazy-cached via dirtyTechLevelCache */
+        private TechLevel _techLevel = TechLevel.Undefined;
+        private bool dirtyTechLevelCache = true;
+        public TechLevel techLevel
+        {
+            get
+            {
+                if (dirtyTechLevelCache) recomputeTechLevel();
+                return _techLevel;
+            }
+        }
         private bool firstTick = true;
         public bool updateProcessed = false;
         public Texture2D factionIcon = TexLoad.factionIcons[0];
@@ -187,20 +211,20 @@ namespace FactionColonies
             Scribe_References.Look(ref taxMap, "taxMap");
             Scribe_Values.Look(ref factionCreated, "factionCreated");
 
-            Scribe_Values.Look(ref averageHappiness, "averageHappiness");
-            Scribe_Values.Look(ref averageLoyalty, "averageLoyalty");
-            Scribe_Values.Look(ref averageUnrest, "averageUnrest");
-            Scribe_Values.Look(ref averageProsperity, "averageProsperity");
+            Scribe_Values.Look(ref _averageHappiness, "averageHappiness");
+            Scribe_Values.Look(ref _averageLoyalty, "averageLoyalty");
+            Scribe_Values.Look(ref _averageUnrest, "averageUnrest");
+            Scribe_Values.Look(ref _averageProsperity, "averageProsperity");
 
-            Scribe_Values.Look(ref income, "income");
-            Scribe_Values.Look(ref upkeep, "upkeep");
-            Scribe_Values.Look(ref profit, "profit");
+            Scribe_Values.Look(ref _income, "income");
+            Scribe_Values.Look(ref _upkeep, "upkeep");
+            Scribe_Values.Look(ref _profit, "profit");
 
             Scribe_Values.Look(ref taxTimeDue, "taxTimeDue");
             Scribe_Values.Look(ref timeStart, "timeStart", -1);
             Scribe_Values.Look(ref uiTimeUpdate, "uiTimeUpdate");
             Scribe_Values.Look(ref militaryTimeDue, "militaryTimeDue", -1);
-            Scribe_Values.Look(ref techLevel, "techLevel");
+            Scribe_Values.Look(ref _techLevel, "techLevel");
             Scribe_Values.Look(ref factionIconPath, "factionIconPath", "Base");
 
             Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
@@ -594,65 +618,124 @@ namespace FactionColonies
             }
         }
 
-        public void updateTechLevel(ResearchManager researchManager, Faction faction = null)
-        {
-            bool medievalOnly = FCSettings.medievalTechOnly;
-            TechLevel curTechLevel = techLevel;
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         * ~     Lazy Cache Invalidation        ~ *
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
+        public void DirtyFactionProfitCache()
+        {
+            dirtyFactionProfitCache = true;
+        }
+
+        public void DirtyAveragesCache()
+        {
+            dirtyAveragesCache = true;
+        }
+
+        public void DirtyTechLevelCache()
+        {
+            dirtyTechLevelCache = true;
+        }
+
+        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         * ~     Lazy Cache Recomputation       ~ *
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+        private void recomputeTotalProfit()
+        {
+            _income = settlements.Sum(s => s.totalIncome);
+            _upkeep = settlements.Sum(s => s.totalUpkeep);
+            _profit = _income - _upkeep;
+            dirtyFactionProfitCache = false;
+        }
+
+        private void recomputeAverages()
+        {
+            int avgHappiness = 0;
+            int avgLoyalty = 0;
+            int avgUnrest = 0;
+            int avgProsperity = 0;
+
+            if (settlements.Count > 0)
+            {
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    avgHappiness += Convert.ToInt32(settlement.happiness);
+                    avgLoyalty += Convert.ToInt32(settlement.loyalty);
+                    avgUnrest += Convert.ToInt32(settlement.unrest);
+                    avgProsperity += Convert.ToInt32(settlement.prosperity);
+                }
+
+                avgHappiness /= settlements.Count;
+                avgLoyalty /= settlements.Count;
+                avgUnrest /= settlements.Count;
+                avgProsperity /= settlements.Count;
+            }
+
+            _averageHappiness = avgHappiness;
+            _averageLoyalty = avgLoyalty;
+            _averageUnrest = avgUnrest;
+            _averageProsperity = avgProsperity;
+            dirtyAveragesCache = false;
+        }
+
+        private void recomputeTechLevel()
+        {
+            ResearchManager researchManager = Find.ResearchManager;
+            bool medievalOnly = FCSettings.medievalTechOnly;
+            TechLevel curTechLevel = _techLevel;
 
             if (!medievalOnly && FactionCache.TechLevelBarrierUltra != null &&
-                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) == FactionCache.TechLevelBarrierUltra.baseCost && techLevel < TechLevel.Ultra)
+                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) == FactionCache.TechLevelBarrierUltra.baseCost && _techLevel < TechLevel.Ultra)
             {
-                techLevel = TechLevel.Ultra;
+                _techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
             }
             else if (!medievalOnly && FactionCache.TechLevelBarrierSpacer != null &&
                      researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) == FactionCache.TechLevelBarrierSpacer.baseCost &&
-                     techLevel < TechLevel.Spacer)
+                     _techLevel < TechLevel.Spacer)
             {
-                techLevel = TechLevel.Spacer;
+                _techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
             }
             else if (!medievalOnly && FactionCache.TechLevelBarrierIndustrial != null &&
                      researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) == FactionCache.TechLevelBarrierIndustrial.baseCost &&
-                     techLevel < TechLevel.Industrial)
+                     _techLevel < TechLevel.Industrial)
             {
-                techLevel = TechLevel.Industrial;
+                _techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
             }
             else if (FactionCache.TechLevelBarrierMedieval != null &&
                      researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) == FactionCache.TechLevelBarrierMedieval.baseCost &&
-                     techLevel < TechLevel.Medieval)
+                     _techLevel < TechLevel.Medieval)
             {
-                techLevel = TechLevel.Medieval;
+                _techLevel = TechLevel.Medieval;
                 LogUtil.Message("updateTechLevel: Medieval");
             }
             else
             {
-                if (techLevel < TechLevel.Neolithic)
+                if (_techLevel < TechLevel.Neolithic)
                 {
                     LogUtil.Message("updateTechLevel: Neolithic");
-                    techLevel = TechLevel.Neolithic;
+                    _techLevel = TechLevel.Neolithic;
                 }
             }
 
-            if (techLevel != curTechLevel)
+            if (_techLevel != curTechLevel)
             {
                 raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
                 DirtyAllTitheCaches();
             }
 
-            Faction playerColonyfaction = faction ?? FactionCache.PlayerColonyFaction;
-            if (playerColonyfaction != null && playerColonyfaction.def.techLevel < techLevel)
+            Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
+            if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
             {
                 LogUtil.Message("Updating Tech Level");
-                updateFactionDef(techLevel, ref playerColonyfaction);
+                updateFactionDef(_techLevel, ref playerColonyfaction);
             }
-            else if (playerColonyfaction != null && playerColonyfaction.def.techLevel >= techLevel)
-            {
-                //LogUtil.Message("Tech Level already matches");
-            }
+
+            dirtyTechLevelCache = false;
         }
 
         public void DirtyAllTitheCaches()
@@ -1170,35 +1253,11 @@ namespace FactionColonies
             return handled;
         }
 
-        public void updateAverages()
+        /// <summary>
+        /// Syncs faction goodwill with average happiness. Should only be called from StatTick (daily).
+        /// </summary>
+        private void syncGoodwillWithAverages()
         {
-            int averageHappinessTmp = 0;
-            int averageLoyaltyTmp = 0;
-            int averageUnrestTmp = 0;
-            int averageProsperityTmp = 0;
-
-            if (settlements.Count > 0)
-            {
-                foreach (WorldSettlementFC settlement in settlements)
-                {
-                    averageHappinessTmp += Convert.ToInt32(settlement.happiness);
-                    averageLoyaltyTmp += Convert.ToInt32(settlement.loyalty);
-                    averageUnrestTmp += Convert.ToInt32(settlement.unrest);
-                    averageProsperityTmp += Convert.ToInt32(settlement.prosperity);
-                }
-
-                averageHappinessTmp /= settlements.Count;
-                averageLoyaltyTmp /= settlements.Count;
-                averageUnrestTmp /= settlements.Count;
-                averageProsperityTmp /= settlements.Count;
-            }
-
-            averageHappiness = averageHappinessTmp;
-            averageLoyalty = averageLoyaltyTmp;
-            averageUnrest = averageUnrestTmp;
-            averageProsperity = averageProsperityTmp;
-
-
             if (settlements.Any() && FactionCache.PlayerColonyFaction != null)
             {
                 FactionCache.PlayerColonyFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
@@ -1214,36 +1273,13 @@ namespace FactionColonies
         public void addSettlement(WorldSettlementFC settlement)
         {
             settlements.Add(settlement);
-            uiUpdate();
+            DirtyFactionProfitCache();
+            DirtyAveragesCache();
         }
 
-        public void uiUpdate()
-        {
-            //Pop UI updates
-            // We cache the total amount now, and signal to dirty the cache anytime an underlying value is changed. No need to update regularly
-            //updateTotalResources();
-            updateTotalProfit();
-            updateTechLevel(Find.ResearchManager);
-        }
-
-        public double getTotalIncome() //return total income of settlements       ####MAKE UPDATE PER HOUR TICK
-        {
-            return income;
-        }
-        public double getTotalUpkeep() //returns total upkeep of all settlements
-        {
-            return upkeep;
-        }
-        public double getTotalProfit()
-        {
-            return profit;
-        }
-        public void updateTotalProfit()
-        {
-            income = settlements.Sum(s => s.totalIncome);
-            upkeep = settlements.Sum(s => s.totalUpkeep);
-            profit = income - upkeep;
-        }
+        public double getTotalIncome() => income;
+        public double getTotalUpkeep() => upkeep;
+        public double getTotalProfit() => profit;
 
         /* * * * *
          * Resource Pools
@@ -1361,7 +1397,7 @@ namespace FactionColonies
 
                 Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
                     LetterDefOf.PositiveEvent);
-                uiUpdate();
+                DirtyFactionProfitCache();
             }
             else
             {
@@ -1643,7 +1679,8 @@ namespace FactionColonies
                 return;
 
             updateSettlementStats();
-            updateAverages();
+            DirtyAveragesCache();
+            syncGoodwillWithAverages();
             RelationsUtilFC.resetPlayerColonyRelations();
             updateDailyResourcePools();
             MakeRandomEvent();
@@ -1746,8 +1783,7 @@ namespace FactionColonies
                     //already built in ui update -.-
                     Find.WindowStack.WindowsUpdate();
 
-                    //Pop UI updates
-                    uiUpdate();
+                    // Profit and averages are lazy-cached — no eager update needed
                 }
             }
             else

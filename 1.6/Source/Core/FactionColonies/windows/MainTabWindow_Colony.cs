@@ -66,8 +66,7 @@ namespace FactionColonies
                 return;
             }
 
-            faction.updateAverages();
-            faction.updateTotalProfit();
+            // Averages and profit are lazy-cached — no eager update needed
             militaryUtil = faction.militaryCustomizationUtil;
 
             // Build tab list
@@ -77,7 +76,6 @@ namespace FactionColonies
             tabs.Add(new TabRecord(overviewTabs[0], delegate
             {
                 curTab = overviewTabs[0];
-                faction.updateTotalProfit();
             }, () => curTab == overviewTabs[0]));
             overviewFuncs.Add(overviewTabs[0], DrawOverviewTab);
             // Bills tab
@@ -120,17 +118,6 @@ namespace FactionColonies
             MainTableRegistry.InvokePostCloseWindow();
             selectingColonyFC = false;
             militaryUtil?.checkMilitaryUtilForErrors();
-        }
-
-        public override void WindowUpdate()
-        {
-            base.WindowUpdate();
-            if (UIUpdateTimer < Find.TickManager.TicksAbs)
-            {
-                UIUpdateTimer = Find.TickManager.TicksAbs + FCSettings.updateUiTimer;
-                if (faction != null)
-                    faction.updateAverages();
-            }
         }
 
         // ===== MAIN DRAW =====

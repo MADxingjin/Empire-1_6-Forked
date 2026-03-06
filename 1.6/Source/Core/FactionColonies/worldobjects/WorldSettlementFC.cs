@@ -606,15 +606,18 @@ namespace FactionColonies
         {
             Messages.Message(message);
             unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
+            FactionCache.FactionComp?.DirtyAveragesCache();
         }
         public void GainUnrest(double amount)
         {
             unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
+            FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
         public void GainHappiness(double amount)
         {
             happiness += amount * getStatValue(FCStatDefOf.happinessGainedMultiplier);
+            FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -637,6 +640,7 @@ namespace FactionColonies
         public void DirtyProfitCache()
         {
             dirtyProfitCache = true;
+            FactionCache.FactionComp?.DirtyFactionProfitCache();
         }
 
         /// <summary>
@@ -977,12 +981,12 @@ namespace FactionColonies
                     if (numWorkers == 0)
                     {
                         DirtyProfitCache();
-                        FactionCache.FactionComp.updateTotalProfit();
+                        FactionCache.FactionComp.DirtyFactionProfitCache();
                         return true;
                     }
                 }
                 DirtyProfitCache();
-                FactionCache.FactionComp.updateTotalProfit();
+                FactionCache.FactionComp.DirtyFactionProfitCache();
             }
 
             return false;
