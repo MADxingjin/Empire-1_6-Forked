@@ -185,7 +185,7 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
+            float buttonWidth = (FilterArea.width - (smallMargin * filterButtonsPerRow-1)) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
             for (int i = 0; i < filterSize; i++)
@@ -194,9 +194,9 @@ namespace FactionColonies
                 int col = i % filterButtonsPerRow;
 
                 Rect buttonRect = new Rect(
-                    FilterArea.x + 5 + (col * buttonWidth),
-                    FilterArea.y + (row * (buttonHeight + 5)),
-                    buttonWidth - 5,
+                    FilterArea.x + (col * buttonWidth + smallMargin),
+                    FilterArea.y + (row * (buttonHeight + smallMargin)),
+                    buttonWidth - smallMargin,
                     buttonHeight
                 );
 

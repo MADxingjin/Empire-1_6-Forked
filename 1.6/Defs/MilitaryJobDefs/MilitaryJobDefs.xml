@@ -58,6 +58,7 @@
         <label>defend friendly settlement</label>
         <statusLabelKey>FCMilStatusDefending</statusLabelKey>
         <occupiesTarget>false</occupiesTarget>
+        <isState>true</isState>
     </FactionColonies.MilitaryJobDef>
 
 </Defs>

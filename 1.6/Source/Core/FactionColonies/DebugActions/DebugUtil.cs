@@ -149,16 +149,16 @@ namespace FactionColonies
                     {
                         LogUtil.MessageForce("Debug - Make Random Event - " + evtDef.label);
                         FCEvent evt = FCEventMaker.MakeRandomEvent(evtDef, null);
-                        if (evtDef.activateAtStart == false)
+                        if (evt == null) return;
+
+                        if (!evtDef.activateAtStart)
                         {
-                            FCEventMaker.MakeRandomEvent(evtDef, null);
                             FactionCache.FactionComp.addEvent(evt);
                         }
 
-                        //letter code
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
-
-                        if (!settlementString.NullOrEmpty()) Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                        if (!settlementString.NullOrEmpty())
+                            Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
                     }
                     ));
             }
