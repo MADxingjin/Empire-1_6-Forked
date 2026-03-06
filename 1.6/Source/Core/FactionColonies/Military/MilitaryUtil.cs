@@ -63,12 +63,12 @@ namespace FactionColonies
             squad.timeDeployed = Find.TickManager.TicksGame;
             Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
 
-            settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJob.Deploy, 1, null);
+            settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
             LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, equippedPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
-                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJob.Deploy, true);
+                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJobDefOf.Deploy, true);
             }
         }
 

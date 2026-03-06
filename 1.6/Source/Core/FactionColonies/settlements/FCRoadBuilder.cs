@@ -83,7 +83,7 @@ namespace FactionColonies
                     return;
                 }
 
-                if (!hasRoadBuildersBoost && faction.AnyPolicyEnables(FCActionType.BuildRoadsToAllies))
+                if (!hasRoadBuildersBoost && faction.IsActionAllowed(FCActionType.BuildRoadsToAllies))
                 {
                     roadQueue.shouldUpdateSettlementsToProcess = true;
                     roadQueue.daysBetweenTicks = 1;
@@ -111,7 +111,7 @@ namespace FactionColonies
 
             // If faction exists and is either player or player has roadBuilders trait and the faction is an ally
             if (settlement.Faction != null)
-                if (settlement.Faction.IsPlayer || (fC.AnyPolicyEnables(FCActionType.BuildRoadsToAllies) && settlement.Faction.PlayerRelationKind == FactionRelationKind.Ally))
+                if (settlement.Faction.IsPlayer || (fC.IsActionAllowed(FCActionType.BuildRoadsToAllies) && settlement.Faction.PlayerRelationKind == FactionRelationKind.Ally))
                     return true;
 
             foreach (WorldSettlementFC settlementFC in fC.settlements)

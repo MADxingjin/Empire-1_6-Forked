@@ -83,7 +83,7 @@ namespace FactionColonies
         public virtual void OnSquadRecalled(FactionFC faction, WorldSettlementFC settlement) { }
 
         /// <summary>Called after a battle has been resolved, before the squad enters cooldown.</summary>
-        public virtual void OnBattleResolved(FactionFC faction, WorldSettlementFC settlement, MilitaryJob job, bool victory) { }
+        public virtual void OnBattleResolved(FactionFC faction, WorldSettlementFC settlement, MilitaryJobDef job, bool victory) { }
 
         // ── Building Events ────────────────────────────────────────
 

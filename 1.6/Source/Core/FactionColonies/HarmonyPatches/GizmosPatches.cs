@@ -160,13 +160,6 @@ namespace FactionColonies
 	[HarmonyPatch(typeof(WorldObject), "GetGizmos")]
 	class AddButtonsToNonEmpireObjects
 	{
-		private static readonly Dictionary<MilitaryJob, (string, string)> MilJobOptionStringsDic = new Dictionary<MilitaryJob, (string, string)> 
-		{ 
-			{ MilitaryJob.CaptureEnemySettlement, ("CaptureSettlement", "FCCaptureFloatMenuOption") },
-			{ MilitaryJob.RaidEnemySettlement, ("RaidSettlement", "FCRaidFloatMenuOption") },
-			{ MilitaryJob.EnslaveEnemySettlement, ("EnslavePopulation", "FCEnslaveFloatMenuOption") },
-		};
-
 		/// <summary>
 		/// Checks if a <paramref name="settlement"/> has a currently usable military squad
 		/// </summary>
@@ -175,14 +168,9 @@ namespace FactionColonies
 		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
 
 		/// <summary>
-		/// Takes a <paramref name="job"/> and generates a FloatMenuOptions using the strings in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic
+		/// Takes a <paramref name="job"/> and generates a FloatMenuOption using the job def's label/desc keys.
 		/// </summary>
-		/// <param name="factionFC"></param>
-		/// <param name="faction"></param>
-		/// <param name="tile"></param>
-		/// <param name="job"></param>
-		/// <returns>the generated FloatMenuOption</returns>
-		private static FloatMenuOption NewOption(FactionFC factionFC, Faction faction, int tile, MilitaryJob job) => new FloatMenuOption((MilJobOptionStringsDic[job].Item1 ?? "FCUnsupportedMilJobError").Translate(), delegate
+		private static FloatMenuOption NewOption(FactionFC factionFC, Faction faction, int tile, MilitaryJobDef job) => new FloatMenuOption((job.floatMenuLabelKey ?? "FCUnsupportedMilJobError").Translate(), delegate
 		{
 			List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
@@ -190,9 +178,7 @@ namespace FactionColonies
 			{
 				if (SettlementHasUsableMilitary(settlement))
 				{
-					//if military is valid to use.
-
-					settlementList.Add(new FloatMenuOption((MilJobOptionStringsDic[job].Item2 ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
+					settlementList.Add(new FloatMenuOption((job.floatMenuDescKey ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
 					{
 						RelationsUtilFC.attackFaction(faction);
 						settlement.MilitaryComp?.SendMilitary(tile, job, 60000, faction);
@@ -218,10 +204,14 @@ namespace FactionColonies
 			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-				if (!factionFC.AnyPolicyBlocks(FCActionType.CaptureSettlement)) list.Add(NewOption(factionFC, faction, tile, MilitaryJob.CaptureEnemySettlement));
-				list.Add(NewOption(factionFC, faction, tile, MilitaryJob.RaidEnemySettlement));
-				if (factionFC.AnyPolicyEnables(FCActionType.EnslaveSettlement) && faction.def.defName != "VFEI_Insect") list.Add(NewOption(factionFC, faction, tile, MilitaryJob.EnslaveEnemySettlement));
+				foreach (MilitaryJobDef job in FactionCache.HostileMilitaryJobs)
+				{
+					if (!factionFC.IsMilitaryJobAllowed(job)) continue;
+					if (job.Handler != null && !job.Handler.IsValidTarget(faction)) continue;
+					list.Add(NewOption(factionFC, faction, tile, job));
+				}
 
+				if (list.Count == 0) list.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
 				Find.WindowStack.Add(new FloatMenu(list));
 			}
 		};
@@ -258,10 +248,10 @@ namespace FactionColonies
 			Faction faction = __instance.Faction;
 			FactionFC factionFC = FactionCache.FactionComp;
 
-			if (factionFC.AnyPolicyEnables(FCActionType.SendDiplomat))
+			if (factionFC.IsActionAllowed(FCActionType.SendDiplomat))
 				__result = __result.AddItem(PeacefulAction(factionFC, faction));
 
-			if (!factionFC.AnyPolicyBlocks(FCActionType.RaidSettlement))
+			if (factionFC.IsActionAllowed(FCActionType.DeployMilitary))
 				__result = __result.AddItem(HostileAction(factionFC, faction, tile));
 		}
 	}

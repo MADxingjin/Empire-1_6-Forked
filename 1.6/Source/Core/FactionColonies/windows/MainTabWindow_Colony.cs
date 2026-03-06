@@ -1675,7 +1675,7 @@ namespace FactionColonies
             {
                 Find.WindowStack.Add(new FloatMenu(DeploymentOptions(settlement)));
             }
-            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.AnyPolicyEnables(FCActionType.DeployExtraSquad))
+            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.IsActionAllowed(FCActionType.DeployExtraSquad))
             {
                 List<FloatMenuOption> extraOptions = new List<FloatMenuOption>();
                 faction.ForEachBehavior(b =>

@@ -55,9 +55,6 @@
 			<li><stat>deadPawnCooldownOffset</stat><value>2000</value></li>
 		</statModifiers>
 		<blockedActions>
-			<li>CaptureSettlement</li>
-			<li>RaidSettlement</li>
-			<li>EnslaveSettlement</li>
 			<li>DeployMilitary</li>
 		</blockedActions>
 		<enabledActions>
@@ -89,9 +86,9 @@
 		<statModifiers>
 			<li><stat>deadPawnCooldownOffset</stat><value>-2000</value></li>
 		</statModifiers>
-		<enabledActions>
-			<li>EnslaveSettlement</li>
-		</enabledActions>
+		<enabledMilitaryJobs>
+			<li>EnslaveEnemySettlement</li>
+		</enabledMilitaryJobs>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -144,9 +141,9 @@
 			<li><stat>extraWorkersSoftcap</stat><value>3</value></li>
 			<li><stat>taxBonusFlat</stat><value>10</value></li>
 		</statModifiers>
-		<blockedActions>
-			<li>CaptureSettlement</li>
-		</blockedActions>
+		<blockedMilitaryJobs>
+			<li>CaptureEnemySettlement</li>
+		</blockedMilitaryJobs>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>

@@ -81,6 +81,8 @@ namespace FactionColonies
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
         public List<FCActionType> blockedActions = new List<FCActionType>();
         public List<FCActionType> enabledActions = new List<FCActionType>();
+        public List<MilitaryJobDef> blockedMilitaryJobs = new List<MilitaryJobDef>();
+        public List<MilitaryJobDef> enabledMilitaryJobs = new List<MilitaryJobDef>();
         public bool preventBuildingDestruction;
         public bool suppressMemberDeathPenalty;
         // Optional behavior class for policies that need procedural logic.

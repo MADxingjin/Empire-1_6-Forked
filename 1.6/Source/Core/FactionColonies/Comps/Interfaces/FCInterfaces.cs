@@ -100,7 +100,7 @@ namespace FactionColonies
         /// <summary>
         /// Called after a military squad has been deployed from a settlement.
         /// </summary>
-        void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad);
+        void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad);
         /// <summary>
         /// Called when a military squad is recalled to its settlement.
         /// </summary>
@@ -108,7 +108,7 @@ namespace FactionColonies
         /// <summary>
         /// Called after a battle has been resolved, before the squad enters cooldown.
         /// </summary>
-        void OnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory);
+        void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory);
     }
     /// <summary>
     /// Defines an interface to let classes hook into research project completion.

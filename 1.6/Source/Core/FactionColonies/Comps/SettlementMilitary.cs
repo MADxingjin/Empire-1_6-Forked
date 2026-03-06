@@ -66,7 +66,7 @@ namespace FactionColonies
         public bool isUnderAttack;
         public bool militaryBusy;
         public int militaryLocation = -1;
-        public MilitaryJob militaryJob = MilitaryJob.Undefined;
+        public MilitaryJobDef militaryJob;
         public Faction militaryEnemy;
         public MercenarySquadFC militarySquad;
         public int artilleryTimer = 0;
@@ -86,7 +86,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref isUnderAttack, "isUnderAttack");
             Scribe_Values.Look(ref militaryBusy, "militaryBusy");
             Scribe_Values.Look(ref militaryLocation, "militaryLocation");
-            Scribe_Values.Look(ref militaryJob, "militaryJob");
+            Scribe_Defs.Look(ref militaryJob, "militaryJob");
             Scribe_References.Look(ref militaryEnemy, "militaryEnemy");
             Scribe_References.Look(ref militarySquad, "militarySquad");
             Scribe_Values.Look(ref artilleryTimer, "artilleryTimer");
@@ -797,9 +797,8 @@ namespace FactionColonies
             base.PostCaravanFormed(caravan);
         }
 
-        public void SendMilitary(PlanetTile location, MilitaryJob job, int timeToFinish, Faction enemy)
+        public void SendMilitary(PlanetTile location, MilitaryJobDef job, int timeToFinish, Faction enemy)
         {
-            FactionFC factionfc = FactionCache.FactionComp;
             if (isMilitaryBusy() || isTargetOccupied(location)) return;
 
             militaryBusy = true;
@@ -807,35 +806,9 @@ namespace FactionColonies
             militaryLocation = location;
 
             if (enemy != null) militaryEnemy = enemy;
-            if (job != MilitaryJob.Deploy) FactionCache.FactionComp.militaryTargets.Add(location);
+            if (job.occupiesTarget) FactionCache.FactionComp.militaryTargets.Add(location);
 
-            FCEvent evt;
-            switch (militaryJob)
-            {
-                case MilitaryJob.RaidEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.raidEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesRaiding".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
-
-                case MilitaryJob.EnslaveEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.enslaveEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesEnslave".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentEnslave".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
-
-                case MilitaryJob.CaptureEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.captureEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesCapturing".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
-
-                default:
-                    break;
-            }
+            job.Handler?.OnDeployed(this, location, timeToFinish, enemy);
 
             MilitaryEventRegistry.InvokeOnSquadDeployed(WorldSettlement, job);
         }
@@ -848,204 +821,17 @@ namespace FactionColonies
         public void processMilitaryEvent()
         {
             FactionFC faction = FactionCache.FactionComp;
-            //calculate success and all of that shit
-
-            //Debug by setting faction automatically
-            //returnMilitaryTarget().SetFaction(FactionColonies.getPlayerColonyFaction());
             if (faction.militaryTargets.Contains(militaryLocation))
             {
                 faction.militaryTargets.Remove(militaryLocation);
             }
-            //LogUtil.Message(winner + " job = " + militaryJob);
-            //Process end result here
-            //attacker == 0; defender == 1;
 
             bool victory = false;
-            MilitaryJob resolvedJob = militaryJob;
+            MilitaryJobDef resolvedJob = militaryJob;
 
-            switch (militaryJob)
+            if (militaryJob.Handler != null)
             {
-                case MilitaryJob.RaidEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        victory = winner == 0;
-                        if (winner == 0)
-                        {
-                            //if won
-                            faction.addExperienceToFactionLevel(5f);
-
-                            TechLevel tech = Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.techLevel;
-                            int lootLevel;
-                            bool getSlaves = true;
-
-
-                            switch (tech)
-                            {
-                                case TechLevel.Archotech:
-                                case TechLevel.Ultra:
-                                case TechLevel.Spacer:
-                                    lootLevel = 4;
-                                    break;
-                                case TechLevel.Industrial:
-                                    lootLevel = 3;
-                                    break;
-                                case TechLevel.Medieval:
-                                case TechLevel.Neolithic:
-                                    lootLevel = 2;
-                                    break;
-                                default:
-                                    lootLevel = 1;
-                                    break;
-                            }
-
-                            if (Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.defName == "VFEI_Insect")
-                            {
-                                lootLevel = 3;
-                                getSlaves = false;
-                            }
-
-                            List<Thing> loot = PaymentUtil.generateRaidLoot(lootLevel, tech);
-
-                            string text = "settlementDeliveringLoot".Translate();
-                            text = loot.Aggregate(text, (current, thing) => current + thing.LabelCap + " " + thing.stackCount + "x\n ");
-
-                            int num = new IntRange(0, 10).RandomInRange;
-                            if (num <= 4 && getSlaves)
-                            {
-                                Pawn prisoner = PaymentUtil.generatePrisoner(militaryEnemy);
-                                text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), WorldSettlement.Name);
-                                WorldSettlement.addPrisoner(prisoner);
-                            }
-
-                            Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                                "RaidEnemySettlementSuccess".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap) + "\n" + text,
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-
-                            //deliver
-
-                            FCEvent eventParams = new FCEvent()
-                            {
-                                location = Find.AnyPlayerHomeMap.Tile,
-                                source = WorldSettlement.Tile,
-                                goods = loot,
-                                customDescription = text,
-                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile)
-                            };
-
-                            DeliveryEvent.CreateDeliveryEvent(eventParams);
-                        }
-                        else
-                        {
-                            //if lost
-                            Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                                "RaidEnemySettlementFailure".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
-                case MilitaryJob.EnslaveEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        victory = winner == 0;
-                        if (winner == 0)
-                        {
-                            //if won
-                            faction.addExperienceToFactionLevel(5f);
-
-                            string text = "";
-
-                            int num = new IntRange(1, 3).RandomInRange;
-                            for (int i = 0; i <= num; i++)
-                            {
-                                Pawn prisoner = PaymentUtil.generatePrisoner(militaryEnemy);
-                                text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), WorldSettlement.Name) + "\n";
-                                WorldSettlement.addPrisoner(prisoner);
-                            }
-
-                            Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                                "RaidEnemySettlementSuccess".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap) + "\n" + text,
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-                        else if (winner == 1)
-                        {
-                            //if lost
-                            Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                                "RaidEnemySettlementFailure".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
-                case MilitaryJob.CaptureEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        victory = winner == 0;
-                        if (winner == 0)
-                        {
-                            faction.addExperienceToFactionLevel(5f);
-
-                            string tmpName = Find.WorldObjects.SettlementAt(militaryLocation).LabelCap;
-                            TechLevel tech = Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.techLevel;
-                            Faction tempFactionLink = Find.WorldObjects.SettlementAt(militaryLocation).Faction;
-                            Find.WorldObjects.SettlementAt(militaryLocation).Destroy();
-                            WorldSettlementFC worldsettlement = ColonyUtil.createPlayerColonySettlement(militaryLocation, WorldSettlementDefOf.WorldSettlementDef_Surface);
-                            worldsettlement.Name = tmpName;
-
-                            int upgradeTimes;
-
-                            switch (tech)
-                            {
-                                case TechLevel.Archotech:
-                                case TechLevel.Ultra:
-                                case TechLevel.Spacer:
-                                    upgradeTimes = 2;
-                                    break;
-                                case TechLevel.Industrial:
-                                    upgradeTimes = 1;
-                                    break;
-                                default:
-                                    upgradeTimes = 0;
-                                    break;
-                            }
-
-                            WorldSettlement.upgradeSettlement(upgradeTimes);
-
-                            WorldSettlement.loyalty = 15;
-                            WorldSettlement.happiness = 25;
-                            WorldSettlement.unrest = 20;
-                            WorldSettlement.prosperity = 70;
-
-                            bool defeated = !Find.WorldObjects.Settlements.Any(settlement => settlement.Faction != null
-                                && settlement.Faction == tempFactionLink);
-
-                            if (defeated)
-                            {
-                                tempFactionLink.defeated = true;
-                            }
-
-                            Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                                "CaptureEnemySettlementSuccess".Translate(WorldSettlement.Name,
-                                    Find.WorldObjects.SettlementAt(militaryLocation).Name, WorldSettlement.settlementLevel),
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-                        else if (winner == 1)
-                        {
-                            Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                                "CaptureEnemySettlementFailure".Translate(WorldSettlement.Name,
-                                    Find.WorldObjects.SettlementAt(militaryLocation).Name), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
+                victory = militaryJob.Handler.OnResolved(this);
             }
 
             MilitaryEventRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
@@ -1055,7 +841,7 @@ namespace FactionColonies
         public void returnMilitary(bool alert)
         {
             militaryBusy = false;
-            militaryJob = MilitaryJob.Undefined;
+            militaryJob = MilitaryJobDefOf.Undefined;
             militaryLocation = -1;
             militaryEnemy = null;
 
@@ -1074,17 +860,17 @@ namespace FactionColonies
 
             int cooldown = GenDate.TicksPerDay * 3;
             cooldown += (int)faction.GetStatValue(FCStatDefOf.militaryCooldownOffset);
-            if (militaryJob == MilitaryJob.RaidEnemySettlement || militaryJob == MilitaryJob.EnslaveEnemySettlement)
-                cooldown += (int)faction.GetStatValue(FCStatDefOf.raidCooldownOffset);
+            if (militaryJob.cooldownStatDef != null)
+                cooldown += (int)faction.GetStatValue(militaryJob.cooldownStatDef);
 
-            if (militaryJob == MilitaryJob.Deploy && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            if (militaryJob.deadPawnCooldown && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
                 int deadMultiplier = 10000 + (int)faction.GetStatValue(FCStatDefOf.deadPawnCooldownOffset);
                 cooldown += militarySquad.dead * deadMultiplier;
             }
             cooldown = Math.Max(cooldown, 0);
 
-            militaryJob = MilitaryJob.Cooldown;
+            militaryJob = MilitaryJobDefOf.Cooldown;
             militaryBusy = true;
             militaryLocation = WorldSettlement.Tile;
             militaryEnemy = null;

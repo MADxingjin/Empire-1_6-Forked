@@ -1,8 +1,6 @@
 using FactionColonies.util;
 using HarmonyLib;
-using LudeonTK;
 using RimWorld;
-using RimWorld.BaseGen;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -10,8 +8,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Verse;
-using Verse.AI.Group;
-using static System.Collections.Specialized.BitVector32;
 
 namespace FactionColonies
 {
@@ -757,6 +753,10 @@ namespace FactionColonies
 
         // ── Behavior Cache ────────────────────────────────────────
 
+        private HashSet<FCActionType> _cachedBlockedActions;
+        private HashSet<FCActionType> _cachedEnabledActions;
+        private HashSet<MilitaryJobDef> _cachedBlockedJobs;
+        private HashSet<MilitaryJobDef> _cachedEnabledJobs;
         private List<FCPolicyBehavior> _cachedBehaviors = null;
         public List<FCPolicyBehavior> cachedBehaviors
         {
@@ -789,8 +789,36 @@ namespace FactionColonies
                     _cachedBehaviors.Add(p.behavior);
             }
 
+            RebuildActionCache();
+
             // Policy/trait changes affect faction-level stat values and behavior ModifyStat results
             InvalidateFactionStatCache();
+        }
+
+        private void RebuildActionCache()
+        {
+            _cachedBlockedActions = new HashSet<FCActionType>();
+            _cachedEnabledActions = new HashSet<FCActionType>();
+            _cachedBlockedJobs = new HashSet<MilitaryJobDef>();
+            _cachedEnabledJobs = new HashSet<MilitaryJobDef>();
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def == null) continue;
+                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
+                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
+                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
+                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
+                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
+                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
+                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
+            }
+            _cachedEnabledActions.ExceptWith(_cachedBlockedActions);
+            _cachedEnabledJobs.ExceptWith(_cachedBlockedJobs);
         }
 
         public void ForEachBehavior(Action<FCPolicyBehavior> action)
@@ -840,7 +868,7 @@ namespace FactionColonies
 
         // ── IMilitaryEventParticipant ─────────────────────────────────
 
-        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad)
+        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad)
         {
             ForEachBehavior(b => b.OnSquadDeployed(this, settlement, isExtraSquad));
         }
@@ -850,7 +878,7 @@ namespace FactionColonies
             ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
         }
 
-        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory)
+        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
         {
             ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
         }
@@ -1030,44 +1058,29 @@ namespace FactionColonies
             return desc;
         }
 
+        public bool AnyPolicyBlocks(FCActionType action) => _cachedBlockedActions?.Contains(action) ?? false;
+        public bool AnyPolicyEnables(FCActionType action) => _cachedEnabledActions?.Contains(action) ?? false;
+
         /// <summary>
-        /// Returns true if any active policy/trait blocks the given action.
-        /// Uses the new data-driven blockedActions lists on FCPolicyDef.
+        /// Unified check: for opt-out actions, returns true unless blocked. For opt-in actions, returns true only if enabled.
         /// </summary>
-        public bool AnyPolicyBlocks(FCActionType action)
+        public bool IsActionAllowed(FCActionType action)
         {
-            foreach (FCPolicy p in policies)
-            {
-                if (p?.def?.blockedActions != null && p.def.blockedActions.Contains(action))
-                    return true;
-            }
-            foreach (FCPolicy p in factionTraits)
-            {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                if (p.def.blockedActions != null && p.def.blockedActions.Contains(action))
-                    return true;
-            }
-            return false;
+            if (FCActionTypeUtil.RequiresEnable(action))
+                return AnyPolicyEnables(action);
+            return !AnyPolicyBlocks(action);
         }
 
         /// <summary>
-        /// Returns true if any active policy/trait enables the given action.
-        /// Uses the new data-driven enabledActions lists on FCPolicyDef.
+        /// Checks if a specific military job is allowed. Respects defaultEnabled on the job def,
+        /// plus policy/trait overrides. Does NOT check the DeployMilitary action gate — caller must check that separately.
         /// </summary>
-        public bool AnyPolicyEnables(FCActionType action)
+        public bool IsMilitaryJobAllowed(MilitaryJobDef job)
         {
-            foreach (FCPolicy p in policies)
-            {
-                if (p?.def?.enabledActions != null && p.def.enabledActions.Contains(action))
-                    return true;
-            }
-            foreach (FCPolicy p in factionTraits)
-            {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                if (p.def.enabledActions != null && p.def.enabledActions.Contains(action))
-                    return true;
-            }
-            return false;
+            if (_cachedBlockedJobs != null && _cachedBlockedJobs.Contains(job)) return false;
+            if (!job.defaultEnabled)
+                return _cachedEnabledJobs != null && _cachedEnabledJobs.Contains(job);
+            return true;
         }
 
         /// <summary>

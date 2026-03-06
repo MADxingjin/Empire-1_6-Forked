@@ -59,10 +59,9 @@ namespace FactionColonies
         {
             if (milComp == null) return MilInactive;
             if (milComp.isUnderAttack) return MilUnderAttack;
-            if (milComp.militaryBusy && milComp.militaryJob != MilitaryJob.Undefined
-                && milComp.militaryJob != MilitaryJob.Cooldown)
+            if (milComp.militaryBusy && !milComp.militaryJob.isState)
                 return MilActiveMission;
-            if (milComp.militaryJob == MilitaryJob.Cooldown) return MilCooldown;
+            if (milComp.militaryJob == MilitaryJobDefOf.Cooldown) return MilCooldown;
             if (milComp.militarySquad?.outfit != null && !milComp.militaryBusy)
                 return MilReady;
             return MilInactive;
@@ -74,23 +73,11 @@ namespace FactionColonies
             if (milComp.isUnderAttack) return "FCMilStatusUnderAttack".Translate();
             if (milComp.militaryBusy)
             {
-                switch (milComp.militaryJob)
-                {
-                    case MilitaryJob.Deploy:
-                        return "FCMilStatusDeployed".Translate();
-                    case MilitaryJob.RaidEnemySettlement:
-                        return "FCMilStatusRaiding".Translate();
-                    case MilitaryJob.EnslaveEnemySettlement:
-                        return "FCMilStatusEnslaving".Translate();
-                    case MilitaryJob.CaptureEnemySettlement:
-                        return "FCMilStatusCapturing".Translate();
-                    case MilitaryJob.DefendFriendlySettlement:
-                        return "FCMilStatusDefending".Translate();
-                    case MilitaryJob.Cooldown:
-                        return GetCooldownLabel(settlement);
-                    default:
-                        return "FCMilStatusBusy".Translate();
-                }
+                if (milComp.militaryJob == MilitaryJobDefOf.Cooldown)
+                    return GetCooldownLabel(settlement);
+                return milComp.militaryJob.statusLabelKey != null
+                    ? milComp.militaryJob.statusLabelKey.Translate()
+                    : "FCMilStatusBusy".Translate();
             }
             if (milComp.militarySquad?.outfit != null) return "FCMilStatusReady".Translate();
             return "FCMilStatusNoSquad".Translate();

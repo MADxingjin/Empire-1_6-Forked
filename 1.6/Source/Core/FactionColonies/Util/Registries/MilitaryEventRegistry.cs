@@ -15,7 +15,7 @@ namespace FactionColonies
         public static void Unregister(IMilitaryEventParticipant participant) => _participants.Remove(participant);
         public static IReadOnlyList<IMilitaryEventParticipant> Participants => _participants;
 
-        public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJob job, bool isExtraSquad = false)
+        public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad = false)
         {
             foreach (IMilitaryEventParticipant participant in _participants)
             {
@@ -33,7 +33,7 @@ namespace FactionColonies
             }
         }
 
-        public static void InvokeOnBattleResolved(WorldSettlementFC settlement, MilitaryJob job, bool victory)
+        public static void InvokeOnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
         {
             foreach (IMilitaryEventParticipant participant in _participants)
             {

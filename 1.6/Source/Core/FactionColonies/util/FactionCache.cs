@@ -40,6 +40,7 @@ namespace FactionColonies
         private static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> _cachedUpgradeTrees = null;
         private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
         private static List<FCEventCategoryDef> _cachedEventCategoryDefs = null;
+        private static List<MilitaryJobDef> _cachedHostileMilitaryJobs = null;
         // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
         private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
         private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
@@ -485,6 +486,25 @@ namespace FactionColonies
                 return _cachedEventCategoryDefs;
             }
         }
+        /// <summary>
+        /// MilitaryJobDefs that have a floatMenuLabelKey, i.e. hostile operations shown in the world gizmo menu.
+        /// </summary>
+        public static List<MilitaryJobDef> HostileMilitaryJobs
+        {
+            get
+            {
+                if (_cachedHostileMilitaryJobs == null)
+                {
+                    _cachedHostileMilitaryJobs = new List<MilitaryJobDef>();
+                    foreach (MilitaryJobDef job in DefDatabase<MilitaryJobDef>.AllDefsListForReading)
+                    {
+                        if (job.floatMenuLabelKey != null)
+                            _cachedHostileMilitaryJobs.Add(job);
+                    }
+                }
+                return _cachedHostileMilitaryJobs;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -507,6 +527,7 @@ namespace FactionColonies
             _cachedUpgradeTrees = null;
             _cachedRequiredByMap = null;
             _cachedEventCategoryDefs = null;
+            _cachedHostileMilitaryJobs = null;
 
             _cachedTechLevelBarrierUltra = null;
             _cachedTechLevelBarrierSpacer = null;
