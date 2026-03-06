@@ -8,21 +8,6 @@ using Verse;
 
 namespace FactionColonies
 {
-    public enum BuildingFilter
-    {
-        All,
-        Happiness,
-        Food,
-        Weapons,
-        Apparel,
-        Research,
-        Medicine,
-        Power,
-        Military,
-        Basetax,
-        Workers
-    }
-
     class FCBuildingWindow : Window
     {
         readonly WorldSettlementFC settlement;
@@ -234,7 +219,20 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
-                Widgets.Label(buttonRect, settlement.BuildingsComp?.getLabelForFilter(i) ?? "");
+                Texture2D filterIcon = settlement.BuildingsComp?.getIconForFilter(i);
+                string filterLabel = settlement.BuildingsComp?.getLabelForFilter(i) ?? "";
+                if (filterIcon != null)
+                {
+                    float iconSize = buttonRect.height - 4f;
+                    Rect iconRect = new Rect(buttonRect.x + 2f, buttonRect.y + 2f, iconSize, iconSize);
+                    GUI.DrawTexture(iconRect, filterIcon);
+                    Rect labelRect = new Rect(iconRect.xMax + 2f, buttonRect.y, buttonRect.width - iconSize - 6f, buttonRect.height);
+                    Widgets.Label(labelRect, filterLabel);
+                }
+                else
+                {
+                    Widgets.Label(buttonRect, filterLabel);
+                }
                 GUI.color = Color.white;
 
                 if (isSelected && Widgets.ButtonInvisible(buttonRect))

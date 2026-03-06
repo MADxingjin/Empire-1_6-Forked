@@ -29,6 +29,20 @@ namespace FactionColonies
             }
         }
     }
+    public class BuildingFilter
+    {
+        public string label;
+        public Texture2D icon;
+        public Func<BuildingFCDef, bool> predicate;
+
+        public BuildingFilter(string label, Texture2D icon, Func<BuildingFCDef, bool> predicate)
+        {
+            this.label = label;
+            this.icon = icon;
+            this.predicate = predicate;
+        }
+    }
+
     /// <summary>
     /// A WorldObjectComp class for use with BuildingFCDefs. When a building is constructed, if it has a SettlementBuildingComp, then
     /// the comp is added to this comp's list and tracked.
@@ -500,110 +514,77 @@ namespace FactionColonies
             }
             return upkeep;
         }
-        /// <summary>
-        /// Used by FCBuildingWindow to determine how many entries to the building filter there should be.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
-        public int getFilterSize()
+        private List<BuildingFilter> filters;
+
+        public void InvalidateFilters()
         {
+            filters = null;
+        }
+
+        private void RebuildFilters()
+        {
+            filters = new List<BuildingFilter>();
+
+            filters.Add(new BuildingFilter("BuildingFilterAll".Translate(), null, _ => true));
+
+            filters.Add(new BuildingFilter("BuildingFilterHappiness".Translate(), TexLoad.iconHappiness, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
+                    m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier)));
+
+            filters.Add(new BuildingFilter("BuildingFilterBasetax".Translate(), TexLoad.iconProsperity, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier)));
+
+            filters.Add(new BuildingFilter("BuildingFilterWorkers".Translate(), null, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost)));
+
             if (WorldSettlement.MilitaryComp != null)
             {
-                return 5 + WorldSettlement.Resources.Count;
+                filters.Add(new BuildingFilter("BuildingFilterMilitary".Translate(), TexLoad.iconMilitary, b =>
+                    b.statModifiers != null && b.statModifiers.Any(m =>
+                        m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency)));
             }
-            else
+
+            foreach (ResourceFC resource in WorldSettlement.Resources)
             {
-                return 4 + WorldSettlement.Resources.Count;
+                ResourceTypeDef resDef = resource.def;
+                filters.Add(new BuildingFilter(resource.label, resDef.Icon, b =>
+                    b.statModifiers != null && b.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef)));
+            }
+
+            foreach (BuildingFilter filter in BuildingFilterRegistry.Filters)
+            {
+                filters.Add(filter);
             }
         }
-        /// <summary>
-        /// Used by FCBuildingWindow to determine what label to show for a given filter index.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
+
+        public int getFilterSize()
+        {
+            if (filters == null) RebuildFilters();
+            return filters.Count;
+        }
+
         public string getLabelForFilter(int i)
         {
-            // edge-case protection
-            if (i < 0)
-                return null;
-            else if (i == 0)
-                return "BuildingFilterAll".Translate();
-            else if (i == 1)
-                return "BuildingFilterHappiness".Translate();
-            else if (i == 2)
-                return "BuildingFilterBasetax".Translate();
-            else if (i == 3)
-                return "BuildingFilterWorkers".Translate();
-            else if (i == 4 && WorldSettlement.MilitaryComp != null)
-                return "BuildingFilterMilitary".Translate();
-            else
-            {
-                return WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.label ?? "";
-            }
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return null;
+            return filters[i].label;
         }
 
-        /// <summary>
-        /// Used by FCBuildingWindow to determine if a building should be filtered.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
-        /* I feel like there has to be a better way to do this. But with a variable number of resources, we can't use an enum... */
+        public Texture2D getIconForFilter(int i)
+        {
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return null;
+            return filters[i].icon;
+        }
+
         public bool filterBuilding(int i, BuildingFCDef building)
         {
-            if (i == 0 || i < 0)
-                return true;
-
-            if (building.statModifiers == null || building.statModifiers.Count == 0)
-                return false;
-
-            if (i == 1) // Happiness
-            {
-                return building.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
-                    m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier);
-            }
-            if (i == 2) // Tax
-            {
-                return building.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier);
-            }
-            if (i == 3) // Workers
-            {
-                return building.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost);
-            }
-            if (i == 4 && WorldSettlement.MilitaryComp != null) // Military
-            {
-                return building.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency);
-            }
-            // Resource filter
-            ResourceTypeDef resDef = WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def;
-            if (resDef != null)
-            {
-                if (building.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef))
-                    return true;
-            }
-
-            return false;
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return true;
+            return filters[i].predicate(building);
         }
 
         public override void CompTick()

@@ -343,6 +343,7 @@ namespace FactionColonies
                 }
             }
             resources.Sort(ResourceFC.sortForUI);
+            BuildingsComp?.InvalidateFilters();
         }
 
         public override void PostMake()
