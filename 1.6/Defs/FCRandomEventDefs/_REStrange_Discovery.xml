@@ -7,7 +7,6 @@
 		<desc>Deep in the mines, a strange presence has been felt and the miners have stopped working to investigate it.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<options>
 			<li>strangeDiscovery_0_1</li>

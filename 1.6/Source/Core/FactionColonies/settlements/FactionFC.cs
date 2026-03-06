@@ -296,6 +296,38 @@ namespace FactionColonies
             BuildingLifecycleRegistry.Register(this);
             MilitaryEventRegistry.Register(this);
             ResearchRegistry.Register(this);
+
+            if (fromLoad)
+            {
+                // Reapply active event stat modifiers to settlements.
+                // Events live on FactionFC, so they aren't available during individual settlement PostLoadInit.
+                foreach (FCEvent evt in events)
+                {
+                    if (evt?.def == null || evt.def.statModifiers == null) continue;
+                    string sourceId = "event_" + evt.def.defName;
+                    if (evt.settlementTraitLocations.Any())
+                    {
+                        foreach (WorldSettlementFC location in evt.settlementTraitLocations)
+                        {
+                            if (location != null)
+                                location.addStatModifiers(evt.def.statModifiers, sourceId);
+                        }
+                    }
+                    else
+                    {
+                        foreach (WorldSettlementFC settlement in settlements)
+                        {
+                            settlement.addStatModifiers(evt.def.statModifiers, sourceId);
+                        }
+                    }
+                }
+
+                // Recalculate stats now that event modifiers are applied
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    settlement.updateProfitAndProduction();
+                }
+            }
         }
         /// <summary>
         /// Returns a list of *all* things that this faction can produce.

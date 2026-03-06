@@ -7,7 +7,6 @@
 		<desc>Lucky harvests have led to a surplus of food in some settlements. +1 food base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>1</value></li>

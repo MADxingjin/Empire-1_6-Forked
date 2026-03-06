@@ -7,7 +7,6 @@
 		<desc>The wildlife in the affected region(s) have all but disappeared. -1 animals base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-1</value></li>

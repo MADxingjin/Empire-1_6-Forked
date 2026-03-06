@@ -7,7 +7,6 @@
 		<desc>A figure of high-importance and connection to your capital in a settlement has been assassinated. Some people on the streets are spreading that it was you who caused their death. -4 happiness a day.</desc>
 
 		<timeTillTrigger>600000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>happinessLostBase</stat><value>4</value></li>

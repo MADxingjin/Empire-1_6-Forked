@@ -7,7 +7,6 @@
 		<desc>There is a great amount of animals roaming the region. +1 animals base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>1</value></li>

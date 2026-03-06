@@ -471,6 +471,14 @@ namespace FactionColonies
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (trader != null && trader.settlement == null) trader.settlement = this;
+
+                // Rebuild stat modifiers from buildings and settlement type before calculating stats.
+                // statModifiers is intentionally not serialized — it's rebuilt from sources on load.
+                // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
+                clearStatModifiers();
+                BuildingsComp?.reapplyBuildingStatModifiers();
+                addStatModifiers(settlementDef.statModifiers, "settlementType");
+
                 updateProfitAndProduction();
             }
         }

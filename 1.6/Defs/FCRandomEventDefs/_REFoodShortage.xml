@@ -7,7 +7,6 @@
 		<desc>There's a widespread food shortage in the affected regions. -1 food base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>

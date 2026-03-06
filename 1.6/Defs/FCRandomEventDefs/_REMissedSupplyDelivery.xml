@@ -7,7 +7,6 @@
 		<desc>The craftsmen in the affected region(s) are suffering from a lack of supplies. -0.5 weapons base production and -0.5 apparel base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-0.5</value></li>

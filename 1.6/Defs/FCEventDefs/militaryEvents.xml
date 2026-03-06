@@ -5,7 +5,7 @@
 		<label>Raid Enemy Settlement</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>-Replace Description-</desc>
-		<location>-1</location>
+
 		<isMilitaryEvent>true</isMilitaryEvent>
 		<category>EC_Military</category>
 	</FactionColonies.FCEventDef>
@@ -15,7 +15,7 @@
 		<label>Enslave Enemy Settlement</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>-Replace Description-</desc>
-		<location>-1</location>
+
 		<isMilitaryEvent>true</isMilitaryEvent>
 		<category>EC_Military</category>
 	</FactionColonies.FCEventDef>
@@ -25,7 +25,7 @@
 		<label>Capture Enemy Settlement</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>-Replace Description-</desc>
-		<location>-1</location>
+
 		<isMilitaryEvent>true</isMilitaryEvent>
 		<category>EC_Military</category>
 	</FactionColonies.FCEventDef>
@@ -35,7 +35,7 @@
 		<label>Military Cooldown</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>-Replace Description-</desc>
-		<location>-1</location>
+
 		<isMilitaryEvent>true</isMilitaryEvent>
 		<category>EC_Military</category>
 	</FactionColonies.FCEventDef>
@@ -45,7 +45,7 @@
 		<label>Settlement is under attack</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>-Replace Description-</desc>
-		<location>-1</location>
+
 		<isMilitaryEvent>true</isMilitaryEvent>
 		<category>EC_Military</category>
 	</FactionColonies.FCEventDef>

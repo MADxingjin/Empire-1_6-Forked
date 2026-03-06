@@ -7,7 +7,6 @@
 		<desc>Due to lowered loyalty, citizens are starting to form local militias and are refusing to hand over their share of taxes. -5% Base Tax Rate.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>-5</value></li>

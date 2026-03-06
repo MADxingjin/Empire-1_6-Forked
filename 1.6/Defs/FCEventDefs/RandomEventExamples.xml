@@ -8,8 +8,6 @@
 		
 		<!-- Basic event stuff -->
 		<timeTillTrigger>300000</timeTillTrigger> <!-- The time the event will last (or until it goes to the next stage) 300000 covers a whole tax period, so is recommended for events affecting production -->
-		<perpetual>false</perpetual> <!-- this currently has no use right now. -->
-		
 		<statModifiers> <!-- FCStatModifier entries that affect either faction or specific settlements -->
 		<!-- <li><stat>taxBonusFlat</stat><value>5</value></li> -->
 		</statModifiers>
@@ -61,9 +59,6 @@
 		<randomThingRewardDef>RERD_Food</randomThingRewardDef> <!-- if you want the event to give the player a random item when the event completes (Or at the end of the 'step' in a chain of events) put the ResourceEventRewardDef defName here. Note, if you have <activateAtStart>true</activateAtStart>, this will not generate an item to give to the player. -->
 		<!-- ResourceEventRewardDef defNames: RERD_Food, RERD_Weapons, RERD_Apparel, RERD_Armor, RERD_Animals, RERD_Logging, RERD_Mining, RERD_Drugs -->
 		<randomThingValue>0</randomThingValue> <!-- The 'MarketValue' of the object being generated. -->
-		<loot>
-			<!-- Put def of things in here and it will give it to the player at the end of the event. -->
-		</loot>
 	</FactionColonies.FCEventDef>
 	
 	
@@ -78,8 +73,6 @@
 		
 		<!-- Basic event stuff -->
 		<timeTillTrigger>300000</timeTillTrigger> 
-		<perpetual>false</perpetual> 
-		
 		<statModifiers>
 		</statModifiers>
 		
@@ -119,8 +112,6 @@
 		<randomThingRewardDef>RERD_Food</randomThingRewardDef>
 		<!-- ResourceEventRewardDef defNames: RERD_Food, RERD_Weapons, RERD_Apparel, RERD_Armor, RERD_Animals, RERD_Logging, RERD_Mining, RERD_Drugs -->
 		<randomThingValue>0</randomThingValue>
-		
-		<loot></loot>
 		
 	</FactionColonies.FCEventDef>
 	

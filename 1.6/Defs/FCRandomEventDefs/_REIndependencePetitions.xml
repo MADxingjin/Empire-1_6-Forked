@@ -7,7 +7,6 @@
 		<desc>Due to unrest in your faction, a growing number of your towns have the idea of independence growing. -5 loyalty a day. -5 prosperity a day. +1 unrest a day.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>5</value></li>

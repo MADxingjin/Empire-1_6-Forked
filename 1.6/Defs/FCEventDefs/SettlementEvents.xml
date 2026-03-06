@@ -5,89 +5,55 @@
 		<label>null</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>A blank event.</desc>
-		<location>0</location>
-		<hasDestination>false</hasDestination>
 		<category>EC_Other</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
-	
+
 	<FactionColonies.FCEventDef>
 		<defName>settleNewColony</defName>
 		<label>Settle Colony</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A caravan is forming a new colony.</desc>
-		<location>0</location>
 		<category>EC_Settlement</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
+
 	<FactionColonies.FCEventDef>
 		<defName>taxColony</defName>
 		<label>Settlment Taxes En-route</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A caravan is delivering taxes.</desc>
-		<location>0</location>
 		<category>EC_Economy</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
 
-
-
-	
 	<FactionColonies.FCEventDef>
 		<defName>constructBuilding</defName>
 		<label>Constructing Building</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A building is being constructed.</desc>
-		<location>0</location>
 		<category>EC_Construction</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
-	
+
 	<FactionColonies.FCEventDef>
 		<defName>enactSettlementPolicy</defName>
 		<label>Enacting a Policy</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A settlement-wide policy is being enacted.</desc>
-		<location>0</location>
 		<category>EC_Policy</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
-	
+
 	<FactionColonies.FCEventDef>
 		<defName>enactFactionPolicy</defName>
 		<label>Enacting a Policy</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A faction-wide policy is being enacted.</desc>
-		<location>0</location>
 		<category>EC_Policy</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
+
 	<FactionColonies.FCEventDef>
 		<defName>upgradeSettlement</defName>
 		<label>Upgrading A Settlement</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<hasDestination>false</hasDestination>
 		<desc>A settlement is being upgraded.</desc>
-		<location>0</location>
 		<category>EC_Settlement</category>
-		<goods>
-		</goods>
 	</FactionColonies.FCEventDef>
-	
+
 </Defs>

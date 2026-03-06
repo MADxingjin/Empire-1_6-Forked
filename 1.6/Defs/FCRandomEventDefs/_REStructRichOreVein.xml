@@ -7,7 +7,6 @@
 		<desc>Some of your settlements have managed to be lucky enough to strike veins of rich ore in their mines! +1 Base Production Mining.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>1</value></li>

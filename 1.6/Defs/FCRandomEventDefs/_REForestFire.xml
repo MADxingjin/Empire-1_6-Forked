@@ -7,7 +7,6 @@
 		<desc>The affected region(s) have forest fires blazing out of control. -1 logging base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-1</value></li>

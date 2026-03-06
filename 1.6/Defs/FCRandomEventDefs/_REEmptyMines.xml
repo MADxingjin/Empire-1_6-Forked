@@ -7,7 +7,6 @@
 		<desc>The affected region(s) have been stricken with barren mines. -1 mining base production.</desc>
 
 		<timeTillTrigger>300000</timeTillTrigger>
-		<perpetual>false</perpetual>
 
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>-1</value></li>
