@@ -23,6 +23,7 @@ namespace FactionColonies
                 try { participant.OnSettlementCreated(settlement); }
                 catch (Exception e) { LogUtil.Error($"ISettlementLifecycleParticipant {participant.GetType().Name} threw in OnSettlementCreated: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokeOnSettlementRemoved(WorldSettlementFC settlement)
@@ -41,6 +42,7 @@ namespace FactionColonies
                 try { participant.OnSettlementUpgraded(settlement, oldLevel, newLevel); }
                 catch (Exception e) { LogUtil.Error($"ISettlementLifecycleParticipant {participant.GetType().Name} threw in OnSettlementUpgraded: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
     }
 }

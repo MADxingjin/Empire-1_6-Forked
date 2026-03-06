@@ -23,6 +23,7 @@ namespace FactionColonies
                 try { participant.OnSquadDeployed(settlement, job, isExtraSquad); }
                 catch (Exception e) { LogUtil.Error($"IMilitaryEventParticipant {participant.GetType().Name} threw in OnSquadDeployed: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokeOnSquadRecalled(WorldSettlementFC settlement)
@@ -32,6 +33,7 @@ namespace FactionColonies
                 try { participant.OnSquadRecalled(settlement); }
                 catch (Exception e) { LogUtil.Error($"IMilitaryEventParticipant {participant.GetType().Name} threw in OnSquadRecalled: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokeOnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
@@ -41,6 +43,7 @@ namespace FactionColonies
                 try { participant.OnBattleResolved(settlement, job, victory); }
                 catch (Exception e) { LogUtil.Error($"IMilitaryEventParticipant {participant.GetType().Name} threw in OnBattleResolved: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
     }
 }

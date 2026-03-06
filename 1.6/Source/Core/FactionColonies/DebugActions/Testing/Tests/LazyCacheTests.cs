@@ -209,6 +209,27 @@ namespace FactionColonies
             TestAssert.IsTrue(fc.techLevel != TechLevel.Undefined, $"techLevel should not be Undefined, got {fc.techLevel}");
         }
 
+        [EmpireTest("LazyCache")]
+        public static void Faction_InvalidateAllSettlementStatCaches_RecomputesCorrectly()
+        {
+            var fc = GetFaction();
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
+
+            FCStatDef stat = FCStatDefOf.happinessGainedBase;
+            double[] before = new double[fc.settlements.Count];
+            for (int i = 0; i < fc.settlements.Count; i++)
+                before[i] = fc.settlements[i].GetSettlementStatValue(stat);
+
+            fc.InvalidateAllSettlementStatCaches();
+
+            for (int i = 0; i < fc.settlements.Count; i++)
+            {
+                double after = fc.settlements[i].GetSettlementStatValue(stat);
+                TestAssert.AreEqual(before[i], after, tolerance: 0.01,
+                    message: $"Settlement {fc.settlements[i].Name}: stat should be the same after InvalidateAllSettlementStatCaches");
+            }
+        }
+
         // ===== Cascade =====
 
         [EmpireTest("LazyCache")]

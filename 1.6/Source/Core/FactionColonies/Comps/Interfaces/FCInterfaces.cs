@@ -36,8 +36,9 @@ namespace FactionColonies
     }
     /// <summary>
     /// A simple interface that a WorldObjectComp -- attached to a WorldSettlementFC -- can implement to affect non-resource stats.
-    /// <para>Results are cached alongside stat modifiers. When the comp's modifier values change, the comp must call
-    /// <c>((WorldSettlementFC)parent).InvalidateStatCache()</c> to flush the cache.</para>
+    /// <para>Results are cached alongside stat modifiers. Caches are automatically invalidated after all lifecycle
+    /// events (building, settlement, military, research, tax hooks). Only call
+    /// <c>((WorldSettlementFC)parent).InvalidateStatCache()</c> manually if changing values outside a lifecycle callback.</para>
     /// </summary>
     public interface IStatModifierProvider
     {
@@ -49,7 +50,9 @@ namespace FactionColonies
     /// Unlike <see cref="IStatModifierProvider"/> (which operates at the stat level), this operates
     /// directly on <see cref="ResourceFC"/> instances, letting comps target specific resources.
     /// <para>Results are queried during production calculation (lazy-cached by ResourceFC's dirty flags).
-    /// When values change, call <c>((WorldSettlementFC)parent).InvalidateResourceCaches()</c> to refresh.</para>
+    /// Caches are automatically invalidated after all lifecycle events (building, settlement, military,
+    /// research, tax hooks). Only call <c>((WorldSettlementFC)parent).InvalidateResourceCaches()</c>
+    /// manually if changing values outside a lifecycle callback.</para>
     /// </summary>
     public interface IResourceProductionModifier
     {

@@ -23,6 +23,7 @@ namespace FactionColonies
                 try { participant.OnBuildingConstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"IBuildingLifecycleParticipant {participant.GetType().Name} threw in OnBuildingConstructed: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokeOnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
@@ -32,6 +33,7 @@ namespace FactionColonies
                 try { participant.OnBuildingDeconstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"IBuildingLifecycleParticipant {participant.GetType().Name} threw in OnBuildingDeconstructed: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
     }
 }

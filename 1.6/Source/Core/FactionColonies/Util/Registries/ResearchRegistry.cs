@@ -25,6 +25,7 @@ namespace FactionColonies
                 try { participant.OnResearchCompleted(project); }
                 catch (Exception e) { LogUtil.Error($"IResearchParticipant {participant.GetType().Name} threw in OnResearchCompleted: {e}"); }
             }
+            FactionCache.FactionComp?.InvalidateAllSettlementStatCaches();
         }
     }
 }

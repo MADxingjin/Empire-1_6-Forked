@@ -42,6 +42,7 @@ namespace FactionColonies
                 try { taxer.PreSettlementCreateTax(settlement); }
                 catch (Exception e) { LogUtil.Error($"ITaxTickParticipant {taxer.GetType().Name} threw in PreSettlementCreateTax: {e}"); }
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokePostSettlementCreateTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)

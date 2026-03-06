@@ -1133,6 +1133,17 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Invalidates stat and resource caches on all settlements.
+        /// Called after faction-wide events (e.g., research completion) that may affect
+        /// settlement-level stat or resource production providers.
+        /// </summary>
+        public void InvalidateAllSettlementStatCaches()
+        {
+            foreach (WorldSettlementFC s in settlements)
+                s.InvalidateStatCache();
+        }
+
+        /// <summary>
         /// Builds a description string for faction-level stat contributions (policies + traits).
         /// Not cached — only used for UI tooltips.
         /// </summary>
