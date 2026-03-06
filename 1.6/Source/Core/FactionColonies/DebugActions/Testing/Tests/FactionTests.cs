@@ -42,7 +42,7 @@ namespace FactionColonies
         public static void Faction_TotalProfit_MatchesSettlementSum()
         {
             var faction = GetFaction();
-            if (faction == null || faction.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (faction == null || faction.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double sumIncome = faction.settlements.Sum(s => s.getTotalIncome());
             double sumUpkeep = faction.settlements.Sum(s => s.getTotalUpkeep());
@@ -56,7 +56,7 @@ namespace FactionColonies
         public static void Faction_SettlementTitheIncome_IsNonNegative()
         {
             var faction = GetFaction();
-            if (faction == null || faction.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (faction == null || faction.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             foreach (var settlement in faction.settlements)
             {
@@ -73,7 +73,7 @@ namespace FactionColonies
         public static void Faction_ResourceProduction_IsFinite()
         {
             var faction = GetFaction();
-            if (faction == null || faction.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (faction == null || faction.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             foreach (var settlement in faction.settlements)
             {

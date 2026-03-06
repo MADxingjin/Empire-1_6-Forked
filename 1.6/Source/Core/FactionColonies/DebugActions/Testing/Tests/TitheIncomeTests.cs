@@ -48,10 +48,10 @@ namespace FactionColonies
         public static void TitheModifierPerWorker_MatchesStatPlusSetting()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = GetFirstNonPoolResource(settlement);
-            if (resource == null) { LogUtil.Message("SKIP: No non-pool resource"); return; }
+            if (resource == null) TestAssert.Skip("No non-pool resource");
 
             double expected = settlement.getStatValue(FCStatDefOf.taxBaseRandomModifier)
                             + FCSettings.productionTitheMod;
@@ -65,10 +65,10 @@ namespace FactionColonies
         public static void TitheIncome_ZeroWorkers_EqualsBaseTimesMultiplier()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = GetFirstNonPoolResource(settlement);
-            if (resource == null) { LogUtil.Message("SKIP: No non-pool resource"); return; }
+            if (resource == null) TestAssert.Skip("No non-pool resource");
 
             int savedWorkers = resource.assignedWorkers;
             try
@@ -94,10 +94,10 @@ namespace FactionColonies
         public static void TitheIncome_FormulaConsistency()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = GetFirstNonPoolResource(settlement);
-            if (resource == null) { LogUtil.Message("SKIP: No non-pool resource"); return; }
+            if (resource == null) TestAssert.Skip("No non-pool resource");
 
             // Manually compute using the same formula that getTitheIncome should use
             double workerMod = resource.getTitheModifierPerWorker() * resource.assignedWorkers;
@@ -113,11 +113,11 @@ namespace FactionColonies
         public static void TitheIncome_MultForTotal_ChangesWithStat()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = GetFirstNonPoolResource(settlement);
-            if (resource == null) { LogUtil.Message("SKIP: No non-pool resource"); return; }
-            if (resource.assignedWorkers == 0) { LogUtil.Message("SKIP: Resource has 0 workers"); return; }
+            if (resource == null) TestAssert.Skip("No non-pool resource");
+            if (resource.assignedWorkers == 0) TestAssert.Skip("Resource has 0 workers");
 
             double incomeBefore = resource.getTitheIncome();
 

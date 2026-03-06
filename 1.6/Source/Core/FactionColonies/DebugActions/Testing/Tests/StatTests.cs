@@ -189,10 +189,7 @@ namespace FactionColonies
             // militaryBaseLevel is additive and has a descriptionKey
             FCStatDef stat = FCStatDefOf.militaryBaseLevel;
             if (stat.descriptionKey.NullOrEmpty())
-            {
-                LogUtil.Message("SKIP: militaryBaseLevel has no descriptionKey");
-                return;
-            }
+                TestAssert.Skip("militaryBaseLevel has no descriptionKey");
             var mods = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 2 } };
             TaggedString desc = FCStatModifier.GetDescription(mods);
             TestAssert.IsFalse(desc.RawText.NullOrEmpty(),
@@ -205,10 +202,7 @@ namespace FactionColonies
             // happinessGainedMultiplier is multiplicative and has a descriptionKey
             FCStatDef stat = FCStatDefOf.happinessGainedMultiplier;
             if (stat.descriptionKey.NullOrEmpty())
-            {
-                LogUtil.Message("SKIP: happinessGainedMultiplier has no descriptionKey");
-                return;
-            }
+                TestAssert.Skip("happinessGainedMultiplier has no descriptionKey");
             var mods = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 1.5 } };
             TaggedString desc = FCStatModifier.GetDescription(mods);
             TestAssert.IsFalse(desc.RawText.NullOrEmpty(),
@@ -221,10 +215,7 @@ namespace FactionColonies
             // Find a resource-linked stat (production additive for the first ResourceTypeDef)
             ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.AllDefsListForReading.FirstOrDefault();
             if (rtd == null || rtd.productionAdditiveStat == null)
-            {
-                LogUtil.Message("SKIP: No ResourceTypeDef with productionAdditiveStat");
-                return;
-            }
+                TestAssert.Skip("No ResourceTypeDef with productionAdditiveStat");
             var mods = new List<FCStatModifier>
             {
                 new FCStatModifier { stat = rtd.productionAdditiveStat, value = 3 }
@@ -242,7 +233,7 @@ namespace FactionColonies
         public static void FactionStat_AllStats_AreFiniteNumbers()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
             {
@@ -259,10 +250,7 @@ namespace FactionColonies
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
-            {
-                LogUtil.Message("SKIP: No faction/settlements");
-                return;
-            }
+                TestAssert.Skip("No faction/settlements");
 
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
@@ -284,10 +272,7 @@ namespace FactionColonies
             var faction = GetFaction();
             var settlement = GetFirstSettlement();
             if (faction == null || settlement == null)
-            {
-                LogUtil.Message("SKIP: No faction/settlement");
-                return;
-            }
+                TestAssert.Skip("No faction/settlement");
 
             foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
             {
@@ -305,18 +290,12 @@ namespace FactionColonies
             var faction = GetFaction();
             var settlement = GetFirstSettlement();
             if (faction == null || settlement == null)
-            {
-                LogUtil.Message("SKIP: No faction/settlement");
-                return;
-            }
+                TestAssert.Skip("No faction/settlement");
 
             // Use happinessGainedBase — additive, appliesToSettlements
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
             if (!stat.appliesToSettlements || stat.aggregation != FCStatAggregation.Additive)
-            {
-                LogUtil.Message("SKIP: happinessGainedBase is not additive+settlement");
-                return;
-            }
+                TestAssert.Skip("happinessGainedBase is not additive+settlement");
 
             double factionPart = faction.GetFactionStatValue(stat);
             double settlementPart = settlement.GetSettlementStatValue(stat);
@@ -342,18 +321,12 @@ namespace FactionColonies
             var faction = GetFaction();
             var settlement = GetFirstSettlement();
             if (faction == null || settlement == null)
-            {
-                LogUtil.Message("SKIP: No faction/settlement");
-                return;
-            }
+                TestAssert.Skip("No faction/settlement");
 
             // Use happinessGainedMultiplier — multiplicative, appliesToSettlements
             FCStatDef stat = FCStatDefOf.happinessGainedMultiplier;
             if (!stat.appliesToSettlements || stat.aggregation != FCStatAggregation.Multiplicative)
-            {
-                LogUtil.Message("SKIP: happinessGainedMultiplier is not multiplicative+settlement");
-                return;
-            }
+                TestAssert.Skip("happinessGainedMultiplier is not multiplicative+settlement");
 
             double factionPart = faction.GetFactionStatValue(stat);
             double settlementPart = settlement.GetSettlementStatValue(stat);
@@ -376,7 +349,7 @@ namespace FactionColonies
         public static void AddModifier_Additive_IncreasesStatValue()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
             double before = settlement.GetSettlementStatValue(stat);
@@ -393,7 +366,7 @@ namespace FactionColonies
         public static void AddModifier_Multiplicative_MultipliesStatValue()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedMultiplier;
             double before = settlement.GetSettlementStatValue(stat);
@@ -410,7 +383,7 @@ namespace FactionColonies
         public static void RemoveModifier_RestoresOriginalValue()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
             double before = settlement.GetSettlementStatValue(stat);
@@ -431,7 +404,7 @@ namespace FactionColonies
         public static void RemoveModifier_ByReference_OnlyRemovesMatchingObject()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
             double before = settlement.GetSettlementStatValue(stat);
@@ -464,7 +437,7 @@ namespace FactionColonies
         public static void RemoveModifiersBySource_RemovesCorrectEntries()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
             double before = settlement.GetSettlementStatValue(stat);
@@ -497,7 +470,7 @@ namespace FactionColonies
         public static void Cache_AddModifier_DirtiesSettlementCache()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             FCStatDef stat = FCStatDefOf.happinessGainedBase;
 
@@ -527,10 +500,7 @@ namespace FactionColonies
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
-            {
-                LogUtil.Message("SKIP: No faction/settlements");
-                return;
-            }
+                TestAssert.Skip("No faction/settlements");
 
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
@@ -548,14 +518,11 @@ namespace FactionColonies
         public static void Resource_StatAdditive_AffectsProductionBase()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = settlement.Resources.FirstOrDefault();
             if (resource == null || resource.def.productionAdditiveStat == null)
-            {
-                LogUtil.Message("SKIP: No resource with productionAdditiveStat");
-                return;
-            }
+                TestAssert.Skip("No resource with productionAdditiveStat");
 
             double baseBefore = resource.productionBase;
 
@@ -575,14 +542,11 @@ namespace FactionColonies
         public static void Resource_StatMultiplier_AffectsProductionMult()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlement"); return; }
+            if (settlement == null) TestAssert.Skip("No settlement");
 
             ResourceFC resource = settlement.Resources.FirstOrDefault();
             if (resource == null || resource.def.productionMultiplierStat == null)
-            {
-                LogUtil.Message("SKIP: No resource with productionMultiplierStat");
-                return;
-            }
+                TestAssert.Skip("No resource with productionMultiplierStat");
 
             double multBefore = resource.productionMult;
 
@@ -607,10 +571,7 @@ namespace FactionColonies
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
-            {
-                LogUtil.Message("SKIP: No faction/settlements");
-                return;
-            }
+                TestAssert.Skip("No faction/settlements");
 
             // Test a representative sample of stats across all settlements
             FCStatDef[] sampleStats = new FCStatDef[]
@@ -641,19 +602,13 @@ namespace FactionColonies
             var faction = GetFaction();
             var settlement = GetFirstSettlement();
             if (faction == null || settlement == null)
-            {
-                LogUtil.Message("SKIP: No faction/settlement");
-                return;
-            }
+                TestAssert.Skip("No faction/settlement");
 
             // Check if Egalitarian is active
             bool egalitarianActive = faction.policies.Any(p =>
                 p?.def == FCPolicyDefOf.egalitarian);
             if (!egalitarianActive)
-            {
-                LogUtil.Message("SKIP: Egalitarian policy not active");
-                return;
-            }
+                TestAssert.Skip("Egalitarian policy not active");
 
             double taxBonus = faction.GetStatValue(FCStatDefOf.taxBonusFlat, settlement);
             double expectedMinBonus = Math.Floor(settlement.happiness / 10);

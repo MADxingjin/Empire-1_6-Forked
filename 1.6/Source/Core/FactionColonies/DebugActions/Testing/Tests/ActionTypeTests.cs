@@ -54,7 +54,7 @@ namespace FactionColonies
         public static void IsActionAllowed_OptOutAction_AllowedByDefault()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -73,7 +73,7 @@ namespace FactionColonies
         public static void IsActionAllowed_OptInAction_DisabledByDefault()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -100,7 +100,7 @@ namespace FactionColonies
         public static void IsActionAllowed_BlockedAction_Blocked()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -122,7 +122,7 @@ namespace FactionColonies
         public static void IsActionAllowed_EnabledAction_Enabled()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -144,7 +144,7 @@ namespace FactionColonies
         public static void IsActionAllowed_BlockTakesPrecedence()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             // Find an opt-in action that one policy enables and another blocks.
             // Militaristic enables DeployExtraSquad; if we can find another that blocks it, test precedence.
@@ -180,7 +180,7 @@ namespace FactionColonies
         public static void ActionCache_RebuildOnPolicyChange()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try

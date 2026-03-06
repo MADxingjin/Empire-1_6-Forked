@@ -7,8 +7,18 @@ namespace FactionColonies
         public TestFailedException(string message) : base(message) { }
     }
 
+    public class TestSkippedException : Exception
+    {
+        public TestSkippedException(string reason) : base(reason) { }
+    }
+
     public static class TestAssert
     {
+        public static void Skip(string reason)
+        {
+            throw new TestSkippedException(reason);
+        }
+
         public static void AreEqual(double expected, double actual, double tolerance = 0.001, string message = null)
         {
             if (Math.Abs(expected - actual) > tolerance)

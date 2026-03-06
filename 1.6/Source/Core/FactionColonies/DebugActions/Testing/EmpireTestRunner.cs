@@ -36,7 +36,8 @@ namespace FactionColonies
             if (category != null)
                 tests = tests.Where(t => t.attr.Category == category).ToList();
 
-            int passed = 0, failed = 0, errors = 0;
+            int passed = 0, failed = 0, errors = 0, skipped = 0;
+            var skipDetails = new List<string>();
             foreach (var (method, attr) in tests)
             {
                 string testName = $"[{attr.Category}] {method.DeclaringType.Name}.{method.Name}";
@@ -45,6 +46,12 @@ namespace FactionColonies
                     method.Invoke(null, null);
                     passed++;
                     LogUtil.Message($"PASS: {testName}");
+                }
+                catch (TargetInvocationException tie) when (tie.InnerException is TestSkippedException tse)
+                {
+                    skipped++;
+                    LogUtil.Message($"SKIP: {testName} -- {tse.Message}");
+                    skipDetails.Add($"  SKIP: {testName} -- {tse.Message}");
                 }
                 catch (TargetInvocationException tie) when (tie.InnerException is TestFailedException tfe)
                 {
@@ -60,7 +67,11 @@ namespace FactionColonies
             }
 
             string label = category != null ? $"[{category}]" : "[All]";
-            LogUtil.MessageForce($"Test results {label}: {passed} passed, {failed} failed, {errors} errors (of {tests.Count} total)");
+            LogUtil.MessageForce($"Test results {label}: {passed} passed, {failed} failed, {errors} errors, {skipped} skipped (of {tests.Count} total)");
+            if (skipDetails.Count > 0)
+            {
+                LogUtil.MessageForce("Skipped tests:\n" + string.Join("\n", skipDetails));
+            }
         }
 
         private static List<(MethodInfo method, EmpireTestAttribute attr)> DiscoverTests()

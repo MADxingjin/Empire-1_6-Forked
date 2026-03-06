@@ -104,7 +104,7 @@ namespace FactionColonies
         public static void StatAggregation_AdditiveDefault_IsZero()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -124,7 +124,7 @@ namespace FactionColonies
         public static void StatAggregation_MultiplicativeDefault_IsOne()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -144,7 +144,7 @@ namespace FactionColonies
         public static void StatAggregation_PolicyModifiers_Applied()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -154,10 +154,7 @@ namespace FactionColonies
                 // Find a policy with known statModifiers
                 FCPolicyDef testDef = FCPolicyDefOf.militaristic;
                 if (testDef.statModifiers.Count == 0)
-                {
-                    LogUtil.Message("SKIP: militaristic has no XML stat modifiers");
-                    return;
-                }
+                    TestAssert.Skip("militaristic has no XML stat modifiers");
 
                 PolicyTestHelper.EnactPolicy(faction, testDef);
 
@@ -185,7 +182,7 @@ namespace FactionColonies
         public static void StatAggregation_MultiplePolicies_Stack()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -200,10 +197,7 @@ namespace FactionColonies
                     .Take(2).ToList();
 
                 if (defs.Count < 2)
-                {
-                    LogUtil.Message("SKIP: Not enough policies modifying militaryBaseLevel");
-                    return;
-                }
+                    TestAssert.Skip("Not enough policies modifying militaryBaseLevel");
 
                 PolicyTestHelper.EnactPolicy(faction, defs[0]);
                 PolicyTestHelper.EnactPolicy(faction, defs[1]);
@@ -227,10 +221,7 @@ namespace FactionColonies
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
-            {
-                LogUtil.Message("SKIP: No faction/settlements");
-                return;
-            }
+                TestAssert.Skip("No faction/settlements");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -261,7 +252,7 @@ namespace FactionColonies
         public static void BehaviorCache_RebuildAfterPolicyAdd()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -285,7 +276,7 @@ namespace FactionColonies
         public static void BehaviorCache_RebuildAfterClear()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -307,7 +298,7 @@ namespace FactionColonies
         public static void BehaviorCache_OrderPoliciesBeforeTraits()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -393,10 +384,7 @@ namespace FactionColonies
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
-            {
-                LogUtil.Message("SKIP: No faction/settlements");
-                return;
-            }
+                TestAssert.Skip("No faction/settlements");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -431,14 +419,11 @@ namespace FactionColonies
         public static void Expansionist_FirstSettlement_Free()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             // This test only works when there are no settlements and no caravans
             if (faction.settlements.Any() || faction.settlementCaravansList.Any())
-            {
-                LogUtil.Message("SKIP: Cannot test first-settlement-free with existing settlements");
-                return;
-            }
+                TestAssert.Skip("Cannot test first-settlement-free with existing settlements");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -460,12 +445,9 @@ namespace FactionColonies
         public static void Expansionist_FeeReduction_50Pct()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
             if (!faction.settlements.Any())
-            {
-                LogUtil.Message("SKIP: Need existing settlements for this test");
-                return;
-            }
+                TestAssert.Skip("Need existing settlements for this test");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -489,12 +471,9 @@ namespace FactionColonies
         public static void Expansionist_FeeReduction_UsesOnPay()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
             if (!faction.settlements.Any())
-            {
-                LogUtil.Message("SKIP: Need existing settlements for this test");
-                return;
-            }
+                TestAssert.Skip("Need existing settlements for this test");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -524,8 +503,8 @@ namespace FactionColonies
         public static void Militaristic_BuildingUpkeep_Discount()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
-            if (!faction.settlements.Any()) { LogUtil.Message("SKIP: Need settlements"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
+            if (!faction.settlements.Any()) TestAssert.Skip("Need settlements");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -542,10 +521,7 @@ namespace FactionColonies
                         m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency));
 
                 if (milBuilding == null)
-                {
-                    LogUtil.Message("SKIP: No military buildings found");
-                    return;
-                }
+                    TestAssert.Skip("No military buildings found");
 
                 double baseUpkeep = 200;
                 double modified = behavior.ModifyBuildingUpkeep(milBuilding, baseUpkeep, faction.settlements.First());
@@ -605,7 +581,7 @@ namespace FactionColonies
         public static void AllPolicies_StatValues_AreFinite()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try

@@ -26,7 +26,7 @@ namespace FactionColonies
         public static void Settlement_DirtyStats_RecomputesWorkersMax()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             double first = s.workersMax;
             s.DirtyStatsCache();
@@ -41,7 +41,7 @@ namespace FactionColonies
         public static void Settlement_DirtyProfit_RecomputesIncome()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             double first = s.totalIncome;
             s.DirtyProfitCache();
@@ -56,7 +56,7 @@ namespace FactionColonies
         public static void Settlement_DirtyStats_CascadesToProfit()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             double first = s.totalProfit;
             s.DirtyStatsCache();
@@ -71,7 +71,7 @@ namespace FactionColonies
         public static void Settlement_DirtyDescription_Recomputes()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             string first = s.description;
             s.DirtyDescriptionCache();
@@ -87,7 +87,7 @@ namespace FactionColonies
         public static void Settlement_ProfitEqualsIncomeMinusUpkeep()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             double expected = s.totalIncome - s.totalUpkeep;
             TestAssert.AreEqual(expected, s.totalProfit, tolerance: 0.01,
@@ -98,7 +98,7 @@ namespace FactionColonies
         public static void Settlement_Workers_NotExceedUltraMax()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             TestAssert.LessThanOrEqual(s.workers, s.workersUltraMax, $"workers ({s.workers}) should not exceed workersUltraMax ({s.workersUltraMax})");
         }
@@ -107,7 +107,7 @@ namespace FactionColonies
         public static void Settlement_WorkersMax_LessOrEqualUltraMax()
         {
             var s = GetFirstSettlement();
-            if (s == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (s == null) TestAssert.Skip("No settlements");
 
             TestAssert.LessThanOrEqual(s.workersMax, s.workersUltraMax, $"workersMax ({s.workersMax}) should not exceed workersUltraMax ({s.workersUltraMax})");
         }
@@ -118,7 +118,7 @@ namespace FactionColonies
         public static void Faction_DirtyProfit_RecomputesIncome()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double first = fc.income;
             fc.DirtyFactionProfitCache();
@@ -133,7 +133,7 @@ namespace FactionColonies
         public static void Faction_DirtyAverages_RecomputesHappiness()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double first = fc.averageHappiness;
             fc.DirtyAveragesCache();
@@ -148,7 +148,7 @@ namespace FactionColonies
         public static void Faction_ProfitEqualsIncomeMinusUpkeep()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double expected = fc.income - fc.upkeep;
             TestAssert.AreEqual(expected, fc.profit, tolerance: 0.01, message: $"profit ({fc.profit}) should equal income - upkeep ({expected})");
@@ -158,7 +158,7 @@ namespace FactionColonies
         public static void Faction_IncomeMatchesSettlementSum()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double sum = fc.settlements.Sum(s => s.totalIncome);
             TestAssert.AreEqual(sum, fc.income, tolerance: 1.0, message: $"faction income ({fc.income}) should match settlement sum ({sum})");
@@ -168,7 +168,7 @@ namespace FactionColonies
         public static void Faction_UpkeepMatchesSettlementSum()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             double sum = fc.settlements.Sum(s => s.totalUpkeep);
             TestAssert.AreEqual(sum, fc.upkeep, tolerance: 1.0, message: $"faction upkeep ({fc.upkeep}) should match settlement sum ({sum})");
@@ -178,7 +178,7 @@ namespace FactionColonies
         public static void Faction_AveragesMatchSettlementMeans()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             int count = fc.settlements.Count;
             int sumH = 0, sumL = 0, sumU = 0, sumP = 0;
@@ -204,7 +204,7 @@ namespace FactionColonies
         public static void Faction_TechLevel_IsNotUndefined()
         {
             var fc = GetFaction();
-            if (fc == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (fc == null) TestAssert.Skip("No faction");
 
             TestAssert.IsTrue(fc.techLevel != TechLevel.Undefined, $"techLevel should not be Undefined, got {fc.techLevel}");
         }
@@ -215,7 +215,7 @@ namespace FactionColonies
         public static void Settlement_DirtyProfit_CascadesToFaction()
         {
             var fc = GetFaction();
-            if (fc == null || fc.settlements.Count == 0) { LogUtil.Message("SKIP: No faction/settlements"); return; }
+            if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
             var s = fc.settlements.First();
 
             double first = fc.income;

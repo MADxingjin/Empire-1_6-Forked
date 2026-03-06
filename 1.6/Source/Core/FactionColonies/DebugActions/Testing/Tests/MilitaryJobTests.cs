@@ -184,7 +184,7 @@ namespace FactionColonies
         public static void DefaultEnabledJob_AllowedByDefault()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -205,7 +205,7 @@ namespace FactionColonies
         public static void DefaultDisabledJob_BlockedByDefault()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -224,7 +224,7 @@ namespace FactionColonies
         public static void EnabledMilitaryJob_OverridesDefault()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -246,7 +246,7 @@ namespace FactionColonies
         public static void BlockedMilitaryJob_Blocks()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -268,7 +268,7 @@ namespace FactionColonies
         public static void BlockedOverridesEnabled_ForJobs()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             // Isolationist blocks Capture (a default-enabled job). Verify it stays blocked
             // even though Capture's defaultEnabled is true — the blockedMilitaryJobs list
@@ -306,7 +306,7 @@ namespace FactionColonies
         public static void Pacifist_BlocksActionNotJobs()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -334,7 +334,7 @@ namespace FactionColonies
         public static void Authoritarian_EnablesEnslave_JobLevel()
         {
             var faction = GetFaction();
-            if (faction == null) { LogUtil.Message("SKIP: No faction"); return; }
+            if (faction == null) TestAssert.Skip("No faction");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
