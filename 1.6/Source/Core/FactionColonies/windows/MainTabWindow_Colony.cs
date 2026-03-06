@@ -1630,9 +1630,8 @@ namespace FactionColonies
                 bx += btnW + btnGap;
 
                 // Fire Support
-                bool noFireSupport = militaryUtil.fireSupportDefs.Count == 0
-                    || settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == false;
-                bool fsDisabled = noFireSupport || milComp.artilleryTimer > Find.TickManager.TicksGame;
+                bool noFireSupport = militaryUtil.fireSupportDefs.Count == 0 || settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == false;
+                bool fsDisabled = noFireSupport || milComp.artilleryTimer > Find.TickManager.TicksGame || !faction.IsActionAllowed(FCActionType.UseFireSupport);
                 Rect fsSupportRect = new Rect(bx, btnY, btnW, btnH);
                 if (UIUtil.ButtonFlat(fsSupportRect, "FCMilitaryTableFireSupport".Translate(), disabled: fsDisabled, highlighted: isHighlighted))
                 {

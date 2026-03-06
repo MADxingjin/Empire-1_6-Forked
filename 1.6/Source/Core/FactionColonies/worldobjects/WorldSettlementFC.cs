@@ -480,7 +480,7 @@ namespace FactionColonies
             {
                 yield return gizmo;
             }
-            if (MilitaryComp?.isUnderAttack != true)
+            if (MilitaryComp?.isUnderAttack != true && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
             {
                 trader.settlement = trader.settlement ?? this;
                 var kindDef = trader.TraderKind;
@@ -510,7 +510,7 @@ namespace FactionColonies
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
         {
-            if (MilitaryComp == null || !MilitaryComp.isUnderAttack)
+            if ((MilitaryComp == null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
                 foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
                     yield return option;
         }

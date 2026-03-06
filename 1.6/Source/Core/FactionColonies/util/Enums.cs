@@ -33,7 +33,13 @@ public enum Operation
         DeployMilitary,
         SendDiplomat,
         DeployExtraSquad,
-        BuildRoadsToAllies
+        BuildRoadsToAllies,
+        UseFireSupport,
+        SendPrisoner,
+        SellPrisoner,
+        DemolishBuilding,
+        UpgradeSettlement,
+        TradeWithSettlement
     }
 
     /// <summary>

@@ -150,8 +150,9 @@ namespace FactionColonies
 			{
 				return;
 			}
-			
-			if (!CanSendPrisoner(__instance)) return;
+
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.SendPrisoner)) return;
+            if (!CanSendPrisoner(__instance)) return;
 
 			__result = __result.Append(SendPrisonerAction(__instance));
 		}

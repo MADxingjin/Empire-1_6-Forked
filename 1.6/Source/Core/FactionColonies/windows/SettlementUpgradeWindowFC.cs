@@ -47,6 +47,7 @@ namespace FactionColonies
         private Message UpgradeSettlement()
         {
             //failure reasons
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("ActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.isUpgrading) return new Message("AlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
             if (PaymentUtil.getSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);

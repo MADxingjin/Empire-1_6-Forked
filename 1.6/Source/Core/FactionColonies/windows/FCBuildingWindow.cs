@@ -1154,6 +1154,7 @@ namespace FactionColonies
 
         private void ExecuteDestroy()
         {
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.DemolishBuilding)) return;
             settlement.deconstructBuilding(buildingSlot);
             Find.WindowStack.TryRemove(this);
             Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
