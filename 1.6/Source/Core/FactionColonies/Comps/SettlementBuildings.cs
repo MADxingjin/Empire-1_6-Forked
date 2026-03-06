@@ -42,7 +42,7 @@ namespace FactionColonies
 
         public List<BuildingFC> Buildings => buildings;
 
-        public int NumBuildingSlots => SettlementFormulas.CalculateBuildingSlots(WorldSettlement?.settlementLevel ?? 0, WorldSettlement.settlementDef.maxBuildingCount);
+        public int NumBuildingSlots => WorldSettlement.GetBuildingSlots();
 
         private bool dirtyConstructionCache = true;
         private List<BuildingFC> constructionCache = new List<BuildingFC>();

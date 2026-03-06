@@ -34,7 +34,7 @@ namespace FactionColonies
             preventCameraMotion = false;
             header = "UpgradeSettlement".Translate();
             this.settlement = settlement;
-            settlementUpgradeCost = SettlementFormulas.CalculateUpgradeCost(settlement.settlementLevel, Convert.ToInt32(FCSettings.settlementBaseUpgradeCost));
+            settlementUpgradeCost = settlement.GetUpgradeCost(Convert.ToInt32(FCSettings.settlementBaseUpgradeCost));
             desc = settlement.Name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
             factionfc = FactionCache.FactionComp;
             maxSettlementLevel = FCSettings.settlementMaxLevel;
@@ -59,7 +59,7 @@ namespace FactionColonies
                 def = FCEventDefOf.upgradeSettlement,
                 tickStarted = Find.TickManager.TicksGame,
                 location = settlement.Tile,
-                timeTillTrigger = Find.TickManager.TicksGame + SettlementFormulas.CalculateUpgradeTime(settlement.settlementLevel, factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier))
+                timeTillTrigger = Find.TickManager.TicksGame + settlement.GetUpgradeTime(factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier))
             };
             tmp.customDescription = "UpgradeEventDesc".Translate(
                 settlement.Name,

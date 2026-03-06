@@ -1,11 +1,8 @@
 ﻿using FactionColonies.util;
-using HarmonyLib;
-using LudeonTK;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -32,6 +29,22 @@ namespace FactionColonies
          * ~        Settlement Base Info         ~ *
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
         public int settlementLevel = 1;
+
+        public int GetBuildingSlots()
+        {
+            return settlementDef.getSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
+        }
+
+        public int GetUpgradeCost(int baseCost)
+        {
+            return settlementDef.getSettlementTypeExtension().GetUpgradeCost(settlementLevel, baseCost);
+        }
+
+        public int GetUpgradeTime(double buildTimeMult)
+        {
+            return settlementDef.getSettlementTypeExtension().GetUpgradeTime(settlementLevel, buildTimeMult);
+        }
+
         /* Workers */
         public double workers;
         public double workersMax;

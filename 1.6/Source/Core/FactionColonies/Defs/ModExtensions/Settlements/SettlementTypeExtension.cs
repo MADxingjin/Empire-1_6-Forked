@@ -228,6 +228,33 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Returns the number of building slots available at the given settlement level.
+        /// Override to customize building slot progression for this settlement type.
+        /// </summary>
+        public virtual int GetBuildingSlots(int level, int maxCount)
+        {
+            return SettlementFormulas.CalculateBuildingSlots(level, maxCount);
+        }
+
+        /// <summary>
+        /// Returns the silver cost to upgrade from the given settlement level.
+        /// Override to customize upgrade costs for this settlement type.
+        /// </summary>
+        public virtual int GetUpgradeCost(int level, int baseCost)
+        {
+            return SettlementFormulas.CalculateUpgradeCost(level, baseCost);
+        }
+
+        /// <summary>
+        /// Returns the time in ticks to upgrade from the given settlement level.
+        /// Override to customize upgrade time for this settlement type.
+        /// </summary>
+        public virtual int GetUpgradeTime(int level, double buildTimeMult)
+        {
+            return SettlementFormulas.CalculateUpgradeTime(level, buildTimeMult);
+        }
+
+        /// <summary>
         /// Called before a settlement is removed from the world.
         /// </summary>
         public virtual void preDestruction(WorldSettlementFC settlement)
