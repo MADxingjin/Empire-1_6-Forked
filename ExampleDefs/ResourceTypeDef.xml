@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  
+
   <!-- This file shows all options for ResourceTypeDef, and explains what they do and their default values -->
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Example</defName>
@@ -20,9 +20,6 @@
 			</researchProjectDefs>
 			<restrictByRecipe>true if the thing's availability should be restricted by the requirements of its recipe. false otherwise. Default: true</restrictByRecipe>
 			<restrictByThingTechLevel>true if the thing's availability should be restricted by its tech level. false otherwise. Default: true</restrictByThingTechLevel>
-			<needsAllResearchRequirements>true if the player needs to meet all specified requirements in order for this thing to be available.
-			                              false if they only need to meet one. Default: false
-										  Note: if restrictByRecipe or restrictByThingTechLevel are set to false, then they will not be considered.</needsAllResearchRequirements>
 		</li>
 	</thingAllowList>
 	<!-- The thing blocklist allows you to specify individual things that will never be available for this category.-->
@@ -43,9 +40,6 @@
 			</researchProjectDefs>
 			<restrictByRecipe>true if the availability of things in this thingCategory should be restricted by their recipe requirements. false otherwise. Default: true</restrictByRecipe>
 			<restrictByThingTechLevel>true if the availability of things in this thingCategory should be restricted by their tech level. false otherwise. Default: true</restrictByThingTechLevel>
-			<needsAllResearchRequirements>true if the player needs to meet all specified requirements in order for things in this thingCategory to be available.
-			                              false if they only need to meet one. Default: false
-										  Note: if restrictByRecipe or restrictByThingTechLevel are set to false, then they will not be considered.</needsAllResearchRequirements>
 		</li>
 	</thingCategoryAllowList>
 	<!-- The thingCategory blockList functions similarly to the thing blocklist, but lets you block categories instead.-->
@@ -66,6 +60,16 @@
 	<stuffCategoryBlockList>
 		<li>stuffCategoryDef to block</li>
 	</stuffCategoryBlockList>
+	<!-- biomeAllowList and biomeBlockList are mutually exclusive. Only one may be specified.-->
+	<!-- If a biomeAllowList is specified, the resource is ONLY available in those biomes.-->
+	<!-- If a biomeBlockList is specified, the resource is available in all biomes EXCEPT those listed.-->
+	<!-- If neither is specified, the resource is available in all biomes.-->
+	<biomeAllowList>
+		<li>BiomeResourceDef to allow</li>
+	</biomeAllowList>
+	<biomeBlockList>
+		<li>BiomeResourceDef to block</li>
+	</biomeBlockList>
 	<!-- For tech level specifications, "Undefined" is treated as though the techlevel requirement doesn't have to be met.-->
 	<!-- In other words, *any* tech level will satisfy a requirement that is set to Undefined.-->
 	<minTechLevel>minimum tech level for this resource to be available. Default: Undefined</minTechLevel>
@@ -74,14 +78,28 @@
 	<researchProjectDefs>
 		<li>a researchProjectDef to require</li>
 	</researchProjectDefs>
-	<needsAllResearchRequirements>true if both the techlevel requirements and researchProjectDef requirements need to be met. false otherwise. Default: false</needsAllResearchRequirements>
-	<!-- Pool reources are unique resources that function as point pools instead of giving you items. The Research and Power resources are both pool resources, for example.-->
+	<needsAllResearchRequirements>true if both the techlevel requirements and researchProjectDef requirements need to be met. false otherwise. Default: true</needsAllResearchRequirements>
+	<!-- associatedSkills defines which pawn skills are relevant to producing this resource. Used for skill-based production calculations. -->
+	<associatedSkills>
+		<li>a SkillDef associated with this resource (e.g. Plants, Cooking, Crafting)</li>
+	</associatedSkills>
+	<!-- Pool resources are unique resources that function as point pools instead of giving you items. The Research and Power resources are both pool resources, for example.-->
 	<!-- If a resource is a pool resource, then it cannot specify any allowlists for things, thingCategories, or stuffCategories.-->
 	<!-- If a resource is a pool resource, then it MUST specify a ResourcePoolExtension in the modExtensions section. You will need to extend the abstract ResourcePoolExtension class,-->
 	<!--     and override any necessary functions for your resource to work. Refer to ResourcePoolExt_Power (for power) and ResourcePoolExt_Research (for research) as examples.-->
 	<isPoolResource>true if the resource represents a pool of points instead of tangible items. Default: false</isPoolResource>
-	<!-- titheMinCount, titheMaxCountBase, and titheMaxCountScaler all control how much of a resource you get when tithing. They do not apply to pool resources.-->
-	<!-- The range of items is set as (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is determine by the code.-->
+	<!-- If true, this resource is automatically included in any WorldSettlementDef that has defaultResources set to true. -->
+	<isDefaultResource>true if this resource should be included by default in settlement types. Default: false</isDefaultResource>
+	<!-- defaultBiomeAdditive and defaultBiomeMultiplier set the baseline production values for biomes that don't specify their own. -->
+	<defaultBiomeAdditive>the base additive production bonus for biomes that don't define one for this resource. Default: 1</defaultBiomeAdditive>
+	<defaultBiomeMultiplier>the base multiplier production bonus for biomes that don't define one for this resource. Default: 1</defaultBiomeMultiplier>
+	<!-- productionAdditiveStat and productionMultiplierStat link this resource to the stat system. These are REQUIRED. -->
+	<!-- They must reference FCStatDefs with Additive and Multiplicative aggregation, respectively. -->
+	<!-- Buildings, events, and policies contribute to production through these stats via FCStatModifier. -->
+	<productionAdditiveStat>defName of the FCStatDef used for additive production bonuses (must have Additive aggregation)</productionAdditiveStat>
+	<productionMultiplierStat>defName of the FCStatDef used for multiplicative production bonuses (must have Multiplicative aggregation)</productionMultiplierStat>
+	<!-- titheMinCount, titheMaxCountBase, and titheMaxCountScaler all control how much of a resource you get when random tithing. They do not apply to pool resources.-->
+	<!-- The range of items is set as (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is determined by the code.-->
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
@@ -96,33 +114,38 @@
 		 4) ResourceTaxExtension: provides pre/post hooks into the tithe generation process for non-pool resources. Extend this to modify
 		                          generated tithes or resource state at tax time. Cannot be used on pool resources.-->
 	<modExtensions>
-		<!-- The Hillious ResourceProductionExtension allows you to specify any additive or multiplier bonuses for this resource based on tile hilliness.-->
+		<!-- The Hilliness ResourceProductionExtension allows you to specify any additive or multiplier bonuses for this resource based on tile hilliness.-->
 		<!-- You only need to specify the values that you want to change. Any unspecified modifier or hilliness level will use the defaults of 0 for additive, and 1 for multiplier.-->
 		<!-- If your resource isn't modified by hilliness at all, then you don't need to include this extension at all.-->
 		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
-			<li>
-				<hilliness>Flat</hilliness>
-				<additive>0</additive>
-				<multiplier>1.1</multiplier>
-			</li>
-			<li>
-				<hilliness>SmallHills</hilliness>
-				<additive>0</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<hilliness>LargeHills</hilliness>
-				<additive>0</additive>
-				<multiplier>1</multiplier>
-			</li>
-			<li>
-				<hilliness>Mountainous</hilliness>
-				<additive>0</additive>
-				<multiplier>0.5</multiplier>
-			</li>
+			<resourceHilliness>
+				<li>
+					<hilliness>Flat</hilliness>
+					<additive>0</additive>
+					<multiplier>1.1</multiplier>
+				</li>
+				<li>
+					<hilliness>SmallHills</hilliness>
+					<additive>0</additive>
+					<multiplier>1</multiplier>
+				</li>
+				<li>
+					<hilliness>LargeHills</hilliness>
+					<additive>0</additive>
+					<multiplier>1</multiplier>
+				</li>
+				<li>
+					<hilliness>Mountainous</hilliness>
+					<additive>0</additive>
+					<multiplier>0.5</multiplier>
+				</li>
+			</resourceHilliness>
 		</li>
+		<!-- Example ResourceTaxExtension: provides hooks before and after tithe generation for non-pool resources. -->
+		<!-- You must create your own class extending ResourceTaxExtension and override OnPreTaxGeneration and/or OnPostTaxGeneration. -->
+		<!-- <li Class="YourNamespace.YourResourceTaxExtension" /> -->
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
 
 </Defs>

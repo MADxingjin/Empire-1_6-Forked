@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for FCPolicyDef, and explains what they do and their default values -->
+  <!-- FCPolicyDefs define policies and traits that can be enacted on the faction or individual settlements. -->
+  <!-- The same def type is used for multiple UI categories, differentiated by the <category> field: -->
+  <!--   Core     = core faction policies (e.g. Militaristic, Pacifist, Authoritarian) -->
+  <!--   Tax      = tax policies -->
+  <!--   Military = military policies -->
+  <!--   Trait    = faction traits (selected during faction creation or unlocked later) -->
+  <!--   Undefined = unused/placeholder -->
+  <FactionColonies.FCPolicyDef>
+	<defName>examplePolicy</defName>
+	<label>Example Policy</label>
+	<!-- Description shown in the policy info panel. -->
+	<desc>A description of this policy's effects and purpose.</desc>
+	<!-- The policy category. Determines which UI section this policy appears in. -->
+	<!-- Valid values: Undefined, Trait, Core, Tax, Military -->
+	<category>Core</category>
+	<!-- Minimum faction tech level required to enact this policy. Default: Undefined (no restriction) -->
+	<techLevelRequirement>Undefined</techLevelRequirement>
+	<!-- Minimum faction level (number of settlements) required to enact this policy. Default: 0 -->
+	<factionLevelRequirement>3</factionLevelRequirement>
+	<!-- Silver cost to enact this policy. Default: 0 -->
+	<cost>500</cost>
+	<!-- Time in ticks to enact the policy. During this time, an enactment event is active. Default: 0 -->
+	<enactDuration>60000</enactDuration>
+	<!-- Tech level associated with this policy (distinct from techLevelRequirement). Default: Undefined -->
+	<techLevel>Undefined</techLevel>
+	<!-- Type identifier string. -->
+	<type>policyType</type>
+
+	<!-- ── UI Display ── -->
+	<!-- Translation keys for positive and negative effect descriptions shown in the policy info UI. -->
+	<positiveEffects>
+		<li>Translation key for a positive effect</li>
+		<li>Another positive effect</li>
+	</positiveEffects>
+	<negativeEffects>
+		<li>Translation key for a negative effect</li>
+	</negativeEffects>
+	<!-- Icon paths for light and dark themes. Resolved lazily to textures. -->
+	<iconPathLight>path/to/icon/light</iconPathLight>
+	<iconPathDark>path/to/icon/dark</iconPathDark>
+
+	<!-- ── Stat Modifiers ── -->
+	<!-- Stat bonuses/penalties applied while this policy is active. -->
+	<!-- See FCStatDef.xml for details on FCStatModifier. -->
+	<statModifiers>
+		<li>
+			<stat>taxBasePercentage</stat>
+			<value>0.05</value>
+		</li>
+	</statModifiers>
+
+	<!-- ── Action Restrictions ── -->
+	<!-- These lists control what actions the player can and cannot perform while the policy is active. -->
+	<!-- Valid FCActionType values: DeployMilitary, SendDiplomat, DeployExtraSquad, BuildRoadsToAllies, -->
+	<!--   UseFireSupport, SendPrisoner, SellPrisoner, DemolishBuilding, UpgradeSettlement, TradeWithSettlement -->
+	<!-- Actions blocked while this policy is active. -->
+	<blockedActions>
+		<li>DeployMilitary</li>
+	</blockedActions>
+	<!-- Actions enabled by this policy (for actions that are disabled by default). -->
+	<enabledActions>
+		<li>TradeWithSettlement</li>
+	</enabledActions>
+
+	<!-- ── Military Job Restrictions ── -->
+	<!-- MilitaryJobDefs blocked while this policy is active. -->
+	<blockedMilitaryJobs>
+		<li>defNameOfMilitaryJob</li>
+	</blockedMilitaryJobs>
+	<!-- MilitaryJobDefs enabled by this policy (for jobs that are disabled by default). -->
+	<enabledMilitaryJobs>
+		<li>defNameOfAnotherMilitaryJob</li>
+	</enabledMilitaryJobs>
+
+	<!-- ── Special Flags ── -->
+	<!-- If true, buildings cannot be destroyed while this policy is active. Default: false -->
+	<preventBuildingDestruction>false</preventBuildingDestruction>
+	<!-- If true, suppresses the happiness/loyalty penalty when faction members die. Default: false -->
+	<suppressMemberDeathPenalty>false</suppressMemberDeathPenalty>
+
+	<!-- ── Behavior Class ── -->
+	<!-- Optional C# class for policies with procedural logic (ticking, hooks, custom UI, abilities). -->
+	<!-- Must be a subclass of FCPolicyBehavior. Null/omitted for purely XML-driven policies. -->
+	<!-- See existing behaviors (Militaristic, Pacifist, Feudal, etc.) for examples. -->
+	<!-- <behaviorClass>YourNamespace.YourPolicyBehavior</behaviorClass> -->
+
+	<!-- ── Incompatible Policies ── -->
+	<!-- Policies that cannot be active at the same time as this one (mutual exclusion in the UI). -->
+	<incompatiblePolicies>
+		<li>anotherPolicy</li>
+	</incompatiblePolicies>
+  </FactionColonies.FCPolicyDef>
+
+</Defs>

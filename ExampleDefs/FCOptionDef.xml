@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for FCOptionDef, and explains what they do and their default values -->
+  <!-- FCOptionDefs define player choices that appear during certain events. -->
+  <!-- When an event has options, a window is shown with each option as a clickable card. -->
+  <!-- Each option has a success chance, optional silver cost, and references to success/fail follow-up events. -->
+  <FactionColonies.FCOptionDef>
+	<defName>exampleOption</defName>
+	<label>Option display text shown to the player</label>
+	<!-- Base chance of success (0-100). The UI shows descriptive labels:
+	     100+  = "Guaranteed"
+	     75-99 = "Likely"
+	     40-74 = "Uncertain"
+	     0-39  = "Risky" -->
+	<baseChanceOfSuccess>75</baseChanceOfSuccess>
+	<!-- Silver cost to choose this option. 0 or less = free. Default: 0 -->
+	<silverCost>0</silverCost>
+	<!-- The event that this option belongs to. -->
+	<parentEvent>exampleEvent</parentEvent>
+	<!-- The event that fires if the player succeeds. If null, nothing happens on success. Default: null -->
+	<successEvent>exampleEventSuccess</successEvent>
+	<!-- The event that fires if the player fails. If null, nothing happens on failure. Default: null -->
+	<failEvent>exampleEventFail</failEvent>
+	<!-- Variable name used for modifying success chance based on game state. Default: null -->
+	<affectingVariable>variableName</affectingVariable>
+  </FactionColonies.FCOptionDef>
+
+</Defs>

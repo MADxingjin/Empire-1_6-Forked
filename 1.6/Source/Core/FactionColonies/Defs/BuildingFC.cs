@@ -29,9 +29,6 @@ namespace FactionColonies
         public int upkeep;
         public string iconPath = "GUI/unrest";
         public Texture2D iconLoaded;
-        public bool requiresRoyality = false;
-        public bool requiresIdeology = false;
-        public List<string> requiredModsID = new List<string>();
         public List<WorldSettlementDef> settlementTypeBlockList = new List<WorldSettlementDef>();
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         public Hilliness minhilliness = Hilliness.Undefined;
@@ -84,7 +81,6 @@ namespace FactionColonies
             }
         }
 
-        public bool RequiredModsLoaded => (ModsConfig.RoyaltyActive || !requiresRoyality) && (ModsConfig.IdeologyActive || !requiresIdeology) && requiredModsID.TrueForAll(mod => ModsConfig.IsActive(mod));
         public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)
         {
             bool meetsSettlementTypeRequirement = true;

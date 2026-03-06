@@ -1050,7 +1050,6 @@ namespace FactionColonies
                 BuildingFCDef building = requiredBy[i];
                 bool canBuild = building.techLevel <= factionfc.techLevel
                     && building.CanBeBuiltForSettlementType(settlement.settlementDef)
-                    && building.RequiredModsLoaded
                     && (building.applicableBiomes.Count == 0
                         || building.applicableBiomes.Contains(settlement.biome));
 
@@ -1203,7 +1202,7 @@ namespace FactionColonies
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
 
-            foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
+            foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
             {
                 if(building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {

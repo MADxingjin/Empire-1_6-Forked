@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for FCEventDef, and explains what they do and their default values -->
+  <!-- FCEventDefs define events in the Empire mod. They can be scripted events (triggered by code) -->
+  <!-- or random events (selected by the random event system based on conditions). -->
+  <!-- Random events are the same def type with isRandomEvent set to true. -->
+  <FactionColonies.FCEventDef>
+	<defName>exampleEvent</defName>
+	<label>Example Event</label>
+
+	<!-- ── Core Fields ── -->
+	<!-- Description shown in the event notification. -->
+	<desc>Description of what happened in this event.</desc>
+	<!-- The event category, which controls the UI accent color. References an FCEventCategoryDef. -->
+	<category>EC_Other</category>
+	<!-- Time in ticks until the event triggers/resolves. -1 means it triggers immediately. Default: -1 -->
+	<timeTillTrigger>60000</timeTillTrigger>
+
+	<!-- ── Random Event Configuration ── -->
+	<!-- Set to true if this event should be eligible for random selection. Default: false -->
+	<isRandomEvent>false</isRandomEvent>
+	<!-- If true, this event activates as soon as the game starts (used for intro events). Default: false -->
+	<activateAtStart>false</activateAtStart>
+	<!-- Minimum player wealth required for this random event to fire. Default: 0 -->
+	<requiredWealth>0</requiredWealth>
+	<!-- How many settlements this event affects. (0, 0) means it's faction-wide, not settlement-specific.
+	     The actual number is randomly chosen within this range. Default: (0, 0) -->
+	<rangeSettlementsAffected>(0, 0)</rangeSettlementsAffected>
+	<!-- If true, affected settlements carry over to follow-up events. Default: true -->
+	<settlementsCarryOver>true</settlementsCarryOver>
+	<!-- Weight for random selection — higher weight = more likely to be picked. Default: 0 -->
+	<weight>10</weight>
+	<!-- Stat range requirements for the random event to fire. -->
+	<!-- The event will only fire if the faction's average stats fall within these ranges. -->
+	<minimumHappiness>0</minimumHappiness>
+	<maximumHappiness>100</maximumHappiness>
+	<minimumLoyalty>0</minimumLoyalty>
+	<maximumLoyalty>100</maximumLoyalty>
+	<minimumUnrest>0</minimumUnrest>
+	<maximumUnrest>100</maximumUnrest>
+	<minimumProsperity>0</minimumProsperity>
+	<maximumProsperity>100</maximumProsperity>
+	<!-- If set, at least one settlement must be producing this resource for the event to fire. -->
+	<requiredResource>RTD_Food</requiredResource>
+	<!-- Events that cannot be active at the same time as this one. -->
+	<incompatibleEvents>
+		<li>anotherEvent</li>
+	</incompatibleEvents>
+
+	<!-- ── Options ── -->
+	<!-- If this event presents choices to the player, list the FCOptionDefs here. -->
+	<!-- See FCOptionDef.xml for details. -->
+	<options>
+		<li>exampleOption1</li>
+		<li>exampleOption2</li>
+	</options>
+	<!-- Optional description shown in the options window. If empty, falls back to desc. -->
+	<optionDescription>Choose how to respond to this event.</optionDescription>
+
+	<!-- ── Event Chains ── -->
+	<!-- If true, another event follows after this one resolves. Default: false -->
+	<eventFollows>false</eventFollows>
+	<!-- The event that follows this one. Only used if eventFollows is true. -->
+	<followingEvent>followUpEvent</followingEvent>
+	<!-- An alternative follow-up event (used with splitEventFollows). -->
+	<followingEvent2>alternativeFollowUpEvent</followingEvent2>
+	<!-- If true, there's a random chance to follow either followingEvent or followingEvent2. Default: false -->
+	<splitEventFollows>false</splitEventFollows>
+	<!-- Percent chance (0-100) to follow followingEvent. The remainder goes to followingEvent2. Default: 50 -->
+	<splitEventChance>50</splitEventChance>
+
+	<!-- ── Rewards ── -->
+	<!-- Specific ThingDefs to give as loot when this event resolves. -->
+	<loot>
+		<li>Silver</li>
+	</loot>
+	<!-- Base market value for randomly generated reward items. 0 means no random rewards. Default: 0 -->
+	<randomThingValue>500</randomThingValue>
+	<!-- References a ResourceEventRewardDef that controls how random rewards are generated. -->
+	<!-- See ResourceEventRewardDef.xml for details. -->
+	<randomThingRewardDef>defNameOfRewardDef</randomThingRewardDef>
+	<!-- Prosperity lost when this event resolves. Default: 0 -->
+	<prosperityLost>0</prosperityLost>
+	<!-- List of BiomeResourceDef defNames that this event can occur in. If empty, all biomes are valid. -->
+	<applicableBiomes>
+		<li>borealForest</li>
+	</applicableBiomes>
+
+	<!-- ── Stat Modifiers ── -->
+	<!-- Stat modifiers applied while this event is active. Removed when the event resolves. -->
+	<!-- See FCStatDef.xml for details on FCStatModifier. -->
+	<statModifiers>
+		<li>
+			<stat>happinessLostBase</stat>
+			<value>5</value>
+		</li>
+	</statModifiers>
+
+	<!-- ── Military ── -->
+	<!-- If true, this event involves military combat (e.g. settlement attacks). Default: false -->
+	<isMilitaryEvent>false</isMilitaryEvent>
+
+	<!-- ── Mod Extensions ── -->
+	<!-- FCEventHandlerExtension: provides custom event resolution logic. -->
+	<!-- Extend FCEventHandlerExtension and override ResolveEvent() and/or OnEventTriggered(). -->
+	<!-- ResolveEvent() is called when the event triggers — return true to skip built-in resolution. -->
+	<!-- OnEventTriggered() is called after all standard processing (loot, stats, cascading events). -->
+	<!-- <modExtensions>
+		<li Class="YourNamespace.YourEventHandlerExtension" />
+	</modExtensions> -->
+  </FactionColonies.FCEventDef>
+
+</Defs>
