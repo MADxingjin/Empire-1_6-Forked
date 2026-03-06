@@ -13,6 +13,14 @@
 	<FCNoEventsMatchFilter>No events match the current filters.</FCNoEventsMatchFilter>
 	<FCMultipleSettlements>Multiple ({0})</FCMultipleSettlements>
 
+	<!-- Event Option Window -->
+	<FCEventAffecting>Affecting:</FCEventAffecting>
+	<FCEventOptionFree>Free</FCEventOptionFree>
+	<FCEventSuccessGuaranteed>Success: Guaranteed</FCEventSuccessGuaranteed>
+	<FCEventSuccessLikely>Success: Likely</FCEventSuccessLikely>
+	<FCEventSuccessUncertain>Success: Uncertain</FCEventSuccessUncertain>
+	<FCEventSuccessRisky>Success: Risky</FCEventSuccessRisky>
+
 	<!-- Building Events -->
 	<BuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</BuildingEventDesc>
 	<BuildingEventCompletedMsg>{0} has been constructed at {1}!</BuildingEventCompletedMsg>
