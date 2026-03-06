@@ -1429,27 +1429,6 @@ namespace FactionColonies
             return pools;
         }
 
-        public double getTitheModifierPerWorker(ResourceTypeDef rdef)
-        {
-            return getStatValue(FCStatDefOf.taxBaseRandomModifier);
-        }
-        public double getTitheModifierForTotal(ResourceTypeDef rdef)
-        {
-            double modifier = 1;
-
-            return modifier;
-        }
-        public double getTaxTimeTaxBoostFlat()
-        {
-            double flatBoost = 0;
-            //Nothing here for now, but if we add a flat boost in the future, that code should go here
-            return flatBoost;
-        }
-        public double getTaxTimeTaxBoostMult()
-        {
-            // Previously used for Industrious random boost; now a flat stat bonus via taxBonusFlat
-            return 1d;
-        }
         public void pruneResourceTithes()
         {
             foreach (ResourceFC res in resources)
@@ -1509,11 +1488,8 @@ namespace FactionColonies
             settlementDef.getSettlementTypeExtension()?.preTax(this);
             TaxTickRegistry.InvokePreSettlementCreateTax(this);
 
-            FactionFC faction = FactionCache.FactionComp;
-            double flatTaxBoost = getTaxTimeTaxBoostFlat();
-            double multTaxBoost = getTaxTimeTaxBoostMult();
             List<Thing> titheThings = new List<Thing>();
-            int tmpSilverAmount = (int)((((totalIncome + flatTaxBoost) * multTaxBoost) - totalUpkeep) + returnOneTimeSilverIncome(true));
+            int tmpSilverAmount = (int)((totalIncome - totalUpkeep) + returnOneTimeSilverIncome(true));
 
             foreach (ResourceFC resource in resources)
             {

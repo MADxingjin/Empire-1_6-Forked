@@ -1,18 +1,11 @@
 ﻿using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
-using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Permissions;
-using System.Security.Policy;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static System.Collections.Specialized.BitVector32;
-using static UnityEngine.ParticleSystem;
 
 namespace FactionColonies
 {
@@ -161,7 +154,7 @@ namespace FactionColonies
             {
                 if (dirtyProductionMultCache)
                 {
-                    cachedProductionMult = calculateProductonMult();
+                    cachedProductionMult = calculateProductionMult();
                     dirtyProductionMultCache = false;
                 }
                 return cachedProductionMult;
@@ -245,9 +238,7 @@ namespace FactionColonies
             if (settlement != null)
             {
                 //TODO: Setup the filter. Should be done with a function in *this* class, not PaymentUtil
-                // Add ProductionBonuses for Biome any special modifiers in the resourceDef
-                setBaseResourceAdditives();
-                setBaseResourceMultipliers();
+                setBaseResourceBonuses();
             }
             resetThingFilter();
         }
@@ -276,59 +267,63 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Calculates the total production base.
+        /// Calculates the total production base from three sources:
+        /// 1. ProductionBonus dict: static environmental bonuses (biome, hilliness, settlement type)
+        /// 2. FCStatDef system: dynamic bonuses from buildings, policies, events
+        /// 3. IResourceProductionModifier comps: dynamic per-resource bonuses from WorldObjectComps
         /// </summary>
-        /// <returns></returns>
         private double calculateProductionBase()
         {
             double dictBase = ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
             double statBase = (settlement != null && def.productionAdditiveStat != null)
                 ? settlement.getStatValue(def.productionAdditiveStat) : 0;
-            return dictBase + statBase;
+            double compBase = 0;
+            if (settlement != null)
+            {
+                foreach (WorldObjectComp comp in settlement.AllComps)
+                {
+                    if (comp is IResourceProductionModifier provider)
+                        compBase += provider.GetResourceAdditiveModifier(this);
+                }
+            }
+            return dictBase + statBase + compBase;
         }
         /// <summary>
-        /// Calculates the total production multiplier.
+        /// Calculates the total production multiplier from three sources:
+        /// 1. ProductionBonus dict: static environmental multipliers (biome, hilliness, settlement type)
+        /// 2. FCStatDef system: dynamic multipliers from buildings, policies, events
+        /// 3. IResourceProductionModifier comps: dynamic per-resource multipliers from WorldObjectComps
+        /// Also includes the settlement tax bonus.
         /// </summary>
-        /// <returns></returns>
-        private double calculateProductonMult()
+        private double calculateProductionMult()
         {
             double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
             double dictMult = ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), 1.0);
             double statMult = (settlement != null && def.productionMultiplierStat != null)
                 ? settlement.getStatValue(def.productionMultiplierStat) : 1;
-            return dictMult * statMult * taxBonus;
-        }
-        public double getTitheModifierAdditivePerWorker()
-        {
-            FactionFC faction = FactionCache.FactionComp;
-            return faction.getFactionTitheBonusAdditivePerWorker(def) + settlement.getTitheModifierPerWorker(def) + FCSettings.productionTitheMod;
-        }
-        public double getTitheModifierAdditiveForTotal()
-        {
-            FactionFC faction = FactionCache.FactionComp;
-            return faction.getFactionTitheBonusAdditiveForTotal(def);
-        }
-        public double getTitheModifierMultPerWorker()
-        {
-            FactionFC faction = FactionCache.FactionComp;
-            return faction.getFactionTitheBonusMultPerWorker(def);
-        }
-        public double getTitheModifierMultForTotal()
-        {
-            FactionFC faction = FactionCache.FactionComp;
-            return faction.getFactionTitheBonusMultForTotal(def);
+            double compMult = 1;
+            if (settlement != null)
+            {
+                foreach (WorldObjectComp comp in settlement.AllComps)
+                {
+                    if (comp is IResourceProductionModifier provider)
+                        compMult *= provider.GetResourceMultiplierModifier(this);
+                }
+            }
+            return dictMult * statMult * compMult * taxBonus;
         }
         public double getTitheModifierPerWorker()
         {
-            return ResourceFormulas.CalculateTitheModifierPerWorker(getTitheModifierAdditivePerWorker(), getTitheModifierMultPerWorker());
+            return settlement.getStatValue(FCStatDefOf.taxBaseRandomModifier) + FCSettings.productionTitheMod;
         }
         public double getTotalTitheModifierForWorkers()
         {
-            return ResourceFormulas.CalculateTotalTitheModifierForWorkers(getTitheModifierPerWorker(), assignedWorkers);
+            return getTitheModifierPerWorker() * assignedWorkers;
         }
         public double getTitheIncome()
         {
-            return ResourceFormulas.CalculateTitheIncome(taxableProductionMarketValue, getTotalTitheModifierForWorkers(), getTitheModifierAdditiveForTotal(), getTitheModifierMultForTotal());
+            double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
+            return (taxableProductionMarketValue + getTotalTitheModifierForWorkers()) * multForTotal;
         }
         public void refreshOnRandomTitheBudgetChange()
         {
@@ -379,46 +374,60 @@ namespace FactionColonies
             return pool;
         }
 
-        /* 
-         * Production Additive functions
+        /*
+         * Production Bonus Initialization
          */
-        public void setBaseResourceAdditives()
-        {
-            double bonus = 0;
-            if (settlement != null)
-            {
-                /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
-                 * so we should be good to go here. */
-                ResourceAvailability biomeBonus = settlement.biomeDef.getBiomeResource(def);
-                if (biomeBonus == null)
-                {
-                    LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
-                }
-                else
-                {
-                    bonus = biomeBonus.additive;
-                    if (bonus != 0)
-                    {
-                        addProductionAdditive(def.defName + settlement.biomeDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.biomeDef.LabelCap);
-                    }
-                }
 
-                ResourceAvailability settleBonus = settlement.settlementDef.getSettlementResource(def);
-                bonus = settleBonus?.additive ?? 0;
-                if (bonus != 0)
-                {
-                    addProductionAdditive(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.settlementDef.LabelCap);
-                }
+        /// <summary>
+        /// Populates both <see cref="productionAdditives"/> and <see cref="productionMultipliers"/> from
+        /// the biome, settlement type, and any <see cref="ResourceProductionExtension"/>s on the resource def.
+        /// Called once at construction.
+        /// </summary>
+        private void setBaseResourceBonuses()
+        {
+            if (settlement == null) return;
+
+            string settlementId = settlement.Name ?? "nullsettlement";
+
+            // --- Biome bonuses ---
+            ResourceAvailability biomeRes = settlement.biomeDef.getBiomeResource(def);
+            if (biomeRes == null)
+            {
+                LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
             }
-            if (def != null && def.modExtensions != null)
+            else
+            {
+                string biomeId = $"{def.defName}_biome_{settlement.biomeDef.defName}_{settlementId}";
+                if (biomeRes.additive != 0)
+                    addProductionAdditive(biomeId, biomeRes.additive, settlement.biomeDef.LabelCap);
+                if (biomeRes.multiplier != 1)
+                    addProductionMultiplier(biomeId, biomeRes.multiplier, settlement.biomeDef.LabelCap);
+            }
+
+            // --- Settlement type bonuses ---
+            ResourceAvailability settleRes = settlement.settlementDef.getSettlementResource(def);
+            if (settleRes != null)
+            {
+                string settleId = $"{def.defName}_settle_{settlement.settlementDef.defName}_{settlementId}";
+                if (settleRes.additive != 0)
+                    addProductionAdditive(settleId, settleRes.additive, settlement.settlementDef.LabelCap);
+                if (settleRes.multiplier != 1)
+                    addProductionMultiplier(settleId, settleRes.multiplier, settlement.settlementDef.LabelCap);
+            }
+
+            // --- ResourceProductionExtension bonuses ---
+            if (def?.modExtensions != null)
             {
                 foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    bonus = ext.GetAdditiveBonus(settlement.Tile);
-                    if (bonus != 0)
-                    {
-                        addProductionAdditive(def.defName + ext.extName + settlement?.Name ?? "nullsettlement", bonus, ext.extName);
-                    }
+                    string extId = $"{def.defName}_ext_{ext.extName}_{settlementId}";
+                    double addBonus = ext.GetAdditiveBonus(settlement.Tile, settlement);
+                    if (addBonus != 0)
+                        addProductionAdditive(extId, addBonus, ext.extName);
+
+                    double multBonus = ext.GetMultiplierBonus(settlement.Tile, settlement);
+                    if (multBonus != 1)
+                        addProductionMultiplier(extId, multBonus, ext.extDesc);
                 }
             }
         }
@@ -463,52 +472,24 @@ namespace FactionColonies
                 {
                     desc += settlement.getStatDesc(def.productionAdditiveStat);
                 }
+                if (settlement != null)
+                {
+                    foreach (WorldObjectComp comp in settlement.AllComps)
+                    {
+                        if (comp is IResourceProductionModifier provider)
+                        {
+                            string compDesc = provider.GetResourceModifierDesc(this);
+                            if (!compDesc.NullOrEmpty())
+                                desc += compDesc + "\n";
+                        }
+                    }
+                }
                 cachedProdBaseDesc = desc.Trim();
                 dirtyProductionBaseDescCache = false;
             }
             return cachedProdBaseDesc;
         }
 
-        /*
-         * Production Multiplier functions
-         */
-        public void setBaseResourceMultipliers()
-        {
-            double bonus = 0;
-            if (settlement != null)
-            {
-                /* getBiomeResource returns NULL if this resource isn't allowed in the biome. We already checked this when adding the ResourceFC to the WorldSettlementFC, though,
-                 * so we should be good to go here. */
-                ResourceAvailability biomeBonus = settlement.biomeDef.getBiomeResource(def);
-                if (biomeBonus == null)
-                {
-                    LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
-                }
-                bonus = biomeBonus?.multiplier ?? 1;
-                if (bonus != 1)
-                {
-                    addProductionMultiplier(settlement.biomeDef.defName, bonus, settlement.biomeDef.LabelCap);
-                }
-
-                ResourceAvailability settleBonus = settlement.settlementDef.getSettlementResource(def);
-                bonus = settleBonus?.multiplier ?? 1;
-                if (bonus != 1)
-                {
-                    addProductionMultiplier(def.defName + settlement.settlementDef.defName + settlement?.Name ?? "nullsettlement", bonus, settlement.settlementDef.LabelCap);
-                }
-            }
-            if (def != null && def.modExtensions != null)
-            {
-                foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
-                {
-                    bonus = ext.GetMultiplierBonus(settlement.Tile);
-                    if (bonus != 1)
-                    {
-                        addProductionMultiplier(ext.extName, bonus, ext.extDesc);
-                    }
-                }
-            }
-        }
         public void addProductionMultiplier(string id, double value, string desc)
         {
             ProductionBonus multiplier = new ProductionBonus(value, desc);
@@ -549,6 +530,18 @@ namespace FactionColonies
                 if (def.productionMultiplierStat != null && settlement != null)
                 {
                     desc += settlement.getStatDesc(def.productionMultiplierStat);
+                }
+                if (settlement != null)
+                {
+                    foreach (WorldObjectComp comp in settlement.AllComps)
+                    {
+                        if (comp is IResourceProductionModifier provider)
+                        {
+                            string compDesc = provider.GetResourceModifierDesc(this);
+                            if (!compDesc.NullOrEmpty())
+                                desc += compDesc + "\n";
+                        }
+                    }
                 }
                 desc += TextUtil.colorizeMultiplierBonus(settlement?.getSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
 
@@ -1172,30 +1165,6 @@ namespace FactionColonies
         public static double CalculateMarketValue(double rawTotalProduction, double silverPerResource)
         {
             return rawTotalProduction * silverPerResource;
-        }
-
-        /// <summary>
-        /// Calculates the per-worker tithe modifier: additive × multiplicative.
-        /// </summary>
-        public static double CalculateTitheModifierPerWorker(double additive, double multiplicative)
-        {
-            return additive * multiplicative;
-        }
-
-        /// <summary>
-        /// Calculates total tithe modifier for all workers: modifier per worker × worker count.
-        /// </summary>
-        public static double CalculateTotalTitheModifierForWorkers(double modifierPerWorker, int assignedWorkers)
-        {
-            return modifierPerWorker * assignedWorkers;
-        }
-
-        /// <summary>
-        /// Calculates tithe income: (rawMarketValue + workerMods + additiveForTotal) × multForTotal.
-        /// </summary>
-        public static double CalculateTitheIncome(double rawMarketValue, double totalWorkerMod, double additiveForTotal, double multForTotal)
-        {
-            return (rawMarketValue + totalWorkerMod + additiveForTotal) * multForTotal;
         }
 
         /// <summary>

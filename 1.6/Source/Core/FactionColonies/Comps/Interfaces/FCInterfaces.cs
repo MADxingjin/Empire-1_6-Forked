@@ -45,6 +45,29 @@ namespace FactionColonies
         string GetStatModifierDesc(FCStatDef stat);
     }
     /// <summary>
+    /// A WorldObjectComp interface for contributing dynamic, per-resource production bonuses.
+    /// Unlike <see cref="IStatModifierProvider"/> (which operates at the stat level), this operates
+    /// directly on <see cref="ResourceFC"/> instances, letting comps target specific resources.
+    /// <para>Results are queried during production calculation (lazy-cached by ResourceFC's dirty flags).
+    /// When values change, call <c>((WorldSettlementFC)parent).InvalidateResourceCaches()</c> to refresh.</para>
+    /// </summary>
+    public interface IResourceProductionModifier
+    {
+        /// <summary>
+        /// Returns an additive production bonus for the given resource. Return 0 for no effect.
+        /// </summary>
+        double GetResourceAdditiveModifier(ResourceFC resource);
+        /// <summary>
+        /// Returns a multiplicative production modifier for the given resource. Return 1 for no effect.
+        /// </summary>
+        double GetResourceMultiplierModifier(ResourceFC resource);
+        /// <summary>
+        /// Returns a description of this comp's contribution for tooltip display.
+        /// Return null or empty if not contributing to this resource.
+        /// </summary>
+        string GetResourceModifierDesc(ResourceFC resource);
+    }
+    /// <summary>
     /// Defines an interface to let classes hook into the tax system.
     /// </summary>
     public interface ITaxTickParticipant

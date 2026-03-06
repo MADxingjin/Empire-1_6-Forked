@@ -400,26 +400,26 @@ namespace FactionColonies
                 return meetsResearchReqs || meetsTechlevelReq;
             }
         }
-        public double getExtensionAdditives(PlanetTile tile)
+        public double getExtensionAdditives(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double add = 0;
             if (modExtensions?.Count > 0)
             {
                 foreach(ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    add += prod.GetAdditiveBonus(tile);
+                    add += prod.GetAdditiveBonus(tile, settlement);
                 }
             }
             return add;
         }
-        public double getExtensionMultipliers(PlanetTile tile)
+        public double getExtensionMultipliers(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double mult = 1;
             if (modExtensions?.Count > 0)
             {
                 foreach (ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    mult *= prod.GetMultiplierBonus(tile);
+                    mult *= prod.GetMultiplierBonus(tile, settlement);
                 }
             }
             return mult;

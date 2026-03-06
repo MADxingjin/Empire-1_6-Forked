@@ -1325,30 +1325,6 @@ namespace FactionColonies
                 rdisplay.setDirtyCache();
             }
         }
-        public double getFactionTitheBonusAdditivePerWorker(ResourceTypeDef rdef)
-        {
-            double bonus = 0;
-
-            return bonus;
-        }
-        public double getFactionTitheBonusAdditiveForTotal(ResourceTypeDef rdef)
-        {
-            double bonus = 0;
-
-            return bonus;
-        }
-        public double getFactionTitheBonusMultPerWorker(ResourceTypeDef rdef)
-        {
-            double bonus = 1;
-
-            return bonus;
-        }
-        public double getFactionTitheBonusMultForTotal(ResourceTypeDef rdef)
-        {
-            return GetStatValue(FCStatDefOf.titheValueMultiplier);
-        }
-
-
         public void addTax()
         {
             TaxTickRegistry.InvokePreTaxResolution(this);

@@ -80,51 +80,6 @@ namespace FactionColonies
             TestAssert.AreEqual(150.0, ResourceFormulas.CalculateMarketValue(30.0, 5.0));
         }
 
-        // --- CalculateTitheModifierPerWorker ---
-
-        [EmpireTest("Resource")]
-        public static void TitheModPerWorker_AdditiveTimesMultiplicative()
-        {
-            TestAssert.AreEqual(6.0, ResourceFormulas.CalculateTitheModifierPerWorker(3.0, 2.0));
-        }
-
-        // --- CalculateTotalTitheModifierForWorkers ---
-
-        [EmpireTest("Resource")]
-        public static void TotalTitheModForWorkers_ModTimesWorkers()
-        {
-            TestAssert.AreEqual(30.0, ResourceFormulas.CalculateTotalTitheModifierForWorkers(10.0, 3));
-        }
-
-        [EmpireTest("Resource")]
-        public static void TotalTitheModForWorkers_ZeroWorkers_ReturnsZero()
-        {
-            TestAssert.AreEqual(0.0, ResourceFormulas.CalculateTotalTitheModifierForWorkers(10.0, 0));
-        }
-
-        // --- CalculateTitheIncome ---
-
-        [EmpireTest("Resource")]
-        public static void TitheIncome_AllComponentsAddUp()
-        {
-            // (100 + 20 + 10) * 1.0 = 130
-            TestAssert.AreEqual(130.0, ResourceFormulas.CalculateTitheIncome(100.0, 20.0, 10.0, 1.0));
-        }
-
-        [EmpireTest("Resource")]
-        public static void TitheIncome_MultForTotalScalesResult()
-        {
-            // (100 + 20 + 10) * 1.2 = 156
-            TestAssert.AreEqual(156.0, ResourceFormulas.CalculateTitheIncome(100.0, 20.0, 10.0, 1.2));
-        }
-
-        [EmpireTest("Resource")]
-        public static void TitheIncome_ZeroRawWithModifiers_StillProducesIncome()
-        {
-            // (0 + 20 + 10) * 1.0 = 30
-            TestAssert.AreEqual(30.0, ResourceFormulas.CalculateTitheIncome(0.0, 20.0, 10.0, 1.0));
-        }
-
         // --- MaxThingCanAfford ---
 
         [EmpireTest("Resource")]
