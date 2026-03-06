@@ -309,14 +309,14 @@ namespace FactionColonies
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
                         if (location != null)
-                            location.addStatModifiers(evt.statModifiers, sourceId);
+                            location.addStatModifiers(evt.def.statModifiers, sourceId);
                     }
                 }
                 else
                 {
                     foreach (WorldSettlementFC settlement in faction.settlements)
                     {
-                        settlement.addStatModifiers(evt.statModifiers, sourceId);
+                        settlement.addStatModifiers(evt.def.statModifiers, sourceId);
                     }
                 }
             }

@@ -1411,7 +1411,7 @@ namespace FactionColonies
                 //if no specific location then faction wide — apply to all settlements
                 foreach (WorldSettlementFC settlement in settlements)
                 {
-                    settlement.addStatModifiers(fcevent.statModifiers, sourceId);
+                    settlement.addStatModifiers(fcevent.def.statModifiers, sourceId);
                 }
             }
         }

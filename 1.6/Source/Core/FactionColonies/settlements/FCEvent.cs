@@ -153,7 +153,6 @@ namespace FactionColonies
                 def = def,
                 tickStarted = Find.TickManager.TicksGame,
                 timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
-                statModifiers = def.statModifiers,
                 settlementTraitLocations = new List<WorldSettlementFC>()
             };
 
@@ -350,19 +349,6 @@ namespace FactionColonies
                 if (evt.def.loot.Any())
                 {
                     List<Thing> list = evt.def.loot.Select(thing => ThingMaker.MakeThing(thing)).ToList();
-
-                    PaymentUtil.deliverThings(list, evt.source);
-                }
-
-                if (evt.loot.Any())
-                {
-                    List<Thing> list = new List<Thing>();
-
-                    foreach (ThingDef thing in evt.loot)
-                    {
-                        //list.Add(ThingMaker.MakeThing(thing));
-                    }
-
                     PaymentUtil.deliverThings(list, evt.source);
                 }
 
@@ -376,10 +362,10 @@ namespace FactionColonies
                     {
                         if (location != null)
                         {
-                            location.removeStatModifiers(evt.statModifiers, "event_" + evt.def.defName);
+                            location.removeStatModifiers(evt.def.statModifiers, "event_" + evt.def.defName);
 
                             //prosperity loss calculation
-                            location.prosperity -= evt.prosperityLost;
+                            location.prosperity -= evt.def.prosperityLost;
                         }
                     }
                 }
@@ -388,8 +374,8 @@ namespace FactionColonies
                     //if no specific location then faction wide
                     foreach (WorldSettlementFC worldsettlement in faction.settlements)
                     {
-                        worldsettlement.removeStatModifiers(evt.statModifiers, "event_" + evt.def.defName);
-                        worldsettlement.prosperity -= evt.prosperityLost;
+                        worldsettlement.removeStatModifiers(evt.def.statModifiers, "event_" + evt.def.defName);
+                        worldsettlement.prosperity -= evt.def.prosperityLost;
                     }
                 }
 
@@ -611,17 +597,16 @@ namespace FactionColonies
     public class FCEvent : IExposable, ILoadReferenceable
     {
         public FCEventDef def = new FCEventDef();
-        public PlanetTile location = -1; //destination
+        public PlanetTile location = -1;
         public int timeTillTrigger = -1;
         public int tickStarted = -1;
         public int loadID = -1;
-        public PlanetTile source = -1; //source location
-        public bool hasDestination; //if has destination
+        public PlanetTile source = -1;
+        public bool hasDestination;
         public int buildingSlot = -1;
         public BuildingFCDef building;
         public List<WorldSettlementFC> settlementTraitLocations = new List<WorldSettlementFC>();
         public List<Thing> goods = new List<Thing>();
-        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
         public bool hasCustomDescription;
         public string customDescription = "";
 
@@ -630,44 +615,12 @@ namespace FactionColonies
         public Letter let = null;
         public bool isDelayed = false;
 
-        //Random Event Information
-        public bool isRandomEvent;
-        public bool perpetual;
-        public bool activateAtStart;
-        public List<Pawn> pawnSpawn = new List<Pawn>();
-        public int requiredWealth;
-        public IntRange rangeSettlementsAffected = new IntRange(0, 0);
-        public bool settlementsCarryOver = true;
-        public int weight;
-        public int minimumHappiness;
-        public int maximumHappiness = 100;
-        public int minimumLoyalty;
-        public int maximumLoyalty = 100;
-        public int minimumUnrest;
-        public int maximumUnrest = 100;
-        public int minimumProsperity;
-        public int maximumProsperity = 100;
-        public List<FCOptionDef> options = new List<FCOptionDef>();
-        public ResourceTypeDef requiredResource;
-        public int randomThingValue;
-        public ResourceEventRewardDef randomThingRewardDef;
-        public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
-        public int prosperityLost;
-        public bool eventFollows;
-        public FCEventDef followingEvent;
-        public FCEventDef followingEvent2;
-        public bool splitEventFollows;
-        public int splitEventChance = 50;
-        public string optionDescription = "";
-        public List<string> applicableBiomes = new List<string>();
-        public List<ThingDef> loot = new List<ThingDef>();
         //Military Force stuff
         public militaryForce militaryForceAttacking;
         public Faction militaryForceAttackingFaction;
         public militaryForce militaryForceDefending;
         public Faction militaryForceDefendingFaction;
         public WorldSettlementFC settlementFCDefending;
-        public bool isMilitaryEvent;
 
         public WorldSettlementDef settlementToCreate = null;
 
@@ -717,7 +670,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasDestination, "hasDestination");
             Scribe_Collections.Look(ref settlementTraitLocations, "settlementTraitLocations", LookMode.Reference);
             Scribe_Collections.Look(ref goods, "goods", LookMode.Deep);
-            // stat modifiers are not serialized; they are rebuilt from def on load
             Scribe_Values.Look(ref loadID, "loadID");
 
             Scribe_Values.Look(ref buildingSlot, "buildingSlot");
@@ -728,37 +680,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref hasCustomDescription, "hasCustomDescription");
             Scribe_Values.Look(ref customDescription, "customDescription");
 
-            //Random Events
-            Scribe_Values.Look(ref isRandomEvent, "isRandomEvent");
-            Scribe_Values.Look(ref perpetual, "perpetual");
-            Scribe_Values.Look(ref activateAtStart, "activateatStart");
-            Scribe_Collections.Look(ref pawnSpawn, "pawnSpawn", LookMode.Deep);
-            Scribe_Values.Look(ref requiredWealth, "requiredWealth");
-            Scribe_Values.Look(ref rangeSettlementsAffected, "rangeSettlementsAffected");
-            Scribe_Values.Look(ref settlementsCarryOver, "settlementsCarryOver");
-            Scribe_Values.Look(ref weight, "eventValue");
-            Scribe_Values.Look(ref minimumHappiness, "minimumHappiness");
-            Scribe_Values.Look(ref maximumHappiness, "maximumHappiness");
-            Scribe_Values.Look(ref minimumLoyalty, "minimumLoyalty");
-            Scribe_Values.Look(ref maximumLoyalty, "maximumLoyalty");
-            Scribe_Values.Look(ref minimumUnrest, "minimumUnrest");
-            Scribe_Values.Look(ref maximumUnrest, "maximumUnrest");
-            Scribe_Values.Look(ref minimumProsperity, "minimumProsperity");
-            Scribe_Values.Look(ref maximumProsperity, "maximumProsperity");
-            Scribe_Defs.Look(ref requiredResource, "requiredResource");
-            Scribe_Values.Look(ref randomThingValue, "randomThingValue");
-            Scribe_Defs.Look(ref randomThingRewardDef, "randomThingRewardDef");
-            Scribe_Collections.Look(ref options, "options", LookMode.Def);
-            Scribe_Collections.Look(ref incompatibleEvents, "incompatibleEvents", LookMode.Def);
-            Scribe_Values.Look(ref prosperityLost, "prosperityLost");
-            Scribe_Values.Look(ref eventFollows, "eventFollows");
-            Scribe_Defs.Look(ref followingEvent, "followingEvent");
-            Scribe_Defs.Look(ref followingEvent2, "followingEvent2");
-            Scribe_Values.Look(ref splitEventFollows, "splitEventFollows");
-            Scribe_Values.Look(ref splitEventChance, "splitEventChance");
-            Scribe_Values.Look(ref optionDescription, "optionDescription");
-            Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
-            Scribe_Collections.Look(ref loot, "loot", LookMode.Def);
             Scribe_Deep.Look(ref msg, "msg");
             Scribe_Deep.Look(ref let, "let");
             Scribe_Values.Look(ref isDelayed, "isDelayed", false);
@@ -769,14 +690,8 @@ namespace FactionColonies
             Scribe_Deep.Look(ref militaryForceDefending, "militaryForceDefending");
             Scribe_References.Look(ref militaryForceDefendingFaction, "militaryForceDefendingFaction");
             Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
-            Scribe_Values.Look(ref isMilitaryEvent, "isMilitaryEvent");
 
             Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
-
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && def != null)
-            {
-                statModifiers = def.statModifiers;
-            }
         }
 
         public string GetUniqueLoadID()
@@ -800,15 +715,13 @@ namespace FactionColonies
 
     public class FCEventDef : Def
     {
-        //Event main info
         public int timeTillTrigger = -1;
         public string desc;
+        public FCEventCategoryDef category;
 
         //Random Event Information
         public bool isRandomEvent = false;
-        public bool perpetual = false;
         public bool activateAtStart;
-        public List<Pawn> pawnSpawn = new List<Pawn>();
         public int requiredWealth = 0;
         public IntRange rangeSettlementsAffected = new IntRange(0, 0);
         public bool settlementsCarryOver = true;
@@ -821,44 +734,31 @@ namespace FactionColonies
         public int maximumUnrest = 100;
         public int minimumProsperity = 0;
         public int maximumProsperity = 100;
-        public List<FCOptionDef> options = new List<FCOptionDef>();
         public ResourceTypeDef requiredResource;
-        public int randomThingValue = 0;
-        public ResourceEventRewardDef randomThingRewardDef;
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
-        public int prosperityLost = 0;
+
+        //Options
+        public List<FCOptionDef> options = new List<FCOptionDef>();
+        public string optionDescription = "";
+
+        //Event chain
         public bool eventFollows = false;
         public FCEventDef followingEvent = null;
         public FCEventDef followingEvent2 = null;
         public bool splitEventFollows = false;
         public int splitEventChance = 50;
-        public string optionDescription = "";
-        public List<string> applicableBiomes = new List<string>();
+
+        //Rewards
         public List<ThingDef> loot = new List<ThingDef>();
-        public bool hasCustomDescription = false;
-        public string customDescription = "";
-
-        //Map info
-        public int location = -1;
-        public bool hasDestination = false;
-
+        public int randomThingValue = 0;
+        public ResourceEventRewardDef randomThingRewardDef;
+        public int prosperityLost = 0;
+        public List<string> applicableBiomes = new List<string>();
 
         //Stat modifiers during event
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
 
-
-        //Benefits after eventtime info
-        public List<Thing> goods = new List<Thing>();
-
-        //Military Force stuff
-        public militaryForce militaryForceAttacking = null;
-        public Faction militaryForceAttackingFaction = null;
-        public militaryForce militaryForceDefending = null;
-        public Faction militaryForceAttackingDefending = null;
-        public WorldSettlementFC settlementFCDefending = null;
         public bool isMilitaryEvent = false;
-
-        public FCEventCategoryDef category;
 
         public override IEnumerable<string> ConfigErrors()
         {
