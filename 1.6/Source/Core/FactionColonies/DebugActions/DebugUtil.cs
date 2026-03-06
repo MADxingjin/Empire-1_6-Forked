@@ -181,8 +181,13 @@ namespace FactionColonies
             {
                 list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
-                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
                     Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
+                    if (enemyFaction == null)
+                    {
+                        Messages.Message("No enemy faction found.", MessageTypeDefOf.RejectInput);
+                        return;
+                    }
+                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
                     MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
                 }
                 ));
@@ -202,7 +207,7 @@ namespace FactionColonies
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
                     list.Add(new DebugMenuOption(
-                        worldcomp.returnSettlementByLocation(evt.location).Name,
+                        worldcomp.returnSettlementByLocation(evt.location)?.Name ?? "Unknown",
                         DebugMenuOptionMode.Action, delegate
                         {
                             //when event is selected, select defending force to replace it with
@@ -210,7 +215,7 @@ namespace FactionColonies
                             List<DebugMenuOption> list2 = new List<DebugMenuOption>();
                             foreach (WorldSettlementFC settlement in worldcomp.settlements)
                             {
-                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && settlement.Name != evt.settlementFCDefending.Name)
+                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Name)
                                 {
                                     list2.Add(new DebugMenuOption(
                                         settlement.Name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
@@ -218,7 +223,7 @@ namespace FactionColonies
                                         {
                                             if (settlement.MilitaryComp.isMilitaryBusy() == false)
                                             {
-                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending.homeSettlement.Name} to {settlement.Name}");
+                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending?.homeSettlement?.Name ?? "Unknown"} to {settlement.Name}");
                                                 MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
                                             }
                                         }
