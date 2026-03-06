@@ -13,6 +13,7 @@ namespace FactionColonies
             if (!_participants.Contains(participant)) _participants.Add(participant);
         }
         public static void Unregister(IMilitaryEventParticipant participant) => _participants.Remove(participant);
+        public static void ClearAll() => _participants.Clear();
         public static IReadOnlyList<IMilitaryEventParticipant> Participants => _participants;
 
         public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad = false)

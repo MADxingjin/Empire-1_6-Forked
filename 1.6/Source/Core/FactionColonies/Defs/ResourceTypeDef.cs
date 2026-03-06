@@ -573,7 +573,7 @@ namespace FactionColonies
                     {
                         if (ext != ext2)
                         {
-                            yield return "ResourcePoolExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
+                            yield return "ResourcePoolExtension " + ext.ToStringSafe() + " appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }
@@ -583,7 +583,7 @@ namespace FactionColonies
                     {
                         if (ext != ext2)
                         {
-                            yield return "ResourceFilterExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
+                            yield return "ResourceFilterExtension " + ext.ToStringSafe() + " appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }

@@ -13,6 +13,7 @@ namespace FactionColonies
             if (!_tabs.Contains(tab)) _tabs.Add(tab);
         }
         public static void Unregister(IMainTabWindowOverview tab) => _tabs.Remove(tab);
+        public static void ClearAll() => _tabs.Clear();
         public static IReadOnlyList<IMainTabWindowOverview> Tabs => _tabs;
 
         public static void InvokePostCloseWindow()

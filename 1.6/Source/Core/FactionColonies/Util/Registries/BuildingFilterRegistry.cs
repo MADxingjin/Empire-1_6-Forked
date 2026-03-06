@@ -12,6 +12,7 @@ namespace FactionColonies
         }
 
         public static void Unregister(BuildingFilter filter) => _filters.Remove(filter);
+        public static void ClearAll() => _filters.Clear();
 
         public static IReadOnlyList<BuildingFilter> Filters => _filters;
     }

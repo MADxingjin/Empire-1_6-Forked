@@ -14,6 +14,7 @@ namespace FactionColonies
             if (!_taxers.Contains(taxer)) _taxers.Add(taxer);
         }
         public static void Unregister(ITaxTickParticipant taxer) => _taxers.Remove(taxer);
+        public static void ClearAll() => _taxers.Clear();
         public static IReadOnlyList<ITaxTickParticipant> Taxers => _taxers;
 
         public static void InvokePreTaxResolution(FactionFC faction)

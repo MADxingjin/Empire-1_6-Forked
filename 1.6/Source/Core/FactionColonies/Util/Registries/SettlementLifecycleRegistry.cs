@@ -13,6 +13,7 @@ namespace FactionColonies
             if (!_participants.Contains(participant)) _participants.Add(participant);
         }
         public static void Unregister(ISettlementLifecycleParticipant participant) => _participants.Remove(participant);
+        public static void ClearAll() => _participants.Clear();
         public static IReadOnlyList<ISettlementLifecycleParticipant> Participants => _participants;
 
         public static void InvokeOnSettlementCreated(WorldSettlementFC settlement)
