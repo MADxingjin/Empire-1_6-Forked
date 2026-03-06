@@ -542,13 +542,6 @@ namespace FactionColonies
 
                 yield return action;
             }
-            foreach (WorldObjectComp comp in AllComps)
-            {
-                foreach (Gizmo gizmo in comp.GetCaravanGizmos(caravan))
-                {
-                    yield return gizmo;
-                }
-            }
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
