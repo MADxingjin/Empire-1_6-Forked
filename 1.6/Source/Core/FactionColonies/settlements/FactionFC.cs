@@ -757,7 +757,7 @@ namespace FactionColonies
             {
                 faction.def.factionIconPath = iconPath;
             }
-            if (settlements.Any() && settlements[0]?.def != null)
+            if (settlements.Any() && settlements[0]?.def != null && UnityData.IsInMainThread)
             {
                 //TODO: not sure if this will interact wierdly with the new SettlementDef. Keep an eye on this
                 WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].def, ContentFinder<Texture2D>.Get(iconPath));

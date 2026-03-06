@@ -713,7 +713,7 @@ namespace FactionColonies
             _totalUpkeep = upkeep;
             _totalIncome = income;
             _workerCost = _workers == 0 ? getBaseWorkerCost() : (_workerTotalUpkeep / _workers);
-            _totalProfit = Convert.ToInt32(_totalIncome - _totalUpkeep);
+            _totalProfit = _totalIncome - _totalUpkeep;
 
             dirtyProfitCache = false;
         }
