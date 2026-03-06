@@ -19,7 +19,7 @@ namespace FactionColonies
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="techlevel"></param>
-        public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
+        public virtual void SetFilter(ThingFilter filter, TechLevel techlevel, ResourceFC resource = null)
         {
         }
         /// <summary>
@@ -28,7 +28,7 @@ namespace FactionColonies
         /// </summary>
         /// <param name="tlevel">Output parameter. This techlevel will be used if getThingSetMaker returns non-null.</param>
         /// <returns></returns>
-        public virtual ThingSetMaker getThingSetMaker(out TechLevel tlevel)
+        public virtual ThingSetMaker getThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
         {
             tlevel = TechLevel.Undefined;
             return null;
@@ -43,7 +43,7 @@ namespace FactionColonies
         /// <param name="stuffDef">ThingDef of the stuff for this thing. Can be ignored if the thingDef is not stuffable.</param>
         /// <param name="quantity">The number of things to generate.</param>
         /// <returns></returns>
-        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null)
+        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null, ResourceFC resource = null)
         {
             return null;
         }

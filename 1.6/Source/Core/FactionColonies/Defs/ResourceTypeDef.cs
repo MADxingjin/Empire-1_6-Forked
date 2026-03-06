@@ -438,7 +438,7 @@ namespace FactionColonies
             /* A resource is allowed in all Biomes by default */
             return true;
         }
-        public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
+        public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined, ResourceFC resource = null)
         {
             /* Category Allow lists */
             foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
@@ -475,7 +475,7 @@ namespace FactionColonies
             {
                 foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
                 {
-                    ext.SetFilter(filter, techlevel);
+                    ext.SetFilter(filter, techlevel, resource);
                 }
             }
         }

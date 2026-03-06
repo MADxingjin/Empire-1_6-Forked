@@ -546,6 +546,10 @@ namespace FactionColonies
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
         {
+            foreach (FloatMenuOption option in base.GetFloatMenuOptions(caravan))
+            {
+                yield return option;
+            }
             if ((MilitaryComp == null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
                 foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
                     yield return option;

@@ -561,7 +561,7 @@ namespace FactionColonies
             if (def == null)
                 return;
             
-            def.FilterResource(randomTitheFilter, faction.techLevel);
+            def.FilterResource(randomTitheFilter, faction.techLevel, this);
         }
         /// <summary>
         /// Generates a list of ThingDefs that can be generated as tithes for this resource.
@@ -590,14 +590,14 @@ namespace FactionColonies
                 param.countRange = new IntRange(1, 1);
 
                 TechLevel tmplevel = TechLevel.Undefined;
-                ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
+                ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel, this);
                 if (tmp != null)
                 {
                     thingSetMaker = tmp;
                     param.techLevel = tmplevel;
                 }
 
-                def.FilterResource(param.filter, faction.techLevel);
+                def.FilterResource(param.filter, faction.techLevel, this);
 
                 /* AllGenerateableThingsDebug(param).ToList() was taken from PaymentUtil.debugGenerateTithe(), which was used to generate the selection float menu
                  * in the settlement screen. Is this really the right function to use? TODO: look into this. */
@@ -1013,7 +1013,7 @@ namespace FactionColonies
                         LogUtil.Message($"  randomTitheFilter has {randomTitheFilter.AllowedDefCount} allowed items");
 
                         TechLevel tmplevel = TechLevel.Undefined;
-                        ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel);
+                        ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel, this);
                         if (tmp != null)
                         {
                             thingSetMaker = tmp;
@@ -1061,7 +1061,7 @@ namespace FactionColonies
                     }
 
                     /* Try to generate the list through the resource's ResourceFilterExtension */
-                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, quantity, key.quality, key.stuffDef);
+                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, quantity, key.quality, key.stuffDef, this);
                     if (things is null)
                     {
                         /* If we're here, then the resource doesn't have a special implementation for generateSpecificThings(). So try to make things the generic way. */
