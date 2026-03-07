@@ -49,13 +49,13 @@ public enum Operation
     /// </summary>
     public static class FCActionTypeUtil
     {
-        private static readonly System.Collections.Generic.HashSet<FCActionType> _requiresEnable = new System.Collections.Generic.HashSet<FCActionType>
+        private static readonly System.Collections.Generic.HashSet<FCActionType> requiresEnable = new System.Collections.Generic.HashSet<FCActionType>
         {
             FCActionType.SendDiplomat,
             FCActionType.DeployExtraSquad,
             FCActionType.BuildRoadsToAllies
         };
 
-        public static bool RequiresEnable(FCActionType action) => _requiresEnable.Contains(action);
+        public static bool RequiresEnable(FCActionType action) => requiresEnable.Contains(action);
     }
 }

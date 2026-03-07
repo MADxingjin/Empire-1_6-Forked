@@ -36,9 +36,6 @@ namespace FactionColonies
         public bool selectingColonyFC;
         public FactionFC faction;
 
-        // ===== UPDATE TIMER =====
-        private int UIUpdateTimer;
-
         // ===== SCROLL POSITIONS =====
         private Vector2 settlementScroll;
         private Vector2 billsScroll;
@@ -764,7 +761,6 @@ namespace FactionColonies
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
-                //GUI.color = Color.gray;
                 Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH),
                     "Lv " + s.settlementLevel + "  •  Mil " + s.settlementMilitaryLevel);
                 GUI.color = origColor;

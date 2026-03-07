@@ -20,26 +20,26 @@ namespace FactionColonies
         public List<Mercenary> deadPawns = new List<Mercenary>();
         public int tickChanged;
 
-        private HashSet<Pawn> _mercenaryPawnSet = new HashSet<Pawn>();
+        private HashSet<Pawn> mercenaryPawnSet = new HashSet<Pawn>();
 
-        public bool IsMercenaryPawn(Pawn pawn) => _mercenaryPawnSet.Contains(pawn);
+        public bool IsMercenaryPawn(Pawn pawn) => mercenaryPawnSet.Contains(pawn);
 
         public void RebuildMercenaryPawnSet()
         {
-            _mercenaryPawnSet.Clear();
+            mercenaryPawnSet.Clear();
             foreach (MercenarySquadFC squad in mercenarySquads)
             {
                 foreach (Mercenary merc in squad.mercenaries)
                 {
                     if (merc?.pawn != null)
-                        _mercenaryPawnSet.Add(merc.pawn);
+                        mercenaryPawnSet.Add(merc.pawn);
                 }
                 if (squad.animals != null)
                 {
                     foreach (Mercenary animal in squad.animals)
                     {
                         if (animal?.pawn != null)
-                            _mercenaryPawnSet.Add(animal.pawn);
+                            mercenaryPawnSet.Add(animal.pawn);
                     }
                 }
             }

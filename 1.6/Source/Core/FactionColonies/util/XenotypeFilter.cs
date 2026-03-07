@@ -103,32 +103,32 @@ namespace FactionColonies.util
                 return raceTotalWeight;
             }
         }
-        private List<PawnKindDef> _cachedGuardAnimals = null;
+        private List<PawnKindDef> cachedGuardAnimals = null;
         public List<PawnKindDef> GuardAnimals
         {
             get
             {
-                if (_cachedGuardAnimals == null)
+                if (cachedGuardAnimals == null)
                 {
-                    _cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
+                    cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
                 }
-                return _cachedGuardAnimals;
+                return cachedGuardAnimals;
             }
         }
-        private bool _checkedForNonViolent = false;
-        private bool _cachedHasOnlyNonViolent = false;
+        private bool checkedForNonViolent = false;
+        private bool cachedHasOnlyNonViolent = false;
         public bool OnlyNonViolentXenos
         {
             get
             {
-                if (!_checkedForNonViolent)
+                if (!checkedForNonViolent)
                 {
-                    _cachedHasOnlyNonViolent = true;
+                    cachedHasOnlyNonViolent = true;
                     if (xenotypeWeights?.Count > 0 && xenotypeWeights.Any(kvp => kvp.Value > 0 && !XenotypeNeedsSecurityGuards(kvp.Key)))
                     {
-                        _cachedHasOnlyNonViolent = false;
+                        cachedHasOnlyNonViolent = false;
                     }
-                    if (_cachedHasOnlyNonViolent && customXenotypeWeights?.Count > 0)
+                    if (cachedHasOnlyNonViolent && customXenotypeWeights?.Count > 0)
                     {
                         foreach (string xenotypeName in customXenotypeWeights.Keys)
                         {
@@ -136,7 +136,7 @@ namespace FactionColonies.util
                             {
                                 if (!CustomXenotypeNeedsSecurityGuards(xenotype.name))
                                 {
-                                    _cachedHasOnlyNonViolent = false;
+                                    cachedHasOnlyNonViolent = false;
                                     break;
                                 }
                             }
@@ -144,11 +144,11 @@ namespace FactionColonies.util
                     }
                     if (XenoCompleteWeight == 0)
                     {
-                        _cachedHasOnlyNonViolent = false;
+                        cachedHasOnlyNonViolent = false;
                     }
-                    _checkedForNonViolent = true;
+                    checkedForNonViolent = true;
                 }
-                return _cachedHasOnlyNonViolent;
+                return cachedHasOnlyNonViolent;
             }
         }
 
@@ -223,7 +223,7 @@ namespace FactionColonies.util
                 xenotypeWeights.Add(xenotype, weight);
             }
             dirtyXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void AddCustomXenotypeWithWeight(CustomXenotype xenotype, float weight)
         {
@@ -236,7 +236,7 @@ namespace FactionColonies.util
                 customXenotypeWeights.Add(xenotype.name, weight);
             }
             dirtyCustomXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void AddRaceWithWeight(ThingDef race, float weight)
         {
@@ -256,7 +256,7 @@ namespace FactionColonies.util
             {
                 xenotypeWeights.Remove(xenotype);
                 dirtyXenotypeTotalWeight = true;
-                _checkedForNonViolent = false;
+                checkedForNonViolent = false;
                 return true;
             }
             return false;
@@ -267,7 +267,7 @@ namespace FactionColonies.util
             {
                 customXenotypeWeights.Remove(xenotype);
                 dirtyCustomXenotypeTotalWeight = true;
-                _checkedForNonViolent = false;
+                checkedForNonViolent = false;
                 return true;
             }
             return false;
@@ -286,13 +286,13 @@ namespace FactionColonies.util
         {
             xenotypeWeights.Clear();
             dirtyXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void ClearCustomXenotypeWeights()
         {
             customXenotypeWeights.Clear();
             dirtyCustomXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void ClearRaceWeights()
         {

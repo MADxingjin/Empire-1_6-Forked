@@ -27,9 +27,9 @@ namespace FactionColonies
         public ThingDef preferredAmmo;
 
         // Lazy preview pawn for UI rendering only — not serialized
-        private Pawn _previewPawn;
-        private bool _pawnIdentityDirty = true;    // Needs new PawnGenerator call (race/xeno change)
-        private bool _pawnEquipmentDirty = true;   // Needs equipment refresh on same pawn
+        private Pawn previewPawn;
+        private bool pawnIdentityDirty = true;    // Needs new PawnGenerator call (race/xeno change)
+        private bool pawnEquipmentDirty = true;   // Needs equipment refresh on same pawn
 
         public MilUnitFC()
         {
@@ -108,80 +108,80 @@ namespace FactionColonies
         {
             get
             {
-                if (_previewPawn == null || _pawnIdentityDirty)
+                if (previewPawn == null || pawnIdentityDirty)
                     RebuildPreviewPawn();
-                else if (_pawnEquipmentDirty)
+                else if (pawnEquipmentDirty)
                     RefreshPreviewEquipment();
-                return _previewPawn;
+                return previewPawn;
             }
         }
 
         public void MarkEquipmentDirty()
         {
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
         }
 
         private void RebuildPreviewPawn()
         {
             try
             {
-                if (_previewPawn != null)
+                if (previewPawn != null)
                 {
-                    _previewPawn.apparel?.DestroyAll();
-                    _previewPawn.equipment?.DestroyAllEquipment();
-                    _previewPawn.Destroy();
+                    previewPawn.apparel?.DestroyAll();
+                    previewPawn.equipment?.DestroyAllEquipment();
+                    previewPawn.Destroy();
                 }
 
-                _previewPawn = PawnGenerator.GeneratePawn(
+                previewPawn = PawnGenerator.GeneratePawn(
                     FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
 
-                if (_previewPawn != null && _previewPawn.Faction == null)
+                if (previewPawn != null && previewPawn.Faction == null)
                 {
                     Faction empireFaction = FactionCache.PlayerColonyFaction;
                     if (empireFaction != null)
-                        _previewPawn.SetFaction(empireFaction);
+                        previewPawn.SetFaction(empireFaction);
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.Warning($"Failed to generate preview pawn for {name}: {ex.Message}");
-                _previewPawn = null;
+                previewPawn = null;
             }
 
-            _pawnIdentityDirty = false;
+            pawnIdentityDirty = false;
 
-            if (_previewPawn == null)
+            if (previewPawn == null)
             {
-                _pawnEquipmentDirty = false;
+                pawnEquipmentDirty = false;
                 return;
             }
 
-            _previewPawn.mindState.canFleeIndividual = false;
+            previewPawn.mindState.canFleeIndividual = false;
             RefreshPreviewEquipment();
         }
 
         private void RefreshPreviewEquipment()
         {
-            if (_previewPawn == null) return;
+            if (previewPawn == null) return;
 
-            _previewPawn.apparel.DestroyAll();
-            _previewPawn.equipment.DestroyAllEquipment();
+            previewPawn.apparel.DestroyAll();
+            previewPawn.equipment.DestroyAllEquipment();
 
             foreach (SavedThing a in apparel)
             {
                 Thing t = a.CreateThing();
                 if (t is Apparel ap)
-                    _previewPawn.apparel.Wear(ap);
+                    previewPawn.apparel.Wear(ap);
             }
 
             foreach (SavedThing w in weapons)
             {
                 Thing wt = w.CreateThing();
                 if (wt is ThingWithComps twc)
-                    _previewPawn.equipment.AddEquipment(twc);
+                    previewPawn.equipment.AddEquipment(twc);
             }
 
-            _pawnEquipmentDirty = false;
+            pawnEquipmentDirty = false;
         }
 
         // --- Equipment Mutation Methods ---
@@ -189,7 +189,7 @@ namespace FactionColonies
         public void changeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
-            _costDirty = true;
+            costDirty = true;
         }
 
         public void SetWeapon(ThingDef def, ThingDef stuff)
@@ -197,7 +197,7 @@ namespace FactionColonies
             weapons.Clear();
             weapons.Add(new SavedThing(def, stuff));
             preferredAmmo = null;
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -206,7 +206,7 @@ namespace FactionColonies
         {
             weapons.Clear();
             preferredAmmo = null;
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -230,7 +230,7 @@ namespace FactionColonies
             apparel.RemoveAll(existing =>
                 !ApparelUtility.CanWearTogether(existing.thing, def, body));
             apparel.Add(new SavedThing(def, stuff));
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -238,7 +238,7 @@ namespace FactionColonies
         public void RemoveApparel(ApparelLayerDef layer, BodyPartGroupDef bodyPart)
         {
             apparel.RemoveAll(s => MatchesSlot(s.thing, layer, bodyPart));
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -248,7 +248,7 @@ namespace FactionColonies
             weapons.Clear();
             apparel.Clear();
             preferredAmmo = null;
-            _pawnEquipmentDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
@@ -266,16 +266,16 @@ namespace FactionColonies
 
         // --- Cost ---
 
-        private bool _costDirty = true;
+        private bool costDirty = true;
 
         public double getTotalCost
         {
             get
             {
-                if (_costDirty)
+                if (costDirty)
                 {
                     updateEquipmentTotalCost();
-                    _costDirty = false;
+                    costDirty = false;
                 }
                 return equipmentTotalCost;
             }
@@ -331,8 +331,8 @@ namespace FactionColonies
         /// </summary>
         public void RerollPreviewPawn()
         {
-            _pawnIdentityDirty = true;
-            _pawnEquipmentDirty = true;
+            pawnIdentityDirty = true;
+            pawnEquipmentDirty = true;
             changeTick();
         }
     }

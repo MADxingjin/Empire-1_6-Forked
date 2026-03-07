@@ -34,10 +34,10 @@ namespace FactionColonies
         private bool requiredByExpanded = true;
 
         // Layout cache — only recomputed when width changes or filter is changed
-        private float _lastLayoutWidth = -1f;
-        private bool _layoutDirty = true;
-        private readonly List<float> _cachedRowHeights = new List<float>();
-        private float _slotUpgradesHeight = 0f;
+        private float lastLayoutWidth = -1f;
+        private bool layoutDirty = true;
+        private readonly List<float> cachedRowHeights = new List<float>();
+        private float slotUpgradesHeight = 0f;
         private string buildingSearchTerm = "";
 
         /* To deal with a variable number of resources (and variable resources in general), we use an int for
@@ -96,12 +96,12 @@ namespace FactionColonies
 
         private void CalculateLayout(float leftPanelWidth)
         {
-            if (leftPanelWidth == _lastLayoutWidth && !_layoutDirty) return;
-            _lastLayoutWidth = leftPanelWidth;
-            _layoutDirty = false;
+            if (leftPanelWidth == lastLayoutWidth && !layoutDirty) return;
+            lastLayoutWidth = leftPanelWidth;
+            layoutDirty = false;
 
-            _slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
-            FilterArea = new Rect(margin, margin + headerHeight + _slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
+            slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
+            FilterArea = new Rect(margin, margin + headerHeight + slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
             SearchBarArea = new Rect(0, FilterArea.yMax + smallMargin, leftPanelWidth, SearchBarHeight);
             CalculateScrollHeight(leftPanelWidth);
         }
@@ -121,12 +121,12 @@ namespace FactionColonies
         private void CalculateScrollHeight(float panelWidth)
         {
             float cardWidth = panelWidth - 16f; // account for scrollbar
-            _cachedRowHeights.Clear();
+            cachedRowHeights.Clear();
             fullScrollHeight = 0;
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
                 float rowH = CalculateBuildingCardHeight(filteredBuildingList[i], cardWidth) + smallMargin;
-                _cachedRowHeights.Add(rowH);
+                cachedRowHeights.Add(rowH);
                 fullScrollHeight += rowH;
             }
         }
@@ -160,7 +160,7 @@ namespace FactionColonies
             if (Widgets.ButtonInvisible(headerRect))
             {
                 expanded = !expanded;
-                _layoutDirty = true;
+                layoutDirty = true;
             }
         }
 
@@ -267,7 +267,7 @@ namespace FactionColonies
                 selectedBuilding = null;
             }
 
-            _layoutDirty = true;
+            layoutDirty = true;
         }
 
         private bool ShouldShowBuilding(BuildingFCDef building)
@@ -364,7 +364,7 @@ namespace FactionColonies
             DrawFilterButtons();
 
             // Recalculate if filter changed mid-frame
-            if (_layoutDirty)
+            if (layoutDirty)
             {
                 CalculateLayout(panel.width);
             }
@@ -388,7 +388,7 @@ namespace FactionColonies
             }
 
             // Recalculate if filter changed mid-frame
-            if (_layoutDirty)
+            if (layoutDirty)
             {
                 CalculateLayout(panel.width);
             }
@@ -446,7 +446,7 @@ namespace FactionColonies
 
         private void DrawBuildingListItem(Listing_Standard ls, BuildingFCDef building, int index)
         {
-            float thisRowHeight = _cachedRowHeights[index];
+            float thisRowHeight = cachedRowHeights[index];
             Rect fullrow = ls.GetRect(thisRowHeight);
             Rect row = new Rect(fullrow.x, fullrow.y + smallMargin, fullrow.width, fullrow.height - smallMargin);
 

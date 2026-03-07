@@ -58,14 +58,14 @@ namespace FactionColonies
             loadID = FactionCache.FactionComp.NextSquadID;
         }
 
-        private bool _costDirty = true;
+        private bool costDirty = true;
 
         public double GetEquipmentTotalCost()
         {
-            if (_costDirty)
+            if (costDirty)
             {
                 updateEquipmentTotalCost();
-                _costDirty = false;
+                costDirty = false;
             }
             return equipmentTotalCost;
         }
@@ -96,7 +96,7 @@ namespace FactionColonies
         public void ChangeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
-            _costDirty = true;
+            costDirty = true;
         }
 
         public int getLatestChanged
