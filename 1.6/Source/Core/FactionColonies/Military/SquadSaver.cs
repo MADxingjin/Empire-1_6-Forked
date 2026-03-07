@@ -201,7 +201,7 @@ namespace FactionColonies
         public MilUnitFC CreateMilUnit()
         {
             PawnKindDef resolvedKind = pawnKind;
-            if (pawnKind != null && !FactionCache.FactionComp.raceFilter.Allows(pawnKind.race))
+            if (pawnKind != null && FactionCache.FactionComp.xenotypeFilter.GetRaceWeight(pawnKind.race) <= 0)
             {
                 resolvedKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }

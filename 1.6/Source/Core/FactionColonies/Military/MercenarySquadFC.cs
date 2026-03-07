@@ -260,7 +260,7 @@ namespace FactionColonies
             PawnKindDef raceChoice = race;
             FactionFC factionFc = FactionCache.FactionComp;
 
-            if (race == null || !factionFc.raceFilter.Allows(raceChoice.race))
+            if (race == null || factionFc.xenotypeFilter.GetRaceWeight(raceChoice.race) <= 0)
             {
                 raceChoice = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }

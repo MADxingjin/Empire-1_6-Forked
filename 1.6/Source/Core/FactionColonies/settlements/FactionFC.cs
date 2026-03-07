@@ -182,7 +182,6 @@ namespace FactionColonies
         public int nextMilitaryFireSupportID = 1;
 
         // ── Filters & Misc ──
-        public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
         public XenotypeFilter xenotypeFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
         public float tradedAmount = 0;
@@ -303,7 +302,6 @@ namespace FactionColonies
             //save resources
             Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
-            Scribe_Deep.Look(ref raceFilter, "raceFilter");
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
             Scribe_Values.Look(ref updateProcessed, "updateProcessed", false);
 
@@ -351,14 +349,6 @@ namespace FactionColonies
         public override void FinalizeInit(bool fromLoad)
         {
             base.FinalizeInit(fromLoad);
-
-            //Just in case null is saved somehow
-            if (raceFilter == null)
-            {
-                LogUtil.Message("Null raceFilter detected - Recreating");
-                raceFilter = new RaceThingFilter(this);
-                raceFilter.FinalizeInit(this);
-            }
 
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
@@ -715,7 +705,6 @@ namespace FactionColonies
 
             if (_techLevel != curTechLevel)
             {
-                raceFilter.FinalizeInit(this);
                 xenotypeFilter.FinalizeInit(this);
                 DirtyAllTitheCaches();
             }

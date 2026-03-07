@@ -21,8 +21,6 @@ namespace FactionColonies.util
         private FactionDef faction;
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
-        private List<TraderKindDef> origCaravanTraderKinds = new List<TraderKindDef>();
-        private List<TraderKindDef> origVisitorTraderKinds = new List<TraderKindDef>();
         private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
 
 
@@ -169,8 +167,6 @@ namespace FactionColonies.util
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
-            origCaravanTraderKinds.AddRange(faction.caravanTraderKinds);
-            origVisitorTraderKinds.AddRange(faction.visitorTraderKinds);
             origBaseTraderKinds.AddRange(faction.baseTraderKinds);
         }
 
@@ -640,7 +636,7 @@ namespace FactionColonies.util
             if (FactionCache.XenotypeIsNonViolent(xenotype))
             {
                 // Find suitable security guard animals
-                securityGuardsByXenotype[xenotype].AddRange(GuardAnimals);
+                securityGuardsByXenotype[xenotype].SetRange(GuardAnimals);
             }
         }
         private void SetupSecurityGuards(string xenotype)
@@ -1446,8 +1442,6 @@ namespace FactionColonies.util
             Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
             Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
 
-            Scribe_Collections.Look(ref origCaravanTraderKinds, "origCaravanTraderKinds", LookMode.Def);
-            Scribe_Collections.Look(ref origVisitorTraderKinds, "origVisitorTraderKinds", LookMode.Def);
             Scribe_Collections.Look(ref origBaseTraderKinds, "origBaseTraderKinds", LookMode.Def);
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
