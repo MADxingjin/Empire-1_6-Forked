@@ -70,7 +70,6 @@ namespace FactionColonies
         public int uiTimeUpdate;
         public int militaryTimeDue;
         private bool firstTick = true;
-        public bool updateProcessed = false;
 
         // ── Lazy-Cached Averages ──
         /* Faction averages — lazy-cached via dirtyAveragesCache */
@@ -303,7 +302,6 @@ namespace FactionColonies
             Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
-            Scribe_Values.Look(ref updateProcessed, "updateProcessed", false);
 
             //Update
             Scribe_Values.Look(ref nextSettlementFCID, "nextSettlementFCID");
@@ -414,8 +412,6 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
-                FCSettings.UpdateChanges();
-
                 roadBuilder.FirstTick();
 
                 if (!(faction is null))

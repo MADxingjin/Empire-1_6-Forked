@@ -93,7 +93,6 @@ namespace FactionColonies
 
 
         public static int productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
-        public static int storeReportCount = 4;
         public static int workerCost = DEFAULT_WORKER_COST;
 
         public static EmpireDifficultyLevel difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
@@ -134,8 +133,6 @@ namespace FactionColonies
 
         public static int maxPolicyCount = 2;
 
-        public static double updateVersion = 0;
-
         /* Flag for debug/verbose logging. */
         private static bool printDebug = false;
         public static bool PrintDebug => printDebug;
@@ -163,25 +160,13 @@ namespace FactionColonies
             Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT);
             Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT);
-            Scribe_Values.Look(ref updateVersion, "updateVersion");
-            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
+Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
             Scribe_Values.Look(ref printDebug, "printDebug", false);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                // Band aid - For existing users upgrading from old system, detect if they have custom values
-                if (difficultyLevel == DEFAULT_DIFFICULTY_LEVEL)
-                {
-                    // Check if current values match Adventure Story defaults
-                    if (silverPerResource != DEFAULT_SILVER_PER_RESOURCE || timeBetweenTaxes_days != DEFAULT_TAX_INTERVAL_DAYS ||
-                        productionTitheMod != DEFAULT_PRODUCTION_TITHE_MOD || workerCost != DEFAULT_WORKER_COST)
-                    {
-                        // User had custom settings, set to Custom mode
-                        difficultyLevel = EmpireDifficultyLevel.Custom;
-                    }
-                }
                 /* Re-construct the intranges */
                 minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
                 minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
@@ -211,85 +196,7 @@ namespace FactionColonies
             }
             return "Unknown";
         }
-        public static void UpdateChanges()
-        {
-            FactionFC factionFC = FactionCache.FactionComp;
-            PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
-
-            // Store the initial state before any modifications
-            bool wasAlreadyProcessed = factionFC.updateProcessed;
-
-            // Only log once when first setting up
-            if (!factionFC.updateProcessed)
-            {
-                LogUtil.Message("Updating Empire to Latest Version");
-                // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
-            }
-            //NEW PLACE FOR UPDATE VERSIONS
-
-            // Only run verification and alerts for new games/first time setup
-            if (!wasAlreadyProcessed)
-            {
-
-                // Welcome message!
-                Find.WindowStack.Add(new FCWindow_Welcome());
-
-                LogUtil.Message("Testing for traits with no tie");
-                VerifyTraits();
-            
-                MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
-
-                LogUtil.Message("Testing for update change");
-                
-                // Mark as processed AFTER everything is done
-                factionFC.updateProcessed = true;
-            }
-
-            if (updateVersion < 0.370)
-            {
-                Find.LetterStack.ReceiveLetter("FCManualDefenseWarningLabel".Translate(), "FCManualDefenseWarningDesc".Translate(), LetterDefOf.NeutralEvent);
-            }
-
-            double newVersion = PatchNoteDef.GetLatestForMod("saakra.empire").ToOldEmpireVersion;
-            //Add update letter/checker here!!
-            if (updateVersion < newVersion)
-            {
-                patchNoteSettings.lastVersion = updateVersion;
-                patchNoteSettings.curVersion = newVersion;
-                patchNoteSettings.Write();
-
-                DebugActionsMisc.PatchNotesDisplayWindow();
-
-                updateVersion = newVersion;
-                settlementsAutoBattle = true;
-            }
-        }
-
-        private static void MessagePlayerAboutConfigErrors(FactionFC factionFC)
-        {
-            LogUtil.Message("Testing for invalid capital map");
-            //Check for an invalid capital map
-            if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null)//&& factionFC.SoSShipCapital == false)
-            {
-                Messages.Message("FCResetCapitalLocationWarning".Translate(), MessageTypeDefOf.NegativeEvent);
-            }
-
-            if (factionFC.taxMap == null)
-            {
-                Messages.Message("FCTaxMapNotSetWarning".Translate(), MessageTypeDefOf.CautionInput);
-            }
-
-            if (factionFC.policies.Count() < 2)
-            {
-                Find.LetterStack.ReceiveLetter("FCTraits".Translate(), "FCSelectYourTraits".Translate(), LetterDefOf.NeutralEvent);
-            }
-
-            if (!settlementsAutoBattle)
-            {
-                Messages.Message("FCAutoResolveDisabledWarning".Translate(), MessageTypeDefOf.RejectInput);
-            }
-        }
-        public static void VerifyTraits()
+        public static void ReapplyStatModifiers()
         {
             FactionFC faction = FactionCache.FactionComp;
             /* Clear stat modifiers for all settlements, and then reapply inherent/building modifiers */
