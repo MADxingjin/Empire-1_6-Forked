@@ -12,8 +12,7 @@ namespace FactionColonies
     public class ResourceFC : IExposable
     {
         public ResourceTypeDef def;
-        public string name;
-        public string label;
+        public string label => def?.LabelCap;
         public WorldSettlementFC settlement;
         private int savedAssignedWorkers;
         public int assignedWorkers
@@ -226,11 +225,6 @@ namespace FactionColonies
                 /* This is a super bad case that should never happen. Find a way to make this a bigger error? */
                 LogUtil.Error($"Created ResourceFC with NULL resourceDef!");
             }
-            else
-            {
-                name = resourceDef.label;
-                label = resourceDef.LabelCap;
-            }
             randomTitheFilter = new ThingFilter();
             randomTitheBudget = 0;
             productionAdditives.Clear();
@@ -247,8 +241,6 @@ namespace FactionColonies
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
-            Scribe_Values.Look(ref name, "name");
-            Scribe_Values.Look(ref label, "label");
             Scribe_Collections.Look(ref productionAdditives, "productionAdditives", LookMode.Value, LookMode.Deep);
             Scribe_Collections.Look(ref productionMultipliers, "productionMultiplers", LookMode.Value, LookMode.Deep);
 
@@ -927,7 +919,7 @@ namespace FactionColonies
                 double totalThingValue = titheThingTotalValue(maxValueThing, quantity);
                 if (totalValue - totalThingValue < titheIncome)
                 {
-                    double budget = titheIncome - (totalValue - (totalValue - totalThingValue));
+                    double budget = titheIncome - totalThingValue;
                     int newQuantity = maxThingCanAfford(maxValueThing, budget);
                     int removeNum = quantity - newQuantity;
                     decrementInTitheList(maxValueThing, removeNum);
@@ -999,7 +991,7 @@ namespace FactionColonies
                 {
                     // Calculate the random tithe
 
-                    double minimum = randomTitheFilter.AllowedThingDefs.Aggregate<ThingDef, double>(999999, (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
+                    double minimum = randomTitheFilter.AllowedThingDefs.Aggregate<ThingDef, double>(double.MaxValue, (current, thing) => Math.Min(thing?.BaseMarketValue ?? 100, current));
                     LogUtil.Message($"{settlement.Name}, resource {label}, minimum random tithe: {minimum}, budget: {randomBudget}");
                     if (minimum <= randomBudget)
                     {

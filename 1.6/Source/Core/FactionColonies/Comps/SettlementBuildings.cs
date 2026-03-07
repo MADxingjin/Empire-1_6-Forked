@@ -427,7 +427,7 @@ namespace FactionColonies
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.addStatModifiers(def.statModifiers, buildingID(buildingSlot), def.LabelCap);
+            WorldSettlement.addStatModifiers(def.statModifiers, buildingID(buildingSlot));
         }
         public void removeBuildingStatModifiers(int buildingSlot)
         {
@@ -460,8 +460,6 @@ namespace FactionColonies
 
             FactionFC faction = FactionCache.FactionComp;
             upkeep = faction.FoldBehaviors(upkeep, (b, u) => b.ModifyBuildingUpkeep(building, u, WorldSettlement));
-
-            upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
 
             return Math.Max((int)upkeep, 0);
         }

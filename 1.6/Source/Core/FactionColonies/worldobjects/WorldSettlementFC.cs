@@ -994,24 +994,9 @@ namespace FactionColonies
             return FCSettings.workerCost + getStatValue(FCStatDefOf.workerBaseCost);
         }
 
-        public int buildingUpkeepModifier(BuildingFCDef building)
-        {
-            int reduction = 0;
-            //For now, this does nothing. But if we add ways to reduce building upkeep at the settlement level, that math should go here.
-
-            return reduction;
-        }
-
         public double getTotalUpkeep() => totalUpkeep;
 
         public double getTotalProfit() => totalProfit;
-        /// <summary>
-        /// Compatibility focused: this object should only be destroyed very deliberately, else another object is likely trying to handle negative combat resolution against this settlement.
-        /// </summary>
-        public void PrepareDestroyWorldObject()
-        {
-            PrepareDestroy();
-        }
 
         public float Happiness
         {
@@ -1079,7 +1064,7 @@ namespace FactionColonies
         /// Adds stat modifiers from a source (building, settlement type, etc).
         /// Resource production bonuses are now handled via FCStatDef's linkedResource on ResourceFC.
         /// </summary>
-        public void addStatModifiers(List<FCStatModifier> mods, string sourceId, string sourceLabel = null)
+        public void addStatModifiers(List<FCStatModifier> mods, string sourceId)
         {
             if (mods != null)
             {
@@ -1272,7 +1257,6 @@ namespace FactionColonies
 
         private int returnOverMaxWorkersFromPrisoners()
         {
-            //LogUtil.Message("max worker : " + num);
             return prisonerList.Count(prisoner => prisoner.workload == FCWorkLoad.Light);
         }
 
