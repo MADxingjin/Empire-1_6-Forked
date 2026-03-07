@@ -280,87 +280,26 @@ namespace FactionColonies
             return pawn;
         }
 
-        //TODO: this function isn't *really* based on resource types, but look into making this more modular anyways, based
-        //      on resourcetypes
-        public static List<Thing> generateThing(double valueBase, string resourceOfThing)
+        public static List<Thing> generateRewardThings(double valueBase, ResourceEventRewardDef rewardDef)
         {
-            regen:
-            List<Thing> things = new List<Thing>();
-            ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
-            ThingSetMakerParams param = new ThingSetMakerParams();
-            param.totalMarketValueRange = new FloatRange((float) (valueBase - 300), (float) (valueBase + 300));
-            param.filter = new ThingFilter();
-            param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
-
-            switch (resourceOfThing)
+            if (rewardDef == null)
             {
-                case "food": //food
-                    param.filter.SetAllow(ThingCategoryDefOf.Foods, true);
-                    param.countRange = new IntRange(1, 1);
-                    break;
-                case "weapons": //weapons
-                    param.filter.SetAllow(ThingCategoryDefOf.Weapons, true);
-                    param.qualityGenerator = QualityGenerator.Gift;
-                    param.totalMarketValueRange =
-                        new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 2));
-                    param.countRange = new IntRange(1, 1);
-                    break;
-                case "apparel": //apparel
-                    param.filter.SetAllow(ThingCategoryDefOf.Apparel, true);
-                    param.qualityGenerator = QualityGenerator.Gift;
-                    param.totalMarketValueRange =
-                        new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 2));
-                    param.countRange = new IntRange(1, 1);
-                    break;
-                case "armor": //armor
-                    param.qualityGenerator = QualityGenerator.Gift;
-                    param.filter.SetAllow(DefDatabase<ThingCategoryDef>.GetNamed("ApparelArmor"), true);
-                    param.filter.SetAllow(ThingCategoryDefOf.Apparel, true);
-                    param.countRange = new IntRange(1, 1);
-                    param.totalMarketValueRange =
-                        new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 2));
-                    break;
-                case "animals": //animals
-                    thingSetMaker = new ThingSetMaker_Animals();
-                    param.techLevel = TechLevel.Undefined;
-                    param.totalMarketValueRange =
-                        new FloatRange((float) (valueBase - valueBase * .5), (float) (valueBase * 1.5));
-                    //param.countRange = new IntRange(1,4);
-                    break;
-                case "logging": //Logging
-                    param.filter.SetAllow(ThingDefOf.WoodLog, true);
-                    param.countRange = new IntRange(1, 10);
-                    break;
-                case "mining": //Mining
-                    param.filter.SetAllow(StuffCategoryDefOf.Metallic, true);
-                    param.filter.SetAllow(ThingDefOf.Silver, false);
-                    //Android shit?
-                    param.filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("Teachmat"), false);
-                    //Remove RimBees Beeswax
-                    param.filter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("RB_Waxy"), false);
-                    //Remove Alpha Animals skysteel
-                    param.filter.SetAllow(DefDatabase<ThingDef>.GetNamedSilentFail("AA_SkySteel"), false);
-                    param.countRange = new IntRange(1, 10);
-                    break;
-                case "drugs": //drugs
-                    param.filter.SetAllow(ThingCategoryDefOf.Drugs, true);
-                    param.countRange = new IntRange(1, 2);
-                    break;
-                default: //log error
-                    LogUtil.Error("This is an error. Report this to the dev. generateThing - nonexistent case ({resourceOfThing})");
-                    break;
+                LogUtil.Error("generateRewardThings called with null rewardDef");
+                return new List<Thing>();
             }
 
-            //LogUtil.Message(resourceID.ToString());
-
-
-            //thingSetMaker.root
-            things = thingSetMaker.Generate(param);
-            if (PaymentUtil.returnValueOfTithe(things) < param.totalMarketValueRange.Value.min)
+            ThingSetMakerParams param = rewardDef.BuildParams(valueBase, out ThingSetMaker thingSetMaker);
+            List<Thing> things = null;
+            for (int attempts = 0; attempts < 100; attempts++)
             {
-                goto regen;
+                things = thingSetMaker.Generate(param);
+                if (PaymentUtil.returnValueOfTithe(things) >= param.totalMarketValueRange.Value.min)
+                {
+                    return things;
+                }
             }
 
+            LogUtil.Warning($"generateRewardThings failed to meet minimum value after 100 attempts for {rewardDef.defName}. Returning last result.");
             return things;
         }
 

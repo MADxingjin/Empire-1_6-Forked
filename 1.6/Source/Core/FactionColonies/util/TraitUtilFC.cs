@@ -76,16 +76,5 @@ namespace FactionColonies
 
             return tempTrait;
         }
-
-        public static int returnResearchAmount()
-        {
-            int research = 0;
-            research += Convert.ToInt32(FactionCache.FactionComp.getFieldValue("researchBaseProduction", Operation.Addition));
-            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
-            {
-                research += Convert.ToInt32(settlement.getFieldValue("researchBaseProduction", Operation.Addition));
-            }
-            return research;
-        }
     }
 }

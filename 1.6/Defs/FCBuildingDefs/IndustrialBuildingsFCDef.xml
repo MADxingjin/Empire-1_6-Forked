@@ -163,7 +163,7 @@
 		<!--Name of Def -->
 		<label>Tree Farm</label>
 		<!--Lable of Def -->
-		<desc>Stop stripping forest of trees and just grow your own! +.5 base logging production.</desc>
+		<desc>Stop stripping forest of trees and just grow your own!</desc>
 		<!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration>

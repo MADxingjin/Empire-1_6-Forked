@@ -85,14 +85,16 @@
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>5</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
-	<!-- aidsDefense only really matters for manual settlement defense. -->
-	<aidsDefense>true if the production of this resource should be considered when generating defenses for the settlement. false otherwise. Default: false</aidsDefense>
-	<!-- Specify any modExtensions necessary for your resource. There are three types of extensions that you can extend to add functionality:
+	<!-- defenseWeight controls how much this resource's production contributes to settlement defense. 0 means no contribution. Default: 0 -->
+	<defenseWeight>1.0</defenseWeight>
+	<!-- Specify any modExtensions necessary for your resource. There are four types of extensions that you can extend to add functionality:
 	     1) ResourceProductionExtension: allows you to specify additional additives or multipliers for this resource with your own conditionals
 		 2) ResourceFilterExtension: allows for more fine-grained control over what types of things are allowed for this resource, rather than simple
 		                             allowlists/blocklists. Is used by the Animals resource to specify animals for tithing.
 		 3) ResourcePoolExtension: must be specified for pool resources. Specifies how the pools are created and managed. You'll need to create your own
-		                           custom ResourcePoolExtension by extending the base ResourcePoolExtension class.-->
+		                           custom ResourcePoolExtension by extending the base ResourcePoolExtension class.
+		 4) ResourceTaxExtension: provides pre/post hooks into the tithe generation process for non-pool resources. Extend this to modify
+		                          generated tithes or resource state at tax time. Cannot be used on pool resources.-->
 	<modExtensions>
 		<!-- The Hillious ResourceProductionExtension allows you to specify any additive or multiplier bonuses for this resource based on tile hilliness.-->
 		<!-- You only need to specify the values that you want to change. Any unspecified modifier or hilliness level will use the defaults of 0 for additive, and 1 for multiplier.-->

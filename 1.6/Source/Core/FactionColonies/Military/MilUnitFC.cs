@@ -23,6 +23,9 @@ namespace FactionColonies
         public List<SavedThing> apparel = new List<SavedThing>();
         public bool HasWeapon => weapons.Any(w => w.thing != null);
 
+        // CE ammo preference (null = equip random ammo)
+        public ThingDef preferredAmmo;
+
         // Lazy preview pawn for UI rendering only — not serialized
         private Pawn _previewPawn;
         private bool _pawnIdentityDirty = true;    // Needs new PawnGenerator call (race/xeno change)
@@ -90,6 +93,7 @@ namespace FactionColonies
             // Def-based equipment storage
             Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
             Scribe_Collections.Look(ref apparel, "apparel", LookMode.Deep);
+            Scribe_Defs.Look(ref preferredAmmo, "preferredAmmo");
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -192,6 +196,7 @@ namespace FactionColonies
         {
             weapons.Clear();
             weapons.Add(new SavedThing(def, stuff));
+            preferredAmmo = null;
             _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
@@ -200,9 +205,22 @@ namespace FactionColonies
         public void ClearWeapon()
         {
             weapons.Clear();
+            preferredAmmo = null;
             _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
+        public void SetPreferredAmmo(ThingDef ammo)
+        {
+            preferredAmmo = ammo;
+            changeTick();
+        }
+
+        public void ClearPreferredAmmo()
+        {
+            preferredAmmo = null;
+            changeTick();
         }
 
         public void SetApparel(ThingDef def, ThingDef stuff)
@@ -229,6 +247,7 @@ namespace FactionColonies
         {
             weapons.Clear();
             apparel.Clear();
+            preferredAmmo = null;
             _pawnEquipmentDirty = true;
             changeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);

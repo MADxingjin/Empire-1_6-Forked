@@ -396,9 +396,6 @@ namespace FactionColonies.util
 			FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.deliveryArrival);
 			evt.source = evtParams.source;
 			evt.goods = evtParams.goods;
-			evt.classToRun = "FactionColonies.util.DeliveryEvent";
-			evt.classMethodToRun = "Action";
-			evt.passEventToClassMethodToRun = true;
 			evt.customDescription = evtParams.customDescription;
 			evt.hasCustomDescription = true;
 			evt.timeTillTrigger = evtParams.timeTillTrigger;

@@ -1,6 +1,7 @@
 using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,20 @@ namespace FactionColonies
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
+        [DebugAction("Empire", "Clear faction traits and policies", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ClearFactionTraitsAndPolicies()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            for (int i = 0; i < faction.factionTraits.Count; i++)
+                faction.factionTraits[i] = new FCPolicy(FCPolicyDefOf.empty);
+
+            faction.policies.Clear();
+
+            LogUtil.Message("Cleared faction traits and policies.");
+        }
+
         [DebugAction("Empire", "Reset All Military Squad Assignments", allowedGameStates = AllowedGameStates.Playing)]
         private static void ResetAllMilitarySquads()
         {
@@ -105,7 +120,8 @@ namespace FactionColonies
 
             for (int k = util.mercenarySquads.Count() - 1; k >= 0; k--)
             {
-                util.mercenarySquads[k].settlement.MilitaryComp.militarySquad = null;
+                if (util.mercenarySquads[k].settlement.MilitaryComp != null)
+                    util.mercenarySquads[k].settlement.MilitaryComp.militarySquad = null;
                 util.mercenarySquads.RemoveAt(k);
             }
 
@@ -415,6 +431,51 @@ namespace FactionColonies
                 }
                 Find.WindowStack.Add(new Dialog_DebugOptionListLister(stats));
             });
+        }
+
+        [DebugAction("Empire", "Create Settlement (Instant)", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
+        private static void CreateSettlementInstant()
+        {
+            PlanetTile tile = GenWorld.MouseTile();
+            if (tile == -1)
+            {
+                Messages.Message("Invalid tile selected.", MessageTypeDefOf.RejectInput);
+                return;
+            }
+
+            List<WorldSettlementDef> defs = DefDatabase<WorldSettlementDef>.AllDefsListForReading;
+            if (defs.Count == 1)
+            {
+                TryCreateInstantSettlement(tile, defs[0]);
+            }
+            else
+            {
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (WorldSettlementDef def in defs)
+                {
+                    WorldSettlementDef localDef = def;
+                    list.Add(new DebugMenuOption(localDef.LabelCap, DebugMenuOptionMode.Action,
+                        () => TryCreateInstantSettlement(tile, localDef)));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+            }
+        }
+
+        private static void TryCreateInstantSettlement(PlanetTile tile, WorldSettlementDef def)
+        {
+            StringBuilder reason = new StringBuilder();
+            if (!WorldTileChecker.IsValidTileForNewSettlement(tile, def, reason))
+            {
+                Messages.Message($"Cannot settle here: {reason}", MessageTypeDefOf.RejectInput);
+                return;
+            }
+            if (FactionCache.FactionComp.checkSettlementCaravansList(tile))
+            {
+                Messages.Message("A settlement caravan is already heading to this tile.", MessageTypeDefOf.RejectInput);
+                return;
+            }
+            LogUtil.MessageForce($"Debug - Create Settlement (Instant) at tile {tile.Tile} with type {def.defName}");
+            ColonyUtil.createPlayerColonySettlement(tile, def);
         }
 
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]

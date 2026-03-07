@@ -69,7 +69,7 @@
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>4</titheMaxCountBase>
 	<titheMaxCountScaler>2</titheMaxCountScaler>
-	<aidsDefense>true</aidsDefense>
+	<defenseWeight>1.0</defenseWeight>
 	<modExtensions>
 		<li Class="FactionColonies.ResourceProductionExtension_Hilliness">
 			<resourceHilliness>

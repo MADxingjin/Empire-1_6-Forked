@@ -27,6 +27,27 @@ namespace FactionColonies
 
         private const float traitButtonSize = 30f;
 
+        // Button rects for the circular policy layout are constant (fixed window size, no resize).
+        // Computed once at class load instead of every frame.
+        private static readonly Rect[] PolicyButtonRects = BuildPolicyButtonRects();
+
+        private static Rect[] BuildPolicyButtonRects()
+        {
+            const double arc = (double)2 / 9;
+            const float xrot = 60f, yrot = 60f;
+            const float xbase = (fullwidth - 18f * 2f) * 0.2f; // inRect.xMax * 0.2f for fixed-size window
+            const float ybase = 200f;
+            var rects = new Rect[9];
+            for (int i = 0; i < 9; i++)
+            {
+                rects[i] = new Rect(
+                    (float)(xbase + xrot * Math.Cos(arc * i * Math.PI)),
+                    (float)(ybase + yrot * Math.Sin(arc * i * Math.PI)),
+                    traitButtonSize, traitButtonSize);
+            }
+            return rects;
+        }
+
         List<FCPolicyDef> selectedPolicies = new List<FCPolicyDef>();
         static List<Vector2> policyScrollBars = new List<Vector2>();
 
@@ -77,40 +98,15 @@ namespace FactionColonies
 
             Rect buttonConfirm = new Rect((inRect.xMax - 200)/2f, inRect.yMax - 50, 200, 30);
 
-            double traitRotationArc = (double)2 / (double)9; // amount of traits
-            float traitButtonXrot = 60f;
-            float traitButtonYrot = 60f;
-            float traitButtonXbase = inRect.xMax * 0.2f;
-            float traitButtonYbase = 200f;
-            float traitButtonAreaWidth = 2 * traitButtonXrot + traitButtonSize;
-            float traitButtonAreaHeight = 2 * traitButtonYrot + traitButtonSize;
-
-            Rect buttonMilitaristic = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 0 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 0 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonAuthoritarian = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 1 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 1 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonIsolationist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 2 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 2 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonFeudal = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 3 * Math.PI)),
-                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 3 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonPacifist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 4 * Math.PI)),
-                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 4 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonEgalitarian = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 5 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 5 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonExpansionist = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 6 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 6 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonTechnocrat = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 7 * Math.PI)),
-                                                (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 7 * Math.PI)), traitButtonSize, traitButtonSize);
-
-            Rect buttonSlaver = new Rect((float)(traitButtonXbase + traitButtonXrot * Math.Cos(traitRotationArc * 8 * Math.PI)),
-                                            (float)(traitButtonYbase + traitButtonYrot * Math.Sin(traitRotationArc * 8 * Math.PI)), traitButtonSize, traitButtonSize);
+            Rect buttonMilitaristic  = PolicyButtonRects[0];
+            Rect buttonAuthoritarian = PolicyButtonRects[1];
+            Rect buttonIsolationist  = PolicyButtonRects[2];
+            Rect buttonFeudal        = PolicyButtonRects[3];
+            Rect buttonPacifist      = PolicyButtonRects[4];
+            Rect buttonEgalitarian   = PolicyButtonRects[5];
+            Rect buttonExpansionist  = PolicyButtonRects[6];
+            Rect buttonTechnocrat    = PolicyButtonRects[7];
+            Rect buttonSlaver        = PolicyButtonRects[8];
 
             Rect descBox = new Rect(inRect.xMax / 2f, headerHeight, (inRect.xMax / 2f) - margin, buttonConfirm.y - headerHeight - margin);
 

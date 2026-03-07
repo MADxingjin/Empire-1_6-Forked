@@ -39,7 +39,10 @@ namespace FactionColonies.util
             Find.WorldObjects.Add(travelingTransporters);
 
             caravan.Destroy();
-            comp.shuttleUsesRemaining -= cost;
+            if (comp != null)
+            {
+                comp.shuttleUsesRemaining -= cost;
+            }
         }
 	}
 }

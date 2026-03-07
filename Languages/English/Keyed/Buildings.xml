@@ -14,6 +14,7 @@
 	<!-- Building Restrictions -->
 	<BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
 	<BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
+	<BuildingInvalidSettlement>{0} cannot be built in a {1}</BuildingInvalidSettlement>
 	<BuildingAlreadyType>There is already a building of that type</BuildingAlreadyType>
 	<BuildingBeingBuiltAlreadyType>There is already a building of that type being built</BuildingBeingBuiltAlreadyType>
 	<BuildingAlreadyConstructed>There is already a building being constructed there</BuildingAlreadyConstructed>
@@ -38,8 +39,20 @@
 	<FCCapitalLost>Empire capital has been lost! You should establish a new capital seat.</FCCapitalLost>
 
 	<!-- Building Window -->
+	<Empire_BuildingWindow_Header>Buildings — {0}</Empire_BuildingWindow_Header>
+	<Empire_BuildingWindow_EmptySlot>Empty Building Slot</Empire_BuildingWindow_EmptySlot>
+	<Empire_BuildingWindow_CurrentBuilding>Current Building</Empire_BuildingWindow_CurrentBuilding>
+	<Empire_BuildingWindow_SelectBuilding>Select a building to view its details</Empire_BuildingWindow_SelectBuilding>
+	<Empire_BuildingWindow_Modifiers>Modifiers</Empire_BuildingWindow_Modifiers>
+	<Empire_BuildingWindow_SettlementImpact>Settlement Impact</Empire_BuildingWindow_SettlementImpact>
+	<Empire_BuildingWindow_Upgrades>Possible Upgrades</Empire_BuildingWindow_Upgrades>
+	<Empire_BuildingWindow_RequiredBy>Required By</Empire_BuildingWindow_RequiredBy>
+	<Empire_BuildingWindow_Requires>Requires: {0}</Empire_BuildingWindow_Requires>
+	<Empire_BuildingWindow_CannotDemolishRequired>Cannot demolish: required by {0}</Empire_BuildingWindow_CannotDemolishRequired>
+	<Empire_BuildingWindow_SlotUpgrades>Upgrades</Empire_BuildingWindow_SlotUpgrades>
 	<BuildingUpgrades>Building Upgrades</BuildingUpgrades>
 	<Buildings>Buildings</Buildings>
 	<Facilities>Facilities</Facilities>
+	<FCSearchBuildings>Search buildings...</FCSearchBuildings>
 
 </LanguageData>

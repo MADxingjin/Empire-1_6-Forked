@@ -14,6 +14,12 @@ namespace FactionColonies
         public bool canSettle;
         public List<ResourceTypeDef> resourceBlockList = new List<ResourceTypeDef>();
 
+        /// <summary>
+        /// Translation key for the biome's settlement description (e.g. "FCDescBorealForest").
+        /// If null or empty, falls back to "FCDescUnknown".
+        /// </summary>
+        public string descriptionKey;
+
         public ResourceBonuses getBiomeResource(ResourceTypeDef resourceTypeDef)
         {
             /* First check if the resource is even allowed in this biome */

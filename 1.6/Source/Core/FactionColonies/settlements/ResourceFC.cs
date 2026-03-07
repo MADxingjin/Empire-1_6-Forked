@@ -72,6 +72,56 @@ namespace FactionColonies
         public string storedRandomTitheBudgetBuffer = "";
         public int storedRandomTitheBudget = 0;
         private int oldStoredRandomTitheBudget = 0;
+
+        // Submods can register named allocations to siphon production away from taxes and tithes.
+        // Each mod registers under its own key so multiple submods compose correctly.
+        // Not persisted — submods are expected to re-register their allocations on load.
+        private struct StockpileEntry
+        {
+            public double amount;
+            public Action onEvicted; // invoked if the entry is evicted at tax time; null is allowed
+        }
+        private Dictionary<string, StockpileEntry> stockpileAllocations = new Dictionary<string, StockpileEntry>();
+        public double totalStockpileAllocation => stockpileAllocations.Values.Sum(e => e.amount);
+
+        /// <summary>
+        /// Attempts to register a named production diversion for a stockpile.
+        /// Returns false without registering if the amount would push total diversions above <see cref="rawTotalProduction"/>.
+        /// If the key already exists, the old entry is replaced (using the new amount in the capacity check).
+        /// </summary>
+        /// <param name="key">Unique identifier for the calling mod (e.g. "MyMod.MyFeature").</param>
+        /// <param name="onEvicted">Optional callback invoked if this entry is later evicted at tax time due to insufficient production.</param>
+        public bool SetStockpileAllocation(string key, double amount, Action onEvicted = null)
+        {
+            double currentForKey = stockpileAllocations.TryGetValue(key, out var existing) ? existing.amount : 0;
+            if (totalStockpileAllocation - currentForKey + amount > rawTotalProduction)
+                return false;
+            stockpileAllocations[key] = new StockpileEntry { amount = amount, onEvicted = onEvicted };
+            return true;
+        }
+
+        /// <summary>Removes a previously registered stockpile allocation. The eviction callback is NOT invoked.</summary>
+        public void ClearStockpileAllocation(string key) => stockpileAllocations.Remove(key);
+
+        /// <summary>
+        /// Evicts stockpile entries (largest first) until the total allocation fits within <see cref="rawTotalProduction"/>.
+        /// Called at tax time after resource caches are refreshed. Invokes each evicted entry's callback.
+        /// </summary>
+        public void PruneStockpileAllocations()
+        {
+            if (totalStockpileAllocation <= rawTotalProduction)
+                return;
+            foreach (var key in stockpileAllocations
+                         .OrderByDescending(kv => kv.Value.amount)
+                         .Select(kv => kv.Key)
+                         .ToList())
+            {
+                if (totalStockpileAllocation <= rawTotalProduction) break;
+                var entry = stockpileAllocations[key];
+                stockpileAllocations.Remove(key);
+                entry.onEvicted?.Invoke();
+            }
+        }
         public int randomTitheBudget
         {
             get
@@ -125,7 +175,7 @@ namespace FactionColonies
                 // TODO: change this? Make it possible to control how much of a pool resources's pool goes into the actual pool, and how much gets shipped as silver?
                 if (def.isPoolResource)
                 {
-                    return rawTotalProductionMarketValue;
+                    return taxableProductionMarketValue;
                 }
                 if (dirtyTitheCache)
                 {
@@ -137,14 +187,17 @@ namespace FactionColonies
             }
         }
         public double titheTotalValueNoRandom => titheTotalValue - randomTitheBudget;
-        /* NOTE: need to be careful about which of rawTotalProduction and actualIncome to use.
-         *  * rawTotalProduction is the TOTAL production value of the resource, before accounting for tithes.
-         *  * actualIncome reports the actual income of the resource, accounting for tithes. This can be negative if the value of the tithes is
-         *    greater than the production of the resource, due to tithing modifiers.
+        /* NOTE: the production property chain flows as follows:
+         *  rawTotalProduction          — gross output (units), before any splits. Display this as "Total Production".
+         *  effectiveRawTotalProduction — post-stockpile output (units); what remains after submod allocations are diverted.
+         *  taxableProductionMarketValue — silver value of effectiveRawTotalProduction; the budget available to taxes and tithes.
+         *  actualIncome                — taxableProductionMarketValue minus tithe costs; what the player actually receives in silver.
+         *                                Can be negative if tithe modifiers push the tithe value above taxable production.
          */
         public double rawTotalProduction => production * assignedWorkers;
-        public double rawTotalProductionMarketValue => rawTotalProduction * FCSettings.silverPerResource;
-        public double actualIncome => rawTotalProductionMarketValue - titheTotalValue;
+        public double effectiveRawTotalProduction => rawTotalProduction - totalStockpileAllocation;
+        public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
+        public double actualIncome => taxableProductionMarketValue - titheTotalValue;
 
         public bool canTithe => !def.isPoolResource;
 
@@ -228,8 +281,7 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductionBase()
         {
-            double productionBase = productionAdditives.Values.Sum(p => p.value);
-            return productionBase;
+            return ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
         }
         /// <summary>
         /// Calculates the total production multiplier.
@@ -237,17 +289,8 @@ namespace FactionColonies
         /// <returns></returns>
         private double calculateProductonMult()
         {
-            double productionMultiplier = 1;
-            foreach (ProductionBonus bonus in productionMultipliers.Values)
-            {
-                //TODO: should multipliers be additive with each other?
-                productionMultiplier *= bonus.value;
-            }
-
             double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
-            productionMultiplier *= taxBonus;
-
-            return productionMultiplier;
+            return ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), taxBonus);
         }
         public double getTitheModifierAdditivePerWorker()
         {
@@ -271,15 +314,15 @@ namespace FactionColonies
         }
         public double getTitheModifierPerWorker()
         {
-            return getTitheModifierAdditivePerWorker() * getTitheModifierMultPerWorker();
+            return ResourceFormulas.CalculateTitheModifierPerWorker(getTitheModifierAdditivePerWorker(), getTitheModifierMultPerWorker());
         }
         public double getTotalTitheModifierForWorkers()
         {
-            return getTitheModifierPerWorker() * assignedWorkers;
+            return ResourceFormulas.CalculateTotalTitheModifierForWorkers(getTitheModifierPerWorker(), assignedWorkers);
         }
         public double getTitheIncome()
         {
-            return (rawTotalProductionMarketValue + getTotalTitheModifierForWorkers() + getTitheModifierAdditiveForTotal()) * getTitheModifierMultForTotal();
+            return ResourceFormulas.CalculateTitheIncome(taxableProductionMarketValue, getTotalTitheModifierForWorkers(), getTitheModifierAdditiveForTotal(), getTitheModifierMultForTotal());
         }
         public void refreshOnRandomTitheBudgetChange()
         {
@@ -325,7 +368,7 @@ namespace FactionColonies
             };
             if (def.isPoolResource)
             {
-                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(rawTotalProduction, settlement);
+                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(effectiveRawTotalProduction, settlement);
             }
             return pool;
         }
@@ -812,7 +855,7 @@ namespace FactionColonies
         }
         public bool canAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            return (titheThingTotalValue(thing, quanity) <= getTitheIncome() - titheTotalValue);
+            return ResourceFormulas.CanAffordThingAmount(titheThingTotalValue(thing, quanity), getTitheIncome() - titheTotalValue);
         }
         public int maxThingCanAfford(ThingQualityTuple thing)
         {
@@ -820,8 +863,7 @@ namespace FactionColonies
         }
         public int maxThingCanAfford(ThingQualityTuple thing, double budget)
         {
-            float value = titheThingValue(thing);
-            return (int)(budget / value);
+            return ResourceFormulas.MaxThingCanAfford(budget, titheThingValue(thing));
         }
         public float calcTotalTitheValue()
         {
@@ -921,6 +963,9 @@ namespace FactionColonies
                 extraSilver = outSilver;
                 return null;
             }
+
+            // Pre-tax generation hook
+            def.GetModExtension<ResourceTaxExtension>()?.OnPreTaxGeneration(this, settlement);
 
             // Prepare the tithe filter. I don't think it should ever be null here, but we'll account for that, just in case.
             if (randomTitheFilter == null)
@@ -1032,6 +1077,9 @@ namespace FactionColonies
                 }
             }
 
+            // Post-tax generation hook
+            def.GetModExtension<ResourceTaxExtension>()?.OnPostTaxGeneration(this, settlement, titheItems, ref outSilver);
+
             extraSilver = outSilver;
             return titheItems;
         }
@@ -1058,6 +1106,98 @@ namespace FactionColonies
         public static int sortForUI(ResourceFC a, ResourceFC b)
         {
             return a.compareForUI(b);
+        }
+    }
+
+    /// <summary>
+    /// Pure calculation methods for resource production and tithe economics.
+    /// These methods have zero RimWorld dependencies, making them unit-testable.
+    /// </summary>
+    public static class ResourceFormulas
+    {
+        /// <summary>
+        /// Calculates the total production base from additive bonuses.
+        /// </summary>
+        public static double CalculateProductionBase(IEnumerable<double> additiveValues)
+        {
+            return additiveValues.Sum();
+        }
+
+        /// <summary>
+        /// Calculates the total production multiplier from multiplier bonuses and tax bonus.
+        /// </summary>
+        public static double CalculateProductionMult(IEnumerable<double> multiplierValues, double taxBonus)
+        {
+            double result = 1;
+            foreach (double value in multiplierValues)
+            {
+                result *= value;
+            }
+            return result * taxBonus;
+        }
+
+        /// <summary>
+        /// Calculates total production: base × multiplier.
+        /// </summary>
+        public static double CalculateProduction(double productionBase, double productionMult)
+        {
+            return productionBase * productionMult;
+        }
+
+        /// <summary>
+        /// Calculates raw total production: production per worker × assigned workers.
+        /// </summary>
+        public static double CalculateRawTotalProduction(double production, int assignedWorkers)
+        {
+            return production * assignedWorkers;
+        }
+
+        /// <summary>
+        /// Converts raw production to market value.
+        /// </summary>
+        public static double CalculateMarketValue(double rawTotalProduction, double silverPerResource)
+        {
+            return rawTotalProduction * silverPerResource;
+        }
+
+        /// <summary>
+        /// Calculates the per-worker tithe modifier: additive × multiplicative.
+        /// </summary>
+        public static double CalculateTitheModifierPerWorker(double additive, double multiplicative)
+        {
+            return additive * multiplicative;
+        }
+
+        /// <summary>
+        /// Calculates total tithe modifier for all workers: modifier per worker × worker count.
+        /// </summary>
+        public static double CalculateTotalTitheModifierForWorkers(double modifierPerWorker, int assignedWorkers)
+        {
+            return modifierPerWorker * assignedWorkers;
+        }
+
+        /// <summary>
+        /// Calculates tithe income: (rawMarketValue + workerMods + additiveForTotal) × multForTotal.
+        /// </summary>
+        public static double CalculateTitheIncome(double rawMarketValue, double totalWorkerMod, double additiveForTotal, double multForTotal)
+        {
+            return (rawMarketValue + totalWorkerMod + additiveForTotal) * multForTotal;
+        }
+
+        /// <summary>
+        /// Calculates how many of a thing can be afforded within a budget.
+        /// </summary>
+        public static int MaxThingCanAfford(double budget, float thingValue)
+        {
+            return (int)(budget / thingValue);
+        }
+
+        /// <summary>
+        /// Checks whether a thing amount fits within the available budget.
+        /// </summary>
+        public static bool CanAffordThingAmount(float thingTotalValue, double availableBudget)
+        {
+            return thingTotalValue <= availableBudget;
         }
     }
 

@@ -166,8 +166,7 @@
 		
 		
 
-		<randomThingType>mining</randomThingType>
-		<!-- item types: food, weapons, apparel, armor, animals, logging, mining, drugs -->
+		<randomThingRewardDef>RERD_Mining</randomThingRewardDef>
 		<randomThingValue>175</randomThingValue>
 		
 	</FactionColonies.FCEventDef>

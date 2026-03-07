@@ -161,7 +161,7 @@
 			<followingEvent>drugTrade_4-1</followingEvent>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
 			<settlementsCarryOver>true</settlementsCarryOver> 
-			<randomThingType>drugs</randomThingType>
+			<randomThingRewardDef>RERD_Drugs</randomThingRewardDef>
 			<randomThingValue>500</randomThingValue>
 			<traits>
 				<li>drugTrade_2-2_1</li>

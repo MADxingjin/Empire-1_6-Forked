@@ -221,6 +221,11 @@ namespace FactionColonies
                 if (Widgets.ButtonText(tabRect, label))
                 {
                     overviewTab = i;
+                    if (overviews.Count > 0 && overviewTab >= 2 && (overviewTab - 2) <= overviews.Count)
+                    {
+                        ISettlementWindowOverview overview = overviews[overviewTab - 2];
+                        overview.OnTabSwitch();
+                    }
                 }
                 if (overviewTab == i)
                 {
@@ -253,7 +258,7 @@ namespace FactionColonies
             {
                 DrawTitheOverview(boundingBox);
             }
-            else if (overviews.Count > 0 && overviewTab >= 2 && overviewTab <= (overviews.Count-2))
+            else if (overviews.Count > 0 && overviewTab >= 2 && (overviewTab - 2) <= overviews.Count)
             {
                 ISettlementWindowOverview overview = overviews[overviewTab - 2];
                 overview.DrawOverviewTab(boundingBox);
@@ -334,7 +339,13 @@ namespace FactionColonies
 
             Rect leftBox = new Rect(boundingBox.x, boundingBox.y, constructionBoxWidth, boundingBox.height);
             Rect rightBox = new Rect(leftBox.xMax, leftBox.y, buildingBoxWidth, boundingBox.height);
-            
+
+            if (settlement.BuildingsComp == null)
+            {
+                DrawFacilities(rightBox);
+                return;
+            }
+
             int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
             DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
             DrawFacilities(rightBox);
@@ -464,7 +475,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(prodBox);
             Widgets.Label(prodLabel, "TotalProd".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(prodnum, res.rawTotalProductionMarketValue.ToString());
+            Widgets.Label(prodnum, res.taxableProductionMarketValue.ToString());
 
             /* Tithe Budget */
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1134,55 +1145,7 @@ namespace FactionColonies
                     UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
-                        // Check if this is an actual built building (not Empty or Construction)
-                        if (building.defName != "Empty" && building.defName != "Construction")
-                        {
-                            // Show demolish menu for built buildings
-                            int demolishCost = (int)Math.Round(building.cost * 0.5);
-                            int buildingSlot = i;
-
-                            List<FloatMenuOption> list = new List<FloatMenuOption>
-                            {
-                                new FloatMenuOption("FCDemolish".Translate() + " (" + "Cost".Translate() + ": " + demolishCost + " " + "Silver".Translate() + ")", delegate
-                                {
-                                    // Show confirmation dialog
-                                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                                        "FCDemolishConfirmation".Translate(building.LabelCap, demolishCost),
-                                        delegate
-                                        {
-                                            // Check if player has enough silver
-                                            if (PaymentUtil.getSilver() < demolishCost)
-                                            {
-                                                Messages.Message("FCNotEnoughSilverDemolish".Translate(), MessageTypeDefOf.RejectInput);
-                                                return;
-                                            }
-                                            
-                                            // Pay the demolition cost
-                                            PaymentUtil.paySilver(demolishCost);
-                                            
-                                            // Deconstruct the building
-                                            settlement.deconstructBuilding(buildingSlot);
-                                            
-                                            // Update the window
-                                            windowUpdateFc();
-
-                                            Messages.Message("FCBuildingDemolished".Translate(building.LabelCap), MessageTypeDefOf.PositiveEvent);
-                                        }
-                                    ));
-                                }),
-                                new FloatMenuOption("FCChangeBuildingButton".Translate(), delegate
-                                {
-                                    Find.WindowStack.Add(new FCBuildingWindow(settlement, buildingSlot));
-                                })
-                            };
-
-                            Find.WindowStack.Add(new FloatMenu(list));
-                        }
-                        else
-                        {
-                            // Empty or Construction slot - open building window to build
-                            Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
-                        }
+                        Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
                     }
                 }
                 else
@@ -1255,7 +1218,7 @@ namespace FactionColonies
                                             "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
-                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp.getBuildingDescFull(construction[i].underConstructionDef));
+                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp?.getBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
                 Widgets.EndScrollView();
@@ -1530,9 +1493,9 @@ namespace FactionColonies
                 Rect totalProd = new Rect(finalProd.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(totalProd, (TextUtil.FloorStat(resource.rawTotalProduction)));
 
-                //Est Income
+                //Est Income (taxable production as silver, after stockpile diversions but before tithes)
                 Rect incomeRawBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.rawTotalProductionMarketValue)));
+                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.taxableProductionMarketValue)));
 
                 //Net Income, after tithes
                 Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, rectY, colWidth, rowHeight);

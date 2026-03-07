@@ -2,11 +2,22 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
 namespace FactionColonies
 {
+    /// <summary>
+    /// Represents an entry in a flattened upgrade tree.
+    /// </summary>
+    public struct BuildingUpgradeEntry
+    {
+        public BuildingFCDef def;
+        public int depth;
+        public BuildingFCDef parent;
+    }
+
     public class BuildingFCDef : Def
     {
         public string desc;
@@ -25,7 +36,18 @@ namespace FactionColonies
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         public Hilliness minhilliness = Hilliness.Undefined;
         public Hilliness maxhilliness = Hilliness.Undefined;
-        //public required research
+        /// <summary>
+        /// Determines if the building can be built directly from the building window, into an empty building slot.
+        /// </summary>
+        public bool baseBuilding = true;
+        /// <summary>
+        /// A list of buildings that this building can upgrade into.
+        /// </summary>
+        public List<BuildingFCDef> upgrades = new List<BuildingFCDef>();
+        /// <summary>
+        /// Buildings that must already be built in the settlement before this building can be constructed.
+        /// </summary>
+        public List<BuildingFCDef> requiredBuildings = new List<BuildingFCDef>();
 
         private bool didCacheBuildingAttributeDesc = false;
         private TaggedString cachedBuildingAttributeDesc = "";
@@ -71,13 +93,67 @@ namespace FactionColonies
         }
 
         public bool RequiredModsLoaded => (ModsConfig.RoyaltyActive || !requiresRoyality) && (ModsConfig.IdeologyActive || !requiresIdeology) && requiredModsID.TrueForAll(mod => ModsConfig.IsActive(mod));
-    }
+        public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)
+        {
+            bool meetsSettlementTypeRequirement = true;
+            if (settlementTypeBlockList?.Count > 0)
+            {
+                if (settlementTypeBlockList.Contains(settlement))
+                {
+                    meetsSettlementTypeRequirement = false;
+                }
+            }
+            if (settlementTypeAllowList?.Count > 0)
+            {
+                //If we have an allowlist, then the default restriction is false
+                meetsSettlementTypeRequirement = false;
+                if (settlementTypeAllowList.Contains(settlement))
+                {
+                    meetsSettlementTypeRequirement = true;
+                }
+            }
+            return meetsSettlementTypeRequirement;
+        }
 
-    public enum SettlementTypeRestriction
-    {
-        None,           // Available to all settlement types
-        SurfaceOnly,    // Only available to surface settlements
-        OrbitalOnly     // Only available to orbital platforms
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var err in base.ConfigErrors())
+            {
+                yield return err;
+            }
+            if (settlementTypeAllowList?.Count > 0 && settlementTypeBlockList?.Count > 0)
+            {
+                yield return $"BuildingFCDef {defName} has both a settlementTypeAllowList and a settlementTypeBlockList";
+            }
+            if (HasCycle(this, d => d.upgrades))
+            {
+                yield return $"BuildingFCDef {defName} has a circular reference in its upgrades chain";
+            }
+            if (HasCycle(this, d => d.requiredBuildings))
+            {
+                yield return $"BuildingFCDef {defName} has a circular reference in its requiredBuildings chain";
+            }
+        }
+
+        private static bool HasCycle(BuildingFCDef start, Func<BuildingFCDef, List<BuildingFCDef>> getChildren)
+        {
+            HashSet<BuildingFCDef> visited = new HashSet<BuildingFCDef>();
+            Stack<BuildingFCDef> stack = new Stack<BuildingFCDef>();
+            stack.Push(start);
+            while (stack.Count > 0)
+            {
+                BuildingFCDef current = stack.Pop();
+                if (!visited.Add(current) && current == start) return true;
+                List<BuildingFCDef> children = getChildren(current);
+                if (children == null) continue;
+                foreach (BuildingFCDef child in children)
+                {
+                    if (child == start) return true;
+                    if (!visited.Contains(child)) stack.Push(child);
+                }
+            }
+            return false;
+        }
     }
 
     [DefOf]

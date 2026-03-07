@@ -44,7 +44,6 @@ namespace FactionColonies
         public double happiness = 100;
         public double prosperity = 100;
 
-        //public List<BuildingFCDef> buildings = new List<BuildingFCDef>();
         /// <summary>
         /// List of traits that apply to this settlement.
         /// <para>This field should never be accessed directly. Adding or removing traits should always be done through the addTrait, addTraits, removeTrait, or removeTraits functions.</para>
@@ -394,7 +393,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look(ref trader, "trader");
+            Scribe_Deep.Look(ref trader, "trader", this);
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
@@ -431,10 +430,6 @@ namespace FactionColonies
             Scribe_Values.Look(ref startUpgradeTick, "startupgradetick", -1);
             Scribe_Values.Look(ref finishUpgradeTick, "finishupgradetick", -1);
 
-
-            //Military
-
-
             //Prisoners
             Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
 
@@ -444,6 +439,7 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                if (trader != null && trader.settlement == null) trader.settlement = this;
                 updateProfitAndProduction();
             }
         }
@@ -463,7 +459,7 @@ namespace FactionColonies
 
         public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            foreach (Gizmo gizmo in base.GetGizmos())
+            foreach (Gizmo gizmo in base.GetCaravanGizmos(caravan))
             {
                 yield return gizmo;
             }
@@ -486,6 +482,13 @@ namespace FactionColonies
 
                 yield return action;
             }
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                foreach (Gizmo gizmo in comp.GetCaravanGizmos(caravan))
+                {
+                    yield return gizmo;
+                }
+            }
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
@@ -500,26 +503,18 @@ namespace FactionColonies
             base.Tick();
             trader?.TraderTrackerTick();
 
-            //TODO: rework faction traits to be comps or something
             if (trait_Egalitarian_TaxBreak_Enabled &&
                 Find.TickManager.TicksGame >= trait_Egalitarian_TaxBreak_Tick + GenDate.TicksPerDay * 10)
                 trait_Egalitarian_TaxBreak_Enabled = false;
+
+            foreach (FCTraitEffectDef trait in traits)
+                trait.GetModExtension<FCTraitEffectModExtension>()?.Tick(this);
         }
 
         public void PublicTick()
         {
             Tick();
         }
-        /*public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (var gizmo in base.GetGizmos()) yield return gizmo;
-            //yield return OpenSettlementWindowAction;
-            //if (settlement.isUnderAttack) yield return DefendColonyAction;
-            //if (settlement.isUnderAttack && !attackers.Any()) yield return ChangeDefenderAction;
-            //var containsShuttlePort = settlement.buildings.Contains(BuildingFCDefOf.shuttlePort);
-            //if (containsShuttlePort) yield return RequestShuttleAction;
-            //if (containsShuttlePort) yield return RequestShuttleForCaravanAction;
-        }*/
 
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
@@ -535,6 +530,7 @@ namespace FactionColonies
 
         public void upgradeSettlement(int times = 1)
         {
+            int oldLevel = settlementLevel;
             settlementLevel += times;
             if (settlementLevel > FCSettings.settlementMaxLevel ||
                 settlementLevel > settlementDef.maxSettlementLevel)
@@ -543,6 +539,7 @@ namespace FactionColonies
             }
             if (settlementLevel < 0) settlementLevel = 0;
             updateStats();
+            settlementDef.getSettlementTypeExtension()?.onUpgrade(this, oldLevel, settlementLevel);
         }
 
         public void delevelSettlement(int times = -1)
@@ -626,9 +623,7 @@ namespace FactionColonies
         }
         public void updateHappiness()
         {
-            happiness += getTotalHappinessGain();
-
-            happiness = Math.Round(Math.Clamp(happiness, 1, 100), 1);
+            happiness = SettlementFormulas.ClampStat(happiness, getTotalHappinessGain());
         }
         public string getHappinessDesc()
         {
@@ -689,9 +684,7 @@ namespace FactionColonies
         }
         public void updateLoyalty()
         {
-            loyalty += getTotalLoyaltyGain();
-
-            loyalty = Math.Round(Math.Clamp(loyalty, 1, 100), 1);
+            loyalty = SettlementFormulas.ClampStat(loyalty, getTotalLoyaltyGain());
         }
         public string getLoyaltyDesc()
         {
@@ -739,9 +732,7 @@ namespace FactionColonies
         }
         public void updateProsperity()
         {
-            prosperity += getProsperityGain();
-
-            prosperity = Math.Round(Math.Clamp(prosperity, 1, 100), 1);
+            prosperity = SettlementFormulas.ClampStat(prosperity, getProsperityGain());
         }
         public string getProsperityDesc()
         {
@@ -939,17 +930,8 @@ namespace FactionColonies
             upkeepExp = "";
             workers = getTotalWorkers();
             double upkeep = 0;
-            double overWork;
-            if (workers > workersMax)
-            {
-                overWork = (int)(workers - workersMax);
-            }
-            else
-            {
-                overWork = 0;
-            }
 
-            workerTotalUpkeep = (workers * getBaseWorkerCost()) + ((workers * getBaseWorkerCost()) * (overWork / 20));
+            workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(workers, workersMax, getBaseWorkerCost());
             if (workerTotalUpkeep > 0)
             {
                 upkeepExp += "+" + Math.Round(workerTotalUpkeep,2).ToString() + " - " + "Workers".Translate() + "\n";
@@ -1038,90 +1020,24 @@ namespace FactionColonies
             double defenseBonus = 0;
             foreach (ResourceFC resource in resources)
             {
-                if (resource.def.aidsDefense && resource.rawTotalProduction > 0)
+                if (resource.def.defenseWeight > 0f && resource.effectiveRawTotalProduction > 0)
                 {
-                    defenseBonus += resource.rawTotalProduction;
+                    defenseBonus += resource.effectiveRawTotalProduction * resource.def.defenseWeight;
                 }
             }
             return defenseBonus;
         }
 
-        //Seperated into its own function to make it easier to PostFix descriptions for potential submod-added biomes
-        // There *has* to be a better way to dynamically retrieve these descriptions...
         private string getDescriptionBiome()
         {
-            string desc = "";
-
-            switch (biomeDef.defName)
-            {
-                case "BorealForest":
-                    desc = "FCDescBorealForest".Translate();
-                    break;
-                case "Tundra":
-                    desc = "FCDescTundra".Translate();
-                    break;
-                case "ColdBog":
-                    desc = "FCDescColdBog".Translate();
-                    break;
-                case "IceSheet":
-                    desc = "FCDescIceSheet".Translate();
-                    break;
-                case "SeaIce":
-                    desc = "FCDescIceSheet".Translate();
-                    break;
-                case "TemperateForest":
-                    desc = "FCDescTemperateForest".Translate();
-                    break;
-                case "TemperateSwamp":
-                    desc = "FCDescTemperateSwamp".Translate();
-                    break;
-                case "TropicalRainforest":
-                    desc = "FCDescTropicalRainforest".Translate();
-                    break;
-                case "AridShrubland":
-                    desc = "FCDescAridShrubland".Translate();
-                    break;
-                case "Desert":
-                    desc = "FCDescDesert".Translate();
-                    break;
-                case "ExtremeDesert":
-                    desc = "FCDescExtremeDesert".Translate();
-                    break;
-                case "OrbitalSpace":
-                    desc = "FCDescOrbitalSpace".Translate();
-                    break;
-                default:
-                    desc = "FCDescUnknown".Translate();
-                    break;
-            }
-            return desc;
+            if (!biomeDef.descriptionKey.NullOrEmpty())
+                return biomeDef.descriptionKey.Translate();
+            return "FCDescUnknown".Translate();
         }
         private string getSettlementLevelDesc()
         {
-            string desc = "";
-            switch (settlementLevel)
-            {
-                case 1:
-                    desc += "FCTownLevel1".Translate();
-                    break;
-                case 2:
-                    desc += "FCTownLevel2".Translate();
-                    break;
-                case 3:
-                case 4:
-                    desc += "FCTownLevel3".Translate();
-                    break;
-                case 5:
-                case 6:
-                    desc += "FCTownLevel4".Translate();
-                    break;
-                case 7:
-                case 8:
-                default:
-                    desc += "FCTownLevel5".Translate();
-                    break;
-            }
-            return desc;
+            return settlementDef.getSettlementTypeExtension()?.getSettlementLevelDesc(settlementLevel)
+                ?? "FCTownLevel5".Translate();
         }
 
         public void updateDescription()
@@ -1164,6 +1080,12 @@ namespace FactionColonies
                 }
             }
             traits.Add(trait);
+            FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+            if (traitExt != null)
+            {
+                try { traitExt.OnAppliedToSettlement(this); }
+                catch (Exception e) { LogUtil.Error($"WorldSettlementFC.addTrait: OnAppliedToSettlement threw for '{trait.defName}': {e}"); }
+            }
             InvalidateTraitCache();
         }
 
@@ -1191,6 +1113,12 @@ namespace FactionColonies
                         resource.removeProductionMultiplierById(traitId);
                     }
                 }
+                FCTraitEffectModExtension traitExt = trait.GetModExtension<FCTraitEffectModExtension>();
+                if (traitExt != null)
+                {
+                    try { traitExt.OnRemovedFromSettlement(this); }
+                    catch (Exception e) { LogUtil.Error($"WorldSettlementFC.removeTrait: OnRemovedFromSettlement threw for '{trait.defName}': {e}"); }
+                }
                 InvalidateTraitCache();
                 return traits.Remove(trait);
             }
@@ -1217,20 +1145,36 @@ namespace FactionColonies
         }
         public double getFieldValue(string field, Operation addOrMultiply)
         {
-            double value = 0;
-            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out value))
+            if (!cachedTraitValues.TryGetValue((field, addOrMultiply), out double value))
             {
                 value = TraitUtilsFC.cycleTraits(field, traits, addOrMultiply);
+                foreach (WorldObjectComp comp in AllComps)
+                {
+                    if (comp is IStatModifierProvider provider)
+                    {
+                        if (addOrMultiply == Operation.Addition)
+                            value += provider.GetStatModifier(field, addOrMultiply);
+                        else
+                            value *= provider.GetStatModifier(field, addOrMultiply);
+                    }
+                }
                 cachedTraitValues.Add((field, addOrMultiply), value);
             }
             return value;
         }
         public string getFieldDesc(string field, Operation addOrMultiply, bool invert = false, bool hardinvert = false)
         {
-            string desc = "";
-            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out desc))
+            if (!cachedTraitDescs.TryGetValue((field, addOrMultiply), out string desc))
             {
+                desc = "";
                 TraitUtilsFC.cycleTraits(field, traits, addOrMultiply, true, ref desc, invert, hardinvert);
+                foreach (WorldObjectComp comp in AllComps)
+                {
+                    if (comp is IStatModifierProvider provider)
+                    {
+                        desc += provider.GetStatModifierDesc(field, addOrMultiply);
+                    }
+                }
                 cachedTraitDescs.Add((field, addOrMultiply), desc);
             }
             return desc;
@@ -1498,6 +1442,8 @@ namespace FactionColonies
         private void preTaxPrep()
         {
             dirtyResourceCaches();
+            foreach (ResourceFC res in resources)
+                res.PruneStockpileAllocations();
             pruneResourceTithes();
             updateProfitAndProduction();
             calculatingTax = true;
@@ -1514,6 +1460,7 @@ namespace FactionColonies
         public List<Thing> createTax(out int silverAmount)
         {
             preTaxPrep();
+            settlementDef.getSettlementTypeExtension()?.preTax(this);
 
             FactionFC faction = FactionCache.FactionComp;
             double flatTaxBoost = getTaxTimeTaxBoostFlat();
@@ -1538,6 +1485,7 @@ namespace FactionColonies
 
             postTaxPrep();
             silverAmount = tmpSilverAmount;
+            settlementDef.getSettlementTypeExtension()?.postTax(this, silverAmount, titheThings);
             return titheThings;
         }
     }

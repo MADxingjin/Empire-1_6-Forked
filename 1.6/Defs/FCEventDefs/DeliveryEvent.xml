@@ -5,5 +5,8 @@
 		<label>Delivery</label>
 		<desc>A transport ship carrying items or pawns is traveling to your map</desc>
 		<timeTillTrigger>15000</timeTillTrigger>
+		<modExtensions>
+			<li Class="FactionColonies.FCEventHandlerExtension_DeliveryArrival"/>
+		</modExtensions>
 	</FactionColonies.FCEventDef>
 </Defs>

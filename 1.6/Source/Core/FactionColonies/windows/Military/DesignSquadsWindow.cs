@@ -252,7 +252,7 @@ namespace FactionColonies
                 rect.y + 4f, 22f, 22f);
             if (!isSelectedSquadDeployed && Widgets.ButtonImage(pencilRect, TexButton.Rename))
             {
-                Find.WindowStack.Add(new FCWindow_RenameSquad(selectedSquad));
+                Find.WindowStack.Add(new FCWindow_Rename(selectedSquad.name, "FCRenameSquad", name => selectedSquad.name = name));
             }
 
             // Cost line

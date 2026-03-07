@@ -103,10 +103,10 @@ namespace FactionColonies
             supporting = new List<CaravanSupporting>();
         }
 
-        private string FoundSettlementString()
+        private static string FoundSettlementString(WorldSettlementFC settlement)
         {
-            return WorldSettlement.Name + " " + "ShortMilitary".Translate() + " " + WorldSettlement.settlementMilitaryLevel +
-                   " - " + "FCAvailable".Translate() + ": " + (!isMilitaryBusySilent()).ToString();
+            return settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel +
+                   " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.isMilitaryBusySilent() != true).ToString();
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -191,7 +191,7 @@ namespace FactionColonies
             {
                 new FloatMenuOption
                 (
-                    "ResetToHomeSettlement".Translate(WorldSettlement.settlementMilitaryLevel),
+                    "ResetToHomeSettlement".Translate(settlementMilitaryLevel),
                     delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, WorldSettlement); },
                     MenuOptionPriority.High
                 )
@@ -204,11 +204,11 @@ namespace FactionColonies
                 where foundSettlement != WorldSettlement && foundSettlement.MilitaryComp?.isMilitaryValid() == true
                 select new FloatMenuOption
                 (
-                    FoundSettlementString(),
+                    FoundSettlementString(foundSettlement),
                     delegate
                     {
                         if (foundSettlement.MilitaryComp?.isMilitaryBusy() != true)
-                            MilitaryUtilFC.changeDefendingMilitaryForce(evt, WorldSettlement);
+                            MilitaryUtilFC.changeDefendingMilitaryForce(evt, foundSettlement);
                     }
                 )
             );
@@ -486,8 +486,8 @@ namespace FactionColonies
                 var squad = force.homeSettlement.MilitaryComp.militarySquad;
                 squad.CheckInitialization();
 
-                squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
-                squad.updateSquadStats(squad.settlement.settlementMilitaryLevel);
+                squad.OutfitSquad(squad.outfit);
+                squad.updateSquadStats(force.homeSettlement.settlementMilitaryLevel);
                 squad.resetNeeds();
 
                 friendlies = squad.AllEquippedMercenaryPawns.ToList();
@@ -635,27 +635,24 @@ namespace FactionColonies
             var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
             var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
 
-            var muliplier = 1;
-            if (faction.hasPolicy(FCPolicyDefOf.feudal))
-                muliplier = 2;
-            float prosperityMultiplier = 1;
-            var canDestroyBuildings = true;
-            if (faction.hasTrait(FCPolicyDefOf.resilient))
-            {
-                prosperityMultiplier = .5f;
-                canDestroyBuildings = false;
-            }
+            bool hasFeudalPolicy = faction.hasPolicy(FCPolicyDefOf.feudal);
+            bool hasResilientTrait = faction.hasTrait(FCPolicyDefOf.resilient);
+            var canDestroyBuildings = !hasResilientTrait;
 
-            // LogUtil.Message("Determined Multipliers for loss penalty");
-            // if winner are enemies
-            WorldSettlement.prosperity -= 20 * prosperityMultiplier;
-            WorldSettlement.happiness -= 25 * happinessLostMultiplier;
-            WorldSettlement.loyalty -= 15 * loyaltyLostMultiplier * muliplier;
+            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(
+                happinessLostMultiplier, loyaltyLostMultiplier,
+                hasFeudalPolicy, hasResilientTrait);
+
+            WorldSettlement.prosperity -= prosperityLoss;
+            WorldSettlement.happiness -= happinessLoss;
+            WorldSettlement.loyalty -= loyaltyLoss;
 
             string str = "DefenseFailureFull".Translate(WorldSettlement.Name);
 
             if (canDestroyBuildings && WorldSettlement?.BuildingsComp != null)
             {
+                // Collect candidate slots for demolition
+                List<int> candidates = new List<int>();
                 for (var k = 0; k < 4; k++)
                 {
                     var deconstructRoll = new IntRange(0, 10).RandomInRange;
@@ -665,6 +662,26 @@ namespace FactionColonies
                     {
                         continue;
                     }
+                    candidates.Add(k);
+                }
+
+                // Sort so buildings that depend on other buildings are demolished first
+                candidates.Sort((a, b) =>
+                {
+                    BuildingFCDef defA = WorldSettlement.BuildingsComp.getBuildingInSlot(a);
+                    BuildingFCDef defB = WorldSettlement.BuildingsComp.getBuildingInSlot(b);
+                    bool aRequiresB = defA.requiredBuildings != null && defA.requiredBuildings.Contains(defB);
+                    bool bRequiresA = defB.requiredBuildings != null && defB.requiredBuildings.Contains(defA);
+                    if (aRequiresB) return -1; // a depends on b, demolish a first
+                    if (bRequiresA) return 1;  // b depends on a, demolish b first
+                    // Buildings with any requirements go before those without
+                    int aReqCount = defA.requiredBuildings?.Count ?? 0;
+                    int bReqCount = defB.requiredBuildings?.Count ?? 0;
+                    return bReqCount.CompareTo(aReqCount);
+                });
+
+                foreach (int k in candidates)
+                {
                     str += "\n" + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.buildingLabel(k));
                     WorldSettlement.deconstructBuilding(k);
                 }
@@ -1128,7 +1145,7 @@ namespace FactionColonies
 
         public bool isMilitaryValid()
         {
-            return WorldSettlement.settlementMilitaryLevel > 0;
+            return settlementMilitaryLevel > 0;
         }
 
         public bool isTargetOccupied(int location)

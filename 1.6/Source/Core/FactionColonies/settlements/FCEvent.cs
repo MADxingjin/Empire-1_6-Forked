@@ -85,8 +85,7 @@ namespace FactionColonies
             // Required resource check
             if (cEvent.requiredResource != null)
             {
-                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0
-                                   || (cEvent.requiredResource == ResourceTypeDefOf.RTD_Research && TraitUtilsFC.returnResearchAmount() > 0);
+                bool hasResource = FactionCache.FactionComp.returnResource(cEvent.requiredResource).amount > 0;
                 if (!hasResource) return false;
             }
 
@@ -326,9 +325,9 @@ namespace FactionColonies
                 }
                 else //if undefined event
                 {
-                    if (evt.def.randomThingValue > 0 && evt.def.randomThingType != "")
+                    if (evt.def.randomThingValue > 0 && evt.def.randomThingRewardDef != null)
                     {
-                        List<Thing> list = PaymentUtil.generateThing(evt.def.randomThingValue, evt.def.randomThingType);
+                        List<Thing> list = PaymentUtil.generateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
 
                         string str = "GoodsReceivedFollowing".Translate(evt.def.label);
 
@@ -478,6 +477,12 @@ namespace FactionColonies
 
         private static void setupAttack(WorldSettlementFC worldSettlement, FCEvent temp)
         {
+            if (worldSettlement.MilitaryComp == null)
+            {
+                LogUtil.Warning($"setupAttack called on {worldSettlement?.Name} with no MilitaryComp. Aborting.");
+                return;
+            }
+
             IncidentParms parms = new IncidentParms
             {
                 target = worldSettlement.Map,
@@ -647,7 +652,7 @@ namespace FactionColonies
         public List<FCOptionDef> options = new List<FCOptionDef>();
         public ResourceTypeDef requiredResource;
         public int randomThingValue;
-        public string randomThingType = "";
+        public ResourceEventRewardDef randomThingRewardDef;
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
         public int prosperityLost;
         public bool eventFollows;
@@ -658,10 +663,6 @@ namespace FactionColonies
         public string optionDescription = "";
         public List<string> applicableBiomes = new List<string>();
         public List<ThingDef> loot = new List<ThingDef>();
-        public string classToRun = "";
-        public string classMethodToRun = "";
-        public bool passEventToClassMethodToRun;
-
         //Military Force stuff
         public militaryForce militaryForceAttacking;
         public Faction militaryForceAttackingFaction;
@@ -748,21 +749,18 @@ namespace FactionColonies
             Scribe_Values.Look(ref maximumProsperity, "maximumProsperity");
             Scribe_Defs.Look(ref requiredResource, "requiredResource");
             Scribe_Values.Look(ref randomThingValue, "randomThingValue");
-            Scribe_Values.Look(ref randomThingType, "randomThingType");
+            Scribe_Defs.Look(ref randomThingRewardDef, "randomThingRewardDef");
             Scribe_Collections.Look(ref options, "options", LookMode.Def);
             Scribe_Collections.Look(ref incompatibleEvents, "incompatibleEvents", LookMode.Def);
             Scribe_Values.Look(ref prosperityLost, "prosperityLost");
             Scribe_Values.Look(ref eventFollows, "eventFollows");
             Scribe_Defs.Look(ref followingEvent, "followingEvent");
             Scribe_Defs.Look(ref followingEvent2, "followingEvent2");
-            Scribe_Values.Look(ref splitEventFollows, "splitEventFol*lows");
+            Scribe_Values.Look(ref splitEventFollows, "splitEventFollows");
             Scribe_Values.Look(ref splitEventChance, "splitEventChance");
             Scribe_Values.Look(ref optionDescription, "optionDescription");
             Scribe_Collections.Look(ref applicableBiomes, "applicableBiomes", LookMode.Value);
             Scribe_Collections.Look(ref loot, "loot", LookMode.Def);
-            Scribe_Values.Look(ref classToRun, "classToRun");
-            Scribe_Values.Look(ref classMethodToRun, "classMethodToRun");
-            Scribe_Values.Look(ref passEventToClassMethodToRun, "passEventToClassMethodToRun");
             Scribe_Deep.Look(ref msg, "msg");
             Scribe_Deep.Look(ref let, "let");
             Scribe_Values.Look(ref isDelayed, "isDelayed", false);
@@ -785,24 +783,13 @@ namespace FactionColonies
 
         public void runAction()
         {
-            if (classToRun.NullOrEmpty() || classMethodToRun.NullOrEmpty()) return;
-
-            Type typ = GenTypes.AllTypes.FirstOrDefault(t => t.FullName == classToRun);
-            if (typ == null)
-            {
-                LogUtil.Error($"FCEvent.runAction: Could not find type '{classToRun}'");
-                return;
-            }
-
             try
             {
-                var obj = Activator.CreateInstance(typ);
-                object[] paramArgu = passEventToClassMethodToRun ? new object[] { this } : new object[] { };
-                Traverse.Create(obj).Method(classMethodToRun, paramArgu).GetValue();
+                def?.GetModExtension<FCEventHandlerExtension>()?.OnEventTriggered(this);
             }
             catch (Exception e)
             {
-                LogUtil.Error($"FCEvent.runAction: Failed to invoke {classToRun}.{classMethodToRun}: {e}");
+                LogUtil.Error($"FCEvent.runAction: OnEventTriggered threw for '{def?.defName ?? "NULL"}': {e}");
             }
         }
     }
@@ -834,7 +821,7 @@ namespace FactionColonies
         public List<FCOptionDef> options = new List<FCOptionDef>();
         public ResourceTypeDef requiredResource;
         public int randomThingValue = 0;
-        public string randomThingType = "";
+        public ResourceEventRewardDef randomThingRewardDef;
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
         public int prosperityLost = 0;
         public bool eventFollows = false;
@@ -847,10 +834,6 @@ namespace FactionColonies
         public List<ThingDef> loot = new List<ThingDef>();
         public bool hasCustomDescription = false;
         public string customDescription = "";
-        public string classToRun;
-        public string classMethodToRun;
-        public bool passEventToClassMethodToRun;
-
 
         //Map info
         public int location = -1;
@@ -877,7 +860,6 @@ namespace FactionColonies
     public class FCEventDefOf
     {
         //List Events here - loads events at start
-        //public static FCEventDef settleNewColony;
         public static FCEventDef Null;
         public static FCEventDef settleNewColony;
         public static FCEventDef taxColony;

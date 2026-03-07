@@ -9,6 +9,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>BorealForest</defName>
 		<label>boreal forest</label>
+		<descriptionKey>FCDescBorealForest</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -29,6 +30,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>Tundra</defName>
 		<label>tundra</label>
+		<descriptionKey>FCDescTundra</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -49,6 +51,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>ColdBog</defName>
 		<label>cold bog</label>
+		<descriptionKey>FCDescColdBog</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -81,6 +84,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>IceSheet</defName>
 		<label>ice sheet</label>
+		<descriptionKey>FCDescIceSheet</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -126,6 +130,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>SeaIce</defName>
 		<label>sea ice</label>
+		<descriptionKey>FCDescIceSheet</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -171,6 +176,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>TemperateForest</defName>
 		<label>temperate forest</label>
+		<descriptionKey>FCDescTemperateForest</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -195,6 +201,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>TemperateSwamp</defName>
 		<label>temperate swamp</label>
+		<descriptionKey>FCDescTemperateSwamp</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -228,6 +235,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>TropicalRainforest</defName>
 		<label>tropical rainforest</label>
+		<descriptionKey>FCDescTropicalRainforest</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -294,6 +302,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>AridShrubland</defName>
 		<label>arid shrubland</label>
+		<descriptionKey>FCDescAridShrubland</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -326,6 +335,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>Desert</defName>
 		<label>desert</label>
+		<descriptionKey>FCDescDesert</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -358,6 +368,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>ExtremeDesert</defName>
 		<label>extreme desert</label>
+		<descriptionKey>FCDescExtremeDesert</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>
@@ -394,6 +405,7 @@
 	<FactionColonies.BiomeResourceDef>
 		<defName>OrbitalSpace</defName>
 		<label>orbital space</label>
+		<descriptionKey>FCDescOrbitalSpace</descriptionKey>
 		<canSettle>true</canSettle>
 		<resources>
 			<li>

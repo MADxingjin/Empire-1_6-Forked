@@ -24,6 +24,12 @@ namespace FactionColonies
         /// <param name="DropPod"></param>
         private static void SpawnSquad(WorldSettlementFC settlement, MercenarySquadFC squad, IntVec3 dropPosition, bool DropPod)
         {
+            if (settlement.MilitaryComp == null)
+            {
+                LogUtil.Warning($"SpawnSquad called on settlement {settlement.Name} with no MilitaryComp. Aborting.");
+                return;
+            }
+
             IncidentParms parms = new IncidentParms
             {
                 target = Find.CurrentMap,
@@ -109,7 +115,7 @@ namespace FactionColonies
                     return;
                 }
 
-                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round(settlement.MilitaryComp.militarySquad.outfit.updateEquipmentTotalCost() * .2));
+                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round((settlement.MilitaryComp?.militarySquad?.outfit?.updateEquipmentTotalCost() ?? 0) * .2));
                 SpawnSquad(settlement, squad, dropPosition, DropPod);
                 DebugTools.curTool = null;
             });
@@ -127,8 +133,9 @@ namespace FactionColonies
         public static void CallinExtraForces(WorldSettlementFC settlement, bool DropPod)
         {
             MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.createMercenarySquad(settlement, true);
-            squad.OutfitSquad(squad.settlement.MilitaryComp.militarySquad.outfit);
-
+            if (squad == null) return;
+            MilSquadFC mainOutfit = settlement.MilitaryComp?.militarySquad?.outfit;
+            if (mainOutfit != null) squad.OutfitSquad(mainOutfit);
             CallinAlliedForces(settlement, DropPod, squad);
         }
         public static void FireSupport(WorldSettlementFC settlement, MilitaryFireSupport support)
@@ -152,7 +159,8 @@ namespace FactionColonies
                     FactionCache.FactionComp.militaryCustomizationUtil.fireSupport.Add(fireSupport);
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
-                    settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;
+                    if (settlement.MilitaryComp != null)
+                        settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;
                 }
                 else
                 {
