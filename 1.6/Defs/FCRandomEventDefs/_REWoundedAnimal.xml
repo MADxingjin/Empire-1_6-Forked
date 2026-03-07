@@ -10,6 +10,7 @@
 		<options>
 			<li>woundedAnimal_0_1</li>
 			<li>woundedAnimal_0_2</li>
+			<li>woundedAnimal_0_3</li>
 		</options>
 
 		<activateAtStart>true</activateAtStart>
@@ -48,6 +49,16 @@
 	</FactionColonies.FCOptionDef>
 
 
+	<FactionColonies.FCOptionDef>
+		<defName>woundedAnimal_0_3</defName>
+		<label>Send for a trained handler to approach it carefully.</label>
+		<parentEvent>woundedAnimal_0</parentEvent>
+		<baseChanceOfSuccess>80</baseChanceOfSuccess>
+		<silverCost>200</silverCost>
+		<successEvent>woundedAnimal_1-3s</successEvent>
+		<failEvent>woundedAnimal_1-3f</failEvent>
+	</FactionColonies.FCOptionDef>
+
 	<FactionColonies.FCEventDef>
 		<defName>woundedAnimal_1-1</defName>
 		<label>Wounded Animal</label>
@@ -74,6 +85,27 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>woundedAnimal_1-3s</defName>
+		<label>Wounded Animal</label>
+		<desc>The trained handler approaches the animal with care and expertise. It calms down and allows itself to be guided in safely.</desc>
+		<timeTillTrigger>1500</timeTillTrigger>
+		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
+		<randomThingValue>500</randomThingValue>
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>woundedAnimal_1-3f</defName>
+		<label>Wounded Animal</label>
+		<desc>Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process. -1 max workers for three days.</desc>
+		<timeTillTrigger>180000</timeTillTrigger>
+		<statModifiers>
+			<li><stat>workerBaseMax</stat><value>-1</value></li>
+		</statModifiers>
+		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
 
 </Defs>
