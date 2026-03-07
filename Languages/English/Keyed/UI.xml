@@ -75,5 +75,7 @@
 	<!-- Errors -->
 	<FCGenericError>If you can read this, something went wrong.</FCGenericError>
 	<FCNotEnoughSilverOption>You do not have enough silver on the map to pay for that option</FCNotEnoughSilverOption>
+	<FCOptionRequiresPolicy>Requires: {0}</FCOptionRequiresPolicy>
+	<FCOptionRequiresPolicyAny>Requires one of: {0}</FCOptionRequiresPolicyAny>
 
 </LanguageData>

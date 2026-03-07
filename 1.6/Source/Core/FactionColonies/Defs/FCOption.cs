@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FactionColonies.util;
 using Verse;
 using Verse.Sound;
 using RimWorld;
@@ -8,6 +9,12 @@ using UnityEngine;
 
 namespace FactionColonies
 {
+    public enum FCRequirementMode : byte
+    {
+        All = 0,
+        Any = 1
+    }
+
     public class FCOptionDef : Def
     {
         public FCOptionDef()
@@ -20,6 +27,8 @@ namespace FactionColonies
         public FCEventDef parentEvent;
         public FCEventDef successEvent = null;
         public FCEventDef failEvent = null;
+        public List<FCPolicyDef> requiredPolicies = new List<FCPolicyDef>();
+        public FCRequirementMode requirementMode = FCRequirementMode.All;
     }
 
     [DefOf]
@@ -240,6 +249,9 @@ namespace FactionColonies
                 FCOptionDef opt = options[i];
                 bool affordable = currentSilver >= opt.silverCost;
                 bool isFree = opt.silverCost <= 0;
+                string requirementFailReason;
+                bool meetsRequirements = MeetsPolicyRequirements(opt, out requirementFailReason);
+                bool available = affordable && meetsRequirements;
 
                 // Card height
                 float cardH = OptionInnerPadding + cachedOptionLabelHeights[i] + 6f + MetadataRowHeight + OptionInnerPadding;
@@ -248,11 +260,11 @@ namespace FactionColonies
                 Rect cardRect = new Rect(inRect.x, curY, contentWidth, cardH);
 
                 // Card background
-                float bgVal = affordable ? 0.18f : 0.12f;
+                float bgVal = available ? 0.18f : 0.12f;
                 Widgets.DrawBoxSolid(cardRect, new Color(bgVal, bgVal, bgVal));
 
                 // Left accent stripe
-                Color stripeColor = affordable
+                Color stripeColor = available
                     ? categoryColor
                     : new Color(categoryColor.r * 0.4f, categoryColor.g * 0.4f, categoryColor.b * 0.4f);
                 Widgets.DrawBoxSolid(new Rect(cardRect.x, cardRect.y, StripeWidth, cardRect.height), stripeColor);
@@ -265,7 +277,7 @@ namespace FactionColonies
                 // Option label text
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.UpperLeft;
-                GUI.color = affordable ? Color.white : new Color(0.5f, 0.5f, 0.5f);
+                GUI.color = available ? Color.white : new Color(0.5f, 0.5f, 0.5f);
                 Widgets.Label(new Rect(innerX, innerY, innerW, cachedOptionLabelHeights[i]), opt.label);
                 GUI.color = colorBefore;
                 innerY += cachedOptionLabelHeights[i] + 6f;
@@ -279,7 +291,7 @@ namespace FactionColonies
                 string successLabel;
                 Color successColor;
                 GetSuccessHint(opt.baseChanceOfSuccess, out successLabel, out successColor);
-                if (!affordable) successColor = new Color(successColor.r * 0.5f, successColor.g * 0.5f, successColor.b * 0.5f);
+                if (!available) successColor = new Color(successColor.r * 0.5f, successColor.g * 0.5f, successColor.b * 0.5f);
                 GUI.color = successColor;
                 Widgets.Label(new Rect(metaRect.x, metaRect.y, metaRect.width * 0.6f, metaRect.height), successLabel);
                 GUI.color = colorBefore;
@@ -289,14 +301,14 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 if (isFree)
                 {
-                    GUI.color = affordable ? AccentUtil.Income : new Color(0.3f, 0.5f, 0.3f);
+                    GUI.color = available ? AccentUtil.Income : new Color(0.3f, 0.5f, 0.3f);
                     Widgets.Label(metaRect, "FCEventOptionFree".Translate());
                     GUI.color = colorBefore;
                 }
                 else
                 {
                     // Draw silver icon + cost text
-                    GUI.color = affordable ? Color.white : AccentUtil.Expense;
+                    GUI.color = available ? Color.white : AccentUtil.Expense;
                     string costStr = opt.silverCost.ToString();
                     float costTextW = Text.CalcSize(costStr).x;
                     Rect costTextRect = new Rect(metaRect.xMax - costTextW, metaRect.y, costTextW, metaRect.height);
@@ -307,7 +319,7 @@ namespace FactionColonies
                         metaRect.y + (metaRect.height - SilverIconSize) / 2f,
                         SilverIconSize, SilverIconSize
                     );
-                    GUI.color = affordable ? Color.white : new Color(0.5f, 0.5f, 0.5f);
+                    GUI.color = available ? Color.white : new Color(0.5f, 0.5f, 0.5f);
                     GUI.DrawTexture(iconRect, ThingDefOf.Silver.uiIcon);
                     GUI.color = colorBefore;
 
@@ -317,8 +329,13 @@ namespace FactionColonies
                     }
                 }
 
+                if (!meetsRequirements)
+                {
+                    UIUtil.TipRegionByText(cardRect, requirementFailReason);
+                }
+
                 // Hover effect
-                if (Mouse.IsOver(cardRect) && affordable)
+                if (Mouse.IsOver(cardRect) && available)
                 {
                     Widgets.DrawBoxSolid(cardRect, new Color(1f, 1f, 1f, 0.04f));
                     Widgets.DrawBox(cardRect);
@@ -327,12 +344,16 @@ namespace FactionColonies
                 // Click handler
                 if (Widgets.ButtonInvisible(cardRect))
                 {
-                    if (affordable)
+                    if (available)
                     {
                         SoundDefOf.Click.PlayOneShotOnCamera();
                         PaymentUtil.PaySilver(opt.silverCost, PaymentUtil.Reason_EventOption);
                         FCEventMaker.CalculateSuccess(opt, parentEvent);
                         Find.WindowStack.TryRemove(this);
+                    }
+                    else if (!meetsRequirements)
+                    {
+                        Messages.Message(requirementFailReason, MessageTypeDefOf.RejectInput);
                     }
                     else
                     {
@@ -369,6 +390,55 @@ namespace FactionColonies
             {
                 label = "FCEventSuccessRisky".Translate();
                 color = AccentUtil.StatBad;
+            }
+        }
+
+        private static bool HasPolicyOrTrait(FactionFC faction, FCPolicyDef def)
+        {
+            foreach (FCPolicy p in faction.policies)
+            {
+                if (p.def == def) return true;
+            }
+            foreach (FCPolicy t in faction.factionTraits)
+            {
+                if (t.def == def) return true;
+            }
+            return false;
+        }
+
+        private static bool MeetsPolicyRequirements(FCOptionDef opt, out string failReason)
+        {
+            failReason = null;
+            if (opt.requiredPolicies == null || opt.requiredPolicies.Count == 0)
+                return true;
+
+            FactionFC faction = FactionCache.FactionComp;
+
+            if (opt.requirementMode == FCRequirementMode.Any)
+            {
+                foreach (FCPolicyDef required in opt.requiredPolicies)
+                {
+                    if (HasPolicyOrTrait(faction, required))
+                        return true;
+                }
+                string allNames = string.Join(", ", opt.requiredPolicies.Select(p => p.label));
+                failReason = "FCOptionRequiresPolicyAny".Translate(allNames);
+                return false;
+            }
+            else
+            {
+                List<string> missing = new List<string>();
+                foreach (FCPolicyDef required in opt.requiredPolicies)
+                {
+                    if (!HasPolicyOrTrait(faction, required))
+                        missing.Add(required.label);
+                }
+                if (missing.Count > 0)
+                {
+                    failReason = "FCOptionRequiresPolicy".Translate(string.Join(", ", missing));
+                    return false;
+                }
+                return true;
             }
         }
     }

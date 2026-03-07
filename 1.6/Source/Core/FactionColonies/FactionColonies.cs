@@ -4,12 +4,8 @@ using System.IO;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
-using FactionColonies.PatchNote;
-using Verse.AI.Group;
-using LudeonTK;
 
 namespace FactionColonies
 {
@@ -160,7 +156,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT);
             Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT);
-Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
+            Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
             Scribe_Values.Look(ref printDebug, "printDebug", false);
