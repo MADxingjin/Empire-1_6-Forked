@@ -2,29 +2,96 @@
 <Defs>
 
 	<FactionColonies.FCEventDef>
-		<defName>expandedForestry</defName>
+		<defName>expandedForestry_0</defName>
 		<label>Expanded Forestry</label>
-		<desc>Some of your settlements have expanded their forestry production this week. +1 logging base production.</desc>
-
-		<timeTillTrigger>300000</timeTillTrigger>
-
-		<statModifiers>
-			<li><stat>RTD_Logging_ProductionAdditive</stat><value>1</value></li>
-		</statModifiers>
-
+		<desc>Some of your settlements have expanded their forestry production this week. How should the extra timber be used?</desc>
+		<timeTillTrigger>0</timeTillTrigger>
 		<options>
+			<li>expandedForestry_0_1</li>
+			<li>expandedForestry_0_2</li>
+			<li>expandedForestry_0_3</li>
 		</options>
-		<activateAtStart>false</activateAtStart>
-
+		<activateAtStart>true</activateAtStart>
 		<isRandomEvent>true</isRandomEvent>
 		<weight>25</weight>
 		<incompatibleEvents>
-		<li>forestFire</li>
+			<li>expandedForestry_1-1</li>
+			<li>expandedForestry_1-2</li>
+			<li>expandedForestry_1-3</li>
+			<li>forestFire_1-1</li>
+			<li>forestFire_1-2s</li>
+			<li>forestFire_1-2f</li>
+			<li>forestFire_1-3</li>
 		</incompatibleEvents>
-
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
+	</FactionColonies.FCEventDef>
 
+	<FactionColonies.FCOptionDef>
+		<defName>expandedForestry_0_1</defName>
+		<label>Keep the expanded logging operations running.</label>
+		<parentEvent>expandedForestry_0</parentEvent>
+		<baseChanceOfSuccess>100</baseChanceOfSuccess>
+		<silverCost>0</silverCost>
+		<successEvent>expandedForestry_1-1</successEvent>
+		<failEvent></failEvent>
+	</FactionColonies.FCOptionDef>
+
+	<FactionColonies.FCOptionDef>
+		<defName>expandedForestry_0_2</defName>
+		<label>Sell the extra timber to passing traders.</label>
+		<parentEvent>expandedForestry_0</parentEvent>
+		<baseChanceOfSuccess>100</baseChanceOfSuccess>
+		<silverCost>0</silverCost>
+		<successEvent>expandedForestry_1-2</successEvent>
+		<failEvent></failEvent>
+	</FactionColonies.FCOptionDef>
+
+	<FactionColonies.FCOptionDef>
+		<defName>expandedForestry_0_3</defName>
+		<label>Stockpile the lumber for settlement construction.</label>
+		<parentEvent>expandedForestry_0</parentEvent>
+		<baseChanceOfSuccess>100</baseChanceOfSuccess>
+		<silverCost>0</silverCost>
+		<successEvent>expandedForestry_1-3</successEvent>
+		<failEvent></failEvent>
+		<requiredPolicies>
+			<li>industrious</li>
+		</requiredPolicies>
+	</FactionColonies.FCOptionDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>expandedForestry_1-1</defName>
+		<label>Expanded Forestry</label>
+		<desc>The expanded logging operations continue. +1 logging base production.</desc>
+		<timeTillTrigger>300000</timeTillTrigger>
+		<statModifiers>
+			<li><stat>RTD_Logging_ProductionAdditive</stat><value>1</value></li>
+		</statModifiers>
+		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>expandedForestry_1-2</defName>
+		<label>Expanded Forestry (Sold)</label>
+		<desc>The extra timber is sold to passing traders for a tidy profit.</desc>
+		<timeTillTrigger>1500</timeTillTrigger>
+		<randomThingRewardDef>RERD_Logging</randomThingRewardDef>
+		<randomThingValue>500</randomThingValue>
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>expandedForestry_1-3</defName>
+		<label>Expanded Forestry (Construction Stockpile)</label>
+		<desc>Lumber is stockpiled for construction projects. +0.5 logging base production, and construction speeds up.</desc>
+		<timeTillTrigger>300000</timeTillTrigger>
+		<statModifiers>
+			<li><stat>RTD_Logging_ProductionAdditive</stat><value>0.5</value></li>
+			<li><stat>buildTimeMultiplier</stat><value>0.25</value></li>
+		</statModifiers>
+		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
 
 </Defs>
