@@ -103,6 +103,31 @@ namespace FactionColonies
             supporting = new List<CaravanSupporting>();
         }
 
+        public override void CompTick()
+        {
+            base.CompTick();
+            if (!isUnderAttack || endingBattle) return;
+            if (Find.TickManager.TicksGame % 250 != 0) return;
+            if (Map == null) return;
+
+            // Clean stale references (null from failed save/load resolution)
+            attackers.RemoveAll(p => p == null || p.Destroyed);
+            defenders.RemoveAll(p => p == null || p.Destroyed);
+
+            if (!attackers.Any() || !defenders.Any())
+            {
+                LogUtil.Warning($"Stuck battle detected at {WorldSettlement.Name}, forcing resolution.");
+                endingBattle = true;
+                LongEventHandler.QueueLongEvent(EndAttack,
+                    "EndingAttack", false, error =>
+                    {
+                        DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
+                            "ErrorEndingAttackDescription".Translate());
+                        LogUtil.Error(error.Message);
+                    });
+            }
+        }
+
         private static string FoundSettlementString(WorldSettlementFC settlement)
         {
             return settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel +
@@ -323,11 +348,13 @@ namespace FactionColonies
 
         private void DeleteMap()
         {
-            if (Map == null) return;
-            var lords = Map.lordManager.lords.ListFullCopy();
+            var map = Map;
+            if (map == null) return;
+
+            var lords = map.lordManager.lords.ListFullCopy();
             foreach (var lord in lords)
             {
-                Map.lordManager.RemoveLord(lord);
+                map.lordManager.RemoveLord(lord);
             }
 
             CameraJumper.TryJump(WorldSettlement.Tile);
@@ -348,7 +375,7 @@ namespace FactionColonies
                     foreach (var pawn in caravanSupporting.pawns)
                         if (!pawn.Dead)
                         {
-                            pawn.DeSpawn();
+                            if (pawn.Spawned) pawn.DeSpawn();
                             pawns.Add(pawn);
                         }
 
@@ -362,7 +389,7 @@ namespace FactionColonies
                             if (num2 > 10000)
                             {
                                 LogUtil.Error("WorldSettlementFC.deleteMap: Too many iterations.");
-                                return;
+                                break;
                             }
 
                             TendUtility.DoTend(null, pawn, null);
@@ -382,13 +409,16 @@ namespace FactionColonies
                 if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
             }
 
-            if (Map.mapPawns?.AllPawnsSpawned == null) return;
-
-            //Despawn removes them from AllPawnsSpawned, so we copy it
-            foreach (var pawn in Map.mapPawns.AllPawnsSpawned.ToList())
+            if (map.mapPawns?.AllPawnsSpawned != null)
             {
-                pawn.DeSpawn();
+                //Despawn removes them from AllPawnsSpawned, so we copy it
+                foreach (var pawn in map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    pawn.DeSpawn();
+                }
             }
+
+            Current.Game.DeinitAndRemoveMap(map, false);
         }
 
         public void StartDefence(FCEvent evt, Action after)
@@ -402,6 +432,7 @@ namespace FactionColonies
 
             if (defenderForce == null)
             {
+                LogUtil.Warning($"StartDefence: defenderForce is null for {WorldSettlement.Name}, settlement loses by default.");
                 EndBattle(false, 0);
                 return;
             }
@@ -541,20 +572,18 @@ namespace FactionColonies
                 {
                     if (riders.Count > 0)
                     {
-                        try
-                        {
-                            var owner = riders.First(pair => pair.Value.thingIDNumber == friendly.thingIDNumber).Key;
-                            CellFinder.TryFindRandomCellInsideWith(new CellRect((int)owner.DrawPos.x - 5,
-                                    (int)owner.DrawPos.z - 5, 10, 10),
-                                testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
-                                    TraverseParms.For(TraverseMode.PassDoors)), out loc);
-                        }
-                        catch
+                        var pair = riders.FirstOrDefault(p => p.Value.thingIDNumber == friendly.thingIDNumber);
+                        if (pair.Key == null)
                         {
                             var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
+                            LogUtil.Error("No rider pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
                             continue;
                         }
+                        var owner = pair.Key;
+                        CellFinder.TryFindRandomCellInsideWith(new CellRect((int)owner.DrawPos.x - 5,
+                                (int)owner.DrawPos.z - 5, 10, 10),
+                            testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
+                                TraverseParms.For(TraverseMode.PassDoors)), out loc);
                     }
                     else
                     {
@@ -609,7 +638,15 @@ namespace FactionColonies
         {
             if (defenderForce?.homeSettlement == WorldSettlement)
             {
-                defenderForce?.homeSettlement?.MilitaryComp?.CooldownMilitary();
+                if (remaining >= 7)
+                {
+                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
+                    defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
+                }
+                else
+                {
+                    defenderForce.homeSettlement.MilitaryComp?.CooldownMilitary();
+                }
             }
             else if (defenderForce == null)
             {
@@ -712,8 +749,10 @@ namespace FactionColonies
 
         private void EndAttack()
         {
-            EndBattle(defenders.Any(), defenders.Count);
+            bool won = defenders.Any();
+            int remaining = defenders.Count;
             DeleteMap();
+            EndBattle(won, remaining);
 
             supporting.Clear();
             defenders.Clear();

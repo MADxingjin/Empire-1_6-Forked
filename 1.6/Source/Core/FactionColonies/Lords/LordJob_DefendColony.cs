@@ -38,7 +38,7 @@ namespace FactionColonies
         public override void LordJobTick()
         {
             base.LordJobTick();
-            if (readded.Any(pawn => pawn?.mindState?.duty == null))
+            if (readded.Count > 0)
             {
                 lord.CurLordToil.UpdateAllDuties();
                 readded.Clear();
