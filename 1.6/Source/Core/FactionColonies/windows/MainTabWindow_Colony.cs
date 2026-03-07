@@ -25,7 +25,8 @@ namespace FactionColonies
             "Overview".Translate(),
             "Bills".Translate(),
             "Events".Translate(),
-            "Military".Translate()
+            "Military".Translate(),
+            "FCEdicts".Translate()
         };
         private Dictionary<string, Action<Rect>> overviewFuncs = new Dictionary<string, Action<Rect>>();
 
@@ -96,6 +97,13 @@ namespace FactionColonies
                 militaryScroll = Vector2.zero;
             }, () => curTab == overviewTabs[3]));
             overviewFuncs.Add(overviewTabs[3], DrawMilitaryTab);
+            // Edicts tab
+            tabs.Add(new TabRecord(overviewTabs[4], delegate
+            {
+                curTab = overviewTabs[4];
+                EdictTabDrawer.OnTabSwitch();
+            }, () => curTab == overviewTabs[4]));
+            overviewFuncs.Add(overviewTabs[4], DrawEdictsTab);
             // Mod-added tabs
             foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
             {
@@ -1363,6 +1371,11 @@ namespace FactionColonies
         }
 
         // ===== MILITARY TAB =====
+
+        private void DrawEdictsTab(Rect rect)
+        {
+            EdictTabDrawer.Draw(rect, faction);
+        }
 
         private void DrawMilitaryTab(Rect rect)
         {

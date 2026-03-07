@@ -13,7 +13,8 @@ namespace FactionColonies
         Trait = 1,
         Core = 2,
         Tax = 3,
-        Military = 4
+        Military = 4,
+        Social = 5
     }
 
     public class FCPolicy : IExposable
@@ -49,6 +50,9 @@ namespace FactionColonies
         public int timeEnacted;
         public FCPolicyBehavior behavior;
 
+        public bool IsFullyActive => def.enactDuration <= 0
+            || Find.TickManager.TicksGame - timeEnacted >= def.enactDuration;
+
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
@@ -74,6 +78,11 @@ namespace FactionColonies
         public string type;
         public TechLevel techLevel = TechLevel.Undefined;
         public int enactDuration;
+        public int upkeepSilver;
+
+        public bool IsEdict => category == FCPolicyCategory.Tax
+            || category == FCPolicyCategory.Military
+            || category == FCPolicyCategory.Social;
         // Icon paths — set in XML, resolved lazily to textures
         public string iconPathLight;
         public string iconPathDark;
@@ -175,6 +184,12 @@ namespace FactionColonies
             {
                 if (str.Length > 0) str += "\n";
                 str += statDesc;
+            }
+
+            if (upkeepSilver > 0)
+            {
+                if (str.Length > 0) str += "\n\n";
+                str += "FCEdictUpkeep".Translate(upkeepSilver);
             }
 
             return str.Trim();

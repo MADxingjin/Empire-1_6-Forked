@@ -2,13 +2,12 @@
 <Defs>
 
 	<FactionColonies.FCPolicyDef>
-		<defName>minimizeTaxation</defName> <!--Name of Def -->
-		<label>Minimize Taxation</label> <!--Lable of Def -->
-		<desc>Collect less taxes from your settlements. This will make them happier and reduce unrest. 65% basetax, +.5 happiness a day, -1 unrest a day.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>taxPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
+		<defName>minimizeTaxation</defName>
+		<label>Minimize Taxation</label>
+		<desc>Collect less taxes from your settlements. This will make them happier and reduce unrest.</desc>
+		<category>Tax</category>
+		<upkeepSilver>50</upkeepSilver>
+		<enactDuration>300000</enactDuration>
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>-35</value></li>
 			<li><stat>happinessGainedBase</stat><value>0.5</value></li>
@@ -17,13 +16,15 @@
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
-		<defName>heavyTaxation</defName> <!--Name of Def -->
-		<label>Heavy Taxation</label> <!--Lable of Def -->
-		<desc>Increase the amount of taxes on your settlements. 125% basetax, -.5 happiness a day, +1 unrest per day, -50% unrest lost, -50% happiness gained.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>taxPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
+		<defName>heavyTaxation</defName>
+		<label>Heavy Taxation</label>
+		<desc>Increase the amount of taxes on your settlements at the cost of happiness and unrest.</desc>
+		<category>Tax</category>
+		<upkeepSilver>75</upkeepSilver>
+		<enactDuration>300000</enactDuration>
+		<incompatiblePolicies>
+			<li>egalitarian</li>
+		</incompatiblePolicies>
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>25</value></li>
 			<li><stat>happinessLostBase</stat><value>0.5</value></li>

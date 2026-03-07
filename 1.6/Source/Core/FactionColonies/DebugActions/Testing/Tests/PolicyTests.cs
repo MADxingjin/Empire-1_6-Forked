@@ -365,10 +365,12 @@ namespace FactionColonies
         public static void Incompatible_MutualExclusionDefined()
         {
             // Verify that incompatible policies are defined mutually (A blocks B implies B blocks A)
+            // Only enforced within the same category — edict→core blocks are one-directional
             foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
             {
                 foreach (FCPolicyDef blocked in def.incompatiblePolicies)
                 {
+                    if (def.category != blocked.category) continue;
                     TestAssert.IsTrue(blocked.incompatiblePolicies.Contains(def),
                         $"{def.defName} blocks {blocked.defName} but not vice versa — incompatibility should be mutual");
                 }

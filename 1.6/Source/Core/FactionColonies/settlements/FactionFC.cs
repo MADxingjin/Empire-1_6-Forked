@@ -138,6 +138,17 @@ namespace FactionColonies
             new FCPolicy(FCPolicyDefOf.empty)
         };
 
+        // ── Edicts (toggleable faction-level policies) ──
+        public Dictionary<FCPolicyCategory, FCPolicy> edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
+
+        // Minimum faction level required to unlock each edict category
+        public static readonly Dictionary<FCPolicyCategory, int> EdictCategoryUnlockLevels = new Dictionary<FCPolicyCategory, int>
+        {
+            { FCPolicyCategory.Social, 2 },
+            { FCPolicyCategory.Tax, 3 },
+            { FCPolicyCategory.Military, 4 }
+        };
+
         // ── Events & Bills ──
         public List<FCEvent> events = new List<FCEvent>();
         public float randomEventLastAdded = 0f;
@@ -336,6 +347,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref factionXPCurrent, "factionXPCurrent");
             Scribe_Values.Look(ref factionXPGoal, "factionXPGoal");
             Scribe_Collections.Look(ref factionTraits, "factionTraits", LookMode.Deep);
+
+            Scribe_Collections.Look(ref edicts, "edicts", LookMode.Value, LookMode.Deep);
+            if (edicts == null) edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
 
             //Research Trading
             Scribe_Values.Look(ref tradedAmount, "tradedAmount");
@@ -613,7 +627,7 @@ namespace FactionColonies
         private void RecomputeTotalProfit()
         {
             _income = settlements.Sum(s => s.totalIncome);
-            _upkeep = settlements.Sum(s => s.totalUpkeep);
+            _upkeep = settlements.Sum(s => s.totalUpkeep) + GetEdictUpkeep();
             _profit = _income - _upkeep;
             dirtyFactionProfitCache = false;
         }
@@ -836,6 +850,20 @@ namespace FactionColonies
                     }
                 }
             }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.def == null || !edict.IsFullyActive) continue;
+                foreach (FCStatModifier mod in edict.def.statModifiers)
+                {
+                    if (mod.stat == stat)
+                    {
+                        if (stat.aggregation == FCStatAggregation.Additive)
+                            value += mod.value;
+                        else
+                            value *= mod.value;
+                    }
+                }
+            }
 
             cachedFactionStatValues[stat] = value;
             return value;
@@ -873,6 +901,18 @@ namespace FactionColonies
                         desc += TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
                     else
                         desc += TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
+                }
+            }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.def == null || !edict.IsFullyActive) continue;
+                foreach (FCStatModifier mod in edict.def.statModifiers)
+                {
+                    if (mod.stat != stat) continue;
+                    if (isAdditive)
+                        desc += TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + edict.def.LabelCap + " (" + "FCEdict".Translate() + ")\n";
+                    else
+                        desc += TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert) + " - " + edict.def.LabelCap + " (" + "FCEdict".Translate() + ")\n";
                 }
             }
 
@@ -929,6 +969,11 @@ namespace FactionColonies
                 if (p.behavior != null)
                     _cachedBehaviors.Add(p.behavior);
             }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.behavior != null)
+                    _cachedBehaviors.Add(edict.behavior);
+            }
 
             RebuildActionCache();
 
@@ -957,6 +1002,14 @@ namespace FactionColonies
                 if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
                 if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
                 if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
+            }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.def == null || !edict.IsFullyActive) continue;
+                if (edict.def.blockedActions != null) foreach (var a in edict.def.blockedActions) _cachedBlockedActions.Add(a);
+                if (edict.def.enabledActions != null) foreach (var a in edict.def.enabledActions) _cachedEnabledActions.Add(a);
+                if (edict.def.blockedMilitaryJobs != null) foreach (var j in edict.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
+                if (edict.def.enabledMilitaryJobs != null) foreach (var j in edict.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
             }
             _cachedEnabledActions.ExceptWith(_cachedBlockedActions);
             _cachedEnabledJobs.ExceptWith(_cachedBlockedJobs);
@@ -1042,6 +1095,113 @@ namespace FactionColonies
             return false;
         }
 
+        #region Edicts
+
+        public bool IsEdictCategoryUnlocked(FCPolicyCategory category)
+        {
+            int required;
+            if (!EdictCategoryUnlockLevels.TryGetValue(category, out required))
+                return false;
+            return factionLevel >= required;
+        }
+
+        public FCPolicy GetActiveEdict(FCPolicyCategory category)
+        {
+            FCPolicy edict;
+            edicts.TryGetValue(category, out edict);
+            return edict;
+        }
+
+        public bool HasEdict(FCPolicyDef def)
+        {
+            FCPolicy edict;
+            if (!edicts.TryGetValue(def.category, out edict)) return false;
+            return edict.def == def;
+        }
+
+        public void EnactEdict(FCPolicyDef def)
+        {
+            if (!def.IsEdict)
+            {
+                LogUtil.Error($"EnactEdict called on non-edict def '{def.defName}'");
+                return;
+            }
+            if (!IsEdictCategoryUnlocked(def.category))
+            {
+                Messages.Message("FCEdictCategoryLocked".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            if (def.factionLevelRequirement > 0 && factionLevel < def.factionLevelRequirement)
+            {
+                Messages.Message("FCEdictLevelRequired".Translate(def.factionLevelRequirement), MessageTypeDefOf.RejectInput);
+                return;
+            }
+
+            // Check incompatibility with active core policies and traits
+            if (!def.incompatiblePolicies.NullOrEmpty())
+            {
+                foreach (FCPolicyDef blocked in def.incompatiblePolicies)
+                {
+                    if (HasPolicy(blocked) || HasTrait(blocked))
+                    {
+                        Messages.Message("FCEdictIncompatible".Translate(def.LabelCap, blocked.LabelCap), MessageTypeDefOf.RejectInput);
+                        return;
+                    }
+                }
+            }
+
+            // Revoke existing edict in this category (if any)
+            RevokeEdict(def.category, silent: true);
+
+            FCPolicy edict = new FCPolicy(def);
+            edicts[def.category] = edict;
+            RebuildBehaviorCache();
+            DirtyFactionProfitCache();
+            Messages.Message("FCEdictEnacted".Translate(def.LabelCap), MessageTypeDefOf.PositiveEvent);
+        }
+
+        public void RevokeEdict(FCPolicyCategory category, bool silent = false)
+        {
+            FCPolicy edict;
+            if (!edicts.TryGetValue(category, out edict)) return;
+
+            if (edict.behavior != null)
+            {
+                try { edict.behavior.OnRemoved(this); }
+                catch (Exception e) { LogUtil.Error($"Edict behavior OnRemoved error for '{edict.def?.defName}': {e}"); }
+            }
+
+            string label = edict.def?.LabelCap ?? "";
+            edicts.Remove(category);
+            RebuildBehaviorCache();
+            DirtyFactionProfitCache();
+            if (!silent)
+                Messages.Message("FCEdictRevoked".Translate(label), MessageTypeDefOf.NeutralEvent);
+        }
+
+        public void RevokeAllEdicts()
+        {
+            // Copy keys to avoid modifying collection during iteration
+            List<FCPolicyCategory> categories = new List<FCPolicyCategory>(edicts.Keys);
+            foreach (FCPolicyCategory cat in categories)
+            {
+                RevokeEdict(cat, silent: true);
+            }
+        }
+
+        public int GetEdictUpkeep()
+        {
+            int total = 0;
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict.IsFullyActive)
+                    total += edict.def.upkeepSilver;
+            }
+            return total;
+        }
+
+        #endregion
+
         public bool AnyPolicyBlocks(FCActionType action) => _cachedBlockedActions?.Contains(action) ?? false;
         public bool AnyPolicyEnables(FCActionType action) => _cachedEnabledActions?.Contains(action) ?? false;
 
@@ -1084,6 +1244,11 @@ namespace FactionColonies
                 if (p.def.preventBuildingDestruction)
                     return true;
             }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.def != null && edict.IsFullyActive && edict.def.preventBuildingDestruction)
+                    return true;
+            }
             return false;
         }
 
@@ -1102,6 +1267,11 @@ namespace FactionColonies
             {
                 if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
                 if (p.def.suppressMemberDeathPenalty)
+                    return true;
+            }
+            foreach (FCPolicy edict in edicts.Values)
+            {
+                if (edict?.def != null && edict.IsFullyActive && edict.def.suppressMemberDeathPenalty)
                     return true;
             }
             return false;
@@ -1265,6 +1435,22 @@ namespace FactionColonies
             {
                 Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
             }
+
+            // Deduct edict upkeep
+            int edictUpkeep = GetEdictUpkeep();
+            if (edictUpkeep > 0)
+            {
+                if (PaymentUtil.GetSilver() >= edictUpkeep)
+                {
+                    PaymentUtil.PaySilver(edictUpkeep, "EdictUpkeep");
+                }
+                else
+                {
+                    RevokeAllEdicts();
+                    Messages.Message("FCEdictUpkeepUnpaid".Translate(), MessageTypeDefOf.NegativeEvent);
+                }
+            }
+
             TaxTickRegistry.InvokePostTaxResolution(this);
         }
 

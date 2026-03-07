@@ -73,6 +73,27 @@
 	<FCConfirmTrait>Are you sure you wish to select {0}? You will not be able to reverse this decision</FCConfirmTrait>
 	<FCSelectYourTraits>Your faction's starting traits are not selected. Go to the faction customization tab to select them!</FCSelectYourTraits>
 
+	<!-- Edicts -->
+	<FCEdicts>Edicts</FCEdicts>
+	<FCEdict>Edict</FCEdict>
+	<FCEdictsDesc>Toggle faction-wide edicts. One edict per category may be active at a time. Active edicts have an ongoing silver cost.</FCEdictsDesc>
+	<FCEdictUpkeep>Upkeep: {0} silver/cycle</FCEdictUpkeep>
+	<FCEdictUpkeepUnpaid>Cannot afford edict upkeep. All edicts have been revoked.</FCEdictUpkeepUnpaid>
+	<FCEdictEnacted>Edict enacted: {0}</FCEdictEnacted>
+	<FCEdictRevoked>Edict revoked: {0}</FCEdictRevoked>
+	<FCEdictNone>None</FCEdictNone>
+	<FCEdictActivating>Enacting... ({0} days remaining)</FCEdictActivating>
+	<FCEdictTotalUpkeep>Total Edict Upkeep: {0} silver/cycle</FCEdictTotalUpkeep>
+	<FCEdictCategoryLocked>This edict category is not yet unlocked.</FCEdictCategoryLocked>
+	<FCEdictLevelRequired>Requires faction level {0}.</FCEdictLevelRequired>
+	<FCEdictCategorySocial>Social</FCEdictCategorySocial>
+	<FCEdictCategoryTax>Tax</FCEdictCategoryTax>
+	<FCEdictCategoryMilitary>Military</FCEdictCategoryMilitary>
+	<FCEdictActive>Active</FCEdictActive>
+	<FCEdictRevoke>Revoke</FCEdictRevoke>
+	<FCEdictLockedUntilLevel>Locked until faction level {0}</FCEdictLockedUntilLevel>
+	<FCEdictIncompatible>{0} is incompatible with your active policy: {1}</FCEdictIncompatible>
+
 	<!-- Research -->
 	<Researching>Researching</Researching>
 	<ResearchExpended>{0} points of research have been used to research {1}. You have {2} points remaining.</ResearchExpended>
