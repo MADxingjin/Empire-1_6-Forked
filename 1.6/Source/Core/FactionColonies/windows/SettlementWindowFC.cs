@@ -1451,6 +1451,16 @@ namespace FactionColonies
                 //Total Production
                 Rect totalProd = new Rect(finalProd.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(totalProd, (TextUtil.FloorStat(resource.rawTotalProduction)));
+                if (resource.AccumulationDays > 0)
+                {
+                    int totalPeriodDays = FCSettings.timeBetweenTaxes / GenDate.TicksPerDay;
+                    string tooltip = "FCTotalProdTooltip".Translate(
+                        TextUtil.FloorStat(resource.InstantaneousProduction),
+                        TextUtil.FloorStat(resource.AccumulatedAverageProduction),
+                        resource.AccumulationDays.ToString(),
+                        totalPeriodDays.ToString());
+                    TooltipHandler.TipRegion(totalProd, tooltip);
+                }
 
                 //Est Income (taxable production as silver, after stockpile diversions but before tithes)
                 Rect incomeRawBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);

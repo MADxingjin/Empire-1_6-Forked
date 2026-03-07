@@ -194,15 +194,28 @@ namespace FactionColonies
                             }
                         }
 
-                        while (tmp.Count() > 0)
+                        // Pick first settlement randomly
+                        if (tmp.Count > 0)
                         {
-                            WorldSettlementFC cSettlement = tmp.RandomElement();
-                            if (settlements.Count() < numSettlements)
-                            {
-                                settlements.Add(cSettlement);
-                            }
+                            WorldSettlementFC first = tmp.RandomElement();
+                            settlements.Add(first);
+                            tmp.Remove(first);
+                        }
 
-                            tmp.Remove(cSettlement);
+                        // Pick remaining settlements, weighted by proximity to the first
+                        while (tmp.Count > 0 && settlements.Count < numSettlements)
+                        {
+                            WorldSettlementFC next;
+                            if (tempEvent.def.useProximity && settlements.Count > 0)
+                            {
+                                next = SelectByProximity(tmp, settlements[0], tempEvent.def.proximityFalloff);
+                            }
+                            else
+                            {
+                                next = tmp.RandomElement();
+                            }
+                            settlements.Add(next);
+                            tmp.Remove(next);
                         }
 
                         tempEvent.settlementTraitLocations.AddRange(settlements);
@@ -229,6 +242,29 @@ namespace FactionColonies
             return tempEvent;
         }
 
+
+        private static WorldSettlementFC SelectByProximity(
+            List<WorldSettlementFC> candidates, WorldSettlementFC anchor, float falloff)
+        {
+            float totalWeight = 0f;
+            float[] weights = new float[candidates.Count];
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                float dist = Find.WorldGrid.ApproxDistanceInTiles(anchor.Tile, candidates[i].Tile);
+                weights[i] = 1f / (1f + dist / falloff);
+                totalWeight += weights[i];
+            }
+
+            float roll = Rand.Range(0f, totalWeight);
+            float cumulative = 0f;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                cumulative += weights[i];
+                if (roll <= cumulative)
+                    return candidates[i];
+            }
+            return candidates[candidates.Count - 1];
+        }
 
         public static void ProcessEvents(in List<FCEvent> events)
         {
@@ -725,6 +761,8 @@ namespace FactionColonies
         public int requiredWealth = 0;
         public IntRange rangeSettlementsAffected = new IntRange(0, 0);
         public bool settlementsCarryOver = true;
+        public bool useProximity = true;
+        public float proximityFalloff = 20f;
         public int weight = 0;
         public int minimumHappiness = 0;
         public int maximumHappiness = 100;

@@ -1458,9 +1458,20 @@ namespace FactionColonies
             DirtyStatsCache();
             calculatingTax = true;
         }
+        public void AccumulateDailyProduction()
+        {
+            foreach (ResourceFC res in resources)
+            {
+                res.AccumulateDailyProduction();
+            }
+        }
         private void PostTaxPrep()
         {
             calculatingTax = false;
+            foreach (ResourceFC res in resources)
+            {
+                res.ResetAccumulator();
+            }
         }
         /// <summary>
         /// This function handles the calculations for determing this settlement's taxes at tax time. It handles both tithes and silver taxes.

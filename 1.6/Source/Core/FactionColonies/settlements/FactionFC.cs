@@ -483,6 +483,7 @@ namespace FactionColonies
                 return;
 
             UpdateSettlementStats();
+            AccumulateDailyProduction();
             DirtyAveragesCache();
             SyncGoodwillWithAverages();
             RelationsUtilFC.ResetPlayerColonyRelations();
@@ -1442,6 +1443,14 @@ namespace FactionColonies
                 }
             }
         }
+        private void AccumulateDailyProduction()
+        {
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                settlement.AccumulateDailyProduction();
+            }
+        }
+
         public void UpdateDailyResourcePools()
         {
             foreach(ResourcePool pool in resourcePools)

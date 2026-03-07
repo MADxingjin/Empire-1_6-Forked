@@ -42,6 +42,9 @@ namespace FactionColonies
         private TaggedString cachedProdMultDesc = "";
         private Texture2D iconLoaded;
 
+        private double accumulatedProduction = 0;
+        private int accumulationDays = 0;
+
         /* Don't expost tithes publicly. We want values to be added or removed *only* through our special functions, so that we can dirty or set
          * cached values appropriately. */
         private Dictionary<ThingQualityTuple, int> tithes = new Dictionary<ThingQualityTuple, int>();
@@ -186,7 +189,18 @@ namespace FactionColonies
          *  actualIncome                — taxableProductionMarketValue minus tithe costs; what the player actually receives in silver.
          *                                Can be negative if tithe modifiers push the tithe value above taxable production.
          */
-        public double rawTotalProduction => production * assignedWorkers;
+        /// <summary>Current snapshot: production * workers, ignoring accumulation.</summary>
+        public double InstantaneousProduction => production * assignedWorkers;
+        /// <summary>Period average if available, otherwise falls back to instantaneous.</summary>
+        public double AccumulatedAverageProduction => accumulationDays > 0
+            ? accumulatedProduction / accumulationDays
+            : InstantaneousProduction;
+        public int AccumulationDays => accumulationDays;
+
+        public double rawTotalProduction =>
+            (settlement != null && settlement.IsCalculatingTax && accumulationDays > 0)
+                ? AccumulatedAverageProduction
+                : InstantaneousProduction;
         public double effectiveRawTotalProduction => rawTotalProduction - totalStockpileAllocation;
         public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
         public double actualIncome => taxableProductionMarketValue - titheTotalValue;
@@ -255,6 +269,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref disburseTitheStock, "disburseTaxStock");
 
             Scribe_References.Look(ref settlement, "settlement");
+
+            Scribe_Values.Look(ref accumulatedProduction, "accumulatedProduction", 0);
+            Scribe_Values.Look(ref accumulationDays, "accumulationDays", 0);
         }
 
         /// <summary>
@@ -349,6 +366,18 @@ namespace FactionColonies
             dirtyProductionMultCache = true;
             dirtyProductionMultDescCache = true;
             dirtyTitheCache = true;
+        }
+
+        public void AccumulateDailyProduction()
+        {
+            accumulatedProduction += InstantaneousProduction;
+            accumulationDays++;
+        }
+
+        public void ResetAccumulator()
+        {
+            accumulatedProduction = 0;
+            accumulationDays = 0;
         }
 
         public ResourcePool CreatePool()
