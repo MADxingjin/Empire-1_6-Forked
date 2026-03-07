@@ -158,7 +158,7 @@ namespace FactionColonies
                     {
                         list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
                         {
-                            settlement.addOneTimeSilverIncome(prisoner.prisoner.MarketValue);
+                            settlement.AddOneTimeSilverIncome(prisoner.prisoner.MarketValue);
 
                             //reset window
                             prisoners.Remove(prisoner);

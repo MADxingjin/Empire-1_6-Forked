@@ -27,7 +27,7 @@ namespace FactionColonies
         {
             get
             {
-                if (dirtyDescriptionCache) recomputeDescription();
+                if (dirtyDescriptionCache) RecomputeDescription();
                 return _description;
             }
         }
@@ -41,17 +41,17 @@ namespace FactionColonies
 
         public int GetBuildingSlots()
         {
-            return settlementDef.getSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
+            return settlementDef.GetSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
         }
 
         public int GetUpgradeCost(int baseCost)
         {
-            return settlementDef.getSettlementTypeExtension().GetUpgradeCost(settlementLevel, baseCost);
+            return settlementDef.GetSettlementTypeExtension().GetUpgradeCost(settlementLevel, baseCost);
         }
 
         public int GetUpgradeTime(double buildTimeMult)
         {
-            return settlementDef.getSettlementTypeExtension().GetUpgradeTime(settlementLevel, buildTimeMult);
+            return settlementDef.GetSettlementTypeExtension().GetUpgradeTime(settlementLevel, buildTimeMult);
         }
 
         /* Workers — lazy-cached, use DirtyStatsCache()/DirtyProfitCache() to invalidate */
@@ -63,11 +63,11 @@ namespace FactionColonies
         private bool dirtyStatsCache = true;
         private bool dirtyProfitCache = true;
 
-        public double workers { get { if (dirtyProfitCache) recomputeProfit(); return _workers; } }
-        public double workersMax { get { if (dirtyStatsCache) recomputeStats(); return _workersMax; } }
-        public double workersUltraMax { get { if (dirtyStatsCache) recomputeStats(); return _workersUltraMax; } }
-        public double workerCost { get { if (dirtyProfitCache) recomputeProfit(); return _workerCost; } }
-        public double workerTotalUpkeep { get { if (dirtyProfitCache) recomputeProfit(); return _workerTotalUpkeep; } }
+        public double workers { get { if (dirtyProfitCache) RecomputeProfit(); return _workers; } }
+        public double workersMax { get { if (dirtyStatsCache) RecomputeStats(); return _workersMax; } }
+        public double workersUltraMax { get { if (dirtyStatsCache) RecomputeStats(); return _workersUltraMax; } }
+        public double workerCost { get { if (dirtyProfitCache) RecomputeProfit(); return _workerCost; } }
+        public double workerTotalUpkeep { get { if (dirtyProfitCache) RecomputeProfit(); return _workerTotalUpkeep; } }
         /* Social Stats */
         public double unrest;
         public double loyalty = 100;
@@ -76,7 +76,7 @@ namespace FactionColonies
 
         /// <summary>
         /// Stat modifiers from buildings, settlement type, and events that apply to this settlement.
-        /// Use addStatModifiers/removeStatModifiers to modify.
+        /// Use AddStatModifiers/RemoveStatModifiers to modify.
         /// Each entry tracks the sourceId that added it for removal by source.
         /// </summary>
         private struct TaggedStatModifier
@@ -108,11 +108,11 @@ namespace FactionColonies
         private string _incomeExp = "";
         private double _totalProfit;
 
-        public double totalUpkeep { get { if (dirtyProfitCache) recomputeProfit(); return _totalUpkeep; } }
-        public string upkeepExp { get { if (dirtyProfitCache) recomputeProfit(); return _upkeepExp; } }
-        public double totalIncome { get { if (dirtyProfitCache) recomputeProfit(); return _totalIncome; } }
-        public string incomeExp { get { if (dirtyProfitCache) recomputeProfit(); return _incomeExp; } }
-        public double totalProfit { get { if (dirtyProfitCache) recomputeProfit(); return _totalProfit; } }
+        public double totalUpkeep { get { if (dirtyProfitCache) RecomputeProfit(); return _totalUpkeep; } }
+        public string upkeepExp { get { if (dirtyProfitCache) RecomputeProfit(); return _upkeepExp; } }
+        public double totalIncome { get { if (dirtyProfitCache) RecomputeProfit(); return _totalIncome; } }
+        public string incomeExp { get { if (dirtyProfitCache) RecomputeProfit(); return _incomeExp; } }
+        public double totalProfit { get { if (dirtyProfitCache) RecomputeProfit(); return _totalProfit; } }
 
         // Jealously guard our resources. Only we can modify them!
         private List<ResourceFC> resources = new List<ResourceFC>();
@@ -210,7 +210,7 @@ namespace FactionColonies
             {
                 if (cachedlocationText.NullOrEmpty())
                 {
-                    cachedlocationText = settlementDef.GetModExtension<SettlementTypeExtension>().getLocationText(this);
+                    cachedlocationText = settlementDef.GetModExtension<SettlementTypeExtension>().GetLocationText(this);
                 }
                 return cachedlocationText;
             }
@@ -290,7 +290,7 @@ namespace FactionColonies
         {
             if (MilitaryComp != null)
             {
-                MilitaryComp.endBattle(false, 0);
+                MilitaryComp.EndBattle(false, 0);
             }
 
             if (destroyFlag)
@@ -335,8 +335,8 @@ namespace FactionColonies
         {
             foreach (ResourceFC resource in resources)
             {
-                resource.setDirtyCacheProdBase();
-                resource.setDirtyCacheProdMult();
+                resource.SetDirtyCacheProdBase();
+                resource.SetDirtyCacheProdMult();
             }
         }
 
@@ -349,7 +349,7 @@ namespace FactionColonies
         {
             foreach (ResourceAvailability rtd in settlementDef.resources)
             {
-                bool resourceAllowed = biomeDef.getBiomeResource(rtd.resourceDef) != null && rtd.resourceDef.ResourceTypeAllowedByTech(techlevel);
+                bool resourceAllowed = biomeDef.GetBiomeResource(rtd.resourceDef) != null && rtd.resourceDef.ResourceTypeAllowedByTech(techlevel);
                 ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == rtd.resourceDef);
                 if (res is null && resourceAllowed)
                 {
@@ -364,10 +364,10 @@ namespace FactionColonies
                 }
                 else if (!(res is null))
                 {
-                    res.setDirtyCache();
+                    res.SetDirtyCache();
                 }
             }
-            resources.Sort(ResourceFC.sortForUI);
+            resources.Sort(ResourceFC.SortForUI);
             BuildingsComp?.InvalidateFilters();
         }
 
@@ -381,9 +381,9 @@ namespace FactionColonies
                 def = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
             FactionFC faction = FactionCache.FactionComp;
-            Name = settlementDef.getSettlementTypeExtension().getSettlementName();
+            Name = settlementDef.GetSettlementTypeExtension().GetSettlementName();
 
-            updateTechIcon();
+            UpdateTechIcon();
             def.expandingIconTexture = "FactionIcons/" + faction.factionIconPath;
             traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
             base.PostMake();
@@ -430,8 +430,8 @@ namespace FactionColonies
             PrepareResources(faction.techLevel);
 
             /* If the settlement type has inherent stat modifiers, add them here. */
-            // addStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-            addStatModifiers(settlementDef.statModifiers, "settlementType");
+            // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
+            AddStatModifiers(settlementDef.statModifiers, "settlementType");
 
             foundingTick = Find.TickManager.TicksGame;
         }
@@ -496,15 +496,15 @@ namespace FactionColonies
                 // Rebuild stat modifiers from buildings and settlement type before calculating stats.
                 // statModifiers is intentionally not serialized — it's rebuilt from sources on load.
                 // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
-                clearStatModifiers();
-                BuildingsComp?.reapplyBuildingStatModifiers();
-                // addStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-                addStatModifiers(settlementDef.statModifiers, "settlementType");
+                ClearStatModifiers();
+                BuildingsComp?.ReapplyBuildingStatModifiers();
+                // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
+                AddStatModifiers(settlementDef.statModifiers, "settlementType");
                 DirtyDescriptionCache();
             }
         }
 
-        public void updateTechIcon()
+        public void UpdateTechIcon()
         {
             var techLevel = FactionCache.FactionComp.techLevel;
             LogUtil.Message("Got tech level " + techLevel);
@@ -573,12 +573,12 @@ namespace FactionColonies
             return MilitaryComp is null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
         }
 
-        public void addPrisoner(Pawn prisoner)
+        public void AddPrisoner(Pawn prisoner)
         {
             prisonerList.Add(new FCPrisoner(prisoner, this));
         }
 
-        public void upgradeSettlement(int times = 1)
+        public void UpgradeSettlement(int times = 1)
         {
             int oldLevel = settlementLevel;
             settlementLevel += times;
@@ -590,30 +590,30 @@ namespace FactionColonies
             if (settlementLevel < 0) settlementLevel = 0;
             DirtyStatsCache();
             DirtyDescriptionCache();
-            settlementDef.getSettlementTypeExtension()?.onUpgrade(this, oldLevel, settlementLevel);
+            settlementDef.GetSettlementTypeExtension()?.OnUpgrade(this, oldLevel, settlementLevel);
             SettlementLifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
         }
 
-        public void delevelSettlement(int times = -1)
+        public void DelevelSettlement(int times = -1)
         {
-            upgradeSettlement(times);
+            UpgradeSettlement(times);
         }
 
         public void GainUnrestWithReason(Message message, double amount)
         {
             Messages.Message(message);
-            unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
+            unrest += amount * GetStatValue(FCStatDefOf.unrestGainedMultiplier);
             FactionCache.FactionComp?.DirtyAveragesCache();
         }
         public void GainUnrest(double amount)
         {
-            unrest += amount * getStatValue(FCStatDefOf.unrestGainedMultiplier);
+            unrest += amount * GetStatValue(FCStatDefOf.unrestGainedMultiplier);
             FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
         public void GainHappiness(double amount)
         {
-            happiness += amount * getStatValue(FCStatDefOf.happinessGainedMultiplier);
+            happiness += amount * GetStatValue(FCStatDefOf.happinessGainedMultiplier);
             FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
@@ -652,7 +652,7 @@ namespace FactionColonies
          * ~     Lazy Cache Recomputation       ~ *
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-        private void recomputeStats()
+        private void RecomputeStats()
         {
             FactionFC factionFc = FactionCache.FactionComp;
 
@@ -660,28 +660,28 @@ namespace FactionColonies
             int overMaxAdjustment = (int)factionFc.GetStatValue(FCStatDefOf.overMaxWorkersAdjustment, this);
 
             //Military Settlement Level
-            settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(getStatValue(FCStatDefOf.militaryBaseLevel));
+            settlementMilitaryLevel = settlementLevel - 1 + Convert.ToInt32(GetStatValue(FCStatDefOf.militaryBaseLevel));
 
             //Worker Stats
             _workersMax = settlementDef.workersMaxBase + (settlementLevel * (settlementDef.workersMaxMult + extraWorkersSoftcap)) +
-                         getStatValue(FCStatDefOf.workerBaseMax) + returnMaxWorkersFromPrisoners();
+                         GetStatValue(FCStatDefOf.workerBaseMax) + ReturnMaxWorkersFromPrisoners();
             _workersUltraMax = _workersMax + settlementDef.workersUltraMaxBase + overMaxAdjustment + (settlementLevel * settlementDef.workersUltraMaxMult) +
-                              getStatValue(FCStatDefOf.workerBaseOverMax) + returnOverMaxWorkersFromPrisoners();
+                              GetStatValue(FCStatDefOf.workerBaseOverMax) + ReturnOverMaxWorkersFromPrisoners();
 
             dirtyStatsCache = false;
             dirtyProfitCache = true;
         }
 
-        private void recomputeProfit()
+        private void RecomputeProfit()
         {
-            if (dirtyStatsCache) recomputeStats();
+            if (dirtyStatsCache) RecomputeStats();
 
             _upkeepExp = "";
             _incomeExp = "";
-            _workers = getTotalWorkers_Internal();
+            _workers = GetTotalWorkers_Internal();
             double upkeep = 0;
 
-            _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, getBaseWorkerCost());
+            _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, GetBaseWorkerCost());
             if (_workerTotalUpkeep > 0)
             {
                 _upkeepExp += "+" + Math.Round(_workerTotalUpkeep, 2).ToString() + " - " + "Workers".Translate() + "\n";
@@ -716,39 +716,39 @@ namespace FactionColonies
 
             _totalUpkeep = upkeep;
             _totalIncome = income;
-            _workerCost = _workers == 0 ? getBaseWorkerCost() : (_workerTotalUpkeep / _workers);
+            _workerCost = _workers == 0 ? GetBaseWorkerCost() : (_workerTotalUpkeep / _workers);
             _totalProfit = _totalIncome - _totalUpkeep;
 
             dirtyProfitCache = false;
         }
 
-        private void recomputeDescription()
+        private void RecomputeDescription()
         {
-            _description = getDescriptionBiome() + "\n\n" + getSettlementLevelDesc();
+            _description = GetDescriptionBiome() + "\n\n" + GetSettlementLevelDesc();
             dirtyDescriptionCache = false;
         }
 
-        public double getHappinessGain()
+        public double GetHappinessGain()
         {
-            double happinessGainMultiplier = getStatValue(FCStatDefOf.happinessGainedMultiplier);
-            return happinessGainMultiplier * (FCSettings.happinessBaseGain + getStatValue(FCStatDefOf.happinessGainedBase));
+            double happinessGainMultiplier = GetStatValue(FCStatDefOf.happinessGainedMultiplier);
+            return happinessGainMultiplier * (FCSettings.happinessBaseGain + GetStatValue(FCStatDefOf.happinessGainedBase));
         }
-        public double getHappinessLoss()
+        public double GetHappinessLoss()
         {
-            double happinessLostMultiplier = getStatValue(FCStatDefOf.happinessLostMultiplier);
-            return happinessLostMultiplier * (FCSettings.happinessBaseLost + getStatValue(FCStatDefOf.happinessLostBase));
+            double happinessLostMultiplier = GetStatValue(FCStatDefOf.happinessLostMultiplier);
+            return happinessLostMultiplier * (FCSettings.happinessBaseLost + GetStatValue(FCStatDefOf.happinessLostBase));
         }
-        public double getTotalHappinessGain()
+        public double GetTotalHappinessGain()
         {
-            return getHappinessGain() - getHappinessLoss();
+            return GetHappinessGain() - GetHappinessLoss();
         }
-        public void updateHappiness()
+        public void UpdateHappiness()
         {
-            happiness = SettlementFormulas.ClampStat(happiness, getTotalHappinessGain());
+            happiness = SettlementFormulas.ClampStat(happiness, GetTotalHappinessGain());
         }
-        public string getHappinessDesc()
+        public string GetHappinessDesc()
         {
-            double happinessGain = getTotalHappinessGain();
+            double happinessGain = GetTotalHappinessGain();
             string desc = "";
 
             if (happinessGain >= 0)
@@ -759,43 +759,43 @@ namespace FactionColonies
             desc += "\n\n";
             string gain = "";
             if (FCSettings.happinessBaseGain != 0)
-                gain += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
 
-            gain += getStatDesc(FCStatDefOf.happinessGainedBase);
-            gain += getStatDesc(FCStatDefOf.happinessGainedMultiplier);
+            gain += GetStatDesc(FCStatDefOf.happinessGainedBase);
+            gain += GetStatDesc(FCStatDefOf.happinessGainedMultiplier);
             if (!gain.NullOrEmpty())
                 desc += gain + "\n";
 
             if (FCSettings.happinessBaseLost != 0)
-                desc += TextUtil.colorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
 
-            desc += getStatDesc(FCStatDefOf.happinessLostBase, hardinvert: true);
-            desc += getStatDesc(FCStatDefOf.happinessLostMultiplier);
+            desc += GetStatDesc(FCStatDefOf.happinessLostBase, hardinvert: true);
+            desc += GetStatDesc(FCStatDefOf.happinessLostMultiplier);
 
             return desc.Trim();
         }
 
-        public double getLoyaltyGain()
+        public double GetLoyaltyGain()
         {
-            double loyaltyGainMultiplier = getStatValue(FCStatDefOf.loyaltyGainedMultiplier);
-            return loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + getStatValue(FCStatDefOf.loyaltyGainedBase));
+            double loyaltyGainMultiplier = GetStatValue(FCStatDefOf.loyaltyGainedMultiplier);
+            return loyaltyGainMultiplier * (FCSettings.loyaltyBaseGain + GetStatValue(FCStatDefOf.loyaltyGainedBase));
         }
-        public double getLoyaltyLoss()
+        public double GetLoyaltyLoss()
         {
-            double loyaltyLostMultiplier = getStatValue(FCStatDefOf.loyaltyLostMultiplier);
-            return loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + getStatValue(FCStatDefOf.loyaltyLostBase));
+            double loyaltyLostMultiplier = GetStatValue(FCStatDefOf.loyaltyLostMultiplier);
+            return loyaltyLostMultiplier * (FCSettings.loyaltyBaseLost + GetStatValue(FCStatDefOf.loyaltyLostBase));
         }
-        public double getTotalLoyaltyGain()
+        public double GetTotalLoyaltyGain()
         {
-            return getLoyaltyGain() - getLoyaltyLoss();
+            return GetLoyaltyGain() - GetLoyaltyLoss();
         }
-        public void updateLoyalty()
+        public void UpdateLoyalty()
         {
-            loyalty = SettlementFormulas.ClampStat(loyalty, getTotalLoyaltyGain());
+            loyalty = SettlementFormulas.ClampStat(loyalty, GetTotalLoyaltyGain());
         }
-        public string getLoyaltyDesc()
+        public string GetLoyaltyDesc()
         {
-            double loyaltyGain = getTotalLoyaltyGain();
+            double loyaltyGain = GetTotalLoyaltyGain();
             string desc = "";
             if (loyaltyGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
@@ -805,33 +805,33 @@ namespace FactionColonies
             desc += "\n\n";
             string gain = "";
             if (FCSettings.loyaltyBaseGain != 0)
-                gain += TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "BaseGain".Translate() + "\n";
 
-            gain += getStatDesc(FCStatDefOf.loyaltyGainedBase);
-            gain += getStatDesc(FCStatDefOf.loyaltyGainedMultiplier);
+            gain += GetStatDesc(FCStatDefOf.loyaltyGainedBase);
+            gain += GetStatDesc(FCStatDefOf.loyaltyGainedMultiplier);
             if (!gain.NullOrEmpty())
                 desc += gain + "\n";
 
             if (FCSettings.loyaltyBaseLost != 0)
-                desc += "\n" + TextUtil.colorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += "\n" + TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
 
-            desc += getStatDesc(FCStatDefOf.loyaltyLostBase, hardinvert: true);
-            desc += getStatDesc(FCStatDefOf.loyaltyLostMultiplier);
+            desc += GetStatDesc(FCStatDefOf.loyaltyLostBase, hardinvert: true);
+            desc += GetStatDesc(FCStatDefOf.loyaltyLostMultiplier);
 
             return desc.Trim();
         }
 
-        public double getProsperityGain()
+        public double GetProsperityGain()
         {
-            return FCSettings.prosperityBaseRecovery + getStatValue(FCStatDefOf.prosperityBaseRecovery);
+            return FCSettings.prosperityBaseRecovery + GetStatValue(FCStatDefOf.prosperityBaseRecovery);
         }
-        public void updateProsperity()
+        public void UpdateProsperity()
         {
-            prosperity = SettlementFormulas.ClampStat(prosperity, getProsperityGain());
+            prosperity = SettlementFormulas.ClampStat(prosperity, GetProsperityGain());
         }
-        public string getProsperityDesc()
+        public string GetProsperityDesc()
         {
-            double prosperityGain = getProsperityGain();
+            double prosperityGain = GetProsperityGain();
             string desc = "";
             if (prosperityGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
@@ -840,33 +840,33 @@ namespace FactionColonies
 
             desc += "\n\n";
             if (FCSettings.prosperityBaseRecovery != 0)
-                desc += TextUtil.colorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
+                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
 
-            desc += getStatDesc(FCStatDefOf.prosperityBaseRecovery);
+            desc += GetStatDesc(FCStatDefOf.prosperityBaseRecovery);
 
             return desc.Trim();
         }
-        public double getUnrestGain()
+        public double GetUnrestGain()
         {
-            double unrestGainMultiplier = getStatValue(FCStatDefOf.unrestGainedMultiplier);
-            return unrestGainMultiplier * (FCSettings.unrestBaseGain + getStatValue(FCStatDefOf.unrestGainedBase));
+            double unrestGainMultiplier = GetStatValue(FCStatDefOf.unrestGainedMultiplier);
+            return unrestGainMultiplier * (FCSettings.unrestBaseGain + GetStatValue(FCStatDefOf.unrestGainedBase));
         }
-        public double getUnrestLoss()
+        public double GetUnrestLoss()
         {
-            double unrestLostMultiplier = getStatValue(FCStatDefOf.unrestLostMultiplier);
-            return unrestLostMultiplier * (FCSettings.unrestBaseLost + getStatValue(FCStatDefOf.unrestLostBase));
+            double unrestLostMultiplier = GetStatValue(FCStatDefOf.unrestLostMultiplier);
+            return unrestLostMultiplier * (FCSettings.unrestBaseLost + GetStatValue(FCStatDefOf.unrestLostBase));
         }
-        public double getTotalUnrestGain()
+        public double GetTotalUnrestGain()
         {
-            return getUnrestGain() - getUnrestLoss();
+            return GetUnrestGain() - GetUnrestLoss();
         }
-        public void updateUnrest()
+        public void UpdateUnrest()
         {
-            unrest = SettlementFormulas.ClampStat(unrest, getTotalUnrestGain());
+            unrest = SettlementFormulas.ClampStat(unrest, GetTotalUnrestGain());
         }
-        public string getUnrestDesc()
+        public string GetUnrestDesc()
         {
-            double unrestGain = getTotalUnrestGain();
+            double unrestGain = GetTotalUnrestGain();
             string desc = "";
             if (unrestGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(unrestGain), "Unrest".Translate());
@@ -876,33 +876,33 @@ namespace FactionColonies
             desc += "\n\n";
             string gain = "";
             if (FCSettings.unrestBaseGain != 0)
-                gain += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "BaseGain".Translate() + "\n";
 
-            gain += getStatDesc(FCStatDefOf.unrestGainedBase);
-            gain += getStatDesc(FCStatDefOf.unrestGainedMultiplier);
+            gain += GetStatDesc(FCStatDefOf.unrestGainedBase);
+            gain += GetStatDesc(FCStatDefOf.unrestGainedMultiplier);
             if (!gain.NullOrEmpty())
                 desc += gain + "\n";
 
             if (FCSettings.unrestBaseLost != 0)
-                desc += TextUtil.colorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
 
-            desc += getStatDesc(FCStatDefOf.unrestLostBase, hardinvert: true);
-            desc += getStatDesc(FCStatDefOf.unrestLostMultiplier);
+            desc += GetStatDesc(FCStatDefOf.unrestLostBase, hardinvert: true);
+            desc += GetStatDesc(FCStatDefOf.unrestLostMultiplier);
 
             return desc.Trim();
         }
-        public double getSettlementTaxBonus()
+        public double GetSettlementTaxBonus()
         {
             FactionFC faction = FactionCache.FactionComp;
             double bonus = faction.GetStatValue(FCStatDefOf.taxBonusFlat, this);
-            bonus += getStatValue(FCStatDefOf.taxBasePercentage);
+            bonus += GetStatValue(FCStatDefOf.taxBasePercentage);
             bonus = ((100d + bonus) / 100d);
             return bonus;
         }
 
-        public double getTotalIncome() => totalIncome;
+        public double GetTotalIncome() => totalIncome;
 
-        public int getTotalWorkers()
+        public int GetTotalWorkers()
         {
             int totalWorkers = 0;
             foreach (ResourceFC resource in resources)
@@ -912,7 +912,7 @@ namespace FactionColonies
 
             while (totalWorkers > workersUltraMax)
             {
-                if (increaseWorkers(null, -1))
+                if (IncreaseWorkers(null, -1))
                 {
                     totalWorkers -= 1;
                 }
@@ -922,10 +922,10 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Internal worker count for use inside recomputeProfit. Reads backing fields directly
+        /// Internal worker count for use inside RecomputeProfit. Reads backing fields directly
         /// and sheds workers without triggering profit recalculation.
         /// </summary>
-        private int getTotalWorkers_Internal()
+        private int GetTotalWorkers_Internal()
         {
             int totalWorkers = 0;
             foreach (ResourceFC resource in resources)
@@ -948,7 +948,7 @@ namespace FactionColonies
 
         private bool CanStillModify(ResourceFC resource, int singleMod) => _workers + singleMod <= workersUltraMax && _workers + singleMod >= 0 && resource.assignedWorkers + singleMod <= workersUltraMax && resource.assignedWorkers + singleMod >= 0;
 
-        public bool increaseWorkers(ResourceFC resource, int numWorkers)
+        public bool IncreaseWorkers(ResourceFC resource, int numWorkers)
         {
             int singleMod = (numWorkers > 0) ? 1 : -1;
             if (resource == null)
@@ -989,14 +989,14 @@ namespace FactionColonies
             return false;
         }
 
-        public double getBaseWorkerCost()
+        public double GetBaseWorkerCost()
         {
-            return FCSettings.workerCost + getStatValue(FCStatDefOf.workerBaseCost);
+            return FCSettings.workerCost + GetStatValue(FCStatDefOf.workerBaseCost);
         }
 
-        public double getTotalUpkeep() => totalUpkeep;
+        public double GetTotalUpkeep() => totalUpkeep;
 
-        public double getTotalProfit() => totalProfit;
+        public double GetTotalProfit() => totalProfit;
 
         public float Happiness
         {
@@ -1018,7 +1018,7 @@ namespace FactionColonies
             get { return (float)Math.Round(prosperity, 1); }
         }
 
-        public ResourceFC returnHighestResource()
+        public ResourceFC ReturnHighestResource()
         {
             double highest = -1;
             ResourceFC highestResource = null;
@@ -1035,7 +1035,7 @@ namespace FactionColonies
             return highestResource;
         }
 
-        public double getDefenseBonus()
+        public double GetDefenseBonus()
         {
             double defenseBonus = 0;
             foreach (ResourceFC resource in resources)
@@ -1048,15 +1048,15 @@ namespace FactionColonies
             return defenseBonus;
         }
 
-        private string getDescriptionBiome()
+        private string GetDescriptionBiome()
         {
             if (!biomeDef.descriptionKey.NullOrEmpty())
                 return biomeDef.descriptionKey.Translate();
             return "FCDescUnknown".Translate();
         }
-        private string getSettlementLevelDesc()
+        private string GetSettlementLevelDesc()
         {
-            return settlementDef.getSettlementTypeExtension()?.getSettlementLevelDesc(settlementLevel)
+            return settlementDef.GetSettlementTypeExtension()?.GetSettlementLevelDesc(settlementLevel)
                 ?? "FCTownLevel5".Translate();
         }
 
@@ -1064,7 +1064,7 @@ namespace FactionColonies
         /// Adds stat modifiers from a source (building, settlement type, etc).
         /// Resource production bonuses are now handled via FCStatDef's linkedResource on ResourceFC.
         /// </summary>
-        public void addStatModifiers(List<FCStatModifier> mods, string sourceId)
+        public void AddStatModifiers(List<FCStatModifier> mods, string sourceId)
         {
             if (mods != null)
             {
@@ -1077,9 +1077,9 @@ namespace FactionColonies
         /// <summary>
         /// Removes stat modifiers previously added by the given source.
         /// mods must be the exact same FCStatModifier object references that were passed to
-        /// addStatModifiers, since removal uses reference equality (the def's objects stored via AddRange).
+        /// AddStatModifiers, since removal uses reference equality (the def's objects stored via AddRange).
         /// </summary>
-        public void removeStatModifiers(List<FCStatModifier> mods, string sourceId)
+        public void RemoveStatModifiers(List<FCStatModifier> mods, string sourceId)
         {
             if (mods != null)
             {
@@ -1101,7 +1101,7 @@ namespace FactionColonies
         /// <summary>
         /// Removes all stat modifiers that were added with the given sourceId.
         /// </summary>
-        public void removeStatModifiersBySource(string sourceId)
+        public void RemoveStatModifiersBySource(string sourceId)
         {
             for (int i = statModifiers.Count - 1; i >= 0; i--)
             {
@@ -1114,7 +1114,7 @@ namespace FactionColonies
         /// <summary>
         /// Clears all settlement-level stat modifiers (from buildings, settlement type).
         /// </summary>
-        public void clearStatModifiers()
+        public void ClearStatModifiers()
         {
             statModifiers.Clear();
             InvalidateStatCache();
@@ -1177,7 +1177,7 @@ namespace FactionColonies
         /// Returns the final combined stat value at this settlement.
         /// Delegates to FactionFC.GetStatValue which combines settlement + faction partials + behaviors.
         /// </summary>
-        public double getStatValue(FCStatDef stat)
+        public double GetStatValue(FCStatDef stat)
         {
             if (!stat.appliesToSettlements)
                 return FactionCache.FactionComp.GetStatValue(stat);
@@ -1188,7 +1188,7 @@ namespace FactionColonies
         /// Builds a per-source breakdown description for a stat at this settlement.
         /// Combines settlement-level, faction-level, and behavior contributions.
         /// </summary>
-        public string getStatDesc(FCStatDef stat, bool hardinvert = false)
+        public string GetStatDesc(FCStatDef stat, bool hardinvert = false)
         {
             if (!stat.appliesToSettlements) return "";
             if (!cachedStatDescs.TryGetValue(stat, out string desc))
@@ -1202,9 +1202,9 @@ namespace FactionColonies
                 {
                     if (tagged.mod.stat != stat) continue;
                     if (isAdditive)
-                        desc += TextUtil.colorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.ColorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
                     else
-                        desc += TextUtil.colorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.ColorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
                 }
 
                 // IStatModifierProvider comps
@@ -1231,12 +1231,12 @@ namespace FactionColonies
             return desc;
         }
 
-        public void deconstructBuilding(int buildingSlot)
+        public void DeconstructBuilding(int buildingSlot)
         {
             BuildingsComp?.DeconstructBuilding(buildingSlot);
         }
 
-        private int returnMaxWorkersFromPrisoners()
+        private int ReturnMaxWorkersFromPrisoners()
         {
             int num = 0;
             foreach (FCPrisoner prisoner in prisonerList)
@@ -1255,23 +1255,23 @@ namespace FactionColonies
             return num;
         }
 
-        private int returnOverMaxWorkersFromPrisoners()
+        private int ReturnOverMaxWorkersFromPrisoners()
         {
             return prisonerList.Count(prisoner => prisoner.workload == FCWorkLoad.Light);
         }
 
 
-        public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
+        public bool ValidConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             if (BuildingsComp == null)
             {
                 return false;
             }
-            return BuildingsComp.validConstructBuilding(building, buildingSlot);
+            return BuildingsComp.ValidConstructBuilding(building, buildingSlot);
         }
 
 
-        public void constructBuilding(BuildingFCDef building, int buildingSlot)
+        public void ConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             if (BuildingsComp == null)
             {
@@ -1280,7 +1280,7 @@ namespace FactionColonies
             BuildingsComp.ConstructBuilding(building, buildingSlot);
         }
 
-        public ResourceFC returnResource(string defName) //used to return the correct resource based on string name
+        public ResourceFC ReturnResource(string defName) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def.defName == defName);
             if (res == null)
@@ -1290,7 +1290,7 @@ namespace FactionColonies
             return res;
         }
 
-        public ResourceFC getResource(ResourceTypeDef type) //used to return the correct resource based on string name
+        public ResourceFC GetResource(ResourceTypeDef type) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == type);
             if (res == null)
@@ -1300,7 +1300,7 @@ namespace FactionColonies
             return res;
         }
 
-        public ResourceFC getResourceByIndex(int index)
+        public ResourceFC GetResourceByIndex(int index)
         {
             if (index >= resources.Count || index < 0)
             {
@@ -1311,10 +1311,10 @@ namespace FactionColonies
                 if (i == index)
                     return resources[i];
             }
-            LogUtil.Error($"Reached end of WorldSettmentFC.getResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
+            LogUtil.Error($"Reached end of WorldSettmentFC.GetResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
             return null;
         }
-        public List<ResourceFC> getTitheableResources()
+        public List<ResourceFC> GetTitheableResources()
         {
             List<ResourceFC> list = new List<ResourceFC>();
             foreach (ResourceFC res in Resources)
@@ -1330,7 +1330,7 @@ namespace FactionColonies
         /// Returns a list of *all* things that this settlement can produce.
         /// </summary>
         /// <returns></returns>
-        public List<ThingDef> getGrandThingList()
+        public List<ThingDef> GetGrandThingList()
         {
             if (dirtyGrandThingListFlag)
             {
@@ -1339,7 +1339,7 @@ namespace FactionColonies
                 {
                     if (!res.def.isPoolResource)
                     {
-                        List<ThingDef> resList = res.generateThingDefList();
+                        List<ThingDef> resList = res.GenerateThingDefList();
                         if (resList != null && resList.Count > 0)
                         {
                             grandThingList.AddRange(resList);
@@ -1350,40 +1350,40 @@ namespace FactionColonies
             }
             return grandThingList;
         }
-        public void dirtyGrandThingList()
+        public void DirtyGrandThingList()
         {
             dirtyGrandThingListFlag = true;
-            FactionCache.FactionComp.dirtyGrandThingList();
+            FactionCache.FactionComp.DirtyGrandThingList();
         }
 
-        public float getOneTimeSilverIncome()
+        public float GetOneTimeSilverIncome()
         {
             return oneTimeSilverIncome;
         }
 
-        public void resetOneTimeSilverIncome()
+        public void ResetOneTimeSilverIncome()
         {
             oneTimeSilverIncome = 0;
         }
 
-        public void addOneTimeSilverIncome(float amount)
+        public void AddOneTimeSilverIncome(float amount)
         {
             oneTimeSilverIncome += amount;
         }
 
-        public float returnOneTimeSilverIncome(bool reset)
+        public float ReturnOneTimeSilverIncome(bool reset)
         {
             float income = oneTimeSilverIncome;
 
             if (reset)
             {
-                resetOneTimeSilverIncome();
+                ResetOneTimeSilverIncome();
             }
 
             return income;
         }
 
-        public void goTo()
+        public void GoTo()
         {
             Find.World.renderer.wantedMode = WorldRenderMode.Planet;
 
@@ -1395,7 +1395,7 @@ namespace FactionColonies
                 Find.MainButtonsRoot.tabs.OpenTab.TabWindow.Close();
             }
         }
-        public List<ResourcePool> createResourcePools()
+        public List<ResourcePool> CreateResourcePools()
         {
             List<ResourcePool> pools = new List<ResourcePool>();
 
@@ -1403,7 +1403,7 @@ namespace FactionColonies
             {
                 if (resource.def.isPoolResource)
                 {
-                    ResourcePool pool = resource.createPool();
+                    ResourcePool pool = resource.CreatePool();
                     if (pool.pool != 0)
                     {
                         pools.Add(pool);
@@ -1414,51 +1414,51 @@ namespace FactionColonies
             return pools;
         }
 
-        public void pruneResourceTithes()
+        public void PruneResourceTithes()
         {
             foreach (ResourceFC res in resources)
             {
                 if (res.canTithe)
                 {
-                    res.pruneTitheList();
+                    res.PruneTitheList();
                 }
             }
         }
-        public void dirtyResourceCache(ResourceTypeDef resDef)
+        public void DirtyResourceCache(ResourceTypeDef resDef)
         {
-            ResourceFC res = getResource(resDef);
+            ResourceFC res = GetResource(resDef);
             if (!(res is null))
             {
-                res.setDirtyCache();
+                res.SetDirtyCache();
             }
         }
-        public void dirtyResourceCache(ResourceFC res)
+        public void DirtyResourceCache(ResourceFC res)
         {
             if (!(res is null))
             {
-                res.setDirtyCache();
+                res.SetDirtyCache();
             }
         }
-        public void dirtyResourceCaches()
+        public void DirtyResourceCaches()
         {
             foreach (ResourceFC res in resources)
             {
-                res.setDirtyCache();
+                res.SetDirtyCache();
             }
         }
         /// <summary>
         /// Handles any necessary pre-tax preparations to ensure that the tax calculation is up-to-date and accurate.
         /// </summary>
-        private void preTaxPrep()
+        private void PreTaxPrep()
         {
-            dirtyResourceCaches();
+            DirtyResourceCaches();
             foreach (ResourceFC res in resources)
                 res.PruneStockpileAllocations();
-            pruneResourceTithes();
+            PruneResourceTithes();
             DirtyStatsCache();
             calculatingTax = true;
         }
-        private void postTaxPrep()
+        private void PostTaxPrep()
         {
             calculatingTax = false;
         }
@@ -1467,21 +1467,21 @@ namespace FactionColonies
         /// </summary>
         /// <param name="silverAmount">The amount of silver to tax; positive if the player gains silver, negative otherwise.</param>
         /// <returns>A list of things produced by tithing resources. May be empty if there are no tithes.</returns>
-        public List<Thing> createTax(out int silverAmount)
+        public List<Thing> CreateTax(out int silverAmount)
         {
-            preTaxPrep();
-            settlementDef.getSettlementTypeExtension()?.preTax(this);
+            PreTaxPrep();
+            settlementDef.GetSettlementTypeExtension()?.PreTax(this);
             TaxTickRegistry.InvokePreSettlementCreateTax(this);
 
             List<Thing> titheThings = new List<Thing>();
-            int tmpSilverAmount = (int)((totalIncome - totalUpkeep) + returnOneTimeSilverIncome(true));
+            int tmpSilverAmount = (int)((totalIncome - totalUpkeep) + ReturnOneTimeSilverIncome(true));
 
             foreach (ResourceFC resource in resources)
             {
                 if (resource.canTithe)
                 {
                     int resExtraSilver = 0;
-                    List<Thing> resTitheThings = resource.generateTithe(out resExtraSilver);
+                    List<Thing> resTitheThings = resource.GenerateTithe(out resExtraSilver);
 
                     if (resTitheThings.Count > 0)
                     {
@@ -1491,9 +1491,9 @@ namespace FactionColonies
                 }
             }
 
-            postTaxPrep();
+            PostTaxPrep();
             silverAmount = tmpSilverAmount;
-            settlementDef.getSettlementTypeExtension()?.postTax(this, ref silverAmount, titheThings);
+            settlementDef.GetSettlementTypeExtension()?.PostTax(this, ref silverAmount, titheThings);
             TaxTickRegistry.InvokePostSettlementCreateTax(this, ref silverAmount, titheThings);
             return titheThings;
         }

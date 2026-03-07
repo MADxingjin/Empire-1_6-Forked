@@ -83,22 +83,13 @@ namespace FactionColonies
             }
         }
 
-        public string buildingID(int buildingSlot)
+        public string BuildingID(int buildingSlot)
         {
             if (buildingSlot >= buildings.Count)
             {
                 return "null";
             }
             return buildings[buildingSlot].def.defName + buildingSlot.ToString();
-        }
-        public bool hasBuilding(BuildingFCDef building)
-        {
-            foreach(BuildingFC bfc in buildings)
-            {
-                if (bfc.def == building)
-                    return true;
-            }
-            return false;
         }
         /// <summary>
         /// Returns true if any currently-built building in this settlement
@@ -128,7 +119,7 @@ namespace FactionColonies
             }
             return result;
         }
-        public BuildingFCDef getBuildingInSlot(int buildingSlot)
+        public BuildingFCDef GetBuildingInSlot(int buildingSlot)
         {
             if (buildingSlot >= buildings.Count)
             {
@@ -149,23 +140,23 @@ namespace FactionColonies
             return null;
         }
 
-        public bool buildingSlotIsEmpty(int buildingSlot)
+        public bool BuildingSlotIsEmpty(int buildingSlot)
         {
             return buildings[buildingSlot].def.defName == BuildingFCDefOf.Empty.defName;
         }
-        public bool buildingSlotIsConstruction(int buildingSlot)
+        public bool BuildingSlotIsConstruction(int buildingSlot)
         {
             return buildings[buildingSlot].def.defName == BuildingFCDefOf.Construction.defName;
         }
-        public bool buildingSlotIsBuilding(int buildingSlot)
+        public bool BuildingSlotIsBuilding(int buildingSlot)
         {
-            return !buildingSlotIsEmpty(buildingSlot) && !buildingSlotIsConstruction(buildingSlot);
+            return !BuildingSlotIsEmpty(buildingSlot) && !BuildingSlotIsConstruction(buildingSlot);
         }
-        public string buildingLabel(int buildingsSlot)
+        public string BuildingLabel(int buildingsSlot)
         {
             return buildings[buildingsSlot].def.LabelCap;
         }
-        public List<BuildingFC> getUnderConstructionBuildings()
+        public List<BuildingFC> GetUnderConstructionBuildings()
         {
             if (dirtyConstructionCache)
             {
@@ -241,7 +232,7 @@ namespace FactionColonies
             }
             return false;
         }
-        public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
+        public bool ValidConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             bool valid = true;
 
@@ -255,7 +246,7 @@ namespace FactionColonies
                 }
             }
 
-            if (PaymentUtil.getSilver() < building.cost) //check if the player has enough money
+            if (PaymentUtil.GetSilver() < building.cost) //check if the player has enough money
             {
                 valid = false;
                 Messages.Message("NotEnoughSilverConstructBuilding".Translate() + "!", MessageTypeDefOf.RejectInput);
@@ -324,7 +315,7 @@ namespace FactionColonies
         }
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
-            addBuildingStatModifiers(buildingSlot);
+            AddBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -345,7 +336,7 @@ namespace FactionColonies
                 }
             }
         }
-        public void startConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
+        public void StartConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
         {
             DeconstructBuilding(buildingSlot);
 
@@ -394,7 +385,7 @@ namespace FactionColonies
             dirtyConstructionCache = true;
             BuildingLifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, deconstructedDef, buildingSlot);
 
-            removeBuildingStatModifiers(buildingSlot);
+            RemoveBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -423,35 +414,35 @@ namespace FactionColonies
 
             buildings[buildingSlot].def = BuildingFCDefOf.Empty;
         }
-        public void addBuildingStatModifiers(int buildingSlot)
+        public void AddBuildingStatModifiers(int buildingSlot)
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.addStatModifiers(def.statModifiers, buildingID(buildingSlot));
+            WorldSettlement.AddStatModifiers(def.statModifiers, BuildingID(buildingSlot));
         }
-        public void removeBuildingStatModifiers(int buildingSlot)
+        public void RemoveBuildingStatModifiers(int buildingSlot)
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.removeStatModifiers(def.statModifiers, buildingID(buildingSlot));
+            WorldSettlement.RemoveStatModifiers(def.statModifiers, BuildingID(buildingSlot));
         }
         /// <summary>
         /// Loops through all constructed buildings and applies their stat modifiers to the parent settlement.
         /// <para>Assumes that the parent settlement's stat modifier list has already been cleared.</para>
         /// </summary>
-        public void reapplyBuildingStatModifiers()
+        public void ReapplyBuildingStatModifiers()
         {
             for (int i = 0; i < FC_MAX_BUILDINGS; i++)
             {
-                addBuildingStatModifiers(i);
+                AddBuildingStatModifiers(i);
             }
         }
 
-        public int getBuildingUpkeep(int buildingSlot)
+        public int GetBuildingUpkeep(int buildingSlot)
         {
-            return getBuildingUpkeep(getBuildingInSlot(buildingSlot));
+            return GetBuildingUpkeep(GetBuildingInSlot(buildingSlot));
         }
-        public int getBuildingUpkeep(BuildingFCDef building)
+        public int GetBuildingUpkeep(BuildingFCDef building)
         {
             if (building == null)
                 return 0;
@@ -464,10 +455,10 @@ namespace FactionColonies
             return Math.Max((int)upkeep, 0);
         }
 
-        public TaggedString getBuildingDesc(BuildingFCDef building)
+        public TaggedString GetBuildingDesc(BuildingFCDef building)
         {
             TaggedString desc = building.desc + "\n";
-            int buildingUpkeep = getBuildingUpkeep(building);
+            int buildingUpkeep = GetBuildingUpkeep(building);
             if (buildingUpkeep > 0)
             {
                 desc += "\n" + "FCBuildingUpkeep".Translate(buildingUpkeep.ToString());
@@ -477,9 +468,9 @@ namespace FactionColonies
 
             return desc.Trim();
         }
-        public TaggedString getBuildingDescFull(BuildingFCDef building)
+        public TaggedString GetBuildingDescFull(BuildingFCDef building)
         {
-            TaggedString desc = building.LabelCap + "\n-----\n" + getBuildingDesc(building);
+            TaggedString desc = building.LabelCap + "\n-----\n" + GetBuildingDesc(building);
             return desc;
         }
 
@@ -489,7 +480,7 @@ namespace FactionColonies
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
-                upkeep += getBuildingUpkeep(building.def);
+                upkeep += GetBuildingUpkeep(building.def);
             }
             return upkeep;
         }
@@ -539,27 +530,27 @@ namespace FactionColonies
             }
         }
 
-        public int getFilterSize()
+        public int GetFilterSize()
         {
             if (filters == null) RebuildFilters();
             return filters.Count;
         }
 
-        public string getLabelForFilter(int i)
+        public string GetLabelForFilter(int i)
         {
             if (filters == null) RebuildFilters();
             if (i < 0 || i >= filters.Count) return null;
             return filters[i].label;
         }
 
-        public Texture2D getIconForFilter(int i)
+        public Texture2D GetIconForFilter(int i)
         {
             if (filters == null) RebuildFilters();
             if (i < 0 || i >= filters.Count) return null;
             return filters[i].icon;
         }
 
-        public bool filterBuilding(int i, BuildingFCDef building)
+        public bool FilterBuilding(int i, BuildingFCDef building)
         {
             if (filters == null) RebuildFilters();
             if (i < 0 || i >= filters.Count) return true;

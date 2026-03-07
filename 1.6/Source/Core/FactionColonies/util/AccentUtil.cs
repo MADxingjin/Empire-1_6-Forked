@@ -29,7 +29,7 @@ namespace FactionColonies
 
         public static Color GetSettlementAccent(WorldSettlementFC s)
         {
-            return s.settlementDef.accentColor ?? (s.getTotalProfit() >= 0 ? Income : Expense);
+            return s.settlementDef.accentColor ?? (s.GetTotalProfit() >= 0 ? Income : Expense);
         }
 
         public static Color GetStatColor(float value, bool inverted)

@@ -29,7 +29,7 @@ namespace FactionColonies
             return (negativeBills, positiveBills);
         }
 
-        public static void autoresolveBills(List<BillFC> bills)
+        public static void AutoresolveBills(List<BillFC> bills)
         {
             int resolvedBills = 0;
 
@@ -56,8 +56,8 @@ namespace FactionColonies
                         //resolve positive bill and negative bill
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = 0;
-                        positiveBill.resolve();
-                        negativeBill.resolve();
+                        positiveBill.Resolve();
+                        negativeBill.Resolve();
                         resolvedBills += 2;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
                         goto Reset;
@@ -68,7 +68,7 @@ namespace FactionColonies
                         //if positive bill greater than negative bill
                         positiveBill.taxes.silverAmount = result;
                         negativeBill.taxes.silverAmount = 0;
-                        negativeBill.resolve();
+                        negativeBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
                         goto Reset;
@@ -79,7 +79,7 @@ namespace FactionColonies
                         //if negative bill is greater (technically lesser) than positive bill
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = result;
-                        positiveBill.resolve();
+                        positiveBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
                         goto ResetInner;
@@ -88,7 +88,7 @@ namespace FactionColonies
 
                 //if looped through all positive bills, attempt to resolve
 
-                if (negativeBill.attemptResolve())
+                if (negativeBill.AttemptResolve())
                 {
                     (negativeBills, positiveBills) = returnBillTypes(bills);
                     resolvedBills++;
@@ -98,7 +98,7 @@ namespace FactionColonies
             ResetOuter:
             foreach (BillFC positiveBill in positiveBills)
             {
-                positiveBill.resolve();
+                positiveBill.Resolve();
                 resolvedBills++;
                 (negativeBills, positiveBills) = returnBillTypes(bills);
                 goto ResetOuter;
@@ -108,17 +108,17 @@ namespace FactionColonies
                 MessageTypeDefOf.NeutralEvent);
         }
 
-        public static void placeThing(Thing thing)
+        public static void PlaceThing(Thing thing)
         {
             Map taxMap = GetActiveTaxDeliveryMap();
             
             IntVec3 intvec;
-            if (checkForActiveTaxDeliverySpot(out intvec, out taxMap))
+            if (CheckForActiveTaxDeliverySpot(out intvec, out taxMap))
             {
                 // Found an active tax delivery spot, use it
                 GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
             }
-            else if (checkForTaxSpot(taxMap, out intvec))
+            else if (CheckForTaxSpot(taxMap, out intvec))
             {
                 // Found regular tax spot on the tax map
                 GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
@@ -131,18 +131,18 @@ namespace FactionColonies
             }
         }
 
-        public static void deliverThings(FCEvent evt, Letter let = null, Message msg = null)
+        public static void DeliverThings(FCEvent evt, Letter let = null, Message msg = null)
         {
             DeliveryEvent.Action(evt, let, msg);
         }
 
 
-        public static void deliverThings(List<Thing> things, int source, Letter let = null, Message msg = null)
+        public static void DeliverThings(List<Thing> things, int source, Letter let = null, Message msg = null)
         {
             DeliveryEvent.CreateDeliveryEvent(things, source, let, msg);
         }
 
-        public static bool paySilver(int amount)
+        public static bool PaySilver(int amount)
         {
             Paid:
             while (amount > 0)
@@ -181,7 +181,7 @@ namespace FactionColonies
 
             return true;
         }
-        public static int getSilver()
+        public static int GetSilver()
         {
             int silver = 0;
 
@@ -195,12 +195,10 @@ namespace FactionColonies
                     }
                 }
             }
-
-            //LogUtil.Message("getSilver {silver}");
             return silver;
         }
 
-        public static bool checkForTaxSpot(Map map, out IntVec3 dropSpot)
+        public static bool CheckForTaxSpot(Map map, out IntVec3 dropSpot)
         {
             foreach (Building building in map.listerBuildings.allBuildingsColonist.Where(b => b.def.defName == "TaxSpot"))
             {
@@ -215,7 +213,7 @@ namespace FactionColonies
             return false;
         }
 
-        public static ThingSetMakerParams returnThingSetMakerParams(int baseValue, int rangeMod)
+        public static ThingSetMakerParams ReturnThingSetMakerParams(int baseValue, int rangeMod)
         {
             ThingSetMakerParams parms = new ThingSetMakerParams();
             parms.techLevel = Find.FactionManager.OfPlayer.def.techLevel;
@@ -223,7 +221,7 @@ namespace FactionColonies
             return parms;
         }
 
-        public static List<Thing> generateRaidLoot(int lootLevel, TechLevel techLevel)
+        public static List<Thing> GenerateRaidLoot(int lootLevel, TechLevel techLevel)
         {
             FactionFC faction = FactionCache.FactionComp;
 
@@ -255,7 +253,7 @@ namespace FactionColonies
             return things;
         }
 
-        public static Pawn generatePrisoner(Faction faction)
+        public static Pawn GeneratePrisoner(Faction faction)
         {
             Pawn pawn;
 
@@ -278,11 +276,11 @@ namespace FactionColonies
             return pawn;
         }
 
-        public static List<Thing> generateRewardThings(double valueBase, ResourceEventRewardDef rewardDef)
+        public static List<Thing> GenerateRewardThings(double valueBase, ResourceEventRewardDef rewardDef)
         {
             if (rewardDef == null)
             {
-                LogUtil.Error("generateRewardThings called with null rewardDef");
+                LogUtil.Error("GenerateRewardThings called with null rewardDef");
                 return new List<Thing>();
             }
 
@@ -291,17 +289,17 @@ namespace FactionColonies
             for (int attempts = 0; attempts < 100; attempts++)
             {
                 things = thingSetMaker.Generate(param);
-                if (PaymentUtil.returnValueOfTithe(things) >= param.totalMarketValueRange.Value.min)
+                if (PaymentUtil.ReturnValueOfTithe(things) >= param.totalMarketValueRange.Value.min)
                 {
                     return things;
                 }
             }
 
-            LogUtil.Warning($"generateRewardThings failed to meet minimum value after 100 attempts for {rewardDef.defName}. Returning last result.");
+            LogUtil.Warning($"GenerateRewardThings failed to meet minimum value after 100 attempts for {rewardDef.defName}. Returning last result.");
             return things;
         }
 
-        public static double returnValueOfTithe(List<Thing> things)
+        public static double ReturnValueOfTithe(List<Thing> things)
         {
             double totalValue = 0;
             foreach (Thing thing in things)
@@ -334,7 +332,7 @@ namespace FactionColonies
             return FactionCache.FactionComp.TaxMap;
         }
 
-        public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
+        public static bool CheckForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
         {
             // Search all player home maps for an active tax delivery spot
             foreach (Map map in Find.Maps)

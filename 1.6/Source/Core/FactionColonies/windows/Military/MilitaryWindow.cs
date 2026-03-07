@@ -16,7 +16,7 @@ namespace FactionColonies
             throw new ApplicationException("Trying to select " + selecting + " on window " + this);
         }
         
-        public void scrollWindow(float num, float maxScroll)
+        public void ScrollWindow(float num, float maxScroll)
         {
             if (scroll - num * 5 < -1 * maxScroll)
             {

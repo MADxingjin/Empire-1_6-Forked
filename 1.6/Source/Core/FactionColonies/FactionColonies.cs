@@ -235,7 +235,7 @@ namespace FactionColonies
                 Find.WindowStack.Add(new FCWindow_Welcome());
 
                 LogUtil.Message("Testing for traits with no tie");
-                verifyTraits();
+                VerifyTraits();
             
                 MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
 
@@ -289,15 +289,15 @@ namespace FactionColonies
                 Messages.Message("FCAutoResolveDisabledWarning".Translate(), MessageTypeDefOf.RejectInput);
             }
         }
-        public static void verifyTraits()
+        public static void VerifyTraits()
         {
             FactionFC faction = FactionCache.FactionComp;
             /* Clear stat modifiers for all settlements, and then reapply inherent/building modifiers */
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
-                settlement.clearStatModifiers();
-                settlement.BuildingsComp?.reapplyBuildingStatModifiers();
-                settlement.addStatModifiers(settlement.settlementDef.statModifiers, "settlementType");
+                settlement.ClearStatModifiers();
+                settlement.BuildingsComp?.ReapplyBuildingStatModifiers();
+                settlement.AddStatModifiers(settlement.settlementDef.statModifiers, "settlementType");
             }
 
             // Re-apply active event stat modifiers to settlements
@@ -309,14 +309,14 @@ namespace FactionColonies
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
                         if (location != null)
-                            location.addStatModifiers(evt.def.statModifiers, sourceId);
+                            location.AddStatModifiers(evt.def.statModifiers, sourceId);
                     }
                 }
                 else
                 {
                     foreach (WorldSettlementFC settlement in faction.settlements)
                     {
-                        settlement.addStatModifiers(evt.def.statModifiers, sourceId);
+                        settlement.AddStatModifiers(evt.def.statModifiers, sourceId);
                     }
                 }
             }
@@ -325,9 +325,9 @@ namespace FactionColonies
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);
 
 
-        public static void debugMarker(ref int i)
+        public static void DebugMarker(ref int i)
         {
-            LogUtil.Message($"debugMarker: {i}");
+            LogUtil.Message($"DebugMarker: {i}");
             i ++;
         }
 

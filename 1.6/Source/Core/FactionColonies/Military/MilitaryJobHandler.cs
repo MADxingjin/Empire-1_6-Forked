@@ -11,7 +11,7 @@ namespace FactionColonies
         /// <summary>Called from SendMilitary. Create the FCEvent, send letters, etc.</summary>
         public abstract void OnDeployed(WorldObjectComp_SettlementMilitary milComp, PlanetTile location, int timeToFinish, Faction enemy);
 
-        /// <summary>Called from processMilitaryEvent when the event timer fires. Return true if victory.</summary>
+        /// <summary>Called from ProcessMilitaryEvent when the event timer fires. Return true if victory.</summary>
         public abstract bool OnResolved(WorldObjectComp_SettlementMilitary milComp);
 
         /// <summary>Returns whether this job can target the given faction. Used to filter hostile menu options.</summary>

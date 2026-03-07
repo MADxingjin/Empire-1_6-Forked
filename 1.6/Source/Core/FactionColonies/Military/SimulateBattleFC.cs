@@ -100,7 +100,7 @@ namespace FactionColonies
             forceRemaining = Math.Round(militaryLevel * militaryEfficiency);
         }
 
-        public static militaryForce createMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
+        public static militaryForce CreateMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
         {
             FactionFC faction = FactionCache.FactionComp;
             double homeForceLevel = 0;
@@ -110,7 +110,7 @@ namespace FactionColonies
             }
 
             double militaryLevel = settlement.settlementMilitaryLevel + homeForceLevel;
-            double efficiency = settlement.getStatValue(FCStatDefOf.militaryCombatEfficiency);
+            double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
             if (isAttacking)
             {
                 militaryLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
@@ -171,7 +171,7 @@ namespace FactionColonies
             }
         }
 
-        public static militaryForce createMilitaryForceFromEnemySettlement(Settlement settlement)
+        public static militaryForce CreateMilitaryForceFromEnemySettlement(Settlement settlement)
         {
             double militaryLevel = 0;
             double efficiency = 0;
@@ -182,7 +182,7 @@ namespace FactionColonies
             return returnForce;
         }
 
-        public static militaryForce createMilitaryForceFromFaction(Faction faction, bool handicap)
+        public static militaryForce CreateMilitaryForceFromFaction(Faction faction, bool handicap)
         {
             double militaryLevel = 1;
             double efficiency = 1;
@@ -214,7 +214,7 @@ namespace FactionColonies
 
     class MilitaryUtilFC
     {
-        public static void attackPlayerSettlement(militaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
+        public static void AttackPlayerSettlement(militaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
         {
             FactionFC factionfc = FactionCache.FactionComp;
 
@@ -224,7 +224,7 @@ namespace FactionColonies
             tmp.location = settlement.Tile;
             tmp.hasDestination = true;
             tmp.customDescription = "settlementAboutToBeAttacked".Translate(settlement.Name, enemyFaction.Name);
-            tmp.militaryForceDefending = militaryForce.createMilitaryForceFromSettlement(settlement);
+            tmp.militaryForceDefending = militaryForce.CreateMilitaryForceFromSettlement(settlement);
             tmp.militaryForceDefendingFaction = FactionCache.PlayerColonyFaction;
             tmp.militaryForceAttacking = attackingForce;
             tmp.militaryForceAttackingFaction = enemyFaction;
@@ -245,7 +245,7 @@ namespace FactionColonies
 
             if (highest != null)
             {
-                changeDefendingMilitaryForce(tmp, highest);
+                ChangeDefendingMilitaryForce(tmp, highest);
             }
 
             if (settlement.MilitaryComp != null)
@@ -253,7 +253,7 @@ namespace FactionColonies
                 settlement.MilitaryComp.defenderForce = tmp.militaryForceDefending;
                 settlement.MilitaryComp.attackerForce = tmp.militaryForceAttacking;
 
-                FactionCache.FactionComp.addEvent(tmp);
+                FactionCache.FactionComp.AddEvent(tmp);
 
                 tmp.customDescription += "\n\nThe estimated attacking force's power is: " +
                                          tmp.militaryForceAttacking.forceRemaining;
@@ -268,11 +268,11 @@ namespace FactionColonies
             }
         }
 
-        public static void changeDefendingMilitaryForce(FCEvent evt, WorldSettlementFC settlementOfMilitaryForce)
+        public static void ChangeDefendingMilitaryForce(FCEvent evt, WorldSettlementFC settlementOfMilitaryForce)
         {
             FactionFC factionfc = FactionCache.FactionComp;
             militaryForce tmpMilitaryForce = null;
-            WorldSettlementFC homeSettlement = factionfc.returnSettlementByLocation(evt.location);
+            WorldSettlementFC homeSettlement = factionfc.ReturnSettlementByLocation(evt.location);
             if (settlementOfMilitaryForce == evt.militaryForceDefending.homeSettlement)
             {
                 Messages.Message("militaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
@@ -281,27 +281,27 @@ namespace FactionColonies
 
             WorldSettlementFC target = Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(evt.location);
 
-            if (evt.militaryForceDefending.homeSettlement != factionfc.returnSettlementByLocation(evt.location))
+            if (evt.militaryForceDefending.homeSettlement != factionfc.ReturnSettlementByLocation(evt.location))
             {
                 //if the forces defending aren't the forces belonging to the settlement
-                evt.militaryForceDefending.homeSettlement.MilitaryComp?.returnMilitary(false);
+                evt.militaryForceDefending.homeSettlement.MilitaryComp?.ReturnMilitary(false);
             }
 
             if (settlementOfMilitaryForce != homeSettlement)
             {
                 tmpMilitaryForce =
-                    militaryForce.createMilitaryForceFromSettlement(
-                        factionfc.returnSettlementByLocation(evt.location), true);
+                    militaryForce.CreateMilitaryForceFromSettlement(
+                        factionfc.ReturnSettlementByLocation(evt.location), true);
             }
 
             factionfc.militaryTargets.Remove(evt.location);
             evt.militaryForceDefending =
-                militaryForce.createMilitaryForceFromSettlement(settlementOfMilitaryForce,
+                militaryForce.CreateMilitaryForceFromSettlement(settlementOfMilitaryForce,
                     homeDefendingForce: tmpMilitaryForce);
 
             if (target.MilitaryComp == null)
             {
-                LogUtil.Warning($"changeDefendingMilitaryForce: target settlement {target?.Name} has no MilitaryComp. Aborting.");
+                LogUtil.Warning($"ChangeDefendingMilitaryForce: target settlement {target?.Name} has no MilitaryComp. Aborting.");
                 return;
             }
             target.MilitaryComp.defenderForce = evt.militaryForceDefending;
@@ -317,17 +317,17 @@ namespace FactionColonies
                 settlementOfMilitaryForce.MilitaryComp?.SendMilitary(evt.settlementFCDefending.Tile, MilitaryJobDefOf.DefendFriendlySettlement, -1, evt.militaryForceAttackingFaction);
                 Find.LetterStack.ReceiveLetter("Military Action", "ForeignMilitarySwitch"
                     .Translate(settlementOfMilitaryForce.Name,
-                        factionfc.returnSettlementByLocation(evt.location).Name,
+                        factionfc.ReturnSettlementByLocation(evt.location).Name,
                         evt.militaryForceDefending.militaryLevel), LetterDefOf.NeutralEvent);
             }
         }
 
-        public static militaryForce returnDefendingMilitaryForce(FCEvent evt)
+        public static militaryForce ReturnDefendingMilitaryForce(FCEvent evt)
         {
             return evt.militaryForceDefending;
         }
 
-        public static FCEvent returnMilitaryEventByLocation(PlanetTile location)
+        public static FCEvent ReturnMilitaryEventByLocation(PlanetTile location)
         {
             return FactionCache.FactionComp.events.FirstOrDefault(evt => evt.def.isMilitaryEvent && evt.location == location);
         }
@@ -335,17 +335,17 @@ namespace FactionColonies
 
     class RelationsUtilFC
     {
-        public static void attackFaction(Faction faction)
+        public static void AttackFaction(Faction faction)
         {
             //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             Find.FactionManager.OfPlayer.TryAffectGoodwillWith(faction, -50);
             TrySetRelationKind(Find.FactionManager.OfPlayer, faction, FactionRelationKind.Hostile);
-            resetPlayerColonyRelations();
+            ResetPlayerColonyRelations();
             //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             //FactionColonies.getPlayerColonyFaction().TryAffectGoodwillWith(faction, -50)
         }
 
-        public static void resetPlayerColonyRelations()
+        public static void ResetPlayerColonyRelations()
         {
             Faction PCFaction = FactionCache.PlayerColonyFaction;
             foreach (Faction faction in Find.FactionManager.AllFactionsInViewOrder)

@@ -35,7 +35,7 @@ namespace FactionColonies
         {
             if (newSquad)
             {
-                setLoadID();
+                SetLoadID();
             }
         }
 
@@ -49,11 +49,11 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                updateEquipmentTotalCost();
+                UpdateEquipmentTotalCost();
             }
         }
 
-        public void setLoadID()
+        public void SetLoadID()
         {
             loadID = FactionCache.FactionComp.NextSquadID;
         }
@@ -64,13 +64,13 @@ namespace FactionColonies
         {
             if (costDirty)
             {
-                updateEquipmentTotalCost();
+                UpdateEquipmentTotalCost();
                 costDirty = false;
             }
             return equipmentTotalCost;
         }
 
-        public int updateEquipmentTotalCost()
+        public int UpdateEquipmentTotalCost()
         {
             double totalCost = 0;
             foreach (MilUnitFC unit in units)
@@ -82,7 +82,7 @@ namespace FactionColonies
             return (int) equipmentTotalCost;
         }
 
-        public void newSquad()
+        public void NewSquad()
         {
             units = new List<MilUnitFC>();
             for (int sq = 0; sq < 30; sq++)
@@ -90,7 +90,7 @@ namespace FactionColonies
                 units.Add(FactionCache.FactionComp.militaryCustomizationUtil.blankUnit);
             }
 
-            updateEquipmentTotalCost();
+            UpdateEquipmentTotalCost();
         }
 
         public void ChangeTick()
@@ -114,7 +114,7 @@ namespace FactionColonies
             }
         }
 
-        public void deleteSquad()
+        public void DeleteSquad()
         {
             FactionCache.FactionComp.militaryCustomizationUtil.squads.Remove(this);
         }

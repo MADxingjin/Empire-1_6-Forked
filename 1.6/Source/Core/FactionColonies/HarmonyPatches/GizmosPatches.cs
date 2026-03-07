@@ -130,7 +130,7 @@ namespace FactionColonies
 				List<FloatMenuOption> settlementList = FactionCache.FactionComp.settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
 				{
 					//disappear prisoner
-					TravelUtil.sendPrisoner(prisoner, settlement);
+					TravelUtil.SendPrisoner(prisoner, settlement);
 
 					foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map => map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>().Where(bed => bed.OwnersForReading.Any(bedPawn => bedPawn == prisoner)))
 					{
@@ -166,7 +166,7 @@ namespace FactionColonies
 		/// </summary>
 		/// <param name="settlement"></param>
 		/// <returns>true if usable, false otherwise</returns>
-		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
+		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
 
 		/// <summary>
 		/// Takes a <paramref name="job"/> and generates a FloatMenuOption using the job def's label/desc keys.
@@ -181,7 +181,7 @@ namespace FactionColonies
 				{
 					settlementList.Add(new FloatMenuOption((job.floatMenuDescKey ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
 					{
-						RelationsUtilFC.attackFaction(faction);
+						RelationsUtilFC.AttackFaction(faction);
 						settlement.MilitaryComp?.SendMilitary(tile, job, 60000, faction);
 					}));
 				}
@@ -225,7 +225,7 @@ namespace FactionColonies
 			defaultLabel = "FCIncreaseRelations".Translate(),
 			defaultDesc = "",
 			icon = TexLoad.iconProsperity,
-			action = delegate { factionFC.sendDiplomaticEnvoy(faction); }
+			action = delegate { factionFC.SendDiplomaticEnvoy(faction); }
 		};
 
 		/// <summary>

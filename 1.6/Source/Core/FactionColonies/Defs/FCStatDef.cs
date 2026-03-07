@@ -100,17 +100,17 @@ namespace FactionColonies
                     if (mod.stat.linkedResource != null)
                     {
                         if (mod.stat.aggregation == FCStatAggregation.Additive)
-                            desc += "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                            desc += "RTDproductionAdditive".Translate(TextUtil.ColorizeAdditiveBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
                         else
-                            desc += "RTDproductionMultiplier".Translate(TextUtil.colorizeMultiplierBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                            desc += "RTDproductionMultiplier".Translate(TextUtil.ColorizeMultiplierBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
                     }
                     else
                     {
                         if (mod.stat.descriptionKey.NullOrEmpty()) continue;
                         if (mod.stat.aggregation == FCStatAggregation.Additive)
-                            desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeAdditiveBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeAdditiveBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
                         else
-                            desc += mod.stat.descriptionKey.Translate(TextUtil.colorizeMultiplierBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeMultiplierBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
                     }
                 }
             }

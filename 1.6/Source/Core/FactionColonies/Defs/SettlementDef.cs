@@ -58,11 +58,11 @@ namespace FactionColonies
 
         public Color? accentColor;
 
-        public ResourceAvailability getSettlementResource(ResourceTypeDef resourceTypeDef)
+        public ResourceAvailability GetSettlementResource(ResourceTypeDef resourceTypeDef)
         {
             return resources.FirstOrDefault((ResourceAvailability b) => b.resourceDef == resourceTypeDef);
         }
-        public List<ResourceTypeDef> getResourceDefs()
+        public List<ResourceTypeDef> GetResourceDefs()
         {
             List<ResourceTypeDef> list = new List<ResourceTypeDef>();
             if (resources != null)
@@ -74,7 +74,7 @@ namespace FactionColonies
             }
             return list;
         }
-        public List<string> getResourceDefNames()
+        public List<string> GetResourceDefNames()
         {
             List<string> list = new List<string>();
             if (resources != null)
@@ -86,12 +86,12 @@ namespace FactionColonies
             }
             return list;
         }
-        public SettlementTypeExtension getSettlementTypeExtension()
+        public SettlementTypeExtension GetSettlementTypeExtension()
         {
             return GetModExtension<SettlementTypeExtension>();
         }
 
-        public bool isUnlocked()
+        public bool IsUnlocked()
         {
             if (researchProjects?.Count > 0)
             {
@@ -114,21 +114,21 @@ namespace FactionColonies
             return true;
         }
 
-        public int getCreationTime(PlanetTile tile)
+        public int GetCreationTime(PlanetTile tile)
         {
-            return GetModExtension<SettlementTypeExtension>().getCreationTime(tile);
+            return GetModExtension<SettlementTypeExtension>().GetCreationTime(tile);
         }
-        public int getCreationCost()
+        public int GetCreationCost()
         {
-            return GetModExtension<SettlementTypeExtension>().getCreationCost();
+            return GetModExtension<SettlementTypeExtension>().GetCreationCost();
         }
-        public PlanetTile getTileForSettlement(PlanetTile tile)
+        public PlanetTile GetTileForSettlement(PlanetTile tile)
         {
-            return GetModExtension<SettlementTypeExtension>().getTileForSettlement(tile);
+            return GetModExtension<SettlementTypeExtension>().GetTileForSettlement(tile);
         }
-        public TaxDeliveryMode getTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
+        public TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
-            return GetModExtension<SettlementTypeExtension>().getTaxDeliveryMode(canUseShuttle, sourceTile);
+            return GetModExtension<SettlementTypeExtension>().GetTaxDeliveryMode(canUseShuttle, sourceTile);
         }
 
         public override void ResolveReferences()

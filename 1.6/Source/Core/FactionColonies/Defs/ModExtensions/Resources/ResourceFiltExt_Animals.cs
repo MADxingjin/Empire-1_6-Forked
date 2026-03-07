@@ -18,12 +18,12 @@ namespace FactionColonies
                 filter.SetAllow(def.race, true);
             }
         }
-        public override ThingSetMaker getThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
+        public override ThingSetMaker GetThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
         {
             tlevel = TechLevel.Undefined;
             return new ThingSetMaker_Animals();
         }
-        public override List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null, ResourceFC resource = null)
+        public override List<Thing> GenerateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null, ResourceFC resource = null)
         {
             // Only handle animal race ThingDefs. For regular items (animal products),
             // return null so the generic path in ResourceFC.cs handles them.

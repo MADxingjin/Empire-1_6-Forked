@@ -24,7 +24,7 @@ namespace FactionColonies
             set
             {
                 savedAssignedWorkers = value;
-                FactionCache.FactionComp?.setDirtyResourceDisplayCache(def);
+                FactionCache.FactionComp?.SetDirtyResourceDisplayCache(def);
             }
         }
 
@@ -141,7 +141,7 @@ namespace FactionColonies
             {
                 if (dirtyProductionBaseCache)
                 {
-                    cachedProductionBase = calculateProductionBase();
+                    cachedProductionBase = CalculateProductionBase();
                     dirtyProductionBaseCache = false;
                 }
                 return cachedProductionBase;
@@ -153,7 +153,7 @@ namespace FactionColonies
             {
                 if (dirtyProductionMultCache)
                 {
-                    cachedProductionMult = calculateProductionMult();
+                    cachedProductionMult = CalculateProductionMult();
                     dirtyProductionMultCache = false;
                 }
                 return cachedProductionMult;
@@ -171,8 +171,8 @@ namespace FactionColonies
                 }
                 if (dirtyTitheCache)
                 {
-                    pruneTitheList();
-                    cachedTitheTotalValue = calcTotalTitheValue();
+                    PruneTitheList();
+                    cachedTitheTotalValue = CalcTotalTitheValue();
                     dirtyTitheCache = false;
                 }
                 return cachedTitheTotalValue + randomTitheBudget;
@@ -232,9 +232,9 @@ namespace FactionColonies
             if (settlement != null)
             {
                 //TODO: Setup the filter. Should be done with a function in *this* class, not PaymentUtil
-                setBaseResourceBonuses();
+                SetBaseResourceBonuses();
             }
-            resetThingFilter();
+            ResetThingFilter();
         }
 
 
@@ -264,11 +264,11 @@ namespace FactionColonies
         /// 2. FCStatDef system: dynamic bonuses from buildings, policies, events
         /// 3. IResourceProductionModifier comps: dynamic per-resource bonuses from WorldObjectComps
         /// </summary>
-        private double calculateProductionBase()
+        private double CalculateProductionBase()
         {
             double dictBase = ResourceFormulas.CalculateProductionBase(productionAdditives.Values.Select(p => p.value));
             double statBase = (settlement != null && def.productionAdditiveStat != null)
-                ? settlement.getStatValue(def.productionAdditiveStat) : 0;
+                ? settlement.GetStatValue(def.productionAdditiveStat) : 0;
             double compBase = 0;
             if (settlement != null)
             {
@@ -287,12 +287,12 @@ namespace FactionColonies
         /// 3. IResourceProductionModifier comps: dynamic per-resource multipliers from WorldObjectComps
         /// Also includes the settlement tax bonus.
         /// </summary>
-        private double calculateProductionMult()
+        private double CalculateProductionMult()
         {
-            double taxBonus = settlement?.getSettlementTaxBonus() ?? 1;
+            double taxBonus = settlement?.GetSettlementTaxBonus() ?? 1;
             double dictMult = ResourceFormulas.CalculateProductionMult(productionMultipliers.Values.Select(p => p.value), 1.0);
             double statMult = (settlement != null && def.productionMultiplierStat != null)
-                ? settlement.getStatValue(def.productionMultiplierStat) : 1;
+                ? settlement.GetStatValue(def.productionMultiplierStat) : 1;
             double compMult = 1;
             if (settlement != null)
             {
@@ -304,20 +304,20 @@ namespace FactionColonies
             }
             return dictMult * statMult * compMult * taxBonus;
         }
-        public double getTitheModifierPerWorker()
+        public double GetTitheModifierPerWorker()
         {
-            return settlement.getStatValue(FCStatDefOf.taxBaseRandomModifier) + FCSettings.productionTitheMod;
+            return settlement.GetStatValue(FCStatDefOf.taxBaseRandomModifier) + FCSettings.productionTitheMod;
         }
-        public double getTotalTitheModifierForWorkers()
+        public double GetTotalTitheModifierForWorkers()
         {
-            return getTitheModifierPerWorker() * assignedWorkers;
+            return GetTitheModifierPerWorker() * assignedWorkers;
         }
-        public double getTitheIncome()
+        public double GetTitheIncome()
         {
             double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
-            return (taxableProductionMarketValue + getTotalTitheModifierForWorkers()) * multForTotal;
+            return (taxableProductionMarketValue + GetTotalTitheModifierForWorkers()) * multForTotal;
         }
-        public void refreshOnRandomTitheBudgetChange()
+        public void RefreshOnRandomTitheBudgetChange()
         {
             if (storedRandomTitheBudget != oldStoredRandomTitheBudget)
             {
@@ -325,34 +325,34 @@ namespace FactionColonies
                 settlement.DirtyProfitCache();
             }
         }
-        public void setDirtyCache()
+        public void SetDirtyCache()
         {
-            setDirtyCacheProdBase();
-            setDirtyCacheProdMult();
+            SetDirtyCacheProdBase();
+            SetDirtyCacheProdMult();
             dirtyTitheCache = true;
-            setDirtyRandomTitheCache();
+            SetDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
-            FactionCache.FactionComp?.setDirtyResourceDisplayCache(def);
+            FactionCache.FactionComp?.SetDirtyResourceDisplayCache(def);
         }
-        public void setDirtyRandomTitheCache()
+        public void SetDirtyRandomTitheCache()
         {
             dirtyRandomTitheCache = true;
-            settlement.dirtyGrandThingList();
+            settlement.DirtyGrandThingList();
         }
-        public void setDirtyCacheProdBase()
+        public void SetDirtyCacheProdBase()
         {
             dirtyProductionBaseCache = true;
             dirtyProductionBaseDescCache = true;
             dirtyTitheCache = true;
         }
-        public void setDirtyCacheProdMult()
+        public void SetDirtyCacheProdMult()
         {
             dirtyProductionMultCache = true;
             dirtyProductionMultDescCache = true;
             dirtyTitheCache = true;
         }
 
-        public ResourcePool createPool()
+        public ResourcePool CreatePool()
         {
             ResourcePool pool = new ResourcePool
             {
@@ -361,7 +361,7 @@ namespace FactionColonies
             };
             if (def.isPoolResource)
             {
-                pool.pool += def.GetModExtension<ResourcePoolExtension>().createPool(effectiveRawTotalProduction, settlement);
+                pool.pool += def.GetModExtension<ResourcePoolExtension>().CreatePool(effectiveRawTotalProduction, settlement);
             }
             return pool;
         }
@@ -375,14 +375,14 @@ namespace FactionColonies
         /// the biome, settlement type, and any <see cref="ResourceProductionExtension"/>s on the resource def.
         /// Called once at construction.
         /// </summary>
-        private void setBaseResourceBonuses()
+        private void SetBaseResourceBonuses()
         {
             if (settlement == null) return;
 
             string settlementId = settlement.Name ?? "nullsettlement";
 
             // --- Biome bonuses ---
-            ResourceAvailability biomeRes = settlement.biomeDef.getBiomeResource(def);
+            ResourceAvailability biomeRes = settlement.biomeDef.GetBiomeResource(def);
             if (biomeRes == null)
             {
                 LogUtil.Error($"Found NULL biomeBonus for resource {def} in settlement {settlement.Name}, despite the ResourceFC already existing");
@@ -391,20 +391,20 @@ namespace FactionColonies
             {
                 string biomeId = $"{def.defName}_biome_{settlement.biomeDef.defName}_{settlementId}";
                 if (biomeRes.additive != 0)
-                    addProductionAdditive(biomeId, biomeRes.additive, settlement.biomeDef.LabelCap);
+                    AddProductionAdditive(biomeId, biomeRes.additive, settlement.biomeDef.LabelCap);
                 if (biomeRes.multiplier != 1)
-                    addProductionMultiplier(biomeId, biomeRes.multiplier, settlement.biomeDef.LabelCap);
+                    AddProductionMultiplier(biomeId, biomeRes.multiplier, settlement.biomeDef.LabelCap);
             }
 
             // --- Settlement type bonuses ---
-            ResourceAvailability settleRes = settlement.settlementDef.getSettlementResource(def);
+            ResourceAvailability settleRes = settlement.settlementDef.GetSettlementResource(def);
             if (settleRes != null)
             {
                 string settleId = $"{def.defName}_settle_{settlement.settlementDef.defName}_{settlementId}";
                 if (settleRes.additive != 0)
-                    addProductionAdditive(settleId, settleRes.additive, settlement.settlementDef.LabelCap);
+                    AddProductionAdditive(settleId, settleRes.additive, settlement.settlementDef.LabelCap);
                 if (settleRes.multiplier != 1)
-                    addProductionMultiplier(settleId, settleRes.multiplier, settlement.settlementDef.LabelCap);
+                    AddProductionMultiplier(settleId, settleRes.multiplier, settlement.settlementDef.LabelCap);
             }
 
             // --- ResourceProductionExtension bonuses ---
@@ -415,15 +415,15 @@ namespace FactionColonies
                     string extId = $"{def.defName}_ext_{ext.extName}_{settlementId}";
                     double addBonus = ext.GetAdditiveBonus(settlement.Tile, settlement);
                     if (addBonus != 0)
-                        addProductionAdditive(extId, addBonus, ext.extName);
+                        AddProductionAdditive(extId, addBonus, ext.extName);
 
                     double multBonus = ext.GetMultiplierBonus(settlement.Tile, settlement);
                     if (multBonus != 1)
-                        addProductionMultiplier(extId, multBonus, ext.extDesc);
+                        AddProductionMultiplier(extId, multBonus, ext.extDesc);
                 }
             }
         }
-        public void addProductionAdditive(string id, double value, string desc)
+        public void AddProductionAdditive(string id, double value, string desc)
         {
             ProductionBonus additive = new ProductionBonus(value, desc);
 
@@ -431,10 +431,10 @@ namespace FactionColonies
             {
                 LogUtil.Warning($"Created a production additive for resource {label} in settlement {settlement.Name} with an empty description! (id: {id})");
             }
-            addProductionAdditive(id, additive);
+            AddProductionAdditive(id, additive);
         }
 
-        private void addProductionAdditive(string id, ProductionBonus additive)
+        private void AddProductionAdditive(string id, ProductionBonus additive)
         {
             try
             {
@@ -444,25 +444,25 @@ namespace FactionColonies
             {
                 LogUtil.Error($"Failed when adding ProductionBonus additive with id {id}: {e.Message}");
             }
-            setDirtyCacheProdBase();
+            SetDirtyCacheProdBase();
         }
-        public void removeProductionAdditiveById(string id)
+        public void RemoveProductionAdditiveById(string id)
         {
             productionAdditives.Remove(id);
-            setDirtyCacheProdBase();
+            SetDirtyCacheProdBase();
         }
-        public TaggedString getProductionAdditivesDesc()
+        public TaggedString GetProductionAdditivesDesc()
         {
             if (dirtyProductionBaseDescCache)
             {
                 TaggedString desc = "";
                 foreach (ProductionBonus additive in productionAdditives.Values)
                 {
-                    desc += TextUtil.colorizeAdditiveBonus(additive.value) + " - " + additive.desc + "\n";
+                    desc += TextUtil.ColorizeAdditiveBonus(additive.value) + " - " + additive.desc + "\n";
                 }
                 if (def.productionAdditiveStat != null && settlement != null)
                 {
-                    desc += settlement.getStatDesc(def.productionAdditiveStat);
+                    desc += settlement.GetStatDesc(def.productionAdditiveStat);
                 }
                 if (settlement != null)
                 {
@@ -482,7 +482,7 @@ namespace FactionColonies
             return cachedProdBaseDesc;
         }
 
-        public void addProductionMultiplier(string id, double value, string desc)
+        public void AddProductionMultiplier(string id, double value, string desc)
         {
             ProductionBonus multiplier = new ProductionBonus(value, desc);
 
@@ -490,10 +490,10 @@ namespace FactionColonies
             {
                 LogUtil.Warning($"Created a production multiplier for resource {label} in settlement {settlement.Name} with an empty description! (id: {id})");
             }
-            addProductionMultiplier(id, multiplier);
+            AddProductionMultiplier(id, multiplier);
         }
 
-        private void addProductionMultiplier(string id, ProductionBonus multiplier)
+        private void AddProductionMultiplier(string id, ProductionBonus multiplier)
         {
             try
             {
@@ -503,25 +503,25 @@ namespace FactionColonies
             {
                 LogUtil.Error($"Failed when adding ProductionBonus multiplier with id {id}: {e.Message}");
             }
-            setDirtyCacheProdMult();
+            SetDirtyCacheProdMult();
         }
-        public void removeProductionMultiplierById(string id)
+        public void RemoveProductionMultiplierById(string id)
         {
             productionMultipliers.Remove(id);
-            setDirtyCacheProdMult();
+            SetDirtyCacheProdMult();
         }
-        public TaggedString getProductionMultipliersDesc()
+        public TaggedString GetProductionMultipliersDesc()
         {
             if (dirtyProductionMultDescCache)
             {
                 TaggedString desc = "";
                 foreach (ProductionBonus multiplier in productionMultipliers.Values)
                 {
-                    desc += TextUtil.colorizeMultiplierBonus(multiplier.value) + " - " + multiplier.desc + "\n";
+                    desc += TextUtil.ColorizeMultiplierBonus(multiplier.value) + " - " + multiplier.desc + "\n";
                 }
                 if (def.productionMultiplierStat != null && settlement != null)
                 {
-                    desc += settlement.getStatDesc(def.productionMultiplierStat);
+                    desc += settlement.GetStatDesc(def.productionMultiplierStat);
                 }
                 if (settlement != null)
                 {
@@ -535,7 +535,7 @@ namespace FactionColonies
                         }
                     }
                 }
-                desc += TextUtil.colorizeMultiplierBonus(settlement?.getSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
+                desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
 
                 cachedProdMultDesc = desc.Trim();
                 dirtyProductionMultDescCache = false;
@@ -546,7 +546,7 @@ namespace FactionColonies
         /*
          * Filter functions
          */
-        public void resetThingFilter()
+        public void ResetThingFilter()
         {
             FactionFC faction = FactionCache.FactionComp;
 
@@ -559,7 +559,7 @@ namespace FactionColonies
         /// Generates a list of ThingDefs that can be generated as tithes for this resource.
         /// </summary>
         /// <returns></returns>
-        public List<ThingDef> generateThingDefList()
+        public List<ThingDef> GenerateThingDefList()
         {
             if (def.isPoolResource)
             {
@@ -571,7 +571,7 @@ namespace FactionColonies
                 if (randomTitheFilter == null)
                 {
                     randomTitheFilter = new ThingFilter();
-                    resetThingFilter();
+                    ResetThingFilter();
                 }
 
                 FactionFC faction = FactionCache.FactionComp;
@@ -582,7 +582,7 @@ namespace FactionColonies
                 param.countRange = new IntRange(1, 1);
 
                 TechLevel tmplevel = TechLevel.Undefined;
-                ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel, this);
+                ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.GetThingSetMaker(out tmplevel, this);
                 if (tmp != null)
                 {
                     thingSetMaker = tmp;
@@ -598,18 +598,18 @@ namespace FactionColonies
             }
             return thingsForRandomTithes;
         }
-        public List<ThingDef> getRandomTitheFilterThings()
+        public List<ThingDef> GetRandomTitheFilterThings()
         {
             if (dirtyFilteredRandomTitheCache)
             {
                 if (randomTitheFilter == null)
                 {
                     randomTitheFilter = new ThingFilter();
-                    resetThingFilter();
+                    ResetThingFilter();
                 }
 
                 filteredThingsForRandomTithes = new List<ThingDef>();
-                List<ThingDef> possibleThings = generateThingDefList();
+                List<ThingDef> possibleThings = GenerateThingDefList();
 
                 foreach(ThingDef thingDef in possibleThings)
                 {
@@ -623,40 +623,40 @@ namespace FactionColonies
             }
             return filteredThingsForRandomTithes;
         }
-        public void clearRandomTitheFilter()
+        public void ClearRandomTitheFilter()
         {
             if (randomTitheFilter == null)
             {
                 randomTitheFilter = new ThingFilter();
             }
             randomTitheFilter.SetDisallowAll();
-            setDirtyRandomTitheCache();
+            SetDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
         }
-        public void setAllRandomTitheFilter()
+        public void SetAllRandomTitheFilter()
         {
             if (randomTitheFilter == null)
             {
                 randomTitheFilter = new ThingFilter();
             }
-            resetThingFilter();
-            setDirtyRandomTitheCache();
+            ResetThingFilter();
+            SetDirtyRandomTitheCache();
             dirtyFilteredRandomTitheCache = true;
         }
-        public void setRandomTitheFilterAllow(ThingDef thing, bool allow)
+        public void SetRandomTitheFilterAllow(ThingDef thing, bool allow)
         {
             if (randomTitheFilter == null)
             {
                 randomTitheFilter = new ThingFilter();
-                resetThingFilter();
-                setDirtyRandomTitheCache();
+                ResetThingFilter();
+                SetDirtyRandomTitheCache();
             }
 
             randomTitheFilter.SetAllow(thing, allow);
             dirtyFilteredRandomTitheCache = true;
         }
         // could cache this with a dictionary, but probably best to see if there's an actual performance problem first
-        public bool getRandomTitheFilterAllow(ThingDef thing)
+        public bool GetRandomTitheFilterAllow(ThingDef thing)
         {
             return randomTitheFilter.Allows(thing);
         }
@@ -671,11 +671,11 @@ namespace FactionColonies
         /// <param name="thing">A ThingQualityTuple specifying the ThingDef, QualityCategory, and StuffDef of the thing to add.</param>
         /// <param name="quantity">The quantity to add to the tithes list. Should always be a non-zero positive value.</param>
         /// <returns>TRUE if the thing was successfully added to the tithes dictionary, FALSE otherwise.</returns>
-        public bool addToTitheList(ThingQualityTuple thing, int quantity, bool forceToQuantity = false)
+        public bool AddToTitheList(ThingQualityTuple thing, int quantity, bool forceToQuantity = false)
         {
             if (quantity < 0)
             {
-                LogUtil.Error($"Tried to add a negative quantity of objects to the tithes list for resource {def.LabelCap}. You should use decrementInTitheList() instead.");
+                LogUtil.Error($"Tried to add a negative quantity of objects to the tithes list for resource {def.LabelCap}. You should use DecrementInTitheList() instead.");
                 return false;
             }
             LogUtil.Message($"Resource {def.LabelCap} adding new thing to tithe list: [{thing.thingDef.LabelCap} | {TextUtil.GetQualityLabelCap(thing.quality)} | {thing.stuffDef?.LabelCap ?? "null stuff"}] with quantity {quantity}");
@@ -705,11 +705,11 @@ namespace FactionColonies
         /// <summary>
         /// Removes a given <paramref name="quantity"/> of <paramref name="thing"/> from the tithes list.
         /// <para>This function dirties the tithe cache, forcing a recalculation of the total tithe value.</para>
-        /// <para>This function does not remove <paramref name="thing"/> from the tithes list if its quantity reaches 0. For that, use removeFromTitheList().</para>
+        /// <para>This function does not remove <paramref name="thing"/> from the tithes list if its quantity reaches 0. For that, use RemoveFromTitheList().</para>
         /// </summary>
         /// <param name="thing">A ThingQualityTuple specifying the ThingDef, QualityCategory, and StuffDef of the thing to decrement.</param>
         /// <param name="quantity">The quantity to remove from the tithes list. Should always be a non-zero positive value.</param>
-        public void decrementInTitheList(ThingQualityTuple thing, int quantity)
+        public void DecrementInTitheList(ThingQualityTuple thing, int quantity)
         {
             if (quantity == 0)
             {
@@ -740,10 +740,10 @@ namespace FactionColonies
         /// <summary>
         /// Fully removes the given <paramref name="thing"/> from the tithes list.
         /// <para>This function dirties the tithe cache, forcing a recalculation of the total tithe value.</para>
-        /// <para>We should only fully remove an item from the tithes list if the player commands it so. Use decrementInTitheList() otherwise, so that things with a quantity of 0 remain in the tithes list.</para>
+        /// <para>We should only fully remove an item from the tithes list if the player commands it so. Use DecrementInTitheList() otherwise, so that things with a quantity of 0 remain in the tithes list.</para>
         /// </summary>
         /// <param name="thing">A ThingQualityTuple specifying the ThingDef, QualityCategory, and StuffDef of the thing to remove.</param>
-        public void removeFromTitheList(ThingQualityTuple thing)
+        public void RemoveFromTitheList(ThingQualityTuple thing)
         {
             if (tithes.ContainsKey(thing))
             {
@@ -753,7 +753,7 @@ namespace FactionColonies
                 settlement.DirtyProfitCache();
             }
         }
-        public ThingQualityTuple getTitheListKey(ThingQualityTuple thing)
+        public ThingQualityTuple GetTitheListKey(ThingQualityTuple thing)
         {
             if (tithes.ContainsKey(thing))
             {
@@ -764,11 +764,11 @@ namespace FactionColonies
                 return null;
             }
         }
-        public bool hasTitheListKey(ThingQualityTuple thing)
+        public bool HasTitheListKey(ThingQualityTuple thing)
         {
             return tithes.ContainsKey(thing);
         }
-        public int getTitheListValue(ThingQualityTuple thing)
+        public int GetTitheListValue(ThingQualityTuple thing)
         {
             if (tithes.ContainsKey(thing))
             {
@@ -779,25 +779,25 @@ namespace FactionColonies
                 return 0;
             }
         }
-        public List<ThingQualityTuple> getTitheListKeys()
+        public List<ThingQualityTuple> GetTitheListKeys()
         {
             return tithes.Keys.ToList();
         }
-        public List<int> getTitheListValues()
+        public List<int> GetTitheListValues()
         {
             return tithes.Values.ToList();
         }
-        public int getTitheListCount()
+        public int GetTitheListCount()
         {
             return tithes.Count;
         }
-        public bool canSetTitheQuality(out QualityCategory maxQuality)
+        public bool CanSetTitheQuality(out QualityCategory maxQuality)
         {
             //TODO: add a building or something that enables selecting item quality when tithing
             maxQuality = QualityCategory.Legendary;
             return true;
         }
-        public List<QualityCategory> getValidTitheQualities(QualityCategory maxQuality)
+        public List<QualityCategory> GetValidTitheQualities(QualityCategory maxQuality)
         {
             List<QualityCategory> list = QualityUtility.AllQualityCategories;
             for (int i = list.Count - 1; i > 0; i--)
@@ -810,29 +810,29 @@ namespace FactionColonies
 
             return list;
         }
-        public bool canSetTitheStuff()
+        public bool CanSetTitheStuff()
         {
             //TODO: add a building or something that enables selecting item stuff when tithing
             return true;
         }
-        public List<ThingDef> getStuffListForThingDef(ThingDef thing)
+        public List<ThingDef> GetStuffListForThingDef(ThingDef thing)
         {
-            return CraftUtil.getThingStuffs(thing, settlement.getGrandThingList());
+            return CraftUtil.GetThingStuffs(thing, settlement.GetGrandThingList());
         }
-        public float titheThingValue(ThingQualityTuple thing)
+        public float TitheThingValue(ThingQualityTuple thing)
         {
-            return titheThingValue(thing.thingDef, thing.stuffDef, thing.quality);
+            return TitheThingValue(thing.thingDef, thing.stuffDef, thing.quality);
         }
-        public float titheThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
+        public float TitheThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
         {
             float value;
-            if (CraftUtil.thingHasQuality(thing))
+            if (CraftUtil.ThingHasQuality(thing))
             {
                 value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing, stuff, quality));
             }
             else
             {
-                if (CraftUtil.thingIsStuffable(thing))
+                if (CraftUtil.ThingIsStuffable(thing))
                 {
                     value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff);
                 }
@@ -848,39 +848,39 @@ namespace FactionColonies
             }
             return value;
         }
-        public float titheThingTotalValue(ThingQualityTuple thing, int quanity)
+        public float TitheThingTotalValue(ThingQualityTuple thing, int quanity)
         {
-            return titheThingValue(thing) * quanity;
+            return TitheThingValue(thing) * quanity;
         }
-        public bool canAffordThingAmount(ThingQualityTuple thing, int quanity)
+        public bool CanAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            return ResourceFormulas.CanAffordThingAmount(titheThingTotalValue(thing, quanity), getTitheIncome() - titheTotalValue);
+            return ResourceFormulas.CanAffordThingAmount(TitheThingTotalValue(thing, quanity), GetTitheIncome() - titheTotalValue);
         }
-        public int maxThingCanAfford(ThingQualityTuple thing)
+        public int MaxThingCanAfford(ThingQualityTuple thing)
         {
-            return maxThingCanAfford(thing, getTitheIncome() - titheTotalValue);
+            return MaxThingCanAfford(thing, GetTitheIncome() - titheTotalValue);
         }
-        public int maxThingCanAfford(ThingQualityTuple thing, double budget)
+        public int MaxThingCanAfford(ThingQualityTuple thing, double budget)
         {
-            return ResourceFormulas.MaxThingCanAfford(budget, titheThingValue(thing));
+            return ResourceFormulas.MaxThingCanAfford(budget, TitheThingValue(thing));
         }
-        public float calcTotalTitheValue()
+        public float CalcTotalTitheValue()
         {
             float total = 0;
             foreach (var (key, value) in tithes)
             {
-                total += titheThingTotalValue(key, value);
+                total += TitheThingTotalValue(key, value);
             }
 
             return total;
         }
-        public ThingQualityTuple findHighestValueTitheThing()
+        public ThingQualityTuple FindHighestValueTitheThing()
         {
             ThingQualityTuple maxthing = null;
             float maxval = 0;
             foreach (var (key, value) in tithes)
             {
-                float val = titheThingValue(key);
+                float val = TitheThingValue(key);
                 if (val > maxval)
                 {
                     maxthing = key;
@@ -895,9 +895,9 @@ namespace FactionColonies
         /// <para>NOTE: The algorithm is heavy-handed. Calling this function with high frequency is ill-advised.</para>
         /// </summary>
         // Could probably make the algorithm slightly less heavy by just subtracting values from totalValue instead of constantly re-calling
-        //   calcTotalTitheValue(), but I'm paranoid about the values misaligning. So leaving as is. If optimization is necessary, that's a
+        //   CalcTotalTitheValue(), but I'm paranoid about the values misaligning. So leaving as is. If optimization is necessary, that's a
         //   decent place to start.
-        public void pruneTitheList()
+        public void PruneTitheList()
         {
             if (tithes.Count == 0)
             {
@@ -905,28 +905,28 @@ namespace FactionColonies
             }
 
             double totalValue = 0;
-            double titheIncome = getTitheIncome();
-            while ((totalValue = calcTotalTitheValue()) > titheIncome && tithes.Count > 0)
+            double titheIncome = GetTitheIncome();
+            while ((totalValue = CalcTotalTitheValue()) > titheIncome && tithes.Count > 0)
             {
-                ThingQualityTuple maxValueThing = findHighestValueTitheThing();
+                ThingQualityTuple maxValueThing = FindHighestValueTitheThing();
                 if (maxValueThing == null)
                 {
                     /* This case shouldn't be possible. But *just* in case, we'll throw an error and bail out if we get here. */
-                    LogUtil.Error($"Got NULL when trying to find highest value thing in tithes list for resource {def.LabelCap}. Bailing out of pruneTitheList()");
+                    LogUtil.Error($"Got NULL when trying to find highest value thing in tithes list for resource {def.LabelCap}. Bailing out of PruneTitheList()");
                     return;
                 }
                 int quantity = tithes[maxValueThing];
-                double totalThingValue = titheThingTotalValue(maxValueThing, quantity);
+                double totalThingValue = TitheThingTotalValue(maxValueThing, quantity);
                 if (totalValue - totalThingValue < titheIncome)
                 {
                     double budget = titheIncome - totalThingValue;
-                    int newQuantity = maxThingCanAfford(maxValueThing, budget);
+                    int newQuantity = MaxThingCanAfford(maxValueThing, budget);
                     int removeNum = quantity - newQuantity;
-                    decrementInTitheList(maxValueThing, removeNum);
+                    DecrementInTitheList(maxValueThing, removeNum);
                 }
                 else
                 {
-                    decrementInTitheList(maxValueThing, quantity);
+                    DecrementInTitheList(maxValueThing, quantity);
                 }
             }
             if (totalValue > titheIncome && tithes.Count == 0)
@@ -937,13 +937,13 @@ namespace FactionColonies
             }
 
             /* One final sanity check. Probably not necessary? If this impacts performance too much, then nuke it. Probably fine though */
-            if ((totalValue = calcTotalTitheValue()) > titheIncome)
+            if ((totalValue = CalcTotalTitheValue()) > titheIncome)
             {
-                LogUtil.Error($"Reached end of pruneTitheList() for resource {def.LabelCap}, but total tithe value {totalValue} is still greater than tithe income {titheIncome}!");
+                LogUtil.Error($"Reached end of PruneTitheList() for resource {def.LabelCap}, but total tithe value {totalValue} is still greater than tithe income {titheIncome}!");
             }
             dirtyTitheCache = true;
         }
-        public List<Thing> generateTithe(out int extraSilver)
+        public List<Thing> GenerateTithe(out int extraSilver)
         {
             int outSilver = 0;
             List<Thing> titheItems = new List<Thing>();
@@ -970,7 +970,7 @@ namespace FactionColonies
             if (randomTitheFilter == null)
             {
                 randomTitheFilter = new ThingFilter();
-                resetThingFilter();
+                ResetThingFilter();
             }
 
             // Determine random tithing budget
@@ -998,14 +998,14 @@ namespace FactionColonies
                         List<Thing> randomTitheList = new List<Thing>();
                         ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
                         ThingSetMakerParams param = new ThingSetMakerParams();
-                        param.totalMarketValueRange = new FloatRange((float)randomBudget, (float)(randomBudget + getTotalTitheModifierForWorkers()));
+                        param.totalMarketValueRange = new FloatRange((float)randomBudget, (float)(randomBudget + GetTotalTitheModifierForWorkers()));
                         param.filter = randomTitheFilter;
                         param.techLevel = FactionCache.PlayerColonyFaction.def.techLevel;
 
                         LogUtil.Message($"  randomTitheFilter has {randomTitheFilter.AllowedDefCount} allowed items");
 
                         TechLevel tmplevel = TechLevel.Undefined;
-                        ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.getThingSetMaker(out tmplevel, this);
+                        ThingSetMaker tmp = def.GetModExtension<ResourceFilterExtension>()?.GetThingSetMaker(out tmplevel, this);
                         if (tmp != null)
                         {
                             thingSetMaker = tmp;
@@ -1040,7 +1040,7 @@ namespace FactionColonies
                 }
             }
 
-            // Now handle specified tithes. We (should) have called pruneTitheList before this, so we shouldn't have to worry about the math adding up
+            // Now handle specified tithes. We (should) have called PruneTitheList before this, so we shouldn't have to worry about the math adding up
             if (tithes.Count > 0)
             {
                 /* Iterate over the dictionary, creating a new thing for each entry, and adding each such thing to the list of tithe items */
@@ -1053,15 +1053,15 @@ namespace FactionColonies
                     }
 
                     /* Try to generate the list through the resource's ResourceFilterExtension */
-                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.generateSpecificThings(key.thingDef, quantity, key.quality, key.stuffDef, this);
+                    List<Thing> things = def.GetModExtension<ResourceFilterExtension>()?.GenerateSpecificThings(key.thingDef, quantity, key.quality, key.stuffDef, this);
                     if (things is null)
                     {
-                        /* If we're here, then the resource doesn't have a special implementation for generateSpecificThings(). So try to make things the generic way. */
+                        /* If we're here, then the resource doesn't have a special implementation for GenerateSpecificThings(). So try to make things the generic way. */
                         for (int i = 0; i < quantity; i++)
                         {
                             Thing thing = ThingMaker.MakeThing(key.thingDef, key.stuffDef);
 
-                            if (CraftUtil.thingHasQuality(key.thingDef))
+                            if (CraftUtil.ThingHasQuality(key.thingDef))
                             {
                                 CompQuality thingQuality = thing.TryGetComp<CompQuality>();
                                 thingQuality.SetQuality(key.quality, ArtGenerationContext.Outsider);
@@ -1086,7 +1086,7 @@ namespace FactionColonies
          *   End Tithe functions                                                                                                                                         *
          * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - */
 
-        public int compareForUI(ResourceFC compareDef)
+        public int CompareForUI(ResourceFC compareDef)
         {
             if (compareDef == null)
             {
@@ -1100,11 +1100,11 @@ namespace FactionColonies
             {
                 return 1;
             }
-            return ResourceTypeDef.sortForUI(this.def, compareDef.def);
+            return ResourceTypeDef.SortForUI(this.def, compareDef.def);
         }
-        public static int sortForUI(ResourceFC a, ResourceFC b)
+        public static int SortForUI(ResourceFC a, ResourceFC b)
         {
-            return a.compareForUI(b);
+            return a.CompareForUI(b);
         }
     }
 
@@ -1223,11 +1223,11 @@ namespace FactionColonies
         public ThingQualityTuple()
         {
         }
-        public string listRejectionMessage()
+        public string ListRejectionMessage()
         {
-            if (CraftUtil.thingHasQuality(thingDef))
+            if (CraftUtil.ThingHasQuality(thingDef))
             {
-                if (CraftUtil.thingIsStuffable(thingDef))
+                if (CraftUtil.ThingIsStuffable(thingDef))
                 {
                     return "TitheListRejectionStuffQuality".Translate(thingDef.LabelCap, TextUtil.GetQualityLabelCap(quality), stuffDef.LabelCap);
                 }
@@ -1238,7 +1238,7 @@ namespace FactionColonies
             }
             else
             {
-                if (CraftUtil.thingIsStuffable(thingDef))
+                if (CraftUtil.ThingIsStuffable(thingDef))
                 {
                     return "TitheListRejectionStuff".Translate(thingDef.LabelCap, stuffDef.LabelCap);
                 }
@@ -1313,7 +1313,7 @@ namespace FactionColonies
                     double resource = 0;
                     for (int k = 0; k < factionFC.settlements.Count; k++)
                     {
-                        resource += (int)(factionFC.settlements[k].getResource(resourceDef)?.rawTotalProduction ?? 0);
+                        resource += (int)(factionFC.settlements[k].GetResource(resourceDef)?.rawTotalProduction ?? 0);
                     }
 
                     cachedAmount = resource;
@@ -1336,11 +1336,11 @@ namespace FactionColonies
         {
             Scribe_Defs.Look(ref resourceDef, "resourcedef");
         }
-        public void setDirtyCache()
+        public void SetDirtyCache()
         {
             dirtyCachedAmount = true;
         }
-        public int compareForUI(ResourceDisplay compareDef)
+        public int CompareForUI(ResourceDisplay compareDef)
         {
             if (compareDef == null)
             {
@@ -1354,11 +1354,11 @@ namespace FactionColonies
             {
                 return 1;
             }
-            return ResourceTypeDef.sortForUI(this.resourceDef, compareDef.resourceDef);
+            return ResourceTypeDef.SortForUI(this.resourceDef, compareDef.resourceDef);
         }
-        public static int sortForUI(ResourceDisplay a, ResourceDisplay b)
+        public static int SortForUI(ResourceDisplay a, ResourceDisplay b)
         {
-            return a.compareForUI(b);
+            return a.CompareForUI(b);
         }
     }
 }

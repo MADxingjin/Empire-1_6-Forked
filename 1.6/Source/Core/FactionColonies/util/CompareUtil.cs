@@ -36,7 +36,7 @@ namespace FactionColonies
 
         public static int CompareSettlementFreeWorkers(WorldSettlementFC x, WorldSettlementFC y)
         {
-            return ((y.workersUltraMax - y.getTotalWorkers()).CompareTo((x.workersUltraMax - x.getTotalWorkers())));
+            return ((y.workersUltraMax - y.GetTotalWorkers()).CompareTo((x.workersUltraMax - x.GetTotalWorkers())));
         }
 
         public static int CompareSettlementUnrest(WorldSettlementFC x, WorldSettlementFC y)
@@ -61,7 +61,7 @@ namespace FactionColonies
 
         public static int CompareSettlementProfit(WorldSettlementFC x, WorldSettlementFC y)
         {
-            return y.getTotalProfit().CompareTo(x.getTotalProfit());
+            return y.GetTotalProfit().CompareTo(x.GetTotalProfit());
         }
         public static int CompareSettlementFoundingDate(WorldSettlementFC x, WorldSettlementFC y)
         {

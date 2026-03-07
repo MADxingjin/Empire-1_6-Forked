@@ -318,7 +318,7 @@ namespace FactionColonies
         private List<FCPolicyDef> GetAvailableTraits()
         {
             return DefDatabase<FCPolicyDef>.AllDefs
-                .Where(d => d.category == FCPolicyCategory.Trait && !faction.hasTrait(d))
+                .Where(d => d.category == FCPolicyCategory.Trait && !faction.HasTrait(d))
                 .ToList();
         }
 

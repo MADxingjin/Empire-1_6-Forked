@@ -26,9 +26,9 @@ namespace FactionColonies
         /// Retrieves the ThingSetMaker associated with this resource.
         /// <para>Resources use ThingSetMaker_MarketValue by default. This function only needs to be specified if you want to use a different ThingSetMaker.</para>
         /// </summary>
-        /// <param name="tlevel">Output parameter. This techlevel will be used if getThingSetMaker returns non-null.</param>
+        /// <param name="tlevel">Output parameter. This techlevel will be used if GetThingSetMaker returns non-null.</param>
         /// <returns></returns>
-        public virtual ThingSetMaker getThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
+        public virtual ThingSetMaker GetThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
         {
             tlevel = TechLevel.Undefined;
             return null;
@@ -43,7 +43,7 @@ namespace FactionColonies
         /// <param name="stuffDef">ThingDef of the stuff for this thing. Can be ignored if the thingDef is not stuffable.</param>
         /// <param name="quantity">The number of things to generate.</param>
         /// <returns></returns>
-        public virtual List<Thing> generateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null, ResourceFC resource = null)
+        public virtual List<Thing> GenerateSpecificThings(ThingDef thingDef, int quantity, QualityCategory quality = QualityCategory.Normal, ThingDef stuffDef = null, ResourceFC resource = null)
         {
             return null;
         }

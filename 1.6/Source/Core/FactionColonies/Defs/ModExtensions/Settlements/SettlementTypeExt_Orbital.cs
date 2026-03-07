@@ -63,12 +63,12 @@ namespace FactionColonies
             spaceKeywords = null;
         }
 
-        public override string getSettlementName(string fallback = "Settlement")
+        public override string GetSettlementName(string fallback = "Settlement")
         {
             string[] keywords = GetSpaceKeywords();
 
             // Get the base name using the same logic as regular settlements
-            string baseName = base.getSettlementName("Orbital");
+            string baseName = base.GetSettlementName("Orbital");
 
             // Get a random space keyword
             string spaceKeyword = keywords[Rand.Range(0, keywords.Length)];
@@ -76,7 +76,7 @@ namespace FactionColonies
             // Combine base name with space keyword
             return $"{baseName} {spaceKeyword}";
         }
-        public override int getCreationCost()
+        public override int GetCreationCost()
         {
             int baseCost = 5000;
 
@@ -95,7 +95,7 @@ namespace FactionColonies
                     return baseCost;
             }
         }
-        public override bool tileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
+        public override bool TileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
         {
             var worldGrid = Find.WorldGrid;
             var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
@@ -112,7 +112,7 @@ namespace FactionColonies
         /// </summary>
         /// <param name="tile"></param>
         /// <returns></returns>
-        public override PlanetTile getTileForSettlement(PlanetTile tile)
+        public override PlanetTile GetTileForSettlement(PlanetTile tile)
         {
             var worldGrid = Find.WorldGrid;
             if (tile.Layer == worldGrid.Orbit)
@@ -124,7 +124,7 @@ namespace FactionColonies
                 return new PlanetTile(tile.tileId, worldGrid.Orbit);
             }
         }
-        public override int getCreationTime(PlanetTile destination)
+        public override int GetCreationTime(PlanetTile destination)
         {
             int baseDays = constructionDays;
 
@@ -142,14 +142,14 @@ namespace FactionColonies
                     return baseDays * GenDate.TicksPerDay;
             }
         }
-        public override string getLocationText(WorldSettlementFC settlement)
+        public override string GetLocationText(WorldSettlementFC settlement)
         {
             string[] locations = GetSpaceLocations();
             // Use the settlement's tileid to deterministically select a location text
             int locationIndex = Math.Abs(settlement.Tile.tileId) % locations.Length;
             return locations[locationIndex];
         }
-        public override TaxDeliveryMode getTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
+        public override TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
             // Force drop pods or shuttles for orbital platform settlements
             if (sourceTile != PlanetTile.Invalid)
@@ -161,7 +161,7 @@ namespace FactionColonies
                 return TaxDeliveryMode.DropPod;
             }
 
-            return base.getTaxDeliveryMode(canUseShuttle, sourceTile);
+            return base.GetTaxDeliveryMode(canUseShuttle, sourceTile);
         }
     }
 }

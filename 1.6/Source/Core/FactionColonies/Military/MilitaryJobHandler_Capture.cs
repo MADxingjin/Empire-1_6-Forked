@@ -12,7 +12,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.captureEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesCapturing".Translate(milComp.WorldSettlement.Name, milComp.returnMilitaryTarget().Label);
+            evt.customDescription = "settlementMilitaryForcesCapturing".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(milComp.WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
@@ -21,18 +21,18 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
             int winner = SimulateBattleFc.FightBattle(
-                militaryForce.createMilitaryForceFromSettlement(milComp.WorldSettlement, true),
-                militaryForce.createMilitaryForceFromFaction(milComp.militaryEnemy, false));
+                militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
+                militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
             if (winner == 0)
             {
-                faction.addExperienceToFactionLevel(5f);
+                faction.AddExperienceToFactionLevel(5f);
 
                 string tmpName = Find.WorldObjects.SettlementAt(milComp.militaryLocation).LabelCap;
                 TechLevel tech = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.techLevel;
                 Faction tempFactionLink = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction;
                 Find.WorldObjects.SettlementAt(milComp.militaryLocation).Destroy();
-                WorldSettlementFC worldsettlement = ColonyUtil.createPlayerColonySettlement(milComp.militaryLocation, WorldSettlementDefOf.WorldSettlementDef_Surface);
+                WorldSettlementFC worldsettlement = ColonyUtil.CreatePlayerColonySettlement(milComp.militaryLocation, WorldSettlementDefOf.WorldSettlementDef_Surface);
                 worldsettlement.Name = tmpName;
 
                 int upgradeTimes;
@@ -52,7 +52,7 @@ namespace FactionColonies
                         break;
                 }
 
-                milComp.WorldSettlement.upgradeSettlement(upgradeTimes);
+                milComp.WorldSettlement.UpgradeSettlement(upgradeTimes);
 
                 milComp.WorldSettlement.loyalty = 15;
                 milComp.WorldSettlement.happiness = 25;

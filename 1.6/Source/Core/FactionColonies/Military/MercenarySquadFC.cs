@@ -110,12 +110,12 @@ namespace FactionColonies
             }
         }
 
-        public void changeTick()
+        public void ChangeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
         }
 
-        public void initiateSquad()
+        public void InitiateSquad()
         {
             mercenaries = new List<Mercenary>();
             UsedApparelList = new List<Apparel>();
@@ -126,7 +126,7 @@ namespace FactionColonies
                 for (int k = 0; k < 30; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
-                    createNewPawn(ref pawn, null, null);
+                    CreateNewPawn(ref pawn, null, null);
                     // Only add if pawn was successfully created
                     if (pawn?.pawn != null)
                     {
@@ -143,7 +143,7 @@ namespace FactionColonies
                 for (int k = 0; k < 30; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
-                    createNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
+                    CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
                     // Only add if pawn was successfully created
                     if (pawn?.pawn != null)
                     {
@@ -156,8 +156,8 @@ namespace FactionColonies
                 }
             }
 
-            LogUtil.Message($"initiateSquad mercenary count : {mercenaries.Count()}");
-            //this.debugMercenarySquad();
+            LogUtil.Message($"InitiateSquad mercenary count : {mercenaries.Count()}");
+            //this.DebugMercenarySquad();
             if (loadID == -1)
             {
                 loadID = FactionCache.FactionComp.GetNextMercenarySquadID();
@@ -180,12 +180,12 @@ namespace FactionColonies
         {
             if (mercenaries == null || !mercenaries.Any(m => m?.pawn != null))
             {
-                initiateSquad();
+                InitiateSquad();
             }
             squadInitialized = true;
         }
 
-        public void resetNeeds()
+        public void ResetNeeds()
         {
             foreach (Pawn merc in AllEquippedMercenaryPawns)
             {
@@ -210,7 +210,7 @@ namespace FactionColonies
             }
         }
 
-        public void removeDroppedEquipment()
+        public void RemoveDroppedEquipment()
         {
             for (int i = UsedApparelList.Count - 1; i >= 0; i--)
             {
@@ -243,18 +243,18 @@ namespace FactionColonies
             }
         }
 
-        public void createNewAnimal(ref Mercenary merc, PawnKindDef race)
+        public void CreateNewAnimal(ref Mercenary merc, PawnKindDef race)
         {
             Pawn newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.AnimalRequest(race));
             //merc = (Mercenary)newPawn;
 
             merc.squad = this;
             merc.settlement = settlement;
-            //LogUtil.Message($"createNewAnimal | {newPawn.Name}   State: Dead - {newPawn.health.Dead}    Apparel Count: {newPawn.apparel.WornApparel.Count()}");
+            //LogUtil.Message($"CreateNewAnimal | {newPawn.Name}   State: Dead - {newPawn.health.Dead}    Apparel Count: {newPawn.apparel.WornApparel.Count()}");
             merc.pawn = newPawn;
         }
 
-        public void createNewPawn(ref Mercenary merc, PawnKindDef race, XenotypeDef _xenotype)
+        public void CreateNewPawn(ref Mercenary merc, PawnKindDef race, XenotypeDef _xenotype)
         {
             XenotypeDef xenotypeChoice = _xenotype;
             PawnKindDef raceChoice = race;
@@ -381,7 +381,7 @@ namespace FactionColonies
             merc.pawn = newPawn;
 
         }
-        public void updateSquadStats(int level)
+        public void UpdateSquadStats(int level)
         {
             foreach (Mercenary merc in mercenaries)
             {
@@ -414,7 +414,7 @@ namespace FactionColonies
             Mercenary pawn2 = new Mercenary(true);
             PawnKindDef kindDef = merc?.pawn?.kindDef ?? PawnKindDefOf.Colonist;
             XenotypeDef xenotype = merc?.pawn?.genes?.Xenotype ?? XenotypeDefOf.Baseliner;
-            createNewPawn(ref pawn2, kindDef, xenotype);
+            CreateNewPawn(ref pawn2, kindDef, xenotype);
             
             // Only replace if new pawn was successfully created
             if (pawn2?.pawn != null)
@@ -470,7 +470,7 @@ namespace FactionColonies
                     while (mercenaries.Count <= count)
                     {
                         Mercenary newMerc = new Mercenary(true);
-                        createNewPawn(ref newMerc, loadout?.pawnKind, loadout?.xenotype);
+                        CreateNewPawn(ref newMerc, loadout?.pawnKind, loadout?.xenotype);
                         if (newMerc?.pawn != null)
                         {
                             mercenaries.Add(newMerc);
@@ -493,7 +493,7 @@ namespace FactionColonies
                     if (mercenaries[count]?.pawn?.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
                     {
                         Mercenary pawn = new Mercenary(true);
-                        createNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype);
+                        CreateNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype);
                         // Only replace if new pawn was successfully created
                         if (pawn?.pawn != null)
                         {
@@ -522,7 +522,7 @@ namespace FactionColonies
                         if (loadout.animal != null)
                         {
                             Mercenary animal = new Mercenary(true);
-                            createNewAnimal(ref animal, loadout.animal);
+                            CreateNewAnimal(ref animal, loadout.animal);
                             animal.handler = mercenaries[count];
                             mercenaries[count].animal = animal;
                             animals.Add(animal);
@@ -557,7 +557,7 @@ namespace FactionColonies
                 count++;
             }
 
-            //debugMercenarySquad();
+            //DebugMercenarySquad();
             FactionCache.FactionComp?.militaryCustomizationUtil?.RebuildMercenaryPawnSet();
         }
 
@@ -610,7 +610,7 @@ namespace FactionColonies
             }
         }
 
-        public void debugMercenarySquad()
+        public void DebugMercenarySquad()
         {
             LogUtil.MessageForce("Debug Mercenary Squad");
             foreach (Mercenary merc in mercenaries)
@@ -619,7 +619,7 @@ namespace FactionColonies
             }
         }
 
-        public Mercenary returnPawn(Pawn pawn)
+        public Mercenary ReturnPawn(Pawn pawn)
         {
             foreach (Mercenary merc in mercenaries)
             {
@@ -640,7 +640,7 @@ namespace FactionColonies
         {
             if (!isExtraSquad)
             {
-                settlement.MilitaryComp?.cooldownMilitary();
+                settlement.MilitaryComp?.CooldownMilitary();
                 return true;
             }
 

@@ -103,10 +103,10 @@ namespace FactionColonies
             loadID = FactionCache.FactionComp.GetNextBillID();
         }
 
-        public bool resolve()
+        public bool Resolve()
         {
             FactionFC factionfc = FactionCache.FactionComp;
-            if (attemptResolve())
+            if (AttemptResolve())
             {
                 return true;
             }
@@ -118,16 +118,16 @@ namespace FactionColonies
             return false;
         }
 
-        public bool attemptResolve()
+        public bool AttemptResolve()
         {
             FactionFC factionfc = FactionCache.FactionComp;
-            if (PaymentUtil.getSilver() >= -1 * taxes.silverAmount || taxes.silverAmount >= 0)
+            if (PaymentUtil.GetSilver() >= -1 * taxes.silverAmount || taxes.silverAmount >= 0)
             { //if have enough silver on the current map to pay  & map belongs to player
 
-                FCEventMaker.createTaxEvent(this);
+                FCEventMaker.CreateTaxEvent(this);
                 if (taxes.resourcePools.Count > 0)
                 {
-                    factionfc.addResourcePools(taxes.resourcePools);
+                    factionfc.AddResourcePools(taxes.resourcePools);
                 }
 
                 return true;
@@ -142,7 +142,7 @@ namespace FactionColonies
 
     public class billUtility
     {
-        public static void processBills()
+        public static void ProcessBills()
         {
             FactionFC factionfc = FactionCache.FactionComp;
             Reset:
@@ -150,7 +150,7 @@ namespace FactionColonies
             {
                 if (bill.dueTick < Find.TickManager.TicksGame)
                 { //if bill is overdue
-                    bill.resolve();
+                    bill.Resolve();
                     goto Reset;
                 }
             }

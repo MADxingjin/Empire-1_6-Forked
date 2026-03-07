@@ -9,7 +9,7 @@ namespace FactionColonies
 {
     public static class ResearchUtil
     {
-        public static bool returnIsResearched(ResearchProjectDef def)
+        public static bool ReturnIsResearched(ResearchProjectDef def)
         {
             if (def == null)
             {

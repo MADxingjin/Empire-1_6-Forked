@@ -33,7 +33,7 @@ namespace FactionColonies
         {
             this.util = util;
             selectedText = "FCSelectAFireSupport".Translate();
-            util.checkMilitaryUtilForErrors();
+            util.CheckMilitaryUtilForErrors();
         }
 
         public override void DrawTab(Rect rect)
@@ -152,7 +152,7 @@ namespace FactionColonies
             {
                 MilitaryFireSupport newSupport = new MilitaryFireSupport();
                 newSupport.name = "New Fire Support " + (util.fireSupportDefs.Count + 1);
-                newSupport.setLoadID();
+                newSupport.SetLoadID();
                 newSupport.projectiles = new List<ThingDef>();
                 selectedText = newSupport.name;
                 selectedSupport = newSupport;
@@ -169,8 +169,8 @@ namespace FactionColonies
                         "FCConfirmDeleteFireSupport".Translate((NamedArgument)supportToDelete.name),
                         delegate
                         {
-                            supportToDelete.delete();
-                            util.checkMilitaryUtilForErrors();
+                            supportToDelete.Delete();
+                            util.CheckMilitaryUtilForErrors();
                             if (selectedSupport == supportToDelete)
                             {
                                 selectedSupport = null;
@@ -221,14 +221,14 @@ namespace FactionColonies
             if (settlementPointReference != null)
             {
                 Widgets.Label(costRect, "FCFireSupportCostRefLabel".Translate(
-                    selectedSupport.returnTotalCost(),
-                    MilitaryCustomizationUtil.calculateMilitaryLevelPoints(
+                    selectedSupport.ReturnTotalCost(),
+                    MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(
                         settlementPointReference.settlementMilitaryLevel)));
             }
             else
             {
                 Widgets.Label(costRect, "FCFireSupportCostLabel".Translate(
-                    selectedSupport.returnTotalCost()));
+                    selectedSupport.ReturnTotalCost()));
             }
 
             Rect countRect = new Rect(rect.x + halfWidth, infoY, halfWidth, 18f);
@@ -246,14 +246,14 @@ namespace FactionColonies
             Rect accuracyLabelRect = new Rect(rect.x, line3Y, rect.width, 18f);
             Widgets.Label(accuracyLabelRect, "FCFireSupportAccuracyLabel".Translate(
                 selectedSupport.accuracy,
-                selectedSupport.returnAccuracyCostPercentage()));
+                selectedSupport.ReturnAccuracyCostPercentage()));
 
             // Accuracy slider
             float sliderY = line3Y + 18f + 2f;
             Rect sliderRect = new Rect(rect.x, sliderY, rect.width, 20f);
             selectedSupport.accuracy = Widgets.HorizontalSlider(sliderRect,
                 selectedSupport.accuracy,
-                Math.Max(3, 15 - FactionCache.FactionComp.returnHighestMilitaryLevel()), 30,
+                Math.Max(3, 15 - FactionCache.FactionComp.ReturnHighestMilitaryLevel()), 30,
                 roundTo: 1);
 
             Text.Font = fontBefore;
@@ -411,7 +411,7 @@ namespace FactionColonies
             if (Widgets.ButtonText(addBtn, "FCAddNewProjectile".Translate()))
             {
                 Find.WindowStack.Add(new FCWindow_ProjectilePicker(
-                    selectedSupport.returnFireSupportOptions(),
+                    selectedSupport.ReturnFireSupportOptions(),
                     def =>
                     {
                         selectedSupport.projectiles.Add(def);

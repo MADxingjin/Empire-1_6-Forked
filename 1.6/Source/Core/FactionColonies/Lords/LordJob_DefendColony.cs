@@ -71,7 +71,7 @@ namespace FactionColonies
             }
             if (pawn.IsMercenary() && pawn.Faction != FactionCache.PlayerColonyFaction) pawn.SetFaction(FactionCache.PlayerColonyFaction);
             
-            settlement?.MilitaryComp?.removeDefender(pawn);
+            settlement?.MilitaryComp?.RemoveDefender(pawn);
         }
     }
 }

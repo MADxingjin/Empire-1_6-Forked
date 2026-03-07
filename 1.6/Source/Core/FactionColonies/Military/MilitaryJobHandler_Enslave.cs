@@ -13,7 +13,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.enslaveEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesEnslave".Translate(milComp.WorldSettlement.Name, milComp.returnMilitaryTarget().Label);
+            evt.customDescription = "settlementMilitaryForcesEnslave".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentEnslave".Translate(milComp.WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
@@ -22,21 +22,21 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
             int winner = SimulateBattleFc.FightBattle(
-                militaryForce.createMilitaryForceFromSettlement(milComp.WorldSettlement, true),
-                militaryForce.createMilitaryForceFromFaction(milComp.militaryEnemy, false));
+                militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
+                militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
             if (winner == 0)
             {
-                faction.addExperienceToFactionLevel(5f);
+                faction.AddExperienceToFactionLevel(5f);
 
                 string text = "";
 
                 int num = new IntRange(1, 3).RandomInRange;
                 for (int i = 0; i <= num; i++)
                 {
-                    Pawn prisoner = PaymentUtil.generatePrisoner(milComp.militaryEnemy);
+                    Pawn prisoner = PaymentUtil.GeneratePrisoner(milComp.militaryEnemy);
                     text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name) + "\n";
-                    milComp.WorldSettlement.addPrisoner(prisoner);
+                    milComp.WorldSettlement.AddPrisoner(prisoner);
                 }
 
                 Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),

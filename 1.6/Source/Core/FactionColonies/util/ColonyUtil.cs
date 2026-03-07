@@ -12,7 +12,7 @@ namespace FactionColonies.util
 {
     public static class ColonyUtil
     {
-        public static WorldSettlementFC createPlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
+        public static WorldSettlementFC CreatePlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
             if (settlementType == null)
             {
@@ -21,7 +21,7 @@ namespace FactionColonies.util
             }
 
             /* Do any pre-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().preCreation(ref tile, ref settlementType);
+            settlementType.GetModExtension<SettlementTypeExtension>().PreCreation(ref tile, ref settlementType);
 
             LogUtil.Message($"Creating settlement of type {settlementType.defName}");
             Faction faction = FactionCache.PlayerColonyFaction;
@@ -38,11 +38,11 @@ namespace FactionColonies.util
             settlement.SetFaction(faction);
             Find.WorldObjects.Add(settlement);
 
-            worldcomp.addSettlement(settlement);
+            worldcomp.AddSettlement(settlement);
             worldcomp.roadBuilder.FlagUpdateRoadQueues();
 
             /* Do any post-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().postCreation(settlement);
+            settlementType.GetModExtension<SettlementTypeExtension>().PostCreation(settlement);
 
             SettlementLifecycleRegistry.InvokeOnSettlementCreated(settlement);
 
@@ -53,9 +53,9 @@ namespace FactionColonies.util
             return settlement;
         }
 
-        public static void removePlayerSettlement(WorldSettlementFC settlement)
+        public static void RemovePlayerSettlement(WorldSettlementFC settlement)
         {
-            settlement.settlementDef.getSettlementTypeExtension()?.preDestruction(settlement);
+            settlement.settlementDef.GetSettlementTypeExtension()?.PreDestruction(settlement);
             settlement.PrepareDestroy();
             FactionFC faction = FactionCache.FactionComp;
             SettlementLifecycleRegistry.InvokeOnSettlementRemoved(settlement);
@@ -68,7 +68,7 @@ namespace FactionColonies.util
             Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>.GetNamed(settlement.def.defName), settlement.Tile));
 
             //clear military events
-            settlement.MilitaryComp?.returnMilitary(false);
+            settlement.MilitaryComp?.ReturnMilitary(false);
 
             HashSet<FCEvent> toRemove = new HashSet<FCEvent>();
 
@@ -93,12 +93,12 @@ namespace FactionColonies.util
                         }
 
                         //if not defending settlement
-                        MilitaryUtilFC.changeDefendingMilitaryForce(evt, evt.settlementFCDefending);
+                        MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, evt.settlementFCDefending);
                     }
                     else
                     {
                         //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.cooldownMilitary();
+                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.CooldownMilitary();
 
                         toRemove.Add(evt);
                     }
@@ -143,7 +143,7 @@ namespace FactionColonies.util
                 faction.events.Remove(evt);
             }
         }
-        public static Faction createPlayerColonyFaction()
+        public static Faction CreatePlayerColonyFaction()
         {
             FactionFC worldcomp = FactionCache.FactionComp;
             if (worldcomp == null)
@@ -152,7 +152,7 @@ namespace FactionColonies.util
                 return null;
             }
             LogUtil.Message("Creating new player faction");
-            worldcomp.setCapital();
+            worldcomp.SetCapital();
 
             FactionDef facDef = DefDatabase<FactionDef>.GetNamed("PColony");
             Faction faction = new Faction

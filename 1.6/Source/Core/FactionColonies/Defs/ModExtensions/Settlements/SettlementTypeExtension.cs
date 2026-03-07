@@ -50,7 +50,7 @@ namespace FactionColonies
         /// <param name="tile">The PlanetTile to check.</param>
         /// <param name="reason">A string stating the reason this tile is not valid.</param>
         /// <returns>TRUE if the given tile is valid for settlement. FALSE otherwise.</returns>
-        public virtual bool tileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
+        public virtual bool TileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
         {
             if (!TileFinder.IsValidTileForNewSettlement(tile, reason)) return false;
 
@@ -106,7 +106,7 @@ namespace FactionColonies
         /// </summary>
         /// <param name="tile"></param>
         /// <returns></returns>
-        public virtual PlanetTile getTileForSettlement(PlanetTile tile)
+        public virtual PlanetTile GetTileForSettlement(PlanetTile tile)
         {
             var worldGrid = Find.WorldGrid;
             if (tile.Layer == worldGrid.Surface)
@@ -119,7 +119,7 @@ namespace FactionColonies
             }
         }
 
-        public virtual string getSettlementName(string fallback = "Settlement")
+        public virtual string GetSettlementName(string fallback = "Settlement")
         {
             Faction pfaction = FactionCache.PlayerColonyFaction;
             if (pfaction?.def.settlementNameMaker == null)
@@ -138,16 +138,16 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Called at the very beginning of createPlayerColonySettlement(), before any code has run.
+        /// Called at the very beginning of CreatePlayerColonySettlement(), before any code has run.
         /// </summary>
-        public virtual void preCreation(ref PlanetTile tile, ref WorldSettlementDef settlementType)
+        public virtual void PreCreation(ref PlanetTile tile, ref WorldSettlementDef settlementType)
         {
         }
 
         /// <summary>
-        /// Called at the very end of createPlayerColonySettlement(), after all code has run (but before the letter notification is sent).
+        /// Called at the very end of CreatePlayerColonySettlement(), after all code has run (but before the letter notification is sent).
         /// </summary>
-        public virtual void postCreation(WorldSettlementFC settlement)
+        public virtual void PostCreation(WorldSettlementFC settlement)
         {
         }
 
@@ -155,7 +155,7 @@ namespace FactionColonies
         /// Determines how much it costs to found a new settlement of this type.
         /// </summary>
         /// <returns>The cost of a new settlement.</returns>
-        public virtual int getCreationCost()
+        public virtual int GetCreationCost()
         {
             if (faction == null)
             {
@@ -170,17 +170,17 @@ namespace FactionColonies
         /// Determines how long it takes to create this settlement.
         /// </summary>
         /// <returns></returns>
-        public virtual int getCreationTime(PlanetTile destination)
+        public virtual int GetCreationTime(PlanetTile destination)
         {
             return TravelUtil.ReturnTicksToArrive(faction.capitalLocation, destination);
         }
 
-        public virtual string getLocationText(WorldSettlementFC settlement)
+        public virtual string GetLocationText(WorldSettlementFC settlement)
         {
             return "Located".Translate() + " " + settlement.Tile.Tile.hilliness.GetLabel() + " " + "LandOf".Translate() + " " + settlement.Tile.Tile.PrimaryBiome.LabelCap.ToLower();
         }
 
-        public virtual TaxDeliveryMode getTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
+        public virtual TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
             if (FCSettings.forcedTaxDeliveryMode != default)
             {
@@ -201,7 +201,7 @@ namespace FactionColonies
         /// <summary>
         /// Returns a description of the settlement's current level for display in the settlement window.
         /// </summary>
-        public virtual string getSettlementLevelDesc(int level)
+        public virtual string GetSettlementLevelDesc(int level)
         {
             switch (level)
             {
@@ -223,7 +223,7 @@ namespace FactionColonies
         /// <summary>
         /// Called after a settlement's level changes (upgrade or delevel) and stats have been updated.
         /// </summary>
-        public virtual void onUpgrade(WorldSettlementFC settlement, int oldLevel, int newLevel)
+        public virtual void OnUpgrade(WorldSettlementFC settlement, int oldLevel, int newLevel)
         {
         }
 
@@ -257,21 +257,21 @@ namespace FactionColonies
         /// <summary>
         /// Called before a settlement is removed from the world.
         /// </summary>
-        public virtual void preDestruction(WorldSettlementFC settlement)
+        public virtual void PreDestruction(WorldSettlementFC settlement)
         {
         }
 
         /// <summary>
         /// Called at the start of tax collection, after pre-tax preparation (cache invalidation, resource pruning).
         /// </summary>
-        public virtual void preTax(WorldSettlementFC settlement)
+        public virtual void PreTax(WorldSettlementFC settlement)
         {
         }
 
         /// <summary>
         /// Called at the end of tax collection, after all calculations are complete.
         /// </summary>
-        public virtual void postTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)
+        public virtual void PostTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)
         {
         }
     }

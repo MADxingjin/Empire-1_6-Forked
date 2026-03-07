@@ -27,7 +27,7 @@ namespace FactionColonies
             if (Settlement == null)
             {
                 FactionFC settlementFaction = FactionCache.FactionComp;
-                Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
+                Settlement = settlementFaction.ReturnSettlementByLocation(map.Tile);
             }
             int min = 36 + Settlement.settlementLevel * 2 - 2;
             return new CellRect(c.x - min / 2, c.z - min / 2, min, min).FullyContainedWithin(new CellRect(0, 0,
@@ -39,7 +39,7 @@ namespace FactionColonies
             if (Settlement == null)
             {
                 FactionFC settlementFaction = FactionCache.FactionComp;
-                Settlement = settlementFaction.returnSettlementByLocation(map.Tile);
+                Settlement = settlementFaction.ReturnSettlementByLocation(map.Tile);
             }
             
             int middle = 36 + Settlement.settlementLevel * 2;
@@ -66,7 +66,7 @@ namespace FactionColonies
             resolveParams.faction = faction;
             BaseGen.globalSettings.map = map;
             resolveParams.stockpileMarketValue = (float) Settlement.totalProfit;
-            double defenseBuildings = Settlement.getDefenseBonus();
+            double defenseBuildings = Settlement.GetDefenseBonus();
             
             int defenseCount = (int) (CurveFactor * Math.Log(defenseBuildings+1));
             resolveParams.edgeDefenseMortarsCount = (int) Math.Ceiling(defenseCount/3f);

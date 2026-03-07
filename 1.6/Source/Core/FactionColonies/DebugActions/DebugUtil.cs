@@ -71,7 +71,7 @@ namespace FactionColonies
                     {
                         foreach (Pawn pawn in selected)
                         {
-                            TravelUtil.sendPrisoner(pawn, settlement);
+                            TravelUtil.SendPrisoner(pawn, settlement);
 
                             foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
                                 map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
@@ -134,7 +134,7 @@ namespace FactionColonies
             }
 
 
-            util.checkMilitaryUtilForErrors();
+            util.CheckMilitaryUtilForErrors();
         }
 
 
@@ -153,7 +153,7 @@ namespace FactionColonies
 
                         if (!evtDef.activateAtStart)
                         {
-                            FactionCache.FactionComp.addEvent(evt);
+                            FactionCache.FactionComp.AddEvent(evt);
                         }
 
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
@@ -188,7 +188,7 @@ namespace FactionColonies
                         return;
                     }
                     LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
-                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
+                    MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
                 }
                 ));
             }
@@ -207,7 +207,7 @@ namespace FactionColonies
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
                     list.Add(new DebugMenuOption(
-                        worldcomp.returnSettlementByLocation(evt.location)?.Name ?? "Unknown",
+                        worldcomp.ReturnSettlementByLocation(evt.location)?.Name ?? "Unknown",
                         DebugMenuOptionMode.Action, delegate
                         {
                             //when event is selected, select defending force to replace it with
@@ -215,16 +215,16 @@ namespace FactionColonies
                             List<DebugMenuOption> list2 = new List<DebugMenuOption>();
                             foreach (WorldSettlementFC settlement in worldcomp.settlements)
                             {
-                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Name)
+                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Name)
                                 {
                                     list2.Add(new DebugMenuOption(
                                         settlement.Name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
-                                        settlement.MilitaryComp.isMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
+                                        settlement.MilitaryComp.IsMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
                                         {
-                                            if (settlement.MilitaryComp.isMilitaryBusy() == false)
+                                            if (settlement.MilitaryComp.IsMilitaryBusy() == false)
                                             {
                                                 LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending?.homeSettlement?.Name ?? "Unknown"} to {settlement.Name}");
-                                                MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
+                                                MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
                                             }
                                         }
                                     ));
@@ -264,7 +264,7 @@ namespace FactionColonies
                     {
                         LogUtil.MessageForce("Debug - Downgrade Player Settlement x" + times + "- " + settlement.Name);
                     }
-                    settlement.upgradeSettlement(times);
+                    settlement.UpgradeSettlement(times);
                 }
                 ));
             }
@@ -290,7 +290,7 @@ namespace FactionColonies
             LogUtil.MessageForce("Debug - Reset All Military Squads");
             foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
-                settlement.MilitaryComp?.returnMilitary(false);
+                settlement.MilitaryComp?.ReturnMilitary(false);
             }
         }
 
@@ -345,7 +345,7 @@ namespace FactionColonies
                         parms.raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly;
 
                         settlement.MilitaryComp.militarySquad.CheckInitialization();
-                        settlement.MilitaryComp.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
+                        settlement.MilitaryComp.militarySquad.UpdateSquadStats(settlement.settlementMilitaryLevel);
 
                         DebugTools.curTool = new DebugTool("Select Drop Position", delegate
                         {
@@ -378,7 +378,7 @@ namespace FactionColonies
         private static void LevelUpFaction()
         {
             FactionFC faction = FactionCache.FactionComp;
-            faction.addExperienceToFactionLevel(faction.factionXPGoal);
+            faction.AddExperienceToFactionLevel(faction.factionXPGoal);
         }
 
         // ============================
@@ -482,13 +482,13 @@ namespace FactionColonies
                 Messages.Message($"Cannot settle here: {reason}", MessageTypeDefOf.RejectInput);
                 return;
             }
-            if (FactionCache.FactionComp.checkSettlementCaravansList(tile))
+            if (FactionCache.FactionComp.CheckSettlementCaravansList(tile))
             {
                 Messages.Message("A settlement caravan is already heading to this tile.", MessageTypeDefOf.RejectInput);
                 return;
             }
             LogUtil.MessageForce($"Debug - Create Settlement (Instant) at tile {tile.Tile} with type {def.defName}");
-            ColonyUtil.createPlayerColonySettlement(tile, def);
+            ColonyUtil.CreatePlayerColonySettlement(tile, def);
         }
 
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
@@ -497,7 +497,7 @@ namespace FactionColonies
             WithSettlementChoice(settlement =>
             {
                 LogUtil.MessageForce($"Debug - Remove Player Settlement - {settlement.Name}");
-                ColonyUtil.removePlayerSettlement(settlement);
+                ColonyUtil.RemovePlayerSettlement(settlement);
             });
         }
 
@@ -524,7 +524,7 @@ namespace FactionColonies
                                 : $"x{localVal}";
                             values.Add(new DebugMenuOption(label, DebugMenuOptionMode.Action, () =>
                             {
-                                settlement.addStatModifiers(
+                                settlement.AddStatModifiers(
                                     new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = localVal } },
                                     "debug");
                                 LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {localVal} to {settlement.Name}");
@@ -542,7 +542,7 @@ namespace FactionColonies
         {
             WithSettlementChoice(settlement =>
             {
-                settlement.removeStatModifiersBySource("debug");
+                settlement.RemoveStatModifiersBySource("debug");
                 LogUtil.MessageForce($"Debug - Cleared debug stat modifiers from {settlement.Name}");
             });
         }
@@ -698,7 +698,7 @@ namespace FactionColonies
                 string squadInfo = comp.militarySquad != null
                     ? $"Deployed:{comp.militarySquad.isDeployed} Job:{comp.militaryJob}"
                     : "No squad";
-                LogUtil.MessageForce($"[{s.Name}] MilLv:{s.settlementMilitaryLevel} Busy:{comp.isMilitaryBusySilent()} | {squadInfo}");
+                LogUtil.MessageForce($"[{s.Name}] MilLv:{s.settlementMilitaryLevel} Busy:{comp.IsMilitaryBusySilent()} | {squadInfo}");
             }
         }
 
@@ -709,7 +709,7 @@ namespace FactionColonies
             {
                 if (settlement.MilitaryComp != null)
                 {
-                    settlement.MilitaryComp.returnMilitary(true);
+                    settlement.MilitaryComp.ReturnMilitary(true);
                     LogUtil.MessageForce($"Debug - Force returned military for {settlement.Name}");
                 }
                 else
@@ -723,7 +723,7 @@ namespace FactionColonies
         private static void RunMilitaryErrorCheck()
         {
             LogUtil.MessageForce("Debug - Running military error check");
-            FactionCache.FactionComp.militaryCustomizationUtil.checkMilitaryUtilForErrors();
+            FactionCache.FactionComp.militaryCustomizationUtil.CheckMilitaryUtilForErrors();
             LogUtil.MessageForce("Debug - Military error check complete");
         }
 
@@ -760,14 +760,14 @@ namespace FactionColonies
                 int localAmount = amount;
                 list.Add(new DebugMenuOption($"+{localAmount} XP", DebugMenuOptionMode.Action, () =>
                 {
-                    faction.addExperienceToFactionLevel(localAmount);
+                    faction.AddExperienceToFactionLevel(localAmount);
                     LogUtil.MessageForce($"Debug - Added {localAmount} XP (now {faction.factionXPCurrent:F0}/{faction.factionXPGoal:F0})");
                 }));
             }
             float remaining = faction.factionXPGoal - faction.factionXPCurrent;
             list.Add(new DebugMenuOption($"+{remaining:F0} XP (to next level)", DebugMenuOptionMode.Action, () =>
             {
-                faction.addExperienceToFactionLevel(remaining);
+                faction.AddExperienceToFactionLevel(remaining);
                 LogUtil.MessageForce($"Debug - Added {remaining:F0} XP to reach next level");
             }));
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));

@@ -186,7 +186,7 @@ namespace FactionColonies
 
         // --- Equipment Mutation Methods ---
 
-        public void changeTick()
+        public void ChangeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
             costDirty = true;
@@ -198,7 +198,7 @@ namespace FactionColonies
             weapons.Add(new SavedThing(def, stuff));
             preferredAmmo = null;
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
@@ -207,20 +207,20 @@ namespace FactionColonies
             weapons.Clear();
             preferredAmmo = null;
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
         public void SetPreferredAmmo(ThingDef ammo)
         {
             preferredAmmo = ammo;
-            changeTick();
+            ChangeTick();
         }
 
         public void ClearPreferredAmmo()
         {
             preferredAmmo = null;
-            changeTick();
+            ChangeTick();
         }
 
         public void SetApparel(ThingDef def, ThingDef stuff)
@@ -231,7 +231,7 @@ namespace FactionColonies
                 !ApparelUtility.CanWearTogether(existing.thing, def, body));
             apparel.Add(new SavedThing(def, stuff));
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
@@ -239,7 +239,7 @@ namespace FactionColonies
         {
             apparel.RemoveAll(s => MatchesSlot(s.thing, layer, bodyPart));
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
@@ -249,7 +249,7 @@ namespace FactionColonies
             apparel.Clear();
             preferredAmmo = null;
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
@@ -274,14 +274,14 @@ namespace FactionColonies
             {
                 if (costDirty)
                 {
-                    updateEquipmentTotalCost();
+                    UpdateEquipmentTotalCost();
                     costDirty = false;
                 }
                 return equipmentTotalCost;
             }
         }
 
-        public void updateEquipmentTotalCost()
+        public void UpdateEquipmentTotalCost()
         {
             if (isBlank)
             {
@@ -320,7 +320,7 @@ namespace FactionColonies
 
         // --- Unit Management ---
 
-        public void removeUnit()
+        public void RemoveUnit()
         {
             FactionCache.FactionComp.militaryCustomizationUtil.units.Remove(this);
         }
@@ -333,7 +333,7 @@ namespace FactionColonies
         {
             pawnIdentityDirty = true;
             pawnEquipmentDirty = true;
-            changeTick();
+            ChangeTick();
         }
     }
 }

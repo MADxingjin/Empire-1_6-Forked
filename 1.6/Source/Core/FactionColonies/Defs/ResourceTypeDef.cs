@@ -55,7 +55,7 @@ namespace FactionColonies
         public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
         }
-        // Used to be part of CraftUtil.canCraftItem. Now, we do this check as part of the overall filtering process
+        // Used to be part of CraftUtil.CanCraftItem. Now, we do this check as part of the overall filtering process
         public static bool ThingAllowedByRecipe(ThingDef thing)
         {
             if (thing.recipeMaker != null)
@@ -83,7 +83,7 @@ namespace FactionColonies
             }
             return true;
         }
-        // Used to be part of CraftUtil.canCraftItem. Now, we do this check as part of the overall filtering process
+        // Used to be part of CraftUtil.CanCraftItem. Now, we do this check as part of the overall filtering process
         public static bool ThingAllowedByThingTechLevel(ThingDef thing, TechLevel techlevel)
         {
             if (techlevel < thing.techLevel)
@@ -304,38 +304,38 @@ namespace FactionColonies
          * Pool helper functions
          * These functions are wrappers for ResourcePoolExtension functions, meant to make it easier to invoke the extension.
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        public bool poolResourceResetsAtTaxTime()
+        public bool PoolResourceResetsAtTaxTime()
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called poolResourceResetsAtTaxTime() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called PoolResourceResetsAtTaxTime() for non-pool resource {this.defName}");
                 return false;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            return GetModExtension<ResourcePoolExtension>().resetAtTaxTime();
+            return GetModExtension<ResourcePoolExtension>().ResetAtTaxTime();
         }
-        public double preAddToGlobalPool(double value)
+        public double PreAddToGlobalPool(double value)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called preAddToGlobalPool() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called PreAddToGlobalPool() for non-pool resource {this.defName}");
                 return value;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            return GetModExtension<ResourcePoolExtension>().preAddToGlobalPool(value);
+            return GetModExtension<ResourcePoolExtension>().PreAddToGlobalPool(value);
         }
-        public void addedToGlobalPool(double value)
+        public void AddedToGlobalPool(double value)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called addedToGlobalPool() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called AddedToGlobalPool() for non-pool resource {this.defName}");
                 return;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            GetModExtension<ResourcePoolExtension>().addedToGlobalPool(value);
+            GetModExtension<ResourcePoolExtension>().AddedToGlobalPool(value);
         }
         public IEnumerable<FloatMenuOption> GetFactionMenuFloatMenuOptions(ResourcePool pool)
         {
@@ -355,16 +355,16 @@ namespace FactionColonies
                 }
             }
         }
-        public void dailyUpdate(ResourcePool pool)
+        public void DailyUpdate(ResourcePool pool)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called dailyUpdate() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called DailyUpdate() for non-pool resource {this.defName}");
                 return;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            GetModExtension<ResourcePoolExtension>().dailyUpdate(pool);
+            GetModExtension<ResourcePoolExtension>().DailyUpdate(pool);
         }
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
          * End of Pool helper functions
@@ -400,7 +400,7 @@ namespace FactionColonies
                 return meetsResearchReqs || meetsTechlevelReq;
             }
         }
-        public double getExtensionAdditives(PlanetTile tile, WorldSettlementFC settlement = null)
+        public double GetExtensionAdditives(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double add = 0;
             if (modExtensions?.Count > 0)
@@ -412,7 +412,7 @@ namespace FactionColonies
             }
             return add;
         }
-        public double getExtensionMultipliers(PlanetTile tile, WorldSettlementFC settlement = null)
+        public double GetExtensionMultipliers(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double mult = 1;
             if (modExtensions?.Count > 0)
@@ -424,7 +424,7 @@ namespace FactionColonies
             }
             return mult;
         }
-        public bool resourceAllowedForBiome(BiomeResourceDef bdef)
+        public bool ResourceAllowedForBiome(BiomeResourceDef bdef)
         {
             if (biomeAllowList.Count > 0)
             {
@@ -480,11 +480,11 @@ namespace FactionColonies
             }
         }
 
-        public int compareForUI(ResourceTypeDef compareDef)
+        public int CompareForUI(ResourceTypeDef compareDef)
         {
             return this.uiPriority - compareDef.uiPriority;
         }
-        public static int sortForUI(ResourceTypeDef a, ResourceTypeDef b)
+        public static int SortForUI(ResourceTypeDef a, ResourceTypeDef b)
         {
             if (a == null)
             {
@@ -494,7 +494,7 @@ namespace FactionColonies
             {
                 return -1;
             }
-            return a.compareForUI(b);
+            return a.CompareForUI(b);
         }
 
         public override IEnumerable<string> ConfigErrors()

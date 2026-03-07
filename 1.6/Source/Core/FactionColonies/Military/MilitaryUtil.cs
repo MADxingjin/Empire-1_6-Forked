@@ -95,8 +95,8 @@ namespace FactionColonies
             }
 
             squad.CheckInitialization();
-            squad.updateSquadStats(settlement.settlementMilitaryLevel);
-            squad.resetNeeds();
+            squad.UpdateSquadStats(settlement.settlementMilitaryLevel);
+            squad.ResetNeeds();
 
             IntVec3 dropPosition;
             DebugTool tool = new DebugTool("selectDeploymentPosition".Translate(), delegate
@@ -115,7 +115,7 @@ namespace FactionColonies
                     return;
                 }
 
-                if (overrideSquad != null) PaymentUtil.paySilver((int)Math.Round((settlement.MilitaryComp?.militarySquad?.outfit?.updateEquipmentTotalCost() ?? 0) * .2));
+                if (overrideSquad != null) PaymentUtil.PaySilver((int)Math.Round((settlement.MilitaryComp?.militarySquad?.outfit?.UpdateEquipmentTotalCost() ?? 0) * .2));
                 SpawnSquad(settlement, squad, dropPosition, DropPod);
                 DebugTools.curTool = null;
             });
@@ -132,7 +132,7 @@ namespace FactionColonies
         /// <param name="cost"></param>
         public static void CallinExtraForces(WorldSettlementFC settlement, bool DropPod)
         {
-            MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.createMercenarySquad(settlement, true);
+            MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.CreateMercenarySquad(settlement, true);
             if (squad == null) return;
             MilSquadFC mainOutfit = settlement.MilitaryComp?.militarySquad?.outfit;
             if (mainOutfit != null) squad.OutfitSquad(mainOutfit);
@@ -144,10 +144,10 @@ namespace FactionColonies
             IntVec3 DropPosition;
             tool = new DebugTool("FCFireSupportSelectPosition".Translate(), delegate
             {
-                float cost = support.returnTotalCost();
-                if (PaymentUtil.getSilver() > cost)
+                float cost = support.ReturnTotalCost();
+                if (PaymentUtil.GetSilver() > cost)
                 {
-                    PaymentUtil.paySilver((int)Math.Round(cost));
+                    PaymentUtil.PaySilver((int)Math.Round(cost));
                     DropPosition = UI.MouseCell();
                     IntVec3 spawnCenter = DropPosition;
                     Map map = Find.CurrentMap;

@@ -29,14 +29,14 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
             var settlement = faction.settlements[0];
             var mods = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = value } };
-            settlement.addStatModifiers(mods, "titheTest");
+            settlement.AddStatModifiers(mods, "titheTest");
             try
             {
                 action();
             }
             finally
             {
-                settlement.removeStatModifiersBySource("titheTest");
+                settlement.RemoveStatModifiersBySource("titheTest");
             }
         }
 
@@ -53,12 +53,12 @@ namespace FactionColonies
             ResourceFC resource = GetFirstNonPoolResource(settlement);
             if (resource == null) TestAssert.Skip("No non-pool resource");
 
-            double expected = settlement.getStatValue(FCStatDefOf.taxBaseRandomModifier)
+            double expected = settlement.GetStatValue(FCStatDefOf.taxBaseRandomModifier)
                             + FCSettings.productionTitheMod;
-            double actual = resource.getTitheModifierPerWorker();
+            double actual = resource.GetTitheModifierPerWorker();
 
             TestAssert.AreEqual(expected, actual,
-                message: "getTitheModifierPerWorker should equal taxBaseRandomModifier stat + productionTitheMod setting");
+                message: "GetTitheModifierPerWorker should equal taxBaseRandomModifier stat + productionTitheMod setting");
         }
 
         [EmpireTest("TitheIncome")]
@@ -74,11 +74,11 @@ namespace FactionColonies
             try
             {
                 resource.assignedWorkers = 0;
-                resource.setDirtyCache();
+                resource.SetDirtyCache();
 
                 double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
                 double expected = resource.taxableProductionMarketValue * multForTotal;
-                double actual = resource.getTitheIncome();
+                double actual = resource.GetTitheIncome();
 
                 TestAssert.AreEqual(expected, actual,
                     message: "With 0 workers, tithe income should equal taxableProductionMarketValue * titheValueMultiplier");
@@ -86,7 +86,7 @@ namespace FactionColonies
             finally
             {
                 resource.assignedWorkers = savedWorkers;
-                resource.setDirtyCache();
+                resource.SetDirtyCache();
             }
         }
 
@@ -99,14 +99,14 @@ namespace FactionColonies
             ResourceFC resource = GetFirstNonPoolResource(settlement);
             if (resource == null) TestAssert.Skip("No non-pool resource");
 
-            // Manually compute using the same formula that getTitheIncome should use
-            double workerMod = resource.getTitheModifierPerWorker() * resource.assignedWorkers;
+            // Manually compute using the same formula that GetTitheIncome should use
+            double workerMod = resource.GetTitheModifierPerWorker() * resource.assignedWorkers;
             double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
             double expected = (resource.taxableProductionMarketValue + workerMod) * multForTotal;
-            double actual = resource.getTitheIncome();
+            double actual = resource.GetTitheIncome();
 
             TestAssert.AreEqual(expected, actual,
-                message: "getTitheIncome should equal (taxableMarketValue + workerMod) * titheValueMultiplier");
+                message: "GetTitheIncome should equal (taxableMarketValue + workerMod) * titheValueMultiplier");
         }
 
         [EmpireTest("TitheIncome")]
@@ -119,13 +119,13 @@ namespace FactionColonies
             if (resource == null) TestAssert.Skip("No non-pool resource");
             if (resource.assignedWorkers == 0) TestAssert.Skip("Resource has 0 workers");
 
-            double incomeBefore = resource.getTitheIncome();
+            double incomeBefore = resource.GetTitheIncome();
 
             // titheValueMultiplier is multiplicative, so adding 1.5 means multiplying by 1.5
             WithFactionModifier(FCStatDefOf.titheValueMultiplier, 1.5, () =>
             {
-                resource.setDirtyCache();
-                double incomeAfter = resource.getTitheIncome();
+                resource.SetDirtyCache();
+                double incomeAfter = resource.GetTitheIncome();
 
                 if (incomeBefore != 0)
                 {
@@ -134,8 +134,8 @@ namespace FactionColonies
                 }
             });
 
-            resource.setDirtyCache();
-            double incomeRestored = resource.getTitheIncome();
+            resource.SetDirtyCache();
+            double incomeRestored = resource.GetTitheIncome();
             TestAssert.AreEqual(incomeBefore, incomeRestored,
                 message: "Tithe income should restore after removing modifier");
         }

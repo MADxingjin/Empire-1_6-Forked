@@ -216,8 +216,8 @@ namespace FactionColonies
                 apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>()
             };
 
-            unit.changeTick();
-            unit.updateEquipmentTotalCost();
+            unit.ChangeTick();
+            unit.UpdateEquipmentTotalCost();
 
             return unit;
         }

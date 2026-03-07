@@ -17,21 +17,21 @@ namespace FactionColonies
 			this.draggable = true;
 			this.doCloseX = true;
 			this.preventCameraMotion = false;
-			this.silverCount = PaymentUtil.getSilver();
+			this.silverCount = PaymentUtil.GetSilver();
 			this.settlement = settlement;
 			this.selectedSilver = 0;
 			this.stringEffect = "SettlementGainsXLoyalty";
 		}
 
 
-		public override float returnValue(int silver)
+		public override float ReturnValue(int silver)
 		{
 			return silver / 100f;
 		}
 
-		public override void useValue(float value)
+		public override void UseValue(float value)
 		{
-			settlement.loyalty += returnValue(selectedSilver);
+			settlement.loyalty += ReturnValue(selectedSilver);
 			if (settlement.loyalty > 100)
 				settlement.loyalty = 100;
 		}

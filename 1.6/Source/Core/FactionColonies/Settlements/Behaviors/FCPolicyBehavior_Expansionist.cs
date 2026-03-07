@@ -15,7 +15,7 @@ namespace FactionColonies
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
             if (settlement.settlementLevel == 1)
-                settlement.upgradeSettlement();
+                settlement.UpgradeSettlement();
         }
 
         public override double ModifyStat(FCStatDef stat, double currentValue, WorldSettlementFC settlement)
@@ -41,9 +41,9 @@ namespace FactionColonies
 
             FactionFC faction = FactionCache.FactionComp;
             if (!faction.settlements.Any() && !faction.settlementCaravansList.Any())
-                return TextUtil.colorizeMultiplierBonus(0) + " - " + policy.def.LabelCap + "\n";
+                return TextUtil.ColorizeMultiplierBonus(0) + " - " + policy.def.LabelCap + "\n";
             if (feeReductionCooldown.IsReady)
-                return TextUtil.colorizeMultiplierBonus(0.5) + " - " + policy.def.LabelCap + "\n";
+                return TextUtil.ColorizeMultiplierBonus(0.5) + " - " + policy.def.LabelCap + "\n";
             return null;
         }
 

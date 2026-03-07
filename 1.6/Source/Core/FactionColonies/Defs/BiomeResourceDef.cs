@@ -20,14 +20,14 @@ namespace FactionColonies
         /// </summary>
         public string descriptionKey;
 
-        public ResourceAvailability getBiomeResource(ResourceTypeDef resourceTypeDef)
+        public ResourceAvailability GetBiomeResource(ResourceTypeDef resourceTypeDef)
         {
             /* First check if the resource is even allowed in this biome */
             if (resourceBlockList.Contains(resourceTypeDef))
             {
                 return null;
             }
-            if (!resourceTypeDef.resourceAllowedForBiome(this))
+            if (!resourceTypeDef.ResourceAllowedForBiome(this))
             {
                 return null;
             }

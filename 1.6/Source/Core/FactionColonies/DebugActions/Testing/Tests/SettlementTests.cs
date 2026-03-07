@@ -19,7 +19,7 @@ namespace FactionColonies
             var settlement = GetFirstSettlement();
             if (settlement == null) TestAssert.Skip("No settlements");
 
-            double gain = settlement.getHappinessGain();
+            double gain = settlement.GetHappinessGain();
             TestAssert.IsFalse(double.IsNaN(gain), "Happiness gain should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(gain), "Happiness gain should not be infinite");
         }
@@ -30,7 +30,7 @@ namespace FactionColonies
             var settlement = GetFirstSettlement();
             if (settlement == null) TestAssert.Skip("No settlements");
 
-            double gain = settlement.getLoyaltyGain();
+            double gain = settlement.GetLoyaltyGain();
             TestAssert.IsFalse(double.IsNaN(gain), "Loyalty gain should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(gain), "Loyalty gain should not be infinite");
         }
@@ -41,7 +41,7 @@ namespace FactionColonies
             var settlement = GetFirstSettlement();
             if (settlement == null) TestAssert.Skip("No settlements");
 
-            double upkeep = settlement.getTotalUpkeep();
+            double upkeep = settlement.GetTotalUpkeep();
             TestAssert.IsTrue(upkeep >= 0, $"Total upkeep should be >= 0, got {upkeep}");
         }
 

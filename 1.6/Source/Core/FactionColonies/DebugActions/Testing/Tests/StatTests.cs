@@ -31,14 +31,14 @@ namespace FactionColonies
         private static void WithTestModifier(WorldSettlementFC settlement, FCStatDef stat, double value, Action action)
         {
             var mods = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = value } };
-            settlement.addStatModifiers(mods, "test");
+            settlement.AddStatModifiers(mods, "test");
             try
             {
                 action();
             }
             finally
             {
-                settlement.removeStatModifiersBySource("test");
+                settlement.RemoveStatModifiersBySource("test");
             }
         }
 
@@ -363,12 +363,12 @@ namespace FactionColonies
             double before = settlement.GetSettlementStatValue(stat);
 
             var mods = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 5.0 } };
-            settlement.addStatModifiers(mods, "test");
+            settlement.AddStatModifiers(mods, "test");
             double during = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before + 5.0, during,
                 message: "Stat should increase after adding modifier");
 
-            settlement.removeStatModifiers(mods, "test");
+            settlement.RemoveStatModifiers(mods, "test");
             double after = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before, after,
                 message: $"Stat should restore after removing modifier (before={before}, after={after})");
@@ -387,21 +387,21 @@ namespace FactionColonies
             var mods1 = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 2.0 } };
             var mods2 = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 2.0 } };
 
-            settlement.addStatModifiers(mods1, "test1");
-            settlement.addStatModifiers(mods2, "test2");
+            settlement.AddStatModifiers(mods1, "test1");
+            settlement.AddStatModifiers(mods2, "test2");
 
             double bothAdded = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before + 4.0, bothAdded,
                 message: "Both modifiers should be applied");
 
             // Remove first by reference
-            settlement.removeStatModifiers(mods1, "test1");
+            settlement.RemoveStatModifiers(mods1, "test1");
             double oneRemoved = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before + 2.0, oneRemoved,
                 message: "Only first modifier should be removed, second should remain");
 
             // Cleanup
-            settlement.removeStatModifiers(mods2, "test2");
+            settlement.RemoveStatModifiers(mods2, "test2");
             double restored = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before, restored,
                 message: "All modifiers should be removed");
@@ -420,21 +420,21 @@ namespace FactionColonies
             var mods1 = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 3.0 } };
             var mods2 = new List<FCStatModifier> { new FCStatModifier { stat = stat, value = 5.0 } };
 
-            settlement.addStatModifiers(mods1, "testA");
-            settlement.addStatModifiers(mods2, "testB");
+            settlement.AddStatModifiers(mods1, "testA");
+            settlement.AddStatModifiers(mods2, "testB");
 
             double bothAdded = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before + 8.0, bothAdded,
                 message: "Both source modifiers should be applied");
 
             // Remove only source A
-            settlement.removeStatModifiersBySource("testA");
+            settlement.RemoveStatModifiersBySource("testA");
             double afterRemoveA = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before + 5.0, afterRemoveA,
                 message: "Only sourceA modifiers should be removed");
 
             // Cleanup
-            settlement.removeStatModifiersBySource("testB");
+            settlement.RemoveStatModifiersBySource("testB");
             double restored = settlement.GetSettlementStatValue(stat);
             TestAssert.AreEqual(before, restored,
                 message: "All modifiers should be removed");

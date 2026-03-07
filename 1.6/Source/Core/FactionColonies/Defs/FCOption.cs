@@ -231,7 +231,7 @@ namespace FactionColonies
             curY += 1f + Padding;
 
             // === Option cards ===
-            int currentSilver = PaymentUtil.getSilver();
+            int currentSilver = PaymentUtil.GetSilver();
 
             for (int i = 0; i < options.Count; i++)
             {
@@ -330,8 +330,8 @@ namespace FactionColonies
                     if (affordable)
                     {
                         SoundDefOf.Click.PlayOneShotOnCamera();
-                        PaymentUtil.paySilver(opt.silverCost);
-                        FCEventMaker.calculateSuccess(opt, parentEvent);
+                        PaymentUtil.PaySilver(opt.silverCost);
+                        FCEventMaker.CalculateSuccess(opt, parentEvent);
                         Find.WindowStack.TryRemove(this);
                     }
                     else

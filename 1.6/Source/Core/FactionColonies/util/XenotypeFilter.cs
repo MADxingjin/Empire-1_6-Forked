@@ -208,7 +208,7 @@ namespace FactionColonies.util
             }
 
             RefreshPawnGroupMakers();
-            WorldSettlementTraderTracker.reloadTraderKind();
+            WorldSettlementTraderTracker.ReloadTraderKind();
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.
          * Due to caching tracking, we want to force other classes to go through our functions when interacting with the dictionary. */
@@ -842,7 +842,7 @@ namespace FactionColonies.util
             outputDef = possibleDefs.First((PawnKindDef def) => !def.trader && !def.isFighter && !def.isBoss && def.label != "mercenary");
             return outputDef;
         }
-        private bool pawnKindRaceCheck(PawnKindDef def, ThingDef race, bool lockTechLevel)
+        private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, bool lockTechLevel)
         {
             if (lockTechLevel)
             {
@@ -892,12 +892,12 @@ namespace FactionColonies.util
         }
         private List<PawnKindDef> GetPawnKindDefsForRace(ThingDef race)
         {
-            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, race, true)).ToList();
+            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, true)).ToList();
             LogUtil.Message($"GetPawnKindDefsForRace: found {output.Count} PawnKindDefs for race {race.LabelCap}");
 
             if (output.Count == 0 || !output.Any((PawnKindDef def) => def.trader) || !output.Any((PawnKindDef def) => def.isFighter))
             {
-                output = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, race, false)).ToList();
+                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, false)).ToList();
                 LogUtil.Message($"GetPawnKindDefsForRace: regenerated PawnKindDefs list for race {race.LabelCap} without techlevel restriction. Final count: {output.Count}");
             }
             return output;
@@ -947,7 +947,7 @@ namespace FactionColonies.util
                 // If trader is still null, attempt to find a fallback option for the Human race
                 if (trader is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     trader = humanPawns.FirstOrDefault((PawnKindDef def) => def.trader);
                     LogUtil.Message("RefreshPawnGroupMakers: Found trader pawnKindDef for human race");
                 }
@@ -981,7 +981,7 @@ namespace FactionColonies.util
                 // If fighter is still null, attempt to find a fallback option for the Human race
                 if (fighter is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     fighter = humanPawns.FirstOrDefault((PawnKindDef def) => def.isFighter);
                     LogUtil.Message("RefreshPawnGroupMakers: Found combat pawnKindDef for human race");
                 }
@@ -1013,7 +1013,7 @@ namespace FactionColonies.util
                 // If peaceful is still null, attempt to find a fallback option for the Human race
                 if (peaceful is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     peaceful = humanPawns.FirstOrDefault((PawnKindDef def) => def.label != "mercenary");
                     LogUtil.Message("RefreshPawnGroupMakers: Found peaceful pawnKindDef for human race");
                 }
@@ -1035,7 +1035,7 @@ namespace FactionColonies.util
             {
                 LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting human race fallback");
                 faction.baseTraderKinds.AddRange(origBaseTraderKinds);
-                WorldSettlementTraderTracker.reloadTraderKind();
+                WorldSettlementTraderTracker.ReloadTraderKind();
             }
         }
         private void SetPawnGroupMakers()

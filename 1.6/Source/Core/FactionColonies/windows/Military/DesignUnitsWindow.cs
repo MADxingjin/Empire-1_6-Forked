@@ -45,7 +45,7 @@ namespace FactionColonies
                 if (!thing.apparel.layers.Contains(layer)) return false;
                 if (bodyPart != null && !thing.apparel.bodyPartGroups.Contains(bodyPart)) return false;
                 if (!thing.apparel.PawnCanWear(Gender.None, DevelopmentalStage.Adult)) return false;
-                return CraftUtil.canCraftItem(thing);
+                return CraftUtil.CanCraftItem(thing);
             }
 
             public bool ApparelInSlot(ThingDef def)
@@ -61,7 +61,7 @@ namespace FactionColonies
 
             selectedText = "Select A Unit";
 
-            util.checkMilitaryUtilForErrors();
+            util.CheckMilitaryUtilForErrors();
         }
 
         public override void Select(IExposable selecting)
@@ -227,8 +227,8 @@ namespace FactionColonies
                         "FCConfirmDeleteUnit".Translate((NamedArgument)unitToDelete.name),
                         delegate
                         {
-                            unitToDelete.removeUnit();
-                            util.checkMilitaryUtilForErrors();
+                            unitToDelete.RemoveUnit();
+                            util.CheckMilitaryUtilForErrors();
                             if (selectedUnit == unitToDelete)
                             {
                                 selectedUnit = null;
@@ -458,7 +458,7 @@ namespace FactionColonies
             if (!isSelectedUnitDeployed && Widgets.ButtonInvisible(EquipmentWeapon))
             {
                 List<ThingDef> weaponDefs = DefDatabase<ThingDef>.AllDefs
-                    .Where(t => t.IsWeapon && t.BaseMarketValue != 0 && CraftUtil.canCraftItem(t))
+                    .Where(t => t.IsWeapon && t.BaseMarketValue != 0 && CraftUtil.CanCraftItem(t))
                     .OrderBy(t => t.label)
                     .ToList();
 

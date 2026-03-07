@@ -50,14 +50,14 @@ namespace FactionColonies
             {
                 double bonus = Math.Floor(settlement.happiness / 10);
                 if (onTaxBreak) bonus -= 30;
-                return TextUtil.colorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
+                return TextUtil.ColorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
             }
             if (onTaxBreak)
             {
                 if (stat == FCStatDefOf.happinessGainedBase)
-                    return TextUtil.colorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
+                    return TextUtil.ColorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
                 if (stat == FCStatDefOf.prosperityBaseRecovery)
-                    return TextUtil.colorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
+                    return TextUtil.ColorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
             }
             return null;
         }
@@ -102,7 +102,7 @@ namespace FactionColonies
                 if (kvp.Value.enabled && (kvp.Value.startTick + GenDate.TicksPerDay * 10) <= currentTick)
                 {
                     kvp.Value.enabled = false;
-                    faction.returnSettlementByLocation(kvp.Key)?.InvalidateStatCache();
+                    faction.ReturnSettlementByLocation(kvp.Key)?.InvalidateStatCache();
                 }
             }
         }

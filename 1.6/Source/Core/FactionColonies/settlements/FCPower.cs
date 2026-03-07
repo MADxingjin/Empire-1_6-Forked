@@ -23,7 +23,7 @@ namespace FactionColonies
                 if (faction.powerOutput == null || faction.powerOutput.DestroyedOrNull() || faction.powerOutput == this.parent)
                 {
                     faction.powerOutput = this.parent;
-                    return (float)faction.getResourcePoolValue(ResourceTypeDefOf.RTD_Power);
+                    return (float)faction.GetResourcePoolValue(ResourceTypeDefOf.RTD_Power);
                 }
                 else
                 {

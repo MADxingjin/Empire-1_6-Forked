@@ -44,8 +44,8 @@ namespace FactionColonies
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
-            double sumIncome = faction.settlements.Sum(s => s.getTotalIncome());
-            double sumUpkeep = faction.settlements.Sum(s => s.getTotalUpkeep());
+            double sumIncome = faction.settlements.Sum(s => s.GetTotalIncome());
+            double sumUpkeep = faction.settlements.Sum(s => s.GetTotalUpkeep());
             double expectedProfit = sumIncome - sumUpkeep;
 
             TestAssert.AreEqual(expectedProfit, faction.profit, tolerance: 1.0,
@@ -62,7 +62,7 @@ namespace FactionColonies
             {
                 foreach (var resource in settlement.Resources)
                 {
-                    double tithe = resource.getTitheIncome();
+                    double tithe = resource.GetTitheIncome();
                     TestAssert.IsTrue(tithe >= 0,
                         $"Tithe income for {resource.def?.defName ?? "null"} in {settlement.Name} should be >= 0, got {tithe}");
                 }

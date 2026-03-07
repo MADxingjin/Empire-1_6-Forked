@@ -15,7 +15,7 @@ namespace FactionColonies
 
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            settlement.constructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
+            settlement.ConstructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
         }
 
         public override double ModifyBuildingUpkeep(BuildingFCDef building, double currentUpkeep, WorldSettlementFC settlement)
@@ -45,10 +45,10 @@ namespace FactionColonies
             if (milComp.militarySquad?.outfit == null)
                 yield break;
 
-            int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
+            int cost = (int)Math.Round(milComp.militarySquad.outfit.UpdateEquipmentTotalCost() * .2);
             yield return new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
             {
-                if (PaymentUtil.getSilver() >= cost)
+                if (PaymentUtil.GetSilver() >= cost)
                 {
                     List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
                     {

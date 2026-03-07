@@ -77,10 +77,10 @@ namespace FactionColonies
                     HealthUtility.HealNonPermanentInjuriesAndRestoreLegs(prisoner);
             }
 
-            return checkDead();
+            return CheckDead();
         }
 
-        public bool checkDead()
+        public bool CheckDead()
         {
             if (health <= 0)
             {

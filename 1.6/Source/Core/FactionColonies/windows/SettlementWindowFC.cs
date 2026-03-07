@@ -329,14 +329,14 @@ namespace FactionColonies
                 return;
             }
 
-            int numUnderConstruction = settlement.BuildingsComp.getUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
-            DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.getUnderConstructionBuildings());
+            int numUnderConstruction = settlement.BuildingsComp.GetUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
+            DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.GetUnderConstructionBuildings());
             DrawFacilities(rightBox);
         }
         private void DrawTitheOverview(Rect boundingBox)
         {
             Color origColor = GUI.color;
-            List<ResourceFC> resources = settlement.getTitheableResources();
+            List<ResourceFC> resources = settlement.GetTitheableResources();
             int numResources = resources.Count;
             /* Draw resource tabs on the left */
             float tabWidth = 25f;
@@ -350,7 +350,7 @@ namespace FactionColonies
                 if (UIUtil.ButtonFlat(tabBox, ""))
                 {
                     titheTab = i;
-                    updateTitheDictBuffers(resources[i]);
+                    UpdateTitheDictBuffers(resources[i]);
                 }
                 Text.Font = GameFont.Small;
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
@@ -446,8 +446,8 @@ namespace FactionColonies
             Widgets.DrawHighlight(titheRow3);
             Widgets.Label(trow3label, "Total".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(trow2num, res.getTitheModifierPerWorker().ToString());
-            Widgets.Label(trow3num, res.getTotalTitheModifierForWorkers().ToString());
+            Widgets.Label(trow2num, res.GetTitheModifierPerWorker().ToString());
+            Widgets.Label(trow3num, res.GetTotalTitheModifierForWorkers().ToString());
 
             /* Production */
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -465,28 +465,28 @@ namespace FactionColonies
             Widgets.DrawMenuSection(budgetBox);
             Widgets.Label(budgetLabel, "TotalTitheBudget".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(budgetnum, res.getTitheIncome().ToString());
+            Widgets.Label(budgetnum, res.GetTitheIncome().ToString());
         }
         private Vector2 titheScrollBar = new Vector2();
-        private void updateTitheDictBuffers(ResourceFC res)
+        private void UpdateTitheDictBuffers(ResourceFC res)
         {
             titheBuffers.Clear();
             if (res != null)
             {
-                List<ThingQualityTuple> items = res.getTitheListKeys();
+                List<ThingQualityTuple> items = res.GetTitheListKeys();
                 for (int i = 0; i < items.Count; i ++)
                 {
-                    titheBuffers.Add(res.getTitheListValue(items[i]).ToString());
+                    titheBuffers.Add(res.GetTitheListValue(items[i]).ToString());
                 }
                 res.storedRandomTitheBudgetBuffer = res.storedRandomTitheBudget.ToString();
             }
             currentDictSize = titheBuffers.Count;
         }
-        private void keepTitheDictBuffersUpdated(ResourceFC res)
+        private void KeepTitheDictBuffersUpdated(ResourceFC res)
         {
-            if (res != null && currentDictSize != res.getTitheListCount())
+            if (res != null && currentDictSize != res.GetTitheListCount())
             {
-                updateTitheDictBuffers(res);
+                UpdateTitheDictBuffers(res);
             }
         }
         private void DrawTitheScrollBox(Rect boundingBox, ResourceFC res)
@@ -510,9 +510,9 @@ namespace FactionColonies
                 Find.WindowStack.Add(new SettlementWindowFC_AddTithe(settlement, res));
             }
 
-            keepTitheDictBuffersUpdated(res);
+            KeepTitheDictBuffersUpdated(res);
 
-            List<ThingQualityTuple> titheItems = res.getTitheListKeys();
+            List<ThingQualityTuple> titheItems = res.GetTitheListKeys();
 
             /* Doing weird box-in-a-box to try and fix some UI drawing issues */
             Rect drawBox = new Rect(boundingBox.x + margin, header.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - header.yMax - margin);
@@ -558,17 +558,17 @@ namespace FactionColonies
                 UIUtil.InfoCardButton(info, iThing);
                 if (Widgets.ButtonText(xBox, "X"))
                 {
-                    res.removeFromTitheList(thingTuple);
+                    res.RemoveFromTitheList(thingTuple);
                     break;
                 }
                 UIUtil.TipRegionByText(xBox, "TitheXDesc".Translate());
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(valueLabel, $"${Math.Round(res.titheThingValue(thingTuple),2)}");
+                Widgets.Label(valueLabel, $"${Math.Round(res.TitheThingValue(thingTuple),2)}");
 
                 QualityCategory maxQuality = QualityCategory.Legendary;
-                if (CraftUtil.thingHasQuality(iThing) && res.canSetTitheQuality(out maxQuality))
+                if (CraftUtil.ThingHasQuality(iThing) && res.CanSetTitheQuality(out maxQuality))
                 {
-                    List<QualityCategory> categoryList = res.getValidTitheQualities(maxQuality);
+                    List<QualityCategory> categoryList = res.GetValidTitheQualities(maxQuality);
                     if (Widgets.ButtonText(qualityBox, TextUtil.GetQualityLabelCap(iQuality)))
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -576,22 +576,22 @@ namespace FactionColonies
                         {
                             options.Add(new FloatMenuOption(TextUtil.GetQualityLabelCap(cat), delegate
                             {
-                                int qty = res.getTitheListValue(thingTuple);
+                                int qty = res.GetTitheListValue(thingTuple);
                                 ThingQualityTuple newTuple = new ThingQualityTuple
                                 {
                                     thingDef = iThing,
                                     quality = cat,
                                     stuffDef = iStuff
                                 };
-                                if (res.hasTitheListKey(newTuple))
+                                if (res.HasTitheListKey(newTuple))
                                 {
-                                    Messages.Message(newTuple.listRejectionMessage(), MessageTypeDefOf.RejectInput);
+                                    Messages.Message(newTuple.ListRejectionMessage(), MessageTypeDefOf.RejectInput);
                                 }
                                 else
                                 {
-                                    res.removeFromTitheList(thingTuple);
-                                    res.addToTitheList(newTuple, qty);
-                                    updateTitheDictBuffers(res);
+                                    res.RemoveFromTitheList(thingTuple);
+                                    res.AddToTitheList(newTuple, qty);
+                                    UpdateTitheDictBuffers(res);
                                 }
                             }));
                         }
@@ -604,9 +604,9 @@ namespace FactionColonies
                     labelExtended = true;
                 }
 
-                if (CraftUtil.thingIsStuffable(iThing))
+                if (CraftUtil.ThingIsStuffable(iThing))
                 {
-                    List<ThingDef> stuffList = res.getStuffListForThingDef(iThing);
+                    List<ThingDef> stuffList = res.GetStuffListForThingDef(iThing);
                     if (Widgets.ButtonText(stuffBox, iStuff?.LabelCap ?? "None"))
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -614,22 +614,22 @@ namespace FactionColonies
                         {
                             options.Add(new FloatMenuOption(stuff.LabelCap, delegate
                             {
-                                int qty = res.getTitheListValue(thingTuple);
+                                int qty = res.GetTitheListValue(thingTuple);
                                 ThingQualityTuple newTuple = new ThingQualityTuple
                                 {
                                     thingDef = iThing,
                                     quality = iQuality,
                                     stuffDef = stuff
                                 };
-                                if (res.hasTitheListKey(newTuple))
+                                if (res.HasTitheListKey(newTuple))
                                 {
-                                    Messages.Message(newTuple.listRejectionMessage(), MessageTypeDefOf.RejectInput);
+                                    Messages.Message(newTuple.ListRejectionMessage(), MessageTypeDefOf.RejectInput);
                                 }
                                 else
                                 {
-                                    res.removeFromTitheList(thingTuple);
-                                    res.addToTitheList(newTuple, qty);
-                                    updateTitheDictBuffers(res);
+                                    res.RemoveFromTitheList(thingTuple);
+                                    res.AddToTitheList(newTuple, qty);
+                                    UpdateTitheDictBuffers(res);
                                 }
                             }));
                         }
@@ -648,9 +648,9 @@ namespace FactionColonies
                 }
                 // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
                 //   keep this in mind when testing...
-                int quantity = res.getTitheListValue(thingTuple);
+                int quantity = res.GetTitheListValue(thingTuple);
                 int oldQuantity = quantity;
-                int max = quantity + res.maxThingCanAfford(thingTuple);
+                int max = quantity + res.MaxThingCanAfford(thingTuple);
                 string buf = titheBuffers[i];
                 Widgets.IntEntry(fieldBox, ref quantity, ref buf);
                 int unclamped = quantity;
@@ -658,14 +658,14 @@ namespace FactionColonies
                 buf = quantity.ToString();
                 if (unclamped > max)
                 {
-                    if (res.getTitheIncome() <= 0)
+                    if (res.GetTitheIncome() <= 0)
                         Messages.Message("TitheBudgetNoWorkers".Translate(), MessageTypeDefOf.RejectInput);
                     else
                         Messages.Message("TitheBudgetInsufficient".Translate(), MessageTypeDefOf.RejectInput);
                 }
                 if (oldQuantity != quantity)
                 {
-                    res.addToTitheList(thingTuple, quantity, true);
+                    res.AddToTitheList(thingTuple, quantity, true);
                 }
                 titheBuffers[i] = buf;
             }
@@ -702,15 +702,15 @@ namespace FactionColonies
             {
                 Rect budgetBox = new Rect(boundingBox.x, disburseBox.yMax, boundingBox.width * 0.6f, 23f);
                 Rect budgetTextBox = new Rect(budgetBox.x + margin, budgetBox.y, budgetBox.width - (margin * 2), budgetBox.height);
-                Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.getTitheIncome() - res.titheTotalValueNoRandom));
-                res.refreshOnRandomTitheBudgetChange();
+                Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.GetTitheIncome() - res.titheTotalValueNoRandom));
+                res.RefreshOnRandomTitheBudgetChange();
                 Rect selectBox = new Rect(budgetBox.xMax, budgetBox.y, boundingBox.width * 0.4f - margin, budgetBox.height);
                 if (Widgets.ButtonText(selectBox, "ItemSelection".Translate()))
                 {
                     Find.WindowStack.Add(new SettlementWindowFC_RandomTithe(settlement, res));
                 }
 
-                List<ThingDef> selectedThings = res.getRandomTitheFilterThings();
+                List<ThingDef> selectedThings = res.GetRandomTitheFilterThings();
 
                 /* Doing weird box-in-a-box to try and fix some UI drawing issues */
                 Rect drawBox = new Rect(boundingBox.x + margin, budgetBox.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - budgetBox.yMax - margin);
@@ -748,7 +748,7 @@ namespace FactionColonies
                     Widgets.Label(icon, new GUIContent(iThing.uiIcon));
                     if (Widgets.ButtonText(xBox, "X"))
                     {
-                        res.setRandomTitheFilterAllow(iThing, false);
+                        res.SetRandomTitheFilterAllow(iThing, false);
                     }
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
@@ -769,7 +769,7 @@ namespace FactionColonies
             Rect availBudgetBox = new Rect(boundingBox.xMax - budgetWidth, boundingBox.y, budgetWidth, boundingBox.height);
             Rect availLabel = new Rect(availBudgetBox.x + smallMargin, availBudgetBox.y + smallMargin, (availBudgetBox.width - smallMargin * 2) / 2f, availBudgetBox.height - smallMargin * 2);
             Rect availNum = new Rect(availLabel.xMax, availLabel.y, availLabel.width, availLabel.height);
-            double totalTithe = Math.Round(res.getTitheIncome(), 2);
+            double totalTithe = Math.Round(res.GetTitheIncome(), 2);
             double usedTithe = Math.Round(res.titheTotalValue, 2);
             TaggedString usedTitheStr = usedTithe.ToString();
             if (usedTithe > totalTithe)
@@ -822,13 +822,13 @@ namespace FactionColonies
                     tooltip = "SettlementHappiness".Translate() + "\n-----\n" + "SettlementHappinessDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double happinessGain = Math.Round(settlement.getTotalHappinessGain(),1);
-                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(happinessGain);
+                    double happinessGain = Math.Round(settlement.GetTotalHappinessGain(),1);
+                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(happinessGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainLabel, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.getHappinessDesc());
+                    UIUtil.TipRegionByText(statGainBox, settlement.GetHappinessDesc());
                 }
 
                 if (stats[i] == "loyalty")
@@ -838,13 +838,13 @@ namespace FactionColonies
                     tooltip = "SettlementLoyalty".Translate() + "\n-----\n" + "SettlementLoyaltyDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double loyaltyGain = Math.Round(settlement.getTotalLoyaltyGain(),1);
-                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(loyaltyGain);
+                    double loyaltyGain = Math.Round(settlement.GetTotalLoyaltyGain(),1);
+                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(loyaltyGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainLabel, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.getLoyaltyDesc());
+                    UIUtil.TipRegionByText(statGainBox, settlement.GetLoyaltyDesc());
                 }
 
                 if (stats[i] == "unrest")
@@ -854,13 +854,13 @@ namespace FactionColonies
                     tooltip = "SettlementUnrest".Translate() + "\n-----\n" + "SettlementUnrestDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double unrestGain = Math.Round(settlement.getTotalUnrestGain(),1);
-                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(unrestGain, true);
+                    double unrestGain = Math.Round(settlement.GetTotalUnrestGain(),1);
+                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(unrestGain, true);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainLabel, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.getUnrestDesc());
+                    UIUtil.TipRegionByText(statGainBox, settlement.GetUnrestDesc());
                 }
 
                 if (stats[i] == "prosperity")
@@ -870,13 +870,13 @@ namespace FactionColonies
                     tooltip = "SettlementProsperity".Translate() + "\n-----\n" + "SettlementProsperityDesc".Translate();
 
                     Widgets.DrawHighlight(statGainBox);
-                    double prosperityGain = Math.Round(settlement.getProsperityGain(),1);
-                    TaggedString statGain = TextUtil.colorizeAdditiveBonus(prosperityGain);
+                    double prosperityGain = Math.Round(settlement.GetProsperityGain(),1);
+                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(prosperityGain);
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainLabel, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.getProsperityDesc());
+                    UIUtil.TipRegionByText(statGainBox, settlement.GetProsperityDesc());
                 }
 
                 UIUtil.TipRegionByText(mainToolTipBox, tooltip);
@@ -895,11 +895,11 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(textBox, settlement.description);
         }
-        private void removeSettlement()
+        private void RemoveSettlement()
         {
             LogUtil.Message($"Removing settlement {settlement.Name}...");
             Find.WindowStack.TryRemove(this);
-            ColonyUtil.removePlayerSettlement(settlement);
+            ColonyUtil.RemovePlayerSettlement(settlement);
         }
         private void DrawMainButtons(Rect boundingBox)
         {
@@ -928,7 +928,7 @@ namespace FactionColonies
 
                     if (label == "DeleteSettlement".Translate())
                     {
-                        Find.WindowStack.Add(new Dialog_Confirm("DeleteSettlementConfirm".Translate(settlement.Name), removeSettlement));
+                        Find.WindowStack.Add(new Dialog_Confirm("DeleteSettlementConfirm".Translate(settlement.Name), RemoveSettlement));
                     }
 
                     if (label == "FCSpecialActions".Translate())
@@ -939,7 +939,7 @@ namespace FactionColonies
                             new FloatMenuOption("GoToLocation".Translate(), delegate
                             {
                                 Find.WindowStack.TryRemove(this);
-                                settlement.goTo();
+                                settlement.GoTo();
                             })
                         };
 
@@ -976,7 +976,7 @@ namespace FactionColonies
 
                         if (settlement.MilitaryComp.isUnderAttack)
                         {
-                            FCEvent evt = MilitaryUtilFC.returnMilitaryEventByLocation(settlement.Tile);
+                            FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
 
                             list.Add(new FloatMenuOption(
                                 "SettlementDefendingInformation".Translate(
@@ -989,27 +989,27 @@ namespace FactionColonies
 
                                 settlementList.Add(new FloatMenuOption(
                                     "ResetToHomeSettlement".Translate(homeSettlement.settlementMilitaryLevel),
-                                    delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, homeSettlement); },
+                                    delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, homeSettlement); },
                                     MenuOptionPriority.High));
 
                                 foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                                 {
-                                    if (settlement.MilitaryComp.isMilitaryValid() && settlement != homeSettlement)
+                                    if (settlement.MilitaryComp.IsMilitaryValid() && settlement != homeSettlement)
                                     {
                                         //if military is valid to use.
 
                                         settlementList.Add(new FloatMenuOption(
                                             settlement.Name + " " + "ShortMilitary".Translate() + " " +
                                             settlement.settlementMilitaryLevel + " - " + "FCAvailable".Translate() +
-                                            ": " + (!settlement.MilitaryComp.isMilitaryBusySilent()).ToString(), delegate
+                                            ": " + (!settlement.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
                                             {
-                                                if (settlement.MilitaryComp.isMilitaryBusy())
+                                                if (settlement.MilitaryComp.IsMilitaryBusy())
                                                 {
                                                     //military is busy
                                                 }
                                                 else
                                                 {
-                                                    MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
+                                                    MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
                                                 }
                                             }
                                         ));
@@ -1104,7 +1104,7 @@ namespace FactionColonies
                 Widgets.DrawMenuSection(nBox);
                 if (i < settlement.BuildingsComp.NumBuildingSlots)
                 {
-                    UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.getBuildingDescFull(building));
+                    UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.GetBuildingDescFull(building));
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
                         Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
@@ -1180,7 +1180,7 @@ namespace FactionColonies
                                             "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
-                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp?.getBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
+                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
                 Widgets.EndScrollView();
@@ -1297,7 +1297,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.UpperCenter;
             Widgets.Label(incomeNum, Math.Round(settlement.totalIncome,2).ToString());
             Widgets.Label(costsNum, Math.Round(settlement.totalUpkeep,2).ToString());
-            Widgets.Label(taxBonusNum, (settlement.getSettlementTaxBonus() * 100d).ToString() + "%");
+            Widgets.Label(taxBonusNum, (settlement.GetSettlementTaxBonus() * 100d).ToString() + "%");
 
             UIUtil.TipRegionByText(incomeBox, settlement.incomeExp);
             UIUtil.TipRegionByText(costsBox, settlement.upkeepExp);
@@ -1437,12 +1437,12 @@ namespace FactionColonies
                 //Base Production
                 Rect baseProd = new Rect(workersIncArrow.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(baseProd, TextUtil.FloorStat(resource.productionBase));
-                UIUtil.TipRegionByText(baseProd, resource.getProductionAdditivesDesc());
+                UIUtil.TipRegionByText(baseProd, resource.GetProductionAdditivesDesc());
 
                 //Modifier
                 Rect multProd = new Rect(baseProd.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(multProd, TextUtil.FloorStat(resource.productionMult));
-                UIUtil.TipRegionByText(multProd, resource.getProductionMultipliersDesc());
+                UIUtil.TipRegionByText(multProd, resource.GetProductionMultipliersDesc());
 
                 //Final Base
                 Rect finalProd = new Rect(multProd.xMax + margin, rectY, colWidth, rowHeight);
@@ -1477,7 +1477,7 @@ namespace FactionColonies
                 return;
             }
             //if clicked to lower amount of workers
-            settlement.increaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
+            settlement.IncreaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
         }
     }
 }

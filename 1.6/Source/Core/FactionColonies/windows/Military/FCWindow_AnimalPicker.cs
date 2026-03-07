@@ -120,7 +120,7 @@ namespace FactionColonies
             if (Widgets.ButtonText(unequipRect, "unitActionUnequipThing".Translate()))
             {
                 unit.animal = null;
-                unit.changeTick();
+                unit.ChangeTick();
                 Close();
             }
 
@@ -139,7 +139,7 @@ namespace FactionColonies
                 if (canConfirm)
                 {
                     unit.animal = selectedDef;
-                    unit.changeTick();
+                    unit.ChangeTick();
                     Close();
                 }
             }

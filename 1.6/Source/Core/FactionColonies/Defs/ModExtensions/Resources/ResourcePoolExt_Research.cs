@@ -10,7 +10,7 @@ namespace FactionColonies
 {
     public class ResourcePoolExt_Research : ResourcePoolExtension
     {
-        public override double createPool(double production, WorldSettlementFC settlement = null)
+        public override double CreatePool(double production, WorldSettlementFC settlement = null)
         {
             FactionFC faction = FactionCache.FactionComp;
 
@@ -18,11 +18,11 @@ namespace FactionColonies
             result *= faction.GetStatValue(FCStatDefOf.researchContributionMultiplier, settlement);
             return (float)result;
         }
-        public override bool resetAtTaxTime()
+        public override bool ResetAtTaxTime()
         {
             return false;
         }
-        public override void addedToGlobalPool(double value)
+        public override void AddedToGlobalPool(double value)
         {
             Messages.Message("PointsAddedToResearchPool".Translate(value), MessageTypeDefOf.PositiveEvent);
         }
@@ -41,15 +41,15 @@ namespace FactionColonies
 
             yield return new FloatMenuOption("ActivateResearch".Translate(), delegate
             {
-                dailyUpdate(pool);
+                DailyUpdate(pool);
             });
 
             yield return new FloatMenuOption("ResearchLevel".Translate(), delegate
             {
-                Messages.Message("CurrentResearchLevel".Translate(faction.techLevel.ToString(), faction.returnNextTechToLevel()), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("CurrentResearchLevel".Translate(faction.techLevel.ToString(), faction.ReturnNextTechToLevel()), MessageTypeDefOf.NeutralEvent);
             });
         }
-        public override void dailyUpdate(ResourcePool pool)
+        public override void DailyUpdate(ResourcePool pool)
         {
             double researchPointPool = pool.pool;
             //Research adding

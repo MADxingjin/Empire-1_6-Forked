@@ -20,7 +20,7 @@ namespace FactionColonies
             IncidentWorker_TraderCaravanArrival worker = new IncidentWorker_TraderCaravanArrival();
             worker.def = IncidentDefOf.TraderCaravanArrival;
             IncidentParms parms =
-                StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, faction.returnCapitalMap());
+                StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, faction.ReturnCapitalMap());
             parms.faction = FactionCache.PlayerColonyFaction;
             RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
                 CellFinder.EdgeRoadChance_Friendly);

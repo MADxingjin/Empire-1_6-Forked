@@ -50,10 +50,10 @@ namespace FactionColonies
             if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("ActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.isUpgrading) return new Message("AlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
-            if (PaymentUtil.getSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
+            if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
             //on success
-            PaymentUtil.paySilver(settlementUpgradeCost);
+            PaymentUtil.PaySilver(settlementUpgradeCost);
             FCEvent tmp = new FCEvent(true)
             {
                 def = FCEventDefOf.upgradeSettlement,
@@ -72,7 +72,7 @@ namespace FactionColonies
             settlement.startUpgradeTick = Find.TickManager.TicksGame;
             settlement.finishUpgradeTick = tmp.timeTillTrigger;
 
-            FactionCache.FactionComp.addEvent(tmp);
+            FactionCache.FactionComp.AddEvent(tmp);
 
             //Close this window
             Find.WindowStack.TryRemove(this);

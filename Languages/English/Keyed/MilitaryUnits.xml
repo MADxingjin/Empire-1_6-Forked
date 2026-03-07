@@ -78,7 +78,7 @@
 	<FCAddUnit>Add Unit</FCAddUnit>
 	<FCSquadUnitCount>Units: {0} / 30</FCSquadUnitCount>
 	<exportSquadButton>Export squad</exportSquadButton>
-	<deleteSquadButton>Delete squad</deleteSquadButton>
+	<DeleteSquadButton>Delete squad</DeleteSquadButton>
 	<FCTotalSquadEquipmentCost>Total Squad Equipment Cost: {0} / {1} (Max Cost)</FCTotalSquadEquipmentCost>
 	<FCTotalSquadEquipmentCostNoRef>Total Squad Equipment Cost: {0} / No Reference</FCTotalSquadEquipmentCostNoRef>
 	<FCDeleteSquad>Delete Squad</FCDeleteSquad>

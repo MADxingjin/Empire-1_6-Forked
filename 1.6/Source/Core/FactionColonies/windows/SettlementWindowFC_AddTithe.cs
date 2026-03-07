@@ -65,8 +65,8 @@ namespace FactionColonies
             float selectionPanelHeight = 0;
             if (selectedThing != null)
             {
-                thingHasQuality = CraftUtil.thingHasQuality(selectedThing);
-                thingIsStuffable = CraftUtil.thingIsStuffable(selectedThing);
+                thingHasQuality = CraftUtil.ThingHasQuality(selectedThing);
+                thingIsStuffable = CraftUtil.ThingIsStuffable(selectedThing);
                 selectionPanelHeight = rowHeight + smallMargin + margin;
                 if (thingHasQuality)
                 {
@@ -101,7 +101,7 @@ namespace FactionColonies
             Rect budgetRow = new Rect(boundingBox.x, iconBox.yMax + margin, boundingBox.width, 22f);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
-            double totalBudget = Math.Round(resource.getTitheIncome(), 2);
+            double totalBudget = Math.Round(resource.GetTitheIncome(), 2);
             double usedBudget = Math.Round(resource.titheTotalValue, 2);
             double remaining = Math.Round(totalBudget - usedBudget, 2);
             string remainingStr;
@@ -145,8 +145,8 @@ namespace FactionColonies
                 if (thingHasQuality)
                 {
                     QualityCategory maxQuality = QualityCategory.Legendary;
-                    resource.canSetTitheQuality(out maxQuality);
-                    List<QualityCategory> categoryList = resource.getValidTitheQualities(maxQuality);
+                    resource.CanSetTitheQuality(out maxQuality);
+                    List<QualityCategory> categoryList = resource.GetValidTitheQualities(maxQuality);
 
                     Rect qualityLabel = new Rect(selectionPanel.x + margin, panelY, 60f, rowHeight);
                     Rect qualityButton = new Rect(qualityLabel.xMax + smallMargin, panelY, 120f, rowHeight);
@@ -174,7 +174,7 @@ namespace FactionColonies
                 string totalCost;
                 if (!(selectedThing is null) && (!thingIsStuffable || !(selectedStuff is null)) && (!thingHasQuality || !(selectedQuality is null)))
                 {
-                    totalCost = $"${Math.Round(resource.titheThingValue(selectedThing, selectedStuff, selectedQuality ?? QualityCategory.Normal))}";
+                    totalCost = $"${Math.Round(resource.TitheThingValue(selectedThing, selectedStuff, selectedQuality ?? QualityCategory.Normal))}";
                 }
                 else
                 {
@@ -209,7 +209,7 @@ namespace FactionColonies
                     quality = thingHasQuality ? selectedQuality ?? QualityCategory.Normal : QualityCategory.Normal,
                     stuffDef = thingIsStuffable ? selectedStuff : null
                 };
-                if (canConfirm && resource.hasTitheListKey(tuple))
+                if (canConfirm && resource.HasTitheListKey(tuple))
                 {
                     canConfirm = false;
                     confirmTooltip = "ItemAlreadyInTitheList".Translate();
@@ -223,13 +223,13 @@ namespace FactionColonies
                 {
                     if (canConfirm)
                     {
-                        if (resource.canAffordThingAmount(tuple, 1))
+                        if (resource.CanAffordThingAmount(tuple, 1))
                         {
-                            resource.addToTitheList(tuple, 1);
+                            resource.AddToTitheList(tuple, 1);
                         }
                         else
                         {
-                            resource.addToTitheList(tuple, 0);
+                            resource.AddToTitheList(tuple, 0);
                         }
                         selectedThing = null;
                         selectedStuff = null;
@@ -289,8 +289,8 @@ namespace FactionColonies
             curY = searchRect.yMax;
 
             List<ThingDef> thingsList = string.IsNullOrEmpty(thingSearchTerm)
-                ? resource.generateThingDefList()
-                : resource.generateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                ? resource.GenerateThingDefList()
+                : resource.GenerateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             // Apply sort
             thingsList = ApplySort(thingsList, itemSortIndex);
@@ -337,7 +337,7 @@ namespace FactionColonies
                     currentStuffs.Clear();
                     if (iThing.MadeFromStuff)
                     {
-                        currentStuffs.AddRange(resource.getStuffListForThingDef(iThing));
+                        currentStuffs.AddRange(resource.GetStuffListForThingDef(iThing));
                         currentStuffs.SortBy(s => s.label);
                     }
 
@@ -346,7 +346,7 @@ namespace FactionColonies
                     {
                         selectedStuff = null;
                     }
-                    if (CraftUtil.thingHasQuality(iThing))
+                    if (CraftUtil.ThingHasQuality(iThing))
                     {
                         if (selectedQuality == null)
                         {
@@ -459,7 +459,7 @@ namespace FactionColonies
                 Widgets.Label(label, iStuff.LabelCap);
                 Text.Anchor = TextAnchor.MiddleRight;
                 float stuffPrice = selectedQuality != null
-                    ? resource.titheThingValue(selectedThing, iStuff, selectedQuality ?? QualityCategory.Normal)
+                    ? resource.TitheThingValue(selectedThing, iStuff, selectedQuality ?? QualityCategory.Normal)
                     : StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, iStuff);
                 Widgets.Label(valueLabel, $"${Math.Round(stuffPrice)}");
                 Text.Anchor = TextAnchor.MiddleLeft;

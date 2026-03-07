@@ -13,7 +13,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.raidEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesRaiding".Translate(milComp.WorldSettlement.Name, milComp.returnMilitaryTarget().Label);
+            evt.customDescription = "settlementMilitaryForcesRaiding".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(milComp.WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
@@ -22,12 +22,12 @@ namespace FactionColonies
         {
             FactionFC faction = FactionCache.FactionComp;
             int winner = SimulateBattleFc.FightBattle(
-                militaryForce.createMilitaryForceFromSettlement(milComp.WorldSettlement, true),
-                militaryForce.createMilitaryForceFromFaction(milComp.militaryEnemy, false));
+                militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
+                militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
             if (winner == 0)
             {
-                faction.addExperienceToFactionLevel(5f);
+                faction.AddExperienceToFactionLevel(5f);
 
                 TechLevel tech = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.techLevel;
                 int lootLevel;
@@ -58,7 +58,7 @@ namespace FactionColonies
                     getSlaves = false;
                 }
 
-                List<Thing> loot = PaymentUtil.generateRaidLoot(lootLevel, tech);
+                List<Thing> loot = PaymentUtil.GenerateRaidLoot(lootLevel, tech);
 
                 string text = "settlementDeliveringLoot".Translate();
                 text = loot.Aggregate(text, (current, thing) => current + thing.LabelCap + " " + thing.stackCount + "x\n ");
@@ -66,9 +66,9 @@ namespace FactionColonies
                 int num = new IntRange(0, 10).RandomInRange;
                 if (num <= 4 && getSlaves)
                 {
-                    Pawn prisoner = PaymentUtil.generatePrisoner(milComp.militaryEnemy);
+                    Pawn prisoner = PaymentUtil.GeneratePrisoner(milComp.militaryEnemy);
                     text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name);
-                    milComp.WorldSettlement.addPrisoner(prisoner);
+                    milComp.WorldSettlement.AddPrisoner(prisoner);
                 }
 
                 Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),

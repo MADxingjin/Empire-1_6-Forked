@@ -34,7 +34,7 @@ namespace FactionColonies
                 int slot = buildingSlots[i];
                 if (slot != buildingSlotToSkip)
                 {
-                    BuildingFCExtension_Shuttles ext = parentComp?.getBuildingInSlot(slot)?.GetModExtension<BuildingFCExtension_Shuttles>();
+                    BuildingFCExtension_Shuttles ext = parentComp?.GetBuildingInSlot(slot)?.GetModExtension<BuildingFCExtension_Shuttles>();
                     if (ext != null)
                     {
                         totalShuttleUses += ext.shuttleUses;
