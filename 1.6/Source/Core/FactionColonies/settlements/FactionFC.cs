@@ -13,131 +13,23 @@ namespace FactionColonies
 {
     public class FactionFC : WorldComponent, ISettlementLifecycleParticipant, IBuildingLifecycleParticipant, IMilitaryEventParticipant, IResearchParticipant
     {
-        public int taxTimeDue = Find.TickManager.TicksGame;
-        public int timeStart = Find.TickManager.TicksGame;
-        public int uiTimeUpdate;
-        public int militaryTimeDue;
-        public bool factionCreated;
+        #region Fields & Properties
 
+        // ── Core Identity ──
+        public string name = "PlayerFaction".Translate();
+        public string title = "Bastion".Translate();
+        public Texture2D factionIcon = TexLoad.factionIcons[0];
+        public string factionIconPath = TexLoad.factionIcons[0].name;
+        public bool factionCreated;
         private int foundingTick = 0;
         public int FoundingTick => foundingTick;
         private Vector2 startingLongLat = new Vector2();
         public Vector2 StartingLongLat => startingLongLat;
 
-        private int nextUnitId;
-        private int nextSquadId;
-
-        public int NextUnitID => ++nextUnitId;
-        public int NextSquadID => ++nextSquadId;
-        /// <summary>
-        /// Used by other mods to find our settlements. Move, rename, or otherwise modify at your own peril
-        /// </summary>
-        public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
-        public string name = "PlayerFaction".Translate();
-        public string title = "Bastion".Translate();
-        /* Faction averages — lazy-cached via dirtyAveragesCache */
-        private double _averageHappiness = 100;
-        private double _averageLoyalty = 100;
-        private double _averageUnrest = 0;
-        private double _averageProsperity = 100;
-        private bool dirtyAveragesCache = true;
-        public double averageHappiness { get { if (dirtyAveragesCache) recomputeAverages(); return _averageHappiness; } }
-        public double averageLoyalty { get { if (dirtyAveragesCache) recomputeAverages(); return _averageLoyalty; } }
-        public double averageUnrest { get { if (dirtyAveragesCache) recomputeAverages(); return _averageUnrest; } }
-        public double averageProsperity { get { if (dirtyAveragesCache) recomputeAverages(); return _averageProsperity; } }
-
-        /* Faction profit — lazy-cached via dirtyFactionProfitCache */
-        private double _income;
-        private double _upkeep;
-        private double _profit;
-        private bool dirtyFactionProfitCache = true;
-        public double income { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _income; } }
-        public double upkeep { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _upkeep; } }
-        public double profit { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _profit; } }
-
+        // ── Capital & Maps ──
         public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         public Map taxMap;
-
-        /* Tech level — lazy-cached via dirtyTechLevelCache */
-        private TechLevel _techLevel = TechLevel.Undefined;
-        private bool dirtyTechLevelCache = true;
-        public TechLevel techLevel
-        {
-            get
-            {
-                if (dirtyTechLevelCache) recomputeTechLevel();
-                return _techLevel;
-            }
-        }
-        private bool firstTick = true;
-        public bool updateProcessed = false;
-        public Texture2D factionIcon = TexLoad.factionIcons[0];
-        public string factionIconPath = TexLoad.factionIcons[0].name;
-
-
-        //New Types of Productions
-        public float researchPointPool = 0;
-        public List<ResourcePool> resourcePools = new List<ResourcePool>();
-        public ThingWithComps powerOutput;
-
-        public List<FCEvent> events = new List<FCEvent>();
-        public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
-
-        public List<BillFC> OldBills = new List<BillFC>();
-        public List<BillFC> Bills = new List<BillFC>();
-        public bool autoResolveBills;
-        public bool autoResolveBillsChanged = false;
-
-        public List<FCPolicy> policies = new List<FCPolicy>();
-
-        public List<int> militaryTargets = new List<int>();
-        public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
-        public XenotypeFilter xenotypeFilter;
-
-        public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
-        public List<ResourceDisplay> FactionResources => factionResources;
-
-        public List<PlanetLayerDef> layersForTilePicker = null;
-
-        //Update
-        public int nextSettlementFCID = 1;
-        public int nextMercenarySquadID = 1;
-        public int nextMercenaryID = 1;
-        public int nextTaxID = 1;
-        public int nextBillID = 1;
-        public int nextEventID = 1;
-        public int nextPrisonerID = 1;
-
-        //Military 
-        public int nextMilitaryFireSupportID = 1;
-
-        //Military Customization
-        public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
-
-        //Road builder
-        public FCRoadBuilder roadBuilder = new FCRoadBuilder();
-
-        //Settlement Leveling
-        public int factionLevel = 1;
-        public float factionXPCurrent = 0;
-        public float factionXPGoal = 100;
-
-        //Random Event
-        public float randomEventLastAdded = 0f;
-
-        //Caching
-        private bool dirtyGrandThingListFlag = true;
-        private List<ThingDef> grandThingList = null;
-
-        public List<FCPolicy> factionTraits = new List<FCPolicy>
-        {
-            new FCPolicy(FCPolicyDefOf.empty),
-            new FCPolicy(FCPolicyDefOf.empty),
-            new FCPolicy(FCPolicyDefOf.empty),
-            new FCPolicy(FCPolicyDefOf.empty),
-            new FCPolicy(FCPolicyDefOf.empty)
-        };
 
         public Map TaxMap
         {
@@ -166,20 +58,186 @@ namespace FactionColonies
             }
         }
 
-        //Research Trading
+        // ── Settlements ──
+        /// <summary>
+        /// Used by other mods to find our settlements. Move, rename, or otherwise modify at your own peril
+        /// </summary>
+        public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
+
+        // ── Timing & Scheduling ──
+        public int taxTimeDue = Find.TickManager.TicksGame;
+        public int timeStart = Find.TickManager.TicksGame;
+        public int uiTimeUpdate;
+        public int militaryTimeDue;
+        private bool firstTick = true;
+        public bool updateProcessed = false;
+
+        // ── Lazy-Cached Averages ──
+        /* Faction averages — lazy-cached via dirtyAveragesCache */
+        private double _averageHappiness = 100;
+        private double _averageLoyalty = 100;
+        private double _averageUnrest = 0;
+        private double _averageProsperity = 100;
+        private bool dirtyAveragesCache = true;
+        public double averageHappiness { get { if (dirtyAveragesCache) recomputeAverages(); return _averageHappiness; } }
+        public double averageLoyalty { get { if (dirtyAveragesCache) recomputeAverages(); return _averageLoyalty; } }
+        public double averageUnrest { get { if (dirtyAveragesCache) recomputeAverages(); return _averageUnrest; } }
+        public double averageProsperity { get { if (dirtyAveragesCache) recomputeAverages(); return _averageProsperity; } }
+
+        // ── Lazy-Cached Profit ──
+        /* Faction profit — lazy-cached via dirtyFactionProfitCache */
+        private double _income;
+        private double _upkeep;
+        private double _profit;
+        private bool dirtyFactionProfitCache = true;
+        public double income { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _income; } }
+        public double upkeep { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _upkeep; } }
+        public double profit { get { if (dirtyFactionProfitCache) recomputeTotalProfit(); return _profit; } }
+
+        // ── Lazy-Cached Tech Level ──
+        /* Tech level — lazy-cached via dirtyTechLevelCache */
+        private TechLevel _techLevel = TechLevel.Undefined;
+        private bool dirtyTechLevelCache = true;
+        public TechLevel techLevel
+        {
+            get
+            {
+                if (dirtyTechLevelCache) recomputeTechLevel();
+                return _techLevel;
+            }
+        }
+
+        // ── Lazy-Cached Grand Thing List ──
+        private bool dirtyGrandThingListFlag = true;
+        private List<ThingDef> grandThingList = null;
+
+        // ── Stat & Behavior Caches ──
+        private Dictionary<FCStatDef, double> cachedFactionStatValues = new Dictionary<FCStatDef, double>();
+        private List<FCPolicyBehavior> _cachedBehaviors = null;
+        public List<FCPolicyBehavior> cachedBehaviors
+        {
+            get
+            {
+                if (_cachedBehaviors == null)
+                    RebuildBehaviorCache();
+                return _cachedBehaviors;
+            }
+        }
+        private HashSet<FCActionType> _cachedBlockedActions;
+        private HashSet<FCActionType> _cachedEnabledActions;
+        private HashSet<MilitaryJobDef> _cachedBlockedJobs;
+        private HashSet<MilitaryJobDef> _cachedEnabledJobs;
+
+        // ── Policies & Traits ──
+        public List<FCPolicy> policies = new List<FCPolicy>();
+        public List<FCPolicy> factionTraits = new List<FCPolicy>
+        {
+            new FCPolicy(FCPolicyDefOf.empty),
+            new FCPolicy(FCPolicyDefOf.empty),
+            new FCPolicy(FCPolicyDefOf.empty),
+            new FCPolicy(FCPolicyDefOf.empty),
+            new FCPolicy(FCPolicyDefOf.empty)
+        };
+
+        // ── Events & Bills ──
+        public List<FCEvent> events = new List<FCEvent>();
+        public float randomEventLastAdded = 0f;
+        public List<BillFC> Bills = new List<BillFC>();
+        public List<BillFC> OldBills = new List<BillFC>();
+        public bool autoResolveBills;
+        public bool autoResolveBillsChanged = false;
+
+        // ── Resources ──
+        public float researchPointPool = 0;
+        public List<ResourcePool> resourcePools = new List<ResourcePool>();
+        public ThingWithComps powerOutput;
+        public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
+        public List<ResourceDisplay> FactionResources => factionResources;
+
+        // ── Military & Roads ──
+        public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
+        public FCRoadBuilder roadBuilder = new FCRoadBuilder();
+        public List<int> militaryTargets = new List<int>();
+
+        // ── Caravans ──
+        public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
+
+        // ── Leveling ──
+        public int factionLevel = 1;
+        public float factionXPCurrent = 0;
+        public float factionXPGoal = 100;
+
+        // ── ID Counters ──
+        private int nextUnitId;
+        private int nextSquadId;
+        public int NextUnitID => ++nextUnitId;
+        public int NextSquadID => ++nextSquadId;
+        public int nextSettlementFCID = 1;
+        public int nextMercenarySquadID = 1;
+        public int nextMercenaryID = 1;
+        public int nextTaxID = 1;
+        public int nextBillID = 1;
+        public int nextEventID = 1;
+        public int nextPrisonerID = 1;
+        public int nextMilitaryFireSupportID = 1;
+
+        // ── Filters & Misc ──
+        public RaceThingFilter raceFilter; // Deprecated, keeping for backwards compatibility
+        public XenotypeFilter xenotypeFilter;
+        public List<PlanetLayerDef> layersForTilePicker = null;
         public float tradedAmount = 0;
 
-        //Call for aid
-        //
-        //
-        // typeof(FactionDialogMaker), "CallForAid")]
-        // class WorldObjectGizmos
-        //{
-        //    static void Prefix(Map map, Faction faction)
-        //    {
+        #endregion
 
-        //    }
-        // }
+        #region Constructor & Lifecycle
+
+        public FactionFC(World world) : base(world)
+        {
+            var harmony = new Harmony("com.Saakra.Empire");
+
+            if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
+            {
+                FixLinuxHarmonyCrash(harmony);
+            }
+
+            harmony.PatchAll();
+        }
+
+        // Fix a crash related to a harmony bug on Linux
+        // This gets all patches Empire makes, gets the ones that would crash on Linux, and fixes them
+        static void FixLinuxHarmonyCrash(Harmony harmony)
+        {
+            bool WouldCrash(MethodInfo method)
+            {
+                if (method == null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
+                {
+                    return false;
+                }
+
+                byte[] bytes = method.GetMethodBody()?.GetILAsByteArray();
+                if (bytes == null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            var methods = typeof(FactionFC).Assembly.GetTypes().Where(t0 => t0 != null && t0.IsClass && !typeof(Delegate).IsAssignableFrom(t0) && t0.GetCustomAttributes(typeof(HarmonyPatch)).Any()).SelectMany(t1 =>
+            {
+                HarmonyPatch patch = (HarmonyPatch)Attribute.GetCustomAttribute(t1, typeof(HarmonyPatch));
+                MethodInfo[] m = patch?.info?.declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                if (m == null) return new List<MethodInfo>();
+
+                return m.Where(met => met.Name == patch.info.methodName);
+            }).Where(WouldCrash);
+
+            foreach (MethodInfo i in methods)
+            {
+                // Patching methods without any Prefixes/Postfixes before actually patching them fixes it. Idk why
+                harmony.Patch(i);
+            }
+        }
+
         /// <summary>
         /// Called when the Empire faction is created.
         /// </summary>
@@ -187,6 +245,7 @@ namespace FactionColonies
         {
             foundingTick = Find.TickManager.TicksGame;
         }
+
         public string GetFoundingDate(bool full = true)
         {
             if (full)
@@ -198,6 +257,10 @@ namespace FactionColonies
                 return GenDate.DateShortStringAt(foundingTick, startingLongLat);
             }
         }
+
+        #endregion
+
+        #region Serialization & Initialization
 
         public override void ExposeData()
         {
@@ -288,7 +351,7 @@ namespace FactionColonies
         public override void FinalizeInit(bool fromLoad)
         {
             base.FinalizeInit(fromLoad);
-            
+
             //Just in case null is saved somehow
             if (raceFilter == null)
             {
@@ -350,101 +413,10 @@ namespace FactionColonies
                 // so values will recompute lazily on next access
             }
         }
-        /// <summary>
-        /// Returns a list of *all* things that this faction can produce.
-        /// </summary>
-        /// <returns></returns>
-        public List<ThingDef> getGrandThingList()
-        {
-            if (dirtyGrandThingListFlag)
-            {
-                grandThingList = new List<ThingDef>();
-                foreach (WorldSettlementFC settlement in settlements)
-                {
-                    grandThingList.AddRange(settlement.getGrandThingList());
-                }
-                grandThingList = grandThingList.Distinct().ToList();
-                dirtyGrandThingListFlag = false;
-            }
-            return grandThingList;
-        }
-        public void dirtyGrandThingList()
-        {
-            dirtyGrandThingListFlag = true;
-        }
-        public List<ThingDef> getStuffListForThingDef(ThingDef thing)
-        {
-            return CraftUtil.getThingStuffs(thing, getGrandThingList());
-        }
 
-        public void GainHappiness(double amount)
-        {
-            foreach (WorldSettlementFC settlement in settlements)
-            {
-                settlement.GainHappiness(amount);
-            }
-        }
+        #endregion
 
-        public void GainUnrestForReason(Message msg, double amount)
-        {
-            Messages.Message(msg);
-            foreach (WorldSettlementFC settlement in settlements)
-            {
-                settlement.GainUnrest(amount);
-            }
-        }
-
-        // Fix a crash related to a harmony bug on Linux
-        // This gets all patches Empire makes, gets the ones that would crash on Linux, and fixes them
-        static void FixLinuxHarmonyCrash(Harmony harmony)
-        {
-            bool WouldCrash(MethodInfo method)
-            {
-                if (method == null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
-                {
-                    return false;
-                }
-
-                byte[] bytes = method.GetMethodBody()?.GetILAsByteArray();
-                if (bytes == null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            var methods = typeof(FactionFC).Assembly.GetTypes().Where(t0 => t0 != null && t0.IsClass && !typeof(Delegate).IsAssignableFrom(t0) && t0.GetCustomAttributes(typeof(HarmonyPatch)).Any()).SelectMany(t1 =>
-            {
-                HarmonyPatch patch = (HarmonyPatch)Attribute.GetCustomAttribute(t1, typeof(HarmonyPatch));
-                MethodInfo[] m = patch?.info?.declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                if (m == null) return new List<MethodInfo>();
-
-                return m.Where(met => met.Name == patch.info.methodName);
-            }).Where(WouldCrash);
-
-            foreach (MethodInfo i in methods)
-            {
-                // Patching methods without any Prefixes/Postfixes before actually patching them fixes it. Idk why
-                harmony.Patch(i);
-            }
-        }
-
-        //CallForAid
-        //Remove ability to attack colony.
-
-
-        public FactionFC(World world) : base(world)
-        {
-            var harmony = new Harmony("com.Saakra.Empire");
-
-            if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
-            {
-                FixLinuxHarmonyCrash(harmony);
-            }
-
-            harmony.PatchAll();
-
-        }
+        #region Tick Loop
 
         public override void WorldComponentTick()
         {
@@ -507,12 +479,119 @@ namespace FactionColonies
             }
         }
 
-        public void TickActions()
+        public void TaxTick(Faction faction)
         {
-            int tick = Find.TickManager.TicksGame;
+            if (faction == null || Find.TickManager.TicksGame < taxTimeDue)
+                return;
 
-            // Dispatch Tick to all active behavior instances
-            ForEachBehavior(b => b.Tick(this));
+            addTax();
+            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
+
+            if (autoResolveBills)
+                PaymentUtil.autoresolveBills(Bills);
+        }
+
+        public void StatTick(Faction faction)
+        {
+            if (faction == null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
+                return;
+
+            updateSettlementStats();
+            DirtyAveragesCache();
+            syncGoodwillWithAverages();
+            RelationsUtilFC.resetPlayerColonyRelations();
+            updateDailyResourcePools();
+            MakeRandomEvent();
+        }
+
+        public void MilitaryTick(Faction faction)
+        {
+            if (Find.TickManager.TicksGame >= militaryTimeDue)
+            {
+                if (faction != null &&
+                    FCSettings.disableHostileMilitaryActions == false &&
+                    Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
+                {
+                    //if military actions not disabled or game has not passed through the first season
+
+                    if (settlements.Any())
+                    {
+                        //if settlements exist
+                        List<WorldSettlementFC> targets = new List<WorldSettlementFC>();
+                        foreach (WorldSettlementFC settlement in settlements)
+                        {
+                            //create weight list of settlements
+                            if (settlement.MilitaryComp?.isUnderAttack != true)
+                            {
+                                //if not underattack, add to list
+                                //get weightvalue of target
+                                int weightValue;
+                                switch (settlement.settlementMilitaryLevel)
+                                {
+                                    case 0:
+                                    case 1:
+                                        weightValue = 10;
+                                        break;
+                                    case 2:
+                                    case 3:
+                                        weightValue = 7;
+                                        break;
+                                    case 4:
+                                    case 5:
+                                        weightValue = 3;
+                                        break;
+                                    default:
+                                        weightValue = 1;
+                                        break;
+                                }
+
+                                for (int k = 0; k < weightValue; k++)
+                                {
+                                    targets.Add(settlement);
+                                }
+                            }
+                        }
+
+                        if (targets.Any())
+                        {
+                            //List created, pick from list
+                            Faction enemy = Find.FactionManager.RandomEnemyFaction();
+                            if (enemy != null)
+                            {
+                                WorldSettlementFC settlement = targets.RandomElementWithFallback();
+
+                                if (settlement != null)
+                                {
+                                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemy, true), settlement, enemy);
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * FCSettings.minMaxDaysTillMilitaryAction.RandomInRange);
+            }
+        }
+
+        public void UITick(Faction faction)
+        {
+            if (uiTimeUpdate <= 0) //update per time?
+            {
+                uiTimeUpdate = FCSettings.updateUiTimer;
+
+                if (faction != null)
+                {
+                    //already built in ui update -.-
+                    Find.WindowStack.WindowsUpdate();
+
+                    // Profit and averages are lazy-cached — no eager update needed
+                }
+            }
+            else
+            {
+                uiTimeUpdate -= 1;
+            }
         }
 
         public void FireSupportTick()
@@ -527,119 +606,22 @@ namespace FactionColonies
             militaryCustomizationUtil.fireSupport.ForEach(support => support.Process());
         }
 
-
-        public int GetNextSettlementFCID()
+        public void TickActions()
         {
-            nextSettlementFCID++;
-            //LogUtil.Message("Returning next settlement FC ID " + nextSettlementFCID);
+            int tick = Find.TickManager.TicksGame;
 
-            return nextSettlementFCID;
+            // Dispatch Tick to all active behavior instances
+            ForEachBehavior(b => b.Tick(this));
         }
 
-        public int GetNextMercenaryID()
-        {
-            nextMercenaryID++;
-            //LogUtil.Message("Returning next mercenary ID " + nextMercenaryID);
-            return nextMercenaryID;
-        }
+        #endregion
 
-        public int GetNextMilitaryFireSupportID()
-        {
-            nextMilitaryFireSupportID++;
-            //LogUtil.Message("Returning next MilitaryFireSupportID " + nextSquadID);
-
-            return nextMilitaryFireSupportID;
-        }
-
-        public int GetNextMercenarySquadID()
-        {
-            nextMercenarySquadID++;
-            //LogUtil.Message("Returning next MercenarySquadID " + nextMercenarySquadID);
-
-            return nextMercenarySquadID;
-        }
-
-        public int GetNextTaxID()
-        {
-            nextTaxID++;
-            return nextTaxID;
-        }
-
-        public int GetNextEventID()
-        {
-            nextEventID++;
-            return nextEventID;
-        }
-
-        public int GetNextBillID()
-        {
-            nextBillID++;
-            return nextBillID;
-        }
-
-        public int GetNextPrisonerID()
-        {
-            nextPrisonerID++;
-            return nextPrisonerID;
-        }
-
-        public void setStartTime()
-        {
-            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
-        }
-
-        public int returnHighestMilitaryLevel()
-        {
-            int max = 1;
-            foreach (WorldSettlementFC settlement in settlements)
-            {
-                max = Math.Max(max, settlement.settlementMilitaryLevel);
-            }
-
-            return max;
-        }
-
-        public string returnNextTechToLevel()
-        {
-            switch (techLevel)
-            {
-                case TechLevel.Ultra:
-                    return "ReachedMaxLevel".Translate();
-                case TechLevel.Spacer:
-                    return "FCShipBasics".Translate();
-                case TechLevel.Industrial:
-                    return "FCFabrication".Translate();
-                case TechLevel.Medieval:
-                    return "FCElectricity".Translate();
-                case TechLevel.Neolithic:
-                    return "FCSmithing".Translate();
-                default:
-                    return "N/A";
-            }
-        }
-
-        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-         * ~     Lazy Cache Invalidation        ~ *
-         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+        #region Lazy Caches
 
         public void DirtyFactionProfitCache()
         {
             dirtyFactionProfitCache = true;
         }
-
-        public void DirtyAveragesCache()
-        {
-            dirtyAveragesCache = true;
-        }
-
-        public void DirtyTechLevelCache()
-        {
-            dirtyTechLevelCache = true;
-        }
-
-        /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-         * ~     Lazy Cache Recomputation       ~ *
-         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
         private void recomputeTotalProfit()
         {
@@ -647,6 +629,11 @@ namespace FactionColonies
             _upkeep = settlements.Sum(s => s.totalUpkeep);
             _profit = _income - _upkeep;
             dirtyFactionProfitCache = false;
+        }
+
+        public void DirtyAveragesCache()
+        {
+            dirtyAveragesCache = true;
         }
 
         private void recomputeAverages()
@@ -677,6 +664,11 @@ namespace FactionColonies
             _averageUnrest = avgUnrest;
             _averageProsperity = avgProsperity;
             dirtyAveragesCache = false;
+        }
+
+        public void DirtyTechLevelCache()
+        {
+            dirtyTechLevelCache = true;
         }
 
         private void recomputeTechLevel()
@@ -749,291 +741,37 @@ namespace FactionColonies
             }
         }
 
-        //TODO: this whole function is playing with defs. Doesn't seem great. Not sure if there's another way to set icons, though. Need to investigate
-        public void updateFactionIcon(ref Faction faction, string iconPath)
-        {
-            LogUtil.Message("Updated Icon - " + iconPath);
-            if (faction?.def != null)
-            {
-                faction.def.factionIconPath = iconPath;
-            }
-            if (settlements.Any() && settlements[0]?.def != null && UnityData.IsInMainThread)
-            {
-                //TODO: not sure if this will interact wierdly with the new SettlementDef. Keep an eye on this
-                WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].def, ContentFinder<Texture2D>.Get(iconPath));
-            }
-
-            foreach (WorldSettlementFC settlement in settlements)
-            {
-                if (settlement?.def != null)
-                {
-                    settlement.def.expandingIconTexture = iconPath;
-                }
-                if (settlement?.Faction?.def != null)
-                {
-                    settlement.Faction.def.factionIconPath = iconPath;
-                }
-            }
-        }
-
-        public void updateFactionDef(TechLevel tech, ref Faction faction)
-        {
-            FactionDef replacingDef;
-            ThingFilter apparelStuffFilter = new ThingFilter();
-            FactionDef def = faction.def;
-
-            switch (tech)
-            {
-                case TechLevel.Archotech:
-                case TechLevel.Ultra:
-                case TechLevel.Spacer:
-                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
-
-                    break;
-                case TechLevel.Industrial:
-                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
-                    break;
-                case TechLevel.Medieval:
-                    if (FCSettings.IsModLoaded("OskarPotocki.VanillaFactionsExpanded.MedievalModule"))
-                    {
-                        replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("VFEM_KingdomCivil");
-                    }
-                    else
-                    {
-                        replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
-                    }
-
-                    break;
-                default:
-                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
-                    break;
-            }
-            //LogUtil.Message("FactionFC.updateFactionDef - switch(tech) passed");
-            def.caravanTraderKinds = replacingDef.caravanTraderKinds;
-            if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
-                def.backstoryFilters = replacingDef.backstoryFilters;
-            def.techLevel = tech;
-            def.basicMemberKind = replacingDef.basicMemberKind;
-            def.visitorTraderKinds = replacingDef.visitorTraderKinds;
-            def.baseTraderKinds = replacingDef.baseTraderKinds;
-            if (replacingDef.apparelStuffFilter != null)
-                def.apparelStuffFilter = replacingDef.apparelStuffFilter;
-
-
-            if (tech >= TechLevel.Spacer && def.apparelStuffFilter != null)
-            {
-                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Synthread"), true);
-                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Hyperweave"), true);
-                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Plasteel"), true);
-            }
-            updateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
-
-            LogUtil.Message("FactionFC.updateFactionDef - Completed tech update");
-        }
-
-        public bool hasPolicy(FCPolicyDef def)
-        {
-            //Don't game the system
-            if (policies.Count < 2)
-            {
-                return false;
-            }
-
-            foreach (FCPolicy policy in policies)
-            {
-                if (policy.def == def)
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool hasTrait(FCPolicyDef def)
-        {
-            foreach (FCPolicy trait in factionTraits)
-            {
-                if (trait.def == def)
-                    return true;
-            }
-
-            return false;
-        }
-
-        // ── Stat Cache ────────────────────────────────────────────
-
-        private Dictionary<FCStatDef, double> cachedFactionStatValues = new Dictionary<FCStatDef, double>();
-
-        // ── Behavior Cache ────────────────────────────────────────
-
-        private HashSet<FCActionType> _cachedBlockedActions;
-        private HashSet<FCActionType> _cachedEnabledActions;
-        private HashSet<MilitaryJobDef> _cachedBlockedJobs;
-        private HashSet<MilitaryJobDef> _cachedEnabledJobs;
-        private List<FCPolicyBehavior> _cachedBehaviors = null;
-        public List<FCPolicyBehavior> cachedBehaviors
-        {
-            get
-            {
-                if (_cachedBehaviors == null)
-                    RebuildBehaviorCache();
-                return _cachedBehaviors;
-            }
-        }
-
         /// <summary>
-        /// Rebuilds the cached behavior list from active policies and traits.
-        /// Order: policies first (in list order), then traits (in slot order).
-        /// This order determines ModifyStat chaining — currently no two behaviors modify the same stat.
+        /// Returns a list of *all* things that this faction can produce.
         /// </summary>
-        public void RebuildBehaviorCache()
+        public List<ThingDef> getGrandThingList()
         {
-            LogUtil.Message($"Rebuilding faction behavior cache");
-            _cachedBehaviors = new List<FCPolicyBehavior>();
-            foreach (FCPolicy p in policies)
+            if (dirtyGrandThingListFlag)
             {
-                if (p?.behavior != null)
-                    _cachedBehaviors.Add(p.behavior);
-            }
-            foreach (FCPolicy p in factionTraits)
-            {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                if (p.behavior != null)
-                    _cachedBehaviors.Add(p.behavior);
-            }
-
-            RebuildActionCache();
-
-            // Policy/trait changes affect faction-level stat values and behavior ModifyStat results
-            InvalidateFactionStatCache();
-        }
-
-        private void RebuildActionCache()
-        {
-            _cachedBlockedActions = new HashSet<FCActionType>();
-            _cachedEnabledActions = new HashSet<FCActionType>();
-            _cachedBlockedJobs = new HashSet<MilitaryJobDef>();
-            _cachedEnabledJobs = new HashSet<MilitaryJobDef>();
-            foreach (FCPolicy p in policies)
-            {
-                if (p?.def == null) continue;
-                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
-                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
-                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
-                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
-            }
-            foreach (FCPolicy p in factionTraits)
-            {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
-                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
-                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
-                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
-            }
-            _cachedEnabledActions.ExceptWith(_cachedBlockedActions);
-            _cachedEnabledJobs.ExceptWith(_cachedBlockedJobs);
-        }
-
-        public void ForEachBehavior(Action<FCPolicyBehavior> action)
-        {
-            foreach (FCPolicyBehavior b in cachedBehaviors)
-            {
-                try
+                grandThingList = new List<ThingDef>();
+                foreach (WorldSettlementFC settlement in settlements)
                 {
-                    action(b);
+                    grandThingList.AddRange(settlement.getGrandThingList());
                 }
-                catch (Exception e)
-                {
-                    LogUtil.Error($"Policy behavior error: {e}");
-                }
+                grandThingList = grandThingList.Distinct().ToList();
+                dirtyGrandThingListFlag = false;
             }
+            return grandThingList;
         }
 
-        // ── ISettlementLifecycleParticipant ──────────────────────────
-        // Bridges registry dispatch to policy behaviors so ColonyUtil only needs one call path.
-
-        void ISettlementLifecycleParticipant.OnSettlementCreated(WorldSettlementFC settlement)
+        public void dirtyGrandThingList()
         {
-            ForEachBehavior(b => b.OnSettlementCreated(this, settlement));
+            dirtyGrandThingListFlag = true;
         }
 
-        void ISettlementLifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
+        public List<ThingDef> getStuffListForThingDef(ThingDef thing)
         {
-            ForEachBehavior(b => b.OnSettlementRemoved(this, settlement));
+            return CraftUtil.getThingStuffs(thing, getGrandThingList());
         }
 
-        void ISettlementLifecycleParticipant.OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
-        {
-            ForEachBehavior(b => b.OnSettlementUpgraded(this, settlement, newLevel));
-        }
+        #endregion
 
-        // ── IBuildingLifecycleParticipant ──────────────────────────────
-
-        void IBuildingLifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
-        {
-            ForEachBehavior(b => b.OnBuildingConstructed(this, settlement, building, slot));
-        }
-
-        void IBuildingLifecycleParticipant.OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
-        {
-            ForEachBehavior(b => b.OnBuildingDeconstructed(this, settlement, building, slot));
-        }
-
-        // ── IMilitaryEventParticipant ─────────────────────────────────
-
-        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad)
-        {
-            ForEachBehavior(b => b.OnSquadDeployed(this, settlement, isExtraSquad));
-        }
-
-        void IMilitaryEventParticipant.OnSquadRecalled(WorldSettlementFC settlement)
-        {
-            ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
-        }
-
-        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
-        {
-            ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
-        }
-
-        // ── IResearchParticipant ──────────────────────────────────────
-
-        void IResearchParticipant.OnResearchCompleted(ResearchProjectDef project)
-        {
-            ForEachBehavior(b => b.OnResearchCompleted(this, project));
-        }
-
-        public T FoldBehaviors<T>(T seed, Func<FCPolicyBehavior, T, T> folder)
-        {
-            foreach (FCPolicyBehavior b in cachedBehaviors)
-            {
-                try
-                {
-                    seed = folder(b, seed);
-                }
-                catch (Exception e)
-                {
-                    LogUtil.Error($"Policy behavior fold error: {e}");
-                }
-            }
-            return seed;
-        }
-
-        /// <summary>
-        /// Calls OnRemoved on all behaviors in the given policy list, then clears it.
-        /// Use this instead of directly clearing/replacing policy lists.
-        /// </summary>
-        public void RemoveAllPolicies(List<FCPolicy> policyList)
-        {
-            foreach (FCPolicy p in policyList)
-            {
-                if (p?.behavior != null)
-                {
-                    try { p.behavior.OnRemoved(this); }
-                    catch (Exception e) { LogUtil.Error($"FCPolicyBehavior.OnRemoved error for '{p.def?.defName}': {e}"); }
-                }
-            }
-            policyList.Clear();
-        }
+        #region Stat System
 
         /// <summary>
         /// Entry point for stat queries. Combines settlement-level and faction-level cached partials,
@@ -1118,32 +856,6 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Clears the faction-level stat cache and dirties resource/desc caches on all settlements
-        /// (since final combined stat values have changed).
-        /// Does NOT clear settlement stat value caches — settlement-level modifiers are unaffected.
-        /// </summary>
-        public void InvalidateFactionStatCache()
-        {
-            cachedFactionStatValues.Clear();
-            foreach (WorldSettlementFC s in settlements)
-            {
-                s.InvalidateDescCache();
-                s.InvalidateResourceCaches();
-            }
-        }
-
-        /// <summary>
-        /// Invalidates stat and resource caches on all settlements.
-        /// Called after faction-wide events (e.g., research completion) that may affect
-        /// settlement-level stat or resource production providers.
-        /// </summary>
-        public void InvalidateAllSettlementStatCaches()
-        {
-            foreach (WorldSettlementFC s in settlements)
-                s.InvalidateStatCache();
-        }
-
-        /// <summary>
         /// Builds a description string for faction-level stat contributions (policies + traits).
         /// Not cached — only used for UI tooltips.
         /// </summary>
@@ -1179,6 +891,169 @@ namespace FactionColonies
             }
 
             return desc;
+        }
+
+        /// <summary>
+        /// Clears the faction-level stat cache and dirties resource/desc caches on all settlements
+        /// (since final combined stat values have changed).
+        /// Does NOT clear settlement stat value caches — settlement-level modifiers are unaffected.
+        /// </summary>
+        public void InvalidateFactionStatCache()
+        {
+            cachedFactionStatValues.Clear();
+            foreach (WorldSettlementFC s in settlements)
+            {
+                s.InvalidateDescCache();
+                s.InvalidateResourceCaches();
+            }
+        }
+
+        /// <summary>
+        /// Invalidates stat and resource caches on all settlements.
+        /// Called after faction-wide events (e.g., research completion) that may affect
+        /// settlement-level stat or resource production providers.
+        /// </summary>
+        public void InvalidateAllSettlementStatCaches()
+        {
+            foreach (WorldSettlementFC s in settlements)
+                s.InvalidateStatCache();
+        }
+
+        #endregion
+
+        #region Behavior System
+
+        /// <summary>
+        /// Rebuilds the cached behavior list from active policies and traits.
+        /// Order: policies first (in list order), then traits (in slot order).
+        /// This order determines ModifyStat chaining — currently no two behaviors modify the same stat.
+        /// </summary>
+        public void RebuildBehaviorCache()
+        {
+            LogUtil.Message($"Rebuilding faction behavior cache");
+            _cachedBehaviors = new List<FCPolicyBehavior>();
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.behavior != null)
+                    _cachedBehaviors.Add(p.behavior);
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.behavior != null)
+                    _cachedBehaviors.Add(p.behavior);
+            }
+
+            RebuildActionCache();
+
+            // Policy/trait changes affect faction-level stat values and behavior ModifyStat results
+            InvalidateFactionStatCache();
+        }
+
+        private void RebuildActionCache()
+        {
+            _cachedBlockedActions = new HashSet<FCActionType>();
+            _cachedEnabledActions = new HashSet<FCActionType>();
+            _cachedBlockedJobs = new HashSet<MilitaryJobDef>();
+            _cachedEnabledJobs = new HashSet<MilitaryJobDef>();
+            foreach (FCPolicy p in policies)
+            {
+                if (p?.def == null) continue;
+                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
+                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
+                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
+                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
+            }
+            foreach (FCPolicy p in factionTraits)
+            {
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
+                if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
+                if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
+                if (p.def.enabledMilitaryJobs != null) foreach (var j in p.def.enabledMilitaryJobs) _cachedEnabledJobs.Add(j);
+            }
+            _cachedEnabledActions.ExceptWith(_cachedBlockedActions);
+            _cachedEnabledJobs.ExceptWith(_cachedBlockedJobs);
+        }
+
+        public void ForEachBehavior(Action<FCPolicyBehavior> action)
+        {
+            foreach (FCPolicyBehavior b in cachedBehaviors)
+            {
+                try
+                {
+                    action(b);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy behavior error: {e}");
+                }
+            }
+        }
+
+        public T FoldBehaviors<T>(T seed, Func<FCPolicyBehavior, T, T> folder)
+        {
+            foreach (FCPolicyBehavior b in cachedBehaviors)
+            {
+                try
+                {
+                    seed = folder(b, seed);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Policy behavior fold error: {e}");
+                }
+            }
+            return seed;
+        }
+
+        /// <summary>
+        /// Calls OnRemoved on all behaviors in the given policy list, then clears it.
+        /// Use this instead of directly clearing/replacing policy lists.
+        /// </summary>
+        public void RemoveAllPolicies(List<FCPolicy> policyList)
+        {
+            foreach (FCPolicy p in policyList)
+            {
+                if (p?.behavior != null)
+                {
+                    try { p.behavior.OnRemoved(this); }
+                    catch (Exception e) { LogUtil.Error($"FCPolicyBehavior.OnRemoved error for '{p.def?.defName}': {e}"); }
+                }
+            }
+            policyList.Clear();
+        }
+
+        #endregion
+
+        #region Policy & Action Checks
+
+        public bool hasPolicy(FCPolicyDef def)
+        {
+            //Don't game the system
+            if (policies.Count < 2)
+            {
+                return false;
+            }
+
+            foreach (FCPolicy policy in policies)
+            {
+                if (policy.def == def)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool hasTrait(FCPolicyDef def)
+        {
+            foreach (FCPolicy trait in factionTraits)
+            {
+                if (trait.def == def)
+                    return true;
+            }
+
+            return false;
         }
 
         public bool AnyPolicyBlocks(FCActionType action) => _cachedBlockedActions?.Contains(action) ?? false;
@@ -1246,40 +1121,60 @@ namespace FactionColonies
             return false;
         }
 
-        public bool sendDiplomaticEnvoy(Faction faction)
-        {
-            if (faction.def.permanentEnemy)
-            {
-                Messages.Message("FCCannotImproveRelationsWithType".Translate(), MessageTypeDefOf.RejectInput);
-                return false;
-            }
+        #endregion
 
-            // Try new behavior system first
-            bool handled = false;
-            ForEachBehavior(b =>
-            {
-                if (!handled)
-                    handled = b.HandleDiplomaticEnvoy(this, faction);
-            });
-            return handled;
+        #region Lifecycle Dispatch
+
+        // Bridges registry dispatch to policy behaviors so ColonyUtil only needs one call path.
+
+        void ISettlementLifecycleParticipant.OnSettlementCreated(WorldSettlementFC settlement)
+        {
+            ForEachBehavior(b => b.OnSettlementCreated(this, settlement));
         }
 
-        /// <summary>
-        /// Syncs faction goodwill with average happiness. Should only be called from StatTick (daily).
-        /// </summary>
-        private void syncGoodwillWithAverages()
+        void ISettlementLifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
         {
-            if (settlements.Any() && FactionCache.PlayerColonyFaction != null)
-            {
-                FactionCache.PlayerColonyFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
-                    (Convert.ToInt32(averageHappiness) - FactionCache.PlayerColonyFaction.PlayerGoodwill));
-            }
+            ForEachBehavior(b => b.OnSettlementRemoved(this, settlement));
         }
 
-        public void setName(string name)
+        void ISettlementLifecycleParticipant.OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
         {
-            this.name = name;
+            ForEachBehavior(b => b.OnSettlementUpgraded(this, settlement, newLevel));
         }
+
+        void IBuildingLifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        {
+            ForEachBehavior(b => b.OnBuildingConstructed(this, settlement, building, slot));
+        }
+
+        void IBuildingLifecycleParticipant.OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        {
+            ForEachBehavior(b => b.OnBuildingDeconstructed(this, settlement, building, slot));
+        }
+
+        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad)
+        {
+            ForEachBehavior(b => b.OnSquadDeployed(this, settlement, isExtraSquad));
+        }
+
+        void IMilitaryEventParticipant.OnSquadRecalled(WorldSettlementFC settlement)
+        {
+            ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
+        }
+
+        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
+        {
+            ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
+        }
+
+        void IResearchParticipant.OnResearchCompleted(ResearchProjectDef project)
+        {
+            ForEachBehavior(b => b.OnResearchCompleted(this, project));
+        }
+
+        #endregion
+
+        #region Settlement Management
 
         public void addSettlement(WorldSettlementFC settlement)
         {
@@ -1288,13 +1183,224 @@ namespace FactionColonies
             DirtyAveragesCache();
         }
 
+        public WorldSettlementFC returnSettlementByLocation(PlanetTile location)
+        {
+            for (int i = 0; i < settlements.Count; i++)
+            {
+                if (settlements[i].Tile == location)
+                {
+                    return settlements[i];
+                }
+            }
+
+            return null;
+        }
+
+        public string getSettlementName(PlanetTile location)
+        {
+            return returnSettlementByLocation(location)?.Name ?? "Null";
+        }
+
+        public void updateSettlementStats()
+        {
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                settlement.updateHappiness();
+                settlement.updateLoyalty();
+                settlement.updateUnrest();
+                settlement.updateProsperity();
+            }
+        }
+
+        public int returnHighestMilitaryLevel()
+        {
+            int max = 1;
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                max = Math.Max(max, settlement.settlementMilitaryLevel);
+            }
+
+            return max;
+        }
+
+        #endregion
+
+        #region Tax & Billing
+
+        public void setStartTime()
+        {
+            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
+        }
+
+        public void addTax()
+        {
+            TaxTickRegistry.InvokePreTaxResolution(this);
+            foreach (ResourcePool pool in resourcePools)
+            {
+                if (pool.resource.poolResourceResetsAtTaxTime())
+                {
+                    pool.pool = 0;
+                }
+            }
+
+            if (settlements.Count != 0)
+            {
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    addExperienceToFactionLevel(2f);
+
+                    List<Thing> list = new List<Thing>();
+                    int silverAmount = 0;
+                    list = settlement.createTax(out silverAmount);
+                    List<ResourcePool> resourcePools = settlement.createResourcePools();
+
+                    BillFC bill = new BillFC(settlement);
+                    bill.taxes.resourcePools = resourcePools;
+                    bill.taxes.itemTithes.AddRange(list);
+                    bill.taxes.silverAmount = silverAmount;
+
+                    Bills.Add(bill);
+
+                    TextUtil.GetTownTitle(settlement);
+                    TaxTickPrisoner(settlement);
+                    ForEachBehavior(b => b.OnTaxCollected(this, settlement));
+                }
+
+                Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
+                    LetterDefOf.PositiveEvent);
+                DirtyFactionProfitCache();
+            }
+            else
+            {
+                Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
+            }
+            TaxTickRegistry.InvokePostTaxResolution(this);
+        }
+
+        public void TaxTickPrisoner(WorldSettlementFC settlement)
+        {
+            int i = 0;
+            while (i < settlement.prisonerList.Count)
+            {
+                FCPrisoner prisoner = settlement.prisonerList[i];
+                bool dead = false;
+
+                switch (prisoner.workload)
+                {
+                    case FCWorkLoad.Heavy:
+                        if (prisoner.AdjustHealth(-20))
+                            dead = true;
+                        break;
+                    case FCWorkLoad.Medium:
+                        if (prisoner.AdjustHealth(-10))
+                            dead = true;
+                        break;
+                    case FCWorkLoad.Light:
+                        if (prisoner.AdjustHealth(4))
+                            dead = true;
+                        break;
+                }
+
+                /* Only increment if the prisoner hasn't died.
+                 * If they *did* die, then AdjustHealth() will have removed them from the list already. So if we increment, then we'll actually skip the next prisoner. */
+                if (!dead) i++;
+            }
+        }
+
+        // resetTraitMercantileCaravanTime removed — mercantile caravan scheduling
+        // is now handled by FCPolicyBehavior_Mercantile.Tick/OnEnacted.
+
         public double getTotalIncome() => income;
         public double getTotalUpkeep() => upkeep;
         public double getTotalProfit() => profit;
 
-        /* * * * *
-         * Resource Pools
-         * * * * * */
+        #endregion
+
+        #region Events
+
+        public void addEvent(FCEvent fcevent)
+        {
+            if (fcevent == null) return;
+            //Add event to events
+            events.Add(fcevent);
+
+            LogUtil.Message($"addEvent: adding new fcevent {fcevent.def.defName}");
+
+            string sourceId = "event_" + fcevent.def.defName;
+
+            //check if event has a location, if does, add stat modifiers to that specific location;
+            if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
+            {
+                foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
+                {
+                    location.addStatModifiers(fcevent.def.statModifiers, sourceId);
+                }
+            }
+            else
+            {
+                //if no specific location then faction wide — apply to all settlements
+                foreach (WorldSettlementFC settlement in settlements)
+                {
+                    settlement.addStatModifiers(fcevent.def.statModifiers, sourceId);
+                }
+            }
+        }
+
+        private void MakeRandomEvent()
+        {
+            if (RandomEventsDisabledOrNoSettlements()) return;
+
+            if (CanMakeRandomEventNow())
+            {
+                FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.returnRandomEvent(), null);
+                if (tmpEvt != null)
+                {
+                    FactionCache.FactionComp.addEvent(tmpEvt);
+                    randomEventLastAdded = 0f;
+
+                    //letter code
+                    string settlementString = tmpEvt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
+
+                    if (!settlementString.NullOrEmpty())
+                    {
+                        Find.LetterStack.ReceiveLetter("Random Event", $"{tmpEvt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                    }
+                    else
+                    {
+                        Find.LetterStack.ReceiveLetter("Random Event", tmpEvt.def.desc,
+                            LetterDefOf.NeutralEvent);
+                    }
+                }
+                else
+                {
+                    randomEventLastAdded += 1f;
+                }
+            }
+            else
+            {
+                randomEventLastAdded += 1f;
+            }
+
+        }
+
+        private bool CanMakeRandomEventNow()
+        {
+            if ((FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent) == 0)
+            {
+                return randomEventLastAdded - FCSettings.minDaysTillRandomEvent <= 0;
+            }
+            else
+            {
+                return Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
+            }
+        }
+
+        private bool RandomEventsDisabledOrNoSettlements() => FactionCache.FactionComp.settlements.Count == 0 || FCSettings.disableRandomEvents;
+
+        #endregion
+
+        #region Resources
+
         public void addResourcePool(ResourcePool pool)
         {
             if (pool == null)
@@ -1361,9 +1467,28 @@ namespace FactionColonies
             }
         }
 
-        /* * * * *
-         * End Resource Pool functions
-         * * * * * */
+        public ResourceDisplay returnResource(string name) //used to return the correct resource based on string name
+        {
+            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef.defName == name);
+            if (res == null)
+            {
+                /* This should never happen! */
+                LogUtil.Error($"Requested resource {name} is not in the list of faction resources!");
+            }
+            return res;
+        }
+
+        public ResourceDisplay returnResource(ResourceTypeDef resourceTypeDef)
+        {
+            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef);
+            if (res == null)
+            {
+                /* This should never happen! */
+                LogUtil.Error($"Requested resource {resourceTypeDef.defName} is not in the list of faction resources!");
+            }
+            return res;
+        }
+
         public void setDirtyResourceDisplayCache(ResourceTypeDef rdef)
         {
             ResourceDisplay rdisplay = factionResources.Find((ResourceDisplay rd) => rd.resourceDef == rdef);
@@ -1372,50 +1497,62 @@ namespace FactionColonies
                 rdisplay.setDirtyCache();
             }
         }
-        public void addTax()
+
+        #endregion
+
+        #region ID Generation
+
+        public int GetNextSettlementFCID()
         {
-            TaxTickRegistry.InvokePreTaxResolution(this);
-            foreach (ResourcePool pool in resourcePools)
-            {
-                if (pool.resource.poolResourceResetsAtTaxTime())
-                {
-                    pool.pool = 0;
-                }
-            }
-
-            if (settlements.Count != 0)
-            {
-                foreach (WorldSettlementFC settlement in settlements)
-                {
-                    addExperienceToFactionLevel(2f);
-
-                    List<Thing> list = new List<Thing>();
-                    int silverAmount = 0;
-                    list = settlement.createTax(out silverAmount);
-                    List<ResourcePool> resourcePools = settlement.createResourcePools();
-
-                    BillFC bill = new BillFC(settlement);
-                    bill.taxes.resourcePools = resourcePools;
-                    bill.taxes.itemTithes.AddRange(list);
-                    bill.taxes.silverAmount = silverAmount;
-
-                    Bills.Add(bill);
-
-                    TextUtil.GetTownTitle(settlement);
-                    TaxTickPrisoner(settlement);
-                    ForEachBehavior(b => b.OnTaxCollected(this, settlement));
-                }
-
-                Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
-                    LetterDefOf.PositiveEvent);
-                DirtyFactionProfitCache();
-            }
-            else
-            {
-                Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
-            }
-            TaxTickRegistry.InvokePostTaxResolution(this);
+            nextSettlementFCID++;
+            return nextSettlementFCID;
         }
+
+        public int GetNextMercenaryID()
+        {
+            nextMercenaryID++;
+            return nextMercenaryID;
+        }
+
+        public int GetNextMilitaryFireSupportID()
+        {
+            nextMilitaryFireSupportID++;
+            return nextMilitaryFireSupportID;
+        }
+
+        public int GetNextMercenarySquadID()
+        {
+            nextMercenarySquadID++;
+            return nextMercenarySquadID;
+        }
+
+        public int GetNextTaxID()
+        {
+            nextTaxID++;
+            return nextTaxID;
+        }
+
+        public int GetNextEventID()
+        {
+            nextEventID++;
+            return nextEventID;
+        }
+
+        public int GetNextBillID()
+        {
+            nextBillID++;
+            return nextBillID;
+        }
+
+        public int GetNextPrisonerID()
+        {
+            nextPrisonerID++;
+            return nextPrisonerID;
+        }
+
+        #endregion
+
+        #region Leveling
 
         public float updateFactionLevelGoalXP(int currentLevel)
         {
@@ -1440,68 +1577,9 @@ namespace FactionColonies
             return leveled;
         }
 
-        public void addEvent(FCEvent fcevent)
-        {
-            if (fcevent == null) return;
-            //Add event to events
-            events.Add(fcevent);
+        #endregion
 
-            LogUtil.Message($"addEvent: adding new fcevent {fcevent.def.defName}");
-
-            string sourceId = "event_" + fcevent.def.defName;
-
-            //check if event has a location, if does, add stat modifiers to that specific location;
-            if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
-            {
-                foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
-                {
-                    location.addStatModifiers(fcevent.def.statModifiers, sourceId);
-                }
-            }
-            else
-            {
-                //if no specific location then faction wide — apply to all settlements
-                foreach (WorldSettlementFC settlement in settlements)
-                {
-                    settlement.addStatModifiers(fcevent.def.statModifiers, sourceId);
-                }
-            }
-        }
-
-        public bool checkSettlementCaravansList(PlanetTile location) //list of destinations caravans gone to
-        {
-            for (int i = 0; i < settlementCaravansList.Count; i++)
-            {
-                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(location, settlementCaravansList[i]))
-                {
-                    return true; // is on list
-                }
-            }
-
-            return false; //is not on list
-        }
-
-        public ResourceDisplay returnResource(string name) //used to return the correct resource based on string name
-        {
-            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef.defName == name);
-            if (res == null)
-            {
-                /* This should never happen! */
-                LogUtil.Error($"Requested resource {name} is not in the list of faction resources!");
-            }
-            return res;
-        }
-
-        public ResourceDisplay returnResource(ResourceTypeDef resourceTypeDef)
-        {
-            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef);
-            if (res == null)
-            {
-                /* This should never happen! */
-                LogUtil.Error($"Requested resource {resourceTypeDef.defName} is not in the list of faction resources!");
-            }
-            return res;
-        }
+        #region Capital Management
 
         public void setCapital()
         {
@@ -1529,6 +1607,28 @@ namespace FactionColonies
                     "FCUnableToSetCapitalHere".Translate(),
                     MessageTypeDefOf.NegativeEvent);
             }
+        }
+
+        public bool HasActiveCapitalSpot()
+        {
+            return !(GetActiveCapitalSpot() is null);
+        }
+
+        public Building_CapitalSpot GetActiveCapitalSpot()
+        {
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.IsPlayerHome) continue;
+
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
+                    {
+                        return capitalSpot;
+                    }
+                }
+            }
+            return null;
         }
 
         public int returnCapitalMapId()
@@ -1559,270 +1659,179 @@ namespace FactionColonies
             return null;
         }
 
-        public WorldSettlementFC returnSettlementByLocation(PlanetTile location)
+        #endregion
+
+        #region Faction Definition
+
+        //TODO: this whole function is playing with defs. Doesn't seem great. Not sure if there's another way to set icons, though. Need to investigate
+        public void updateFactionIcon(ref Faction faction, string iconPath)
         {
-            for (int i = 0; i < settlements.Count; i++)
+            LogUtil.Message("Updated Icon - " + iconPath);
+            if (faction?.def != null)
             {
-                if (settlements[i].Tile == location)
-                {
-                    return settlements[i];
-                }
+                faction.def.factionIconPath = iconPath;
+            }
+            if (settlements.Any() && settlements[0]?.def != null && UnityData.IsInMainThread)
+            {
+                //TODO: not sure if this will interact wierdly with the new SettlementDef. Keep an eye on this
+                WorldSettlementFC.traitCachedIcon.SetValue(settlements[0].def, ContentFinder<Texture2D>.Get(iconPath));
             }
 
-            return null;
-        }
-
-        public string getSettlementName(PlanetTile location)
-        {
-            return returnSettlementByLocation(location)?.Name ?? "Null";
-        }
-
-        public void updateSettlementStats()
-        {
             foreach (WorldSettlementFC settlement in settlements)
             {
-                settlement.updateHappiness();
-                settlement.updateLoyalty();
-                settlement.updateUnrest();
-                settlement.updateProsperity();
-            }
-        }
-
-        public void TaxTick(Faction faction)
-        {
-            if (faction == null || Find.TickManager.TicksGame < taxTimeDue)
-                return;
-
-            addTax();
-            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
-
-            if (autoResolveBills)
-                PaymentUtil.autoresolveBills(Bills);
-        }
-
-        public void TaxTickPrisoner(WorldSettlementFC settlement)
-        {
-            int i = 0;
-            while (i < settlement.prisonerList.Count)
-            {
-                FCPrisoner prisoner = settlement.prisonerList[i];
-                bool dead = false;
-
-                switch (prisoner.workload)
+                if (settlement?.def != null)
                 {
-                    case FCWorkLoad.Heavy:
-                        if (prisoner.AdjustHealth(-20))
-                            dead = true;
-                        break;
-                    case FCWorkLoad.Medium:
-                        if (prisoner.AdjustHealth(-10))
-                            dead = true;
-                        break;
-                    case FCWorkLoad.Light:
-                        if (prisoner.AdjustHealth(4))
-                            dead = true;
-                        break;
+                    settlement.def.expandingIconTexture = iconPath;
                 }
-
-                /* Only increment if the prisoner hasn't died.
-                 * If they *did* die, then AdjustHealth() will have removed them from the list already. So if we increment, then we'll actually skip the next prisoner. */
-                if (!dead) i++;
-            }
-        }
-
-        // resetTraitMercantileCaravanTime removed — mercantile caravan scheduling
-        // is now handled by FCPolicyBehavior_Mercantile.Tick/OnEnacted.
-
-        private bool CanMakeRandomEventNow()
-        {
-            if ((FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent) == 0)
-            {
-                return randomEventLastAdded - FCSettings.minDaysTillRandomEvent <= 0;
-            }
-            else
-            {
-                return Rand.Chance((randomEventLastAdded - FCSettings.minDaysTillRandomEvent) / (FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent));
-            }
-        }
-
-        private bool RandomEventsDisabledOrNoSettlements() => FactionCache.FactionComp.settlements.Count == 0 || FCSettings.disableRandomEvents;
-
-        private void MakeRandomEvent()
-        {
-            if (RandomEventsDisabledOrNoSettlements()) return;
-
-            if (CanMakeRandomEventNow())
-            {
-                FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.returnRandomEvent(), null);
-                if (tmpEvt != null)
+                if (settlement?.Faction?.def != null)
                 {
-                    FactionCache.FactionComp.addEvent(tmpEvt);
-                    randomEventLastAdded = 0f;
+                    settlement.Faction.def.factionIconPath = iconPath;
+                }
+            }
+        }
 
-                    //letter code
-                    string settlementString = tmpEvt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
+        public void updateFactionDef(TechLevel tech, ref Faction faction)
+        {
+            FactionDef replacingDef;
+            ThingFilter apparelStuffFilter = new ThingFilter();
+            FactionDef def = faction.def;
 
-                    if (!settlementString.NullOrEmpty())
+            switch (tech)
+            {
+                case TechLevel.Archotech:
+                case TechLevel.Ultra:
+                case TechLevel.Spacer:
+                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
+
+                    break;
+                case TechLevel.Industrial:
+                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
+                    break;
+                case TechLevel.Medieval:
+                    if (FCSettings.IsModLoaded("OskarPotocki.VanillaFactionsExpanded.MedievalModule"))
                     {
-                        Find.LetterStack.ReceiveLetter("Random Event", $"{tmpEvt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                        replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("VFEM_KingdomCivil");
                     }
                     else
                     {
-                        Find.LetterStack.ReceiveLetter("Random Event", tmpEvt.def.desc,
-                            LetterDefOf.NeutralEvent);
+                        replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     }
-                }
-                else
+
+                    break;
+                default:
+                    replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
+                    break;
+            }
+            def.caravanTraderKinds = replacingDef.caravanTraderKinds;
+            if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
+                def.backstoryFilters = replacingDef.backstoryFilters;
+            def.techLevel = tech;
+            def.basicMemberKind = replacingDef.basicMemberKind;
+            def.visitorTraderKinds = replacingDef.visitorTraderKinds;
+            def.baseTraderKinds = replacingDef.baseTraderKinds;
+            if (replacingDef.apparelStuffFilter != null)
+                def.apparelStuffFilter = replacingDef.apparelStuffFilter;
+
+
+            if (tech >= TechLevel.Spacer && def.apparelStuffFilter != null)
+            {
+                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Synthread"), true);
+                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Hyperweave"), true);
+                def.apparelStuffFilter.SetAllow(DefDatabase<StuffCategoryDef>.GetNamedSilentFail("Plasteel"), true);
+            }
+            updateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
+
+            LogUtil.Message("FactionFC.updateFactionDef - Completed tech update");
+        }
+
+        public string returnNextTechToLevel()
+        {
+            switch (techLevel)
+            {
+                case TechLevel.Ultra:
+                    return "ReachedMaxLevel".Translate();
+                case TechLevel.Spacer:
+                    return "FCShipBasics".Translate();
+                case TechLevel.Industrial:
+                    return "FCFabrication".Translate();
+                case TechLevel.Medieval:
+                    return "FCElectricity".Translate();
+                case TechLevel.Neolithic:
+                    return "FCSmithing".Translate();
+                default:
+                    return "N/A";
+            }
+        }
+
+        #endregion
+
+        #region Misc
+
+        public void setName(string name)
+        {
+            this.name = name;
+        }
+
+        public void GainHappiness(double amount)
+        {
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                settlement.GainHappiness(amount);
+            }
+        }
+
+        public void GainUnrestForReason(Message msg, double amount)
+        {
+            Messages.Message(msg);
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                settlement.GainUnrest(amount);
+            }
+        }
+
+        public bool sendDiplomaticEnvoy(Faction faction)
+        {
+            if (faction.def.permanentEnemy)
+            {
+                Messages.Message("FCCannotImproveRelationsWithType".Translate(), MessageTypeDefOf.RejectInput);
+                return false;
+            }
+
+            // Try new behavior system first
+            bool handled = false;
+            ForEachBehavior(b =>
+            {
+                if (!handled)
+                    handled = b.HandleDiplomaticEnvoy(this, faction);
+            });
+            return handled;
+        }
+
+        /// <summary>
+        /// Syncs faction goodwill with average happiness. Should only be called from StatTick (daily).
+        /// </summary>
+        private void syncGoodwillWithAverages()
+        {
+            if (settlements.Any() && FactionCache.PlayerColonyFaction != null)
+            {
+                FactionCache.PlayerColonyFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer,
+                    (Convert.ToInt32(averageHappiness) - FactionCache.PlayerColonyFaction.PlayerGoodwill));
+            }
+        }
+
+        public bool checkSettlementCaravansList(PlanetTile location) //list of destinations caravans gone to
+        {
+            for (int i = 0; i < settlementCaravansList.Count; i++)
+            {
+                if (location == settlementCaravansList[i] || Find.WorldGrid.IsNeighbor(location, settlementCaravansList[i]))
                 {
-                    randomEventLastAdded += 1f;
+                    return true; // is on list
                 }
             }
-            else
-            {
-                randomEventLastAdded += 1f;
-            }
 
+            return false; //is not on list
         }
 
-        public void StatTick(Faction faction)
-        {
-            if (faction == null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
-                return;
-
-            updateSettlementStats();
-            DirtyAveragesCache();
-            syncGoodwillWithAverages();
-            RelationsUtilFC.resetPlayerColonyRelations();
-            updateDailyResourcePools();
-            MakeRandomEvent();
-        }
-
-        public void MilitaryTick(Faction faction)
-        {
-            if (Find.TickManager.TicksGame >= militaryTimeDue)
-            {
-                if (faction != null &&
-                    FCSettings.disableHostileMilitaryActions == false &&
-                    Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
-                {
-                    //if military actions not disabled or game has not passed through the first season
-                    //LogUtil.Message("Mil Action debug");
-
-
-                    //if settlements exist
-
-                    // get list of settlements
-
-                    //if not underattack, add to list
-
-                    //create weight list by settlement military level
-
-                    //choose random
-
-                    if (settlements.Any())
-                    {
-                        //if settlements exist
-                        List<WorldSettlementFC> targets = new List<WorldSettlementFC>();
-                        foreach (WorldSettlementFC settlement in settlements)
-                        {
-                            //create weight list of settlements
-                            if (settlement.MilitaryComp?.isUnderAttack != true)
-                            {
-                                //if not underattack, add to list
-                                //get weightvalue of target
-                                int weightValue;
-                                switch (settlement.settlementMilitaryLevel)
-                                {
-                                    case 0:
-                                    case 1:
-                                        weightValue = 10;
-                                        break;
-                                    case 2:
-                                    case 3:
-                                        weightValue = 7;
-                                        break;
-                                    case 4:
-                                    case 5:
-                                        weightValue = 3;
-                                        break;
-                                    default:
-                                        weightValue = 1;
-                                        break;
-                                }
-
-                                for (int k = 0; k < weightValue; k++)
-                                {
-                                    targets.Add(settlement);
-                                }
-                            }
-                        }
-
-                        if (targets.Any())
-                        {
-                            //List created, pick from list
-                            Faction enemy = Find.FactionManager.RandomEnemyFaction();
-                            if (enemy != null)
-                            {
-                                WorldSettlementFC settlement = targets.RandomElementWithFallback();
-
-                                if (settlement != null)
-                                {
-                                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemy, true), settlement, enemy);
-                                }
-                            }
-
-                        }
-                    }
-                }
-
-                militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * FCSettings.minMaxDaysTillMilitaryAction.RandomInRange);
-                //LogUtil.Message(militaryTimeDue + " - " + Find.TickManager.TicksGame);
-                //LogUtil.Message((militaryTimeDue - Find.TickManager.TicksGame) / 60000 + " days till next military action");
-                //militaryTimeDue =
-            }
-        }
-
-
-        public void UITick(Faction faction)
-        {
-            if (uiTimeUpdate <= 0) //update per time?
-            {
-                uiTimeUpdate = FCSettings.updateUiTimer;
-
-                if (faction != null)
-                {
-                    //already built in ui update -.-
-                    Find.WindowStack.WindowsUpdate();
-
-                    // Profit and averages are lazy-cached — no eager update needed
-                }
-            }
-            else
-            {
-                uiTimeUpdate -= 1;
-            }
-        }
-
-        public bool HasActiveCapitalSpot()
-        {
-            return !(GetActiveCapitalSpot() is null);
-        }
-
-        public Building_CapitalSpot GetActiveCapitalSpot()
-        {
-            foreach (Map map in Find.Maps)
-            {
-                if (!map.IsPlayerHome) continue;
-                
-                foreach (Building building in map.listerBuildings.allBuildingsColonist)
-                {
-                    if (building is Building_CapitalSpot capitalSpot && capitalSpot.IsActiveCapitalSpot)
-                    {
-                        return capitalSpot;
-                    }
-                }
-            }
-            return null;
-        }
+        #endregion
     }
 }
