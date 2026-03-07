@@ -1128,6 +1128,11 @@ namespace FactionColonies
             ForEachBehavior(b => b.OnSettlementUpgraded(this, settlement, newLevel));
         }
 
+        void ISettlementLifecycleParticipant.OnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef)
+        {
+            ForEachBehavior(b => b.OnSettlementTypeChanged(this, settlement, oldDef, newDef));
+        }
+
         void IBuildingLifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
         {
             ForEachBehavior(b => b.OnBuildingConstructed(this, settlement, building, slot));

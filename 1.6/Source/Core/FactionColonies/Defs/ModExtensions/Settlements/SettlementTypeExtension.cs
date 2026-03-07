@@ -254,6 +254,82 @@ namespace FactionColonies
             return SettlementFormulas.CalculateUpgradeTime(level, buildTimeMult);
         }
 
+        // ── Type Transition ────────────────────────────────────────
+
+        /// <summary>
+        /// Called on the OLD type's extension before the def swap happens.
+        /// </summary>
+        public virtual void PreTypeTransition(WorldSettlementFC settlement, WorldSettlementDef newDef)
+        {
+        }
+
+        /// <summary>
+        /// Called on the NEW type's extension after the def swap and full reconciliation.
+        /// </summary>
+        public virtual void PostTypeTransition(WorldSettlementFC settlement, WorldSettlementDef oldDef)
+        {
+        }
+
+        /// <summary>
+        /// Validates whether an existing settlement's tile is compatible with this type.
+        /// Unlike <see cref="TileIsValidForSettlement"/>, this skips occupation and adjacency checks
+        /// since the settlement already exists on the tile.
+        /// Base impl checks: planet layer, hilliness, allowedBiomes, blockedBiomes.
+        /// </summary>
+        public virtual bool TileIsValidForTypeTransition(PlanetTile tile, StringBuilder reason = null)
+        {
+            if (parentDef.planetLayers.Count > 0 && !parentDef.planetLayers.Contains(tile.Layer.Def))
+            {
+                reason?.Append("TileWrongPlanetLayer".Translate());
+                return false;
+            }
+            else if (parentDef.planetLayers.Count == 0 && tile.Layer != Find.WorldGrid.Surface)
+            {
+                reason?.Append("TileWrongPlanetLayer".Translate());
+                return false;
+            }
+
+            if (tile.Tile?.hilliness == Hilliness.Impassable)
+            {
+                reason?.Append("ImpassableMountains".Translate(parentDef.LabelCap));
+                return false;
+            }
+
+            if (parentDef.allowedBiomes?.Count > 0)
+            {
+                bool foundAllowedBiome = false;
+                foreach (BiomeDef biome in tile.Tile.Biomes)
+                {
+                    if (parentDef.allowedBiomes.Contains(biome))
+                    {
+                        foundAllowedBiome = true;
+                        break;
+                    }
+                }
+                if (!foundAllowedBiome)
+                {
+                    reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                    return false;
+                }
+            }
+
+            if (parentDef.blockedBiomes?.Count > 0)
+            {
+                foreach (BiomeDef biome in tile.Tile.Biomes)
+                {
+                    if (parentDef.blockedBiomes.Contains(biome))
+                    {
+                        reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // ── Destruction ───────────────────────────────────────────
+
         /// <summary>
         /// Called before a settlement is removed from the world.
         /// </summary>

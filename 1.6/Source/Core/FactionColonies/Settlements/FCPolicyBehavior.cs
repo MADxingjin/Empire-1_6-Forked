@@ -98,6 +98,11 @@ namespace FactionColonies
         /// <summary>Called after a settlement has been upgraded (or deleveled).</summary>
         public virtual void OnSettlementUpgraded(FactionFC faction, WorldSettlementFC settlement, int newLevel) { }
 
+        // ── Settlement Type Change ────────────────────────────────
+
+        /// <summary>Called after a settlement has transitioned to a new WorldSettlementDef.</summary>
+        public virtual void OnSettlementTypeChanged(FactionFC faction, WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef) { }
+
         // ── Research ───────────────────────────────────────────────
 
         /// <summary>Called after a research project has been completed.</summary>

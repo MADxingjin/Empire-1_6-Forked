@@ -44,5 +44,15 @@ namespace FactionColonies
             }
             settlement.InvalidateStatCache();
         }
+
+        public static void InvokeOnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef)
+        {
+            foreach (ISettlementLifecycleParticipant participant in _participants)
+            {
+                try { participant.OnSettlementTypeChanged(settlement, oldDef, newDef); }
+                catch (Exception e) { LogUtil.Error($"ISettlementLifecycleParticipant {participant.GetType().Name} threw in OnSettlementTypeChanged: {e}"); }
+            }
+            settlement.InvalidateStatCache();
+        }
     }
 }

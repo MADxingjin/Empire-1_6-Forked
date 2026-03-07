@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -597,6 +598,148 @@ namespace FactionColonies
         public void DelevelSettlement(int times = -1)
         {
             UpgradeSettlement(times);
+        }
+
+        /// <summary>
+        /// Transitions this settlement to a new WorldSettlementDef, reconciling all dependent state
+        /// (comps, stats, resources, buildings, caches). Returns false if the transition is blocked
+        /// (e.g., incompatible planet layer or biome).
+        /// </summary>
+        public bool TransitionType(WorldSettlementDef newDef)
+        {
+            if (newDef == null || newDef == settlementDef) return false;
+
+            WorldSettlementDef oldDef = settlementDef;
+
+            // --- Validation: tile must be valid for new type ---
+            SettlementTypeExtension newExt = newDef.GetSettlementTypeExtension();
+            if (newExt == null)
+            {
+                LogUtil.Error($"Cannot transition {Name}: {newDef.defName} has no SettlementTypeExtension");
+                return false;
+            }
+            StringBuilder reason = new StringBuilder();
+            if (!newExt.TileIsValidForTypeTransition(new PlanetTile(Tile), reason))
+            {
+                LogUtil.Warning($"Cannot transition {Name} from {oldDef.defName} to {newDef.defName}: {reason}");
+                return false;
+            }
+
+            // --- Pre-transition hooks ---
+            oldDef.GetSettlementTypeExtension()?.PreTypeTransition(this, newDef);
+
+            // --- Stat cleanup ---
+            RemoveStatModifiersBySource("settlementType");
+
+            // --- Deconstruct invalid buildings (before def swap, using new def for validation) ---
+            if (BuildingsComp != null)
+            {
+                for (int i = BuildingsComp.Buildings.Count - 1; i >= 0; i--)
+                {
+                    BuildingFCDef bDef = BuildingsComp.Buildings[i].def;
+                    if (bDef != BuildingFCDefOf.Empty && !bDef.CanBeBuiltForSettlementType(newDef))
+                    {
+                        Messages.Message("BuildingRemovedByTypeTransition".Translate(bDef.LabelCap, Name), MessageTypeDefOf.NeutralEvent);
+                        BuildingsComp.DeconstructBuilding(i);
+                    }
+                }
+            }
+
+            // --- Core swap ---
+            def = newDef;
+
+            // --- Reconcile comps ---
+            ReconcileComps(oldDef, newDef);
+
+            // --- Clamp level ---
+            if (settlementLevel > settlementDef.maxSettlementLevel)
+                settlementLevel = settlementDef.maxSettlementLevel;
+
+            // --- Reconcile resources: remove orphans, then add/dirty via PrepareResources ---
+            HashSet<ResourceTypeDef> newResourceDefs = new HashSet<ResourceTypeDef>();
+            foreach (ResourceAvailability ra in settlementDef.resources)
+                newResourceDefs.Add(ra.resourceDef);
+            for (int i = resources.Count - 1; i >= 0; i--)
+            {
+                if (!newResourceDefs.Contains(resources[i].def))
+                    resources.RemoveAt(i);
+            }
+            PrepareResources(FactionCache.FactionComp.techLevel);
+
+            // --- Apply new stat modifiers ---
+            AddStatModifiers(settlementDef.statModifiers, "settlementType");
+
+            // --- Reconcile building slots ---
+            BuildingsComp?.ReinitBuildings();
+
+            // --- Update icon/texture ---
+            UpdateTechIcon();
+            def.expandingIconTexture = "FactionIcons/" + FactionCache.FactionComp.factionIconPath;
+            traitCachedIcon.SetValue(def, ContentFinder<Texture2D>.Get(def.expandingIconTexture));
+
+            // --- Invalidate all caches ---
+            InvalidateCache();
+            FactionCache.FactionComp?.DirtyFactionProfitCache();
+            FactionCache.FactionComp?.DirtyAveragesCache();
+
+            // --- Post-transition hooks ---
+            newDef.GetSettlementTypeExtension()?.PostTypeTransition(this, oldDef);
+            SettlementLifecycleRegistry.InvokeOnSettlementTypeChanged(this, oldDef, newDef);
+
+            LogUtil.Message($"Settlement {Name} transitioned from {oldDef.defName} to {newDef.defName}");
+            return true;
+        }
+
+        /// <summary>
+        /// Reconciles the WorldObjectComp list after a def swap.
+        /// Removes comps whose compClass only existed on the old def (calling PostDestroy).
+        /// Adds comps whose compClass only exists on the new def.
+        /// Comps present on both defs are left untouched, preserving their state.
+        /// </summary>
+        private void ReconcileComps(WorldSettlementDef oldDef, WorldSettlementDef newDef)
+        {
+            HashSet<Type> oldCompClasses = new HashSet<Type>();
+            foreach (WorldObjectCompProperties props in oldDef.comps)
+                oldCompClasses.Add(props.compClass);
+
+            HashSet<Type> newCompClasses = new HashSet<Type>();
+            foreach (WorldObjectCompProperties props in newDef.comps)
+                newCompClasses.Add(props.compClass);
+
+            // Remove comps that are on the old def but NOT on the new def
+            List<WorldObjectComp> compsList = AllComps;
+            for (int i = compsList.Count - 1; i >= 0; i--)
+            {
+                Type compType = compsList[i].GetType();
+                if (oldCompClasses.Contains(compType) && !newCompClasses.Contains(compType))
+                {
+                    compsList[i].PostDestroy();
+                    compsList.RemoveAt(i);
+                }
+            }
+
+            // Add comps that are on the new def but NOT on the old def
+            HashSet<Type> currentCompClasses = new HashSet<Type>();
+            foreach (WorldObjectComp comp in compsList)
+                currentCompClasses.Add(comp.GetType());
+
+            foreach (WorldObjectCompProperties props in newDef.comps)
+            {
+                if (!currentCompClasses.Contains(props.compClass))
+                {
+                    try
+                    {
+                        WorldObjectComp comp = (WorldObjectComp)Activator.CreateInstance(props.compClass);
+                        comp.parent = this;
+                        compsList.Add(comp);
+                        comp.Initialize(props);
+                    }
+                    catch (Exception e)
+                    {
+                        LogUtil.Error($"Failed to create comp {props.compClass} during type transition: {e}");
+                    }
+                }
+            }
         }
 
         public void GainUnrestWithReason(Message message, double amount)

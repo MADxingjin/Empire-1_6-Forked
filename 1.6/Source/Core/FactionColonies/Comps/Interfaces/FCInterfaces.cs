@@ -103,6 +103,10 @@ namespace FactionColonies
         /// Called after a settlement has been upgraded or deleveled.
         /// </summary>
         void OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel);
+        /// <summary>
+        /// Called after a settlement has transitioned to a new WorldSettlementDef.
+        /// </summary>
+        void OnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef);
     }
     /// <summary>
     /// Defines an interface to let classes hook into building construction and deconstruction.
