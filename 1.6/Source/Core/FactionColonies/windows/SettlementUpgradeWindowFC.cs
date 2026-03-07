@@ -53,7 +53,7 @@ namespace FactionColonies
             if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
             //on success
-            PaymentUtil.PaySilver(settlementUpgradeCost);
+            PaymentUtil.PaySilver(settlementUpgradeCost, PaymentUtil.Reason_SettlementUpgrade, settlement);
             FCEvent tmp = new FCEvent(true)
             {
                 def = FCEventDefOf.upgradeSettlement,

@@ -231,7 +231,6 @@ namespace FactionColonies
             productionMultipliers.Clear();
             if (settlement != null)
             {
-                //TODO: Setup the filter. Should be done with a function in *this* class, not PaymentUtil
                 SetBaseResourceBonuses();
             }
             ResetThingFilter();

@@ -9,6 +9,16 @@ namespace FactionColonies
 {
     public class PaymentUtil
     {
+        public const string Reason_SquadDeployment = "squad_deployment";
+        public const string Reason_FireSupport = "fire_support";
+        public const string Reason_BuildingConstruction = "building_construction";
+        public const string Reason_BuildingDemolition = "building_demolition";
+        public const string Reason_SettlementCreation = "settlement_creation";
+        public const string Reason_SettlementUpgrade = "settlement_upgrade";
+        public const string Reason_EventOption = "event_option";
+        public const string Reason_TaxPayment = "tax_payment";
+        public const string Reason_SilverPayment = "silver_payment";
+
         public static (List<BillFC>, List<BillFC>) returnBillTypes(List<BillFC> bills)
         {
             List<BillFC> positiveBills = new List<BillFC>();
@@ -35,73 +45,72 @@ namespace FactionColonies
 
             (List<BillFC> negativeBills, List<BillFC> positiveBills) = returnBillTypes(bills);
 
-
-            //Go through each negative bill
-            //cycle through each positive bill
-            //subtract silver from positive bill until negative bill = 0
-            //if negative bill equals zero, move to next.
-
-            //if make it to the end of the positive bills, goto function to check if there's enough silver. If so, pay, if not, return the function
-            Reset:
-            foreach (BillFC negativeBill in negativeBills)
+            // Offset negative bills against positive bills, then resolve any remainder.
+            int i = 0;
+            while (i < negativeBills.Count)
             {
-                ResetInner:
-                foreach (BillFC positiveBill in positiveBills)
+                BillFC negativeBill = negativeBills[i];
+                bool matched = false;
+                int j = 0;
+                while (j < positiveBills.Count)
                 {
+                    BillFC positiveBill = positiveBills[j];
                     float result = positiveBill.taxes.silverAmount + negativeBill.taxes.silverAmount;
                     if (result == 0)
                     {
-                        //LogUtil.Message("Equal");
-                        //if bills cancel eachother out
-                        //resolve positive bill and negative bill
+                        // Bills cancel each other out — resolve both, restart outer
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = 0;
                         positiveBill.Resolve();
                         negativeBill.Resolve();
                         resolvedBills += 2;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto Reset;
+                        i = 0;
+                        matched = true;
+                        break;
                     }
                     else if (result > 0)
                     {
-                        //LogUtil.Message("More");
-                        //if positive bill greater than negative bill
+                        // Positive bill covers the negative — resolve negative, restart outer
                         positiveBill.taxes.silverAmount = result;
                         negativeBill.taxes.silverAmount = 0;
                         negativeBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto Reset;
+                        i = 0;
+                        matched = true;
+                        break;
                     }
-                    else if (result < 0)
+                    else // result < 0
                     {
-                        //LogUtil.Message("Less");
-                        //if negative bill is greater (technically lesser) than positive bill
+                        // Negative exceeds positive — resolve positive, continue inner
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = result;
                         positiveBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto ResetInner;
+                        j = 0;
+                        continue;
                     }
                 }
 
-                //if looped through all positive bills, attempt to resolve
-
-                if (negativeBill.AttemptResolve())
+                if (!matched)
                 {
-                    (negativeBills, positiveBills) = returnBillTypes(bills);
-                    resolvedBills++;
+                    // Exhausted positive bills — attempt to resolve with player silver
+                    if (negativeBill.AttemptResolve())
+                    {
+                        (negativeBills, positiveBills) = returnBillTypes(bills);
+                        resolvedBills++;
+                    }
+                    i++;
                 }
             }
 
-            ResetOuter:
-            foreach (BillFC positiveBill in positiveBills)
+            // Resolve remaining positive bills
+            foreach (BillFC positiveBill in new List<BillFC>(positiveBills))
             {
                 positiveBill.Resolve();
                 resolvedBills++;
-                (negativeBills, positiveBills) = returnBillTypes(bills);
-                goto ResetOuter;
             }
 
             Messages.Message(TranslatorFormattedStringExtensions.Translate("NumberTaxesHasBeenSolved", resolvedBills),
@@ -142,40 +151,37 @@ namespace FactionColonies
             DeliveryEvent.CreateDeliveryEvent(things, source, let, msg);
         }
 
-        public static bool PaySilver(int amount)
+        public static bool PaySilver(int amount, string reason = null, WorldSettlementFC settlement = null)
         {
-            Paid:
-            while (amount > 0)
+            SilverPaymentContext context = new SilverPaymentContext(amount, reason, settlement);
+            SilverPaymentRegistry.InvokeModifiers(context);
+            amount = context.Amount;
+            if (amount <= 0) return true;
+
+            List<Thing> silverStacks = new List<Thing>();
+            foreach (Map map in Find.Maps)
             {
-                foreach (Map map in Find.Maps)
+                if (map.IsPlayerHome)
                 {
-                    if (map.IsPlayerHome)
-                    {
-                    List:
-                        foreach (Thing item in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage() == true))
-                        {
-                            //if silver, add to count
-                            if (amount - item.stackCount < 0) //if removing silver would pay too much
-                            {
-                                int overdraw = -1 * (amount - item.stackCount);
-                                amount -= (item.stackCount - overdraw);
-                                item.SplitOff(item.stackCount - overdraw).Destroy(DestroyMode.Vanish);
-                                goto Paid;
-                            }
-                            else if (amount - item.stackCount > 0) //if removing silver would leave some
-                            {
-                                amount -= item.stackCount;
-                                item.Destroy(DestroyMode.Vanish);
-                                goto List;
-                            }
-                            else if (amount - item.stackCount == 0) //if removing silver will make amount = 0
-                            {
-                                amount -= item.stackCount;
-                                item.Destroy(DestroyMode.Vanish);
-                                goto Paid;
-                            }
-                        }
-                    }
+                    silverStacks.AddRange(
+                        map.listerThings.ThingsOfDef(ThingDefOf.Silver)
+                           .Where(s => s.IsInAnyStorage()));
+                }
+            }
+
+            foreach (Thing stack in silverStacks)
+            {
+                if (amount <= 0) break;
+
+                if (stack.stackCount <= amount)
+                {
+                    amount -= stack.stackCount;
+                    stack.Destroy(DestroyMode.Vanish);
+                }
+                else
+                {
+                    stack.SplitOff(amount).Destroy(DestroyMode.Vanish);
+                    amount = 0;
                 }
             }
 

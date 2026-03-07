@@ -115,7 +115,7 @@ namespace FactionColonies
                     return;
                 }
 
-                if (overrideSquad != null) PaymentUtil.PaySilver((int)Math.Round((settlement.MilitaryComp?.militarySquad?.outfit?.UpdateEquipmentTotalCost() ?? 0) * .2));
+                if (overrideSquad != null) PaymentUtil.PaySilver((int)Math.Round((settlement.MilitaryComp?.militarySquad?.outfit?.UpdateEquipmentTotalCost() ?? 0) * .2), PaymentUtil.Reason_SquadDeployment, settlement);
                 SpawnSquad(settlement, squad, dropPosition, DropPod);
                 DebugTools.curTool = null;
             });
@@ -147,7 +147,7 @@ namespace FactionColonies
                 float cost = support.ReturnTotalCost();
                 if (PaymentUtil.GetSilver() > cost)
                 {
-                    PaymentUtil.PaySilver((int)Math.Round(cost));
+                    PaymentUtil.PaySilver((int)Math.Round(cost), PaymentUtil.Reason_FireSupport, settlement);
                     DropPosition = UI.MouseCell();
                     IntVec3 spawnCenter = DropPosition;
                     Map map = Find.CurrentMap;

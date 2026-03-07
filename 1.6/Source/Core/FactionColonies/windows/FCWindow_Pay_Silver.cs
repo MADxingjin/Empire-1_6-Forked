@@ -104,7 +104,7 @@ namespace FactionColonies
 
 			if(Widgets.ButtonText(button_Confirm, "FCConfirm".Translate()))
 			{
-				PaymentUtil.PaySilver(selectedSilver);
+				PaymentUtil.PaySilver(selectedSilver, PaymentUtil.Reason_SilverPayment, settlement);
 				this.UseValue(selectedSilver);
 				this.Close();
 

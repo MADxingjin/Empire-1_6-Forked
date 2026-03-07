@@ -145,13 +145,11 @@ namespace FactionColonies
         public static void ProcessBills()
         {
             FactionFC factionfc = FactionCache.FactionComp;
-            Reset:
-            foreach(BillFC bill in factionfc.Bills)
+            for (int i = factionfc.Bills.Count - 1; i >= 0; i--)
             {
-                if (bill.dueTick < Find.TickManager.TicksGame)
-                { //if bill is overdue
-                    bill.Resolve();
-                    goto Reset;
+                if (factionfc.Bills[i].dueTick < Find.TickManager.TicksGame)
+                {
+                    factionfc.Bills[i].Resolve();
                 }
             }
         }

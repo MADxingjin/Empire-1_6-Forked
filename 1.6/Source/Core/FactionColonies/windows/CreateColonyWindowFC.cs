@@ -329,7 +329,7 @@ namespace FactionColonies
 
                 LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
 
-                PaymentUtil.PaySilver(settlementCreationCost);
+                PaymentUtil.PaySilver(settlementCreationCost, PaymentUtil.Reason_SettlementCreation);
 
                 //create settle event
                 FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);

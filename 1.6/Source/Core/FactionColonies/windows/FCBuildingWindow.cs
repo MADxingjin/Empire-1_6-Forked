@@ -532,7 +532,7 @@ namespace FactionColonies
                                 Messages.Message("FCNotEnoughSilverDemolish".Translate(), MessageTypeDefOf.RejectInput);
                                 return;
                             }
-                            PaymentUtil.PaySilver(demolishCost);
+                            PaymentUtil.PaySilver(demolishCost, PaymentUtil.Reason_BuildingDemolition, settlement);
                             settlement.DeconstructBuilding(buildingSlot);
                             Messages.Message("FCBuildingDemolished".Translate(buildingDef.LabelCap), MessageTypeDefOf.PositiveEvent);
                             Find.WindowStack.TryRemove(this);
@@ -1179,7 +1179,7 @@ namespace FactionColonies
             tmpEvt.hasCustomDescription = true;
             FactionCache.FactionComp.AddEvent(tmpEvt);
 
-            PaymentUtil.PaySilver(Convert.ToInt32(selectedBuilding.cost));
+            PaymentUtil.PaySilver(Convert.ToInt32(selectedBuilding.cost), PaymentUtil.Reason_BuildingConstruction, settlement);
             Messages.Message(selectedBuilding.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
             settlement.BuildingsComp.StartConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
             Find.WindowStack.TryRemove(this);

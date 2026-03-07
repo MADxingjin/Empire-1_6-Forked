@@ -581,7 +581,7 @@ namespace FactionColonies
             else if (bill.taxes.silverAmount < 0) //if paying money
             {
                 //remove money from colony
-                PaymentUtil.PaySilver((int)(-1 * (bill.taxes.silverAmount)));
+                PaymentUtil.PaySilver((int)(-1 * (bill.taxes.silverAmount)), PaymentUtil.Reason_TaxPayment, bill.settlement);
             }
 
 

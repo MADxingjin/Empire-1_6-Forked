@@ -330,7 +330,7 @@ namespace FactionColonies
                     if (affordable)
                     {
                         SoundDefOf.Click.PlayOneShotOnCamera();
-                        PaymentUtil.PaySilver(opt.silverCost);
+                        PaymentUtil.PaySilver(opt.silverCost, PaymentUtil.Reason_EventOption);
                         FCEventMaker.CalculateSuccess(opt, parentEvent);
                         Find.WindowStack.TryRemove(this);
                     }
