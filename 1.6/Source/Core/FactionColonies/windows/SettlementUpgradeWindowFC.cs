@@ -74,9 +74,8 @@ namespace FactionColonies
 
             FactionCache.FactionComp.addEvent(tmp);
 
-            //Close this window and update the SettlementWindowFc
+            //Close this window
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
 
             return new Message("StartUpgradeSettlement".Translate(), MessageTypeDefOf.NeutralEvent);
         }

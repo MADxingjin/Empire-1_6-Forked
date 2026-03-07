@@ -55,18 +55,10 @@ namespace FactionColonies
         // Comps with overview tabs
         private List<ISettlementWindowOverview> overviews = new List<ISettlementWindowOverview>();
 
-        public void windowUpdateFc()
-        {
-            // description is now lazily cached — no action needed
-        }
-
         public override void PreOpen()
         {
             base.PreOpen();
-            // Don't recalculate production on UI open - this overwrites saved values
-            // settlement.updateProfitAndProduction();
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
-            //settlement.update description
             factionfc = FactionCache.FactionComp;
 
             foreach (WorldObjectComp comp in settlement.AllComps)
@@ -95,7 +87,6 @@ namespace FactionColonies
             if (uiUpdateTimer == 0)
             {
                 uiUpdateTimer = FCSettings.updateUiTimer;
-                windowUpdateFc();
             }
             else
             {
@@ -147,9 +138,6 @@ namespace FactionColonies
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;
-
-            //TODO: add entries to overviewTabs based on settlement comps
-            //TODO: need to actually make an interface for WorldObjectComps to implement overview functionality...
         }
 
 
@@ -193,14 +181,11 @@ namespace FactionColonies
             Widgets.DrawBox(botBox);
             GUI.color = origColor;
             DrawSettlementStats(topBoxInner);
-            //Widgets.DrawLineHorizontal(boundingBox.x, topBox.yMax + margin, boundingBox.width);
             DrawMainButtons(botBoxInner);
         }
 
         private void DrawCenterInfo(Rect boundingBox)
         {
-            //Rect headerBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30 + (margin*2) + 60);
-
             Color origColor = GUI.color;
             float nTabs = overviewTabs.Count;
             float tabY = boundingBox.y;
@@ -362,7 +347,6 @@ namespace FactionColonies
                 Rect tabBox = new Rect(boundingBox.x, boundingBox.y + (tabHeight * i), tabWidth, tabHeight);
                 float imgSize = Math.Min(tabWidth, tabHeight);
                 Rect iconBox = new Rect(tabBox.x + (tabWidth - imgSize) / 2f, tabBox.y + (tabHeight - imgSize) / 2f, imgSize, imgSize);
-                //if (Widgets.ButtonText(tabBox, ""))
                 if (UIUtil.ButtonFlat(tabBox, ""))
                 {
                     titheTab = i;
@@ -373,7 +357,6 @@ namespace FactionColonies
                 UIUtil.TipRegionByText(tabBox, resources[i].def.LabelCap);
                 if (titheTab == i)
                 {
-                    //Widgets.DrawBox(tabBox);
                     chosenRect = tabBox;
                 }
             }
@@ -573,7 +556,6 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
                 UIUtil.InfoCardButton(info, iThing);
-                //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
                 if (Widgets.ButtonText(xBox, "X"))
                 {
                     res.removeFromTitheList(thingTuple);
@@ -771,7 +753,6 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
                     Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue,2)}");
-                    //Widgets.InfoCardButton(icon.xMax, row.y+1, iThing);
                     UIUtil.InfoCardButton(info, iThing);
                 }
 
@@ -906,7 +887,6 @@ namespace FactionColonies
 
         private void DrawDescription(Rect boundingBox)
         {
-            //Widgets.Label(new Rect(x, y - 20, 100, 30), "Description".Translate());
             Widgets.DrawMenuSection(boundingBox);
 
             Rect textBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2), boundingBox.height - (margin * 2));
@@ -1042,9 +1022,6 @@ namespace FactionColonies
                                 }
 
                                 Find.WindowStack.Add(new Searchable_FloatMenu(settlementList) { vanishIfMouseDistant = true });
-
-
-                                //set to raid settlement here
                             }));
 
                             Find.WindowStack.Add(new FloatMenu(list));
@@ -1380,9 +1357,6 @@ namespace FactionColonies
             Rect incomeBox = new Rect(prodTotalBox.xMax + margin, boundingBox.y, colWidth*2 + margin, headerHeight/2f);
             Rect incomeRawBox = new Rect(incomeBox.x, incomeBox.yMax, colWidth, headerHeight / 2f);
             Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, incomeRawBox.y, colWidth, headerHeight/2f);
-            // make a new rect for the income label to account for some text-alignment issues
-            //Rect incomeLabel = new Rect(incomeBox.x - 2, incomeBox.y, incomeBox.width, incomeBox.height);
-
             Widgets.DrawHighlight(workersBox);
             Widgets.Label(workersBox, "Workers".Translate());
 
@@ -1504,7 +1478,6 @@ namespace FactionColonies
             }
             //if clicked to lower amount of workers
             settlement.increaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
-            windowUpdateFc();
         }
     }
 }

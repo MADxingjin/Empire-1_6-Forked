@@ -536,7 +536,6 @@ namespace FactionColonies
                             settlement.deconstructBuilding(buildingSlot);
                             Messages.Message("FCBuildingDemolished".Translate(buildingDef.LabelCap), MessageTypeDefOf.PositiveEvent);
                             Find.WindowStack.TryRemove(this);
-                            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
                         }
                     ));
                 }
@@ -1154,7 +1153,6 @@ namespace FactionColonies
             if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.DemolishBuilding)) return;
             settlement.deconstructBuilding(buildingSlot);
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
         }
 
         private void ExecuteBuild()
@@ -1185,7 +1183,6 @@ namespace FactionColonies
             Messages.Message(selectedBuilding.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
             settlement.BuildingsComp.startConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
         }
 
         #endregion
