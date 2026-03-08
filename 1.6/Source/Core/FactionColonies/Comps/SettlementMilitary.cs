@@ -708,6 +708,8 @@ namespace FactionColonies
 
         private void LoseBattle(FactionFC faction)
         {
+            faction.threatAdaptation.Notify_BattleLost();
+
             var happinessLostMultiplier = WorldSettlement.GetStatValue(FCStatDefOf.happinessLostMultiplier);
             var loyaltyLostMultiplier = WorldSettlement.GetStatValue(FCStatDefOf.loyaltyLostMultiplier);
 
@@ -805,6 +807,7 @@ namespace FactionColonies
         private void WinBattle(FactionFC faction)
         {
             faction.AddExperienceToFactionLevel(5f);
+            faction.threatAdaptation.Notify_BattleWon();
             Find.LetterStack.ReceiveLetter("DefenseSuccessful".Translate(),
                 "DefenseSuccessfulFull".Translate(WorldSettlement.Name),
                 LetterDefOf.PositiveEvent, new LookTargets(WorldSettlement));

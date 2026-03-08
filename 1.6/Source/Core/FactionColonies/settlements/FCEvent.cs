@@ -512,7 +512,7 @@ namespace FactionColonies
                 raidNeverFleeIndividual = true
             };
             parms.points = IncidentWorker_Raid.AdjustedRaidPoints(
-                (float)temp.militaryForceAttacking.forceRemaining * 150,
+                (float)temp.militaryForceAttacking.forceRemaining * 175,
                 PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
                 parms.faction, PawnGroupKindDefOf.Combat,
                 parms.target // new required parameter

@@ -198,13 +198,21 @@ namespace FactionColonies
 
             double value = militaryLevel + MilitaryUtil.RandomAttackModifier();
             value = Math.Max(value, 1);
+
+            FactionFC factionComp = FactionCache.FactionComp;
+
+            // Apply Empire Threat Level scaling
+            value *= ThreatScalingUtil.ComputeEmpireThreatLevel(factionComp);
+
+            // Apply storyteller-curve adaptation
+            if (factionComp.threatAdaptation != null)
+            {
+                value *= factionComp.threatAdaptation.ThreatFactor;
+            }
+
             if (handicap)
             {
-                value = Math.Min(value,
-                    (2 + Math.Round((double) (Find.TickManager.TicksGame -
-                                              FactionCache.FactionComp.timeStart - GenDate.TicksPerSeason) /
-                                    GenDate.TicksPerSeason)));
-                //LogUtil.Message(value.ToString());
+                value = Math.Min(value, ThreatScalingUtil.ComputeHandicapCap(factionComp));
             }
 
             militaryForce returnForce = new militaryForce(value, efficiency, null, faction);
@@ -236,6 +244,7 @@ namespace FactionColonies
             {
                 if (settlementCompare.MilitaryComp != null &&
                     settlementCompare.MilitaryComp.autoDefend && !settlementCompare.MilitaryComp.militaryBusy &&
+                    !settlementCompare.MilitaryComp.isUnderAttack &&
                     settlementCompare.settlementMilitaryLevel > settlement.settlementMilitaryLevel &&
                     (highest == null || settlementCompare.settlementMilitaryLevel > highest.settlementMilitaryLevel))
                 {

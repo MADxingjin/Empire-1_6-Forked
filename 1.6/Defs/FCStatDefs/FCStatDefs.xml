@@ -96,6 +96,22 @@
         <invertedForDisplay>true</invertedForDisplay>
     </FactionColonies.FCStatDef>
 
+    <!-- ── Threat Scaling ──────────────────────────────────────── -->
+
+    <FactionColonies.FCStatDef>
+        <defName>threatScalingBase</defName>
+        <label>threat scaling base</label>
+        <aggregation>Additive</aggregation>
+        <appliesToSettlements>false</appliesToSettlements>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>threatScalingMultiplier</defName>
+        <label>threat scaling multiplier</label>
+        <aggregation>Multiplicative</aggregation>
+        <appliesToSettlements>false</appliesToSettlements>
+    </FactionColonies.FCStatDef>
+
     <!-- ── Economy ─────────────────────────────────────────────── -->
 
     <FactionColonies.FCStatDef>

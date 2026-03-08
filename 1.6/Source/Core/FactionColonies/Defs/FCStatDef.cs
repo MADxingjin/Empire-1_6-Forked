@@ -132,6 +132,10 @@ namespace FactionColonies
         public static FCStatDef raidCooldownOffset;
         public static FCStatDef deadPawnCooldownOffset;
 
+        // ── Threat Scaling ───────────────────────────────────────
+        public static FCStatDef threatScalingBase;
+        public static FCStatDef threatScalingMultiplier;
+
         // ── Battle Penalties ──────────────────────────────────────
         public static FCStatDef battleProsperityLossMultiplier;
         public static FCStatDef battleHappinessLossMultiplier;

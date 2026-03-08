@@ -167,6 +167,7 @@ namespace FactionColonies
 
         // ── Military & Roads ──
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
+        public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
         public List<int> militaryTargets = new List<int>();
 
@@ -346,6 +347,10 @@ namespace FactionColonies
             //Road builder
             Scribe_Deep.Look(ref roadBuilder, "roadBuilder");
 
+            //Threat adaptation
+            Scribe_Deep.Look(ref threatAdaptation, "threatAdaptation");
+            if (threatAdaptation == null) threatAdaptation = new EmpireThreatAdaptation();
+
             // Legacy trait Scribe_Values removed — state is now in FCPolicyBehavior subclasses,
             // serialized via FCPolicy.ExposeData -> FCPolicyBehavior.ExposeData.
 
@@ -488,6 +493,7 @@ namespace FactionColonies
             UITick(faction);
             StatTick(faction);
             MilitaryTick(faction);
+            threatAdaptation.Tick();
             if (pendingEdictActivations.Count > 0 && Find.TickManager.TicksGame % 250 == 0)
                 CheckEdictActivations();
             if (!(faction is null))
@@ -574,7 +580,8 @@ namespace FactionColonies
                         if (targets.Any())
                         {
                             //List created, pick from list
-                            Faction enemy = Find.FactionManager.RandomEnemyFaction();
+                            double etl = ThreatScalingUtil.ComputeEmpireThreatLevel(this);
+                            Faction enemy = ThreatScalingUtil.PickWeightedEnemyFaction(etl);
                             if (enemy != null)
                             {
                                 WorldSettlementFC settlement = targets.RandomElementWithFallback();
@@ -589,7 +596,7 @@ namespace FactionColonies
                     }
                 }
 
-                militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * FCSettings.minMaxDaysTillMilitaryAction.RandomInRange);
+                militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * ThreatScalingUtil.ComputeScaledAttackInterval(this));
             }
         }
 
