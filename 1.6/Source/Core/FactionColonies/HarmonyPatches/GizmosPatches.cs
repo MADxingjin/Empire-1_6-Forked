@@ -5,6 +5,7 @@ using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using Verse.AI.Group;
 
 namespace FactionColonies
 {
@@ -29,7 +30,9 @@ namespace FactionColonies
 			
 			if (__instance.Faction == playerColonyFaction)
 			{
-				Pawn_DraftController pawnDraftController = __instance.drafter ?? new Pawn_DraftController(__instance);
+				if (__instance.drafter == null)
+					__instance.drafter = new Pawn_DraftController(__instance);
+				Pawn_DraftController pawnDraftController = __instance.drafter;
 				
 				Command_Toggle draftColonists = new Command_Toggle
 				{
@@ -82,7 +85,21 @@ namespace FactionColonies
 						Command_Toggle action = gizmo as Command_Toggle;
 						if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
 						{
-							action.toggleAction = () => found.SetFaction(FactionCache.PlayerColonyFaction);
+							action.toggleAction = () =>
+							{
+								found.SetFaction(FactionCache.PlayerColonyFaction);
+								// Re-add to defense lord after undrafting
+								var milComp = settlementFc.MilitaryComp;
+								if (milComp != null && milComp.defenders.Any())
+								{
+									var defenderLord = milComp.defenders[0].GetLord();
+									if (defenderLord != null && !defenderLord.ownedPawns.Contains(found))
+									{
+										defenderLord.AddPawn(found);
+										defenderLord.CurLordToil.UpdateAllDuties();
+									}
+								}
+							};
 							break;
 						}
 					}

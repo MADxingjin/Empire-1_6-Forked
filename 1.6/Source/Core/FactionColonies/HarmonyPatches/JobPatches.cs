@@ -1,4 +1,5 @@
 using HarmonyLib;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 using Verse.AI;
@@ -25,6 +26,23 @@ namespace FactionColonies
             // Block all non-supporting defenders (mercenary or generated)
             if (military.defenders.Contains(pawn)) return false;
 
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(JobGiver_ExitMap), "TryGiveJob")]
+    class Patch_JobGiver_ExitMap
+    {
+        static bool Prefix(Pawn pawn, ref Job __result)
+        {
+            if (!(pawn.Map?.Parent is WorldSettlementFC settlement)) return true;
+            var military = settlement.MilitaryComp;
+            if (military == null || !military.isUnderAttack) return true;
+            if (military.defenders.Contains(pawn))
+            {
+                __result = null;
+                return false;
+            }
             return true;
         }
     }

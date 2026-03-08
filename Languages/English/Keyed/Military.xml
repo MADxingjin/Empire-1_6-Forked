@@ -70,6 +70,7 @@
 	<DefenseFailureBuildingsProtected>Buildings were protected from destruction by your policies.</DefenseFailureBuildingsProtected>
 	<BuildingDestroyedInRaid>{0} has been destroyed in the raid.</BuildingDestroyedInRaid>
 	<SettlementDeleveledRaid>The settlement level has decreased by one.</SettlementDeleveledRaid>
+	<InjuredCaravanMembersReturning>{0} injured caravan member(s) are being transported home. Estimated arrival: {1} days.</InjuredCaravanMembersReturning>
 
 	<!-- Battle Ending -->
 	<EndingAttack>Ending attack...</EndingAttack>

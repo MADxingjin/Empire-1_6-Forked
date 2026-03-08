@@ -98,7 +98,7 @@ namespace FactionColonies.util
                     else
                     {
                         //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.CooldownMilitary();
+                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.CooldownMilitaryFinal();
 
                         toRemove.Add(evt);
                     }

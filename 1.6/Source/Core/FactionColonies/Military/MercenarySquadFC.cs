@@ -640,7 +640,7 @@ namespace FactionColonies
         {
             if (!isExtraSquad)
             {
-                settlement.MilitaryComp?.CooldownMilitary();
+                settlement.MilitaryComp?.CooldownMilitaryFinal();
                 return true;
             }
 

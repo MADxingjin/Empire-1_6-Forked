@@ -422,6 +422,22 @@ namespace FactionColonies.util
 			}
 		}
 		
+		public static string ShuttleEventInjuredLostString
+		{
+			get
+			{
+				if (FactionCache.TechTransportPods.IsFinished)
+				{
+					if (ModsConfig.RoyaltyActive)
+					{
+						return "transportingInjuredShuttleLost".Translate();
+					}
+					return "transportingInjuredDropPodLost".Translate();
+				}
+				return "transportingInjuredCaravanLost".Translate();
+			}
+		}
+
 		public static IntVec3 GetDeliveryCell(TraverseParms traverseParms, Map map)
 		{
 			if (!PaymentUtil.CheckForTaxSpot(map, out IntVec3 intVec3))

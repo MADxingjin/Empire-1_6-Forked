@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
+using RimWorld;
 using Verse;
 using Verse.AI.Group;
 
@@ -62,6 +63,11 @@ namespace FactionColonies
         {
             if (condition == PawnLostCondition.ChangedFaction || condition == PawnLostCondition.ExitedMap)
             {
+                // Player is drafting this pawn — let it go without re-adding
+                if (condition == PawnLostCondition.ChangedFaction && pawn.Faction == Faction.OfPlayer)
+                {
+                    return;
+                }
                 if (pawn.Spawned)
                 {
                     lord.AddPawn(pawn);
@@ -70,7 +76,7 @@ namespace FactionColonies
                 return;
             }
             if (pawn.IsMercenary() && pawn.Faction != FactionCache.PlayerColonyFaction) pawn.SetFaction(FactionCache.PlayerColonyFaction);
-            
+
             settlement?.MilitaryComp?.RemoveDefender(pawn);
         }
     }

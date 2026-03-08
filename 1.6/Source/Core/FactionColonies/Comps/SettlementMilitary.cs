@@ -76,13 +76,14 @@ namespace FactionColonies
         private bool endingBattle = false;
         private bool battleMapInitialized = false;
         private int initialDefenderCount;
+        private string pendingDeliveryMessage;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Collections.Look(ref attackers, "attackers", LookMode.Reference);
             Scribe_Collections.Look(ref defenders, "defenders", LookMode.Reference);
-            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Reference);
+            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Deep);
             Scribe_Deep.Look(ref defenderForce, "defenderForce");
             Scribe_Deep.Look(ref attackerForce, "attackerForce");
             Scribe_Values.Look(ref isUnderAttack, "isUnderAttack");
@@ -347,6 +348,7 @@ namespace FactionColonies
                     supporting.Add(caravanSupporting);
 
                     defenders.AddRange(caravanSupporting.pawns);
+                    initialDefenderCount = defenders.Count;
                 });
         }
 
@@ -357,7 +359,7 @@ namespace FactionColonies
                     yield return option;
         }
 
-        private void DeleteMap()
+        private void DeleteMap(bool won = true)
         {
             var map = Map;
             if (map == null) return;
@@ -407,17 +409,27 @@ namespace FactionColonies
                         }
                     }
 
+                string eventText = won
+                    ? DeliveryEvent.ShuttleEventInjuredString
+                    : DeliveryEvent.ShuttleEventInjuredLostString;
+                int travelTicks = TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile);
+                if (!won) travelTicks += GenDate.TicksPerDay;
+
                 var eventParams = new FCEvent
                 {
                     location = Find.AnyPlayerHomeMap.Tile,
                     source = WorldSettlement.Tile,
                     goods = pawns.ToList(),
-                    customDescription = DeliveryEvent.ShuttleEventInjuredString,
-                    timeTillTrigger = Find.TickManager.TicksGame +
-                                      TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile)
+                    customDescription = eventText,
+                    timeTillTrigger = Find.TickManager.TicksGame + travelTicks
                 };
 
-                if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
+                if (pawns.Any())
+                {
+                    DeliveryEvent.CreateDeliveryEvent(eventParams);
+                    string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
+                    pendingDeliveryMessage = "InjuredCaravanMembersReturning".Translate(pawns.Count, travelDays);
+                }
             }
 
             if (map.mapPawns?.AllPawnsSpawned != null)
@@ -443,7 +455,7 @@ namespace FactionColonies
                 {
                     foreach (var pawn in caravan.PawnsListForReading.ToList())
                     {
-                        if (empireDefenders.Contains(pawn))
+                        if (empireDefenders.Contains(pawn) && pawn.Faction != Faction.OfPlayer)
                         {
                             caravan.RemovePawn(pawn);
                             if (!pawn.Destroyed) pawn.Destroy();
@@ -550,8 +562,13 @@ namespace FactionColonies
             var points = (float)(force.militaryLevel * force.militaryEfficiency * 100);
             List<Pawn> friendlies;
             var riders = new Dictionary<Pawn, Pawn>();
-            if (force.homeSettlement.MilitaryComp?.militarySquad != null &&
-                force.homeSettlement.MilitaryComp.militarySquad.mercenaries.Any())
+            var homeComp = force.homeSettlement.MilitaryComp;
+            bool squadAvailable = homeComp?.militarySquad != null
+                && homeComp.militarySquad.mercenaries.Any()
+                && (homeComp.militaryJob == null
+                    || homeComp.militaryJob == MilitaryJobDefOf.Undefined
+                    || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
+            if (squadAvailable)
             {
                 var squad = force.homeSettlement.MilitaryComp.militarySquad;
                 squad.CheckInitialization();
@@ -677,14 +694,24 @@ namespace FactionColonies
         {
             if (defenderForce?.homeSettlement == WorldSettlement)
             {
+                var homeComp = defenderForce.homeSettlement.MilitaryComp;
+                // If squad was busy elsewhere (raid, capture, etc.), don't interfere — generated pawns were used
+                if (homeComp != null && homeComp.militaryJob != null
+                    && homeComp.militaryJob != MilitaryJobDefOf.Undefined
+                    && homeComp.militaryJob != MilitaryJobDefOf.DefendFriendlySettlement)
+                {
+                    return;
+                }
+
+                int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
-                    defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
+                    homeComp?.ReturnMilitary(true);
                 }
                 else
                 {
-                    defenderForce.homeSettlement.MilitaryComp?.CooldownMilitary();
+                    homeComp?.CooldownMilitaryFinal(battleDeaths);
                 }
             }
             else if (defenderForce == null)
@@ -694,6 +721,7 @@ namespace FactionColonies
             else
             {
                 // if not the home settlement defending
+                int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
@@ -701,7 +729,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    defenderForce.homeSettlement.MilitaryComp?.CooldownMilitary();
+                    defenderForce.homeSettlement.MilitaryComp?.CooldownMilitaryFinal(battleDeaths);
                 }
             }
         }
@@ -799,7 +827,10 @@ namespace FactionColonies
                 }
             }
 
-            // LogUtil.Message("Settlement deleveling handled");
+            if (!string.IsNullOrEmpty(pendingDeliveryMessage))
+            {
+                str += "\n\n" + pendingDeliveryMessage;
+            }
             Find.LetterStack.ReceiveLetter("DefenseFailure".Translate(), str, LetterDefOf.Death,
                 new LookTargets(WorldSettlement));
         }
@@ -808,8 +839,13 @@ namespace FactionColonies
         {
             faction.AddExperienceToFactionLevel(5f);
             faction.threatAdaptation.Notify_BattleWon();
+            string text = "DefenseSuccessfulFull".Translate(WorldSettlement.Name);
+            if (!string.IsNullOrEmpty(pendingDeliveryMessage))
+            {
+                text += "\n\n" + pendingDeliveryMessage;
+            }
             Find.LetterStack.ReceiveLetter("DefenseSuccessful".Translate(),
-                "DefenseSuccessfulFull".Translate(WorldSettlement.Name),
+                text,
                 LetterDefOf.PositiveEvent, new LookTargets(WorldSettlement));
         }
 
@@ -817,7 +853,7 @@ namespace FactionColonies
         {
             bool won = defenders.Any();
             int remaining = defenders.Count;
-            DeleteMap();
+            DeleteMap(won);
             EndBattle(won, remaining);
 
             supporting.Clear();
@@ -826,6 +862,7 @@ namespace FactionColonies
             attackers.Clear();
             attackerForce = null;
             endingBattle = false;
+            pendingDeliveryMessage = null;
         }
 
         public void RemoveAttacker(Pawn downed)
@@ -866,9 +903,11 @@ namespace FactionColonies
                 var lord = found.GetLord();
                 if (lord != null)
                 {
-                    //lord.ownedPawns.Remove(found);
                     lord.Notify_PawnLost(found, PawnLostCondition.LeftVoluntarily);
                 }
+
+                // Also remove directly from defenders (lord notification may not fire for despawned pawns)
+                defenders.Remove(found);
 
                 foreach (var caravanSupporting in
                     supporting.Where(caravanSupporting => caravanSupporting.pawns.Contains(found)))
@@ -940,7 +979,7 @@ namespace FactionColonies
             }
 
             MilitaryEventRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
-            CooldownMilitary();
+            CooldownMilitaryFinal();
         }
 
         public void ReturnMilitary(bool alert)
@@ -959,7 +998,7 @@ namespace FactionColonies
             }
         }
 
-        public void CooldownMilitary()
+        public void CooldownMilitaryFinal(int battleDeaths = 0)
         {
             FactionFC faction = FactionCache.FactionComp;
 
@@ -968,10 +1007,17 @@ namespace FactionColonies
             if (militaryJob != null && militaryJob.cooldownStatDef != null)
                 cooldown += (int)faction.GetStatValue(militaryJob.cooldownStatDef);
 
-            if (militaryJob != null && militaryJob.deadPawnCooldown && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            // Dead pawn cooldown: use battleDeaths for defense, squad.dead for deployment
+            int deaths = battleDeaths;
+            if (deaths == 0 && militaryJob != null && militaryJob.deadPawnCooldown
+                && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            {
+                deaths = militarySquad != null ? militarySquad.dead : 0;
+            }
+            if (deaths > 0 && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
                 int deadMultiplier = 10000 + (int)faction.GetStatValue(FCStatDefOf.deadPawnCooldownOffset);
-                cooldown += militarySquad.dead * deadMultiplier;
+                cooldown += deaths * deadMultiplier;
             }
             cooldown = Math.Max(cooldown, 0);
 
