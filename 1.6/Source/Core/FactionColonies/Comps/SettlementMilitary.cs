@@ -74,6 +74,7 @@ namespace FactionColonies
         public int settlementMilitaryLevel;
 
         private bool endingBattle = false;
+        private int initialDefenderCount;
 
         public override void PostExposeData()
         {
@@ -92,6 +93,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref artilleryTimer, "artilleryTimer");
             Scribe_Values.Look(ref autoDefend, "autoDefend");
             Scribe_Values.Look(ref settlementMilitaryLevel, "settlementMilitaryLevel");
+            Scribe_Values.Look(ref initialDefenderCount, "initialDefenderCount");
         }
 
         public override void Initialize(WorldObjectCompProperties props)
@@ -471,16 +473,18 @@ namespace FactionColonies
                     FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
 
                 GenerateFriendlies(force);
+                Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
+
+                string enemyName = attackerForce?.homeFaction?.Name ?? "Unknown";
+                GlobalTargetInfo jumpTarget = defenders.Any()
+                    ? new GlobalTargetInfo(defenders[0])
+                    : new GlobalTargetInfo(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
+                Find.LetterStack.ReceiveLetter(
+                    "ManualBattleStarted".Translate(WorldSettlement.Name),
+                    "ManualBattleStartedDesc".Translate(WorldSettlement.Name, enemyName),
+                    LetterDefOf.ThreatBig,
+                    new LookTargets(jumpTarget));
             }
-
-            if (Current.Game.CurrentMap == Map && Find.World.renderer.wantedMode != WorldRenderMode.Planet) return;
-
-            if (defenders.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(defenders[0]));
-            else if (Map.mapPawns.AllPawnsSpawned.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(Map.mapPawns.AllPawnsSpawned[0]));
-            else
-                CameraJumper.TryJump(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
         }
 
         public static IntVec3 FindNearEdgeCell(Map map)
@@ -599,14 +603,13 @@ namespace FactionColonies
                 GenSpawn.Spawn(friendly, loc, Map, new Rot4());
                 friendly.drafter = new Pawn_DraftController(friendly);
 
-
                 Map.mapPawns.RegisterPawn(friendly);
-                friendly.drafter.Drafted = true;
             }
 
             LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(WorldSettlement, riders), Map, friendlies);
 
             defenders = friendlies;
+            initialDefenderCount = defenders.Count;
         }
 
         public void EndBattle(bool won, int remaining)
@@ -638,7 +641,7 @@ namespace FactionColonies
         {
             if (defenderForce?.homeSettlement == WorldSettlement)
             {
-                if (remaining >= 7)
+                if (remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
@@ -655,7 +658,7 @@ namespace FactionColonies
             else
             {
                 // if not the home settlement defending
-                if (remaining >= 7)
+                if (remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
@@ -899,10 +902,10 @@ namespace FactionColonies
 
             int cooldown = GenDate.TicksPerDay * 3;
             cooldown += (int)faction.GetStatValue(FCStatDefOf.militaryCooldownOffset);
-            if (militaryJob.cooldownStatDef != null)
+            if (militaryJob != null && militaryJob.cooldownStatDef != null)
                 cooldown += (int)faction.GetStatValue(militaryJob.cooldownStatDef);
 
-            if (militaryJob.deadPawnCooldown && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            if (militaryJob != null && militaryJob.deadPawnCooldown && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
                 int deadMultiplier = 10000 + (int)faction.GetStatValue(FCStatDefOf.deadPawnCooldownOffset);
                 cooldown += militarySquad.dead * deadMultiplier;

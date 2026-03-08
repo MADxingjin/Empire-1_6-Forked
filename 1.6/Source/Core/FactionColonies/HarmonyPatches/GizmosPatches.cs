@@ -34,7 +34,7 @@ namespace FactionColonies
 				Command_Toggle draftColonists = new Command_Toggle
 				{
 					hotKey = KeyBindingDefOf.Command_ColonistDraft,
-					isActive = () => false,
+					isActive = () => pawnDraftController.Drafted,
 					toggleAction = () =>
 					{
 						if (pawnDraftController.pawn.Faction == Faction.OfPlayer) return;

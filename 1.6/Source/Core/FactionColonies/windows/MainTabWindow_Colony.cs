@@ -1501,7 +1501,7 @@ namespace FactionColonies
 
                 // === TOP LINE ===
                 float statusW = 190f;
-                float badgeW  = 80f;
+                float badgeW  = 120f;
                 float nameW   = contentW - statusW - badgeW;
 
                 // Top-left: Settlement name (clickable, accent-colored)
@@ -1527,7 +1527,10 @@ namespace FactionColonies
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 double budget = MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(settlement.settlementMilitaryLevel);
-                string badgeStr = "ML " + settlement.settlementMilitaryLevel + "  \u2022  $" + budget;
+                double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+                string badgeStr = "ML " + settlement.settlementMilitaryLevel
+                    + "  \u2022  " + efficiency.ToString("0.0") + "x"
+                    + "  \u2022  $" + budget;
                 Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH), badgeStr);
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;

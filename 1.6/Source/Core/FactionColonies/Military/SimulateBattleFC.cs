@@ -139,28 +139,27 @@ namespace FactionColonies
                     efficiency = .5;
                     break;
                 case TechLevel.Neolithic:
-                    militaryLevel = 1;
+                    militaryLevel = 2;
                     efficiency = 1;
                     break;
                 case TechLevel.Medieval:
-                    militaryLevel = 2;
+                    militaryLevel = 3;
                     efficiency = 1.2;
                     break;
-
                 case TechLevel.Industrial:
-                    militaryLevel = 3;
+                    militaryLevel = 5;
                     efficiency = 1.2;
                     break;
                 case TechLevel.Spacer:
-                    militaryLevel = 3;
+                    militaryLevel = 6;
                     efficiency = 1.3;
                     break;
                 case TechLevel.Ultra:
-                    militaryLevel = 3;
+                    militaryLevel = 7;
                     efficiency = 1.3;
                     break;
                 case TechLevel.Archotech:
-                    militaryLevel = 4;
+                    militaryLevel = 9;
                     efficiency = 1.5;
                     break;
                 default:
@@ -198,6 +197,7 @@ namespace FactionColonies
             }
 
             double value = militaryLevel + MilitaryUtil.RandomAttackModifier();
+            value = Math.Max(value, 1);
             if (handicap)
             {
                 value = Math.Min(value,

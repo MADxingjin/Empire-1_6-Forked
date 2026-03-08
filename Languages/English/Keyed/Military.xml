@@ -48,6 +48,8 @@
 	<DefenseSuccessfulFull>The defense of {0} was successful!</DefenseSuccessfulFull>
 	<DefenseFailure>Defense Failure</DefenseFailure>
 	<DefenseFailureFull>The defense of our settlement, {0}, has been crushed.</DefenseFailureFull>
+	<ManualBattleStarted>Battle for {0}</ManualBattleStarted>
+	<ManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</ManualBattleStartedDesc>
 	<DefendColony>Defend</DefendColony>
 	<DefendColonyDesc>Defend your Settlement manually</DefendColonyDesc>
 	<DefendSettlement>Set Defending Force</DefendSettlement>
