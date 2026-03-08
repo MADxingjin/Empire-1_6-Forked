@@ -4,5 +4,6 @@
         <li>/</li>
         <li>1.6</li>
         <li IfModActive="CETeam.CombatExtended">Compat/1.6/CombatExtended</li>
+        <li IfModActive="Torann.RimWar">Compat/1.6/RimWar</li>
     </v1.6>
 </loadFolders>
