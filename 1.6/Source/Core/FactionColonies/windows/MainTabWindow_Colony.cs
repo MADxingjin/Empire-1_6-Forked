@@ -171,10 +171,21 @@ namespace FactionColonies
                 return;
             }
 
-            // Content area sits below the tab strip
-            Rect contentRect = new Rect(inRect.x, inRect.y + TabDrawer.TabHeight, inRect.width, inRect.height - TabDrawer.TabHeight);
+            // Calculate minimum tab width from the longest label
+            Text.Font = GameFont.Small;
+            float maxLabelWidth = 0f;
+            foreach (TabRecord tab in tabs)
+            {
+                float w = Text.CalcSize(tab.label).x;
+                if (w > maxLabelWidth) maxLabelWidth = w;
+            }
+            float minTabWidth = maxLabelWidth + 16f;
+
+            // Content area sits below the tab strip (dynamic height for overflow rows)
+            float tabHeight = TabDrawer.GetOverflowTabHeight(inRect, tabs, minTabWidth, 200f);
+            Rect contentRect = new Rect(inRect.x, inRect.y + tabHeight, inRect.width, inRect.height - tabHeight);
             Widgets.DrawMenuSection(contentRect);
-            TabDrawer.DrawTabs(contentRect, tabs);
+            TabDrawer.DrawTabsOverflow(inRect, tabs, minTabWidth, 200f);
 
             try
             {
