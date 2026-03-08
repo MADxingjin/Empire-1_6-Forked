@@ -74,6 +74,7 @@ namespace FactionColonies
         public int settlementMilitaryLevel;
 
         private bool endingBattle = false;
+        private bool battleMapInitialized = false;
         private int initialDefenderCount;
 
         public override void PostExposeData()
@@ -94,6 +95,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref autoDefend, "autoDefend");
             Scribe_Values.Look(ref settlementMilitaryLevel, "settlementMilitaryLevel");
             Scribe_Values.Look(ref initialDefenderCount, "initialDefenderCount");
+            Scribe_Values.Look(ref battleMapInitialized, "battleMapInitialized");
         }
 
         public override void Initialize(WorldObjectCompProperties props)
@@ -192,6 +194,13 @@ namespace FactionColonies
                 icon = TexLoad.iconCustomize,
                 action = delegate
                 {
+                    if (evt.militaryForceDefending == null || evt.militaryForceDefending.homeSettlement == null)
+                    {
+                        LogUtil.Warning($"ChangeDefenderAction: militaryForceDefending or its homeSettlement is null for event at {evt.location}");
+                        ChangeDefendingForceAction(evt);
+                        return;
+                    }
+
                     var list = new List<FloatMenuOption>()
                     {
                         new FloatMenuOption("SettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
@@ -365,12 +374,12 @@ namespace FactionColonies
 
             //Ignore any empty caravans
             var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => pawn.Downed || pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => !pawn.Downed && !pawn.Dead)).ToList())
+            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => pawn.Spawned && !pawn.Downed && !pawn.Dead)).ToList())
             {
                 CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
             }
 
-            if (AllDowned && defenders.Any())
+            if (AllDowned)
             {
                 var pawns = new HashSet<Thing>();
                 foreach (var caravanSupporting in supporting)
@@ -421,6 +430,31 @@ namespace FactionColonies
             }
 
             Current.Game.DeinitAndRemoveMap(map, false);
+
+            // Safety net: reclaim any defender pawns that escaped into caravans
+            var empireDefenders = new HashSet<Pawn>(defenders);
+            foreach (var cs in supporting)
+                foreach (var p in cs.pawns)
+                    empireDefenders.Remove(p);
+
+            if (empireDefenders.Count > 0)
+            {
+                foreach (var caravan in Find.WorldObjects.Caravans.ToList())
+                {
+                    foreach (var pawn in caravan.PawnsListForReading.ToList())
+                    {
+                        if (empireDefenders.Contains(pawn))
+                        {
+                            caravan.RemovePawn(pawn);
+                            if (!pawn.Destroyed) pawn.Destroy();
+                        }
+                    }
+                    if (!caravan.Destroyed && !caravan.PawnsListForReading.Any())
+                    {
+                        caravan.Destroy();
+                    }
+                }
+            }
         }
 
         public void StartDefence(FCEvent evt, Action after)
@@ -454,8 +488,9 @@ namespace FactionColonies
         private void ZoomIntoTile(FCEvent evt)
         {
             SoundDefOf.Tick_High.PlayOneShotOnCamera();
-            if (Current.Game.CurrentMap != Map && !defenders.Any())
+            if (!battleMapInitialized)
             {
+                battleMapInitialized = true;
                 if (evt == null)
                 {
                     LogUtil.Warning("Aborting defense, null FCEvent!");
@@ -635,6 +670,7 @@ namespace FactionColonies
                 LogUtil.Error($"Encountered an error while trying to resolve combat in Empire{Environment.NewLine}{e}");
             }
             isUnderAttack = false;
+            battleMapInitialized = false;
         }
 
         private void CooldownMilitary(int remaining)
@@ -687,6 +723,26 @@ namespace FactionColonies
 
             string str = "DefenseFailureFull".Translate(WorldSettlement.Name);
 
+            // Penalty summary
+            str += "\n\n" + "DefenseFailurePenaltiesHeader".Translate();
+
+            int displayProsperity = (int)Math.Round(prosperityLoss);
+            int displayHappiness = (int)Math.Round(happinessLoss);
+            int displayLoyalty = (int)Math.Round(loyaltyLoss);
+
+            if (displayProsperity > 0)
+            {
+                str += "\n  - " + "DefenseFailureProsperityLoss".Translate(displayProsperity);
+            }
+            if (displayHappiness > 0)
+            {
+                str += "\n  - " + "DefenseFailureHappinessLoss".Translate(displayHappiness);
+            }
+            if (displayLoyalty > 0)
+            {
+                str += "\n  - " + "DefenseFailureLoyaltyLoss".Translate(displayLoyalty);
+            }
+
             if (canDestroyBuildings && WorldSettlement?.BuildingsComp != null)
             {
                 // Collect candidate slots for demolition
@@ -720,19 +776,23 @@ namespace FactionColonies
 
                 foreach (int k in candidates)
                 {
-                    str += "\n" + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.BuildingLabel(k));
+                    str += "\n  - " + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.BuildingLabel(k));
                     WorldSettlement.DeconstructBuilding(k);
                 }
             }
 
-            // LogUtil.Message("Building deconstruction handled");
+            if (!canDestroyBuildings)
+            {
+                str += "\n  - " + "DefenseFailureBuildingsProtected".Translate();
+            }
+
             // level remover checker
             if (WorldSettlement.settlementLevel > 1 && canDestroyBuildings)
             {
                 var num = new IntRange(0, 10).RandomInRange;
                 if (num >= 7)
                 {
-                    str += "\n\n" + "SettlementDeleveledRaid".Translate();
+                    str += "\n  - " + "SettlementDeleveledRaid".Translate();
                     WorldSettlement.DelevelSettlement();
                 }
             }

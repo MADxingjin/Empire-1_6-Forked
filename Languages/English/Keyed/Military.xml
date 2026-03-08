@@ -63,6 +63,11 @@
 	<autoBattleEnabledNoManualFight><!--You can't manually fight battles if automatic battle resolve is enabled!-->Manually fighting battles is currently disabled due to game breaking bugs.</autoBattleEnabledNoManualFight>
 
 	<!-- Raid Damage -->
+	<DefenseFailurePenaltiesHeader>Penalties suffered:</DefenseFailurePenaltiesHeader>
+	<DefenseFailureProsperityLoss>Prosperity: -{0}</DefenseFailureProsperityLoss>
+	<DefenseFailureHappinessLoss>Happiness: -{0}</DefenseFailureHappinessLoss>
+	<DefenseFailureLoyaltyLoss>Loyalty: -{0}</DefenseFailureLoyaltyLoss>
+	<DefenseFailureBuildingsProtected>Buildings were protected from destruction by your policies.</DefenseFailureBuildingsProtected>
 	<BuildingDestroyedInRaid>{0} has been destroyed in the raid.</BuildingDestroyedInRaid>
 	<SettlementDeleveledRaid>The settlement level has decreased by one.</SettlementDeleveledRaid>
 
