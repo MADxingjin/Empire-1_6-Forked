@@ -15,7 +15,7 @@
 
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Undefined">
 		<defName>tradingPost</defName> <!--Name of Def -->
-		<label>TradingPost</label> <!--Lable of Def -->
+		<label>Trading Post</label> <!--Lable of Def -->
 		<desc>A small outpost that roving traders frequent.</desc> <!-- Description of trait -->
 		<cost>250</cost>
 		<constructionDuration>60000</constructionDuration> <!-- Ticks it takes until construction is finished -->

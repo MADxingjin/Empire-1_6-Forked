@@ -18,7 +18,7 @@
 
 	<FactionColonies.FCEventDef>
 		<defName>taxColony</defName>
-		<label>Settlment Taxes En-route</label>
+		<label>Settlement Taxes En-Route</label>
 		<timeTillTrigger>0</timeTillTrigger>
 		<desc>A caravan is delivering taxes.</desc>
 		<category>EC_Economy</category>

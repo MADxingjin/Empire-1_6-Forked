@@ -795,6 +795,7 @@ namespace FactionColonies
         {
             float statBoxHeight = (boundingBox.height - (4 * margin)) / 5;
             float statGainBoxHeight = 30;
+            float statGainBoxWidth = 35;
             float statSize = Math.Min(30f, statBoxHeight);
             for (int i = 0; i < stats.Count; i++)
             {
@@ -803,9 +804,9 @@ namespace FactionColonies
                 Rect statBox = new Rect(boundingBox.x, boundingBox.y + (statBoxHeight + margin) * i, boundingBox.width, statBoxHeight);
                 Widgets.DrawMenuSection(statBox);
                 Rect buttonBox = new Rect(statBox.x + margin, statBox.y + margin, statSize + 4, statSize + 4);
-                Rect labelBox = new Rect(buttonBox.xMax + margin, buttonBox.y, statBox.width - (buttonBox.width + margin * 2), buttonBox.height);
-                Rect statGainBox = new Rect(statBox.xMax - statGainBoxHeight - margin, statBox.y + (statBox.height - statGainBoxHeight)/2, statGainBoxHeight, statGainBoxHeight);
-                Rect statGainLabel = new Rect(statGainBox.x + smallMargin, statGainBox.y + smallMargin, statGainBoxHeight - (smallMargin * 2), statGainBoxHeight - (smallMargin * 2));
+                Rect labelBox = new Rect(buttonBox.xMax, buttonBox.y, statBox.width - (buttonBox.width + margin * 2), buttonBox.height);
+                Rect statGainBox = new Rect(statBox.xMax - statGainBoxWidth - margin, statBox.y + (statBox.height - statGainBoxHeight)/2, statGainBoxWidth, statGainBoxHeight);
+                //Rect statGainLabel = new Rect(statGainBox.x + smallMargin, statGainBox.y + smallMargin, statGainBoxWidth - (smallMargin * 2), statGainBoxHeight - (smallMargin * 2));
                 Rect mainToolTipBox = new Rect(statBox.x, statBox.y, statGainBox.x - statBox.x, statBox.height);
                 string tooltip = "";
                 if (stats[i] == "militaryLevel")
@@ -827,7 +828,7 @@ namespace FactionColonies
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
-                    Widgets.Label(statGainLabel, statGain);
+                    Widgets.Label(statGainBox, statGain);
                     UIUtil.TipRegionByText(statGainBox, settlement.GetHappinessDesc());
                 }
 
@@ -843,7 +844,7 @@ namespace FactionColonies
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
-                    Widgets.Label(statGainLabel, statGain);
+                    Widgets.Label(statGainBox, statGain);
                     UIUtil.TipRegionByText(statGainBox, settlement.GetLoyaltyDesc());
                 }
 
@@ -859,7 +860,7 @@ namespace FactionColonies
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
-                    Widgets.Label(statGainLabel, statGain);
+                    Widgets.Label(statGainBox, statGain);
                     UIUtil.TipRegionByText(statGainBox, settlement.GetUnrestDesc());
                 }
 
@@ -875,7 +876,7 @@ namespace FactionColonies
 
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
-                    Widgets.Label(statGainLabel, statGain);
+                    Widgets.Label(statGainBox, statGain);
                     UIUtil.TipRegionByText(statGainBox, settlement.GetProsperityDesc());
                 }
 
@@ -1269,7 +1270,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "Total".Translate() + " " + "Profit".Translate() + ":");
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(profitNum, new GUIContent(settlement.totalProfit.ToString(), ThingDefOf.Silver.uiIcon));
+            Widgets.Label(profitNum, new GUIContent(Math.Round(settlement.totalProfit).ToString(), ThingDefOf.Silver.uiIcon));
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;

@@ -200,7 +200,7 @@ namespace FactionColonies
             {
                 settlement.ClearStatModifiers();
                 settlement.BuildingsComp?.ReapplyBuildingStatModifiers();
-                settlement.AddStatModifiers(settlement.settlementDef.statModifiers, "settlementType");
+                settlement.AddStatModifiers(settlement.settlementDef.statModifiers, "settlementType", settlement.settlementDef.label);
             }
 
             // Re-apply active event stat modifiers to settlements
@@ -212,14 +212,14 @@ namespace FactionColonies
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
                         if (location != null)
-                            location.AddStatModifiers(evt.def.statModifiers, sourceId);
+                            location.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                     }
                 }
                 else
                 {
                     foreach (WorldSettlementFC settlement in faction.settlements)
                     {
-                        settlement.AddStatModifiers(evt.def.statModifiers, sourceId);
+                        settlement.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                     }
                 }
             }

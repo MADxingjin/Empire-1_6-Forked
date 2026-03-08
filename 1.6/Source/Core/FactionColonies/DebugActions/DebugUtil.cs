@@ -906,6 +906,36 @@ namespace FactionColonies
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(traitList));
         }
 
+        [DebugAction("Empire", "Instantly Enact Edict", allowedGameStates = AllowedGameStates.Playing)]
+        private static void InstantlyEnactEdict()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
+            {
+                if (!def.IsEdict) continue;
+                FCPolicyDef local = def;
+                FCPolicy existing;
+                faction.edicts.TryGetValue(local.category, out existing);
+                string status = (existing != null && existing.def == local) ? " [ACTIVE]" : "";
+                list.Add(new DebugMenuOption($"[{local.category}] {local.LabelCap}{status}", DebugMenuOptionMode.Action, () =>
+                {
+                    faction.EnactEdict(local);
+                    FCPolicy edict;
+                    if (faction.edicts.TryGetValue(local.category, out edict))
+                    {
+                        edict.timeEnacted = Find.TickManager.TicksGame - local.enactDuration;
+                        faction.InvalidateFactionStatCache();
+                        faction.DirtyFactionProfitCache();
+                    }
+                    LogUtil.MessageForce($"Debug - Instantly enacted edict: {local.defName}");
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
         [DebugAction("Empire", "Log Policy Behavior State", allowedGameStates = AllowedGameStates.Playing)]
         private static void LogPolicyBehaviorState()
         {

@@ -21,19 +21,22 @@ namespace FactionColonies
         };
 
         private static Dictionary<FCPolicyCategory, List<FCPolicyDef>> cachedEdictsByCategory;
-        private static Vector2 scrollPosition;
+        private static Dictionary<FCPolicyCategory, Vector2> columnScrollPositions =
+            new Dictionary<FCPolicyCategory, Vector2>();
 
         private const float Margin = 5f;
         private const float ColumnGap = 8f;
         private const float HeaderHeight = 30f;
-        private const float EdictRowHeight = 80f;
+        private const float EdictRowHeight = 86f;
         private const float BottomBarHeight = 35f;
         private const float RadioSize = 24f;
         private const float CategoryPadding = 6f;
 
+        private const float margin = 5f;
+
         public static void OnTabSwitch()
         {
-            scrollPosition = Vector2.zero;
+            columnScrollPositions.Clear();
             cachedEdictsByCategory = null;
         }
 
@@ -62,6 +65,29 @@ namespace FactionColonies
             }
         }
 
+        private static void GetColumnColors(FCPolicyCategory category, out Color bodyColor, out Color headerColor)
+        {
+            switch (category)
+            {
+                case FCPolicyCategory.Social:
+                    bodyColor = new Color(0.20f, 0.17f, 0.10f, 0.5f);
+                    headerColor = new Color(0.28f, 0.24f, 0.15f, 0.8f);
+                    break;
+                case FCPolicyCategory.Tax:
+                    bodyColor = new Color(0.10f, 0.18f, 0.10f, 0.5f);
+                    headerColor = new Color(0.15f, 0.25f, 0.15f, 0.8f);
+                    break;
+                case FCPolicyCategory.Military:
+                    bodyColor = new Color(0.20f, 0.12f, 0.10f, 0.5f);
+                    headerColor = new Color(0.28f, 0.16f, 0.13f, 0.8f);
+                    break;
+                default:
+                    bodyColor = new Color(0.15f, 0.15f, 0.15f, 0.5f);
+                    headerColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+                    break;
+            }
+        }
+
         public static void Draw(Rect rect, FactionFC faction)
         {
             Dictionary<FCPolicyCategory, List<FCPolicyDef>> edictsByCategory = GetEdictsByCategory();
@@ -69,11 +95,11 @@ namespace FactionColonies
             // Description header
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
-            Rect descRect = new Rect(rect.x + Margin, rect.y + Margin, rect.width - Margin * 2, 20f);
+            Rect descRect = new Rect(rect.x + Margin, rect.y + Margin, rect.width - Margin * 2, 22f);
             Widgets.Label(descRect, "FCEdictsDesc".Translate());
 
             float topY = descRect.yMax + Margin;
-            float bottomBarY = rect.yMax - BottomBarHeight;
+            float bottomBarY = rect.yMax - BottomBarHeight - margin;
             float columnsHeight = bottomBarY - topY - Margin;
             float columnWidth = (rect.width - Margin * 2 - ColumnGap * 2) / 3f;
 
@@ -95,9 +121,10 @@ namespace FactionColonies
 
         private static void DrawColumn(Rect rect, FCPolicyCategory category, List<FCPolicyDef> edicts, FactionFC faction)
         {
-            // Column background
-            Widgets.DrawBoxSolid(rect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
-            Widgets.DrawBox(rect);
+            // Column background with category tint
+            Color bodyColor, headerColor;
+            GetColumnColors(category, out bodyColor, out headerColor);
+            Widgets.DrawBoxSolid(rect, bodyColor);
 
             bool unlocked = faction.IsEdictCategoryUnlocked(category);
             int requiredLevel;
@@ -105,7 +132,7 @@ namespace FactionColonies
 
             // Header
             Rect headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
-            Widgets.DrawBoxSolid(headerRect, new Color(0.2f, 0.2f, 0.2f, 0.8f));
+            Widgets.DrawBoxSolid(headerRect, headerColor);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(headerRect, GetCategoryLabel(category));
@@ -127,7 +154,7 @@ namespace FactionColonies
 
             // Active edict status
             FCPolicy activeEdict = faction.GetActiveEdict(category);
-            Rect statusRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 20f);
+            Rect statusRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 22f);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -140,7 +167,7 @@ namespace FactionColonies
                 if (!activeEdict.IsFullyActive)
                 {
                     contentY = statusRect.yMax;
-                    Rect activatingRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 20f);
+                    Rect activatingRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 22f);
                     float daysRemaining = (activeEdict.def.enactDuration - (Find.TickManager.TicksGame - activeEdict.timeEnacted)) / 60000f;
                     GUI.color = Color.yellow;
                     Widgets.Label(activatingRect, "FCEdictActivating".Translate(daysRemaining.ToString("F1")));
@@ -150,6 +177,20 @@ namespace FactionColonies
                 else
                 {
                     contentY = statusRect.yMax;
+                }
+
+                // Active edict effects
+                string effectsText = FCStatModifier.GetDescription(activeEdict.def.statModifiers);
+                if (!effectsText.NullOrEmpty())
+                {
+                    float effectsWidth = rect.width - CategoryPadding * 2;
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    float effectsHeight = Text.CalcHeight(effectsText, effectsWidth);
+                    Rect effectsRect = new Rect(rect.x + CategoryPadding, contentY + 2f, effectsWidth, effectsHeight);
+                    Widgets.Label(effectsRect, effectsText);
+                    contentY = effectsRect.yMax + 2f;
+                    Text.Font = GameFont.Small;
                 }
 
                 // Revoke button
@@ -170,15 +211,32 @@ namespace FactionColonies
             Widgets.DrawLineHorizontal(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2);
             contentY += CategoryPadding;
 
-            // Edict list
+            // Edict list with scroll view
+            float listHeight = rect.yMax - contentY;
+            float totalContentHeight = edicts.Count * (EdictRowHeight + 2f);
+            Rect listOuterRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, listHeight);
+
+            Vector2 scrollPos;
+            if (!columnScrollPositions.TryGetValue(category, out scrollPos))
+                scrollPos = Vector2.zero;
+
+            Rect listViewRect = new Rect(listOuterRect.x, listOuterRect.y, listOuterRect.width, totalContentHeight);
+            bool needsScroll = totalContentHeight > listHeight;
+            if (needsScroll)
+                listViewRect.width -= 16f; // Account for scrollbar width
+
+            Widgets.BeginScrollView(listOuterRect, ref scrollPos, listViewRect);
+            columnScrollPositions[category] = scrollPos;
+
+            float rowY = listViewRect.y;
             foreach (FCPolicyDef def in edicts)
             {
-                if (contentY + EdictRowHeight > rect.yMax) break;
-
-                Rect rowRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, EdictRowHeight);
+                Rect rowRect = new Rect(listViewRect.x, rowY, listViewRect.width, EdictRowHeight);
                 DrawEdictRow(rowRect, def, faction, activeEdict);
-                contentY = rowRect.yMax + 2f;
+                rowY = rowRect.yMax + 2f;
             }
+
+            Widgets.EndScrollView();
 
             Text.Anchor = TextAnchor.UpperLeft;
         }
@@ -214,7 +272,7 @@ namespace FactionColonies
             float textX = radioRect.xMax + Margin;
             float textWidth = rect.width - RadioSize - Margin;
 
-            Rect labelRect = new Rect(textX, rect.y + 2f, textWidth, 20f);
+            Rect labelRect = new Rect(textX, rect.y + 2f, textWidth, 22f);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -224,13 +282,13 @@ namespace FactionColonies
             Widgets.Label(labelRect, def.LabelCap);
 
             // Description
-            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 36f);
+            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 40f);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(descRect, def.desc);
 
             // Upkeep
-            Rect upkeepRect = new Rect(textX, descRect.yMax, textWidth, 18f);
+            Rect upkeepRect = new Rect(textX, descRect.yMax, textWidth, 20f);
             GUI.color = available ? new Color(1f, 0.85f, 0.4f) : Color.gray;
             Widgets.Label(upkeepRect, "FCEdictUpkeep".Translate(def.upkeepSilver));
 

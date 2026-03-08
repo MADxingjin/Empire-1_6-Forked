@@ -140,6 +140,7 @@ namespace FactionColonies
 
         // ── Edicts (toggleable faction-level policies) ──
         public Dictionary<FCPolicyCategory, FCPolicy> edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
+        private HashSet<FCPolicyCategory> pendingEdictActivations = new HashSet<FCPolicyCategory>();
 
         // Minimum faction level required to unlock each edict category
         public static readonly Dictionary<FCPolicyCategory, int> EdictCategoryUnlockLevels = new Dictionary<FCPolicyCategory, int>
@@ -350,6 +351,15 @@ namespace FactionColonies
 
             Scribe_Collections.Look(ref edicts, "edicts", LookMode.Value, LookMode.Deep);
             if (edicts == null) edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                pendingEdictActivations.Clear();
+                foreach (var kvp in edicts)
+                {
+                    if (kvp.Value != null && !kvp.Value.IsFullyActive)
+                        pendingEdictActivations.Add(kvp.Key);
+                }
+            }
 
             //Research Trading
             Scribe_Values.Look(ref tradedAmount, "tradedAmount");
@@ -399,14 +409,14 @@ namespace FactionColonies
                         foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                         {
                             if (location != null)
-                                location.AddStatModifiers(evt.def.statModifiers, sourceId);
+                                location.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                         }
                     }
                     else
                     {
                         foreach (WorldSettlementFC settlement in settlements)
                         {
-                            settlement.AddStatModifiers(evt.def.statModifiers, sourceId);
+                            settlement.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                         }
                     }
                 }
@@ -472,6 +482,8 @@ namespace FactionColonies
             UITick(faction);
             StatTick(faction);
             MilitaryTick(faction);
+            if (pendingEdictActivations.Count > 0 && Find.TickManager.TicksGame % 250 == 0)
+                CheckEdictActivations();
             if (!(faction is null))
             {
                 roadBuilder.RoadTick();
@@ -1155,6 +1167,8 @@ namespace FactionColonies
 
             FCPolicy edict = new FCPolicy(def);
             edicts[def.category] = edict;
+            if (def.enactDuration > 0)
+                pendingEdictActivations.Add(def.category);
             RebuildBehaviorCache();
             DirtyFactionProfitCache();
             Messages.Message("FCEdictEnacted".Translate(def.LabelCap), MessageTypeDefOf.PositiveEvent);
@@ -1173,6 +1187,7 @@ namespace FactionColonies
 
             string label = edict.def?.LabelCap ?? "";
             edicts.Remove(category);
+            pendingEdictActivations.Remove(category);
             RebuildBehaviorCache();
             DirtyFactionProfitCache();
             if (!silent)
@@ -1198,6 +1213,30 @@ namespace FactionColonies
                     total += edict.def.upkeepSilver;
             }
             return total;
+        }
+
+        private void CheckEdictActivations()
+        {
+            bool anyActivated = false;
+            List<FCPolicyCategory> toRemove = new List<FCPolicyCategory>();
+            foreach (FCPolicyCategory cat in pendingEdictActivations)
+            {
+                FCPolicy edict;
+                if (!edicts.TryGetValue(cat, out edict) || edict.IsFullyActive)
+                {
+                    toRemove.Add(cat);
+                    if (edicts.ContainsKey(cat))
+                        anyActivated = true;
+                }
+            }
+            foreach (FCPolicyCategory cat in toRemove)
+                pendingEdictActivations.Remove(cat);
+
+            if (anyActivated)
+            {
+                InvalidateFactionStatCache();
+                DirtyFactionProfitCache();
+            }
         }
 
         #endregion
@@ -1510,7 +1549,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
-                    location.AddStatModifiers(fcevent.def.statModifiers, sourceId);
+                    location.AddStatModifiers(fcevent.def.statModifiers, sourceId, fcevent.def.label);
                 }
             }
             else
@@ -1518,7 +1557,7 @@ namespace FactionColonies
                 //if no specific location then faction wide — apply to all settlements
                 foreach (WorldSettlementFC settlement in settlements)
                 {
-                    settlement.AddStatModifiers(fcevent.def.statModifiers, sourceId);
+                    settlement.AddStatModifiers(fcevent.def.statModifiers, sourceId, fcevent.def.label);
                 }
             }
         }

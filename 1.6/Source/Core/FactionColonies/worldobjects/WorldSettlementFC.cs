@@ -83,6 +83,7 @@ namespace FactionColonies
         private struct TaggedStatModifier
         {
             public string sourceId;
+            public string sourceLabel;
             public FCStatModifier mod;
         }
         private List<TaggedStatModifier> statModifiers = new List<TaggedStatModifier>();
@@ -432,7 +433,7 @@ namespace FactionColonies
 
             /* If the settlement type has inherent stat modifiers, add them here. */
             // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-            AddStatModifiers(settlementDef.statModifiers, "settlementType");
+            AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
 
             foundingTick = Find.TickManager.TicksGame;
         }
@@ -500,7 +501,7 @@ namespace FactionColonies
                 ClearStatModifiers();
                 BuildingsComp?.ReapplyBuildingStatModifiers();
                 // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-                AddStatModifiers(settlementDef.statModifiers, "settlementType");
+                AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
                 DirtyDescriptionCache();
             }
         }
@@ -667,7 +668,7 @@ namespace FactionColonies
             PrepareResources(FactionCache.FactionComp.techLevel);
 
             // --- Apply new stat modifiers ---
-            AddStatModifiers(settlementDef.statModifiers, "settlementType");
+            AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
 
             // --- Reconcile building slots ---
             BuildingsComp?.ReinitBuildings();
@@ -1207,12 +1208,12 @@ namespace FactionColonies
         /// Adds stat modifiers from a source (building, settlement type, etc).
         /// Resource production bonuses are now handled via FCStatDef's linkedResource on ResourceFC.
         /// </summary>
-        public void AddStatModifiers(List<FCStatModifier> mods, string sourceId)
+        public void AddStatModifiers(List<FCStatModifier> mods, string sourceId, string sourceLabel = null)
         {
             if (mods != null)
             {
                 foreach (FCStatModifier mod in mods)
-                    statModifiers.Add(new TaggedStatModifier { sourceId = sourceId, mod = mod });
+                    statModifiers.Add(new TaggedStatModifier { sourceId = sourceId, sourceLabel = sourceLabel ?? sourceId, mod = mod });
             }
             InvalidateStatCache();
         }
@@ -1345,9 +1346,9 @@ namespace FactionColonies
                 {
                     if (tagged.mod.stat != stat) continue;
                     if (isAdditive)
-                        desc += TextUtil.ColorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.ColorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + tagged.sourceLabel + "\n";
                     else
-                        desc += TextUtil.ColorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + "Building".Translate() + "\n";
+                        desc += TextUtil.ColorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + tagged.sourceLabel + "\n";
                 }
 
                 // IStatModifierProvider comps

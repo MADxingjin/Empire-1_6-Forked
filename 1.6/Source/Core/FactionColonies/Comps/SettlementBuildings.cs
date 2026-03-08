@@ -418,7 +418,7 @@ namespace FactionColonies
         {
             BuildingFCDef def = buildings[buildingSlot].def;
             if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
-            WorldSettlement.AddStatModifiers(def.statModifiers, BuildingID(buildingSlot));
+            WorldSettlement.AddStatModifiers(def.statModifiers, BuildingID(buildingSlot), def.label);
         }
         public void RemoveBuildingStatModifiers(int buildingSlot)
         {
