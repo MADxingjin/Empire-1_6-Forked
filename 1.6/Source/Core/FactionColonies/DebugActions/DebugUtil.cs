@@ -187,8 +187,20 @@ namespace FactionColonies
                         Messages.Message("No enemy faction found.", MessageTypeDefOf.RejectInput);
                         return;
                     }
-                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
-                    MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
+
+                    List<DebugMenuOption> levelList = new List<DebugMenuOption>();
+                    for (int level = 1; level <= 10; level++)
+                    {
+                        int chosenLevel = level;
+                        levelList.Add(new DebugMenuOption($"Level {chosenLevel}", DebugMenuOptionMode.Action, delegate
+                        {
+                            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
+                            militaryForce attackingForce = new militaryForce(chosenLevel, efficiency, null, enemyFaction);
+                            LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
+                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(levelList));
                 }
                 ));
             }

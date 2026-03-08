@@ -365,7 +365,7 @@ namespace FactionColonies
 
             //Ignore any empty caravans
             var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => pawn.Downed || pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => !pawn.Downed && !pawn.Dead)))
+            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => !pawn.Downed && !pawn.Dead)).ToList())
             {
                 CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
             }

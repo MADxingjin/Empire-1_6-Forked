@@ -1088,8 +1088,14 @@ namespace FactionColonies.util
                         selectionWeight = RaceWeights[race]
                     };
 
-                    // Add to all relevant pawn group makers
-                    faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    bool isViolenceCapable = FCPawnGenerator.IsViolenceCapablePawnKind(pawnKind);
+
+                    // Settlement group maker: PawnGroupKindWorker_Normal hardcodes mustBeCapableOfViolence=true,
+                    // so only add PawnKindDefs that can plausibly generate violence-capable pawns
+                    if (isViolenceCapable)
+                    {
+                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    }
 
                     if (pawnKind.label != "mercenary")
                     {
@@ -1111,7 +1117,7 @@ namespace FactionColonies.util
 
                 if (associatedXenotypes.Count > 0)
                 {
-                    raceXenoAssociations.Add(race, associatedXenotypes.Distinct().ToList());
+                    raceXenoAssociations[race] = associatedXenotypes.Distinct().ToList();
                 }
             }
             ReweightPawnGroupMakers();

@@ -201,16 +201,22 @@ namespace FactionColonies
 
         #region Constructor & Lifecycle
 
+        private static bool harmonyPatched = false;
+
         public FactionFC(World world) : base(world)
         {
-            var harmony = new Harmony("com.Saakra.Empire");
-
-            if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
+            if (!harmonyPatched)
             {
-                FixLinuxHarmonyCrash(harmony);
-            }
+                var harmony = new Harmony("com.Saakra.Empire");
 
-            harmony.PatchAll();
+                if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
+                {
+                    FixLinuxHarmonyCrash(harmony);
+                }
+
+                harmony.PatchAll();
+                harmonyPatched = true;
+            }
         }
 
         // Fix a crash related to a harmony bug on Linux

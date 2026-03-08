@@ -170,7 +170,7 @@ namespace FactionColonies
                     _cachedRaceList = new List<ThingDef>();
                     foreach (PawnKindDef pawnKind in AllPawnKindDefs)
                     {
-                        if (pawnKind.race != null && !_cachedRaceList.Contains(pawnKind.race) && (pawnKind.race == ThingDefOf.Human || pawnKind.IsHumanLikeRace()))
+                        if (pawnKind.race != null && !_cachedRaceList.Any(r => r.defName == pawnKind.race.defName) && (pawnKind.race == ThingDefOf.Human || pawnKind.IsHumanLikeRace()))
                         {
                             _cachedRaceList.Add(pawnKind.race);
                         }
