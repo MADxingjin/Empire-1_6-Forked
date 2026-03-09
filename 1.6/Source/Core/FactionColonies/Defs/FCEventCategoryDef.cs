@@ -22,7 +22,7 @@ namespace FactionColonies
 
         static FCEventCategoryDefOf()
         {
-            DefOfHelper.EnsureInitializedInCtor(typeof(FCEventCategoryDef));
+            DefOfHelper.EnsureInitializedInCtor(typeof(FCEventCategoryDefOf));
         }
     }
 }
