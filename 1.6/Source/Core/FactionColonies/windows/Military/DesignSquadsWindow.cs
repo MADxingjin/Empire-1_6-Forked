@@ -264,13 +264,11 @@ namespace FactionColonies
             {
                 Widgets.Label(costRect, "FCTotalSquadEquipmentCost".Translate(
                     selectedSquad.GetEquipmentTotalCost(),
-                    MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(
-                        settlementPointReference.settlementMilitaryLevel)));
+                    MilitaryCustomizationUtil.CalculateSquadBudget(settlementPointReference.settlementMilitaryLevel)));
             }
             else
             {
-                Widgets.Label(costRect, "FCTotalSquadEquipmentCostNoRef".Translate(
-                    selectedSquad.GetEquipmentTotalCost()));
+                Widgets.Label(costRect, "FCTotalSquadEquipmentCostNoRef".Translate(selectedSquad.GetEquipmentTotalCost()));
             }
 
             if (isSelectedSquadDeployed)

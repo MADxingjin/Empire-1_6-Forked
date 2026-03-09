@@ -131,7 +131,7 @@ namespace FactionColonies
                     if (squad.settlement != null)
                         settlementMilLevel = squad.settlement.settlementMilitaryLevel;
                     if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
-                                                  CalculateMilitaryLevelPoints(settlementMilLevel)))
+                                                  CalculateSquadBudget(settlementMilLevel)))
                         continue;
                     if (squad.settlement != null)
                     {
@@ -160,15 +160,14 @@ namespace FactionColonies
             get { return squads.Select(squadFC => squadFC.getLatestChanged).Prepend(0).Max(); }
         }
 
-        public static double CalculateMilitaryLevelPoints(int MilitaryLevel)
+        public static double CalculateSquadBudget(int militaryLevel)
         {
-            double points = 500; //starting points at mil level 0
-            for (int i = 1; i <= MilitaryLevel; i++)
-            {
-                points += (500 * MilitaryLevel);
-            }
+            return 500 + (600.0 * militaryLevel * militaryLevel);
+        }
 
-            return points;
+        public static double CalculateFireSupportBudget(int militaryLevel)
+        {
+            return 500 + (500.0 * militaryLevel * militaryLevel);
         }
 
         public MercenarySquadFC ReturnSquadFromUnit(Pawn unit)
@@ -231,7 +230,7 @@ namespace FactionColonies
                 LogUtil.Message($"Attempted to assign a squad to settlement {settlement.Name} with NULL MilitaryComp");
                 return;
             }
-            if (CalculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
+            if (CalculateSquadBudget(settlement.settlementMilitaryLevel) >=
                 squad.GetEquipmentTotalCost())
             {
                 if (SquadExists(settlement))

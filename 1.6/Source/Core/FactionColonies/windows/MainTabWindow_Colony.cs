@@ -1537,7 +1537,7 @@ namespace FactionColonies
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                double budget = MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(settlement.settlementMilitaryLevel);
+                double budget = MilitaryCustomizationUtil.CalculateSquadBudget(settlement.settlementMilitaryLevel);
                 double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
                 FactionFC fcBadge = FactionCache.FactionComp;
                 double atkPower = Math.Round(
@@ -1735,7 +1735,7 @@ namespace FactionColonies
                 list.Add(new FloatMenuOption(support.name + " - $" + cost, delegate
                 {
                     if (support.ReturnTotalCost() <=
-                        MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
+                        MilitaryCustomizationUtil.CalculateFireSupportBudget(settlement.settlementMilitaryLevel))
                     {
                         if (settlement.BuildingsComp?.HasBuilding(BuildingFCDefOf.artilleryOutpost) == true)
                         {

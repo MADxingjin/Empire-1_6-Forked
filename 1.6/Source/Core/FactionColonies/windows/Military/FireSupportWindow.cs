@@ -222,18 +222,15 @@ namespace FactionColonies
             {
                 Widgets.Label(costRect, "FCFireSupportCostRefLabel".Translate(
                     selectedSupport.ReturnTotalCost(),
-                    MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(
-                        settlementPointReference.settlementMilitaryLevel)));
+                    MilitaryCustomizationUtil.CalculateFireSupportBudget(settlementPointReference.settlementMilitaryLevel)));
             }
             else
             {
-                Widgets.Label(costRect, "FCFireSupportCostLabel".Translate(
-                    selectedSupport.ReturnTotalCost()));
+                Widgets.Label(costRect, "FCFireSupportCostLabel".Translate(selectedSupport.ReturnTotalCost()));
             }
 
             Rect countRect = new Rect(rect.x + halfWidth, infoY, halfWidth, 18f);
-            Widgets.Label(countRect, "FCFireSupportProjectileCount".Translate(
-                selectedSupport.projectiles.Count));
+            Widgets.Label(countRect, "FCFireSupportProjectileCount".Translate(selectedSupport.projectiles.Count));
 
             // Info line 2: Duration
             float line2Y = infoY + 18f + 2f;
