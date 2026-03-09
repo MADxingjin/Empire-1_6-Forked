@@ -230,6 +230,11 @@ namespace FactionColonies
                 LogUtil.Message($"Attempted to assign a squad to settlement {settlement.Name} with NULL MilitaryComp");
                 return;
             }
+            if (!SquadAssignmentRegistry.CanAssign(settlement, squad, out string rejectReason))
+            {
+                Messages.Message(rejectReason, MessageTypeDefOf.RejectInput);
+                return;
+            }
             if (CalculateSquadBudget(settlement.settlementMilitaryLevel) >=
                 squad.GetEquipmentTotalCost())
             {

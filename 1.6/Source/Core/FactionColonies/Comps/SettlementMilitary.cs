@@ -238,7 +238,9 @@ namespace FactionColonies
             settlementList.AddRange
             (
                 from foundSettlement in faction.settlements
-                where foundSettlement != WorldSettlement && foundSettlement.MilitaryComp?.IsMilitaryValid() == true
+                where foundSettlement != WorldSettlement
+                    && foundSettlement.MilitaryComp?.IsMilitaryValid() == true
+                    && DefenseValidatorRegistry.CanDefend(foundSettlement, WorldSettlement)
                 select new FloatMenuOption
                 (
                     FoundSettlementString(foundSettlement),

@@ -252,6 +252,7 @@ namespace FactionColonies
                     settlementCompare.MilitaryComp.autoDefend && !settlementCompare.MilitaryComp.militaryBusy &&
                     !settlementCompare.MilitaryComp.isUnderAttack &&
                     settlementCompare.settlementMilitaryLevel > settlement.settlementMilitaryLevel &&
+                    DefenseValidatorRegistry.CanDefend(settlementCompare, settlement) &&
                     (highest == null || settlementCompare.settlementMilitaryLevel > highest.settlementMilitaryLevel))
                 {
                     highest = settlementCompare;

@@ -159,6 +159,31 @@ namespace FactionColonies
         void ModifyForce(militaryForce force, bool isAttacker);
     }
     /// <summary>
+    /// Allows submods to veto or filter defense assignments. Called when a settlement
+    /// is considered as a defender for another settlement (both manual selection and auto-defend).
+    /// Register implementations via <see cref="DefenseValidatorRegistry"/>.
+    /// </summary>
+    public interface IDefenseValidator
+    {
+        /// <summary>
+        /// Returns true if <paramref name="defender"/> is allowed to defend <paramref name="target"/>.
+        /// Return false to exclude it from the defender list or auto-defend selection.
+        /// </summary>
+        bool CanDefend(WorldSettlementFC defender, WorldSettlementFC target);
+    }
+    /// <summary>
+    /// Allows submods to veto squad assignments. Called before a squad loadout is
+    /// assigned to a settlement. Register implementations via <see cref="SquadAssignmentRegistry"/>.
+    /// </summary>
+    public interface ISquadAssignmentValidator
+    {
+        /// <summary>
+        /// Returns true if <paramref name="squad"/> can be assigned to <paramref name="settlement"/>.
+        /// If false, <paramref name="reason"/> is shown to the player as a rejection message.
+        /// </summary>
+        bool CanAssign(WorldSettlementFC settlement, MilSquadFC squad, out string reason);
+    }
+    /// <summary>
     /// Allows submods to contribute additive or multiplicative modifiers to the Empire Threat Level (ETL).
     /// Register implementations via <see cref="ThreatScalingRegistry"/>.
     /// </summary>
