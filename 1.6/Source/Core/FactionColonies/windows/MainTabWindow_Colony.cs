@@ -104,30 +104,11 @@ namespace FactionColonies
                 EdictTabDrawer.OnTabSwitch();
             }, () => curTab == overviewTabs[4]));
             overviewFuncs.Add(overviewTabs[4], DrawEdictsTab);
-            // Mod-added tabs
-            foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
-            {
-                try
-                {
-                    itab.PreOpenWindow(faction);
-                    tabs.Add(new TabRecord(itab.TabName(), delegate
-                    {
-                        curTab = itab.TabName();
-                        itab.OnTabSwitch();
-                    }, () => curTab == itab.TabName()));
-                    overviewFuncs.Add(itab.TabName(), itab.DrawOverviewTab);
-                }
-                catch (Exception e)
-                {
-                    LogUtil.Error($"IMainTabWindowOverview {itab.GetType().Name} threw during registration: {e}");
-                }
-            }
         }
 
         public override void PostClose()
         {
             base.PostClose();
-            MainTableRegistry.InvokePostCloseWindow();
             selectingColonyFC = false;
             militaryUtil?.CheckMilitaryUtilForErrors();
         }
