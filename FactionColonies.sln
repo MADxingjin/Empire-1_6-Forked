@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.CE", "1.6\Source\Pat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.FTV", "1.6\Source\Patch-FTV\Empire.FTV.csproj", "{1B1B0A4C-A83A-218D-03FC-E25D49DC5768}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.WD", "1.6\Source\Patch-WD\Empire.WD.csproj", "{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,24 @@ Global
 		{1B1B0A4C-A83A-218D-03FC-E25D49DC5768}.Testing|x64.Build.0 = Testing|Any CPU
 		{1B1B0A4C-A83A-218D-03FC-E25D49DC5768}.Testing|x86.ActiveCfg = Testing|Any CPU
 		{1B1B0A4C-A83A-218D-03FC-E25D49DC5768}.Testing|x86.Build.0 = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|x64.Build.0 = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Debug|x86.Build.0 = Debug|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|x64.ActiveCfg = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|x64.Build.0 = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|x86.ActiveCfg = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Release|x86.Build.0 = Release|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|x64.ActiveCfg = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|x64.Build.0 = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|x86.ActiveCfg = Testing|Any CPU
+		{91CFBACC-73CD-FE10-0E3E-64A40E9F269B}.Testing|x86.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

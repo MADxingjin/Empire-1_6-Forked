@@ -35,7 +35,7 @@ namespace FactionColonies.FTV
         static FactionTerritoriesCompatInit()
         {
             new Harmony("com.Saakra.Empire.FTV").PatchAll(Assembly.GetExecutingAssembly());
-            LogUtil.Message("Faction Territories & Vassalage patched");
+            LogUtil.MessageForce("Faction Territories & Vassalage patched");
         }
     }
 

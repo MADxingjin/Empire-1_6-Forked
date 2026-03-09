@@ -7,7 +7,7 @@ using Verse;
 
 namespace FactionColonies
 {
-    class SimulateBattleFc
+    public class SimulateBattleFc
     {
         public static int FightBattle(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
         {
@@ -220,7 +220,7 @@ namespace FactionColonies
         }
     }
 
-    class MilitaryUtilFC
+    public class MilitaryUtilFC
     {
         public static void AttackPlayerSettlement(militaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
         {
@@ -342,7 +342,7 @@ namespace FactionColonies
         }
     }
 
-    class RelationsUtilFC
+    public class RelationsUtilFC
     {
         public static void AttackFaction(Faction faction)
         {

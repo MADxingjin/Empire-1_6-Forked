@@ -73,6 +73,7 @@ namespace FactionColonies
                 return _cachedColonyFaction;
             }
         }
+        public static bool IsPlayerColonyFaction(Faction f) => !(PlayerColonyFaction is null) && f == PlayerColonyFaction;
         /// <summary>
         /// The player faction itself.
         /// </summary>
