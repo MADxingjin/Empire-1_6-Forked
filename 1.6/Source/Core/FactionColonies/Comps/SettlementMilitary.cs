@@ -956,7 +956,7 @@ namespace FactionColonies
 
             job.Handler?.OnDeployed(this, location, timeToFinish, enemy);
 
-            MilitaryEventRegistry.InvokeOnSquadDeployed(WorldSettlement, job);
+            LifecycleRegistry.InvokeOnSquadDeployed(WorldSettlement, job);
         }
 
         public Settlement ReturnMilitaryTarget()
@@ -980,7 +980,7 @@ namespace FactionColonies
                 victory = militaryJob.Handler.OnResolved(this);
             }
 
-            MilitaryEventRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
+            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
             CooldownMilitaryFinal();
         }
 
@@ -991,7 +991,7 @@ namespace FactionColonies
             militaryLocation = -1;
             militaryEnemy = null;
 
-            MilitaryEventRegistry.InvokeOnSquadRecalled(WorldSettlement);
+            LifecycleRegistry.InvokeOnSquadRecalled(WorldSettlement);
 
             if (alert)
             {

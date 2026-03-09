@@ -18,11 +18,8 @@ namespace FactionColonies
 
             TaxTickRegistry.ClearAll();
             MainTableRegistry.ClearAll();
-            BuildingLifecycleRegistry.ClearAll();
-            SettlementLifecycleRegistry.ClearAll();
+            LifecycleRegistry.ClearAll();
             BattleModifierRegistry.ClearAll();
-            ResearchRegistry.ClearAll();
-            MilitaryEventRegistry.ClearAll();
             BuildingFilterRegistry.ClearAll();
 
             SettlementTypeExtension_Orbital.InvalidateCache();

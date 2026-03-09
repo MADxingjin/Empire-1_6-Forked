@@ -68,7 +68,7 @@ namespace FactionColonies
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
-                MilitaryEventRegistry.InvokeOnSquadDeployed(settlement, MilitaryJobDefOf.Deploy, true);
+                LifecycleRegistry.InvokeOnSquadDeployed(settlement, MilitaryJobDefOf.Deploy, true);
             }
         }
 

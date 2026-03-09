@@ -593,7 +593,7 @@ namespace FactionColonies
             DirtyStatsCache();
             DirtyDescriptionCache();
             settlementDef.GetSettlementTypeExtension()?.OnUpgrade(this, oldLevel, settlementLevel);
-            SettlementLifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
+            LifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
         }
 
         public void DelevelSettlement(int times = -1)
@@ -685,7 +685,7 @@ namespace FactionColonies
 
             // --- Post-transition hooks ---
             newDef.GetSettlementTypeExtension()?.PostTypeTransition(this, oldDef);
-            SettlementLifecycleRegistry.InvokeOnSettlementTypeChanged(this, oldDef, newDef);
+            LifecycleRegistry.InvokeOnSettlementTypeChanged(this, oldDef, newDef);
 
             LogUtil.Message($"Settlement {Name} transitioned from {oldDef.defName} to {newDef.defName}");
             return true;

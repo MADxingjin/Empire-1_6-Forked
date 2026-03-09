@@ -87,64 +87,21 @@ namespace FactionColonies
         void PostSettlementCreateTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings);
     }
     /// <summary>
-    /// Defines an interface to let classes hook into settlement creation and removal.
+    /// Unified lifecycle hook for settlement, building, military, and research events.
+    /// Register implementations via <see cref="LifecycleRegistry"/>.
+    /// Use <see cref="LifecycleParticipantBase"/> to avoid stubbing unused methods.
     /// </summary>
-    public interface ISettlementLifecycleParticipant
+    public interface ILifecycleParticipant
     {
-        /// <summary>
-        /// Called after a settlement has been fully created, added to the world, and registered with the faction.
-        /// </summary>
         void OnSettlementCreated(WorldSettlementFC settlement);
-        /// <summary>
-        /// Called when a settlement is being removed, before cleanup (military return, event removal) begins.
-        /// </summary>
         void OnSettlementRemoved(WorldSettlementFC settlement);
-        /// <summary>
-        /// Called after a settlement has been upgraded or deleveled.
-        /// </summary>
         void OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel);
-        /// <summary>
-        /// Called after a settlement has transitioned to a new WorldSettlementDef.
-        /// </summary>
         void OnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef);
-    }
-    /// <summary>
-    /// Defines an interface to let classes hook into building construction and deconstruction.
-    /// </summary>
-    public interface IBuildingLifecycleParticipant
-    {
-        /// <summary>
-        /// Called after a building has been fully constructed and its comps initialized.
-        /// </summary>
         void OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot);
-        /// <summary>
-        /// Called before a building is deconstructed and its stat modifiers removed.
-        /// </summary>
         void OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot);
-    }
-    /// <summary>
-    /// Defines an interface to let classes hook into military deployment, recall, and battle resolution events.
-    /// </summary>
-    public interface IMilitaryEventParticipant
-    {
-        /// <summary>
-        /// Called after a military squad has been deployed from a settlement.
-        /// </summary>
         void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad);
-        /// <summary>
-        /// Called when a military squad is recalled to its settlement.
-        /// </summary>
         void OnSquadRecalled(WorldSettlementFC settlement);
-        /// <summary>
-        /// Called after a battle has been resolved, before the squad enters cooldown.
-        /// </summary>
         void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory);
-    }
-    /// <summary>
-    /// Defines an interface to let classes hook into research project completion.
-    /// </summary>
-    public interface IResearchParticipant
-    {
         void OnResearchCompleted(ResearchProjectDef project);
     }
     /// <summary>

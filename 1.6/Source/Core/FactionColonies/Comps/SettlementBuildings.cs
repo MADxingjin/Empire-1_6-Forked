@@ -373,7 +373,7 @@ namespace FactionColonies
             };
 
             HandleOnConstructionComps(building, buildingSlot);
-            BuildingLifecycleRegistry.InvokeOnBuildingConstructed(WorldSettlement, building, buildingSlot);
+            LifecycleRegistry.InvokeOnBuildingConstructed(WorldSettlement, building, buildingSlot);
         }
         /// <summary>
         /// <para>Handles any special processing when a building is deconstructed.</para>
@@ -383,7 +383,7 @@ namespace FactionColonies
             BuildingFCDef deconstructedDef = buildings[buildingSlot].def;
             LogUtil.Message($"Deconstructing building {deconstructedDef.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
             dirtyConstructionCache = true;
-            BuildingLifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, deconstructedDef, buildingSlot);
+            LifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, deconstructedDef, buildingSlot);
 
             RemoveBuildingStatModifiers(buildingSlot);
 

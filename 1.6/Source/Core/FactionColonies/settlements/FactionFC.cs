@@ -11,7 +11,7 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class FactionFC : WorldComponent, ISettlementLifecycleParticipant, IBuildingLifecycleParticipant, IMilitaryEventParticipant, IResearchParticipant
+    public class FactionFC : WorldComponent, ILifecycleParticipant
     {
         #region Fields & Properties
 
@@ -402,10 +402,7 @@ namespace FactionColonies
             }
             factionResources.Sort(ResourceDisplay.SortForUI);
 
-            SettlementLifecycleRegistry.Register(this);
-            BuildingLifecycleRegistry.Register(this);
-            MilitaryEventRegistry.Register(this);
-            ResearchRegistry.Register(this);
+            LifecycleRegistry.Register(this);
 
             if (fromLoad)
             {
@@ -1335,52 +1332,52 @@ namespace FactionColonies
 
         // Bridges registry dispatch to policy behaviors so ColonyUtil only needs one call path.
 
-        void ISettlementLifecycleParticipant.OnSettlementCreated(WorldSettlementFC settlement)
+        void ILifecycleParticipant.OnSettlementCreated(WorldSettlementFC settlement)
         {
             ForEachBehavior(b => b.OnSettlementCreated(this, settlement));
         }
 
-        void ISettlementLifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
+        void ILifecycleParticipant.OnSettlementRemoved(WorldSettlementFC settlement)
         {
             ForEachBehavior(b => b.OnSettlementRemoved(this, settlement));
         }
 
-        void ISettlementLifecycleParticipant.OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
+        void ILifecycleParticipant.OnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
         {
             ForEachBehavior(b => b.OnSettlementUpgraded(this, settlement, newLevel));
         }
 
-        void ISettlementLifecycleParticipant.OnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef)
+        void ILifecycleParticipant.OnSettlementTypeChanged(WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef)
         {
             ForEachBehavior(b => b.OnSettlementTypeChanged(this, settlement, oldDef, newDef));
         }
 
-        void IBuildingLifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        void ILifecycleParticipant.OnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
         {
             ForEachBehavior(b => b.OnBuildingConstructed(this, settlement, building, slot));
         }
 
-        void IBuildingLifecycleParticipant.OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
+        void ILifecycleParticipant.OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
         {
             ForEachBehavior(b => b.OnBuildingDeconstructed(this, settlement, building, slot));
         }
 
-        void IMilitaryEventParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad)
+        void ILifecycleParticipant.OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad)
         {
             ForEachBehavior(b => b.OnSquadDeployed(this, settlement, isExtraSquad));
         }
 
-        void IMilitaryEventParticipant.OnSquadRecalled(WorldSettlementFC settlement)
+        void ILifecycleParticipant.OnSquadRecalled(WorldSettlementFC settlement)
         {
             ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
         }
 
-        void IMilitaryEventParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
+        void ILifecycleParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
         {
             ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
         }
 
-        void IResearchParticipant.OnResearchCompleted(ResearchProjectDef project)
+        void ILifecycleParticipant.OnResearchCompleted(ResearchProjectDef project)
         {
             ForEachBehavior(b => b.OnResearchCompleted(this, project));
         }

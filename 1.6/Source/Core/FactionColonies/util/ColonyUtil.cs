@@ -44,7 +44,7 @@ namespace FactionColonies.util
             /* Do any post-settlement-creation demanded of the settlement type */
             settlementType.GetModExtension<SettlementTypeExtension>().PostCreation(settlement);
 
-            SettlementLifecycleRegistry.InvokeOnSettlementCreated(settlement);
+            LifecycleRegistry.InvokeOnSettlementCreated(settlement);
 
             Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
                 "SettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
@@ -58,7 +58,7 @@ namespace FactionColonies.util
             settlement.settlementDef.GetSettlementTypeExtension()?.PreDestruction(settlement);
             settlement.PrepareDestroy();
             FactionFC faction = FactionCache.FactionComp;
-            SettlementLifecycleRegistry.InvokeOnSettlementRemoved(settlement);
+            LifecycleRegistry.InvokeOnSettlementRemoved(settlement);
             faction.settlements.Remove(settlement);
             faction.DirtyFactionProfitCache();
             faction.DirtyAveragesCache();
