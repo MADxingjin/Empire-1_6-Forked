@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -23,26 +24,15 @@ namespace FactionColonies
                 if (cs.pawns.Contains(pawn)) return true;
             }
 
-            // Block all non-supporting defenders (mercenary or generated)
+            // Block defenders from exiting
             if (military.defenders.Contains(pawn)) return false;
 
-            return true;
-        }
-    }
+            // Fallback: block squad mercenary pawns removed from defenders
+            if (pawn.IsMercenary()) return false;
 
-    [HarmonyPatch(typeof(JobGiver_ExitMap), "TryGiveJob")]
-    class Patch_JobGiver_ExitMap
-    {
-        static bool Prefix(Pawn pawn, ref Job __result)
-        {
-            if (!(pawn.Map?.Parent is WorldSettlementFC settlement)) return true;
-            var military = settlement.MilitaryComp;
-            if (military == null || !military.isUnderAttack) return true;
-            if (military.defenders.Contains(pawn))
-            {
-                __result = null;
-                return false;
-            }
+            // Fallback: block any drafted pawn (generic generated defenders drafted via our gizmo)
+            if (pawn.Drafted) return false;
+
             return true;
         }
     }

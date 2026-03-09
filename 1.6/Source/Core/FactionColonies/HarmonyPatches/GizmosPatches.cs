@@ -88,10 +88,13 @@ namespace FactionColonies
 							action.toggleAction = () =>
 							{
 								found.SetFaction(FactionCache.PlayerColonyFaction);
-								// Re-add to defense lord after undrafting
+								// Re-add to defenders list and defense lord after undrafting
 								var milComp = settlementFc.MilitaryComp;
 								if (milComp != null && milComp.defenders.Any())
 								{
+									if (!milComp.defenders.Contains(found))
+										milComp.defenders.Add(found);
+
 									var defenderLord = milComp.defenders[0].GetLord();
 									if (defenderLord != null && !defenderLord.ownedPawns.Contains(found))
 									{
