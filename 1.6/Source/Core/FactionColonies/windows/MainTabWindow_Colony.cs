@@ -1539,9 +1539,15 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 double budget = MilitaryCustomizationUtil.CalculateMilitaryLevelPoints(settlement.settlementMilitaryLevel);
                 double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
-                string badgeStr = "ML " + settlement.settlementMilitaryLevel
-                    + "  \u2022  " + efficiency.ToString("0.0") + "x"
-                    + "  \u2022  $" + budget;
+                FactionFC fcBadge = FactionCache.FactionComp;
+                double atkPower = Math.Round(
+                    (settlement.settlementMilitaryLevel + fcBadge.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking))
+                    * efficiency * fcBadge.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking));
+                double defPower = Math.Round(
+                    (settlement.settlementMilitaryLevel + fcBadge.GetStatValue(FCStatDefOf.militaryLevelBonusDefending))
+                    * efficiency * fcBadge.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending)
+                    * FCSettings.defenderAdvantage);
+                string badgeStr = "FCMilBadge".Translate(atkPower, defPower, budget);
                 Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH), badgeStr);
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;

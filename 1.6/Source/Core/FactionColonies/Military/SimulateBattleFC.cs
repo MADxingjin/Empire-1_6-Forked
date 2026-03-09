@@ -17,6 +17,9 @@ namespace FactionColonies
                 BattleModifierRegistry.InvokeModifyForce(MFA, true);
                 BattleModifierRegistry.InvokeModifyForce(MFB, false);
 
+                // Defender advantage: defenders are inherently harder to dislodge
+                MFB.forceRemaining = Math.Round(MFB.forceRemaining * FCSettings.defenderAdvantage);
+
                 LogUtil.Message("SimulateBattleFc.FightBattle: Starting battle");
                 while (MFA.forceRemaining > 0 && MFB.forceRemaining > 0)
                 {
@@ -76,6 +79,9 @@ namespace FactionColonies
         public int random;
         public WorldSettlementFC homeSettlement;
         public Faction homeFaction;
+
+        /// <summary>forceRemaining with defender advantage applied (for display).</summary>
+        public double DefensivePower => Math.Round(forceRemaining * FCSettings.defenderAdvantage);
 
         public void ExposeData()
         {
@@ -264,8 +270,9 @@ namespace FactionColonies
 
                 FactionCache.FactionComp.AddEvent(tmp);
 
-                tmp.customDescription += "\n\nThe estimated attacking force's power is: " +
-                                         tmp.militaryForceAttacking.forceRemaining;
+                tmp.customDescription += "\n\n" + "settlementAttackEstimate".Translate(
+                    tmp.militaryForceAttacking.forceRemaining,
+                    tmp.militaryForceDefending.DefensivePower);
                 settlement.MilitaryComp.isUnderAttack = true;
 
                 Find.LetterStack.ReceiveLetter("settlementInDanger".Translate(), tmp.customDescription,

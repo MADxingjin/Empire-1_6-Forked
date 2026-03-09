@@ -205,7 +205,7 @@ namespace FactionColonies
                     var list = new List<FloatMenuOption>()
                     {
                         new FloatMenuOption("SettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
-                                                                                       evt.militaryForceDefending.militaryLevel),
+                                                                                       evt.militaryForceDefending.DefensivePower),
                                             null, MenuOptionPriority.High),
                         new FloatMenuOption("ChangeDefendingForce".Translate(), () => ChangeDefendingForceAction(evt))
                     };

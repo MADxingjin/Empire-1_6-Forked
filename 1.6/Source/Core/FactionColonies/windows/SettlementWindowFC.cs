@@ -813,7 +813,34 @@ namespace FactionColonies
                 {
                     Widgets.Label(buttonBox, new GUIContent(TexLoad.iconMilitary));
                     Widgets.Label(labelBox, settlement.settlementMilitaryLevel.ToString());
-                    tooltip = "SettlementMilitaryLevel".Translate() + "\n-----\n" + "SettlementMilitaryLevelDesc".Translate();
+                    FactionFC fc = FactionCache.FactionComp;
+                    double baseLvl = settlement.settlementMilitaryLevel;
+                    double eff = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+                    double atkLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
+                    double atkEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
+                    double defLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
+                    double defEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
+                    double defAdv = FCSettings.defenderAdvantage;
+                    double offPower = Math.Round((baseLvl + atkLvlBonus) * eff * atkEffBonus);
+                    double defPower = Math.Round((baseLvl + defLvlBonus) * eff * defEffBonus * defAdv);
+
+                    tooltip = "SettlementMilitaryLevel".Translate() + "\n-----\n"
+                        + "SettlementMilitaryLevelDesc".Translate() + "\n\n"
+                        + "Base level: " + baseLvl;
+                    if (Math.Abs(eff - 1.0) > 0.001)
+                        tooltip += "\nCombat efficiency: " + eff.ToString("0.0#") + "x";
+                    tooltip += "\n\nOffensive Power: " + offPower;
+                    if (Math.Abs(atkLvlBonus) > 0.001)
+                        tooltip += "\n  Level bonus: +" + atkLvlBonus.ToString("0.#");
+                    if (Math.Abs(atkEffBonus - 1.0) > 0.001)
+                        tooltip += "\n  Efficiency bonus: " + atkEffBonus.ToString("0.0#") + "x";
+                    tooltip += "\n\nDefensive Power: " + defPower;
+                    if (Math.Abs(defLvlBonus) > 0.001)
+                        tooltip += "\n  Level bonus: +" + defLvlBonus.ToString("0.#");
+                    if (Math.Abs(defEffBonus - 1.0) > 0.001)
+                        tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
+                    if (Math.Abs(defAdv - 1.0) > 0.001)
+                        tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
                 }
 
                 if (stats[i] == "happiness")
@@ -982,14 +1009,17 @@ namespace FactionColonies
                             list.Add(new FloatMenuOption(
                                 "SettlementDefendingInformation".Translate(
                                     evt.militaryForceDefending.homeSettlement.Name,
-                                    evt.militaryForceDefending.militaryLevel), null, MenuOptionPriority.High));
+                                    evt.militaryForceDefending.DefensivePower), null, MenuOptionPriority.High));
                             list.Add(new FloatMenuOption("ChangeDefendingForce".Translate(), delegate
                             {
                                 List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
                                 WorldSettlementFC homeSettlement = settlement;
 
+                                double homePower = Math.Round(homeSettlement.settlementMilitaryLevel
+                                    * homeSettlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
+                                    * FCSettings.defenderAdvantage);
                                 settlementList.Add(new FloatMenuOption(
-                                    "ResetToHomeSettlement".Translate(homeSettlement.settlementMilitaryLevel),
+                                    "ResetToHomeSettlement".Translate(homePower),
                                     delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, homeSettlement); },
                                     MenuOptionPriority.High));
 
@@ -997,11 +1027,12 @@ namespace FactionColonies
                                 {
                                     if (settlement.MilitaryComp.IsMilitaryValid() && settlement != homeSettlement)
                                     {
-                                        //if military is valid to use.
-
+                                        double power = Math.Round(settlement.settlementMilitaryLevel
+                                            * settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
+                                            * FCSettings.defenderAdvantage);
                                         settlementList.Add(new FloatMenuOption(
-                                            settlement.Name + " " + "ShortMilitary".Translate() + " " +
-                                            settlement.settlementMilitaryLevel + " - " + "FCAvailable".Translate() +
+                                            settlement.Name + " " + "FCPower".Translate() + " " +
+                                            power + " - " + "FCAvailable".Translate() +
                                             ": " + (!settlement.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
                                             {
                                                 if (settlement.MilitaryComp.IsMilitaryBusy())

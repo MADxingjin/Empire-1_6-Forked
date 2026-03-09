@@ -76,6 +76,7 @@ namespace FactionColonies
         public const int DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT = 0;
         public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 6;
         public const float DEFAULT_MAX_THREAT_MULTIPLIER = 3.0f;
+        public const float DEFAULT_DEFENDER_ADVANTAGE = 1.15f;
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
          *           ~  DEFAULTS END ~
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -129,6 +130,7 @@ namespace FactionColonies
         public static double militaryRaceCostMultiplier = 0.15;
 
         public static float maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
+        public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
 
         public static int maxPolicyCount = 2;
 
@@ -164,6 +166,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
             Scribe_Values.Look(ref printDebug, "printDebug", false);
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
+            Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -468,6 +471,9 @@ namespace FactionColonies
             ls.Label("FCSettingMaxThreatScaling".Translate() + ": " + maxThreatMultiplier.ToString("0.0") + "x");
             maxThreatMultiplier = ls.Slider(maxThreatMultiplier, 1.0f, 5.0f);
 
+            ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
+            defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
+
             ls.Label("FCSettingMinMaxRandomEvent".Translate());
             ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
             minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
@@ -493,6 +499,7 @@ namespace FactionColonies
                 deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
                 settlementsAutoBattle = DEFAULT_SETTLEMENTS_AUTO_BATTLE;
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
+                defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;

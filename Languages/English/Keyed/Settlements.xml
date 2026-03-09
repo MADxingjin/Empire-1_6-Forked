@@ -69,10 +69,7 @@
 	<SettlementStatLoss>Losing {0} {1} per day</SettlementStatLoss>
 
 	<!-- Settlement Stat Descriptions -->
-	<SettlementMilitaryLevelDesc>The measure of the settlements's military level.
-
-The military level of a town directly affects the town's ability to defend itself as well as attack external threats
-	</SettlementMilitaryLevelDesc>
+	<SettlementMilitaryLevelDesc>The military level directly affects the settlement's ability to defend itself and attack external threats.</SettlementMilitaryLevelDesc>
 	<SettlementHappinessDesc>The measure of the Settlement's overall happiness.
 
 A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
