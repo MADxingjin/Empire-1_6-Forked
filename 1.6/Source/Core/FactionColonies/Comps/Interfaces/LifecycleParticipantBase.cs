@@ -17,7 +17,7 @@ namespace FactionColonies
         public virtual void OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot) { }
         public virtual void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad) { }
         public virtual void OnSquadRecalled(WorldSettlementFC settlement) { }
-        public virtual void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory) { }
+        public virtual void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result) { }
         public virtual void OnResearchCompleted(ResearchProjectDef project) { }
     }
 }

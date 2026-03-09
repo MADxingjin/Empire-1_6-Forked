@@ -475,15 +475,15 @@ namespace FactionColonies
         {
             if (FCSettings.settlementsAutoBattle)
             {
-                var won = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending) == 1;
-                EndBattle(won, (int)evt.militaryForceDefending.forceRemaining);
+                BattleResult battleResult = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending);
+                EndBattle(battleResult.DefenderVictory, (int)evt.militaryForceDefending.forceRemaining, battleResult);
                 return;
             }
 
             if (defenderForce == null)
             {
                 LogUtil.Warning($"StartDefence: defenderForce is null for {WorldSettlement.Name}, settlement loses by default.");
-                EndBattle(false, 0);
+                EndBattle(false, 0, null);
                 return;
             }
 
@@ -666,7 +666,7 @@ namespace FactionColonies
             initialDefenderCount = defenders.Count;
         }
 
-        public void EndBattle(bool won, int remaining)
+        public void EndBattle(bool won, int remaining, BattleResult battleResult = null)
         {
             var faction = FactionCache.FactionComp;
 
@@ -690,6 +690,7 @@ namespace FactionColonies
             }
             isUnderAttack = false;
             battleMapInitialized = false;
+            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, MilitaryJobDefOf.DefendFriendlySettlement, won, battleResult);
         }
 
         private void CooldownMilitary(int remaining)
@@ -972,15 +973,16 @@ namespace FactionColonies
                 faction.militaryTargets.Remove(militaryLocation);
             }
 
-            bool victory = false;
+            BattleResult result = null;
             MilitaryJobDef resolvedJob = militaryJob;
 
             if (militaryJob.Handler != null)
             {
-                victory = militaryJob.Handler.OnResolved(this);
+                result = militaryJob.Handler.OnResolved(this);
             }
 
-            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory);
+            bool victory = result != null && result.AttackerVictory;
+            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory, result);
             CooldownMilitaryFinal();
         }
 

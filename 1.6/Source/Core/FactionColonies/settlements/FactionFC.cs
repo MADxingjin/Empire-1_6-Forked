@@ -1372,9 +1372,9 @@ namespace FactionColonies
             ForEachBehavior(b => b.OnSquadRecalled(this, settlement));
         }
 
-        void ILifecycleParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
+        void ILifecycleParticipant.OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result)
         {
-            ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory));
+            ForEachBehavior(b => b.OnBattleResolved(this, settlement, job, victory, result));
         }
 
         void ILifecycleParticipant.OnResearchCompleted(ResearchProjectDef project)

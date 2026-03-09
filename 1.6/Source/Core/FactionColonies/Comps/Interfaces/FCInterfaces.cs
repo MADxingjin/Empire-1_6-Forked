@@ -101,7 +101,7 @@ namespace FactionColonies
         void OnBuildingDeconstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot);
         void OnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad);
         void OnSquadRecalled(WorldSettlementFC settlement);
-        void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory);
+        void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result);
         void OnResearchCompleted(ResearchProjectDef project);
     }
     /// <summary>

@@ -103,11 +103,11 @@ namespace FactionColonies
             settlement.InvalidateStatCache();
         }
 
-        public static void InvokeOnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory)
+        public static void InvokeOnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result)
         {
             foreach (ILifecycleParticipant p in _participants)
             {
-                try { p.OnBattleResolved(settlement, job, victory); }
+                try { p.OnBattleResolved(settlement, job, victory, result); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBattleResolved: {e}"); }
             }
             settlement.InvalidateStatCache();

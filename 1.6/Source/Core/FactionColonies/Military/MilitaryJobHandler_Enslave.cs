@@ -18,14 +18,14 @@ namespace FactionColonies
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
 
-        public override bool OnResolved(WorldObjectComp_SettlementMilitary milComp)
+        public override BattleResult OnResolved(WorldObjectComp_SettlementMilitary milComp)
         {
             FactionFC faction = FactionCache.FactionComp;
-            int winner = SimulateBattleFc.FightBattle(
+            BattleResult result = SimulateBattleFc.FightBattle(
                 militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
                 militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
-            if (winner == 0)
+            if (result.AttackerVictory)
             {
                 faction.AddExperienceToFactionLevel(5f);
 
@@ -44,7 +44,7 @@ namespace FactionColonies
                         Find.WorldObjects.SettlementAt(milComp.militaryLocation).LabelCap) + "\n" + text,
                     LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
             }
-            else if (winner == 1)
+            else if (result.DefenderVictory)
             {
                 Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
                     "RaidEnemySettlementFailure".Translate(
@@ -52,7 +52,7 @@ namespace FactionColonies
                     new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
             }
 
-            return winner == 0;
+            return result;
         }
     }
 }

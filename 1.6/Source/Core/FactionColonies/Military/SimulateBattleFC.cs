@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
@@ -9,9 +10,9 @@ namespace FactionColonies
 {
     public class SimulateBattleFc
     {
-        public static int FightBattle(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
+        public static BattleResult FightBattle(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
         {
-            int result = 0;
+            var result = new BattleResult();
             try
             {
                 BattleModifierRegistry.InvokeModifyForce(MFA, true);
@@ -20,31 +21,38 @@ namespace FactionColonies
                 // Defender advantage: defenders are inherently harder to dislodge
                 MFB.forceRemaining = Math.Round(MFB.forceRemaining * FCSettings.defenderAdvantage);
 
+                result.attackerInitialForce = MFA.forceRemaining;
+                result.defenderInitialForce = MFB.forceRemaining;
+                result.roundLog = new List<bool>();
+
                 LogUtil.Message("SimulateBattleFc.FightBattle: Starting battle");
                 while (MFA.forceRemaining > 0 && MFB.forceRemaining > 0)
                 {
-                    // One number should always be reduced to 0
+                    double prevDefender = MFB.forceRemaining;
                     FightRound(MFA, MFB, rand);
+                    // If defender lost force this round, attacker won the round
+                    result.roundLog.Add(MFB.forceRemaining < prevDefender);
                 }
+
+                result.attackerRemainingForce = MFA.forceRemaining;
+                result.defenderRemainingForce = MFB.forceRemaining;
+                result.totalRounds = result.roundLog.Count;
 
                 if (MFA.forceRemaining <= 0)
                 {
                     LogUtil.Message("SimulateBattleFc.FightBattle: Defending Force has won.");
-                    //b is winner
-                    result = 1;
+                    result.winner = BattleWinner.Defender;
                 }
-
                 else
                 {
                     LogUtil.Message("SimulateBattleFc.FightBattle: Attacking Force has won.");
-                    //a is winner
-                    result = 0;
+                    result.winner = BattleWinner.Attacker;
                 }
             }
             catch (Exception e)
             {
                 LogUtil.Error($"An exception occurred while resolving combat in Empire {Environment.NewLine}[{e}]");
-                result = -1;
+                result.winner = BattleWinner.Error;
             }
 
             return result;

@@ -104,11 +104,15 @@ namespace FactionColonies
             // A always rolls high, B always rolls low
             var rand = new AlternatingRandProvider(15, 2);
 
-            int result = SimulateBattleFc.FightBattle(mfa, mfb, rand);
+            BattleResult result = SimulateBattleFc.FightBattle(mfa, mfb, rand);
 
-            TestAssert.AreEqual(0, result, message: "Result 0 = attacker wins");
+            TestAssert.AreEqual(BattleWinner.Attacker, result.winner, message: "Attacker should win");
+            TestAssert.IsTrue(result.AttackerVictory);
             TestAssert.IsTrue(mfa.forceRemaining > 0, "Attacker should have forces remaining");
             TestAssert.LessThanOrEqual(mfb.forceRemaining, 0, "Defender should be eliminated");
+            TestAssert.IsTrue(result.totalRounds > 0, "Battle should have at least one round");
+            TestAssert.IsNotNull(result.roundLog, "Round log should not be null");
+            TestAssert.AreEqual(result.totalRounds, result.roundLog.Count, "totalRounds should match roundLog count");
         }
 
         [EmpireTest("Battle")]
@@ -119,9 +123,13 @@ namespace FactionColonies
             // A always rolls low, B always rolls high
             var rand = new AlternatingRandProvider(2, 15);
 
-            int result = SimulateBattleFc.FightBattle(mfa, mfb, rand);
+            BattleResult result = SimulateBattleFc.FightBattle(mfa, mfb, rand);
 
-            TestAssert.AreEqual(1, result, message: "Result 1 = defender wins");
+            TestAssert.AreEqual(BattleWinner.Defender, result.winner, message: "Defender should win");
+            TestAssert.IsTrue(result.DefenderVictory);
+            TestAssert.IsTrue(result.totalRounds > 0, "Battle should have at least one round");
+            TestAssert.IsNotNull(result.roundLog, "Round log should not be null");
+            TestAssert.AreEqual(result.totalRounds, result.roundLog.Count, "totalRounds should match roundLog count");
         }
     }
 }
