@@ -22,7 +22,6 @@ namespace FactionColonies
         }
 
         public float baseChanceOfSuccess;
-        public string affectingVariable = null;
         public int silverCost = 0;
         public FCEventDef parentEvent;
         public FCEventDef successEvent = null;

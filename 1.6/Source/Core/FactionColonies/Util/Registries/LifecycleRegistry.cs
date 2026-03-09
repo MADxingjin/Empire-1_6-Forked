@@ -26,6 +26,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementCreated(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementCreated: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -36,7 +37,9 @@ namespace FactionColonies
             {
                 try { p.OnSettlementRemoved(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementRemoved: {e}"); }
+                settlement.InvalidateStatCache();
             }
+            settlement.InvalidateStatCache();
         }
 
         public static void InvokeOnSettlementUpgraded(WorldSettlementFC settlement, int oldLevel, int newLevel)
@@ -45,6 +48,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementUpgraded(settlement, oldLevel, newLevel); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementUpgraded: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -55,6 +59,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementTypeChanged(settlement, oldDef, newDef); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementTypeChanged: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -67,6 +72,7 @@ namespace FactionColonies
             {
                 try { p.OnBuildingConstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBuildingConstructed: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -77,6 +83,7 @@ namespace FactionColonies
             {
                 try { p.OnBuildingDeconstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBuildingDeconstructed: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -89,6 +96,7 @@ namespace FactionColonies
             {
                 try { p.OnSquadDeployed(settlement, job, isExtraSquad); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSquadDeployed: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -99,6 +107,7 @@ namespace FactionColonies
             {
                 try { p.OnSquadRecalled(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSquadRecalled: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -109,6 +118,7 @@ namespace FactionColonies
             {
                 try { p.OnBattleResolved(settlement, job, victory, result); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBattleResolved: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -121,6 +131,7 @@ namespace FactionColonies
             {
                 try { p.OnResearchCompleted(project); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnResearchCompleted: {e}"); }
+                FactionCache.FactionComp?.InvalidateAllSettlementStatCaches();
             }
             FactionCache.FactionComp?.InvalidateAllSettlementStatCaches();
         }

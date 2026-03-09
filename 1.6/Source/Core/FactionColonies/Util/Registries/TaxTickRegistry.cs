@@ -41,6 +41,7 @@ namespace FactionColonies
             {
                 try { taxer.PreSettlementCreateTax(settlement); }
                 catch (Exception e) { LogUtil.Error($"ITaxTickParticipant {taxer.GetType().Name} threw in PreSettlementCreateTax: {e}"); }
+                settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
         }
@@ -51,7 +52,9 @@ namespace FactionColonies
             {
                 try { taxer.PostSettlementCreateTax(settlement, ref silverAmount, titheThings); }
                 catch (Exception e) { LogUtil.Error($"ITaxTickParticipant {taxer.GetType().Name} threw in PostSettlementCreateTax: {e}"); }
+                settlement.InvalidateStatCache();
             }
+            settlement.InvalidateStatCache();
         }
     }
 }

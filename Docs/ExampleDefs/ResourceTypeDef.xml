@@ -101,10 +101,10 @@
 	<!-- titheMinCount, titheMaxCountBase, and titheMaxCountScaler all control how much of a resource you get when random tithing. They do not apply to pool resources.-->
 	<!-- The range of items is set as (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is determined by the code.-->
 	<titheMinCount>1</titheMinCount>
-	<titheMaxCountBase>5</titheMaxCountBase>
+	<titheMaxCountBase>1</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
 	<!-- defenseWeight controls how much this resource's production contributes to settlement defense. 0 means no contribution. Default: 0 -->
-	<defenseWeight>1.0</defenseWeight>
+	<defenseWeight>0</defenseWeight>
 	<!-- Specify any modExtensions necessary for your resource. There are four types of extensions that you can extend to add functionality:
 	     1) ResourceProductionExtension: allows you to specify additional additives or multipliers for this resource with your own conditionals
 		 2) ResourceFilterExtension: allows for more fine-grained control over what types of things are allowed for this resource, rather than simple

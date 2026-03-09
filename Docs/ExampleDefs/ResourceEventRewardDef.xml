@@ -61,7 +61,7 @@
 	<!-- ── Custom ThingSetMaker ── -->
 	<!-- Optional custom ThingSetMaker class. Must be a subclass of ThingSetMaker. -->
 	<!-- If null, ThingSetMaker_MarketValue is used. -->
-	<!-- <thingSetMakerClass>YourNamespace.YourThingSetMaker</thingSetMakerClass> -->
+	<thingSetMakerClass>YourNamespace.YourThingSetMaker</thingSetMakerClass>
 
 	<!-- ── Tech Level Override ── -->
 	<!-- If true, uses the techLevel field below instead of the player faction's tech level. Default: false -->

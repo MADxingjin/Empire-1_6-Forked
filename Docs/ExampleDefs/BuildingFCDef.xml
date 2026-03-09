@@ -5,7 +5,7 @@
   <!-- BuildingFCDefs define buildings that can be constructed in Empire settlements. -->
   <!-- Buildings provide stat bonuses, can have upgrade chains, and can be restricted by biome, hilliness, -->
   <!-- settlement type, and tech level. -->
-  <!-- If a building requires a specific DLC or mod, use MayRequire on the def element instead of custom fields: -->
+  <!-- If a building requires a specific DLC or mod, use MayRequire on the def element: -->
   <!-- <FactionColonies.BuildingFCDef MayRequire="Ludeon.RimWorld.Royalty"> -->
   <FactionColonies.BuildingFCDef>
 	<defName>ExampleBuilding</defName>

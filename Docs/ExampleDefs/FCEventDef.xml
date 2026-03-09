@@ -97,6 +97,12 @@
 		</li>
 	</statModifiers>
 
+	<!-- ── Settlement Selection ── -->
+	<!-- If true, random settlement selection uses proximity-based weighting (closer settlements more likely). Default: true -->
+	<useProximity>true</useProximity>
+	<!-- Falloff distance for proximity weighting. Higher values make distance matter less. Default: 20 -->
+	<proximityFalloff>20</proximityFalloff>
+
 	<!-- ── Military ── -->
 	<!-- If true, this event involves military combat (e.g. settlement attacks). Default: false -->
 	<isMilitaryEvent>false</isMilitaryEvent>

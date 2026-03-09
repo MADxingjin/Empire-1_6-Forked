@@ -22,8 +22,13 @@
 	<successEvent>exampleEventSuccess</successEvent>
 	<!-- The event that fires if the player fails. If null, nothing happens on failure. Default: null -->
 	<failEvent>exampleEventFail</failEvent>
-	<!-- Variable name used for modifying success chance based on game state. Default: null -->
-	<affectingVariable>variableName</affectingVariable>
+	<!-- ── Policy Requirements ── -->
+	<!-- Policies that must be active for this option to be available. If empty, always available. -->
+	<requiredPolicies>
+		<li>examplePolicy</li>
+	</requiredPolicies>
+	<!-- Whether all or any of the required policies must be active. Valid values: All, Any. Default: All -->
+	<requirementMode>All</requirementMode>
   </FactionColonies.FCOptionDef>
 
 </Defs>
