@@ -116,6 +116,12 @@ namespace FactionColonies
             TestAssert.AreEqual(0, SettlementFormulas.CalculateBuildingUpkeep(50, true, true));
         }
 
+        [EmpireTest("Formula")]
+        public static void BuildingUpkeep_ZeroBase_MilitaryWithPolicy_StaysZero()
+        {
+            TestAssert.AreEqual(0, SettlementFormulas.CalculateBuildingUpkeep(0, true, true));
+        }
+
         // --- CalculateBattleLossPenalties ---
 
         [EmpireTest("Formula")]
