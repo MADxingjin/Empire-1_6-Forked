@@ -23,6 +23,13 @@ public enum Operation
         Major
     }
 
+    public enum BattleMode
+    {
+        Auto,
+        Manual,
+        Hybrid
+    }
+
     /// <summary>
     /// Hard-coded action gates that policies can block or enable via FCPolicyDef.blockedActions/enabledActions.
     /// Military job-level permissions are handled separately via MilitaryJobDef.defaultEnabled and

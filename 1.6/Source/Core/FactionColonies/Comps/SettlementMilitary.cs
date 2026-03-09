@@ -299,11 +299,19 @@ namespace FactionColonies
 
         private AcceptanceReport CanDoManualFight()
         {
-            if (FCSettings.settlementsAutoBattle)
+            if (FCSettings.battleMode == BattleMode.Auto)
             {
                 return new AcceptanceReport("autoBattleEnabledNoManualFight".Translate());
             }
             return AcceptanceReport.WasAccepted;
+        }
+
+        private bool IsPlayerCaravanOnTile()
+        {
+            return Find.WorldObjects.Caravans.Any(c =>
+                c.Tile == WorldSettlement.Tile &&
+                c.Faction == Faction.OfPlayer &&
+                !c.pather.Moving);
         }
 
         //TOOD: All following methods were yoinked from WorldSettlementFC. parameters and variables need to be adjusted accordingly
@@ -473,7 +481,17 @@ namespace FactionColonies
 
         public void StartDefence(FCEvent evt, Action after)
         {
-            if (FCSettings.settlementsAutoBattle)
+            bool shouldAutoResolve = false;
+            if (FCSettings.battleMode == BattleMode.Auto)
+            {
+                shouldAutoResolve = true;
+            }
+            else if (FCSettings.battleMode == BattleMode.Hybrid)
+            {
+                shouldAutoResolve = !battleMapInitialized && !IsPlayerCaravanOnTile();
+            }
+
+            if (shouldAutoResolve)
             {
                 BattleResult battleResult = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending);
                 EndBattle(battleResult.DefenderVictory, (int)evt.militaryForceDefending.forceRemaining, battleResult);

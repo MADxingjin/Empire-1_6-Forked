@@ -282,6 +282,8 @@ namespace FactionColonies
                 tmp.customDescription += "\n\n" + "settlementAttackEstimate".Translate(
                     tmp.militaryForceAttacking.forceRemaining,
                     tmp.militaryForceDefending.DefensivePower);
+                if (FCSettings.battleMode == BattleMode.Hybrid)
+                    tmp.customDescription += "\n\n" + "settlementAttackHybridHint".Translate();
                 settlement.MilitaryComp.isUnderAttack = true;
 
                 Find.LetterStack.ReceiveLetter("settlementInDanger".Translate(), tmp.customDescription,
