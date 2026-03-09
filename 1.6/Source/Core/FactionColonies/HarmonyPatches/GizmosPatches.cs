@@ -30,19 +30,19 @@ namespace FactionColonies
 			
 			if (__instance.Faction == playerColonyFaction)
 			{
-				if (__instance.drafter == null)
-					__instance.drafter = new Pawn_DraftController(__instance);
-				Pawn_DraftController pawnDraftController = __instance.drafter;
-				
+				Pawn pawn = __instance;
+
 				Command_Toggle draftColonists = new Command_Toggle
 				{
 					hotKey = KeyBindingDefOf.Command_ColonistDraft,
-					isActive = () => pawnDraftController.Drafted,
+					isActive = () => false,
 					toggleAction = () =>
 					{
-						if (pawnDraftController.pawn.Faction == Faction.OfPlayer) return;
-						pawnDraftController.pawn.SetFaction(Faction.OfPlayer);
-						pawnDraftController.Drafted = true;
+						if (pawn.Faction == Faction.OfPlayer) return;
+						pawn.SetFaction(Faction.OfPlayer);
+						// SetFaction → AddAndRemoveDynamicComponents creates pawn.drafter for OfPlayer pawns
+						if (pawn.drafter != null)
+							pawn.drafter.Drafted = true;
 					},
 					defaultDesc = "CommandToggleDraftDesc".Translate(),
 					icon = TexCommand.Draft,
@@ -50,10 +50,10 @@ namespace FactionColonies
 					groupKey = 81729172,
 					defaultLabel = "CommandDraftLabel".Translate()
 				};
-				
-				if (pawnDraftController.pawn.Downed)
+
+				if (pawn.Downed)
 				{
-					draftColonists.Disable("IsIncapped".Translate(pawnDraftController.pawn.LabelShort, pawnDraftController.pawn));
+					draftColonists.Disable("IsIncapped".Translate(pawn.LabelShort, pawn));
 				}
 				
 				draftColonists.tutorTag = "Draft";
