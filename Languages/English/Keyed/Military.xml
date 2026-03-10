@@ -62,6 +62,7 @@
 	<ToggleAutoDefend>Automatically defending attacked settlements: {0}</ToggleAutoDefend>
 	<autoDefendWarning>Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu!</autoDefendWarning>
 	<autoBattleEnabledNoManualFight>Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually.</autoBattleEnabledNoManualFight>
+	<hybridBattleEnabledNoManualFight>Hybrid battle mode is enabled. Send a caravan to manually defend this settlement.</hybridBattleEnabledNoManualFight>
 	<settlementAttackHybridHint>Send a caravan to this settlement before the attack to fight manually.</settlementAttackHybridHint>
 
 	<!-- Raid Damage -->

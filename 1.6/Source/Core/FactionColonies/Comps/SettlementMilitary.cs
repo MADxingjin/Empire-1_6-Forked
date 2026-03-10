@@ -303,6 +303,10 @@ namespace FactionColonies
             {
                 return new AcceptanceReport("autoBattleEnabledNoManualFight".Translate());
             }
+            else if (FCSettings.battleMode == BattleMode.Hybrid && !IsPlayerCaravanOnTile())
+            {
+                return new AcceptanceReport("hybridBattleEnabledNoManualFight".Translate());
+            }
             return AcceptanceReport.WasAccepted;
         }
 
@@ -310,8 +314,7 @@ namespace FactionColonies
         {
             return Find.WorldObjects.Caravans.Any(c =>
                 c.Tile == WorldSettlement.Tile &&
-                c.Faction == Faction.OfPlayer &&
-                !c.pather.Moving);
+                c.Faction == Faction.OfPlayer);
         }
 
         //TOOD: All following methods were yoinked from WorldSettlementFC. parameters and variables need to be adjusted accordingly
