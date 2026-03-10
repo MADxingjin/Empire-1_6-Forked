@@ -11,8 +11,16 @@
 	<FCSettingDisableRandomEvents>Disable Random Events</FCSettingDisableRandomEvents>
 	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
 	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
-	<FCSettingAutoResolveBattles>Automatically Resolve Battles</FCSettingAutoResolveBattles>
+	<FCSettingBattleMode>Battle Mode: </FCSettingBattleMode>
+	<FCBattleModeAuto>Auto-Resolve</FCBattleModeAuto>
+	<FCBattleModeAutoDesc>All battles resolve automatically.</FCBattleModeAutoDesc>
+	<FCBattleModeManual>Manual</FCBattleModeManual>
+	<FCBattleModeManualDesc>All battles generate a map for manual combat.</FCBattleModeManualDesc>
+	<FCBattleModeHybrid>Hybrid</FCBattleModeHybrid>
+	<FCBattleModeHybridDesc>Battles auto-resolve unless you send a caravan to defend.</FCBattleModeHybridDesc>
 	<FCSettingMinMaxMilitaryAction>Min/Max Days Until Military Action (ex. Settlements being attacked)</FCSettingMinMaxMilitaryAction>
+	<FCSettingMaxThreatScaling>Maximum Threat Scaling</FCSettingMaxThreatScaling>
+	<FCSettingDefenderAdvantage>Defender Advantage</FCSettingDefenderAdvantage>
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
 	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
@@ -56,9 +64,9 @@
 	<!-- Warnings -->
 	<FCResetCapitalLocationWarning>Please reset your capital location. If you continue to see this after reseting, please report it.</FCResetCapitalLocationWarning>
 	<FCTaxMapNotSetWarning>Your tax map has not been set. Please set it using the faction menu.</FCTaxMapNotSetWarning>
-	<FCAutoResolveDisabledWarning>Auto resolve is disabled, this setting can cause map generation errors on settlement defense. If you encounter map generation errors turn it back on!</FCAutoResolveDisabledWarning>
-	<FCManualDefenseWarningLabel>Manual Settlement Defence is now disabled by default</FCManualDefenseWarningLabel>
-	<FCManualDefenseWarningDesc>Manual settlement defence has been disabled by default because it has many bugs that can make the game unplayable. The team has decided to completely rework this part of the mod instead of fixing the various issues. As such, enabling settlement defence happens at your own risk. Please do not report issues concerning manual settlement defence.</FCManualDefenseWarningDesc>
+	<FCAutoResolveDisabledWarning>Manual or Hybrid battle mode is active. If you encounter map generation errors, switch back to Auto-Resolve.</FCAutoResolveDisabledWarning>
+	<FCManualDefenseWarningLabel>Manual Settlement Defence</FCManualDefenseWarningLabel>
+	<FCManualDefenseWarningDesc>Manual and Hybrid battle modes generate maps for settlement defense. If you encounter issues, switch to Auto-Resolve mode in settings.</FCManualDefenseWarningDesc>
 	<FCTaxDeliveryNotSetWarning>No tax delivery location set. Either set a tax delivery map or enable tax delivery on a tax spot.</FCTaxDeliveryNotSetWarning>
 	<FCCapitalNotSetWarning>No empire capital established. Either use 'Set Capital' in the Empire menu or build and activate a Capital Seat.</FCCapitalNotSetWarning>
 

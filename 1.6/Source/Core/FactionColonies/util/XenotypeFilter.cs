@@ -21,8 +21,6 @@ namespace FactionColonies.util
         private FactionDef faction;
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
-        private List<TraderKindDef> origCaravanTraderKinds = new List<TraderKindDef>();
-        private List<TraderKindDef> origVisitorTraderKinds = new List<TraderKindDef>();
         private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
 
 
@@ -105,32 +103,32 @@ namespace FactionColonies.util
                 return raceTotalWeight;
             }
         }
-        private List<PawnKindDef> _cachedGuardAnimals = null;
+        private List<PawnKindDef> cachedGuardAnimals = null;
         public List<PawnKindDef> GuardAnimals
         {
             get
             {
-                if (_cachedGuardAnimals == null)
+                if (cachedGuardAnimals == null)
                 {
-                    _cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
+                    cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
                 }
-                return _cachedGuardAnimals;
+                return cachedGuardAnimals;
             }
         }
-        private bool _checkedForNonViolent = false;
-        private bool _cachedHasOnlyNonViolent = false;
+        private bool checkedForNonViolent = false;
+        private bool cachedHasOnlyNonViolent = false;
         public bool OnlyNonViolentXenos
         {
             get
             {
-                if (!_checkedForNonViolent)
+                if (!checkedForNonViolent)
                 {
-                    _cachedHasOnlyNonViolent = true;
+                    cachedHasOnlyNonViolent = true;
                     if (xenotypeWeights?.Count > 0 && xenotypeWeights.Any(kvp => kvp.Value > 0 && !XenotypeNeedsSecurityGuards(kvp.Key)))
                     {
-                        _cachedHasOnlyNonViolent = false;
+                        cachedHasOnlyNonViolent = false;
                     }
-                    if (_cachedHasOnlyNonViolent && customXenotypeWeights?.Count > 0)
+                    if (cachedHasOnlyNonViolent && customXenotypeWeights?.Count > 0)
                     {
                         foreach (string xenotypeName in customXenotypeWeights.Keys)
                         {
@@ -138,7 +136,7 @@ namespace FactionColonies.util
                             {
                                 if (!CustomXenotypeNeedsSecurityGuards(xenotype.name))
                                 {
-                                    _cachedHasOnlyNonViolent = false;
+                                    cachedHasOnlyNonViolent = false;
                                     break;
                                 }
                             }
@@ -146,11 +144,11 @@ namespace FactionColonies.util
                     }
                     if (XenoCompleteWeight == 0)
                     {
-                        _cachedHasOnlyNonViolent = false;
+                        cachedHasOnlyNonViolent = false;
                     }
-                    _checkedForNonViolent = true;
+                    checkedForNonViolent = true;
                 }
-                return _cachedHasOnlyNonViolent;
+                return cachedHasOnlyNonViolent;
             }
         }
 
@@ -169,8 +167,6 @@ namespace FactionColonies.util
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
-            origCaravanTraderKinds.AddRange(faction.caravanTraderKinds);
-            origVisitorTraderKinds.AddRange(faction.visitorTraderKinds);
             origBaseTraderKinds.AddRange(faction.baseTraderKinds);
         }
 
@@ -212,7 +208,7 @@ namespace FactionColonies.util
             }
 
             RefreshPawnGroupMakers();
-            WorldSettlementTraderTracker.reloadTraderKind();
+            WorldSettlementTraderTracker.ReloadTraderKind();
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.
          * Due to caching tracking, we want to force other classes to go through our functions when interacting with the dictionary. */
@@ -227,7 +223,7 @@ namespace FactionColonies.util
                 xenotypeWeights.Add(xenotype, weight);
             }
             dirtyXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void AddCustomXenotypeWithWeight(CustomXenotype xenotype, float weight)
         {
@@ -240,7 +236,7 @@ namespace FactionColonies.util
                 customXenotypeWeights.Add(xenotype.name, weight);
             }
             dirtyCustomXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void AddRaceWithWeight(ThingDef race, float weight)
         {
@@ -260,7 +256,7 @@ namespace FactionColonies.util
             {
                 xenotypeWeights.Remove(xenotype);
                 dirtyXenotypeTotalWeight = true;
-                _checkedForNonViolent = false;
+                checkedForNonViolent = false;
                 return true;
             }
             return false;
@@ -271,7 +267,7 @@ namespace FactionColonies.util
             {
                 customXenotypeWeights.Remove(xenotype);
                 dirtyCustomXenotypeTotalWeight = true;
-                _checkedForNonViolent = false;
+                checkedForNonViolent = false;
                 return true;
             }
             return false;
@@ -290,13 +286,13 @@ namespace FactionColonies.util
         {
             xenotypeWeights.Clear();
             dirtyXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void ClearCustomXenotypeWeights()
         {
             customXenotypeWeights.Clear();
             dirtyCustomXenotypeTotalWeight = true;
-            _checkedForNonViolent = false;
+            checkedForNonViolent = false;
         }
         public void ClearRaceWeights()
         {
@@ -640,7 +636,7 @@ namespace FactionColonies.util
             if (FactionCache.XenotypeIsNonViolent(xenotype))
             {
                 // Find suitable security guard animals
-                securityGuardsByXenotype[xenotype].AddRange(GuardAnimals);
+                securityGuardsByXenotype[xenotype].SetRange(GuardAnimals);
             }
         }
         private void SetupSecurityGuards(string xenotype)
@@ -846,7 +842,7 @@ namespace FactionColonies.util
             outputDef = possibleDefs.First((PawnKindDef def) => !def.trader && !def.isFighter && !def.isBoss && def.label != "mercenary");
             return outputDef;
         }
-        private bool pawnKindRaceCheck(PawnKindDef def, ThingDef race, bool lockTechLevel)
+        private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, bool lockTechLevel)
         {
             if (lockTechLevel)
             {
@@ -896,12 +892,12 @@ namespace FactionColonies.util
         }
         private List<PawnKindDef> GetPawnKindDefsForRace(ThingDef race)
         {
-            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, race, true)).ToList();
+            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, true)).ToList();
             LogUtil.Message($"GetPawnKindDefsForRace: found {output.Count} PawnKindDefs for race {race.LabelCap}");
 
             if (output.Count == 0 || !output.Any((PawnKindDef def) => def.trader) || !output.Any((PawnKindDef def) => def.isFighter))
             {
-                output = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, race, false)).ToList();
+                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, false)).ToList();
                 LogUtil.Message($"GetPawnKindDefsForRace: regenerated PawnKindDefs list for race {race.LabelCap} without techlevel restriction. Final count: {output.Count}");
             }
             return output;
@@ -951,7 +947,7 @@ namespace FactionColonies.util
                 // If trader is still null, attempt to find a fallback option for the Human race
                 if (trader is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     trader = humanPawns.FirstOrDefault((PawnKindDef def) => def.trader);
                     LogUtil.Message("RefreshPawnGroupMakers: Found trader pawnKindDef for human race");
                 }
@@ -985,7 +981,7 @@ namespace FactionColonies.util
                 // If fighter is still null, attempt to find a fallback option for the Human race
                 if (fighter is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     fighter = humanPawns.FirstOrDefault((PawnKindDef def) => def.isFighter);
                     LogUtil.Message("RefreshPawnGroupMakers: Found combat pawnKindDef for human race");
                 }
@@ -1017,7 +1013,7 @@ namespace FactionColonies.util
                 // If peaceful is still null, attempt to find a fallback option for the Human race
                 if (peaceful is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => pawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
                     peaceful = humanPawns.FirstOrDefault((PawnKindDef def) => def.label != "mercenary");
                     LogUtil.Message("RefreshPawnGroupMakers: Found peaceful pawnKindDef for human race");
                 }
@@ -1039,7 +1035,7 @@ namespace FactionColonies.util
             {
                 LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting human race fallback");
                 faction.baseTraderKinds.AddRange(origBaseTraderKinds);
-                WorldSettlementTraderTracker.reloadTraderKind();
+                WorldSettlementTraderTracker.ReloadTraderKind();
             }
         }
         private void SetPawnGroupMakers()
@@ -1092,8 +1088,14 @@ namespace FactionColonies.util
                         selectionWeight = RaceWeights[race]
                     };
 
-                    // Add to all relevant pawn group makers
-                    faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    bool isViolenceCapable = FCPawnGenerator.IsViolenceCapablePawnKind(pawnKind);
+
+                    // Settlement group maker: PawnGroupKindWorker_Normal hardcodes mustBeCapableOfViolence=true,
+                    // so only add PawnKindDefs that can plausibly generate violence-capable pawns
+                    if (isViolenceCapable)
+                    {
+                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    }
 
                     if (pawnKind.label != "mercenary")
                     {
@@ -1115,7 +1117,7 @@ namespace FactionColonies.util
 
                 if (associatedXenotypes.Count > 0)
                 {
-                    raceXenoAssociations.Add(race, associatedXenotypes.Distinct().ToList());
+                    raceXenoAssociations[race] = associatedXenotypes.Distinct().ToList();
                 }
             }
             ReweightPawnGroupMakers();
@@ -1446,8 +1448,6 @@ namespace FactionColonies.util
             Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
             Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
 
-            Scribe_Collections.Look(ref origCaravanTraderKinds, "origCaravanTraderKinds", LookMode.Def);
-            Scribe_Collections.Look(ref origVisitorTraderKinds, "origVisitorTraderKinds", LookMode.Def);
             Scribe_Collections.Look(ref origBaseTraderKinds, "origBaseTraderKinds", LookMode.Def);
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)

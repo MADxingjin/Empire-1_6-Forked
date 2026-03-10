@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
 using Verse;
-using Unity;
 using UnityEngine;
 using System.Reflection;
 using FactionColonies.util;
@@ -155,17 +154,17 @@ namespace FactionColonies
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-                    list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
-                    
+                    if (FactionCache.FactionComp.IsActionAllowed(FCActionType.SellPrisoner))
                     {
-                        settlement.addOneTimeSilverIncome(prisoner.prisoner.MarketValue);
+                        list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
+                        {
+                            settlement.AddOneTimeSilverIncome(prisoner.prisoner.MarketValue);
 
-                        //reset window
-                        prisoners.Remove(prisoner);
-                        WindowUpdate();
-                        return;
-
-                    }));
+                            //reset window
+                            prisoners.Remove(prisoner);
+                            WindowUpdate();
+                        }));
+                    }
 
                     list.Add(new FloatMenuOption("ReturnToPlayer".Translate(), delegate
                     {

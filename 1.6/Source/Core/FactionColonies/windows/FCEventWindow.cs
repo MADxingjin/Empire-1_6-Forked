@@ -157,7 +157,7 @@ namespace FactionColonies
                 {
                     if(evt.hasDestination == true)
                     {
-                        Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
+                        Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.location)));
                     } else
                     {
                         if (evt.settlementTraitLocations.Count > 0)
@@ -178,7 +178,7 @@ namespace FactionColonies
                         {
                            if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
                             {
-                                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source)));
+                                Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.source)));
                             }
                         }
                     }
@@ -206,7 +206,7 @@ namespace FactionColonies
             if (Event.current.type == EventType.ScrollWheel)
             {
 
-                scrollWindow(Event.current.delta.y);
+                ScrollWindow(Event.current.delta.y);
             }
             
         }
@@ -215,7 +215,7 @@ namespace FactionColonies
 
 
 
-        private void scrollWindow(float num)
+        private void ScrollWindow(float num)
         {
             if (scroll - num * 5 < -1 * maxScroll)
             {

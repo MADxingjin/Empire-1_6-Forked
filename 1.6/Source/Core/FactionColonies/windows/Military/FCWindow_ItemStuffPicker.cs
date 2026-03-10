@@ -61,7 +61,7 @@ namespace FactionColonies
                 selectedStuff = initialStuff;
                 if (initialItem.MadeFromStuff)
                 {
-                    currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(initialItem));
+                    currentStuffs.AddRange(FactionCache.FactionComp.GetStuffListForThingDef(initialItem));
                     currentStuffs.SortBy(s => s.label);
                 }
             }
@@ -216,7 +216,7 @@ namespace FactionColonies
                     currentStuffs.Clear();
                     if (item.MadeFromStuff)
                     {
-                        currentStuffs.AddRange(FactionCache.FactionComp.getStuffListForThingDef(item));
+                        currentStuffs.AddRange(FactionCache.FactionComp.GetStuffListForThingDef(item));
                         currentStuffs.SortBy(s => s.label);
                     }
 

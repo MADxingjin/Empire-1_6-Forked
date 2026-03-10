@@ -155,6 +155,7 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<TotalProduction>Total Production</TotalProduction>
 	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
 	<TotalProd>Total Production</TotalProd>
+	<FCTotalProdTooltip>Current rate: {0}\nPeriod average: {1} ({2} of {3} days sampled)</FCTotalProdTooltip>
 	<FCResourcePools>Resource Pools</FCResourcePools>
 
 	<!-- Resource Types -->

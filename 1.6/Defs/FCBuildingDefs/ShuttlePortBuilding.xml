@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	<FactionColonies.BuildingFCDef>
+	<FactionColonies.BuildingFCDef MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>shuttlePort</defName>
 		<!--Name of Def -->
 		<label>Shuttle Port</label>
@@ -11,12 +11,12 @@
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>shuttlePort</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBaseRandomModifier</stat><value>10</value></li>
+			<li><stat>taxBasePercentage</stat><value>5</value></li>
+		</statModifiers>
 		<upkeep>600</upkeep>
 		<iconPath>GUI/Buildings/ShuttlePort</iconPath>
-		<requiresRoyality>true</requiresRoyality>
 		<modExtensions>
 		  <li Class="FactionColonies.BuildingFCExtension_Shuttles">
 		    <compClass>FactionColonies.SettlementBuildingComp_Shuttles</compClass>

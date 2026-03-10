@@ -20,26 +20,26 @@ namespace FactionColonies
         public List<Mercenary> deadPawns = new List<Mercenary>();
         public int tickChanged;
 
-        private HashSet<Pawn> _mercenaryPawnSet = new HashSet<Pawn>();
+        private HashSet<Pawn> mercenaryPawnSet = new HashSet<Pawn>();
 
-        public bool IsMercenaryPawn(Pawn pawn) => _mercenaryPawnSet.Contains(pawn);
+        public bool IsMercenaryPawn(Pawn pawn) => mercenaryPawnSet.Contains(pawn);
 
         public void RebuildMercenaryPawnSet()
         {
-            _mercenaryPawnSet.Clear();
+            mercenaryPawnSet.Clear();
             foreach (MercenarySquadFC squad in mercenarySquads)
             {
                 foreach (Mercenary merc in squad.mercenaries)
                 {
                     if (merc?.pawn != null)
-                        _mercenaryPawnSet.Add(merc.pawn);
+                        mercenaryPawnSet.Add(merc.pawn);
                 }
                 if (squad.animals != null)
                 {
                     foreach (Mercenary animal in squad.animals)
                     {
                         if (animal?.pawn != null)
-                            _mercenaryPawnSet.Add(animal.pawn);
+                            mercenaryPawnSet.Add(animal.pawn);
                     }
                 }
             }
@@ -79,7 +79,7 @@ namespace FactionColonies
             }
         }
 
-        public void checkMilitaryUtilForErrors()
+        public void CheckMilitaryUtilForErrors()
         {
             try
             {
@@ -114,7 +114,7 @@ namespace FactionColonies
             }
             catch (Exception ex)
             {
-                LogUtil.Error($"Error in checkMilitaryUtilForErrors: {ex.Message}");
+                LogUtil.Error($"Error in CheckMilitaryUtilForErrors: {ex.Message}");
                 return;
             }
 
@@ -131,7 +131,7 @@ namespace FactionColonies
                     if (squad.settlement != null)
                         settlementMilLevel = squad.settlement.settlementMilitaryLevel;
                     if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
-                                                  calculateMilitaryLevelPoints(settlementMilLevel)))
+                                                  CalculateSquadBudget(settlementMilLevel)))
                         continue;
                     if (squad.settlement != null)
                     {
@@ -160,18 +160,17 @@ namespace FactionColonies
             get { return squads.Select(squadFC => squadFC.getLatestChanged).Prepend(0).Max(); }
         }
 
-        public static double calculateMilitaryLevelPoints(int MilitaryLevel)
+        public static double CalculateSquadBudget(int militaryLevel)
         {
-            double points = 500; //starting points at mil level 0
-            for (int i = 1; i <= MilitaryLevel; i++)
-            {
-                points += (500 * MilitaryLevel);
-            }
-
-            return points;
+            return 500 + (600.0 * militaryLevel * militaryLevel);
         }
 
-        public MercenarySquadFC returnSquadFromUnit(Pawn unit)
+        public static double CalculateFireSupportBudget(int militaryLevel)
+        {
+            return 500 + (500.0 * militaryLevel * militaryLevel);
+        }
+
+        public MercenarySquadFC ReturnSquadFromUnit(Pawn unit)
         {
             foreach (var squad in mercenarySquads)
             {
@@ -190,11 +189,11 @@ namespace FactionColonies
                 }
             }
 
-            LogUtil.Message("MercenarySquadFC - returnSquadFromUnit - Did not find squad.");
+            LogUtil.Message("MercenarySquadFC - ReturnSquadFromUnit - Did not find squad.");
             return null;
         }
 
-        public Mercenary returnMercenaryFromUnit(Pawn unit, MercenarySquadFC squad)
+        public Mercenary ReturnMercenaryFromUnit(Pawn unit, MercenarySquadFC squad)
         {
             return squad.mercenaries.FirstOrDefault(merc => merc.pawn == unit);
         }
@@ -211,37 +210,42 @@ namespace FactionColonies
         public IEnumerable<Pawn> AllMercenaryPawns =>
             AllMercenaries.Select(merc => merc.pawn);
 
-        public void resetSquads()
+        public void ResetSquads()
         {
             squads = new List<MilSquadFC>();
         }
 
-        public void updateUnits()
+        public void UpdateUnits()
         {
             foreach (MilUnitFC unit in units)
             {
-                unit.updateEquipmentTotalCost();
+                unit.UpdateEquipmentTotalCost();
             }
         }
 
-        public void attemptToAssignSquad(WorldSettlementFC settlement, MilSquadFC squad)
+        public void AttemptToAssignSquad(WorldSettlementFC settlement, MilSquadFC squad)
         {
             if (settlement.MilitaryComp == null)
             {
                 LogUtil.Message($"Attempted to assign a squad to settlement {settlement.Name} with NULL MilitaryComp");
                 return;
             }
-            if (calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel) >=
+            if (!SquadAssignmentRegistry.CanAssign(settlement, squad, out string rejectReason))
+            {
+                Messages.Message(rejectReason, MessageTypeDefOf.RejectInput);
+                return;
+            }
+            if (CalculateSquadBudget(settlement.settlementMilitaryLevel) >=
                 squad.GetEquipmentTotalCost())
             {
-                if (squadExists(settlement))
+                if (SquadExists(settlement))
                 {
                     settlement.MilitaryComp.militarySquad.OutfitSquad(squad);
                 }
                 else
                 {
                     //create new squad
-                    createMercenarySquad(settlement);
+                    CreateMercenarySquad(settlement);
                     settlement.MilitaryComp.militarySquad.OutfitSquad(squad);
                 }
 
@@ -254,7 +258,7 @@ namespace FactionColonies
             }
         }
 
-        public MercenarySquadFC createMercenarySquad(WorldSettlementFC settlement, bool isExtra = false)
+        public MercenarySquadFC CreateMercenarySquad(WorldSettlementFC settlement, bool isExtra = false)
         {
             if (settlement.MilitaryComp == null)
             {
@@ -262,33 +266,33 @@ namespace FactionColonies
                 return null;
             }
             MercenarySquadFC squad = new MercenarySquadFC();
-            squad.initiateSquad();
+            squad.InitiateSquad();
             mercenarySquads.Add(squad);
             if (!isExtra)
-                settlement.MilitaryComp.militarySquad = findSquad(squad);
+                settlement.MilitaryComp.militarySquad = FindSquad(squad);
             squad.settlement = settlement;
             squad.isExtraSquad = isExtra;
 
             if (settlement.MilitaryComp.militarySquad == null)
             {
-                LogUtil.Warning("createMercenarySquad fail. Found squad is Null");
+                LogUtil.Warning("CreateMercenarySquad fail. Found squad is Null");
             }
 
             RebuildMercenaryPawnSet();
-            return findSquad(squad);
+            return FindSquad(squad);
         }
 
-        public MercenarySquadFC findSquad(MercenarySquadFC squad)
+        public MercenarySquadFC FindSquad(MercenarySquadFC squad)
         {
             return mercenarySquads.FirstOrDefault(mercSquad => squad == mercSquad);
         }
 
-        public bool squadExists(WorldSettlementFC settlement)
+        public bool SquadExists(WorldSettlementFC settlement)
         {
             return settlement.MilitaryComp?.militarySquad != null;
         }
 
-        public void changeTick()
+        public void ChangeTick()
         {
             tickChanged = Find.TickManager.TicksGame;
         }

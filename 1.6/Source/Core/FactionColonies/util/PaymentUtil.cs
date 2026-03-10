@@ -9,6 +9,16 @@ namespace FactionColonies
 {
     public class PaymentUtil
     {
+        public const string Reason_SquadDeployment = "squad_deployment";
+        public const string Reason_FireSupport = "fire_support";
+        public const string Reason_BuildingConstruction = "building_construction";
+        public const string Reason_BuildingDemolition = "building_demolition";
+        public const string Reason_SettlementCreation = "settlement_creation";
+        public const string Reason_SettlementUpgrade = "settlement_upgrade";
+        public const string Reason_EventOption = "event_option";
+        public const string Reason_TaxPayment = "tax_payment";
+        public const string Reason_SilverPayment = "silver_payment";
+
         public static (List<BillFC>, List<BillFC>) returnBillTypes(List<BillFC> bills)
         {
             List<BillFC> positiveBills = new List<BillFC>();
@@ -29,96 +39,95 @@ namespace FactionColonies
             return (negativeBills, positiveBills);
         }
 
-        public static void autoresolveBills(List<BillFC> bills)
+        public static void AutoresolveBills(List<BillFC> bills)
         {
             int resolvedBills = 0;
 
             (List<BillFC> negativeBills, List<BillFC> positiveBills) = returnBillTypes(bills);
 
-
-            //Go through each negative bill
-            //cycle through each positive bill
-            //subtract silver from positive bill until negative bill = 0
-            //if negative bill equals zero, move to next.
-
-            //if make it to the end of the positive bills, goto function to check if there's enough silver. If so, pay, if not, return the function
-            Reset:
-            foreach (BillFC negativeBill in negativeBills)
+            // Offset negative bills against positive bills, then resolve any remainder.
+            int i = 0;
+            while (i < negativeBills.Count)
             {
-                ResetInner:
-                foreach (BillFC positiveBill in positiveBills)
+                BillFC negativeBill = negativeBills[i];
+                bool matched = false;
+                int j = 0;
+                while (j < positiveBills.Count)
                 {
+                    BillFC positiveBill = positiveBills[j];
                     float result = positiveBill.taxes.silverAmount + negativeBill.taxes.silverAmount;
                     if (result == 0)
                     {
-                        //LogUtil.Message("Equal");
-                        //if bills cancel eachother out
-                        //resolve positive bill and negative bill
+                        // Bills cancel each other out — resolve both, restart outer
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = 0;
-                        positiveBill.resolve();
-                        negativeBill.resolve();
+                        positiveBill.Resolve();
+                        negativeBill.Resolve();
                         resolvedBills += 2;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto Reset;
+                        i = 0;
+                        matched = true;
+                        break;
                     }
                     else if (result > 0)
                     {
-                        //LogUtil.Message("More");
-                        //if positive bill greater than negative bill
+                        // Positive bill covers the negative — resolve negative, restart outer
                         positiveBill.taxes.silverAmount = result;
                         negativeBill.taxes.silverAmount = 0;
-                        negativeBill.resolve();
+                        negativeBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto Reset;
+                        i = 0;
+                        matched = true;
+                        break;
                     }
-                    else if (result < 0)
+                    else // result < 0
                     {
-                        //LogUtil.Message("Less");
-                        //if negative bill is greater (technically lesser) than positive bill
+                        // Negative exceeds positive — resolve positive, continue inner
                         positiveBill.taxes.silverAmount = 0;
                         negativeBill.taxes.silverAmount = result;
-                        positiveBill.resolve();
+                        positiveBill.Resolve();
                         resolvedBills++;
                         (negativeBills, positiveBills) = returnBillTypes(bills);
-                        goto ResetInner;
+                        j = 0;
+                        continue;
                     }
                 }
 
-                //if looped through all positive bills, attempt to resolve
-
-                if (negativeBill.attemptResolve())
+                if (!matched)
                 {
-                    (negativeBills, positiveBills) = returnBillTypes(bills);
-                    resolvedBills++;
+                    // Exhausted positive bills — attempt to resolve with player silver
+                    if (negativeBill.AttemptResolve())
+                    {
+                        (negativeBills, positiveBills) = returnBillTypes(bills);
+                        resolvedBills++;
+                    }
+                    i++;
                 }
             }
 
-            ResetOuter:
-            foreach (BillFC positiveBill in positiveBills)
+            // Resolve remaining positive bills
+            foreach (BillFC positiveBill in new List<BillFC>(positiveBills))
             {
-                positiveBill.resolve();
+                positiveBill.Resolve();
                 resolvedBills++;
-                (negativeBills, positiveBills) = returnBillTypes(bills);
-                goto ResetOuter;
             }
 
             Messages.Message(TranslatorFormattedStringExtensions.Translate("NumberTaxesHasBeenSolved", resolvedBills),
                 MessageTypeDefOf.NeutralEvent);
         }
 
-        public static void placeThing(Thing thing)
+        public static void PlaceThing(Thing thing)
         {
             Map taxMap = GetActiveTaxDeliveryMap();
             
             IntVec3 intvec;
-            if (checkForActiveTaxDeliverySpot(out intvec, out taxMap))
+            if (CheckForActiveTaxDeliverySpot(out intvec, out taxMap))
             {
                 // Found an active tax delivery spot, use it
                 GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
             }
-            else if (checkForTaxSpot(taxMap, out intvec))
+            else if (CheckForTaxSpot(taxMap, out intvec))
             {
                 // Found regular tax spot on the tax map
                 GenPlace.TryPlaceThing(thing, intvec, taxMap, ThingPlaceMode.Near);
@@ -131,57 +140,54 @@ namespace FactionColonies
             }
         }
 
-        public static void deliverThings(FCEvent evt, Letter let = null, Message msg = null)
+        public static void DeliverThings(FCEvent evt, Letter let = null, Message msg = null)
         {
             DeliveryEvent.Action(evt, let, msg);
         }
 
 
-        public static void deliverThings(List<Thing> things, int source, Letter let = null, Message msg = null)
+        public static void DeliverThings(List<Thing> things, int source, Letter let = null, Message msg = null)
         {
             DeliveryEvent.CreateDeliveryEvent(things, source, let, msg);
         }
 
-        public static bool paySilver(int amount)
+        public static bool PaySilver(int amount, string reason = null, WorldSettlementFC settlement = null)
         {
-            Paid:
-            while (amount > 0)
+            SilverPaymentContext context = new SilverPaymentContext(amount, reason, settlement);
+            SilverPaymentRegistry.InvokeModifiers(context);
+            amount = context.Amount;
+            if (amount <= 0) return true;
+
+            List<Thing> silverStacks = new List<Thing>();
+            foreach (Map map in Find.Maps)
             {
-                foreach (Map map in Find.Maps)
+                if (map.IsPlayerHome)
                 {
-                    if (map.IsPlayerHome)
-                    {
-                    List:
-                        foreach (Thing item in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage() == true))
-                        {
-                            //if silver, add to count
-                            if (amount - item.stackCount < 0) //if removing silver would pay too much
-                            {
-                                int overdraw = -1 * (amount - item.stackCount);
-                                amount -= (item.stackCount - overdraw);
-                                item.SplitOff(item.stackCount - overdraw).Destroy(DestroyMode.Vanish);
-                                goto Paid;
-                            }
-                            else if (amount - item.stackCount > 0) //if removing silver would leave some
-                            {
-                                amount -= item.stackCount;
-                                item.Destroy(DestroyMode.Vanish);
-                                goto List;
-                            }
-                            else if (amount - item.stackCount == 0) //if removing silver will make amount = 0
-                            {
-                                amount -= item.stackCount;
-                                item.Destroy(DestroyMode.Vanish);
-                                goto Paid;
-                            }
-                        }
-                    }
+                    silverStacks.AddRange(
+                        map.listerThings.ThingsOfDef(ThingDefOf.Silver)
+                           .Where(s => s.IsInAnyStorage()));
+                }
+            }
+
+            foreach (Thing stack in silverStacks)
+            {
+                if (amount <= 0) break;
+
+                if (stack.stackCount <= amount)
+                {
+                    amount -= stack.stackCount;
+                    stack.Destroy(DestroyMode.Vanish);
+                }
+                else
+                {
+                    stack.SplitOff(amount).Destroy(DestroyMode.Vanish);
+                    amount = 0;
                 }
             }
 
             return true;
         }
-        public static int getSilver()
+        public static int GetSilver()
         {
             int silver = 0;
 
@@ -195,12 +201,10 @@ namespace FactionColonies
                     }
                 }
             }
-
-            //LogUtil.Message("getSilver {silver}");
             return silver;
         }
 
-        public static bool checkForTaxSpot(Map map, out IntVec3 dropSpot)
+        public static bool CheckForTaxSpot(Map map, out IntVec3 dropSpot)
         {
             foreach (Building building in map.listerBuildings.allBuildingsColonist.Where(b => b.def.defName == "TaxSpot"))
             {
@@ -215,7 +219,7 @@ namespace FactionColonies
             return false;
         }
 
-        public static ThingSetMakerParams returnThingSetMakerParams(int baseValue, int rangeMod)
+        public static ThingSetMakerParams ReturnThingSetMakerParams(int baseValue, int rangeMod)
         {
             ThingSetMakerParams parms = new ThingSetMakerParams();
             parms.techLevel = Find.FactionManager.OfPlayer.def.techLevel;
@@ -223,19 +227,17 @@ namespace FactionColonies
             return parms;
         }
 
-        public static List<Thing> generateRaidLoot(int lootLevel, TechLevel techLevel)
+        public static List<Thing> GenerateRaidLoot(int lootLevel, TechLevel techLevel)
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            float trait_LootMulitplier = 1f;
-            if (faction.hasTrait(FCPolicyDefOf.raiders))
-                trait_LootMulitplier = 1.2f;
+            float lootMultiplier = (float)faction.GetStatValue(FCStatDefOf.lootMultiplier);
 
             List<Thing> things = new List<Thing>();
             ThingSetMaker thingSetMaker = new ThingSetMaker_MarketValue();
             ThingSetMakerParams param = new ThingSetMakerParams();
-            param.totalMarketValueRange = new FloatRange((500 + (lootLevel * 200)) * trait_LootMulitplier,
-                (1000 + (lootLevel * 500)) * trait_LootMulitplier);
+            param.totalMarketValueRange = new FloatRange((500 + (lootLevel * 200)) * lootMultiplier,
+                (1000 + (lootLevel * 500)) * lootMultiplier);
             param.filter = new ThingFilter();
             param.techLevel = techLevel;
             param.countRange = new IntRange(3, 20);
@@ -257,7 +259,7 @@ namespace FactionColonies
             return things;
         }
 
-        public static Pawn generatePrisoner(Faction faction)
+        public static Pawn GeneratePrisoner(Faction faction)
         {
             Pawn pawn;
 
@@ -280,11 +282,11 @@ namespace FactionColonies
             return pawn;
         }
 
-        public static List<Thing> generateRewardThings(double valueBase, ResourceEventRewardDef rewardDef)
+        public static List<Thing> GenerateRewardThings(double valueBase, ResourceEventRewardDef rewardDef)
         {
             if (rewardDef == null)
             {
-                LogUtil.Error("generateRewardThings called with null rewardDef");
+                LogUtil.Error("GenerateRewardThings called with null rewardDef");
                 return new List<Thing>();
             }
 
@@ -293,17 +295,17 @@ namespace FactionColonies
             for (int attempts = 0; attempts < 100; attempts++)
             {
                 things = thingSetMaker.Generate(param);
-                if (PaymentUtil.returnValueOfTithe(things) >= param.totalMarketValueRange.Value.min)
+                if (PaymentUtil.ReturnValueOfTithe(things) >= param.totalMarketValueRange.Value.min)
                 {
                     return things;
                 }
             }
 
-            LogUtil.Warning($"generateRewardThings failed to meet minimum value after 100 attempts for {rewardDef.defName}. Returning last result.");
+            LogUtil.Warning($"GenerateRewardThings failed to meet minimum value after 100 attempts for {rewardDef.defName}. Returning last result.");
             return things;
         }
 
-        public static double returnValueOfTithe(List<Thing> things)
+        public static double ReturnValueOfTithe(List<Thing> things)
         {
             double totalValue = 0;
             foreach (Thing thing in things)
@@ -336,7 +338,7 @@ namespace FactionColonies
             return FactionCache.FactionComp.TaxMap;
         }
 
-        public static bool checkForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
+        public static bool CheckForActiveTaxDeliverySpot(out IntVec3 dropSpot, out Map taxMap)
         {
             // Search all player home maps for an active tax delivery spot
             foreach (Map map in Find.Maps)

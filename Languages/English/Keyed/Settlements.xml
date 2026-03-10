@@ -69,10 +69,7 @@
 	<SettlementStatLoss>Losing {0} {1} per day</SettlementStatLoss>
 
 	<!-- Settlement Stat Descriptions -->
-	<SettlementMilitaryLevelDesc>The measure of the settlements's military level.
-
-The military level of a town directly affects the town's ability to defend itself as well as attack external threats
-	</SettlementMilitaryLevelDesc>
+	<SettlementMilitaryLevelDesc>The military level directly affects the settlement's ability to defend itself and attack external threats.</SettlementMilitaryLevelDesc>
 	<SettlementHappinessDesc>The measure of the Settlement's overall happiness.
 
 A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
@@ -157,6 +154,27 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCTownLevel3>The settlement has a good number of structures — largely production oriented — as well as dedicated storehouses, and busy workers scurry between them. A modest wall protects the settlement.</FCTownLevel3>
 	<FCTownLevel4>The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack.</FCTownLevel4>
 	<FCTownLevel5>Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints.</FCTownLevel5>
+
+	<!-- Orbital Settlement Locations -->
+	<FCOrbitalLocation1>Orbiting in deep space</FCOrbitalLocation1>
+	<FCOrbitalLocation2>Stationed in low orbit</FCOrbitalLocation2>
+	<FCOrbitalLocation3>Floating in the emptiness of space</FCOrbitalLocation3>
+	<FCOrbitalLocation4>Anchored in orbit</FCOrbitalLocation4>
+	<FCOrbitalLocation5>Positioned in low orbit</FCOrbitalLocation5>
+	<FCOrbitalLocation6>Suspended above the surface</FCOrbitalLocation6>
+	<FCOrbitalLocation7>Deployed in orbital space</FCOrbitalLocation7>
+
+	<!-- Orbital Settlement Name Keywords -->
+	<FCOrbitalKeyword1>Space Station</FCOrbitalKeyword1>
+	<FCOrbitalKeyword2>Station</FCOrbitalKeyword2>
+	<FCOrbitalKeyword3>Satellite</FCOrbitalKeyword3>
+	<FCOrbitalKeyword4>Solar Base</FCOrbitalKeyword4>
+	<FCOrbitalKeyword5>Orbital Hub</FCOrbitalKeyword5>
+	<FCOrbitalKeyword6>Space Platform</FCOrbitalKeyword6>
+	<FCOrbitalKeyword7>Cosmic Station</FCOrbitalKeyword7>
+	<FCOrbitalKeyword8>Stellar Base</FCOrbitalKeyword8>
+	<FCOrbitalKeyword9>Void Station</FCOrbitalKeyword9>
+	<FCOrbitalKeyword10>Astral Platform</FCOrbitalKeyword10>
 
 	<!-- Building Environment Restrictions -->
 	<BuildingInvalidEnvironment>That building cannot be built on this settlement's biome!</BuildingInvalidEnvironment>

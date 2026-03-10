@@ -28,7 +28,7 @@ namespace FactionColonies
         /// <param name="hardinvert">If true, the bonus is multiplied by -1 before being processed.</param>
         /// <param name="addPlusSign">If true, adds a "+" before positive values. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString colorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
+        public static TaggedString ColorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
         {
             if (hardinvert)
             {
@@ -79,7 +79,7 @@ namespace FactionColonies
         /// <param name="invert">If true, values less than 1 are colorized as positive, and vice versa. Defaults to false</param>
         /// <param name="addXsign">If true, adds a "x" before the bonus. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString colorizeMultiplierBonus(double bonus, bool invert = false, bool addXsign = true)
+        public static TaggedString ColorizeMultiplierBonus(double bonus, bool invert = false, bool addXsign = true)
         {
             string baseBonus = bonus.ToString();
             if (addXsign)

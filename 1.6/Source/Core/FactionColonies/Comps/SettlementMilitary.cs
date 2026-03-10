@@ -66,7 +66,7 @@ namespace FactionColonies
         public bool isUnderAttack;
         public bool militaryBusy;
         public int militaryLocation = -1;
-        public MilitaryJob militaryJob = MilitaryJob.Undefined;
+        public MilitaryJobDef militaryJob;
         public Faction militaryEnemy;
         public MercenarySquadFC militarySquad;
         public int artilleryTimer = 0;
@@ -74,24 +74,29 @@ namespace FactionColonies
         public int settlementMilitaryLevel;
 
         private bool endingBattle = false;
+        private bool battleMapInitialized = false;
+        private int initialDefenderCount;
+        private string pendingDeliveryMessage;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Collections.Look(ref attackers, "attackers", LookMode.Reference);
             Scribe_Collections.Look(ref defenders, "defenders", LookMode.Reference);
-            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Reference);
+            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Deep);
             Scribe_Deep.Look(ref defenderForce, "defenderForce");
             Scribe_Deep.Look(ref attackerForce, "attackerForce");
             Scribe_Values.Look(ref isUnderAttack, "isUnderAttack");
             Scribe_Values.Look(ref militaryBusy, "militaryBusy");
             Scribe_Values.Look(ref militaryLocation, "militaryLocation");
-            Scribe_Values.Look(ref militaryJob, "militaryJob");
+            Scribe_Defs.Look(ref militaryJob, "militaryJob");
             Scribe_References.Look(ref militaryEnemy, "militaryEnemy");
             Scribe_References.Look(ref militarySquad, "militarySquad");
             Scribe_Values.Look(ref artilleryTimer, "artilleryTimer");
             Scribe_Values.Look(ref autoDefend, "autoDefend");
             Scribe_Values.Look(ref settlementMilitaryLevel, "settlementMilitaryLevel");
+            Scribe_Values.Look(ref initialDefenderCount, "initialDefenderCount");
+            Scribe_Values.Look(ref battleMapInitialized, "battleMapInitialized");
         }
 
         public override void Initialize(WorldObjectCompProperties props)
@@ -103,10 +108,35 @@ namespace FactionColonies
             supporting = new List<CaravanSupporting>();
         }
 
+        public override void CompTick()
+        {
+            base.CompTick();
+            if (!isUnderAttack || endingBattle) return;
+            if (Find.TickManager.TicksGame % 250 != 0) return;
+            if (Map == null) return;
+
+            // Clean stale references (null from failed save/load resolution)
+            attackers.RemoveAll(p => p == null || p.Destroyed);
+            defenders.RemoveAll(p => p == null || p.Destroyed);
+
+            if (!attackers.Any() || !defenders.Any())
+            {
+                LogUtil.Warning($"Stuck battle detected at {WorldSettlement.Name}, forcing resolution.");
+                endingBattle = true;
+                LongEventHandler.QueueLongEvent(EndAttack,
+                    "EndingAttack", false, error =>
+                    {
+                        DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
+                            "ErrorEndingAttackDescription".Translate());
+                        LogUtil.Error(error.Message);
+                    });
+            }
+        }
+
         private static string FoundSettlementString(WorldSettlementFC settlement)
         {
             return settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel +
-                   " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.isMilitaryBusySilent() != true).ToString();
+                   " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -121,7 +151,7 @@ namespace FactionColonies
             }
             if (isUnderAttack && !attackers.Any())
             {
-                FCEvent evt = MilitaryUtilFC.returnMilitaryEventByLocation(WorldSettlement.Tile);
+                FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(WorldSettlement.Tile);
                 if (evt != null)
                 {
                     yield return ChangeDefenderAction(evt);
@@ -142,7 +172,7 @@ namespace FactionColonies
                 icon = TexLoad.iconMilitary,
                 action = delegate
                 {
-                    startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(WorldSettlement.Tile), () => { });
+                    StartDefence(MilitaryUtilFC.ReturnMilitaryEventByLocation(WorldSettlement.Tile), () => { });
                 }
             };
             /* If auto-battle is enabled, then disable the button. We leave it visible, though, so that the player knows that this is an option if
@@ -165,10 +195,17 @@ namespace FactionColonies
                 icon = TexLoad.iconCustomize,
                 action = delegate
                 {
+                    if (evt.militaryForceDefending == null || evt.militaryForceDefending.homeSettlement == null)
+                    {
+                        LogUtil.Warning($"ChangeDefenderAction: militaryForceDefending or its homeSettlement is null for event at {evt.location}");
+                        ChangeDefendingForceAction(evt);
+                        return;
+                    }
+
                     var list = new List<FloatMenuOption>()
                     {
                         new FloatMenuOption("SettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
-                                                                                       evt.militaryForceDefending.militaryLevel),
+                                                                                       evt.militaryForceDefending.DefensivePower),
                                             null, MenuOptionPriority.High),
                         new FloatMenuOption("ChangeDefendingForce".Translate(), () => ChangeDefendingForceAction(evt))
                     };
@@ -192,7 +229,7 @@ namespace FactionColonies
                 new FloatMenuOption
                 (
                     "ResetToHomeSettlement".Translate(settlementMilitaryLevel),
-                    delegate { MilitaryUtilFC.changeDefendingMilitaryForce(evt, WorldSettlement); },
+                    delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, WorldSettlement); },
                     MenuOptionPriority.High
                 )
             };
@@ -201,14 +238,16 @@ namespace FactionColonies
             settlementList.AddRange
             (
                 from foundSettlement in faction.settlements
-                where foundSettlement != WorldSettlement && foundSettlement.MilitaryComp?.isMilitaryValid() == true
+                where foundSettlement != WorldSettlement
+                    && foundSettlement.MilitaryComp?.IsMilitaryValid() == true
+                    && DefenseValidatorRegistry.CanDefend(foundSettlement, WorldSettlement)
                 select new FloatMenuOption
                 (
                     FoundSettlementString(foundSettlement),
                     delegate
                     {
-                        if (foundSettlement.MilitaryComp?.isMilitaryBusy() != true)
-                            MilitaryUtilFC.changeDefendingMilitaryForce(evt, foundSettlement);
+                        if (foundSettlement.MilitaryComp?.IsMilitaryBusy() != true)
+                            MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, foundSettlement);
                     }
                 )
             );
@@ -231,11 +270,11 @@ namespace FactionColonies
             }
             if (isUnderAttack)
             {
-                yield return defendColonyCaravan(caravan);
+                yield return DefendColonyCaravan(caravan);
             }
         }
 
-        private Command defendColonyCaravan(Caravan caravan)
+        private Command DefendColonyCaravan(Caravan caravan)
         {
             Command_Action defendColonyCaravan = new Command_Action
             {
@@ -244,7 +283,7 @@ namespace FactionColonies
                 icon = TexLoad.iconMilitary,
                 action = () =>
                 {
-                    startDefence(MilitaryUtilFC.returnMilitaryEventByLocation(WorldSettlement.Tile), () => CaravanDefend(caravan));
+                    StartDefence(MilitaryUtilFC.ReturnMilitaryEventByLocation(WorldSettlement.Tile), () => CaravanDefend(caravan));
                 }
             };
             /* If auto-battle is enabled, then disable the button. We leave it visible, though, so that the player knows that this is an option if
@@ -260,11 +299,22 @@ namespace FactionColonies
 
         private AcceptanceReport CanDoManualFight()
         {
-            if (FCSettings.settlementsAutoBattle)
+            if (FCSettings.battleMode == BattleMode.Auto)
             {
                 return new AcceptanceReport("autoBattleEnabledNoManualFight".Translate());
             }
+            else if (FCSettings.battleMode == BattleMode.Hybrid && !IsPlayerCaravanOnTile())
+            {
+                return new AcceptanceReport("hybridBattleEnabledNoManualFight".Translate());
+            }
             return AcceptanceReport.WasAccepted;
+        }
+
+        private bool IsPlayerCaravanOnTile()
+        {
+            return Find.WorldObjects.Caravans.Any(c =>
+                c.Tile == WorldSettlement.Tile &&
+                c.Faction == Faction.OfPlayer);
         }
 
         //TOOD: All following methods were yoinked from WorldSettlementFC. parameters and variables need to be adjusted accordingly
@@ -291,8 +341,8 @@ namespace FactionColonies
                 return;
             }
 
-            startDefence(
-                MilitaryUtilFC.returnMilitaryEventByLocation(destinationTile), () =>
+            StartDefence(
+                MilitaryUtilFC.ReturnMilitaryEventByLocation(destinationTile), () =>
                 {
                     foreach (var pawn in pawns)
                     {
@@ -311,6 +361,7 @@ namespace FactionColonies
                     supporting.Add(caravanSupporting);
 
                     defenders.AddRange(caravanSupporting.pawns);
+                    initialDefenderCount = defenders.Count;
                 });
         }
 
@@ -321,13 +372,15 @@ namespace FactionColonies
                     yield return option;
         }
 
-        private void deleteMap()
+        private void DeleteMap(bool won = true)
         {
-            if (Map == null) return;
-            var lords = Map.lordManager.lords.ListFullCopy();
+            var map = Map;
+            if (map == null) return;
+
+            var lords = map.lordManager.lords.ListFullCopy();
             foreach (var lord in lords)
             {
-                Map.lordManager.RemoveLord(lord);
+                map.lordManager.RemoveLord(lord);
             }
 
             CameraJumper.TryJump(WorldSettlement.Tile);
@@ -336,19 +389,19 @@ namespace FactionColonies
 
             //Ignore any empty caravans
             var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => pawn.Downed || pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => !pawn.Downed && !pawn.Dead)))
+            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => pawn.Spawned && !pawn.Downed && !pawn.Dead)).ToList())
             {
                 CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
             }
 
-            if (AllDowned && defenders.Any())
+            if (AllDowned)
             {
                 var pawns = new HashSet<Thing>();
                 foreach (var caravanSupporting in supporting)
                     foreach (var pawn in caravanSupporting.pawns)
                         if (!pawn.Dead)
                         {
-                            pawn.DeSpawn();
+                            if (pawn.Spawned) pawn.DeSpawn();
                             pawns.Add(pawn);
                         }
 
@@ -362,47 +415,96 @@ namespace FactionColonies
                             if (num2 > 10000)
                             {
                                 LogUtil.Error("WorldSettlementFC.deleteMap: Too many iterations.");
-                                return;
+                                break;
                             }
 
                             TendUtility.DoTend(null, pawn, null);
                         }
                     }
 
+                string eventText = won
+                    ? DeliveryEvent.ShuttleEventInjuredString
+                    : DeliveryEvent.ShuttleEventInjuredLostString;
+                int travelTicks = TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile);
+                if (!won) travelTicks += GenDate.TicksPerDay;
+
                 var eventParams = new FCEvent
                 {
                     location = Find.AnyPlayerHomeMap.Tile,
                     source = WorldSettlement.Tile,
                     goods = pawns.ToList(),
-                    customDescription = DeliveryEvent.ShuttleEventInjuredString,
-                    timeTillTrigger = Find.TickManager.TicksGame +
-                                      TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile)
+                    customDescription = eventText,
+                    timeTillTrigger = Find.TickManager.TicksGame + travelTicks
                 };
 
-                if (pawns.Any()) DeliveryEvent.CreateDeliveryEvent(eventParams);
+                if (pawns.Any())
+                {
+                    DeliveryEvent.CreateDeliveryEvent(eventParams);
+                    string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
+                    pendingDeliveryMessage = "InjuredCaravanMembersReturning".Translate(pawns.Count, travelDays);
+                }
             }
 
-            if (Map.mapPawns?.AllPawnsSpawned == null) return;
-
-            //Despawn removes them from AllPawnsSpawned, so we copy it
-            foreach (var pawn in Map.mapPawns.AllPawnsSpawned.ToList())
+            if (map.mapPawns?.AllPawnsSpawned != null)
             {
-                pawn.DeSpawn();
+                //Despawn removes them from AllPawnsSpawned, so we copy it
+                foreach (var pawn in map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    pawn.DeSpawn();
+                }
+            }
+
+            Current.Game.DeinitAndRemoveMap(map, false);
+
+            // Safety net: reclaim any defender pawns that escaped into caravans
+            var empireDefenders = new HashSet<Pawn>(defenders);
+            foreach (var cs in supporting)
+                foreach (var p in cs.pawns)
+                    empireDefenders.Remove(p);
+
+            if (empireDefenders.Count > 0)
+            {
+                foreach (var caravan in Find.WorldObjects.Caravans.ToList())
+                {
+                    foreach (var pawn in caravan.PawnsListForReading.ToList())
+                    {
+                        if (empireDefenders.Contains(pawn) && pawn.Faction != Faction.OfPlayer)
+                        {
+                            caravan.RemovePawn(pawn);
+                            if (!pawn.Destroyed) pawn.Destroy();
+                        }
+                    }
+                    if (!caravan.Destroyed && !caravan.PawnsListForReading.Any())
+                    {
+                        caravan.Destroy();
+                    }
+                }
             }
         }
 
-        public void startDefence(FCEvent evt, Action after)
+        public void StartDefence(FCEvent evt, Action after)
         {
-            if (FCSettings.settlementsAutoBattle)
+            bool shouldAutoResolve = false;
+            if (FCSettings.battleMode == BattleMode.Auto)
             {
-                var won = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending) == 1;
-                endBattle(won, (int)evt.militaryForceDefending.forceRemaining);
+                shouldAutoResolve = true;
+            }
+            else if (FCSettings.battleMode == BattleMode.Hybrid)
+            {
+                shouldAutoResolve = !battleMapInitialized && !IsPlayerCaravanOnTile();
+            }
+
+            if (shouldAutoResolve)
+            {
+                BattleResult battleResult = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending);
+                EndBattle(battleResult.DefenderVictory, (int)evt.militaryForceDefending.forceRemaining, battleResult);
                 return;
             }
 
             if (defenderForce == null)
             {
-                endBattle(false, 0);
+                LogUtil.Warning($"StartDefence: defenderForce is null for {WorldSettlement.Name}, settlement loses by default.");
+                EndBattle(false, 0, null);
                 return;
             }
 
@@ -412,17 +514,18 @@ namespace FactionColonies
                     MapGenerator.GenerateMap(new IntVec3(70 + WorldSettlement.settlementLevel * 10, 1, 70 + WorldSettlement.settlementLevel * 10),
                                              WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs).mapDrawer.RegenerateEverythingNow();
 
-                zoomIntoTile(evt);
+                ZoomIntoTile(evt);
                 after.Invoke();
             },
                 "GeneratingMap", false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap);
         }
 
-        private void zoomIntoTile(FCEvent evt)
+        private void ZoomIntoTile(FCEvent evt)
         {
             SoundDefOf.Tick_High.PlayOneShotOnCamera();
-            if (Current.Game.CurrentMap != Map && !defenders.Any())
+            if (!battleMapInitialized)
             {
+                battleMapInitialized = true;
                 if (evt == null)
                 {
                     LogUtil.Warning("Aborting defense, null FCEvent!");
@@ -430,7 +533,7 @@ namespace FactionColonies
                 }
 
                 evt.timeTillTrigger = Find.TickManager.TicksGame;
-                var force = MilitaryUtilFC.returnDefendingMilitaryForce(evt);
+                var force = MilitaryUtilFC.ReturnDefendingMilitaryForce(evt);
                 if (force == null) return;
 
                 if (force.homeSettlement.MilitaryComp != null)
@@ -439,17 +542,19 @@ namespace FactionColonies
                 foreach (var building in Map.listerBuildings.allBuildingsColonist)
                     FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
 
-                generateFriendlies(force);
+                GenerateFriendlies(force);
+                Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
+
+                string enemyName = attackerForce?.homeFaction?.Name ?? "Unknown";
+                GlobalTargetInfo jumpTarget = defenders.Any()
+                    ? new GlobalTargetInfo(defenders[0])
+                    : new GlobalTargetInfo(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
+                Find.LetterStack.ReceiveLetter(
+                    "ManualBattleStarted".Translate(WorldSettlement.Name),
+                    "ManualBattleStartedDesc".Translate(WorldSettlement.Name, enemyName),
+                    LetterDefOf.ThreatBig,
+                    new LookTargets(jumpTarget));
             }
-
-            if (Current.Game.CurrentMap == Map && Find.World.renderer.wantedMode != WorldRenderMode.Planet) return;
-
-            if (defenders.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(defenders[0]));
-            else if (Map.mapPawns.AllPawnsSpawned.Any())
-                CameraJumper.TryJump(new GlobalTargetInfo(Map.mapPawns.AllPawnsSpawned[0]));
-            else
-                CameraJumper.TryJump(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
         }
 
         public static IntVec3 FindNearEdgeCell(Map map)
@@ -475,20 +580,25 @@ namespace FactionColonies
             return CellFinder.RandomCell(map);
         }
 
-        private void generateFriendlies(militaryForce force)
+        private void GenerateFriendlies(militaryForce force)
         {
             var points = (float)(force.militaryLevel * force.militaryEfficiency * 100);
             List<Pawn> friendlies;
             var riders = new Dictionary<Pawn, Pawn>();
-            if (force.homeSettlement.MilitaryComp?.militarySquad != null &&
-                force.homeSettlement.MilitaryComp.militarySquad.mercenaries.Any())
+            var homeComp = force.homeSettlement.MilitaryComp;
+            bool squadAvailable = homeComp?.militarySquad != null
+                && homeComp.militarySquad.mercenaries.Any()
+                && (homeComp.militaryJob == null
+                    || homeComp.militaryJob == MilitaryJobDefOf.Undefined
+                    || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
+            if (squadAvailable)
             {
                 var squad = force.homeSettlement.MilitaryComp.militarySquad;
                 squad.CheckInitialization();
 
                 squad.OutfitSquad(squad.outfit);
-                squad.updateSquadStats(force.homeSettlement.settlementMilitaryLevel);
-                squad.resetNeeds();
+                squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
+                squad.ResetNeeds();
 
                 friendlies = squad.AllEquippedMercenaryPawns.ToList();
 
@@ -541,20 +651,18 @@ namespace FactionColonies
                 {
                     if (riders.Count > 0)
                     {
-                        try
-                        {
-                            var owner = riders.First(pair => pair.Value.thingIDNumber == friendly.thingIDNumber).Key;
-                            CellFinder.TryFindRandomCellInsideWith(new CellRect((int)owner.DrawPos.x - 5,
-                                    (int)owner.DrawPos.z - 5, 10, 10),
-                                testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
-                                    TraverseParms.For(TraverseMode.PassDoors)), out loc);
-                        }
-                        catch
+                        var pair = riders.FirstOrDefault(p => p.Value.thingIDNumber == friendly.thingIDNumber);
+                        if (pair.Key == null)
                         {
                             var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            LogUtil.Error("No pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
+                            LogUtil.Error("No rider pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
                             continue;
                         }
+                        var owner = pair.Key;
+                        CellFinder.TryFindRandomCellInsideWith(new CellRect((int)owner.DrawPos.x - 5,
+                                (int)owner.DrawPos.z - 5, 10, 10),
+                            testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
+                                TraverseParms.For(TraverseMode.PassDoors)), out loc);
                     }
                     else
                     {
@@ -570,21 +678,20 @@ namespace FactionColonies
                 GenSpawn.Spawn(friendly, loc, Map, new Rot4());
                 friendly.drafter = new Pawn_DraftController(friendly);
 
-
                 Map.mapPawns.RegisterPawn(friendly);
-                friendly.drafter.Drafted = true;
             }
 
             LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(WorldSettlement, riders), Map, friendlies);
 
             defenders = friendlies;
+            initialDefenderCount = defenders.Count;
         }
 
-        public void endBattle(bool won, int remaining)
+        public void EndBattle(bool won, int remaining, BattleResult battleResult = null)
         {
             var faction = FactionCache.FactionComp;
 
-            LogUtil.Message("WorldSettlementFC.endBattle: Handling combat resolution...");
+            LogUtil.Message("WorldSettlementFC.EndBattle: Handling combat resolution...");
             try
             {
                 if (won)
@@ -595,7 +702,7 @@ namespace FactionColonies
                 {
                     LoseBattle(faction);
                 }
-                LogUtil.Message("WorldSettlementFC.endBattle: Handling foreign defenders...");
+                LogUtil.Message("WorldSettlementFC.EndBattle: Handling foreign defenders...");
                 CooldownMilitary(remaining);
             }
             catch (Exception e)
@@ -603,13 +710,33 @@ namespace FactionColonies
                 LogUtil.Error($"Encountered an error while trying to resolve combat in Empire{Environment.NewLine}{e}");
             }
             isUnderAttack = false;
+            battleMapInitialized = false;
+            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, MilitaryJobDefOf.DefendFriendlySettlement, won, battleResult);
         }
 
         private void CooldownMilitary(int remaining)
         {
             if (defenderForce?.homeSettlement == WorldSettlement)
             {
-                defenderForce?.homeSettlement?.MilitaryComp?.cooldownMilitary();
+                var homeComp = defenderForce.homeSettlement.MilitaryComp;
+                // If squad was busy elsewhere (raid, capture, etc.), don't interfere — generated pawns were used
+                if (homeComp != null && homeComp.militaryJob != null
+                    && homeComp.militaryJob != MilitaryJobDefOf.Undefined
+                    && homeComp.militaryJob != MilitaryJobDefOf.DefendFriendlySettlement)
+                {
+                    return;
+                }
+
+                int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
+                if (remaining >= initialDefenderCount)
+                {
+                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
+                    homeComp?.ReturnMilitary(true);
+                }
+                else
+                {
+                    homeComp?.CooldownMilitaryFinal(battleDeaths);
+                }
             }
             else if (defenderForce == null)
             {
@@ -618,36 +745,57 @@ namespace FactionColonies
             else
             {
                 // if not the home settlement defending
-                if (remaining >= 7)
+                int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
+                if (remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
-                    defenderForce.homeSettlement.MilitaryComp?.returnMilitary(true);
+                    defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
                 }
                 else
                 {
-                    defenderForce.homeSettlement.MilitaryComp?.cooldownMilitary();
+                    defenderForce.homeSettlement.MilitaryComp?.CooldownMilitaryFinal(battleDeaths);
                 }
             }
         }
 
         private void LoseBattle(FactionFC faction)
         {
-            var happinessLostMultiplier = WorldSettlement.getFieldValue("happinessLostMultiplier", Operation.Multiplication);
-            var loyaltyLostMultiplier = WorldSettlement.getFieldValue("loyaltyLostMultiplier", Operation.Multiplication);
+            faction.threatAdaptation.Notify_BattleLost();
 
-            bool hasFeudalPolicy = faction.hasPolicy(FCPolicyDefOf.feudal);
-            bool hasResilientTrait = faction.hasTrait(FCPolicyDefOf.resilient);
-            var canDestroyBuildings = !hasResilientTrait;
+            var happinessLostMultiplier = WorldSettlement.GetStatValue(FCStatDefOf.happinessLostMultiplier);
+            var loyaltyLostMultiplier = WorldSettlement.GetStatValue(FCStatDefOf.loyaltyLostMultiplier);
 
-            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(
-                happinessLostMultiplier, loyaltyLostMultiplier,
-                hasFeudalPolicy, hasResilientTrait);
+            var (prosperityLoss, happinessLoss, loyaltyLoss) = SettlementFormulas.CalculateBattleLossPenalties(happinessLostMultiplier, loyaltyLostMultiplier);
+            prosperityLoss *= faction.GetStatValue(FCStatDefOf.battleProsperityLossMultiplier);
+            happinessLoss *= faction.GetStatValue(FCStatDefOf.battleHappinessLossMultiplier);
+            loyaltyLoss *= faction.GetStatValue(FCStatDefOf.battleLoyaltyLossMultiplier);
+            var canDestroyBuildings = !faction.AnyPolicyPreventsBuildingDestruction();
 
             WorldSettlement.prosperity -= prosperityLoss;
             WorldSettlement.happiness -= happinessLoss;
             WorldSettlement.loyalty -= loyaltyLoss;
 
             string str = "DefenseFailureFull".Translate(WorldSettlement.Name);
+
+            // Penalty summary
+            str += "\n\n" + "DefenseFailurePenaltiesHeader".Translate();
+
+            int displayProsperity = (int)Math.Round(prosperityLoss);
+            int displayHappiness = (int)Math.Round(happinessLoss);
+            int displayLoyalty = (int)Math.Round(loyaltyLoss);
+
+            if (displayProsperity > 0)
+            {
+                str += "\n  - " + "DefenseFailureProsperityLoss".Translate(displayProsperity);
+            }
+            if (displayHappiness > 0)
+            {
+                str += "\n  - " + "DefenseFailureHappinessLoss".Translate(displayHappiness);
+            }
+            if (displayLoyalty > 0)
+            {
+                str += "\n  - " + "DefenseFailureLoyaltyLoss".Translate(displayLoyalty);
+            }
 
             if (canDestroyBuildings && WorldSettlement?.BuildingsComp != null)
             {
@@ -658,7 +806,7 @@ namespace FactionColonies
                     var deconstructRoll = new IntRange(0, 10).RandomInRange;
                     var deconstructChance = 7;
                     if (deconstructRoll < deconstructChance ||
-                        !WorldSettlement.BuildingsComp.buildingSlotIsBuilding(k))
+                        !WorldSettlement.BuildingsComp.BuildingSlotIsBuilding(k))
                     {
                         continue;
                     }
@@ -668,8 +816,8 @@ namespace FactionColonies
                 // Sort so buildings that depend on other buildings are demolished first
                 candidates.Sort((a, b) =>
                 {
-                    BuildingFCDef defA = WorldSettlement.BuildingsComp.getBuildingInSlot(a);
-                    BuildingFCDef defB = WorldSettlement.BuildingsComp.getBuildingInSlot(b);
+                    BuildingFCDef defA = WorldSettlement.BuildingsComp.GetBuildingInSlot(a);
+                    BuildingFCDef defB = WorldSettlement.BuildingsComp.GetBuildingInSlot(b);
                     bool aRequiresB = defA.requiredBuildings != null && defA.requiredBuildings.Contains(defB);
                     bool bRequiresA = defB.requiredBuildings != null && defB.requiredBuildings.Contains(defA);
                     if (aRequiresB) return -1; // a depends on b, demolish a first
@@ -682,40 +830,55 @@ namespace FactionColonies
 
                 foreach (int k in candidates)
                 {
-                    str += "\n" + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.buildingLabel(k));
-                    WorldSettlement.deconstructBuilding(k);
+                    str += "\n  - " + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.BuildingLabel(k));
+                    WorldSettlement.DeconstructBuilding(k);
                 }
             }
 
-            // LogUtil.Message("Building deconstruction handled");
+            if (!canDestroyBuildings)
+            {
+                str += "\n  - " + "DefenseFailureBuildingsProtected".Translate();
+            }
+
             // level remover checker
             if (WorldSettlement.settlementLevel > 1 && canDestroyBuildings)
             {
                 var num = new IntRange(0, 10).RandomInRange;
                 if (num >= 7)
                 {
-                    str += "\n\n" + "SettlementDeleveledRaid".Translate();
-                    WorldSettlement.delevelSettlement();
+                    str += "\n  - " + "SettlementDeleveledRaid".Translate();
+                    WorldSettlement.DelevelSettlement();
                 }
             }
 
-            // LogUtil.Message("Settlement deleveling handled");
+            if (!string.IsNullOrEmpty(pendingDeliveryMessage))
+            {
+                str += "\n\n" + pendingDeliveryMessage;
+            }
             Find.LetterStack.ReceiveLetter("DefenseFailure".Translate(), str, LetterDefOf.Death,
                 new LookTargets(WorldSettlement));
         }
 
         private void WinBattle(FactionFC faction)
         {
-            faction.addExperienceToFactionLevel(5f);
+            faction.AddExperienceToFactionLevel(5f);
+            faction.threatAdaptation.Notify_BattleWon();
+            string text = "DefenseSuccessfulFull".Translate(WorldSettlement.Name);
+            if (!string.IsNullOrEmpty(pendingDeliveryMessage))
+            {
+                text += "\n\n" + pendingDeliveryMessage;
+            }
             Find.LetterStack.ReceiveLetter("DefenseSuccessful".Translate(),
-                "DefenseSuccessfulFull".Translate(WorldSettlement.Name),
+                text,
                 LetterDefOf.PositiveEvent, new LookTargets(WorldSettlement));
         }
 
-        private void endAttack()
+        private void EndAttack()
         {
-            endBattle(defenders.Any(), defenders.Count);
-            deleteMap();
+            bool won = defenders.Any();
+            int remaining = defenders.Count;
+            DeleteMap(won);
+            EndBattle(won, remaining);
 
             supporting.Clear();
             defenders.Clear();
@@ -723,15 +886,16 @@ namespace FactionColonies
             attackers.Clear();
             attackerForce = null;
             endingBattle = false;
+            pendingDeliveryMessage = null;
         }
 
-        public void removeAttacker(Pawn downed)
+        public void RemoveAttacker(Pawn downed)
         {
             attackers.Remove(downed);
             if (attackers.Any() || endingBattle) return;
 
             endingBattle = true;
-            LongEventHandler.QueueLongEvent(endAttack,
+            LongEventHandler.QueueLongEvent(EndAttack,
                 "EndingAttack", false, error =>
                 {
                     DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
@@ -740,13 +904,13 @@ namespace FactionColonies
                 });
         }
 
-        public void removeDefender(Pawn defender)
+        public void RemoveDefender(Pawn defender)
         {
             defenders.Remove(defender);
             if (defenders.Any() || endingBattle) return;
 
             endingBattle = true;
-            LongEventHandler.QueueLongEvent(endAttack,
+            LongEventHandler.QueueLongEvent(EndAttack,
                 "EndingAttack", false, error =>
                 {
                     DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
@@ -763,9 +927,11 @@ namespace FactionColonies
                 var lord = found.GetLord();
                 if (lord != null)
                 {
-                    //lord.ownedPawns.Remove(found);
                     lord.Notify_PawnLost(found, PawnLostCondition.LeftVoluntarily);
                 }
+
+                // Also remove directly from defenders (lord notification may not fire for despawned pawns)
+                defenders.Remove(found);
 
                 foreach (var caravanSupporting in
                     supporting.Where(caravanSupporting => caravanSupporting.pawns.Contains(found)))
@@ -799,258 +965,56 @@ namespace FactionColonies
             base.PostCaravanFormed(caravan);
         }
 
-        public void SendMilitary(PlanetTile location, MilitaryJob job, int timeToFinish, Faction enemy)
+        public void SendMilitary(PlanetTile location, MilitaryJobDef job, int timeToFinish, Faction enemy)
         {
-            FactionFC factionfc = FactionCache.FactionComp;
-            if (isMilitaryBusy() || isTargetOccupied(location)) return;
+            if (IsMilitaryBusy() || IsTargetOccupied(location)) return;
 
             militaryBusy = true;
             militaryJob = job;
             militaryLocation = location;
 
             if (enemy != null) militaryEnemy = enemy;
-            if (job != MilitaryJob.Deploy) FactionCache.FactionComp.militaryTargets.Add(location);
+            if (job.occupiesTarget) FactionCache.FactionComp.militaryTargets.Add(location);
 
-            FCEvent evt;
-            switch (militaryJob)
-            {
-                case MilitaryJob.RaidEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.raidEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesRaiding".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
+            job.Handler?.OnDeployed(this, location, timeToFinish, enemy);
 
-                case MilitaryJob.EnslaveEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.enslaveEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesEnslave".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentEnslave".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
-
-                case MilitaryJob.CaptureEnemySettlement:
-                    evt = FCEventMaker.MakeEvent(FCEventDefOf.captureEnemySettlement);
-                    evt.customDescription = "settlementMilitaryForcesCapturing".Translate(WorldSettlement.Name, returnMilitaryTarget().Label);
-                    Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
-                    evt.DefineEvent(factionfc, WorldSettlement.Tile, timeToFinish);
-                    break;
-
-                default:
-                    break;
-            }
+            LifecycleRegistry.InvokeOnSquadDeployed(WorldSettlement, job);
         }
 
-        public Settlement returnMilitaryTarget()
+        public Settlement ReturnMilitaryTarget()
         {
             return militaryLocation == -1 ? null : Find.WorldObjects.SettlementAt(militaryLocation);
         }
 
-        public void processMilitaryEvent()
+        public void ProcessMilitaryEvent()
         {
             FactionFC faction = FactionCache.FactionComp;
-            //calculate success and all of that shit
-
-            //Debug by setting faction automatically
-            //returnMilitaryTarget().SetFaction(FactionColonies.getPlayerColonyFaction());
             if (faction.militaryTargets.Contains(militaryLocation))
             {
                 faction.militaryTargets.Remove(militaryLocation);
             }
-            //LogUtil.Message(winner + " job = " + militaryJob);
-            //Process end result here
-            //attacker == 0; defender == 1;
 
-            switch (militaryJob)
+            BattleResult result = null;
+            MilitaryJobDef resolvedJob = militaryJob;
+
+            if (militaryJob.Handler != null)
             {
-                case MilitaryJob.RaidEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        if (winner == 0)
-                        {
-                            //if won
-                            faction.addExperienceToFactionLevel(5f);
-
-                            TechLevel tech = Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.techLevel;
-                            int lootLevel;
-                            bool getSlaves = true;
-
-
-                            switch (tech)
-                            {
-                                case TechLevel.Archotech:
-                                case TechLevel.Ultra:
-                                case TechLevel.Spacer:
-                                    lootLevel = 4;
-                                    break;
-                                case TechLevel.Industrial:
-                                    lootLevel = 3;
-                                    break;
-                                case TechLevel.Medieval:
-                                case TechLevel.Neolithic:
-                                    lootLevel = 2;
-                                    break;
-                                default:
-                                    lootLevel = 1;
-                                    break;
-                            }
-
-                            if (Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.defName == "VFEI_Insect")
-                            {
-                                lootLevel = 3;
-                                getSlaves = false;
-                            }
-
-                            List<Thing> loot = PaymentUtil.generateRaidLoot(lootLevel, tech);
-
-                            string text = "settlementDeliveringLoot".Translate();
-                            text = loot.Aggregate(text, (current, thing) => current + thing.LabelCap + " " + thing.stackCount + "x\n ");
-
-                            int num = new IntRange(0, 10).RandomInRange;
-                            if (num <= 4 && getSlaves)
-                            {
-                                Pawn prisoner = PaymentUtil.generatePrisoner(militaryEnemy);
-                                text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), WorldSettlement.Name);
-                                WorldSettlement.addPrisoner(prisoner);
-                            }
-
-                            Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                                "RaidEnemySettlementSuccess".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap) + "\n" + text,
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-
-                            //deliver
-
-                            FCEvent eventParams = new FCEvent()
-                            {
-                                location = Find.AnyPlayerHomeMap.Tile,
-                                source = WorldSettlement.Tile,
-                                goods = loot,
-                                customDescription = text,
-                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile)
-                            };
-
-                            DeliveryEvent.CreateDeliveryEvent(eventParams);
-                        }
-                        else
-                        {
-                            //if lost
-                            Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                                "RaidEnemySettlementFailure".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
-                case MilitaryJob.EnslaveEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        if (winner == 0)
-                        {
-                            //if won
-                            faction.addExperienceToFactionLevel(5f);
-
-                            string text = "";
-
-                            int num = new IntRange(1, 3).RandomInRange;
-                            for (int i = 0; i <= num; i++)
-                            {
-                                Pawn prisoner = PaymentUtil.generatePrisoner(militaryEnemy);
-                                text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), WorldSettlement.Name) + "\n";
-                                WorldSettlement.addPrisoner(prisoner);
-                            }
-
-                            Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                                "RaidEnemySettlementSuccess".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap) + "\n" + text,
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-                        else if (winner == 1)
-                        {
-                            //if lost
-                            Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                                "RaidEnemySettlementFailure".Translate(
-                                    Find.WorldObjects.SettlementAt(militaryLocation).LabelCap), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
-                case MilitaryJob.CaptureEnemySettlement:
-                    {
-                        int winner = SimulateBattleFc.FightBattle(militaryForce.createMilitaryForceFromSettlement(WorldSettlement, true),
-                            militaryForce.createMilitaryForceFromFaction(militaryEnemy, false));
-                        if (winner == 0)
-                        {
-                            faction.addExperienceToFactionLevel(5f);
-
-                            string tmpName = Find.WorldObjects.SettlementAt(militaryLocation).LabelCap;
-                            TechLevel tech = Find.WorldObjects.SettlementAt(militaryLocation).Faction.def.techLevel;
-                            Faction tempFactionLink = Find.WorldObjects.SettlementAt(militaryLocation).Faction;
-                            Find.WorldObjects.SettlementAt(militaryLocation).Destroy();
-                            WorldSettlementFC worldsettlement = ColonyUtil.createPlayerColonySettlement(militaryLocation, WorldSettlementDefOf.WorldSettlementDef_Surface);
-                            worldsettlement.Name = tmpName;
-
-                            int upgradeTimes;
-
-                            switch (tech)
-                            {
-                                case TechLevel.Archotech:
-                                case TechLevel.Ultra:
-                                case TechLevel.Spacer:
-                                    upgradeTimes = 2;
-                                    break;
-                                case TechLevel.Industrial:
-                                    upgradeTimes = 1;
-                                    break;
-                                default:
-                                    upgradeTimes = 0;
-                                    break;
-                            }
-
-                            WorldSettlement.upgradeSettlement(upgradeTimes);
-
-                            WorldSettlement.loyalty = 15;
-                            WorldSettlement.happiness = 25;
-                            WorldSettlement.unrest = 20;
-                            WorldSettlement.prosperity = 70;
-
-                            bool defeated = !Find.WorldObjects.Settlements.Any(settlement => settlement.Faction != null
-                                && settlement.Faction == tempFactionLink);
-
-                            if (defeated)
-                            {
-                                tempFactionLink.defeated = true;
-                            }
-
-                            Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                                "CaptureEnemySettlementSuccess".Translate(WorldSettlement.Name,
-                                    Find.WorldObjects.SettlementAt(militaryLocation).Name, WorldSettlement.settlementLevel),
-                                LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-                        else if (winner == 1)
-                        {
-                            Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                                "CaptureEnemySettlementFailure".Translate(WorldSettlement.Name,
-                                    Find.WorldObjects.SettlementAt(militaryLocation).Name), LetterDefOf.NegativeEvent,
-                                new LookTargets(Find.WorldObjects.SettlementAt(militaryLocation)));
-                        }
-
-                        break;
-                    }
+                result = militaryJob.Handler.OnResolved(this);
             }
 
-            cooldownMilitary();
+            bool victory = result != null && result.AttackerVictory;
+            LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, resolvedJob, victory, result);
+            CooldownMilitaryFinal();
         }
 
-        public void returnMilitary(bool alert)
+        public void ReturnMilitary(bool alert)
         {
             militaryBusy = false;
-            militaryJob = MilitaryJob.Undefined;
+            militaryJob = MilitaryJobDefOf.Undefined;
             militaryLocation = -1;
             militaryEnemy = null;
+
+            LifecycleRegistry.InvokeOnSquadRecalled(WorldSettlement);
 
             if (alert)
             {
@@ -1059,45 +1023,43 @@ namespace FactionColonies
             }
         }
 
-        public void cooldownMilitary()
+        public void CooldownMilitaryFinal(int battleDeaths = 0)
         {
             FactionFC faction = FactionCache.FactionComp;
 
-            int cooldownReduction = 0;
-            if (faction.hasTrait(FCPolicyDefOf.raiders) && (militaryJob == MilitaryJob.RaidEnemySettlement || militaryJob == MilitaryJob.EnslaveEnemySettlement))
+            int cooldown = GenDate.TicksPerDay * 3;
+            cooldown += (int)faction.GetStatValue(FCStatDefOf.militaryCooldownOffset);
+            if (militaryJob != null && militaryJob.cooldownStatDef != null)
+                cooldown += (int)faction.GetStatValue(militaryJob.cooldownStatDef);
+
+            // Dead pawn cooldown: use battleDeaths for defense, squad.dead for deployment
+            int deaths = battleDeaths;
+            if (deaths == 0 && militaryJob != null && militaryJob.deadPawnCooldown
+                && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
-                cooldownReduction += 60000;
+                deaths = militarySquad != null ? militarySquad.dead : 0;
             }
-            else if (militaryJob == MilitaryJob.Deploy && FCSettings.deadPawnsIncreaseMilitaryCooldown)
+            if (deaths > 0 && FCSettings.deadPawnsIncreaseMilitaryCooldown)
             {
-                List<string> policies = faction.policies.ConvertAll(policy => policy.def.defName);
-                bool militarist = policies.Contains("militaristic");
-                bool authoritarian = policies.Contains("authoritarian");
-                bool pacifist = policies.Contains("pacifist");
-
-                // If the faction is militarist AND authortarian: multiplier is 7000
-                // If the faction is militarist OR authortarian: multiplier is 8000
-                // If the faction is neither: multiplier is 10000
-                // If the faction is pacifist: add 2000 to the previous result
-                int deadMultiplier = (militarist || authoritarian ? (militarist && authoritarian ? 7000 : 8000) : 10000) + (pacifist ? 2000 : 0);
-
-                cooldownReduction -= militarySquad.dead * deadMultiplier;
+                int deadMultiplier = 10000 + (int)faction.GetStatValue(FCStatDefOf.deadPawnCooldownOffset);
+                cooldown += deaths * deadMultiplier;
             }
+            cooldown = Math.Max(cooldown, 0);
 
-            militaryJob = MilitaryJob.Cooldown;
+            militaryJob = MilitaryJobDefOf.Cooldown;
             militaryBusy = true;
             militaryLocation = WorldSettlement.Tile;
             militaryEnemy = null;
 
             FCEvent tmp = FCEventMaker.MakeEvent(FCEventDefOf.cooldownMilitary);
             tmp.hasCustomDescription = true;
-            tmp.timeTillTrigger = Find.TickManager.TicksGame + (GenDate.TicksPerDay * 3) - cooldownReduction;
+            tmp.timeTillTrigger = Find.TickManager.TicksGame + cooldown;
             tmp.location = WorldSettlement.Tile;
             tmp.customDescription = "MilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
-            FactionCache.FactionComp.addEvent(tmp);
+            FactionCache.FactionComp.AddEvent(tmp);
         }
 
-        public bool isMilitaryBusy(bool silent = false)
+        public bool IsMilitaryBusy(bool silent = false)
         {
             if (militaryBusy && !silent)
             {
@@ -1107,7 +1069,7 @@ namespace FactionColonies
             return militaryBusy;
         }
 
-        public bool isMilitarySquadValid()
+        public bool IsMilitarySquadValid()
         {
             if (militarySquad != null)
             {
@@ -1133,22 +1095,22 @@ namespace FactionColonies
             return false;
         }
 
-        public bool isMilitarySquadValidSilent()
+        public bool IsMilitarySquadValidSilent()
         {
             return !(militarySquad is null);
         }
 
-        public bool isMilitaryBusySilent()
+        public bool IsMilitaryBusySilent()
         {
             return militaryBusy;
         }
 
-        public bool isMilitaryValid()
+        public bool IsMilitaryValid()
         {
             return settlementMilitaryLevel > 0;
         }
 
-        public bool isTargetOccupied(int location)
+        public bool IsTargetOccupied(int location)
         {
             if (FactionCache.FactionComp.militaryTargets.Contains(location))
             {

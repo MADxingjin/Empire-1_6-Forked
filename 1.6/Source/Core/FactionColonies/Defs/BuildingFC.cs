@@ -24,14 +24,11 @@ namespace FactionColonies
         public double cost;
         public int constructionDuration;
         public TechLevel techLevel = TechLevel.Undefined;
-        public List<FCTraitEffectDef> traits;
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
         public List<string> applicableBiomes = new List<string>();
         public int upkeep;
         public string iconPath = "GUI/unrest";
         public Texture2D iconLoaded;
-        public bool requiresRoyality = false;
-        public bool requiresIdeology = false;
-        public List<string> requiredModsID = new List<string>();
         public List<WorldSettlementDef> settlementTypeBlockList = new List<WorldSettlementDef>();
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         public Hilliness minhilliness = Hilliness.Undefined;
@@ -58,15 +55,7 @@ namespace FactionColonies
             {
                 if (!didCacheBuildingAttributeDesc)
                 {
-                    cachedBuildingAttributeDesc = "";
-                    if (traits?.Count > 0)
-                    {
-                        foreach (FCTraitEffectDef trait in traits)
-                        {
-                            cachedBuildingAttributeDesc += "\n" + trait.traitBonusDesc;
-                        }
-                    }
-                    cachedBuildingAttributeDesc = cachedBuildingAttributeDesc.Trim();
+                    cachedBuildingAttributeDesc = FCStatModifier.GetDescription(statModifiers);
                     didCacheBuildingAttributeDesc = true;
                 }
                 return cachedBuildingAttributeDesc;
@@ -92,7 +81,6 @@ namespace FactionColonies
             }
         }
 
-        public bool RequiredModsLoaded => (ModsConfig.RoyaltyActive || !requiresRoyality) && (ModsConfig.IdeologyActive || !requiresIdeology) && requiredModsID.TrueForAll(mod => ModsConfig.IsActive(mod));
         public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)
         {
             bool meetsSettlementTypeRequirement = true;
@@ -133,6 +121,8 @@ namespace FactionColonies
             {
                 yield return $"BuildingFCDef {defName} has a circular reference in its requiredBuildings chain";
             }
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
         }
 
         private static bool HasCycle(BuildingFCDef start, Func<BuildingFCDef, List<BuildingFCDef>> getChildren)

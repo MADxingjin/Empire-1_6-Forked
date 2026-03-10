@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using FactionColonies.util;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,114 +13,114 @@ namespace FactionColonies
         Trait = 1,
         Core = 2,
         Tax = 3,
-        Military = 4
+        Military = 4,
+        Social = 5
     }
 
     public class FCPolicy : IExposable
     {
         public FCPolicy()
         {
-
         }
-        public FCPolicy( FCPolicyDef def)
+
+        public FCPolicy(FCPolicyDef def)
         {
             FactionFC faction = FactionCache.FactionComp;
             this.def = def;
             timeEnacted = Find.TickManager.TicksGame;
 
-
-            //Road Builder Trait
-            if (def == FCPolicyDefOf.roadBuilders)
+            // Create behavior instance if this policy has procedural logic
+            if (def.behaviorClass != null)
             {
-                ResearchProjectDef researchdef = DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false);
-                if (researchdef == null)
-                    LogUtil.Error("Road research returned Null");
-                if (!(Find.ResearchManager.GetProgress(researchdef) == researchdef.baseCost))
+                behavior = (FCPolicyBehavior)Activator.CreateInstance(def.behaviorClass);
+                behavior.policy = this;
+                try
                 {
-                    Find.ResearchManager.FinishProject(researchdef);
+                    behavior.OnEnacted(faction);
                 }
-
+                catch (Exception e)
+                {
+                    LogUtil.Error($"FCPolicyBehavior.OnEnacted error for '{def.defName}': {e}");
+                }
             }
 
-            //Mercantile Trait
-            if (def == FCPolicyDefOf.mercantile)
-            {
-                faction.resetTraitMercantileCaravanTime();
-            }
         }
 
         public FCPolicyDef def;
         public int timeEnacted;
+        public FCPolicyBehavior behavior;
+
+        public bool IsFullyActive => def.enactDuration <= 0
+            || Find.TickManager.TicksGame - timeEnacted >= def.enactDuration;
 
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
             Scribe_Values.Look(ref timeEnacted, "timeEnacted");
-            
+            Scribe_Deep.Look(ref behavior, "behavior");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && behavior != null)
+                behavior.policy = this;
         }
-
-
     }
 
-    public class FCPolicyDef : Def, IExposable
+    public class FCPolicyDef : Def
     {
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref factionLevelRequirement, "factionLevelRequirement");
-            Scribe_Values.Look(ref techLevelRequirement, "techLevelRequirement");
-            Scribe_Values.Look(ref desc, "desc");
-            Scribe_Values.Look(ref category, "category");
-            Scribe_Values.Look(ref cost, "cost");
-            Scribe_Values.Look(ref type, "type");
-            Scribe_Values.Look(ref techLevel, "techLevel");
-            Scribe_Values.Look(ref enactDuration, "enactDuration");
-            Scribe_Collections.Look(ref traits, "traits", LookMode.Value);
-            Scribe_Collections.Look(ref positiveEffects, "positiveEffects", LookMode.Value);
-            Scribe_Collections.Look(ref negativeEffects, "negativeEffects", LookMode.Value);
-        }
-
         public string desc;
         public FCPolicyCategory category;
         public TechLevel techLevelRequirement;
         public int factionLevelRequirement;
         public List<string> positiveEffects;
         public List<string> negativeEffects;
-        
+
         // Additional fields for XML compatibility
         public int cost;
         public string type;
         public TechLevel techLevel = TechLevel.Undefined;
         public int enactDuration;
-        public List<string> traits = new List<string>();
+        public int upkeepSilver;
+
+        public bool IsEdict => category == FCPolicyCategory.Tax
+            || category == FCPolicyCategory.Military
+            || category == FCPolicyCategory.Social;
+        // Icon paths — set in XML, resolved lazily to textures
+        public string iconPathLight;
+        public string iconPathDark;
+
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+        public List<FCActionType> blockedActions = new List<FCActionType>();
+        public List<FCActionType> enabledActions = new List<FCActionType>();
+        public List<MilitaryJobDef> blockedMilitaryJobs = new List<MilitaryJobDef>();
+        public List<MilitaryJobDef> enabledMilitaryJobs = new List<MilitaryJobDef>();
+        public bool preventBuildingDestruction;
+        public bool suppressMemberDeathPenalty;
+        // Optional behavior class for policies that need procedural logic.
+        // Must be a subclass of FCPolicyBehavior. Null for pure-XML policies.
+        public Type behaviorClass;
+
+        // Policies/traits that are incompatible with this one (mutual exclusion in selection UI)
+        public List<FCPolicyDef> incompatiblePolicies = new List<FCPolicyDef>();
+
+        [Unsaved] private Texture2D resolvedIconLight;
+        [Unsaved] private Texture2D resolvedIconDark;
+        [Unsaved] private bool triedResolveLight;
+        [Unsaved] private bool triedResolveDark;
 
         public Texture2D IconLight
         {
             get
             {
-                switch (defName)
+                if (!triedResolveLight)
                 {
-                    case "militaristic":
-                        return TexLoad.traitMilitaristicLight;
-                    case "pacifist":
-                        return TexLoad.traitPacifistLight;
-                    case "authoritarian":
-                        return TexLoad.traitAuthoritarianLight;
-                    case "egalitarian":
-                        return TexLoad.traitEgalitarianLight;
-                    case "isolationist":
-                        return TexLoad.traitIsolationistLight;
-                    case "expansionist":
-                        return TexLoad.traitExpansionistLight;
-                    case "technocratic":
-                        return TexLoad.traitTechnocraticLight;
-                    case "feudal":
-                        return TexLoad.traitFeudalLight;
-                    case "slaver":
-                        return TexLoad.traitSlaverLight;
-                    default:
-                        LogUtil.Warning("Could not find icon for " + defName);
-                        return null;
+                    triedResolveLight = true;
+                    if (!iconPathLight.NullOrEmpty())
+                    {
+                        resolvedIconLight = ContentFinder<Texture2D>.Get(iconPathLight, false);
+                        if (resolvedIconLight == null)
+                            LogUtil.Warning("Could not resolve light icon at '" + iconPathLight + "' for " + defName);
+                    }
                 }
+                return resolvedIconLight;
             }
         }
 
@@ -126,32 +128,20 @@ namespace FactionColonies
         {
             get
             {
-                switch (defName)
+                if (!triedResolveDark)
                 {
-                    case "militaristic":
-                        return TexLoad.traitMilitaristicDark;
-                    case "pacifist":
-                        return TexLoad.traitPacifistDark;
-                    case "authoritarian":
-                        return TexLoad.traitAuthoritarianDark;
-                    case "egalitarian":
-                        return TexLoad.traitEgalitarianDark;
-                    case "isolationist":
-                        return TexLoad.traitIsolationistDark;
-                    case "expansionist":
-                        return TexLoad.traitExpansionistDark;
-                    case "technocratic":
-                        return TexLoad.traitTechnocraticDark;
-                    case "feudal":
-                        return TexLoad.traitFeudalDark;
-                    case "slaver":
-                        return TexLoad.traitSlaverDark;
-                    default:
-                        LogUtil.Warning("Could not find icon for " + defName);
-                        return null;
+                    triedResolveDark = true;
+                    if (!iconPathDark.NullOrEmpty())
+                    {
+                        resolvedIconDark = ContentFinder<Texture2D>.Get(iconPathDark, false);
+                        if (resolvedIconDark == null)
+                            LogUtil.Warning("Could not resolve dark icon at '" + iconPathDark + "' for " + defName);
+                    }
                 }
+                return resolvedIconDark;
             }
         }
+
         public bool HasNegativeEffects()
         {
             return negativeEffects != null && negativeEffects.Count > 0;
@@ -189,11 +179,34 @@ namespace FactionColonies
                 }
             }
 
+            string statDesc = FCStatModifier.GetDescription(statModifiers);
+            if (!statDesc.NullOrEmpty())
+            {
+                if (str.Length > 0) str += "\n";
+                str += statDesc;
+            }
+
+            if (upkeepSilver > 0)
+            {
+                if (str.Length > 0) str += "\n\n";
+                str += "FCEdictUpkeep".Translate(upkeepSilver);
+            }
+
             return str.Trim();
         }
         public string CachedPolicyDesc()
         {
             return FactionCache.FCPolicyDescs?[this] ?? PolicyDesc();
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string err in base.ConfigErrors())
+                yield return err;
+            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
+                yield return err;
+            if (behaviorClass != null && !typeof(FCPolicyBehavior).IsAssignableFrom(behaviorClass))
+                yield return defName + ": behaviorClass " + behaviorClass.Name + " is not a subclass of FCPolicyBehavior";
         }
     }
 

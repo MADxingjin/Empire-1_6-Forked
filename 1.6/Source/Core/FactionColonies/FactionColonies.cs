@@ -4,12 +4,8 @@ using System.IO;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
-using FactionColonies.PatchNote;
-using Verse.AI.Group;
-using LudeonTK;
 
 namespace FactionColonies
 {
@@ -74,11 +70,13 @@ namespace FactionColonies
         public const bool DEFAULT_DISABLE_RANDOM_EVENTS = false;
         public const bool DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS = true;
         public const bool DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN = true;
-        public const bool DEFAULT_SETTLEMENTS_AUTO_BATTLE = true;
+        public const BattleMode DEFAULT_BATTLE_MODE = BattleMode.Auto;
         public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
         public const int DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION = 10;
         public const int DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT = 0;
         public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 6;
+        public const float DEFAULT_MAX_THREAT_MULTIPLIER = 3.0f;
+        public const float DEFAULT_DEFENDER_ADVANTAGE = 1.15f;
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
          *           ~  DEFAULTS END ~
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -93,7 +91,6 @@ namespace FactionColonies
 
 
         public static int productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
-        public static int storeReportCount = 4;
         public static int workerCost = DEFAULT_WORKER_COST;
 
         public static EmpireDifficultyLevel difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
@@ -106,7 +103,7 @@ namespace FactionColonies
         public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
         public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
         public static bool deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
-        public static bool settlementsAutoBattle = DEFAULT_SETTLEMENTS_AUTO_BATTLE;
+        public static BattleMode battleMode = DEFAULT_BATTLE_MODE;
         public static TaxDeliveryMode forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
         public static TaxNotificationMode taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
 
@@ -132,9 +129,10 @@ namespace FactionColonies
         public static double militaryAnimalCostMultiplier = 1.5;
         public static double militaryRaceCostMultiplier = 0.15;
 
-        public static int maxPolicyCount = 2;
+        public static float maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
+        public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
 
-        public static double updateVersion = 0;
+        public static int maxPolicyCount = 2;
 
         /* Flag for debug/verbose logging. */
         private static bool printDebug = false;
@@ -158,30 +156,20 @@ namespace FactionColonies
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
             Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);
             Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown", DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN);
-            Scribe_Values.Look(ref settlementsAutoBattle, "settlementsAutoBattle", DEFAULT_SETTLEMENTS_AUTO_BATTLE);
+            Scribe_Values.Look(ref battleMode, "battleMode", DEFAULT_BATTLE_MODE);
             Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction", DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref minDaysTillRandomEvent, "minDaysTillRandomEvent", DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT);
             Scribe_Values.Look(ref maxDaysTillRandomEvent, "maxDaysTillRandomEvent", DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT);
-            Scribe_Values.Look(ref updateVersion, "updateVersion");
             Scribe_Values.Look(ref buildingWindowWidth, "buildingWindowWidth", 800f);
             Scribe_Values.Look(ref buildingWindowHeight, "buildingWindowHeight", 600f);
             Scribe_Values.Look(ref difficultyLevel, "difficultyLevel", DEFAULT_DIFFICULTY_LEVEL);
             Scribe_Values.Look(ref printDebug, "printDebug", false);
+            Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
+            Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                // Band aid - For existing users upgrading from old system, detect if they have custom values
-                if (difficultyLevel == DEFAULT_DIFFICULTY_LEVEL)
-                {
-                    // Check if current values match Adventure Story defaults
-                    if (silverPerResource != DEFAULT_SILVER_PER_RESOURCE || timeBetweenTaxes_days != DEFAULT_TAX_INTERVAL_DAYS ||
-                        productionTitheMod != DEFAULT_PRODUCTION_TITHE_MOD || workerCost != DEFAULT_WORKER_COST)
-                    {
-                        // User had custom settings, set to Custom mode
-                        difficultyLevel = EmpireDifficultyLevel.Custom;
-                    }
-                }
                 /* Re-construct the intranges */
                 minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
                 minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
@@ -211,118 +199,45 @@ namespace FactionColonies
             }
             return "Unknown";
         }
-        public static void UpdateChanges()
-        {
-            FactionFC factionFC = FactionCache.FactionComp;
-            PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
-
-            // Store the initial state before any modifications
-            bool wasAlreadyProcessed = factionFC.updateProcessed;
-
-            // Only log once when first setting up
-            if (!factionFC.updateProcessed)
-            {
-                LogUtil.Message("Updating Empire to Latest Version");
-                // DON'T set updateProcessed = true here yet! ( ͡° ͜ʖ ͡°)
-            }
-            //NEW PLACE FOR UPDATE VERSIONS
-
-            // Only run verification and alerts for new games/first time setup
-            if (!wasAlreadyProcessed)
-            {
-
-                // Welcome message!
-                Find.WindowStack.Add(new FCWindow_Welcome());
-
-                LogUtil.Message("Testing for traits with no tie");
-                verifyTraits();
-            
-                MessagePlayerAboutConfigErrors(factionFC);  // ← This will now execute!
-
-                LogUtil.Message("Testing for update change");
-                
-                // Mark as processed AFTER everything is done
-                factionFC.updateProcessed = true;
-            }
-
-            if (updateVersion < 0.370)
-            {
-                Find.LetterStack.ReceiveLetter("FCManualDefenseWarningLabel".Translate(), "FCManualDefenseWarningDesc".Translate(), LetterDefOf.NeutralEvent);
-            }
-
-            double newVersion = PatchNoteDef.GetLatestForMod("saakra.empire").ToOldEmpireVersion;
-            //Add update letter/checker here!!
-            if (updateVersion < newVersion)
-            {
-                patchNoteSettings.lastVersion = updateVersion;
-                patchNoteSettings.curVersion = newVersion;
-                patchNoteSettings.Write();
-
-                DebugActionsMisc.PatchNotesDisplayWindow();
-
-                updateVersion = newVersion;
-                settlementsAutoBattle = true;
-            }
-        }
-
-        private static void MessagePlayerAboutConfigErrors(FactionFC factionFC)
-        {
-            LogUtil.Message("Testing for invalid capital map");
-            //Check for an invalid capital map
-            if (Find.WorldObjects.SettlementAt(factionFC.capitalLocation) == null)//&& factionFC.SoSShipCapital == false)
-            {
-                Messages.Message("FCResetCapitalLocationWarning".Translate(), MessageTypeDefOf.NegativeEvent);
-            }
-
-            if (factionFC.taxMap == null)
-            {
-                Messages.Message("FCTaxMapNotSetWarning".Translate(), MessageTypeDefOf.CautionInput);
-            }
-
-            if (factionFC.policies.Count() < 2)
-            {
-                Find.LetterStack.ReceiveLetter("FCTraits".Translate(), "FCSelectYourTraits".Translate(), LetterDefOf.NeutralEvent);
-            }
-
-            if (!settlementsAutoBattle)
-            {
-                Messages.Message("FCAutoResolveDisabledWarning".Translate(), MessageTypeDefOf.RejectInput);
-            }
-        }
-        public static void verifyTraits()
+        public static void ReapplyStatModifiers()
         {
             FactionFC faction = FactionCache.FactionComp;
-            /* Clear the traits for all settlements, and then reapply inherent/building traits */
+            /* Clear stat modifiers for all settlements, and then reapply inherent/building modifiers */
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
-                settlement.clearTraits();
-                settlement.BuildingsComp?.reapplyBuildingTraits();
-                settlement.addTraits(settlement.settlementDef.traits);
+                settlement.ClearStatModifiers();
+                settlement.BuildingsComp?.ReapplyBuildingStatModifiers();
+                settlement.AddStatModifiers(settlement.settlementDef.statModifiers, "settlementType", settlement.settlementDef.label);
             }
-            //make new list for factionfc traits
-            //loop through events and add traits
-            //loop through
-            //if an event trait applies to settlements, then it will be added to applicable settlements automatically.
-            // no need to do a seperate event loop for settlements.
-            List<FCTraitEffectDef> factionTraits = new List<FCTraitEffectDef>();
 
+            // Re-apply active event stat modifiers to settlements
             foreach (FCEvent evt in faction.events)
             {
-                if (evt.settlementTraitLocations.Count() <= 0)
+                string sourceId = "event_" + evt.def.defName;
+                if (evt.settlementTraitLocations.Count() > 0)
                 {
-                    factionTraits.AddRange(evt.traits);
+                    foreach (WorldSettlementFC location in evt.settlementTraitLocations)
+                    {
+                        if (location != null)
+                            location.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                    }
+                }
+                else
+                {
+                    foreach (WorldSettlementFC settlement in faction.settlements)
+                    {
+                        settlement.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                    }
                 }
             }
-
-            FactionCache.FactionComp.assignNewTraitList(factionTraits);
         }
 
         public static bool IsModLoaded(string packageID) => LoadedModManager.RunningModsListForReading.Any(mod => mod.PackageIdPlayerFacing == packageID);
 
 
-        public static void debugMarker(ref int i)
+        public static void DebugMarker(ref int i)
         {
-            LogUtil.Message($"debugMarker: {i}");
+            LogUtil.Message($"DebugMarker: {i}");
             i ++;
         }
 
@@ -446,6 +361,13 @@ namespace FactionColonies
             }
         }
 
+        private List<FloatMenuOption> BattleModeOptions => new List<FloatMenuOption>
+        {
+            new FloatMenuOption("FCBattleModeAuto".Translate() + " - " + "FCBattleModeAutoDesc".Translate(), () => battleMode = BattleMode.Auto),
+            new FloatMenuOption("FCBattleModeManual".Translate() + " - " + "FCBattleModeManualDesc".Translate(), () => battleMode = BattleMode.Manual),
+            new FloatMenuOption("FCBattleModeHybrid".Translate() + " - " + "FCBattleModeHybridDesc".Translate(), () => battleMode = BattleMode.Hybrid)
+        };
+
         /// <summary>
         /// Creates a list of options for tax notification mode
         /// </summary>
@@ -544,9 +466,7 @@ namespace FactionColonies
             ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref disableRandomEvents);
             ls.CheckboxLabeled("FCSettingDeadPawnsIncreaseMilCooldown".Translate(), ref deadPawnsIncreaseMilitaryCooldown);
             ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref disableForcedPausingDuringEvents);
-            //TODO: uncomment when auto battle works.
-            //      mostly just adding this "todo" as an easy target for searching
-            //ls.CheckboxLabeled("FCSettingAutoResolveBattles".Translate(), ref settings.settlementsAutoBattle);
+            if (ls.ButtonText("FCSettingBattleMode".Translate() + battleMode)) Find.WindowStack.Add(new FloatMenu(BattleModeOptions));
             if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
@@ -554,6 +474,12 @@ namespace FactionColonies
             ls.IntRange(ref minMaxDaysTillMilitaryAction, 1, 30);
             minDaysTillMilitaryAction = minMaxDaysTillMilitaryAction.min;
             maxDaysTillMilitaryAction = Math.Max(1, minMaxDaysTillMilitaryAction.max);
+
+            ls.Label("FCSettingMaxThreatScaling".Translate() + ": " + maxThreatMultiplier.ToString("0.0") + "x");
+            maxThreatMultiplier = ls.Slider(maxThreatMultiplier, 1.0f, 5.0f);
+
+            ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
+            defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
 
             ls.Label("FCSettingMinMaxRandomEvent".Translate());
             ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
@@ -578,7 +504,9 @@ namespace FactionColonies
                 maxDaysTillRandomEvent = DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT;
                 disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
                 deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
-                settlementsAutoBattle = DEFAULT_SETTLEMENTS_AUTO_BATTLE;
+                battleMode = DEFAULT_BATTLE_MODE;
+                maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
+                defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;

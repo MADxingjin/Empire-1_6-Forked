@@ -29,6 +29,20 @@ namespace FactionColonies
             }
         }
     }
+    public class BuildingFilter
+    {
+        public string label;
+        public Texture2D icon;
+        public Func<BuildingFCDef, bool> predicate;
+
+        public BuildingFilter(string label, Texture2D icon, Func<BuildingFCDef, bool> predicate)
+        {
+            this.label = label;
+            this.icon = icon;
+            this.predicate = predicate;
+        }
+    }
+
     /// <summary>
     /// A WorldObjectComp class for use with BuildingFCDefs. When a building is constructed, if it has a SettlementBuildingComp, then
     /// the comp is added to this comp's list and tracked.
@@ -42,7 +56,7 @@ namespace FactionColonies
 
         public List<BuildingFC> Buildings => buildings;
 
-        public int NumBuildingSlots => SettlementFormulas.CalculateBuildingSlots(WorldSettlement?.settlementLevel ?? 0, WorldSettlement.settlementDef.maxBuildingCount);
+        public int NumBuildingSlots => WorldSettlement.GetBuildingSlots();
 
         private bool dirtyConstructionCache = true;
         private List<BuildingFC> constructionCache = new List<BuildingFC>();
@@ -69,22 +83,13 @@ namespace FactionColonies
             }
         }
 
-        public string buildingID(int buildingSlot)
+        public string BuildingID(int buildingSlot)
         {
             if (buildingSlot >= buildings.Count)
             {
                 return "null";
             }
             return buildings[buildingSlot].def.defName + buildingSlot.ToString();
-        }
-        public bool hasBuilding(BuildingFCDef building)
-        {
-            foreach(BuildingFC bfc in buildings)
-            {
-                if (bfc.def == building)
-                    return true;
-            }
-            return false;
         }
         /// <summary>
         /// Returns true if any currently-built building in this settlement
@@ -114,7 +119,7 @@ namespace FactionColonies
             }
             return result;
         }
-        public BuildingFCDef getBuildingInSlot(int buildingSlot)
+        public BuildingFCDef GetBuildingInSlot(int buildingSlot)
         {
             if (buildingSlot >= buildings.Count)
             {
@@ -135,23 +140,23 @@ namespace FactionColonies
             return null;
         }
 
-        public bool buildingSlotIsEmpty(int buildingSlot)
+        public bool BuildingSlotIsEmpty(int buildingSlot)
         {
             return buildings[buildingSlot].def.defName == BuildingFCDefOf.Empty.defName;
         }
-        public bool buildingSlotIsConstruction(int buildingSlot)
+        public bool BuildingSlotIsConstruction(int buildingSlot)
         {
             return buildings[buildingSlot].def.defName == BuildingFCDefOf.Construction.defName;
         }
-        public bool buildingSlotIsBuilding(int buildingSlot)
+        public bool BuildingSlotIsBuilding(int buildingSlot)
         {
-            return !buildingSlotIsEmpty(buildingSlot) && !buildingSlotIsConstruction(buildingSlot);
+            return !BuildingSlotIsEmpty(buildingSlot) && !BuildingSlotIsConstruction(buildingSlot);
         }
-        public string buildingLabel(int buildingsSlot)
+        public string BuildingLabel(int buildingsSlot)
         {
             return buildings[buildingsSlot].def.LabelCap;
         }
-        public List<BuildingFC> getUnderConstructionBuildings()
+        public List<BuildingFC> GetUnderConstructionBuildings()
         {
             if (dirtyConstructionCache)
             {
@@ -219,7 +224,15 @@ namespace FactionColonies
             }
             return comp;
         }
-        public bool validConstructBuilding(BuildingFCDef building, int buildingSlot)
+        public bool HasBuilding(BuildingFCDef building)
+        {
+            foreach (BuildingFC slot in buildings)
+            {
+                if (slot.def == building) return true;
+            }
+            return false;
+        }
+        public bool ValidConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             bool valid = true;
 
@@ -233,7 +246,7 @@ namespace FactionColonies
                 }
             }
 
-            if (PaymentUtil.getSilver() < building.cost) //check if the player has enough money
+            if (PaymentUtil.GetSilver() < building.cost) //check if the player has enough money
             {
                 valid = false;
                 Messages.Message("NotEnoughSilverConstructBuilding".Translate() + "!", MessageTypeDefOf.RejectInput);
@@ -297,31 +310,12 @@ namespace FactionColonies
                 valid = false;
                 Messages.Message("BuildingInvalidSettlement".Translate(building.LabelCap, WorldSettlement.settlementDef.LabelCap), MessageTypeDefOf.RejectInput);
             }
-            //TODO: rework based on def
-            /*bool isOrbitalPlatform = ResourceUtils.IsOrbitalPlatform(settlement);
-            switch (building.settlementTypeRestriction)
-            {
-                case SettlementTypeRestriction.SurfaceOnly:
-                    if (isOrbitalPlatform)
-                    {
-                        valid = false;
-                        Messages.Message("BuildingSurfaceOnly".Translate(), MessageTypeDefOf.RejectInput);
-                    }
-                    break;
-                case SettlementTypeRestriction.OrbitalOnly:
-                    if (!isOrbitalPlatform)
-                    {
-                        valid = false;
-                        Messages.Message("BuildingOrbitalOnly".Translate(), MessageTypeDefOf.RejectInput);
-                    }
-                    break;
-            }*/
 
             return valid;
         }
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
-            addBuildingTrait(buildingSlot);
+            AddBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -342,7 +336,7 @@ namespace FactionColonies
                 }
             }
         }
-        public void startConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
+        public void StartConstruction(BuildingFCDef building, int buildingSlot, int completionTick)
         {
             DeconstructBuilding(buildingSlot);
 
@@ -379,16 +373,19 @@ namespace FactionColonies
             };
 
             HandleOnConstructionComps(building, buildingSlot);
+            LifecycleRegistry.InvokeOnBuildingConstructed(WorldSettlement, building, buildingSlot);
         }
         /// <summary>
         /// <para>Handles any special processing when a building is deconstructed.</para>
         /// </summary>
         public void DeconstructBuilding(int buildingSlot)
         {
-            LogUtil.Message($"Deconstructing building {buildings[buildingSlot].def.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
+            BuildingFCDef deconstructedDef = buildings[buildingSlot].def;
+            LogUtil.Message($"Deconstructing building {deconstructedDef.defName} in slot {buildingSlot} in settlement {WorldSettlement?.Name ?? "nullsettlement"}");
             dirtyConstructionCache = true;
+            LifecycleRegistry.InvokeOnBuildingDeconstructed(WorldSettlement, deconstructedDef, buildingSlot);
 
-            removeBuildingTrait(buildingSlot);
+            RemoveBuildingStatModifiers(buildingSlot);
 
             if (buildings[buildingSlot].def.modExtensions?.Count > 0)
             {
@@ -417,77 +414,67 @@ namespace FactionColonies
 
             buildings[buildingSlot].def = BuildingFCDefOf.Empty;
         }
-        public void addBuildingTrait(int buildingSlot)
+        public void AddBuildingStatModifiers(int buildingSlot)
         {
-            if (buildings[buildingSlot].def.traits != null)
-            {
-                WorldSettlement.addTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
-            }
-            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
-                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
-            {
-                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
-            }
+            BuildingFCDef def = buildings[buildingSlot].def;
+            if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
+            WorldSettlement.AddStatModifiers(def.statModifiers, BuildingID(buildingSlot), def.label);
         }
-        public void removeBuildingTrait(int buildingSlot)
+        public void RemoveBuildingStatModifiers(int buildingSlot)
         {
-            if (buildings[buildingSlot].def.traits != null)
-            {
-                WorldSettlement.removeTraits(buildings[buildingSlot].def.traits, buildingID(buildingSlot));
-            }
-            else if (!(buildings[buildingSlot].def == BuildingFCDefOf.Empty ||
-                       buildings[buildingSlot].def == BuildingFCDefOf.Construction))
-            {
-                LogUtil.Warning($"Building {buildings[buildingSlot].def.defName} has no traits. Is this intentional?");
-            }
+            BuildingFCDef def = buildings[buildingSlot].def;
+            if (def == BuildingFCDefOf.Empty || def == BuildingFCDefOf.Construction) return;
+            WorldSettlement.RemoveStatModifiers(def.statModifiers, BuildingID(buildingSlot));
         }
         /// <summary>
-        /// Loops through all constructed buildings and applies their trait to the parent settlement.
-        /// <para>Assumes that the parent settlement's trait list has already been cleared.</para>
+        /// Loops through all constructed buildings and applies their stat modifiers to the parent settlement.
+        /// <para>Assumes that the parent settlement's stat modifier list has already been cleared.</para>
         /// </summary>
-        public void reapplyBuildingTraits()
+        public void ReapplyBuildingStatModifiers()
         {
             for (int i = 0; i < FC_MAX_BUILDINGS; i++)
             {
-                addBuildingTrait(i);
+                AddBuildingStatModifiers(i);
             }
         }
 
-        public int getBuildingUpkeep(int buildingSlot)
+        public int GetBuildingUpkeep(int buildingSlot)
         {
-            return getBuildingUpkeep(getBuildingInSlot(buildingSlot));
+            return GetBuildingUpkeep(GetBuildingInSlot(buildingSlot));
         }
-        public int getBuildingUpkeep(BuildingFCDef building)
+        public int GetBuildingUpkeep(BuildingFCDef building)
         {
             if (building == null)
                 return 0;
 
-            int upkeep = building.upkeep;
+            double upkeep = building.upkeep;
 
             FactionFC faction = FactionCache.FactionComp;
-            upkeep += faction.buildingUpkeepModifier(building);
+            upkeep = faction.FoldBehaviors(upkeep, (b, u) => b.ModifyBuildingUpkeep(building, u, WorldSettlement));
 
-            upkeep += WorldSettlement?.buildingUpkeepModifier(building) ?? 0;
-
-            return Math.Max(upkeep, 0);
+            return (int)upkeep;
         }
 
-        public TaggedString getBuildingDesc(BuildingFCDef building)
+        public TaggedString GetBuildingDesc(BuildingFCDef building)
         {
             TaggedString desc = building.desc + "\n";
-            int buildingUpkeep = getBuildingUpkeep(building);
+            int buildingUpkeep = GetBuildingUpkeep(building);
             if (buildingUpkeep > 0)
             {
                 desc += "\n" + "FCBuildingUpkeep".Translate(buildingUpkeep.ToString());
+            }
+            else if (buildingUpkeep < 0)
+            {
+                desc += "\n" + "FCBuildingIncome".Translate(Math.Abs(buildingUpkeep).ToString());
             }
 
             desc += "\n" + building.AttributeDesc;
 
             return desc.Trim();
         }
-        public TaggedString getBuildingDescFull(BuildingFCDef building)
+        public TaggedString GetBuildingDescFull(BuildingFCDef building)
         {
-            TaggedString desc = building.LabelCap + "\n-----\n" + getBuildingDesc(building);
+            TaggedString desc = building.LabelCap + "\n-----\n" + GetBuildingDesc(building);
             return desc;
         }
 
@@ -497,130 +484,81 @@ namespace FactionColonies
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
-                bool isMilitary = false;
-
-                foreach (FCTraitEffectDef trait in building.def.traits ?? Enumerable.Empty<FCTraitEffectDef>())
-                {
-                    if (trait.militaryBaseLevel > 0 || trait.militaryMultiplierCombatEfficiency > 1)
-                    {
-                        isMilitary = true;
-                        break;
-                    }
-                }
-
-                upkeep += SettlementFormulas.CalculateBuildingUpkeep(building.def.upkeep, isMilitary, faction.hasPolicy(FCPolicyDefOf.militaristic));
+                upkeep += GetBuildingUpkeep(building.def);
             }
             return upkeep;
         }
-        /// <summary>
-        /// Used by FCBuildingWindow to determine how many entries to the building filter there should be.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
-        public int getFilterSize()
+        private List<BuildingFilter> filters;
+
+        public void InvalidateFilters()
         {
+            filters = null;
+        }
+
+        private void RebuildFilters()
+        {
+            filters = new List<BuildingFilter>();
+
+            filters.Add(new BuildingFilter("BuildingFilterAll".Translate(), null, _ => true));
+
+            filters.Add(new BuildingFilter("BuildingFilterHappiness".Translate(), TexLoad.iconHappiness, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
+                    m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier)));
+
+            filters.Add(new BuildingFilter("BuildingFilterBasetax".Translate(), TexLoad.iconProsperity, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier)));
+
+            filters.Add(new BuildingFilter("BuildingFilterWorkers".Translate(), null, b =>
+                b.statModifiers != null && b.statModifiers.Any(m =>
+                    m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost)));
+
             if (WorldSettlement.MilitaryComp != null)
             {
-                return 5 + WorldSettlement.Resources.Count;
+                filters.Add(new BuildingFilter("BuildingFilterMilitary".Translate(), TexLoad.iconMilitary, b =>
+                    b.statModifiers != null && b.statModifiers.Any(m =>
+                        m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency)));
             }
-            else
+
+            foreach (ResourceFC resource in WorldSettlement.Resources)
             {
-                return 4 + WorldSettlement.Resources.Count;
+                ResourceTypeDef resDef = resource.def;
+                filters.Add(new BuildingFilter(resource.label, resDef.Icon, b =>
+                    b.statModifiers != null && b.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef)));
             }
-        }
-        /// <summary>
-        /// Used by FCBuildingWindow to determine what label to show for a given filter index.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
-        public string getLabelForFilter(int i)
-        {
-            // edge-case protection
-            if (i < 0)
-                return null;
-            else if (i == 0)
-                return "BuildingFilterAll".Translate();
-            else if (i == 1)
-                return "BuildingFilterHappiness".Translate();
-            else if (i == 2)
-                return "BuildingFilterBasetax".Translate();
-            else if (i == 3)
-                return "BuildingFilterWorkers".Translate();
-            else if (i == 4 && WorldSettlement.MilitaryComp != null)
-                return "BuildingFilterMilitary".Translate();
-            else
+
+            foreach (BuildingFilter filter in BuildingFilterRegistry.Filters)
             {
-                return WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.label ?? "";
+                filters.Add(filter);
             }
         }
 
-        /// <summary>
-        /// Used by FCBuildingWindow to determine if a building should be filtered.
-        /// <para>0 = All</para>
-        /// <para>1 = Happiness</para>
-        /// <para>2 = Basetax</para>
-        /// <para>3 = Workers</para>
-        /// <para>4 = Military (if the settlement has a MilitaryComp)</para>
-        /// <para>5+ = each settlement resource in order</para>
-        /// <para>If the settlement does not have a MilitaryComp, then resources will start at index 4 instead of 5.</para>
-        /// </summary>
-        /// <returns></returns>
-        /* I feel like there has to be a better way to do this. But with a variable number of resources, we can't use an enum... */
-        public bool filterBuilding(int i, BuildingFCDef building)
+        public int GetFilterSize()
         {
-            if (i == 0 || i < 0)
-                return true;
+            if (filters == null) RebuildFilters();
+            return filters.Count;
+        }
 
-            // Get the building's traits
-            if (building.traits == null || building.traits.Count == 0)
-                return false;
+        public string GetLabelForFilter(int i)
+        {
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return null;
+            return filters[i].label;
+        }
 
-            foreach (FCTraitEffectDef traitDef in building.traits)
-            {
-                ResourceBonuses rtd;
-                if (i == 1)
-                {
-                    if (traitDef.happinessLostBase != 0 || traitDef.happinessGainedBase != 0 ||
-                        Math.Abs(traitDef.happinessLostMultiplier - 1.0) > 0.001 ||
-                        Math.Abs(traitDef.happinessGainedMultiplier - 1.0) > 0.001)
-                        return true;
-                }
-                else if (i == 2)
-                {
-                    if (traitDef.taxBasePercentage != 0 || traitDef.taxBaseRandomModifier != 0)
-                        return true;
-                }
-                else if (i == 3)
-                {
-                    if (traitDef.workerBaseMax != 0 || traitDef.workerBaseOverMax != 0 || traitDef.workerBaseCost != 0)
-                        return true;
-                }
-                else if (i == 4 && WorldSettlement.MilitaryComp != null)
-                {
-                    if (traitDef.militaryBaseLevel != 0 || Math.Abs(traitDef.militaryMultiplierCombatEfficiency - 1.0) > 0.001)
-                        return true;
-                }
-                else
-                {
-                    rtd = traitDef.getTraitResource(WorldSettlement.getResourceByIndex(i - (WorldSettlement.MilitaryComp == null ? 4 : 5))?.def);
-                    if (rtd != null && (rtd.additive != 0 || Math.Abs(rtd.multiplier - 1.0) > 0.001))
-                        return true;
-                }
-            }
+        public Texture2D GetIconForFilter(int i)
+        {
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return null;
+            return filters[i].icon;
+        }
 
-            return false;
+        public bool FilterBuilding(int i, BuildingFCDef building)
+        {
+            if (filters == null) RebuildFilters();
+            if (i < 0 || i >= filters.Count) return true;
+            return filters[i].predicate(building);
         }
 
         public override void CompTick()

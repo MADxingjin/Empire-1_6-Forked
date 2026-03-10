@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for FCEventCategoryDef, and explains what they do and their default values -->
+  <!-- FCEventCategoryDefs define color-coded categories for events (e.g. Settlement, Construction, Economy, Military). -->
+  <!-- They are referenced by FCEventDef's <category> field. They are used for both color coordination and filtering. -->
+  <FactionColonies.FCEventCategoryDef>
+	<defName>EC_Example</defName>
+	<label>Example Category</label>
+	<description>A brief description of this event category.</description>
+	<!-- The color used for this event category in the UI (accent bars, buttons, etc.).
+	     Specified as RGBA components, each 0-1. Default: (0.65, 0.65, 0.65, 1) -->
+	<color>(0.65, 0.65, 0.65)</color>
+	<!-- Determines the order this category appears in filter/sorting lists. Lower = earlier. Default: 100 -->
+	<displayOrder>100</displayOrder>
+  </FactionColonies.FCEventCategoryDef>
+
+</Defs>

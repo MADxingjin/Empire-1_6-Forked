@@ -13,6 +13,7 @@
 
 	<!-- Attack Notifications -->
 	<settlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction</settlementAboutToBeAttacked>
+	<settlementAttackEstimate>Estimated enemy power: {0}\nCurrent defense power: {1}</settlementAttackEstimate>
 	<settlementInDanger>Settlement In Danger</settlementInDanger>
 	<settlementMilitaryForcesRaiding>{0}'s military forces are raiding {1}</settlementMilitaryForcesRaiding>
 	<settlementMilitaryForcesEnslave>{0}'s military forces are attempting to enslave the population of {1}</settlementMilitaryForcesEnslave>
@@ -48,21 +49,31 @@
 	<DefenseSuccessfulFull>The defense of {0} was successful!</DefenseSuccessfulFull>
 	<DefenseFailure>Defense Failure</DefenseFailure>
 	<DefenseFailureFull>The defense of our settlement, {0}, has been crushed.</DefenseFailureFull>
+	<ManualBattleStarted>Battle for {0}</ManualBattleStarted>
+	<ManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</ManualBattleStartedDesc>
 	<DefendColony>Defend</DefendColony>
 	<DefendColonyDesc>Defend your Settlement manually</DefendColonyDesc>
 	<DefendSettlement>Set Defending Force</DefendSettlement>
-	<SettlementDefendingInformation>Settlement Defending Information: {0}'s - Mil {1}</SettlementDefendingInformation>
-	<ResetToHomeSettlement>Reset to home settlement's defense - Mil {0}</ResetToHomeSettlement>
+	<SettlementDefendingInformation>Settlement Defending: {0}'s - Power {1}</SettlementDefendingInformation>
+	<ResetToHomeSettlement>Reset to home settlement's defense - Power {0}</ResetToHomeSettlement>
 	<ChangeDefendingForce>Change Defending Force</ChangeDefendingForce>
 	<militaryAlreadyDefendingSettlement>That military force is already defending the target</militaryAlreadyDefendingSettlement>
 	<defendingMilitaryReset>The defending military has been reset as the defense force for the settlement</defendingMilitaryReset>
 	<ToggleAutoDefend>Automatically defending attacked settlements: {0}</ToggleAutoDefend>
 	<autoDefendWarning>Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu!</autoDefendWarning>
-	<autoBattleEnabledNoManualFight><!--You can't manually fight battles if automatic battle resolve is enabled!-->Manually fighting battles is currently disabled due to game breaking bugs.</autoBattleEnabledNoManualFight>
+	<autoBattleEnabledNoManualFight>Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually.</autoBattleEnabledNoManualFight>
+	<hybridBattleEnabledNoManualFight>Hybrid battle mode is enabled. Send a caravan to manually defend this settlement.</hybridBattleEnabledNoManualFight>
+	<settlementAttackHybridHint>Send a caravan to this settlement before the attack to fight manually.</settlementAttackHybridHint>
 
 	<!-- Raid Damage -->
+	<DefenseFailurePenaltiesHeader>Penalties suffered:</DefenseFailurePenaltiesHeader>
+	<DefenseFailureProsperityLoss>Prosperity: -{0}</DefenseFailureProsperityLoss>
+	<DefenseFailureHappinessLoss>Happiness: -{0}</DefenseFailureHappinessLoss>
+	<DefenseFailureLoyaltyLoss>Loyalty: -{0}</DefenseFailureLoyaltyLoss>
+	<DefenseFailureBuildingsProtected>Buildings were protected from destruction by your policies.</DefenseFailureBuildingsProtected>
 	<BuildingDestroyedInRaid>{0} has been destroyed in the raid.</BuildingDestroyedInRaid>
 	<SettlementDeleveledRaid>The settlement level has decreased by one.</SettlementDeleveledRaid>
+	<InjuredCaravanMembersReturning>{0} injured caravan member(s) are being transported home. Estimated arrival: {1} days.</InjuredCaravanMembersReturning>
 
 	<!-- Battle Ending -->
 	<EndingAttack>Ending attack...</EndingAttack>
@@ -123,6 +134,7 @@
 	<NoValidMilitaries>No valid militaries to use.</NoValidMilitaries>
 	<FCAvailable>Available</FCAvailable>
 	<ShortMilitary>Mil</ShortMilitary>
+	<FCPower>Power</FCPower>
 	<MedievalTechOnly>Medieval Tech Only</MedievalTechOnly>
 	<FCMilitaryLevel>militaryLevel</FCMilitaryLevel>
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
@@ -149,5 +161,6 @@
 	<FCMilBtnResetTip>Reset and regenerate squad members</FCMilBtnResetTip>
 	<FCMilBtnFireSupportTip>Call in artillery fire support</FCMilBtnFireSupportTip>
 	<FCMilBtnAutoDefendTip>Automatically send this settlement's forces to defend other settlements under attack</FCMilBtnAutoDefendTip>
+	<FCMilBadge>Atk {0} / Def {1}  &#x2022;  ${2}</FCMilBadge>
 
 </LanguageData>

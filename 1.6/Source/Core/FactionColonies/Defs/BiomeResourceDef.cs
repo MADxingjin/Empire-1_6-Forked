@@ -10,7 +10,7 @@ namespace FactionColonies
         /* The SettlementDef should determine what resources are available to the settlement, not the biome.
          * Biomes should support all resources by default.
          * If a resource isn't specified in the BiomeResourceDef, then treat it as a default 1 additive, 1 multiplier resource. */
-        public List<ResourceBonuses> resources = new List<ResourceBonuses>();
+        public List<ResourceAvailability> resources = new List<ResourceAvailability>();
         public bool canSettle;
         public List<ResourceTypeDef> resourceBlockList = new List<ResourceTypeDef>();
 
@@ -20,25 +20,25 @@ namespace FactionColonies
         /// </summary>
         public string descriptionKey;
 
-        public ResourceBonuses getBiomeResource(ResourceTypeDef resourceTypeDef)
+        public ResourceAvailability GetBiomeResource(ResourceTypeDef resourceTypeDef)
         {
             /* First check if the resource is even allowed in this biome */
             if (resourceBlockList.Contains(resourceTypeDef))
             {
                 return null;
             }
-            if (!resourceTypeDef.resourceAllowedForBiome(this))
+            if (!resourceTypeDef.ResourceAllowedForBiome(this))
             {
                 return null;
             }
-            ResourceBonuses res = resources.Find((ResourceBonuses rb) => rb.resourceDef == resourceTypeDef);
+            ResourceAvailability res = resources.Find((ResourceAvailability rb) => rb.resourceDef == resourceTypeDef);
             if (res == null)
             {
                 /* If the resource isn't explicitly mentioned in the BiomeResourceDef, and it isn't on the blocklist (and this biome
                  * isn't on that resource's biome blocklist -- handled by the resourceAllowedForBiome check), then we'll add the resource
                  * to this biome with default production values. */
                 /* Meant to let people add new resources without having to include that resource in *every* BiomeResourceDef */
-                res = new ResourceBonuses
+                res = new ResourceAvailability
                 {
                     resourceDef = resourceTypeDef,
                     additive = resourceTypeDef.defaultBiomeAdditive,
@@ -51,7 +51,7 @@ namespace FactionColonies
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            foreach (ResourceBonuses rb in resources)
+            foreach (ResourceAvailability rb in resources)
             {
                 if (double.IsNaN(rb.additive))
                 {

@@ -122,7 +122,7 @@ namespace FactionColonies
                 faction.factionIconPath = tempFactionIconPath;
                 faction.factionIcon = tempFactionIcon;
 
-                faction.updateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
+                faction.UpdateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
 
                 Find.WindowStack.TryRemove(this);
             }

@@ -5,6 +5,7 @@ using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using Verse.AI.Group;
 
 namespace FactionColonies
 {
@@ -29,17 +30,19 @@ namespace FactionColonies
 			
 			if (__instance.Faction == playerColonyFaction)
 			{
-				Pawn_DraftController pawnDraftController = __instance.drafter ?? new Pawn_DraftController(__instance);
-				
+				Pawn pawn = __instance;
+
 				Command_Toggle draftColonists = new Command_Toggle
 				{
 					hotKey = KeyBindingDefOf.Command_ColonistDraft,
 					isActive = () => false,
 					toggleAction = () =>
 					{
-						if (pawnDraftController.pawn.Faction == Faction.OfPlayer) return;
-						pawnDraftController.pawn.SetFaction(Faction.OfPlayer);
-						pawnDraftController.Drafted = true;
+						if (pawn.Faction == Faction.OfPlayer) return;
+						pawn.SetFaction(Faction.OfPlayer);
+						// SetFaction → AddAndRemoveDynamicComponents creates pawn.drafter for OfPlayer pawns
+						if (pawn.drafter != null)
+							pawn.drafter.Drafted = true;
 					},
 					defaultDesc = "CommandToggleDraftDesc".Translate(),
 					icon = TexCommand.Draft,
@@ -47,10 +50,10 @@ namespace FactionColonies
 					groupKey = 81729172,
 					defaultLabel = "CommandDraftLabel".Translate()
 				};
-				
-				if (pawnDraftController.pawn.Downed)
+
+				if (pawn.Downed)
 				{
-					draftColonists.Disable("IsIncapped".Translate(pawnDraftController.pawn.LabelShort, pawnDraftController.pawn));
+					draftColonists.Disable("IsIncapped".Translate(pawn.LabelShort, pawn));
 				}
 				
 				draftColonists.tutorTag = "Draft";
@@ -82,7 +85,24 @@ namespace FactionColonies
 						Command_Toggle action = gizmo as Command_Toggle;
 						if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
 						{
-							action.toggleAction = () => found.SetFaction(FactionCache.PlayerColonyFaction);
+							action.toggleAction = () =>
+							{
+								found.SetFaction(FactionCache.PlayerColonyFaction);
+								// Re-add to defenders list and defense lord after undrafting
+								var milComp = settlementFc.MilitaryComp;
+								if (milComp != null && milComp.defenders.Any())
+								{
+									if (!milComp.defenders.Contains(found))
+										milComp.defenders.Add(found);
+
+									var defenderLord = milComp.defenders[0].GetLord();
+									if (defenderLord != null && !defenderLord.ownedPawns.Contains(found))
+									{
+										defenderLord.AddPawn(found);
+										defenderLord.CurLordToil.UpdateAllDuties();
+									}
+								}
+							};
 							break;
 						}
 					}
@@ -130,7 +150,7 @@ namespace FactionColonies
 				List<FloatMenuOption> settlementList = FactionCache.FactionComp.settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
 				{
 					//disappear prisoner
-					TravelUtil.sendPrisoner(prisoner, settlement);
+					TravelUtil.SendPrisoner(prisoner, settlement);
 
 					foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map => map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>().Where(bed => bed.OwnersForReading.Any(bedPawn => bedPawn == prisoner)))
 					{
@@ -150,8 +170,9 @@ namespace FactionColonies
 			{
 				return;
 			}
-			
-			if (!CanSendPrisoner(__instance)) return;
+
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.SendPrisoner)) return;
+            if (!CanSendPrisoner(__instance)) return;
 
 			__result = __result.Append(SendPrisonerAction(__instance));
 		}
@@ -160,29 +181,17 @@ namespace FactionColonies
 	[HarmonyPatch(typeof(WorldObject), "GetGizmos")]
 	class AddButtonsToNonEmpireObjects
 	{
-		private static readonly Dictionary<MilitaryJob, (string, string)> MilJobOptionStringsDic = new Dictionary<MilitaryJob, (string, string)> 
-		{ 
-			{ MilitaryJob.CaptureEnemySettlement, ("CaptureSettlement", "FCCaptureFloatMenuOption") },
-			{ MilitaryJob.RaidEnemySettlement, ("RaidSettlement", "FCRaidFloatMenuOption") },
-			{ MilitaryJob.EnslaveEnemySettlement, ("EnslavePopulation", "FCEnslaveFloatMenuOption") },
-		};
-
 		/// <summary>
 		/// Checks if a <paramref name="settlement"/> has a currently usable military squad
 		/// </summary>
 		/// <param name="settlement"></param>
 		/// <returns>true if usable, false otherwise</returns>
-		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
+		private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
 
 		/// <summary>
-		/// Takes a <paramref name="job"/> and generates a FloatMenuOptions using the strings in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic
+		/// Takes a <paramref name="job"/> and generates a FloatMenuOption using the job def's label/desc keys.
 		/// </summary>
-		/// <param name="factionFC"></param>
-		/// <param name="faction"></param>
-		/// <param name="tile"></param>
-		/// <param name="job"></param>
-		/// <returns>the generated FloatMenuOption</returns>
-		private static FloatMenuOption NewOption(FactionFC factionFC, Faction faction, int tile, MilitaryJob job) => new FloatMenuOption((MilJobOptionStringsDic[job].Item1 ?? "FCUnsupportedMilJobError").Translate(), delegate
+		private static FloatMenuOption NewOption(FactionFC factionFC, Faction faction, int tile, MilitaryJobDef job) => new FloatMenuOption((job.floatMenuLabelKey ?? "FCUnsupportedMilJobError").Translate(), delegate
 		{
 			List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
 
@@ -190,11 +199,9 @@ namespace FactionColonies
 			{
 				if (SettlementHasUsableMilitary(settlement))
 				{
-					//if military is valid to use.
-
-					settlementList.Add(new FloatMenuOption((MilJobOptionStringsDic[job].Item2 ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
+					settlementList.Add(new FloatMenuOption((job.floatMenuDescKey ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
 					{
-						RelationsUtilFC.attackFaction(faction);
+						RelationsUtilFC.AttackFaction(faction);
 						settlement.MilitaryComp?.SendMilitary(tile, job, 60000, faction);
 					}));
 				}
@@ -218,10 +225,14 @@ namespace FactionColonies
 			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-				if (!factionFC.hasPolicy(FCPolicyDefOf.isolationist)) list.Add(NewOption(factionFC, faction, tile, MilitaryJob.CaptureEnemySettlement));
-				list.Add(NewOption(factionFC, faction, tile, MilitaryJob.RaidEnemySettlement));
-				if (factionFC.hasPolicy(FCPolicyDefOf.authoritarian) && faction.def.defName != "VFEI_Insect") list.Add(NewOption(factionFC, faction, tile, MilitaryJob.EnslaveEnemySettlement));
+				foreach (MilitaryJobDef job in FactionCache.HostileMilitaryJobs)
+				{
+					if (!factionFC.IsMilitaryJobAllowed(job)) continue;
+					if (job.Handler != null && !job.Handler.IsValidTarget(faction)) continue;
+					list.Add(NewOption(factionFC, faction, tile, job));
+				}
 
+				if (list.Count == 0) list.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
 				Find.WindowStack.Add(new FloatMenu(list));
 			}
 		};
@@ -234,7 +245,7 @@ namespace FactionColonies
 			defaultLabel = "FCIncreaseRelations".Translate(),
 			defaultDesc = "",
 			icon = TexLoad.iconProsperity,
-			action = delegate { factionFC.sendDiplomaticEnvoy(faction); }
+			action = delegate { factionFC.SendDiplomaticEnvoy(faction); }
 		};
 
 		/// <summary>
@@ -258,13 +269,11 @@ namespace FactionColonies
 			Faction faction = __instance.Faction;
 			FactionFC factionFC = FactionCache.FactionComp;
 
-			if (factionFC.hasPolicy(FCPolicyDefOf.pacifist))
-			{
+			if (factionFC.IsActionAllowed(FCActionType.SendDiplomat))
 				__result = __result.AddItem(PeacefulAction(factionFC, faction));
-				return;
-			}
 
-			__result = __result.AddItem(HostileAction(factionFC, faction, tile));
+			if (factionFC.IsActionAllowed(FCActionType.DeployMilitary))
+				__result = __result.AddItem(HostileAction(factionFC, faction, tile));
 		}
 	}
 }

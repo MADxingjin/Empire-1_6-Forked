@@ -39,6 +39,8 @@ namespace FactionColonies
         private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
         private static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> _cachedUpgradeTrees = null;
         private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
+        private static List<FCEventCategoryDef> _cachedEventCategoryDefs = null;
+        private static List<MilitaryJobDef> _cachedHostileMilitaryJobs = null;
         // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
         private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
         private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
@@ -71,6 +73,7 @@ namespace FactionColonies
                 return _cachedColonyFaction;
             }
         }
+        public static bool IsPlayerColonyFaction(Faction f) => !(PlayerColonyFaction is null) && f == PlayerColonyFaction;
         /// <summary>
         /// The player faction itself.
         /// </summary>
@@ -168,7 +171,7 @@ namespace FactionColonies
                     _cachedRaceList = new List<ThingDef>();
                     foreach (PawnKindDef pawnKind in AllPawnKindDefs)
                     {
-                        if (pawnKind.race != null && !_cachedRaceList.Contains(pawnKind.race) && (pawnKind.race == ThingDefOf.Human || pawnKind.IsHumanLikeRace()))
+                        if (pawnKind.race != null && !_cachedRaceList.Any(r => r.defName == pawnKind.race.defName) && (pawnKind.race == ThingDefOf.Human || pawnKind.IsHumanLikeRace()))
                         {
                             _cachedRaceList.Add(pawnKind.race);
                         }
@@ -473,6 +476,36 @@ namespace FactionColonies
                 return _cachedRequiredByMap;
             }
         }
+        public static List<FCEventCategoryDef> FCEventCategoryDefs
+        {
+            get
+            {
+                if (_cachedEventCategoryDefs == null)
+                {
+                    _cachedEventCategoryDefs = DefDatabase<FCEventCategoryDef>.AllDefsListForReading;
+                }
+                return _cachedEventCategoryDefs;
+            }
+        }
+        /// <summary>
+        /// MilitaryJobDefs that have a floatMenuLabelKey, i.e. hostile operations shown in the world gizmo menu.
+        /// </summary>
+        public static List<MilitaryJobDef> HostileMilitaryJobs
+        {
+            get
+            {
+                if (_cachedHostileMilitaryJobs == null)
+                {
+                    _cachedHostileMilitaryJobs = new List<MilitaryJobDef>();
+                    foreach (MilitaryJobDef job in DefDatabase<MilitaryJobDef>.AllDefsListForReading)
+                    {
+                        if (job.floatMenuLabelKey != null)
+                            _cachedHostileMilitaryJobs.Add(job);
+                    }
+                }
+                return _cachedHostileMilitaryJobs;
+            }
+        }
 
         public static void InvalidateCache()
         {
@@ -494,6 +527,8 @@ namespace FactionColonies
             _cachedFCPolicyDescs = null;
             _cachedUpgradeTrees = null;
             _cachedRequiredByMap = null;
+            _cachedEventCategoryDefs = null;
+            _cachedHostileMilitaryJobs = null;
 
             _cachedTechLevelBarrierUltra = null;
             _cachedTechLevelBarrierSpacer = null;

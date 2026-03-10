@@ -25,7 +25,9 @@ namespace FactionColonies
                     return;
                 }
 
-                XenotypeFilter filter = FactionCache.FactionComp.xenotypeFilter;
+                XenotypeFilter filter = FactionCache.FactionComp?.xenotypeFilter;
+                if (filter is null) return;
+
                 XenotypeDef chosenXenotype = null;
                 CustomXenotype chosenCustomXenotype = null;
 

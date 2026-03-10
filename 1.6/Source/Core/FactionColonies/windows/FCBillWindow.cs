@@ -156,7 +156,7 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(resolve, "ResolveBill".Translate()))
                 {
-                    if (bill.attemptResolve())
+                    if (bill.AttemptResolve())
                     {
                         goto Reset;
                     }
@@ -183,7 +183,7 @@ namespace FactionColonies
                     {
                         case true:
                             Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
-                            PaymentUtil.autoresolveBills(bills);
+                            PaymentUtil.AutoresolveBills(bills);
                             break;
                         case false:
                             Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
@@ -211,7 +211,7 @@ namespace FactionColonies
             if (Event.current.type == EventType.ScrollWheel)
             {
 
-                scrollWindow(Event.current.delta.y);
+                ScrollWindow(Event.current.delta.y);
             }
 
         }
@@ -220,7 +220,7 @@ namespace FactionColonies
 
 
 
-        private void scrollWindow(float num)
+        private void ScrollWindow(float num)
         {
             if (scroll - num * 5 < -1 * maxScroll)
             {

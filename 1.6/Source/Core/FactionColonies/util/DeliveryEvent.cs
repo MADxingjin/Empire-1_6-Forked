@@ -36,14 +36,14 @@ namespace FactionColonies.util
 
 		public static void Action(FCEvent evt)
 		{
-			Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false);
+			Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
 		}
 
 		public static void Action(FCEvent evt, Letter let = null, Message msg = null, bool CanUseShuttle = false)
 		{
 			evt.let = let;
 			evt.msg = msg;
-			Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.Traits.Contains(FCTraitEffectDefOf.shuttlePort) ?? false));
+			Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
 		}
 
 		private static void MakeDeliveryLetterAndMessage(FCEvent evt)
@@ -348,7 +348,7 @@ namespace FactionColonies.util
 		private static void SpawnOnTaxSpot(FCEvent evt)
 		{
 			MakeDeliveryLetterAndMessage(evt);
-			evt.goods.ForEach(thing => PaymentUtil.placeThing(thing));
+			evt.goods.ForEach(thing => PaymentUtil.PlaceThing(thing));
 		}
 
 		public static TaxDeliveryMode TaxDeliveryModeForSettlement(bool canUseShuttle, PlanetTile sourceTile)
@@ -356,7 +356,7 @@ namespace FactionColonies.util
 			WorldSettlementFC settlement = FactionCache.FactionComp.settlements.FirstOrFallback((WorldSettlementFC s) => s.Tile == sourceTile);
 			if (settlement != null)
 			{
-				return settlement.settlementDef.getTaxDeliveryMode(canUseShuttle, sourceTile);
+				return settlement.settlementDef.GetTaxDeliveryMode(canUseShuttle, sourceTile);
 			}
 			LogUtil.Error($"Trying to deliver taxes for a null settlement!");
 			return TaxDeliveryMode.Caravan;
@@ -387,7 +387,7 @@ namespace FactionColonies.util
 			catch(Exception e)
 			{
 				LogUtil.ErrorOnce("Critical delivery failure, spawning things on tax spot instead! Message: " + e.Message + " StackTrace: " + e.StackTrace + " Source: " + e.Source, 77239232);
-				evt.goods.ForEach(thing => PaymentUtil.placeThing(thing));
+				evt.goods.ForEach(thing => PaymentUtil.PlaceThing(thing));
 			}
 		}
 
@@ -403,7 +403,7 @@ namespace FactionColonies.util
 			evt.msg = evtParams.msg;
 			evt.isDelayed = evtParams.isDelayed;
 
-			FactionCache.FactionComp.addEvent(evt);
+			FactionCache.FactionComp.AddEvent(evt);
 		}
 
 		public static string ShuttleEventInjuredString
@@ -422,9 +422,25 @@ namespace FactionColonies.util
 			}
 		}
 		
+		public static string ShuttleEventInjuredLostString
+		{
+			get
+			{
+				if (FactionCache.TechTransportPods.IsFinished)
+				{
+					if (ModsConfig.RoyaltyActive)
+					{
+						return "transportingInjuredShuttleLost".Translate();
+					}
+					return "transportingInjuredDropPodLost".Translate();
+				}
+				return "transportingInjuredCaravanLost".Translate();
+			}
+		}
+
 		public static IntVec3 GetDeliveryCell(TraverseParms traverseParms, Map map)
 		{
-			if (!PaymentUtil.checkForTaxSpot(map, out IntVec3 intVec3))
+			if (!PaymentUtil.CheckForTaxSpot(map, out IntVec3 intVec3))
 			{
 				intVec3 = ValidLandingCell(new IntVec2(1, 1), map, true);
 			}

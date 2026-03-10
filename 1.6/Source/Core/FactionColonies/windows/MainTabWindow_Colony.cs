@@ -25,7 +25,8 @@ namespace FactionColonies
             "Overview".Translate(),
             "Bills".Translate(),
             "Events".Translate(),
-            "Military".Translate()
+            "Military".Translate(),
+            "FCEdicts".Translate()
         };
         private Dictionary<string, Action<Rect>> overviewFuncs = new Dictionary<string, Action<Rect>>();
 
@@ -36,13 +37,13 @@ namespace FactionColonies
         public bool selectingColonyFC;
         public FactionFC faction;
 
-        // ===== UPDATE TIMER =====
-        private int UIUpdateTimer;
-
         // ===== SCROLL POSITIONS =====
         private Vector2 settlementScroll;
         private Vector2 billsScroll;
         private Vector2 eventsScroll;
+
+        // ===== EVENT FILTER STATE =====
+        private static readonly HashSet<FCEventCategoryDef> hiddenEventCategories = new HashSet<FCEventCategoryDef>();
 
         // ===== SETTLEMENT SORT =====
         private int currentSettlementSortIndex = 0;
@@ -63,8 +64,7 @@ namespace FactionColonies
                 return;
             }
 
-            faction.updateAverages();
-            faction.updateTotalProfit();
+            // Averages and profit are lazy-cached — no eager update needed
             militaryUtil = faction.militaryCustomizationUtil;
 
             // Build tab list
@@ -74,7 +74,6 @@ namespace FactionColonies
             tabs.Add(new TabRecord(overviewTabs[0], delegate
             {
                 curTab = overviewTabs[0];
-                faction.updateTotalProfit();
             }, () => curTab == overviewTabs[0]));
             overviewFuncs.Add(overviewTabs[0], DrawOverviewTab);
             // Bills tab
@@ -98,34 +97,20 @@ namespace FactionColonies
                 militaryScroll = Vector2.zero;
             }, () => curTab == overviewTabs[3]));
             overviewFuncs.Add(overviewTabs[3], DrawMilitaryTab);
-            // Mod-added tabs
-            foreach (IMainTabWindowOverview itab in MainTableRegistry.Tabs)
+            // Edicts tab
+            tabs.Add(new TabRecord(overviewTabs[4], delegate
             {
-                tabs.Add(new TabRecord(itab.TabName(), delegate
-                {
-                    curTab = itab.TabName();
-                    itab.OnTabSwitch();
-                }, () => curTab == itab.TabName()));
-                overviewFuncs.Add(itab.TabName(), itab.DrawOverviewTab);
-            }
+                curTab = overviewTabs[4];
+                EdictTabDrawer.OnTabSwitch();
+            }, () => curTab == overviewTabs[4]));
+            overviewFuncs.Add(overviewTabs[4], DrawEdictsTab);
         }
 
         public override void PostClose()
         {
             base.PostClose();
             selectingColonyFC = false;
-            militaryUtil?.checkMilitaryUtilForErrors();
-        }
-
-        public override void WindowUpdate()
-        {
-            base.WindowUpdate();
-            if (UIUpdateTimer < Find.TickManager.TicksAbs)
-            {
-                UIUpdateTimer = Find.TickManager.TicksAbs + FCSettings.updateUiTimer;
-                if (faction != null)
-                    faction.updateAverages();
-            }
+            militaryUtil?.CheckMilitaryUtilForErrors();
         }
 
         // ===== MAIN DRAW =====
@@ -143,7 +128,7 @@ namespace FactionColonies
                 Rect btn = new Rect(inRect.x + inRect.width / 2f - 150f, inRect.y + inRect.height / 2f - 20f, 300f, 40f);
                 if (Widgets.ButtonText(btn, "FCCreateNewFaction".Translate()))
                 {
-                    ColonyUtil.createPlayerColonyFaction();
+                    ColonyUtil.CreatePlayerColonyFaction();
                     faction = FactionCache.FactionComp;
                     if (faction != null)
                     {
@@ -167,12 +152,31 @@ namespace FactionColonies
                 return;
             }
 
-            // Content area sits below the tab strip
-            Rect contentRect = new Rect(inRect.x, inRect.y + TabDrawer.TabHeight, inRect.width, inRect.height - TabDrawer.TabHeight);
-            Widgets.DrawMenuSection(contentRect);
-            TabDrawer.DrawTabs(contentRect, tabs);
+            // Calculate minimum tab width from the longest label
+            Text.Font = GameFont.Small;
+            float maxLabelWidth = 0f;
+            foreach (TabRecord tab in tabs)
+            {
+                float w = Text.CalcSize(tab.label).x;
+                if (w > maxLabelWidth) maxLabelWidth = w;
+            }
+            float minTabWidth = maxLabelWidth + 16f;
 
-            overviewFuncs[curTab](contentRect);
+            // Content area sits below the tab strip (dynamic height for overflow rows)
+            float tabHeight = TabDrawer.GetOverflowTabHeight(inRect, tabs, minTabWidth, 200f);
+            Rect contentRect = new Rect(inRect.x, inRect.y + tabHeight, inRect.width, inRect.height - tabHeight);
+            Widgets.DrawMenuSection(contentRect);
+            TabDrawer.DrawTabsOverflow(inRect, tabs, minTabWidth, 200f);
+
+            try
+            {
+                overviewFuncs[curTab](contentRect);
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error drawing tab '{curTab}': {e}");
+                curTab = overviewTabs[0];
+            }
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
@@ -435,7 +439,17 @@ namespace FactionColonies
         }
         private void DrawActionButtons(Rect panel)
         {
-            int numButtons = 1 + (faction.hasPolicy(FCPolicyDefOf.technocratic) ? 1 : 0) + (faction.hasPolicy(FCPolicyDefOf.feudal) ? 1 : 0);
+            // Collect action buttons from all active policy/trait extensions
+            List<(TaggedString label, Action onClick)> actionButtons = new List<(TaggedString, Action)>();
+            faction.ForEachBehavior(b =>
+            {
+                var buttons = b.GetMainTabActionButtons(faction);
+                if (buttons != null)
+                    foreach (var btn in buttons)
+                        actionButtons.Add(btn);
+            });
+
+            int numButtons = 1 + actionButtons.Count;
             // The "Create New Colony" button is more important than all the rest, so we'll make it as wide as two of the other buttons. Keep that in mind for the following math
             float calcButtonWidth = (panel.width - (margin * (numButtons - 1))) / (numButtons + 1);
             float y = panel.y;
@@ -445,72 +459,12 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            // TODO: would really like to generalize the faction policy code
-            if (faction.hasPolicy(FCPolicyDefOf.technocratic))
+            foreach (var (label, onClick) in actionButtons)
             {
-                Rect techButton = new Rect(x, y, calcButtonWidth, height);
-                if (Widgets.ButtonText(techButton, "FCSendResearchItems".Translate()))
-                {
-                    if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
-                    {
-                        Pawn playerNegotiator = Find.ColonistBar.GetColonistsInOrder()[0];
-                        FCTrader_Research trader = new FCTrader_Research();
-                        Find.WindowStack.Add(new Dialog_Trade(playerNegotiator, trader));
-                    }
-                    else
-                    {
-                        LogUtil.Error("Couldn't find any colonists to trade with");
-                    }
-                }
-                x += techButton.width + margin;
-            }
-
-            if (faction.hasPolicy(FCPolicyDefOf.feudal))
-            {
-                Rect feudalButton = new Rect(x, y, calcButtonWidth, height);
-                if (Widgets.ButtonText(feudalButton, "FCRequestMercenary".Translate()))
-                {
-                    if (faction.traitFeudalBoolCanUseMercenary)
-                    {
-                        faction.traitFeudalBoolCanUseMercenary = false;
-                        faction.traitFeudalTickLastUsedMercenary = Find.TickManager.TicksGame;
-
-                        PawnGenerationRequest request = FCPawnGenerator.WorkerOrMilitaryRequest();
-                        request.ColonistRelationChanceFactor = 20f;
-                        Pawn pawn = PawnGenerator.GeneratePawn(request);
-
-                        IncidentParms parms = new IncidentParms
-                        {
-                            target = Find.CurrentMap,
-                            faction = FactionCache.PlayerColonyFaction,
-                            points = 999,
-                            raidArrivalModeForQuickMilitaryAid = true,
-                            raidNeverFleeIndividual = true,
-                            raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop,
-                            raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-                        };
-                        parms.raidArrivalModeForQuickMilitaryAid = true;
-
-                        PawnsArrivalModeWorker_EdgeWalkIn worker = new PawnsArrivalModeWorker_EdgeWalkIn();
-                        worker.TryResolveRaidSpawnCenter(parms);
-                        worker.Arrive(new List<Pawn> { pawn }, parms);
-
-                        Find.LetterStack.ReceiveLetter(
-                            "FCMercenaryJoined".Translate(),
-                            "FCMercenaryJoinedText".Translate(pawn.NameFullColored),
-                            LetterDefOf.PositiveEvent,
-                            new LookTargets(pawn));
-                        pawn.SetFaction(Faction.OfPlayer);
-                    }
-                    else
-                    {
-                        Messages.Message(
-                            "FCActionMercenaryOnCooldown".Translate(
-                                ((faction.traitFeudalTickLastUsedMercenary + GenDate.TicksPerSeason) - Find.TickManager.TicksGame).ToTimeString()),
-                            MessageTypeDefOf.RejectInput);
-                    }
-                }
-                x += feudalButton.width + margin;
+                Rect btnRect = new Rect(x, y, calcButtonWidth, height);
+                if (Widgets.ButtonText(btnRect, label))
+                    onClick();
+                x += btnRect.width + margin;
             }
 
             Rect newColonyButton = new Rect(x, y, calcButtonWidth * 2, height);
@@ -807,7 +761,6 @@ namespace FactionColonies
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
-                //GUI.color = Color.gray;
                 Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH),
                     "Lv " + s.settlementLevel + "  •  Mil " + s.settlementMilitaryLevel);
                 GUI.color = origColor;
@@ -815,7 +768,7 @@ namespace FactionColonies
                 Text.Anchor = anchorBefore;
 
                 // Top-right: Profit value (colored green/red)
-                int profit = (int)s.getTotalProfit();
+                int profit = (int)s.GetTotalProfit();
                 string profitStr = "$" + (profit >= 0 ? "+" : "") + profit;
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
@@ -830,7 +783,7 @@ namespace FactionColonies
 
                 // Bottom-left: Town title + free workers
                 string townTitle = TextUtil.GetTownTitle(s);
-                int freeWorkers = (int)(s.workersUltraMax - s.getTotalWorkers());
+                int freeWorkers = (int)(s.workersUltraMax - s.GetTotalWorkers());
                 string bottomLeftStr = townTitle + "  •  " + freeWorkers + " " + "FCSettlementTableWorkers".Translate();
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
@@ -933,7 +886,7 @@ namespace FactionColonies
             if (faction.autoResolveBills && !prevAutoResolve)
             {
                 Messages.Message("FCBillsAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
-                PaymentUtil.autoresolveBills(bills);
+                PaymentUtil.AutoresolveBills(bills);
             }
             else if (!faction.autoResolveBills && prevAutoResolve)
             {
@@ -1026,7 +979,7 @@ namespace FactionColonies
                 Rect resolveRect = new Rect(contentX + contentW - resolveW, ry + 4f, resolveW, rowH - 8f);
                 if (Widgets.ButtonText(resolveRect, "ResolveBill".Translate()))
                 {
-                    if (!bill.attemptResolve())
+                    if (!bill.AttemptResolve())
                         Messages.Message("NotEnoughSilverOnMapToPayBill".Translate() + "!", MessageTypeDefOf.RejectInput);
                     break;
                 }
@@ -1085,6 +1038,50 @@ namespace FactionColonies
         // ===== EVENTS TAB =====
 
 
+        private void DrawEventFilterBar(Rect barRect)
+        {
+            List<FCEventCategoryDef> categories = FactionCache.FCEventCategoryDefs.OrderBy(c => c.displayOrder).ToList();
+            int count = categories.Count + 1; // +1 for "All" button
+            float gap = 3f;
+            float btnW = (barRect.width - gap * (count - 1)) / count;
+
+            GameFont fontBefore = Text.Font;
+            Text.Font = GameFont.Tiny;
+
+            // "All" button
+            Rect allRect = new Rect(barRect.x, barRect.y, btnW, barRect.height);
+            bool allActive = hiddenEventCategories.Count == 0;
+            Color allColor = allActive ? Color.white : Color.gray;
+            if (UIUtil.ButtonFlat(allRect, "FCEventCatAll".Translate(), labelColor: allColor, highlighted: allActive))
+            {
+                hiddenEventCategories.Clear();
+            }
+
+            // Category toggle buttons
+            for (int i = 0; i < categories.Count; i++)
+            {
+                FCEventCategoryDef cat = categories[i];
+                float x = barRect.x + (i + 1) * (btnW + gap);
+                Rect btnRect = new Rect(x, barRect.y, btnW, barRect.height);
+
+                bool visible = !hiddenEventCategories.Contains(cat);
+                Color catColor = cat.color;
+                Color labelColor = visible
+                    ? catColor
+                    : new Color(catColor.r * 0.4f, catColor.g * 0.4f, catColor.b * 0.4f);
+
+                if (UIUtil.ButtonFlat(btnRect, cat.label.CapitalizeFirst(), labelColor: labelColor, highlighted: visible))
+                {
+                    if (visible)
+                        hiddenEventCategories.Add(cat);
+                    else
+                        hiddenEventCategories.Remove(cat);
+                }
+            }
+
+            Text.Font = fontBefore;
+        }
+
         private void DrawEventsTab(Rect rect)
         {
             List<FCEvent> events = faction.events;
@@ -1095,6 +1092,7 @@ namespace FactionColonies
             const float progressW = 160f;
             const float progressH = 14f;
             const float summaryH  = 24f;
+            const float filterH   = 24f;
 
             float innerX = rect.x + pad;
             float innerW = rect.width - pad * 2f;
@@ -1106,11 +1104,21 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color origColor = GUI.color;
             GUI.color = Color.gray;
-            Widgets.Label(new Rect(innerX, rect.y + pad, innerW, summaryH),
-                "FCActiveEventsCount".Translate(events.Count));
+            bool filtering = hiddenEventCategories.Count > 0;
+            int filteredCount = filtering
+                ? events.Count(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e)))
+                : events.Count;
+            string summaryText = filtering
+                ? "FCActiveEventsFiltered".Translate(filteredCount, events.Count)
+                : "FCActiveEventsCount".Translate(events.Count);
+            Widgets.Label(new Rect(innerX, rect.y + pad, innerW, summaryH), summaryText);
             GUI.color = origColor;
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
+
+            // Filter bar
+            Rect filterBar = new Rect(innerX, rect.y + pad + summaryH + 2f, innerW, filterH);
+            DrawEventFilterBar(filterBar);
 
             // Empty state
             if (events.Count == 0)
@@ -1129,16 +1137,39 @@ namespace FactionColonies
                 return;
             }
 
+            // Build sorted + filtered list
+            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
+            if (filtering)
+            {
+                sorted = sorted.Where(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e))).ToList();
+            }
+
             // Scrollable event list
-            float listY    = rect.y + pad + summaryH + 4f;
+            float listY    = rect.y + pad + summaryH + filterH + 6f;
             float viewH    = rect.yMax - listY - pad;
             Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
-            float contentH = events.Count * (rowH + rowGap);
+            float contentH = sorted.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
+
+            // Filtered empty state
+            if (sorted.Count == 0)
+            {
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                origColor = GUI.color;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(rect.x, listY + viewH * 0.25f, rect.width, 40f),
+                    "FCNoEventsMatchFilter".Translate());
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                return;
+            }
 
             Widgets.BeginScrollView(viewRect, ref eventsScroll, scrollRect);
 
-            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
             for (int i = 0; i < sorted.Count; i++)
             {
                 FCEvent evt = sorted[i];
@@ -1238,7 +1269,7 @@ namespace FactionColonies
         {
             if (evt.hasDestination)
             {
-                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.location);
+                WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.location);
                 return settlement?.Name;
             }
             if (evt.settlementTraitLocations.Count == 1)
@@ -1247,18 +1278,18 @@ namespace FactionColonies
                 return "FCMultipleSettlements".Translate(evt.settlementTraitLocations.Count);
             if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
             {
-                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.source);
+                WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.source);
                 return settlement?.Name;
             }
             // Generic fallback: try location, then source
             if (evt.location != -1)
             {
-                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.location);
+                WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.location);
                 if (settlement != null) return settlement.Name;
             }
             if (evt.source != -1)
             {
-                WorldSettlementFC settlement = faction.returnSettlementByLocation(evt.source);
+                WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.source);
                 if (settlement != null) return settlement.Name;
             }
             return null;
@@ -1290,7 +1321,7 @@ namespace FactionColonies
         {
             if (evt.hasDestination)
             {
-                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.location)));
+                Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.location)));
             }
             else if (evt.settlementTraitLocations.Count > 0)
             {
@@ -1316,22 +1347,27 @@ namespace FactionColonies
             }
             else if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
             {
-                Find.WindowStack.Add(new SettlementWindowFc(faction.returnSettlementByLocation(evt.source)));
+                Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.source)));
             }
             else
             {
                 // Generic fallback: try location, then source
                 WorldSettlementFC fallback = null;
                 if (evt.location != -1)
-                    fallback = faction.returnSettlementByLocation(evt.location);
+                    fallback = faction.ReturnSettlementByLocation(evt.location);
                 if (fallback == null && evt.source != -1)
-                    fallback = faction.returnSettlementByLocation(evt.source);
+                    fallback = faction.ReturnSettlementByLocation(evt.source);
                 if (fallback != null)
                     Find.WindowStack.Add(new SettlementWindowFc(fallback));
             }
         }
 
         // ===== MILITARY TAB =====
+
+        private void DrawEdictsTab(Rect rect)
+        {
+            EdictTabDrawer.Draw(rect, faction);
+        }
 
         private void DrawMilitaryTab(Rect rect)
         {
@@ -1457,7 +1493,7 @@ namespace FactionColonies
 
                 // === TOP LINE ===
                 float statusW = 190f;
-                float badgeW  = 80f;
+                float badgeW  = 120f;
                 float nameW   = contentW - statusW - badgeW;
 
                 // Top-left: Settlement name (clickable, accent-colored)
@@ -1482,8 +1518,17 @@ namespace FactionColonies
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                double budget = MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel);
-                string badgeStr = "ML " + settlement.settlementMilitaryLevel + "  \u2022  $" + budget;
+                double budget = MilitaryCustomizationUtil.CalculateSquadBudget(settlement.settlementMilitaryLevel);
+                double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+                FactionFC fcBadge = FactionCache.FactionComp;
+                double atkPower = Math.Round(
+                    (settlement.settlementMilitaryLevel + fcBadge.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking))
+                    * efficiency * fcBadge.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking));
+                double defPower = Math.Round(
+                    (settlement.settlementMilitaryLevel + fcBadge.GetStatValue(FCStatDefOf.militaryLevelBonusDefending))
+                    * efficiency * fcBadge.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending)
+                    * FCSettings.defenderAdvantage);
+                string badgeStr = "FCMilBadge".Translate(atkPower, defPower, budget);
                 Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH), badgeStr);
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
@@ -1546,12 +1591,12 @@ namespace FactionColonies
                 Rect setSquadRect = new Rect(bx, btnY, btnW, btnH);
                 if (UIUtil.ButtonFlat(setSquadRect, "FCMilitaryTableSetSquad".Translate(), disabled: noSquads, highlighted: isHighlighted))
                 {
-                    if (militaryUtil.squads == null) militaryUtil.resetSquads();
+                    if (militaryUtil.squads == null) militaryUtil.ResetSquads();
 
                     List<FloatMenuOption> squads = new List<FloatMenuOption>();
                     squads.AddRange(militaryUtil.squads.Select(squad => new FloatMenuOption(
                         squad.name + " - " + "Cost".Translate() + ": " + squad.GetEquipmentTotalCost(),
-                        delegate { militaryUtil.attemptToAssignSquad(settlement, squad); })));
+                        delegate { militaryUtil.AttemptToAssignSquad(settlement, squad); })));
 
                     if (!squads.Any())
                         squads.Add(new FloatMenuOption("FCNoSquadAvailable".Translate(), null));
@@ -1583,7 +1628,7 @@ namespace FactionColonies
                             if (milComp.militarySquad != null)
                             {
                                 Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
-                                milComp.militarySquad.initiateSquad();
+                                milComp.militarySquad.InitiateSquad();
                             }
                             else
                             {
@@ -1597,9 +1642,8 @@ namespace FactionColonies
                 bx += btnW + btnGap;
 
                 // Fire Support
-                bool noFireSupport = militaryUtil.fireSupportDefs.Count == 0
-                    || settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == false;
-                bool fsDisabled = noFireSupport || milComp.artilleryTimer > Find.TickManager.TicksGame;
+                bool noFireSupport = militaryUtil.fireSupportDefs.Count == 0 || settlement.BuildingsComp?.HasBuilding(BuildingFCDefOf.artilleryOutpost) == false;
+                bool fsDisabled = noFireSupport || milComp.artilleryTimer > Find.TickManager.TicksGame || !faction.IsActionAllowed(FCActionType.UseFireSupport);
                 Rect fsSupportRect = new Rect(bx, btnY, btnW, btnH);
                 if (UIUtil.ButtonFlat(fsSupportRect, "FCMilitaryTableFireSupport".Translate(), disabled: fsDisabled, highlighted: isHighlighted))
                 {
@@ -1626,7 +1670,7 @@ namespace FactionColonies
                     + "FCSettlementTableMilLevel".Translate() + ": " + settlement.settlementMilitaryLevel + "\n"
                     + "FCMilitaryTableMilitaryBudget".Translate() + ": $" + budget + "\n"
                     + "FCMilitaryTableSquad".Translate() + ": " + squadName + "\n"
-                    + "FCMilitaryTableAvailable".Translate() + ": " + (milComp.isMilitaryBusySilent() ? "No".Translate() : "Yes".Translate()) + "\n"
+                    + "FCMilitaryTableAvailable".Translate() + ": " + (milComp.IsMilitaryBusySilent() ? "No".Translate() : "Yes".Translate()) + "\n"
                     + "FCMilitaryTableUnderAttack".Translate() + ": " + (milComp.isUnderAttack ? "Yes".Translate() : "No".Translate());
                 float btnStartX = contentX + contentW - totalBtnW;
                 UIUtil.TipRegionByText(new Rect(0f, ry, btnStartX, rowH), tooltip);
@@ -1638,60 +1682,24 @@ namespace FactionColonies
 
         private void HandleDeployClick(WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp)
         {
-            if (!milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid())
+            if (!milComp.IsMilitaryBusy(true) && milComp.IsMilitarySquadValid())
             {
                 Find.WindowStack.Add(new FloatMenu(DeploymentOptions(settlement)));
             }
-            else if (milComp.isMilitaryBusy(true) && milComp.isMilitarySquadValid() && faction.hasPolicy(FCPolicyDefOf.militaristic))
+            else if (milComp.IsMilitaryBusy(true) && milComp.IsMilitarySquadValid() && faction.IsActionAllowed(FCActionType.DeployExtraSquad))
             {
-                if ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) <= Find.TickManager.TicksGame)
+                List<FloatMenuOption> extraOptions = new List<FloatMenuOption>();
+                faction.ForEachBehavior(b =>
                 {
-                    int cost = (int)Math.Round(milComp.militarySquad.outfit.updateEquipmentTotalCost() * .2);
-                    List<FloatMenuOption> options = new List<FloatMenuOption>
-                    {
-                        new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
-                        {
-                            if (PaymentUtil.getSilver() >= cost)
-                            {
-                                List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
-                                {
-                                    new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
-                                    {
-                                        MilitaryUtil.CallinExtraForces(settlement, false);
-                                        Find.WindowStack.currentlyDrawnWindow.Close();
-                                    })
-                                };
-
-                                if (!FCSettings.medievalTechOnly &&
-                                    (FactionCache.TechTransportPods?.IsFinished ?? false))
-                                {
-                                    deploymentOptions.Add(new FloatMenuOption("dropPodDeploymentOption".Translate(), delegate
-                                    {
-                                        MilitaryUtil.CallinExtraForces(settlement, true);
-                                        Find.WindowStack.currentlyDrawnWindow.Close();
-                                    }));
-                                }
-
-                                Find.WindowStack.Add(new FloatMenu(deploymentOptions));
-                            }
-                            else
-                            {
-                                Messages.Message("NotEnoughSilverToDeploySquad".Translate(), MessageTypeDefOf.RejectInput);
-                            }
-                        })
-                    };
-                    Find.WindowStack.Add(new FloatMenu(options));
-                }
-                else
-                {
-                    Messages.Message("XDaysToRedeploy".Translate(Math.Round(
-                        ((faction.traitMilitaristicTickLastUsedExtraSquad + GenDate.TicksPerDay * 5) -
-                         Find.TickManager.TicksGame).TicksToDays(), 1)), MessageTypeDefOf.RejectInput);
-                }
+                    var options = b.GetExtraDeploymentOptions(faction, settlement, milComp);
+                    if (options != null) extraOptions.AddRange(options);
+                });
+                if (extraOptions.Any())
+                    Find.WindowStack.Add(new FloatMenu(extraOptions));
             }
             else
             {
-                milComp.isMilitaryBusy();
+                milComp.IsMilitaryBusy();
             }
         }
 
@@ -1704,17 +1712,17 @@ namespace FactionColonies
                 if (support.projectiles == null || support.projectiles.Count == 0)
                     continue;
 
-                float cost = support.returnTotalCost();
+                float cost = support.ReturnTotalCost();
                 list.Add(new FloatMenuOption(support.name + " - $" + cost, delegate
                 {
-                    if (support.returnTotalCost() <=
-                        MilitaryCustomizationUtil.calculateMilitaryLevelPoints(settlement.settlementMilitaryLevel))
+                    if (support.ReturnTotalCost() <=
+                        MilitaryCustomizationUtil.CalculateFireSupportBudget(settlement.settlementMilitaryLevel))
                     {
-                        if (settlement.BuildingsComp?.hasBuilding(BuildingFCDefOf.artilleryOutpost) == true)
+                        if (settlement.BuildingsComp?.HasBuilding(BuildingFCDefOf.artilleryOutpost) == true)
                         {
                             if (milComp.artilleryTimer <= Find.TickManager.TicksGame)
                             {
-                                if (PaymentUtil.getSilver() >= cost)
+                                if (PaymentUtil.GetSilver() >= cost)
                                 {
                                     MilitaryUtil.FireSupport(settlement, support);
                                 }

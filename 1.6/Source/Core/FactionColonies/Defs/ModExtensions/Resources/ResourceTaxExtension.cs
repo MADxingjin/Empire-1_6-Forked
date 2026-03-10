@@ -28,8 +28,7 @@ namespace FactionColonies
         /// <param name="settlement">The settlement that generated the tithe.</param>
         /// <param name="generatedThings">The list of things generated. Can be modified.</param>
         /// <param name="extraSilver">Additional silver amount. Can be modified via ref.</param>
-        public virtual void OnPostTaxGeneration(ResourceFC resource, WorldSettlementFC settlement,
-            List<Thing> generatedThings, ref int extraSilver)
+        public virtual void OnPostTaxGeneration(ResourceFC resource, WorldSettlementFC settlement, List<Thing> generatedThings, ref int extraSilver)
         {
         }
     }

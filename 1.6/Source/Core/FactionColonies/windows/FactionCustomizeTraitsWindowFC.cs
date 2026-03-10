@@ -117,6 +117,7 @@ namespace FactionColonies
                             traitIndex++;
                         }
                     }
+                    faction.RebuildBehaviorCache();
                 }
 
                 Find.WindowStack.TryRemove(this);
@@ -316,15 +317,9 @@ namespace FactionColonies
 
         private List<FCPolicyDef> GetAvailableTraits()
         {
-            List<FCPolicyDef> list = new List<FCPolicyDef>();
-            if (!faction.hasTrait(FCPolicyDefOf.resilient))      list.Add(FCPolicyDefOf.resilient);
-            if (!faction.hasTrait(FCPolicyDefOf.raiders))        list.Add(FCPolicyDefOf.raiders);
-            if (!faction.hasTrait(FCPolicyDefOf.defenseInDepth)) list.Add(FCPolicyDefOf.defenseInDepth);
-            if (!faction.hasTrait(FCPolicyDefOf.industrious))    list.Add(FCPolicyDefOf.industrious);
-            if (!faction.hasTrait(FCPolicyDefOf.roadBuilders))   list.Add(FCPolicyDefOf.roadBuilders);
-            if (!faction.hasTrait(FCPolicyDefOf.mercantile))     list.Add(FCPolicyDefOf.mercantile);
-            if (!faction.hasTrait(FCPolicyDefOf.innovative))     list.Add(FCPolicyDefOf.innovative);
-            return list;
+            return DefDatabase<FCPolicyDef>.AllDefs
+                .Where(d => d.category == FCPolicyCategory.Trait && !faction.HasTrait(d))
+                .ToList();
         }
 
         string returnTraitText(FCPolicyDef def)

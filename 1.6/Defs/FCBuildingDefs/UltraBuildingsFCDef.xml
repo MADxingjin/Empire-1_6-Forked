@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Ultra">
@@ -11,10 +11,15 @@
 		<cost>120000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>LightConverter</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>-3</value></li>
+			<li><stat>RTD_Food_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Weapons_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Apparel_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Mining_ProductionMultiplier</stat><value>1.75</value></li>
+			<li><stat>RTD_Medicine_ProductionMultiplier</stat><value>1.75</value></li>
+		</statModifiers>
 		<upkeep>4000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/LightConverter</iconPath>
@@ -30,10 +35,9 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>AnimalBeacon</li>
-		</traits>
+		<statModifiers>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>2.0</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/BaconBeacon</iconPath>
@@ -49,10 +53,10 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>TrappedAI</li>
-		</traits>
+		<statModifiers>
+			<li><stat>unrestGainedBase</stat><value>0.5</value></li>
+			<li><stat>RTD_Research_ProductionMultiplier</stat><value>2.0</value></li>
+		</statModifiers>
 		<upkeep>2000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/HAL9000</iconPath>
@@ -68,10 +72,14 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>UnionOffices</li>
-		</traits>
+		<statModifiers>
+			<li><stat>unrestLostBase</stat><value>0.75</value></li>
+			<li><stat>happinessGainedBase</stat><value>0.75</value></li>
+			<li><stat>loyaltyGainedBase</stat><value>0.75</value></li>
+			<li><stat>workerBaseCost</stat><value>50</value></li>
+			<li><stat>workerBaseMax</stat><value>10</value></li>
+			<li><stat>workerBaseOverMax</stat><value>10</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/CapitalismSucks</iconPath>
@@ -87,10 +95,9 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>OrbitalSpaceLaser</li>
-		</traits>
+		<statModifiers>
+			<li><stat>militaryBaseLevel</stat><value>2</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/CFinder</iconPath>
@@ -106,26 +113,26 @@
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
-		<traits>
-			<!-- Put the traits they provide here -->
-			<li>TransdimensionalMarket</li>
-		</traits>
+		<statModifiers>
+			<li><stat>taxBaseRandomModifier</stat><value>80</value></li>
+			<li><stat>taxBasePercentage</stat><value>25</value></li>
+		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/NetherPortal</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Ultra">
 		<defName>archotechGenerator</defName> <!--Name of Def -->
 		<label>Archotech Generator</label> <!--Lable of Def -->
 		<desc>An arcane generator that even the maintainers can't hope to understand, but have acquired.</desc> <!-- Description of trait -->
 		<cost>8000</cost>
 		<constructionDuration>600000</constructionDuration> <!-- Ticks it takes until construction is finished -->
-		<traits> <!-- Put the traits they provide here -->
-			<li>archotechGenerator</li>
-		</traits>
+		<statModifiers>
+			<li><stat>RTD_Power_ProductionMultiplier</stat><value>2.0</value></li>
+		</statModifiers>
 		<upkeep>1000</upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/ArchotechGenerator</iconPath>
 	</FactionColonies.BuildingFCDef>
-	
+
 </Defs>

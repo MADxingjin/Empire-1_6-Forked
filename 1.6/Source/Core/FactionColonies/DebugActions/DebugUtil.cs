@@ -71,7 +71,7 @@ namespace FactionColonies
                     {
                         foreach (Pawn pawn in selected)
                         {
-                            TravelUtil.sendPrisoner(pawn, settlement);
+                            TravelUtil.SendPrisoner(pawn, settlement);
 
                             foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map =>
                                 map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>())
@@ -94,9 +94,17 @@ namespace FactionColonies
             if (faction == null) return;
 
             for (int i = 0; i < faction.factionTraits.Count; i++)
+            {
+                if (faction.factionTraits[i]?.behavior != null)
+                {
+                    try { faction.factionTraits[i].behavior.OnRemoved(faction); }
+                    catch (Exception e) { LogUtil.Error($"FCPolicyBehavior.OnRemoved error: {e}"); }
+                }
                 faction.factionTraits[i] = new FCPolicy(FCPolicyDefOf.empty);
+            }
 
-            faction.policies.Clear();
+            faction.RemoveAllPolicies(faction.policies);
+            faction.RebuildBehaviorCache();
 
             LogUtil.Message("Cleared faction traits and policies.");
         }
@@ -126,7 +134,7 @@ namespace FactionColonies
             }
 
 
-            util.checkMilitaryUtilForErrors();
+            util.CheckMilitaryUtilForErrors();
         }
 
 
@@ -141,16 +149,16 @@ namespace FactionColonies
                     {
                         LogUtil.MessageForce("Debug - Make Random Event - " + evtDef.label);
                         FCEvent evt = FCEventMaker.MakeRandomEvent(evtDef, null);
-                        if (evtDef.activateAtStart == false)
+                        if (evt == null) return;
+
+                        if (!evtDef.activateAtStart)
                         {
-                            FCEventMaker.MakeRandomEvent(evtDef, null);
-                            FactionCache.FactionComp.addEvent(evt);
+                            FactionCache.FactionComp.AddEvent(evt);
                         }
 
-                        //letter code
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
-
-                        if (!settlementString.NullOrEmpty()) Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                        if (!settlementString.NullOrEmpty())
+                            Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
                     }
                     ));
             }
@@ -173,9 +181,26 @@ namespace FactionColonies
             {
                 list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
                 {
-                    LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name}");
                     Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
-                    MilitaryUtilFC.attackPlayerSettlement(militaryForce.createMilitaryForceFromFaction(enemyFaction, true), settlement, enemyFaction);
+                    if (enemyFaction == null)
+                    {
+                        Messages.Message("No enemy faction found.", MessageTypeDefOf.RejectInput);
+                        return;
+                    }
+
+                    List<DebugMenuOption> levelList = new List<DebugMenuOption>();
+                    for (int level = 1; level <= 10; level++)
+                    {
+                        int chosenLevel = level;
+                        levelList.Add(new DebugMenuOption($"Level {chosenLevel}", DebugMenuOptionMode.Action, delegate
+                        {
+                            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
+                            militaryForce attackingForce = new militaryForce(chosenLevel, efficiency, null, enemyFaction);
+                            LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
+                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(levelList));
                 }
                 ));
             }
@@ -194,7 +219,7 @@ namespace FactionColonies
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
                     list.Add(new DebugMenuOption(
-                        worldcomp.returnSettlementByLocation(evt.location).Name,
+                        worldcomp.ReturnSettlementByLocation(evt.location)?.Name ?? "Unknown",
                         DebugMenuOptionMode.Action, delegate
                         {
                             //when event is selected, select defending force to replace it with
@@ -202,16 +227,16 @@ namespace FactionColonies
                             List<DebugMenuOption> list2 = new List<DebugMenuOption>();
                             foreach (WorldSettlementFC settlement in worldcomp.settlements)
                             {
-                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.isMilitaryValid() && settlement.Name != evt.settlementFCDefending.Name)
+                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Name)
                                 {
                                     list2.Add(new DebugMenuOption(
                                         settlement.Name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +
-                                        settlement.MilitaryComp.isMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
+                                        settlement.MilitaryComp.IsMilitaryBusySilent(), DebugMenuOptionMode.Action, delegate
                                         {
-                                            if (settlement.MilitaryComp.isMilitaryBusy() == false)
+                                            if (settlement.MilitaryComp.IsMilitaryBusy() == false)
                                             {
-                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending.homeSettlement.Name} to {settlement.Name}");
-                                                MilitaryUtilFC.changeDefendingMilitaryForce(evt, settlement);
+                                                LogUtil.MessageForce($"Debug - Change Player Settlement - {evt.militaryForceDefending?.homeSettlement?.Name ?? "Unknown"} to {settlement.Name}");
+                                                MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
                                             }
                                         }
                                     ));
@@ -251,7 +276,7 @@ namespace FactionColonies
                     {
                         LogUtil.MessageForce("Debug - Downgrade Player Settlement x" + times + "- " + settlement.Name);
                     }
-                    settlement.upgradeSettlement(times);
+                    settlement.UpgradeSettlement(times);
                 }
                 ));
             }
@@ -277,7 +302,7 @@ namespace FactionColonies
             LogUtil.MessageForce("Debug - Reset All Military Squads");
             foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
-                settlement.MilitaryComp?.returnMilitary(false);
+                settlement.MilitaryComp?.ReturnMilitary(false);
             }
         }
 
@@ -332,7 +357,7 @@ namespace FactionColonies
                         parms.raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly;
 
                         settlement.MilitaryComp.militarySquad.CheckInitialization();
-                        settlement.MilitaryComp.militarySquad.updateSquadStats(settlement.settlementMilitaryLevel);
+                        settlement.MilitaryComp.militarySquad.UpdateSquadStats(settlement.settlementMilitaryLevel);
 
                         DebugTools.curTool = new DebugTool("Select Drop Position", delegate
                         {
@@ -365,7 +390,7 @@ namespace FactionColonies
         private static void LevelUpFaction()
         {
             FactionFC faction = FactionCache.FactionComp;
-            faction.addExperienceToFactionLevel(faction.factionXPGoal);
+            faction.AddExperienceToFactionLevel(faction.factionXPGoal);
         }
 
         // ============================
@@ -394,7 +419,7 @@ namespace FactionColonies
         {
             foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
             {
-                LogUtil.MessageForce($"[{s.Name}] Lv{s.settlementLevel} | Happy:{s.happiness:F0} Loyal:{s.loyalty:F0} Unrest:{s.unrest:F0} Prosper:{s.prosperity:F0} | Workers:{s.workers}/{s.workersMax} Prisoners:{s.prisonerList.Count} Traits:{s.Traits.Count}");
+                LogUtil.MessageForce($"[{s.Name}] Lv{s.settlementLevel} | Happy:{s.happiness:F0} Loyal:{s.loyalty:F0} Unrest:{s.unrest:F0} Prosper:{s.prosperity:F0} | Workers:{s.workers}/{s.workersMax} Prisoners:{s.prisonerList.Count}");
             }
         }
 
@@ -469,13 +494,13 @@ namespace FactionColonies
                 Messages.Message($"Cannot settle here: {reason}", MessageTypeDefOf.RejectInput);
                 return;
             }
-            if (FactionCache.FactionComp.checkSettlementCaravansList(tile))
+            if (FactionCache.FactionComp.CheckSettlementCaravansList(tile))
             {
                 Messages.Message("A settlement caravan is already heading to this tile.", MessageTypeDefOf.RejectInput);
                 return;
             }
             LogUtil.MessageForce($"Debug - Create Settlement (Instant) at tile {tile.Tile} with type {def.defName}");
-            ColonyUtil.createPlayerColonySettlement(tile, def);
+            ColonyUtil.CreatePlayerColonySettlement(tile, def);
         }
 
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
@@ -484,47 +509,187 @@ namespace FactionColonies
             WithSettlementChoice(settlement =>
             {
                 LogUtil.MessageForce($"Debug - Remove Player Settlement - {settlement.Name}");
-                ColonyUtil.removePlayerSettlement(settlement);
+                ColonyUtil.RemovePlayerSettlement(settlement);
             });
         }
 
-        [DebugAction("Empire", "Add Settlement Trait", allowedGameStates = AllowedGameStates.Playing)]
-        private static void AddSettlementTrait()
+        [DebugAction("Empire", "Add Stat Modifier", allowedGameStates = AllowedGameStates.Playing)]
+        private static void AddStatModifier()
         {
             WithSettlementChoice(settlement =>
             {
                 List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (FCTraitEffectDef trait in DefDatabase<FCTraitEffectDef>.AllDefsListForReading)
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
                 {
-                    if (settlement.Traits.Contains(trait)) continue;
-                    FCTraitEffectDef localTrait = trait;
-                    list.Add(new DebugMenuOption(localTrait.defName, DebugMenuOptionMode.Action, () =>
+                    FCStatDef localStat = stat;
+                    list.Add(new DebugMenuOption(localStat.defName, DebugMenuOptionMode.Action, () =>
                     {
-                        settlement.addTrait(localTrait);
-                        LogUtil.MessageForce($"Debug - Added trait {localTrait.defName} to {settlement.Name}");
+                        List<DebugMenuOption> values = new List<DebugMenuOption>();
+                        double[] options = localStat.aggregation == FCStatAggregation.Additive
+                            ? new double[] { -10, -5, -1, 1, 5, 10 }
+                            : new double[] { 0.5, 0.75, 1.25, 1.5, 2.0 };
+                        foreach (double val in options)
+                        {
+                            double localVal = val;
+                            string label = localStat.aggregation == FCStatAggregation.Additive
+                                ? (localVal > 0 ? $"+{localVal}" : $"{localVal}")
+                                : $"x{localVal}";
+                            values.Add(new DebugMenuOption(label, DebugMenuOptionMode.Action, () =>
+                            {
+                                settlement.AddStatModifiers(
+                                    new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = localVal } },
+                                    "debug");
+                                LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {localVal} to {settlement.Name}");
+                            }));
+                        }
+                        Find.WindowStack.Add(new Dialog_DebugOptionListLister(values));
                     }));
                 }
                 Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
             });
         }
 
-        [DebugAction("Empire", "Remove Settlement Trait", allowedGameStates = AllowedGameStates.Playing)]
-        private static void RemoveSettlementTrait()
+        [DebugAction("Empire", "Clear Debug Stat Modifiers", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ClearDebugStatModifiers()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                settlement.RemoveStatModifiersBySource("debug");
+                LogUtil.MessageForce($"Debug - Cleared debug stat modifiers from {settlement.Name}");
+            });
+        }
+
+        [DebugAction("Empire", "Log All Stat Values", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogAllStatValues()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                FactionFC faction = FactionCache.FactionComp;
+                LogUtil.MessageForce($"--- Stat Values for {settlement.Name} ---");
+                int defaultCount = 0;
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
+                {
+                    if (stat.appliesToSettlements)
+                    {
+                        double final = faction.GetStatValue(stat, settlement);
+                        double settlementPart = settlement.GetSettlementStatValue(stat);
+                        double factionPart = faction.GetFactionStatValue(stat);
+                        if (Math.Abs(final - stat.IdentityValue) < 0.001
+                            && Math.Abs(settlementPart - stat.IdentityValue) < 0.001
+                            && Math.Abs(factionPart - stat.IdentityValue) < 0.001)
+                        {
+                            defaultCount++;
+                            continue;
+                        }
+                        string agg = stat.aggregation == FCStatAggregation.Additive ? "Add" : "Mult";
+                        LogUtil.MessageForce($"  {stat.defName}: Final={final:F2} | Settlement={settlementPart:F2} | Faction={factionPart:F2} ({agg})");
+                    }
+                    else
+                    {
+                        double val = faction.GetFactionStatValue(stat);
+                        if (Math.Abs(val - stat.IdentityValue) < 0.001)
+                        {
+                            defaultCount++;
+                            continue;
+                        }
+                        LogUtil.MessageForce($"  {stat.defName}: {val:F2} (faction-only)");
+                    }
+                }
+                LogUtil.MessageForce($"  ({defaultCount} stats at default value)");
+            });
+        }
+
+        [DebugAction("Empire", "Log Stat Breakdown", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogStatBreakdown()
         {
             WithSettlementChoice(settlement =>
             {
                 List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (FCTraitEffectDef trait in settlement.Traits)
+                foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
                 {
-                    FCTraitEffectDef localTrait = trait;
-                    list.Add(new DebugMenuOption(localTrait.defName, DebugMenuOptionMode.Action, () =>
+                    FCStatDef localStat = stat;
+                    list.Add(new DebugMenuOption(localStat.defName, DebugMenuOptionMode.Action, () =>
                     {
-                        settlement.removeTrait(localTrait);
-                        LogUtil.MessageForce($"Debug - Removed trait {localTrait.defName} from {settlement.Name}");
+                        FactionFC faction = FactionCache.FactionComp;
+                        string agg = localStat.aggregation == FCStatAggregation.Additive ? "Additive" : "Multiplicative";
+                        LogUtil.MessageForce($"--- Stat Breakdown: {localStat.defName} ({agg}, default={localStat.IdentityValue}) ---");
+
+                        // Settlement-level modifiers
+                        foreach (FCStatModifier mod in settlement.StatModifiers)
+                        {
+                            if (mod.stat == localStat)
+                                LogUtil.MessageForce($"  Settlement modifier: {mod.value:F2}");
+                        }
+
+                        // IStatModifierProvider comps
+                        foreach (WorldObjectComp comp in settlement.AllComps)
+                        {
+                            if (comp is IStatModifierProvider provider)
+                            {
+                                double compVal = provider.GetStatModifier(localStat);
+                                if (Math.Abs(compVal - (localStat.aggregation == FCStatAggregation.Additive ? 0 : 1)) > 0.001)
+                                    LogUtil.MessageForce($"  Comp ({comp.GetType().Name}): {compVal:F2}");
+                            }
+                        }
+                        LogUtil.MessageForce($"  Settlement partial = {settlement.GetSettlementStatValue(localStat):F2}");
+
+                        // Faction-level (policies + traits)
+                        foreach (FCPolicy p in faction.policies)
+                        {
+                            if (p?.def == null) continue;
+                            foreach (FCStatModifier mod in p.def.statModifiers)
+                            {
+                                if (mod.stat == localStat)
+                                    LogUtil.MessageForce($"  Policy ({p.def.defName}): {mod.value:F2}");
+                            }
+                        }
+                        foreach (FCPolicy p in faction.factionTraits)
+                        {
+                            if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                            foreach (FCStatModifier mod in p.def.statModifiers)
+                            {
+                                if (mod.stat == localStat)
+                                    LogUtil.MessageForce($"  Trait ({p.def.defName}): {mod.value:F2}");
+                            }
+                        }
+                        LogUtil.MessageForce($"  Faction partial = {faction.GetFactionStatValue(localStat):F2}");
+
+                        // Behavior contributions
+                        foreach (FCPolicyBehavior b in faction.cachedBehaviors)
+                        {
+                            string desc = b.GetStatDescription(localStat, settlement);
+                            if (!desc.NullOrEmpty())
+                                LogUtil.MessageForce($"  Behavior ({b.GetType().Name}): {desc.TrimEnd()}");
+                        }
+
+                        double final = faction.GetStatValue(localStat, settlement);
+                        LogUtil.MessageForce($"  FINAL = {final:F2}");
                     }));
                 }
                 Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
             });
+        }
+
+        [DebugAction("Empire", "Log Faction Stats", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogFactionStatValues()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            LogUtil.MessageForce("--- Faction-Level Stat Values ---");
+            int defaultCount = 0;
+            foreach (FCStatDef stat in DefDatabase<FCStatDef>.AllDefsListForReading)
+            {
+                double val = faction.GetFactionStatValue(stat);
+                if (Math.Abs(val - stat.IdentityValue) < 0.001)
+                {
+                    defaultCount++;
+                    continue;
+                }
+                string agg = stat.aggregation == FCStatAggregation.Additive ? "Add" : "Mult";
+                LogUtil.MessageForce($"  {stat.defName} = {val:F2} ({agg}, default={stat.IdentityValue})");
+            }
+            LogUtil.MessageForce($"  ({defaultCount} stats at default value)");
         }
 
         // ============================
@@ -545,7 +710,7 @@ namespace FactionColonies
                 string squadInfo = comp.militarySquad != null
                     ? $"Deployed:{comp.militarySquad.isDeployed} Job:{comp.militaryJob}"
                     : "No squad";
-                LogUtil.MessageForce($"[{s.Name}] MilLv:{s.settlementMilitaryLevel} Busy:{comp.isMilitaryBusySilent()} | {squadInfo}");
+                LogUtil.MessageForce($"[{s.Name}] MilLv:{s.settlementMilitaryLevel} Busy:{comp.IsMilitaryBusySilent()} | {squadInfo}");
             }
         }
 
@@ -556,7 +721,7 @@ namespace FactionColonies
             {
                 if (settlement.MilitaryComp != null)
                 {
-                    settlement.MilitaryComp.returnMilitary(true);
+                    settlement.MilitaryComp.ReturnMilitary(true);
                     LogUtil.MessageForce($"Debug - Force returned military for {settlement.Name}");
                 }
                 else
@@ -570,7 +735,7 @@ namespace FactionColonies
         private static void RunMilitaryErrorCheck()
         {
             LogUtil.MessageForce("Debug - Running military error check");
-            FactionCache.FactionComp.militaryCustomizationUtil.checkMilitaryUtilForErrors();
+            FactionCache.FactionComp.militaryCustomizationUtil.CheckMilitaryUtilForErrors();
             LogUtil.MessageForce("Debug - Military error check complete");
         }
 
@@ -586,10 +751,14 @@ namespace FactionColonies
             LogUtil.MessageForce($"Settlements:{f.settlements.Count} | Income:{f.income:F0} Upkeep:{f.upkeep:F0} Profit:{f.profit:F0}");
             LogUtil.MessageForce($"TaxDue:{f.taxTimeDue - Find.TickManager.TicksGame} ticks | MilDue:{f.militaryTimeDue - Find.TickManager.TicksGame} ticks");
             LogUtil.MessageForce($"AvgHappy:{f.averageHappiness:F0} AvgLoyal:{f.averageLoyalty:F0} AvgUnrest:{f.averageUnrest:F0} AvgProsper:{f.averageProsperity:F0}");
-            LogUtil.MessageForce($"Policies:{f.policies.Count} | Traits:{f.Traits.Count} | ResearchPool:{f.researchPointPool:F0}");
-            if (f.Traits.Any())
+            LogUtil.MessageForce($"Policies:{f.policies.Count} | Traits:{f.factionTraits.Count} | ResearchPool:{f.researchPointPool:F0}");
+            if (f.factionTraits.Any())
             {
-                LogUtil.MessageForce($"Trait list: {f.Traits.Select(t => t.defName).ToCommaList()}");
+                LogUtil.MessageForce($"Trait list: {f.factionTraits.Select(t => t.def?.defName).ToCommaList()}");
+            }
+            if (f.policies.Any())
+            {
+                LogUtil.MessageForce($"Policy list: {f.policies.Select(t => t.def?.defName).ToCommaList()}");
             }
         }
 
@@ -603,14 +772,14 @@ namespace FactionColonies
                 int localAmount = amount;
                 list.Add(new DebugMenuOption($"+{localAmount} XP", DebugMenuOptionMode.Action, () =>
                 {
-                    faction.addExperienceToFactionLevel(localAmount);
+                    faction.AddExperienceToFactionLevel(localAmount);
                     LogUtil.MessageForce($"Debug - Added {localAmount} XP (now {faction.factionXPCurrent:F0}/{faction.factionXPGoal:F0})");
                 }));
             }
             float remaining = faction.factionXPGoal - faction.factionXPCurrent;
             list.Add(new DebugMenuOption($"+{remaining:F0} XP (to next level)", DebugMenuOptionMode.Action, () =>
             {
-                faction.addExperienceToFactionLevel(remaining);
+                faction.AddExperienceToFactionLevel(remaining);
                 LogUtil.MessageForce($"Debug - Added {remaining:F0} XP to reach next level");
             }));
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
@@ -682,6 +851,253 @@ namespace FactionColonies
             bool built = rb.roadQueue.BuildRoadSegments();
             LogUtil.MessageForce($"Debug - Build Road Segment Now: {(built ? "segment built" : "no segment to build")}");
         }
+
+        // ============================
+        // Policy Debug Actions
+        // ============================
+
+        [DebugAction("Empire", "Enact Policy (Debug)", allowedGameStates = AllowedGameStates.Playing)]
+        private static void EnactPolicyDebug()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
+            {
+                if (def == FCPolicyDefOf.empty) continue;
+                if (def.category != FCPolicyCategory.Core) continue;
+                FCPolicyDef local = def;
+                string status = faction.policies.Any(p => p.def == local) ? " [ACTIVE]" : "";
+                list.Add(new DebugMenuOption($"{local.defName}{status}", DebugMenuOptionMode.Action, () =>
+                {
+                    var policy = new FCPolicy(local);
+                    faction.policies.Add(policy);
+                    faction.RebuildBehaviorCache();
+                    LogUtil.MessageForce($"Debug - Enacted policy: {local.defName} (behavior: {(policy.behavior != null ? policy.behavior.GetType().Name : "none")})");
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
+        [DebugAction("Empire", "Enact Trait (Debug)", allowedGameStates = AllowedGameStates.Playing)]
+        private static void EnactTraitDebug()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            List<DebugMenuOption> traitList = new List<DebugMenuOption>();
+            foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
+            {
+                if (def == FCPolicyDefOf.empty) continue;
+                if (def.category != FCPolicyCategory.Trait) continue;
+                FCPolicyDef local = def;
+                traitList.Add(new DebugMenuOption(local.defName, DebugMenuOptionMode.Action, () =>
+                {
+                    List<DebugMenuOption> slotList = new List<DebugMenuOption>();
+                    for (int i = 0; i < faction.factionTraits.Count; i++)
+                    {
+                        int slot = i;
+                        string current = faction.factionTraits[slot]?.def?.defName ?? "empty";
+                        slotList.Add(new DebugMenuOption($"Slot {slot} [{current}]", DebugMenuOptionMode.Action, () =>
+                        {
+                            if (faction.factionTraits[slot]?.behavior != null)
+                            {
+                                try { faction.factionTraits[slot].behavior.OnRemoved(faction); }
+                                catch (Exception e) { LogUtil.Error($"OnRemoved error: {e}"); }
+                            }
+                            var trait = new FCPolicy(local);
+                            faction.factionTraits[slot] = trait;
+                            faction.RebuildBehaviorCache();
+                            LogUtil.MessageForce($"Debug - Set trait slot {slot} to: {local.defName}");
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(slotList));
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(traitList));
+        }
+
+        [DebugAction("Empire", "Instantly Enact Edict", allowedGameStates = AllowedGameStates.Playing)]
+        private static void InstantlyEnactEdict()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
+            {
+                if (!def.IsEdict) continue;
+                FCPolicyDef local = def;
+                FCPolicy existing;
+                faction.edicts.TryGetValue(local.category, out existing);
+                string status = (existing != null && existing.def == local) ? " [ACTIVE]" : "";
+                list.Add(new DebugMenuOption($"[{local.category}] {local.LabelCap}{status}", DebugMenuOptionMode.Action, () =>
+                {
+                    faction.EnactEdict(local);
+                    FCPolicy edict;
+                    if (faction.edicts.TryGetValue(local.category, out edict))
+                    {
+                        edict.timeEnacted = Find.TickManager.TicksGame - local.enactDuration;
+                        faction.InvalidateFactionStatCache();
+                        faction.DirtyFactionProfitCache();
+                    }
+                    LogUtil.MessageForce($"Debug - Instantly enacted edict: {local.defName}");
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
+        [DebugAction("Empire", "Log Policy Behavior State", allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogPolicyBehaviorState()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            LogUtil.MessageForce("=== Policy Behavior State ===");
+
+            foreach (FCPolicy p in faction.policies)
+            {
+                if (p?.behavior == null)
+                {
+                    LogUtil.MessageForce($"[Policy] {p?.def?.defName ?? "null"}: no behavior");
+                    continue;
+                }
+                LogBehaviorState("Policy", p);
+            }
+
+            for (int i = 0; i < faction.factionTraits.Count; i++)
+            {
+                FCPolicy p = faction.factionTraits[i];
+                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p.behavior == null)
+                {
+                    LogUtil.MessageForce($"[Trait {i}] {p.def.defName}: no behavior");
+                    continue;
+                }
+                LogBehaviorState($"Trait {i}", p);
+            }
+        }
+
+        private static void LogBehaviorState(string prefix, FCPolicy p)
+        {
+            string behaviorType = p.behavior.GetType().Name;
+
+            if (p.behavior is FCPolicyBehavior_Militaristic mil)
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): extraSquadCooldown Ready={mil.DebugCooldownReady()} Days={mil.DebugCooldownDays():F1}");
+            }
+            else if (p.behavior is FCPolicyBehavior_Pacifist pac)
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): diplomatCooldown Ready={pac.DebugCooldownReady()} Days={pac.DebugCooldownDays():F1}");
+            }
+            else if (p.behavior is FCPolicyBehavior_Feudal feu)
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): mercenaryCooldown Ready={feu.DebugCooldownReady()} Days={feu.DebugCooldownDays():F1}");
+            }
+            else if (p.behavior is FCPolicyBehavior_Expansionist exp)
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): feeReduction Ready={exp.DebugCooldownReady()} Days={exp.DebugCooldownDays():F1}");
+            }
+            else if (p.behavior is FCPolicyBehavior_Egalitarian egal)
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): taxBreaks={egal.DebugTaxBreakCount()} active={egal.DebugActiveTaxBreakCount()}");
+            }
+            else if (p.behavior is FCPolicyBehavior_Mercantile merc)
+            {
+                int ticksUntil = merc.DebugNextCaravanTick() - Find.TickManager.TicksGame;
+                float daysUntil = ticksUntil / (float)GenDate.TicksPerDay;
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): nextCaravan in {daysUntil:F1} days ({ticksUntil} ticks)");
+            }
+            else
+            {
+                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): (no inspectable state)");
+            }
+        }
+
+        [DebugAction("Empire", "Force Policy Cooldowns Ready", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ForcePolicyCooldownsReady()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            int count = 0;
+            foreach (FCPolicyBehavior b in faction.cachedBehaviors)
+            {
+                if (b is FCPolicyBehavior_Militaristic mil) { mil.DebugResetCooldown(); count++; }
+                else if (b is FCPolicyBehavior_Pacifist pac) { pac.DebugResetCooldown(); count++; }
+                else if (b is FCPolicyBehavior_Feudal feu) { feu.DebugResetCooldown(); count++; }
+                else if (b is FCPolicyBehavior_Expansionist exp) { exp.DebugResetCooldown(); count++; }
+                else if (b is FCPolicyBehavior_Mercantile merc) { merc.DebugResetNextCaravan(); count++; }
+            }
+            LogUtil.MessageForce($"Debug - Reset {count} policy cooldowns to ready");
+        }
+
+        [DebugAction("Empire", "Trigger Policy Hook", allowedGameStates = AllowedGameStates.Playing)]
+        private static void TriggerPolicyHook()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction == null) return;
+
+            List<DebugMenuOption> hookList = new List<DebugMenuOption>();
+
+            hookList.Add(new DebugMenuOption("OnSettlementCreated", DebugMenuOptionMode.Action, () =>
+            {
+                WithSettlementChoice(settlement =>
+                {
+                    faction.ForEachBehavior(b => b.OnSettlementCreated(faction, settlement));
+                    LogUtil.MessageForce($"Debug - Triggered OnSettlementCreated on {settlement.Name}");
+                });
+            }));
+
+            hookList.Add(new DebugMenuOption("OnSettlementRemoved", DebugMenuOptionMode.Action, () =>
+            {
+                WithSettlementChoice(settlement =>
+                {
+                    faction.ForEachBehavior(b => b.OnSettlementRemoved(faction, settlement));
+                    LogUtil.MessageForce($"Debug - Triggered OnSettlementRemoved on {settlement.Name}");
+                });
+            }));
+
+            hookList.Add(new DebugMenuOption("OnSquadDeployed", DebugMenuOptionMode.Action, () =>
+            {
+                WithSettlementChoice(settlement =>
+                {
+                    faction.ForEachBehavior(b => b.OnSquadDeployed(faction, settlement, false));
+                    LogUtil.MessageForce($"Debug - Triggered OnSquadDeployed on {settlement.Name}");
+                });
+            }));
+
+            hookList.Add(new DebugMenuOption("OnSquadRecalled", DebugMenuOptionMode.Action, () =>
+            {
+                WithSettlementChoice(settlement =>
+                {
+                    faction.ForEachBehavior(b => b.OnSquadRecalled(faction, settlement));
+                    LogUtil.MessageForce($"Debug - Triggered OnSquadRecalled on {settlement.Name}");
+                });
+            }));
+
+            hookList.Add(new DebugMenuOption("OnTaxCollected", DebugMenuOptionMode.Action, () =>
+            {
+                WithSettlementChoice(settlement =>
+                {
+                    faction.ForEachBehavior(b => b.OnTaxCollected(faction, settlement));
+                    LogUtil.MessageForce($"Debug - Triggered OnTaxCollected on {settlement.Name}");
+                });
+            }));
+
+            hookList.Add(new DebugMenuOption("OnSettlementCostPaid", DebugMenuOptionMode.Action, () =>
+            {
+                faction.ForEachBehavior(b => b.OnSettlementCostPaid(faction));
+                LogUtil.MessageForce("Debug - Triggered OnSettlementCostPaid");
+            }));
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(hookList));
+        }
+
+        // ============================
+        // Road Debug Actions
+        // ============================
 
         [DebugAction("Empire", "Log Road Builder Status", allowedGameStates = AllowedGameStates.Playing)]
         private static void LogRoadBuilderStatus()

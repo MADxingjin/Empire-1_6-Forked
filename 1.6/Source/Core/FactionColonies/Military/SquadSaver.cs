@@ -201,7 +201,7 @@ namespace FactionColonies
         public MilUnitFC CreateMilUnit()
         {
             PawnKindDef resolvedKind = pawnKind;
-            if (pawnKind != null && !FactionCache.FactionComp.raceFilter.Allows(pawnKind.race))
+            if (pawnKind != null && FactionCache.FactionComp.xenotypeFilter.GetRaceWeight(pawnKind.race) <= 0)
             {
                 resolvedKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }
@@ -216,8 +216,8 @@ namespace FactionColonies
                 apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>()
             };
 
-            unit.changeTick();
-            unit.updateEquipmentTotalCost();
+            unit.ChangeTick();
+            unit.UpdateEquipmentTotalCost();
 
             return unit;
         }

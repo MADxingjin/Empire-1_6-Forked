@@ -10,8 +10,8 @@ namespace FactionColonies
         private static ResourceFC MakeResource(double productionPerWorker, int workers)
         {
             var res = new ResourceFC();
-            // A non-empty desc is required to avoid a null-settlement warning branch in addProductionAdditive
-            res.addProductionAdditive("test.production", productionPerWorker, "test bonus");
+            // A non-empty desc is required to avoid a null-settlement warning branch in AddProductionAdditive
+            res.AddProductionAdditive("test.production", productionPerWorker, "test bonus");
             res.assignedWorkers = workers;
             return res;
         }

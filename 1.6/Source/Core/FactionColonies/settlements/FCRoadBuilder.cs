@@ -8,6 +8,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using HarmonyLib;
+using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -19,7 +20,7 @@ namespace FactionColonies
         public int daysBetweenTicks = 3;
         public bool roadBuildingEnabled = true;
         public bool wasRoadBuildingDisabled = true;
-        bool roadBuilders;
+        bool hasRoadBuildersBoost;
 
         public FCRoadBuilder()
         {
@@ -50,7 +51,7 @@ namespace FactionColonies
             if (daysBetweenTicks == 0)
             {
                 LogUtil.Message("FCRoadBuilder - Resetting daysBetweenTicks");
-                int days = roadBuilders ? 1 : 3;
+                int days = hasRoadBuildersBoost ? 1 : 3;
                 daysBetweenTicks = days;
                 roadQueue.daysBetweenTicks = days;
             }
@@ -82,11 +83,11 @@ namespace FactionColonies
                     return;
                 }
 
-                if (!roadBuilders && faction.hasTrait(FCPolicyDefOf.roadBuilders))
+                if (!hasRoadBuildersBoost && faction.IsActionAllowed(FCActionType.BuildRoadsToAllies))
                 {
                     roadQueue.shouldUpdateSettlementsToProcess = true;
                     roadQueue.daysBetweenTicks = 1;
-                    roadBuilders = true;
+                    hasRoadBuildersBoost = true;
                     daysBetweenTicks = 1;
                 }
 
@@ -108,9 +109,9 @@ namespace FactionColonies
         {
             FactionFC fC = FactionCache.FactionComp;
 
-            // If faction exists and is either player or player has roadBuilders and the faction is an ally
+            // If faction exists and is either player or player has roadBuilders trait and the faction is an ally
             if (settlement.Faction != null)
-                if (settlement.Faction.IsPlayer || (fC.hasTrait(FCPolicyDefOf.roadBuilders) && settlement.Faction.PlayerRelationKind == FactionRelationKind.Ally))
+                if (settlement.Faction.IsPlayer || (fC.IsActionAllowed(FCActionType.BuildRoadsToAllies) && settlement.Faction.PlayerRelationKind == FactionRelationKind.Ally))
                     return true;
 
             foreach (WorldSettlementFC settlementFC in fC.settlements)
@@ -232,17 +233,17 @@ namespace FactionColonies
                     parent[i] = i;
             }
 
-            public int Find(int x)
+            public int FindRoot(int x)
             {
                 if (parent[x] != x)
-                    parent[x] = Find(parent[x]);
+                    parent[x] = FindRoot(parent[x]);
                 return parent[x];
             }
 
-            public bool Union(int x, int y)
+            public bool TryMerge(int x, int y)
             {
-                int rootX = Find(x);
-                int rootY = Find(y);
+                int rootX = FindRoot(x);
+                int rootY = FindRoot(y);
                 if (rootX == rootY)
                     return false;
                 if (rank[rootX] < rank[rootY])
@@ -407,7 +408,7 @@ namespace FactionColonies
                 int idxA = tileToIndex[edge.fromTile];
                 int idxB = tileToIndex[edge.toTile];
 
-                if (uf.Union(idxA, idxB))
+                if (uf.TryMerge(idxA, idxB))
                 {
                     mstEdges.Add(edge);
                     if (mstEdges.Count == n - 1)

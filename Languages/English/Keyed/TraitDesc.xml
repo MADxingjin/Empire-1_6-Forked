@@ -36,4 +36,5 @@
 	<FCTraitDesc_createSettlementMultiplier>{0} Settlement Cost</FCTraitDesc_createSettlementMultiplier>
 	
 	<FCBuildingUpkeep>Upkeep: ${0}</FCBuildingUpkeep>
+	<FCBuildingIncome>Income: ${0}</FCBuildingIncome>
 </LanguageData>

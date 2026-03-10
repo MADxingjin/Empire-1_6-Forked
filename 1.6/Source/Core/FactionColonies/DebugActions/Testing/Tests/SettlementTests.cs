@@ -17,9 +17,9 @@ namespace FactionColonies
         public static void Settlement_HappinessGain_IsFiniteNumber()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
-            double gain = settlement.getHappinessGain();
+            double gain = settlement.GetHappinessGain();
             TestAssert.IsFalse(double.IsNaN(gain), "Happiness gain should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(gain), "Happiness gain should not be infinite");
         }
@@ -28,9 +28,9 @@ namespace FactionColonies
         public static void Settlement_LoyaltyGain_IsFiniteNumber()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
-            double gain = settlement.getLoyaltyGain();
+            double gain = settlement.GetLoyaltyGain();
             TestAssert.IsFalse(double.IsNaN(gain), "Loyalty gain should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(gain), "Loyalty gain should not be infinite");
         }
@@ -39,9 +39,9 @@ namespace FactionColonies
         public static void Settlement_TotalUpkeep_IsNonNegative()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
-            double upkeep = settlement.getTotalUpkeep();
+            double upkeep = settlement.GetTotalUpkeep();
             TestAssert.IsTrue(upkeep >= 0, $"Total upkeep should be >= 0, got {upkeep}");
         }
 
@@ -49,8 +49,8 @@ namespace FactionColonies
         public static void Settlement_BuildingSlots_MatchesFormula()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
-            if (settlement.BuildingsComp == null) { LogUtil.Message("SKIP: No BuildingsComp"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
+            if (settlement.BuildingsComp == null) TestAssert.Skip("No BuildingsComp");
 
             int actual = settlement.BuildingsComp.NumBuildingSlots;
             int expected = SettlementFormulas.CalculateBuildingSlots(
@@ -63,7 +63,7 @@ namespace FactionColonies
         public static void Settlement_Happiness_IsClamped()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
             TestAssert.IsTrue(settlement.happiness >= 1 && settlement.happiness <= 100,
                 $"Happiness should be in [1, 100], got {settlement.happiness}");
@@ -73,7 +73,7 @@ namespace FactionColonies
         public static void Settlement_Loyalty_IsClamped()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
             TestAssert.IsTrue(settlement.loyalty >= 1 && settlement.loyalty <= 100,
                 $"Loyalty should be in [1, 100], got {settlement.loyalty}");
@@ -83,7 +83,7 @@ namespace FactionColonies
         public static void Settlement_Prosperity_IsClamped()
         {
             var settlement = GetFirstSettlement();
-            if (settlement == null) { LogUtil.Message("SKIP: No settlements"); return; }
+            if (settlement == null) TestAssert.Skip("No settlements");
 
             TestAssert.IsTrue(settlement.prosperity >= 1 && settlement.prosperity <= 100,
                 $"Prosperity should be in [1, 100], got {settlement.prosperity}");

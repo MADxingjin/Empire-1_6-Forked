@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for WorldSettlementDef, and explains what they do and their default values -->
+  <!-- WorldSettlementDef extends WorldObjectDef (not Def directly), so it inherits all WorldObjectDef fields -->
+  <!-- such as worldObjectClass, expandingIcon, texture, etc. -->
+  <!-- WorldSettlementDefs define settlement types (e.g. Surface, Orbital) with their own resources, -->
+  <!-- worker caps, biome restrictions, stat modifiers, and behavior via SettlementTypeExtension. -->
+  <!-- IMPORTANT: Every WorldSettlementDef must include a SettlementTypeExtension (or subclass) in modExtensions. -->
+  <FactionColonies.WorldSettlementDef>
+	<!-- WorldObjectDef fields that you'll typically want to set: -->
+	<defName>WorldSettlementDef_Example</defName>
+	<label>Example Settlement</label>
+	<description>A brief description of this settlement type.</description>
+	<worldObjectClass>FactionColonies.WorldSettlementFC</worldObjectClass>
+	<expandingIconTexture>path/to/settlement/icon</expandingIconTexture>
+	<texture>path/to/settlement/map/texture</texture>
+
+	<!-- ── Resources ── -->
+	<!-- Per-resource availability and base production values for this settlement type. -->
+	<!-- Each entry is a ResourceAvailability: {resourceDef, additive, multiplier}. -->
+	<!-- If additive is omitted, it defaults to 0 at ResolveReferences time. -->
+	<resources>
+		<li>
+			<resourceDef>RTD_Food</resourceDef>
+			<additive>1</additive>
+			<multiplier>1</multiplier>
+		</li>
+		<li>
+			<resourceDef>RTD_Mining</resourceDef>
+			<additive>0</additive>
+			<multiplier>0.5</multiplier>
+		</li>
+	</resources>
+	<!-- If true, all ResourceTypeDefs with isDefaultResource set to true are automatically included -->
+	<!-- Explicit entries take priority over defaults. Default: false -->
+	<defaultResources>true</defaultResources>
+
+	<!-- ── Workers ── -->
+	<!-- Worker cap formula: maxWorkers = workersMaxBase + (workersMaxMult * settlementLevel) -->
+	<!-- Ultra max (hard cap): workersUltraMaxBase + (workersUltraMaxMult * settlementLevel) -->
+	<workersMaxBase>0</workersMaxBase>
+	<workersMaxMult>3</workersMaxMult>
+	<workersUltraMaxBase>5</workersUltraMaxBase>
+	<workersUltraMaxMult>0</workersUltraMaxMult>
+
+	<!-- ── Biome Restrictions ── -->
+	<!-- These two lists are mutually exclusive — specify at most one. -->
+	<!-- If allowedBiomes is set, settlements of this type can ONLY be placed in those biomes. -->
+	<!-- If blockedBiomes is set, settlements of this type can be placed in all biomes EXCEPT those listed. -->
+	<!-- If neither is set, all biomes are valid. -->
+	<allowedBiomes>
+		<li>TemperateForest</li>
+		<li>BorealForest</li>
+	</allowedBiomes>
+	<blockedBiomes>
+		<!-- mutually exclusive with allowedBiomes -->
+	</blockedBiomes>
+
+	<!-- ── Stat Modifiers ── -->
+	<!-- Stat modifiers inherent to this settlement type. Applied to all settlements of this type. -->
+	<!-- See FCStatDef.xml for details on FCStatModifier. -->
+	<statModifiers>
+		<li>
+			<stat>workerBaseCost</stat>
+			<value>-5</value>
+		</li>
+	</statModifiers>
+
+	<!-- ── Biome Resource Override ── -->
+	<!-- If set, the settlement uses this BiomeResourceDef instead of the tile's actual biome resources. -->
+	<!-- Useful for settlement types that have fixed resource profiles regardless of location (e.g. orbital). -->
+	<biomeResourceOverride>defNameOfBiomeResourceDef</biomeResourceOverride>
+
+	<!-- ── Unlock Requirements ── -->
+	<!-- List of research projects that must all be completed before this settlement type is available. -->
+	<researchProjects>
+		<li>Electricity</li>
+	</researchProjects>
+	<!-- Minimum faction tech level required. Default: Undefined (no restriction) -->
+	<techLevel>Undefined</techLevel>
+
+	<!-- ── Planet Layers ── -->
+	<!-- For settlement types that exist on non-surface planet layers (e.g. orbital). -->
+	<!-- List of PlanetLayerDefs this settlement type can exist on. -->
+	<planetLayers>
+		<li>defNameOfPlanetLayer</li>
+	</planetLayers>
+
+	<!-- ── Limits ── -->
+	<!-- Maximum settlement level. Default: 99 -->
+	<!-- This is the hard programmatic cap. Settlement max level can also be changed in the mod settings,
+	       so you only need to specify this field if you expect it to impact the normal max level (which is 10).-->
+	<maxSettlementLevel>99</maxSettlementLevel>
+	<!-- Maximum number of building slots. Default: 99 -->
+	<!-- This is the hard cap. Max building count in the code is based on the settlement level, and is usually lower than this value.
+	       So you only need to specify this field if you expect it to impact the normal max building count (which is 8).-->
+	<maxBuildingCount>99</maxBuildingCount>
+
+	<!-- ── UI / Flavor ── -->
+	<!-- Optional key for settlement-type-specific town titles. -->
+	<!-- When set, the title system tries FCTitle_{titleKey}_{resourceDefName}_{level} first, -->
+	<!-- falling back to FCTitle_{resourceDefName}_{level} if the type-specific key doesn't exist. -->
+	<titleKey>mySettlementType</titleKey>
+	<!-- If true, the creation timer is labeled "Construction Time" instead of "Travel Time". Default: false -->
+	<isConstructed>false</isConstructed>
+	<!-- Optional UI accent color for this settlement type. -->
+	<accentColor>(0.4, 0.7, 1.0)</accentColor>
+
+	<!-- ── Required Mod Extension ── -->
+	<!-- Every WorldSettlementDef MUST include a SettlementTypeExtension (or a subclass). -->
+	<!-- This extension controls: tile validation, creation cost/time, settlement naming, -->
+	<!-- tax delivery mode, building slot progression, upgrade costs/times, and lifecycle hooks. -->
+	<!-- The base SettlementTypeExtension provides sensible defaults for surface settlements. -->
+	<!-- Override it (like SettlementTypeExt_Orbital) for custom behavior. -->
+	<modExtensions>
+		<li Class="FactionColonies.SettlementTypeExtension" />
+	</modExtensions>
+  </FactionColonies.WorldSettlementDef>
+
+</Defs>

@@ -8,21 +8,6 @@ using Verse;
 
 namespace FactionColonies
 {
-    public enum BuildingFilter
-    {
-        All,
-        Happiness,
-        Food,
-        Weapons,
-        Apparel,
-        Research,
-        Medicine,
-        Power,
-        Military,
-        Basetax,
-        Workers
-    }
-
     class FCBuildingWindow : Window
     {
         readonly WorldSettlementFC settlement;
@@ -49,10 +34,10 @@ namespace FactionColonies
         private bool requiredByExpanded = true;
 
         // Layout cache — only recomputed when width changes or filter is changed
-        private float _lastLayoutWidth = -1f;
-        private bool _layoutDirty = true;
-        private readonly List<float> _cachedRowHeights = new List<float>();
-        private float _slotUpgradesHeight = 0f;
+        private float lastLayoutWidth = -1f;
+        private bool layoutDirty = true;
+        private readonly List<float> cachedRowHeights = new List<float>();
+        private float slotUpgradesHeight = 0f;
         private string buildingSearchTerm = "";
 
         /* To deal with a variable number of resources (and variable resources in general), we use an int for
@@ -111,12 +96,12 @@ namespace FactionColonies
 
         private void CalculateLayout(float leftPanelWidth)
         {
-            if (leftPanelWidth == _lastLayoutWidth && !_layoutDirty) return;
-            _lastLayoutWidth = leftPanelWidth;
-            _layoutDirty = false;
+            if (leftPanelWidth == lastLayoutWidth && !layoutDirty) return;
+            lastLayoutWidth = leftPanelWidth;
+            layoutDirty = false;
 
-            _slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
-            FilterArea = new Rect(margin, margin + headerHeight + _slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
+            slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
+            FilterArea = new Rect(margin, margin + headerHeight + slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
             SearchBarArea = new Rect(0, FilterArea.yMax + smallMargin, leftPanelWidth, SearchBarHeight);
             CalculateScrollHeight(leftPanelWidth);
         }
@@ -124,7 +109,7 @@ namespace FactionColonies
         private float CalculateBuildingCardHeight(BuildingFCDef building, float cardWidth)
         {
             float descWidth = cardWidth - listIconSize - margin * 3;
-            TaggedString desc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
+            TaggedString desc = settlement.BuildingsComp?.GetBuildingDesc(building) ?? TaggedString.Empty;
             GameFont tmp = Text.Font;
             Text.Font = GameFont.Tiny;
             float textHeight = Text.CalcHeight(desc.RawText, descWidth);
@@ -136,12 +121,12 @@ namespace FactionColonies
         private void CalculateScrollHeight(float panelWidth)
         {
             float cardWidth = panelWidth - 16f; // account for scrollbar
-            _cachedRowHeights.Clear();
+            cachedRowHeights.Clear();
             fullScrollHeight = 0;
             for (int i = 0; i < filteredBuildingList.Count; i++)
             {
                 float rowH = CalculateBuildingCardHeight(filteredBuildingList[i], cardWidth) + smallMargin;
-                _cachedRowHeights.Add(rowH);
+                cachedRowHeights.Add(rowH);
                 fullScrollHeight += rowH;
             }
         }
@@ -175,7 +160,7 @@ namespace FactionColonies
             if (Widgets.ButtonInvisible(headerRect))
             {
                 expanded = !expanded;
-                _layoutDirty = true;
+                layoutDirty = true;
             }
         }
 
@@ -184,7 +169,7 @@ namespace FactionColonies
             if (building.requiredBuildings.Count == 0) return false;
             foreach (BuildingFCDef req in building.requiredBuildings)
             {
-                if (!settlement.BuildingsComp.hasBuilding(req)) return true;
+                if (!settlement.BuildingsComp.HasBuilding(req)) return true;
                 if (req == buildingDef) return true;
             }
             return false;
@@ -200,7 +185,7 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            float buttonWidth = (FilterArea.width - 10) / filterButtonsPerRow;
+            float buttonWidth = (FilterArea.width - (smallMargin * filterButtonsPerRow-1)) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
             for (int i = 0; i < filterSize; i++)
@@ -209,9 +194,9 @@ namespace FactionColonies
                 int col = i % filterButtonsPerRow;
 
                 Rect buttonRect = new Rect(
-                    FilterArea.x + 5 + (col * buttonWidth),
-                    FilterArea.y + (row * (buttonHeight + 5)),
-                    buttonWidth - 5,
+                    FilterArea.x + (col * buttonWidth + smallMargin),
+                    FilterArea.y + (row * (buttonHeight + smallMargin)),
+                    buttonWidth - smallMargin,
                     buttonHeight
                 );
 
@@ -234,7 +219,20 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
-                Widgets.Label(buttonRect, settlement.BuildingsComp?.getLabelForFilter(i) ?? "");
+                Texture2D filterIcon = settlement.BuildingsComp?.GetIconForFilter(i);
+                string filterLabel = settlement.BuildingsComp?.GetLabelForFilter(i) ?? "";
+                if (filterIcon != null)
+                {
+                    float iconSize = buttonRect.height - 4f;
+                    Rect iconRect = new Rect(buttonRect.x + 2f, buttonRect.y + 2f, iconSize, iconSize);
+                    GUI.DrawTexture(iconRect, filterIcon);
+                    Rect labelRect = new Rect(iconRect.xMax + 2f, buttonRect.y, buttonRect.width - iconSize - 6f, buttonRect.height);
+                    Widgets.Label(labelRect, filterLabel);
+                }
+                else
+                {
+                    Widgets.Label(buttonRect, filterLabel);
+                }
                 GUI.color = Color.white;
 
                 if (isSelected && Widgets.ButtonInvisible(buttonRect))
@@ -269,7 +267,7 @@ namespace FactionColonies
                 selectedBuilding = null;
             }
 
-            _layoutDirty = true;
+            layoutDirty = true;
         }
 
         private bool ShouldShowBuilding(BuildingFCDef building)
@@ -277,7 +275,7 @@ namespace FactionColonies
             if (!string.IsNullOrEmpty(buildingSearchTerm)
                 && building.label.IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
                 return false;
-            return settlement.BuildingsComp?.filterBuilding(currentFilter, building) ?? true;
+            return settlement.BuildingsComp?.FilterBuilding(currentFilter, building) ?? true;
         }
 
         #endregion
@@ -366,7 +364,7 @@ namespace FactionColonies
             DrawFilterButtons();
 
             // Recalculate if filter changed mid-frame
-            if (_layoutDirty)
+            if (layoutDirty)
             {
                 CalculateLayout(panel.width);
             }
@@ -390,7 +388,7 @@ namespace FactionColonies
             }
 
             // Recalculate if filter changed mid-frame
-            if (_layoutDirty)
+            if (layoutDirty)
             {
                 CalculateLayout(panel.width);
             }
@@ -439,7 +437,7 @@ namespace FactionColonies
             // Description to the right of the icon
             float descX = iconRect.xMax + margin;
             float descWidth = row.xMax - descX - margin;
-            TaggedString desc = settlement.BuildingsComp?.getBuildingDesc(building) ?? TaggedString.Empty;
+            TaggedString desc = settlement.BuildingsComp?.GetBuildingDesc(building) ?? TaggedString.Empty;
             Rect descRect = new Rect(descX, contentY, descWidth, row.yMax - contentY - margin);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
@@ -448,7 +446,7 @@ namespace FactionColonies
 
         private void DrawBuildingListItem(Listing_Standard ls, BuildingFCDef building, int index)
         {
-            float thisRowHeight = _cachedRowHeights[index];
+            float thisRowHeight = cachedRowHeights[index];
             Rect fullrow = ls.GetRect(thisRowHeight);
             Rect row = new Rect(fullrow.x, fullrow.y + smallMargin, fullrow.width, fullrow.height - smallMargin);
 
@@ -529,16 +527,15 @@ namespace FactionColonies
                         "FCDemolishConfirmation".Translate(buildingDef.LabelCap, demolishCost),
                         delegate
                         {
-                            if (PaymentUtil.getSilver() < demolishCost)
+                            if (PaymentUtil.GetSilver() < demolishCost)
                             {
                                 Messages.Message("FCNotEnoughSilverDemolish".Translate(), MessageTypeDefOf.RejectInput);
                                 return;
                             }
-                            PaymentUtil.paySilver(demolishCost);
-                            settlement.deconstructBuilding(buildingSlot);
+                            PaymentUtil.PaySilver(demolishCost, PaymentUtil.Reason_BuildingDemolition, settlement);
+                            settlement.DeconstructBuilding(buildingSlot);
                             Messages.Message("FCBuildingDemolished".Translate(buildingDef.LabelCap), MessageTypeDefOf.PositiveEvent);
                             Find.WindowStack.TryRemove(this);
-                            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
                         }
                     ));
                 }
@@ -657,19 +654,23 @@ namespace FactionColonies
             Rect costRect = new Rect(statsX, curY, statsW, 22f);
             Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
 
-            int buildTime = selectedBuilding.constructionDuration;
-            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
-                buildTime /= 2;
+            int buildTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
             Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
             Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
 
             float statsBottom = timeRect.yMax;
 
-            int upkeep = settlement.BuildingsComp?.getBuildingUpkeep(selectedBuilding) ?? 0;
+            int upkeep = settlement.BuildingsComp?.GetBuildingUpkeep(selectedBuilding) ?? 0;
             if (upkeep > 0)
             {
                 Rect upkeepRect = new Rect(statsX, timeRect.yMax + smallMargin, statsW, 22f);
                 Widgets.Label(upkeepRect, "FCBuildingUpkeep".Translate(upkeep.ToString()));
+                statsBottom = upkeepRect.yMax;
+            }
+            else if (upkeep < 0)
+            {
+                Rect upkeepRect = new Rect(statsX, timeRect.yMax + smallMargin, statsW, 22f);
+                Widgets.Label(upkeepRect, "FCBuildingIncome".Translate(Math.Abs(upkeep).ToString()));
                 statsBottom = upkeepRect.yMax;
             }
 
@@ -690,7 +691,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 foreach (BuildingFCDef req in selectedBuilding.requiredBuildings)
                 {
-                    bool has = settlement.BuildingsComp?.hasBuilding(req) == true;
+                    bool has = settlement.BuildingsComp?.HasBuilding(req) == true;
                     bool isSlotBuilding = req == buildingDef;
                     bool satisfied = has && !isSlotBuilding;
                     Rect statusRect = new Rect(scrollViewRect.x + margin, curY, w - margin * 2, 18f);
@@ -766,7 +767,7 @@ namespace FactionColonies
             curY += smallMargin;
             Text.Font = GameFont.Small;
             float contentWidth = width - (smallMargin * 2);
-            float textHeight = Text.CalcHeight(modifiers.RawText, contentWidth);
+            float textHeight = Text.CalcHeight(modifiers, contentWidth);
             float blockHeight = 22f + smallMargin + textHeight;
 
             // Block background
@@ -797,8 +798,7 @@ namespace FactionColonies
             if (modifiers.RawText.NullOrEmpty()) return 0;
             GameFont tmp = Text.Font;
             Text.Font = GameFont.Small;
-            float h = smallMargin + 22f + smallMargin
-                + Text.CalcHeight(modifiers.RawText, width - (smallMargin * 2)) + margin;
+            float h = smallMargin + 22f + smallMargin + Text.CalcHeight(modifiers, width - (smallMargin * 2)) + margin;
             Text.Font = tmp;
             return h;
         }
@@ -809,24 +809,20 @@ namespace FactionColonies
 
         private float DrawSettlementImpact(float x, float curY, float width)
         {
-            if (selectedBuilding.traits == null || selectedBuilding.traits.Count == 0) return curY;
+            if (selectedBuilding.statModifiers == null || !selectedBuilding.statModifiers.Any(m => m.stat != null && m.stat.linkedResource != null)) return curY;
 
             // Gather all affected resources from both old and new building
             HashSet<ResourceTypeDef> affectedResources = new HashSet<ResourceTypeDef>();
-            if (selectedBuilding.traits != null)
+            foreach (FCStatModifier mod in selectedBuilding.statModifiers)
+                if (mod.stat != null && mod.stat.linkedResource != null)
+                    affectedResources.Add(mod.stat.linkedResource);
+
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction;
+            if (isReplacing && buildingDef.statModifiers != null)
             {
-                foreach (var trait in selectedBuilding.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affectedResources.Add(rb.resourceDef);
-            }
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
-            if (isReplacing)
-            {
-                foreach (var trait in buildingDef.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affectedResources.Add(rb.resourceDef);
+                foreach (FCStatModifier mod in buildingDef.statModifiers)
+                    if (mod.stat != null && mod.stat.linkedResource != null)
+                        affectedResources.Add(mod.stat.linkedResource);
             }
 
             if (affectedResources.Count == 0) return curY;
@@ -853,7 +849,7 @@ namespace FactionColonies
             // Draw each affected resource
             foreach (ResourceTypeDef resDef in affectedResources)
             {
-                ResourceFC resource = settlement.getResource(resDef);
+                ResourceFC resource = settlement.GetResource(resDef);
                 if (resource == null) continue;
 
                 double currentProd = resource.production;
@@ -861,34 +857,32 @@ namespace FactionColonies
                 double projectedMult = resource.productionMult;
 
                 // Subtract old building contributions
-                if (isReplacing)
+                if (isReplacing && buildingDef.statModifiers != null)
                 {
-                    foreach (var trait in buildingDef.traits)
+                    foreach (FCStatModifier mod in buildingDef.statModifiers)
                     {
-                        ResourceBonuses rb = trait.getTraitResource(resDef);
-                        if (rb != null)
-                        {
-                            if (rb.additive != 0) projectedBase -= rb.additive;
-                            if (rb.multiplier != 1 && rb.multiplier != 0) projectedMult /= rb.multiplier;
-                        }
+                        if (mod.stat == null || mod.stat.linkedResource != resDef) continue;
+                        if (mod.stat.aggregation == FCStatAggregation.Additive)
+                            projectedBase -= mod.value;
+                        else if (mod.value != 0)
+                            projectedMult /= mod.value;
                     }
                 }
 
                 // Add new building contributions
-                foreach (var trait in selectedBuilding.traits)
+                foreach (FCStatModifier mod in selectedBuilding.statModifiers)
                 {
-                    ResourceBonuses rb = trait.getTraitResource(resDef);
-                    if (rb != null)
-                    {
-                        if (rb.additive != 0) projectedBase += rb.additive;
-                        if (rb.multiplier != 1) projectedMult *= rb.multiplier;
-                    }
+                    if (mod.stat == null || mod.stat.linkedResource != resDef) continue;
+                    if (mod.stat.aggregation == FCStatAggregation.Additive)
+                        projectedBase += mod.value;
+                    else
+                        projectedMult *= mod.value;
                 }
 
                 double projectedProd = projectedBase * projectedMult;
                 double delta = projectedProd - currentProd;
 
-                // Draw row: [icon] Label: current → projected (delta)
+                // Draw row: [icon] Label: current -> projected (delta)
                 Rect rowRect = new Rect(x, curY, width, 22f);
 
                 // Resource icon
@@ -925,20 +919,18 @@ namespace FactionColonies
 
         private float CalculateImpactHeight()
         {
-            if (selectedBuilding?.traits == null || selectedBuilding.traits.Count == 0) return 0;
+            if (selectedBuilding?.statModifiers == null || !selectedBuilding.statModifiers.Any(m => m.stat != null && m.stat.linkedResource != null)) return 0;
 
             HashSet<ResourceTypeDef> affected = new HashSet<ResourceTypeDef>();
-            foreach (var trait in selectedBuilding.traits)
-                foreach (var rb in trait.resourceBonuses)
-                    if (rb.resourceDef != null)
-                        affected.Add(rb.resourceDef);
+            foreach (FCStatModifier mod in selectedBuilding.statModifiers)
+                if (mod.stat != null && mod.stat.linkedResource != null)
+                    affected.Add(mod.stat.linkedResource);
 
-            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction && buildingDef.traits != null;
-            if (isReplacing)
-                foreach (var trait in buildingDef.traits)
-                    foreach (var rb in trait.resourceBonuses)
-                        if (rb.resourceDef != null)
-                            affected.Add(rb.resourceDef);
+            bool isReplacing = buildingDef != BuildingFCDefOf.Empty && buildingDef != BuildingFCDefOf.Construction;
+            if (isReplacing && buildingDef.statModifiers != null)
+                foreach (FCStatModifier mod in buildingDef.statModifiers)
+                    if (mod.stat != null && mod.stat.linkedResource != null)
+                        affected.Add(mod.stat.linkedResource);
 
             if (affected.Count == 0) return 0;
 
@@ -1063,7 +1055,6 @@ namespace FactionColonies
                 BuildingFCDef building = requiredBy[i];
                 bool canBuild = building.techLevel <= factionfc.techLevel
                     && building.CanBeBuiltForSettlementType(settlement.settlementDef)
-                    && building.RequiredModsLoaded
                     && (building.applicableBiomes.Count == 0
                         || building.applicableBiomes.Contains(settlement.biome));
 
@@ -1087,7 +1078,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     foreach (BuildingFCDef req in building.requiredBuildings)
                     {
-                        bool has = settlement.BuildingsComp?.hasBuilding(req) == true;
+                        bool has = settlement.BuildingsComp?.HasBuilding(req) == true;
                         Rect statusRect = new Rect(x + margin * 2, curY, width - margin * 4, 18f);
                         GUI.color = has ? Color.green : Color.red;
                         string checkmark = has ? "✓ " : "✗ ";
@@ -1165,15 +1156,15 @@ namespace FactionColonies
 
         private void ExecuteDestroy()
         {
-            settlement.deconstructBuilding(buildingSlot);
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.DemolishBuilding)) return;
+            settlement.DeconstructBuilding(buildingSlot);
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
         }
 
         private void ExecuteBuild()
         {
             if (selectedBuilding == null) return;
-            if (settlement.BuildingsComp?.validConstructBuilding(selectedBuilding, buildingSlot) != true) return;
+            if (settlement.BuildingsComp?.ValidConstructBuilding(selectedBuilding, buildingSlot) != true) return;
 
             FCEvent tmpEvt = new FCEvent(true)
             {
@@ -1184,9 +1175,7 @@ namespace FactionColonies
                 buildingSlot = buildingSlot
             };
 
-            int triggerTime = selectedBuilding.constructionDuration;
-            if (factionfc.hasPolicy(FCPolicyDefOf.isolationist))
-                triggerTime /= 2;
+            int triggerTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
 
             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
             tmpEvt.customDescription = "BuildingEventDesc".Translate(
@@ -1194,13 +1183,12 @@ namespace FactionColonies
                 settlement.Name,
                 (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
             tmpEvt.hasCustomDescription = true;
-            FactionCache.FactionComp.addEvent(tmpEvt);
+            FactionCache.FactionComp.AddEvent(tmpEvt);
 
-            PaymentUtil.paySilver(Convert.ToInt32(selectedBuilding.cost));
+            PaymentUtil.PaySilver(Convert.ToInt32(selectedBuilding.cost), PaymentUtil.Reason_BuildingConstruction, settlement);
             Messages.Message(selectedBuilding.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
-            settlement.BuildingsComp.startConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
+            settlement.BuildingsComp.StartConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>()?.windowUpdateFc();
         }
 
         #endregion
@@ -1212,12 +1200,12 @@ namespace FactionColonies
             factionfc = FactionCache.FactionComp;
             this.settlement = settlement;
             this.buildingSlot = buildingSlot;
-            buildingDef = settlement.BuildingsComp?.getBuildingInSlot(buildingSlot);
+            buildingDef = settlement.BuildingsComp?.GetBuildingInSlot(buildingSlot);
 
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
 
-            foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading.Where(def => def.RequiredModsLoaded))
+            foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
             {
                 if(building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {
@@ -1264,10 +1252,10 @@ namespace FactionColonies
             }
             else
             {
-                buildingDesc = settlement.BuildingsComp?.getBuildingDesc(buildingDef) ?? TaggedString.Empty;
+                buildingDesc = settlement.BuildingsComp?.GetBuildingDesc(buildingDef) ?? TaggedString.Empty;
             }
 
-            filterSize = settlement.BuildingsComp?.getFilterSize() ?? 0;
+            filterSize = settlement.BuildingsComp?.GetFilterSize() ?? 0;
             filterRows = (int)Math.Ceiling((double)filterSize / (double)filterButtonsPerRow);
             fullScrollHeight = filteredBuildingList.Count * 90f;
         }

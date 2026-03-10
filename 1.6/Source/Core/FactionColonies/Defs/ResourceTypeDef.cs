@@ -55,7 +55,7 @@ namespace FactionColonies
         public virtual void SetFilter(ThingFilter filter, TechLevel techlevel)
         {
         }
-        // Used to be part of CraftUtil.canCraftItem. Now, we do this check as part of the overall filtering process
+        // Used to be part of CraftUtil.CanCraftItem. Now, we do this check as part of the overall filtering process
         public static bool ThingAllowedByRecipe(ThingDef thing)
         {
             if (thing.recipeMaker != null)
@@ -83,7 +83,7 @@ namespace FactionColonies
             }
             return true;
         }
-        // Used to be part of CraftUtil.canCraftItem. Now, we do this check as part of the overall filtering process
+        // Used to be part of CraftUtil.CanCraftItem. Now, we do this check as part of the overall filtering process
         public static bool ThingAllowedByThingTechLevel(ThingDef thing, TechLevel techlevel)
         {
             if (techlevel < thing.techLevel)
@@ -242,6 +242,17 @@ namespace FactionColonies
         public double defaultBiomeMultiplier = 1;
 
         /// <summary>
+        /// The FCStatDef used for additive production bonuses from buildings, events, and policies.
+        /// Aggregated via the stat system; value is added to the base production from biome/extensions.
+        /// </summary>
+        public FCStatDef productionAdditiveStat;
+        /// <summary>
+        /// The FCStatDef used for multiplicative production bonuses from buildings, events, and policies.
+        /// Aggregated via the stat system; value multiplies the final production alongside biome multipliers.
+        /// </summary>
+        public FCStatDef productionMultiplierStat;
+
+        /// <summary>
         /// When generating tithes for this resource, the count range is set to (titheMinCount, titheMaxCountBase + (titheMaxCountScaler * multiplier)) where "multiplier" is set within
         /// the code.
         /// </summary>
@@ -293,38 +304,38 @@ namespace FactionColonies
          * Pool helper functions
          * These functions are wrappers for ResourcePoolExtension functions, meant to make it easier to invoke the extension.
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        public bool poolResourceResetsAtTaxTime()
+        public bool PoolResourceResetsAtTaxTime()
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called poolResourceResetsAtTaxTime() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called PoolResourceResetsAtTaxTime() for non-pool resource {this.defName}");
                 return false;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            return GetModExtension<ResourcePoolExtension>().resetAtTaxTime();
+            return GetModExtension<ResourcePoolExtension>().ResetAtTaxTime();
         }
-        public double preAddToGlobalPool(double value)
+        public double PreAddToGlobalPool(double value)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called preAddToGlobalPool() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called PreAddToGlobalPool() for non-pool resource {this.defName}");
                 return value;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            return GetModExtension<ResourcePoolExtension>().preAddToGlobalPool(value);
+            return GetModExtension<ResourcePoolExtension>().PreAddToGlobalPool(value);
         }
-        public void addedToGlobalPool(double value)
+        public void AddedToGlobalPool(double value)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called addedToGlobalPool() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called AddedToGlobalPool() for non-pool resource {this.defName}");
                 return;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            GetModExtension<ResourcePoolExtension>().addedToGlobalPool(value);
+            GetModExtension<ResourcePoolExtension>().AddedToGlobalPool(value);
         }
         public IEnumerable<FloatMenuOption> GetFactionMenuFloatMenuOptions(ResourcePool pool)
         {
@@ -344,16 +355,16 @@ namespace FactionColonies
                 }
             }
         }
-        public void dailyUpdate(ResourcePool pool)
+        public void DailyUpdate(ResourcePool pool)
         {
             if (!isPoolResource)
             {
-                LogUtil.Error($"Called dailyUpdate() for non-pool resource {this.defName}");
+                LogUtil.Error($"Called DailyUpdate() for non-pool resource {this.defName}");
                 return;
             }
             /* ConfigErrors already checked that ResourcePoolExtensions exists if isPoolResource is set, so
              * we won't bother with null-checking here. */
-            GetModExtension<ResourcePoolExtension>().dailyUpdate(pool);
+            GetModExtension<ResourcePoolExtension>().DailyUpdate(pool);
         }
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
          * End of Pool helper functions
@@ -389,31 +400,31 @@ namespace FactionColonies
                 return meetsResearchReqs || meetsTechlevelReq;
             }
         }
-        public double getExtensionAdditives(PlanetTile tile)
+        public double GetExtensionAdditives(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double add = 0;
             if (modExtensions?.Count > 0)
             {
                 foreach(ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    add += prod.GetAdditiveBonus(tile);
+                    add += prod.GetAdditiveBonus(tile, settlement);
                 }
             }
             return add;
         }
-        public double getExtensionMultipliers(PlanetTile tile)
+        public double GetExtensionMultipliers(PlanetTile tile, WorldSettlementFC settlement = null)
         {
             double mult = 1;
             if (modExtensions?.Count > 0)
             {
                 foreach (ResourceProductionExtension prod in modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    mult *= prod.GetMultiplierBonus(tile);
+                    mult *= prod.GetMultiplierBonus(tile, settlement);
                 }
             }
             return mult;
         }
-        public bool resourceAllowedForBiome(BiomeResourceDef bdef)
+        public bool ResourceAllowedForBiome(BiomeResourceDef bdef)
         {
             if (biomeAllowList.Count > 0)
             {
@@ -427,7 +438,7 @@ namespace FactionColonies
             /* A resource is allowed in all Biomes by default */
             return true;
         }
-        public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined)
+        public void FilterResource(ThingFilter filter, TechLevel techlevel = TechLevel.Undefined, ResourceFC resource = null)
         {
             /* Category Allow lists */
             foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
@@ -464,16 +475,16 @@ namespace FactionColonies
             {
                 foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
                 {
-                    ext.SetFilter(filter, techlevel);
+                    ext.SetFilter(filter, techlevel, resource);
                 }
             }
         }
 
-        public int compareForUI(ResourceTypeDef compareDef)
+        public int CompareForUI(ResourceTypeDef compareDef)
         {
             return this.uiPriority - compareDef.uiPriority;
         }
-        public static int sortForUI(ResourceTypeDef a, ResourceTypeDef b)
+        public static int SortForUI(ResourceTypeDef a, ResourceTypeDef b)
         {
             if (a == null)
             {
@@ -483,7 +494,7 @@ namespace FactionColonies
             {
                 return -1;
             }
-            return a.compareForUI(b);
+            return a.CompareForUI(b);
         }
 
         public override IEnumerable<string> ConfigErrors()
@@ -562,7 +573,7 @@ namespace FactionColonies
                     {
                         if (ext != ext2)
                         {
-                            yield return "ResourcePoolExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
+                            yield return "ResourcePoolExtension " + ext.ToStringSafe() + " appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }
@@ -572,7 +583,7 @@ namespace FactionColonies
                     {
                         if (ext != ext2)
                         {
-                            yield return "ResourceFilterExtension " + ext.ToStringSafe() + "appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
+                            yield return "ResourceFilterExtension " + ext.ToStringSafe() + " appears more than once in defModExtensions for ResourceTypeDef " + this.defName;
                         }
                     }
                 }
@@ -606,42 +617,33 @@ namespace FactionColonies
                     yield return "isPoolResource is TRUE but there is no ResourcePoolExtension in defModExtensions for ResourceTypeDef " + this.defName;
                 }
             }
+            if (productionAdditiveStat == null)
+            {
+                yield return "productionAdditiveStat is not set for ResourceTypeDef " + this.defName;
+            }
+            else if (productionAdditiveStat.aggregation != FCStatAggregation.Additive)
+            {
+                yield return "productionAdditiveStat must have Additive aggregation for ResourceTypeDef " + this.defName;
+            }
+            if (productionMultiplierStat == null)
+            {
+                yield return "productionMultiplierStat is not set for ResourceTypeDef " + this.defName;
+            }
+            else if (productionMultiplierStat.aggregation != FCStatAggregation.Multiplicative)
+            {
+                yield return "productionMultiplierStat must have Multiplicative aggregation for ResourceTypeDef " + this.defName;
+            }
         }
     }
     /// <summary>
-    /// Class for use in other defs.
+    /// Defines resource availability and base production bonuses for biomes and settlement types.
+    /// Unlike FCStatModifier, this determines WHETHER a resource exists at a location, not just its bonus.
     /// </summary>
-    public class ResourceBonuses
+    public class ResourceAvailability
     {
         public ResourceTypeDef resourceDef;
         public double additive = double.NaN;
         public double multiplier = 1;
-
-        /// <summary>
-        /// Creates a string description of this resource bonus, of the following form:
-        /// (+/-)[additive] base [resourceDef label]
-        /// x[multiplier] [resourceDef label]
-        /// </summary>
-        /// <returns>A TaggedString with colorized bonus values.</returns>
-        public TaggedString getBonusDesc(string tab = "")
-        {
-            TaggedString desc = "";
-            if (additive != 0 && !double.IsNaN(additive))
-            {
-                desc += tab + "RTDproductionAdditive".Translate(TextUtil.colorizeAdditiveBonus(additive), resourceDef.LabelCap);
-                if (multiplier != 1)
-                {
-                    desc += "\n";
-                }
-            }
-
-            if (multiplier != 1)
-            {
-                desc += tab + "RTDproductionMultiplier".Translate(TextUtil.colorizeMultiplierBonus(multiplier), resourceDef.LabelCap);
-            }
-
-            return desc;
-        }
     }
 
     [DefOf]

@@ -61,7 +61,7 @@ namespace FactionColonies
 					else
 					{
 						// Find a reasonable default position
-						if (PaymentUtil.checkForTaxSpot(lord.Map, out IntVec3 taxSpot))
+						if (PaymentUtil.CheckForTaxSpot(lord.Map, out IntVec3 taxSpot))
 						{
 							enterCell = taxSpot;
 							deliveryCell = taxSpot;
@@ -86,7 +86,7 @@ namespace FactionColonies
 					traverseParms.pawn = leadPawn;
 					
 					// First try to find tax spot
-					if (PaymentUtil.checkForTaxSpot(lord.Map, out deliveryCell))
+					if (PaymentUtil.CheckForTaxSpot(lord.Map, out deliveryCell))
 					{
 						// Validate tax spot
 						if (!deliveryCell.IsValid || !deliveryCell.InBounds(lord.Map))

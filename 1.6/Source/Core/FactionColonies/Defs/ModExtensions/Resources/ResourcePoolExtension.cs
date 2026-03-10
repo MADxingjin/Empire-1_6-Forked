@@ -20,7 +20,7 @@ namespace FactionColonies
         /// <param name="production">Production value of the pool's associated resource.</param>
         /// <param name="settlement">Settlement to create the pool for.</param>
         /// <returns>The size of the newly-created pool.</returns>
-        public virtual double createPool(double production, WorldSettlementFC settlement = null)
+        public virtual double CreatePool(double production, WorldSettlementFC settlement = null)
         {
             return 0;
         }
@@ -28,7 +28,7 @@ namespace FactionColonies
         /// Controls whether the resource's faction-level pool is reset to 0 at tax time.
         /// </summary>
         /// <returns>TRUE if the pool should reset every tax period. FALSE otherwise. Defaults to TRUE.</returns>
-        public virtual bool resetAtTaxTime()
+        public virtual bool ResetAtTaxTime()
         {
             return true;
         }
@@ -38,7 +38,7 @@ namespace FactionColonies
         /// </summary>
         /// <param name="value">The value that we intend to add to the global pool.</param>
         /// <returns>A modified value to add to the global pool.</returns>
-        public virtual double preAddToGlobalPool(double value)
+        public virtual double PreAddToGlobalPool(double value)
         {
             return value;
         }
@@ -47,7 +47,7 @@ namespace FactionColonies
         /// <para>This function is called after the resource is actually added to the pool.</para>
         /// </summary>
         /// <param name="value">The value that is added to the global pool.</param>
-        public virtual void addedToGlobalPool(double value)
+        public virtual void AddedToGlobalPool(double value)
         {
         }
         /// <summary>
@@ -63,7 +63,7 @@ namespace FactionColonies
         /// Called daily at the FactionFC level. Handles any daily processing for the faction-level resource pool.
         /// </summary>
         /// <param name="pool">The ResourcePool to update.</param>
-        public virtual void dailyUpdate(ResourcePool pool)
+        public virtual void DailyUpdate(ResourcePool pool)
         {
         }
     }

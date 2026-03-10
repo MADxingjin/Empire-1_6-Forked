@@ -12,7 +12,7 @@ namespace FactionColonies
     /// </summary>
     public static class GenUtil
     {
-        public static Type returnUnknownTypeFromName(string name)
+        public static Type ReturnUnknownTypeFromName(string name)
         {
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {

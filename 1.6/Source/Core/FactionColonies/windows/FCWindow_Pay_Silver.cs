@@ -42,7 +42,7 @@ namespace FactionColonies
 			this.draggable = true;
 			this.doCloseX = true;
 			this.preventCameraMotion = false;
-			this.silverCount = PaymentUtil.getSilver();
+			this.silverCount = PaymentUtil.GetSilver();
 			this.settlement = settlement;
 			this.selectedSilver = 0;
 		}
@@ -65,14 +65,14 @@ namespace FactionColonies
 
 		}
 
-		public virtual float returnValue(int silver)
+		public virtual float ReturnValue(int silver)
 		{
 			float loyalty;
 			loyalty = silver / 100;
 			return loyalty;
 		}
 
-		public virtual void useValue(float value)
+		public virtual void UseValue(float value)
 		{
 			
 		}
@@ -100,12 +100,12 @@ namespace FactionColonies
 			
 			selectedSilver = (int)Widgets.HorizontalSlider(slider, selectedSilver, 0, silverCount, roundTo: 1);
 
-			Widgets.Label(label_Lower, TranslatorFormattedStringExtensions.Translate(stringEffect, returnValue(selectedSilver)));
+			Widgets.Label(label_Lower, TranslatorFormattedStringExtensions.Translate(stringEffect, ReturnValue(selectedSilver)));
 
 			if(Widgets.ButtonText(button_Confirm, "FCConfirm".Translate()))
 			{
-				PaymentUtil.paySilver(selectedSilver);
-				this.useValue(selectedSilver);
+				PaymentUtil.PaySilver(selectedSilver, PaymentUtil.Reason_SilverPayment, settlement);
+				this.UseValue(selectedSilver);
 				this.Close();
 
 			}

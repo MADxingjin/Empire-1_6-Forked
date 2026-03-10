@@ -50,7 +50,7 @@ namespace FactionColonies
             }
         }
 
-        public static void reloadTraderKind()
+        public static void ReloadTraderKind()
         {
             baseTraderKinds = null;
         }

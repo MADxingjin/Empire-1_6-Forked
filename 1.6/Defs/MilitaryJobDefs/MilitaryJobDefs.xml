@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>Undefined</defName>
+        <label>undefined</label>
+        <isState>true</isState>
+        <occupiesTarget>false</occupiesTarget>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>Cooldown</defName>
+        <label>cooldown</label>
+        <isState>true</isState>
+        <occupiesTarget>false</occupiesTarget>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>Deploy</defName>
+        <label>deploy</label>
+        <statusLabelKey>FCMilStatusDeployed</statusLabelKey>
+        <occupiesTarget>false</occupiesTarget>
+        <deadPawnCooldown>true</deadPawnCooldown>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>RaidEnemySettlement</defName>
+        <label>raid enemy settlement</label>
+        <handlerClass>FactionColonies.MilitaryJobHandler_Raid</handlerClass>
+        <statusLabelKey>FCMilStatusRaiding</statusLabelKey>
+        <cooldownStatDef>raidCooldownOffset</cooldownStatDef>
+        <floatMenuLabelKey>RaidSettlement</floatMenuLabelKey>
+        <floatMenuDescKey>FCRaidFloatMenuOption</floatMenuDescKey>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>EnslaveEnemySettlement</defName>
+        <label>enslave enemy settlement</label>
+        <handlerClass>FactionColonies.MilitaryJobHandler_Enslave</handlerClass>
+        <statusLabelKey>FCMilStatusEnslaving</statusLabelKey>
+        <cooldownStatDef>raidCooldownOffset</cooldownStatDef>
+        <floatMenuLabelKey>EnslavePopulation</floatMenuLabelKey>
+        <floatMenuDescKey>FCEnslaveFloatMenuOption</floatMenuDescKey>
+        <defaultEnabled>false</defaultEnabled>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>CaptureEnemySettlement</defName>
+        <label>capture enemy settlement</label>
+        <handlerClass>FactionColonies.MilitaryJobHandler_Capture</handlerClass>
+        <statusLabelKey>FCMilStatusCapturing</statusLabelKey>
+        <floatMenuLabelKey>CaptureSettlement</floatMenuLabelKey>
+        <floatMenuDescKey>FCCaptureFloatMenuOption</floatMenuDescKey>
+    </FactionColonies.MilitaryJobDef>
+
+    <FactionColonies.MilitaryJobDef>
+        <defName>DefendFriendlySettlement</defName>
+        <label>defend friendly settlement</label>
+        <statusLabelKey>FCMilStatusDefending</statusLabelKey>
+        <occupiesTarget>false</occupiesTarget>
+        <isState>true</isState>
+    </FactionColonies.MilitaryJobDef>
+
+</Defs>

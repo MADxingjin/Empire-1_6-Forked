@@ -80,18 +80,18 @@ namespace FactionColonies
             Rect disableAllBox = new Rect(enableAllBox.xMax, enableAllBox.y, boundingBox.width / 2f, 30f);
             if (Widgets.ButtonText(enableAllBox, "FCTitheEnableAll".Translate()))
             {
-                resource.setAllRandomTitheFilter();
+                resource.SetAllRandomTitheFilter();
             }
             if (Widgets.ButtonText(disableAllBox, "FCTitheDisableAll".Translate()))
             {
-                resource.clearRandomTitheFilter();
+                resource.ClearRandomTitheFilter();
             }
 
             float curY = enableAllBox.yMax + margin;
 
             // Enabled count + status filter row
-            List<ThingDef> allThings = resource.generateThingDefList();
-            int enabledCount = allThings.Count(t => resource.getRandomTitheFilterAllow(t));
+            List<ThingDef> allThings = resource.GenerateThingDefList();
+            int enabledCount = allThings.Count(t => resource.GetRandomTitheFilterAllow(t));
             int totalCount = allThings.Count;
 
             Rect countRow = new Rect(boundingBox.x, curY, boundingBox.width, 22f);
@@ -172,9 +172,9 @@ namespace FactionColonies
 
             // Apply status filter
             if (statusFilter == 1)
-                thingsList = thingsList.Where(t => resource.getRandomTitheFilterAllow(t)).ToList();
+                thingsList = thingsList.Where(t => resource.GetRandomTitheFilterAllow(t)).ToList();
             else if (statusFilter == 2)
-                thingsList = thingsList.Where(t => !resource.getRandomTitheFilterAllow(t)).ToList();
+                thingsList = thingsList.Where(t => !resource.GetRandomTitheFilterAllow(t)).ToList();
 
             // Scroll list
             Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
@@ -202,12 +202,12 @@ namespace FactionColonies
                 }
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
-                bool allowed = resource.getRandomTitheFilterAllow(iThing);
+                bool allowed = resource.GetRandomTitheFilterAllow(iThing);
                 Color buttonColor = allowed ? Color.green : Color.red;
                 GUI.color = buttonColor;
                 if (Widgets.ButtonText(enableBox, IsAllowedTranslation(allowed)))
                 {
-                    resource.setRandomTitheFilterAllow(iThing, !allowed);
+                    resource.SetRandomTitheFilterAllow(iThing, !allowed);
                 }
                 GUI.color = Color.white;
                 Text.Anchor = TextAnchor.MiddleLeft;

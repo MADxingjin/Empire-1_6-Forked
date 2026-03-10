@@ -2,58 +2,73 @@
 <Defs>
 
 	<FactionColonies.FCPolicyDef>
-		<defName>heavyConscription</defName> <!--Name of Def -->
-		<label>Heavy Conscription</label> <!--Lable of Def -->
-		<desc>A large number of the populace is conscripted into the settlement's military forces. -50% happiness gain, +50% unrest gain, +2 military level in each settlement.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>heavyConscription</li>
-		</traits>
+		<defName>heavyConscription</defName>
+		<label>Heavy Conscription</label>
+		<desc>A large number of the populace is conscripted into the settlement's military forces.</desc>
+		<category>Military</category>
+		<upkeepSilver>125</upkeepSilver>
+		<enactDuration>300000</enactDuration>
+		<incompatiblePolicies>
+			<li>pacifist</li>
+		</incompatiblePolicies>
+		<statModifiers>
+			<li><stat>happinessGainedMultiplier</stat><value>0.7</value></li>
+			<li><stat>unrestGainedMultiplier</stat><value>1.3</value></li>
+			<li><stat>militaryBaseLevel</stat><value>2</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
 	<FactionColonies.FCPolicyDef>
-		<defName>volunteerService</defName> <!--Name of Def -->
-		<label>Volunteer Service</label> <!--Lable of Def -->
-		<desc>The military force of your settlements is by volunteers only. +20% combat efficiency, -25% unrest gain, -25% loyalty lost.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>volunteerService</li>
-		</traits>
+		<defName>volunteerService</defName>
+		<label>Volunteer Service</label>
+		<desc>The military force of your settlements is by volunteers only.</desc>
+		<category>Military</category>
+		<upkeepSilver>100</upkeepSilver>
+		<enactDuration>300000</enactDuration>
+		<incompatiblePolicies>
+			<li>slaver</li>
+		</incompatiblePolicies>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>1.2</value></li>
+			<li><stat>unrestGainedMultiplier</stat><value>0.75</value></li>
+			<li><stat>workerBaseCost</stat><value>10</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
 	<FactionColonies.FCPolicyDef>
-		<defName>aFactionDisarmed</defName> <!--Name of Def -->
-		<label>A Faction Disarmed</label> <!--Lable of Def -->
-		<desc>There is very little, if any trained military forces in the faction. -40% combat efficiency, +10% tax gain.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>aFactionDisarmed</li>
-		</traits>
+		<defName>aFactionDisarmed</defName>
+		<label>A Faction Disarmed</label>
+		<desc>There is very little, if any trained military forces in the faction.</desc>
+		<category>Military</category>
+		<upkeepSilver>50</upkeepSilver>
+		<enactDuration>300000</enactDuration>
+		<incompatiblePolicies>
+			<li>militaristic</li>
+		</incompatiblePolicies>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>0.6</value></li>
+			<li><stat>taxBasePercentage</stat><value>20</value></li>
+			<li><stat>happinessGainedBase</stat><value>0.5</value></li>
+			<li><stat>unrestLostBase</stat><value>1</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
-	
+
 	<FactionColonies.FCPolicyDef>
-		<defName>slaveArmy</defName> <!--Name of Def -->
-		<label>Slave Army</label> <!--Lable of Def -->
-		<desc>The majority of your settlements' military forces is comprised of slaves or those in forced servitude. -20% combat efficiency, +1 military level in each settlement.</desc> <!-- Description of trait -->
-		<cost>0</cost>
-		<type>militaryPolicy</type> <!-- only displays with specific type: taxPolicy, socialPolicy, militaryPolicy, factionTrait, settlementTrait -->
-		<techLevel>Undefined</techLevel>
-		<enactDuration>300000</enactDuration> <!-- Ticks it takes until construction is finished -->
-		<traits>
-			<li>slaveArmy</li>
-		</traits>
+		<defName>slaveArmy</defName>
+		<label>Slave Army</label>
+		<desc>The majority of your settlements' military forces is comprised of slaves or those in forced servitude.</desc>
+		<category>Military</category>
+		<upkeepSilver>75</upkeepSilver>
+		<enactDuration>300000</enactDuration>
+		<incompatiblePolicies>
+			<li>egalitarian</li>
+		</incompatiblePolicies>
+		<statModifiers>
+			<li><stat>militaryCombatEfficiency</stat><value>0.8</value></li>
+			<li><stat>militaryBaseLevel</stat><value>1</value></li>
+			<li><stat>workerBaseCost</stat><value>-10</value></li>
+			<li><stat>unrestGainedBase</stat><value>1</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
-	
+
 </Defs>

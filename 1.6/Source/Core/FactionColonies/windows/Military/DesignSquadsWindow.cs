@@ -39,7 +39,7 @@ namespace FactionColonies
                 util.blankUnit = new MilUnitFC(true);
             }
 
-            util.checkMilitaryUtilForErrors();
+            util.CheckMilitaryUtilForErrors();
         }
 
         public override void Select(IExposable selecting)
@@ -156,7 +156,7 @@ namespace FactionColonies
                 {
                     selectedSquad = squad;
                     selectedText = squad.name;
-                    selectedSquad.updateEquipmentTotalCost();
+                    selectedSquad.UpdateEquipmentTotalCost();
                 }
             }
 
@@ -179,7 +179,7 @@ namespace FactionColonies
             {
                 if (util.squads == null)
                 {
-                    util.resetSquads();
+                    util.ResetSquads();
                 }
 
                 MilSquadFC newSquad = new MilSquadFC(true)
@@ -188,7 +188,7 @@ namespace FactionColonies
                 };
                 selectedText = newSquad.name;
                 selectedSquad = newSquad;
-                selectedSquad.newSquad();
+                selectedSquad.NewSquad();
                 util.squads.Add(newSquad);
             }
 
@@ -200,15 +200,15 @@ namespace FactionColonies
 
             if (selectedSquad != null)
             {
-                if (Widgets.ButtonText(deleteBtn, "deleteSquadButton".Translate()))
+                if (Widgets.ButtonText(deleteBtn, "DeleteSquadButton".Translate()))
                 {
                     MilSquadFC squadToDelete = selectedSquad;
                     Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                         "FCConfirmDeleteSquad".Translate((NamedArgument)squadToDelete.name),
                         delegate
                         {
-                            squadToDelete.deleteSquad();
-                            util.checkMilitaryUtilForErrors();
+                            squadToDelete.DeleteSquad();
+                            util.CheckMilitaryUtilForErrors();
                             if (selectedSquad == squadToDelete)
                             {
                                 selectedSquad = null;
@@ -264,13 +264,11 @@ namespace FactionColonies
             {
                 Widgets.Label(costRect, "FCTotalSquadEquipmentCost".Translate(
                     selectedSquad.GetEquipmentTotalCost(),
-                    MilitaryCustomizationUtil.calculateMilitaryLevelPoints(
-                        settlementPointReference.settlementMilitaryLevel)));
+                    MilitaryCustomizationUtil.CalculateSquadBudget(settlementPointReference.settlementMilitaryLevel)));
             }
             else
             {
-                Widgets.Label(costRect, "FCTotalSquadEquipmentCostNoRef".Translate(
-                    selectedSquad.GetEquipmentTotalCost()));
+                Widgets.Label(costRect, "FCTotalSquadEquipmentCostNoRef".Translate(selectedSquad.GetEquipmentTotalCost()));
             }
 
             if (isSelectedSquadDeployed)
@@ -491,8 +489,8 @@ namespace FactionColonies
             if (!canEdit) GUI.color = Color.gray;
             if (Widgets.ButtonText(resetBtn, "FCResetToDefault".Translate(), true, true, canEdit))
             {
-                selectedSquad.newSquad();
-                selectedSquad.updateEquipmentTotalCost();
+                selectedSquad.NewSquad();
+                selectedSquad.UpdateEquipmentTotalCost();
                 selectedSquad.ChangeTick();
             }
             GUI.color = colorBefore;
@@ -535,7 +533,7 @@ namespace FactionColonies
                 return;
             }
             selectedSquad.units[blankIndex] = unit;
-            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.UpdateEquipmentTotalCost();
             selectedSquad.ChangeTick();
         }
 
@@ -548,7 +546,7 @@ namespace FactionColonies
                 return;
             }
             selectedSquad.units[blankIndex] = unit;
-            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.UpdateEquipmentTotalCost();
             selectedSquad.ChangeTick();
         }
 
@@ -566,7 +564,7 @@ namespace FactionColonies
             if (lastIndex == -1) return;
 
             selectedSquad.units[lastIndex] = util.blankUnit;
-            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.UpdateEquipmentTotalCost();
             selectedSquad.ChangeTick();
         }
 
@@ -579,7 +577,7 @@ namespace FactionColonies
                     selectedSquad.units[i] = util.blankUnit;
                 }
             }
-            selectedSquad.updateEquipmentTotalCost();
+            selectedSquad.UpdateEquipmentTotalCost();
             selectedSquad.ChangeTick();
         }
 

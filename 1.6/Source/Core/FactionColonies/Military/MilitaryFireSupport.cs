@@ -57,7 +57,7 @@ namespace FactionColonies
             return $"MilitaryFireSupport_{loadID}";
         }
 
-        public void setLoadID()
+        public void SetLoadID()
         {
             loadID = FactionCache.FactionComp.GetNextMilitaryFireSupportID();
         }
@@ -78,23 +78,23 @@ namespace FactionColonies
             return (float)Math.Round(cost);
         }
 
-        public float returnAccuracyCostPercentage()
+        public float ReturnAccuracyCostPercentage()
         {
             return CalculateAccuracyCostPercentage(accuracy);
         }
 
-        public float returnTotalCost()
+        public float ReturnTotalCost()
         {
             totalCost = CalculateTotalCost(accuracy, projectiles.Select(def => def.BaseMarketValue));
             return totalCost;
         }
 
-        public void delete()
+        public void Delete()
         {
             FactionCache.FactionComp.militaryCustomizationUtil.fireSupportDefs.Remove(this);
         }
 
-        public ThingDef expendProjectile()
+        public ThingDef ExpendProjectile()
         {
             if (!projectiles.Any()) return null;
             ThingDef projectile = projectiles[0];
@@ -102,7 +102,7 @@ namespace FactionColonies
             return projectile;
         }
 
-        public List<ThingDef> returnFireSupportOptions()
+        public List<ThingDef> ReturnFireSupportOptions()
         {
             // return list of thingdefs that can be used as fire support
             ThingSetMaker thingSetMaker = new ThingSetMaker_Count();
@@ -145,7 +145,7 @@ namespace FactionColonies
                 if (ShouldFire)
                 {
                     IntVec3 spawnCenter = SemiRandomSpawnCenter;
-                    ThingDef ammoDef = expendProjectile();
+                    ThingDef ammoDef = ExpendProjectile();
                     if (ammoDef == null) return;
 
                     if (CombatExtendedUtil.IsCELoaded)

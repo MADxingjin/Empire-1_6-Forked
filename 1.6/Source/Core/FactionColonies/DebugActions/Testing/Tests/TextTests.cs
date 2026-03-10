@@ -83,19 +83,19 @@ namespace FactionColonies
             TestAssert.AreEqual("The CF", TextGen.ToShortName("The Crimson Fleet"));
         }
 
-        // --- TextUtil.colorizeAdditiveBonus ---
+        // --- TextUtil.ColorizeAdditiveBonus ---
 
         [EmpireTest("Text")]
         public static void ColorizeAdditive_PositiveBonus_ContainsPlusSign()
         {
-            string result = TextUtil.colorizeAdditiveBonus(5.0).RawText;
+            string result = TextUtil.ColorizeAdditiveBonus(5.0).RawText;
             TestAssert.IsTrue(result.Contains("+"), $"Expected '+' in '{result}'");
         }
 
         [EmpireTest("Text")]
         public static void ColorizeAdditive_NegativeBonus_NoPlusSign()
         {
-            string result = TextUtil.colorizeAdditiveBonus(-3.0).RawText;
+            string result = TextUtil.ColorizeAdditiveBonus(-3.0).RawText;
             TestAssert.IsFalse(result.Contains("+"), $"Expected no '+' in '{result}'");
         }
 
@@ -103,23 +103,23 @@ namespace FactionColonies
         public static void ColorizeAdditive_HardInvert_FlipsSign()
         {
             // 5.0 with hardinvert becomes -5, so no plus sign
-            string result = TextUtil.colorizeAdditiveBonus(5.0, hardinvert: true).RawText;
+            string result = TextUtil.ColorizeAdditiveBonus(5.0, hardinvert: true).RawText;
             TestAssert.IsTrue(result.Contains("-"), $"Expected '-' in '{result}'");
         }
 
-        // --- TextUtil.colorizeMultiplierBonus ---
+        // --- TextUtil.ColorizeMultiplierBonus ---
 
         [EmpireTest("Text")]
         public static void ColorizeMultiplier_WithXSign_ContainsX()
         {
-            string result = TextUtil.colorizeMultiplierBonus(1.5).RawText;
+            string result = TextUtil.ColorizeMultiplierBonus(1.5).RawText;
             TestAssert.IsTrue(result.Contains("x"), $"Expected 'x' in '{result}'");
         }
 
         [EmpireTest("Text")]
         public static void ColorizeMultiplier_WithoutXSign_NoX()
         {
-            string result = TextUtil.colorizeMultiplierBonus(1.5, addXsign: false).RawText;
+            string result = TextUtil.ColorizeMultiplierBonus(1.5, addXsign: false).RawText;
             TestAssert.IsFalse(result.Contains("x"), $"Expected no 'x' in '{result}'");
         }
     }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for BiomeResourceDef, and explains what they do and their default values -->
+  <!-- BiomeResourceDefs define what resources are available in a biome and their base production values. -->
+  <!-- Each biome in the game should map to a BiomeResourceDef. If a resource is not listed in a BiomeResourceDef, -->
+  <!-- it uses the resource's defaultBiomeAdditive and defaultBiomeMultiplier values (both default to 1). -->
+  <FactionColonies.BiomeResourceDef>
+	<defName>exampleBiome</defName>
+	<label>Example Biome</label>
+	<description>A brief description of this biome for the settlement creation UI.</description>
+	<!-- Whether the player can create settlements in this biome. -->
+	<canSettle>true</canSettle>
+	<!-- Translation key for the biome's description shown in the settlement window (e.g. "FCDescBorealForest").
+	     If null or empty, falls back to "FCDescUnknown". -->
+	<descriptionKey>FCDescExampleBiome</descriptionKey>
+	<!-- Per-resource production values for this biome. -->
+	<!-- Each entry specifies a ResourceTypeDef and its additive/multiplier bonuses. -->
+	<!-- Resources not listed here will use their defaultBiomeAdditive and defaultBiomeMultiplier. -->
+	<!-- If additive is omitted (or set to NaN), it falls back to the ResourceTypeDef's defaultBiomeAdditive at ResolveReferences time. -->
+	<resources>
+		<li>
+			<resourceDef>RTD_Food</resourceDef>
+			<additive>1.5</additive>
+			<multiplier>1</multiplier>
+		</li>
+		<li>
+			<resourceDef>RTD_Mining</resourceDef>
+			<additive>0.5</additive>
+			<multiplier>0.8</multiplier>
+		</li>
+	</resources>
+	<!-- Resources that are completely unavailable in this biome. -->
+	<!-- This takes precedence over the resources list — if a resource is on this list, it cannot be produced here. -->
+	<!-- Note: ResourceTypeDef also has its own biomeAllowList/biomeBlockList for the reverse direction. -->
+	<resourceBlockList>
+		<li>RTD_Example_Blocked</li>
+	</resourceBlockList>
+  </FactionColonies.BiomeResourceDef>
+
+</Defs>

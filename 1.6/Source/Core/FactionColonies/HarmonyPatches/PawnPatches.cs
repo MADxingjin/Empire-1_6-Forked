@@ -12,10 +12,10 @@ namespace FactionColonies
             if (__instance.IsMercenary())
             {
                 if (__instance.Faction != FactionCache.PlayerColonyFaction) __instance.SetFaction(FactionCache.PlayerColonyFaction);
-                MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.returnSquadFromUnit(__instance);
+                MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.ReturnSquadFromUnit(__instance);
                 if (squad != null)
                 {
-                    Mercenary merc = FactionCache.FactionComp.militaryCustomizationUtil.returnMercenaryFromUnit(__instance, squad);
+                    Mercenary merc = FactionCache.FactionComp.militaryCustomizationUtil.ReturnMercenaryFromUnit(__instance, squad);
                     if (merc != null)
                     {
                         if (squad.settlement != null)
@@ -25,13 +25,13 @@ namespace FactionColonies
                                 squad.dead += 1;
                             }
 
-                            squad.settlement.happiness -= 1;
+                            squad.settlement.GainHappiness(-1d);
                         }
 
                         squad.PassPawnToDeadMercenaries(merc);
                     }
 
-                    squad.removeDroppedEquipment();
+                    squad.RemoveDroppedEquipment();
                 }
                 else
                 {

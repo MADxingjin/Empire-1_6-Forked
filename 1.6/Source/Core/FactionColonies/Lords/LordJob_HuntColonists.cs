@@ -44,7 +44,7 @@ namespace FactionColonies
 
         public override void Notify_PawnLost(Pawn pawn, PawnLostCondition condition)
         {
-            settlement?.MilitaryComp?.removeAttacker(pawn);
+            settlement?.MilitaryComp?.RemoveAttacker(pawn);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Verse;
 using RimWorld;
 using UnityEngine;
+using FactionColonies.util;
 
 
 namespace FactionColonies
@@ -33,7 +34,7 @@ namespace FactionColonies
             preventCameraMotion = false;
             header = "UpgradeSettlement".Translate();
             this.settlement = settlement;
-            settlementUpgradeCost = Convert.ToInt32(FCSettings.settlementBaseUpgradeCost) + (settlement.settlementLevel * 1000);
+            settlementUpgradeCost = settlement.GetUpgradeCost(Convert.ToInt32(FCSettings.settlementBaseUpgradeCost));
             desc = settlement.Name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
             factionfc = FactionCache.FactionComp;
             maxSettlementLevel = FCSettings.settlementMaxLevel;
@@ -46,18 +47,19 @@ namespace FactionColonies
         private Message UpgradeSettlement()
         {
             //failure reasons
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("ActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.isUpgrading) return new Message("AlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
-            if (PaymentUtil.getSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
+            if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
             //on success
-            PaymentUtil.paySilver(settlementUpgradeCost);
+            PaymentUtil.PaySilver(settlementUpgradeCost, PaymentUtil.Reason_SettlementUpgrade, settlement);
             FCEvent tmp = new FCEvent(true)
             {
                 def = FCEventDefOf.upgradeSettlement,
                 tickStarted = Find.TickManager.TicksGame,
                 location = settlement.Tile,
-                timeTillTrigger = Find.TickManager.TicksGame + (settlement.settlementLevel + 1) * 60000 * (factionfc.hasPolicy(FCPolicyDefOf.isolationist) ? 1 : 2)
+                timeTillTrigger = Find.TickManager.TicksGame + settlement.GetUpgradeTime(factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier))
             };
             tmp.customDescription = "UpgradeEventDesc".Translate(
                 settlement.Name,
@@ -70,11 +72,10 @@ namespace FactionColonies
             settlement.startUpgradeTick = Find.TickManager.TicksGame;
             settlement.finishUpgradeTick = tmp.timeTillTrigger;
 
-            FactionCache.FactionComp.addEvent(tmp);
+            FactionCache.FactionComp.AddEvent(tmp);
 
-            //Close this window and update the SettlementWindowFc
+            //Close this window
             Find.WindowStack.TryRemove(this);
-            Find.WindowStack.WindowOfType<SettlementWindowFc>().windowUpdateFc();
 
             return new Message("StartUpgradeSettlement".Translate(), MessageTypeDefOf.NeutralEvent);
         }

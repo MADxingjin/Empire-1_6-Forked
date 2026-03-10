@@ -18,11 +18,30 @@ namespace FactionColonies
     public class FCEventHandlerExtension : DefModExtension
     {
         /// <summary>
+        /// Called to resolve a custom event. Return true if handled (skips built-in resolution).
+        /// Generic post-processing (loot, stat cleanup, cascading events, OnEventTriggered)
+        /// still runs afterward regardless of return value.
+        /// </summary>
+        public virtual bool ResolveEvent(FCEvent evt, FactionFC faction)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Called after all standard event processing has completed (loot delivery,
         /// trait removal, prosperity changes, following events).
         /// </summary>
         public virtual void OnEventTriggered(FCEvent evt)
         {
+        }
+
+        /// <summary>
+        /// Called during settlement removal for each active event that wasn't already
+        /// handled by the core cleanup logic. Return true to cancel this event.
+        /// </summary>
+        public virtual bool ShouldCancelOnSettlementRemoval(FCEvent evt, WorldSettlementFC settlement)
+        {
+            return false;
         }
     }
 

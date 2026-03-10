@@ -76,11 +76,12 @@ namespace FactionColonies
         static bool Prefix(ref Faction __instance, Pawn member, DamageInfo? dinfo, bool wasWorldPawn, Map map)
         {
             if (member.Faction == FactionCache.PlayerColonyFaction && !wasWorldPawn &&
-                !PawnGenerator.IsBeingGenerated(member) && map != null && map.IsPlayerHome &&
+                !PawnGenerator.IsBeingGenerated(member) && map != null &&
+                (map.IsPlayerHome || map.Parent is WorldSettlementFC) &&
                 !__instance.HostileTo(Faction.OfPlayer))
             {
                 FactionFC faction = FactionCache.FactionComp;
-                if (!faction.hasPolicy(FCPolicyDefOf.pacifist) && dinfo != null)
+                if (!faction.AnyPolicySuppressesMemberDeathPenalty() && dinfo != null)
                 {
                     if (dinfo.Value.Category == DamageInfo.SourceCategory.Collapse)
                     {
@@ -136,13 +137,12 @@ namespace FactionColonies
         }
     }
 
-    //member exit map
- /*   [HarmonyPatch(typeof(Faction), "Notify_MemberExitedMap")]
-    class GoodwillPatchFunctionsExitedMap
+    [HarmonyPatch(typeof(Faction), "Notify_MemberTookDamage")]
+    class GoodwillPatchFunctionsTookDamage
     {
-        static bool Prefix(ref Faction __instance, Pawn member, bool free)
+        static bool Prefix(ref Faction __instance, Pawn member, DamageInfo dinfo)
         {
-            if (__instance.def.defName == "PColony")
+            if (__instance == FactionCache.PlayerColonyFaction)
             {
                 return false;
             }
@@ -150,19 +150,4 @@ namespace FactionColonies
             return true;
         }
     }
-
-    //member took damage
-    [HarmonyPatch(typeof(Faction), "Notify_MemberTookDamage")]
-    class GoodwillPatchFunctionsTookDamage
-    {
-        static bool Prefix(ref Faction __instance, Pawn member, DamageInfo dinfo)
-        {
-            if (__instance.def.defName == "PColony")
-            {
-                return false;
-            }
-
-            return true;
-        }
-    } */
 } 

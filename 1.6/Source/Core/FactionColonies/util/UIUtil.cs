@@ -14,7 +14,7 @@ namespace FactionColonies
 {
     public static class UIUtil
     {
-        public static float getTotalHeight(Rect inputBox)
+        public static float GetTotalHeight(Rect inputBox)
         {
             return inputBox.y + inputBox.height;
         }

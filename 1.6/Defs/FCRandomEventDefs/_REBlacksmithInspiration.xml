@@ -1,128 +1,115 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-<FactionColonies.FCEventDef>
-		<defName>blacksmithInspiration_0</defName> 
-		<label>Blacksmith Inspiration</label> 
+	<FactionColonies.FCEventDef>
+		<defName>blacksmithInspiration_0</defName>
+		<label>Blacksmith Inspiration</label>
 		<desc>A blacksmith in a nearby settlement has received a great inspiration and is seeking patrons for what he claims will be a work of unparalleled quality! He plans to give it to his patron as a token of his loyalty.</desc>
-		<!-- Basic event stuff -->
-		<timeTillTrigger>0</timeTillTrigger> 
-
-		<options> 
+		<category>EC_Economy</category>
+		<timeTillTrigger>0</timeTillTrigger>
+		<options>
 			<li>blacksmithInspiration_0_1</li>
 			<li>blacksmithInspiration_0_2</li>
 			<li>blacksmithInspiration_0_3</li>
 			<li>blacksmithInspiration_0_4</li>
 		</options>
-		
-		<activateAtStart>true</activateAtStart> 
-		
-		<isRandomEvent>true</isRandomEvent> 
-		<weight>10</weight>  <!-- The amount of 'chances' an random event has to be selected. 1 for Extremely rare, 5 for rare, 15 for uncommon, 25 for common -->
+		<activateAtStart>true</activateAtStart>
+		<isRandomEvent>true</isRandomEvent>
+		<weight>10</weight>
 		<incompatibleEvents>
 		</incompatibleEvents>
-
-		<rangeSettlementsAffected>0~0</rangeSettlementsAffected> 
-		<settlementsCarryOver>true</settlementsCarryOver> 
-
-		<requiredResource>RTD_Weapons</requiredResource> 
-		
+		<rangeSettlementsAffected>0~0</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
+		<requiredResource>RTD_Weapons</requiredResource>
 	</FactionColonies.FCEventDef>
-
 
 	<FactionColonies.FCOptionDef>
 		<defName>blacksmithInspiration_0_1</defName>
-		<label>I do not have the money to fund such an endeavor.</label>
+		<label>I cannot spare the funds for such an endeavor.</label>
 		<parentEvent>blacksmithInspiration_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
 		<silverCost>0</silverCost>
 		<successEvent>Null</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>
-	
+
 	<FactionColonies.FCOptionDef>
 		<defName>blacksmithInspiration_0_2</defName>
-		<label>I'll set aside a small amount for your efforts. Surely, 500 silver will be plenty.</label>
+		<label>A modest commission — 500 silver should suffice.</label>
 		<parentEvent>blacksmithInspiration_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
 		<silverCost>500</silverCost>
 		<successEvent>blacksmithInspiration_1-1</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>
-	
+
 	<FactionColonies.FCOptionDef>
 		<defName>blacksmithInspiration_0_3</defName>
-		<label>A great inspiration? I want to see this done. 1,000 silver will be allotted.</label>
+		<label>Fund the masterwork! Spare no expense.</label>
 		<parentEvent>blacksmithInspiration_0</parentEvent>
-		<baseChanceOfSuccess>100</baseChanceOfSuccess>
-		<silverCost>1000</silverCost>
-		<successEvent>blacksmithInspiration_1-2</successEvent>
-		<failEvent></failEvent>
+		<baseChanceOfSuccess>60</baseChanceOfSuccess>
+		<silverCost>1500</silverCost>
+		<successEvent>blacksmithInspiration_1-2s</successEvent>
+		<failEvent>blacksmithInspiration_1-2f</failEvent>
 	</FactionColonies.FCOptionDef>
-	
+
 	<FactionColonies.FCOptionDef>
 		<defName>blacksmithInspiration_0_4</defName>
-		<label>This will surely turn to be an artifact of the ages! I will give all of the funding you require. \n ... 2,000 silver, you say?</label>
+		<label>Fund an apprentice program instead — train the next generation.</label>
 		<parentEvent>blacksmithInspiration_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
-		<silverCost>2000</silverCost>
+		<silverCost>800</silverCost>
 		<successEvent>blacksmithInspiration_1-3</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>
-	
-	
-	
-	
-	
-	
+
 	<FactionColonies.FCEventDef>
-		<!-- Basic def stuff -->
-		<defName>blacksmithInspiration_1-1</defName> 
-		<label>Blacksmith Inspiration</label> 
-		<desc>The blacksmith is working on your gift...</desc>
-		
-		<!-- Basic event stuff -->
-		<timeTillTrigger>180000</timeTillTrigger> 
-		
-		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
-		<settlementsCarryOver>true</settlementsCarryOver> 
-		
+		<defName>blacksmithInspiration_1-1</defName>
+		<label>Blacksmith Inspiration</label>
+		<desc>The blacksmith is working on your commission...</desc>
+		<category>EC_Economy</category>
+		<timeTillTrigger>180000</timeTillTrigger>
+		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
-		<randomThingValue>500</randomThingValue>
-	</FactionColonies.FCEventDef>
-	
-	<FactionColonies.FCEventDef>
-		<!-- Basic def stuff -->
-		<defName>blacksmithInspiration_1-2</defName> 
-		<label>Blacksmith Inspiration</label> 
-		<desc>The blacksmith is working on your gift...</desc>
-		
-		<!-- Basic event stuff -->
-		<timeTillTrigger>180000</timeTillTrigger> 
-		
-		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
-		<settlementsCarryOver>true</settlementsCarryOver> 
-		
-		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
-		<randomThingValue>1000</randomThingValue>
-	</FactionColonies.FCEventDef>
-	
-	<FactionColonies.FCEventDef>
-		<!-- Basic def stuff -->
-		<defName>blacksmithInspiration_1-3</defName> 
-		<label>Blacksmith Inspiration</label> 
-		<desc>The blacksmith is working on your gift...</desc>
-		
-		<!-- Basic event stuff -->
-		<timeTillTrigger>180000</timeTillTrigger> 
-		
-		<rangeSettlementsAffected>1~1</rangeSettlementsAffected> 
-		<settlementsCarryOver>true</settlementsCarryOver> 
-		
-		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
-		<randomThingValue>2000</randomThingValue>
+		<randomThingValue>700</randomThingValue>
 	</FactionColonies.FCEventDef>
 
-	
+	<FactionColonies.FCEventDef>
+		<defName>blacksmithInspiration_1-2s</defName>
+		<label>Blacksmith Inspiration (Masterwork)</label>
+		<desc>The blacksmith's inspiration has produced a true masterwork! The result exceeds all expectations.</desc>
+		<category>EC_Economy</category>
+		<timeTillTrigger>180000</timeTillTrigger>
+		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
+		<randomThingValue>2500</randomThingValue>
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>blacksmithInspiration_1-2f</defName>
+		<label>Blacksmith Inspiration (Disappointing)</label>
+		<desc>The blacksmith's ambition outpaced his skill. The result is serviceable, but far from the masterwork promised.</desc>
+		<category>EC_Economy</category>
+		<timeTillTrigger>180000</timeTillTrigger>
+		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
+		<randomThingValue>400</randomThingValue>
+	</FactionColonies.FCEventDef>
+
+	<FactionColonies.FCEventDef>
+		<defName>blacksmithInspiration_1-3</defName>
+		<label>Blacksmith Inspiration (Apprentice Program)</label>
+		<desc>The blacksmith's apprentice program trains the next generation of weaponsmiths. No personal masterwork is produced, but the settlement's weapon production improves. +1 weapons base production.</desc>
+		<category>EC_Economy</category>
+		<timeTillTrigger>300000</timeTillTrigger>
+		<statModifiers>
+			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>1</value></li>
+		</statModifiers>
+		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
+		<settlementsCarryOver>true</settlementsCarryOver>
+	</FactionColonies.FCEventDef>
 
 </Defs>

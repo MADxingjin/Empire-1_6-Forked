@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for BuildingFCDef, and explains what they do and their default values -->
+  <!-- BuildingFCDefs define buildings that can be constructed in Empire settlements. -->
+  <!-- Buildings provide stat bonuses, can have upgrade chains, and can be restricted by biome, hilliness, -->
+  <!-- settlement type, and tech level. -->
+  <!-- If a building requires a specific DLC or mod, use MayRequire on the def element: -->
+  <!-- <FactionColonies.BuildingFCDef MayRequire="Ludeon.RimWorld.Royalty"> -->
+  <FactionColonies.BuildingFCDef>
+	<defName>ExampleBuilding</defName>
+	<label>Example Building</label>
+	<!-- Description shown in the building info panel. -->
+	<desc>A description of what this building does.</desc>
+	<!-- Silver cost to construct this building. -->
+	<cost>500</cost>
+	<!-- Time in ticks to construct. 60000 ticks = 1 in-game day. -->
+	<constructionDuration>120000</constructionDuration>
+	<!-- Minimum tech level required for this building. Default: Undefined (no restriction) -->
+	<techLevel>Undefined</techLevel>
+	<!-- Path to the building's icon texture (without file extension). Default: "GUI/unrest" -->
+	<iconPath>path/to/building/icon</iconPath>
+	<!-- Silver upkeep cost deducted periodically. Default: 0 -->
+	<upkeep>0</upkeep>
+
+	<!-- ── Stat Modifiers ── -->
+	<!-- Stat bonuses this building provides while built. See FCStatDef.xml for details on FCStatModifier. -->
+	<statModifiers>
+		<li>
+			<stat>taxBasePercentage</stat>
+			<value>0.1</value>
+		</li>
+		<li>
+			<stat>RTD_Food_ProductionAdditive</stat>
+			<value>2</value>
+		</li>
+	</statModifiers>
+
+	<!-- ── Biome Restrictions ── -->
+	<!-- List of BiomeResourceDef defNames where this building can be built. -->
+	<!-- If empty, the building is available in all biomes. -->
+	<applicableBiomes>
+		<li>borealForest</li>
+		<li>temperateForest</li>
+	</applicableBiomes>
+
+	<!-- ── Hilliness Restrictions ── -->
+	<!-- Minimum and maximum hilliness for the settlement tile. Default: Undefined (no restriction) -->
+	<!-- Valid values: Undefined, Flat, SmallHills, LargeHills, Mountainous, Impassable -->
+	<minhilliness>Undefined</minhilliness>
+	<maxhilliness>Undefined</maxhilliness>
+
+	<!-- ── Settlement Type Restrictions ── -->
+	<!-- These two lists are mutually exclusive — specify at most one. -->
+	<!-- If an allowList is specified, the building can ONLY be built in those settlement types. -->
+	<!-- If a blockList is specified, the building can be built in all settlement types EXCEPT those listed. -->
+	<settlementTypeAllowList>
+		<li>WorldSettlementDef_Surface</li>
+	</settlementTypeAllowList>
+	<settlementTypeBlockList>
+		<!-- mutually exclusive with settlementTypeAllowList -->
+	</settlementTypeBlockList>
+
+	<!-- ── Build Slot Behavior ── -->
+	<!-- If true, this building can be built directly from the building window into an empty slot. -->
+	<!-- If false, it can only be obtained by upgrading another building. Default: true -->
+	<baseBuilding>true</baseBuilding>
+
+	<!-- ── Upgrade Chain ── -->
+	<!-- Buildings that this building can be upgraded into. The player selects an upgrade from this list -->
+	<!-- in the building window. Must not form circular references. -->
+	<upgrades>
+		<li>ExampleBuildingUpgraded</li>
+	</upgrades>
+
+	<!-- ── Required Buildings ── -->
+	<!-- Other buildings that must already be built in the same settlement before this building can be constructed. -->
+	<!-- Must not form circular references. -->
+	<requiredBuildings>
+		<li>AnotherBuilding</li>
+	</requiredBuildings>
+  </FactionColonies.BuildingFCDef>
+
+</Defs>

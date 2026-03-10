@@ -11,10 +11,18 @@ namespace FactionColonies
     [HarmonyPatch(typeof(Game), "Dispose")]
     class CachePatches
     {
-        /* Simple postfix to invalidate the static FactionCache when loading a save or returning to the main menu. */
+        /* Simple postfix to invalidate the static FactionCache and clear all registries when loading a save or returning to the main menu. */
         public static void Postfix()
         {
             FactionCache.InvalidateCache();
+
+            TaxTickRegistry.ClearAll();
+            MainTableRegistry.ClearAll();
+            LifecycleRegistry.ClearAll();
+            BattleModifierRegistry.ClearAll();
+            BuildingFilterRegistry.ClearAll();
+
+            SettlementTypeExtension_Orbital.InvalidateCache();
         }
     }
 }

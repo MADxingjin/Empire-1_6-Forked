@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for MilitaryJobDef, and explains what they do and their default values -->
+  <!-- MilitaryJobDefs define military actions that squads can perform (e.g. raid, enslave, capture, defend). -->
+  <!-- Each job has a handler class that implements the actual behavior, and configuration for how it -->
+  <!-- appears in menus, whether it occupies a target, and what cooldown stat governs it. -->
+  <FactionColonies.MilitaryJobDef>
+	<defName>exampleMilitaryJob</defName>
+	<label>Example Military Job</label>
+	<description>A brief description of this military job.</description>
+	<!-- The C# class that implements this job's behavior. Must be a subclass of MilitaryJobHandler. -->
+	<!-- The handler is instantiated once per def and cached. -->
+	<handlerClass>YourNamespace.YourMilitaryJobHandler</handlerClass>
+	<!-- Translation key for the status label shown while this job is active (e.g. "Raiding", "Defending"). -->
+	<statusLabelKey>FCMilJob_Example_Status</statusLabelKey>
+	<!-- Translation key for the label shown in the float menu when selecting this job. -->
+	<floatMenuLabelKey>FCMilJob_Example_Label</floatMenuLabelKey>
+	<!-- Translation key for the description tooltip shown in the float menu. -->
+	<floatMenuDescKey>FCMilJob_Example_Desc</floatMenuDescKey>
+	<!-- If true, the target settlement/location is "occupied" while this job is active, -->
+	<!-- preventing other jobs from targeting the same location. Default: true -->
+	<occupiesTarget>true</occupiesTarget>
+	<!-- If true, this job represents a persistent state rather than a one-time action. Default: false -->
+	<isState>false</isState>
+	<!-- The FCStatDef that controls cooldown duration for this job. -->
+	<!-- When set, the cooldown is modified by this stat's aggregated value. -->
+	<cooldownStatDef>militaryCooldownOffset</cooldownStatDef>
+	<!-- If true, the cooldown uses the dead pawn cooldown formula instead of the standard one. Default: false -->
+	<deadPawnCooldown>false</deadPawnCooldown>
+	<!-- If true, this job is enabled by default (can be blocked by FCPolicyDef.blockedMilitaryJobs). -->
+	<!-- If false, it must be explicitly enabled by FCPolicyDef.enabledMilitaryJobs. Default: true -->
+	<defaultEnabled>true</defaultEnabled>
+  </FactionColonies.MilitaryJobDef>
+
+</Defs>

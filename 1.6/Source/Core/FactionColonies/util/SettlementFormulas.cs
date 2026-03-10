@@ -9,20 +9,6 @@ namespace FactionColonies.util
     public static class SettlementFormulas
     {
         /// <summary>
-        /// Calculates the net stat change (gain - loss) for a settlement stat like happiness, loyalty, or unrest.
-        /// </summary>
-        public static double CalculateStatChange(
-            double baseGain, double baseLoss,
-            double gainTraitAdditive, double lossTraitAdditive,
-            double gainMultiplier, double lossMultiplier,
-            double policyBonus = 0)
-        {
-            double gain = gainMultiplier * (policyBonus + baseGain + gainTraitAdditive);
-            double loss = lossMultiplier * (baseLoss + lossTraitAdditive);
-            return gain - loss;
-        }
-
-        /// <summary>
         /// Clamps a stat value after applying a change, rounding to 1 decimal place.
         /// </summary>
         public static double ClampStat(double current, double change, double min = 1, double max = 100)
@@ -68,16 +54,29 @@ namespace FactionColonies.util
         }
 
         /// <summary>
-        /// Calculates stat penalties when a settlement loses a battle.
-        /// Feudal policy doubles loyalty loss. Resilient trait halves prosperity loss.
+        /// Calculates base stat penalties when a settlement loses a battle.
+        /// Policy-specific modifiers (e.g. feudal, resilient) are applied via FCStatDef stats.
         /// </summary>
         public static (double prosperity, double happiness, double loyalty) CalculateBattleLossPenalties(
-            double happinessLostMultiplier, double loyaltyLostMultiplier,
-            bool hasFeudalPolicy, bool hasResilientTrait)
+            double happinessLostMultiplier, double loyaltyLostMultiplier)
         {
-            int feudalMult = hasFeudalPolicy ? 2 : 1;
-            float prosperityMult = hasResilientTrait ? 0.5f : 1f;
-            return (20 * prosperityMult, 25 * happinessLostMultiplier, 15 * loyaltyLostMultiplier * feudalMult);
+            return (20, 25 * happinessLostMultiplier, 15 * loyaltyLostMultiplier);
+        }
+
+        /// <summary>
+        /// Calculates the silver cost to upgrade a settlement to the next level.
+        /// </summary>
+        public static int CalculateUpgradeCost(int settlementLevel, int baseUpgradeCost)
+        {
+            return baseUpgradeCost + (settlementLevel * 1000);
+        }
+
+        /// <summary>
+        /// Calculates the duration in ticks for a settlement upgrade to complete.
+        /// </summary>
+        public static int CalculateUpgradeTime(int settlementLevel, double buildTimeMultiplier)
+        {
+            return (int)((settlementLevel + 1) * 60000 * 2 * buildTimeMultiplier);
         }
     }
 }

@@ -18,7 +18,10 @@
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
 	</modDependencies>
-	
+	<loadAfter>
+		<li>jaeger972.factionterritories</li>
+	</loadAfter>
+
 	<description>Spread your rule across the Rimworld with self governing colonies that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies. But politics is always a deadly game.
 
 Events will periodically influence your colonies, or your faction as a whole. You must decide how best to respond to these situations. And beware, a poor guiding hand will have consequences, your faction may lose faith in your leadership entirely, and take their destiny into their own hands.

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- This file shows all options for ResourceEventRewardDef, and explains what they do and their default values -->
+  <!-- ResourceEventRewardDefs control how random reward items are generated for events. -->
+  <!-- They are referenced by FCEventDef's <randomThingRewardDef> field. -->
+  <!-- Each def configures ThingSetMakerParams: what items are allowed, their value range, count, and quality. -->
+  <FactionColonies.ResourceEventRewardDef>
+	<defName>exampleReward</defName>
+	<label>Example Reward</label>
+	<description>A brief description of this reward configuration.</description>
+
+	<!-- ── Item Filter ── -->
+	<!-- Thing categories to include in the filter. At least one allow list (or a custom thingSetMakerClass) is required. -->
+	<thingCategoryAllowList>
+		<li>Foods</li>
+	</thingCategoryAllowList>
+	<!-- Individual things to allow in the filter. -->
+	<thingAllowList>
+		<li>MealFine</li>
+	</thingAllowList>
+	<!-- Individual things to block from the filter (removed after allow lists are applied). -->
+	<thingBlockList>
+		<li>MealSurvivalPack</li>
+	</thingBlockList>
+	<!-- Stuff categories to allow. -->
+	<stuffCategoryAllowList>
+		<li>Metallic</li>
+	</stuffCategoryAllowList>
+	<!-- Stuff categories to block. -->
+	<stuffCategoryBlockList>
+		<li>Stony</li>
+	</stuffCategoryBlockList>
+
+	<!-- ── Value Range ── -->
+	<!-- Two modes for calculating the market value range, based on a valueBase provided at runtime: -->
+	<!-- If useValueFactors is false (default): range = (valueBase + valueMinFlatOffset, valueBase + valueMaxFlatOffset) -->
+	<!-- If useValueFactors is true: range = (valueBase * valueMinFactor, valueBase * valueMaxFactor) -->
+	<useValueFactors>false</useValueFactors>
+	<!-- Flat offset mode (used when useValueFactors is false): -->
+	<valueMinFlatOffset>-300</valueMinFlatOffset>
+	<valueMaxFlatOffset>300</valueMaxFlatOffset>
+	<!-- Factor mode (used when useValueFactors is true): -->
+	<valueMinFactor>0.5</valueMinFactor>
+	<valueMaxFactor>2.0</valueMaxFactor>
+
+	<!-- ── Count ── -->
+	<!-- If true, a count range is applied to generated items. Default: true -->
+	<!-- Some ThingSetMakers (like ThingSetMaker_Animals) don't use count ranges, so set this to false for those. -->
+	<useCountRange>true</useCountRange>
+	<!-- Count range for generated items. Default: (1, 1) -->
+	<countRange>(1, 3)</countRange>
+
+	<!-- ── Quality ── -->
+	<!-- If true, applies the qualityGenerator to generated items. Default: false -->
+	<useQualityGenerator>false</useQualityGenerator>
+	<!-- The quality distribution to use. Only used when useQualityGenerator is true. Default: Gift -->
+	<!-- See RimWorld.QualityGenerator for valid values (e.g. Gift, Reward, BaseGen, etc.) -->
+	<qualityGenerator>Gift</qualityGenerator>
+
+	<!-- ── Custom ThingSetMaker ── -->
+	<!-- Optional custom ThingSetMaker class. Must be a subclass of ThingSetMaker. -->
+	<!-- If null, ThingSetMaker_MarketValue is used. -->
+	<thingSetMakerClass>YourNamespace.YourThingSetMaker</thingSetMakerClass>
+
+	<!-- ── Tech Level Override ── -->
+	<!-- If true, uses the techLevel field below instead of the player faction's tech level. Default: false -->
+	<overrideTechLevel>false</overrideTechLevel>
+	<!-- Tech level override value. Only used when overrideTechLevel is true. Default: Undefined -->
+	<techLevel>Undefined</techLevel>
+  </FactionColonies.ResourceEventRewardDef>
+
+</Defs>
