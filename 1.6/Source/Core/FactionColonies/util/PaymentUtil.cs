@@ -47,13 +47,27 @@ namespace FactionColonies
 
             // Offset negative bills against positive bills, then resolve any remainder.
             int i = 0;
+            int maxOuterIterations = bills.Count * bills.Count + 1;
+            int outerIterations = 0;
             while (i < negativeBills.Count)
             {
+                if (++outerIterations > maxOuterIterations)
+                {
+                    LogUtil.Error($"AutoresolveBills: exceeded {maxOuterIterations} outer iterations. Bailing out to prevent freeze.");
+                    break;
+                }
                 BillFC negativeBill = negativeBills[i];
                 bool matched = false;
                 int j = 0;
+                int maxInnerIterations = bills.Count * 2 + 1;
+                int innerIterations = 0;
                 while (j < positiveBills.Count)
                 {
+                    if (++innerIterations > maxInnerIterations)
+                    {
+                        LogUtil.Error("AutoresolveBills: exceeded max inner iterations. Bailing out to prevent freeze.");
+                        break;
+                    }
                     BillFC positiveBill = positiveBills[j];
                     float result = positiveBill.taxes.silverAmount + negativeBill.taxes.silverAmount;
                     if (result == 0)

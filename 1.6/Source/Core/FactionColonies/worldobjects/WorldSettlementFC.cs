@@ -1082,8 +1082,15 @@ namespace FactionColonies
                 totalWorkers += resource.assignedWorkers;
             }
 
+            int maxAttempts = resources.Count * ((int)(totalWorkers - _workersUltraMax) + 1) * 3;
+            int attempts = 0;
             while (totalWorkers > _workersUltraMax)
             {
+                if (++attempts > maxAttempts)
+                {
+                    LogUtil.Error($"GetTotalWorkers_Internal: exceeded {maxAttempts} attempts shedding workers for {Name}. Bailing out to prevent freeze.");
+                    break;
+                }
                 int idx = Rand.RangeInclusive(0, resources.Count - 1);
                 if (resources[idx].assignedWorkers > 0)
                 {
@@ -1107,8 +1114,14 @@ namespace FactionColonies
                     return false;
                 }
 
+                int maxAttempts = resources.Count * 3;
                 while (_workers > workersUltraMax)
                 {
+                    if (--maxAttempts < 0)
+                    {
+                        LogUtil.Error($"IncreaseWorkers: exceeded max attempts finding a worker to shed for {Name}. Bailing out to prevent freeze.");
+                        break;
+                    }
                     int num = Rand.RangeInclusive(0, resources.Count - 1);
                     if (resources[num].assignedWorkers > 0)
                     {
