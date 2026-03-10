@@ -586,7 +586,10 @@ namespace FactionColonies.util
             {
                 return false;
             }
-            if (request.MustBeCapableOfViolence && FactionCache.XenotypeIsNonViolent(xenotype))
+            bool needsViolence = request.MustBeCapableOfViolence
+                || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
+                || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
+            if (needsViolence && FactionCache.XenotypeIsNonViolent(xenotype))
             {
                 return false;
             }
@@ -612,7 +615,10 @@ namespace FactionColonies.util
             {
                 return false;
             }
-            if (request.MustBeCapableOfViolence && FactionCache.CustomXenotypeIsNonViolent(xenotypeName))
+            bool needsViolence = request.MustBeCapableOfViolence
+                || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
+                || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
+            if (needsViolence && FactionCache.CustomXenotypeIsNonViolent(xenotypeName))
             {
                 return false;
             }
