@@ -392,10 +392,11 @@ namespace FactionColonies
 
             viewRectHeight = viewRectHeight == -1f ? float.MaxValue : viewRectHeight;
             Rect viewRect = new Rect(inRect.x, inRect.y, inRect.width - 17f, viewRectHeight);
+            Rect listRect = new Rect(inRect.x, inRect.y, inRect.width - 17f, float.MaxValue);
 
             Widgets.BeginScrollView(inRect, ref scrollVector, viewRect);
             Listing_Standard ls = new Listing_Standard();
-            ls.Begin(viewRect);
+            ls.Begin(listRect);
 
             // Display mod version
             ls.Label("FCModVersion".Translate(GetModVersion()));
@@ -514,26 +515,10 @@ namespace FactionColonies
                 ApplyDifficultyPreset(difficultyLevel);
             }
 
-            FixScrollingBug(ls);
+            viewRectHeight = ls.CurHeight + 5f;
             ls.End();
 
             Widgets.EndScrollView();
-        }
-
-        private void FixScrollingBug(Listing_Standard ls)
-        {
-            if (fixDone) return;
-
-            if (!firstRun)
-            {
-                viewRectHeight = ls.CurHeight + 5f;
-                fixDone = true;
-            }
-            else
-            {
-                viewRectHeight = float.MaxValue;
-                firstRun = false;
-            }
         }
     }
 
