@@ -582,7 +582,7 @@ namespace FactionColonies
 
         private void GenerateFriendlies(militaryForce force)
         {
-            var points = (float)(force.militaryLevel * force.militaryEfficiency * 100);
+            var points = Math.Max((float)(force.forceRemaining * 100), 50f);
             List<Pawn> friendlies;
             var riders = new Dictionary<Pawn, Pawn>();
             var homeComp = force.homeSettlement.MilitaryComp;
