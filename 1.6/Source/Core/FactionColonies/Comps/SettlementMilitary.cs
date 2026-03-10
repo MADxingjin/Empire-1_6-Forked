@@ -525,16 +525,23 @@ namespace FactionColonies
             SoundDefOf.Tick_High.PlayOneShotOnCamera();
             if (!battleMapInitialized)
             {
-                battleMapInitialized = true;
                 if (evt == null)
                 {
-                    LogUtil.Warning("Aborting defense, null FCEvent!");
+                    LogUtil.Warning("Aborting defense, null FCEvent! Resetting battle state.");
+                    EndBattle(false, 0, null);
                     return;
                 }
 
-                evt.timeTillTrigger = Find.TickManager.TicksGame;
                 var force = MilitaryUtilFC.ReturnDefendingMilitaryForce(evt);
-                if (force == null) return;
+                if (force == null)
+                {
+                    LogUtil.Warning($"Aborting defense for {WorldSettlement?.Name}, null defending force. Resetting battle state.");
+                    EndBattle(false, 0, null);
+                    return;
+                }
+
+                battleMapInitialized = true;
+                evt.timeTillTrigger = Find.TickManager.TicksGame;
 
                 if (force.homeSettlement.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;

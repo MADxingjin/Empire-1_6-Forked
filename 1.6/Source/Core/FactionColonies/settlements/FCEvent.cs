@@ -275,6 +275,13 @@ namespace FactionColonies
 
                 FCEvent evt = events[i];
                 faction.events.RemoveAt(i);
+
+                if (evt.def == null)
+                {
+                    LogUtil.Warning($"Skipping event with null def (loadID={evt.loadID}). Likely corrupted save data.");
+                    continue;
+                }
+
                 WorldSettlementFC settlement;
 
                 LogUtil.Message($"Processing event {evt.def.defName}");
@@ -301,7 +308,8 @@ namespace FactionColonies
                                 settlement = faction.ReturnSettlementByLocation(evt.source);
                                 if (settlement == null)
                                 {
-                                    continue;
+                                    LogUtil.Warning($"taxColony event references missing settlement at tile {evt.source}. Skipping delivery.");
+                                    break;
                                 }
 
                                 string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
@@ -346,22 +354,40 @@ namespace FactionColonies
                         case "captureEnemySettlement":
                         case "raidEnemySettlement":
                         case "enslaveEnemySettlement":
-                            //Process military event
-                            faction.ReturnSettlementByLocation(evt.location).MilitaryComp?.ProcessMilitaryEvent();
-                            break;
+                            {
+                                WorldSettlementFC militarySettlement = faction.ReturnSettlementByLocation(evt.location);
+                                if (militarySettlement != null)
+                                    militarySettlement.MilitaryComp?.ProcessMilitaryEvent();
+                                else
+                                    LogUtil.Warning($"Military event '{evt.def.defName}' references missing settlement at tile {evt.location}. Skipping.");
+                                break;
+                            }
                         case "cooldownMilitary":
                             {
-                                faction.ReturnSettlementByLocation(evt.location).MilitaryComp?.ReturnMilitary(true);
+                                WorldSettlementFC cooldownSettlement = faction.ReturnSettlementByLocation(evt.location);
+                                if (cooldownSettlement != null)
+                                    cooldownSettlement.MilitaryComp?.ReturnMilitary(true);
+                                else
+                                    LogUtil.Warning($"cooldownMilitary event references missing settlement at tile {evt.location}. Skipping.");
                                 break;
                             }
                     }
 
                     if (evt.def.defName == "settlementBeingAttacked")
                     {
-
                         WorldSettlementFC worldSettlement = evt.settlementFCDefending;
-
-                        worldSettlement.MilitaryComp?.StartDefence(evt, () => SetupAttack(worldSettlement, evt));
+                        if (worldSettlement == null)
+                        {
+                            LogUtil.Warning($"settlementBeingAttacked event has null settlementFCDefending (loadID={evt.loadID}). Skipping defense.");
+                        }
+                        else if (worldSettlement.MilitaryComp == null)
+                        {
+                            LogUtil.Warning($"settlementBeingAttacked: {worldSettlement.Name} has no MilitaryComp. Skipping defense.");
+                        }
+                        else
+                        {
+                            worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt));
+                        }
                     }
                     else //if undefined event
                     {
@@ -497,9 +523,23 @@ namespace FactionColonies
 
         private static void SetupAttack(WorldSettlementFC worldSettlement, FCEvent temp)
         {
-            if (worldSettlement.MilitaryComp == null)
+            if (worldSettlement?.MilitaryComp is null)
             {
                 LogUtil.Warning($"SetupAttack called on {worldSettlement?.Name} with no MilitaryComp. Aborting.");
+                return;
+            }
+
+            if (worldSettlement.Map is null)
+            {
+                LogUtil.Error($"SetupAttack: {worldSettlement.Name} has no map. Resetting battle state.");
+                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
+                return;
+            }
+
+            if (temp.militaryForceAttacking is null || temp.militaryForceAttackingFaction is null)
+            {
+                LogUtil.Error($"SetupAttack: Missing attacking force or faction for {worldSettlement.Name}. Resetting battle state.");
+                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
                 return;
             }
 
