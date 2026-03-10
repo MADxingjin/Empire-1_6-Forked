@@ -934,8 +934,15 @@ namespace FactionColonies
 
             double totalValue = 0;
             double titheIncome = GetTitheIncome();
+            int maxIterations = tithes.Count + 1;
+            int iterations = 0;
             while ((totalValue = CalcTotalTitheValue()) > titheIncome && tithes.Count > 0)
             {
+                if (++iterations > maxIterations)
+                {
+                    LogUtil.Error($"PruneTitheList() for resource {def.LabelCap} exceeded max iterations ({maxIterations}). Bailing out to prevent freeze.");
+                    break;
+                }
                 ThingQualityTuple maxValueThing = FindHighestValueTitheThing();
                 if (maxValueThing == null)
                 {
@@ -947,7 +954,7 @@ namespace FactionColonies
                 double totalThingValue = TitheThingTotalValue(maxValueThing, quantity);
                 if (totalValue - totalThingValue < titheIncome)
                 {
-                    double budget = titheIncome - totalThingValue;
+                    double budget = titheIncome - (totalValue - totalThingValue);
                     int newQuantity = MaxThingCanAfford(maxValueThing, budget);
                     int removeNum = quantity - newQuantity;
                     DecrementInTitheList(maxValueThing, removeNum);
