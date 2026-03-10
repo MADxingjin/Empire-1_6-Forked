@@ -145,10 +145,62 @@ namespace FactionColonies.util
 			return false;
 		}
 
+		/// <summary>
+		/// Merges goods into properly-sized stacks respecting each ThingDef's stackLimit.
+		/// Prevents spawning one pawn per individual item when delivering bulk resources.
+		/// </summary>
+		private static List<Thing> ConsolidateGoods(List<Thing> goods)
+		{
+			List<Thing> consolidated = new List<Thing>();
+
+			foreach (Thing thing in goods)
+			{
+				if (thing.stackCount <= 0) continue;
+
+				bool merged = false;
+				for (int i = 0; i < consolidated.Count; i++)
+				{
+					Thing existing = consolidated[i];
+					if (existing.CanStackWith(thing) && existing.stackCount < existing.def.stackLimit)
+					{
+						existing.TryAbsorbStack(thing, true);
+						if (thing.stackCount <= 0 || thing.Destroyed)
+						{
+							merged = true;
+							break;
+						}
+					}
+				}
+
+				if (!merged && thing.stackCount > 0 && !thing.Destroyed)
+				{
+					consolidated.Add(thing);
+				}
+			}
+
+			// Split any over-limit stacks that resulted from absorption
+			List<Thing> result = new List<Thing>();
+			foreach (Thing thing in consolidated)
+			{
+				while (thing.stackCount > thing.def.stackLimit)
+				{
+					result.Add(thing.SplitOff(thing.def.stackLimit));
+				}
+				if (thing.stackCount > 0)
+				{
+					result.Add(thing);
+				}
+			}
+
+			return result;
+		}
+
 		private static void SendCaravan(FCEvent evt)
 		{
 			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			if (DoDelayCaravanDueToDanger(evt)) return;
+
+			evt.goods = ConsolidateGoods(evt.goods);
 
 			MakeDeliveryLetterAndMessage(evt);
 			List<Pawn> pawns = new List<Pawn>();
