@@ -667,6 +667,12 @@ namespace FactionColonies
                 Widgets.Label(upkeepRect, "FCBuildingUpkeep".Translate(upkeep.ToString()));
                 statsBottom = upkeepRect.yMax;
             }
+            else if (upkeep < 0)
+            {
+                Rect upkeepRect = new Rect(statsX, timeRect.yMax + smallMargin, statsW, 22f);
+                Widgets.Label(upkeepRect, "FCBuildingIncome".Translate(Math.Abs(upkeep).ToString()));
+                statsBottom = upkeepRect.yMax;
+            }
 
             curY = Math.Max(iconRect.yMax, statsBottom) + margin;
 

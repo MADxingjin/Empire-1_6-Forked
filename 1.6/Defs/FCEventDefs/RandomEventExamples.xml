@@ -5,6 +5,7 @@
 		<defName>randomEventExample</defName> <!-- make this a unique name -->
 		<label>An example event is happening!</label> <!-- This is what the player sees in the event menu -->
 		<desc>Your settlement is being attacked by blah blah blah.</desc> <!-- The description of the event. -->
+		<category>EC_Other</category>
 		
 		<!-- Basic event stuff -->
 		<timeTillTrigger>300000</timeTillTrigger> <!-- The time the event will last (or until it goes to the next stage) 300000 covers a whole tax period, so is recommended for events affecting production -->
@@ -67,9 +68,10 @@
 	<!-- Base Event without all the comments -->
 	<FactionColonies.FCEventDef>
 		<!-- Basic def stuff -->
-		<defName>randomEventExample2</defName> 
-		<label>An example event is happening!</label> 
+		<defName>randomEventExample2</defName>
+		<label>An example event is happening!</label>
 		<desc>Your settlement is being attacked by blah blah blah.</desc>
+		<category>EC_Other</category>
 		
 		<!-- Basic event stuff -->
 		<timeTillTrigger>300000</timeTillTrigger> 

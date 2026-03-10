@@ -5,6 +5,7 @@
 		<defName>unexpectedCraftsmanship_0</defName>
 		<label>Unexpected Craftsmanship</label>
 		<desc>The craftsmen in your settlements have been working unusually well! How should their talents be directed?</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 		<options>
 			<li>unexpectedCraftsmanship_0_1</li>
@@ -60,12 +61,17 @@
 		<defName>unexpectedCraftsmanship_1-1</defName>
 		<label>Unexpected Craftsmanship</label>
 		<desc>The craftsmen continue their excellent work across all disciplines. +0.5 weapons and +0.5 apparel base production. Their broad excellence boosts morale. +1 happiness.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>happinessGainedBase</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>unexpectedCraftsmanship_0</li>
+			<li>missedSupplyDelivery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -74,10 +80,15 @@
 		<defName>unexpectedCraftsmanship_1-2</defName>
 		<label>Unexpected Craftsmanship (Weapons Focus)</label>
 		<desc>The craftsmen focus their talents on weaponsmithing. +1 weapons base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>unexpectedCraftsmanship_0</li>
+			<li>missedSupplyDelivery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -86,10 +97,15 @@
 		<defName>unexpectedCraftsmanship_1-3</defName>
 		<label>Unexpected Craftsmanship (Apparel Focus)</label>
 		<desc>The craftsmen focus their talents on tailoring. +1 apparel base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>unexpectedCraftsmanship_0</li>
+			<li>missedSupplyDelivery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

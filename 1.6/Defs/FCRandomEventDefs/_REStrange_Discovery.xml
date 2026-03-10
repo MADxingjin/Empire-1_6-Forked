@@ -5,6 +5,7 @@
 		<defName>strangeDiscovery_0</defName>
 		<label>Strange Discovery</label>
 		<desc>Deep in the mines, a strange presence has been felt and the miners have stopped working to investigate it.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<options>
 			<li>strangeDiscovery_0_1</li>
@@ -56,6 +57,7 @@
 		<defName>strangeDiscovery_1-1b</defName>
 		<label>Strange Discovery</label>
 		<desc>Your miners press deeper into the unknown...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-1b</followingEvent>
@@ -68,6 +70,7 @@
 		<defName>strangeDiscovery_1-1</defName>
 		<label>Strange Discovery</label>
 		<desc>Your miners start to investigate under military escort...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-1</followingEvent>
@@ -80,6 +83,7 @@
 		<defName>strangeDiscovery_1-2</defName>
 		<label>Strange Discovery</label>
 		<desc>Your miners start to investigate under military escort...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-2</followingEvent>
@@ -92,6 +96,7 @@
 		<defName>strangeDiscovery_1-3</defName>
 		<label>Strange Discovery</label>
 		<desc>Your miners start to investigate...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-3</followingEvent>
@@ -104,6 +109,7 @@
 		<defName>strangeDiscovery_2-1b</defName>
 		<label>Strange Discovery</label>
 		<desc>The miners struck an exceptionally rich vein near the disturbance! Someone must have wanted us to find this... \n +0.5 base mining production. You will receive a haul of ores that the miners dug up.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -119,6 +125,7 @@
 		<defName>strangeDiscovery_2-1</defName>
 		<label>Strange Discovery</label>
 		<desc>After investigating, the miners found several veins of ore all clumped together! Someone must have wanted us to find this... \n +0.25 base mining production. You will receive a small group of ores that the miners dug up.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -134,6 +141,7 @@
 		<defName>strangeDiscovery_2-2</defName>
 		<label>Strange Discovery</label>
 		<desc>When your miners investigated, a large insectoid attacked! Luckily, the security force sent with the miners fought off the creature with no casualties. A report of the event has been sent up for investigation.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>2500</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -144,6 +152,7 @@
 		<defName>strangeDiscovery_2-3</defName>
 		<label>Strange Discovery</label>
 		<desc>When your miners investigated, a large insectoid attacked! A few of the miners were killed before the creature was slain. Due to this, a number of workers have decided to stay home after the traumatic event. \n -3 max workers</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>

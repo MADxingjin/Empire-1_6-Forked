@@ -5,6 +5,7 @@
 		<defName>woundedAnimal_0</defName>
 		<label>Wounded Animal</label>
 		<desc>A farmer of one of your settlements has brought a wounded animal to your capital. He states that it entered their town and would refuse to leave. The animal looks sickly and on edge. It looks like it could snap at any moment...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>0</timeTillTrigger>
 
 		<options>
@@ -63,6 +64,7 @@
 		<defName>woundedAnimal_1-1</defName>
 		<label>Wounded Animal</label>
 		<desc>The animal remains calm. Your colonists guide it in without issue.</desc>
+		<category>EC_Other</category>
 
 		<timeTillTrigger>1500</timeTillTrigger>
 
@@ -75,6 +77,7 @@
 		<defName>woundedAnimal_1-2</defName>
 		<label>Wounded Animal</label>
 		<desc>As the animal is guided in, it starts to fight against the settlers delivering it. It quickly becomes more and more aggressive and all attempts to calm it start to fail... Several settlers are heavily injured or die. Unfortunately, this will affect production for a period of time. Max workers -3 for five days.</desc>
+		<category>EC_Other</category>
 
 		<timeTillTrigger>300000</timeTillTrigger>
 
@@ -91,6 +94,7 @@
 		<defName>woundedAnimal_1-3s</defName>
 		<label>Wounded Animal</label>
 		<desc>The trained handler approaches the animal with care and expertise. It calms down and allows itself to be guided in safely.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>1500</timeTillTrigger>
 		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
 		<randomThingValue>500</randomThingValue>
@@ -100,6 +104,7 @@
 		<defName>woundedAnimal_1-3f</defName>
 		<label>Wounded Animal</label>
 		<desc>Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process. -1 max workers for three days.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-1</value></li>

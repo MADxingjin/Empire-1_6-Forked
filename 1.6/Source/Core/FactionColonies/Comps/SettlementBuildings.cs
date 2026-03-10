@@ -452,7 +452,7 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
             upkeep = faction.FoldBehaviors(upkeep, (b, u) => b.ModifyBuildingUpkeep(building, u, WorldSettlement));
 
-            return Math.Max((int)upkeep, 0);
+            return (int)upkeep;
         }
 
         public TaggedString GetBuildingDesc(BuildingFCDef building)
@@ -462,6 +462,10 @@ namespace FactionColonies
             if (buildingUpkeep > 0)
             {
                 desc += "\n" + "FCBuildingUpkeep".Translate(buildingUpkeep.ToString());
+            }
+            else if (buildingUpkeep < 0)
+            {
+                desc += "\n" + "FCBuildingIncome".Translate(Math.Abs(buildingUpkeep).ToString());
             }
 
             desc += "\n" + building.AttributeDesc;

@@ -824,6 +824,7 @@ namespace FactionColonies
             _incomeExp = "";
             _workers = GetTotalWorkers_Internal();
             double upkeep = 0;
+            double income = 0;
 
             _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, GetBaseWorkerCost());
             if (_workerTotalUpkeep > 0)
@@ -839,8 +840,12 @@ namespace FactionColonies
                 upkeep += buildingsUpkeep;
                 _upkeepExp += "+" + Math.Round(buildingsUpkeep, 2).ToString() + " - " + "Buildings".Translate() + "\n";
             }
+            else if (buildingsUpkeep < 0)
+            {
+                income += Math.Abs(buildingsUpkeep);
+                _incomeExp += "+" + Math.Round(Math.Abs(buildingsUpkeep), 2).ToString() + " - " + "Buildings".Translate() + "\n";
+            }
 
-            double income = 0;
             foreach (ResourceFC resource in resources)
             {
                 if (resource.actualIncome > 0)

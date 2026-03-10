@@ -37,6 +37,13 @@
 	</FactionColonies.FCEventCategoryDef>
 
 	<FactionColonies.FCEventCategoryDef>
+		<defName>EC_Social</defName>
+		<label>Social</label>
+		<color>(0.7, 0.4, 0.9)</color>
+		<displayOrder>60</displayOrder>
+	</FactionColonies.FCEventCategoryDef>
+
+	<FactionColonies.FCEventCategoryDef>
 		<defName>EC_Other</defName>
 		<label>Other</label>
 		<color>(0.65, 0.65, 0.65)</color>

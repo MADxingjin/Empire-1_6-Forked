@@ -69,16 +69,6 @@ namespace FactionColonies
         // ============================
 
         [EmpireTest("BuildingDef")]
-        public static void AllBuildings_UpkeepIsNonNegative()
-        {
-            foreach (BuildingFCDef def in DefDatabase<BuildingFCDef>.AllDefsListForReading)
-            {
-                TestAssert.IsTrue(def.upkeep >= 0,
-                    $"{def.defName}: upkeep should be >= 0, got {def.upkeep}");
-            }
-        }
-
-        [EmpireTest("BuildingDef")]
         public static void AllBuildings_Upgrades_ResolvedCorrectly()
         {
             foreach (BuildingFCDef def in DefDatabase<BuildingFCDef>.AllDefsListForReading)

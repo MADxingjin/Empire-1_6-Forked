@@ -18,6 +18,7 @@ namespace FactionColonies
         public static FCEventCategoryDef EC_Economy;
         public static FCEventCategoryDef EC_Policy;
         public static FCEventCategoryDef EC_Military;
+        public static FCEventCategoryDef EC_Social;
         public static FCEventCategoryDef EC_Other;
 
         static FCEventCategoryDefOf()

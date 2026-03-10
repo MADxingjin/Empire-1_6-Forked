@@ -5,6 +5,7 @@
 		<defName>foodShortage_0</defName>
 		<label>Widespread Food Shortage</label>
 		<desc>There's a widespread food shortage in the affected regions. Your settlements need guidance on how to handle this crisis.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 		<options>
 			<li>foodShortage_0_1</li>
@@ -75,10 +76,14 @@
 		<defName>foodShortage_1-1</defName>
 		<label>Food Shortage</label>
 		<desc>Your settlements endure the food shortage. -1 food base production for the period.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>foodShortage_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -87,10 +92,14 @@
 		<defName>foodShortage_1-2</defName>
 		<label>Food Shortage (Imports)</label>
 		<desc>Emergency imports have arrived, lessening the impact of the food shortage. -0.5 food base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>foodShortage_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -99,11 +108,15 @@
 		<defName>foodShortage_1-3</defName>
 		<label>Food Shortage (Rationing)</label>
 		<desc>Strict rationing is in effect. Citizens admire the shared sacrifice. -1 food base production, +1 loyalty.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>loyaltyGainedBase</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>foodShortage_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -112,10 +125,14 @@
 		<defName>foodShortage_1-4</defName>
 		<label>Food Shortage (Slaves Starved)</label>
 		<desc>The slaves bear the brunt of the shortage. Food production continues unaffected, but the workforce is diminished. -2 max workers.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-2</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>foodShortage_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

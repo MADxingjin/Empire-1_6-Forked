@@ -5,6 +5,7 @@
 		<defName>moonlitRitual_0</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>One of your settlements reports seeing strange figures wander into the forest at night. They are described as wearing strange costumes.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>0</timeTillTrigger>
 
 		<options>
@@ -51,6 +52,7 @@
 		<defName>moonlitRitual_1-1</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>Someone has been sent to investigate...</desc>
+		<category>EC_Other</category>
 		<optionDescription>You receive news that an investigator followed an individual into the woods. They reported back seeing the group perform a series of almost ritualistic carnal acts. Not caring to stick around for it, he returned.</optionDescription>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<options>
@@ -96,6 +98,7 @@
 		<defName>moonlitRitual_2-1</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>Investigating further...</desc>
+		<category>EC_Other</category>
 		<optionDescription>The investigator reports back that the group returned again. They continued the same activities as the night prior- however, after not leaving, he observed that the group brought out an ornate chest with religious-looking symbols. He stepped closer for a better look, but after stepping on a dead leaf, the group heard him. He fled before they could find him.</optionDescription>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<options>
@@ -131,6 +134,7 @@
 		<defName>moonlitRitual_2-2</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>You have decided to leave them be.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 
 		<eventFollows>true</eventFollows>
@@ -149,6 +153,7 @@
 		<defName>moonlitRitual_3-1</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>You have ordered the investigation to continue...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>moonlitRitual_4-1</followingEvent>
@@ -160,6 +165,7 @@
 		<defName>moonlitRitual_4-1</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>After not reporting back, a search for the investigator was conducted. He was found dead. His body was stripped, his chest cavity split, and his skin carved with runic symbols. The group, whoever they were, were not seen again. Dread falls upon us all. \n Coincidently enough, this week's harvests seem to have spoiled... \n -2 happiness a day, -1 food base production.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>happinessLostBase</stat><value>2</value></li>
@@ -174,6 +180,7 @@
 		<defName>moonlitRitual_3-2</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>You have ordered the investigation to continue...</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>moonlitRitual_4-2</followingEvent>
@@ -185,6 +192,7 @@
 		<defName>moonlitRitual_4-2</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>The investigator reported back early in the morning looking quite disheaveled. However, his story says otherwise. They expected him this time and gave an invintation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to enjoyed himself! \n +1 food base production.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>1</value></li>
@@ -198,6 +206,7 @@
 		<defName>moonlitRitual_3-3</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>This week's harvests seem to be unnaturally more plentiful than usual... +.5 food base production.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>
@@ -211,6 +220,7 @@
 		<defName>moonlitRitual_3-4</defName>
 		<label>A Moonlit Ritual</label>
 		<desc>This week's harvests seem to be unnaturally less plentiful than usual... -.5 food base production.</desc>
+		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-0.5</value></li>

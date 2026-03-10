@@ -5,6 +5,7 @@
 		<defName>blacksmithInspiration_0</defName>
 		<label>Blacksmith Inspiration</label>
 		<desc>A blacksmith in a nearby settlement has received a great inspiration and is seeking patrons for what he claims will be a work of unparalleled quality! He plans to give it to his patron as a token of his loyalty.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 		<options>
 			<li>blacksmithInspiration_0_1</li>
@@ -66,6 +67,7 @@
 		<defName>blacksmithInspiration_1-1</defName>
 		<label>Blacksmith Inspiration</label>
 		<desc>The blacksmith is working on your commission...</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -77,6 +79,7 @@
 		<defName>blacksmithInspiration_1-2s</defName>
 		<label>Blacksmith Inspiration (Masterwork)</label>
 		<desc>The blacksmith's inspiration has produced a true masterwork! The result exceeds all expectations.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -88,6 +91,7 @@
 		<defName>blacksmithInspiration_1-2f</defName>
 		<label>Blacksmith Inspiration (Disappointing)</label>
 		<desc>The blacksmith's ambition outpaced his skill. The result is serviceable, but far from the masterwork promised.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -99,6 +103,7 @@
 		<defName>blacksmithInspiration_1-3</defName>
 		<label>Blacksmith Inspiration (Apprentice Program)</label>
 		<desc>The blacksmith's apprentice program trains the next generation of weaponsmiths. No personal masterwork is produced, but the settlement's weapon production improves. +1 weapons base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>1</value></li>

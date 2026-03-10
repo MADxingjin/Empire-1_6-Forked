@@ -5,6 +5,7 @@
 		<defName>sparseWildlife_0</defName>
 		<label>Sparse Wildlife</label>
 		<desc>The wildlife in the affected region(s) have all but disappeared. How should your settlements adapt?</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 		<options>
 			<li>sparseWildlife_0_1</li>
@@ -60,10 +61,15 @@
 		<defName>sparseWildlife_1-1</defName>
 		<label>Sparse Wildlife</label>
 		<desc>Your settlements make do without the wildlife. -1 animals base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>sparseWildlife_0</li>
+			<li>denseWildlife_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -72,10 +78,15 @@
 		<defName>sparseWildlife_1-2</defName>
 		<label>Sparse Wildlife (Extended Hunts)</label>
 		<desc>Hunting parties range further to compensate. -0.5 animals base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>sparseWildlife_0</li>
+			<li>denseWildlife_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -84,11 +95,16 @@
 		<defName>sparseWildlife_1-3</defName>
 		<label>Sparse Wildlife (Farming Shift)</label>
 		<desc>Settlers shift their focus from hunting to farming. -1 animals base production, +0.5 food base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>sparseWildlife_0</li>
+			<li>denseWildlife_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

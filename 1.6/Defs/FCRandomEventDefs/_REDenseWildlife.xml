@@ -5,6 +5,7 @@
 		<defName>denseWildlife_0</defName>
 		<label>Dense Wildlife</label>
 		<desc>There is a great amount of animals roaming the region. How should your settlements take advantage?</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 		<options>
 			<li>denseWildlife_0_1</li>
@@ -60,10 +61,15 @@
 		<defName>denseWildlife_1-1</defName>
 		<label>Dense Wildlife</label>
 		<desc>The herds flourish and boost animal production. +1 animals base production.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>denseWildlife_0</li>
+			<li>sparseWildlife_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -72,20 +78,30 @@
 		<defName>denseWildlife_1-2</defName>
 		<label>Dense Wildlife (Grand Hunt)</label>
 		<desc>A grand hunt is organized, bringing back valuable animal products.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>1500</timeTillTrigger>
 		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
 		<randomThingValue>500</randomThingValue>
+		<incompatibleEvents>
+			<li>denseWildlife_0</li>
+			<li>sparseWildlife_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
 		<defName>denseWildlife_1-3</defName>
 		<label>Dense Wildlife (Domestication)</label>
 		<desc>Some of the animals are captured and domesticated for long-term gains. +0.5 animals and +0.5 food base production for an extended period.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>600000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>denseWildlife_0</li>
+			<li>sparseWildlife_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

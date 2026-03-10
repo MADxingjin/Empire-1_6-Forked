@@ -5,6 +5,7 @@
 		<defName>drugTrade_0</defName>
 		<label>Drug Trade</label>
 		<desc>One of your settlements is reporting a massive spike in illegal drug use. The leadership suspects that a producer has taken up residence nearby. They request your word on the matter.</desc>
+		<category>EC_Economy</category>
 		<timeTillTrigger>0</timeTillTrigger>
 
 		<options>
@@ -48,6 +49,7 @@
 			<defName>drugTrade_1-1</defName>
 			<label>Drug Trade</label>
 			<desc>Investigating drug trade...\n -10% basetax</desc>
+			<category>EC_Economy</category>
 			<timeTillTrigger>120000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
 			<splitEventFollows>true</splitEventFollows>
@@ -65,6 +67,7 @@
 			<defName>drugTrade_1-2</defName>
 			<label>Drug Trade</label>
 			<desc>Your settlement may be hooked on drugs, but they seem content with their reality. You doubt you'll hear any complaints anytime soon. \n -10% base tax, +25% happiness gain, -25% unrest gain.</desc>
+			<category>EC_Economy</category>
 			<timeTillTrigger>600000</timeTillTrigger>
 			<statModifiers>
 				<li><stat>happinessGainedMultiplier</stat><value>1.25</value></li>
@@ -80,6 +83,7 @@
 			<defName>drugTrade_2-1</defName>
 			<label>Drug Trade</label>
 			<desc>The authorities have returned with good news! They have found the drug production. The sneaky lads almost got away, but no one can match the strength of your empire! However, they point out that a coin or two could be turned from taking over the production instead...</desc>
+			<category>EC_Economy</category>
 			<timeTillTrigger>0</timeTillTrigger>
 			<activateAtStart>true</activateAtStart>
 			<options>
@@ -114,6 +118,7 @@
 			<defName>drugTrade_2-2</defName>
 			<label>Drug Trade</label>
 			<desc>The authorities you directed to find the source of the drug production has turned up nothing. Locals are unhappy with the upheaval. The investigators are going to have to lay back for a short while...  \n -10% base Tax</desc>
+			<category>EC_Economy</category>
 			<timeTillTrigger>300000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
 			<followingEvent>drugTrade_1-1</followingEvent>
@@ -126,6 +131,7 @@
 			<defName>drugTrade_3-1</defName>
 			<label>Drug Trade</label>
 			<desc>The drug line has been incorporated into the settlement's official production. A random tithe of drugs will be delivered to you on a 5-day basis. -10% base tax.</desc>
+			<category>EC_Economy</category>
 			<timeTillTrigger>300000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
 			<followingEvent>drugTrade_4-1</followingEvent>
@@ -143,6 +149,7 @@
 			<defName>drugTrade_4-1</defName>
 			<label>Drug Trade</label>
 			<desc>You have received a new tithe of drugs. Continue production or shut down the facility?</desc>
+			<category>EC_Economy</category>
 			<activateAtStart>true</activateAtStart>
 			<options>
 				<li>drugTrade_4-1_1</li>

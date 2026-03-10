@@ -38,6 +38,7 @@ namespace FactionColonies
 
             int passed = 0, failed = 0, errors = 0, skipped = 0;
             var skipDetails = new List<string>();
+            var failDetails = new List<string>();
             foreach (var (method, attr) in tests)
             {
                 string testName = $"[{attr.Category}] {method.DeclaringType.Name}.{method.Name}";
@@ -57,6 +58,7 @@ namespace FactionColonies
                 {
                     failed++;
                     LogUtil.Error($"FAIL: {testName} -- {tfe.Message}");
+                    failDetails.Add($"  FAIL: {testName} -- {tfe.Message}");
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +70,10 @@ namespace FactionColonies
 
             string label = category != null ? $"[{category}]" : "[All]";
             LogUtil.MessageForce($"Test results {label}: {passed} passed, {failed} failed, {errors} errors, {skipped} skipped (of {tests.Count} total)");
+            if (failDetails.Count > 0)
+            {
+                LogUtil.MessageForce("Failed tests:\n" + string.Join("\n", failDetails));
+            }
             if (skipDetails.Count > 0)
             {
                 LogUtil.MessageForce("Skipped tests:\n" + string.Join("\n", skipDetails));
