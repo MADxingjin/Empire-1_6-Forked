@@ -318,7 +318,8 @@ namespace FactionColonies
                         compMult *= provider.GetResourceMultiplierModifier(this);
                 }
             }
-            return dictMult * statMult * compMult * taxBonus;
+            double prosperityMult = (settlement != null) ? (settlement.prosperity / 100.0) : 1.0;
+            return dictMult * statMult * compMult * taxBonus * prosperityMult;
         }
         public double GetTitheModifierPerWorker()
         {
@@ -564,6 +565,13 @@ namespace FactionColonies
                     }
                 }
                 desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
+
+                if (settlement != null)
+                {
+                    double prosperityMult = settlement.prosperity / 100.0;
+                    desc += "\n" + TextUtil.ColorizeMultiplierBonus(prosperityMult) + " - " + "Prosperity".Translate().CapitalizeFirst()
+                        + " (" + (int)settlement.prosperity + "%)";
+                }
 
                 cachedProdMultDesc = desc.Trim();
                 dirtyProductionMultDescCache = false;

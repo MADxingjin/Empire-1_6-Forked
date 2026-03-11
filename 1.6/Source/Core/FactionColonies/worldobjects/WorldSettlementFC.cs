@@ -73,7 +73,18 @@ namespace FactionColonies
         public double unrest;
         public double loyalty = 100;
         public double happiness = 100;
-        public double prosperity = 100;
+        private double _prosperity = 100;
+        public double prosperity
+        {
+            get { return _prosperity; }
+            set
+            {
+                if (_prosperity == value) return;
+                _prosperity = value;
+                InvalidateResourceCaches();
+                DirtyProfitCache();
+            }
+        }
 
         /// <summary>
         /// Stat modifiers from buildings, settlement type, and events that apply to this settlement.
@@ -466,7 +477,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref unrest, "unrest");
             Scribe_Values.Look(ref loyalty, "loyalty");
             Scribe_Values.Look(ref happiness, "happiness");
-            Scribe_Values.Look(ref prosperity, "prosperity");
+            Scribe_Values.Look(ref _prosperity, "prosperity");
             Scribe_Values.Look(ref _workerCost, "workerCost");
             Scribe_Values.Look(ref _workerTotalUpkeep, "workerTotalUpkeep");
 
