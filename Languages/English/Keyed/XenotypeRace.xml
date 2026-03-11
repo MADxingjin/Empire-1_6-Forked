@@ -24,6 +24,9 @@
 	<Empire_XenotypeMenus_EnableAll>Enable All</Empire_XenotypeMenus_EnableAll>
 	<Empire_XenotypeMenus_DisableNonBaseliner>Disable Non-Baseliner</Empire_XenotypeMenus_DisableNonBaseliner>
 
+	<!-- Faction Tooltip -->
+	<EmpireMemberRaceChances>Member Race Chances</EmpireMemberRaceChances>
+
 	<!-- Warnings -->
 	<DisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</DisabledHumanWarning>
 	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>

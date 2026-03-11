@@ -23,6 +23,7 @@ namespace FactionColonies
             BuildingFilterRegistry.ClearAll();
 
             SettlementTypeExtension_Orbital.InvalidateCache();
+            FactionDefDescriptionPatch.Invalidate();
         }
     }
 }

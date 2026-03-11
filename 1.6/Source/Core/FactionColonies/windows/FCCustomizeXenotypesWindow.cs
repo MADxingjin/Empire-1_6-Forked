@@ -78,6 +78,7 @@ namespace FactionColonies
         public override void PostClose()
         {
             base.PostClose();
+            FactionDefDescriptionPatch.Invalidate();
             filter.CullWeights();
         }
 

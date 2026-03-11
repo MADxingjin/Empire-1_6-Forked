@@ -1,15 +1,8 @@
-using NAudio.Wave;
 using RimWorld;
-using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using UnityEngine;
 using Verse;
-using Verse.Noise;
 
 namespace FactionColonies.util
 {
@@ -310,12 +303,17 @@ namespace FactionColonies.util
             }
             else
             {
+                List<XenotypeDef> toRemove = new List<XenotypeDef>();
                 foreach (XenotypeDef xenotype in xenotypeWeights.Keys)
                 {
-                    if (XenotypeWeights.ContainsKey(xenotype) && XenotypeWeights[xenotype] == 0)
+                    if (xenotypeWeights[xenotype] == 0)
                     {
-                        RemoveXenotype(xenotype);
+                        toRemove.Add(xenotype);
                     }
+                }
+                for (int i = 0; i < toRemove.Count; i++)
+                {
+                    RemoveXenotype(toRemove[i]);
                 }
             }
         }
@@ -330,12 +328,17 @@ namespace FactionColonies.util
             }
             else
             {
+                List<string> toRemove = new List<string>();
                 foreach (string xenotype in customXenotypeWeights.Keys)
                 {
-                    if (CustomXenotypeWeights.ContainsKey(xenotype) && CustomXenotypeWeights[xenotype] == 0)
+                    if (customXenotypeWeights[xenotype] == 0)
                     {
-                        RemoveCustomXenotype(xenotype);
+                        toRemove.Add(xenotype);
                     }
+                }
+                for (int i = 0; i < toRemove.Count; i++)
+                {
+                    RemoveCustomXenotype(toRemove[i]);
                 }
             }
         }
@@ -349,12 +352,17 @@ namespace FactionColonies.util
             }
             else
             {
+                List<ThingDef> toRemove = new List<ThingDef>();
                 foreach (ThingDef race in raceWeights.Keys)
                 {
-                    if (RaceWeights.ContainsKey(race) && RaceWeights[race] == 0)
+                    if (raceWeights[race] == 0)
                     {
-                        RemoveRace(race);
+                        toRemove.Add(race);
                     }
+                }
+                for (int i = 0; i < toRemove.Count; i++)
+                {
+                    RemoveRace(toRemove[i]);
                 }
             }
         }
