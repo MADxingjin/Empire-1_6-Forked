@@ -1654,14 +1654,18 @@ namespace FactionColonies
 
                 // Auto-Defend toggle
                 bool autoDefendOn = milComp.autoDefend;
+                bool autoDefendDisabled = !milComp.IsMilitaryValid();
                 Rect autoDefRect = new Rect(bx, btnY, btnW, btnH);
                 if (UIUtil.ButtonFlat(autoDefRect, "FCMilAutoDefend".Translate(),
-                    labelColor: autoDefendOn ? AccentUtil.MilReady : (Color?)null,
+                    labelColor: autoDefendOn && !autoDefendDisabled ? AccentUtil.MilReady : (Color?)null,
+                    disabled: autoDefendDisabled,
                     highlighted: isHighlighted))
                 {
                     milComp.autoDefend = !milComp.autoDefend;
                 }
-                UIUtil.TipRegionByText(autoDefRect, "FCMilBtnAutoDefendTip".Translate());
+                UIUtil.TipRegionByText(autoDefRect, autoDefendDisabled
+                    ? "FCMilAutoDefendDisabled".Translate()
+                    : "FCMilBtnAutoDefendTip".Translate());
 
                 Text.Font = fontBefore;
 

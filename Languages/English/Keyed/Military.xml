@@ -161,6 +161,7 @@
 	<FCMilBtnResetTip>Reset and regenerate squad members</FCMilBtnResetTip>
 	<FCMilBtnFireSupportTip>Call in artillery fire support</FCMilBtnFireSupportTip>
 	<FCMilBtnAutoDefendTip>Automatically send this settlement's forces to defend other settlements under attack</FCMilBtnAutoDefendTip>
+	<FCMilAutoDefendDisabled>This settlement's military level is too low to auto-defend. Upgrade the settlement to increase its military level.</FCMilAutoDefendDisabled>
 	<FCMilBadge>Atk {0} / Def {1}  &#x2022;  ${2}</FCMilBadge>
 
 </LanguageData>
