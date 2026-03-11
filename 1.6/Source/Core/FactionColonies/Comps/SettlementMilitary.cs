@@ -496,6 +496,7 @@ namespace FactionColonies
 
             if (shouldAutoResolve)
             {
+                initialDefenderCount = (int)evt.militaryForceDefending.forceRemaining;
                 BattleResult battleResult = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending);
                 EndBattle(battleResult.DefenderVictory, (int)evt.militaryForceDefending.forceRemaining, battleResult);
                 return;
@@ -710,7 +711,7 @@ namespace FactionColonies
                     LoseBattle(faction);
                 }
                 LogUtil.Message("WorldSettlementFC.EndBattle: Handling foreign defenders...");
-                CooldownMilitary(remaining);
+                CooldownMilitary(remaining, won);
             }
             catch (Exception e)
             {
@@ -721,7 +722,7 @@ namespace FactionColonies
             LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, MilitaryJobDefOf.DefendFriendlySettlement, won, battleResult);
         }
 
-        private void CooldownMilitary(int remaining)
+        private void CooldownMilitary(int remaining, bool won)
         {
             if (defenderForce?.homeSettlement == WorldSettlement)
             {
@@ -735,7 +736,7 @@ namespace FactionColonies
                 }
 
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
-                if (remaining >= initialDefenderCount)
+                if (won && remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     homeComp?.ReturnMilitary(true);
@@ -753,7 +754,7 @@ namespace FactionColonies
             {
                 // if not the home settlement defending
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
-                if (remaining >= initialDefenderCount)
+                if (won && remaining >= initialDefenderCount)
                 {
                     Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);

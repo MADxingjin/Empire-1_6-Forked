@@ -208,6 +208,28 @@ namespace FactionColonies
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
+        [DebugAction("Empire", "Force Attack + Event Same Tick", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ForceAttackAndEventSameTick()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            FCEvent attackEvt = faction.events.FirstOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+            if (attackEvt == null)
+            {
+                LogUtil.MessageForce("Debug - No pending settlementBeingAttacked event. Use 'Attack Player Settlement' first.");
+                return;
+            }
+
+            if (FCSettings.disableRandomEvents)
+            {
+                LogUtil.MessageForce("Debug - Warning: random events are disabled in settings. Random event will not fire.");
+            }
+
+            int nextDayBoundary = ((Find.TickManager.TicksGame / GenDate.TicksPerDay) + 1) * GenDate.TicksPerDay;
+            attackEvt.timeTillTrigger = nextDayBoundary;
+            faction.randomEventLastAdded = FCSettings.maxDaysTillRandomEvent + 1;
+            Find.TickManager.DebugSetTicksGame(nextDayBoundary - 1);
+            LogUtil.MessageForce($"Debug - Attack timer and random event aligned to tick {nextDayBoundary}. Unpause to trigger both on the same tick.");
+        }
 
         [DebugAction("Empire", "Change Settlement Defending Force", allowedGameStates = AllowedGameStates.Playing)]
         private static void ChangeAttackPlayerSettlementMilitaryForce()
