@@ -149,7 +149,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryJob")]
         public static void EnslaveHandler_AcceptsNullFaction()
         {
-            // null?.def?.defName is null, which != "VFEI_Insect", so returns true
+            // null?.def?.defName is null, which != "Insect", so returns true
             TestAssert.IsTrue(MilitaryJobDefOf.EnslaveEnemySettlement.Handler.IsValidTarget(null),
                 "Enslave handler should accept null faction");
         }
@@ -157,16 +157,16 @@ namespace FactionColonies
         [EmpireTest("MilitaryJob")]
         public static void EnslaveHandler_RejectsInsectFaction()
         {
-            // Check all game factions — only VFEI_Insect (if loaded) should be rejected
+            // Check all game factions — only Insect should be rejected
             var allFactions = Find.FactionManager.AllFactions.ToList();
             MilitaryJobHandler handler = MilitaryJobDefOf.EnslaveEnemySettlement.Handler;
 
             foreach (RimWorld.Faction faction in allFactions)
             {
-                if (faction.def.defName == "VFEI_Insect")
+                if (faction.def.defName == "Insect")
                 {
                     TestAssert.IsFalse(handler.IsValidTarget(faction),
-                        "Enslave handler should reject VFEI_Insect faction");
+                        "Enslave handler should reject Insect faction");
                 }
                 else
                 {

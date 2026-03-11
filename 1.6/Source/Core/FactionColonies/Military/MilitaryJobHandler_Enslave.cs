@@ -7,7 +7,7 @@ namespace FactionColonies
 {
     public class MilitaryJobHandler_Enslave : MilitaryJobHandler
     {
-        public override bool IsValidTarget(Faction targetFaction) => targetFaction?.def?.defName != "VFEI_Insect";
+        public override bool IsValidTarget(Faction targetFaction) => targetFaction?.def?.defName != "Insect";
 
         public override void OnDeployed(WorldObjectComp_SettlementMilitary milComp, PlanetTile location, int timeToFinish, Faction enemy)
         {

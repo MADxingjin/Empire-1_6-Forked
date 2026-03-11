@@ -111,7 +111,7 @@ namespace FactionColonies
             this.militaryEfficiency = militaryEfficiency;
             this.homeSettlement = homeSettlement;
             this.homeFaction = homeFaction;
-            forceRemaining = Math.Round(militaryLevel * militaryEfficiency);
+            forceRemaining = Math.Max(1, Math.Round(militaryLevel * militaryEfficiency));
         }
 
         public static militaryForce CreateMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
@@ -203,7 +203,7 @@ namespace FactionColonies
             {
                 GetMilitaryLevelAndEfficiencyFromTechLevel(faction.def.techLevel, out militaryLevel, out efficiency);
 
-                if (faction.def.defName == "VFEI_Insect")
+                if (faction.def.defName == "Insect")
                 {
                     militaryLevel = 4;
                     efficiency = 1.2;

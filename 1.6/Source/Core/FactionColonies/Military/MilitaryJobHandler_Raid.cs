@@ -52,7 +52,7 @@ namespace FactionColonies
                         break;
                 }
 
-                if (Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.defName == "VFEI_Insect")
+                if (Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.defName == "Insect")
                 {
                     lootLevel = 3;
                     getSlaves = false;
