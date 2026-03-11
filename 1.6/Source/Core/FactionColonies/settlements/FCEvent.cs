@@ -181,10 +181,9 @@ namespace FactionColonies
                         {
                             if (tempEvent.def.requiredResource != null)
                             {
-                                //if there is a required resource
-                                if (settlement.GetResource(tempEvent.def.requiredResource).assignedWorkers > 0)
+                                ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
+                                if (res != null && res.InstantaneousProduction > 0)
                                 {
-                                    //if have someone working on that resource
                                     tmp.Add(settlement);
                                 }
                             }
