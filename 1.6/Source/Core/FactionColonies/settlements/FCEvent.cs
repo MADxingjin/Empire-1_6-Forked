@@ -184,7 +184,11 @@ namespace FactionColonies
                                 ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
                                 if (res != null && res.InstantaneousProduction > 0)
                                 {
-                                    tmp.Add(settlement);
+                                    // Settlements that produce more of a resource should have a higher weight
+                                    for (int i = 0; i < res.InstantaneousProduction; i++)
+                                    {
+                                        tmp.Add(settlement);
+                                    }
                                 }
                             }
                             else
@@ -213,7 +217,11 @@ namespace FactionColonies
                             {
                                 next = tmp.RandomElement();
                             }
-                            settlements.Add(next);
+
+                            if (!settlements.Contains(next))
+                            {
+                                settlements.Add(next);
+                            }
                             tmp.Remove(next);
                         }
 
@@ -222,6 +230,12 @@ namespace FactionColonies
                     else
                     {
                         tempEvent.settlementTraitLocations.AddRange(SettlementTraitLocations);
+                    }
+
+                    // If no valid settlements were chosen, then return early instead of firing the event
+                    if (tempEvent.settlementTraitLocations.Count == 0)
+                    {
+                        return null;
                     }
                 }
 
@@ -401,7 +415,21 @@ namespace FactionColonies
                             evt.goods.AddRange(list);
 
                             evt.let = LetterMaker.MakeLetter("GoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
-                            if (list.Count > 0) DeliveryEvent.CreateDeliveryEvent(evt);
+                            if (list.Count > 0)
+                            {
+                                if (!evt.source.IsValidTile())
+                                {
+                                    if (evt.settlementTraitLocations.Any())
+                                    {
+                                        evt.source = evt.settlementTraitLocations.First().Tile;
+                                    }
+                                    else
+                                    {
+                                        evt.source = FactionCache.FactionComp.capitalLocation;
+                                    }
+                                }
+                                DeliveryEvent.CreateDeliveryEvent(evt);
+                            }
                         }
                     }
                 }

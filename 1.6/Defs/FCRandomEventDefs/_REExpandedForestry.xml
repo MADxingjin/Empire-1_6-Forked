@@ -26,6 +26,7 @@
 		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
+		<requiredResource>RTD_Logging</requiredResource>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCOptionDef>
@@ -84,7 +85,8 @@
 		<desc>The extra timber is sold to passing traders for a tidy profit.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>1500</timeTillTrigger>
-		<randomThingRewardDef>RERD_Logging</randomThingRewardDef>
+		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
+		<randomThingRewardDef>RERD_Silver</randomThingRewardDef>
 		<randomThingValue>500</randomThingValue>
 		<incompatibleEvents>
 			<li>expandedForestry_0</li>

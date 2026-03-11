@@ -93,6 +93,16 @@
     <countRange>1~10</countRange>
   </FactionColonies.ResourceEventRewardDef>
 
+  <!-- Silver -->
+  <FactionColonies.ResourceEventRewardDef>
+    <defName>RERD_Silver</defName>
+    <label>silver</label>
+    <thingAllowList>
+      <li>Silver</li>
+    </thingAllowList>
+    <countRange>1~1</countRange>
+  </FactionColonies.ResourceEventRewardDef>
+
   <!-- Drugs -->
   <FactionColonies.ResourceEventRewardDef>
     <defName>RERD_Drugs</defName>

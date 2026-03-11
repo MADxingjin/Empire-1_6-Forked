@@ -24,6 +24,7 @@
 		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
+		<requiredResource>RTD_Food</requiredResource>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCOptionDef>
