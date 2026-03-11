@@ -85,6 +85,18 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Returns true if this modifier represents a beneficial effect.
+        /// Accounts for inverted stats where lower values are better.
+        /// </summary>
+        public bool IsBeneficial()
+        {
+            if (stat == null) return false;
+            if (stat.aggregation == FCStatAggregation.Multiplicative)
+                return stat.invertedForDisplay ? value < 1.0 : value > 1.0;
+            return stat.invertedForDisplay ? value < 0.0 : value > 0.0;
+        }
+
+        /// <summary>
         /// Builds a human-readable description string from a list of stat modifiers.
         /// Resource-linked stats use resource-specific translation keys; other stats use descriptionKey.
         /// </summary>

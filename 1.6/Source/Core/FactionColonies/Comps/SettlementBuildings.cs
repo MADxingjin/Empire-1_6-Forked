@@ -503,29 +503,33 @@ namespace FactionColonies
 
             filters.Add(new BuildingFilter("BuildingFilterHappiness".Translate(), TexLoad.iconHappiness, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
-                    m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier)));
+                    (m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
+                     m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier)
+                    && m.IsBeneficial())));
 
             filters.Add(new BuildingFilter("BuildingFilterBasetax".Translate(), TexLoad.iconProsperity, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier)));
+                    (m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier)
+                    && m.IsBeneficial())));
 
             filters.Add(new BuildingFilter("BuildingFilterWorkers".Translate(), null, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
-                    m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost)));
+                    (m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost)
+                    && m.IsBeneficial())));
 
             if (WorldSettlement.MilitaryComp != null)
             {
                 filters.Add(new BuildingFilter("BuildingFilterMilitary".Translate(), TexLoad.iconMilitary, b =>
                     b.statModifiers != null && b.statModifiers.Any(m =>
-                        m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency)));
+                        (m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency)
+                        && m.IsBeneficial())));
             }
 
             foreach (ResourceFC resource in WorldSettlement.Resources)
             {
                 ResourceTypeDef resDef = resource.def;
                 filters.Add(new BuildingFilter(resource.label, resDef.Icon, b =>
-                    b.statModifiers != null && b.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef)));
+                    b.statModifiers != null && b.statModifiers.Any(m => m.stat != null && m.stat.linkedResource == resDef && m.IsBeneficial())));
             }
 
             foreach (BuildingFilter filter in BuildingFilterRegistry.Filters)
