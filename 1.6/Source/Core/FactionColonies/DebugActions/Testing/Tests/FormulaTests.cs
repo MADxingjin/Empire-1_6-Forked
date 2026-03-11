@@ -22,7 +22,7 @@ namespace FactionColonies
         [EmpireTest("Formula")]
         public static void ClampStat_BelowMin_ClampsToMin()
         {
-            TestAssert.AreEqual(1.0, SettlementFormulas.ClampStat(2.0, -5.0));
+            TestAssert.AreEqual(0.0, SettlementFormulas.ClampStat(2.0, -5.0));
         }
 
         [EmpireTest("Formula")]

@@ -11,7 +11,7 @@ namespace FactionColonies.util
         /// <summary>
         /// Clamps a stat value after applying a change, rounding to 1 decimal place.
         /// </summary>
-        public static double ClampStat(double current, double change, double min = 1, double max = 100)
+        public static double ClampStat(double current, double change, double min = 0, double max = 100)
         {
             return Math.Round(Math.Clamp(current + change, min, max), 1);
         }
