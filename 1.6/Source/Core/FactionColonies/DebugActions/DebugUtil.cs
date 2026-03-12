@@ -249,7 +249,7 @@ namespace FactionColonies
                             List<DebugMenuOption> list2 = new List<DebugMenuOption>();
                             foreach (WorldSettlementFC settlement in worldcomp.settlements)
                             {
-                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Name)
+                                if (settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && settlement.Name != evt.settlementFCDefending?.Label)
                                 {
                                     list2.Add(new DebugMenuOption(
                                         settlement.Name + " - " + settlement.settlementMilitaryLevel + " - Busy: " +

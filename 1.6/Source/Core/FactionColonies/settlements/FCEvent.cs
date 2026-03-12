@@ -388,18 +388,25 @@ namespace FactionColonies
 
                     if (evt.def.defName == "settlementBeingAttacked")
                     {
-                        WorldSettlementFC worldSettlement = evt.settlementFCDefending;
-                        if (worldSettlement == null)
+                        if (evt.settlementFCDefending == null)
                         {
                             LogUtil.Warning($"settlementBeingAttacked event has null settlementFCDefending (loadID={evt.loadID}). Skipping defense.");
                         }
-                        else if (worldSettlement.MilitaryComp == null)
+                        else if (evt.settlementFCDefending is WorldSettlementFC worldSettlement)
                         {
-                            LogUtil.Warning($"settlementBeingAttacked: {worldSettlement.Name} has no MilitaryComp. Skipping defense.");
+                            if (worldSettlement.MilitaryComp == null)
+                            {
+                                LogUtil.Warning($"settlementBeingAttacked: {worldSettlement.Name} has no MilitaryComp. Skipping defense.");
+                            }
+                            else
+                            {
+                                worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt));
+                            }
                         }
                         else
                         {
-                            worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt));
+                            // External raid target (registered via RaidTargetRegistry) — auto-resolve only
+                            ResolveExternalRaidTarget(evt);
                         }
                     }
                     else //if undefined event
@@ -545,6 +552,75 @@ namespace FactionColonies
                 }
 
                 evt.RunAction();
+            }
+        }
+
+        /// <summary>
+        /// Auto-resolves a raid on an external <see cref="IRaidTarget"/> (registered via <see cref="RaidTargetRegistry"/>).
+        /// Called when the 24-hour warning timer expires for a non-<see cref="WorldSettlementFC"/> target.
+        /// </summary>
+        private static void ResolveExternalRaidTarget(FCEvent evt)
+        {
+            IRaidTarget target = RaidTargetRegistry.FindByWorldObject(evt.settlementFCDefending);
+            if (target == null)
+            {
+                LogUtil.Warning($"settlementBeingAttacked: target at tile {evt.location} not found in RaidTargetRegistry. Skipping.");
+                return;
+            }
+
+            try
+            {
+                BattleResult result = SimulateBattleFc.FightBattle(evt.militaryForceAttacking, evt.militaryForceDefending);
+
+                if (result.DefenderVictory)
+                {
+                    target.OnRaidWon(result);
+                    FactionCache.FactionComp.AddExperienceToFactionLevel(5f);
+                    FactionCache.FactionComp.threatAdaptation.Notify_BattleWon();
+                }
+                else
+                {
+                    target.OnRaidLost(result);
+                    FactionCache.FactionComp.threatAdaptation.Notify_BattleLost();
+                }
+
+                // Handle defending settlement cooldown (if an Empire settlement was assigned as defender)
+                if (evt.militaryForceDefending?.homeSettlement != null)
+                {
+                    var defenderComp = evt.militaryForceDefending.homeSettlement.MilitaryComp;
+                    if (defenderComp != null)
+                    {
+                        int remaining = (int)Math.Max(0, evt.militaryForceDefending.forceRemaining);
+                        int initial = (int)Math.Max(0, evt.militaryForceDefending.militaryLevel * evt.militaryForceDefending.militaryEfficiency);
+                        int deaths = Math.Max(0, initial - remaining);
+                        if (result.DefenderVictory && remaining >= initial)
+                        {
+                            defenderComp.ReturnMilitary(true);
+                        }
+                        else
+                        {
+                            defenderComp.CooldownMilitaryFinal(deaths);
+                        }
+                    }
+                }
+
+                // Notify external auto-defender if one was assigned
+                if (evt.externalDefenderSource != null)
+                {
+                    IAutoDefender autoDefender = AutoDefenderRegistry.FindByWorldObject(evt.externalDefenderSource);
+                    if (autoDefender != null)
+                    {
+                        autoDefender.OnDefenseComplete(result.DefenderVictory, result);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error resolving external raid target at tile {evt.location}: {e}");
+            }
+            finally
+            {
+                target.IsUnderAttack = false;
             }
         }
 
@@ -725,7 +801,12 @@ namespace FactionColonies
         public Faction militaryForceAttackingFaction;
         public militaryForce militaryForceDefending;
         public Faction militaryForceDefendingFaction;
-        public WorldSettlementFC settlementFCDefending;
+        public WorldObject settlementFCDefending;
+        /// <summary>
+        /// If the defending force was provided by an external <see cref="IAutoDefender"/> (not an Empire settlement),
+        /// this references the defender's world object so it can be notified on battle completion.
+        /// </summary>
+        public WorldObject externalDefenderSource;
 
         public WorldSettlementDef settlementToCreate = null;
 
@@ -795,6 +876,7 @@ namespace FactionColonies
             Scribe_Deep.Look(ref militaryForceDefending, "militaryForceDefending");
             Scribe_References.Look(ref militaryForceDefendingFaction, "militaryForceDefendingFaction");
             Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
+            Scribe_References.Look(ref externalDefenderSource, "externalDefenderSource");
 
             Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
         }

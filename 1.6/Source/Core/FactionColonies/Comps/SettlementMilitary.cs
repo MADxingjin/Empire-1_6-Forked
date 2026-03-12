@@ -750,9 +750,9 @@ namespace FactionColonies
             {
                 LogUtil.Message("Defending force not set-- if the attack came from another mod, this is fine.");
             }
-            else
+            else if (defenderForce.homeSettlement != null)
             {
-                // if not the home settlement defending
+                // if not the home settlement defending (foreign Empire settlement)
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (won && remaining >= initialDefenderCount)
                 {
@@ -763,6 +763,11 @@ namespace FactionColonies
                 {
                     defenderForce.homeSettlement.MilitaryComp?.CooldownMilitaryFinal(battleDeaths);
                 }
+            }
+            else
+            {
+                // External auto-defender (no homeSettlement) — handled via AutoDefenderRegistry in the event resolver
+                LogUtil.Message("External defender force resolved — cooldown handled by AutoDefenderRegistry callback.");
             }
         }
 
