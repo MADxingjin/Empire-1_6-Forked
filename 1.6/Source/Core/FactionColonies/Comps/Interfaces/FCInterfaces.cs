@@ -201,6 +201,8 @@ namespace FactionColonies
         militaryForce CreateDefendingForce();
         void OnDefenseStarted();
         void OnDefenseComplete(bool won, BattleResult result);
+        /// <summary>Called when this defender is replaced by another force (not defeated).</summary>
+        void OnDefenseReplaced();
     }
     /// <summary>
     /// Allows external mods to display entries in Empire's military tab alongside settlements.

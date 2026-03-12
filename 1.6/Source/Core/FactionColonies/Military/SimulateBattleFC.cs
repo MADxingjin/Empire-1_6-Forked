@@ -390,7 +390,8 @@ namespace FactionColonies
             FactionFC factionfc = FactionCache.FactionComp;
             militaryForce tmpMilitaryForce = null;
             WorldSettlementFC homeSettlement = factionfc.ReturnSettlementByLocation(evt.location);
-            if (settlementOfMilitaryForce == evt.militaryForceDefending.homeSettlement)
+            if (evt.militaryForceDefending.homeSettlement != null
+                && settlementOfMilitaryForce == evt.militaryForceDefending.homeSettlement)
             {
                 Messages.Message("militaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
                 return;
@@ -398,10 +399,17 @@ namespace FactionColonies
 
             WorldSettlementFC target = Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(evt.location);
 
-            if (evt.militaryForceDefending.homeSettlement != factionfc.ReturnSettlementByLocation(evt.location))
+            if (evt.militaryForceDefending.homeSettlement != null
+                && evt.militaryForceDefending.homeSettlement != factionfc.ReturnSettlementByLocation(evt.location))
             {
                 //if the forces defending aren't the forces belonging to the settlement
                 evt.militaryForceDefending.homeSettlement.MilitaryComp?.ReturnMilitary(false);
+            }
+            else if (evt.externalDefenderSource != null)
+            {
+                IAutoDefender autoDefender = AutoDefenderRegistry.FindByWorldObject(evt.externalDefenderSource);
+                autoDefender?.OnDefenseReplaced();
+                evt.externalDefenderSource = null;
             }
 
             if (settlementOfMilitaryForce != homeSettlement)
@@ -437,6 +445,44 @@ namespace FactionColonies
                         factionfc.ReturnSettlementByLocation(evt.location).Name,
                         evt.militaryForceDefending.militaryLevel), LetterDefOf.NeutralEvent);
             }
+        }
+
+        public static void ChangeDefendingToExternalForce(FCEvent evt, IAutoDefender defender)
+        {
+            FactionFC factionfc = FactionCache.FactionComp;
+
+            if (evt.externalDefenderSource != null && evt.externalDefenderSource == defender.WorldObject)
+            {
+                Messages.Message("militaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+
+            // Clean up current defender
+            if (evt.militaryForceDefending.homeSettlement != null
+                && evt.militaryForceDefending.homeSettlement != factionfc.ReturnSettlementByLocation(evt.location))
+            {
+                evt.militaryForceDefending.homeSettlement.MilitaryComp?.ReturnMilitary(false);
+            }
+            else if (evt.externalDefenderSource != null)
+            {
+                IAutoDefender old = AutoDefenderRegistry.FindByWorldObject(evt.externalDefenderSource);
+                old?.OnDefenseReplaced();
+            }
+
+            // Assign new external defender
+            factionfc.militaryTargets.Remove(evt.location);
+            evt.militaryForceDefending = defender.CreateDefendingForce();
+            evt.externalDefenderSource = defender.WorldObject;
+            defender.OnDefenseStarted();
+
+            WorldSettlementFC target = Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(evt.location);
+            if (target?.MilitaryComp != null)
+            {
+                target.MilitaryComp.defenderForce = evt.militaryForceDefending;
+            }
+
+            Messages.Message("externalDefenderAssigned".Translate(defender.WorldObject.LabelCap),
+                MessageTypeDefOf.NeutralEvent);
         }
 
         public static militaryForce ReturnDefendingMilitaryForce(FCEvent evt)

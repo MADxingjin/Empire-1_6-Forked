@@ -252,6 +252,21 @@ namespace FactionColonies
                 )
             );
 
+            // Add external auto-defenders (VOE outposts, etc.)
+            foreach (IAutoDefender defender in AutoDefenderRegistry.Defenders)
+            {
+                if (!defender.CanAutoDefend) continue;
+                if (evt.externalDefenderSource != null && evt.externalDefenderSource == defender.WorldObject) continue;
+                int distance = Find.WorldGrid.TraversalDistanceBetween(defender.WorldObject.Tile, WorldSettlement.Tile);
+                if (distance > defender.Range) continue;
+
+                IAutoDefender d = defender;
+                settlementList.Add(new FloatMenuOption(
+                    d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel + ")",
+                    delegate { MilitaryUtilFC.ChangeDefendingToExternalForce(evt, d); }
+                ));
+            }
+
             if (settlementList.Count == 0)
                 settlementList.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
 
