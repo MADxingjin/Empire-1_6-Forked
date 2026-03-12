@@ -137,7 +137,7 @@ namespace FactionColonies
             }
         }
 
-        public double production => productionBase * productionMult;
+        public double production => Math.Max(0, productionBase * productionMult);
         public double productionBase
         {
             get
