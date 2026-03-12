@@ -568,6 +568,7 @@ namespace FactionColonies
                     FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
 
                 GenerateFriendlies(force);
+                RecruitMapInhabitants();
                 Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
 
                 string enemyName = attackerForce?.homeFaction?.Name ?? "Unknown";
@@ -726,6 +727,43 @@ namespace FactionColonies
 
             defenders = friendlies;
             initialDefenderCount = defenders.Count;
+        }
+
+        private void RecruitMapInhabitants()
+        {
+            if (Map == null || !defenders.Any()) return;
+
+            Lord defenseLord = defenders[0].GetLord();
+            if (defenseLord == null) return;
+
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            var inhabitants = new List<Pawn>();
+
+            foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned)
+            {
+                if (defenders.Contains(pawn)) continue;
+                if (!pawn.RaceProps.Humanlike) continue;
+                if (pawn.Downed || pawn.Dead) continue;
+                if (pawn.Faction != empireFaction) continue;
+                if (pawn.IsPrisonerOfColony) continue;
+                inhabitants.Add(pawn);
+            }
+
+            foreach (Pawn inhabitant in inhabitants)
+            {
+                Lord existingLord = inhabitant.GetLord();
+                if (existingLord != null)
+                    existingLord.Notify_PawnLost(inhabitant, PawnLostCondition.LeftVoluntarily);
+
+                defenseLord.AddPawn(inhabitant);
+                defenders.Add(inhabitant);
+            }
+
+            if (inhabitants.Count > 0)
+            {
+                initialDefenderCount = defenders.Count;
+                LogUtil.Message($"Added {inhabitants.Count} settlement inhabitants to defenders at {WorldSettlement.Name}");
+            }
         }
 
         public void EndBattle(bool won, int remaining, BattleResult battleResult = null)
