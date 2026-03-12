@@ -199,7 +199,7 @@ namespace FactionColonies
         /// <summary>True if the defender is available (enabled, not busy, not packing, etc.).</summary>
         bool CanAutoDefend { get; }
         militaryForce CreateDefendingForce();
-        void OnDefenseStarted();
+        void OnDefenseStarted(WorldObject target);
         void OnDefenseComplete(bool won, BattleResult result);
         /// <summary>Called when this defender is replaced by another force (not defeated).</summary>
         void OnDefenseReplaced();

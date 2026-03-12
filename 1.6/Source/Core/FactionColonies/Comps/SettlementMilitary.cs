@@ -58,6 +58,7 @@ namespace FactionColonies
         public militaryForce attackerForce;
         public List<Pawn> attackers = new List<Pawn>();
         public militaryForce defenderForce;
+        private FCEvent currentBattleEvent;
         public List<Pawn> defenders = new List<Pawn>();
         public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
         //TODO all code referencing isUnderAttack needs to point to this comp
@@ -499,6 +500,7 @@ namespace FactionColonies
 
         public void StartDefence(FCEvent evt, Action after)
         {
+            currentBattleEvent = evt;
             bool shouldAutoResolve = false;
             if (FCSettings.battleMode == BattleMode.Auto)
             {
@@ -781,8 +783,12 @@ namespace FactionColonies
             }
             else
             {
-                // External auto-defender (no homeSettlement) — handled via AutoDefenderRegistry in the event resolver
-                LogUtil.Message("External defender force resolved — cooldown handled by AutoDefenderRegistry callback.");
+                // External auto-defender (no homeSettlement) — notify via stored event reference
+                if (currentBattleEvent?.externalDefenderSource != null)
+                {
+                    IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(currentBattleEvent.externalDefenderSource);
+                    extDefender?.OnDefenseComplete(won, null);
+                }
             }
         }
 
@@ -915,6 +921,7 @@ namespace FactionColonies
             attackerForce = null;
             endingBattle = false;
             pendingDeliveryMessage = null;
+            currentBattleEvent = null;
         }
 
         public void RemoveAttacker(Pawn downed)

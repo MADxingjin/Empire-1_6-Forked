@@ -1545,7 +1545,8 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
                 GUI.color = accent;
-                Widgets.Label(new Rect(contentX + contentW - statusW, topY, statusW, lineH), AccentUtil.GetMilitaryStatusLabel(milComp, settlement));
+                Rect labelRect = new Rect(contentX + contentW - statusW, topY, statusW, lineH);
+                Widgets.Label(labelRect, Text.ClampTextWithEllipsis(labelRect, AccentUtil.GetMilitaryStatusLabel(milComp, settlement)));
                 GUI.color = origColor;
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;

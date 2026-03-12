@@ -281,14 +281,16 @@ namespace FactionColonies
                 {
                     tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                     tmp.externalDefenderSource = bestExternalDefender.WorldObject;
-                    bestExternalDefender.OnDefenseStarted();
+                    bestExternalDefender.OnDefenseStarted(settlement);
+                    tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
                 }
             }
             else if (bestExternalDefender != null)
             {
                 tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                 tmp.externalDefenderSource = bestExternalDefender.WorldObject;
-                bestExternalDefender.OnDefenseStarted();
+                bestExternalDefender.OnDefenseStarted(settlement);
+                tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
             }
 
             if (settlement.MilitaryComp != null)
@@ -371,7 +373,8 @@ namespace FactionColonies
             {
                 tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                 tmp.externalDefenderSource = bestExternalDefender.WorldObject;
-                bestExternalDefender.OnDefenseStarted();
+                bestExternalDefender.OnDefenseStarted(target.WorldObject);
+                tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
             }
 
             target.IsUnderAttack = true;
@@ -473,7 +476,7 @@ namespace FactionColonies
             factionfc.militaryTargets.Remove(evt.location);
             evt.militaryForceDefending = defender.CreateDefendingForce();
             evt.externalDefenderSource = defender.WorldObject;
-            defender.OnDefenseStarted();
+            defender.OnDefenseStarted(evt.settlementFCDefending);
 
             WorldSettlementFC target = Find.World.worldObjects.WorldObjectAt<WorldSettlementFC>(evt.location);
             if (target?.MilitaryComp != null)

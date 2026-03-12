@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FactionColonies.util;
 using UnityEngine;
+using RimWorld.Planet;
 using Verse;
 
 namespace FactionColonies
@@ -59,7 +60,7 @@ namespace FactionColonies
         {
             if (milComp == null) return MilInactive;
             if (milComp.isUnderAttack) return MilUnderAttack;
-            if (milComp.militaryBusy && !milComp.militaryJob.isState)
+            if (milComp.militaryBusy && (!milComp.militaryJob.isState || milComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement))
                 return MilActiveMission;
             if (milComp.militaryJob == MilitaryJobDefOf.Cooldown) return MilCooldown;
             if (milComp.militarySquad?.outfit != null && !milComp.militaryBusy)
@@ -75,6 +76,13 @@ namespace FactionColonies
             {
                 if (milComp.militaryJob == MilitaryJobDefOf.Cooldown)
                     return GetCooldownLabel(settlement);
+                if (milComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement
+                    && milComp.militaryLocation != -1)
+                {
+                    WorldObject target = Find.WorldObjects.WorldObjectAt<WorldObject>(milComp.militaryLocation);
+                    if (target != null)
+                        return "FCMilStatusDefendingTarget".Translate(target.LabelCap);
+                }
                 return milComp.militaryJob.statusLabelKey != null
                     ? milComp.militaryJob.statusLabelKey.Translate()
                     : "FCMilStatusBusy".Translate();
