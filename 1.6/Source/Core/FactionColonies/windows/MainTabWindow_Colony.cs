@@ -1436,14 +1436,19 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color origColor = GUI.color;
             GUI.color = Color.gray;
-            Widgets.Label(new Rect(innerX, tableRect.y + pad, innerW * 0.5f, summaryH),
-                "FCMilitarySettlementCount".Translate(settlements.Count));
+            IReadOnlyList<IMilitaryTabEntry> externalEntries = MilitaryTabRegistry.Entries;
+            int totalMilitaryCount = settlements.Count + externalEntries.Count;
+
+            string countLabel = externalEntries.Count > 0
+                ? "FCMilitarySettlementCount".Translate(settlements.Count) + " + " + externalEntries.Count
+                : "FCMilitarySettlementCount".Translate(settlements.Count).ToString();
+            Widgets.Label(new Rect(innerX, tableRect.y + pad, innerW * 0.5f, summaryH), countLabel);
             GUI.color = origColor;
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
 
             // Empty state
-            if (settlements.Count == 0)
+            if (totalMilitaryCount == 0)
             {
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
@@ -1463,7 +1468,7 @@ namespace FactionColonies
             float listY    = tableRect.y + pad + summaryH + 4f;
             float viewH    = tableRect.yMax - listY - pad;
             Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
-            float contentH = settlements.Count * (rowH + rowGap);
+            float contentH = totalMilitaryCount * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
 
             Widgets.BeginScrollView(viewRect, ref militaryScroll, scrollRect);
@@ -1540,7 +1545,8 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
                 GUI.color = accent;
-                Widgets.Label(new Rect(contentX + contentW - statusW, topY, statusW, lineH), AccentUtil.GetMilitaryStatusLabel(milComp, settlement));
+                Rect labelRect = new Rect(contentX + contentW - statusW, topY, statusW, lineH);
+                Widgets.Label(labelRect, Text.ClampTextWithEllipsis(labelRect, AccentUtil.GetMilitaryStatusLabel(milComp, settlement)));
                 GUI.color = origColor;
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
@@ -1679,6 +1685,107 @@ namespace FactionColonies
                 float btnStartX = contentX + contentW - totalBtnW;
                 UIUtil.TipRegionByText(new Rect(0f, ry, btnStartX, rowH), tooltip);
                 UIUtil.TipRegionByText(new Rect(btnStartX, ry, rowW - btnStartX, lineH), tooltip);
+            }
+
+            // === External military tab entries (e.g., defensive outposts) ===
+            for (int j = 0; j < externalEntries.Count; j++)
+            {
+                IMilitaryTabEntry entry = externalEntries[j];
+                int rowIndex = settlements.Count + j;
+                float ry = rowIndex * (rowH + rowGap);
+                float rowW = scrollRect.width;
+                Rect rowRect = new Rect(0f, ry, rowW, rowH);
+
+                bool isHighlighted = rowIndex % 2 == 0;
+                if (isHighlighted)
+                    Widgets.DrawHighlight(rowRect);
+
+                // Accent strip
+                Color accent = entry.AccentColor;
+                Widgets.DrawBoxSolid(new Rect(0f, ry, accentW, rowH), accent);
+
+                float contentX = accentW + 6f;
+                float contentW = rowW - contentX - 4f;
+                float topY  = ry;
+                float botY  = ry + rowH / 2f;
+                float lineH = rowH / 2f;
+
+                // === TOP LINE ===
+                float statusW = 190f;
+                float badgeW  = 120f;
+                float nameW   = contentW - statusW - badgeW;
+
+                // Top-left: Entry name (clickable, accent-colored — zooms to world object)
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                origColor = GUI.color;
+                GUI.color = accent;
+                Rect nameRect = new Rect(contentX, topY, nameW, lineH);
+                Widgets.Label(nameRect, entry.Name);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+                if (Widgets.ButtonInvisible(nameRect))
+                    CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(entry.WorldObject));
+                if (Mouse.IsOver(nameRect))
+                    Widgets.DrawHighlight(nameRect);
+
+                // Top-center: Defense power badge
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                double entryDefPower = Math.Round(entry.MilitaryLevel * FCSettings.defenderAdvantage);
+                string entryBadge = "Mil " + entry.MilitaryLevel + " \u2022 Def " + entryDefPower;
+                Widgets.Label(new Rect(contentX + nameW, topY, badgeW, lineH), entryBadge);
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Top-right: Status label
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleRight;
+                origColor = GUI.color;
+                GUI.color = accent;
+                Widgets.Label(new Rect(contentX + contentW - statusW, topY, statusW, lineH), entry.StatusLabel);
+                GUI.color = origColor;
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // === BOTTOM LINE ===
+                float btnW   = 80f;
+                float btnH   = lineH - 4f;
+                float btnY   = botY + 2f;
+
+                // Bottom-left: Type label
+                fontBefore = Text.Font;
+                anchorBefore = Text.Anchor;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(contentX, botY, contentW - btnW - 4f, lineH), entry.WorldObject.def.label.CapitalizeFirst());
+                Text.Font = fontBefore;
+                Text.Anchor = anchorBefore;
+
+                // Bottom-right: Auto-defend toggle only
+                Text.Font = GameFont.Tiny;
+                Rect autoDefRect = new Rect(contentX + contentW - btnW, btnY, btnW, btnH);
+                if (UIUtil.ButtonFlat(autoDefRect, "FCMilAutoDefend".Translate(),
+                    labelColor: entry.AutoDefend ? AccentUtil.MilReady : (Color?)null,
+                    highlighted: isHighlighted))
+                {
+                    entry.AutoDefend = !entry.AutoDefend;
+                }
+                UIUtil.TipRegionByText(autoDefRect, "FCMilBtnAutoDefendTip".Translate());
+                Text.Font = fontBefore;
+
+                // Tooltip
+                string entryTooltip = entry.Name + "\n\n"
+                    + "FCSettlementTableMilLevel".Translate() + ": " + entry.MilitaryLevel + "\n"
+                    + "FCMilitaryTableUnderAttack".Translate() + ": " + (entry.IsUnderAttack ? "Yes".Translate() : "No".Translate());
+                UIUtil.TipRegionByText(new Rect(0f, ry, contentX + contentW - btnW, rowH), entryTooltip);
             }
 
             Widgets.EndScrollView();

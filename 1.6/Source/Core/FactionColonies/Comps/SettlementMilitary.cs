@@ -58,6 +58,7 @@ namespace FactionColonies
         public militaryForce attackerForce;
         public List<Pawn> attackers = new List<Pawn>();
         public militaryForce defenderForce;
+        private FCEvent currentBattleEvent;
         public List<Pawn> defenders = new List<Pawn>();
         public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
         //TODO all code referencing isUnderAttack needs to point to this comp
@@ -251,6 +252,21 @@ namespace FactionColonies
                     }
                 )
             );
+
+            // Add external auto-defenders (VOE outposts, etc.)
+            foreach (IAutoDefender defender in AutoDefenderRegistry.Defenders)
+            {
+                if (!defender.CanAutoDefend) continue;
+                if (evt.externalDefenderSource != null && evt.externalDefenderSource == defender.WorldObject) continue;
+                int distance = Find.WorldGrid.TraversalDistanceBetween(defender.WorldObject.Tile, WorldSettlement.Tile);
+                if (distance > defender.Range) continue;
+
+                IAutoDefender d = defender;
+                settlementList.Add(new FloatMenuOption(
+                    d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel + ")",
+                    delegate { MilitaryUtilFC.ChangeDefendingToExternalForce(evt, d); }
+                ));
+            }
 
             if (settlementList.Count == 0)
                 settlementList.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
@@ -484,6 +500,7 @@ namespace FactionColonies
 
         public void StartDefence(FCEvent evt, Action after)
         {
+            currentBattleEvent = evt;
             bool shouldAutoResolve = false;
             if (FCSettings.battleMode == BattleMode.Auto)
             {
@@ -544,13 +561,14 @@ namespace FactionColonies
                 battleMapInitialized = true;
                 evt.timeTillTrigger = Find.TickManager.TicksGame;
 
-                if (force.homeSettlement.MilitaryComp != null)
+                if (force.homeSettlement?.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;
 
                 foreach (var building in Map.listerBuildings.allBuildingsColonist)
                     FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
 
                 GenerateFriendlies(force);
+                RecruitMapInhabitants();
                 Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
 
                 string enemyName = attackerForce?.homeFaction?.Name ?? "Unknown";
@@ -591,46 +609,62 @@ namespace FactionColonies
         private void GenerateFriendlies(militaryForce force)
         {
             var points = Math.Max((float)(force.forceRemaining * 100), 50f);
-            List<Pawn> friendlies;
+            List<Pawn> friendlies = null;
             var riders = new Dictionary<Pawn, Pawn>();
-            var homeComp = force.homeSettlement.MilitaryComp;
-            bool squadAvailable = homeComp?.militarySquad != null
-                && homeComp.militarySquad.mercenaries.Any()
-                && (homeComp.militaryJob == null
-                    || homeComp.militaryJob == MilitaryJobDefOf.Undefined
-                    || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
-            if (squadAvailable)
+
+            // Try external defender pawns (VOE outposts, etc.)
+            if (force.homeSettlement == null && currentBattleEvent?.externalDefenderSource != null)
             {
-                var squad = force.homeSettlement.MilitaryComp.militarySquad;
-                squad.CheckInitialization();
+                IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(
+                    currentBattleEvent.externalDefenderSource);
+                friendlies = extDefender?.GetDefendingPawns();
+            }
 
-                squad.OutfitSquad(squad.outfit);
-                squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
-                squad.ResetNeeds();
-
-                friendlies = squad.AllEquippedMercenaryPawns.ToList();
-
-                foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
+            if (friendlies != null && friendlies.Count > 0)
+            {
+                // External defender provided real pawns — skip squad/random generation
             }
             else
             {
-                var parms = new IncidentParms
+                var homeComp = force.homeSettlement?.MilitaryComp;
+                bool squadAvailable = homeComp?.militarySquad != null
+                    && homeComp.militarySquad.mercenaries.Any()
+                    && (homeComp.militaryJob == null
+                        || homeComp.militaryJob == MilitaryJobDefOf.Undefined
+                        || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
+                if (squadAvailable)
                 {
-                    target = Map,
-                    faction = FactionCache.PlayerColonyFaction,
-                    generateFightersOnly = true,
-                    raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-                };
-                parms.points = IncidentWorker_Raid.AdjustedRaidPoints(points,
-                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                    parms.faction, PawnGroupKindDefOf.Combat,
-                    parms.target // new required parameter
-                );
-                friendlies = PawnGroupMakerUtility.GeneratePawns(
-                    IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
-                        PawnGroupKindDefOf.Combat, parms, true)).ToList();
-                if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-            }
+                    var squad = force.homeSettlement.MilitaryComp.militarySquad;
+                    squad.CheckInitialization();
+
+                    squad.OutfitSquad(squad.outfit);
+                    squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
+                    squad.ResetNeeds();
+
+                    friendlies = squad.AllEquippedMercenaryPawns.ToList();
+
+                    foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
+                }
+                else
+                {
+                    var parms = new IncidentParms
+                    {
+                        target = Map,
+                        faction = FactionCache.PlayerColonyFaction,
+                        generateFightersOnly = true,
+                        raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
+                    };
+                    parms.points = IncidentWorker_Raid.AdjustedRaidPoints(points,
+                        PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
+                        parms.faction, PawnGroupKindDefOf.Combat,
+                        parms.target // new required parameter
+                    );
+                    friendlies = PawnGroupMakerUtility.GeneratePawns(
+                        IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
+                            PawnGroupKindDefOf.Combat, parms, true)).ToList();
+                    if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
+                }
+            } // end else (no external defender pawns)
 
             void tryFindLoc(out IntVec3 loc, Pawn friendly)
             {
@@ -695,6 +729,43 @@ namespace FactionColonies
             initialDefenderCount = defenders.Count;
         }
 
+        private void RecruitMapInhabitants()
+        {
+            if (Map == null || !defenders.Any()) return;
+
+            Lord defenseLord = defenders[0].GetLord();
+            if (defenseLord == null) return;
+
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            var inhabitants = new List<Pawn>();
+
+            foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned)
+            {
+                if (defenders.Contains(pawn)) continue;
+                if (!pawn.RaceProps.Humanlike) continue;
+                if (pawn.Downed || pawn.Dead) continue;
+                if (pawn.Faction != empireFaction) continue;
+                if (pawn.IsPrisonerOfColony) continue;
+                inhabitants.Add(pawn);
+            }
+
+            foreach (Pawn inhabitant in inhabitants)
+            {
+                Lord existingLord = inhabitant.GetLord();
+                if (existingLord != null)
+                    existingLord.Notify_PawnLost(inhabitant, PawnLostCondition.LeftVoluntarily);
+
+                defenseLord.AddPawn(inhabitant);
+                defenders.Add(inhabitant);
+            }
+
+            if (inhabitants.Count > 0)
+            {
+                initialDefenderCount = defenders.Count;
+                LogUtil.Message($"Added {inhabitants.Count} settlement inhabitants to defenders at {WorldSettlement.Name}");
+            }
+        }
+
         public void EndBattle(bool won, int remaining, BattleResult battleResult = null)
         {
             var faction = FactionCache.FactionComp;
@@ -750,9 +821,9 @@ namespace FactionColonies
             {
                 LogUtil.Message("Defending force not set-- if the attack came from another mod, this is fine.");
             }
-            else
+            else if (defenderForce.homeSettlement != null)
             {
-                // if not the home settlement defending
+                // if not the home settlement defending (foreign Empire settlement)
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (won && remaining >= initialDefenderCount)
                 {
@@ -762,6 +833,15 @@ namespace FactionColonies
                 else
                 {
                     defenderForce.homeSettlement.MilitaryComp?.CooldownMilitaryFinal(battleDeaths);
+                }
+            }
+            else
+            {
+                // External auto-defender (no homeSettlement) — notify via stored event reference
+                if (currentBattleEvent?.externalDefenderSource != null)
+                {
+                    IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(currentBattleEvent.externalDefenderSource);
+                    extDefender?.OnDefenseComplete(won, null);
                 }
             }
         }
@@ -885,6 +965,28 @@ namespace FactionColonies
         {
             bool won = defenders.Any();
             int remaining = defenders.Count;
+
+            // Return external defender pawns before map cleanup destroys them
+            if (currentBattleEvent?.externalDefenderSource != null)
+            {
+                IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(
+                    currentBattleEvent.externalDefenderSource);
+                if (extDefender != null)
+                {
+                    List<Pawn> survivingPawns = new List<Pawn>();
+                    foreach (Pawn pawn in defenders)
+                    {
+                        if (pawn != null && !pawn.Dead && !pawn.Destroyed)
+                        {
+                            if (pawn.Spawned) pawn.DeSpawn();
+                            survivingPawns.Add(pawn);
+                        }
+                    }
+                    extDefender.ReturnDefendingPawns(survivingPawns);
+                    defenders.Clear();
+                }
+            }
+
             DeleteMap(won);
             EndBattle(won, remaining);
 
@@ -895,6 +997,7 @@ namespace FactionColonies
             attackerForce = null;
             endingBattle = false;
             pendingDeliveryMessage = null;
+            currentBattleEvent = null;
         }
 
         public void RemoveAttacker(Pawn downed)

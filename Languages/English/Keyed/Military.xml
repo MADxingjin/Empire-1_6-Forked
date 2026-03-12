@@ -59,6 +59,8 @@
 	<ChangeDefendingForce>Change Defending Force</ChangeDefendingForce>
 	<militaryAlreadyDefendingSettlement>That military force is already defending the target</militaryAlreadyDefendingSettlement>
 	<defendingMilitaryReset>The defending military has been reset as the defense force for the settlement</defendingMilitaryReset>
+	<externalDefenderAssigned>{0} is now defending this settlement.</externalDefenderAssigned>
+	<externalDefenderAutoAssigned>{0} has been automatically assigned to defend.</externalDefenderAutoAssigned>
 	<ToggleAutoDefend>Automatically defending attacked settlements: {0}</ToggleAutoDefend>
 	<autoDefendWarning>Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu!</autoDefendWarning>
 	<autoBattleEnabledNoManualFight>Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually.</autoBattleEnabledNoManualFight>
@@ -151,6 +153,7 @@
 	<FCMilStatusEnslaving>Enslaving</FCMilStatusEnslaving>
 	<FCMilStatusCapturing>Capturing</FCMilStatusCapturing>
 	<FCMilStatusDefending>Defending</FCMilStatusDefending>
+	<FCMilStatusDefendingTarget>Defending {0}</FCMilStatusDefendingTarget>
 	<FCMilStatusCooldown>Deployment Cooldown</FCMilStatusCooldown>
 	<FCMilStatusBusy>Busy</FCMilStatusBusy>
 	<FCMilStatusReady>Ready</FCMilStatusReady>

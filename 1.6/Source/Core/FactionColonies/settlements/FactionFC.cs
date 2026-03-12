@@ -536,64 +536,78 @@ namespace FactionColonies
                 {
                     //if military actions not disabled or game has not passed through the first season
 
-                    if (settlements.Any())
+                    if (settlements.Any() || RaidTargetRegistry.Targets.Count > 0)
                     {
-                        //if settlements exist
-                        List<WorldSettlementFC> targets = new List<WorldSettlementFC>();
+                        // Build weighted target list for settlements
+                        List<WorldSettlementFC> settlementTargets = new List<WorldSettlementFC>();
                         foreach (WorldSettlementFC settlement in settlements)
                         {
-                            //create weight list of settlements
                             if (settlement.MilitaryComp?.isUnderAttack != true)
                             {
-                                //if not underattack, add to list
-                                //get weightvalue of target
-                                int weightValue;
-                                switch (settlement.settlementMilitaryLevel)
-                                {
-                                    case 0:
-                                    case 1:
-                                        weightValue = 10;
-                                        break;
-                                    case 2:
-                                    case 3:
-                                        weightValue = 7;
-                                        break;
-                                    case 4:
-                                    case 5:
-                                        weightValue = 3;
-                                        break;
-                                    default:
-                                        weightValue = 1;
-                                        break;
-                                }
-
+                                int weightValue = GetMilitaryTargetWeight(settlement.settlementMilitaryLevel);
                                 for (int k = 0; k < weightValue; k++)
                                 {
-                                    targets.Add(settlement);
+                                    settlementTargets.Add(settlement);
                                 }
                             }
                         }
 
-                        if (targets.Any())
+                        // Build weighted target list for external raid targets
+                        List<IRaidTarget> externalTargets = new List<IRaidTarget>();
+                        foreach (IRaidTarget raidTarget in RaidTargetRegistry.Targets)
                         {
-                            //List created, pick from list
+                            if (!raidTarget.IsUnderAttack)
+                            {
+                                int weightValue = GetMilitaryTargetWeight(raidTarget.MilitaryLevel);
+                                for (int k = 0; k < weightValue; k++)
+                                {
+                                    externalTargets.Add(raidTarget);
+                                }
+                            }
+                        }
+
+                        int totalWeight = settlementTargets.Count + externalTargets.Count;
+                        if (totalWeight > 0)
+                        {
                             double etl = ThreatScalingUtil.ComputeEmpireThreatLevel(this);
                             Faction enemy = ThreatScalingUtil.PickWeightedEnemyFaction(etl);
                             if (enemy != null)
                             {
-                                WorldSettlementFC settlement = targets.RandomElementWithFallback();
-
-                                if (settlement != null)
+                                int roll = Rand.Range(0, totalWeight);
+                                if (roll < settlementTargets.Count)
                                 {
+                                    WorldSettlementFC settlement = settlementTargets[roll];
                                     MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemy, true), settlement, enemy);
                                 }
+                                else
+                                {
+                                    IRaidTarget raidTarget = externalTargets[roll - settlementTargets.Count];
+                                    MilitaryUtilFC.AttackRaidTarget(militaryForce.CreateMilitaryForceFromFaction(enemy, true), raidTarget, enemy);
+                                }
                             }
-
                         }
                     }
                 }
 
                 militaryTimeDue = Find.TickManager.TicksGame + (GenDate.TicksPerDay * ThreatScalingUtil.ComputeScaledAttackInterval(this));
+            }
+        }
+
+        private static int GetMilitaryTargetWeight(int militaryLevel)
+        {
+            switch (militaryLevel)
+            {
+                case 0:
+                case 1:
+                    return 10;
+                case 2:
+                case 3:
+                    return 7;
+                case 4:
+                case 5:
+                    return 3;
+                default:
+                    return 1;
             }
         }
 

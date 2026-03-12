@@ -91,9 +91,18 @@ namespace FactionColonies.util
                         {
                             toRemove.Add(evt);
                         }
-
-                        //if not defending settlement
-                        MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, evt.settlementFCDefending);
+                        else if (evt.settlementFCDefending is WorldSettlementFC targetSettlement)
+                        {
+                            //if not defending settlement, reset to target's own defense
+                            MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, targetSettlement);
+                        }
+                        else
+                        {
+                            // External raid target (outpost etc.) — defender removed, remove event
+                            toRemove.Add(evt);
+                            IRaidTarget raidTarget = RaidTargetRegistry.FindByWorldObject(evt.settlementFCDefending);
+                            if (raidTarget != null) raidTarget.IsUnderAttack = false;
+                        }
                     }
                     else
                     {

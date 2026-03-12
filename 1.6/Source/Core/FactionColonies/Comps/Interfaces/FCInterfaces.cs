@@ -1,11 +1,6 @@
-﻿using FactionColonies;
-using FactionColonies.util;
-using RimWorld;
+﻿using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -169,5 +164,70 @@ namespace FactionColonies
         /// Use the context's Reason and Settlement fields to determine what the payment is for.
         /// </summary>
         void ModifyPayment(SilverPaymentContext context);
+    }
+    /// <summary>
+    /// Allows external mods to register world objects as raid targets for Empire's military system.
+    /// Registered targets are included in the attack target pool alongside Empire settlements,
+    /// receive the same 24-hour warning, and auto-resolve via <see cref="SimulateBattleFc.FightBattle"/>.
+    /// Register implementations via <see cref="RaidTargetRegistry"/>.
+    /// </summary>
+    public interface IRaidTarget
+    {
+        /// <summary>The world object this target wraps (for serialization and <see cref="LookTargets"/>).</summary>
+        WorldObject WorldObject { get; }
+        string Name { get; }
+        int Tile { get; }
+        /// <summary>Virtual military level used for targeting weight and auto-defend comparison.</summary>
+        int MilitaryLevel { get; }
+        /// <summary>Set by the attack system to prevent duplicate attacks. Cleared on resolution.</summary>
+        bool IsUnderAttack { get; set; }
+        void OnRaidWon(BattleResult result);
+        void OnRaidLost(BattleResult result);
+    }
+    /// <summary>
+    /// Allows external mods to register world objects as auto-defenders for Empire settlements
+    /// (and other <see cref="IRaidTarget"/>s). Defenders create a <see cref="militaryForce"/> and
+    /// are placed on cooldown after battle resolution.
+    /// Register implementations via <see cref="AutoDefenderRegistry"/>.
+    /// </summary>
+    public interface IAutoDefender
+    {
+        WorldObject WorldObject { get; }
+        int MilitaryLevel { get; }
+        /// <summary>Maximum tile distance for auto-defense eligibility.</summary>
+        int Range { get; }
+        /// <summary>True if the defender is available (enabled, not busy, not packing, etc.).</summary>
+        bool CanAutoDefend { get; }
+        militaryForce CreateDefendingForce();
+        void OnDefenseStarted(WorldObject target);
+        void OnDefenseComplete(bool won, BattleResult result);
+        /// <summary>Called when this defender is replaced by another force (not defeated).</summary>
+        void OnDefenseReplaced();
+        /// <summary>
+        /// Returns pawns to fight in a manual battle, or null to generate pawns from force points.
+        /// Implementations should remove pawns from their source before returning them.
+        /// </summary>
+        List<Pawn> GetDefendingPawns();
+        /// <summary>
+        /// Called after a manual battle ends to return surviving pawns.
+        /// Pawns will already be despawned from the battle map.
+        /// </summary>
+        void ReturnDefendingPawns(List<Pawn> pawns);
+    }
+    /// <summary>
+    /// Allows external mods to display entries in Empire's military tab alongside settlements.
+    /// Entries appear as simplified cards with name, military level, status, and an auto-defend toggle.
+    /// Register implementations via <see cref="MilitaryTabRegistry"/>.
+    /// </summary>
+    public interface IMilitaryTabEntry
+    {
+        WorldObject WorldObject { get; }
+        string Name { get; }
+        int MilitaryLevel { get; }
+        bool AutoDefend { get; set; }
+        bool IsUnderAttack { get; }
+        bool IsBusy { get; }
+        string StatusLabel { get; }
+        Color AccentColor { get; }
     }
 }
