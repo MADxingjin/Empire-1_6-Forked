@@ -561,7 +561,7 @@ namespace FactionColonies
                 battleMapInitialized = true;
                 evt.timeTillTrigger = Find.TickManager.TicksGame;
 
-                if (force.homeSettlement.MilitaryComp != null)
+                if (force.homeSettlement?.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;
 
                 foreach (var building in Map.listerBuildings.allBuildingsColonist)
@@ -608,46 +608,62 @@ namespace FactionColonies
         private void GenerateFriendlies(militaryForce force)
         {
             var points = Math.Max((float)(force.forceRemaining * 100), 50f);
-            List<Pawn> friendlies;
+            List<Pawn> friendlies = null;
             var riders = new Dictionary<Pawn, Pawn>();
-            var homeComp = force.homeSettlement.MilitaryComp;
-            bool squadAvailable = homeComp?.militarySquad != null
-                && homeComp.militarySquad.mercenaries.Any()
-                && (homeComp.militaryJob == null
-                    || homeComp.militaryJob == MilitaryJobDefOf.Undefined
-                    || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
-            if (squadAvailable)
+
+            // Try external defender pawns (VOE outposts, etc.)
+            if (force.homeSettlement == null && currentBattleEvent?.externalDefenderSource != null)
             {
-                var squad = force.homeSettlement.MilitaryComp.militarySquad;
-                squad.CheckInitialization();
+                IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(
+                    currentBattleEvent.externalDefenderSource);
+                friendlies = extDefender?.GetDefendingPawns();
+            }
 
-                squad.OutfitSquad(squad.outfit);
-                squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
-                squad.ResetNeeds();
-
-                friendlies = squad.AllEquippedMercenaryPawns.ToList();
-
-                foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
+            if (friendlies != null && friendlies.Count > 0)
+            {
+                // External defender provided real pawns — skip squad/random generation
             }
             else
             {
-                var parms = new IncidentParms
+                var homeComp = force.homeSettlement?.MilitaryComp;
+                bool squadAvailable = homeComp?.militarySquad != null
+                    && homeComp.militarySquad.mercenaries.Any()
+                    && (homeComp.militaryJob == null
+                        || homeComp.militaryJob == MilitaryJobDefOf.Undefined
+                        || homeComp.militaryJob == MilitaryJobDefOf.DefendFriendlySettlement);
+                if (squadAvailable)
                 {
-                    target = Map,
-                    faction = FactionCache.PlayerColonyFaction,
-                    generateFightersOnly = true,
-                    raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
-                };
-                parms.points = IncidentWorker_Raid.AdjustedRaidPoints(points,
-                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                    parms.faction, PawnGroupKindDefOf.Combat,
-                    parms.target // new required parameter
-                );
-                friendlies = PawnGroupMakerUtility.GeneratePawns(
-                    IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
-                        PawnGroupKindDefOf.Combat, parms, true)).ToList();
-                if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-            }
+                    var squad = force.homeSettlement.MilitaryComp.militarySquad;
+                    squad.CheckInitialization();
+
+                    squad.OutfitSquad(squad.outfit);
+                    squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
+                    squad.ResetNeeds();
+
+                    friendlies = squad.AllEquippedMercenaryPawns.ToList();
+
+                    foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
+                }
+                else
+                {
+                    var parms = new IncidentParms
+                    {
+                        target = Map,
+                        faction = FactionCache.PlayerColonyFaction,
+                        generateFightersOnly = true,
+                        raidStrategy = RaidStrategyDefOf.ImmediateAttackFriendly
+                    };
+                    parms.points = IncidentWorker_Raid.AdjustedRaidPoints(points,
+                        PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
+                        parms.faction, PawnGroupKindDefOf.Combat,
+                        parms.target // new required parameter
+                    );
+                    friendlies = PawnGroupMakerUtility.GeneratePawns(
+                        IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
+                            PawnGroupKindDefOf.Combat, parms, true)).ToList();
+                    if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
+                }
+            } // end else (no external defender pawns)
 
             void tryFindLoc(out IntVec3 loc, Pawn friendly)
             {
@@ -911,6 +927,28 @@ namespace FactionColonies
         {
             bool won = defenders.Any();
             int remaining = defenders.Count;
+
+            // Return external defender pawns before map cleanup destroys them
+            if (currentBattleEvent?.externalDefenderSource != null)
+            {
+                IAutoDefender extDefender = AutoDefenderRegistry.FindByWorldObject(
+                    currentBattleEvent.externalDefenderSource);
+                if (extDefender != null)
+                {
+                    List<Pawn> survivingPawns = new List<Pawn>();
+                    foreach (Pawn pawn in defenders)
+                    {
+                        if (pawn != null && !pawn.Dead && !pawn.Destroyed)
+                        {
+                            if (pawn.Spawned) pawn.DeSpawn();
+                            survivingPawns.Add(pawn);
+                        }
+                    }
+                    extDefender.ReturnDefendingPawns(survivingPawns);
+                    defenders.Clear();
+                }
+            }
+
             DeleteMap(won);
             EndBattle(won, remaining);
 

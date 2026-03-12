@@ -203,6 +203,16 @@ namespace FactionColonies
         void OnDefenseComplete(bool won, BattleResult result);
         /// <summary>Called when this defender is replaced by another force (not defeated).</summary>
         void OnDefenseReplaced();
+        /// <summary>
+        /// Returns pawns to fight in a manual battle, or null to generate pawns from force points.
+        /// Implementations should remove pawns from their source before returning them.
+        /// </summary>
+        List<Pawn> GetDefendingPawns();
+        /// <summary>
+        /// Called after a manual battle ends to return surviving pawns.
+        /// Pawns will already be despawned from the battle map.
+        /// </summary>
+        void ReturnDefendingPawns(List<Pawn> pawns);
     }
     /// <summary>
     /// Allows external mods to display entries in Empire's military tab alongside settlements.

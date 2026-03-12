@@ -22,6 +22,10 @@ namespace FactionColonies
             BattleModifierRegistry.ClearAll();
             BuildingFilterRegistry.ClearAll();
 
+            AutoDefenderRegistry.ClearAll();
+            MilitaryTabRegistry.ClearAll();
+            RaidTargetRegistry.ClearAll();
+
             SettlementTypeExtension_Orbital.InvalidateCache();
             FactionDefDescriptionPatch.Invalidate();
         }
