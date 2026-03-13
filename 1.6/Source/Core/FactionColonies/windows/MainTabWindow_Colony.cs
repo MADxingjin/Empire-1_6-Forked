@@ -53,6 +53,14 @@ namespace FactionColonies
         private Vector2 militaryScroll;
         private MilitaryCustomizationUtil militaryUtil;
 
+        // ===== SORTED LIST CACHES =====
+        private List<BillFC> cachedSortedBills;
+        private int cachedBillsCount = -1;
+        private List<FCEvent> cachedSortedEvents;
+        private int cachedEventsCount = -1;
+        private int cachedHiddenCategoriesCount = -1;
+        private static List<FCEventCategoryDef> cachedSortedCategories;
+
         // ===== LIFECYCLE =====
 
         public override void PreOpen()
@@ -949,7 +957,12 @@ namespace FactionColonies
 
             Widgets.BeginScrollView(viewRect, ref billsScroll, scrollRect);
 
-            List<BillFC> sorted = bills.OrderBy(b => b.dueTick).ToList();
+            if (cachedSortedBills == null || cachedBillsCount != bills.Count)
+            {
+                cachedSortedBills = bills.OrderBy(b => b.dueTick).ToList();
+                cachedBillsCount = bills.Count;
+            }
+            List<BillFC> sorted = cachedSortedBills;
             for (int i = 0; i < sorted.Count; i++)
             {
                 BillFC bill = sorted[i];
@@ -1070,7 +1083,11 @@ namespace FactionColonies
 
         private void DrawEventFilterBar(Rect barRect)
         {
-            List<FCEventCategoryDef> categories = FactionCache.FCEventCategoryDefs.OrderBy(c => c.displayOrder).ToList();
+            if (cachedSortedCategories == null)
+            {
+                cachedSortedCategories = FactionCache.FCEventCategoryDefs.OrderBy(c => c.displayOrder).ToList();
+            }
+            List<FCEventCategoryDef> categories = cachedSortedCategories;
             int count = categories.Count + 1; // +1 for "All" button
             float gap = 3f;
             float btnW = (barRect.width - gap * (count - 1)) / count;
@@ -1127,6 +1144,25 @@ namespace FactionColonies
             float innerX = rect.x + pad;
             float innerW = rect.width - pad * 2f;
 
+            // Build sorted + filtered cache
+            bool filtering = hiddenEventCategories.Count > 0;
+            bool needsRebuild = cachedSortedEvents == null
+                || cachedEventsCount != events.Count
+                || cachedHiddenCategoriesCount != hiddenEventCategories.Count;
+            if (needsRebuild)
+            {
+                cachedSortedEvents = events.OrderBy(e => e.timeTillTrigger).ToList();
+                if (filtering)
+                {
+                    cachedSortedEvents = cachedSortedEvents
+                        .Where(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e)))
+                        .ToList();
+                }
+                cachedEventsCount = events.Count;
+                cachedHiddenCategoriesCount = hiddenEventCategories.Count;
+            }
+            List<FCEvent> sorted = cachedSortedEvents;
+
             // Summary line
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
@@ -1134,10 +1170,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color origColor = GUI.color;
             GUI.color = Color.gray;
-            bool filtering = hiddenEventCategories.Count > 0;
-            int filteredCount = filtering
-                ? events.Count(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e)))
-                : events.Count;
+            int filteredCount = filtering ? sorted.Count : events.Count;
             string summaryText = filtering
                 ? "FCActiveEventsFiltered".Translate(filteredCount, events.Count)
                 : "FCActiveEventsCount".Translate(events.Count);
@@ -1165,13 +1198,6 @@ namespace FactionColonies
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
                 return;
-            }
-
-            // Build sorted + filtered list
-            List<FCEvent> sorted = events.OrderBy(e => e.timeTillTrigger).ToList();
-            if (filtering)
-            {
-                sorted = sorted.Where(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e))).ToList();
             }
 
             // Scrollable event list

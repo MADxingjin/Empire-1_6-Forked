@@ -1077,6 +1077,11 @@ namespace FactionColonies
                 {
                     totalWorkers -= 1;
                 }
+                else
+                {
+                    LogUtil.Error($"GetTotalWorkers: IncreaseWorkers failed to shed a worker for {Name}. Breaking to prevent freeze.");
+                    break;
+                }
             }
 
             return totalWorkers;

@@ -200,15 +200,17 @@ namespace FactionColonies.util
             bool success = true;
             if (!faction.TryGenerateNewLeader())
             {
-                LogUtil.Message("Generating Leader failed! Manually Generating . . .");
-                faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: Faction.OfPlayer.RandomPawnKind(),
+                LogUtil.Warning("TryGenerateNewLeader failed. Falling back to manual generation.");
+                PawnKindDef fallbackKind = faction.RandomPawnKind();
+                LogUtil.Message($"Fallback pawnkind: {fallbackKind?.defName ?? "null"}");
+                faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: fallbackKind,
                 faction: faction, context: PawnGenerationContext.NonPlayer,
                 forceGenerateNewPawn: true, allowDead: false, allowDowned: false,
                 canGeneratePawnRelations: true, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0,
                 forceAddFreeWarmLayerIfNeeded: false, worldPawnFactionDoesntMatter: false));
                 if (faction.leader == null)
                 {
-                    LogUtil.Warning("That failed, too! Contacting " + faction.Name + " won't work!");
+                    LogUtil.Warning("Fallback leader generation also failed!");
                     success = false;
                 }
                 else
@@ -217,8 +219,17 @@ namespace FactionColonies.util
                     {
                         Find.WorldPawns.PassToWorld(faction.leader, PawnDiscardDecideMode.KeepForever);
                     }
-                    LogUtil.Message($"Created pawn {faction.leader.Name} ({faction.leader.ThingID}) to lead faction {faction.Name}");
+                    LogUtil.Message($"Created leader {faction.leader.Name} ({faction.leader.ThingID}), " +
+                                    $"pawnKind: {faction.leader.kindDef?.defName ?? "null"}, " +
+                                    $"ideo: {faction.leader.Ideo?.name ?? "none"}, " +
+                                    $"faction: {faction.Name}");
                 }
+            }
+            else
+            {
+                LogUtil.Message($"TryGenerateNewLeader succeeded. Leader: {faction.leader?.Name} ({faction.leader?.ThingID}), " +
+                                $"pawnKind: {faction.leader?.kindDef?.defName ?? "null"}, " +
+                                $"ideo: {faction.leader?.Ideo?.name ?? "none"}");
             }
 
             return success;

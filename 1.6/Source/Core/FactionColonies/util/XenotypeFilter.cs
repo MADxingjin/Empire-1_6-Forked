@@ -1122,6 +1122,10 @@ namespace FactionColonies.util
                         faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat
                         faction.pawnGroupMakers[1].guards.Add(pawnOption); // Trader guards
                     }
+                    else if (pawnKind.factionLeader)
+                    {
+                        faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat (needed for TryGenerateNewLeader)
+                    }
 
                     if (pawnKind.trader)
                     {
