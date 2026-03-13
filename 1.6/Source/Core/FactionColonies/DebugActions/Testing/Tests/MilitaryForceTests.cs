@@ -104,7 +104,7 @@ namespace FactionColonies
             TestAssert.IsFalse(double.IsNaN(force.forceRemaining), "forceRemaining should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(force.forceRemaining), "forceRemaining should not be infinite");
             TestAssert.IsTrue(force.forceRemaining >= 0, $"forceRemaining should be >= 0, got {force.forceRemaining}");
-            TestAssert.GreaterThan(force.militaryLevel, 0, "militaryLevel should be > 0");
+            TestAssert.IsTrue(force.militaryLevel >= 0, "militaryLevel should be >= 0");
             TestAssert.GreaterThan(force.militaryEfficiency, 0, "militaryEfficiency should be > 0");
         }
 

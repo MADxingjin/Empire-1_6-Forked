@@ -92,7 +92,7 @@ namespace FactionColonies
             if (totalStockpileAllocation - currentForKey + amount > rawTotalProduction)
                 return false;
             stockpileAllocations[key] = new StockpileEntry { amount = amount, onEvicted = onEvicted };
-            settlement.DirtyProfitCache();
+            settlement?.DirtyProfitCache();
             return true;
         }
 
@@ -100,7 +100,7 @@ namespace FactionColonies
         public void ClearStockpileAllocation(string key)
         {
             stockpileAllocations.Remove(key);
-            settlement.DirtyProfitCache();
+            settlement?.DirtyProfitCache();
         }
 
         /// <summary>
