@@ -94,12 +94,10 @@
 	<FactionColonies.FCEventDef>
 		<defName>loyaltyParade_1-3</defName>
 		<label>Loyalty Parade (Recruitment)</label>
-		<desc>The enthusiastic gathering is used to recruit new workers for the empire's settlements. +1 loyalty a day, -2 unrest a day, +2 max workers.</desc>
+		<desc>The enthusiastic gathering is used to recruit new workers for the empire's settlements. +2 max workers.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
-			<li><stat>loyaltyGainedBase</stat><value>1</value></li>
-			<li><stat>unrestLostBase</stat><value>2</value></li>
 			<li><stat>workerBaseMax</stat><value>2</value></li>
 		</statModifiers>
 		<incompatibleEvents>

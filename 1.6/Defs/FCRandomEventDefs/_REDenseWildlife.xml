@@ -91,9 +91,9 @@
 	<FactionColonies.FCEventDef>
 		<defName>denseWildlife_1-3</defName>
 		<label>Dense Wildlife (Domestication)</label>
-		<desc>Some of the animals are captured and domesticated for long-term gains. +0.5 animals and +0.5 food base production for an extended period.</desc>
+		<desc>Some of the animals are captured and domesticated for long-term gains. +0.5 animals and +0.5 food base production.</desc>
 		<category>EC_Economy</category>
-		<timeTillTrigger>600000</timeTillTrigger>
+		<timeTillTrigger>360000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>

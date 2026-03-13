@@ -26,7 +26,7 @@
 		<defName>strangeDiscovery_0_1</defName>
 		<label>What are you doing? Keep digging!</label>
 		<parentEvent>strangeDiscovery_0</parentEvent>
-		<baseChanceOfSuccess>35</baseChanceOfSuccess>
+		<baseChanceOfSuccess>45</baseChanceOfSuccess>
 		<silverCost>0</silverCost>
 		<successEvent>strangeDiscovery_1-1b</successEvent>
 		<failEvent>strangeDiscovery_1-3</failEvent>

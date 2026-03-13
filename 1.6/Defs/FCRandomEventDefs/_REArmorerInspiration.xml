@@ -84,7 +84,7 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Armor</randomThingRewardDef>
-		<randomThingValue>2500</randomThingValue>
+		<randomThingValue>2800</randomThingValue>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>

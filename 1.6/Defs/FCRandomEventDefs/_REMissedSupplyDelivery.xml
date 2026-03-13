@@ -99,9 +99,9 @@
 	<FactionColonies.FCEventDef>
 		<defName>missedSupplyDelivery_1-3</defName>
 		<label>Missed Supply Delivery (Improvised)</label>
-		<desc>The craftsmen improvise with local materials, focusing their limited supplies on apparel. -1 weapons base production.</desc>
+		<desc>The craftsmen improvise with local materials, focusing their limited supplies on apparel. -1 weapons base production for a shorter period.</desc>
 		<category>EC_Economy</category>
-		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTrigger>180000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>

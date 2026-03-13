@@ -55,10 +55,10 @@
 
 	<FactionColonies.FCOptionDef>
 		<defName>blacksmithInspiration_0_4</defName>
-		<label>Fund an apprentice program instead — train the next generation.</label>
+		<label>I'll provide workshop materials from our settlement stores.</label>
 		<parentEvent>blacksmithInspiration_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
-		<silverCost>800</silverCost>
+		<silverCost>0</silverCost>
 		<successEvent>blacksmithInspiration_1-3</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>
@@ -84,7 +84,7 @@
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
-		<randomThingValue>2500</randomThingValue>
+		<randomThingValue>2800</randomThingValue>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
@@ -101,15 +101,17 @@
 
 	<FactionColonies.FCEventDef>
 		<defName>blacksmithInspiration_1-3</defName>
-		<label>Blacksmith Inspiration (Apprentice Program)</label>
-		<desc>The blacksmith's apprentice program trains the next generation of weaponsmiths. No personal masterwork is produced, but the settlement's weapon production improves. +1 weapons base production.</desc>
+		<label>Blacksmith Inspiration (Workshop Materials)</label>
+		<desc>The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -1 weapons base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
-			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>1</value></li>
+			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
+		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
+		<randomThingValue>1000</randomThingValue>
 	</FactionColonies.FCEventDef>
 
 </Defs>

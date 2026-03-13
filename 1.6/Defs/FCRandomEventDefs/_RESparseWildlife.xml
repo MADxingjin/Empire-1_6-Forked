@@ -53,7 +53,7 @@
 		<label>Shift focus to farming the land instead.</label>
 		<parentEvent>sparseWildlife_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
-		<silverCost>0</silverCost>
+		<silverCost>150</silverCost>
 		<successEvent>sparseWildlife_1-3</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>

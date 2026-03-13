@@ -78,12 +78,13 @@
 	<FactionColonies.FCEventDef>
 		<defName>struckRichOreVein_1-2</defName>
 		<label>Rich Ore Vein (Rush Extraction)</label>
-		<desc>The miners are pushed hard to extract as much ore as possible. +2.5 mining base production, but the overwork takes its toll. -1 happiness.</desc>
+		<desc>The miners are pushed hard to extract as much ore as possible. +2.5 mining base production, but the overwork takes its toll. -3 happiness, -1 max workers.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>2.5</value></li>
-			<li><stat>happinessGainedBase</stat><value>-1</value></li>
+			<li><stat>happinessGainedBase</stat><value>-3</value></li>
+			<li><stat>workerBaseMax</stat><value>-1</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>struckRichOreVein_0</li>
