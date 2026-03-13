@@ -154,8 +154,8 @@ namespace FactionColonies
 
 					foreach (var bed in Find.Maps.Where(map => map.IsPlayerHome).SelectMany(map => map.listerBuildings.allBuildingsColonist).OfType<Building_Bed>().Where(bed => bed.OwnersForReading.Any(bedPawn => bedPawn == prisoner)))
 					{
-						bed.ForPrisoners = false;
-						bed.ForPrisoners = true;
+						bed.ForOwnerType = BedOwnerType.Colonist;
+						bed.ForOwnerType = BedOwnerType.Prisoner;
 					}
 				})).ToList();
 

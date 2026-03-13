@@ -114,14 +114,17 @@ namespace FactionColonies
                     list.Add(new FloatMenuOption("FCHeavy".Translate().CapitalizeFirst() + " - " + "FCHeavyExplanation".Translate(), delegate
                     {
                         prisoner.workload = FCWorkLoad.Heavy;
+                        settlement.DirtyStatsCache();
                     }));
                     list.Add(new FloatMenuOption("FCMedium".Translate().CapitalizeFirst() + " - " + "FCMediumExplanation".Translate(), delegate
                     {
                         prisoner.workload = FCWorkLoad.Medium;
+                        settlement.DirtyStatsCache();
                     }));
                     list.Add(new FloatMenuOption("FCLight".Translate().CapitalizeFirst() + " - " + "FCLightExplanation".Translate(), delegate
                     {
                         prisoner.workload = FCWorkLoad.Light;
+                        settlement.DirtyStatsCache();
                     }));
                     FloatMenu menu = new FloatMenu(list);
                     Find.WindowStack.Add(menu);
@@ -162,6 +165,7 @@ namespace FactionColonies
 
                             //reset window
                             prisoners.Remove(prisoner);
+                            settlement.DirtyStatsCache();
                             WindowUpdate();
                         }));
                     }
@@ -198,6 +202,7 @@ namespace FactionColonies
 
                         //reset window
                         prisoners.Remove(prisoner);
+                        settlement.DirtyStatsCache();
                         WindowUpdate();
                         return;
                     }));

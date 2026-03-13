@@ -589,6 +589,7 @@ namespace FactionColonies
         public void AddPrisoner(Pawn prisoner)
         {
             prisonerList.Add(new FCPrisoner(prisoner, this));
+            DirtyStatsCache();
         }
 
         public void UpgradeSettlement(int times = 1)
