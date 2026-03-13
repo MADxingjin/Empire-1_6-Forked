@@ -346,21 +346,23 @@ namespace FactionColonies
             {
                 Rect tabBox = new Rect(boundingBox.x, boundingBox.y + (tabHeight * i), tabWidth, tabHeight);
                 float imgSize = Math.Min(tabWidth, tabHeight);
-                Rect iconBox = new Rect(tabBox.x + (tabWidth - imgSize) / 2f, tabBox.y + (tabHeight - imgSize) / 2f, imgSize, imgSize);
-                if (UIUtil.ButtonFlat(tabBox, ""))
+                Rect iconBox = new Rect(tabBox.x + 2f + (tabWidth - imgSize) / 2f, tabBox.y + (tabHeight - imgSize) / 2f, imgSize, imgSize);
+                if (UIUtil.ButtonFlat(tabBox, "", highlighted: titheTab == i))
                 {
                     titheTab = i;
                     UpdateTitheDictBuffers(resources[i]);
                 }
                 Text.Font = GameFont.Small;
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
+                // Resource color accent
+                Widgets.DrawBoxSolid(new Rect(tabBox.x, tabBox.y, 3f, tabBox.height), resources[i].def.color);
                 UIUtil.TipRegionByText(tabBox, resources[i].def.LabelCap);
                 if (titheTab == i)
                 {
                     chosenRect = tabBox;
                 }
             }
-            GUI.color = Color.gray;
+            GUI.color = resources[titheTab].def.color;
             //fancy custom tab stuff
             Widgets.DrawLineVertical(chosenRect.xMax, boundingBox.y, chosenRect.y - boundingBox.y);
             Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.y, chosenRect.width);
@@ -1453,6 +1455,9 @@ namespace FactionColonies
                     Rect rowHighlight = new Rect(viewRect.x, rectY - (margin / 2f), viewRect.width, rowHeight + margin);
                     Widgets.DrawHighlight(rowHighlight);
                 }
+
+                // Resource color accent
+                Widgets.DrawBoxSolid(new Rect(viewRect.x, rectY, 3f, rowHeight), resource.def.color);
 
                 float resourceImgSize = Math.Min(colWidth, rowHeight);
                 float resourceImxgX = viewRect.x + ((colWidth - resourceImgSize) / 2f);

@@ -6,6 +6,7 @@
 	<label>food</label>
 	<description>A resource category for meals and plant foods.</description>
 	<iconPath>GUI/ProductionFood</iconPath>
+	<color>(0.45, 0.75, 0.35)</color>
 	<uiPriority>100</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Food_ProductionAdditive</productionAdditiveStat>
@@ -55,6 +56,7 @@
 	<label>weapons</label>
 	<description>A resource category for weapons.</description>
 	<iconPath>GUI/ProductionWeapons</iconPath>
+	<color>(0.75, 0.35, 0.35)</color>
 	<uiPriority>200</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Weapons_ProductionAdditive</productionAdditiveStat>
@@ -91,6 +93,7 @@
 	<label>apparel</label>
 	<description>A resource category for apparel.</description>
 	<iconPath>GUI/ProductionApparel</iconPath>
+	<color>(0.55, 0.45, 0.75)</color>
 	<uiPriority>300</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Apparel_ProductionAdditive</productionAdditiveStat>
@@ -124,6 +127,7 @@
 	<label>animals</label>
 	<description>A resource category for livestock and animal products.</description>
 	<iconPath>GUI/ProductionAnimals</iconPath>
+	<color>(0.75, 0.60, 0.35)</color>
 	<uiPriority>400</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Animals_ProductionAdditive</productionAdditiveStat>
@@ -162,6 +166,7 @@
 	<label>logging</label>
 	<description>A resource category for logging.</description>
 	<iconPath>GUI/ProductionLogging</iconPath>
+	<color>(0.55, 0.40, 0.25)</color>
 	<uiPriority>500</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Logging_ProductionAdditive</productionAdditiveStat>
@@ -187,6 +192,7 @@
 	<label>mining</label>
 	<description>A resource category for mining materials.</description>
 	<iconPath>GUI/ProductionMining</iconPath>
+	<color>(0.50, 0.55, 0.60)</color>
 	<uiPriority>600</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Mining_ProductionAdditive</productionAdditiveStat>
@@ -240,6 +246,7 @@
 	<label>medicine</label>
 	<description>A resource category for medicine.</description>
 	<iconPath>GUI/ProductionMedicine</iconPath>
+	<color>(0.35, 0.70, 0.70)</color>
 	<uiPriority>700</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Medicine_ProductionAdditive</productionAdditiveStat>
@@ -277,6 +284,7 @@
 	<label>research</label>
 	<description>A resource category for research.</description>
 	<iconPath>GUI/ProductionResearch</iconPath>
+	<color>(0.35, 0.50, 0.80)</color>
 	<uiPriority>800</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
@@ -303,6 +311,7 @@
 	<label>power</label>
 	<description>A resource category for power.</description>
 	<iconPath>GUI/ProductionPower</iconPath>
+	<color>(0.80, 0.75, 0.30)</color>
 	<uiPriority>900</uiPriority>
 	<isDefaultResource>true</isDefaultResource>
 	<isPoolResource>true</isPoolResource>
@@ -336,6 +345,7 @@
 	<label>chemfuel</label>
 	<description>A resource category for chemfuel.</description>
 	<iconPath>GUI/ProductionChemfuel</iconPath>
+	<color>(0.70, 0.45, 0.60)</color>
 	<uiPriority>1000</uiPriority>
 	<productionAdditiveStat>RTD_Chemfuel_ProductionAdditive</productionAdditiveStat>
 	<productionMultiplierStat>RTD_Chemfuel_ProductionMultiplier</productionMultiplierStat>
@@ -360,6 +370,7 @@
 	<label>gravtech</label>
 	<description>A resource category for gravtech resources.</description>
 	<iconPath>GUI/ProductionGravtech</iconPath>
+	<color>(0.55, 0.75, 0.80)</color>
 	<uiPriority>1100</uiPriority>
 	<productionAdditiveStat>RTD_Gravtech_ProductionAdditive</productionAdditiveStat>
 	<productionMultiplierStat>RTD_Gravtech_ProductionMultiplier</productionMultiplierStat>

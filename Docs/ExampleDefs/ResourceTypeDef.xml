@@ -7,6 +7,8 @@
 	<label>resource label</label>
 	<description>A brief description of the resource category.</description>
 	<iconPath>path/to/your/resource/icon</iconPath>
+	<!-- A color used to visually represent this resource in the UI (e.g. accent bars on supply routes). Format: (R, G, B) with values 0-1. Default: (0.65, 0.65, 0.65) -->
+	<color>(0.45, 0.75, 0.35)</color>
 	<uiPriority>determines the order this resource will appear in any lists. Lower value = higher in the list. Default: 10000</uiPriority>
 	<!-- The thing allowlist allows you to specify individual things that can be selected for tithing in this category.-->
 	<!-- Things that are specified in the allow list will always be available for this resource, even if they don't belong to any allowed categories, or DO belong to a blocked category.-->

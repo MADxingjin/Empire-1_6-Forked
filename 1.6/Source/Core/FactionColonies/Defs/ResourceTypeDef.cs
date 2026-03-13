@@ -181,6 +181,7 @@ namespace FactionColonies
     public class ResourceTypeDef : Def
     {
         public string iconPath;
+        public Color color = new Color(0.65f, 0.65f, 0.65f);
 
         /* For all Allow-Blocklist pairs, the allowlist is processed first, and then the blocklist is used to shave off blocked elements */
         /* NOTE: The thingAllowList is treated as the ultimate source of truth for the Things it specifies. That is:
