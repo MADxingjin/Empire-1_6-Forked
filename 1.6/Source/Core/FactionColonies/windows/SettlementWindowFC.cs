@@ -5,6 +5,7 @@ using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -1445,7 +1446,6 @@ namespace FactionColonies
             Widgets.DrawHighlight(incomeRawCol);
             Widgets.DrawMenuSection(incomeNetCol);
             UIUtil.TipRegionByText(incomeRawCol, "RawIncomeDesc".Translate());
-            UIUtil.TipRegionByText(incomeNetCol, "NetIncomeDesc".Translate());
 
             for (int i = 0; i < availableResources.Count; i++)
             {
@@ -1507,13 +1507,22 @@ namespace FactionColonies
                     TooltipHandler.TipRegion(totalProd, tooltip);
                 }
 
-                //Est Income (taxable production as silver, after stockpile diversions but before tithes)
+                //Raw Income (total production as silver, before stockpile diversions and tithes)
                 Rect incomeRawBox = new Rect(totalProd.xMax + margin, rectY, colWidth, rowHeight);
-                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.taxableProductionMarketValue)));
+                Widgets.Label(incomeRawBox, (TextUtil.FloorStat(resource.grossMarketValue)));
 
-                //Net Income, after tithes
+                //Net Income, after stockpile diversions and tithes
                 Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(incomeNetBox, (TextUtil.FloorStat(resource.actualIncome)));
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("NetIncomeBreakdownGross".Translate(TextUtil.FloorStat(resource.grossMarketValue)));
+                if (resource.stockpileMarketValue > 0)
+                    sb.AppendLine("NetIncomeBreakdownStockpile".Translate(TextUtil.FloorStat(resource.stockpileMarketValue)));
+                if (resource.titheTotalValue > 0)
+                    sb.AppendLine("NetIncomeBreakdownTithes".Translate(TextUtil.FloorStat(resource.titheTotalValue)));
+                sb.Append("NetIncomeBreakdownNet".Translate(TextUtil.FloorStat(resource.actualIncome)));
+                UIUtil.TipRegionByText(incomeNetBox, sb.ToString());
             }
 
             Widgets.EndScrollView();

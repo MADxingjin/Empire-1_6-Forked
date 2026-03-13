@@ -191,9 +191,13 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<Upkeep>Upkeep</Upkeep>
 	<FCUpkeep>Upkeep</FCUpkeep>
 	<Raw>Raw</Raw>
-	<RawIncomeDesc>The total income a resource produces, before accounting for tithes.</RawIncomeDesc>
+	<RawIncomeDesc>The total income a resource produces, before any deductions.</RawIncomeDesc>
 	<Net>Net</Net>
-	<NetIncomeDesc>The total income a resources produces, after accounting for tithes.</NetIncomeDesc>
+	<NetIncomeDesc>The total income a resource produces, after accounting for stockpile diversions and tithes.</NetIncomeDesc>
+	<NetIncomeBreakdownGross>Gross income: {0}</NetIncomeBreakdownGross>
+	<NetIncomeBreakdownStockpile>Stockpile diversions: -{0}</NetIncomeBreakdownStockpile>
+	<NetIncomeBreakdownTithes>Tithes: -{0}</NetIncomeBreakdownTithes>
+	<NetIncomeBreakdownNet>Net income: {0}</NetIncomeBreakdownNet>
 	<itemcost>{0}{1}</itemcost>
 
 	<!-- Power Output -->

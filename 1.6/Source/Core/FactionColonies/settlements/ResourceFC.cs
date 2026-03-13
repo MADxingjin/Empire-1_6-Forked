@@ -190,8 +190,10 @@ namespace FactionColonies
         /* NOTE: the production property chain flows as follows:
          *  rawTotalProduction          — gross output (units), before any splits. Display this as "Total Production".
          *  effectiveRawTotalProduction — post-stockpile output (units); what remains after submod allocations are diverted.
+         *  grossMarketValue            — silver value of rawTotalProduction; displayed as "Raw Income" (before any deductions).
+         *  stockpileMarketValue        — silver value of totalStockpileAllocation; used in Net Income tooltip breakdown.
          *  taxableProductionMarketValue — silver value of effectiveRawTotalProduction; the budget available to taxes and tithes.
-         *  actualIncome                — taxableProductionMarketValue minus tithe costs; what the player actually receives in silver.
+         *  actualIncome                — taxableProductionMarketValue minus tithe costs; displayed as "Net Income".
          *                                Can be negative if tithe modifiers push the tithe value above taxable production.
          */
         /// <summary>Current snapshot: production * workers, ignoring accumulation.</summary>
@@ -207,6 +209,8 @@ namespace FactionColonies
                 ? AccumulatedAverageProduction
                 : InstantaneousProduction;
         public double effectiveRawTotalProduction => rawTotalProduction - totalStockpileAllocation;
+        public double grossMarketValue => rawTotalProduction * FCSettings.silverPerResource;
+        public double stockpileMarketValue => totalStockpileAllocation * FCSettings.silverPerResource;
         public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
         public double actualIncome => taxableProductionMarketValue - titheTotalValue;
 
