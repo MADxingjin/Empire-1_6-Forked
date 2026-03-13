@@ -58,6 +58,12 @@ namespace FactionColonies
 
         public Color? accentColor;
 
+        /// <summary>
+        /// If false, this settlement type will not appear in the settlement type picker.
+        /// Submods can XML-patch this to false to hide settlement types.
+        /// </summary>
+        public bool available = true;
+
         public ResourceAvailability GetSettlementResource(ResourceTypeDef resourceTypeDef)
         {
             return resources.FirstOrDefault((ResourceAvailability b) => b.resourceDef == resourceTypeDef);
@@ -93,6 +99,7 @@ namespace FactionColonies
 
         public bool IsUnlocked()
         {
+            if (!available) return false;
             if (researchProjects?.Count > 0)
             {
                 foreach (ResearchProjectDef researchProject in researchProjects)

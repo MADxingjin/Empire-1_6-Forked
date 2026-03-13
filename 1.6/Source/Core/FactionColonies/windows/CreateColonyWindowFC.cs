@@ -51,7 +51,7 @@ namespace FactionColonies
             faction = FactionCache.FactionComp;
             prodBoxHeight = faction.FactionResources.Count * 22 + 10;
             windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
-            currentSettlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
+            currentSettlementType = GetDefaultSettlementType();
             oldSettlementType = null;
         }
 
@@ -206,6 +206,15 @@ namespace FactionColonies
             {
                 timeToTravel = 0;
             }
+        }
+
+        private static WorldSettlementDef GetDefaultSettlementType()
+        {
+            foreach (WorldSettlementDef def in DefDatabase<WorldSettlementDef>.AllDefs)
+            {
+                if (def.IsUnlocked()) return def;
+            }
+            return WorldSettlementDefOf.WorldSettlementDef_Surface;
         }
 
         private IEnumerable<FloatMenuOption> GetAvailableSettlementTypes()
