@@ -885,8 +885,12 @@ namespace FactionColonies
                 // Draw row: [icon] Label: current -> projected (delta)
                 Rect rowRect = new Rect(x, curY, width, 22f);
 
+                // Resource color accent
+                Widgets.DrawBoxSolid(new Rect(x, curY, 3f, 22f), resDef.color);
+                float contentX = x + 3f + smallMargin;
+
                 // Resource icon
-                Rect iconRect = new Rect(x, curY, 20f, 20f);
+                Rect iconRect = new Rect(contentX, curY, 20f, 20f);
                 GUI.DrawTexture(iconRect, resource.getIcon);
 
                 Text.Font = GameFont.Small;
@@ -897,7 +901,7 @@ namespace FactionColonies
                 string deltaStr = (delta >= 0 ? "+" : "") + delta.ToString("F1");
                 Color deltaColor = delta >= 0 ? Color.green : Color.red;
 
-                Rect textRect = new Rect(iconRect.xMax + smallMargin, curY, width - 20f - smallMargin, 22f);
+                Rect textRect = new Rect(iconRect.xMax + smallMargin, curY, width - (contentX - x) - 20f - smallMargin, 22f);
                 string label = resource.label + ": " + currentStr + " → " + projectedStr + " (";
                 Widgets.Label(textRect, label);
 

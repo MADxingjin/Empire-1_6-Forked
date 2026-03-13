@@ -41,6 +41,7 @@ namespace FactionColonies
         private Vector2 settlementScroll;
         private Vector2 billsScroll;
         private Vector2 eventsScroll;
+        private Vector2 productionScroll;
 
         // ===== EVENT FILTER STATE =====
         private static readonly HashSet<FCEventCategoryDef> hiddenEventCategories = new HashSet<FCEventCategoryDef>();
@@ -546,6 +547,7 @@ namespace FactionColonies
                         Widgets.DrawHighlight(row);
                     }
 
+                    Widgets.DrawBoxSolid(new Rect(row.x, row.y, 3f, rowSize), pool.resource.color);
                     Widgets.ButtonImage(icon, pool.resource.Icon);
                     UIUtil.TipRegionByText(icon, pool.resource.LabelCap);
 
@@ -593,28 +595,56 @@ namespace FactionColonies
             Widgets.Label(prodHeaderBox, "TotalProduction".Translate());
             y += prodHeaderBox.height + margin;
 
-            float iconSize  = 30f;
-            float rGap = 5f;
-            int rPerRow = Mathf.Max(1, (int)Math.Floor(width / (iconSize + rGap)));
-            int ri = 0;
-            float resRowWidth = rPerRow * (iconSize + rGap) - rGap;
-            float rowx = panel.x + (panel.width - resRowWidth) / 2f;
+            float rowHeight = 22f;
+            float rowSpacing = 2f;
+            float iconSm = 20f;
+            int resourceCount = faction.FactionResources.Count;
+            float totalHeight2 = resourceCount * (rowHeight + rowSpacing) - rowSpacing;
+            float maxHeight = 264f;
+            float sectionHeight2 = Math.Min(totalHeight2, maxHeight);
+            float rowWidth2 = width;
 
-            Text.Font   = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleCenter;
+            Rect sectionBox = new Rect(x, y, width, sectionHeight2);
+            bool needsScroll = totalHeight2 > sectionHeight2;
+            if (needsScroll)
+            {
+                Rect scrollContent = new Rect(x, y, width, totalHeight2);
+                Widgets.BeginScrollView(sectionBox, ref productionScroll, scrollContent);
+                rowWidth2 -= 16f;
+            }
+
+            int ri = 0;
+            Text.Font = GameFont.Tiny;
             foreach (ResourceDisplay resource in faction.FactionResources)
             {
-                int col = ri % rPerRow;
-                int row = ri / rPerRow;
-                float rx = rowx + col * (iconSize + rGap);
-                float ry = y + row * (iconSize + 16f);
-                Rect icon = new Rect(rx, ry, iconSize, iconSize);
+                float ry = y + ri * (rowHeight + rowSpacing);
+                Rect rowRect = new Rect(x, ry, rowWidth2, rowHeight);
 
-                Widgets.ButtonImage(icon, resource.Icon);
-                UIUtil.TipRegionByText(icon, resource.label);
+                if (ri % 2 == 0)
+                {
+                    Widgets.DrawHighlight(rowRect);
+                }
 
-                Widgets.Label(new Rect(rx, ry + iconSize, iconSize, 15f), resource.amount.ToString());
+                Widgets.DrawBoxSolid(new Rect(x, ry, 3f, rowHeight), resource.resourceDef.color);
+
+                Rect iconRect = new Rect(x + 5f, ry + (rowHeight - iconSm) / 2f, iconSm, iconSm);
+                Widgets.ButtonImage(iconRect, resource.Icon);
+
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Rect labelRect = new Rect(iconRect.xMax + 4f, ry, rowWidth2 - iconRect.xMax + x - 4f - 50f, rowHeight);
+                Widgets.Label(labelRect, resource.label);
+
+                Text.Anchor = TextAnchor.MiddleRight;
+                Rect amountRect = new Rect(x + rowWidth2 - 50f, ry, 48f, rowHeight);
+                Widgets.Label(amountRect, resource.amount.ToString());
+
+                UIUtil.TipRegionByText(rowRect, resource.label);
                 ri++;
+            }
+
+            if (needsScroll)
+            {
+                Widgets.EndScrollView();
             }
         }
 

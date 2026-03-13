@@ -74,6 +74,10 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(labelHighlight);
             Widgets.Label(labelText, resource.def.LabelCap);
+            Rect iconAccent = new Rect(iconBox.x, iconBox.y, iconBox.width, 3f);
+            Rect labelAccent = new Rect(labelHighlight.x, labelHighlight.y, labelHighlight.width, 3f);
+            Widgets.DrawBoxSolid(iconAccent, resource.def.color);
+            Widgets.DrawBoxSolid(labelAccent, resource.def.color);
 
             /* Enable All / Disable All buttons */
             Rect enableAllBox = new Rect(boundingBox.x, iconBox.yMax + margin, boundingBox.width / 2f, 30f);

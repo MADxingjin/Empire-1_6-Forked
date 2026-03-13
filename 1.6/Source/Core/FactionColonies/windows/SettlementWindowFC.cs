@@ -421,6 +421,10 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(labelHighlight);
             Widgets.Label(labelText, res.def.LabelCap);
+            Rect iconAccent = new Rect(iconBox.x, iconBox.y, iconBox.width, 3f);
+            Rect labelAccent = new Rect(labelHighlight.x, labelHighlight.y, labelHighlight.width, 3f);
+            Widgets.DrawBoxSolid(iconAccent, res.def.color);
+            Widgets.DrawBoxSolid(labelAccent, res.def.color);
 
             /* Info boxes */
             Text.Font = GameFont.Tiny;
