@@ -92,11 +92,16 @@ namespace FactionColonies
             if (totalStockpileAllocation - currentForKey + amount > rawTotalProduction)
                 return false;
             stockpileAllocations[key] = new StockpileEntry { amount = amount, onEvicted = onEvicted };
+            settlement.DirtyProfitCache();
             return true;
         }
 
         /// <summary>Removes a previously registered stockpile allocation. The eviction callback is NOT invoked.</summary>
-        public void ClearStockpileAllocation(string key) => stockpileAllocations.Remove(key);
+        public void ClearStockpileAllocation(string key)
+        {
+            stockpileAllocations.Remove(key);
+            settlement.DirtyProfitCache();
+        }
 
         /// <summary>
         /// Evicts stockpile entries (largest first) until the total allocation fits within <see cref="rawTotalProduction"/>.
