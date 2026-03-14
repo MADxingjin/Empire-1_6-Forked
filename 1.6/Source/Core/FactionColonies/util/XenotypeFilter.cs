@@ -865,6 +865,7 @@ namespace FactionColonies.util
         private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, TechLevelMatch techMatch)
         {
             if (def.race != race) return false;
+            if (def.defaultFactionDef != null && def.defaultFactionDef.isPlayer) return false;
             if (techMatch == TechLevelMatch.Any || def.defaultFactionDef is null) return true;
             if (techMatch == TechLevelMatch.Exact)
                 return def.defaultFactionDef.techLevel == factionFc.techLevel;
