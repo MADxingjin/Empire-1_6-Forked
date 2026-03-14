@@ -961,7 +961,7 @@ namespace FactionColonies
                 LetterDefOf.PositiveEvent, new LookTargets(WorldSettlement));
         }
 
-        private void EndAttack()
+        public void EndAttack()
         {
             bool won = defenders.Any();
             int remaining = defenders.Count;

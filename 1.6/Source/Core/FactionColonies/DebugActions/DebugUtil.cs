@@ -39,6 +39,37 @@ namespace FactionColonies
             Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + GenDate.TicksPerYear);
         }
 
+        [DebugAction("Empire", "Kill & Regen Leader", allowedGameStates = AllowedGameStates.Playing)]
+        private static void DebugKillAndRegenLeader()
+        {
+            Faction faction = FactionCache.PlayerColonyFaction;
+            if (faction == null)
+            {
+                LogUtil.MessageForce("No Empire faction found.");
+                return;
+            }
+            Pawn oldLeader = faction.leader;
+            if (oldLeader != null)
+            {
+                LogUtil.MessageForce($"Killing leader: {oldLeader.Name} ({oldLeader.ThingID}), " +
+                                     $"title: {faction.LeaderTitle}, " +
+                                     $"ideo: {oldLeader.Ideo?.name ?? "none"}");
+                oldLeader.Kill(null);
+            }
+            else
+            {
+                LogUtil.MessageForce("No current leader. Generating new one.");
+            }
+            ColonyUtil.CreatePlayerFactionLeader(faction);
+            if (faction.leader != null)
+            {
+                LogUtil.MessageForce($"New leader: {faction.leader.Name} ({faction.leader.ThingID}), " +
+                                     $"title: {faction.LeaderTitle}, " +
+                                     $"pawnKind: {faction.leader.kindDef?.defName ?? "null"}, " +
+                                     $"ideo: {faction.leader.Ideo?.name ?? "none"}");
+            }
+        }
+
         [DebugAction("Empire", "Print Races", allowedGameStates = AllowedGameStates.Playing)]
         private static void PrintRaces()
         {

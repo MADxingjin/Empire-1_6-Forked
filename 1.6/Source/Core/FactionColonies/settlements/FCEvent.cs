@@ -654,11 +654,14 @@ namespace FactionColonies
                 raidStrategy = RaidStrategyDefOf.ImmediateAttack,
                 raidNeverFleeIndividual = true
             };
-            parms.points = IncidentWorker_Raid.AdjustedRaidPoints(
-                (float)temp.militaryForceAttacking.forceRemaining * 175,
-                PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                parms.faction, PawnGroupKindDefOf.Combat,
-                parms.target // new required parameter
+            parms.points = Math.Max(
+                IncidentWorker_Raid.AdjustedRaidPoints(
+                    (float)temp.militaryForceAttacking.forceRemaining * 175,
+                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
+                    parms.faction, PawnGroupKindDefOf.Combat,
+                    parms.target // new required parameter
+                ),
+                300f // Minimum floor — ensures at least 1 pawn for any faction
             );
             parms.raidArrivalMode = ResolveRaidArriveMode(parms) ?? PawnsArrivalModeDefOf.EdgeWalkIn;
             parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
@@ -669,7 +672,7 @@ namespace FactionColonies
             if (!attackers.Any())
             {
                 LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-                worldSettlement.MilitaryComp.EndBattle(true, 0);
+                worldSettlement.MilitaryComp.EndAttack();
                 return;
             }
 

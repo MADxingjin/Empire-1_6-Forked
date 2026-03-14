@@ -856,23 +856,20 @@ namespace FactionColonies.util
             outputDef = possibleDefs.First((PawnKindDef def) => !def.trader && !def.isFighter && !def.isBoss && def.label != "mercenary");
             return outputDef;
         }
-        private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, bool lockTechLevel)
+        private enum TechLevelMatch
         {
-            if (lockTechLevel)
-            {
-                if (def.defaultFactionDef is null)
-                {
-                    return def.race == race;
-                }
-                else
-                {
-                    return def.race == race && (def.defaultFactionDef.techLevel <= factionFc.techLevel);
-                }
-            }
-            else
-            {
-                return def.race == race;
-            }
+            Exact,      // techLevel == factionFc.techLevel
+            AtOrBelow,  // techLevel <= factionFc.techLevel
+            Any         // no restriction
+        }
+        private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, TechLevelMatch techMatch)
+        {
+            if (def.race != race) return false;
+            if (techMatch == TechLevelMatch.Any || def.defaultFactionDef is null) return true;
+            if (techMatch == TechLevelMatch.Exact)
+                return def.defaultFactionDef.techLevel == factionFc.techLevel;
+            // AtOrBelow
+            return def.defaultFactionDef.techLevel <= factionFc.techLevel;
         }
         private float PawnKindXenotypeChance(PawnKindDef def, XenotypeDef xenotype)
         {
@@ -904,16 +901,35 @@ namespace FactionColonies.util
                 return remainingChance / (float)(numXenosRemaining);
             }
         }
+        private bool HasRequiredPawnKindTypes(List<PawnKindDef> defs)
+        {
+            return defs.Count > 0 && defs.Any(d => d.trader) && defs.Any(d => d.isFighter);
+        }
         private List<PawnKindDef> GetPawnKindDefsForRace(ThingDef race)
         {
-            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, true)).ToList();
-            LogUtil.Message($"GetPawnKindDefsForRace: found {output.Count} PawnKindDefs for race {race.LabelCap}");
+            // Stage 1: exact tech level match
+            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.Exact)).ToList();
+            LogUtil.Message($"GetPawnKindDefsForRace: found {output.Count} PawnKindDefs for race {race.LabelCap} (exact tech level)");
 
-            if (output.Count == 0 || !output.Any((PawnKindDef def) => def.trader) || !output.Any((PawnKindDef def) => def.isFighter))
+            if (!HasRequiredPawnKindTypes(output))
             {
-                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, false)).ToList();
-                LogUtil.Message($"GetPawnKindDefsForRace: regenerated PawnKindDefs list for race {race.LabelCap} without techlevel restriction. Final count: {output.Count}");
+                // Stage 2: equal or below tech level
+                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.AtOrBelow)).ToList();
+                LogUtil.Message($"GetPawnKindDefsForRace: relaxed to equal-or-below tech level for {race.LabelCap}. Count: {output.Count}");
             }
+
+            if (!HasRequiredPawnKindTypes(output))
+            {
+                // Stage 3: any tech level
+                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.Any)).ToList();
+                LogUtil.Message($"GetPawnKindDefsForRace: relaxed to any tech level for {race.LabelCap}. Count: {output.Count}");
+            }
+
+            if (!HasRequiredPawnKindTypes(output))
+            {
+                LogUtil.Error($"GetPawnKindDefsForRace: could not find enough pawnkinds for {race.LabelCap}! Count: {output.Count}");
+            }
+
             return output;
         }
         private void ReweightPawnGenOptionsForRace(List<PawnGenOption> options, ThingDef race)
@@ -961,7 +977,7 @@ namespace FactionColonies.util
                 // If trader is still null, attempt to find a fallback option for the Human race
                 if (trader is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
                     trader = humanPawns.FirstOrDefault((PawnKindDef def) => def.trader);
                     LogUtil.Message("RefreshPawnGroupMakers: Found trader pawnKindDef for human race");
                 }
@@ -995,7 +1011,7 @@ namespace FactionColonies.util
                 // If fighter is still null, attempt to find a fallback option for the Human race
                 if (fighter is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
                     fighter = humanPawns.FirstOrDefault((PawnKindDef def) => def.isFighter);
                     LogUtil.Message("RefreshPawnGroupMakers: Found combat pawnKindDef for human race");
                 }
@@ -1027,7 +1043,7 @@ namespace FactionColonies.util
                 // If peaceful is still null, attempt to find a fallback option for the Human race
                 if (peaceful is null)
                 {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, true));
+                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
                     peaceful = humanPawns.FirstOrDefault((PawnKindDef def) => def.label != "mercenary");
                     LogUtil.Message("RefreshPawnGroupMakers: Found peaceful pawnKindDef for human race");
                 }

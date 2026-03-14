@@ -99,5 +99,36 @@ namespace FactionColonies
             UIHighlighter.HighlightOpportunity(rect, "InfoCard");
             return result;
         }
+
+        public static void DrawTabDecoratorHorizontalTop(Rect tab, Rect boundingBox, Color color)
+        {
+            DrawTabDecoratorHorizontalTop(tab, boundingBox.x, boundingBox.xMax, color);
+        }
+        public static void DrawTabDecoratorHorizontalTop(Rect tab, float leftx, float rightx, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.DrawLineHorizontal(leftx, tab.yMax, tab.x - leftx);
+            Widgets.DrawLineVertical(tab.x, tab.y, tab.height);
+            Widgets.DrawLineHorizontal(tab.x, tab.y, tab.width);
+            Widgets.DrawLineVertical(tab.xMax, tab.y, tab.height);
+            Widgets.DrawLineHorizontal(tab.xMax, tab.yMax, rightx - tab.xMax);
+            GUI.color = origColor;
+        }
+        public static void DrawTabDecoratorVerticalLeft(Rect tab, Rect boundingBox, Color color)
+        {
+            DrawTabDecoratorVerticalLeft(tab, boundingBox.y, boundingBox.yMax, color);
+        }
+        public static void DrawTabDecoratorVerticalLeft(Rect tab, float upy, float downy, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.DrawLineVertical(tab.xMax, upy, tab.y - upy);
+            Widgets.DrawLineHorizontal(tab.x, tab.y, tab.width);
+            Widgets.DrawLineVertical(tab.x, tab.y, tab.height);
+            Widgets.DrawLineHorizontal(tab.x, tab.yMax, tab.width);
+            Widgets.DrawLineVertical(tab.xMax, tab.yMax, downy - tab.yMax);
+            GUI.color = origColor;
+        }
     }
 }

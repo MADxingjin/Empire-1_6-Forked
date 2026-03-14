@@ -363,14 +363,7 @@ namespace FactionColonies
                     chosenRect = tabBox;
                 }
             }
-            GUI.color = resources[titheTab].def.color;
-            //fancy custom tab stuff
-            Widgets.DrawLineVertical(chosenRect.xMax, boundingBox.y, chosenRect.y - boundingBox.y);
-            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.y, chosenRect.width);
-            Widgets.DrawLineVertical(chosenRect.x, chosenRect.y, chosenRect.height);
-            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.yMax, chosenRect.width);
-            Widgets.DrawLineVertical(chosenRect.xMax, chosenRect.yMax, boundingBox.yMax - chosenRect.yMax);
-            GUI.color = origColor;
+            UIUtil.DrawTabDecoratorVerticalLeft(chosenRect, boundingBox, resources[titheTab].def.color);
 
             ResourceFC titheRes = resources[titheTab];
 

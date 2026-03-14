@@ -221,6 +221,7 @@ namespace FactionColonies.util
                     }
                     LogUtil.Message($"Created leader {faction.leader.Name} ({faction.leader.ThingID}), " +
                                     $"pawnKind: {faction.leader.kindDef?.defName ?? "null"}, " +
+                                    $"title: {faction.LeaderTitle}, " +
                                     $"ideo: {faction.leader.Ideo?.name ?? "none"}, " +
                                     $"faction: {faction.Name}");
                 }
@@ -229,6 +230,7 @@ namespace FactionColonies.util
             {
                 LogUtil.Message($"TryGenerateNewLeader succeeded. Leader: {faction.leader?.Name} ({faction.leader?.ThingID}), " +
                                 $"pawnKind: {faction.leader?.kindDef?.defName ?? "null"}, " +
+                                $"title: {faction.LeaderTitle}, " +
                                 $"ideo: {faction.leader?.Ideo?.name ?? "none"}");
             }
 
