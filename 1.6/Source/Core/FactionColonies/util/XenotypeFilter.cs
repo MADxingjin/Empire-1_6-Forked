@@ -1082,6 +1082,12 @@ namespace FactionColonies.util
                 List<XenotypeDef> associatedXenotypes = new List<XenotypeDef>();
                 foreach (PawnKindDef pawnKind in humanPawns)
                 {
+                    //BUGFIX: if the pawnKind has 0 combat power, then skip it entirely. There lies madness
+                    if (pawnKind.combatPower == 0)
+                    {
+                        LogUtil.Message($"SetPawnGroupMakers: found pawnKind {pawnKind.defName} with 0 combat power. Skipping");
+                        continue;
+                    }
                     if (pawnKind.xenotypeSet != null)
                     {
                         /* We need to loop over the xenotypeSet twice: once to determine if this is a valid PawnKindDef, and *then* to add to the associated xenotype dictionary */
@@ -1134,7 +1140,7 @@ namespace FactionColonies.util
                         faction.pawnGroupMakers[3].options.Add(pawnOption); // Peaceful
                     }
 
-                    if (pawnKind.isFighter && pawnKind.combatPower > 0)
+                    if (pawnKind.isFighter)
                     {
                         faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat
                         faction.pawnGroupMakers[1].guards.Add(pawnOption); // Trader guards
