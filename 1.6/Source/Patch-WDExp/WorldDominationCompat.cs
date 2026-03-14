@@ -7,31 +7,30 @@ using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
-using WorldDomination;
-using TSA_WorldDomination.RaidLogic;
-using TSA_WorldDomination.WorldActions;
+using TSA_WorldDomination;
 
-namespace FactionColonies.WD
+namespace FactionColonies.WDExp
 {
     /// <summary>
-    /// Compatibility patches for "World Domination" (TSA.WorldDomination).
+    /// Compatibility patches for "World Domination - Experimental" (TSA.WorldDominationExperimental).
     /// This assembly is only loaded when WD is active (via LoadFolders.xml).
     ///
     /// Fixes:
     /// 1. Excludes PColony from WD's daily action queue (prevents automated raids/growth/expansion)
-    /// 2. Prevents WD from using Empire settlements as raid actors
-    /// 3. Scales enemy force in Empire battles based on WD settlement strength
-    /// 4. Syncs PColony diplomacy after WD allegiance changes
-    /// 5. Excludes PColony from WD's leader/underdog/balance mechanics
+    /// 2. Intercepts WD raids on Empire settlements (routes through Empire's defense system)
+    /// 3. Prevents WD from using Empire settlements as raid actors
+    /// 4. Scales enemy force in Empire battles based on WD settlement strength
+    /// 5. Syncs PColony diplomacy after WD allegiance changes
+    /// 6. Excludes PColony from WD's leader/underdog/balance mechanics
     /// </summary>
     [StaticConstructorOnStartup]
     public static class WorldDominationCompatInit
     {
         static WorldDominationCompatInit()
         {
-            new Harmony("com.Saakra.Empire.WD").PatchAll(Assembly.GetExecutingAssembly());
+            new Harmony("com.Saakra.Empire.WDExp").PatchAll(Assembly.GetExecutingAssembly());
             BattleModifierRegistry.Register(new WDStrengthBattleModifier());
-            LogUtil.MessageForce("World Domination compatibility module loaded.");
+            LogUtil.MessageForce("World Domination (Experimental) compatibility module loaded.");
         }
     }
 
@@ -54,7 +53,44 @@ namespace FactionColonies.WD
     }
 
     // ================================================================
-    // Patch 2: Prevent WD from using Empire settlements as raid actors
+    // Patch 2: Intercept WD raids targeting Empire settlements
+    // WD's ExecuteTravelerRaid checks target.Faction.IsPlayer
+    // to route player attacks, but PColony is not IsPlayer.
+    // Without this patch, WD runs simulated combat and ResolveVictory
+    // calls target.Destroy(), permanently deleting Empire settlement data.
+    // ================================================================
+    [HarmonyPatch(typeof(Raid_Simulated), "ExecuteTravelerRaid")]
+    public static class Patch_ExecuteTravelerRaid
+    {
+        private static bool Prefix(WorldObject_Traveler traveler, WorldComponent_SpreadManager manager)
+        {
+            WorldSettlementFC empireSettlement = traveler.targetObject as WorldSettlementFC;
+            if (empireSettlement == null) return true;
+
+            if (traveler.Faction == null) return true;
+
+            // Convert WD traveler strength to Empire military force
+            double techLevel;
+            double efficiency;
+            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+                traveler.Faction.def.techLevel, out techLevel, out efficiency);
+
+            double wdMilitaryLevel = traveler.travelerStrength / WDStrengthBattleModifier.SCALE_FACTOR;
+            militaryForce attackingForce = new militaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
+
+            // Route through Empire's defense system (1-day warning + auto-battle/manual)
+            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, empireSettlement, traveler.Faction);
+
+            LogUtil.Message("WD raid on Empire settlement " + empireSettlement.Name +
+                " intercepted (WD strength " + traveler.travelerStrength.ToString("F0") +
+                " -> Empire force " + attackingForce.forceRemaining + ")");
+
+            return false;
+        }
+    }
+
+    // ================================================================
+    // Patch 3: Prevent WD from using Empire settlements as raid actors
     // Belt-and-suspenders with Patch 1. If PColony somehow enters the
     // action queue, this prevents its settlements from being selected.
     // ================================================================
@@ -72,7 +108,7 @@ namespace FactionColonies.WD
     }
 
     // ================================================================
-    // Patch 3: Scale enemy force based on WD settlement strength
+    // Patch 4: Scale enemy force based on WD settlement strength
     // Uses IBattleModifier so it integrates with Empire's existing
     // battle modifier pipeline. When Empire attacks a settlement that
     // has CompViralSpread, the defender's force is scaled from WD
@@ -121,7 +157,7 @@ namespace FactionColonies.WD
     }
 
     // ================================================================
-    // Patch 4: Sync PColony relations after WD diplomacy changes
+    // Patch 5: Sync PColony relations after WD diplomacy changes
     // WD randomly shifts faction allegiances and forms coalitions.
     // PColony must mirror the player faction's relations.
     // ================================================================
@@ -150,14 +186,14 @@ namespace FactionColonies.WD
     }
 
     // ================================================================
-    // Patch 5: Exclude PColony from WD's world power statistics
+    // Patch 6: Exclude PColony from WD's world power statistics
     // GetWorldPowerStats collects all non-player factions. PColony
     // passes this filter (it's not Faction.OfPlayer). If included,
     // PColony could be selected as world leader (triggering handicap)
     // or underdog (triggering buff), both of which are inappropriate
     // for a player-controlled empire.
     // ================================================================
-    [HarmonyPatch(typeof(WorldActions_Utils), "GetWorldPowerStats")]
+    [HarmonyPatch(typeof(WorldStatsUtils), "GetWorldPowerStats")]
     public static class Patch_GetWorldPowerStats
     {
         private static void Postfix(SpreadLogEntry.GlobalWorldStats __result)
