@@ -866,6 +866,7 @@ namespace FactionColonies.util
         {
             if (def.race != race) return false;
             if (def.defaultFactionDef != null && def.defaultFactionDef.isPlayer) return false;
+            if (def.combatPower == 0) return false;
             if (techMatch == TechLevelMatch.Any || def.defaultFactionDef is null) return true;
             if (techMatch == TechLevelMatch.Exact)
                 return def.defaultFactionDef.techLevel == factionFc.techLevel;
@@ -1082,10 +1083,10 @@ namespace FactionColonies.util
                 List<XenotypeDef> associatedXenotypes = new List<XenotypeDef>();
                 foreach (PawnKindDef pawnKind in humanPawns)
                 {
-                    //BUGFIX: if the pawnKind has 0 combat power, then skip it entirely. There lies madness
                     if (pawnKind.combatPower == 0)
                     {
-                        LogUtil.Message($"SetPawnGroupMakers: found pawnKind {pawnKind.defName} with 0 combat power. Skipping");
+                        // This case *should* have been culled by GetPawnKindDefsForRace, but just in case, check it here
+                        LogUtil.Warning($"SetPawnGroupMakers found pawnKind {pawnKind.defName} with 0 combat power, skipping");
                         continue;
                     }
                     if (pawnKind.xenotypeSet != null)
