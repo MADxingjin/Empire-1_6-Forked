@@ -925,6 +925,7 @@ namespace FactionColonies
             float maxval = 0;
             foreach (var (key, value) in tithes)
             {
+                if (value <= 0) continue; // skip zero-quantity entries
                 float val = TitheThingValue(key);
                 if (val > maxval)
                 {
@@ -951,7 +952,7 @@ namespace FactionColonies
 
             double totalValue = 0;
             double titheIncome = GetTitheIncome();
-            int maxIterations = tithes.Count + 1;
+            int maxIterations = tithes.Count * 3 + 5;
             int iterations = 0;
             while ((totalValue = CalcTotalTitheValue()) > titheIncome && tithes.Count > 0)
             {

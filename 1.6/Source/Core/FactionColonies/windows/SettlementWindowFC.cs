@@ -650,7 +650,7 @@ namespace FactionColonies
                 //   keep this in mind when testing...
                 int quantity = res.GetTitheListValue(thingTuple);
                 int oldQuantity = quantity;
-                int max = quantity + res.MaxThingCanAfford(thingTuple);
+                int max = Math.Max(0, quantity + res.MaxThingCanAfford(thingTuple));
                 string buf = titheBuffers[i];
                 Widgets.IntEntry(fieldBox, ref quantity, ref buf);
                 int unclamped = quantity;
