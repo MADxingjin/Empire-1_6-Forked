@@ -44,12 +44,31 @@ namespace FactionColonies
             tempFactionIconPath = faction.factionIconPath;
         }
 
-        public override void OnAcceptKeyPressed()
+        private void ApplyChanges()
         {
-            base.OnAcceptKeyPressed();
+            if (name.NullOrEmpty()) name = "PlayerFaction".Translate();
+
             faction.title = title;
             faction.name = name;
-            FactionCache.PlayerColonyFaction.Name = name;
+            faction.factionIconPath = tempFactionIconPath;
+            faction.factionIcon = tempFactionIcon;
+
+            Faction fact = FactionCache.PlayerColonyFaction;
+            if (fact != null)
+            {
+                fact.Name = name;
+                faction.UpdateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
+            }
+            else
+            {
+                LogUtil.Error("PlayerColonyFaction is null - cannot sync faction name/icon!");
+            }
+        }
+
+        public override void OnAcceptKeyPressed()
+        {
+            ApplyChanges();
+            base.OnAcceptKeyPressed();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -114,16 +133,7 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
             {
-                Faction fact = FactionCache.PlayerColonyFaction;
-                faction.title = title;
-                faction.name = name;
-                fact.Name = name;
-                faction.name = name;
-                faction.factionIconPath = tempFactionIconPath;
-                faction.factionIcon = tempFactionIcon;
-
-                faction.UpdateFactionIcon(ref fact, "FactionIcons/" + tempFactionIconPath);
-
+                ApplyChanges();
                 Find.WindowStack.TryRemove(this);
             }
 

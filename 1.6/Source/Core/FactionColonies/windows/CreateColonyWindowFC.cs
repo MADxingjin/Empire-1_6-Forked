@@ -49,6 +49,11 @@ namespace FactionColonies
             preventCameraMotion = false;
             doCloseX = true;
             faction = FactionCache.FactionComp;
+            if (faction == null)
+            {
+                LogUtil.Error("FactionFC WorldComponent is null in CreateColonyWindowFC constructor!");
+                return;
+            }
             prodBoxHeight = faction.FactionResources.Count * 22 + 10;
             windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
             currentSettlementType = GetDefaultSettlementType();
@@ -88,7 +93,7 @@ namespace FactionColonies
         //Drawing
         public override void DoWindowContents(Rect inRect)
         {
-            if (!Find.TilePicker.Active)
+            if (faction == null || !Find.TilePicker.Active)
             {
                 Close();
                 return;

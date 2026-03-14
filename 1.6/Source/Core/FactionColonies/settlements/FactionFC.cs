@@ -453,6 +453,11 @@ namespace FactionColonies
                         TexLoad.factionIcons.First());
                     UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
                     factionIconPath = factionIcon.name;
+
+                    if (!name.NullOrEmpty() && faction.Name != name)
+                    {
+                        faction.Name = name;
+                    }
                 }
 
                 militaryCustomizationUtil.CheckMilitaryUtilForErrors();
