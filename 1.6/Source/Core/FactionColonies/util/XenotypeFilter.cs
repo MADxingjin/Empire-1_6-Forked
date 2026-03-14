@@ -1134,7 +1134,7 @@ namespace FactionColonies.util
                         faction.pawnGroupMakers[3].options.Add(pawnOption); // Peaceful
                     }
 
-                    if (pawnKind.isFighter)
+                    if (pawnKind.isFighter && pawnKind.combatPower > 0)
                     {
                         faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat
                         faction.pawnGroupMakers[1].guards.Add(pawnOption); // Trader guards
