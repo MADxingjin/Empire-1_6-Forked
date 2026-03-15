@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Generic Labels -->
+	<!-- EN: Name -->
+  <Name>Nom</Name>
+	<!-- EN: None -->
+  <None>Aucune</None>
+	<!-- EN: No -->
+  <No>Non</No>
+	<!-- EN: Yes -->
+  <Yes>Oui</Yes>
+	<!-- EN: Set -->
+  <Set>Définir</Set>
+	<!-- EN: Deploy -->
+  <Deploy>Déployer</Deploy>
+	<!-- EN: Reset -->
+  <Reset>Réinitialiser</Reset>
+	<!-- EN: Base -->
+  <Base>Base</Base>
+	<!-- EN: Modifier -->
+  <Modifier>Modificateur</Modifier>
+	<!-- EN: Final -->
+  <Final>Final</Final>
+	<!-- EN: Effect -->
+  <Effect>Effet</Effect>
+	<!-- EN: Info -->
+  <Info>Infos</Info>
+	<!-- EN: Total -->
+  <Total>total</Total>
+	<!-- EN: Mult -->
+  <Mult>Mult.</Mult>
+	<!-- EN: Date -->
+  <Date>Date</Date>
+	<!-- EN: Selected -->
+  <Selected>Sélectionné</Selected>
+	<!-- EN: Select -->
+  <Select>Sélectionner</Select>
+	<!-- EN: Enabled -->
+  <FCIsAllowed>Activé</FCIsAllowed>
+	<!-- EN: Disabled -->
+  <FCIsNotAllowed>Désactivé</FCIsNotAllowed>
+	<!-- EN: Per-Worker -->
+  <PerWorker>Par ouvrier</PerWorker>
+	<!-- EN: {0}/{1} -->
+  <NumRatio>{0}/{1}</NumRatio>
+	<!-- EN:  a settlement  -->
+  <aSettlement>une colonie</aSettlement>
+	<!-- EN: This will be added to in the future -->
+  <AddedInFuture>Cela sera étoffé à l’avenir</AddedInFuture>
+	<!-- EN: Item -->
+  <Item>Objet</Item>
+
+	<!-- Tab Labels -->
+	<!-- EN: Colonies -->
+  <Colonies>Colonies</Colonies>
+	<!-- EN: Bills -->
+  <Bills>Ordres</Bills>
+	<!-- EN: Events -->
+  <Events>Événements</Events>
+	<!-- EN: Settlement -->
+  <Settlement>Colonie</Settlement>
+	<!-- EN: Settlements -->
+  <Settlements>Colonies</Settlements>
+	<!-- EN: Overview -->
+  <Overview>Aperçu</Overview>
+	<!-- EN: Overview -->
+  <FCOverview>Aperçu</FCOverview>
+	<!-- EN: Travel Time -->
+  <TravelTime>Temps de trajet</TravelTime>
+	<!-- EN: Construction Time -->
+  <ConstructionTime>Temps de construction</ConstructionTime>
+
+	<!-- Buttons -->
+	<!-- EN: This button is not available yet -->
+  <ButtonNotAvailable>Ce bouton n’est pas encore disponible</ButtonNotAvailable>
+	<!-- EN: Confirm Changes -->
+  <ConfirmChanges>Confirmer les changements</ConfirmChanges>
+	<!-- EN: Confirm -->
+  <FCConfirm>Confirmer</FCConfirm>
+	<!-- EN: Confirm Decision -->
+  <FCConfirmDecision>Confirmer la décision</FCConfirmDecision>
+	<!-- EN: View -->
+  <View>Voir</View>
+	<!-- EN: Go To -->
+  <GoTo>Aller à</GoTo>
+	<!-- EN: Report -->
+  <Report>Rapport</Report>
+	<!-- EN: Reports -->
+  <Reports>Rapports</Reports>
+	<!-- EN: Actions -->
+  <Actions>Actions</Actions>
+	<!-- EN: View Info -->
+  <ViewInfo>Voir les infos</ViewInfo>
+	<!-- EN: Set Map -->
+  <SetMap>Définir la carte</SetMap>
+	<!-- EN: Action Available -->
+  <FCActionAvailable>Action disponible</FCActionAvailable>
+
+	<!-- Generic Actions -->
+	<!-- EN: Auto-Resolve -->
+  <FCAutoResolve>Résolution auto</FCAutoResolve>
+	<!-- EN: Auto-Resolving : {0} -->
+  <FCAutoResolving>Résolution automatique : {0}</FCAutoResolving>
+	<!-- EN: Bills are now autoresolving! -->
+  <FCBillsAutoResolving>Les ordres sont désormais résolus automatiquement !</FCBillsAutoResolving>
+	<!-- EN: Bills are now not autoresolving. -->
+  <FCBillsNotAutoResolving>Les ordres ne sont plus résolus automatiquement.</FCBillsNotAutoResolving>
+	<!-- EN: Desc -->
+  <FCDesc>Desc.</FCDesc>
+	<!-- EN: Create New Faction -->
+  <FCCreateNewFaction>Créer une nouvelle faction</FCCreateNewFaction>
+	<!-- EN: Reset to Default -->
+  <FCResetToDefault>Réinitialiser par défaut</FCResetToDefault>
+	<!-- EN: Set Point Ref -->
+  <FCSetPointRef>Définir le point de référence</FCSetPointRef>
+	<!-- EN: No Valid Settlements -->
+  <FCNoValidSettlements>Aucune colonie valide</FCNoValidSettlements>
+	<!-- EN: No special actions to take -->
+  <FCNoSpecialActions>Aucune action spéciale à entreprendre</FCNoSpecialActions>
+	<!-- EN: That Building is locked -->
+  <FCBuildingLocked>Ce bâtiment est verrouillé</FCBuildingLocked>
+	<!-- EN: Unlocks at settlement level {0}. -->
+  <FCBuildingLockedLevel>Débloqué au niveau de colonie {0}.</FCBuildingLockedLevel>
+	<!-- EN: Maximum building slots reached for this settlement type. -->
+  <FCBuildingLockedMax>Maximum bâtiment slots reached pour ce colonie type.</FCBuildingLockedMax>
+	<!-- EN: Capital -->
+  <Capital>Capitale</Capital>
+
+	<!-- Float Menu -->
+	<!-- EN: Type to search: -->
+  <FloatMenuSearchable>Tapez pour rechercher :</FloatMenuSearchable>
+	<!-- EN: Force Open -->
+  <FCSMFForceOpen>Forcer l’ouverture</FCSMFForceOpen>
+
+	<!-- Errors -->
+	<!-- EN: If you can read this, something went wrong. -->
+  <FCGenericError>Si vous pouvez lire ceci, quelque chose s’est mal passé.</FCGenericError>
+	<!-- EN: You do not have enough silver on the map to pay for that option -->
+  <FCNotEnoughSilverOption>Vous n’avez pas assez d’argent sur la carte pour payer cette option</FCNotEnoughSilverOption>
+	<!-- EN: Requires: {0} -->
+  <FCOptionRequiresPolicy>Nécessite : {0}</FCOptionRequiresPolicy>
+	<!-- EN: Requires one of: {0} -->
+  <FCOptionRequiresPolicyAny>Nécessite l’un de : {0}</FCOptionRequiresPolicyAny>
+
+</LanguageData>

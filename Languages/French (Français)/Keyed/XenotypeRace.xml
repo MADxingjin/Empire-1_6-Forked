@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Xenotype/Race Selection -->
+	<!-- EN: Xenotype Selection -->
+  <XenotypeSelection>Sélection du xénotype</XenotypeSelection>
+	<!-- EN: Race Selection -->
+  <RaceSelection>Sélection de la race</RaceSelection>
+	<!-- EN: Xenotype and Race Selection -->
+  <XenotypeRaceSelection>Sélection du xénotype et de la race</XenotypeRaceSelection>
+	<!-- EN: Allowed Races -->
+  <AllowedRaces>Races autorisées</AllowedRaces>
+	<!-- EN: Cannot have less than one race in your faction -->
+  <CannotHaveLessThanOneRace>Impossible d’avoir moins d’une race dans votre faction</CannotHaveLessThanOneRace>
+	<!-- EN: Allowed Xenotypes -->
+  <AllowedXenotypes>Xénotypes autorisés</AllowedXenotypes>
+	<!-- EN: Cannot have less than one xenotype in your faction -->
+  <CannotHaveLessThanOneXenotype>Impossible d’avoir moins d’un xénotype dans votre faction</CannotHaveLessThanOneXenotype>
+	<!-- EN: Security guards will be provided for non-violent xenotypes -->
+  <SecurityGuardsIncluded>Des agents de sécurité seront fournis pour les xénotypes non violents</SecurityGuardsIncluded>
+
+	<!-- Weight Errors -->
+	<!-- EN: All Xenotypes have 0 weight! -->
+  <XenotypeWeightError>Tous les xénotypes ont un poids de 0 !</XenotypeWeightError>
+	<!-- EN: If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight. -->
+  <XenotypeWeightErrorDesc>Si vous fermez cette fenêtre alors que tous les xénotypes ont un poids de 0, ils seront tous réinitialisés à un poids de 1.</XenotypeWeightErrorDesc>
+	<!-- EN: All races have 0 weight! -->
+  <RaceWeightError>Toutes les races ont un poids de 0 !</RaceWeightError>
+	<!-- EN: If you close this window while all races have 0 weight, then they will all be reset to 1 weight. -->
+  <RaceWeightErrorDesc>Si vous fermez cette fenêtre alors que toutes les races ont un poids de 0, elles seront toutes réinitialisées à un poids de 1.</RaceWeightErrorDesc>
+
+	<!-- Enable/Disable Options -->
+	<!-- EN: Enable All -->
+  <XenoRaceEnableAll>Tout activer</XenoRaceEnableAll>
+	<!-- EN: Disable Non-Baseliner -->
+  <XenoDisableNonBaseliner>Désactiver les non-Baseliners</XenoDisableNonBaseliner>
+	<!-- EN: Disable Non-Human -->
+  <RaceDisableNonHuman>Désactiver les non-humains</RaceDisableNonHuman>
+	<!-- EN: Enable All -->
+  <Empire_XenotypeMenus_EnableAll>Tout activer</Empire_XenotypeMenus_EnableAll>
+	<!-- EN: Disable Non-Baseliner -->
+  <Empire_XenotypeMenus_DisableNonBaseliner>Désactiver les non-Baseliners</Empire_XenotypeMenus_DisableNonBaseliner>
+
+	<!-- Faction Tooltip -->
+	<!-- EN: Member Race Chances -->
+  <EmpireMemberRaceChances>Probabilités des races des membres</EmpireMemberRaceChances>
+
+	<!-- Warnings -->
+	<!-- EN: The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options. -->
+  <DisabledHumanWarning>La race humaine est désactivée, mais peut encore apparaître comme solution de secours si les races sélectionnées ne disposent pas d’options de type de pion valides.</DisabledHumanWarning>
+	<!-- EN: Xenotype is considered non-violent. -->
+  <XenoNonViolentIndicatorDesc>Ce xénotype est considéré comme non violent.</XenoNonViolentIndicatorDesc>
+	<!-- EN: Only non-violent xenotypes are selected. You will still see Baseliners if violence is required. -->
+  <OnlyNonViolentXenoWarning>Seuls des xénotypes non violents sont sélectionnés. Vous verrez quand même des Baseliners si la violence est requise.</OnlyNonViolentXenoWarning>
+
+</LanguageData>
