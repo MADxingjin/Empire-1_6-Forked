@@ -234,6 +234,8 @@ namespace FactionColonies
                     // If no valid settlements were chosen, then return early instead of firing the event
                     if (tempEvent.settlementTraitLocations.Count == 0)
                     {
+                        LogUtil.Warning($"Random event '{def.defName}' found no valid settlements"
+                            + (def.requiredResource != null ? $" (requires {def.requiredResource.defName} production)" : ""));
                         return null;
                     }
                 }

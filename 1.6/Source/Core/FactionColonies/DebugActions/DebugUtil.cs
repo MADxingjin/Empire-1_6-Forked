@@ -180,7 +180,12 @@ namespace FactionColonies
                     {
                         LogUtil.MessageForce("Debug - Make Random Event - " + evtDef.label);
                         FCEvent evt = FCEventMaker.MakeRandomEvent(evtDef, null);
-                        if (evt == null) return;
+                        if (evt == null)
+                        {
+                            if (!evtDef.activateAtStart)
+                                LogUtil.Warning("Debug - Event returned null: " + evtDef.defName);
+                            return;
+                        }
 
                         if (!evtDef.activateAtStart)
                         {
@@ -190,6 +195,8 @@ namespace FactionColonies
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
                         if (!settlementString.NullOrEmpty())
                             Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                        else
+                            Find.LetterStack.ReceiveLetter("Random Event", evt.def.desc, LetterDefOf.NeutralEvent);
                     }
                     ));
             }
