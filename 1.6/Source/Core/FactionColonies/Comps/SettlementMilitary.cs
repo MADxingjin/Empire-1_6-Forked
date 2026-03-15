@@ -749,6 +749,33 @@ namespace FactionColonies
                 inhabitants.Add(pawn);
             }
 
+            int targetCount = (int)WorldSettlement.workers;
+
+            // Remove excess civilians
+            while (inhabitants.Count > targetCount)
+            {
+                Pawn excess = inhabitants[inhabitants.Count - 1];
+                inhabitants.RemoveAt(inhabitants.Count - 1);
+                if (excess.Spawned) excess.Destroy();
+            }
+
+            // Spawn additional civilians if needed
+            while (inhabitants.Count < targetCount)
+            {
+                Pawn civilian = PawnGenerator.GeneratePawn(FCPawnGenerator.CivilianRequest());
+                IntVec3 loc;
+                if (!CellFinder.TryFindRandomCellNear(Map.Center, Map, 15, c => c.Standable(Map), out loc))
+                    loc = Map.Center;
+                GenSpawn.Spawn(civilian, loc, Map);
+                inhabitants.Add(civilian);
+            }
+
+            // Strip weapons from civilians so they are visually distinct from guards
+            foreach (Pawn inhabitant in inhabitants)
+            {
+                inhabitant.equipment.DestroyAllEquipment();
+            }
+
             foreach (Pawn inhabitant in inhabitants)
             {
                 Lord existingLord = inhabitant.GetLord();

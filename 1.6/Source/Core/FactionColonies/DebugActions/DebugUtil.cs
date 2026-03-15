@@ -246,6 +246,47 @@ namespace FactionColonies
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
+        [DebugAction("Empire", "Instant Attack Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
+        private static void InstantAttackPlayerSettlement()
+        {
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+            {
+                list.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, delegate
+                {
+                    Faction enemyFaction = Find.FactionManager.RandomEnemyFaction();
+                    if (enemyFaction == null)
+                    {
+                        Messages.Message("No enemy faction found.", MessageTypeDefOf.RejectInput);
+                        return;
+                    }
+
+                    List<DebugMenuOption> levelList = new List<DebugMenuOption>();
+                    for (int level = 1; level <= 10; level++)
+                    {
+                        int chosenLevel = level;
+                        levelList.Add(new DebugMenuOption($"Level {chosenLevel}", DebugMenuOptionMode.Action, delegate
+                        {
+                            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
+                            militaryForce attackingForce = new militaryForce(chosenLevel, efficiency, null, enemyFaction);
+                            LogUtil.MessageForce($"Debug - Instant Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
+                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+
+                            FCEvent attackEvt = FactionCache.FactionComp.events.LastOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+                            if (attackEvt != null)
+                            {
+                                attackEvt.timeTillTrigger = Find.TickManager.TicksGame + 1;
+                            }
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(levelList));
+                }
+                ));
+            }
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
         [DebugAction("Empire", "Force Attack + Event Same Tick", allowedGameStates = AllowedGameStates.Playing)]
         private static void ForceAttackAndEventSameTick()
         {
