@@ -103,7 +103,7 @@
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>-1</value></li>
-			<li><stat>buildTimeMultiplier</stat><value>0.25</value></li>
+			<li><stat>buildTimeMultiplier</stat><value>0.5</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>emptyMines_0</li>
