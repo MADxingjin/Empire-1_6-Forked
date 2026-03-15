@@ -74,11 +74,12 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-2</defName>
 		<label>Death In The Family (Memorial)</label>
-		<desc>A public memorial is held, honoring the fallen figure's legacy. The gesture helps ease the grief and strengthens loyalty. -3 happiness a day, +1 loyalty a day.</desc>
+		<desc>A public memorial is held, honoring the fallen figure's legacy. The gesture helps ease the grief and strengthens loyalty. -4 happiness lost a day, +1 happiness gained a day, +1 loyalty a day.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>600000</timeTillTrigger>
 		<statModifiers>
-			<li><stat>happinessLostBase</stat><value>3</value></li>
+			<li><stat>happinessLostBase</stat><value>4</value></li>
+			<li><stat>happinessGainedBase</stat><value>1</value></li>
 			<li><stat>loyaltyGainedBase</stat><value>1</value></li>
 		</statModifiers>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
@@ -91,11 +92,12 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-3s</defName>
 		<label>Death In The Family (Justice Found)</label>
-		<desc>The investigation uncovers the assassin and brings them to justice. The people are relieved, and the grief is lessened. -3 happiness a day.</desc>
+		<desc>The investigation uncovers the assassin and brings them to justice. The people still grieve, but finding the killer eases the pain. -4 happiness lost a day, +1 happiness gained a day.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<statModifiers>
-			<li><stat>happinessLostBase</stat><value>3</value></li>
+			<li><stat>happinessLostBase</stat><value>4</value></li>
+			<li><stat>happinessGainedBase</stat><value>1</value></li>
 		</statModifiers>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
