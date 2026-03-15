@@ -1,164 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using RimWorld;
-using System.Linq;
-using System.Reflection.Emit;
 using Verse;
 
 namespace FactionColonies.util
 {
-	
 	class FCPawnGenerator
-	{		
-		// List of pawn kinds known to commonly generate violence-incapable pawns
-		private static readonly HashSet<string> problematicPawnKinds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-		{
-			// Civilian/non-combat pawns
-			"Beggar", "Villager", "Ghoul", "Hunter", "Slave", "WildMan", 
-			"SpaceRefugee", "Refugee", "Drifter", "AncientSoldier",
-			// Other problematic types
-			"Farmer", "Trader", "Minstrel", "Hermit", "Pilgrim", "Monk",
-			"Child", "Baby", "Newborn", "StrangerInBlack"
-		};
-		
-		/// <summary>
-		/// Check if pawn kind name contains problematic patterns
-		/// </summary>
-		private static bool HasProblematicPattern(string defName)
-		{
-			if (string.IsNullOrEmpty(defName)) return true;
-			
-			string lower = defName.ToLower();
-			// Filter out child pawns, tribal variants that often fail, and other problematic patterns
-			return lower.Contains("child") || 
-			       lower.Contains("baby") || 
-			       lower.Contains("newborn") ||
-			       lower.Contains("_child") ||
-			       lower.Contains("slave") ||
-			       lower.Contains("refugee") ||
-			       lower.Contains("beggar") ||
-			       lower.Contains("hermit") ||
-			       lower.Contains("pilgrim");
-		}
-		
-		// List of pawn kinds that are reliable for military use
-		private static readonly List<string> preferredMilitaryKinds = new List<string>
-		{
-			"Colonist", "Mercenary", "Fighter", "Soldier", "Pirate", "Grenadier",
-			"SpaceSoldier", "EliteMercenary", "TownGuard", "Janissary"
-		};
-		
-		/// <summary>
-		/// Check if a pawn kind is likely to produce violence-capable pawns
-		/// </summary>
-		public static bool IsViolenceCapablePawnKind(PawnKindDef kindDef)
-		{
-			if (kindDef == null) return false;
-			
-			// Check if it's in the problematic list
-			if (problematicPawnKinds.Contains(kindDef.defName))
-			{
-				return false;
-			}
-			
-			// Check for problematic patterns in the name
-			if (HasProblematicPattern(kindDef.defName))
-			{
-				return false;
-			}
-			
-			// Check combat power - very low combat power suggests non-combat pawn
-			if (kindDef.combatPower < 30f)
-			{
-				return false;
-			}
-			
-			return true;
-		}
-		
-		/// <summary>
-		/// Get a violence-capable pawn kind, with fallbacks
-		/// </summary>
-		public static PawnKindDef GetViolenceCapablePawnKind(Faction faction)
-		{
-			if (faction?.def?.pawnGroupMakers == null)
-			{
-				return PawnKindDefOf.Colonist;
-			}
-			
-			// Try to find a violence-capable pawn kind from the faction
-			var allKinds = faction.def.pawnGroupMakers
-				.Where(pgm => pgm.options != null)
-				.SelectMany(pgm => pgm.options)
-				.Select(opt => opt.kind)
-				.Where(k => k != null && IsViolenceCapablePawnKind(k))
-				.ToList();
-			
-			if (allKinds.Any())
-			{
-				return allKinds.RandomElement();
-			}
-			
-			// Try preferred military kinds from the database
-			foreach (var kindName in preferredMilitaryKinds)
-			{
-				var kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(kindName);
-				if (kind != null && IsViolenceCapablePawnKind(kind))
-				{
-					return kind;
-				}
-			}
-			
-			// Final fallback
-			return PawnKindDefOf.Colonist;
-		}
-
+	{
 		public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
-        {
+		{
 			var kindDef = pawnKindDef;
-			
-			// Validate the provided pawn kind for violence capability
-			if (kindDef != null && !IsViolenceCapablePawnKind(kindDef))
-			{
-				kindDef = null; // Force fallback - skip problematic pawn kinds silently
-			}
-			
 			if (kindDef == null)
 			{
-				try
-				{
-					var tempFaction = FactionCache.PlayerColonyFaction;
-					kindDef = GetViolenceCapablePawnKind(tempFaction);
-				}
-				catch (Exception ex)
-				{
-					LogUtil.Warning($"Failed to get pawn kind from player faction: {ex.Message}");
-				}
-				
-				// Fallback to default colonist if still null
-				if (kindDef == null)
-				{
-					kindDef = PawnKindDefOf.Colonist;
-				}
+				kindDef = PColonyPawnKindDefOf.PColony_Fighter;
 			}
-			
-			var factionFC = FactionCache.FactionComp;
-			
+
 			// Get a safe age value
 			float? fixedAge = null;
 			try
 			{
-				fixedAge = kindDef?.GetReasonableMercenaryAge();
+				fixedAge = kindDef.GetReasonableMercenaryAge();
 			}
 			catch (Exception ex)
 			{
 				LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
-				fixedAge = null; // Let the game decide the age
+				fixedAge = null;
 			}
-			
-			// IMPORTANT: Use null faction to prevent faction xenotype forcing
-			// The pawn's faction will be set after generation
-			// NEW NOTE: apparently we used to force a null faction to prevent some kind of shenanigans. Shouldn't be necessary with the prefix patch on GeneratePawn, but keep on the lookout for errors...
+
 			return new PawnGenerationRequest(
 				kind: kindDef,
 				faction: FactionCache.PlayerColonyFaction,
@@ -168,7 +35,7 @@ namespace FactionColonies.util
 				allowDead: false,
 				allowDowned: false,
 				canGeneratePawnRelations: true,
-				mustBeCapableOfViolence: true, // Always require violence for military
+				mustBeCapableOfViolence: true,
 				colonistRelationChanceFactor: 0,
 				forceAddFreeWarmLayerIfNeeded: false,
 				allowGay: true,
@@ -177,7 +44,7 @@ namespace FactionColonies.util
 				inhabitant: false,
 				certainlyBeenInCryptosleep: false,
 				forceRedressWorldPawnIfFormerColonist: false,
-				worldPawnFactionDoesntMatter: true, // Allow any world pawn
+				worldPawnFactionDoesntMatter: true,
 				biocodeWeaponChance: 0,
 				extraPawnForExtraRelationChance: null,
 				relationWithExtraPawnChanceFactor: 0,
@@ -185,8 +52,8 @@ namespace FactionColonies.util
 				validatorPostGear: null,
 				forcedTraits: null,
 				prohibitedTraits: null,
-                forcedXenotype: xenotypeDef,
-                fixedBiologicalAge: fixedAge
+				forcedXenotype: xenotypeDef,
+				fixedBiologicalAge: fixedAge
 			);
 		}
 
@@ -195,40 +62,23 @@ namespace FactionColonies.util
 			var kindDef = pawnKindDef;
 			if (kindDef == null)
 			{
-				try
-				{
-					kindDef = FactionCache.PlayerColonyFaction?.RandomPawnKind();
-				}
-				catch (Exception ex)
-				{
-					LogUtil.Warning($"Failed to get pawn kind from player faction: {ex.Message}");
-				}
-				
-				// Fallback to default colonist if still null
-				if (kindDef == null)
-				{
-					kindDef = PawnKindDefOf.Colonist;
-				}
+				kindDef = PColonyPawnKindDefOf.PColony_Villager;
 			}
-			
-			var faction = FactionCache.PlayerColonyFaction;
-			var factionFC = FactionCache.FactionComp;
-			
-			// Get a safe age value
+
 			float? fixedAge = null;
 			try
 			{
-				fixedAge = kindDef?.GetReasonableMercenaryAge();
+				fixedAge = kindDef.GetReasonableMercenaryAge();
 			}
 			catch (Exception ex)
 			{
 				LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
-				fixedAge = null; // Let the game decide the age
+				fixedAge = null;
 			}
-			
+
 			return new PawnGenerationRequest(
 				kind: kindDef,
-				faction: faction,
+				faction: FactionCache.PlayerColonyFaction,
 				context: PawnGenerationContext.NonPlayer,
 				tile: -1,
 				forceGenerateNewPawn: false,
@@ -260,11 +110,9 @@ namespace FactionColonies.util
 
 		public static PawnGenerationRequest AnimalRequest(PawnKindDef race)
 		{
-			var faction = FactionCache.PlayerColonyFaction;
-			
 			return new PawnGenerationRequest(
 				kind: race,
-				faction: faction,
+				faction: FactionCache.PlayerColonyFaction,
 				context: PawnGenerationContext.NonPlayer,
 				tile: -1,
 				forceGenerateNewPawn: false,
@@ -293,22 +141,20 @@ namespace FactionColonies.util
 		}
 
 		/// <summary>
-		/// Generate a simple delivery pawn that bypasses xenotype filtering issues
+		/// Generate a simple delivery pawn using the Empire's fighter template.
 		/// </summary>
 		public static PawnGenerationRequest SimpleDeliveryRequest()
 		{
-			var faction = FactionCache.PlayerColonyFaction;
-			
 			return new PawnGenerationRequest(
-				kind: PawnKindDefOf.Colonist,
-				faction: faction,
+				kind: PColonyPawnKindDefOf.PColony_Fighter,
+				faction: FactionCache.PlayerColonyFaction,
 				context: PawnGenerationContext.NonPlayer,
 				tile: -1,
 				forceGenerateNewPawn: false,
 				allowDead: false,
 				allowDowned: false,
 				canGeneratePawnRelations: true,
-				mustBeCapableOfViolence: true, // Always capable of violence for delivery
+				mustBeCapableOfViolence: true,
 				colonistRelationChanceFactor: 0,
 				forceAddFreeWarmLayerIfNeeded: false,
 				allowGay: true,
@@ -329,4 +175,3 @@ namespace FactionColonies.util
 		}
 	}
 }
-

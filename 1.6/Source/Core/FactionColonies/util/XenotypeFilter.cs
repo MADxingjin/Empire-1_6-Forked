@@ -147,8 +147,6 @@ namespace FactionColonies.util
 
         private Dictionary<ThingDef, List<XenotypeDef>> raceXenoAssociations = new Dictionary<ThingDef, List<XenotypeDef>>();
 
-        // Borrowed from RaceThingfilter
-        private bool HasMissingPawnKindDefTypes => !faction.pawnGroupMakers[1].traders.Any() || !faction.pawnGroupMakers[0].options.Any() || !faction.pawnGroupMakers[3].options.Any() || WorldSettlementTraderTracker.BaseTraderKinds == null || !WorldSettlementTraderTracker.BaseTraderKinds.Any();
 
         public XenotypeFilter()
         {
@@ -837,40 +835,31 @@ namespace FactionColonies.util
             return allGuards.Distinct().ToList();
         }
         /// <summary>
-        /// Attempts to find a pawnKindDef for the given race that is not a fighter and not a trader.
+        /// Scans AllPawnKindDefs to build the raceXenoAssociations dictionary.
+        /// This preserves HAR xenotype-race association info without populating pawnGroupMakers.
         /// </summary>
-        /// <param name="race"></param>
-        private PawnKindDef GetBasicPawnKindDefForRace(ThingDef race)
+        private void BuildRaceXenoAssociations()
         {
-            if (race is null)
+            raceXenoAssociations.Clear();
+            foreach (ThingDef race in RaceWeights.Keys)
             {
-                return null;
+                List<XenotypeDef> associatedXenotypes = new List<XenotypeDef>();
+                foreach (PawnKindDef pawnKind in FactionCache.AllPawnKindDefs)
+                {
+                    if (pawnKind.race != race || pawnKind.xenotypeSet == null) continue;
+                    for (int i = 0; i < pawnKind.xenotypeSet.Count; i++)
+                    {
+                        if (pawnKind.xenotypeSet[i].chance > 0)
+                        {
+                            associatedXenotypes.Add(pawnKind.xenotypeSet[i].xenotype);
+                        }
+                    }
+                }
+                if (associatedXenotypes.Count > 0)
+                {
+                    raceXenoAssociations[race] = associatedXenotypes.Distinct().ToList();
+                }
             }
-
-            PawnKindDef outputDef = null;
-            List<PawnKindDef> possibleDefs = GetPawnKindDefsForRace(race);
-            if (possibleDefs.Count == 0)
-            {
-                return null;
-            }
-            outputDef = possibleDefs.First((PawnKindDef def) => !def.trader && !def.isFighter && !def.isBoss && def.label != "mercenary");
-            return outputDef;
-        }
-        private enum TechLevelMatch
-        {
-            Exact,      // techLevel == factionFc.techLevel
-            AtOrBelow,  // techLevel <= factionFc.techLevel
-            Any         // no restriction
-        }
-        private bool PawnKindRaceCheck(PawnKindDef def, ThingDef race, TechLevelMatch techMatch)
-        {
-            if (def.race != race) return false;
-            if (def.defaultFactionDef != null && def.defaultFactionDef.isPlayer) return false;
-            if (techMatch == TechLevelMatch.Any || def.defaultFactionDef is null) return true;
-            if (techMatch == TechLevelMatch.Exact)
-                return def.defaultFactionDef.techLevel == factionFc.techLevel;
-            // AtOrBelow
-            return def.defaultFactionDef.techLevel <= factionFc.techLevel;
         }
         private float PawnKindXenotypeChance(PawnKindDef def, XenotypeDef xenotype)
         {
@@ -902,37 +891,6 @@ namespace FactionColonies.util
                 return remainingChance / (float)(numXenosRemaining);
             }
         }
-        private bool HasRequiredPawnKindTypes(List<PawnKindDef> defs)
-        {
-            return defs.Count > 0 && defs.Any(d => d.trader) && defs.Any(d => d.isFighter);
-        }
-        private List<PawnKindDef> GetPawnKindDefsForRace(ThingDef race)
-        {
-            // Stage 1: exact tech level match
-            List<PawnKindDef> output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.Exact)).ToList();
-            LogUtil.Message($"GetPawnKindDefsForRace: found {output.Count} PawnKindDefs for race {race.LabelCap} (exact tech level)");
-
-            if (!HasRequiredPawnKindTypes(output))
-            {
-                // Stage 2: equal or below tech level
-                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.AtOrBelow)).ToList();
-                LogUtil.Message($"GetPawnKindDefsForRace: relaxed to equal-or-below tech level for {race.LabelCap}. Count: {output.Count}");
-            }
-
-            if (!HasRequiredPawnKindTypes(output))
-            {
-                // Stage 3: any tech level
-                output = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, race, TechLevelMatch.Any)).ToList();
-                LogUtil.Message($"GetPawnKindDefsForRace: relaxed to any tech level for {race.LabelCap}. Count: {output.Count}");
-            }
-
-            if (!HasRequiredPawnKindTypes(output))
-            {
-                LogUtil.Error($"GetPawnKindDefsForRace: could not find enough pawnkinds for {race.LabelCap}! Count: {output.Count}");
-            }
-
-            return output;
-        }
         private void ReweightPawnGenOptionsForRace(List<PawnGenOption> options, ThingDef race)
         {
             if (raceWeights.ContainsKey(race))
@@ -960,206 +918,72 @@ namespace FactionColonies.util
                 ReweightPawnGenOptionsForRace(faction.pawnGroupMakers[3].options, race);
             }
         }
-        private void SetFallbackPawnGroupMakers()
+        private void ValidatePawnGroupMakers()
         {
-            if (!faction.pawnGroupMakers[1].traders.Any()) //traders
-            {
-                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any trader PawnKindDefs, attempting fallbacks");
-                PawnKindDef trader = null;
-
-                /* We will first try to make an all-new pawnkinddef with an enabled race */
-                PawnKindDef baseDef = GetBasicPawnKindDefForRace(GetRandomRace());
-                if (baseDef != null)
-                {
-                    trader = baseDef.ShallowClone();
-                    trader.trader = true;
-                    LogUtil.Warning($"RefreshPawnGroupMakers: Created new PawnKindDef for traders using original PawnKindDef {baseDef.defName} of race {baseDef.race.defName}");
-                }
-                // If trader is still null, attempt to find a fallback option for the Human race
-                if (trader is null)
-                {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
-                    trader = humanPawns.FirstOrDefault((PawnKindDef def) => def.trader);
-                    LogUtil.Message("RefreshPawnGroupMakers: Found trader pawnKindDef for human race");
-                }
-                if (trader is null)
-                {
-                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for traders, but failed!");
-                }
-                else
-                {
-                    var pawnOption = new PawnGenOption
-                    {
-                        kind = trader,
-                        selectionWeight = 1
-                    };
-                    faction.pawnGroupMakers[1].traders.Add(pawnOption);
-                }
-            }
-            if (!faction.pawnGroupMakers[0].options.Any()) //combat
-            {
-                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any combat PawnKindDefs, attempting fallbacks");
-                PawnKindDef fighter = null;
-
-                /* We will first try to make an all-new pawnkinddef with an enabled race */
-                PawnKindDef baseDef = GetBasicPawnKindDefForRace(GetRandomRace());
-                if (baseDef != null)
-                {
-                    fighter = baseDef.ShallowClone();
-                    fighter.isFighter = true;
-                    LogUtil.Warning($"RefreshPawnGroupMakers: Created new PawnKindDef for combat using original PawnKindDef {baseDef.defName} of race {baseDef.race.defName}");
-                }
-                // If fighter is still null, attempt to find a fallback option for the Human race
-                if (fighter is null)
-                {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
-                    fighter = humanPawns.FirstOrDefault((PawnKindDef def) => def.isFighter);
-                    LogUtil.Message("RefreshPawnGroupMakers: Found combat pawnKindDef for human race");
-                }
-                if (fighter is null)
-                {
-                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for fighters, but failed!");
-                }
-                else
-                {
-                    var pawnOption = new PawnGenOption
-                    {
-                        kind = fighter,
-                        selectionWeight = 1
-                    };
-                    faction.pawnGroupMakers[0].options.Add(pawnOption);
-                }
-            }
-            if (!faction.pawnGroupMakers[3].options.Any()) //peaceful
-            {
-                LogUtil.Warning("RefreshPawnGroupMakers: Failed to find any peaceful PawnKindDefs, attempting fallbacks");
-                PawnKindDef peaceful = null;
-
-                PawnKindDef baseDef = GetBasicPawnKindDefForRace(GetRandomRace());
-                if (baseDef != null)
-                {
-                    peaceful = baseDef;
-                    LogUtil.Message($"RefreshPawnGroupMakers: Found peaceful PawnKindDef {baseDef.defName} of race {baseDef.race.defName}");
-                }
-                // If peaceful is still null, attempt to find a fallback option for the Human race
-                if (peaceful is null)
-                {
-                    var humanPawns = FactionCache.AllPawnKindDefs.Where(def => PawnKindRaceCheck(def, ThingDefOf.Human, TechLevelMatch.AtOrBelow));
-                    peaceful = humanPawns.FirstOrDefault((PawnKindDef def) => def.label != "mercenary");
-                    LogUtil.Message("RefreshPawnGroupMakers: Found peaceful pawnKindDef for human race");
-                }
-                if (peaceful is null)
-                {
-                    LogUtil.Error("RefreshPawnGroupMakers: Attempted to find fallback PawnKindDef for peaceful, but failed!");
-                }
-                else
-                {
-                    var pawnOption = new PawnGenOption
-                    {
-                        kind = peaceful,
-                        selectionWeight = 1
-                    };
-                    faction.pawnGroupMakers[3].options.Add(pawnOption);
-                }
-            }
+            if (!faction.pawnGroupMakers[0].options.Any())
+                LogUtil.Error("RefreshPawnGroupMakers: combat pawnGroupMaker has no options after template population");
+            if (!faction.pawnGroupMakers[1].traders.Any())
+                LogUtil.Error("RefreshPawnGroupMakers: trader pawnGroupMaker has no traders after template population");
+            if (!faction.pawnGroupMakers[3].options.Any())
+                LogUtil.Error("RefreshPawnGroupMakers: peaceful pawnGroupMaker has no options after template population");
             if (WorldSettlementTraderTracker.BaseTraderKinds != null && !WorldSettlementTraderTracker.BaseTraderKinds.Any())
             {
-                LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting human race fallback");
+                LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting fallback");
                 faction.baseTraderKinds.AddRange(origBaseTraderKinds);
                 WorldSettlementTraderTracker.ReloadTraderKind();
             }
         }
         private void SetPawnGroupMakers()
         {
-            /* For each allowed race, find all associated PawnKindDefs. Add every such def that does not contain a disallowed Xenotype to the pawnGroupMakers.
-             *   Check each associated PawnKindDef for a xenotypeSet. If there is one, add the xenotypes to the raceXenoAssociations dictionary. */
-            /* The handling of xenotypes will be done in a prefix patch on PawnGenerator.GeneratePawn(PawnGenerationRequest). */
-            raceXenoAssociations.Clear();
+            BuildRaceXenoAssociations();
 
+            TechLevel techLevel = factionFc.techLevel;
             foreach (ThingDef race in RaceWeights.Keys)
             {
-                List<PawnKindDef> humanPawns = GetPawnKindDefsForRace(race);
-                List<XenotypeDef> associatedXenotypes = new List<XenotypeDef>();
-                foreach (PawnKindDef pawnKind in humanPawns)
-                {
-                    if (pawnKind.xenotypeSet != null)
-                    {
-                        /* We need to loop over the xenotypeSet twice: once to determine if this is a valid PawnKindDef, and *then* to add to the associated xenotype dictionary */
-                        bool isValid = true;
-                        for (int i = 0; i < pawnKind.xenotypeSet.Count && isValid; i++)
-                        {
-                            if (race != ThingDefOf.Human && pawnKind.xenotypeSet[i].xenotype == XenotypeDefOf.Baseliner)
-                            {
-                                /* HAR compat: For non-human races, we also consider the Baseliner xenotype to be valid, even if it has been disabled in the filter. */
-                                continue;
-                            }
-                            else if (pawnKind.xenotypeSet[i].chance > 0 && GetXenotypeWeight(pawnKind.xenotypeSet[i].xenotype) == 0)
-                            {
-                                LogUtil.Message($"SetPawnGroupMakers: pawnKind {pawnKind.defName} has disallowed xenotype {pawnKind.xenotypeSet[i].xenotype} in its xenotypeset");
-                                isValid = false;
-                            }
-                        }
-                        if (!isValid)
-                        {
-                            continue;
-                        }
-                        for (int i = 0; i < pawnKind.xenotypeSet.Count; i++)
-                        {
-                            if (pawnKind.xenotypeSet[i].chance > 0)
-                            {
-                                XenotypeDef xenotype = pawnKind.xenotypeSet[i].xenotype;
-                                associatedXenotypes.Add(xenotype);
-                            }
-                        }
-                    }
+                List<PawnKindDef> clones = PawnKindTemplateUtil.GetOrCreateClonesForRace(race, techLevel);
+                float raceWeight = RaceWeights[race];
 
+                foreach (PawnKindDef clone in clones)
+                {
                     var pawnOption = new PawnGenOption
                     {
-                        kind = pawnKind,
-                        selectionWeight = RaceWeights[race]
+                        kind = clone,
+                        selectionWeight = raceWeight
                     };
 
-                    bool isViolenceCapable = FCPawnGenerator.IsViolenceCapablePawnKind(pawnKind);
-
-                    // Settlement group maker: PawnGroupKindWorker_Normal hardcodes mustBeCapableOfViolence=true,
-                    // so only add PawnKindDefs that can plausibly generate violence-capable pawns
-                    if (isViolenceCapable)
-                    {
-                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
-                    }
-
-                    if (pawnKind.label != "mercenary")
-                    {
-                        faction.pawnGroupMakers[1].options.Add(pawnOption); // Trader
-                        faction.pawnGroupMakers[3].options.Add(pawnOption); // Peaceful
-                    }
-
-                    if (pawnKind.isFighter)
+                    if (clone.isFighter)
                     {
                         faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat
                         faction.pawnGroupMakers[1].guards.Add(pawnOption); // Trader guards
-                    }
-                    else if (pawnKind.factionLeader)
-                    {
-                        faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat (needed for TryGenerateNewLeader)
+                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
                     }
 
-                    if (pawnKind.trader)
+                    if (clone.factionLeader)
+                    {
+                        faction.pawnGroupMakers[0].options.Add(pawnOption); // Combat (for TryGenerateNewLeader)
+                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    }
+
+                    if (clone.trader)
                     {
                         faction.pawnGroupMakers[1].traders.Add(pawnOption);
                     }
-                }
 
-                if (associatedXenotypes.Count > 0)
-                {
-                    raceXenoAssociations[race] = associatedXenotypes.Distinct().ToList();
+                    // Non-fighter, non-trader: civilian types go in Trader options, Peaceful, and Settlement
+                    if (!clone.isFighter && !clone.trader && !clone.factionLeader)
+                    {
+                        faction.pawnGroupMakers[1].options.Add(pawnOption); // Trader
+                        faction.pawnGroupMakers[3].options.Add(pawnOption); // Peaceful
+                        faction.pawnGroupMakers[2].options.Add(pawnOption); // Settlement
+                    }
                 }
             }
+
             ReweightPawnGroupMakers();
+
+            // Add security guard animals for non-violent xenotypes
             foreach (XenotypeDef xenotype in XenotypeWeights.Keys)
             {
-                //TODO: see if anything else needs to be done
-                // Add security guards for xenotypes that need them
                 if (securityGuardsByXenotype.ContainsKey(xenotype) && securityGuardsByXenotype[xenotype].List.Any())
                 {
                     foreach (var guardAnimal in securityGuardsByXenotype[xenotype].List)
@@ -1169,7 +993,6 @@ namespace FactionColonies.util
                             kind = guardAnimal,
                             selectionWeight = 1
                         };
-
                         faction.pawnGroupMakers[0].options.Add(guardOption); // Combat
                         faction.pawnGroupMakers[1].guards.Add(guardOption); // Trader guards
                     }
@@ -1180,8 +1003,6 @@ namespace FactionColonies.util
             {
                 foreach (string xenotype in CustomXenotypeWeights.Keys)
                 {
-                    //TODO
-                    // Add security guards for xenotypes that need them
                     if (securityGuardsByCustomXenotype.ContainsKey(xenotype) && securityGuardsByCustomXenotype[xenotype].List.Any())
                     {
                         foreach (var guardAnimal in securityGuardsByCustomXenotype[xenotype].List)
@@ -1191,7 +1012,6 @@ namespace FactionColonies.util
                                 kind = guardAnimal,
                                 selectionWeight = 1
                             };
-
                             faction.pawnGroupMakers[0].options.Add(guardOption); // Combat
                             faction.pawnGroupMakers[1].guards.Add(guardOption); // Trader guards
                         }
@@ -1203,6 +1023,8 @@ namespace FactionColonies.util
         {
             if (faction == null || factionFc == null) return;
             LogUtil.Message("Refreshing pawn group makers");
+
+            PawnKindTemplateUtil.InvalidateCache();
 
             // Clear existing pawn group makers
             faction.pawnGroupMakers = new List<PawnGroupMaker>
@@ -1225,42 +1047,12 @@ namespace FactionColonies.util
             }
 
             SetPawnGroupMakers();
-
-            /* If there are pawnGroupMakers with missing options, then try to find options using the basic Human race.
-             *   If this fails, then the player (or their mods) is doing something fucky. Likely. Possibly.
-             */
-            SetFallbackPawnGroupMakers();
+            ValidatePawnGroupMakers();
 
             // Add pack animals for caravans
             foreach (PawnKindDef animalKindDef in FactionCache.AllPackAnimalKinds)
             {
                 faction.pawnGroupMakers[1].carriers.Add(new PawnGenOption { kind = animalKindDef, selectionWeight = 1 });
-            }
-
-            if (HasMissingPawnKindDefTypes)
-            {
-                string missing = "";
-                if (!faction.pawnGroupMakers[1].traders.Any())
-                {
-                    missing += " | traders";
-                }
-                if (!faction.pawnGroupMakers[0].options.Any())
-                {
-                    missing += " | fighters";
-                }
-                if (!faction.pawnGroupMakers[3].options.Any())
-                {
-                    missing += " | traders";
-                }
-                if (WorldSettlementTraderTracker.BaseTraderKinds == null)
-                {
-                    missing += " | WorldSettlementTraderTracker.BaseTraderKinds == null";
-                }
-                if (WorldSettlementTraderTracker.BaseTraderKinds != null && !WorldSettlementTraderTracker.BaseTraderKinds.Any())
-                {
-                    missing += $" | WorldSettlementTraderTracker.BaseTraderKinds count: {WorldSettlementTraderTracker.BaseTraderKinds.Count}";
-                }
-                LogUtil.Error($"RefreshPawnGroupMakers: still has missing pawn kind def types. Reasons:{missing}");
             }
 
             RefreshMercenaryPawnGenOptions();
