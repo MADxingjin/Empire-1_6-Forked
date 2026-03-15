@@ -564,8 +564,7 @@ namespace FactionColonies
                 if (force.homeSettlement?.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;
 
-                foreach (var building in Map.listerBuildings.allBuildingsColonist)
-                    FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
+                Map.fogGrid.ClearAllFog();
 
                 GenerateFriendlies(force);
                 RecruitMapInhabitants();
@@ -770,10 +769,11 @@ namespace FactionColonies
                 inhabitants.Add(civilian);
             }
 
-            // Strip weapons from civilians so they are visually distinct from guards
-            foreach (Pawn inhabitant in inhabitants)
+            // Strip weapons from most civilians so they are visually distinct from guards (~25% keep weapons)
+            for (int i = 0; i < inhabitants.Count; i++)
             {
-                inhabitant.equipment.DestroyAllEquipment();
+                if (i % 4 != 0)
+                    inhabitants[i].equipment.DestroyAllEquipment();
             }
 
             foreach (Pawn inhabitant in inhabitants)
