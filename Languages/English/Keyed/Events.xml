@@ -20,6 +20,8 @@
 	<FCEventSuccessLikely>Success: Likely</FCEventSuccessLikely>
 	<FCEventSuccessUncertain>Success: Uncertain</FCEventSuccessUncertain>
 	<FCEventSuccessRisky>Success: Risky</FCEventSuccessRisky>
+	<FCEffectPreviewReward>reward worth ~{0} silver</FCEffectPreviewReward>
+	<FCEffectPreviewDuration>({0} days)</FCEffectPreviewDuration>
 
 	<!-- Building Events -->
 	<BuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</BuildingEventDesc>
