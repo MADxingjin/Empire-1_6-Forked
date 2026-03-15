@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Empty Mines -->
+  <emptyMines_0.label>Mines vides</emptyMines_0.label>
+  <!-- EN: The affected region(s) have been stricken with barren mines. What should be done? -->
+  <emptyMines_0.desc>Les régions touchées souffrent de mines épuisées. Que faut-il faire ?</emptyMines_0.desc>
+  
+  <!-- EN: Empty Mines -->
+  <emptyMines_1-1.label>Mines vides</emptyMines_1-1.label>
+  <!-- EN: The miners wait for new veins to surface. -1 mining base production. -->
+  <emptyMines_1-1.desc>Les mineurs attendent que de nouveaux filons apparaissent. -1 production minière de base.</emptyMines_1-1.desc>
+  
+  <!-- EN: Empty Mines (Prospectors Failed) -->
+  <emptyMines_1-2f.label>Mines vides (Prospection échouée)</emptyMines_1-2f.label>
+  <!-- EN: The prospectors found nothing. The mines remain empty. -1 mining base production. -->
+  <emptyMines_1-2f.desc>Les prospecteurs n&apos;ont rien trouvé. Les mines restent vides. -1 production minière de base.</emptyMines_1-2f.desc>
+  
+  <!-- EN: Empty Mines (Construction Redirect) -->
+  <emptyMines_1-3.label>Mines vides (Redirection vers la construction)</emptyMines_1-3.label>
+  <!-- EN: Idle miners are put to work on settlement construction projects. -1 mining base production, but construction speeds up. -->
+  <emptyMines_1-3.desc>Les mineurs inoccupés sont affectés aux projets de construction de la colonie. -1 production minière de base, mais la construction s&apos;accélère.</emptyMines_1-3.desc>
+  
+</LanguageData>

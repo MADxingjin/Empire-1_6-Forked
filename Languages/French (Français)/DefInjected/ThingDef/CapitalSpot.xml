@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: capital seat -->
+  <CapitalSpot.label>siège de capitale</CapitalSpot.label>
+  <!-- EN: Designates the seat of your Empire's capital. This location serves as the central reference point for travel calculations, event targeting, and administrative functions. Can be moved with your gravship empire.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <CapitalSpot.description>Désigne le siège de la capitale de votre Empire. Cet emplacement sert de point de référence central pour les calculs de déplacement, le ciblage des événements et les fonctions administratives. Peut être déplacé avec votre empire gravship.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</CapitalSpot.description>
+  
+</LanguageData>

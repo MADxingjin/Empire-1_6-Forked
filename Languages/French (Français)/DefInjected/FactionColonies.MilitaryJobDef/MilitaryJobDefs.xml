@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: capture enemy settlement -->
+  <CaptureEnemySettlement.label>Capturer une colonie ennemie</CaptureEnemySettlement.label>
+  
+  <!-- EN: cooldown -->
+  <Cooldown.label>Temps de recharge</Cooldown.label>
+  
+  <!-- EN: defend friendly settlement -->
+  <DefendFriendlySettlement.label>Défendre une colonie alliée</DefendFriendlySettlement.label>
+  
+  <!-- EN: deploy -->
+  <Deploy.label>Déployer</Deploy.label>
+  
+  <!-- EN: enslave enemy settlement -->
+  <EnslaveEnemySettlement.label>Asservir une colonie ennemie</EnslaveEnemySettlement.label>
+  
+  <!-- EN: raid enemy settlement -->
+  <RaidEnemySettlement.label>Piller une colonie ennemie</RaidEnemySettlement.label>
+  
+  <!-- EN: undefined -->
+  <Undefined.label>Indéfini</Undefined.label>
+  
+</LanguageData>

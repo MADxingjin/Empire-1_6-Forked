@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Jungle infestée de féralisks -->
+  <AB_FeraliskInfestedJungle.label>Jungle infestée de féralisks</AB_FeraliskInfestedJungle.label>
+  
+  <!-- EN: Gallatross Graveyard -->
+  <AB_GallatrossGraveyard.label>Cimetière de gallatross</AB_GallatrossGraveyard.label>
+  
+  <!-- EN: Gelatinous Superorganism -->
+  <AB_GelatinousSuperorganism.label>Gélatineux Superorganisme</AB_GelatinousSuperorganism.label>
+  
+  <!-- EN: idyllic meadows -->
+  <AB_IdyllicMeadows.label>Prairies idylliques</AB_IdyllicMeadows.label>
+  
+  <!-- EN: Mechanoid Intrusion -->
+  <AB_MechanoidIntrusion.label>Méchanoïde Intrusion</AB_MechanoidIntrusion.label>
+  
+  <!-- EN: miasmic mangrove -->
+  <AB_MiasmicMangrove.label>Mangrove miasmatique</AB_MiasmicMangrove.label>
+  
+  <!-- EN: Mycotic Jungle -->
+  <AB_MycoticJungle.label>Jungle mycotique</AB_MycoticJungle.label>
+  
+  <!-- EN: Ocular Forest -->
+  <AB_OcularForest.label>Forêt oculaire</AB_OcularForest.label>
+  
+  <!-- EN: Propane Lakes -->
+  <AB_PropaneLakes.label>Lacs de propane</AB_PropaneLakes.label>
+  
+  <!-- EN: pyroclastic conflagration -->
+  <AB_PyroclasticConflagration.label>Conflagration pyroclastique</AB_PyroclasticConflagration.label>
+  
+  <!-- EN: Forsaken Crags -->
+  <AB_RockyCrags.label>Rochers abandonnés</AB_RockyCrags.label>
+  
+  <!-- EN: Tar Pits -->
+  <AB_TarPits.label>Fosses de goudron</AB_TarPits.label>
+  
+</LanguageData>

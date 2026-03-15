@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Store the surplus for continued production. -->
+  <foodSurplus_0_1.label>Stocker le surplus pour soutenir la production continue.</foodSurplus_0_1.label>
+  
+  <!-- EN: Sell the excess harvest to traders. -->
+  <foodSurplus_0_2.label>Vendre l’excédent de récolte aux marchands.</foodSurplus_0_2.label>
+  
+  <!-- EN: Host a grand feast to celebrate the bounty. -->
+  <foodSurplus_0_3.label>Organiser un grand festin pour célébrer l’abondance.</foodSurplus_0_3.label>
+  
+</LanguageData>

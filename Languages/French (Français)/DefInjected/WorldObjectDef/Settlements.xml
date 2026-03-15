@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: basic orbital colony -->
+  <WorldSettlementDef_Orbital.label>colonie orbitale de base</WorldSettlementDef_Orbital.label>
+  <!-- EN: Standard orbital construction capabilities\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <WorldSettlementDef_Orbital.description>Capacités standards de construction orbitale
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</WorldSettlementDef_Orbital.description>
+  
+  <!-- EN: advanced orbital colony -->
+  <WorldSettlementDef_Orbital_Advanced.label>colonie orbitale avancée</WorldSettlementDef_Orbital_Advanced.label>
+  <!-- EN: 25% lower base construction cost, larger size\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <WorldSettlementDef_Orbital_Advanced.description>Coût de construction de base réduit de 25 %, taille plus grande
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</WorldSettlementDef_Orbital_Advanced.description>
+  
+  <!-- EN: glitterworld orbital colony -->
+  <WorldSettlementDef_Orbital_Glitter.label>colonie orbitale Glitterworld</WorldSettlementDef_Orbital_Glitter.label>
+  <!-- EN: Specialized production buildings with bonuses\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <WorldSettlementDef_Orbital_Glitter.description>Bâtiments de production spécialisés avec bonus
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</WorldSettlementDef_Orbital_Glitter.description>
+  
+  <!-- EN: logistics orbital colony -->
+  <WorldSettlementDef_Orbital_Logistics.label>colonie orbitale logistique</WorldSettlementDef_Orbital_Logistics.label>
+  <!-- EN: 50% faster tax delivery and special buildings\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <WorldSettlementDef_Orbital_Logistics.description>Livraison des taxes 50 % plus rapide et bâtiments spéciaux
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</WorldSettlementDef_Orbital_Logistics.description>
+  
+  <!-- EN: empire settlement -->
+  <WorldSettlementDef_Surface.label>colonie impériale</WorldSettlementDef_Surface.label>
+  <!-- EN: A base of the Empire player faction\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <WorldSettlementDef_Surface.description>Une base de la faction du joueur Empire
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</WorldSettlementDef_Surface.description>
+  
+</LanguageData>

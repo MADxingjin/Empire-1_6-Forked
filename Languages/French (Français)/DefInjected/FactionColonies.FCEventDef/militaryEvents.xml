@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Capture Enemy Settlement -->
+  <captureEnemySettlement.label>Capturer la colonie ennemie</captureEnemySettlement.label>
+  <!-- EN: -Replace Description- -->
+  <captureEnemySettlement.desc>Une colonie ennemie est en cours de capture.</captureEnemySettlement.desc>
+  
+  <!-- EN: Military Cooldown -->
+  <cooldownMilitary.label>Recharge militaire</cooldownMilitary.label>
+  <!-- EN: -Replace Description- -->
+  <cooldownMilitary.desc>Les forces militaires se réorganisent après leur dernière opération.</cooldownMilitary.desc>
+  
+  <!-- EN: Enslave Enemy Settlement -->
+  <enslaveEnemySettlement.label>Asservir la colonie ennemie</enslaveEnemySettlement.label>
+  <!-- EN: -Replace Description- -->
+  <enslaveEnemySettlement.desc>Une colonie ennemie est en cours d’asservissement.</enslaveEnemySettlement.desc>
+  
+  <!-- EN: Raid Enemy Settlement -->
+  <raidEnemySettlement.label>Piller la colonie ennemie</raidEnemySettlement.label>
+  <!-- EN: -Replace Description- -->
+  <raidEnemySettlement.desc>Une colonie ennemie est en cours de pillage.</raidEnemySettlement.desc>
+  
+  <!-- EN: Settlement is under attack -->
+  <settlementBeingAttacked.label>La colonie est attaquée</settlementBeingAttacked.label>
+  <!-- EN: -Replace Description- -->
+  <settlementBeingAttacked.desc>L’une de vos colonies est actuellement attaquée.</settlementBeingAttacked.desc>
+  
+</LanguageData>

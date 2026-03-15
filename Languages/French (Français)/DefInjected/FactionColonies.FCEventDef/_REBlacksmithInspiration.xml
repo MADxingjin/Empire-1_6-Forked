@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Blacksmith Inspiration -->
+  <blacksmithInspiration_0.label>Inspiration de forgeron</blacksmithInspiration_0.label>
+  <!-- EN: A blacksmith in a nearby settlement has received a great inspiration and is seeking patrons for what he claims will be a work of unparalleled quality! He plans to give it to his patron as a token of his loyalty. -->
+  <blacksmithInspiration_0.desc>Un forgeron d&apos;une colonie voisine a reçu une grande inspiration et cherche des mécènes pour ce qu&apos;il affirme être une œuvre d&apos;une qualité inégalée ! Il prévoit de l&apos;offrir à son mécène en signe de loyauté.</blacksmithInspiration_0.desc>
+  
+  <!-- EN: Blacksmith Inspiration -->
+  <blacksmithInspiration_1-1.label>Inspiration de forgeron</blacksmithInspiration_1-1.label>
+  <!-- EN: The blacksmith is working on your commission... -->
+  <blacksmithInspiration_1-1.desc>Le forgeron travaille sur votre commande...</blacksmithInspiration_1-1.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Disappointing) -->
+  <blacksmithInspiration_1-2f.label>Inspiration de forgeron (Décevante)</blacksmithInspiration_1-2f.label>
+  <!-- EN: The blacksmith's ambition outpaced his skill. The result is serviceable, but far from the masterwork promised. -->
+  <blacksmithInspiration_1-2f.desc>L&apos;ambition du forgeron a dépassé son talent. Le résultat est correct, mais loin du chef-d&apos;œuvre promis.</blacksmithInspiration_1-2f.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Masterwork) -->
+  <blacksmithInspiration_1-2s.label>Inspiration de forgeron (Chef-d&apos;œuvre)</blacksmithInspiration_1-2s.label>
+  <!-- EN: The blacksmith's inspiration has produced a true masterwork! The result exceeds all expectations. -->
+  <blacksmithInspiration_1-2s.desc>L&apos;inspiration du forgeron a produit un véritable chef-d&apos;œuvre ! Le résultat dépasse toutes les attentes.</blacksmithInspiration_1-2s.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Workshop Materials) -->
+  <blacksmithInspiration_1-3.label>Inspiration de forgeron (Matériaux d&apos;atelier)</blacksmithInspiration_1-3.label>
+  <!-- EN: The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -1 weapons base production. -->
+  <blacksmithInspiration_1-3.desc>Le forgeron travaille avec des matériaux détournés des chaînes de production de votre colonie. Ce détournement ralentit la production d&apos;armes, mais son travail avance bien. -1 production de base d&apos;armes.</blacksmithInspiration_1-3.desc>
+  
+</LanguageData>

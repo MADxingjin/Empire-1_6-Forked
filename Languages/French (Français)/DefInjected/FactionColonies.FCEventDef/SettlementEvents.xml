@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Constructing Building -->
+  <constructBuilding.label>Construction d&apos;un bâtiment</constructBuilding.label>
+  <!-- EN: A building is being constructed. -->
+  <constructBuilding.desc>Un bâtiment est en cours de construction.</constructBuilding.desc>
+  
+  <!-- EN: Enacting a Policy -->
+  <enactFactionPolicy.label>Adoption d&apos;une politique</enactFactionPolicy.label>
+  <!-- EN: A faction-wide policy is being enacted. -->
+  <enactFactionPolicy.desc>Une politique à l&apos;échelle de la faction est en cours d&apos;adoption.</enactFactionPolicy.desc>
+  
+  <!-- EN: Enacting a Policy -->
+  <enactSettlementPolicy.label>Adoption d&apos;une politique</enactSettlementPolicy.label>
+  <!-- EN: A settlement-wide policy is being enacted. -->
+  <enactSettlementPolicy.desc>Une politique à l&apos;échelle de la colonie est en cours d&apos;adoption.</enactSettlementPolicy.desc>
+  
+  <!-- EN: null -->
+  <Null.label>nul</Null.label>
+  <!-- EN: A blank event. -->
+  <Null.desc>Un événement vide.</Null.desc>
+  
+  <!-- EN: Settle Colony -->
+  <settleNewColony.label>Fonder une colonie</settleNewColony.label>
+  <!-- EN: A caravan is forming a new colony. -->
+  <settleNewColony.desc>Une caravane est en train de fonder une nouvelle colonie.</settleNewColony.desc>
+  
+  <!-- EN: Settlement Taxes En-Route -->
+  <taxColony.label>Taxes de colonie en route</taxColony.label>
+  <!-- EN: A caravan is delivering taxes. -->
+  <taxColony.desc>Une caravane livre les taxes.</taxColony.desc>
+  
+  <!-- EN: Upgrading A Settlement -->
+  <upgradeSettlement.label>Amélioration d&apos;une colonie</upgradeSettlement.label>
+  <!-- EN: A settlement is being upgraded. -->
+  <upgradeSettlement.desc>Une colonie est en cours d&apos;amélioration.</upgradeSettlement.desc>
+  
+</LanguageData>

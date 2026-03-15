@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Ammunition Mines -->
+  <AmmunitionMines.label>Mines à munitions</AmmunitionMines.label>
+  <!-- EN: From flint for arrows to the materials for bullets and gunpowder, these mines take up space that could be used for other resource mining. -->
+  <AmmunitionMines.desc>Du silex pour les flèches aux matériaux pour les balles et la poudre, ces mines occupent un espace qui pourrait servir à extraire d&apos;autres ressources.</AmmunitionMines.desc>
+  
+  <!-- EN: Barracks -->
+  <barracks.label>Caserne</barracks.label>
+  <!-- EN: A buildings to house the local troops. -->
+  <barracks.desc>Un bâtiment destiné à loger les troupes locales.</barracks.desc>
+  
+  <!-- EN: Deforestation Camp -->
+  <deforestationCamp.label>Camp de déforestation</deforestationCamp.label>
+  <!-- EN: A camp that the local forests are stripped of all their resources and the life within. -->
+  <deforestationCamp.desc>Un camp où les forêts locales sont dépouillées de toutes leurs ressources et de la vie qu&apos;elles abritent.</deforestationCamp.desc>
+  
+  <!-- EN: Psychedelic Drug Den -->
+  <DrugDen.label>Antre de drogues psychédéliques</DrugDen.label>
+  <!-- EN: It's amazing the discoveries people make while absurdly high. Sometimes those discoveries are even useful! -->
+  <DrugDen.desc>Les découvertes faites sous l&apos;effet de substances sont parfois étonnantes. Et quelquefois, elles sont même utiles !</DrugDen.desc>
+  
+  <!-- EN: Farmland -->
+  <Farmland.label>Terres agricoles</Farmland.label>
+  <!-- EN: A section of land dedicated to growing edible plants. -->
+  <Farmland.desc>Une portion de terrain dédiée à la culture de plantes comestibles.</Farmland.desc>
+  
+  <!-- EN: Flint Storage -->
+  <FlintStorage.label>Stockage de silex</FlintStorage.label>
+  <!-- EN: A Storage for Flint. -->
+  <FlintStorage.desc>Un entrepôt pour le silex.</FlintStorage.desc>
+  
+  <!-- EN: Fur Hunter Camp -->
+  <FurHunterCamp.label>Camp de chasse aux fourrures</FurHunterCamp.label>
+  <!-- EN: A camp for your Fur Hunter. -->
+  <FurHunterCamp.desc>Un camp pour votre chasseur de fourrures.</FurHunterCamp.desc>
+  
+  <!-- EN: Giant Hamster Wheel -->
+  <HamsterWheel.label>Roue de hamster géante</HamsterWheel.label>
+  <!-- EN: It's not much, but it's better than nothing! -->
+  <HamsterWheel.desc>Ce n&apos;est pas grand-chose, mais c&apos;est mieux que rien !</HamsterWheel.desc>
+  
+  <!-- EN: Herbal Medicine Farm -->
+  <herbalMedicineFarm.label>Ferme de plantes médicinales</herbalMedicineFarm.label>
+  <!-- EN: A small farm to grow herbal medicine. -->
+  <herbalMedicineFarm.desc>Une petite ferme destinée à cultiver des plantes médicinales.</herbalMedicineFarm.desc>
+  
+  <!-- EN: Migrant Housing -->
+  <migrantHousing.label>Logement pour migrants</migrantHousing.label>
+  <!-- EN: Local housing for traveling migrants to stay in. -->
+  <migrantHousing.desc>Des logements locaux pour héberger les migrants de passage.</migrantHousing.desc>
+  
+  <!-- EN: Quarry -->
+  <quarry.label>Carrière</quarry.label>
+  <!-- EN: Torn up land being used to mine for valuable ore. -->
+  <quarry.desc>Un terrain excavé utilisé pour extraire du minerai précieux.</quarry.desc>
+  
+  <!-- EN: SlavePit -->
+  <SlavePit.label>Fosse à esclaves</SlavePit.label>
+  <!-- EN: A pit where Slaves goes to sleep. -->
+  <SlavePit.desc>Une fosse où les esclaves vont dormir.</SlavePit.desc>
+  
+  <!-- EN: Tanning Workshop -->
+  <TanningWorkshop.label>Atelier de tannage</TanningWorkshop.label>
+  <!-- EN: A workshop designed to turn animal hides into leather. -->
+  <TanningWorkshop.desc>Un atelier conçu pour transformer les peaux animales en cuir.</TanningWorkshop.desc>
+  
+  <!-- EN: Trading Post -->
+  <tradingPost.label>Poste de commerce</tradingPost.label>
+  <!-- EN: A small outpost that roving traders frequent. -->
+  <tradingPost.desc>Un petit avant-poste fréquenté par des marchands itinérants.</tradingPost.desc>
+  
+  <!-- EN: Training Yard -->
+  <trainingYard.label>Terrain d&apos;entraînement</trainingYard.label>
+  <!-- EN: A place for your soldiers to train. -->
+  <trainingYard.desc>Un lieu où vos soldats peuvent s&apos;entraîner.</trainingYard.desc>
+  
+</LanguageData>

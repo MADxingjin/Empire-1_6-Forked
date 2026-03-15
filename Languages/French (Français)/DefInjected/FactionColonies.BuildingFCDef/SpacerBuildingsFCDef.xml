@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Asteroid Magnet -->
+  <AsteroidMagnet.label>Aimant à astéroïdes</AsteroidMagnet.label>
+  <!-- EN: People may not like it, but it's hard to deny the amount of resources gathered when you just pull the metals you want out of the sky. -->
+  <AsteroidMagnet.desc>Les gens n&apos;aiment peut-être pas ça, mais il est difficile de nier la quantité de ressources récupérées quand on extrait directement du ciel les métaux voulus.</AsteroidMagnet.desc>
+  
+  <!-- EN: Automated Defense Systems -->
+  <automatedDefenseSystems.label>Systèmes de défense automatisés</automatedDefenseSystems.label>
+  <!-- EN: Androids roam the streets, keeping the colonists safe from external and internal harm. -->
+  <automatedDefenseSystems.desc>Des androïdes patrouillent dans les rues et protègent les colons des menaces extérieures comme intérieures.</automatedDefenseSystems.desc>
+  
+  <!-- EN: Bionics Manufacturing Plant -->
+  <bionicsManufacturingPlant.label>Usine de fabrication bionique</bionicsManufacturingPlant.label>
+  <!-- EN: A factory dedicated to the development of new bionics. -->
+  <bionicsManufacturingPlant.desc>Une usine dédiée au développement de nouvelles bioniques.</bionicsManufacturingPlant.desc>
+  
+  <!-- EN: Cloning Lab -->
+  <CloningLab.label>Laboratoire de clonage</CloningLab.label>
+  <!-- EN: Why breed or capture animals when you can just grow them in vats? -->
+  <CloningLab.desc>Pourquoi élever ou capturer des animaux quand on peut simplement les faire pousser en cuve ?</CloningLab.desc>
+  
+  <!-- EN: Clothing Printers -->
+  <ClothingPrinters.label>Imprimantes à vêtements</ClothingPrinters.label>
+  <!-- EN: Remove the human element altogether! Dump raw materials in and watch as each article of clothing is printed as a single, seamless piece! -->
+  <ClothingPrinters.desc>Supprimez totalement l&apos;intervention humaine ! Versez les matières premières et regardez chaque vêtement être imprimé en une seule pièce sans couture !</ClothingPrinters.desc>
+  
+  <!-- EN: Food Reconstruction -->
+  <FoodReconstruction.label>Reconstitution alimentaire</FoodReconstruction.label>
+  <!-- EN: Nobody likes nutrient paste, but with a little flavoring and cosmetic tweaks, it can look and taste like whatever you want it to! -->
+  <FoodReconstruction.desc>Personne n&apos;aime la pâte nutritive, mais avec un peu d&apos;arômes et quelques ajustements esthétiques, elle peut ressembler et goûter à ce que vous voulez !</FoodReconstruction.desc>
+  
+  <!-- EN: Glitterworld Research Facility -->
+  <glitterworldResearchFacility.label>Centre de recherche Glitterworld</glitterworldResearchFacility.label>
+  <!-- EN: From this building, researchers equipped with the highest-grade tools search for the answers of the universe. -->
+  <glitterworldResearchFacility.desc>Dans ce bâtiment, des chercheurs équipés d&apos;outils de très haut niveau cherchent les réponses de l&apos;univers.</glitterworldResearchFacility.desc>
+  
+  <!-- EN: Intergalactic Market -->
+  <intergalacticMarket.label>Marché intergalactique</intergalacticMarket.label>
+  <!-- EN: From here, ships fly in and deposit their goods and replace their cargo before returning home. -->
+  <intergalacticMarket.desc>D&apos;ici, les vaisseaux arrivent, déposent leurs marchandises, rechargent leur cargaison puis repartent chez eux.</intergalacticMarket.desc>
+  
+  <!-- EN: Mechanoid Salvage Shop -->
+  <MechSalvage.label>Atelier de récupération mécanoïde</MechSalvage.label>
+  <!-- EN: With the right tools, you can do more than shred dead mechanoids, you can salvage their tech to use against them. -->
+  <MechSalvage.desc>Avec les bons outils, vous pouvez faire plus que démonter des mécanoïdes détruits : vous pouvez récupérer leur technologie pour l&apos;utiliser contre eux.</MechSalvage.desc>
+  
+  <!-- EN: Perpetual Motion Generator -->
+  <perpetualMotionGenerator.label>Générateur à mouvement perpétuel</perpetualMotionGenerator.label>
+  <!-- EN: An impossibility against the laws of physics, a generator that produces extra energy using the concept of perpetual motion. -->
+  <perpetualMotionGenerator.desc>Une impossibilité au regard des lois de la physique : un générateur qui produit de l&apos;énergie supplémentaire grâce au concept de mouvement perpétuel.</perpetualMotionGenerator.desc>
+  
+  <!-- EN: Subliminal Message Center -->
+  <SubliminalMessageCenter.label>Centre de messages subliminaux</SubliminalMessageCenter.label>
+  <!-- EN: Weave subliminal messaging into the settlement's local broadcasts. -->
+  <SubliminalMessageCenter.desc>Glissez des messages subliminaux dans les diffusions locales de la colonie.</SubliminalMessageCenter.desc>
+  
+  <!-- EN: Synthetic Wood Factory -->
+  <SyntheticWoodFactory.label>Usine de bois synthétique</SyntheticWoodFactory.label>
+  <!-- EN: It's new! It's space-age! It's just as good as the real thing and it's definitely not vinyl, we swear! -->
+  <SyntheticWoodFactory.desc>C&apos;est nouveau ! C&apos;est futuriste ! C&apos;est aussi bien que le vrai bois et ce n&apos;est absolument pas du vinyle, juré !</SyntheticWoodFactory.desc>
+  
+  <!-- EN: Worker Bots -->
+  <WorkerBots.label>Robots ouvriers</WorkerBots.label>
+  <!-- EN: Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere. -->
+  <WorkerBots.desc>Faites accomplir aux robots les tâches les plus monotones de la colonie afin que les habitants puissent être affectés ailleurs.</WorkerBots.desc>
+  
+</LanguageData>

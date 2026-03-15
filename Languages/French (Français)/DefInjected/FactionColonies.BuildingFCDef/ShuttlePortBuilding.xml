@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Shuttle Port -->
+  <shuttlePort.label>Port de navettes</shuttlePort.label>
+  <!-- EN: A small scale airport, this building provides the infrastructure to rapidly send goods around the planet. This building allows you to send three shuttles every tax cycle. -->
+  <shuttlePort.desc>Petit aéroport, ce bâtiment fournit l’infrastructure nécessaire pour envoyer rapidement des marchandises autour de la planète. Il vous permet d’envoyer trois navettes à chaque cycle fiscal.</shuttlePort.desc>
+  
+</LanguageData>

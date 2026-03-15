@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_0.label>Un rituel au clair de lune</moonlitRitual_0.label>
+  <!-- EN: One of your settlements reports seeing strange figures wander into the forest at night. They are described as wearing strange costumes. -->
+  <moonlitRitual_0.desc>L’une de vos colonies signale avoir vu d’étranges silhouettes entrer dans la forêt la nuit. Elles sont décrites comme portant des costumes étranges.</moonlitRitual_0.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_1-1.label>Un rituel au clair de lune</moonlitRitual_1-1.label>
+  <!-- EN: Someone has been sent to investigate... -->
+  <moonlitRitual_1-1.desc>Quelqu’un a été envoyé pour enquêter...</moonlitRitual_1-1.desc>
+  <!-- EN: You receive news that an investigator followed an individual into the woods. They reported back seeing the group perform a series of almost ritualistic carnal acts. Not caring to stick around for it, he returned. -->
+  <moonlitRitual_1-1.optionDescription>Vous apprenez qu’un enquêteur a suivi un individu dans les bois. Il rapporte avoir vu le groupe se livrer à une série d’actes charnels presque rituels. Ne souhaitant pas rester davantage, il est rentré.</moonlitRitual_1-1.optionDescription>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_2-1.label>Un rituel au clair de lune</moonlitRitual_2-1.label>
+  <!-- EN: Investigating further... -->
+  <moonlitRitual_2-1.desc>L’enquête se poursuit...</moonlitRitual_2-1.desc>
+  <!-- EN: The investigator reports back that the group returned again. They continued the same activities as the night prior- however, after not leaving, he observed that the group brought out an ornate chest with religious-looking symbols. He stepped closer for a better look, but after stepping on a dead leaf, the group heard him. He fled before they could find him. -->
+  <moonlitRitual_2-1.optionDescription>L’enquêteur rapporte que le groupe est revenu une nouvelle fois. Ils ont repris les mêmes activités que la nuit précédente ; cependant, en restant caché, il a observé qu’ils avaient sorti un coffre orné de symboles religieux. Il s’est approché pour mieux voir, mais en marchant sur une feuille morte, le groupe l’a entendu. Il a fui avant qu’ils ne puissent le trouver.</moonlitRitual_2-1.optionDescription>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_2-2.label>Un rituel au clair de lune</moonlitRitual_2-2.label>
+  <!-- EN: You have decided to leave them be. -->
+  <moonlitRitual_2-2.desc>Vous avez décidé de les laisser tranquilles.</moonlitRitual_2-2.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-1.label>Un rituel au clair de lune</moonlitRitual_3-1.label>
+  <!-- EN: You have ordered the investigation to continue... -->
+  <moonlitRitual_3-1.desc>Vous avez ordonné la poursuite de l’enquête...</moonlitRitual_3-1.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-2.label>Un rituel au clair de lune</moonlitRitual_3-2.label>
+  <!-- EN: You have ordered the investigation to continue... -->
+  <moonlitRitual_3-2.desc>Vous avez ordonné l’intervention des autorités locales...</moonlitRitual_3-2.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-3.label>Un rituel au clair de lune</moonlitRitual_3-3.label>
+  <!-- EN: This week's harvests seem to be unnaturally more plentiful than usual... +.5 food base production. -->
+  <moonlitRitual_3-3.desc>Les récoltes de cette semaine semblent anormalement plus abondantes que d’habitude... +0.5 production de nourriture de base.</moonlitRitual_3-3.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-4.label>Un rituel au clair de lune</moonlitRitual_3-4.label>
+  <!-- EN: This week's harvests seem to be unnaturally less plentiful than usual... -.5 food base production. -->
+  <moonlitRitual_3-4.desc>Les récoltes de cette semaine semblent anormalement moins abondantes que d’habitude... -0.5 production de nourriture de base.</moonlitRitual_3-4.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_4-1.label>Un rituel au clair de lune</moonlitRitual_4-1.label>
+  <!-- EN: After not reporting back, a search for the investigator was conducted. He was found dead. His body was stripped, his chest cavity split, and his skin carved with runic symbols. The group, whoever they were, were not seen again. Dread falls upon us all. \n Coincidently enough, this week's harvests seem to have spoiled... \n -2 happiness a day, -1 food base production. -->
+  <moonlitRitual_4-1.desc>Après qu’il ne soit pas revenu, des recherches ont été lancées pour retrouver l’enquêteur. Il a été retrouvé mort. Son corps avait été dépouillé, sa cage thoracique ouverte, et sa peau gravée de symboles runiques. Le groupe, quel qu’il ait été, n’a plus jamais été revu. L’effroi s’abat sur nous tous. 
+ Par coïncidence, les récoltes de cette semaine semblent avoir pourri... 
+ -2 bonheur par jour, -1 production de nourriture de base.</moonlitRitual_4-1.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_4-2.label>Un rituel au clair de lune</moonlitRitual_4-2.label>
+  <!-- EN: The investigator reported back early in the morning looking quite disheaveled. However, his story says otherwise. They expected him this time and gave an invintation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to enjoyed himself! \n +1 food base production. -->
+  <moonlitRitual_4-2.desc>L’enquêteur est revenu tôt le matin, l’air assez échevelé. Pourtant, son récit est tout autre. Ils l’attendaient cette fois et lui ont même proposé de se joindre à eux. D’après lui, ils accomplissaient un rituel de fertilité pour leur déesse dans l’espoir d’une bonne récolte. Quoi qu’il en soit, il semble y avoir pris plaisir ! 
+ +1 production de nourriture de base.</moonlitRitual_4-2.desc>
+  
+</LanguageData>

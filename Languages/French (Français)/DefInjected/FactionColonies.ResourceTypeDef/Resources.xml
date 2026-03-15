@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: animals -->
+  <RTD_Animals.label>Animaux</RTD_Animals.label>
+  <!-- EN: A resource category for livestock and animal products.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Animals.description>Une catégorie de ressources pour le bétail et les produits animaux.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Animals.description>
+  
+  <!-- EN: apparel -->
+  <RTD_Apparel.label>Tenues</RTD_Apparel.label>
+  <!-- EN: A resource category for apparel.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Apparel.description>Une catégorie de ressources pour les vêtements.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Apparel.description>
+  
+  <!-- EN: chemfuel -->
+  <RTD_Chemfuel.label>Chemfuel</RTD_Chemfuel.label>
+  <!-- EN: A resource category for chemfuel.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Chemfuel.description>Une catégorie de ressources pour le chemfuel.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Chemfuel.description>
+  
+  <!-- EN: food -->
+  <RTD_Food.label>Vivres</RTD_Food.label>
+  <!-- EN: A resource category for meals and plant foods.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Food.description>Une catégorie de ressources pour les repas et aliments végétaux.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Food.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Food.modExtensions.0.extDesc>Relief du terrain</RTD_Food.modExtensions.0.extDesc>
+  
+  <!-- EN: gravtech -->
+  <RTD_Gravtech.label>Gravtech</RTD_Gravtech.label>
+  <!-- EN: A resource category for gravtech resources.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Gravtech.description>Une catégorie de ressources pour les ressources gravtech.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Gravtech.description>
+  
+  <!-- EN: logging -->
+  <RTD_Logging.label>Bois</RTD_Logging.label>
+  <!-- EN: A resource category for logging.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Logging.description>Une catégorie de ressources pour l’exploitation forestière.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Logging.description>
+  
+  <!-- EN: medicine -->
+  <RTD_Medicine.label>Soins</RTD_Medicine.label>
+  <!-- EN: A resource category for medicine.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Medicine.description>Une catégorie de ressources pour les médicaments.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Medicine.description>
+  
+  <!-- EN: mining -->
+  <RTD_Mining.label>Mines</RTD_Mining.label>
+  <!-- EN: A resource category for mining materials.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Mining.description>Une catégorie de ressources pour les matériaux d’exploitation minière.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Mining.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Mining.modExtensions.0.extDesc>Relief du terrain</RTD_Mining.modExtensions.0.extDesc>
+  
+  <!-- EN: power -->
+  <RTD_Power.label>Énergie</RTD_Power.label>
+  <!-- EN: A resource category for power.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Power.description>Une catégorie de ressources pour l’énergie.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Power.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Power.modExtensions.1.extDesc>Relief du terrain</RTD_Power.modExtensions.1.extDesc>
+  
+  <!-- EN: research -->
+  <RTD_Research.label>Science</RTD_Research.label>
+  <!-- EN: A resource category for research.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Research.description>Une catégorie de ressources pour la recherche.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Research.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Research.modExtensions.1.extDesc>Relief du terrain</RTD_Research.modExtensions.1.extDesc>
+  
+  <!-- EN: weapons -->
+  <RTD_Weapons.label>Armes</RTD_Weapons.label>
+  <!-- EN: A resource category for weapons.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <RTD_Weapons.description>Une catégorie de ressources pour les armes.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</RTD_Weapons.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Weapons.modExtensions.0.extDesc>Relief du terrain</RTD_Weapons.modExtensions.0.extDesc>
+  
+</LanguageData>

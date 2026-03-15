@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: tax spot -->
+  <TaxSpot.label>point de taxe</TaxSpot.label>
+  <!-- EN: Designates a spot to receive taxes and tithes. Can be set as the active tax delivery location for your entire empire.\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <TaxSpot.description>Désigne un emplacement pour recevoir taxes et dîmes. Peut être défini comme lieu actif de livraison fiscale pour tout votre empire.
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</TaxSpot.description>
+  
+</LanguageData>

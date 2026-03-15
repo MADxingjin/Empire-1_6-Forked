@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Settlements -->
+  <PColonyMainButton.label>Empire</PColonyMainButton.label>
+  <!-- EN: Settle and manage your NPC Colonies\n\n&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt; -->
+  <PColonyMainButton.description>Fondez et gérez vos colonies PNJ
+
+
+&lt;i&gt;&lt;color=#66E0E4FF&gt;Empire 1_6 (Continued)&lt;/color&gt;&lt;/i&gt;</PColonyMainButton.description>
+  
+</LanguageData>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: There's little we can do. We'll endure the shortage. -->
+  <foodShortage_0_1.label>Il y a&apos;s petit nous pouvoir faire. Nous&apos;ll endure le shoutage.</foodShortage_0_1.label>
+  
+  <!-- EN: Purchase emergency food imports to soften the blow. -->
+  <foodShortage_0_2.label>Purchase emergency nourriture impouts à soften le blow.</foodShortage_0_2.label>
+  
+  <!-- EN: Enforce strict rationing — shared sacrifice builds loyalty. -->
+  <foodShortage_0_3.label>Enfouce strict rationing — shared sacrifice builds loyauté.</foodShortage_0_3.label>
+  
+  <!-- EN: Let the slaves starve. The workers will eat. -->
+  <foodShortage_0_4.label>Laissez le esclaves starve. Le ouvriers va eat.</foodShortage_0_4.label>
+  
+</LanguageData>

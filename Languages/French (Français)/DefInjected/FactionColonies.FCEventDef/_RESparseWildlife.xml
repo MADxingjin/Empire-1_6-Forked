@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Sparse Wildlife -->
+  <sparseWildlife_0.label>Faune clairsemée</sparseWildlife_0.label>
+  <!-- EN: The wildlife in the affected region(s) have all but disappeared. How should your settlements adapt? -->
+  <sparseWildlife_0.desc>La faune des régions touchées a presque entièrement disparu. Comment vos colonies doivent-elles s’adapter ?</sparseWildlife_0.desc>
+  
+  <!-- EN: Sparse Wildlife -->
+  <sparseWildlife_1-1.label>Faune clairsemée</sparseWildlife_1-1.label>
+  <!-- EN: Your settlements make do without the wildlife. -1 animals base production. -->
+  <sparseWildlife_1-1.desc>Vos colonies s’adaptent en l’absence de faune sauvage. -1 production animale de base.</sparseWildlife_1-1.desc>
+  
+  <!-- EN: Sparse Wildlife (Extended Hunts) -->
+  <sparseWildlife_1-2.label>Faune clairsemée (Chasses étendues)</sparseWildlife_1-2.label>
+  <!-- EN: Hunting parties range further to compensate. -0.5 animals base production. -->
+  <sparseWildlife_1-2.desc>Les groupes de chasse vont plus loin pour compenser. -0.5 production animale de base.</sparseWildlife_1-2.desc>
+  
+  <!-- EN: Sparse Wildlife (Farming Shift) -->
+  <sparseWildlife_1-3.label>Faune clairsemée (Réorientation agricole)</sparseWildlife_1-3.label>
+  <!-- EN: Settlers shift their focus from hunting to farming. -1 animals base production, +0.5 food base production. -->
+  <sparseWildlife_1-3.desc>Les colons déplacent leur attention de la chasse vers l’agriculture. -1 production animale de base, +0.5 production de nourriture de base.</sparseWildlife_1-3.desc>
+  
+</LanguageData>

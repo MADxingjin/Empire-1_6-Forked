@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Adult Entertainment Centre -->
+  <adultEntertainmentCentre.label>Centre de divertissement pour adultes</adultEntertainmentCentre.label>
+  <!-- EN: A place for the local people to spend a dime and have a good time. -->
+  <adultEntertainmentCentre.desc>Un lieu où la population locale peut dépenser quelques pièces et s&apos;amuser.</adultEntertainmentCentre.desc>
+  
+  <!-- EN: Animal Testing Facility -->
+  <animalTestingFacility.label>Centre de tests sur les animaux</animalTestingFacility.label>
+  <!-- EN: A research lab dedicated to testing products on animals. Unethical, but useful. -->
+  <animalTestingFacility.desc>Un laboratoire de recherche dédié aux tests de produits sur les animaux. Peu éthique, mais utile.</animalTestingFacility.desc>
+  
+  <!-- EN: Apartment Housing -->
+  <apartmentHousing.label>Immeuble résidentiel</apartmentHousing.label>
+  <!-- EN: A large apartment block to house local workers. -->
+  <apartmentHousing.desc>Un grand immeuble destiné à loger les ouvriers locaux.</apartmentHousing.desc>
+  
+  <!-- EN: Artillery Outpost -->
+  <artilleryOutpost.label>Avant-poste d&apos;artillerie</artilleryOutpost.label>
+  <!-- EN: When this building is built, an artillery strike can be called for a cost in the military menu. -->
+  <artilleryOutpost.desc>Une fois ce bâtiment construit, un tir d&apos;artillerie peut être appelé contre paiement depuis le menu militaire.</artilleryOutpost.desc>
+  
+  <!-- EN: Battery Power Station -->
+  <batteryPowerStation.label>Station d&apos;énergie à batteries</batteryPowerStation.label>
+  <!-- EN: A power station to store excess energy production. -->
+  <batteryPowerStation.desc>Une station énergétique permettant de stocker l&apos;excédent de production.</batteryPowerStation.desc>
+  
+  <!-- EN: Clean Energy Lab -->
+  <cleanEnergyLab.label>Laboratoire d&apos;énergie propre</cleanEnergyLab.label>
+  <!-- EN: A research lab dedicated to researching and producing more efficient clean forms of energy. -->
+  <cleanEnergyLab.desc>Un laboratoire de recherche dédié à l&apos;étude et à la production de formes d&apos;énergie propre plus efficaces.</cleanEnergyLab.desc>
+  
+  <!-- EN: Firearms Factory -->
+  <firearmsFactory.label>Usine d&apos;armes à feu</firearmsFactory.label>
+  <!-- EN: A factory that produces mass quantities of firearms. -->
+  <firearmsFactory.desc>Une usine qui produit de grandes quantités d&apos;armes à feu.</firearmsFactory.desc>
+  
+  <!-- EN: Forced Work Camps -->
+  <forcedWorkCamps.label>Camps de travail forcé</forcedWorkCamps.label>
+  <!-- EN: Put those prisoners to work and increase your production! -->
+  <forcedWorkCamps.desc>Faites travailler ces prisonniers et augmentez votre production !</forcedWorkCamps.desc>
+  
+  <!-- EN: Industrial Mining Equipment Depot -->
+  <IMED.label>Dépôt d&apos;équipement minier industriel</IMED.label>
+  <!-- EN: Build a place to store and maintain big ugly machines that chew through rock like it's cardboard. -->
+  <IMED.desc>Construisez un lieu pour stocker et entretenir de grosses machines qui dévorent la roche comme du carton.</IMED.desc>
+  
+  <!-- EN: Indoor Hydroponics -->
+  <indoorHydroponics.label>Hydroponie intérieure</indoorHydroponics.label>
+  <!-- EN: Food is produced indoors, protecting it from the harshes from the world. -->
+  <indoorHydroponics.desc>La nourriture est produite en intérieur, ce qui la protège des conditions extérieures les plus rudes.</indoorHydroponics.desc>
+  
+  <!-- EN: In-House Merc Company -->
+  <inhouseMercCompany.label>Compagnie de mercenaires interne</inhouseMercCompany.label>
+  <!-- EN: Barracks for an in-house mercenary company. They will provide security for the colony. -->
+  <inhouseMercCompany.desc>Des baraquements pour une compagnie de mercenaires interne. Ils assureront la sécurité de la colonie.</inhouseMercCompany.desc>
+  
+  <!-- EN: Junk Food Factory -->
+  <JunkFoodFactory.label>Usine de malbouffe</JunkFoodFactory.label>
+  <!-- EN: It's quick, cheap, and unhealthy. The locals will complain about the lack of quality, but they'll be too unhealthy to do anything about it. -->
+  <JunkFoodFactory.desc>C&apos;est rapide, bon marché et mauvais pour la santé. Les habitants se plaindront du manque de qualité, mais seront trop mal en point pour y faire quoi que ce soit.</JunkFoodFactory.desc>
+  
+  <!-- EN: Volcanology Lab -->
+  <lavaLab.label>Laboratoire de volcanologie</lavaLab.label>
+  <!-- EN: A research facility dedicated to studying volcanology and any potential practical applications. -->
+  <lavaLab.desc>Une installation de recherche dédiée à l&apos;étude de la volcanologie et à ses applications pratiques potentielles.</lavaLab.desc>
+  
+  <!-- EN: Geothermal Power Plant -->
+  <lavaPlant.label>Centrale géothermique</lavaPlant.label>
+  <!-- EN: Harness the easily accessible geothermal energy of volcanically active areas for power generation. -->
+  <lavaPlant.desc>Exploitez l&apos;énergie géothermique facilement accessible des zones volcaniquement actives pour produire de l&apos;électricité.</lavaPlant.desc>
+  
+  <!-- EN: Local Zoo -->
+  <LocalZoo.label>Zoo local</LocalZoo.label>
+  <!-- EN: A place for people to ogle various different animals as they pass through the settlement for fun and profit! -->
+  <LocalZoo.desc>Un endroit où les gens peuvent admirer différents animaux de passage dans la colonie, pour le plaisir et le profit !</LocalZoo.desc>
+  
+  <!-- EN: Research Labs -->
+  <researchLabs.label>Laboratoires de recherche</researchLabs.label>
+  <!-- EN: Scienctists spend their days researching here. -->
+  <researchLabs.desc>Les scientifiques passent leurs journées à faire des recherches ici.</researchLabs.desc>
+  
+  <!-- EN: Rimazon Warehouse -->
+  <rimazonWarehouse.label>Entrepôt Rimazon</rimazonWarehouse.label>
+  <!-- EN: A warehouse stocked full of goods marked to be shipped. -->
+  <rimazonWarehouse.desc>Un entrepôt rempli de marchandises prêtes à être expédiées.</rimazonWarehouse.desc>
+  
+  <!-- EN: Soil Reclamation Bureau -->
+  <soilFixer.label>Bureau de restauration des sols</soilFixer.label>
+  <!-- EN: Restores fertility to the damaged and depleted soil of Scarlands. -->
+  <soilFixer.desc>Restaure la fertilité des sols endommagés et épuisés des Scarlands.</soilFixer.desc>
+  
+  <!-- EN: Solar Plant -->
+  <solarPlant.label>Centrale solaire</solarPlant.label>
+  <!-- EN: A solar powerplant to produce extra energy. -->
+  <solarPlant.desc>Une centrale solaire qui produit de l&apos;énergie supplémentaire.</solarPlant.desc>
+  
+  <!-- EN: Textile Factory -->
+  <TextileFactory.label>Usine textile</TextileFactory.label>
+  <!-- EN: Making clothes is so much easier when machines do most of the work! -->
+  <TextileFactory.desc>Fabriquer des vêtements est bien plus simple quand les machines font l&apos;essentiel du travail !</TextileFactory.desc>
+  
+  <!-- EN: Tree Farm -->
+  <TreeFarm.label>Plantation forestière</TreeFarm.label>
+  <!-- EN: Stop stripping forest of trees and just grow your own! -->
+  <TreeFarm.desc>Arrêtez de dépouiller les forêts et faites pousser vos propres arbres !</TreeFarm.desc>
+  
+</LanguageData>

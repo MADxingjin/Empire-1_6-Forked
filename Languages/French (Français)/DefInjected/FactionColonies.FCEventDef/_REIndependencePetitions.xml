@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Independence Petitions -->
+  <independencePetitions_0.label>Pétitions d’indépendance</independencePetitions_0.label>
+  <!-- EN: Due to unrest in your faction, a growing number of your towns have the idea of independence growing. How will you address the dissent? -->
+  <independencePetitions_0.desc>En raison de l&apos;agitation dans votre faction, un nombre croissant de vos villes nourrit des idées d&apos;indépendance. Comment allez-vous répondre à cette dissidence ?</independencePetitions_0.desc>
+  
+  <!-- EN: Independence Petitions -->
+  <independencePetitions_1-1.label>Pétitions d’indépendance</independencePetitions_1-1.label>
+  <!-- EN: The petitions continue unopposed. The movement grows as more settlements consider independence. -5 loyalty a day, -5 prosperity a day, +1 unrest a day. -->
+  <independencePetitions_1-1.desc>Les pétitions se poursuivent sans opposition. Le mouvement grandit à mesure que d&apos;autres colonies envisagent l&apos;indépendance. -5 loyauté par jour, -5 prospérité par jour, +1 agitation par jour.</independencePetitions_1-1.desc>
+  
+  <!-- EN: Independence Petitions (Grievances Addressed) -->
+  <independencePetitions_1-2.label>Pétitions d&apos;indépendance (Griefs pris en compte)</independencePetitions_1-2.label>
+  <!-- EN: Aid is distributed to the discontented settlements. The gesture helps, but the underlying tensions remain. -3 loyalty a day, -3 prosperity a day. -->
+  <independencePetitions_1-2.desc>Une aide est distribuée aux colonies mécontentes. Le geste aide, mais les tensions de fond demeurent. -3 loyauté par jour, -3 prospérité par jour.</independencePetitions_1-2.desc>
+  
+  <!-- EN: Independence Petitions (Suppressed) -->
+  <independencePetitions_1-3.label>Pétitions d&apos;indépendance (Réprimées)</independencePetitions_1-3.label>
+  <!-- EN: The independence movement is crushed by force. The dissidents are silenced, but the heavy-handed response breeds further resentment. -1 loyalty a day, +3 unrest a day. -->
+  <independencePetitions_1-3.desc>Le mouvement indépendantiste est écrasé par la force. Les dissidents sont réduits au silence, mais cette réponse brutale nourrit davantage de ressentiment. -1 loyauté par jour, +3 agitation par jour.</independencePetitions_1-3.desc>
+  
+</LanguageData>

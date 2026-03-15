@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Massive Forest Fire -->
+  <forestFire_0.label>Incendie de forêt majeur</forestFire_0.label>
+  <!-- EN: The affected region(s) have forest fires blazing out of control. How should your settlements respond? -->
+  <forestFire_0.desc>Les régions touchées sont ravagées par des incendies de forêt incontrôlables. Comment vos colonies doivent-elles réagir ?</forestFire_0.desc>
+  
+  <!-- EN: Forest Fire -->
+  <forestFire_1-1.label>Incendie de forêt</forestFire_1-1.label>
+  <!-- EN: The fire burns unchecked through the forests. -1 logging base production. -->
+  <forestFire_1-1.desc>Le feu se propage sans contrôle à travers les forêts. -1 production forestière de base.</forestFire_1-1.desc>
+  
+  <!-- EN: Forest Fire (Containment Failed) -->
+  <forestFire_1-2f.label>Incendie de forêt (Confinement échoué)</forestFire_1-2f.label>
+  <!-- EN: Despite their best efforts, the firefighting crews couldn't contain the blaze. The fire rages on. -1 logging base production. -->
+  <forestFire_1-2f.desc>Malgré tous leurs efforts, les équipes de lutte contre l’incendie n’ont pas pu contenir le brasier. Le feu continue de faire rage. -1 production forestière de base.</forestFire_1-2f.desc>
+  
+  <!-- EN: Forest Fire (Contained) -->
+  <forestFire_1-2s.label>Incendie de forêt (Contenu)</forestFire_1-2s.label>
+  <!-- EN: The firefighting crews managed to contain the blaze! The damage is limited. -0.5 logging base production. -->
+  <forestFire_1-2s.desc>Les équipes de lutte contre l’incendie ont réussi à contenir le brasier ! Les dégâts sont limités. -0.5 production forestière de base.</forestFire_1-2s.desc>
+  
+  <!-- EN: Forest Fire (Controlled Burn) -->
+  <forestFire_1-3.label>Incendie de forêt (Brûlage contrôlé)</forestFire_1-3.label>
+  <!-- EN: The controlled burn clears damaged forest, opening land for farming. -1 logging base production, +0.5 food base production. -->
+  <forestFire_1-3.desc>Le brûlage contrôlé dégage la forêt endommagée et libère des terres pour l’agriculture. -1 production forestière de base, +0.5 production de nourriture de base.</forestFire_1-3.desc>
+  
+</LanguageData>

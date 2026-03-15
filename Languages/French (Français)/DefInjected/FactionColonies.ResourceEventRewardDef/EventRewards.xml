@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: animals -->
+  <RERD_Animals.label>Animaux</RERD_Animals.label>
+  
+  <!-- EN: apparel -->
+  <RERD_Apparel.label>Vêtements</RERD_Apparel.label>
+  
+  <!-- EN: armor -->
+  <RERD_Armor.label>Armures</RERD_Armor.label>
+  
+  <!-- EN: drugs -->
+  <RERD_Drugs.label>Drogues</RERD_Drugs.label>
+  
+  <!-- EN: food -->
+  <RERD_Food.label>Nourriture</RERD_Food.label>
+  
+  <!-- EN: logging -->
+  <RERD_Logging.label>Bois</RERD_Logging.label>
+  
+  <!-- EN: mining -->
+  <RERD_Mining.label>Mines</RERD_Mining.label>
+  
+  <!-- EN: silver -->
+  <RERD_Silver.label>Argent</RERD_Silver.label>
+  
+  <!-- EN: weapons -->
+  <RERD_Weapons.label>Armes</RERD_Weapons.label>
+  
+</LanguageData>

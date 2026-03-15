@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: following TargetA. -->
+  <FCFollowCloseAndCarry.reportString>Following TargetA.</FCFollowCloseAndCarry.reportString>
+  
+  <!-- EN: dropping off something. -->
+  <FCGotoAndDrop.reportString>dropping off something.</FCGotoAndDrop.reportString>
+  
+</LanguageData>

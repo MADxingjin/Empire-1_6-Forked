@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: An example event is happening! -->
+  <randomEventExample.label>Un événement d’exemple est en cours !</randomEventExample.label>
+  <!-- EN: Your settlement is being attacked by blah blah blah. -->
+  <randomEventExample.desc>Votre colonie est attaquée par bla bla bla.</randomEventExample.desc>
+  
+  <!-- EN: An example event is happening! -->
+  <randomEventExample2.label>Un événement d’exemple est en cours !</randomEventExample2.label>
+  <!-- EN: Your settlement is being attacked by blah blah blah. -->
+  <randomEventExample2.desc>Votre colonie est attaquée par bla bla bla.</randomEventExample2.desc>
+  
+</LanguageData>
