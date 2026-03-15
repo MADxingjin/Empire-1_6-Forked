@@ -59,7 +59,6 @@ namespace FactionColonies
             }
             else if (researchPointPool != 0 && Find.ResearchManager.GetProject() != null)
             {
-                //LogUtil.Message(researchTotal.ToString());
                 float neededPoints;
                 neededPoints = (float)Math.Ceiling(Find.ResearchManager.GetProject().CostApparent - Find.ResearchManager.GetProject().ProgressApparent);
                 LogUtil.Message("Needed points: " + neededPoints);

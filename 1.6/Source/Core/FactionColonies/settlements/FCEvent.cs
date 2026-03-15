@@ -16,7 +16,6 @@ namespace FactionColonies
         {
             float baseChance = option.baseChanceOfSuccess;
             int roll = Rand.Range(1, 100);
-            //LogUtil.Message(roll.ToString());
 
             FCEvent tempEvent = new FCEvent(true);
 

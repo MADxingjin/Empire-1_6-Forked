@@ -14,13 +14,22 @@ namespace FactionColonies
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.raidEnemySettlement);
             evt.customDescription = "settlementMilitaryForcesRaiding".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
-            Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(milComp.WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
+            Settlement target = Find.WorldObjects.SettlementAt(location);
+            Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(milComp.WorldSettlement.Name, target?.LabelCap ?? (TaggedString)""), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
 
         public override BattleResult OnResolved(WorldObjectComp_SettlementMilitary milComp)
         {
             FactionFC faction = FactionCache.FactionComp;
+
+            Settlement target = Find.WorldObjects.SettlementAt(milComp.militaryLocation);
+            if (target == null)
+            {
+                LogUtil.Warning("Military raid target at tile " + milComp.militaryLocation + " no longer exists");
+                return new BattleResult();
+            }
+
             BattleResult result = SimulateBattleFc.FightBattle(
                 militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
                 militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
@@ -29,7 +38,7 @@ namespace FactionColonies
             {
                 faction.AddExperienceToFactionLevel(5f);
 
-                TechLevel tech = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.techLevel;
+                TechLevel tech = target.Faction.def.techLevel;
                 int lootLevel;
                 bool getSlaves = true;
 
@@ -52,7 +61,7 @@ namespace FactionColonies
                         break;
                 }
 
-                if (Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.defName == "Insect")
+                if (target.Faction.def.defName == "Insect")
                 {
                     lootLevel = 3;
                     getSlaves = false;
@@ -73,8 +82,8 @@ namespace FactionColonies
 
                 Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
                     "RaidEnemySettlementSuccess".Translate(
-                        Find.WorldObjects.SettlementAt(milComp.militaryLocation).LabelCap) + "\n" + text,
-                    LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
+                        target.LabelCap) + "\n" + text,
+                    LetterDefOf.PositiveEvent, new LookTargets(target));
 
                 FCEvent eventParams = new FCEvent()
                 {
@@ -91,8 +100,8 @@ namespace FactionColonies
             {
                 Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
                     "RaidEnemySettlementFailure".Translate(
-                        Find.WorldObjects.SettlementAt(milComp.militaryLocation).LabelCap), LetterDefOf.NegativeEvent,
-                    new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
+                        target.LabelCap), LetterDefOf.NegativeEvent,
+                    new LookTargets(target));
             }
 
             return result;

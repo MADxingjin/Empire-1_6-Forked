@@ -324,11 +324,9 @@ namespace FactionColonies
             double totalValue = 0;
             foreach (Thing thing in things)
             {
-                //LogUtil.Message(thing.def + " #" + thing.stackCount + " $" + thing.stackCount * thing.MarketValue);
                 totalValue += thing.stackCount * thing.MarketValue;
             }
 
-            //LogUtil.Message("Total Value: $" + totalValue);
             return totalValue;
         }
 

@@ -63,8 +63,6 @@ namespace FactionColonies
             rand = rand ?? new RimWorldRandProvider();
             var randA = (rand.Range(0, 20) * MFA.militaryEfficiency);
             var randB = (rand.Range(0, 20) * MFB.militaryEfficiency);
-            // LogUtil.Message("A Begin: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B begin");
-            // LogUtil.Message("A Rolled: " + randA.ToString() + " : " + randB.ToString() + " B rolled");
 
             if (randA > randB)
             {
@@ -74,7 +72,7 @@ namespace FactionColonies
             {
                 MFA.forceRemaining -= 1;
             }
-            //LogUtil.Message("A Remain: " + MFA.forceRemaining + " : " + MFB.forceRemaining + " B remain");
+
         }
     }
 
@@ -503,12 +501,9 @@ namespace FactionColonies
     {
         public static void AttackFaction(Faction faction)
         {
-            //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
             Find.FactionManager.OfPlayer.TryAffectGoodwillWith(faction, -50);
             TrySetRelationKind(Find.FactionManager.OfPlayer, faction, FactionRelationKind.Hostile);
             ResetPlayerColonyRelations();
-            //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony ");
-            //FactionColonies.getPlayerColonyFaction().TryAffectGoodwillWith(faction, -50)
         }
 
         public static void ResetPlayerColonyRelations()
@@ -523,7 +518,6 @@ namespace FactionColonies
                         (Find.FactionManager.OfPlayer.RelationWith(faction).baseGoodwill -
                          PCFaction.RelationWith(faction).baseGoodwill));
                     TrySetRelationKind(PCFaction, faction, Find.FactionManager.OfPlayer.RelationKindWith(faction));
-                    //LogUtil.Message(Find.FactionManager.OfPlayer.RelationWith(faction).goodwill + " player:colony " + PCFaction.RelationWith(faction).goodwill);
                 }
             }
         }
