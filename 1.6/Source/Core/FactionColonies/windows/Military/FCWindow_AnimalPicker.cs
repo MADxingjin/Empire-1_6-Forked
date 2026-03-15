@@ -87,7 +87,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(iconRect, new GUIContent(animal.race.uiIcon));
 
-                UIUtil.InfoCardButton(infoRect, animal.race);
+                Widgets.InfoCardButton(infoRect, animal.race);
 
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(labelRect, animal.LabelCap);

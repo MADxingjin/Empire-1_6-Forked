@@ -148,7 +148,7 @@ namespace FactionColonies
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(errorLabel, errorText);
-                UIUtil.TipRegionByText(errorBox, "XenotypeWeightErrorDesc".Translate());
+                TooltipHandler.TipRegion(errorBox, "XenotypeWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
             }
@@ -237,7 +237,7 @@ namespace FactionColonies
                         Widgets.Label(label, xenotype.LabelCap);
                     }
                     Widgets.Label(percentLabel, Math.Round(filter.GetXenotypeChance(xenotype) * 100, 2).ToString() + "%");
-                    UIUtil.TipRegionByText(label, xenotype.description);
+                    TooltipHandler.TipRegion(label, xenotype.description);
 
                     float weight = filter.GetXenotypeWeight(xenotype);
                     float oldWeight = weight;
@@ -306,7 +306,7 @@ namespace FactionColonies
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(errorLabel, errorText);
-                UIUtil.TipRegionByText(errorBox, "RaceWeightErrorDesc".Translate());
+                TooltipHandler.TipRegion(errorBox, "RaceWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
             }
@@ -374,7 +374,7 @@ namespace FactionColonies
                 Widgets.Label(icon, new GUIContent(race.uiIcon));
                 Widgets.Label(label, race.LabelCap);
                 Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race)*100, 2).ToString() + "%");
-                UIUtil.TipRegionByText(label, race.description);
+                TooltipHandler.TipRegion(label, race.description);
 
                 float weight = filter.GetRaceWeight(race);
                 float oldWeight = weight;

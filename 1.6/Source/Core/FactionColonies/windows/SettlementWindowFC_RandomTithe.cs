@@ -219,7 +219,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue)}");
                 Text.Anchor = TextAnchor.MiddleLeft;
-                UIUtil.InfoCardButton(info, iThing);
+                Widgets.InfoCardButton(info, iThing);
             }
 
             Widgets.EndScrollView();

@@ -347,13 +347,13 @@ namespace FactionColonies
 
                     if (!affordable)
                     {
-                        UIUtil.TipRegionByText(cardRect, "FCNotEnoughSilverOption".Translate());
+                        TooltipHandler.TipRegion(cardRect, "FCNotEnoughSilverOption".Translate());
                     }
                 }
 
                 if (!meetsRequirements)
                 {
-                    UIUtil.TipRegionByText(cardRect, requirementFailReason);
+                    TooltipHandler.TipRegion(cardRect, requirementFailReason);
                 }
 
                 // Effect preview (guaranteed options only)

@@ -119,28 +119,28 @@ namespace FactionColonies
 
 
             //Upper menu
-            Rect upperBox = new Rect(5, UIUtil.GetTotalHeight(newColonyHeader) + verticalMargins, 258, upperBox_height);
+            Rect upperBox = new Rect(5, newColonyHeader.yMax + verticalMargins, 258, upperBox_height);
             Widgets.DrawMenuSection(upperBox); //height was originally 220
 
-            DrawLabelBox(new Rect(10, UIUtil.GetTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
-            DrawLabelBox(new Rect(153, UIUtil.GetTotalHeight(newColonyHeader) + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
+            DrawLabelBox(new Rect(10, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
+            DrawLabelBox(new Rect(153, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
 
 
             //Lower Menu label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Rect productionLabelBox = new Rect(0, UIUtil.GetTotalHeight(upperBox) + verticalMargins, 268, productionLabel_height); //0, 270, 268, 40
+            Rect productionLabelBox = new Rect(0, upperBox.yMax + verticalMargins, 268, productionLabel_height); //0, 270, 268, 40
             Widgets.Label(productionLabelBox, "BaseProductionStats".Translate());
 
 
             //Lower menu
-            Rect prodBox = new Rect(5, UIUtil.GetTotalHeight(productionLabelBox) + verticalMargins, 258, prodBoxHeight); //5, 210, 258, 220
+            Rect prodBox = new Rect(5, productionLabelBox.yMax + verticalMargins, 258, prodBoxHeight); //5, 210, 258, 220
             Widgets.DrawMenuSection(prodBox); 
 
             //Draw production
             DrawProduction(prodBox);
 
-            float curHeight = UIUtil.GetTotalHeight(prodBox);
+            float curHeight = prodBox.yMax;
             curHeight = DrawChooseSettlementTypeButton(curHeight);
             curHeight = DrawCreateSettlementButton(curHeight);
 
@@ -328,7 +328,7 @@ namespace FactionColonies
                 FloatMenu menu = new FloatMenu(list);
                 Find.WindowStack.Add(menu);
             }
-            return UIUtil.GetTotalHeight(button);
+            return button.yMax;
         }
 
         private float DrawCreateSettlementButton(float curHeight)
@@ -339,7 +339,7 @@ namespace FactionColonies
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
             if (Widgets.ButtonText(button, "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
             {
-                if (!CanCreateSettlementHere()) return UIUtil.GetTotalHeight(button);
+                if (!CanCreateSettlementHere()) return button.yMax;
 
                 LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
 
@@ -371,7 +371,7 @@ namespace FactionColonies
 
                 DoPostEventCreationTraitThings();
             }
-            return UIUtil.GetTotalHeight(button);
+            return button.yMax;
         }
 
         private bool CanCreateSettlementHere(bool silent = false)
