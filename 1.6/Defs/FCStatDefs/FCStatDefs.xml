@@ -162,6 +162,8 @@
         <label>build time multiplier</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_buildTimeMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
