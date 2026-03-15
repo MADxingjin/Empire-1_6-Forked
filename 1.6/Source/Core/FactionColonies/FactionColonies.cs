@@ -127,7 +127,7 @@ namespace FactionColonies
         public static double prosperityBaseRecovery = 1;
         public static int productionResearchBase = 100;
         public static double militaryAnimalCostMultiplier = 1.5;
-        public static double militaryRaceCostMultiplier = 0.15;
+        public static double militaryRaceCostMultiplier = 0.075;
 
         public static float maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
         public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
