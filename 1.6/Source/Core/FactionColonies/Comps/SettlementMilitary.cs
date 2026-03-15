@@ -628,6 +628,7 @@ namespace FactionColonies
             {
                 var homeComp = force.homeSettlement?.MilitaryComp;
                 bool squadAvailable = homeComp?.militarySquad != null
+                    && homeComp.militarySquad.outfit != null
                     && homeComp.militarySquad.mercenaries.Any()
                     && (homeComp.militaryJob == null
                         || homeComp.militaryJob == MilitaryJobDefOf.Undefined
