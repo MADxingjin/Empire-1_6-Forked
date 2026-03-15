@@ -54,7 +54,7 @@
 		<label>Perform a controlled burn — cleared land can be farmed.</label>
 		<parentEvent>forestFire_0</parentEvent>
 		<baseChanceOfSuccess>100</baseChanceOfSuccess>
-		<silverCost>0</silverCost>
+		<silverCost>150</silverCost>
 		<successEvent>forestFire_1-3</successEvent>
 		<failEvent></failEvent>
 	</FactionColonies.FCOptionDef>

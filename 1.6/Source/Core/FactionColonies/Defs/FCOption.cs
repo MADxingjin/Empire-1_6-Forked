@@ -318,6 +318,27 @@ namespace FactionColonies
                 Widgets.Label(new Rect(metaRect.x, metaRect.y, metaRect.width * 0.6f, metaRect.height), successLabel);
                 GUI.color = colorBefore;
 
+                // Policy tag (always visible)
+                if (opt.requiredPolicies != null && opt.requiredPolicies.Count > 0)
+                {
+                    string policyTag;
+                    if (opt.requirementMode == FCRequirementMode.Any)
+                        policyTag = string.Join(" / ", opt.requiredPolicies.Select(p => p.LabelCap));
+                    else
+                        policyTag = string.Join(", ", opt.requiredPolicies.Select(p => p.LabelCap));
+
+                    Text.Font = GameFont.Tiny;
+                    float successWidth = Text.CalcSize(successLabel).x;
+                    float tagX = metaRect.x + successWidth + 6f;
+                    GUI.color = available
+                        ? new Color(0.6f, 0.75f, 0.9f)
+                        : new Color(0.4f, 0.4f, 0.4f);
+                    Widgets.Label(
+                        new Rect(tagX, metaRect.y, metaRect.width * 0.6f - successWidth - 6f, metaRect.height),
+                        "[" + policyTag + "]");
+                    GUI.color = colorBefore;
+                }
+
                 // Silver cost (right-aligned)
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
