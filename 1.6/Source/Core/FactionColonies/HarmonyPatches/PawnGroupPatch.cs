@@ -11,13 +11,13 @@ namespace FactionColonies
     /// effective cost 0 (combatPower=0 or xenotype.combatPowerFactor=0), the loop
     /// subtracts 0 from the point budget and never terminates.
     /// </summary>
-    // This patch may be too destructive to other mods. Empire has a lower-impact fix for this, but leaving this code here, just in case we want to bring it back
-    /*[HarmonyPatch(typeof(PawnGroupMakerUtility))]
+    [HarmonyPatch(typeof(PawnGroupMakerUtility))]
     [HarmonyPatch("GetOptions")]
     static class Patch_GetOptions_FilterZeroCost
     {
         static void Postfix(List<PawnGenOptionWithXenotype> __result)
         {
+            int culledCount = 0;
             for (int i = __result.Count - 1; i >= 0; i--)
             {
                 if (__result[i].Cost <= 0f)
@@ -30,8 +30,13 @@ namespace FactionColonies
                         + " xenotypeCombatPowerFactor=" + (culled.Xenotype != null ? culled.Xenotype.combatPowerFactor.ToString() : "N/A")
                         + " effectiveCost=" + culled.Cost);
                     __result.RemoveAt(i);
+                    culledCount++;
                 }
             }
+            if (culledCount > 0 && __result.Count == 0)
+            {
+                LogUtil.Warning("GetOptions: all " + culledCount + " option(s) had zero effective cost and were removed. No pawns will be generated for this group.");
+            }
         }
-    }*/
+    }
 }
