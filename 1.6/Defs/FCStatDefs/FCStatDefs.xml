@@ -26,6 +26,7 @@
         <label>military level bonus (defending)</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_militaryLevelBonusDefending</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -40,6 +41,7 @@
         <label>military efficiency bonus (attacking)</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_militaryEfficiencyBonusAttacking</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -61,6 +63,8 @@
         <label>raid cooldown offset</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_raidCooldownOffset</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -68,6 +72,8 @@
         <label>dead pawn cooldown offset</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_deadPawnCooldownOffset</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <!-- ── Battle Penalties ────────────────────────────────────── -->
@@ -78,6 +84,7 @@
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_battleProsperityLossMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -94,6 +101,7 @@
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_battleLoyaltyLossMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <!-- ── Threat Scaling ──────────────────────────────────────── -->
@@ -133,6 +141,7 @@
         <label>flat tax bonus</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_taxBonusFlat</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -140,6 +149,7 @@
         <label>tithe value multiplier</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_titheValueMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -147,6 +157,7 @@
         <label>loot multiplier</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_lootMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -155,6 +166,7 @@
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_settlementCostMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -189,6 +201,7 @@
         <label>research contribution multiplier</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_researchContributionMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <!-- ── Workers ─────────────────────────────────────────────── -->
@@ -220,6 +233,7 @@
         <label>extra workers softcap</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_extraWorkersSoftcap</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -227,6 +241,7 @@
         <label>over-max workers adjustment</label>
         <aggregation>Additive</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_overMaxWorkersAdjustment</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <!-- ── Prosperity ──────────────────────────────────────────── -->
