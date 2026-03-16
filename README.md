@@ -49,6 +49,8 @@ For more info on the mod's extensibility, refer to the documentation in the Docs
 ## Contributing
 Contributions welcome! Just fork the project (top right), make your changes, and then open a pull request.
 
+**Make sure that you fork the development branch, and open PRs into the development branch.**
+
 Translations are especially welcome. There are a *lot* of new translation keys, and many of the old ones are likely outdated.
 
 Depending on what you want to add, though, consider making a submod (especially for new resource types or settlement types). It's way easier than ever before!
