@@ -9,28 +9,55 @@ namespace FactionColonies
 
         public override void OnEnacted(FactionFC faction)
         {
-            float days = Rand.RangeInclusive(3, 5);
-            nextCaravanTick = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
+            ScheduleNextCaravan();
         }
 
         public override void Tick(FactionFC faction)
         {
             if (nextCaravanTick > Find.TickManager.TicksGame) return;
 
+            Map map = faction.ReturnCapitalMap();
+            if (map is null)
+            {
+                ScheduleNextCaravan(true);
+                return;
+            }
+
             IncidentWorker_TraderCaravanArrival worker = new IncidentWorker_TraderCaravanArrival();
             worker.def = IncidentDefOf.TraderCaravanArrival;
             IncidentParms parms =
-                StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, faction.ReturnCapitalMap());
+                StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, map);
             parms.faction = FactionCache.PlayerColonyFaction;
-            RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, (Map)parms.target,
-                CellFinder.EdgeRoadChance_Friendly);
-            parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
+
+            if (!worker.CanFireNow(parms))
+            {
+                ScheduleNextCaravan(true);
+                return;
+            }
+
+            RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, map, CellFinder.EdgeRoadChance_Friendly);
+            parms.spawnRotation = Rot4.FromAngleFlat((map.Center - parms.spawnCenter).AngleFlat);
             if (parms.spawnCenter.IsValid)
                 worker.TryExecute(parms);
             else
                 LogUtil.Warning("Mercantile - Spawn Center not valid");
 
-            float days = Rand.RangeInclusive(3, 5);
+            ScheduleNextCaravan();
+        }
+
+        private void ScheduleNextCaravan(bool failCase = false)
+        {
+            float days;
+            if (failCase)
+            {
+                // If we're rescheduling due to a failure to spawn the caravan, then try
+                // again more quickly than we usually would.
+                days = 2;
+            }
+            else
+            {
+                days = Rand.RangeInclusive(3, 5);
+            }
             nextCaravanTick = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
         }
 
