@@ -458,7 +458,8 @@ namespace FactionColonies
             if (!isSelectedUnitDeployed && Widgets.ButtonInvisible(EquipmentWeapon))
             {
                 List<ThingDef> weaponDefs = DefDatabase<ThingDef>.AllDefs
-                    .Where(t => t.IsWeapon && t.BaseMarketValue != 0 && CraftUtil.CanCraftItem(t))
+                    .Where(t => t.IsWeapon && t.BaseMarketValue != 0 && CraftUtil.CanCraftItem(t)
+                        && HARUtil.CanRaceUseWeapon(selectedUnit.pawnKind?.race, t))
                     .OrderBy(t => t.label)
                     .ToList();
 
@@ -607,7 +608,8 @@ namespace FactionColonies
             if (!Widgets.ButtonInvisible(slot.rect)) return;
 
             List<ThingDef> apparelDefs = DefDatabase<ThingDef>.AllDefs
-                .Where(t => slot.ThingFitsSlot(t))
+                .Where(t => slot.ThingFitsSlot(t)
+                    && HARUtil.CanRaceWearApparel(unit.pawnKind?.race, t))
                 .OrderBy(t => t.label)
                 .ToList();
 
