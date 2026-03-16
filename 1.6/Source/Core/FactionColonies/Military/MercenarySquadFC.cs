@@ -315,11 +315,11 @@ namespace FactionColonies
             {
                 if (isNonViolentXenotype)
                 {
-                    newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.CivilianRequest(raceChoice, xenotypeChoice));
+                    newPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.CivilianRequest(raceChoice, xenotypeChoice));
                 }
                 else
                 {
-                    newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
+                    newPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
                 }
 
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)

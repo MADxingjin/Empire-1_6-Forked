@@ -683,6 +683,17 @@ namespace FactionColonies.util
                 securityGuardsByCustomXenotype[xenotype].SetRange(GuardAnimals);
             }
         }
+        private void SetupAllSecurityGuards()
+        {
+            foreach (XenotypeDef xenotype in XenotypeWeights.Keys)
+            {
+                SetupSecurityGuards(xenotype);
+            }
+            foreach (string xenoName in CustomXenotypeWeights.Keys)
+            {
+                SetupSecurityGuards(xenoName);
+            }    
+        }
 
         public static bool NameNeedsSecurityGuards(string name)
         {
@@ -956,6 +967,7 @@ namespace FactionColonies.util
         private void SetPawnGroupMakers()
         {
             BuildRaceXenoAssociations();
+            SetupAllSecurityGuards();
 
             TechLevel techLevel = factionFc.techLevel;
             foreach (ThingDef race in RaceWeights.Keys)

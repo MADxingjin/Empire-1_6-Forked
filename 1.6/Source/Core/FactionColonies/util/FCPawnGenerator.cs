@@ -6,6 +6,24 @@ namespace FactionColonies.util
 {
 	class FCPawnGenerator
 	{
+		/// <summary>
+		/// Generates a pawn with a specific forced xenotype that the PawnGenerationPatches prefix
+		/// will respect (instead of overriding with the xenotype filter).
+		/// Use this for designed military units where the player chose a specific xenotype.
+		/// </summary>
+		public static Pawn GenerateWithForcedXenotype(PawnGenerationRequest request)
+		{
+			PawnGenerationPatches.respectForcedXenotype = true;
+			try
+			{
+				return PawnGenerator.GeneratePawn(request);
+			}
+			finally
+			{
+				PawnGenerationPatches.respectForcedXenotype = false;
+			}
+		}
+
 		public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
 		{
 			var kindDef = pawnKindDef;
