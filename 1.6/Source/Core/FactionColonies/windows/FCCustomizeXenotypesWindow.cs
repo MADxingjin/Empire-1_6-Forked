@@ -371,7 +371,9 @@ namespace FactionColonies
                 }
 
                 ThingDef race = allRaces[i];
-                Widgets.Label(icon, new GUIContent(race.uiIcon));
+                //Races don't have icons. But I'm lazy and don't want to remove the icon rect and adjust the math, even though
+                //  doing so would've been easier than writing this comment. Hmm. Oh well.
+                //Widgets.Label(icon, new GUIContent(race.uiIcon));
                 Widgets.Label(label, race.LabelCap);
                 Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race)*100, 2).ToString() + "%");
                 TooltipHandler.TipRegion(label, race.description);
