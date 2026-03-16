@@ -593,26 +593,15 @@ namespace FactionColonies.util
             bool needsViolence = request.MustBeCapableOfViolence
                 || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
                 || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
-            bool hasGuards = securityGuardsByXenotype.ContainsKey(xenotype) && securityGuardsByXenotype[xenotype].List.Any();
             if (needsViolence && FactionCache.XenotypeIsNonViolent(xenotype))
             {
-                // Allow non-violent xenotypes through if they have security guards assigned
-                if (!hasGuards)
-                {
-                    return false;
-                }
+                return false;
             }
             if (PawnKindXenotypeChance(request.KindDef, xenotype) <= 0)
             {
                 return false;
             }
-            // Strip the Violent flag when guards handle it — still check all other required work tags
-            WorkTags tagsToCheck = request.KindDef.requiredWorkTags;
-            if (hasGuards)
-            {
-                tagsToCheck &= ~WorkTags.Violent;
-            }
-            if (!CanGeneListDoRequiredWork(tagsToCheck, xenotype.genes))
+            if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
             {
                 return false;
             }
@@ -633,24 +622,13 @@ namespace FactionColonies.util
             bool needsViolence = request.MustBeCapableOfViolence
                 || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
                 || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
-            bool hasGuards = securityGuardsByCustomXenotype.ContainsKey(xenotypeName) && securityGuardsByCustomXenotype[xenotypeName].List.Any();
             if (needsViolence && FactionCache.CustomXenotypeIsNonViolent(xenotypeName))
             {
-                // Allow non-violent custom xenotypes through if they have security guards assigned
-                if (!hasGuards)
-                {
-                    return false;
-                }
+                return false;
             }
             if (FactionCache.CustomXenotypesDecoder.TryGetValue(xenotypeName, out CustomXenotype xenotype))
             {
-                // Strip the Violent flag when guards handle it — still check all other required work tags
-                WorkTags tagsToCheck = request.KindDef.requiredWorkTags;
-                if (hasGuards)
-                {
-                    tagsToCheck &= ~WorkTags.Violent;
-                }
-                if (!CanGeneListDoRequiredWork(tagsToCheck, xenotype.genes))
+                if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
                 {
                     return false;
                 }

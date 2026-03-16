@@ -324,17 +324,10 @@ namespace FactionColonies.util
 				}
 			}
 			
-			// Add guard animals for protection — prefer per-xenotype security guards when available
-			XenotypeFilter xenoFilter = FactionCache.FactionComp?.xenotypeFilter;
-			List<PawnKindDef> availableGuardAnimals = xenoFilter != null
-				? xenoFilter.GetAvailableSecurityGuards()
-				: new List<PawnKindDef>();
-			if (!availableGuardAnimals.Any())
-			{
-				availableGuardAnimals = FactionCache.AllCombatAnimalKindDefs
-					.OrderByDescending(def => def.combatPower)
-					.Take(5).ToList();
-			}
+			// Add guard animals for protection
+			List<PawnKindDef> availableGuardAnimals = FactionCache.AllCombatAnimalKindDefs
+				.OrderByDescending(def => def.combatPower)
+				.Take(5).ToList();
 
 			if (availableGuardAnimals.Any())
 			{

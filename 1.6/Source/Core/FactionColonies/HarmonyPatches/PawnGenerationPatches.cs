@@ -56,21 +56,11 @@ namespace FactionColonies
                 if (!(chosenXenotype is null))
                 {
                     request.ForcedXenotype = chosenXenotype;
-                    // If the chosen xenotype is non-violent, don't require violence capability —
-                    // security guard animals handle combat instead
-                    if (FactionCache.XenotypeIsNonViolent(chosenXenotype))
-                    {
-                        request.MustBeCapableOfViolence = false;
-                    }
                     LogUtil.Message($"GeneratePawn patch forced xenotype: {chosenXenotype.defName} for pawnKind: {request.KindDef.defName}");
                 }
                 else if (!(chosenCustomXenotype is null))
                 {
                     request.ForcedCustomXenotype = chosenCustomXenotype;
-                    if (FactionCache.CustomXenotypeIsNonViolent(chosenCustomXenotype))
-                    {
-                        request.MustBeCapableOfViolence = false;
-                    }
                     LogUtil.Message($"GeneratePawn patch forced custom xenotype: {chosenCustomXenotype.name} for pawnKind: {request.KindDef.defName}");
                 }
                 else
