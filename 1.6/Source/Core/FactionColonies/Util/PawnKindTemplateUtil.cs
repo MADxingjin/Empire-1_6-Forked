@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -11,6 +13,15 @@ namespace FactionColonies.util
     static class PawnKindTemplateUtil
     {
         private static Dictionary<RaceTechKey, List<PawnKindDef>> cloneCache = new Dictionary<RaceTechKey, List<PawnKindDef>>();
+        private static Dictionary<ThingDef, RaceGearData> raceGearCache = new Dictionary<ThingDef, RaceGearData>();
+
+        private struct RaceGearData
+        {
+            public List<string> apparelTags;
+            public List<string> weaponTags;
+            public FloatRange apparelMoney;
+            public FloatRange weaponMoney;
+        }
 
         private struct RaceTechKey
         {
@@ -79,6 +90,12 @@ namespace FactionColonies.util
                     clone.apparelTags = new List<string>(template.apparelTags);
 
                 ApplyTechLevelScaling(clone, techLevel);
+
+                if (race != ThingDefOf.Human)
+                {
+                    ApplyRaceGearOverrides(clone, race);
+                }
+
                 clones.Add(clone);
             }
 
@@ -103,6 +120,7 @@ namespace FactionColonies.util
         public static void InvalidateCache()
         {
             cloneCache.Clear();
+            raceGearCache.Clear();
         }
 
         /// <summary>
@@ -175,6 +193,111 @@ namespace FactionColonies.util
             {
                 tags.Add(tag);
             }
+        }
+
+        /// <summary>
+        /// For non-Human HAR races, replaces the clone's apparel/weapon tags with tags harvested
+        /// from the race's own PawnKindDefs, and floor-clamps budgets to ensure the race's gear is affordable.
+        /// </summary>
+        private static void ApplyRaceGearOverrides(PawnKindDef clone, ThingDef race)
+        {
+            RaceGearData gearData = GetOrHarvestRaceGearData(race);
+
+            // Replace apparel tags with the race's own tags so PawnApparelGenerator can find matching apparel.
+            // If no tags were found, set to null so the generator skips tag filtering entirely
+            // and lets HAR's race restrictions handle it.
+            if (gearData.apparelTags != null && gearData.apparelTags.Count > 0)
+            {
+                clone.apparelTags = new List<string>(gearData.apparelTags);
+            }
+            else
+            {
+                clone.apparelTags = null;
+            }
+
+            // Replace weapon tags only if the race defines its own; otherwise keep Empire's tags
+            if (gearData.weaponTags != null && gearData.weaponTags.Count > 0)
+            {
+                clone.weaponTags = new List<string>(gearData.weaponTags);
+            }
+
+            // Floor-clamp budgets: take the max of Empire's (possibly tech-scaled) budget and the race's average.
+            // This ensures alien gear (often more expensive) is affordable while preserving tech-level scaling boosts.
+            clone.apparelMoney = new FloatRange(
+                Math.Max(clone.apparelMoney.min, gearData.apparelMoney.min),
+                Math.Max(clone.apparelMoney.max, gearData.apparelMoney.max));
+            clone.weaponMoney = new FloatRange(
+                Math.Max(clone.weaponMoney.min, gearData.weaponMoney.min),
+                Math.Max(clone.weaponMoney.max, gearData.weaponMoney.max));
+        }
+
+        /// <summary>
+        /// Scans all PawnKindDefs for the given race and collects their apparel/weapon tags and budget ranges.
+        /// Results are cached per race.
+        /// </summary>
+        private static RaceGearData GetOrHarvestRaceGearData(ThingDef race)
+        {
+            if (raceGearCache.TryGetValue(race, out RaceGearData cached))
+            {
+                return cached;
+            }
+
+            HashSet<string> apparelTags = new HashSet<string>();
+            HashSet<string> weaponTags = new HashSet<string>();
+            float apparelMoneyMinSum = 0f, apparelMoneyMaxSum = 0f;
+            float weaponMoneyMinSum = 0f, weaponMoneyMaxSum = 0f;
+            int apparelBudgetCount = 0;
+            int weaponBudgetCount = 0;
+
+            foreach (PawnKindDef def in DefDatabase<PawnKindDef>.AllDefsListForReading)
+            {
+                if (def.race != race) continue;
+                // Skip Empire's own clones to avoid circular contamination
+                if (def.defName.StartsWith("PColony_")) continue;
+
+                if (def.apparelTags != null)
+                {
+                    foreach (string tag in def.apparelTags)
+                    {
+                        apparelTags.Add(tag);
+                    }
+                }
+                if (def.weaponTags != null)
+                {
+                    foreach (string tag in def.weaponTags)
+                    {
+                        weaponTags.Add(tag);
+                    }
+                }
+
+                if (def.apparelMoney.max > 0)
+                {
+                    apparelMoneyMinSum += def.apparelMoney.min;
+                    apparelMoneyMaxSum += def.apparelMoney.max;
+                    apparelBudgetCount++;
+                }
+                if (def.weaponMoney.max > 0)
+                {
+                    weaponMoneyMinSum += def.weaponMoney.min;
+                    weaponMoneyMaxSum += def.weaponMoney.max;
+                    weaponBudgetCount++;
+                }
+            }
+
+            RaceGearData data = new RaceGearData
+            {
+                apparelTags = apparelTags.Count > 0 ? apparelTags.ToList() : null,
+                weaponTags = weaponTags.Count > 0 ? weaponTags.ToList() : null,
+                apparelMoney = apparelBudgetCount > 0
+                    ? new FloatRange(apparelMoneyMinSum / apparelBudgetCount, apparelMoneyMaxSum / apparelBudgetCount)
+                    : new FloatRange(0, 0),
+                weaponMoney = weaponBudgetCount > 0
+                    ? new FloatRange(weaponMoneyMinSum / weaponBudgetCount, weaponMoneyMaxSum / weaponBudgetCount)
+                    : new FloatRange(0, 0)
+            };
+
+            raceGearCache[race] = data;
+            return data;
         }
     }
 }
