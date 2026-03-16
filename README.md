@@ -1,30 +1,59 @@
-#For 1.6 Only
-I've put together a patch for this mod in hope to bring this over to 1.6. 
+# Empire Refactored
 
-**Warning, this patch is <ins>UNSTABLE</ins>. Expect errors and unexpected behaviour.**
+Now under new management!
 
-#Old Readme:
+This branch of Empire is under active development. Bugs are still being stamped out, but things are more stable than before.
 
-#For 1.5 Only
+If you do run into a bug, please report it in the issues section with logs and, if applicable, screenshots. The more information I have, the faster I can fix issues.
 
-I've been working on updating this mod because I really missed it after switching to 1.5.   I am not a software developer nor do I have the time to add new features so please do not set your expectations high.
+**NOT SAVE COMPATIBLE WITH OLD VERSIONS OF EMPIRE!!** Adding this verson of Empire to a save that did not have an old version of Empire should be fine, but if you replace old Empire with this Empire in an active save, then **expect bugs and bad behavior. This is unsupported!**
 
-This version is here because I know other people would probably like to try it out.
+**Rimworld v1.6 only!**
 
+# Empire
+Spread your rule across the Rimworld with self governing colonies that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies. But politics is always a deadly game.
 
+Events will periodically influence your colonies, or your faction as a whole. You must decide how best to respond to these situations.
 
-#Old Readme:
+Your colonists will pay taxes, be it in silver, or goods. You can tell them where you want your taxes, and they will dutifully pay them. A fully customizable faction name and title allows you to put your own spin on your subjects. They can be feudal vassals, a megacorporation’s branch offices, or even a shining beacon of truth and liberty. It is all part of the greater story.
 
-# Empire-Mod
-This is the repository for the Empire mod Ludeon Studio's topdown base building-exploration game RimWorld.
-The Mod features the ability to found and manage your own empire in order to assist the player in his daily endeavours.
+## Refactored
+This version of Empire has been heavily refactored. Old classes have been merged, reworked, replaced, or removed. Any mod whose compatibility with Empire used code, will need to be reworked.
+
+Any mod whose compatibility with Empire depends entirely on referencing the PColony factionDef may be fine, as the def has *not* been renamed.
+
+### New features
+- Replaced the old webby road builder with a Minimum Spanning Tree-based algorithm, resulting in much more natural-looking road networks
+- UI overhaul -- the vast majority of the UI has been reworked and updated. Previously hidden information has been brought to the fore, and tooltips reveal even more!
+- Edicts -- old, unused policies were reworked as three new categories of edicts: Social, Tax, and Military. Each edict provices faction-wide bonuses and maluses. Each category unlocks as your faction levels up.
+- Reworked Events -- Most of the existing events were reworked to give the player a choice over how they respond
+
+## Manual Battles!
+Yes, you heard that right. Manual battles are back! ...Tentatively!
+
+I've fixed a lot of bugs with them, and they seem more stable than before. But as a historically fragile feature, I can't gaurantee that they're truly stable. We're still finding and stamping out bugs.
+
+I would like to keep manual battles available, but if their legendary bugginess persists, then I may disable them again.
+
+## Submods and Extensibility
+Along with the refactor comes far greater extensibility. Settlement and resource types are defined by XML defs now; basic resources and settlements can be created in XML alone. And if you want to get fancy, there is a handy set of extensible abstract classes to use.
+
+Buildings have been changed as well; they can have upgrade paths, or depend on the presence of other buildings.
+
+Adding new events or policies is possible through XML, too!
+
+On the whole, it should be far easier to write submods without having to harmony patch everything!
+
+For more info on the mod's extensibility, refer to the documentation in the Docs directory.
+
+## Contributing
+Contributions welcome! Just fork the project (top right), make your changes, and then open a pull request.
+
+Translations are especially welcome. There are a *lot* of new translation keys, and many of the old ones are likely outdated.
+
+Depending on what you want to add, though, consider making a submod (especially for new resource types or settlement types). It's way easier than ever before!
+
+# Credit
 This mod was initially developed by Saakra, a lone Mod Dev. He has since moved on due to IRL issues and handed over the reigns of development to the community.
 
-## Building
-To build using the dotnet cli, go to `[version]/Source/FactionColonies` and run `dotnet build`. The Assembly will output to the Assemblies folder, along with debug symbols.
-
-`dotnet build --configuration release`
-
-The Assembly will output to the Assemblies folder. 
-Debug symbols will only be included on the debug configuration, 
-which requires RimWorldData_(version) to be copied from the vanilla game.
+The current active maintainer is yours truly, Matathias.
