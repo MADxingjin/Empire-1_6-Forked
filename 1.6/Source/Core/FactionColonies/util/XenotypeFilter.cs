@@ -9,8 +9,6 @@ namespace FactionColonies.util
     public class XenotypeFilter : IExposable
     {
         //TODO: once the new xenotype/race filter is working, add support for choosing the type of animals that the faction uses for caravans and security
-        //TODO: presently (2026-02-23), if only non-violent xenotypes are selected in the filter, then we will still generate Baseliners if the would-be-generated pawn must be capable of violence.
-        //        This isn't *super* desirable. It would be preferable to let people have a faction full of non-violent hippies if they want. But actually coding that up will be much trickier than what we have now.
         private FactionDef faction;
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
@@ -595,15 +593,21 @@ namespace FactionColonies.util
             bool needsViolence = request.MustBeCapableOfViolence
                 || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
                 || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
+            bool hasGuards = securityGuardsByXenotype.ContainsKey(xenotype) && securityGuardsByXenotype[xenotype].List.Any();
             if (needsViolence && FactionCache.XenotypeIsNonViolent(xenotype))
             {
-                return false;
+                // Allow non-violent xenotypes through if they have security guards assigned
+                if (!hasGuards)
+                {
+                    return false;
+                }
             }
             if (PawnKindXenotypeChance(request.KindDef, xenotype) <= 0)
             {
                 return false;
             }
-            if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
+            // Skip requiredWorkTags check for guarded non-violent xenotypes — the guards handle violent work
+            if (!hasGuards && !CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
             {
                 return false;
             }
@@ -624,13 +628,19 @@ namespace FactionColonies.util
             bool needsViolence = request.MustBeCapableOfViolence
                 || (request.KindDef.weaponTags != null && request.KindDef.weaponTags.Count > 0)
                 || (request.KindDef.requiredWorkTags & WorkTags.Violent) != WorkTags.None;
+            bool hasGuards = securityGuardsByCustomXenotype.ContainsKey(xenotypeName) && securityGuardsByCustomXenotype[xenotypeName].List.Any();
             if (needsViolence && FactionCache.CustomXenotypeIsNonViolent(xenotypeName))
             {
-                return false;
+                // Allow non-violent custom xenotypes through if they have security guards assigned
+                if (!hasGuards)
+                {
+                    return false;
+                }
             }
             if (FactionCache.CustomXenotypesDecoder.TryGetValue(xenotypeName, out CustomXenotype xenotype))
             {
-                if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
+                // Skip requiredWorkTags check for guarded non-violent xenotypes — the guards handle violent work
+                if (!hasGuards && !CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
                 {
                     return false;
                 }
@@ -1076,8 +1086,14 @@ namespace FactionColonies.util
 
         public List<PawnKindDef> GetSecurityGuardsForXenotype(XenotypeDef xenotype)
         {
-            return securityGuardsByXenotype.ContainsKey(xenotype) 
-                ? securityGuardsByXenotype[xenotype].List 
+            return securityGuardsByXenotype.ContainsKey(xenotype)
+                ? securityGuardsByXenotype[xenotype].List
+                : new List<PawnKindDef>();
+        }
+        public List<PawnKindDef> GetSecurityGuardsForCustomXenotype(string xenotypeName)
+        {
+            return securityGuardsByCustomXenotype.ContainsKey(xenotypeName)
+                ? securityGuardsByCustomXenotype[xenotypeName].List
                 : new List<PawnKindDef>();
         }
         public void GetFirstXenotypesForRequest(PawnGenerationRequest request, out XenotypeDef xenotype, out CustomXenotype customXenotype)

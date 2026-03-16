@@ -39,6 +39,7 @@
 	<fcLabelAnimal>Animal</fcLabelAnimal>
 	<fcLabelAmmo>Ammo</fcLabelAmmo>
 	<fcAmmoAny>Any</fcAmmoAny>
+	<fcSecurityGuardAutoAssign>Guard auto-assigned</fcSecurityGuardAutoAssign>
 
 	<!-- Unit Buttons -->
 	<FCRenameUnit>Rename Unit</FCRenameUnit>

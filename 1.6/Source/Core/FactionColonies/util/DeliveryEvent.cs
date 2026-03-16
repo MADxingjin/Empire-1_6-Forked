@@ -324,21 +324,25 @@ namespace FactionColonies.util
 				}
 			}
 			
-			// Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
-			// This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-			var guardAnimals = FactionCache.AllCombatAnimalKindDefs
-				.OrderByDescending(def => def.combatPower)
-				.Take(5); // Take more options to ensure we can get 2 guards
+			// Add guard animals for protection — prefer per-xenotype security guards when available
+			XenotypeFilter xenoFilter = FactionCache.FactionComp?.xenotypeFilter;
+			List<PawnKindDef> availableGuardAnimals = xenoFilter != null
+				? xenoFilter.GetAvailableSecurityGuards()
+				: new List<PawnKindDef>();
+			if (!availableGuardAnimals.Any())
+			{
+				availableGuardAnimals = FactionCache.AllCombatAnimalKindDefs
+					.OrderByDescending(def => def.combatPower)
+					.Take(5).ToList();
+			}
 
-			// Log available guard animals for debugging
-			var availableGuardAnimals = guardAnimals.ToList();
 			if (availableGuardAnimals.Any())
 			{
 				LogUtil.Message($"Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
 			}
 
 			int guardsAdded = 0;
-			foreach (var guardAnimal in guardAnimals)
+			foreach (var guardAnimal in availableGuardAnimals)
 			{
 				try
 				{

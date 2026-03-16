@@ -526,6 +526,21 @@ namespace FactionColonies
             {
                 Widgets.ButtonImage(AnimalCompanion, selectedUnit.animal.race.uiIcon);
             }
+            else if (selectedUnit.xenotype != null && FactionCache.XenotypeIsNonViolent(selectedUnit.xenotype))
+            {
+                // Show info label that a security guard will be auto-assigned
+                GameFont prevFont = Text.Font;
+                TextAnchor prevAnchor = Text.Anchor;
+                Color prevColor = GUI.color;
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.UpperCenter;
+                GUI.color = Color.gray;
+                Rect guardLabel = new Rect(AnimalCompanion.x, AnimalCompanion.yMax + 2f, AnimalCompanion.width, 30f);
+                Widgets.Label(guardLabel, "fcSecurityGuardAutoAssign".Translate());
+                Text.Font = prevFont;
+                Text.Anchor = prevAnchor;
+                GUI.color = prevColor;
+            }
 
             // Draw equipped icons in slots
             foreach (ApparelSlotDef slot in apparelSlots)

@@ -123,6 +123,7 @@ namespace FactionColonies
 
             if (outfit == null)
             {
+                animals = new List<Mercenary>();
                 for (int k = 0; k < 30; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
@@ -131,6 +132,7 @@ namespace FactionColonies
                     if (pawn?.pawn != null)
                     {
                         mercenaries.Add(pawn);
+                        TryAssignSecurityGuard(pawn);
                     }
                     else
                     {
@@ -245,11 +247,51 @@ namespace FactionColonies
         public void CreateNewAnimal(ref Mercenary merc, PawnKindDef race)
         {
             Pawn newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.AnimalRequest(race));
-            //merc = (Mercenary)newPawn;
 
             merc.squad = this;
             merc.settlement = settlement;
             merc.pawn = newPawn;
+        }
+
+        /// <summary>
+        /// If the mercenary's xenotype is non-violent and has security guards configured,
+        /// auto-assigns a random guard animal from the xenotype's SecurityGuardList.
+        /// </summary>
+        private void TryAssignSecurityGuard(Mercenary merc)
+        {
+            if (merc?.pawn?.genes == null) return;
+            // Don't overwrite a manually-assigned animal
+            if (merc.animal != null) return;
+
+            FactionFC factionFc = FactionCache.FactionComp;
+            if (factionFc?.xenotypeFilter == null) return;
+
+            XenotypeFilter xenoFilter = factionFc.xenotypeFilter;
+            List<PawnKindDef> guardOptions = null;
+
+            XenotypeDef mercXenotype = merc.pawn.genes.Xenotype;
+            if (mercXenotype != null && FactionCache.XenotypeIsNonViolent(mercXenotype))
+            {
+                guardOptions = xenoFilter.GetSecurityGuardsForXenotype(mercXenotype);
+            }
+            else if (merc.pawn.genes.CustomXenotype != null)
+            {
+                string customName = merc.pawn.genes.CustomXenotype.name;
+                if (FactionCache.CustomXenotypeIsNonViolent(customName))
+                {
+                    guardOptions = xenoFilter.GetSecurityGuardsForCustomXenotype(customName);
+                }
+            }
+
+            if (guardOptions != null && guardOptions.Any())
+            {
+                PawnKindDef guardKind = guardOptions.RandomElement();
+                Mercenary guardAnimal = new Mercenary(true);
+                CreateNewAnimal(ref guardAnimal, guardKind);
+                guardAnimal.handler = merc;
+                merc.animal = guardAnimal;
+                animals.Add(guardAnimal);
+            }
         }
 
         public void CreateNewPawn(ref Mercenary merc, PawnKindDef race, XenotypeDef _xenotype)
@@ -263,12 +305,23 @@ namespace FactionColonies
                 raceChoice = FactionCache.PlayerColonyFaction.RandomPawnKind();
             }
 
+            // Determine if this xenotype is non-violent — use CivilianRequest to avoid mustBeCapableOfViolence rejection
+            bool isNonViolentXenotype = (xenotypeChoice != null && FactionCache.XenotypeIsNonViolent(xenotypeChoice))
+                                     || (xenotypeChoice == null && factionFc.xenotypeFilter.OnlyNonViolentXenos);
+
             // Try to generate pawn with the requested kind
             Pawn newPawn = null;
             try
             {
-                newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
-                
+                if (isNonViolentXenotype)
+                {
+                    newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.CivilianRequest(raceChoice, xenotypeChoice));
+                }
+                else
+                {
+                    newPawn = PawnGenerator.GeneratePawn(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
+                }
+
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (newPawn != null && newPawn.Faction == null)
                 {
@@ -283,32 +336,32 @@ namespace FactionColonies
             {
                 LogUtil.Warning($"Failed to generate pawn with kind {raceChoice?.defName}: {ex.Message}");
             }
-            
-            // Fallback 1: Try with Baseliner xenotype and NO faction (avoids faction xenotype forcing)
+
+            // Fallback 1: Try with simple request, respecting non-violent status
             if (newPawn == null)
             {
-                LogUtil.Warning($"Pawn generation failed for {raceChoice?.defName}. Trying Baseliner fallback without faction.");
+                LogUtil.Warning($"Pawn generation failed for {raceChoice?.defName}. Trying fallback without faction.");
                 try
                 {
                     var simpleRequest = new PawnGenerationRequest(
                         kind: PawnKindDefOf.Colonist,
-                        faction: null, // NO faction - this prevents faction xenotype forcing
+                        faction: null,
                         context: PawnGenerationContext.NonPlayer,
                         tile: -1,
                         forceGenerateNewPawn: false,
                         allowDead: false,
                         allowDowned: false,
-                        canGeneratePawnRelations: false, // No relations for factionless pawns
-                        mustBeCapableOfViolence: true,
+                        canGeneratePawnRelations: false,
+                        mustBeCapableOfViolence: !isNonViolentXenotype,
                         colonistRelationChanceFactor: 0,
                         forceAddFreeWarmLayerIfNeeded: false,
                         allowGay: true,
                         allowFood: true,
                         allowAddictions: false,
-                        forcedXenotype: XenotypeDefOf.Baseliner // Force Baseliner - guaranteed violence capable
+                        forcedXenotype: isNonViolentXenotype ? xenotypeChoice : XenotypeDefOf.Baseliner
                     );
                     newPawn = PawnGenerator.GeneratePawn(simpleRequest);
-                    
+
                     // Set the faction after generation
                     if (newPawn != null)
                     {
@@ -321,7 +374,7 @@ namespace FactionColonies
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.Warning($"Baseliner fallback also failed: {ex.Message}");
+                    LogUtil.Warning($"Fallback also failed: {ex.Message}");
                 }
             }
             
@@ -524,6 +577,11 @@ namespace FactionColonies
                             animal.handler = mercenaries[count];
                             mercenaries[count].animal = animal;
                             animals.Add(animal);
+                        }
+                        else
+                        {
+                            // Auto-assign security guard for non-violent mercs without a manually-assigned animal
+                            TryAssignSecurityGuard(mercenaries[count]);
                         }
 
                         mercenaries[count].loadout = loadout;
