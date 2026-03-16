@@ -530,7 +530,7 @@ namespace FactionColonies
             {
                 if (Map == null)
                     MapGenerator.GenerateMap(new IntVec3(70 + WorldSettlement.settlementLevel * 10, 1, 70 + WorldSettlement.settlementLevel * 10),
-                                             WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs).mapDrawer.RegenerateEverythingNow();
+                                             WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs);
 
                 ZoomIntoTile(evt);
                 after.Invoke();
@@ -769,10 +769,10 @@ namespace FactionColonies
                 inhabitants.Add(civilian);
             }
 
-            // Strip weapons from most civilians so they are visually distinct from guards (~25% keep weapons)
+            // Strip weapons from most civilians so they are visually distinct from guards (~12% keep weapons)
             for (int i = 0; i < inhabitants.Count; i++)
             {
-                if (i % 4 != 0)
+                if (i % 8 != 0)
                     inhabitants[i].equipment.DestroyAllEquipment();
             }
 
