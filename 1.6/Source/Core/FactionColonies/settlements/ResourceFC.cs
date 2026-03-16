@@ -213,6 +213,10 @@ namespace FactionColonies
         public double stockpileMarketValue => totalStockpileAllocation * FCSettings.silverPerResource;
         public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
         public double actualIncome => taxableProductionMarketValue - titheTotalValue;
+        /// <summary>What actualIncome would be at tax time, using the period average instead of instantaneous production.</summary>
+        public double averageActualIncome => accumulationDays > 0
+            ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue
+            : actualIncome;
 
         public bool canTithe => !def.isPoolResource;
 

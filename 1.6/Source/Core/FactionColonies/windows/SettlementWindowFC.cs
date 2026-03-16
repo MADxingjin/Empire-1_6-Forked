@@ -1514,7 +1514,16 @@ namespace FactionColonies
                     sb.AppendLine("NetIncomeBreakdownStockpile".Translate(TextUtil.FloorStat(resource.stockpileMarketValue)));
                 if (resource.titheTotalValue > 0)
                     sb.AppendLine("NetIncomeBreakdownTithes".Translate(TextUtil.FloorStat(resource.titheTotalValue)));
-                sb.Append("NetIncomeBreakdownNet".Translate(TextUtil.FloorStat(resource.actualIncome)));
+                sb.AppendLine("NetIncomeBreakdownNet".Translate(TextUtil.FloorStat(resource.actualIncome)));
+                if (resource.AccumulationDays > 0)
+                {
+                    int totalPeriodDays = FCSettings.timeBetweenTaxes / GenDate.TicksPerDay;
+                    sb.AppendLine("-----");
+                    sb.Append("NetIncomeBreakdownAvg".Translate(
+                        TextUtil.FloorStat(resource.averageActualIncome),
+                        resource.AccumulationDays.ToString(),
+                        totalPeriodDays.ToString()));
+                }
                 TooltipHandler.TipRegion(incomeNetBox, sb.ToString());
             }
 

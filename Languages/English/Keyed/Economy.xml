@@ -198,6 +198,7 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<NetIncomeBreakdownStockpile>Stockpile diversions: -{0}</NetIncomeBreakdownStockpile>
 	<NetIncomeBreakdownTithes>Tithes: -{0}</NetIncomeBreakdownTithes>
 	<NetIncomeBreakdownNet>Net income: {0}</NetIncomeBreakdownNet>
+	<NetIncomeBreakdownAvg>Period average net: {0} ({1} of {2} days sampled)</NetIncomeBreakdownAvg>
 	<itemcost>{0}{1}</itemcost>
 
 	<!-- Power Output -->
