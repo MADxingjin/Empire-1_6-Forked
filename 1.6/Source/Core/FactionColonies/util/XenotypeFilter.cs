@@ -606,8 +606,13 @@ namespace FactionColonies.util
             {
                 return false;
             }
-            // Skip requiredWorkTags check for guarded non-violent xenotypes — the guards handle violent work
-            if (!hasGuards && !CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
+            // Strip the Violent flag when guards handle it — still check all other required work tags
+            WorkTags tagsToCheck = request.KindDef.requiredWorkTags;
+            if (hasGuards)
+            {
+                tagsToCheck &= ~WorkTags.Violent;
+            }
+            if (!CanGeneListDoRequiredWork(tagsToCheck, xenotype.genes))
             {
                 return false;
             }
@@ -639,8 +644,13 @@ namespace FactionColonies.util
             }
             if (FactionCache.CustomXenotypesDecoder.TryGetValue(xenotypeName, out CustomXenotype xenotype))
             {
-                // Skip requiredWorkTags check for guarded non-violent xenotypes — the guards handle violent work
-                if (!hasGuards && !CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
+                // Strip the Violent flag when guards handle it — still check all other required work tags
+                WorkTags tagsToCheck = request.KindDef.requiredWorkTags;
+                if (hasGuards)
+                {
+                    tagsToCheck &= ~WorkTags.Violent;
+                }
+                if (!CanGeneListDoRequiredWork(tagsToCheck, xenotype.genes))
                 {
                     return false;
                 }
