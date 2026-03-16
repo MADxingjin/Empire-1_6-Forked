@@ -322,24 +322,24 @@ namespace FactionColonies.util
 						LogUtil.Warning($"Failed to spawn extra pawn: {ex.Message}");
 					}
 				}
-			}
-			
-			// Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
-			// This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-			var guardAnimals = FactionCache.AllCombatAnimalKindDefs
-				.OrderByDescending(def => def.combatPower)
-				.Take(5); // Take more options to ensure we can get 2 guards
+            }
 
-			// Log available guard animals for debugging
-			var availableGuardAnimals = guardAnimals.ToList();
-			if (availableGuardAnimals.Any())
+            // Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
+            // This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
+            var guardAnimals = FactionCache.AllCombatAnimalKindDefs
+                .OrderByDescending(def => def.combatPower)
+                .Take(5); // Take more options to ensure we can get 2 guards
+
+            // Log available guard animals for debugging
+            var availableGuardAnimals = guardAnimals.ToList();
+            if (availableGuardAnimals.Any())
 			{
 				LogUtil.Message($"Available guard animals: {string.Join(", ", availableGuardAnimals.Select(a => $"{a.label} (Combat: {a.combatPower:F0})"))}");
 			}
 
 			int guardsAdded = 0;
-			foreach (var guardAnimal in guardAnimals)
-			{
+            foreach (var guardAnimal in guardAnimals)
+            {
 				try
 				{
 					Pawn guard = PawnGenerator.GeneratePawn(FCPawnGenerator.AnimalRequest(guardAnimal));

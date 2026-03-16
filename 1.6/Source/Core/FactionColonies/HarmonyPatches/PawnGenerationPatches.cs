@@ -1,11 +1,6 @@
-﻿using FactionColonies.util;
+using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace FactionColonies
@@ -13,16 +8,40 @@ namespace FactionColonies
     [HarmonyPatch(typeof(PawnGenerator), "GeneratePawn", typeof(PawnGenerationRequest))]
     class PawnGenerationPatches
     {
+        /// <summary>
+        /// When true, the prefix respects any pre-set ForcedXenotype on the request
+        /// (e.g. from designed military units). When false, vanilla's default Baseliner
+        /// on Empire template PawnKindDefs is cleared so the xenotype filter can run.
+        /// Set by <see cref="FCPawnGenerator.GenerateWithForcedXenotype"/>.
+        /// </summary>
+        // I don't much like this static flag, but I'm not sure of a better way around vanilla's
+        //   forced Baseliner behavior
+        internal static bool respectForcedXenotype = false;
+
         public static void Prefix(ref PawnGenerationRequest request)
         {
             if (!(request.Faction is null) && request.Faction == FactionCache.PlayerColonyFaction && request.KindDef?.IsHumanLikeRace() == true)
             {
-                /* Respect xenotypes that have already been forced (e.g. from designed military units)
-                 * This has a chance of allowing through forced xenotypes from other sources, which I'm not sure is desirable.
-                 * But this should preserve the xenotype that a player chooses when designing military units, and that's more important. */
                 if (!(request.ForcedXenotype is null) || !(request.ForcedCustomXenotype is null))
                 {
-                    return;
+                    // If our own code explicitly set the forced xenotype (e.g. designed military units),
+                    // respect it and skip the filter.
+                    if (respectForcedXenotype)
+                    {
+                        return;
+                    }
+
+                    // Vanilla's PawnGroupKindWorker defaults to Baseliner for Empire template clones
+                    // (useFactionXenotypes=false, xenotypeSet=null). Clear it so our filter runs.
+                    if (request.KindDef?.defName?.StartsWith("PColony_") == true)
+                    {
+                        request.ForcedXenotype = null;
+                        request.ForcedCustomXenotype = null;
+                    }
+                    else
+                    {
+                        return; // Non-Empire PawnKindDef — respect whatever was forced
+                    }
                 }
 
                 XenotypeFilter filter = FactionCache.FactionComp?.xenotypeFilter;
@@ -37,18 +56,15 @@ namespace FactionColonies
                 if (!(chosenXenotype is null))
                 {
                     request.ForcedXenotype = chosenXenotype;
-                    //Debug logging
                     LogUtil.Message($"GeneratePawn patch forced xenotype: {chosenXenotype.defName} for pawnKind: {request.KindDef.defName}");
                 }
                 else if (!(chosenCustomXenotype is null))
                 {
                     request.ForcedCustomXenotype = chosenCustomXenotype;
-                    //Debug logging
                     LogUtil.Message($"GeneratePawn patch forced custom xenotype: {chosenCustomXenotype.name} for pawnKind: {request.KindDef.defName}");
                 }
                 else
                 {
-                    //Debug Logging
                     LogUtil.Warning($"GeneratePawn patch failed to force a xenotype or custom xenotype for pawnKind: {request.KindDef.defName}");
                 }
             }

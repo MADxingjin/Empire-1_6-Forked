@@ -132,8 +132,7 @@ namespace FactionColonies
                     previewPawn.Destroy();
                 }
 
-                previewPawn = PawnGenerator.GeneratePawn(
-                    FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
+                previewPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
 
                 if (previewPawn != null && previewPawn.Faction == null)
                 {
