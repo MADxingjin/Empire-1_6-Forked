@@ -195,7 +195,7 @@ namespace FactionColonies
                 Widgets.ThingIcon(iconRect, item);
 
                 Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
-                UIUtil.InfoCardButton(infoRect, item);
+                Widgets.InfoCardButton(infoRect, item);
 
                 Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
@@ -306,7 +306,7 @@ namespace FactionColonies
                 Widgets.ThingIcon(iconRect, stuff);
 
                 Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
-                UIUtil.InfoCardButton(infoRect, stuff);
+                Widgets.InfoCardButton(infoRect, stuff);
 
                 Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,

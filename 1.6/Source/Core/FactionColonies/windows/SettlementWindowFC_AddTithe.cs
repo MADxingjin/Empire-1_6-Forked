@@ -243,7 +243,7 @@ namespace FactionColonies
                 if (!canConfirm)
                 {
                     GUI.color = Color.white;
-                    UIUtil.TipRegionByText(confirmButton, confirmTooltip);
+                    TooltipHandler.TipRegion(confirmButton, confirmTooltip);
                 }
             }
 
@@ -333,7 +333,7 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
-                UIUtil.InfoCardButton(info, iThing);
+                Widgets.InfoCardButton(info, iThing);
                 if (Widgets.ButtonInvisible(row))
                 {
                     selectedThing = iThing;
@@ -454,7 +454,7 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iStuff.uiIcon));
-                UIUtil.InfoCardButton(info, iStuff);
+                Widgets.InfoCardButton(info, iStuff);
                 if (Widgets.ButtonInvisible(row))
                 {
                     selectedStuff = iStuff;

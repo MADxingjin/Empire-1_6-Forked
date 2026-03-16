@@ -66,6 +66,9 @@ namespace FactionColonies
         private float cachedTitleHeight;
         private float cachedDescHeight;
         private float[] cachedOptionLabelHeights;
+        private string[] cachedEffectPreviews;
+        private float[] cachedEffectPreviewHeights;
+        private const float EffectPreviewSpacing = 4f;
 
         public override Vector2 InitialSize
         {
@@ -134,6 +137,18 @@ namespace FactionColonies
                 cachedOptionLabelHeights[i] = Text.CalcHeight(options[i].label, labelWidth);
             }
 
+            cachedEffectPreviews = new string[options.Count];
+            cachedEffectPreviewHeights = new float[options.Count];
+            Text.Font = GameFont.Tiny;
+            for (int i = 0; i < options.Count; i++)
+            {
+                cachedEffectPreviews[i] = GetEffectPreview(options[i]);
+                if (cachedEffectPreviews[i] != null)
+                {
+                    cachedEffectPreviewHeights[i] = Text.CalcHeight(cachedEffectPreviews[i], labelWidth);
+                }
+            }
+
             // Sum up total height
             float y = AccentBarHeight + Padding;     // accent bar + top padding
             y += cachedTitleHeight;                    // title
@@ -156,6 +171,10 @@ namespace FactionColonies
             {
                 if (i > 0) y += OptionSpacing;
                 float cardH = OptionInnerPadding + cachedOptionLabelHeights[i] + 6f + MetadataRowHeight + OptionInnerPadding;
+                if (cachedEffectPreviews[i] != null)
+                {
+                    cardH += EffectPreviewSpacing + cachedEffectPreviewHeights[i];
+                }
                 y += Math.Max(cardH, MinOptionHeight);
             }
 
@@ -254,6 +273,10 @@ namespace FactionColonies
 
                 // Card height
                 float cardH = OptionInnerPadding + cachedOptionLabelHeights[i] + 6f + MetadataRowHeight + OptionInnerPadding;
+                if (cachedEffectPreviews[i] != null)
+                {
+                    cardH += EffectPreviewSpacing + cachedEffectPreviewHeights[i];
+                }
                 cardH = Math.Max(cardH, MinOptionHeight);
 
                 Rect cardRect = new Rect(inRect.x, curY, contentWidth, cardH);
@@ -295,6 +318,27 @@ namespace FactionColonies
                 Widgets.Label(new Rect(metaRect.x, metaRect.y, metaRect.width * 0.6f, metaRect.height), successLabel);
                 GUI.color = colorBefore;
 
+                // Policy tag (always visible)
+                if (opt.requiredPolicies != null && opt.requiredPolicies.Count > 0)
+                {
+                    string policyTag;
+                    if (opt.requirementMode == FCRequirementMode.Any)
+                        policyTag = string.Join(" / ", opt.requiredPolicies.Select(p => p.LabelCap));
+                    else
+                        policyTag = string.Join(", ", opt.requiredPolicies.Select(p => p.LabelCap));
+
+                    Text.Font = GameFont.Tiny;
+                    float successWidth = Text.CalcSize(successLabel).x;
+                    float tagX = metaRect.x + successWidth + 6f;
+                    GUI.color = available
+                        ? new Color(0.6f, 0.75f, 0.9f)
+                        : new Color(0.4f, 0.4f, 0.4f);
+                    Widgets.Label(
+                        new Rect(tagX, metaRect.y, metaRect.width * 0.6f - successWidth - 6f, metaRect.height),
+                        "[" + policyTag + "]");
+                    GUI.color = colorBefore;
+                }
+
                 // Silver cost (right-aligned)
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
@@ -324,13 +368,26 @@ namespace FactionColonies
 
                     if (!affordable)
                     {
-                        UIUtil.TipRegionByText(cardRect, "FCNotEnoughSilverOption".Translate());
+                        TooltipHandler.TipRegion(cardRect, "FCNotEnoughSilverOption".Translate());
                     }
                 }
 
                 if (!meetsRequirements)
                 {
-                    UIUtil.TipRegionByText(cardRect, requirementFailReason);
+                    TooltipHandler.TipRegion(cardRect, requirementFailReason);
+                }
+
+                // Effect preview (guaranteed options only)
+                if (cachedEffectPreviews[i] != null)
+                {
+                    innerY += MetadataRowHeight + EffectPreviewSpacing;
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    GUI.color = available ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.4f, 0.4f, 0.4f);
+                    Widgets.Label(
+                        new Rect(innerX, innerY, innerW, cachedEffectPreviewHeights[i]),
+                        cachedEffectPreviews[i]);
+                    GUI.color = colorBefore;
                 }
 
                 // Hover effect
@@ -366,6 +423,52 @@ namespace FactionColonies
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
             GUI.color = colorBefore;
+        }
+
+        private static string GetEffectPreview(FCOptionDef opt)
+        {
+            if (opt.baseChanceOfSuccess < 100f) return null;
+
+            FCEventDef resultEvent = opt.successEvent;
+            if (resultEvent == null || resultEvent == FCEventDefOf.Null) return null;
+
+            List<string> parts = new List<string>();
+
+            // Stat modifiers — reuse existing formatter
+            if (resultEvent.statModifiers != null && resultEvent.statModifiers.Count > 0)
+            {
+                TaggedString statDesc = FCStatModifier.GetDescription(resultEvent.statModifiers);
+                if (!statDesc.NullOrEmpty())
+                {
+                    string[] lines = statDesc.ToString().Split('\n');
+                    foreach (string line in lines)
+                    {
+                        string trimmed = line.Trim();
+                        if (!trimmed.NullOrEmpty()) parts.Add(trimmed);
+                    }
+                }
+            }
+
+            // Item rewards
+            if (resultEvent.randomThingValue > 0 && resultEvent.randomThingRewardDef != null)
+            {
+                parts.Add("FCEffectPreviewReward".Translate(resultEvent.randomThingValue));
+            }
+
+            if (parts.Count == 0) return null;
+
+            // Duration context (skip near-instant deliveries)
+            string durationStr = "";
+            if (resultEvent.timeTillTrigger > 1500)
+            {
+                int days = (int)(resultEvent.timeTillTrigger / (double)GenDate.TicksPerDay);
+                if (days > 0)
+                {
+                    durationStr = " " + "FCEffectPreviewDuration".Translate(days);
+                }
+            }
+
+            return string.Join(", ", parts) + durationStr;
         }
 
         private static void GetSuccessHint(float chance, out string label, out Color color)

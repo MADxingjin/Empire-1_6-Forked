@@ -13,13 +13,22 @@ namespace FactionColonies
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.captureEnemySettlement);
             evt.customDescription = "settlementMilitaryForcesCapturing".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
-            Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(milComp.WorldSettlement.Name, Find.WorldObjects.SettlementAt(location)), LetterDefOf.NeutralEvent);
+            Settlement target = Find.WorldObjects.SettlementAt(location);
+            Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(milComp.WorldSettlement.Name, target?.LabelCap ?? (TaggedString)""), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
         }
 
         public override BattleResult OnResolved(WorldObjectComp_SettlementMilitary milComp)
         {
             FactionFC faction = FactionCache.FactionComp;
+
+            Settlement target = Find.WorldObjects.SettlementAt(milComp.militaryLocation);
+            if (target == null)
+            {
+                LogUtil.Warning("Military capture target at tile " + milComp.militaryLocation + " no longer exists");
+                return new BattleResult();
+            }
+
             BattleResult result = SimulateBattleFc.FightBattle(
                 militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
                 militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
@@ -28,10 +37,10 @@ namespace FactionColonies
             {
                 faction.AddExperienceToFactionLevel(5f);
 
-                string tmpName = Find.WorldObjects.SettlementAt(milComp.militaryLocation).LabelCap;
-                TechLevel tech = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction.def.techLevel;
-                Faction tempFactionLink = Find.WorldObjects.SettlementAt(milComp.militaryLocation).Faction;
-                Find.WorldObjects.SettlementAt(milComp.militaryLocation).Destroy();
+                string tmpName = target.LabelCap;
+                TechLevel tech = target.Faction.def.techLevel;
+                Faction tempFactionLink = target.Faction;
+                target.Destroy();
                 WorldSettlementFC worldsettlement = ColonyUtil.CreatePlayerColonySettlement(milComp.militaryLocation, WorldSettlementDefOf.WorldSettlementDef_Surface);
                 worldsettlement.Name = tmpName;
 
@@ -69,15 +78,15 @@ namespace FactionColonies
 
                 Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
                     "CaptureEnemySettlementSuccess".Translate(milComp.WorldSettlement.Name,
-                        Find.WorldObjects.SettlementAt(milComp.militaryLocation).Name, milComp.WorldSettlement.settlementLevel),
-                    LetterDefOf.PositiveEvent, new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
+                        worldsettlement.Name, milComp.WorldSettlement.settlementLevel),
+                    LetterDefOf.PositiveEvent, new LookTargets(worldsettlement));
             }
             else if (result.DefenderVictory)
             {
                 Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
                     "CaptureEnemySettlementFailure".Translate(milComp.WorldSettlement.Name,
-                        Find.WorldObjects.SettlementAt(milComp.militaryLocation).Name), LetterDefOf.NegativeEvent,
-                    new LookTargets(Find.WorldObjects.SettlementAt(milComp.militaryLocation)));
+                        target.Name), LetterDefOf.NegativeEvent,
+                    new LookTargets(target));
             }
 
             return result;

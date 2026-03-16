@@ -34,7 +34,22 @@
 	
 	<FCTraitDesc_createSettlementBaseCost>{0} Base Settlement Cost</FCTraitDesc_createSettlementBaseCost>
 	<FCTraitDesc_createSettlementMultiplier>{0} Settlement Cost</FCTraitDesc_createSettlementMultiplier>
-	
+	<FCTraitDesc_buildTimeMultiplier>{0} Build Time</FCTraitDesc_buildTimeMultiplier>
+
+	<FCTraitDesc_militaryLevelBonusDefending>{0} Military Level (Defending)</FCTraitDesc_militaryLevelBonusDefending>
+	<FCTraitDesc_militaryEfficiencyBonusAttacking>{0} Combat Efficiency (Attacking)</FCTraitDesc_militaryEfficiencyBonusAttacking>
+	<FCTraitDesc_deadPawnCooldownOffset>{0} Dead Pawn Cooldown</FCTraitDesc_deadPawnCooldownOffset>
+	<FCTraitDesc_raidCooldownOffset>{0} Raid Cooldown</FCTraitDesc_raidCooldownOffset>
+	<FCTraitDesc_battleProsperityLossMultiplier>{0} Battle Prosperity Loss</FCTraitDesc_battleProsperityLossMultiplier>
+	<FCTraitDesc_battleLoyaltyLossMultiplier>{0} Battle Loyalty Loss</FCTraitDesc_battleLoyaltyLossMultiplier>
+	<FCTraitDesc_taxBonusFlat>{0} Flat Tax Bonus</FCTraitDesc_taxBonusFlat>
+	<FCTraitDesc_titheValueMultiplier>{0} Tithe Value</FCTraitDesc_titheValueMultiplier>
+	<FCTraitDesc_lootMultiplier>{0} Loot Value</FCTraitDesc_lootMultiplier>
+	<FCTraitDesc_settlementCostMultiplier>{0} Settlement Cost</FCTraitDesc_settlementCostMultiplier>
+	<FCTraitDesc_researchContributionMultiplier>{0} Research Contribution</FCTraitDesc_researchContributionMultiplier>
+	<FCTraitDesc_extraWorkersSoftcap>{0} Extra Workers Softcap</FCTraitDesc_extraWorkersSoftcap>
+	<FCTraitDesc_overMaxWorkersAdjustment>{0} Over-Max Workers Penalty</FCTraitDesc_overMaxWorkersAdjustment>
+
 	<FCBuildingUpkeep>Upkeep: ${0}</FCBuildingUpkeep>
 	<FCBuildingIncome>Income: ${0}</FCBuildingIncome>
 </LanguageData>

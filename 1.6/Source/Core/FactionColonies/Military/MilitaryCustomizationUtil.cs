@@ -162,7 +162,7 @@ namespace FactionColonies
 
         public static double CalculateSquadBudget(int militaryLevel)
         {
-            return 500 + (600.0 * militaryLevel * militaryLevel);
+            return 1000 + (500.0 * militaryLevel) + (600.0 * militaryLevel * militaryLevel);
         }
 
         public static double CalculateFireSupportBudget(int militaryLevel)

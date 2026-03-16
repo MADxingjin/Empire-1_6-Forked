@@ -248,7 +248,7 @@ namespace FactionColonies
 
                 if (settlementTruncated != settlementFullName)
                 {
-                    UIUtil.TipRegionByText(settlementRect, settlementFullName);
+                    TooltipHandler.TipRegion(settlementRect, settlementFullName);
                 }
 
                 if (Widgets.ButtonInvisible(settlementRect))
@@ -273,7 +273,7 @@ namespace FactionColonies
 
                 if (squadTruncated != squadFullName)
                 {
-                    UIUtil.TipRegionByText(squadNameRect, squadFullName);
+                    TooltipHandler.TipRegion(squadNameRect, squadFullName);
                 }
 
                 if (Widgets.ButtonInvisible(squadNameRect))

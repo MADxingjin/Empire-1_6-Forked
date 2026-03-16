@@ -530,7 +530,7 @@ namespace FactionColonies
             {
                 if (Map == null)
                     MapGenerator.GenerateMap(new IntVec3(70 + WorldSettlement.settlementLevel * 10, 1, 70 + WorldSettlement.settlementLevel * 10),
-                                             WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs).mapDrawer.RegenerateEverythingNow();
+                                             WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs);
 
                 ZoomIntoTile(evt);
                 after.Invoke();
@@ -564,8 +564,7 @@ namespace FactionColonies
                 if (force.homeSettlement?.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;
 
-                foreach (var building in Map.listerBuildings.allBuildingsColonist)
-                    FloodFillerFog.FloodUnfog(building.InteractionCell, Map);
+                Map.fogGrid.ClearAllFog();
 
                 GenerateFriendlies(force);
                 RecruitMapInhabitants();
@@ -748,6 +747,34 @@ namespace FactionColonies
                 if (pawn.Faction != empireFaction) continue;
                 if (pawn.IsPrisonerOfColony) continue;
                 inhabitants.Add(pawn);
+            }
+
+            int targetCount = (int)WorldSettlement.workers;
+
+            // Remove excess civilians
+            while (inhabitants.Count > targetCount)
+            {
+                Pawn excess = inhabitants[inhabitants.Count - 1];
+                inhabitants.RemoveAt(inhabitants.Count - 1);
+                if (excess.Spawned) excess.Destroy();
+            }
+
+            // Spawn additional civilians if needed
+            while (inhabitants.Count < targetCount)
+            {
+                Pawn civilian = PawnGenerator.GeneratePawn(FCPawnGenerator.CivilianRequest());
+                IntVec3 loc;
+                if (!CellFinder.TryFindRandomCellNear(Map.Center, Map, 15, c => c.Standable(Map), out loc))
+                    loc = Map.Center;
+                GenSpawn.Spawn(civilian, loc, Map);
+                inhabitants.Add(civilian);
+            }
+
+            // Strip weapons from most civilians so they are visually distinct from guards (~12% keep weapons)
+            for (int i = 0; i < inhabitants.Count; i++)
+            {
+                if (i % 8 != 0)
+                    inhabitants[i].equipment.DestroyAllEquipment();
             }
 
             foreach (Pawn inhabitant in inhabitants)

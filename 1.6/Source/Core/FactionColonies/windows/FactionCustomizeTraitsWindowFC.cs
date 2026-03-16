@@ -156,7 +156,7 @@ namespace FactionColonies
                 {
                     label = (slot + 1) + ". " + existing.def.LabelCap;
                     labelColor = Color.gray;
-                    UIUtil.TipRegionByText(row, existing.def.PolicyText());
+                    TooltipHandler.TipRegion(row, existing.def.PolicyText());
                 }
                 else if (isLocked)
                 {
@@ -167,7 +167,7 @@ namespace FactionColonies
                 {
                     label = (slot + 1) + ". " + "FCTraitSelectedPreview".Translate(selectedTraits[newTraitIndex].LabelCap);
                     labelColor = Color.green;
-                    UIUtil.TipRegionByText(row, selectedTraits[newTraitIndex].PolicyText());
+                    TooltipHandler.TipRegion(row, selectedTraits[newTraitIndex].PolicyText());
                     newTraitIndex++;
                 }
                 else

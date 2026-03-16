@@ -3,6 +3,7 @@
     <v1.6>
         <li>/</li>
         <li>1.6</li>
+        <li IfModActive="erdelf.HumanoidAlienRaces">Compat/1.6/HumanoidAlienRaces</li>
         <li IfModActive="CETeam.CombatExtended">Compat/1.6/CombatExtended</li>
         <li IfModActive="Torann.RimWar">Compat/1.6/RimWar</li>
         <li IfModActive="jaeger972.factionterritories">Compat/1.6/FactionTerritories</li>

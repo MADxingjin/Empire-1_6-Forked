@@ -329,7 +329,7 @@ namespace FactionColonies
                 Widgets.Label(valueBox, value);
                 GUI.color = origStatColor;
 
-                UIUtil.TipRegionByText(statBox, tooltip);
+                TooltipHandler.TipRegion(statBox, tooltip);
 
                 y += statH + smallMargin;
             }
@@ -345,7 +345,7 @@ namespace FactionColonies
                 {
                     Rect policyBox = new Rect(leftX + (i * (policySize + margin)), y, policySize, policySize);
                     Widgets.ButtonImage(policyBox, faction.policies[i].def.IconLight);
-                    UIUtil.TipRegionByText(policyBox, faction.policies[i].def.PolicyText());
+                    TooltipHandler.TipRegion(policyBox, faction.policies[i].def.PolicyText());
                 }
             }
             else
@@ -386,7 +386,7 @@ namespace FactionColonies
                 else if (current.def != FCPolicyDefOf.empty)
                 {
                     Widgets.Label(labelRect, current.def.LabelCap);
-                    UIUtil.TipRegionByText(traitRect, current.def.PolicyText());
+                    TooltipHandler.TipRegion(traitRect, current.def.PolicyText());
                 }
                 else
                 {
@@ -557,7 +557,7 @@ namespace FactionColonies
 
                     Widgets.DrawBoxSolid(new Rect(row.x, row.y, 3f, rowSize), pool.resource.color);
                     Widgets.ButtonImage(icon, pool.resource.Icon);
-                    UIUtil.TipRegionByText(icon, pool.resource.LabelCap);
+                    TooltipHandler.TipRegion(icon, pool.resource.LabelCap);
 
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleRight;
@@ -646,7 +646,7 @@ namespace FactionColonies
                 Rect amountRect = new Rect(x + rowWidth2 - 50f, ry, 48f, rowHeight);
                 Widgets.Label(amountRect, resource.amount.ToString());
 
-                UIUtil.TipRegionByText(rowRect, resource.label);
+                TooltipHandler.TipRegion(rowRect, resource.label);
                 ri++;
             }
 
@@ -853,7 +853,7 @@ namespace FactionColonies
                     + "FCSettlementTableUnrest".Translate() + ": " + (int)s.Unrest + "\n"
                     + "FCSettlementTableProsperity".Translate() + ": " + (int)s.Prosperity + "\n"
                     + "FCSettlementTableFounding".Translate() + ": " + s.GetFoundingDate(false);
-                UIUtil.TipRegionByText(rowRect, tooltip);
+                TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
@@ -1059,7 +1059,7 @@ namespace FactionColonies
                     + "Silver".Translate() + ": " + bill.taxes.silverAmount.ToString("F0") + "\n"
                     + titheSummary + "\n"
                     + "DueFC".Translate() + ": " + dueStr;
-                UIUtil.TipRegionByText(rowRect, tooltip);
+                TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
@@ -1314,7 +1314,7 @@ namespace FactionColonies
 
                 // Row tooltip
                 string tooltip = GetEventFullTooltip(evt);
-                UIUtil.TipRegionByText(rowRect, tooltip);
+                TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
             Widgets.EndScrollView();
@@ -1665,7 +1665,7 @@ namespace FactionColonies
 
                     Find.WindowStack.Add(new Searchable_FloatMenu(squads));
                 }
-                UIUtil.TipRegionByText(setSquadRect, "FCMilBtnSetSquadTip".Translate());
+                TooltipHandler.TipRegion(setSquadRect, "FCMilBtnSetSquadTip".Translate());
                 bx += btnW + btnGap;
 
                 // Deploy
@@ -1676,7 +1676,7 @@ namespace FactionColonies
                 {
                     HandleDeployClick(settlement, milComp);
                 }
-                UIUtil.TipRegionByText(deployRect, "FCMilBtnDeployTip".Translate());
+                TooltipHandler.TipRegion(deployRect, "FCMilBtnDeployTip".Translate());
                 bx += btnW + btnGap;
 
                 // Reset
@@ -1700,7 +1700,7 @@ namespace FactionColonies
                     };
                     Find.WindowStack.Add(new FloatMenu(list));
                 }
-                UIUtil.TipRegionByText(resetRect, "FCMilBtnResetTip".Translate());
+                TooltipHandler.TipRegion(resetRect, "FCMilBtnResetTip".Translate());
                 bx += btnW + btnGap;
 
                 // Fire Support
@@ -1711,7 +1711,7 @@ namespace FactionColonies
                 {
                     HandleFireSupportClick(settlement, milComp);
                 }
-                UIUtil.TipRegionByText(fsSupportRect, "FCMilBtnFireSupportTip".Translate());
+                TooltipHandler.TipRegion(fsSupportRect, "FCMilBtnFireSupportTip".Translate());
                 bx += btnW + btnGap;
 
                 // Auto-Defend toggle
@@ -1725,7 +1725,7 @@ namespace FactionColonies
                 {
                     milComp.autoDefend = !milComp.autoDefend;
                 }
-                UIUtil.TipRegionByText(autoDefRect, autoDefendDisabled
+                TooltipHandler.TipRegion(autoDefRect, autoDefendDisabled
                     ? "FCMilAutoDefendDisabled".Translate()
                     : "FCMilBtnAutoDefendTip".Translate());
 
@@ -1739,8 +1739,8 @@ namespace FactionColonies
                     + "FCMilitaryTableAvailable".Translate() + ": " + (milComp.IsMilitaryBusySilent() ? "No".Translate() : "Yes".Translate()) + "\n"
                     + "FCMilitaryTableUnderAttack".Translate() + ": " + (milComp.isUnderAttack ? "Yes".Translate() : "No".Translate());
                 float btnStartX = contentX + contentW - totalBtnW;
-                UIUtil.TipRegionByText(new Rect(0f, ry, btnStartX, rowH), tooltip);
-                UIUtil.TipRegionByText(new Rect(btnStartX, ry, rowW - btnStartX, lineH), tooltip);
+                TooltipHandler.TipRegion(new Rect(0f, ry, btnStartX, rowH), tooltip);
+                TooltipHandler.TipRegion(new Rect(btnStartX, ry, rowW - btnStartX, lineH), tooltip);
             }
 
             // === External military tab entries (e.g., defensive outposts) ===
@@ -1834,14 +1834,14 @@ namespace FactionColonies
                 {
                     entry.AutoDefend = !entry.AutoDefend;
                 }
-                UIUtil.TipRegionByText(autoDefRect, "FCMilBtnAutoDefendTip".Translate());
+                TooltipHandler.TipRegion(autoDefRect, "FCMilBtnAutoDefendTip".Translate());
                 Text.Font = fontBefore;
 
                 // Tooltip
                 string entryTooltip = entry.Name + "\n\n"
                     + "FCSettlementTableMilLevel".Translate() + ": " + entry.MilitaryLevel + "\n"
                     + "FCMilitaryTableUnderAttack".Translate() + ": " + (entry.IsUnderAttack ? "Yes".Translate() : "No".Translate());
-                UIUtil.TipRegionByText(new Rect(0f, ry, contentX + contentW - btnW, rowH), entryTooltip);
+                TooltipHandler.TipRegion(new Rect(0f, ry, contentX + contentW - btnW, rowH), entryTooltip);
             }
 
             Widgets.EndScrollView();

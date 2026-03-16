@@ -157,7 +157,6 @@ namespace FactionColonies
             }
 
             LogUtil.Message($"InitiateSquad mercenary count : {mercenaries.Count()}");
-            //this.DebugMercenarySquad();
             if (loadID == -1)
             {
                 loadID = FactionCache.FactionComp.GetNextMercenarySquadID();
@@ -250,7 +249,6 @@ namespace FactionColonies
 
             merc.squad = this;
             merc.settlement = settlement;
-            //LogUtil.Message($"CreateNewAnimal | {newPawn.Name}   State: Dead - {newPawn.health.Dead}    Apparel Count: {newPawn.apparel.WornApparel.Count()}");
             merc.pawn = newPawn;
         }
 
@@ -557,7 +555,6 @@ namespace FactionColonies
                 count++;
             }
 
-            //DebugMercenarySquad();
             FactionCache.FactionComp?.militaryCustomizationUtil?.RebuildMercenaryPawnSet();
         }
 

@@ -200,7 +200,7 @@ namespace FactionColonies
                 string nulabel = Text.ClampTextWithEllipsis(tabRect, label);
                 if (nulabel != label)
                 {
-                    UIUtil.TipRegionByText(tabRect, label);
+                    TooltipHandler.TipRegion(tabRect, label);
                 }
                 if (Widgets.ButtonText(tabRect, label))
                 {
@@ -357,7 +357,7 @@ namespace FactionColonies
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
                 // Resource color accent
                 Widgets.DrawBoxSolid(new Rect(tabBox.x, tabBox.y, 3f, tabBox.height), resources[i].def.color);
-                UIUtil.TipRegionByText(tabBox, resources[i].def.LabelCap);
+                TooltipHandler.TipRegion(tabBox, resources[i].def.LabelCap);
                 if (titheTab == i)
                 {
                     chosenRect = tabBox;
@@ -555,13 +555,13 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(icon, new GUIContent(iThing.uiIcon));
-                UIUtil.InfoCardButton(info, iThing);
+                Widgets.InfoCardButton(info, iThing);
                 if (Widgets.ButtonText(xBox, "X"))
                 {
                     res.RemoveFromTitheList(thingTuple);
                     break;
                 }
-                UIUtil.TipRegionByText(xBox, "TitheXDesc".Translate());
+                TooltipHandler.TipRegion(xBox, "TitheXDesc".Translate());
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(valueLabel, $"${Math.Round(res.TitheThingValue(thingTuple),2)}");
 
@@ -644,7 +644,7 @@ namespace FactionColonies
                 Widgets.Label(label, nulabel);
                 if (nulabel != iThing.LabelCap)
                 {
-                    UIUtil.TipRegionByText(label, iThing.LabelCap);
+                    TooltipHandler.TipRegion(label, iThing.LabelCap);
                 }
                 // This seems like a *really* hacky way to handle these buffers. Seems like it'd be prone to UI jitteryness, or just general bad feel
                 //   keep this in mind when testing...
@@ -687,7 +687,7 @@ namespace FactionColonies
             Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
             Widgets.DrawHighlight(header);
             Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe);
-            UIUtil.TipRegionByText(header, "RandomTithesDesc".Translate());
+            TooltipHandler.TipRegion(header, "RandomTithesDesc".Translate());
 
             Rect accruedBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, rowHeight);
             Rect accruedTextBox = new Rect(accruedBox.x + smallMargin, accruedBox.y, accruedBox.width - (smallMargin * 2), accruedBox.height);
@@ -695,8 +695,8 @@ namespace FactionColonies
             Rect disbursedTextBox = new Rect(disburseBox.x + smallMargin, disburseBox.y, disburseBox.width - (smallMargin * 2), disburseBox.height);
             Widgets.Label(accruedTextBox, "RandomTitheAccrued".Translate(res.randomTitheStock));
             Widgets.CheckboxLabeled(disbursedTextBox, "DisburseAccruedRandomTithe".Translate(), ref res.disburseTitheStock);
-            UIUtil.TipRegionByText(accruedBox, "RandomTitheAccruedDesc".Translate());
-            UIUtil.TipRegionByText(disburseBox, "DisburseAccruedRandomTitheDesc".Translate());
+            TooltipHandler.TipRegion(accruedBox, "RandomTitheAccruedDesc".Translate());
+            TooltipHandler.TipRegion(disburseBox, "DisburseAccruedRandomTitheDesc".Translate());
 
             if (res.hasRandomTithe)
             {
@@ -753,7 +753,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     Widgets.Label(label, iThing.LabelCap);
                     Widgets.Label(valueLabel, $"${Math.Round(iThing.BaseMarketValue,2)}");
-                    UIUtil.InfoCardButton(info, iThing);
+                    Widgets.InfoCardButton(info, iThing);
                 }
 
                 Widgets.EndScrollView();
@@ -775,7 +775,7 @@ namespace FactionColonies
             if (usedTithe > totalTithe)
             {
                 usedTitheStr = usedTitheStr.Colorize(Color.red);
-                UIUtil.TipRegionByText(availNum, "TitheOverBudget".Translate());
+                TooltipHandler.TipRegion(availNum, "TitheOverBudget".Translate());
             }
             else if (res.actualIncome < 0)
             {
@@ -856,7 +856,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainBox, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.GetHappinessDesc());
+                    TooltipHandler.TipRegion(statGainBox, settlement.GetHappinessDesc());
                 }
 
                 if (stats[i] == "loyalty")
@@ -872,7 +872,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainBox, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.GetLoyaltyDesc());
+                    TooltipHandler.TipRegion(statGainBox, settlement.GetLoyaltyDesc());
                 }
 
                 if (stats[i] == "unrest")
@@ -888,7 +888,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainBox, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.GetUnrestDesc());
+                    TooltipHandler.TipRegion(statGainBox, settlement.GetUnrestDesc());
                 }
 
                 if (stats[i] == "prosperity")
@@ -904,10 +904,10 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Text.Font = GameFont.Small;
                     Widgets.Label(statGainBox, statGain);
-                    UIUtil.TipRegionByText(statGainBox, settlement.GetProsperityDesc());
+                    TooltipHandler.TipRegion(statGainBox, settlement.GetProsperityDesc());
                 }
 
-                UIUtil.TipRegionByText(mainToolTipBox, tooltip);
+                TooltipHandler.TipRegion(mainToolTipBox, tooltip);
             }
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Medium;
@@ -1140,7 +1140,7 @@ namespace FactionColonies
                 Widgets.DrawMenuSection(nBox);
                 if (i < settlement.BuildingsComp.NumBuildingSlots)
                 {
-                    UIUtil.TipRegionByText(nBuilding, settlement.BuildingsComp.GetBuildingDescFull(building));
+                    TooltipHandler.TipRegion(nBuilding, settlement.BuildingsComp.GetBuildingDescFull(building));
                     if (Widgets.ButtonImage(nBuilding, building.Icon))
                     {
                         Find.WindowStack.Add(new FCBuildingWindow(settlement, i));
@@ -1152,7 +1152,7 @@ namespace FactionColonies
                     string lockTooltip = isCapLocked
                         ? "FCBuildingLockedMax".Translate()
                         : "FCBuildingLockedLevel".Translate(2 * (i - 2));
-                    UIUtil.TipRegionByText(nBox, lockTooltip);
+                    TooltipHandler.TipRegion(nBox, lockTooltip);
                     if (Widgets.ButtonImage(nBuilding, TexLoad.buildingLocked))
                     {
                         Messages.Message("FCBuildingLocked".Translate(), MessageTypeDefOf.RejectInput);
@@ -1216,7 +1216,7 @@ namespace FactionColonies
                                             "completiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
-                    UIUtil.TipRegionByText(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
+                    TooltipHandler.TipRegion(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
                 Widgets.EndScrollView();
@@ -1335,8 +1335,8 @@ namespace FactionColonies
             Widgets.Label(costsNum, Math.Round(settlement.totalUpkeep,2).ToString());
             Widgets.Label(taxBonusNum, (settlement.GetSettlementTaxBonus() * 100d).ToString() + "%");
 
-            UIUtil.TipRegionByText(incomeBox, settlement.incomeExp);
-            UIUtil.TipRegionByText(costsBox, settlement.upkeepExp);
+            TooltipHandler.TipRegion(incomeBox, settlement.incomeExp);
+            TooltipHandler.TipRegion(costsBox, settlement.upkeepExp);
         }
 
         private void DrawWorkerBreakdown(Rect boundingBox)
@@ -1360,7 +1360,7 @@ namespace FactionColonies
             Rect upkeepNum = new Rect(upkeepLabel.xMax, upkeepLabel.y, labelWidth * 0.25f, labelHeight);
 
             Widgets.DrawHighlight(workerBox);
-            UIUtil.TipRegionByText(overMaxBox, "AssignedOvermaxWorkersTooltip".Translate());
+            TooltipHandler.TipRegion(overMaxBox, "AssignedOvermaxWorkersTooltip".Translate());
             Widgets.DrawHighlight(upkeepBox);
 
             Widgets.Label(workerLabel, "AssignedWorkers".Translate());
@@ -1414,10 +1414,10 @@ namespace FactionColonies
             Widgets.DrawLineHorizontal(incomeBox.x, incomeBox.yMax, incomeBox.width);
             Widgets.DrawHighlight(incomeRawBox);
             Widgets.Label(incomeRawBox, "Raw".Translate());
-            UIUtil.TipRegionByText(incomeRawBox, "RawIncomeDesc".Translate());
+            TooltipHandler.TipRegion(incomeRawBox, "RawIncomeDesc".Translate());
             Widgets.DrawHighlight(incomeNetBox);
             Widgets.Label(incomeNetBox, "Net".Translate());
-            UIUtil.TipRegionByText(incomeNetBox, "NetIncomeDesc".Translate());
+            TooltipHandler.TipRegion(incomeNetBox, "NetIncomeDesc".Translate());
 
             Rect resourceArea = new Rect(boundingBox.x, workersBox.yMax + margin, boundingBox.width, boundingBox.yMax - (workersBox.yMax + margin));
             DrawResources(resourceArea, colWidth);
@@ -1438,7 +1438,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(totalProdCol);
             Widgets.DrawHighlight(incomeRawCol);
             Widgets.DrawMenuSection(incomeNetCol);
-            UIUtil.TipRegionByText(incomeRawCol, "RawIncomeDesc".Translate());
+            TooltipHandler.TipRegion(incomeRawCol, "RawIncomeDesc".Translate());
 
             for (int i = 0; i < availableResources.Count; i++)
             {
@@ -1460,7 +1460,7 @@ namespace FactionColonies
                 float resourceImxgX = viewRect.x + ((colWidth - resourceImgSize) / 2f);
                 Rect resourceImgRect = new Rect(resourceImxgX, rectY, resourceImgSize, resourceImgSize);
                 Widgets.ButtonImage(resourceImgRect, resource.def.Icon);
-                UIUtil.TipRegionByText(resourceImgRect, resource.def.LabelCap);
+                TooltipHandler.TipRegion(resourceImgRect, resource.def.LabelCap);
 
                 //Production Efficiency
                 float arrowButtonHeight = Math.Min(rowHeight, 20f);
@@ -1475,12 +1475,12 @@ namespace FactionColonies
                 //Base Production
                 Rect baseProd = new Rect(workersIncArrow.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(baseProd, TextUtil.FloorStat(resource.productionBase));
-                UIUtil.TipRegionByText(baseProd, resource.GetProductionAdditivesDesc());
+                TooltipHandler.TipRegion(baseProd, resource.GetProductionAdditivesDesc());
 
                 //Modifier
                 Rect multProd = new Rect(baseProd.xMax + margin, rectY, colWidth, rowHeight);
                 Widgets.Label(multProd, TextUtil.FloorStat(resource.productionMult));
-                UIUtil.TipRegionByText(multProd, resource.GetProductionMultipliersDesc());
+                TooltipHandler.TipRegion(multProd, resource.GetProductionMultipliersDesc());
 
                 //Final Base
                 Rect finalProd = new Rect(multProd.xMax + margin, rectY, colWidth, rowHeight);
@@ -1515,7 +1515,7 @@ namespace FactionColonies
                 if (resource.titheTotalValue > 0)
                     sb.AppendLine("NetIncomeBreakdownTithes".Translate(TextUtil.FloorStat(resource.titheTotalValue)));
                 sb.Append("NetIncomeBreakdownNet".Translate(TextUtil.FloorStat(resource.actualIncome)));
-                UIUtil.TipRegionByText(incomeNetBox, sb.ToString());
+                TooltipHandler.TipRegion(incomeNetBox, sb.ToString());
             }
 
             Widgets.EndScrollView();

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using UnityEngine;
 using Verse;
 
@@ -220,7 +220,7 @@ namespace FactionColonies
             comp.settlement = settlement;
             if (settlement == null)
             {
-                Log.Error($"Created new SettlementBuildingComp {compClass} with null SettlementFC");
+                LogUtil.Error($"Created new SettlementBuildingComp {compClass} with null SettlementFC");
             }
             return comp;
         }
