@@ -60,7 +60,7 @@ namespace FactionColonies
                     new FloatRange(Settlement.settlementLevel / 10f, (Settlement.settlementLevel + 3) / 10f);
             }
 
-            resolveParams.chanceToSkipFloor = Math.Max(0, 100 - Settlement.settlementLevel * 10);
+            resolveParams.chanceToSkipFloor = Math.Max(0, 100 - Settlement.settlementLevel * 20);
             resolveParams.rect = cellRect;
             resolveParams.faction = faction;
             BaseGen.globalSettings.map = map;

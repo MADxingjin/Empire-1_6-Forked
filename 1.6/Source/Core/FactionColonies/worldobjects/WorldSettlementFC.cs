@@ -18,6 +18,13 @@ namespace FactionColonies
     /// </summary>
     public class WorldSettlementFC : Settlement
     {
+        // Override to bypass KCSG's Harmony postfix on Settlement.MapGeneratorDef,
+        // which can hijack Empire's map generator when VBGE is installed.
+        public override MapGeneratorDef MapGeneratorDef
+        {
+            get { return def.mapGenerator ?? MapGeneratorDefOf.Base_Faction; }
+        }
+
         private string name;
         private string nameShort;
         private string nameOriginal;
