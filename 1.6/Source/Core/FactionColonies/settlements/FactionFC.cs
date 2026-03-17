@@ -381,6 +381,7 @@ namespace FactionColonies
 
         public override void FinalizeInit(bool fromLoad)
         {
+            LogUtil.MessageForce("Empire v" + FCSettings.GetModVersion());
             base.FinalizeInit(fromLoad);
 
             // Apply saved tech level to FactionDef early — must happen before anything
