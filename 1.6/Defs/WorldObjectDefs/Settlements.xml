@@ -5,6 +5,7 @@
     <label>empire settlement</label>
     <description>A base of the Empire player faction</description>
     <worldObjectClass>FactionColonies.WorldSettlementFC</worldObjectClass>
+    <mapGenerator>Empire_Base</mapGenerator>
     <fullyExpandedInSpace>true</fullyExpandedInSpace>
     <expandingIcon>true</expandingIcon>
     <expandingIconPriority>10</expandingIconPriority>
