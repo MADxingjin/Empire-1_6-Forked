@@ -1543,6 +1543,9 @@ namespace FactionColonies
                     sb.AppendLine("NetIncomeBreakdownStockpile".Translate(TextUtil.FloorStat(resource.stockpileMarketValue)));
                 if (resource.titheTotalValue > 0)
                     sb.AppendLine("NetIncomeBreakdownTithes".Translate(TextUtil.FloorStat(resource.titheTotalValue)));
+                double titheOffset = Math.Min(resource.titheTotalValue, resource.externalTitheBudget);
+                if (titheOffset > 0)
+                    sb.AppendLine("NetIncomeBreakdownTitheInjection".Translate(TextUtil.FloorStat(titheOffset)));
                 sb.AppendLine("NetIncomeBreakdownNet".Translate(TextUtil.FloorStat(resource.actualIncome)));
                 if (resource.AccumulationDays > 0)
                 {
