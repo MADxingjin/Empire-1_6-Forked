@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace FactionColonies
@@ -136,6 +137,24 @@ namespace FactionColonies
         // ============================
         // MakeEvent (game state)
         // ============================
+
+        [EmpireTest("EventSystem")]
+        public static void AllEventDefs_BiomeLists_AreValid()
+        {
+            foreach (FCEventDef def in DefDatabase<FCEventDef>.AllDefsListForReading)
+            {
+                foreach (string biome in def.applicableBiomes)
+                {
+                    TestAssert.IsNotNull(DefDatabase<BiomeDef>.GetNamed(biome, false),
+                        $"{def.defName}: applicableBiomes contains unknown biome '{biome}'");
+                }
+                foreach (string biome in def.restrictedBiomes)
+                {
+                    TestAssert.IsNotNull(DefDatabase<BiomeDef>.GetNamed(biome, false),
+                        $"{def.defName}: restrictedBiomes contains unknown biome '{biome}'");
+                }
+            }
+        }
 
         [EmpireTest("EventSystem")]
         public static void MakeEvent_SetsTimeTillTrigger()
