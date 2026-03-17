@@ -135,7 +135,7 @@ namespace FactionColonies
         /// <summary>
         /// Returns the patch notes seperated by new lines
         /// </summary>
-        public string PatchNotesFormatted => string.Join("\n", patchNoteLines);
+        public string PatchNotesFormatted => string.Join("\n", patchNoteLines.Select(line => "\u2022 " + line));
 
         /// <summary>
         /// Returns additional notes as provided by the def
@@ -230,13 +230,43 @@ namespace FactionColonies
             modContentPackCached = null;
         }
 
+        /// <summary>
+        /// Returns true if this patch note's version is newer than the given version components.
+        /// </summary>
+        public bool IsNewerThan(int maj, int min, int pat)
+        {
+            if (major != maj) return major > maj;
+            if (minor != min) return minor > min;
+            return patch > pat;
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (string error in base.ConfigErrors())
+            {
+                yield return error;
+            }
+
+            if (patchNoteLines.NullOrEmpty())
+                yield return "patchNoteLines is empty";
+            if (major < 0 || minor < 0 || patch < 0)
+                yield return $"version components must be non-negative: {major}.{minor}.{patch}";
+            if (releaseMonth < 1 || releaseMonth > 12 || releaseDay < 1 || releaseDay > 31)
+                yield return $"invalid release date: {releaseYear}-{releaseMonth}-{releaseDay}";
+            if (!patchNoteImagePaths.NullOrEmpty() && patchNoteImagePaths.Count != patchNoteImageDescriptions.Count)
+                yield return $"patchNoteImagePaths count ({patchNoteImagePaths.Count}) != patchNoteImageDescriptions count ({patchNoteImageDescriptions.Count})";
+            if (string.IsNullOrEmpty(modId))
+                yield return "modId is empty";
+            if (authors.NullOrEmpty())
+                yield return "authors list is empty";
+        }
+
         private static string ToVersion(int num) => (num > 10) ? num.ToString() : '0' + num.ToString();
 
         /// <summary>
-        /// Sorts all patchNoteDefs to find the latest one for a mod using it's <paramref name="modId"/>
+        /// Sorts all patchNoteDefs to find the latest one for a mod using it's <paramref name="modId"/>.
+        /// Logs a warning if the latest def's version doesn't match Manifest.xml.
         /// </summary>
-        /// <param name="modId"></param>
-        /// <returns>the newest PatchNoteDef, null if no PatchNoteDefs with the <paramref name="modId"/> exist</returns>
         public static PatchNoteDef GetLatestForMod(string modId)
         {
             List<PatchNoteDef> patchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.Where(def => def.modId == modId).ToList();
@@ -249,7 +279,15 @@ namespace FactionColonies
 
             //This way of sorting produces a list: oldest => newest
             patchNoteDefs.SortBy(def => def.ReleaseDate, def => def.ToOldEmpireVersion);
-            return patchNoteDefs.Last();
+            PatchNoteDef latest = patchNoteDefs.Last();
+
+            string manifestVersion = FCSettings.GetModVersion();
+            if (manifestVersion != "Unknown" && manifestVersion != latest.VersionNumber)
+            {
+                LogUtil.Warning($"Latest PatchNoteDef version {latest.VersionNumber} does not match Manifest.xml version {manifestVersion}");
+            }
+
+            return latest;
         }
 
         [DefOf]

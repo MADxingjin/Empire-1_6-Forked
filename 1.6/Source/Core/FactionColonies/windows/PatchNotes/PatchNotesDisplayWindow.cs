@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FactionColonies.PatchNote;
 using FactionColonies.util;
 using RimWorld;
 using UnityEngine;
@@ -43,7 +42,6 @@ namespace FactionColonies
 		private static readonly List<PatchNoteDef> patchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.ListFullCopy();
 
 		private readonly string title = "FCPatchNotesWindowTitle".Translate();
-		private readonly PatchNoteSettings patchNoteSettings = LoadedModManager.GetMod<PatchNoteMod>().GetSettings<PatchNoteSettings>();
 
 		//For the patch note area
 		private bool firstRun = true;
@@ -84,6 +82,19 @@ namespace FactionColonies
 		/// </summary>
 		/// <param name="title"></param>
 		public PatchNotesDisplayWindow(string title) : this() => this.title = title;
+
+		public override void PostClose()
+		{
+			base.PostClose();
+			if (patchNoteDefs.Count > 0)
+			{
+				PatchNoteDef latest = patchNoteDefs[0]; // Already sorted newest-first
+				FCSettings.lastSeenVersionMajor = latest.Major;
+				FCSettings.lastSeenVersionMinor = latest.Minor;
+				FCSettings.lastSeenVersionPatch = latest.Patch;
+				LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
+			}
+		}
 
 		/// <summary>
 		/// This function draws the contents of this window class. The Rects were laid out using NesGui
@@ -313,10 +324,10 @@ namespace FactionColonies
 					Widgets.DrawLightHighlight(curPatchNoteRect);
 
 
-				if (patchNoteDefs[i].ToOldEmpireVersion > patchNoteSettings.lastVersion)
-                {
+				if (patchNoteDefs[i].IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+				{
 					GUI.color = Color.red;
-                }
+				}
 
 				Widgets.DrawBox(curPatchNoteRect);
 

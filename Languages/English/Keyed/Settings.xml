@@ -43,22 +43,6 @@
 	<FCDifficultyLosingIsFunDesc>Brutal difficulty for masochists. Minimal resources and very long tax intervals.</FCDifficultyLosingIsFunDesc>
 	<FCDifficultyCustomDesc>Customize all empire settings manually.</FCDifficultyCustomDesc>
 
-	<!-- Welcome Window -->
-	<FCWelcomeTitle>Welcome to the Empire Mod!</FCWelcomeTitle>
-	<FCWelcomeMessage>Welcome to the Empire Mod! Build and manage settlements with production, military and loyalty!</FCWelcomeMessage>
-	<FCWelcomeDescription>Build and manage settlements with production, military and loyalty!</FCWelcomeDescription>
-	<FCWelcomeQuickStart>QUICK START:</FCWelcomeQuickStart>
-	<FCWelcomeStep1>Select faction traits (you'll get an alert)</FCWelcomeStep1>
-	<FCWelcomeStep2>Set your tax collection spot &amp; capital seat</FCWelcomeStep2>
-	<FCWelcomeStep3>Create your first settlement</FCWelcomeStep3>
-	<FCWelcomeStep4>Start production of resources, handle military and manage loyalty</FCWelcomeStep4>
-	<FCWelcomeHelpfulResources>HELPFUL RESOURCES:</FCWelcomeHelpfulResources>
-	<FCWelcomeDiscord>Join our Discord Community</FCWelcomeDiscord>
-	<FCWelcomeGuide>Empire Guide (Google Docs)</FCWelcomeGuide>
-	<FCWelcomeGitHub>GitHub Repository</FCWelcomeGitHub>
-	<FCWelcomeTip>TIP: Start with "Adventure Story" difficulty for balanced gameplay!</FCWelcomeTip>
-	<FCWelcomeBegin>Begin your Empire</FCWelcomeBegin>
-	<FCWelcomeClose>Close</FCWelcomeClose>
 	<FCModVersion>Empire Mod Version: {0}</FCModVersion>
 
 	<!-- Warnings -->
