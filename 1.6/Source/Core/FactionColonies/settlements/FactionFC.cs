@@ -383,6 +383,19 @@ namespace FactionColonies
         {
             base.FinalizeInit(fromLoad);
 
+            // Apply saved tech level to FactionDef early — must happen before anything
+            // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
+            // of going through RecomputeTechLevel, which has side effects (xenotypeFilter
+            // FinalizeInit) that depend on deferred initialization.
+            if (fromLoad && _techLevel > TechLevel.Undefined)
+            {
+                Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
+                if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
+                {
+                    UpdateFactionDef(_techLevel, ref playerColonyfaction);
+                }
+            }
+
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
@@ -448,7 +461,7 @@ namespace FactionColonies
 
                 if (!(faction is null))
                 {
-                    faction.def.techLevel = TechLevel.Undefined;
+                    _ = techLevel;
                     factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
                         TexLoad.factionIcons.First());
                     UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);

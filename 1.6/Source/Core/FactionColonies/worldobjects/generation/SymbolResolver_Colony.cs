@@ -1,7 +1,6 @@
-﻿using RimWorld;
+using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
-using Verse.AI.Group;
 
 namespace FactionColonies
 {
@@ -15,7 +14,10 @@ namespace FactionColonies
             else if (rp.rect.Width >= 20 && rp.rect.Height >= 20 &&
                      (rp.faction.def.techLevel >= TechLevel.Industrial || Rand.Bool))
                 dist = Rand.Bool ? 2 : 4;
-            
+
+            float emptyNodes = (float)rp.rect.Area / 144f * 0.17f;
+            BaseGen.globalSettings.minEmptyNodes = emptyNodes < 1f ? 0 : GenMath.RoundRandom(emptyNodes);
+
             if (rp.faction.def.techLevel >= TechLevel.Industrial)
             {
                 BaseGen.symbolStack.Push("outdoorLighting", rp);
@@ -24,20 +26,16 @@ namespace FactionColonies
                 {
                     ResolveParams resolveParams2 = rp;
                     resolveParams2.faction = rp.faction;
-                   BaseGen.symbolStack.Push("firefoamPopper", resolveParams2);
+                    BaseGen.symbolStack.Push("firefoamPopper", resolveParams2);
                 }
             }
 
-            bool? nullable1;
             if (dist > 0)
             {
                 ResolveParams resolveParams2 = rp;
                 resolveParams2.faction = rp.faction;
                 resolveParams2.edgeDefenseWidth = dist;
-                ref ResolveParams local = ref resolveParams2;
-                nullable1 = rp.edgeThingMustReachMapEdge;
-                bool? nullable2 = !nullable1.HasValue || nullable1.GetValueOrDefault();
-                local.edgeThingMustReachMapEdge = nullable2;
+                resolveParams2.edgeThingMustReachMapEdge = rp.edgeThingMustReachMapEdge ?? true;
                 BaseGen.symbolStack.Push("edgeDefense", resolveParams2);
             }
 
@@ -48,22 +46,21 @@ namespace FactionColonies
             ResolveParams resolveParams4 = rp;
             resolveParams4.rect = rp.rect.ContractedBy(dist);
             resolveParams4.faction = rp.faction;
-            ref ResolveParams local1 = ref resolveParams4;
-            nullable1 = rp.floorOnlyIfTerrainSupports;
-            bool? nullable3 = !nullable1.HasValue || nullable1.GetValueOrDefault();
-            local1.floorOnlyIfTerrainSupports = nullable3;
+            resolveParams4.floorOnlyIfTerrainSupports = rp.floorOnlyIfTerrainSupports ?? true;
             BaseGen.symbolStack.Push("basePart_outdoors", resolveParams4);
             ResolveParams resolveParams5 = rp;
             resolveParams5.floorDef = TerrainDefOf.Bridge;
-            ref ResolveParams local2 = ref resolveParams5;
-            nullable1 = rp.floorOnlyIfTerrainSupports;
-            bool? nullable4 = !nullable1.HasValue || nullable1.GetValueOrDefault();
-            local2.floorOnlyIfTerrainSupports = nullable4;
-            ref ResolveParams local3 = ref resolveParams5;
-            nullable1 = rp.allowBridgeOnAnyImpassableTerrain;
-            bool? nullable5 = !nullable1.HasValue || nullable1.GetValueOrDefault();
-            local3.allowBridgeOnAnyImpassableTerrain = nullable5;
+            resolveParams5.floorOnlyIfTerrainSupports = rp.floorOnlyIfTerrainSupports ?? true;
+            resolveParams5.allowBridgeOnAnyImpassableTerrain = rp.allowBridgeOnAnyImpassableTerrain ?? true;
             BaseGen.symbolStack.Push("floor", resolveParams5);
+            BaseGen.symbolStack.Push("removeDangerousTerrain", rp);
+            if (ModsConfig.BiotechActive)
+            {
+                ResolveParams resolveParams6 = rp;
+                resolveParams6.rect = rp.rect.ExpandedBy(Rand.Range(1, 4));
+                resolveParams6.edgeUnpolluteChance = 0.5f;
+                BaseGen.symbolStack.Push("unpollute", resolveParams6);
+            }
         }
     }
 }

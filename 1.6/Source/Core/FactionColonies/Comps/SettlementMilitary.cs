@@ -566,6 +566,25 @@ namespace FactionColonies
 
                 Map.fogGrid.ClearAllFog();
 
+                // Remove pawns spawned by KCSG/VBGE that don't belong to Empire or the player.
+                // KCSG's SymbolResolver_Settlement spawns generic faction pawns during map gen
+                // that conflict with Empire's lord-based military system.
+                Faction empireFaction = FactionCache.PlayerColonyFaction;
+                List<Pawn> toRemove = new List<Pawn>();
+                foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned)
+                {
+                    if (!pawn.RaceProps.Humanlike) continue;
+                    if (pawn.Faction == empireFaction) continue;
+                    if (pawn.Faction == Faction.OfPlayer) continue;
+                    toRemove.Add(pawn);
+                }
+                foreach (Pawn pawn in toRemove)
+                {
+                    pawn.Destroy();
+                }
+                if (toRemove.Count > 0)
+                    LogUtil.Message($"Cleaned up {toRemove.Count} unrelated pawns from {WorldSettlement.Name}");
+
                 GenerateFriendlies(force);
                 RecruitMapInhabitants();
                 Find.TickManager.Notify_GeneratedPotentiallyHostileMap();

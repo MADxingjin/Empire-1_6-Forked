@@ -4,7 +4,7 @@
         <defName>FactionBaseGenerator</defName>
         <label>ColonyBase</label>
         <worldObjectClass>FactionColonies.WorldSettlementFC</worldObjectClass>
-        <mapGenerator>Base_Faction</mapGenerator>
+        <mapGenerator>Empire_Base</mapGenerator>
         <texture>World/WorldObjects/DefaultSettlement</texture>
         <expandingIcon>true</expandingIcon>
         <expandMore>true</expandMore>

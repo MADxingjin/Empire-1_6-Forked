@@ -77,11 +77,11 @@ namespace FactionColonies
                 resource.SetDirtyCache();
 
                 double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
-                double expected = resource.taxableProductionMarketValue * multForTotal;
+                double expected = resource.taxableProductionMarketValue * multForTotal + resource.externalTitheBudget;
                 double actual = resource.GetTitheIncome();
 
                 TestAssert.AreEqual(expected, actual,
-                    message: "With 0 workers, tithe income should equal taxableProductionMarketValue * titheValueMultiplier");
+                    message: "With 0 workers, tithe income should equal taxableProductionMarketValue * titheValueMultiplier + externalTitheBudget");
             }
             finally
             {
@@ -102,11 +102,11 @@ namespace FactionColonies
             // Manually compute using the same formula that GetTitheIncome should use
             double workerMod = resource.GetTitheModifierPerWorker() * resource.assignedWorkers;
             double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
-            double expected = (resource.taxableProductionMarketValue + workerMod) * multForTotal;
+            double expected = (resource.taxableProductionMarketValue + workerMod) * multForTotal + resource.externalTitheBudget;
             double actual = resource.GetTitheIncome();
 
             TestAssert.AreEqual(expected, actual,
-                message: "GetTitheIncome should equal (taxableMarketValue + workerMod) * titheValueMultiplier");
+                message: "GetTitheIncome should equal (taxableMarketValue + workerMod) * titheValueMultiplier + externalTitheBudget");
         }
 
         [EmpireTest("TitheIncome")]

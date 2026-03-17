@@ -62,6 +62,44 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_101_0</defName>
+		<label>Compatibility with Vanilla Base Generation Expanded</label>
+		<description>Update&apos;s Empire&apos;s compatibility with Vanilla Base Generation Expanded, including a transpiler fix to an out-of-bounds error in the Vanilla Expanded Framework.</description>
+
+		<major>0</major>
+		<minor>101</minor>
+		<patch>0</patch>
+
+		<releaseDay>17</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add transpiler patch to fix an out-of-bounds error during VBGE map generation</li>
+		<li>Fix the spawning of defense turrets for settlements that have weapons production</li>
+		<li>Extensiblity: tithe injections are properly reflected in the &quot;net income&quot; display on the settlement window</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Compatibility with Vanilla Base Generation Expanded</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_100_1</defName>
 		<label>Additional extensibility support</label>
 		<description>Lets submods &apos;inject&apos; extra value into a settlement&apos;s tithe budget.</description>

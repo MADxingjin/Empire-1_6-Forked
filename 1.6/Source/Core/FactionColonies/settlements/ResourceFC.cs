@@ -214,7 +214,8 @@ namespace FactionColonies
         public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
         /// <summary>
         /// Aggregates additional tithe budget (in silver) from all <see cref="ITitheBudgetModifier"/> comps
-        /// on this settlement. Added to the tithe income cap and offset in actualIncome.
+        /// on this settlement. Added to the tithe income cap; in actualIncome, only the portion of tithe
+        /// covered by this budget is offset (capped to titheTotalValue).
         /// </summary>
         public double externalTitheBudget
         {
@@ -232,10 +233,10 @@ namespace FactionColonies
                 return total;
             }
         }
-        public double actualIncome => taxableProductionMarketValue - titheTotalValue + externalTitheBudget;
+        public double actualIncome => taxableProductionMarketValue - titheTotalValue + Math.Min(titheTotalValue, externalTitheBudget);
         /// <summary>What actualIncome would be at tax time, using the period average instead of instantaneous production.</summary>
         public double averageActualIncome => accumulationDays > 0
-            ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue + externalTitheBudget
+            ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue + Math.Min(titheTotalValue, externalTitheBudget)
             : actualIncome;
 
         public bool canTithe => !def.isPoolResource;

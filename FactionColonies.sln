@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.WDExp", "1.6\Source\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.HAR", "1.6\Source\Patch-HAR\Empire.HAR.csproj", "{8A25014A-9508-F5CA-C809-D016C2586BD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.KCSG", "1.6\Source\Patch-KCSG\Empire.KCSG.csproj", "{ADD38221-BC00-9C01-65F2-553F6475D46D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,24 @@ Global
 		{8A25014A-9508-F5CA-C809-D016C2586BD3}.Testing|x64.Build.0 = Testing|Any CPU
 		{8A25014A-9508-F5CA-C809-D016C2586BD3}.Testing|x86.ActiveCfg = Testing|Any CPU
 		{8A25014A-9508-F5CA-C809-D016C2586BD3}.Testing|x86.Build.0 = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|x64.Build.0 = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Debug|x86.Build.0 = Debug|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|x64.ActiveCfg = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|x64.Build.0 = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|x86.ActiveCfg = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Release|x86.Build.0 = Release|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x64.ActiveCfg = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x64.Build.0 = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x86.ActiveCfg = Testing|Any CPU
+		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x86.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
