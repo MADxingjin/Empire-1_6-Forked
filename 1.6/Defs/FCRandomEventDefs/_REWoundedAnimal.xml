@@ -19,6 +19,10 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>woundedAnimal_1-1</li>
+			<li>woundedAnimal_1-2</li>
+			<li>woundedAnimal_1-3s</li>
+			<li>woundedAnimal_1-3f</li>
 		</incompatibleEvents>
 
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
@@ -70,6 +74,9 @@
 
 		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
 		<randomThingValue>700</randomThingValue>
+		<incompatibleEvents>
+			<li>woundedAnimal_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 
@@ -84,6 +91,9 @@
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-3</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>woundedAnimal_0</li>
+		</incompatibleEvents>
 
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -98,6 +108,9 @@
 		<timeTillTrigger>1500</timeTillTrigger>
 		<randomThingRewardDef>RERD_Animals</randomThingRewardDef>
 		<randomThingValue>500</randomThingValue>
+		<incompatibleEvents>
+			<li>woundedAnimal_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
@@ -109,6 +122,9 @@
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>woundedAnimal_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

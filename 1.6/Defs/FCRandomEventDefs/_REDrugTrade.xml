@@ -62,6 +62,9 @@
 			<splitEventChance>50</splitEventChance>
 			<followingEvent>drugTrade_2-1</followingEvent>
 			<followingEvent2>drugTrade_2-2</followingEvent2>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 			<settlementsCarryOver>true</settlementsCarryOver>
 			<statModifiers>
@@ -80,6 +83,9 @@
 				<li><stat>unrestGainedMultiplier</stat><value>.75</value></li>
 				<li><stat>taxBasePercentage</stat><value>-10</value></li>
 			</statModifiers>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 			<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -96,6 +102,9 @@
 				<li>drugTrade_2-1_1</li>
 				<li>drugTrade_2-1_2</li>
 			</options>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 			<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -128,6 +137,9 @@
 			<timeTillTrigger>300000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
 			<followingEvent>drugTrade_1-1</followingEvent>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 			<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -148,6 +160,9 @@
 			<statModifiers>
 				<li><stat>taxBasePercentage</stat><value>-10</value></li>
 			</statModifiers>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 
@@ -161,6 +176,9 @@
 				<li>drugTrade_4-1_1</li>
 				<li>drugTrade_4-1_2</li>
 			</options>
+			<incompatibleEvents>
+				<li>drugTrade_0</li>
+			</incompatibleEvents>
 			<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>

@@ -69,6 +69,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-1b</followingEvent>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -82,6 +85,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-1</followingEvent>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -95,6 +101,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-2</followingEvent>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -108,6 +117,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>strangeDiscovery_2-3</followingEvent>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -126,6 +138,9 @@
 		</statModifiers>
 		<randomThingRewardDef>RERD_Mining</randomThingRewardDef>
 		<randomThingValue>300</randomThingValue>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<!-- Standard reward: ore veins found (Option 2 success path) -->
@@ -142,6 +157,9 @@
 		</statModifiers>
 		<randomThingRewardDef>RERD_Mining</randomThingRewardDef>
 		<randomThingValue>175</randomThingValue>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<!-- Safe failure: military protects miners -->
@@ -151,6 +169,9 @@
 		<desc>When your miners investigated, a large insectoid attacked! Luckily, the security force sent with the miners fought off the creature with no casualties. A report of the event has been sent up for investigation.</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>2500</timeTillTrigger>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -167,6 +188,9 @@
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-3</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>strangeDiscovery_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 </Defs>
