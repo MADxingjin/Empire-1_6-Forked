@@ -62,6 +62,43 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_101_1</defName>
+		<label>Fix event stacking &amp; incompatibilities</label>
+		<description>Various fixes for Empire&apos;s events.</description>
+
+		<major>0</major>
+		<minor>101</minor>
+		<patch>1</patch>
+
+		<releaseDay>17</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Update the event system so that events won&apos;t stack on the same settlement</li>
+		<li>Update event chains to have the proper incompatible tags, so that incompatible events won&apos;t fire at the same time</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Fix event stacking &amp; incompatibilities</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_101_0</defName>
 		<label>Compatibility with Vanilla Base Generation Expanded</label>
 		<description>Update&apos;s Empire&apos;s compatibility with Vanilla Base Generation Expanded, including a transpiler fix to an out-of-bounds error in the Vanilla Expanded Framework.</description>

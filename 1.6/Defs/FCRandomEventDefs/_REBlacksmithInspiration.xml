@@ -17,6 +17,10 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>blacksmithInspiration_1-1</li>
+			<li>blacksmithInspiration_1-2s</li>
+			<li>blacksmithInspiration_1-2f</li>
+			<li>blacksmithInspiration_1-3</li>
 		</incompatibleEvents>
 		<rangeSettlementsAffected>0~0</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
@@ -73,6 +77,9 @@
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>700</randomThingValue>
+		<incompatibleEvents>
+			<li>blacksmithInspiration_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
@@ -85,6 +92,9 @@
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>2800</randomThingValue>
+		<incompatibleEvents>
+			<li>blacksmithInspiration_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
@@ -97,6 +107,9 @@
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>400</randomThingValue>
+		<incompatibleEvents>
+			<li>blacksmithInspiration_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCEventDef>
@@ -112,6 +125,9 @@
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
 		<randomThingValue>1000</randomThingValue>
+		<incompatibleEvents>
+			<li>blacksmithInspiration_0</li>
+		</incompatibleEvents>
 	</FactionColonies.FCEventDef>
 
 </Defs>

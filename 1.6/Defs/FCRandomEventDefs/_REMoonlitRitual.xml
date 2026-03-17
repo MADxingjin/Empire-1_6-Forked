@@ -18,6 +18,15 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>moonlitRitual_1-1</li>
+			<li>moonlitRitual_2-1</li>
+			<li>moonlitRitual_2-2</li>
+			<li>moonlitRitual_3-1</li>
+			<li>moonlitRitual_3-2</li>
+			<li>moonlitRitual_3-3</li>
+			<li>moonlitRitual_3-4</li>
+			<li>moonlitRitual_4-1</li>
+			<li>moonlitRitual_4-2</li>
 		</incompatibleEvents>
 
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
@@ -61,6 +70,9 @@
 			<li>moonlitRitual_1-1_3</li>
 		</options>
 		<activateAtStart>false</activateAtStart>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -106,6 +118,9 @@
 			<li>moonlitRitual_2-1_2</li>
 		</options>
 		<activateAtStart>false</activateAtStart>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -144,6 +159,9 @@
 		<followingEvent>moonlitRitual_3-3</followingEvent>
 		<followingEvent2>moonlitRitual_3-4</followingEvent2>
 
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -157,6 +175,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>moonlitRitual_4-1</followingEvent>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -171,6 +192,9 @@
 			<li><stat>happinessLostBase</stat><value>2</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -184,6 +208,9 @@
 		<timeTillTrigger>60000</timeTillTrigger>
 		<eventFollows>true</eventFollows>
 		<followingEvent>moonlitRitual_4-2</followingEvent>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -197,6 +224,9 @@
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -211,6 +241,9 @@
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
@@ -225,6 +258,9 @@
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
+		<incompatibleEvents>
+			<li>moonlitRitual_0</li>
+		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 	</FactionColonies.FCEventDef>
