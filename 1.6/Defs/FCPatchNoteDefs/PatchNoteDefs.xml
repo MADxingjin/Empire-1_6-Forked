@@ -62,6 +62,79 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_105_0</defName>
+		<label>Improve faction overview</label>
+		<description>Add further settlement upgrade info to the faction overview.</description>
+
+		<major>0</major>
+		<minor>105</minor>
+		<patch>0</patch>
+
+		<releaseDay>17</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds an &quot;Upgrade&quot; button to each upgradable settlement in the faction overview</li>
+		<li>Adds an &quot;Upgrading...&quot; progress bar to each actively upgrading settlement in the faction overview</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Improve faction overview</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_104_1</defName>
+		<label>Fix auto-resolve tax bug</label>
+		<description>Quick fix for the tax system.</description>
+
+		<major>0</major>
+		<minor>104</minor>
+		<patch>1</patch>
+
+		<releaseDay>17</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Fixes an issue where auto-resolve won&apos;t properly auto-resolve bills with a negative silver amount</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Fix auto-resolve tax bug</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_104_0</defName>
 		<label>Drop Pods deliver to tax spot</label>
 		<description>Updates how drop pod deliveries choose their landing target.</description>

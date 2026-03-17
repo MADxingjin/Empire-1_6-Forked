@@ -40,6 +40,10 @@ namespace FactionColonies
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
         public int settlementLevel = 1;
 
+        public bool CanUpgrade => !isUpgrading
+            && settlementLevel < FCSettings.settlementMaxLevel
+            && settlementLevel < settlementDef.maxSettlementLevel;
+
         public int GetBuildingSlots()
         {
             return settlementDef.GetSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
