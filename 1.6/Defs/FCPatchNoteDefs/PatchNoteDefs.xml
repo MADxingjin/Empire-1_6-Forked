@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<!-- PatchNoteTypes: Undefined, Hotfix, Patch, Minor, Major -->
 	<FactionColonies.PatchNoteDef Name="EmpirePatchBase" Abstract="True">
@@ -66,6 +66,56 @@
 		</authors>
 	</FactionColonies.PatchNoteDef>
 	========== END TEMPLATE ========== -->
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_100_0</defName>
+		<label>Major Refactor</label>
+		<description>Updating version during major refactor.</description>
+
+		<major>0</major>
+		<minor>100</minor>
+		<patch>0</patch>
+
+		<releaseDay>16</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Reworked FactionColonies class and the settings</li>
+		<li>Added a LogUtil class</li>
+		<li>Refactored settlements to use a single WorldSettlementFC class</li>
+		<li>Settlement types and resources defined through XML defs</li>
+		<li>Major UI rework (redid most of the mod&apos;s windows)</li>
+		<li>Road buildings uses a Minimum Spanning Tree (MST) for more organic-looking road networks</li>
+		<li>Faction policies and traits converted into defs</li>
+		<li>Repurposed old, unused policies into three new categories of Edicts</li>
+		<li>Reworked events to give the player a choice over how they respond</li>
+		<li>Reworked taxes: a snapshot of a settlement&apos;s production is taken each day. At tax time, the player recieves taxes based on the average of these daily snapshots</li>
+		<li>Numerous bug fixes to the manual battle system. It has been tentatively re-enabled. If it remains buggy, it may be disabled again</li>
+		<li>Military threat levels reworked. Settlement raids scale more</li>
+		<li>Numerous changes in the name of extensibility (refer to the Docs)</li>
+		<li>Compatibility patches for Humanoid Alien Races, Combat Extended, RimWar, World Domination, and Faction Territories &amp; Vassalage. Some still need testing</li>
+		<li>Numerous other bugfixes; too many to note here</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Major Refactor</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 
 		<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_50_0</defName>
