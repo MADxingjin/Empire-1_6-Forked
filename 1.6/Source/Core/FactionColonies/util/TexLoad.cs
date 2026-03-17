@@ -62,8 +62,7 @@ namespace FactionColonies
         //UnitCustomization
         public static readonly Texture2D unitCircle = ContentFinder<Texture2D>.Get("GUI/unitCircle");
 
-        // Welcome window textures
-        public static readonly Texture2D empireIcon = ContentFinder<Texture2D>.Get("UI/Banners/Empire");
+        // Patch notes link button textures
         public static readonly Texture2D discordIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/discordlogo");
         public static readonly Texture2D githubIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/githublogo");
         public static readonly Texture2D wikiIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/wikilogo");

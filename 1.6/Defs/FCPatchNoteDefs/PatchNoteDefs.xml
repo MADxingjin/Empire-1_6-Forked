@@ -29,6 +29,44 @@
 		<introStringBase>A new update for {0} has been released: v.{1}. The following changes have occurred:</introStringBase>
 	</FactionColonies.PatchNoteDef>
 
+	<!-- ========== TEMPLATE: Copy this block and fill in fields to add a new patch note ==========
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>X_YY_ZZ</defName>
+		<label>Short Title</label>
+		<description>One-line summary of the update.</description>
+
+		<major>0</major>
+		<minor>0</minor>
+		<patch>0</patch>
+
+		<releaseDay>1</releaseDay>
+		<releaseMonth>1</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+			<li>Change description here.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Image description here.</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+			<li>YourName</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+	========== END TEMPLATE ========== -->
+
 		<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_50_0</defName>
 		<label>Updated Textures</label>

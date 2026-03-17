@@ -138,9 +138,14 @@ namespace FactionColonies
         private static bool printDebug = false;
         public static bool PrintDebug => printDebug;
 
-        // Window size settings - add these fields
+        // Window size settings
         public static float buildingWindowWidth = 800f;
         public static float buildingWindowHeight = 600f;
+
+        // Patch notes version tracking — marks the latest version the player has seen
+        public static int lastSeenVersionMajor = 0;
+        public static int lastSeenVersionMinor = 0;
+        public static int lastSeenVersionPatch = 0;
 
         public override void ExposeData()
         {
@@ -167,6 +172,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref printDebug, "printDebug", false);
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
+            Scribe_Values.Look(ref lastSeenVersionMajor, "lastSeenVersionMajor", 0);
+            Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
+            Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
