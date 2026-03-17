@@ -426,9 +426,13 @@ namespace FactionColonies
             float rowHeight = 23f;
             float labelHeight = rowHeight - (smallMargin * 2);
 
+            double extBudget = res.externalTitheBudget;
+            bool hasInjection = extBudget > 0.01;
+
             Rect titheModBox = new Rect(boundingBox.x, iconBox.yMax + margin, (boundingBox.width - margin)/2f, rowHeight * 3f);
             Rect prodBox = new Rect(titheModBox.xMax + margin, iconBox.yMax + margin, (boundingBox.width - margin)/2f, rowHeight);
-            Rect budgetBox = new Rect(titheModBox.xMax + margin, prodBox.yMax, (boundingBox.width - margin) / 2f, rowHeight);
+            float budgetY = hasInjection ? prodBox.yMax + rowHeight : prodBox.yMax;
+            Rect budgetBox = new Rect(titheModBox.xMax + margin, budgetY, (boundingBox.width - margin) / 2f, rowHeight);
 
             /* Tithe modifier info */
             Rect titheRow1 = new Rect(titheModBox.x, titheModBox.y, titheModBox.width, rowHeight);
@@ -457,6 +461,31 @@ namespace FactionColonies
             Widgets.Label(prodLabel, "TotalProd".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(prodnum, res.taxableProductionMarketValue.ToString());
+
+            /* External Tithe Injection */
+            if (hasInjection)
+            {
+                Rect injBox = new Rect(prodBox.x, prodBox.yMax, prodBox.width, rowHeight);
+                Rect injLabel = new Rect(injBox.x + smallMargin, injBox.y + smallMargin, (injBox.width - (margin * 2)) * 0.75f, labelHeight);
+                Rect injNum = new Rect(injLabel.xMax, injLabel.y, (injBox.width - (margin * 2)) * 0.25f, labelHeight);
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(injLabel, "ExternalTitheBudget".Translate());
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(injNum, extBudget.ToString());
+
+                StringBuilder injTip = new StringBuilder();
+                foreach (WorldObjectComp comp in res.settlement.AllComps)
+                {
+                    if (comp is ITitheBudgetModifier modifier)
+                    {
+                        string desc = modifier.GetExternalTitheBudgetDesc(res);
+                        if (!string.IsNullOrEmpty(desc))
+                            injTip.AppendLine(desc);
+                    }
+                }
+                if (injTip.Length > 0)
+                    TooltipHandler.TipRegion(injBox, injTip.ToString().TrimEnd());
+            }
 
             /* Tithe Budget */
             Text.Anchor = TextAnchor.MiddleLeft;

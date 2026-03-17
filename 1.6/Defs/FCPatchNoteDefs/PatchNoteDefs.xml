@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_100_1</defName>
+		<label>Additional extensibility support</label>
+		<description>Lets submods &apos;inject&apos; extra value into a settlement&apos;s tithe budget.</description>
+
+		<major>0</major>
+		<minor>100</minor>
+		<patch>1</patch>
+
+		<releaseDay>16</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds an ITitheBudgetModifier interface that WorldObjectComps can implement. Allows for &apos;injection&apos; of additional value into a settlement&apos;s tithe budget for a given resource</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Additional extensibility support</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_100_0</defName>
 		<label>Major Refactor</label>
 		<description>Updating version during major refactor.</description>

@@ -212,10 +212,30 @@ namespace FactionColonies
         public double grossMarketValue => rawTotalProduction * FCSettings.silverPerResource;
         public double stockpileMarketValue => totalStockpileAllocation * FCSettings.silverPerResource;
         public double taxableProductionMarketValue => effectiveRawTotalProduction * FCSettings.silverPerResource;
-        public double actualIncome => taxableProductionMarketValue - titheTotalValue;
+        /// <summary>
+        /// Aggregates additional tithe budget (in silver) from all <see cref="ITitheBudgetModifier"/> comps
+        /// on this settlement. Added to the tithe income cap and offset in actualIncome.
+        /// </summary>
+        public double externalTitheBudget
+        {
+            get
+            {
+                double total = 0;
+                if (settlement != null)
+                {
+                    foreach (WorldObjectComp comp in settlement.AllComps)
+                    {
+                        if (comp is ITitheBudgetModifier provider)
+                            total += provider.GetExternalTitheBudget(this);
+                    }
+                }
+                return total;
+            }
+        }
+        public double actualIncome => taxableProductionMarketValue - titheTotalValue + externalTitheBudget;
         /// <summary>What actualIncome would be at tax time, using the period average instead of instantaneous production.</summary>
         public double averageActualIncome => accumulationDays > 0
-            ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue
+            ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue + externalTitheBudget
             : actualIncome;
 
         public bool canTithe => !def.isPoolResource;
@@ -345,7 +365,7 @@ namespace FactionColonies
         public double GetTitheIncome()
         {
             double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
-            return (taxableProductionMarketValue + GetTotalTitheModifierForWorkers()) * multForTotal;
+            return ((taxableProductionMarketValue + GetTotalTitheModifierForWorkers()) * multForTotal) + externalTitheBudget;
         }
         public void RefreshOnRandomTitheBudgetChange()
         {
