@@ -56,7 +56,14 @@
 		
 		<requiredResource><!--ResourceTypeDef defName--></requiredResource> <!-- if you want an event to require that a specific resource is being produced, put the ResourceTypeDef defName in this tag. If you use this along with the rangeSettlementsAffected, the event will only occur in settlements that is producing that resource! -->
 		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
-		
+
+		<applicableBiomes> <!-- If set, this event will only target settlements in these biomes. Uses BiomeDef defNames. If empty, all biomes are valid. -->
+			<!-- <li>BorealForest</li> -->
+		</applicableBiomes>
+		<restrictedBiomes> <!-- If set, this event will NOT target settlements in these biomes. Ignored if applicableBiomes is set. -->
+			<!-- <li>Desert</li> -->
+		</restrictedBiomes>
+
 		<randomThingRewardDef>RERD_Food</randomThingRewardDef> <!-- if you want the event to give the player a random item when the event completes (Or at the end of the 'step' in a chain of events) put the ResourceEventRewardDef defName here. Note, if you have <activateAtStart>true</activateAtStart>, this will not generate an item to give to the player. -->
 		<!-- ResourceEventRewardDef defNames: RERD_Food, RERD_Weapons, RERD_Apparel, RERD_Armor, RERD_Animals, RERD_Logging, RERD_Mining, RERD_Drugs -->
 		<randomThingValue>0</randomThingValue> <!-- The 'MarketValue' of the object being generated. -->
@@ -110,7 +117,12 @@
 		
 		<requiredResource><!--ResourceTypeDef defName--></requiredResource>
 		<!-- ResourceTypeDef defNames: RTD_Food, RTD_Weapons, RTD_Apparel, RTD_Animals, RTD_Logging, RTD_Mining, RTD_Research, RTD_Power, RTD_Medicine, RTD_Chemfuel -->
-		
+
+		<applicableBiomes>
+		</applicableBiomes>
+		<restrictedBiomes>
+		</restrictedBiomes>
+
 		<randomThingRewardDef>RERD_Food</randomThingRewardDef>
 		<!-- ResourceEventRewardDef defNames: RERD_Food, RERD_Weapons, RERD_Apparel, RERD_Armor, RERD_Animals, RERD_Logging, RERD_Mining, RERD_Drugs -->
 		<randomThingValue>0</randomThingValue>

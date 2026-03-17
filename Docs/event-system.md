@@ -51,6 +51,7 @@ Random events are a subset of `FCEventDef` where `isRandomEvent = true`. The ran
    - Faction average happiness must be within `minimumHappiness`–`maximumHappiness`
    - Same for loyalty, unrest, and prosperity ranges
    - If `requiredResource` is set, at least one settlement must produce it
+   - If `applicableBiomes` or `restrictedBiomes` is set, at least one settlement must have an allowed biome
    - No `incompatibleEvents` can be currently active
 2. Builds a weighted list (each def appears `weight` times)
 3. Picks a random element
@@ -67,6 +68,8 @@ Random events are a subset of `FCEventDef` where `isRandomEvent = true`. The ran
 | `minimumUnrest` / `maximumUnrest` | `int` | Required unrest range (0-100). |
 | `minimumProsperity` / `maximumProsperity` | `int` | Required prosperity range (0-100). |
 | `requiredResource` | `ResourceTypeDef` | At least one settlement must produce this. |
+| `applicableBiomes` | `List<string>` | Biome allowlist (BiomeDef defNames). Only settlements in these biomes are eligible. Empty = all. |
+| `restrictedBiomes` | `List<string>` | Biome blocklist (BiomeDef defNames). Settlements in these biomes are excluded. Ignored if `applicableBiomes` is set. |
 | `incompatibleEvents` | `List<FCEventDef>` | Cannot fire while these events are active. |
 | `rangeSettlementsAffected` | `IntRange` | How many settlements are affected. `(0,0)` = faction-wide. |
 

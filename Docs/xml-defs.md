@@ -190,6 +190,8 @@ Defines events — both scripted (triggered by code) and random (selected by the
 | `requiredWealth` | `int` | `0` | Minimum player wealth for random events. |
 | `rangeSettlementsAffected` | `IntRange` | `(0,0)` | How many settlements affected. (0,0) = faction-wide. |
 | `requiredResource` | `ResourceTypeDef` | `null` | At least one settlement must produce this resource. |
+| `applicableBiomes` | `List<string>` | `[]` | Biome allowlist (BiomeDef defNames). Only settlements in listed biomes are eligible. Empty = all. |
+| `restrictedBiomes` | `List<string>` | `[]` | Biome blocklist (BiomeDef defNames). Settlements in listed biomes are excluded. Ignored if `applicableBiomes` is set. |
 | `options` | `List<FCOptionDef>` | `[]` | Player choices for this event. |
 | `eventFollows` | `bool` | `false` | Whether a follow-up event fires on resolution. |
 | `followingEvent` | `FCEventDef` | `null` | The follow-up event. |
