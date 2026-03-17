@@ -28,6 +28,7 @@
 	<AlreadyUpgradeSettlement>This settlement is already being upgraded!</AlreadyUpgradeSettlement>
 	<StartUpgradeSettlement>The settlement is now being upgraded...</StartUpgradeSettlement>
 	<UpgradeSettlement>Upgrade Settlement</UpgradeSettlement>
+	<Upgrade>Upgrade</Upgrade>
 	<SettlementUpgradeInProgress>Upgrading...</SettlementUpgradeInProgress>
 	<CanBeUpgraded>can be upgraded for</CanBeUpgraded>
 	<UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
@@ -38,6 +39,8 @@
 	<NotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</NotEnoughSilverUpgrade>
 	<CannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</CannotBeUpgradedPastMax>
 	<UpgradeTown>Upgrade Town</UpgradeTown>
+	<FCUpgradeBadgeInProgress>Upgrading: {0} remaining</FCUpgradeBadgeInProgress>
+	<FCUpgradeBadgeAvailable>Click to upgrade (cost: {0} silver)</FCUpgradeBadgeAvailable>
 
 	<!-- Settlement Window -->
 	<TownLog>Town Log</TownLog>

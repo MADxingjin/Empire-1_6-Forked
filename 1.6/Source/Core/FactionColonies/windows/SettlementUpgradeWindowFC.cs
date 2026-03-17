@@ -95,7 +95,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Tiny;
 
-            if (settlement.settlementLevel < maxSettlementLevel) //if settlement is not max level
+            if (settlement.CanUpgrade) //if settlement is not max level
             {
                 if (Widgets.ButtonText(new Rect(xoffset + ((335 - 150) / 2), height + 10, 150, 40), "UpgradeSettlement".Translate() + ": " + settlementUpgradeCost)) Messages.Message(UpgradeSettlement());
             }

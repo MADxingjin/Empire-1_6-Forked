@@ -827,14 +827,59 @@ namespace FactionColonies
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                float statsW = 130f;
+                float statsW = 230f;
                 Widgets.Label(new Rect(contentX, botY, contentW - statsW, lineH), bottomLeftStr);
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
 
+                // Bottom-right: Upgrade badge
+                float upgradeBadgeW = 105f;
+                float upgradeBadgeX = contentX + contentW - statsW;
+                if (s.isUpgrading)
+                {
+                    // "Upgrading..." label
+                    fontBefore = Text.Font;
+                    anchorBefore = Text.Anchor;
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    origColor = GUI.color;
+                    GUI.color = Color.gray;
+                    float labelW = 67f;
+                    Widgets.Label(new Rect(upgradeBadgeX, botY, labelW, lineH), "SettlementUpgradeInProgress".Translate());
+                    GUI.color = origColor;
+                    Text.Font = fontBefore;
+                    Text.Anchor = anchorBefore;
+
+                    // Progress bar
+                    float progress = (float)(Find.TickManager.TicksGame - s.startUpgradeTick)
+                                   / (float)(s.finishUpgradeTick - s.startUpgradeTick);
+                    progress = Mathf.Clamp01(progress);
+                    float barW = 30f;
+                    float barH = 10f;
+                    Rect barRect = new Rect(upgradeBadgeX + labelW + 2f, botY + (lineH - barH) / 2f, barW, barH);
+                    UIUtil.DrawProgressBarColors(barRect, progress, new Color(0.15f, 0.15f, 0.15f), new Color(0.3f, 0.75f, 1f));
+
+                    int ticksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    TooltipHandler.TipRegion(new Rect(upgradeBadgeX, botY, upgradeBadgeW, lineH),
+                        "FCUpgradeBadgeInProgress".Translate(ticksLeft.ToStringTicksToPeriod()));
+                }
+                else if (s.CanUpgrade)
+                {
+                    fontBefore = Text.Font;
+                    Text.Font = GameFont.Tiny;
+                    Rect btnRect = new Rect(upgradeBadgeX, botY + 2f, upgradeBadgeW, lineH - 4f);
+                    if (UIUtil.ButtonFlat(btnRect, "Upgrade".Translate(), AccentUtil.Income, highlighted: i % 2 != 0))
+                        Find.WindowStack.Add(new SettlementUpgradeWindowFc(s));
+                    Text.Font = fontBefore;
+
+                    int cost = s.GetUpgradeCost(Convert.ToInt32(FCSettings.settlementBaseUpgradeCost));
+                    TooltipHandler.TipRegion(new Rect(upgradeBadgeX, botY, upgradeBadgeW, lineH),
+                        "FCUpgradeBadgeAvailable".Translate(cost));
+                }
+
                 // Bottom-right: Stat icons (happiness, loyalty, unrest)
                 float statGroupW = 43f;
-                float statsStartX = contentX + contentW - (statGroupW * 3);
+                float statsStartX = contentX + contentW - statsW + upgradeBadgeW;
                 DrawStatIcon(statsStartX, botY, lineH, iconSz, TexLoad.iconHappiness,
                     ((int)s.Happiness).ToString(), AccentUtil.GetStatColor(s.Happiness, false));
                 DrawStatIcon(statsStartX + statGroupW, botY, lineH, iconSz, TexLoad.iconLoyalty,
@@ -853,6 +898,11 @@ namespace FactionColonies
                     + "FCSettlementTableUnrest".Translate() + ": " + (int)s.Unrest + "\n"
                     + "FCSettlementTableProsperity".Translate() + ": " + (int)s.Prosperity + "\n"
                     + "FCSettlementTableFounding".Translate() + ": " + s.GetFoundingDate(false);
+                if (s.isUpgrading)
+                {
+                    int ttTicksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    tooltip += "\n" + "FCUpgradeBadgeInProgress".Translate(ttTicksLeft.ToStringTicksToPeriod());
+                }
                 TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
