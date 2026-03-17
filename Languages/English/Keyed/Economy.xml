@@ -115,6 +115,7 @@ Total accrued budget: {2}</NoTitheLetterDesc>
 	<NoTitheLetterDesc2>{0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
 
 Total accrued budget: {2}</NoTitheLetterDesc2>
+	<ExternalTitheBudget>Tithe Injection</ExternalTitheBudget>
 	<TotalTitheBudget>Total Tithe Budget</TotalTitheBudget>
 	<AvailableTitheBudget>Available Budget</AvailableTitheBudget>
 	<UsedTitheBudget>Used Budget</UsedTitheBudget>
