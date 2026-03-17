@@ -110,13 +110,15 @@ namespace FactionColonies
 
                 if (!matched)
                 {
-                    // Exhausted positive bills — attempt to resolve with player silver
                     if (negativeBill.AttemptResolve())
                     {
                         (negativeBills, positiveBills) = returnBillTypes(bills);
                         resolvedBills++;
                     }
-                    i++;
+                    else
+                    {
+                        i++;  // Only skip bills that genuinely can't be resolved
+                    }
                 }
             }
 
