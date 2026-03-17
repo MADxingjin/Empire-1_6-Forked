@@ -1580,6 +1580,12 @@ namespace FactionColonies
         public void AddEvent(FCEvent fcevent)
         {
             if (fcevent == null) return;
+
+            if (fcevent.goods != null && fcevent.goods.Count > 0)
+            {
+                fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
+            }
+
             //Add event to events
             events.Add(fcevent);
 
