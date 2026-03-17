@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><AnimalBeacon.label>Balise animale archotech</AnimalBeacon.label>
+  
+  <AnimalBeacon.desc>Une tour archotech qui émet un signal attirant les animaux lointains et apaisant ceux qui se trouvent à proximité.</AnimalBeacon.desc>
+  
+  
+  <archotechGenerator.label>Générateur archotech</archotechGenerator.label>
+  
+  <archotechGenerator.desc>Un générateur ésotérique que même les techniciens n'ont aucun espoir de comprendre, mais qu'ils ont acquis.</archotechGenerator.desc>
+  
+  
+  <LightConverter.label>Convertisseur de lumière archotech</LightConverter.label>
+  
+  <LightConverter.desc>Une grande machine archotech à alimentation vanométrique capable de transformer la lumière en presque tout ce qui n'est pas vivant. Elle nécessite une présence militaire constante pour repousser les pillards.</LightConverter.desc>
+  
+  
+  <OrbitalSpaceLaser.label>Laser spatial orbital</OrbitalSpaceLaser.label>
+  
+  <OrbitalSpaceLaser.desc>C'est un peu comme une bombe nucléaire, mais réutilisable et alimentée à l'énergie solaire.</OrbitalSpaceLaser.desc>
+  
+  
+  <TransdimensionalMarket.label>Marché transdimensionnel</TransdimensionalMarket.label>
+  
+  <TransdimensionalMarket.desc>Faire du commerce à travers la galaxie est une chose. Construire un monolithe d'obsidienne en flammes pour commercer avec les habitants d'une dimension infernale en est une autre.</TransdimensionalMarket.desc>
+  
+  
+  <TrappedAI.label>IA archotech piégée</TrappedAI.label>
+  
+  <TrappedAI.desc>Une IA de niveau archotech piégée dans un réseau fermé. Elle est parfaitement sûre... tant que personne ne la libère.</TrappedAI.desc>
+  
+  
+  <UnionOffices.label>Bureaux syndicaux</UnionOffices.label>
+  
+  <UnionOffices.desc>Un bâtiment central depuis lequel les syndicats locaux peuvent fonctionner. C'est fou de voir à quel point les gens sont plus heureux et plus enclins à travailler quand on les traite bien.</UnionOffices.desc>
+  
+</LanguageData>

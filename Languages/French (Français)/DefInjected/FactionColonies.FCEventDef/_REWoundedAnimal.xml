@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><woundedAnimal_0.label>Animal blessé</woundedAnimal_0.label>
+  
+  <woundedAnimal_0.desc>Un fermier de l’une de vos colonies a amené un animal blessé à votre capitale. Il affirme qu’il est entré dans leur ville et refusait d’en repartir. L’animal semble malade et nerveux. On dirait qu’il pourrait s’emporter à tout moment...</woundedAnimal_0.desc>
+  
+  
+  <woundedAnimal_1-1.label>Animal blessé</woundedAnimal_1-1.label>
+  
+  <woundedAnimal_1-1.desc>L’animal reste calme. Vos colons le guident à l’intérieur sans problème.</woundedAnimal_1-1.desc>
+  
+  
+  <woundedAnimal_1-2.label>Animal blessé</woundedAnimal_1-2.label>
+  
+  <woundedAnimal_1-2.desc>Alors que l’animal est guidé à l’intérieur, il commence à se débattre contre les colons qui l’amènent. Il devient rapidement de plus en plus agressif et toutes les tentatives pour le calmer échouent... Plusieurs colons sont grièvement blessés ou meurent. Malheureusement, cela affectera la production pendant un certain temps. Ouvriers max -3 pendant cinq jours.</woundedAnimal_1-2.desc>
+  
+  
+  <woundedAnimal_1-3f.label>Animal blessé</woundedAnimal_1-3f.label>
+  
+  <woundedAnimal_1-3f.desc>Malgré tous les efforts du soigneur, l’animal se déchaîne. Le soigneur parvient à maîtriser la situation, mais est blessé dans le processus. -1 ouvrier max pendant trois jours.</woundedAnimal_1-3f.desc>
+  
+  
+  <woundedAnimal_1-3s.label>Animal blessé</woundedAnimal_1-3s.label>
+  
+  <woundedAnimal_1-3s.desc>Le soigneur expérimenté approche l’animal avec précaution et expertise. Il se calme et se laisse guider en sécurité.</woundedAnimal_1-3s.desc>
+  
+</LanguageData>

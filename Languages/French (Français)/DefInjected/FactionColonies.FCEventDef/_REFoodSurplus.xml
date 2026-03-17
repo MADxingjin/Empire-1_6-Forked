@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><foodSurplus_0.label>Surplus alimentaire</foodSurplus_0.label>
+  
+  <foodSurplus_0.desc>De bonnes récoltes ont entraîné un surplus de nourriture dans certaines colonies. Que faire de l’excédent ?</foodSurplus_0.desc>
+  
+  
+  <foodSurplus_1-1.label>Surplus alimentaire</foodSurplus_1-1.label>
+  
+  <foodSurplus_1-1.desc>Le surplus est stocké pour soutenir la production continue. +1 production de nourriture de base.</foodSurplus_1-1.desc>
+  
+  
+  <foodSurplus_1-2.label>Surplus de nourriture (Vendu)</foodSurplus_1-2.label>
+  
+  <foodSurplus_1-2.desc>L’excédent de récolte est vendu à des marchands de passage.</foodSurplus_1-2.desc>
+  
+  
+  <foodSurplus_1-3.label>Surplus de nourriture (Festin)</foodSurplus_1-3.label>
+  
+  <foodSurplus_1-3.desc>Un grand festin est organisé pour célébrer l’abondance ! Les citoyens sont heureux et loyaux. +2 bonheur, +1 loyauté.</foodSurplus_1-3.desc>
+  
+</LanguageData>

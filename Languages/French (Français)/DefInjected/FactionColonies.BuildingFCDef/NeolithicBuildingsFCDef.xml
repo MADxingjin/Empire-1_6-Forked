@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><alchemist.label>Alchimiste</alchemist.label>
+  
+  <alchemist.desc>Transformer l'acier en or ? Nous trouverons bien un moyen !</alchemist.desc>
+  
+  
+  <ancientAcademy.label>Académie antique</ancientAcademy.label>
+  
+  <ancientAcademy.desc>Dévoile des secrets de l'univers qui sont peut-être vrais… ou peut-être pas !</ancientAcademy.desc>
+  
+  
+  <apothecary.label>Apothicaire</apothecary.label>
+  
+  <apothecary.desc>Fabrique des élixirs pour guérir tous les maux ! (Résultats non garantis.)</apothecary.desc>
+  
+  
+  <bailiff.label>Bailli</bailiff.label>
+  
+  <bailiff.desc>N'accepte aucune excuse pour les loyers payés en retard.</bailiff.desc>
+  
+  
+  <brewer.label>Brasseur</brewer.label>
+  
+  <brewer.desc>Brasse les meilleurs alcools et sous-produits éthyliques. Merci de boire avec modération.</brewer.desc>
+  
+  
+  <carpenter.label>Charpentier</carpenter.label>
+  
+  <carpenter.desc>Fabrique de merveilleux meubles pour éviter les pires crimes de guerre.</carpenter.desc>
+  
+  
+  <cerealFarmland.label>Terres céréalières</cerealFarmland.label>
+  
+  <cerealFarmland.desc>Des terres destinées à cultiver des céréales pour nourrir plus d'un seul village.</cerealFarmland.desc>
+  
+  
+  <fletcher.label>Fabricant de flèches</fletcher.label>
+  
+  <fletcher.desc>Un artisan des flèches, les meilleures munitions du néolithique !</fletcher.desc>
+  
+  
+  <furrier.label>Fourreur</furrier.label>
+  
+  <furrier.desc>Fabrique des biens à partir de fourrures et de peaux. Ignorez l'odeur douteuse.</furrier.desc>
+  
+  
+  <grainMill.label>Moulin à grains</grainMill.label>
+  
+  <grainMill.desc>Un moulin pour moudre les céréales à l'aide de grosses pierres.</grainMill.desc>
+  
+  
+  <granary.label>Grenier</granary.label>
+  
+  <granary.desc>Un endroit sûr pour stocker les céréales à l'abri de ces fichus rats.</granary.desc>
+  
+  
+  <huntersHut.label>Hutte de chasseur</huntersHut.label>
+  
+  <huntersHut.desc>Chasse dans les bois environnants pour se nourrir. Les espèces menacées sont délicieuses !</huntersHut.desc>
+  
+  
+  <militia.label>Milice</militia.label>
+  
+  <militia.desc>Prêts à se battre pour leurs familles, même si ce n'est pas très efficace.</militia.desc>
+  
+  
+  <slaveMarket.label>Marché aux esclaves</slaveMarket.label>
+  
+  <slaveMarket.desc>Besoin de main-d'œuvre gratuite ?</slaveMarket.desc>
+  
+  
+  <stoneMason.label>Tailleur de pierre</stoneMason.label>
+  
+  <stoneMason.desc>Artisan de la pierre le jour, maître du monde la nuit.</stoneMason.desc>
+  
+</LanguageData>

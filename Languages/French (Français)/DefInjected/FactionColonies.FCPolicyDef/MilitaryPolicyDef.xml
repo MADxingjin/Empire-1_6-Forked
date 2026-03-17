@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><aFactionDisarmed.label>Faction désarmée</aFactionDisarmed.label>
+  
+  <aFactionDisarmed.desc>Très peu de troupes entraînées dans la faction.</aFactionDisarmed.desc>
+  
+  
+  <heavyConscription.label>Conscription lourde</heavyConscription.label>
+  
+  <heavyConscription.desc>Une grande part de la population sert dans l’armée.</heavyConscription.desc>
+  
+  
+  <slaveArmy.label>Armée servile</slaveArmy.label>
+  
+  <slaveArmy.desc>L’armée repose surtout sur esclaves et serviteurs forcés.</slaveArmy.desc>
+  
+  
+  <volunteerService.label>Service volontaire</volunteerService.label>
+  
+  <volunteerService.desc>L’armée est composée uniquement de volontaires.</volunteerService.desc>
+  
+</LanguageData>

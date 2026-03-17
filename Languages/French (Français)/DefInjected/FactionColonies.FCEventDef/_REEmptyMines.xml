@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><emptyMines_0.label>Mines vides</emptyMines_0.label>
+  
+  <emptyMines_0.desc>Les régions touchées souffrent de mines épuisées. Que faut-il faire ?</emptyMines_0.desc>
+  
+  
+  <emptyMines_1-1.label>Mines vides</emptyMines_1-1.label>
+  
+  <emptyMines_1-1.desc>Les mineurs attendent que de nouveaux filons apparaissent. -1 production minière de base.</emptyMines_1-1.desc>
+  
+  
+  <emptyMines_1-2f.label>Mines vides (Prospection échouée)</emptyMines_1-2f.label>
+  
+  <emptyMines_1-2f.desc>Les prospecteurs n'ont rien trouvé. Les mines restent vides. -1 production minière de base.</emptyMines_1-2f.desc>
+  
+  
+  <emptyMines_1-3.label>Mines vides (Redirection vers la construction)</emptyMines_1-3.label>
+  
+  <emptyMines_1-3.desc>Les mineurs inoccupés sont affectés aux projets de construction de la colonie. -1 production minière de base, mais la construction s'accélère.</emptyMines_1-3.desc>
+  
+</LanguageData>

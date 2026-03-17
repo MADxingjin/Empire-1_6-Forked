@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><asteroidMiningPlatform.label>Plateforme minière d'astéroïdes</asteroidMiningPlatform.label>
+  
+  <asteroidMiningPlatform.desc>Des drones miniers automatisés récoltent des ressources sur les astéroïdes proches et les débris spatiaux. Bien plus efficace que l'exploitation minière planétaire.</asteroidMiningPlatform.desc>
+  
+  
+  <orbitalFuelDepot.label>Dépôt de carburant orbital</orbitalFuelDepot.label>
+  
+  <orbitalFuelDepot.desc>Stocke et traite le carburant des vaisseaux spatiaux. Essentiel pour maintenir les opérations orbitales et soutenir les voyages spatiaux.</orbitalFuelDepot.desc>
+  
+  
+  <solarCollectionArray.label>Réseau de collecte solaire</solarCollectionArray.label>
+  
+  <solarCollectionArray.desc>D'immenses réseaux de panneaux solaires, sans interférence atmosphérique, captent directement l'énergie de l'étoile. Ils alimentent la station et fournissent un surplus d'énergie.</solarCollectionArray.desc>
+  
+</LanguageData>

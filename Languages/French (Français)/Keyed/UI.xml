@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><Name>Nom</Name>
+	
+  <None>Aucune</None>
+	
+  <No>Non</No>
+	
+  <Yes>Oui</Yes>
+	
+  <Set>Définir</Set>
+	
+  <Deploy>Déployer</Deploy>
+	
+  <Reset>Réinitialiser</Reset>
+	
+  <Base>Base</Base>
+	
+  <Modifier>Modificateur</Modifier>
+	
+  <Final>Final</Final>
+	
+  <Effect>Effet</Effect>
+	
+  <Info>Infos</Info>
+	
+  <Total>total</Total>
+	
+  <Mult>Mult.</Mult>
+	
+  <Date>Date</Date>
+	
+  <Selected>Sélectionné</Selected>
+	
+  <Select>Sélectionner</Select>
+	
+  <FCIsAllowed>Activé</FCIsAllowed>
+	
+  <FCIsNotAllowed>Désactivé</FCIsNotAllowed>
+	
+  <PerWorker>Par ouvrier</PerWorker>
+	
+  <NumRatio>{0}/{1}</NumRatio>
+	
+  <aSettlement>une colonie</aSettlement>
+	
+  <AddedInFuture>Cela sera étoffé à l’avenir</AddedInFuture>
+	
+  <Item>Objet</Item>
+
+	
+	
+  <Colonies>Colonies</Colonies>
+	
+  <Bills>Ordres</Bills>
+	
+  <Events>Événements</Events>
+	
+  <Settlement>Colonie</Settlement>
+	
+  <Settlements>Colonies</Settlements>
+	
+  <Overview>Aperçu</Overview>
+	
+  <FCOverview>Aperçu</FCOverview>
+	
+  <TravelTime>Temps de trajet</TravelTime>
+	
+  <ConstructionTime>Temps de construction</ConstructionTime>
+
+	
+	
+  <ButtonNotAvailable>Ce bouton n’est pas encore disponible</ButtonNotAvailable>
+	
+  <ConfirmChanges>Confirmer les changements</ConfirmChanges>
+	
+  <FCConfirm>Confirmer</FCConfirm>
+	
+  <FCConfirmDecision>Confirmer la décision</FCConfirmDecision>
+	
+  <View>Voir</View>
+	
+  <GoTo>Aller à</GoTo>
+	
+  <Report>Rapport</Report>
+	
+  <Reports>Rapports</Reports>
+	
+  <Actions>Actions</Actions>
+	
+  <ViewInfo>Voir les infos</ViewInfo>
+	
+  <SetMap>Définir la carte</SetMap>
+	
+  <FCActionAvailable>Action disponible</FCActionAvailable>
+
+	
+	
+  <FCAutoResolve>Résolution auto</FCAutoResolve>
+	
+  <FCAutoResolving>Résolution automatique : {0}</FCAutoResolving>
+	
+  <FCBillsAutoResolving>Les ordres sont désormais résolus automatiquement !</FCBillsAutoResolving>
+	
+  <FCBillsNotAutoResolving>Les ordres ne sont plus résolus automatiquement.</FCBillsNotAutoResolving>
+	
+  <FCDesc>Desc.</FCDesc>
+	
+  <FCCreateNewFaction>Créer une nouvelle faction</FCCreateNewFaction>
+	
+  <FCResetToDefault>Réinitialiser par défaut</FCResetToDefault>
+	
+  <FCSetPointRef>Définir le point de référence</FCSetPointRef>
+	
+  <FCNoValidSettlements>Aucune colonie valide</FCNoValidSettlements>
+	
+  <FCNoSpecialActions>Aucune action spéciale à entreprendre</FCNoSpecialActions>
+	
+  <FCBuildingLocked>Ce bâtiment est verrouillé</FCBuildingLocked>
+	
+  <FCBuildingLockedLevel>Débloqué au niveau de colonie {0}.</FCBuildingLockedLevel>
+	
+  <FCBuildingLockedMax>Maximum bâtiment slots reached pour ce colonie type.</FCBuildingLockedMax>
+	
+  <Capital>Capitale</Capital>
+
+	
+	
+  <FloatMenuSearchable>Tapez pour rechercher :</FloatMenuSearchable>
+	
+  <FCSMFForceOpen>Forcer l’ouverture</FCSMFForceOpen>
+
+	
+	
+  <FCGenericError>Si vous pouvez lire ceci, quelque chose s’est mal passé.</FCGenericError>
+	
+  <FCNotEnoughSilverOption>Vous n’avez pas assez d’argent sur la carte pour payer cette option</FCNotEnoughSilverOption>
+	
+  <FCOptionRequiresPolicy>Nécessite : {0}</FCOptionRequiresPolicy>
+	
+  <FCOptionRequiresPolicyAny>Nécessite l’un de : {0}</FCOptionRequiresPolicyAny>
+
+</LanguageData>

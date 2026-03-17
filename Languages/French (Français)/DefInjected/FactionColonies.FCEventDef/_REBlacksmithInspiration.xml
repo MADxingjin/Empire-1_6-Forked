@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><blacksmithInspiration_0.label>Inspiration de forgeron</blacksmithInspiration_0.label>
+  
+  <blacksmithInspiration_0.desc>Un forgeron d'une colonie voisine a reçu une grande inspiration et cherche des mécènes pour ce qu'il affirme être une œuvre d'une qualité inégalée ! Il prévoit de l'offrir à son mécène en signe de loyauté.</blacksmithInspiration_0.desc>
+  
+  
+  <blacksmithInspiration_1-1.label>Inspiration de forgeron</blacksmithInspiration_1-1.label>
+  
+  <blacksmithInspiration_1-1.desc>Le forgeron travaille sur votre commande...</blacksmithInspiration_1-1.desc>
+  
+  
+  <blacksmithInspiration_1-2f.label>Inspiration de forgeron (Décevante)</blacksmithInspiration_1-2f.label>
+  
+  <blacksmithInspiration_1-2f.desc>L'ambition du forgeron a dépassé son talent. Le résultat est correct, mais loin du chef-d'œuvre promis.</blacksmithInspiration_1-2f.desc>
+  
+  
+  <blacksmithInspiration_1-2s.label>Inspiration de forgeron (Chef-d'œuvre)</blacksmithInspiration_1-2s.label>
+  
+  <blacksmithInspiration_1-2s.desc>L'inspiration du forgeron a produit un véritable chef-d'œuvre ! Le résultat dépasse toutes les attentes.</blacksmithInspiration_1-2s.desc>
+  
+  
+  <blacksmithInspiration_1-3.label>Inspiration de forgeron (Matériaux d'atelier)</blacksmithInspiration_1-3.label>
+  
+  <blacksmithInspiration_1-3.desc>Le forgeron travaille avec des matériaux détournés des chaînes de production de votre colonie. Ce détournement ralentit la production d'armes, mais son travail avance bien. -1 production de base d'armes.</blacksmithInspiration_1-3.desc>
+  
+</LanguageData>

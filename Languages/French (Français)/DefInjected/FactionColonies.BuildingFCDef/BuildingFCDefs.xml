@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><Construction.label>En Construction</Construction.label>
+  
+  <Construction.desc>Un bâtiment est en cours de construction ici...</Construction.desc>
+  
+  
+  <Empty.label>Emplacement vide</Empty.label>
+  
+  <Empty.desc>Cliquez ici pour construire un bâtiment</Empty.desc>
+  
+</LanguageData>

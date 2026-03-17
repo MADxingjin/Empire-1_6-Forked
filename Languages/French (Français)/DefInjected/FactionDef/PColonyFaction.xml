@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><PColony.label>Faction du joueur</PColony.label>
+  
+  <PColony.description>Cette faction est sous votre contrôle.</PColony.description>
+  
+  <PColony.leaderTitle>Premier conseiller</PColony.leaderTitle>
+  
+  <PColony.messageDefendersAttacking>{0} de {1} attaquent votre {2}.</PColony.messageDefendersAttacking>
+  
+  <PColony.pawnSingular>Outlander</PColony.pawnSingular>
+  
+  <PColony.pawnsPlural>Outlanders</PColony.pawnsPlural>
+  
+</LanguageData>

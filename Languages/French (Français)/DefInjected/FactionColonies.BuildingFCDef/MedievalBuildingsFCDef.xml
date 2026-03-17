@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><adventurersGuild.label>Guilde des aventuriers</adventurersGuild.label>
+  
+  <adventurersGuild.desc>Un lieu où les aventuriers de passage peuvent se retrouver et passer la nuit.</adventurersGuild.desc>
+  
+  
+  <apparelSweatshop.label>Atelier textile clandestin</apparelSweatshop.label>
+  
+  <apparelSweatshop.desc>Un lieu où faire travailler aussi bien les esclaves que les colons !</apparelSweatshop.desc>
+  
+  
+  <jailhouse.label>Prison</jailhouse.label>
+  
+  <jailhouse.desc>Un lieu où enfermer la racaille criminelle.</jailhouse.desc>
+  
+  
+  <loggingCamp.label>Camp forestier</loggingCamp.label>
+  
+  <loggingCamp.desc>Un camp dédié à l'exploitation forestière. Il comprend même une scierie !</loggingCamp.desc>
+  
+  
+  <Mills.label>Moulins</Mills.label>
+  
+  <Mills.desc>Des moulins ! À vent ou à eau, ils sont utiles à bien des choses !</Mills.desc>
+  
+  
+  <plagueCamp.label>Camp de peste</plagueCamp.label>
+  
+  <plagueCamp.desc>Un camp de confinement destiné à accueillir les malades et les mourants.</plagueCamp.desc>
+  
+  
+  <publicMarket.label>Marché public</publicMarket.label>
+  
+  <publicMarket.desc>Un marché public où échanger des marchandises.</publicMarket.desc>
+  
+  
+  <RedlightDistrict.label>Quartier rouge</RedlightDistrict.label>
+  
+  <RedlightDistrict.desc>Un lieu où marchands et gens du commun peuvent passer la nuit en compagnie douteuse.</RedlightDistrict.desc>
+  
+  
+  <ServantHousing.label>Logement des serviteurs</ServantHousing.label>
+  
+  <ServantHousing.desc>Les serviteurs sont bien pratiques, et plus vous avez de logements pour eux, plus vous pouvez en engager !</ServantHousing.desc>
+  
+  
+  <slavePlantation.label>Plantation d'esclaves</slavePlantation.label>
+  
+  <slavePlantation.desc>Les esclaves travaillent les champs ici.</slavePlantation.desc>
+  
+  
+  <Smithy.label>Forge</Smithy.label>
+  
+  <Smithy.desc>Une forge robuste et une enclume encore plus solide. Parfait pour façonner aussi bien des armes que des outils.</Smithy.desc>
+  
+  
+  <UndergroundMine.label>Mine souterraine</UndergroundMine.label>
+  
+  <UndergroundMine.desc>Creusez profondément sous la surface de la planète à la recherche de matériaux vraiment précieux. N'oubliez pas les étais !</UndergroundMine.desc>
+  
+  
+  <wildernessGuild.label>Guilde de la nature sauvage</wildernessGuild.label>
+  
+  <wildernessGuild.desc>Une guilde dédiée à l'apprivoisement de la nature sauvage.</wildernessGuild.desc>
+  
+</LanguageData>

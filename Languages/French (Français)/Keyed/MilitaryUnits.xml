@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><FCMilitaryTableSquad>Escouade assignée</FCMilitaryTableSquad>
+	
+  <FCMilitaryTableSetSquad>Définir l’escouade</FCMilitaryTableSetSquad>
+	
+  <FCMilitaryTableDeploySquad>Déployer l’escouade</FCMilitaryTableDeploySquad>
+	
+  <FCMilitaryTableResetSquad>Réinitialiser l’escouade</FCMilitaryTableResetSquad>
+	
+  <FCMilitaryTableButtonCreateSquad>Gérer les escouades</FCMilitaryTableButtonCreateSquad>
+	
+  <FCMilitaryTableButtonCreateUnit>Gérer les unités</FCMilitaryTableButtonCreateUnit>
+	
+  <FCMilitaryTableButtonCreateFireSupport>Gérer le soutien de feu</FCMilitaryTableButtonCreateFireSupport>
+	
+  <FCMilTableConfirm>Êtes-vous sûr ? Cliquez pour confirmer</FCMilTableConfirm>
+	
+  <FCNoSquadAvailable>Aucune escouade disponible</FCNoSquadAvailable>
+	
+  <FCResetSquadPawns>Les pions de l’escouade ont été régénérés</FCResetSquadPawns>
+	
+  <FCResetSquadRejected>Il n’y a aucun pion à réinitialiser. Assignez d’abord une escouade.</FCResetSquadRejected>
+	
+  <selectDeployedSquad>Sélectionner l’escouade déployée</selectDeployedSquad>
+	
+  <selectedDeployedSquad>{1} de {0}</selectedDeployedSquad>
+	
+  <noSquadsAvailable>Aucune escouade disponible</noSquadsAvailable>
+
+	
+	
+  <ExportUnit>Unité exportée</ExportUnit>
+	
+  <ExportSquad>Escouade exportée</ExportSquad>
+	
+  <CantBeModified>{0} ne peut pas être modifié : {1}</CantBeModified>
+	
+  <ReasonDeployed>Une escouade qui le contient est déployée</ReasonDeployed>
+	
+  <ReasonDefending>Une escouade qui le contient défend une colonie</ReasonDefending>
+	
+  <ReasonDeployedSquad>L’escouade est actuellement déployée</ReasonDeployedSquad>
+	
+  <ReasonDefendingSquad>L’escouade défend actuellement une colonie</ReasonDefendingSquad>
+	
+  <importUnit>Importer une unité</importUnit>
+	
+  <clearUnitSlot>Vider l’emplacement de l’unité</clearUnitSlot>
+
+	
+	
+  <fcLabelHead>Tête</fcLabelHead>
+	
+  <fcLabelShirt>Chemise</fcLabelShirt>
+	
+  <fcLabelChest>Torse</fcLabelChest>
+	
+  <fcLabelOver>Surcouche</fcLabelOver>
+	
+  <fcLabelBelt>Ceinture</fcLabelBelt>
+	
+  <fcLabelPants>Pantalon</fcLabelPants>
+	
+  <fcLabelWeapon>Arme</fcLabelWeapon>
+	
+  <fcLabelAnimal>Animal</fcLabelAnimal>
+	
+  <fcLabelAmmo>Munitions</fcLabelAmmo>
+	
+  <fcAmmoAny>N’importe lequel</fcAmmoAny>
+
+	
+	
+  <FCRenameUnit>Renommer l’unité</FCRenameUnit>
+	
+  <FCConfirmDeleteUnit>Êtes-vous sûr de vouloir supprimer « {0} » ?</FCConfirmDeleteUnit>
+	
+  <resetUnitToDefaultButton>Réinitialiser par défaut</resetUnitToDefaultButton>
+	
+  <deleteUnitButton>Supprimer l’unité</deleteUnitButton>
+	
+  <selectAUnitButton>Sélectionner une unité</selectAUnitButton>
+	
+  <rollANewUnitButton>Générer un nouveau pion</rollANewUnitButton>
+	
+  <changeUnitRaceButton>Changer la race</changeUnitRaceButton>
+	
+  <changeUnitXenoButton>Changer le xénotype</changeUnitXenoButton>
+	
+  <exportUnitButton>Exporter l’unité</exportUnitButton>
+
+	
+	
+  <totalEquipmentCostLabel>Coût total de l’équipement :</totalEquipmentCostLabel>
+	
+  <unitActionUnequipThing>Retirer</unitActionUnequipThing>
+	
+  <fcPickWeapon>Sélectionner une arme</fcPickWeapon>
+	
+  <fcPickApparel>Sélectionner une tenue</fcPickApparel>
+	
+  <fcPickAnimal>Sélectionner un animal</fcPickAnimal>
+	
+  <fcNoMaterialNeeded>Aucune sélection de matériau nécessaire</fcNoMaterialNeeded>
+	
+  <fcPickerSummary>Sélectionné : {0} - Coût : {1}</fcPickerSummary>
+	
+  <fcPickerSelectItem>Sélectionnez d’abord un objet</fcPickerSelectItem>
+	
+  <fcPickerSelectStuff>Sélectionner un matériau pour cet objet</fcPickerSelectStuff>
+
+	
+	
+  <changeUnitRaceNoRaces>Aucune race disponible</changeUnitRaceNoRaces>
+	
+  <changeUnitXenoNoXenos>Aucun xéno disponible</changeUnitXenoNoXenos>
+	
+  <noPawnKindDefOfTypeOfRaceWarning>Impossible de trouver des PawnKindDefs{0} pour les niveaux technologiques : {1} avec la race {2}. L’Empire générera {2}{3} en utilisant le niveau technologique : {4}.</noPawnKindDefOfTypeOfRaceWarning>
+	
+  <noPawnKindDefOfTypeOfRaceError>Impossible de trouver des PawnKindDefs{0} pour n’importe quel niveau technologique avec la race {1}. Ils ne pourront pas être générés !</noPawnKindDefOfTypeOfRaceError>
+	
+  <missingPawnKindDefsCriticalError>Les races sélectionnées n’ont pas les PawnKindDefs critiques requis ! Votre faction pourra générer des humains pour combler le manque.</missingPawnKindDefsCriticalError>
+
+	
+	
+  <FCCreateNewSquad>Créer une nouvelle escouade</FCCreateNewSquad>
+	
+  <FCImportSquad>Importer une escouade</FCImportSquad>
+	
+  <FCRenameSquad>Renommer l’escouade</FCRenameSquad>
+	
+  <FCConfirmDeleteSquad>Êtes-vous sûr de vouloir supprimer « {0} » ?</FCConfirmDeleteSquad>
+	
+  <FCSquadFull>L’escouade est complète (30/30 unités)</FCSquadFull>
+	
+  <FCAddUnit>Ajouter une unité</FCAddUnit>
+	
+  <FCSquadUnitCount>Unités : {0} / 30</FCSquadUnitCount>
+	
+  <exportSquadButton>Exporter l’escouade</exportSquadButton>
+	
+  <DeleteSquadButton>Supprimer l’escouade</DeleteSquadButton>
+	
+  <FCTotalSquadEquipmentCost>Coût total de l’équipement de l’escouade : {0} / {1} (coût max)</FCTotalSquadEquipmentCost>
+	
+  <FCTotalSquadEquipmentCostNoRef>Coût total de l’équipement de l’escouade : {0} / Sans référence</FCTotalSquadEquipmentCostNoRef>
+	
+  <FCDeleteSquad>Supprimer l’escouade</FCDeleteSquad>
+	
+  <FCSelectASquad>Sélectionner une escouade</FCSelectASquad>
+	
+  <FCMilitaryLevelLabel>- Niveau militaire :</FCMilitaryLevelLabel>
+	
+  <FCNoSquadEquipped>Vous ne pouvez pas déployer une escouade sans personnel équipé !</FCNoSquadEquipped>
+	
+  <FCNoSquadLoadoutAssigned>Aucun équipement d’escouade n’est assigné à cette colonie !</FCNoSquadLoadoutAssigned>
+	
+  <FCNoSquadAssigned>Aucune escouade militaire n’est assignée à cette colonie !</FCNoSquadAssigned>
+	
+  <FCSquadExceedsMaxCost>Cette escouade dépasse le coût maximal alloué à la colonie</FCSquadExceedsMaxCost>
+	
+  <FCCreateNewUnit>Créer une nouvelle unité</FCCreateNewUnit>
+
+	
+	
+  <FCCreateNewFireSupport>Créer un nouveau soutien de feu</FCCreateNewFireSupport>
+	
+  <FCDeleteSupport>Supprimer le soutien</FCDeleteSupport>
+	
+  <FCAddNewProjectile>Ajouter un nouveau projectile</FCAddNewProjectile>
+	
+  <FCRenameFireSupport>Renommer le soutien de feu</FCRenameFireSupport>
+	
+  <FCConfirmDeleteFireSupport>Êtes-vous sûr de vouloir supprimer « {0} » ?</FCConfirmDeleteFireSupport>
+	
+  <deleteFireSupportButton>Supprimer</deleteFireSupportButton>
+	
+  <FCFireSupportCostLabel>Coût: {0}</FCFireSupportCostLabel>
+	
+  <FCFireSupportCostRefLabel>Coût: {0} / {1} (Max)</FCFireSupportCostRefLabel>
+	
+  <FCFireSupportProjectileCount>Projectiles: {0}</FCFireSupportProjectileCount>
+	
+  <FCFireSupportDuration>Durée : {0}s</FCFireSupportDuration>
+	
+  <FCFireSupportAccuracyLabel>Précision (rayon en cases) : {0} · Modificateur de coût : +{1}%</FCFireSupportAccuracyLabel>
+	
+  <FCSelectAFireSupport>Sélectionner un soutien de feu</FCSelectAFireSupport>
+	
+  <FCNoProjectilesFound>Aucun projectile disponible trouvé</FCNoProjectilesFound>
+	
+  <FCFireSupportOptions>Options</FCFireSupportOptions>
+	
+  <FCInsertProjectileAbove>Insérer un projectile au-dessus de l’emplacement</FCInsertProjectileAbove>
+	
+  <FCDuplicate>Dupliquer</FCDuplicate>
+
+	
+	
+  <FCNavUnits>Unités</FCNavUnits>
+	
+  <FCNavSquads>Escouades</FCNavSquads>
+	
+  <FCNavFireSupport>Soutien de feu</FCNavFireSupport>
+	
+  <FCEditUnitTooltip>Modifier l’équipement de cette unité</FCEditUnitTooltip>
+
+	
+	
+  <FCPawns>Pions</FCPawns>
+	
+  <FCTrader>Marchand</FCTrader>
+	
+  <FCFighter>Combattant</FCFighter>
+	
+  <FCNonMercenary>Non-mercenaire</FCNonMercenary>
+
+	
+	
+  <FCImport>Importer</FCImport>
+	
+  <FCImported>{0} importé</FCImported>
+	
+  <FCDeleted>{0} supprimé</FCDeleted>
+
+	
+	
+  <PrisonersMenu>Prisonniers</PrisonersMenu>
+	
+  <FCWorkload>Charge de travail</FCWorkload>
+	
+  <FCHeavy>lourde</FCHeavy>
+	
+  <FCMedium>moyenne</FCMedium>
+	
+  <FCLight>légère</FCLight>
+	
+  <FCHeavyExplanation>Ajoute +2 au plafond souple des ouvriers (ouvriers max avant augmentation des coûts). Réduit la santé de 20.</FCHeavyExplanation>
+	
+  <FCMediumExplanation>Ajoute +1 au plafond souple des ouvriers (ouvriers max avant augmentation des coûts). Réduit la santé de 10.</FCMediumExplanation>
+	
+  <FCLightExplanation>Ajoute +1 au plafond dur des ouvriers (ouvriers au-delà du maximum). Augmente la santé de 4.</FCLightExplanation>
+	
+  <SellPawn>Vendre le pion</SellPawn>
+	
+  <ReturnToPlayer>Renvoyer au joueur</ReturnToPlayer>
+	
+  <SellPawnInfo>La valeur sera ajoutée à la prochaine facture de la colonie</SellPawnInfo>
+	
+  <PrisonerCaptureInfo>Prisonnier : {0} a été réduit en esclavage et livré à {1}</PrisonerCaptureInfo>
+	
+  <cantSendWithDangerLevel>Vous ne pouvez pas envoyer un prisonnier à vos colonies lorsque la carte a un niveau de danger de {0} !</cantSendWithDangerLevel>
+	
+  <floatMenuOptionSendPrisonerToSettlement>{0} - Niveau de la colonie : {1}, Prisonniers : {2}</floatMenuOptionSendPrisonerToSettlement>
+	
+  <aPrisonerIsBeingDeliveredToYou>Un prisonnier vous est livré</aPrisonerIsBeingDeliveredToYou>
+
+	
+	
+  <FCRequestMercenary>Demander un mercenaire</FCRequestMercenary>
+	
+  <FCActionMercenaryRefreshed>L’action Demander un mercenaire est de nouveau disponible</FCActionMercenaryRefreshed>
+	
+  <FCActionMercenaryOnCooldown>Vous ne pouvez pas utiliser cette action avant encore {0}</FCActionMercenaryOnCooldown>
+
+</LanguageData>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><WorldSettlementDef_Orbital.label>colonie orbitale de base</WorldSettlementDef_Orbital.label>
+  
+  <WorldSettlementDef_Orbital.description>Capacités standards de construction orbitale</WorldSettlementDef_Orbital.description>
+  
+  
+  <WorldSettlementDef_Orbital_Advanced.label>colonie orbitale avancée</WorldSettlementDef_Orbital_Advanced.label>
+  
+  <WorldSettlementDef_Orbital_Advanced.description>Coût de construction de base réduit de 25 %, taille plus grande</WorldSettlementDef_Orbital_Advanced.description>
+  
+  
+  <WorldSettlementDef_Orbital_Glitter.label>colonie orbitale Glitterworld</WorldSettlementDef_Orbital_Glitter.label>
+  
+  <WorldSettlementDef_Orbital_Glitter.description>Bâtiments de production spécialisés avec bonus</WorldSettlementDef_Orbital_Glitter.description>
+  
+  
+  <WorldSettlementDef_Orbital_Logistics.label>colonie orbitale logistique</WorldSettlementDef_Orbital_Logistics.label>
+  
+  <WorldSettlementDef_Orbital_Logistics.description>Livraison des taxes 50 % plus rapide et bâtiments spéciaux</WorldSettlementDef_Orbital_Logistics.description>
+  
+  
+  <WorldSettlementDef_Surface.label>colonie impériale</WorldSettlementDef_Surface.label>
+  
+  <WorldSettlementDef_Surface.description>Une base de la faction du joueur Empire</WorldSettlementDef_Surface.description>
+  
+</LanguageData>

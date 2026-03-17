@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><struckRichOreVein_0.label>Filon riche découvert</struckRichOreVein_0.label>
+  
+  <struckRichOreVein_0.desc>Certaines de vos colonies ont réussi à découvrir des filons de minerai riche dans leurs mines ! Comment doivent-elles procéder ?</struckRichOreVein_0.desc>
+  
+  
+  <struckRichOreVein_1-1.label>Filon de minerai riche</struckRichOreVein_1-1.label>
+  
+  <struckRichOreVein_1-1.desc>Les mineurs extraient le minerai à un rythme régulier. +1 production minière de base.</struckRichOreVein_1-1.desc>
+  
+  
+  <struckRichOreVein_1-2.label>Filon de minerai riche (Extraction intensive)</struckRichOreVein_1-2.label>
+  
+  <struckRichOreVein_1-2.desc>Les mineurs sont poussés à extraire autant de minerai que possible. +2.5 production minière de base, mais le surmenage a un prix. -3 bonheur, -1 ouvrier max.</struckRichOreVein_1-2.desc>
+  
+  
+  <struckRichOreVein_1-3.label>Filon de minerai riche (Droits vendus)</struckRichOreVein_1-3.label>
+  
+  <struckRichOreVein_1-3.desc>Les droits d’exploitation minière sont vendus à des intérêts extérieurs pour un profit immédiat.</struckRichOreVein_1-3.desc>
+  
+</LanguageData>

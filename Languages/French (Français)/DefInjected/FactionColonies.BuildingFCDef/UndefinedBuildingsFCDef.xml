@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><AmmunitionMines.label>Mines à munitions</AmmunitionMines.label>
+  
+  <AmmunitionMines.desc>Du silex pour les flèches aux matériaux pour les balles et la poudre, ces mines occupent un espace qui pourrait servir à extraire d'autres ressources.</AmmunitionMines.desc>
+  
+  
+  <barracks.label>Caserne</barracks.label>
+  
+  <barracks.desc>Un bâtiment destiné à loger les troupes locales.</barracks.desc>
+  
+  
+  <deforestationCamp.label>Camp de déforestation</deforestationCamp.label>
+  
+  <deforestationCamp.desc>Un camp où les forêts locales sont dépouillées de toutes leurs ressources et de la vie qu'elles abritent.</deforestationCamp.desc>
+  
+  
+  <DrugDen.label>Antre de drogues psychédéliques</DrugDen.label>
+  
+  <DrugDen.desc>Les découvertes faites sous l'effet de substances sont parfois étonnantes. Et quelquefois, elles sont même utiles !</DrugDen.desc>
+  
+  
+  <Farmland.label>Terres agricoles</Farmland.label>
+  
+  <Farmland.desc>Une portion de terrain dédiée à la culture de plantes comestibles.</Farmland.desc>
+  
+  
+  <FlintStorage.label>Stockage de silex</FlintStorage.label>
+  
+  <FlintStorage.desc>Un entrepôt pour le silex.</FlintStorage.desc>
+  
+  
+  <FurHunterCamp.label>Camp de chasse aux fourrures</FurHunterCamp.label>
+  
+  <FurHunterCamp.desc>Un camp pour votre chasseur de fourrures.</FurHunterCamp.desc>
+  
+  
+  <HamsterWheel.label>Roue de hamster géante</HamsterWheel.label>
+  
+  <HamsterWheel.desc>Ce n'est pas grand-chose, mais c'est mieux que rien !</HamsterWheel.desc>
+  
+  
+  <herbalMedicineFarm.label>Ferme de plantes médicinales</herbalMedicineFarm.label>
+  
+  <herbalMedicineFarm.desc>Une petite ferme destinée à cultiver des plantes médicinales.</herbalMedicineFarm.desc>
+  
+  
+  <migrantHousing.label>Logement pour migrants</migrantHousing.label>
+  
+  <migrantHousing.desc>Des logements locaux pour héberger les migrants de passage.</migrantHousing.desc>
+  
+  
+  <quarry.label>Carrière</quarry.label>
+  
+  <quarry.desc>Un terrain excavé utilisé pour extraire du minerai précieux.</quarry.desc>
+  
+  
+  <SlavePit.label>Fosse à esclaves</SlavePit.label>
+  
+  <SlavePit.desc>Une fosse où les esclaves vont dormir.</SlavePit.desc>
+  
+  
+  <TanningWorkshop.label>Atelier de tannage</TanningWorkshop.label>
+  
+  <TanningWorkshop.desc>Un atelier conçu pour transformer les peaux animales en cuir.</TanningWorkshop.desc>
+  
+  
+  <tradingPost.label>Poste de commerce</tradingPost.label>
+  
+  <tradingPost.desc>Un petit avant-poste fréquenté par des marchands itinérants.</tradingPost.desc>
+  
+  
+  <trainingYard.label>Terrain d'entraînement</trainingYard.label>
+  
+  <trainingYard.desc>Un lieu où vos soldats peuvent s'entraîner.</trainingYard.desc>
+  
+</LanguageData>

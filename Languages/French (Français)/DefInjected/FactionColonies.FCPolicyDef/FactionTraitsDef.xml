@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><authoritarian.label>Autoritaire</authoritarian.label>
+  
+  <authoritarian.desc>Une société autoritaire cherche à garder le contrôle sur ses membres par tous les moyens nécessaires.</authoritarian.desc>
+  
+  <authoritarian.negativeEffects.0>- La loyauté commence à 70 %</authoritarian.negativeEffects.0>
+  
+  <authoritarian.positiveEffects.0>- Peut envoyer vos forces militaires attaquer une colonie d’une autre faction pour réduire en esclavage ses membres au lieu d’un simple raid</authoritarian.positiveEffects.0>
+  
+  <authoritarian.positiveEffects.1>- Vous pouvez dépenser de l’argent pour augmenter la loyauté d’une colonie</authoritarian.positiveEffects.1>
+  
+  
+  <egalitarian.label>Égalitaire</egalitarian.label>
+  
+  <egalitarian.desc>Une société égalitaire cherche l’égalité entre tous.</egalitarian.desc>
+  
+  <egalitarian.negativeEffects.0>- Le bonheur commence à 60 %</egalitarian.negativeEffects.0>
+  
+  <egalitarian.positiveEffects.0>- Peut réduire la taxe de base de 20 % pendant deux périodes fiscales pour fortement augmenter le bonheur et la prospérité</egalitarian.positiveEffects.0>
+  
+  <egalitarian.positiveEffects.1>- Reçoit un bonus de taxe de base de (1 % par 10 % de bonheur)</egalitarian.positiveEffects.1>
+  
+  
+  <expansionist.label>Expansionniste</expansionist.label>
+  
+  <expansionist.desc>Une société expansionniste cherche à répandre sa gloire à travers tout le royaume.</expansionist.desc>
+  
+  <expansionist.positiveEffects.0>- Votre première colonie est gratuite</expansionist.positiveEffects.0>
+  
+  <expansionist.positiveEffects.1>- Une fois par an, à partir de votre deuxième année, le coût de création d’une nouvelle colonie est réduit de 50 %</expansionist.positiveEffects.1>
+  
+  <expansionist.positiveEffects.2>- Les colonies que vous fondez commencent au niveau 2</expansionist.positiveEffects.2>
+  
+  
+  <feudal.label>Féodal</feudal.label>
+  
+  <feudal.desc>Une société féodale soutient un contrat féodal, liant la société à un suzerain en échange de protection.</feudal.desc>
+  
+  <feudal.negativeEffects.0>- Ne pas protéger vos colonies contre un raid fait fortement chuter leur loyauté</feudal.negativeEffects.0>
+  
+  <feudal.positiveEffects.0>- Une fois par saison, peut demander à un mercenaire expérimenté de votre faction de rejoindre votre colonie</feudal.positiveEffects.0>
+  
+  <feudal.positiveEffects.1>- Toutes les dîmes reçues voient leur valeur augmentée de 20 %</feudal.positiveEffects.1>
+  
+  
+  <isolationist.label>Isolationniste</isolationist.label>
+  
+  <isolationist.desc>Une société isolationniste cherche à rester en retrait des politiques et interactions du monde.</isolationist.desc>
+  
+  <isolationist.negativeEffects.0>- Le coût de création de nouvelles colonies augmente de 100 %</isolationist.negativeEffects.0>
+  
+  <isolationist.negativeEffects.1>- Ne peut pas utiliser ses forces militaires pour capturer les colonies d’autres factions</isolationist.negativeEffects.1>
+  
+  <isolationist.positiveEffects.0>- Le temps nécessaire pour améliorer les colonies et construire des bâtiments est réduit de 50 %</isolationist.positiveEffects.0>
+  
+  <isolationist.positiveEffects.1>- Chaque colonie reçoit +3 supplémentaires au plafond souple des ouvriers par niveau de colonie</isolationist.positiveEffects.1>
+  
+  <isolationist.positiveEffects.2>- Toutes les colonies reçoivent +10 % de taxe de base</isolationist.positiveEffects.2>
+  
+  
+  <militaristic.label>Militariste</militaristic.label>
+  
+  <militaristic.desc>Une société militariste cherche la gloire dans le sang et la mort pour sa cause.</militaristic.desc>
+  
+  <militaristic.positiveEffects.0>- +20 % de modificateur de combat lors de l’utilisation des forces militaires de votre faction</militaristic.positiveEffects.0>
+  
+  <militaristic.positiveEffects.1>- Une fois tous les cinq jours, vous pouvez déployer une seconde escouade depuis une même colonie en payant 20 % du coût de l’escouade en argent</militaristic.positiveEffects.1>
+  
+  <militaristic.positiveEffects.2>- Lors de la création d’une nouvelle colonie, elle commence avec une caserne</militaristic.positiveEffects.2>
+  
+  <militaristic.positiveEffects.3>- Tous les bâtiments militaires coûtent 100 de moins en entretien</militaristic.positiveEffects.3>
+  
+  
+  <pacifist.label>Pacifiste</pacifist.label>
+  
+  <pacifist.desc>Une société pacifiste cherche à éviter les conflits partout et autant que possible.</pacifist.desc>
+  
+  <pacifist.negativeEffects.0>- Ne peut pas utiliser ses forces militaires pour piller ou capturer les colonies d’autres factions</pacifist.negativeEffects.0>
+  
+  <pacifist.positiveEffects.0>- Une fois tous les cinq jours, peut envoyer un émissaire diplomatique à une autre faction pour tenter d’améliorer les relations</pacifist.positiveEffects.0>
+  
+  <pacifist.positiveEffects.1>- La mort de membres de votre faction ne fera pas augmenter les troubles ni baisser le bonheur</pacifist.positiveEffects.1>
+  
+  
+  <slaver.label>Esclavagiste</slaver.label>
+  
+  <slaver.desc>Une société axée sur l’esclavage.</slaver.desc>
+  
+  <slaver.negativeEffects.0>- -2 ouvriers au-dessus du maximum</slaver.negativeEffects.0>
+  
+  <slaver.positiveEffects.0>- Votre faction utilise des esclaves pour son projet depuis le début, gagnant plus d’ouvriers au prix d’une capacité réduite à embaucher des citoyens ordinaires.</slaver.positiveEffects.0>
+  
+  <slaver.positiveEffects.1>- +2 Base Ouvriers</slaver.positiveEffects.1>
+  
+  
+  <technocratic.label>Technocratique</technocratic.label>
+  
+  <technocratic.desc>Une société technocratique cherche l’approfondissement des connaissances et l’amélioration continue.</technocratic.desc>
+  
+  <technocratic.positiveEffects.0>- Toute la recherche produite par vos colonies est doublée</technocratic.positiveEffects.0>
+  
+  <technocratic.positiveEffects.1>- Peut envoyer à vos colonies des objets dont vous n’avez pas terminé la recherche, ou au-dessus de votre niveau technologique, afin qu’ils soient rétroconçus, vous accordant leur valeur en points de recherche</technocratic.positiveEffects.1>
+  
+</LanguageData>

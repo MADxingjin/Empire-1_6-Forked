@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><adultEntertainmentCentre.label>Centre de divertissement pour adultes</adultEntertainmentCentre.label>
+  
+  <adultEntertainmentCentre.desc>Un lieu où la population locale peut dépenser quelques pièces et s'amuser.</adultEntertainmentCentre.desc>
+  
+  
+  <animalTestingFacility.label>Centre de tests sur les animaux</animalTestingFacility.label>
+  
+  <animalTestingFacility.desc>Un laboratoire de recherche dédié aux tests de produits sur les animaux. Peu éthique, mais utile.</animalTestingFacility.desc>
+  
+  
+  <apartmentHousing.label>Immeuble résidentiel</apartmentHousing.label>
+  
+  <apartmentHousing.desc>Un grand immeuble destiné à loger les ouvriers locaux.</apartmentHousing.desc>
+  
+  
+  <artilleryOutpost.label>Avant-poste d'artillerie</artilleryOutpost.label>
+  
+  <artilleryOutpost.desc>Une fois ce bâtiment construit, un tir d'artillerie peut être appelé contre paiement depuis le menu militaire.</artilleryOutpost.desc>
+  
+  
+  <batteryPowerStation.label>Station d'énergie à batteries</batteryPowerStation.label>
+  
+  <batteryPowerStation.desc>Une station énergétique permettant de stocker l'excédent de production.</batteryPowerStation.desc>
+  
+  
+  <cleanEnergyLab.label>Laboratoire d'énergie propre</cleanEnergyLab.label>
+  
+  <cleanEnergyLab.desc>Un laboratoire de recherche dédié à l'étude et à la production de formes d'énergie propre plus efficaces.</cleanEnergyLab.desc>
+  
+  
+  <firearmsFactory.label>Usine d'armes à feu</firearmsFactory.label>
+  
+  <firearmsFactory.desc>Une usine qui produit de grandes quantités d'armes à feu.</firearmsFactory.desc>
+  
+  
+  <forcedWorkCamps.label>Camps de travail forcé</forcedWorkCamps.label>
+  
+  <forcedWorkCamps.desc>Faites travailler ces prisonniers et augmentez votre production !</forcedWorkCamps.desc>
+  
+  
+  <IMED.label>Dépôt d'équipement minier industriel</IMED.label>
+  
+  <IMED.desc>Construisez un lieu pour stocker et entretenir de grosses machines qui dévorent la roche comme du carton.</IMED.desc>
+  
+  
+  <indoorHydroponics.label>Hydroponie intérieure</indoorHydroponics.label>
+  
+  <indoorHydroponics.desc>La nourriture est produite en intérieur, ce qui la protège des conditions extérieures les plus rudes.</indoorHydroponics.desc>
+  
+  
+  <inhouseMercCompany.label>Compagnie de mercenaires interne</inhouseMercCompany.label>
+  
+  <inhouseMercCompany.desc>Des baraquements pour une compagnie de mercenaires interne. Ils assureront la sécurité de la colonie.</inhouseMercCompany.desc>
+  
+  
+  <JunkFoodFactory.label>Usine de malbouffe</JunkFoodFactory.label>
+  
+  <JunkFoodFactory.desc>C'est rapide, bon marché et mauvais pour la santé. Les habitants se plaindront du manque de qualité, mais seront trop mal en point pour y faire quoi que ce soit.</JunkFoodFactory.desc>
+  
+  
+  <lavaLab.label>Laboratoire de volcanologie</lavaLab.label>
+  
+  <lavaLab.desc>Une installation de recherche dédiée à l'étude de la volcanologie et à ses applications pratiques potentielles.</lavaLab.desc>
+  
+  
+  <lavaPlant.label>Centrale géothermique</lavaPlant.label>
+  
+  <lavaPlant.desc>Exploitez l'énergie géothermique facilement accessible des zones volcaniquement actives pour produire de l'électricité.</lavaPlant.desc>
+  
+  
+  <LocalZoo.label>Zoo local</LocalZoo.label>
+  
+  <LocalZoo.desc>Un endroit où les gens peuvent admirer différents animaux de passage dans la colonie, pour le plaisir et le profit !</LocalZoo.desc>
+  
+  
+  <researchLabs.label>Laboratoires de recherche</researchLabs.label>
+  
+  <researchLabs.desc>Les scientifiques passent leurs journées à faire des recherches ici.</researchLabs.desc>
+  
+  
+  <rimazonWarehouse.label>Entrepôt Rimazon</rimazonWarehouse.label>
+  
+  <rimazonWarehouse.desc>Un entrepôt rempli de marchandises prêtes à être expédiées.</rimazonWarehouse.desc>
+  
+  
+  <soilFixer.label>Bureau de restauration des sols</soilFixer.label>
+  
+  <soilFixer.desc>Restaure la fertilité des sols endommagés et épuisés des Scarlands.</soilFixer.desc>
+  
+  
+  <solarPlant.label>Centrale solaire</solarPlant.label>
+  
+  <solarPlant.desc>Une centrale solaire qui produit de l'énergie supplémentaire.</solarPlant.desc>
+  
+  
+  <TextileFactory.label>Usine textile</TextileFactory.label>
+  
+  <TextileFactory.desc>Fabriquer des vêtements est bien plus simple quand les machines font l'essentiel du travail !</TextileFactory.desc>
+  
+  
+  <TreeFarm.label>Plantation forestière</TreeFarm.label>
+  
+  <TreeFarm.desc>Arrêtez de dépouiller les forêts et faites pousser vos propres arbres !</TreeFarm.desc>
+  
+</LanguageData>

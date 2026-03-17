@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><AridShrubland.label>Broussailles arides</AridShrubland.label>
+  
+  
+  <BorealForest.label>Forêt boréale</BorealForest.label>
+  
+  
+  <ColdBog.label>Tourbière froide</ColdBog.label>
+  
+  
+  <defaultBiome.label>Par défaut Biome</defaultBiome.label>
+  
+  
+  <Desert.label>désert</Desert.label>
+  
+  
+  <ExtremeDesert.label>extrême désert</ExtremeDesert.label>
+  
+  
+  <IceSheet.label>Banquise</IceSheet.label>
+  
+  
+  <OrbitalSpace.label>Espace orbital</OrbitalSpace.label>
+  
+  
+  <SeaIce.label>Mer de glace</SeaIce.label>
+  
+  
+  <TemperateForest.label>Forêt tempérée</TemperateForest.label>
+  
+  
+  <TemperateSwamp.label>Marais tempéré</TemperateSwamp.label>
+  
+  
+  <TropicalRainforest.label>Forêt tropicale</TropicalRainforest.label>
+  
+  
+  <TropicalSwamp.label>Marais tropical</TropicalSwamp.label>
+  
+  
+  <Tundra.label>toundra</Tundra.label>
+  
+</LanguageData>

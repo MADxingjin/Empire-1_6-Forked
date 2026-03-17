@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><Empty.label>Emplacement de politique vide</Empty.label>
+  
+  <Empty.desc>Cliquez ici pour adopter cette politique.</Empty.desc>
+  
+  
+  <Enacting.label>Politique en cours de préparation...</Enacting.label>
+  
+  <Enacting.desc>Une politique est en cours de préparation.</Enacting.desc>
+  
+</LanguageData>
