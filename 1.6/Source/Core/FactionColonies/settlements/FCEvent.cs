@@ -89,10 +89,12 @@ namespace FactionColonies
             }
 
             // Incompatible/duplicate event check
+            // Faction-wide events are blocked globally if already active.
+            // Settlement-specific events are allowed through — MakeRandomEvent handles per-settlement filtering.
             foreach (FCEvent evt in FactionCache.FactionComp.events)
             {
                 if (evt.def == null) continue;
-                if (cEvent == evt.def) return false;
+                if (cEvent == evt.def && noSettlementRequirement) return false;
 
                 foreach (FCEventDef inEvt in evt.def.incompatibleEvents)
                 {
@@ -176,8 +178,32 @@ namespace FactionColonies
 
                     if (SettlementTraitLocations == null || SettlementTraitLocations.Count == 0)
                     {
+                        // Exclude settlements already affected by the same or an incompatible event
+                        HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
+                        foreach (FCEvent activeEvt in worldcomp.events)
+                        {
+                            if (activeEvt.def == null) continue;
+                            bool isSameDef = activeEvt.def == def;
+                            bool isIncompatible = false;
+                            if (!isSameDef)
+                            {
+                                foreach (FCEventDef inEvt in activeEvt.def.incompatibleEvents)
+                                {
+                                    if (inEvt == def) { isIncompatible = true; break; }
+                                }
+                            }
+                            if (isSameDef || isIncompatible)
+                            {
+                                foreach (WorldSettlementFC s in activeEvt.settlementTraitLocations)
+                                {
+                                    if (s != null) excludedSettlements.Add(s);
+                                }
+                            }
+                        }
+
                         foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
                         {
+                            if (excludedSettlements.Contains(settlement)) continue;
                             if (tempEvent.def.requiredResource != null)
                             {
                                 ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);

@@ -18,6 +18,15 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>moonlitRitual_1-1</li>
+			<li>moonlitRitual_2-1</li>
+			<li>moonlitRitual_2-2</li>
+			<li>moonlitRitual_3-1</li>
+			<li>moonlitRitual_3-2</li>
+			<li>moonlitRitual_3-3</li>
+			<li>moonlitRitual_3-4</li>
+			<li>moonlitRitual_4-1</li>
+			<li>moonlitRitual_4-2</li>
 		</incompatibleEvents>
 
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>

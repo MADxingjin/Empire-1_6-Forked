@@ -16,6 +16,14 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>strangeDiscovery_1-1</li>
+			<li>strangeDiscovery_1-1b</li>
+			<li>strangeDiscovery_1-2</li>
+			<li>strangeDiscovery_1-3</li>
+			<li>strangeDiscovery_2-1</li>
+			<li>strangeDiscovery_2-1b</li>
+			<li>strangeDiscovery_2-2</li>
+			<li>strangeDiscovery_2-3</li>
 		</incompatibleEvents>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>

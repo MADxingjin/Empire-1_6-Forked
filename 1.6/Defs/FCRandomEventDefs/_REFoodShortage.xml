@@ -21,6 +21,7 @@
 			<li>foodShortage_1-2</li>
 			<li>foodShortage_1-3</li>
 			<li>foodShortage_1-4</li>
+			<li>foodSurplus_0</li>
 		</incompatibleEvents>
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>

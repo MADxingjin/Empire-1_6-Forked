@@ -18,6 +18,12 @@
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
 		<incompatibleEvents>
+			<li>drugTrade_1-1</li>
+			<li>drugTrade_1-2</li>
+			<li>drugTrade_2-1</li>
+			<li>drugTrade_2-2</li>
+			<li>drugTrade_3-1</li>
+			<li>drugTrade_4-1</li>
 		</incompatibleEvents>
 
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
