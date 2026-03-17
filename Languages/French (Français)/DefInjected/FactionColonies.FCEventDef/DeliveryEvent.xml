@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<LanguageData>
-  
-  <!-- EN: Delivery -->
-  <deliveryArrival.label>Livraison</deliveryArrival.label>
-  <!-- EN: A transport ship carrying items or pawns is traveling to your map -->
-  <deliveryArrival.desc>Un vaisseau de transport transportant des objets ou des pions se dirige vers votre carte</deliveryArrival.desc>
-  
-</LanguageData>

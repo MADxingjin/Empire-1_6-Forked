@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<LanguageData>
-  
-  <!-- EN: Wanderlust -->
-  <wanderlust.label>Envie de voyage</wanderlust.label>
-  <!-- EN: The citizens of your faction are itching to get on the road and settle new lands. Half cost to settle. -->
-  <wanderlust.desc>Les citoyens de votre faction brûlent d’envie de prendre la route et de s’installer sur de nouvelles terres. Coût d’installation réduit de moitié.</wanderlust.desc>
-  
-</LanguageData>
