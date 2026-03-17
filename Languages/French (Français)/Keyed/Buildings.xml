@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><ConstructBuilding>Construire un bâtiment</ConstructBuilding>
+	
+  <Construct>Construire</Construct>
+	
+  <Build>Construire</Build>
+	
+  <Built>Construit</Built>
+	
+  <WillBeConstructedIn>sera construit dans</WillBeConstructedIn>
+	
+  <HasBeenConstructedAt>a été construit à</HasBeenConstructedAt>
+	
+  <Empire_BuildingWindow_ConstructionDesc>Actuellement en construction : {0}</Empire_BuildingWindow_ConstructionDesc>
+	
+  <BuildTime>Temps de construction : {0}</BuildTime>
+
+	
+	
+  <BuildingSurfaceOnly>Ce bâtiment ne peut être construit que dans les colonies de surface</BuildingSurfaceOnly>
+	
+  <BuildingOrbitalOnly>Ce bâtiment ne peut être construit que sur des plateformes orbitales</BuildingOrbitalOnly>
+	
+  <BuildingInvalidSettlement>{0} ne peut pas être construit dans une {1}</BuildingInvalidSettlement>
+	
+  <BuildingAlreadyType>Il y a déjà un bâtiment de ce type</BuildingAlreadyType>
+	
+  <BuildingBeingBuiltAlreadyType>Un bâtiment de ce type est déjà en cours de construction</BuildingBeingBuiltAlreadyType>
+	
+  <BuildingAlreadyConstructed>Un bâtiment est déjà en cours de construction à cet emplacement</BuildingAlreadyConstructed>
+
+	
+	
+  <Destroy>Détruire</Destroy>
+	
+  <FCDemolish>Démolir</FCDemolish>
+	
+  <FCDemolishConfirmation>Êtes-vous sûr de vouloir démolir {0} ? Cela coûtera {1} argent.</FCDemolishConfirmation>
+	
+  <FCBuildingDemolished>{0} a été démoli</FCBuildingDemolished>
+	
+  <FCChangeBuildingButton>Changer de bâtiment</FCChangeBuildingButton>
+
+	
+	
+  <BuildingFilterAll>Tout</BuildingFilterAll>
+	
+  <BuildingFilterHappiness>Bonheur</BuildingFilterHappiness>
+	
+  <BuildingFilterBasetax>Impôt</BuildingFilterBasetax>
+	
+  <BuildingFilterWorkers>Ouvriers</BuildingFilterWorkers>
+	
+  <BuildingFilterMilitary>Militaire</BuildingFilterMilitary>
+
+	
+	
+  <FCCapitalEstablished>Capitale de l'Empire établie à {0} ! Cet endroit sera utilisé comme centre de votre empire.</FCCapitalEstablished>
+	
+  <FCCapitalSeatDisabled>Siège de capitale désactivé. L'Empire utilisera un emplacement de capitale de secours si disponible.</FCCapitalSeatDisabled>
+	
+  <FCCapitalLost>La capitale de l'Empire a été perdue ! Vous devriez établir un nouveau siège de capitale.</FCCapitalLost>
+
+	
+	
+  <Empire_BuildingWindow_Header>Bâtiments — {0}</Empire_BuildingWindow_Header>
+	
+  <Empire_BuildingWindow_EmptySlot>Emplacement de bâtiment vide</Empire_BuildingWindow_EmptySlot>
+	
+  <Empire_BuildingWindow_CurrentBuilding>Bâtiment actuel</Empire_BuildingWindow_CurrentBuilding>
+	
+  <Empire_BuildingWindow_SelectBuilding>Sélectionnez un bâtiment pour voir ses détails</Empire_BuildingWindow_SelectBuilding>
+	
+  <Empire_BuildingWindow_Modifiers>Modificateurs</Empire_BuildingWindow_Modifiers>
+	
+  <Empire_BuildingWindow_SettlementImpact>Impact sur la colonie</Empire_BuildingWindow_SettlementImpact>
+	
+  <Empire_BuildingWindow_Upgrades>Améliorations possibles</Empire_BuildingWindow_Upgrades>
+	
+  <Empire_BuildingWindow_RequiredBy>Requis par</Empire_BuildingWindow_RequiredBy>
+	
+  <Empire_BuildingWindow_Requires>Nécessite : {0}</Empire_BuildingWindow_Requires>
+	
+  <Empire_BuildingWindow_CannotDemolishRequired>Impossible de démolir : requis par {0}</Empire_BuildingWindow_CannotDemolishRequired>
+	
+  <Empire_BuildingWindow_SlotUpgrades>Améliorations</Empire_BuildingWindow_SlotUpgrades>
+	
+  <BuildingUpgrades>Améliorations de bâtiment</BuildingUpgrades>
+	
+  <Buildings>structures</Buildings>
+	
+  <Facilities>Installations</Facilities>
+	
+  <FCSearchBuildings>Rechercher...</FCSearchBuildings>
+
+</LanguageData>

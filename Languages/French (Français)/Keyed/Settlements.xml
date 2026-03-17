@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><SettleANewColony>Fonder une nouvelle colonie</SettleANewColony>
+	
+  <CreateNewColony>Créer une nouvelle colonie</CreateNewColony>
+	
+  <SelectTile>Sélectionnez une case pour créer la colonie</SelectTile>
+	
+  <selectedInvalidTile>Vous ne pouvez pas construire de colonie ici !</selectedInvalidTile>
+	
+  <Settle>Fonder</Settle>
+	
+  <CaravanOnWay>Une caravane est déjà en route</CaravanOnWay>
+	
+  <CaravanSentToLocation>Une caravane a été envoyée sur place ! Elle arrivera dans</CaravanSentToLocation>
+	
+  <ConstructionToLocation>Des équipes de construction ont été envoyées sur place ! Leur travail sera terminé dans</ConstructionToLocation>
+	
+  <ColonyConstruction>Construction de {0}</ColonyConstruction>
+	
+  <ImpassableMountains>Vous ne pouvez pas fonder de {0} sur des montagnes infranchissables.</ImpassableMountains>
+	
+  <NotAllowedBiome>Vous ne pouvez pas fonder de {0} dans ce biome.</NotAllowedBiome>
+	
+  <InvalidPlanetLayer>Couche planétaire invalide.</InvalidPlanetLayer>
+	
+  <OrbitalTileOccupied>Cette case orbitale est occupée.</OrbitalTileOccupied>
+	
+  <FCSettlementFormed>Colonie fondée</FCSettlementFormed>
+	
+  <TheSettlement>La colonie</TheSettlement>
+	
+  <HasBeenFormed>a été fondée</HasBeenFormed>
+	
+  <SettleEventDesc>Une caravane voyage pour établir une nouvelle {0} dans le {1}. Arrivée estimée : {2}.</SettleEventDesc>
+	
+  <SettleEventCompletedDesc>{0} a été établie comme nouvelle {1} dans le {2}.</SettleEventCompletedDesc>
+	
+  <PlayerColony>Colonie du joueur</PlayerColony>
+	
+  <SetCapital>Définir comme capitale</SetCapital>
+	
+  <SetAsFactionCapital>{0} a été définie comme capitale de la faction</SetAsFactionCapital>
+
+	
+	
+  <AlreadyUpgradeSettlement>Cette colonie est déjà en cours d’amélioration !</AlreadyUpgradeSettlement>
+	
+  <StartUpgradeSettlement>La colonie est maintenant en cours d’amélioration…</StartUpgradeSettlement>
+	
+  <UpgradeSettlement>Améliorer la colonie</UpgradeSettlement>
+	
+  <SettlementUpgradeInProgress>Amélioration…</SettlementUpgradeInProgress>
+	
+  <CanBeUpgraded>peut être améliorée pour</CanBeUpgraded>
+	
+  <UpgradeColonyDesc>Améliorer cette colonie augmentera de 3 le nombre maximal d’ouvriers avant que leur coût ne commence à augmenter. Le niveau militaire de cette colonie augmentera également de 1.</UpgradeColonyDesc>
+	
+  <HasBeenUpgraded>a été améliorée au niveau</HasBeenUpgraded>
+	
+  <UpgradeEventDesc>{0} est en cours d’amélioration du niveau {1} au niveau {2}.
+
+{3}</UpgradeEventDesc>
+	
+  <UpgradeEventCompletedDesc>{0} a été améliorée au niveau {1} !
+
+{2}</UpgradeEventCompletedDesc>
+	
+  <AlreadyMaxLevel>est déjà au niveau maximum</AlreadyMaxLevel>
+	
+  <NotEnoughSilverUpgrade>La carte actuelle n’a pas assez d’argent pour payer l’amélioration de la colonie.</NotEnoughSilverUpgrade>
+	
+  <CannotBeUpgradedPastMax>Cette colonie ne peut pas être améliorée au-delà du niveau maximum</CannotBeUpgradedPastMax>
+	
+  <UpgradeTown>Améliorer la ville</UpgradeTown>
+
+	
+	
+  <TownLog>Journal de la ville</TownLog>
+	
+  <GoToLocation>Aller à l’emplacement</GoToLocation>
+	
+  <Located>Située dans le</Located>
+	
+  <LandOf>territoire d’un</LandOf>
+	
+  <openSettlementWindowDefaultLabel>Voir les informations de la colonie</openSettlementWindowDefaultLabel>
+	
+  <openSettlementWindowDefaultDesc>Ouvre la fenêtre de colonie des colonies</openSettlementWindowDefaultDesc>
+	
+  <FCBuildRoads>Construire des routes</FCBuildRoads>
+
+	
+	
+  <SettlementMilitaryLevel>Niveau militaire de la colonie</SettlementMilitaryLevel>
+	
+  <SettlementHappiness>Bonheur de la colonie</SettlementHappiness>
+	
+  <SettlementLoyalty>Loyauté de la colonie</SettlementLoyalty>
+	
+  <SettlementUnrest>Troubles de la colonie</SettlementUnrest>
+	
+  <SettlementProsperity>Prospérité de la colonie</SettlementProsperity>
+	
+  <FCHappiness>bonheur</FCHappiness>
+	
+  <FCLoyality>loyauté</FCLoyality>
+	
+  <FCUnrest>troubles</FCUnrest>
+	
+  <FCProsperity>prospérité</FCProsperity>
+	
+  <Happiness>bonheur</Happiness>
+	
+  <Loyalty>loyauté</Loyalty>
+	
+  <Unrest>troubles</Unrest>
+	
+  <Prosperity>prospérité</Prosperity>
+	
+  <BaseRecovery>Récupération de base</BaseRecovery>
+	
+  <BaseGain>Gain de base</BaseGain>
+	
+  <BaseLoss>Perte de base</BaseLoss>
+	
+  <SettlementStatGain>Gain de {0} {1} par jour</SettlementStatGain>
+	
+  <SettlementStatLoss>Perte de {0} {1} par jour</SettlementStatLoss>
+
+	
+	
+  <SettlementMilitaryLevelDesc>Le niveau militaire affecte directement la capacité de la colonie à se défendre et à attaquer les menaces extérieures.</SettlementMilitaryLevelDesc>
+	
+  <SettlementHappinessDesc>Mesure du bonheur global de la colonie.
+
+Un bonheur élevé signifie que tout conflit interne au sein de la colonie tournera fortement en votre faveur.</SettlementHappinessDesc>
+	
+  <SettlementLoyaltyDesc>Mesure de la loyauté globale de la colonie.
+
+La loyauté d’une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit les risques de défection.</SettlementLoyaltyDesc>
+	
+  <SettlementUnrestDesc>Mesure des troubles globaux de la colonie.
+
+Plus les troubles augmentent, plus les événements internes dangereux dans votre colonie ont de chances d’éclater. Laissez-les monter trop haut, et une révolte générale de la colonie peut survenir.</SettlementUnrestDesc>
+	
+  <SettlementProsperityDesc>Mesure de la prospérité globale de la colonie.
+
+La prospérité d’une ville est directement corrélée à la production de ressources (par ex. 50 % de prospérité = 50 % de production). Si la prospérité est endommagée, elle remontera lentement avec le temps.</SettlementProsperityDesc>
+
+	
+	
+  <SettlementManager>Gestionnaire de colonie</SettlementManager>
+	
+  <FCSettlementTableName>Nom</FCSettlementTableName>
+	
+  <FCSettlementTableLevel>Niveau</FCSettlementTableLevel>
+	
+  <FCSettlementTableMilLevel>Niveau militaire</FCSettlementTableMilLevel>
+	
+  <FCSettlementTableProfit>Profit</FCSettlementTableProfit>
+	
+  <FCSettlementTableWorkers>Ouvriers libres</FCSettlementTableWorkers>
+	
+  <FCSettlementTableHappiness>Bonheur</FCSettlementTableHappiness>
+	
+  <FCSettlementTableLoyalty>Loyauté</FCSettlementTableLoyalty>
+	
+  <FCSettlementTableUnrest>Troubles</FCSettlementTableUnrest>
+	
+  <FCSettlementTableProsperity>Prospérité</FCSettlementTableProsperity>
+	
+  <FCSettlementTableFounding>Date de fondation</FCSettlementTableFounding>
+	
+  <FCNoSettlements>Aucune colonie.</FCNoSettlements>
+	
+  <FCSettlementCount>{0} colonies</FCSettlementCount>
+	
+  <FCSortBy>Tri : {0}</FCSortBy>
+	
+  <ColonyLevel>Niveau de colonie</ColonyLevel>
+	
+  <Hamlet>hameau</Hamlet>
+
+	
+	
+  <DeleteSettlement>Supprimer la colonie</DeleteSettlement>
+	
+  <DeleteSettlementConfirm>Supprimer la colonie {0} ?</DeleteSettlementConfirm>
+	
+  <AreYouSureRemove>Êtes-vous sûr ?</AreYouSureRemove>
+	
+  <SettlementRemoved>La colonie {0} a été supprimée.</SettlementRemoved>
+
+	
+	
+  <FCCustomizeSettlement>Personnaliser la colonie</FCCustomizeSettlement>
+	
+  <FCSettlementFullName>Nom complet :</FCSettlementFullName>
+	
+  <FCSettlementShortName>Nom court :</FCSettlementShortName>
+	
+  <FCUnsupportedSettlementFaction>La faction de cette colonie n’a pas de nom, ou quelque chose s’est terriblement mal passé.</FCUnsupportedSettlementFaction>
+
+	
+	
+  <FCSpecialActions>Actions spéciales</FCSpecialActions>
+	
+  <FCBuyLoyalty>Acheter de la loyauté</FCBuyLoyalty>
+	
+  <SendSilverToColony>Envoyer de l’argent à la colonie</SendSilverToColony>
+	
+  <SendingXSilver>Envoi de {0} argent</SendingXSilver>
+	
+  <SettlementGainsXLoyalty>La colonie gagnera {0} loyauté</SettlementGainsXLoyalty>
+
+	
+	
+  <numUnderConstruction>Construction active : {0}</numUnderConstruction>
+	
+  <ActiveConstruction>Construction active</ActiveConstruction>
+	
+  <closeConstructionBox>Fermer la liste des constructions</closeConstructionBox>
+	
+  <openConstructionBox>Ouvrir la liste des constructions</openConstructionBox>
+	
+  <settlementupgrading>Amélioration de la colonie</settlementupgrading>
+	
+  <completiontimer>Se termine dans : {0}</completiontimer>
+
+	
+	
+  <FCDescSeaIce>Des étendues infinies de glace, presque dénuées de vie, à part quelques animaux rares et clairsemés. Aucune nourriture ne pousse, sauf dans des pièces chauffées. Seules les formes de vie les plus tenaces survivent ici.</FCDescSeaIce>
+	
+  <FCDescIceSheet>Une gelée terne et sans fin recouvre la terre, interrompue seulement par des affleurements rocheux et des ruines. La seule source de nourriture est la faune robuste qui a fait de cet endroit son foyer.</FCDescIceSheet>
+	
+  <FCDescTundra>L’arrière-pays abrite une variété de flore et de faune rudes, survivant tant bien que mal sur un paysage couvert de mousse. Quand l’été arrive, la terre s’éveille brièvement à la vie.</FCDescTundra>
+	
+  <FCDescColdBog>La beauté sauvage de cette terre n’a d’égale que son inhospitalité. Des marécages parsèment le paysage, tout comme de fréquents troupeaux d’herbivores migrateurs et les prédateurs qui les chassent.</FCDescColdBog>
+	
+  <FCDescBorealForest>Généralement moins froide que l’arrière-pays d’une toundra, la forêt boréale connaît des hivers rigoureux compensés seulement par des étés chauds, durant lesquels la verdure fleurit brièvement et la nourriture devient abondante.</FCDescBorealForest>
+	
+  <FCDescTropicalRainforest>Les arbres étouffent le ciel, laissant à peine passer la lumière jusqu’au sol. Pourtant, sous la canopée existe une faune et une flore éblouissantes, mais mortelles. La beauté de ce biome n’a d’égale que les dangers qu’il renferme.</FCDescTropicalRainforest>
+	
+  <FCDescTemperateForest>Des forêts et des ruisseaux abondants divisent le paysage. Les animaux parcourent les bois épais, et nourriture comme abri y sont en abondance.</FCDescTemperateForest>
+	
+  <FCDescTemperateSwamp>La terre est couverte de tourbières et de marécages, et ce qui ne l’est pas est recouvert d’une végétation variée. L’espace constructible y est précieux.</FCDescTemperateSwamp>
+	
+  <FCDescTropicalSwamp>La terre est étouffée par une végétation dense alors que les arbres montent vers le ciel, laissant à peine passer la lumière jusqu’aux sols traîtres. Les maladies y sont fréquentes et omniprésentes.</FCDescTropicalSwamp>
+	
+  <FCDescAridShrubland>Sans être un véritable désert, le sol cultivable y est rare à cause de la chaleur implacable. La majeure partie du terrain est dégagée, avec quelques bosquets isolés brisant un horizon autrement vide.</FCDescAridShrubland>
+	
+  <FCDescDesert>La terre arable est rare, car la majeure partie du terrain est couverte de sable, parfois trop dangereux pour y construire. Malgré cela, la vie s’y accroche, et les dunes abritent une faune et une flore étonnamment riches.</FCDescDesert>
+	
+  <FCDescExtremeDesert>Le soleil a brûlé cette terre jusqu’à en faire une friche. Il n’y a presque aucun sol capable de supporter une végétation correcte, et celui qui existe est de mauvaise qualité.</FCDescExtremeDesert>
+	
+  <FCDescUnknown>On sait peu de choses des terres environnantes, mais la colonie parvient à survivre et à prospérer dans ses conditions actuelles.</FCDescUnknown>
+	
+  <FCDescOrbitalSpace>Le vaste vide spatial s’étend dans toutes les directions, rompu seulement par le scintillement lointain des étoiles et le passage occasionnel d’un astéroïde. Les panneaux solaires brillent dans la lumière éternelle, tandis que les systèmes de survie bourdonnent discrètement dans cet environnement artificiel. La station flotte dans le vide, phare de civilisation au cœur de la nature sauvage cosmique.</FCDescOrbitalSpace>
+
+	
+	
+  <FCTownLevel1>La colonie elle-même n’est qu’un petit groupe de bâtiments rassemblés autour d’une structure centrale.</FCTownLevel1>
+	
+  <FCTownLevel2>La colonie est dominée par quelques grandes structures, mais elle reste assez petite. Des sacs de sable et des barricades entourent l’extérieur.</FCTownLevel2>
+	
+  <FCTownLevel3>La colonie compte déjà un bon nombre de structures — principalement orientées vers la production — ainsi que des entrepôts dédiés, et des ouvriers affairés courent entre elles. Un modeste mur protège la colonie.</FCTownLevel3>
+	
+  <FCTownLevel4>La colonie est de taille raisonnable et bien organisée, avec plusieurs bâtiments industriels regroupés pour maximiser l’efficacité. Un mur épais et des défenses internes protègent la colonie des attaques.</FCTownLevel4>
+	
+  <FCTownLevel5>Des bâtiments clairement signalés marquent le cœur industriel de ce phare animé de civilisation, ainsi que divers autres services. Plusieurs murs encerclent la colonie, avec d’abondantes défenses intérieures placées dans des goulots d’étranglement soigneusement planifiés.</FCTownLevel5>
+
+	
+	
+  <FCOrbitalLocation1>En orbite dans l’espace profond</FCOrbitalLocation1>
+	
+  <FCOrbitalLocation2>Stationnée en orbite basse</FCOrbitalLocation2>
+	
+  <FCOrbitalLocation3>Flottant dans le vide spatial</FCOrbitalLocation3>
+	
+  <FCOrbitalLocation4>Ancrée en orbite</FCOrbitalLocation4>
+	
+  <FCOrbitalLocation5>Positionnée en orbite basse</FCOrbitalLocation5>
+	
+  <FCOrbitalLocation6>Suspendue au-dessus de la surface</FCOrbitalLocation6>
+	
+  <FCOrbitalLocation7>Déployée dans l’espace orbital</FCOrbitalLocation7>
+
+	
+	
+  <FCOrbitalKeyword1>Station spatiale</FCOrbitalKeyword1>
+	
+  <FCOrbitalKeyword2>Station</FCOrbitalKeyword2>
+	
+  <FCOrbitalKeyword3>Satellite</FCOrbitalKeyword3>
+	
+  <FCOrbitalKeyword4>Base solaire</FCOrbitalKeyword4>
+	
+  <FCOrbitalKeyword5>Hub orbital</FCOrbitalKeyword5>
+	
+  <FCOrbitalKeyword6>Plateforme spatiale</FCOrbitalKeyword6>
+	
+  <FCOrbitalKeyword7>Station cosmique</FCOrbitalKeyword7>
+	
+  <FCOrbitalKeyword8>Base stellaire</FCOrbitalKeyword8>
+	
+  <FCOrbitalKeyword9>Station du vide</FCOrbitalKeyword9>
+	
+  <FCOrbitalKeyword10>Plateforme astrale</FCOrbitalKeyword10>
+
+	
+	
+  <BuildingInvalidEnvironment>Ce bâtiment ne peut pas être construit sur le biome de cette colonie !</BuildingInvalidEnvironment>
+
+</LanguageData>

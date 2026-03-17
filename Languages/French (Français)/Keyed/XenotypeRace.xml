@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><XenotypeSelection>Sélection du xénotype</XenotypeSelection>
+	
+  <RaceSelection>Sélection de la race</RaceSelection>
+	
+  <XenotypeRaceSelection>Sélection du xénotype et de la race</XenotypeRaceSelection>
+	
+  <AllowedRaces>Races autorisées</AllowedRaces>
+	
+  <CannotHaveLessThanOneRace>Impossible d’avoir moins d’une race dans votre faction</CannotHaveLessThanOneRace>
+	
+  <AllowedXenotypes>Xénotypes autorisés</AllowedXenotypes>
+	
+  <CannotHaveLessThanOneXenotype>Impossible d’avoir moins d’un xénotype dans votre faction</CannotHaveLessThanOneXenotype>
+	
+  <SecurityGuardsIncluded>Des agents de sécurité seront fournis pour les xénotypes non violents</SecurityGuardsIncluded>
+
+	
+	
+  <XenotypeWeightError>Tous les xénotypes ont un poids de 0 !</XenotypeWeightError>
+	
+  <XenotypeWeightErrorDesc>Si vous fermez cette fenêtre alors que tous les xénotypes ont un poids de 0, ils seront tous réinitialisés à un poids de 1.</XenotypeWeightErrorDesc>
+	
+  <RaceWeightError>Toutes les races ont un poids de 0 !</RaceWeightError>
+	
+  <RaceWeightErrorDesc>Si vous fermez cette fenêtre alors que toutes les races ont un poids de 0, elles seront toutes réinitialisées à un poids de 1.</RaceWeightErrorDesc>
+
+	
+	
+  <XenoRaceEnableAll>Tout activer</XenoRaceEnableAll>
+	
+  <XenoDisableNonBaseliner>Désactiver les non-Baseliners</XenoDisableNonBaseliner>
+	
+  <RaceDisableNonHuman>Désactiver les non-humains</RaceDisableNonHuman>
+	
+  <Empire_XenotypeMenus_EnableAll>Tout activer</Empire_XenotypeMenus_EnableAll>
+	
+  <Empire_XenotypeMenus_DisableNonBaseliner>Désactiver les non-Baseliners</Empire_XenotypeMenus_DisableNonBaseliner>
+
+	
+	
+  <EmpireMemberRaceChances>Probabilités des races des membres</EmpireMemberRaceChances>
+
+	
+	
+  <DisabledHumanWarning>La race humaine est désactivée, mais peut encore apparaître comme solution de secours si les races sélectionnées ne disposent pas d’options de type de pion valides.</DisabledHumanWarning>
+	
+  <XenoNonViolentIndicatorDesc>Ce xénotype est considéré comme non violent.</XenoNonViolentIndicatorDesc>
+	
+  <OnlyNonViolentXenoWarning>Seuls des xénotypes non violents sont sélectionnés. Vous verrez quand même des Baseliners si la violence est requise.</OnlyNonViolentXenoWarning>
+
+</LanguageData>

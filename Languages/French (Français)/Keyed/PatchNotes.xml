@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><FCPatchNotesWindowTitle>Notes de mise à jour</FCPatchNotesWindowTitle>
+	
+  <FCSelectPatchNotes>Sélectionner patch notes à voir images</FCSelectPatchNotes>
+	
+  <FCPatchNotesImagesMissing>Aucun aperçu disponible</FCPatchNotesImagesMissing>
+	
+  <FCPatchNotesImageZoomTooltip>Cliquer pour agrandir l’image</FCPatchNotesImageZoomTooltip>
+</LanguageData>

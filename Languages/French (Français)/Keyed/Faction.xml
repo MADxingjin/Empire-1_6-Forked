@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><CustomizeFaction>Personnaliser la faction</CustomizeFaction>
+	
+  <FactionName>Nom de la faction</FactionName>
+	
+  <FactionTitle>Titre de la faction</FactionTitle>
+	
+  <FactionIcon>Icône de la faction</FactionIcon>
+	
+  <InvalidFaction>Cette faction ne peut pas faire tourner un empire à elle seule !</InvalidFaction>
+	
+  <PlayerFaction>Faction du joueur</PlayerFaction>
+	
+  <Bastion>Bastion</Bastion>
+	
+  <FCFoundedOn>Fondée le {0}</FCFoundedOn>
+
+	
+	
+  <FactionHappiness>Bonheur de la faction</FactionHappiness>
+	
+  <FactionLoyalty>Loyauté de la faction</FactionLoyalty>
+	
+  <FactionUnrest>Agitation de la faction</FactionUnrest>
+	
+  <FactionProsperity>Prospérité de la faction</FactionProsperity>
+	
+  <FactionHappinessDesc>Mesure du bonheur global de la faction. Un bonheur élevé signifie que tout conflit interne au sein d'une colonie tournera fortement en votre faveur.</FactionHappinessDesc>
+	
+  <FactionLoyaltyDesc>Mesure de la loyauté globale de la faction. La loyauté d'une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit le risque de défection.</FactionLoyaltyDesc>
+	
+  <FactionUnrestDesc>Mesure de l'agitation globale de la faction. Plus elle augmente, plus des événements internes dangereux ont de chances d'éclater. Si elle monte trop haut, une révolte à l'échelle de la faction peut survenir.</FactionUnrestDesc>
+	
+  <FactionProsperityDesc>Mesure de la prospérité globale de la faction. La prospérité d'une ville est directement liée à la production de ressources. 50 % de prospérité = 50 % de production. Si la prospérité est endommagée, elle remontera lentement avec le temps.</FactionProsperityDesc>
+
+	
+	
+  <FCLevel>Niveau de faction : {0}</FCLevel>
+	
+  <FCFactionLevelUp>Montée de niveau de la faction</FCFactionLevelUp>
+	
+  <FCFactionLevelUpDesc>Votre faction {0} est passée au niveau {1} !</FCFactionLevelUpDesc>
+	
+  <ReachedMaxLevel>niveau maximum atteint</ReachedMaxLevel>
+
+	
+	
+  <Policies-Traits>Politiques/Traits</Policies-Traits>
+	
+  <FactionPoliciesAndTraits>Politiques et traits de faction</FactionPoliciesAndTraits>
+	
+  <TaxLaw>Politique fiscale</TaxLaw>
+	
+  <SocialPolicy>Politique sociale</SocialPolicy>
+	
+  <MilitaryPolicy>Politique militaire</MilitaryPolicy>
+	
+  <FCPolicySelection>Sélection de politique</FCPolicySelection>
+	
+  <FCSelectPolicies>Sélectionner les politiques</FCSelectPolicies>
+	
+  <PolicyAlreadyEnacted>Cette politique est déjà en vigueur</PolicyAlreadyEnacted>
+	
+  <AlreadyPolicyTypeBeingEnacted>Une politique de ce type est déjà en cours d'adoption</AlreadyPolicyTypeBeingEnacted>
+	
+  <AlreadyPolicyInSlot>Une politique est déjà en cours d'adoption dans cet emplacement</AlreadyPolicyInSlot>
+	
+  <Enact>Promulguer</Enact>
+	
+  <Enacted>Promulguée</Enacted>
+	
+  <Repeal>Abroger</Repeal>
+	
+  <WillBeEnactedIn>sera promulguée dans</WillBeEnactedIn>
+	
+  <EnactPolicy>Promulguer la politique</EnactPolicy>
+	
+  <HasBeenEnactedAt>a été promulguée à</HasBeenEnactedAt>
+	
+  <EnactedInYourFaction>a été promulguée dans votre faction</EnactedInYourFaction>
+
+	
+	
+  <FactionTraits>Traits de faction</FactionTraits>
+	
+  <AddTrait>Ajouter un trait</AddTrait>
+	
+  <FCTraitSelection>Sélection de trait</FCTraitSelection>
+	
+  <FCSelectTraits>Sélectionner les traits</FCSelectTraits>
+	
+  <FCTraitSlots>Emplacements de traits</FCTraitSlots>
+	
+  <FCAvailableTraits>Traits disponibles</FCAvailableTraits>
+	
+  <FCTraitSelectedPreview>{0}</FCTraitSelectedPreview>
+	
+  <FCNoOpenTraitSlots>Tous les emplacements de traits disponibles sont remplis !</FCNoOpenTraitSlots>
+	
+  <FCAllTraitSlotsFilled>Tous les emplacements de traits ont été attribués.</FCAllTraitSlotsFilled>
+	
+  <FCSelectTraitsPrompt>Sélectionnez encore {0} trait(s) dans la liste ci-dessus.</FCSelectTraitsPrompt>
+	
+  <FCTraitSelectionReady>Appuyez sur Confirmer pour attribuer les traits sélectionnés. Cette action est irréversible !</FCTraitSelectionReady>
+	
+  <FCHoverTraitForDetails>Survolez un trait pour voir ses détails.</FCHoverTraitForDetails>
+	
+  <FCSelectedPolicies>Sélectionnés ({0}/{1})</FCSelectedPolicies>
+	
+  <FCAvailablePolicies>Politiques disponibles</FCAvailablePolicies>
+	
+  <FCConflictsWith>Entre en conflit avec : {0}</FCConflictsWith>
+	
+  <FCTraits>Traits</FCTraits>
+	
+  <FCSelectTraits0>Sélectionnez {0} politiques à ajouter ! Attention, ce choix est irréversible !</FCSelectTraits0>
+	
+  <FCSelectTraits2>N'oubliez pas : votre choix sera irréversible une fois cette fenêtre fermée !</FCSelectTraits2>
+	
+  <FCConflictingTraits>Vous ne pouvez pas avoir des traits de faction incompatibles !</FCConflictingTraits>
+	
+  <FCUnselectTrait>Vous devez désélectionner l'un de vos traits actuels pour en choisir un autre !</FCUnselectTrait>
+	
+  <FCTraitsChosen>Vous avez déjà choisi vos traits. Vous ne pouvez plus les modifier !</FCTraitsChosen>
+	
+  <FCSelectANewTrait>Sélectionner un nouveau trait</FCSelectANewTrait>
+	
+  <FCTraitLockedUntilLevel>Verrouillé jusqu'au niveau {0}</FCTraitLockedUntilLevel>
+	
+  <FCConfirmTrait>Êtes-vous sûr de vouloir sélectionner {0} ? Vous ne pourrez pas revenir sur cette décision</FCConfirmTrait>
+	
+  <FCSelectYourTraits>Les traits de départ de votre faction ne sont pas sélectionnés. Allez dans l'onglet de personnalisation de la faction pour les choisir !</FCSelectYourTraits>
+
+	
+	
+  <FCEdicts>Édits</FCEdicts>
+	
+  <FCEdict>Édit</FCEdict>
+	
+  <FCEdictsDesc>Activez ou désactivez les édits à l'échelle de la faction. Un seul édit par catégorie peut être actif à la fois. Les édits actifs ont un coût continu en argent.</FCEdictsDesc>
+	
+  <FCEdictUpkeep>Entretien : {0} argent/cycle</FCEdictUpkeep>
+	
+  <FCEdictUpkeepUnpaid>Impossible de payer l'entretien des édits. Tous les édits ont été révoqués.</FCEdictUpkeepUnpaid>
+	
+  <FCEdictEnacted>Édit promulgué : {0}</FCEdictEnacted>
+	
+  <FCEdictRevoked>Édit révoqué : {0}</FCEdictRevoked>
+	
+  <FCEdictNone>Aucune</FCEdictNone>
+	
+  <FCEdictActivating>Adoption en cours... ({0} jours restants)</FCEdictActivating>
+	
+  <FCEdictTotalUpkeep>Entretien total des édits : {0} argent/cycle</FCEdictTotalUpkeep>
+	
+  <FCEdictCategoryLocked>Cette catégorie d'édit n'est pas encore débloquée.</FCEdictCategoryLocked>
+	
+  <FCEdictLevelRequired>Nécessite le niveau de faction {0}.</FCEdictLevelRequired>
+	
+  <FCEdictCategorySocial>Social</FCEdictCategorySocial>
+	
+  <FCEdictCategoryTax>Fiscalité</FCEdictCategoryTax>
+	
+  <FCEdictCategoryMilitary>Militaire</FCEdictCategoryMilitary>
+	
+  <FCEdictActive>Actif</FCEdictActive>
+	
+  <FCEdictRevoke>Révoquer</FCEdictRevoke>
+	
+  <FCEdictLockedUntilLevel>Verrouillé jusqu'au niveau de faction {0}</FCEdictLockedUntilLevel>
+	
+  <FCEdictIncompatible>{0} est incompatible avec votre politique active : {1}</FCEdictIncompatible>
+
+	
+	
+  <Researching>Recherche en cours</Researching>
+	
+  <ResearchExpended>{0} points de recherche ont été utilisés pour rechercher {1}. Il vous reste {2} points.</ResearchExpended>
+	
+  <ResearchPointsExpended>Recherche dépensée</ResearchPointsExpended>
+	
+  <NoResearchExpended>Aucun point de recherche n'a été utilisé aujourd'hui. Il vous reste {0} points.</NoResearchExpended>
+	
+  <PointsAddedToResearchPool>{0} points ont été ajoutés au pool de recherche !</PointsAddedToResearchPool>
+	
+  <ResearchGeneratedWaste>Les points de recherche générés par votre faction ont été perdus, car aucune recherche n'est sélectionnée</ResearchGeneratedWaste>
+	
+  <ActivateResearch>Activer la recherche</ActivateResearch>
+	
+  <FCSendResearchItems>Envoyer des objets de recherche</FCSendResearchItems>
+	
+  <FCFactionResearch>Recherche de faction</FCFactionResearch>
+	
+  <ResearchLevel>Vérifier le niveau technologique</ResearchLevel>
+	
+  <CurrentResearchLevel>Votre niveau technologique actuel est {0}. Pour atteindre le niveau suivant, vous devez rechercher {1}</CurrentResearchLevel>
+	
+  <FCShipBasics>Bases du vaisseau</FCShipBasics>
+	
+  <FCFabrication>Fabrication</FCFabrication>
+	
+  <FCElectricity>Électricité</FCElectricity>
+	
+  <FCSmithing>Forge</FCSmithing>
+
+	
+	
+  <FCRelationImproved>Relations améliorées !</FCRelationImproved>
+	
+  <FCRelationImprovedText>Vos communications avec {0} ont entraîné une amélioration des relations de {1} !</FCRelationImprovedText>
+	
+  <FCRelationNotImproved>Échec des relations</FCRelationNotImproved>
+	
+  <FCFailedToImproveRelationship>Vos communications avec {0} n'ont pas permis d'améliorer les relations.</FCFailedToImproveRelationship>
+	
+  <XDaysToSendDiplomat>Il reste {0} jours avant que la capacité d'améliorer les relations soit réinitialisée</XDaysToSendDiplomat>
+	
+  <FCIncreaseRelations>Tenter d'améliorer les relations</FCIncreaseRelations>
+	
+  <FCCannotImproveRelationsWithType>Vous ne pouvez pas améliorer vos relations avec des factions de ce type</FCCannotImproveRelationsWithType>
+
+	
+	
+  <CouldNotFindMapOfCapital>Impossible de trouver la carte de la capitale</CouldNotFindMapOfCapital>
+	
+  <FCCapitalAlreadyEstablished>La capitale de l'Empire est déjà établie à {0}. Désactivez d'abord le siège de capitale là-bas si vous voulez la déplacer.</FCCapitalAlreadyEstablished>
+	
+  <FCUnableToSetCapitalHere>Impossible de définir la capitale de la faction sur cette carte. Rendez-vous sur la carte de votre capitale et utilisez le bouton Définir comme capitale, ou construisez un siège de capitale.</FCUnableToSetCapitalHere>
+
+</LanguageData>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><CurrentOngoingEvents>Événements en cours</CurrentOngoingEvents>
+	
+  <TimeRemaining>Temps restant</TimeRemaining>
+	
+  <NewLand>Nouvelle terre</NewLand>
+	
+  <EventAffectingSettlements>Cet événement affecte les colonies suivantes :</EventAffectingSettlements>
+	
+  <FCNoActiveEvents>Aucun événement actif.</FCNoActiveEvents>
+	
+  <FCActiveEventsCount>{0} événements actifs</FCActiveEventsCount>
+	
+  <FCActiveEventsFiltered>{0} événements actifs sur {1}</FCActiveEventsFiltered>
+	
+  <FCEventCatAll>Tout</FCEventCatAll>
+	
+  <FCNoEventsMatchFilter>Aucun événement ne correspond aux filtres actuels.</FCNoEventsMatchFilter>
+	
+  <FCMultipleSettlements>Multiples ({0})</FCMultipleSettlements>
+
+	
+	
+  <FCEventAffecting>Affecte :</FCEventAffecting>
+	
+  <FCEventOptionFree>Gratuit</FCEventOptionFree>
+	
+  <FCEventSuccessGuaranteed>Succès : garanti</FCEventSuccessGuaranteed>
+	
+  <FCEventSuccessLikely>Succès : probable</FCEventSuccessLikely>
+	
+  <FCEventSuccessUncertain>Succès : incertain</FCEventSuccessUncertain>
+	
+  <FCEventSuccessRisky>Succès : risqué</FCEventSuccessRisky>
+
+	
+	
+  <BuildingEventDesc>{0} est en cours de construction à {1}. Fin estimée : {2}.</BuildingEventDesc>
+	
+  <BuildingEventCompletedMsg>{0} a été construit à {1} !</BuildingEventCompletedMsg>
+
+	
+	
+  <DeathOfFactionPawn>Votre incompétence a conduit à la mort d’un pion issu de vos colonies ! Les troubles ont augmenté dans vos colonies sujettes.</DeathOfFactionPawn>
+	
+  <CaptureOfFactionPawn>La capture d’un pion issu de l’une de vos colonies a provoqué de graves troubles dans vos colonies sujettes !</CaptureOfFactionPawn>
+	
+  <PrisonerHasDiedLetter>Le prisonnier est mort</PrisonerHasDiedLetter>
+	
+  <PrisonerHasDied>{0} à {1} est mort d’épuisement au travail</PrisonerHasDied>
+
+	
+	
+  <FCMercenaryJoined>Mercenaire arrivé</FCMercenaryJoined>
+	
+  <FCMercenaryJoinedText>Un mercenaire, {0}, de votre faction a rejoint votre colonie !</FCMercenaryJoinedText>
+
+	
+	
+  <transportingInjuredShuttle>Une navette ramène vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredShuttle>
+	
+  <transportingInjuredDropPod>Des capsules de largage ramènent vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredDropPod>
+	
+  <transportingInjuredCaravan>Une caravane ramène vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredCaravan>
+	
+  <transportingInjuredShuttleLost>Une navette ramène vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredShuttleLost>
+	
+  <transportingInjuredDropPodLost>Des capsules de largage ramènent vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredDropPodLost>
+	
+  <transportingInjuredCaravanLost>Une caravane ramène vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredCaravanLost>
+	
+  <shuttleLandingBlockedWithItems>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère. Elle contient : {0}.</shuttleLandingBlockedWithItems>
+	
+  <shuttleLandingBlocked>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère.</shuttleLandingBlocked>
+	
+  <caravanDangerTooHigh>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger.</caravanDangerTooHigh>
+	
+  <caravanDangerTooHighWithItems>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger. Elle transporte : {0}.</caravanDangerTooHighWithItems>
+
+	
+	
+  <shuttlePortCallShuttleLabel>Demander une navette</shuttlePortCallShuttleLabel>
+	
+  <shuttlePortCallShuttleDesc>Demandez à votre colonie de vous envoyer une navette capable de transporter une caravane :
+ {0} utilisations restantes (coût : {1})</shuttlePortCallShuttleDesc>
+	
+  <targetAnythingWithColonists>Ciblez n’importe quoi avec des colons libres pour envoyer la navette</targetAnythingWithColonists>
+	
+  <requestShuttleToCaravan>Demander une navette pour cette caravane</requestShuttleToCaravan>
+	
+  <requestShuttleToColony>Demander une navette pour cette colonie</requestShuttleToColony>
+	
+  <requestShuttleToMap>Demander une navette pour cette carte</requestShuttleToMap>
+	
+  <shuttlePortCallShuttleForCaravanLabel>Demander une navette pour une caravane</shuttlePortCallShuttleForCaravanLabel>
+	
+  <targetAnyWorldObject>Ciblez n’importe quel objet du monde vers lequel vous voulez envoyer la navette :
+ {0} utilisations restantes (coût : {1})</targetAnyWorldObject>
+	
+  <sendCaravanHere>Envoyer la caravane ici</sendCaravanHere>
+	
+  <noCaravansToSendShuttleTo>Il n’y a aucune caravane à laquelle envoyer une navette !</noCaravansToSendShuttleTo>
+	
+  <noShuttleUsesRemaining>Aucune utilisation de navette restante pour cette période fiscale !</noShuttleUsesRemaining>
+	
+  <notEnoughShuttleUsesRemaining>Nombre d’utilisations de navette insuffisant pour cette période fiscale !</notEnoughShuttleUsesRemaining>
+
+</LanguageData>

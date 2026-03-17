@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><RTDproductionAdditive>{0} de production de {1}</RTDproductionAdditive>
+	
+  <RTDproductionMultiplier>{0} de production de {1}</RTDproductionMultiplier>
+	
+  <RTDproductionAdditiveFrom>{0} de production de {1} provenant de {2}</RTDproductionAdditiveFrom>
+	
+  <RTDproductionMultiplierFrom>{0} de production de {1} provenant de {2}</RTDproductionMultiplierFrom>
+	
+	
+  <FCTraitDesc_ResourceBonusLabel>Bonus de ressources</FCTraitDesc_ResourceBonusLabel>
+	
+	
+  <FCTraitDesc_MilitaryLevel>{0} Niveau militaire</FCTraitDesc_MilitaryLevel>
+	
+  <FCTraitDesc_MilitaryCombatEfficiency>{0} Efficacité militaire au combat</FCTraitDesc_MilitaryCombatEfficiency>
+	
+  <FCTraitDesc_taxBasePercentage>{0} Pourcentage de taxe de base</FCTraitDesc_taxBasePercentage>
+	
+  <FCTraitDesc_taxBaseRandomModifier>{0} Modificateur de dîme</FCTraitDesc_taxBaseRandomModifier>
+	
+  <FCTraitDesc_prosperityBaseRecovery>{0} Récupération de prospérité de base</FCTraitDesc_prosperityBaseRecovery>
+	
+  <FCTraitDesc_workerBaseCost>{0} coût des ouvriers</FCTraitDesc_workerBaseCost>
+	
+  <FCTraitDesc_workerBaseMax>{0} capacité d’ouvriers</FCTraitDesc_workerBaseMax>
+	
+  <FCTraitDesc_workerBaseOverMax>{0} capacité d’ouvriers au-delà du maximum</FCTraitDesc_workerBaseOverMax>
+	
+	
+  <FCTraitDesc_happinessLostBase>{0} Perte de bonheur de base</FCTraitDesc_happinessLostBase>
+	
+  <FCTraitDesc_happinessGainedBase>{0} gain de bonheur de base</FCTraitDesc_happinessGainedBase>
+	
+  <FCTraitDesc_happinessLostMultiplier>{0} Perte de bonheur</FCTraitDesc_happinessLostMultiplier>
+	
+  <FCTraitDesc_happinessGainedMultiplier>{0} gain de bonheur</FCTraitDesc_happinessGainedMultiplier>
+	
+	
+  <FCTraitDesc_loyaltyLostBase>{0} Perte de loyauté de base</FCTraitDesc_loyaltyLostBase>
+	
+  <FCTraitDesc_loyaltyGainedBase>{0} gain de loyauté de base</FCTraitDesc_loyaltyGainedBase>
+	
+  <FCTraitDesc_loyaltyLostMultiplier>{0} Perte de loyauté</FCTraitDesc_loyaltyLostMultiplier>
+	
+  <FCTraitDesc_loyaltyGainedMultiplier>{0} gain de loyauté</FCTraitDesc_loyaltyGainedMultiplier>
+	
+	
+  <FCTraitDesc_unrestLostBase>{0} Perte de troubles de base</FCTraitDesc_unrestLostBase>
+	
+  <FCTraitDesc_unrestGainedBase>{0} gain de troubles de base</FCTraitDesc_unrestGainedBase>
+	
+  <FCTraitDesc_unrestLostMultiplier>{0} Perte de troubles</FCTraitDesc_unrestLostMultiplier>
+	
+  <FCTraitDesc_unrestGainedMultiplier>{0} gain de troubles</FCTraitDesc_unrestGainedMultiplier>
+	
+	
+  <FCTraitDesc_createSettlementBaseCost>{0} Coût de base d’une colonie</FCTraitDesc_createSettlementBaseCost>
+	
+  <FCTraitDesc_createSettlementMultiplier>{0} Coût de la colonie</FCTraitDesc_createSettlementMultiplier>
+	
+	
+  <FCBuildingUpkeep>Entretien : ${0}</FCBuildingUpkeep>
+	
+  <FCBuildingIncome>Revenu : ${0}</FCBuildingIncome>
+</LanguageData>

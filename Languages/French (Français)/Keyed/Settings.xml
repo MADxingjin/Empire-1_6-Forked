@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><FCSettingSilverPerResource>Montant d’argent gagné par ressource</FCSettingSilverPerResource>
+	
+  <FCSettingDaysBetweenTax>Jours entre chaque perception des taxes</FCSettingDaysBetweenTax>
+	
+  <FCSettingProductionTitheMod>Modificateur de dîme de production</FCSettingProductionTitheMod>
+	
+  <FCSettingWorkerCost>Coût par ouvrier</FCSettingWorkerCost>
+	
+  <FCSettingMaxSettlementLevel>Niveau maximal de colonie</FCSettingMaxSettlementLevel>
+	
+  <FCSettingDisableHostileMilActions>Désactiver les actions militaires hostiles</FCSettingDisableHostileMilActions>
+	
+  <FCSettingDisableRandomEvents>Désactiver les événements aléatoires</FCSettingDisableRandomEvents>
+	
+  <FCSettingDeadPawnsIncreaseMilCooldown>Les morts augmentent le temps de recharge militaire</FCSettingDeadPawnsIncreaseMilCooldown>
+	
+  <FCSettingForcedPausing>Désactiver la pause forcée pendant les événements</FCSettingForcedPausing>
+	
+  <FCSettingBattleMode>Mode de bataille :</FCSettingBattleMode>
+	
+  <FCBattleModeAuto>Résolution auto</FCBattleModeAuto>
+	
+  <FCBattleModeAutoDesc>Toutes les batailles sont résolues automatiquement.</FCBattleModeAutoDesc>
+	
+  <FCBattleModeManual>Manuel</FCBattleModeManual>
+	
+  <FCBattleModeManualDesc>Toutes les batailles génèrent une carte pour un combat manuel.</FCBattleModeManualDesc>
+	
+  <FCBattleModeHybrid>Hybride</FCBattleModeHybrid>
+	
+  <FCBattleModeHybridDesc>Les batailles se résolvent automatiquement sauf si vous envoyez une caravane pour défendre.</FCBattleModeHybridDesc>
+	
+  <FCSettingMinMaxMilitaryAction>Jours min/max avant une action militaire (ex. colonies attaquées)</FCSettingMinMaxMilitaryAction>
+	
+  <FCSettingMaxThreatScaling>Échelle maximale de menace</FCSettingMaxThreatScaling>
+	
+  <FCSettingDefenderAdvantage>Avantage du défenseur</FCSettingDefenderAdvantage>
+	
+  <FCSettingMinMaxRandomEvent>Jours min/max avant un événement aléatoire</FCSettingMinMaxRandomEvent>
+	
+  <FCSettingEnableDebugLogging>Activer les journaux détaillés</FCSettingEnableDebugLogging>
+	
+  <FCSettingResetButton>Réinitialiser les paramètres</FCSettingResetButton>
+	
+  <FCOpenPatchNotes>Ouvrir la fenêtre des notes de mise à jour</FCOpenPatchNotes>
+
+	
+	
+  <FCSettingEmpireDifficulty>Difficulté de l’Empire</FCSettingEmpireDifficulty>
+	
+  <FCDifficultyPeaceful>Paisible</FCDifficultyPeaceful>
+	
+  <FCDifficultyCommunityBuilder>Bâtisseur de communauté</FCDifficultyCommunityBuilder>
+	
+  <FCDifficultyAdventureStory>(Par défaut) Histoire d’aventure</FCDifficultyAdventureStory>
+	
+  <FCDifficultyStriveToSurvive>Lutte pour survivre</FCDifficultyStriveToSurvive>
+	
+  <FCDifficultyBloodAndDust>Sang et poussière</FCDifficultyBloodAndDust>
+	
+  <FCDifficultyLosingIsFun>Perdre, c’est amusant</FCDifficultyLosingIsFun>
+	
+  <FCDifficultyCustom>Personnalisé</FCDifficultyCustom>
+	
+  <FCDifficultyPeacefulDesc>Pour les joueurs qui veulent une gestion d’empire détendue, avec des gains de ressources généreux et une perception fréquente des taxes.</FCDifficultyPeacefulDesc>
+	
+  <FCDifficultyCommunityBuilderDesc>Difficulté facile avec de bons gains de ressources et une fréquence de taxes modérée.</FCDifficultyCommunityBuilderDesc>
+	
+  <FCDifficultyAdventureStoryDesc>Difficulté équilibrée pour la plupart des joueurs. Gains de ressources modérés avec des intervalles de taxes raisonnables.</FCDifficultyAdventureStoryDesc>
+	
+  <FCDifficultyStriveToSurviveDesc>Difficulté exigeante avec moins de ressources et des intervalles de taxes plus longs.</FCDifficultyStriveToSurviveDesc>
+	
+  <FCDifficultyBloodAndDustDesc>Difficulté élevée avec des ressources limitées et une perception peu fréquente des taxes.</FCDifficultyBloodAndDustDesc>
+	
+  <FCDifficultyLosingIsFunDesc>Difficulté brutale pour les masochistes. Ressources minimales et intervalles de taxes très longs.</FCDifficultyLosingIsFunDesc>
+	
+  <FCDifficultyCustomDesc>Personnalisez manuellement tous les paramètres de l’Empire.</FCDifficultyCustomDesc>
+
+	
+	
+  <FCWelcomeTitle>Bienvenue dans le mod Empire !</FCWelcomeTitle>
+	
+  <FCWelcomeMessage>Bienvenue dans le mod Empire ! Construisez et gérez des colonies avec production, armée et loyauté !</FCWelcomeMessage>
+	
+  <FCWelcomeDescription>Construisez et gérez des colonies avec production, armée et loyauté !</FCWelcomeDescription>
+	
+  <FCWelcomeQuickStart>DÉMARRAGE RAPIDE :</FCWelcomeQuickStart>
+	
+  <FCWelcomeStep1>Sélectionnez les traits de faction (vous recevrez une alerte)</FCWelcomeStep1>
+	
+  <FCWelcomeStep2>Définissez votre point de collecte des taxes et votre siège de capitale</FCWelcomeStep2>
+	
+  <FCWelcomeStep3>Créez votre première colonie</FCWelcomeStep3>
+	
+  <FCWelcomeStep4>Lancez la production de ressources, gérez l’armée et la loyauté</FCWelcomeStep4>
+	
+  <FCWelcomeHelpfulResources>RESSOURCES UTILES :</FCWelcomeHelpfulResources>
+	
+  <FCWelcomeDiscord>Rejoindre notre communauté Discord</FCWelcomeDiscord>
+	
+  <FCWelcomeGuide>Guide Empire (Google Docs)</FCWelcomeGuide>
+	
+  <FCWelcomeGitHub>Dépôt GitHub</FCWelcomeGitHub>
+	
+  <FCWelcomeTip>ASTUCE : commencez avec la difficulté « Histoire d’aventure » pour une expérience équilibrée !</FCWelcomeTip>
+	
+  <FCWelcomeBegin>Commencez votre Empire</FCWelcomeBegin>
+	
+  <FCWelcomeClose>Fermer</FCWelcomeClose>
+	
+  <FCModVersion>Version du mod Empire : {0}</FCModVersion>
+
+	
+	
+  <FCResetCapitalLocationWarning>Veuillez réinitialiser l’emplacement de votre capitale. Si ce message continue d’apparaître après réinitialisation, merci de le signaler.</FCResetCapitalLocationWarning>
+	
+  <FCTaxMapNotSetWarning>Votre carte de livraison des taxes n’a pas été définie. Veuillez la définir via le menu de faction.</FCTaxMapNotSetWarning>
+	
+  <FCAutoResolveDisabledWarning>Le mode de bataille Manuel ou Hybride est actif. Si vous rencontrez des erreurs de génération de carte, repassez en Résolution auto.</FCAutoResolveDisabledWarning>
+	
+  <FCManualDefenseWarningLabel>Défense manuelle de colonie</FCManualDefenseWarningLabel>
+	
+  <FCManualDefenseWarningDesc>Les modes Manuel et Hybride génèrent des cartes pour la défense des colonies. En cas de problème, repassez au mode Résolution auto dans les paramètres.</FCManualDefenseWarningDesc>
+	
+  <FCTaxDeliveryNotSetWarning>Aucun lieu de livraison des taxes défini. Définissez une carte de livraison des taxes ou activez la livraison des taxes sur un point de taxe.</FCTaxDeliveryNotSetWarning>
+	
+  <FCCapitalNotSetWarning>Aucune capitale d’Empire n’a été établie. Utilisez « Définir comme capitale » dans le menu Empire ou construisez et activez un siège de capitale.</FCCapitalNotSetWarning>
+
+</LanguageData>
