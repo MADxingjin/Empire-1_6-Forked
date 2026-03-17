@@ -66,6 +66,29 @@ namespace FactionColonies
         string GetResourceModifierDesc(ResourceFC resource);
     }
     /// <summary>
+    /// A WorldObjectComp interface for injecting additional tithe budget into a resource.
+    /// The injected budget raises the tithe income cap (<see cref="ResourceFC.GetTitheIncome"/>) and is
+    /// offset in <see cref="ResourceFC.actualIncome"/> so it doesn't count as a settlement loss — the
+    /// goods are already paid for by whatever mechanism the submod uses (e.g., stockpile drawdown).
+    /// <para>Queried during tithe budget calculation via <see cref="ResourceFC.externalTitheBudget"/>.
+    /// Caches are automatically invalidated after all lifecycle events. Call
+    /// <c>((WorldSettlementFC)parent).InvalidateStatCache()</c> manually if changing values outside
+    /// a lifecycle callback.</para>
+    /// </summary>
+    public interface ITitheBudgetModifier
+    {
+        /// <summary>
+        /// Returns additional tithe budget (in silver value) for the given resource.
+        /// Return 0 for no effect.
+        /// </summary>
+        double GetExternalTitheBudget(ResourceFC resource);
+
+        /// <summary>
+        /// Description text for the tithe budget breakdown tooltip. Return null or empty for no entry.
+        /// </summary>
+        string GetExternalTitheBudgetDesc(ResourceFC resource);
+    }
+    /// <summary>
     /// Defines an interface to let classes hook into the tax system.
     /// </summary>
     public interface ITaxTickParticipant
