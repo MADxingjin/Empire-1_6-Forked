@@ -927,6 +927,64 @@ namespace FactionColonies
                 LogUtil.Error($"FCEvent.RunAction: OnEventTriggered threw for '{def?.defName ?? "NULL"}': {e}");
             }
         }
+
+        /// <summary>
+        /// Merges goods into properly-sized stacks respecting each ThingDef's stackLimit.
+        /// </summary>
+        public static List<Thing> ConsolidateGoods(List<Thing> goods)
+        {
+            List<Thing> consolidated = new List<Thing>();
+
+            foreach (Thing thing in goods)
+            {
+                if (thing.stackCount <= 0) continue;
+
+                bool merged = false;
+                for (int i = 0; i < consolidated.Count; i++)
+                {
+                    Thing existing = consolidated[i];
+                    if (existing.CanStackWith(thing) && existing.stackCount < existing.def.stackLimit)
+                    {
+                        existing.TryAbsorbStack(thing, true);
+                        if (thing.stackCount <= 0 || thing.Destroyed)
+                        {
+                            merged = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!merged && thing.stackCount > 0 && !thing.Destroyed)
+                {
+                    consolidated.Add(thing);
+                }
+            }
+
+            // Split any over-limit stacks that resulted from absorption
+            List<Thing> result = new List<Thing>();
+            foreach (Thing thing in consolidated)
+            {
+                // This while *shouldn't* loop infinitely, but just in case, we'll add a break-out case
+                int i = 0;
+                const int LOOP_LIMIT = 1000;
+                while (thing.stackCount > thing.def.stackLimit && i < LOOP_LIMIT)
+                {
+                    result.Add(thing.SplitOff(thing.def.stackLimit));
+                    i++;
+                }
+                if (i == LOOP_LIMIT)
+                {
+                    LogUtil.Error($"ConsolidateGoods: reached LOOP_LIMIT iterations when splitting stack of {thing.Label}");
+                }
+
+                if (thing.stackCount > 0)
+                {
+                    result.Add(thing);
+                }
+            }
+
+            return result;
+        }
     }
 
 
