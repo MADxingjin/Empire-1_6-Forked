@@ -6,22 +6,16 @@
 
 		<links>
 			<li>https://discord.gg/f3zFQqA</li>
-			<li>https://steamcommunity.com/sharedfiles/filedetails/?id=2571437524</li>
-			<li>https://rimworld-empire-mod.fandom.com/wiki/Rimworld-_Empire_Mod_Wiki</li>
-			<li>https://github.com/littlertom/Empire-1_6-Continued</li>
+			<li>https://github.com/matathias/Empire-1_6-Continued/tree/development</li>
 		</links>
 
 		<linkButtonImagePaths>
 			<li>GUI/Buttons/discordlogo</li>
-			<li>GUI/Buttons/wikilogo</li>
-			<li>GUI/Buttons/nguilogo</li>
 			<li>GUI/Buttons/githublogo</li>
 		</linkButtonImagePaths>
 
 		<linkButtonToolTips>
 			<li>Join the Empire discord!</li>
-			<li>Check out the Empire Wiki!</li>
-			<li>The layout of this GUI was made using NesGUI, a tool for modders that helps with creating RimWorld GUI! Click to learn more.</li>
 			<li>Please raise any issues you find on the Github page.</li>
 		</linkButtonToolTips>
 
@@ -179,9 +173,7 @@
 		</patchNoteImagePaths>
 
 		<patchNoteImageDescriptions>
-			<li>SOS2 support has been updated.</li>
-			<li>Be advised, make sure Vehicle Framework is up to date as this point of time as it's spewing errors.</li>
-			<li>Conflicting textures removed.</li>
+			<li>SOS2 support has been updated and conflicting textures removed.</li>
 		</patchNoteImageDescriptions>
 
 		<additionalNotes>

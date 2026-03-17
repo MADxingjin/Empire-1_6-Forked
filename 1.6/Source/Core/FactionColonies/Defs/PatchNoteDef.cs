@@ -135,7 +135,7 @@ namespace FactionColonies
         /// <summary>
         /// Returns the patch notes seperated by new lines
         /// </summary>
-        public string PatchNotesFormatted => string.Join("\n", patchNoteLines);
+        public string PatchNotesFormatted => string.Join("\n", patchNoteLines.Select(line => "\u2022 " + line));
 
         /// <summary>
         /// Returns additional notes as provided by the def
