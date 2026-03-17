@@ -990,7 +990,8 @@ namespace FactionColonies
                 if (maxValueThing == null)
                 {
                     /* This case shouldn't be possible. But *just* in case, we'll throw an error and bail out if we get here. */
-                    LogUtil.Error($"Got NULL when trying to find highest value thing in tithes list for resource {def.LabelCap}. Bailing out of PruneTitheList()");
+                    /* With tithe injections, this case IS now possible. Downgrade the error to a regular message */
+                    LogUtil.Message($"Got NULL when trying to find highest value thing in tithes list for resource {def.LabelCap}. Bailing out of PruneTitheList()");
                     return;
                 }
                 int quantity = tithes[maxValueThing];

@@ -357,7 +357,22 @@ namespace FactionColonies
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
                 // Resource color accent
                 Widgets.DrawBoxSolid(new Rect(tabBox.x, tabBox.y, 3f, tabBox.height), resources[i].def.color);
-                TooltipHandler.TipRegion(tabBox, resources[i].def.LabelCap);
+                TooltipHandler.TipRegion(tabBox, resources[i].def.LabelCap);// Tithe budget status indicator on right edge
+                double titheIncome = resources[i].GetTitheIncome();
+                if (titheIncome > 0)
+                {
+                    float ratio = (float)(resources[i].titheTotalValue / titheIncome);
+                    Color alertColor;
+                    if (ratio >= 1f)
+                        alertColor = Color.red;
+                    else if (ratio >= 0.5f)
+                        alertColor = Color.yellow;
+                    else
+                        alertColor = Color.green;
+
+                    float alertSize = 3f;
+                    Widgets.DrawBoxSolid(new Rect(tabBox.xMax - alertSize - 2f, tabBox.y + 5f, alertSize, alertSize), alertColor);
+                }
                 if (titheTab == i)
                 {
                     chosenRect = tabBox;
@@ -450,8 +465,8 @@ namespace FactionColonies
             Widgets.DrawHighlight(titheRow3);
             Widgets.Label(trow3label, "Total".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(trow2num, res.GetTitheModifierPerWorker().ToString());
-            Widgets.Label(trow3num, res.GetTotalTitheModifierForWorkers().ToString());
+            Widgets.Label(trow2num, Math.Round(res.GetTitheModifierPerWorker()).ToString());
+            Widgets.Label(trow3num, Math.Round(res.GetTotalTitheModifierForWorkers()).ToString());
 
             /* Production */
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -460,7 +475,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(prodBox);
             Widgets.Label(prodLabel, "TotalProd".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(prodnum, res.taxableProductionMarketValue.ToString());
+            Widgets.Label(prodnum, Math.Round(res.taxableProductionMarketValue).ToString());
 
             /* External Tithe Injection */
             if (hasInjection)
@@ -471,7 +486,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(injLabel, "ExternalTitheBudget".Translate());
                 Text.Anchor = TextAnchor.MiddleRight;
-                Widgets.Label(injNum, extBudget.ToString());
+                Widgets.Label(injNum, Math.Round(extBudget).ToString());
 
                 StringBuilder injTip = new StringBuilder();
                 foreach (WorldObjectComp comp in res.settlement.AllComps)
@@ -494,7 +509,7 @@ namespace FactionColonies
             Widgets.DrawMenuSection(budgetBox);
             Widgets.Label(budgetLabel, "TotalTitheBudget".Translate());
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(budgetnum, res.GetTitheIncome().ToString());
+            Widgets.Label(budgetnum, Math.Round(res.GetTitheIncome()).ToString());
         }
         private Vector2 titheScrollBar = new Vector2();
         private void UpdateTitheDictBuffers(ResourceFC res)
