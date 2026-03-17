@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><sparseWildlife_0.label>Faune clairsemée</sparseWildlife_0.label>
+  
+  <sparseWildlife_0.desc>La faune des régions touchées a presque entièrement disparu. Comment vos colonies doivent-elles s’adapter ?</sparseWildlife_0.desc>
+  
+  
+  <sparseWildlife_1-1.label>Faune clairsemée</sparseWildlife_1-1.label>
+  
+  <sparseWildlife_1-1.desc>Vos colonies s’adaptent en l’absence de faune sauvage. -1 production animale de base.</sparseWildlife_1-1.desc>
+  
+  
+  <sparseWildlife_1-2.label>Faune clairsemée (Chasses étendues)</sparseWildlife_1-2.label>
+  
+  <sparseWildlife_1-2.desc>Les groupes de chasse vont plus loin pour compenser. -0.5 production animale de base.</sparseWildlife_1-2.desc>
+  
+  
+  <sparseWildlife_1-3.label>Faune clairsemée (Réorientation agricole)</sparseWildlife_1-3.label>
+  
+  <sparseWildlife_1-3.desc>Les colons déplacent leur attention de la chasse vers l’agriculture. -1 production animale de base, +0.5 production de nourriture de base.</sparseWildlife_1-3.desc>
+  
+</LanguageData>

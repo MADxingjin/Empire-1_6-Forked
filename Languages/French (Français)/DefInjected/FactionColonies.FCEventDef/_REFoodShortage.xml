@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><foodShortage_0.label>Pénurie alimentaire généralisée</foodShortage_0.label>
+  
+  <foodShortage_0.desc>Une pénurie alimentaire généralisée touche les régions concernées. Vos colonies ont besoin de directives pour gérer cette crise.</foodShortage_0.desc>
+  
+  
+  <foodShortage_1-1.label>Pénurie alimentaire</foodShortage_1-1.label>
+  
+  <foodShortage_1-1.desc>Vos colonies subissent la pénurie alimentaire. -1 production de nourriture de base pour la durée de l’événement.</foodShortage_1-1.desc>
+  
+  
+  <foodShortage_1-2.label>Pénurie alimentaire (Importations)</foodShortage_1-2.label>
+  
+  <foodShortage_1-2.desc>Des importations d’urgence sont arrivées, réduisant l’impact de la pénurie alimentaire. -0.5 production de nourriture de base.</foodShortage_1-2.desc>
+  
+  
+  <foodShortage_1-3.label>Pénurie alimentaire (Rationnement)</foodShortage_1-3.label>
+  
+  <foodShortage_1-3.desc>Un rationnement strict est mis en place. Les citoyens admirent ce sacrifice partagé. -1 production de nourriture de base, +1 loyauté.</foodShortage_1-3.desc>
+  
+  
+  <foodShortage_1-4.label>Pénurie alimentaire (Esclaves affamés)</foodShortage_1-4.label>
+  
+  <foodShortage_1-4.desc>Les esclaves supportent le plus gros de la pénurie. La production alimentaire continue sans être affectée, mais la main-d’œuvre diminue. -2 ouvriers max.</foodShortage_1-4.desc>
+  
+</LanguageData>

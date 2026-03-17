@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><battleHappinessLossMultiplier.label>multiplicateur de perte de bonheur au combat</battleHappinessLossMultiplier.label>
+  
+  
+  <battleLoyaltyLossMultiplier.label>multiplicateur de perte de loyauté au combat</battleLoyaltyLossMultiplier.label>
+  
+  
+  <battleProsperityLossMultiplier.label>multiplicateur de perte de prospérité au combat</battleProsperityLossMultiplier.label>
+  
+  
+  <buildTimeMultiplier.label>multiplicateur du temps de construction</buildTimeMultiplier.label>
+  
+  
+  <createSettlementBaseCost.label>coût de base de création d’une colonie</createSettlementBaseCost.label>
+  
+  
+  <createSettlementMultiplier.label>multiplicateur du coût de création d’une colonie</createSettlementMultiplier.label>
+  
+  
+  <deadPawnCooldownOffset.label>réduction du délai de récupération après la mort d’un pion</deadPawnCooldownOffset.label>
+  
+  
+  <extraWorkersSoftcap.label>plafond souple des ouvriers supplémentaires</extraWorkersSoftcap.label>
+  
+  
+  <happinessGainedBase.label>gain de bonheur de base</happinessGainedBase.label>
+  
+  
+  <happinessGainedMultiplier.label>multiplicateur de gain de bonheur</happinessGainedMultiplier.label>
+  
+  
+  <happinessLostBase.label>perte de bonheur de base</happinessLostBase.label>
+  
+  
+  <happinessLostMultiplier.label>multiplicateur de perte de bonheur</happinessLostMultiplier.label>
+  
+  
+  <lootMultiplier.label>multiplicateur de butin</lootMultiplier.label>
+  
+  
+  <loyaltyGainedBase.label>gain de loyauté de base</loyaltyGainedBase.label>
+  
+  
+  <loyaltyGainedMultiplier.label>multiplicateur de gain de loyauté</loyaltyGainedMultiplier.label>
+  
+  
+  <loyaltyLostBase.label>perte de loyauté de base</loyaltyLostBase.label>
+  
+  
+  <loyaltyLostMultiplier.label>multiplicateur de perte de loyauté</loyaltyLostMultiplier.label>
+  
+  
+  <militaryBaseLevel.label>niveau militaire de base</militaryBaseLevel.label>
+  
+  
+  <militaryCombatEfficiency.label>efficacité militaire au combat</militaryCombatEfficiency.label>
+  
+  
+  <militaryCooldownOffset.label>décalage du délai de récupération militaire</militaryCooldownOffset.label>
+  
+  
+  <militaryEfficiencyBonusAttacking.label>bonus d’efficacité militaire (attaque)</militaryEfficiencyBonusAttacking.label>
+  
+  
+  <militaryEfficiencyBonusDefending.label>bonus d’efficacité militaire (défense)</militaryEfficiencyBonusDefending.label>
+  
+  
+  <militaryLevelBonusAttacking.label>bonus de niveau militaire (attaque)</militaryLevelBonusAttacking.label>
+  
+  
+  <militaryLevelBonusDefending.label>bonus de niveau militaire (défense)</militaryLevelBonusDefending.label>
+  
+  
+  <overMaxWorkersAdjustment.label>ajustement des ouvriers au-delà du maximum</overMaxWorkersAdjustment.label>
+  
+  
+  <prosperityBaseRecovery.label>récupération de prospérité de base</prosperityBaseRecovery.label>
+  
+  
+  <raidCooldownOffset.label>réduction du délai de récupération des raids</raidCooldownOffset.label>
+  
+  
+  <researchContributionMultiplier.label>multiplicateur de contribution à la recherche</researchContributionMultiplier.label>
+  
+  
+  <settlementCostMultiplier.label>multiplicateur du coût de colonie</settlementCostMultiplier.label>
+  
+  
+  <taxBasePercentage.label>pourcentage de taxe de base</taxBasePercentage.label>
+  
+  
+  <taxBaseRandomModifier.label>modificateur aléatoire de taxe de base</taxBaseRandomModifier.label>
+  
+  
+  <taxBonusFlat.label>bonus fixe de taxe</taxBonusFlat.label>
+  
+  
+  <threatScalingBase.label>niveau de menace de base</threatScalingBase.label>
+  
+  
+  <threatScalingMultiplier.label>multiplicateur du niveau de menace</threatScalingMultiplier.label>
+  
+  
+  <titheValueMultiplier.label>multiplicateur de valeur des dîmes</titheValueMultiplier.label>
+  
+  
+  <unrestGainedBase.label>gain de troubles de base</unrestGainedBase.label>
+  
+  
+  <unrestGainedMultiplier.label>multiplicateur de gain de troubles</unrestGainedMultiplier.label>
+  
+  
+  <unrestLostBase.label>perte de troubles de base</unrestLostBase.label>
+  
+  
+  <unrestLostMultiplier.label>multiplicateur de perte de troubles</unrestLostMultiplier.label>
+  
+  
+  <workerBaseCost.label>coût de base des ouvriers</workerBaseCost.label>
+  
+  
+  <workerBaseMax.label>maximum de base des ouvriers</workerBaseMax.label>
+  
+  
+  <workerBaseOverMax.label>ouvriers de base au-delà du maximum</workerBaseOverMax.label>
+  
+</LanguageData>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><missedSupplyDelivery_0.label>Livraison de fournitures manquée</missedSupplyDelivery_0.label>
+  
+  <missedSupplyDelivery_0.desc>Les artisans des régions touchées souffrent d’un manque d’approvisionnement. Comment doivent-ils s’adapter ?</missedSupplyDelivery_0.desc>
+  
+  
+  <missedSupplyDelivery_1-1.label>Livraison de fournitures manquée</missedSupplyDelivery_1-1.label>
+  
+  <missedSupplyDelivery_1-1.desc>Les artisans attendent la prochaine livraison. -0.5 production de base d’armes et -0.5 de vêtements.</missedSupplyDelivery_1-1.desc>
+  
+  
+  <missedSupplyDelivery_1-2.label>Missed Supply Livraison (Local Sourcing)</missedSupplyDelivery_1-2.label>
+  
+  <missedSupplyDelivery_1-2.desc>Les réseaux commerciaux aident à trouver localement des fournitures de remplacement. -0.25 production de base d’armes et -0.25 de vêtements.</missedSupplyDelivery_1-2.desc>
+  
+  
+  <missedSupplyDelivery_1-3.label>Missed Supply Livraison (Improvised)</missedSupplyDelivery_1-3.label>
+  
+  <missedSupplyDelivery_1-3.desc>Les artisans improvisent avec des matériaux locaux et consacrent leurs fournitures limitées aux vêtements. -1 production d’armes de base pendant une période plus courte.</missedSupplyDelivery_1-3.desc>
+  
+</LanguageData>

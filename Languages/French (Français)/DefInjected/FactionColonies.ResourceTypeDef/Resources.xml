@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><RTD_Animals.label>Animaux</RTD_Animals.label>
+  
+  <RTD_Animals.description>Une catégorie de ressources pour le bétail et les produits animaux.</RTD_Animals.description>
+  
+  
+  <RTD_Apparel.label>Tenues</RTD_Apparel.label>
+  
+  <RTD_Apparel.description>Une catégorie de ressources pour les vêtements.</RTD_Apparel.description>
+  
+  
+  <RTD_Chemfuel.label>Chemfuel</RTD_Chemfuel.label>
+  
+  <RTD_Chemfuel.description>Une catégorie de ressources pour le chemfuel.</RTD_Chemfuel.description>
+  
+  
+  <RTD_Food.label>Vivres</RTD_Food.label>
+  
+  <RTD_Food.description>Une catégorie de ressources pour les repas et aliments végétaux.</RTD_Food.description>
+  
+  <RTD_Food.modExtensions.0.extDesc>Relief du terrain</RTD_Food.modExtensions.0.extDesc>
+  
+  
+  <RTD_Gravtech.label>Gravtech</RTD_Gravtech.label>
+  
+  <RTD_Gravtech.description>Une catégorie de ressources pour les ressources gravtech.</RTD_Gravtech.description>
+  
+  
+  <RTD_Logging.label>Bois</RTD_Logging.label>
+  
+  <RTD_Logging.description>Une catégorie de ressources pour l’exploitation forestière.</RTD_Logging.description>
+  
+  
+  <RTD_Medicine.label>Soins</RTD_Medicine.label>
+  
+  <RTD_Medicine.description>Une catégorie de ressources pour les médicaments.</RTD_Medicine.description>
+  
+  
+  <RTD_Mining.label>Mines</RTD_Mining.label>
+  
+  <RTD_Mining.description>Une catégorie de ressources pour les matériaux d’exploitation minière.</RTD_Mining.description>
+  
+  <RTD_Mining.modExtensions.0.extDesc>Relief du terrain</RTD_Mining.modExtensions.0.extDesc>
+  
+  
+  <RTD_Power.label>Énergie</RTD_Power.label>
+  
+  <RTD_Power.description>Une catégorie de ressources pour l’énergie.</RTD_Power.description>
+  
+  <RTD_Power.modExtensions.1.extDesc>Relief du terrain</RTD_Power.modExtensions.1.extDesc>
+  
+  
+  <RTD_Research.label>Science</RTD_Research.label>
+  
+  <RTD_Research.description>Une catégorie de ressources pour la recherche.</RTD_Research.description>
+  
+  <RTD_Research.modExtensions.1.extDesc>Relief du terrain</RTD_Research.modExtensions.1.extDesc>
+  
+  
+  <RTD_Weapons.label>Armes</RTD_Weapons.label>
+  
+  <RTD_Weapons.description>Une catégorie de ressources pour les armes.</RTD_Weapons.description>
+  
+  <RTD_Weapons.modExtensions.0.extDesc>Relief du terrain</RTD_Weapons.modExtensions.0.extDesc>
+  
+</LanguageData>

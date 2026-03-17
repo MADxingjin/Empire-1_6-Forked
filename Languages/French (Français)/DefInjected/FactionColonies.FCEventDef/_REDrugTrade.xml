@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><drugTrade_0.label>Trafic de drogue</drugTrade_0.label>
+  
+  <drugTrade_0.desc>L'une de vos colonies signale une forte hausse de la consommation de drogues illégales. Les dirigeants soupçonnent qu'un producteur s'est installé à proximité. Ils demandent votre décision.</drugTrade_0.desc>
+  
+  
+  <drugTrade_1-1.label>Trafic de drogue</drugTrade_1-1.label>
+  
+  <drugTrade_1-1.desc>Investigating drug commerce...
+ -10% basetax</drugTrade_1-1.desc>
+  
+  
+  <drugTrade_1-2.label>Trafic de drogue</drugTrade_1-2.label>
+  
+  <drugTrade_1-2.desc>Votre colonie est peut-être dépendante aux drogues, mais ses habitants semblent satisfaits de leur réalité. Vous doutez d’entendre des plaintes de sitôt. 
+ -10 % taxe de base, +25 % gain de bonheur, -25 % gain de troubles.</drugTrade_1-2.desc>
+  
+  
+  <drugTrade_2-1.label>Trafic de drogue</drugTrade_2-1.label>
+  
+  <drugTrade_2-1.desc>Les autorités sont revenues avec de bonnes nouvelles ! Elles ont trouvé le lieu de production de drogue. Les petits malins ont failli s'en sortir, mais nul ne peut rivaliser avec la force de votre empire ! Elles soulignent cependant qu'il serait possible d'en tirer quelques profits en reprenant la production...</drugTrade_2-1.desc>
+  
+  
+  <drugTrade_2-2.label>Trafic de drogue</drugTrade_2-2.label>
+  
+  <drugTrade_2-2.desc>Les autorités chargées de trouver la source de la production de drogue n’ont rien découvert. Les habitants sont mécontents de l’agitation provoquée. Les enquêteurs vont devoir se retirer un moment... 
+ -4 bonheur, -2 loyauté, -15 % taxe de base.</drugTrade_2-2.desc>
+  
+  
+  <drugTrade_3-1.label>Trafic de drogue</drugTrade_3-1.label>
+  
+  <drugTrade_3-1.desc>La production de drogue a été intégrée à la production officielle de la colonie. Une dîme aléatoire de drogues vous sera livrée tous les 5 jours. -10 % taxe de base.</drugTrade_3-1.desc>
+  
+  
+  <drugTrade_4-1.label>Trafic de drogue</drugTrade_4-1.label>
+  
+  <drugTrade_4-1.desc>Vous avez reçu une nouvelle dîme de drogues. Continuer la production ou fermer l'installation ?</drugTrade_4-1.desc>
+  
+</LanguageData>

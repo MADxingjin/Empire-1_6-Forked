@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><heavyTaxation.label>Impôt fort</heavyTaxation.label>
+  
+  <heavyTaxation.desc>Plus de taxes, mais moins de bonheur et plus de troubles.</heavyTaxation.desc>
+  
+  
+  <minimizeTaxation.label>Impôt léger</minimizeTaxation.label>
+  
+  <minimizeTaxation.desc>Moins de taxes, plus de bonheur et moins de troubles.</minimizeTaxation.desc>
+  
+</LanguageData>

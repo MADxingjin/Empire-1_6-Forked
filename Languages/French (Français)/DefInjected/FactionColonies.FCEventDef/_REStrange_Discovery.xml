@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><strangeDiscovery_0.label>Découverte étrange</strangeDiscovery_0.label>
+  
+  <strangeDiscovery_0.desc>Au fond des mines, une présence étrange a été ressentie, et les mineurs ont arrêté le travail pour enquêter.</strangeDiscovery_0.desc>
+  
+  
+  <strangeDiscovery_1-1.label>Découverte étrange</strangeDiscovery_1-1.label>
+  
+  <strangeDiscovery_1-1.desc>Vos mineurs commencent à enquêter sous escorte militaire...</strangeDiscovery_1-1.desc>
+  
+  
+  <strangeDiscovery_1-1b.label>Découverte étrange</strangeDiscovery_1-1b.label>
+  
+  <strangeDiscovery_1-1b.desc>Vos mineurs s’enfoncent plus profondément dans l’inconnu...</strangeDiscovery_1-1b.desc>
+  
+  
+  <strangeDiscovery_1-2.label>Découverte étrange</strangeDiscovery_1-2.label>
+  
+  <strangeDiscovery_1-2.desc>Vos mineurs commencent à enquêter sous escorte militaire...</strangeDiscovery_1-2.desc>
+  
+  
+  <strangeDiscovery_1-3.label>Découverte étrange</strangeDiscovery_1-3.label>
+  
+  <strangeDiscovery_1-3.desc>Vos mineurs commencent à enquêter...</strangeDiscovery_1-3.desc>
+  
+  
+  <strangeDiscovery_2-1.label>Découverte étrange</strangeDiscovery_2-1.label>
+  
+  <strangeDiscovery_2-1.desc>Après enquête, les mineurs ont trouvé plusieurs filons de minerai regroupés ! Quelqu’un devait vouloir que nous trouvions cela... 
+ +0.25 production minière de base. Vous recevrez un petit lot de minerais déterrés par les mineurs.</strangeDiscovery_2-1.desc>
+  
+  
+  <strangeDiscovery_2-1b.label>Découverte étrange</strangeDiscovery_2-1b.label>
+  
+  <strangeDiscovery_2-1b.desc>Les mineurs ont découvert un filon exceptionnellement riche près de la perturbation ! Quelqu’un devait vouloir que nous trouvions cela... 
+ +0.5 production minière de base. Vous recevrez une cargaison de minerais déterrés par les mineurs.</strangeDiscovery_2-1b.desc>
+  
+  
+  <strangeDiscovery_2-2.label>Découverte étrange</strangeDiscovery_2-2.label>
+  
+  <strangeDiscovery_2-2.desc>Lorsque vos mineurs ont enquêté, un grand insectoïde a attaqué ! Heureusement, les forces de sécurité envoyées avec les mineurs ont repoussé la créature sans pertes. Un rapport sur l’événement a été transmis pour enquête.</strangeDiscovery_2-2.desc>
+  
+  
+  <strangeDiscovery_2-3.label>Découverte étrange</strangeDiscovery_2-3.label>
+  
+  <strangeDiscovery_2-3.desc>Lorsque vos mineurs ont enquêté, un grand insectoïde a attaqué ! Quelques mineurs ont été tués avant que la créature ne soit abattue. À la suite de ce traumatisme, plusieurs ouvriers ont décidé de rester chez eux pendant un temps.
+ -3 ouvriers max</strangeDiscovery_2-3.desc>
+  
+</LanguageData>

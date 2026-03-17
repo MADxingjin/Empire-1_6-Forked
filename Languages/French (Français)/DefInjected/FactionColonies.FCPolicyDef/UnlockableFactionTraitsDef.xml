@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><defenseInDepth.label>Défense en profondeur</defenseInDepth.label>
+  
+  <defenseInDepth.positiveEffects.0>- Les forces militaires reçoivent un bonus de +2 niveaux au combat en défense</defenseInDepth.positiveEffects.0>
+  
+  
+  <empty.label>Aucun trait</empty.label>
+  
+  
+  <industrious.label>Industrieux</industrious.label>
+  
+  <industrious.positiveEffects.0>- Toutes les colonies reçoivent un bonus constant de +5 à la taxe de base</industrious.positiveEffects.0>
+  
+  
+  <innovative.label>Innovant</innovative.label>
+  
+  <innovative.positiveEffects.0>- Les colonies génèrent passivement des points de recherche égaux à 5 % de leur profit total</innovative.positiveEffects.0>
+  
+  
+  <lucky.label>Chanceux</lucky.label>
+  
+  <lucky.positiveEffects.0>- Les événements négatifs aléatoires d’Empire ont 20 % de chances d’être relancés en échange d’un nouvel événement</lucky.positiveEffects.0>
+  
+  
+  <mercantile.label>Mercantile</mercantile.label>
+  
+  <mercantile.positiveEffects.0>- Une caravane marchande aléatoire arrivera à votre capitale tous les 3 à 5 jours</mercantile.positiveEffects.0>
+  
+  
+  <raiders.label>Pillards</raiders.label>
+  
+  <raiders.positiveEffects.0>- Augmente la valeur du butin de 20 % lors des raids</raiders.positiveEffects.0>
+  
+  <raiders.positiveEffects.1>- Les forces militaires redeviennent disponibles 1 jour plus tôt après un raid</raiders.positiveEffects.1>
+  
+  
+  <resilient.label>Résilient</resilient.label>
+  
+  <resilient.positiveEffects.0>- Réduit la perte de prospérité de 50 % en cas d’attaque</resilient.positiveEffects.0>
+  
+  <resilient.positiveEffects.1>- Ne peut pas perdre de bâtiments ni de niveaux de colonie lors d’une défense ratée</resilient.positiveEffects.1>
+  
+  
+  <roadBuilders.label>Bâtisseurs de routes</roadBuilders.label>
+  
+  <roadBuilders.positiveEffects.0>- Débloque automatiquement la première technologie routière</roadBuilders.positiveEffects.0>
+  
+  <roadBuilders.positiveEffects.1>- Les routes sont construites en 33 % du temps normalement requis</roadBuilders.positiveEffects.1>
+  
+  <roadBuilders.positiveEffects.2>- Des routes seront aussi construites pour relier les colonies des factions alliées</roadBuilders.positiveEffects.2>
+  
+</LanguageData>

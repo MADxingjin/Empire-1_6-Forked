@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><constructBuilding.label>Construction d'un bâtiment</constructBuilding.label>
+  
+  <constructBuilding.desc>Un bâtiment est en cours de construction.</constructBuilding.desc>
+  
+  
+  <enactFactionPolicy.label>Adoption d'une politique</enactFactionPolicy.label>
+  
+  <enactFactionPolicy.desc>Une politique à l'échelle de la faction est en cours d'adoption.</enactFactionPolicy.desc>
+  
+  
+  <enactSettlementPolicy.label>Adoption d'une politique</enactSettlementPolicy.label>
+  
+  <enactSettlementPolicy.desc>Une politique à l'échelle de la colonie est en cours d'adoption.</enactSettlementPolicy.desc>
+  
+  
+  <Null.label>nul</Null.label>
+  
+  <Null.desc>Un événement vide.</Null.desc>
+  
+  
+  <settleNewColony.label>Fonder une colonie</settleNewColony.label>
+  
+  <settleNewColony.desc>Une caravane est en train de fonder une nouvelle colonie.</settleNewColony.desc>
+  
+  
+  <taxColony.label>Taxes de colonie en route</taxColony.label>
+  
+  <taxColony.desc>Une caravane livre les taxes.</taxColony.desc>
+  
+  
+  <upgradeSettlement.label>Amélioration d'une colonie</upgradeSettlement.label>
+  
+  <upgradeSettlement.desc>Une colonie est en cours d'amélioration.</upgradeSettlement.desc>
+  
+</LanguageData>

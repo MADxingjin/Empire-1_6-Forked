@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><deathInTheFamily_0.label>Décès dans la famille</deathInTheFamily_0.label>
+  
+  <deathInTheFamily_0.desc>Une personne de grande importance liée à votre capitale dans une colonie a été assassinée. Certains habitants affirment dans les rues que vous êtes responsable de sa mort. Comment allez-vous réagir ?</deathInTheFamily_0.desc>
+  
+  
+  <deathInTheFamily_1-1.label>Décès dans la famille</deathInTheFamily_1-1.label>
+  
+  <deathInTheFamily_1-1.desc>Les colonies font leur deuil en privé. Le chagrin pèse lourdement sur la population. -4 bonheur par jour.</deathInTheFamily_1-1.desc>
+  
+  
+  <deathInTheFamily_1-2.label>Mort dans la famille (Mémorial)</deathInTheFamily_1-2.label>
+  
+  <deathInTheFamily_1-2.desc>Un mémorial public est organisé pour honorer l’héritage de la personne disparue. Ce geste apaise le deuil et renforce la loyauté. -3 bonheur par jour, +1 loyauté par jour.</deathInTheFamily_1-2.desc>
+  
+  
+  <deathInTheFamily_1-3f.label>Mort dans la famille (Enquête échouée)</deathInTheFamily_1-3f.label>
+  
+  <deathInTheFamily_1-3f.desc>L’enquête ne donne rien et ne fait qu’alimenter les rumeurs selon lesquelles vous seriez derrière l’assassinat. La population devient agitée. -4 bonheur par jour, +2 troubles par jour.</deathInTheFamily_1-3f.desc>
+  
+  
+  <deathInTheFamily_1-3s.label>Mort dans la famille (Justice rendue)</deathInTheFamily_1-3s.label>
+  
+  <deathInTheFamily_1-3s.desc>L’enquête identifie l’assassin et le traduit en justice. La population est soulagée, et le deuil s’apaise. -3 bonheur par jour.</deathInTheFamily_1-3s.desc>
+  
+</LanguageData>

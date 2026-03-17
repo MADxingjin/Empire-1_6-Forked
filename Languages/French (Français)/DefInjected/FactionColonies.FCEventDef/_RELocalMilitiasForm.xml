@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><localMilitiasForm_0.label>Formation de milices locales</localMilitiasForm_0.label>
+  
+  <localMilitiasForm_0.desc>En raison d'une baisse de loyauté, des citoyens commencent à former des milices locales et refusent de remettre leur part des taxes. Comment allez-vous gérer la situation ?</localMilitiasForm_0.desc>
+  
+  
+  <localMilitiasForm_1-1.label>Formation de milices locales</localMilitiasForm_1-1.label>
+  
+  <localMilitiasForm_1-1.desc>Les milices poursuivent leurs activités sans contrôle. La collecte des taxes en souffre car les citoyens refusent de payer leur part. -5 % taux de taxe de base.</localMilitiasForm_1-1.desc>
+  
+  
+  <localMilitiasForm_1-2.label>Formation de milices locales (En garnison)</localMilitiasForm_1-2.label>
+  
+  <localMilitiasForm_1-2.desc>Les milices sont intégrées aux garnisons des colonies. La collecte des taxes en souffre toujours, mais les colonies sont mieux défendues. Les citoyens supportent mal la conscription forcée. -5 % taux de taxe de base, +1 niveau militaire, -1 bonheur par jour.</localMilitiasForm_1-2.desc>
+  
+  
+  <localMilitiasForm_1-3.label>Formation de milices locales (Dissoutes)</localMilitiasForm_1-3.label>
+  
+  <localMilitiasForm_1-3.desc>Les milices sont dissoutes de force. La collecte des taxes reprend, mais cette réaction brutale nuit à la loyauté et alimente l'agitation. -1 loyauté par jour, +1 agitation par jour.</localMilitiasForm_1-3.desc>
+  
+</LanguageData>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><AsteroidMagnet.label>Aimant à astéroïdes</AsteroidMagnet.label>
+  
+  <AsteroidMagnet.desc>Les gens n'aiment peut-être pas ça, mais il est difficile de nier la quantité de ressources récupérées quand on extrait directement du ciel les métaux voulus.</AsteroidMagnet.desc>
+  
+  
+  <automatedDefenseSystems.label>Systèmes de défense automatisés</automatedDefenseSystems.label>
+  
+  <automatedDefenseSystems.desc>Des androïdes patrouillent dans les rues et protègent les colons des menaces extérieures comme intérieures.</automatedDefenseSystems.desc>
+  
+  
+  <bionicsManufacturingPlant.label>Usine de fabrication bionique</bionicsManufacturingPlant.label>
+  
+  <bionicsManufacturingPlant.desc>Une usine dédiée au développement de nouvelles bioniques.</bionicsManufacturingPlant.desc>
+  
+  
+  <CloningLab.label>Laboratoire de clonage</CloningLab.label>
+  
+  <CloningLab.desc>Pourquoi élever ou capturer des animaux quand on peut simplement les faire pousser en cuve ?</CloningLab.desc>
+  
+  
+  <ClothingPrinters.label>Imprimantes à vêtements</ClothingPrinters.label>
+  
+  <ClothingPrinters.desc>Supprimez totalement l'intervention humaine ! Versez les matières premières et regardez chaque vêtement être imprimé en une seule pièce sans couture !</ClothingPrinters.desc>
+  
+  
+  <FoodReconstruction.label>Reconstitution alimentaire</FoodReconstruction.label>
+  
+  <FoodReconstruction.desc>Personne n'aime la pâte nutritive, mais avec un peu d'arômes et quelques ajustements esthétiques, elle peut ressembler et goûter à ce que vous voulez !</FoodReconstruction.desc>
+  
+  
+  <glitterworldResearchFacility.label>Centre de recherche Glitterworld</glitterworldResearchFacility.label>
+  
+  <glitterworldResearchFacility.desc>Dans ce bâtiment, des chercheurs équipés d'outils de très haut niveau cherchent les réponses de l'univers.</glitterworldResearchFacility.desc>
+  
+  
+  <intergalacticMarket.label>Marché intergalactique</intergalacticMarket.label>
+  
+  <intergalacticMarket.desc>D'ici, les vaisseaux arrivent, déposent leurs marchandises, rechargent leur cargaison puis repartent chez eux.</intergalacticMarket.desc>
+  
+  
+  <MechSalvage.label>Atelier de récupération mécanoïde</MechSalvage.label>
+  
+  <MechSalvage.desc>Avec les bons outils, vous pouvez faire plus que démonter des mécanoïdes détruits : vous pouvez récupérer leur technologie pour l'utiliser contre eux.</MechSalvage.desc>
+  
+  
+  <perpetualMotionGenerator.label>Générateur à mouvement perpétuel</perpetualMotionGenerator.label>
+  
+  <perpetualMotionGenerator.desc>Une impossibilité au regard des lois de la physique : un générateur qui produit de l'énergie supplémentaire grâce au concept de mouvement perpétuel.</perpetualMotionGenerator.desc>
+  
+  
+  <SubliminalMessageCenter.label>Centre de messages subliminaux</SubliminalMessageCenter.label>
+  
+  <SubliminalMessageCenter.desc>Glissez des messages subliminaux dans les diffusions locales de la colonie.</SubliminalMessageCenter.desc>
+  
+  
+  <SyntheticWoodFactory.label>Usine de bois synthétique</SyntheticWoodFactory.label>
+  
+  <SyntheticWoodFactory.desc>C'est nouveau ! C'est futuriste ! C'est aussi bien que le vrai bois et ce n'est absolument pas du vinyle, juré !</SyntheticWoodFactory.desc>
+  
+  
+  <WorkerBots.label>Robots ouvriers</WorkerBots.label>
+  
+  <WorkerBots.desc>Faites accomplir aux robots les tâches les plus monotones de la colonie afin que les habitants puissent être affectés ailleurs.</WorkerBots.desc>
+  
+</LanguageData>

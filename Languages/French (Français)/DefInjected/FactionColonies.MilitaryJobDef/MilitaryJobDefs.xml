@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData><CaptureEnemySettlement.label>Capturer une colonie ennemie</CaptureEnemySettlement.label>
+  
+  
+  <Cooldown.label>Temps de recharge</Cooldown.label>
+  
+  
+  <DefendFriendlySettlement.label>Défendre une colonie alliée</DefendFriendlySettlement.label>
+  
+  
+  <Deploy.label>Déployer</Deploy.label>
+  
+  
+  <EnslaveEnemySettlement.label>Asservir une colonie ennemie</EnslaveEnemySettlement.label>
+  
+  
+  <RaidEnemySettlement.label>Piller une colonie ennemie</RaidEnemySettlement.label>
+  
+  
+  <Undefined.label>Indéfini</Undefined.label>
+  
+</LanguageData>
