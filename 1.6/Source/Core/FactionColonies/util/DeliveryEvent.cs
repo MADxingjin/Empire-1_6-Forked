@@ -120,7 +120,12 @@ namespace FactionColonies.util
 		{
 			Map playerHomeMap = FactionCache.FactionComp.TaxMap;
 			MakeDeliveryLetterAndMessage(evt);
-			DropPodUtility.DropThingsNear(DropCellFinder.TradeDropSpot(playerHomeMap), playerHomeMap, evt.goods, 110, false, false, false, false);
+			IntVec3 dropCell;
+			if (!PaymentUtil.CheckForTaxSpot(playerHomeMap, out dropCell))
+			{
+				dropCell = DropCellFinder.TradeDropSpot(playerHomeMap);
+			}
+			DropPodUtility.DropThingsNear(dropCell, playerHomeMap, evt.goods, 110, false, false, false, false);
 		}
 
 		private static bool DoDelayCaravanDueToDanger(FCEvent evt)
