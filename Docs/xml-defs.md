@@ -89,6 +89,7 @@ Defines a settlement type (e.g., Surface, Orbital). Controls resource availabili
 | `titleKey` | `string` | `null` | Key for settlement-type-specific town titles. Falls back to default titles. |
 | `isConstructed` | `bool` | `false` | If true, creation timer labeled "Construction Time" instead of "Travel Time". |
 | `accentColor` | `Color?` | `null` | UI accent color for this settlement type. |
+| `baseSettlementType` | `WorldSettlementDef` | `null` | Parent settlement type for inheritance-aware building allow/block list checks. When set, a building's allow/block list will match this def and all ancestors in the chain. |
 
 **Required modExtension**: [SettlementTypeExtension](def-mod-extensions.md#settlementtypeextension).
 

@@ -38,6 +38,13 @@ namespace FactionColonies
 
         public List<PlanetLayerDef> planetLayers = new List<PlanetLayerDef>();
 
+        /// <summary>
+        /// Optional parent settlement type for inheritance-aware allow/block list checks on buildings.
+        /// When a BuildingFCDef's allow/block list is checked, the chain of baseSettlementType references
+        /// is walked upward, so subtypes automatically match their parent type.
+        /// </summary>
+        public WorldSettlementDef baseSettlementType;
+
         public int maxSettlementLevel = 99;
         public int maxBuildingCount = 99;
 
@@ -185,6 +192,20 @@ namespace FactionColonies
             if (GetModExtension<SettlementTypeExtension>() == null)
             {
                 yield return "WorldSettlementDef " + defName + " does not specify a SettlementTypeExtension_Base";
+            }
+            if (baseSettlementType != null)
+            {
+                HashSet<WorldSettlementDef> visited = new HashSet<WorldSettlementDef> { this };
+                WorldSettlementDef current = baseSettlementType;
+                while (current != null)
+                {
+                    if (!visited.Add(current))
+                    {
+                        yield return "WorldSettlementDef " + defName + " has a circular baseSettlementType reference involving " + current.defName;
+                        break;
+                    }
+                    current = current.baseSettlementType;
+                }
             }
             foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
                 yield return err;

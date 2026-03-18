@@ -85,7 +85,7 @@ namespace FactionColonies
             bool meetsSettlementTypeRequirement = true;
             if (settlementTypeBlockList?.Count > 0)
             {
-                if (settlementTypeBlockList.Contains(settlement))
+                if (MatchesAnySettlementType(settlementTypeBlockList, settlement))
                 {
                     meetsSettlementTypeRequirement = false;
                 }
@@ -94,12 +94,23 @@ namespace FactionColonies
             {
                 //If we have an allowlist, then the default restriction is false
                 meetsSettlementTypeRequirement = false;
-                if (settlementTypeAllowList.Contains(settlement))
+                if (MatchesAnySettlementType(settlementTypeAllowList, settlement))
                 {
                     meetsSettlementTypeRequirement = true;
                 }
             }
             return meetsSettlementTypeRequirement;
+        }
+
+        private bool MatchesAnySettlementType(List<WorldSettlementDef> list, WorldSettlementDef settlement)
+        {
+            WorldSettlementDef current = settlement;
+            while (current != null)
+            {
+                if (list.Contains(current)) return true;
+                current = current.baseSettlementType;
+            }
+            return false;
         }
 
         public override IEnumerable<string> ConfigErrors()
