@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_106_3</defName>
+		<label>Minor UI API change</label>
+		<description>Adds a new button in UIUtil.</description>
+
+		<major>0</major>
+		<minor>106</minor>
+		<patch>3</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds a new button &quot;ButtonFlatIcon&quot; to UIUtil</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor UI API change</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_106_2</defName>
 		<label>Minor fix</label>
 		<description>Fix an issue with the minimum days between events calculation.</description>

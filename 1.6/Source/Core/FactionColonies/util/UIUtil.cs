@@ -27,11 +27,24 @@ namespace FactionColonies
 
         public static bool ButtonFlat(Rect rect, string label, Color? labelColor = null, bool disabled = false, bool highlighted = false)
         {
+            return ButtonFlatIcon(rect, label, null, labelColor, disabled, highlighted);
+        }
+
+        public static bool ButtonFlatIcon(Rect rect, string label, Texture2D icon = null,
+            Color? labelColor = null, bool disabled = false, bool highlighted = false)
+        {
             bool hovered = !disabled && Mouse.IsOver(rect);
             float normalBg = highlighted ? 0.15f : 0.22f;
             float hoverBg = highlighted ? 0.28f : 0.35f;
             float bg = hovered ? hoverBg : normalBg;
             Widgets.DrawBoxSolid(rect, new Color(bg, bg, bg));
+
+            float iconSpace = 0f;
+            if (icon != null)
+            {
+                GUI.DrawTexture(new Rect(rect.x + 2f, rect.y + (rect.height - 16f) / 2f, 16f, 16f), icon);
+                iconSpace = 20f;
+            }
 
             TextAnchor prevAnchor = Text.Anchor;
             bool prevWordWrap = Text.WordWrap;
@@ -39,7 +52,7 @@ namespace FactionColonies
             Text.WordWrap = false;
             Color prevColor = GUI.color;
             GUI.color = disabled ? Color.gray : (labelColor ?? Color.white);
-            Widgets.Label(rect, label);
+            Widgets.Label(new Rect(rect.x + iconSpace, rect.y, rect.width - iconSpace, rect.height), label);
             GUI.color = prevColor;
             Text.Anchor = prevAnchor;
             Text.WordWrap = prevWordWrap;
