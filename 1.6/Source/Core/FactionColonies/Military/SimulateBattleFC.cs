@@ -503,7 +503,6 @@ namespace FactionColonies
         {
             Find.FactionManager.OfPlayer.TryAffectGoodwillWith(faction, -50);
             TrySetRelationKind(Find.FactionManager.OfPlayer, faction, FactionRelationKind.Hostile);
-            ResetPlayerColonyRelations();
         }
 
         public static void ResetPlayerColonyRelations()
@@ -522,7 +521,7 @@ namespace FactionColonies
             }
         }
 
-        private static bool TrySetRelationKind(Faction self, Faction other, FactionRelationKind kind, bool canSendLetter = true)
+        internal static bool TrySetRelationKind(Faction self, Faction other, FactionRelationKind kind, bool canSendLetter = true)
         {
             FactionRelation factionRelation = self.RelationWith(other);
             if (factionRelation.kind == kind)
