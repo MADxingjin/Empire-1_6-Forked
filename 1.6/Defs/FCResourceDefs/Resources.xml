@@ -69,6 +69,9 @@
 			<thingCategoryDef>MortarShells</thingCategoryDef>
 		</li>
 	</thingCategoryAllowList>
+	<thingCategoryBlockList>
+		<li>WeaponsUnique</li>
+	</thingCategoryBlockList>
 	<associatedSkills>
 		<li>Crafting</li>
 	</associatedSkills>
