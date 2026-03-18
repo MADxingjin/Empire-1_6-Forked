@@ -9,6 +9,7 @@ namespace FactionColonies.util
         public static bool CanCraftItem(ThingDef thing, bool includeSingleUse = false)
         {
             bool canCraft = true;
+            if (WeaponBlockedForCrafting(thing)) return false;
             if (thing.recipeMaker != null)
             {
                 if (thing.recipeMaker.researchPrerequisites != null)
@@ -49,6 +50,18 @@ namespace FactionColonies.util
 
 
             return canCraft;
+        }
+        public static bool WeaponBlockedForMercs(ThingDef thing)
+        {
+            if (!thing.IsWeapon) return false;
+            if (thing.weaponTags is null) return false;
+            return thing.weaponTags.Contains("FCWeaponBlocklist_Merc");
+        }
+        public static bool WeaponBlockedForCrafting(ThingDef thing)
+        {
+            if (!thing.IsWeapon) return false;
+            if (thing.weaponTags is null) return false;
+            return thing.weaponTags.Contains("FCWeaponBlocklist_Craft");
         }
 
         public static bool ThingHasQuality(ThingDef thing)

@@ -459,7 +459,7 @@ namespace FactionColonies
             {
                 List<ThingDef> weaponDefs = DefDatabase<ThingDef>.AllDefs
                     .Where(t => t.IsWeapon && t.BaseMarketValue != 0
-                        //&& !t.weaponTags.NullOrEmpty() // enabling this check will block the player from choosing things like "beer", "wood", or animal horns/tusks as weapons. That *might* be desirable at some point, so I'm leaving it here, and commented out
+                        && !CraftUtil.WeaponBlockedForMercs(t)
                         && t.generateAllowChance > 0f // blocks unique weapons
                         && CraftUtil.CanCraftItem(t)
                         && HARUtil.CanRaceUseWeapon(selectedUnit.pawnKind?.race, t))
