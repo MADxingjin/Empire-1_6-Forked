@@ -81,6 +81,17 @@ namespace FactionColonies
             bool noSettlementRequirement = cEvent.rangeSettlementsAffected.min == 0 && cEvent.rangeSettlementsAffected.max == 0;
             if (!noSettlementRequirement && FactionCache.FactionComp.settlements.Count() < cEvent.rangeSettlementsAffected.min) return false;
 
+            // Biome check — for settlement-targeting events, at least one settlement must qualify
+            if (!noSettlementRequirement && (cEvent.applicableBiomes.Count > 0 || cEvent.restrictedBiomes.Count > 0))
+            {
+                bool anyMatch = false;
+                foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
+                {
+                    if (cEvent.BiomeAllowed(s.biome)) { anyMatch = true; break; }
+                }
+                if (!anyMatch) return false;
+            }
+
             // Required resource check
             if (cEvent.requiredResource != null)
             {
@@ -204,6 +215,7 @@ namespace FactionColonies
                         foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
                         {
                             if (excludedSettlements.Contains(settlement)) continue;
+                            if (!tempEvent.def.BiomeAllowed(settlement.biome)) continue;
                             if (tempEvent.def.requiredResource != null)
                             {
                                 ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
@@ -261,7 +273,9 @@ namespace FactionColonies
                     if (tempEvent.settlementTraitLocations.Count == 0)
                     {
                         LogUtil.Warning($"Random event '{def.defName}' found no valid settlements"
-                            + (def.requiredResource != null ? $" (requires {def.requiredResource.defName} production)" : ""));
+                            + (def.requiredResource != null ? $" (requires {def.requiredResource.defName} production)" : "")
+                            + (def.applicableBiomes.Count > 0 ? $" (biomes: {string.Join(", ", def.applicableBiomes)})" : "")
+                            + (def.restrictedBiomes.Count > 0 ? $" (excluded biomes: {string.Join(", ", def.restrictedBiomes)})" : ""));
                         return null;
                     }
                 }
@@ -1031,11 +1045,21 @@ namespace FactionColonies
         public ResourceEventRewardDef randomThingRewardDef;
         public int prosperityLost = 0;
         public List<string> applicableBiomes = new List<string>();
+        public List<string> restrictedBiomes = new List<string>();
 
         //Stat modifiers during event
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
 
         public bool isMilitaryEvent = false;
+
+        public bool BiomeAllowed(string biome)
+        {
+            if (applicableBiomes.Count > 0)
+                return applicableBiomes.Contains(biome);
+            if (restrictedBiomes.Count > 0)
+                return !restrictedBiomes.Contains(biome);
+            return true;
+        }
 
         public override IEnumerable<string> ConfigErrors()
         {
@@ -1043,6 +1067,16 @@ namespace FactionColonies
                 yield return err;
             foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
                 yield return err;
+            foreach (string biome in applicableBiomes)
+            {
+                if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)
+                    yield return $"{defName}: applicableBiomes contains unknown biome '{biome}'";
+            }
+            foreach (string biome in restrictedBiomes)
+            {
+                if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)
+                    yield return $"{defName}: restrictedBiomes contains unknown biome '{biome}'";
+            }
         }
     }
 

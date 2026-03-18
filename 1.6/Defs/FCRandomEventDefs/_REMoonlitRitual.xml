@@ -33,7 +33,12 @@
 		<settlementsCarryOver>true</settlementsCarryOver>
 
 		<requiredResource>RTD_Food</requiredResource>
-
+		<restrictedBiomes>
+			<li>Desert</li>
+			<li>ExtremeDesert</li>
+			<li>IceSheet</li>
+			<li>SeaIce</li>
+		</restrictedBiomes>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCOptionDef>

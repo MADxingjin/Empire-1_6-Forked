@@ -28,6 +28,12 @@
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<requiredResource>RTD_Logging</requiredResource>
+		<restrictedBiomes>
+			<li>Desert</li>
+			<li>ExtremeDesert</li>
+			<li>IceSheet</li>
+			<li>SeaIce</li>
+		</restrictedBiomes>
 	</FactionColonies.FCEventDef>
 
 	<FactionColonies.FCOptionDef>

@@ -82,10 +82,15 @@
 	<randomThingRewardDef>defNameOfRewardDef</randomThingRewardDef>
 	<!-- Prosperity lost when this event resolves. Default: 0 -->
 	<prosperityLost>0</prosperityLost>
-	<!-- List of BiomeResourceDef defNames that this event can occur in. If empty, all biomes are valid. -->
+	<!-- Biome allowlist (BiomeDef defNames). If non-empty, only settlements in these biomes are eligible. -->
 	<applicableBiomes>
-		<li>borealForest</li>
+		<li>BorealForest</li>
 	</applicableBiomes>
+	<!-- Biome blocklist (BiomeDef defNames). Settlements in these biomes are excluded. Ignored if applicableBiomes is set. -->
+	<restrictedBiomes>
+		<li>Desert</li>
+		<li>ExtremeDesert</li>
+	</restrictedBiomes>
 
 	<!-- ── Stat Modifiers ── -->
 	<!-- Stat modifiers applied while this event is active. Removed when the event resolves. -->
