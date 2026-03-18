@@ -17,6 +17,7 @@ namespace FactionColonies
         public bool roadBuildingEnabled = true;
         public bool wasRoadBuildingDisabled = true;
         bool hasRoadBuildersBoost;
+        bool pathsFullyProcessed;
 
         public FCRoadBuilder()
         {
@@ -67,9 +68,7 @@ namespace FactionColonies
                 return;
             }
 
-            // Every 20 ticks causes a slight stutter, but the game is still playable
-            // TODO: Make this a config option
-            if (Find.TickManager.TicksGame % 20 == 0)
+            if (Find.TickManager.TicksGame % 250 == 0)
             {
                 FactionFC faction = FactionCache.FactionComp;
 
@@ -94,7 +93,17 @@ namespace FactionColonies
                     roadQueue.nextRoadTick = Find.TickManager.TicksGame + GenDate.TicksPerDay * roadQueue.daysBetweenTicks;
                 }
 
-                roadQueue.ProcessOnePath();
+                if (!pathsFullyProcessed)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (!roadQueue.ProcessOnePath())
+                        {
+                            pathsFullyProcessed = true;
+                            break;
+                        }
+                    }
+                }
 
                 bool segmentBuilt = roadQueue.BuildRoadSegments();
             }
@@ -187,7 +196,10 @@ namespace FactionColonies
         public void FlagUpdateRoadQueues()
         {
             if (roadQueue != null)
+            {
                 roadQueue.shouldUpdateSettlementsToProcess = true;
+                pathsFullyProcessed = false;
+            }
         }
     }
 
@@ -451,13 +463,20 @@ namespace FactionColonies
             roadPathIterator = ProcessPath();
         }
 
-        public void ProcessOnePath()
+        /// <summary>
+        /// Advances the path iterator by one step. Returns true if a path was added, false if exhausted.
+        /// </summary>
+        public bool ProcessOnePath()
         {
             if (this.roadPathIterator == null)
                 this.roadPathIterator = ProcessPath();
 
             if (this.roadPathIterator.MoveNext())
+            {
                 this.roadPaths.Add(this.roadPathIterator.Current);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
