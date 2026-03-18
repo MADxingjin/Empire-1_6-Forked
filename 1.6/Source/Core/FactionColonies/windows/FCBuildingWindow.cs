@@ -711,6 +711,9 @@ namespace FactionColonies
             // C3.5: Modifiers
             curY = DrawModifiers(scrollViewRect.x + (impactMargin / 2f), curY, impactWidth);
 
+            // C3.75: Extension sections (IBuildingDetailSection from modExtensions)
+            curY = DrawExtensionSections(scrollViewRect.x + (impactMargin / 2f), curY, impactWidth);
+
             // C4: Settlement Impact
             curY = DrawSettlementImpact(scrollViewRect.x + (impactMargin / 2f), curY, impactWidth);
 
@@ -745,6 +748,8 @@ namespace FactionColonies
                 h += selectedBuilding.requiredBuildings.Count * 18f + smallMargin;
             // Modifiers
             h += CalculateModifiersHeight(width * 0.8f);
+            // Extension sections
+            h += CalculateExtensionSectionsHeight(width * 0.8f);
             // Settlement impact
             h += CalculateImpactHeight();
             // Upgrades
@@ -800,6 +805,55 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             float h = smallMargin + 22f + smallMargin + Text.CalcHeight(modifiers, width - (smallMargin * 2)) + margin;
             Text.Font = tmp;
+            return h;
+        }
+
+        #endregion
+
+        #region Extension Sections
+
+        private float DrawExtensionSections(float x, float curY, float width)
+        {
+            if (selectedBuilding.modExtensions == null) return curY;
+            foreach (IBuildingDetailSection section in selectedBuilding.modExtensions.OfType<IBuildingDetailSection>())
+            {
+                float contentWidth = width - (smallMargin * 2);
+                float contentHeight = section.GetSectionHeight(selectedBuilding, contentWidth);
+                if (contentHeight <= 0) continue;
+
+                curY += smallMargin;
+                float blockHeight = 22f + smallMargin + contentHeight;
+
+                Rect blockRect = new Rect(x, curY, width, blockHeight);
+                Widgets.DrawHighlight(blockRect);
+
+                Rect headerRect = new Rect(x, curY, width, 22f);
+                Widgets.DrawHighlight(headerRect);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.color = new Color(1f, 1f, 1f, 0.7f);
+                Widgets.Label(new Rect(x + smallMargin, curY, contentWidth, 22f), section.SectionLabel);
+                GUI.color = Color.white;
+
+                Rect contentRect = new Rect(x + smallMargin, headerRect.yMax + smallMargin, contentWidth, contentHeight);
+                section.DrawSection(selectedBuilding, contentRect);
+
+                curY = blockRect.yMax + margin;
+            }
+            return curY;
+        }
+
+        private float CalculateExtensionSectionsHeight(float width)
+        {
+            if (selectedBuilding.modExtensions == null) return 0;
+            float h = 0;
+            float contentWidth = width - (smallMargin * 2);
+            foreach (IBuildingDetailSection section in selectedBuilding.modExtensions.OfType<IBuildingDetailSection>())
+            {
+                float contentHeight = section.GetSectionHeight(selectedBuilding, contentWidth);
+                if (contentHeight <= 0) continue;
+                h += smallMargin + 22f + smallMargin + contentHeight + margin;
+            }
             return h;
         }
 
