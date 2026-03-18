@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using RimWorld.QuestGen;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using Verse;
 
 namespace FactionColonies
@@ -165,6 +166,87 @@ namespace FactionColonies
             }
 
             return true;
+        }
+    }
+
+    //Mirror player goodwill changes to Empire faction
+    [HarmonyPatch(typeof(Faction))]
+    [HarmonyPatch("TryAffectGoodwillWith")]
+    class MirrorGoodwillToEmpire
+    {
+        static void Postfix(Faction __instance, Faction other, bool __result)
+        {
+            if (!__result) return;
+
+            Faction pcFaction = FactionCache.PlayerColonyFaction;
+            if (pcFaction == null) return;
+
+            Faction player = Find.FactionManager.OfPlayer;
+
+            Faction thirdParty;
+            if (__instance == player && other != pcFaction)
+            {
+                thirdParty = other;
+            }
+            else if (other == player && __instance != pcFaction)
+            {
+                thirdParty = __instance;
+            }
+            else
+            {
+                return;
+            }
+
+            int playerGoodwill = player.RelationWith(thirdParty).baseGoodwill;
+            int empireGoodwill = pcFaction.RelationWith(thirdParty).baseGoodwill;
+            int delta = playerGoodwill - empireGoodwill;
+
+            if (delta != 0)
+            {
+                pcFaction.TryAffectGoodwillWith(thirdParty, delta, canSendMessage: false, canSendHostilityLetter: false);
+                LogUtil.Message($"TryAffectGoodwillWith Postfix: Empire faction changing relations with {thirdParty.Name} by {delta}");
+            }
+
+            FactionRelationKind playerKind = player.RelationKindWith(thirdParty);
+            if (pcFaction.RelationKindWith(thirdParty) != playerKind)
+            {
+                RelationsUtilFC.TrySetRelationKind(pcFaction, thirdParty, playerKind, canSendLetter: false);
+                LogUtil.Message($"TryAffectGoodwillWith Postfix: Empire faction changing relationkind with {thirdParty.Name} to {playerKind}");
+            }
+        }
+    }
+
+    //Mirror direct relation changes to Empire faction (for factions without goodwill)
+    [HarmonyPatch(typeof(Faction))]
+    [HarmonyPatch("SetRelationDirect")]
+    class MirrorRelationDirectToEmpire
+    {
+        static void Postfix(Faction __instance, Faction other, FactionRelationKind kind)
+        {
+            Faction pcFaction = FactionCache.PlayerColonyFaction;
+            if (pcFaction == null) return;
+
+            Faction player = Find.FactionManager.OfPlayer;
+
+            Faction thirdParty;
+            if (__instance == player && other != pcFaction)
+            {
+                thirdParty = other;
+            }
+            else if (other == player && __instance != pcFaction)
+            {
+                thirdParty = __instance;
+            }
+            else
+            {
+                return;
+            }
+
+            if (pcFaction.RelationKindWith(thirdParty) != kind)
+            {
+                pcFaction.SetRelationDirect(thirdParty, kind, canSendHostilityLetter: false);
+                LogUtil.Message($"SetRelationDirect Postfix: Empire faction changing relationkind with {thirdParty.Name} to {kind}");
+            }
         }
     }
 }
