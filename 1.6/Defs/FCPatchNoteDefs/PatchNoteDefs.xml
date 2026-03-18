@@ -62,6 +62,43 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_109_0</defName>
+		<label>Restrict weapon filtering</label>
+		<description>Adds some restrictions to how weapons are filtered across the mod.</description>
+
+		<major>0</major>
+		<minor>109</minor>
+		<patch>0</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add &quot;WeaponUnique&quot; to the category blocklist of the weapons resource, thus blocking unique weapons from being tithed</li>
+		<li>Block unique weapons from appearing in the weapon selection list for created military units</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Restrict weapon filtering</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_108_0</defName>
 		<label>Faction relations update</label>
 		<description>Some changes to the Empire faction to let it better mirror the player&apos;s faction relations.</description>
