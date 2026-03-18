@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_107_0</defName>
+		<label>Quest Exclusion</label>
+		<description>Excludes the Empire NPC faction from quests, work sites, and distress calls</description>
+
+		<major>0</major>
+		<minor>107</minor>
+		<patch>0</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Excludes the Empire NPC faction from quests, work sites, and distress calls</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Quest Exclusion</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_106_3</defName>
 		<label>Minor UI API change</label>
 		<description>Adds a new button in UIUtil.</description>

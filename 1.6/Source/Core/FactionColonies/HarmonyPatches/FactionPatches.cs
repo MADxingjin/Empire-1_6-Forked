@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using RimWorld.QuestGen;
 using System.Collections.Generic;
 using Verse;
 
@@ -143,6 +144,23 @@ namespace FactionColonies
         {
             if (__instance == FactionCache.PlayerColonyFaction)
             {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    //Exclude Empire faction from quest faction selection
+    [HarmonyPatch(typeof(QuestNode_GetFaction))]
+    [HarmonyPatch("IsGoodFaction")]
+    class QuestFactionExcludePColony
+    {
+        static bool Prefix(Faction faction, ref bool __result)
+        {
+            if (faction == FactionCache.PlayerColonyFaction)
+            {
+                __result = false;
                 return false;
             }
 

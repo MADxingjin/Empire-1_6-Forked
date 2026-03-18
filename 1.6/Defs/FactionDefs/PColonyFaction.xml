@@ -14,5 +14,6 @@
 		<maxCountAtGameStart>0</maxCountAtGameStart>
 		<maxConfigurableAtWorldCreation>0</maxConfigurableAtWorldCreation>
 		<startingCountAtWorldCreation>0</startingCountAtWorldCreation>
+		<canGenerateQuestSites>false</canGenerateQuestSites>
 	</FactionDef>
 </Defs>
