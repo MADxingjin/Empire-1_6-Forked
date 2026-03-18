@@ -80,6 +80,15 @@
 	<!-- Minimum faction tech level required. Default: Undefined (no restriction) -->
 	<techLevel>Undefined</techLevel>
 
+	<!-- ── Settlement Type Inheritance ── -->
+	<!-- Optional parent settlement type for building allow/block list inheritance. -->
+	<!-- When a BuildingFCDef's settlementTypeAllowList or settlementTypeBlockList is checked, -->
+	<!-- the chain of baseSettlementType references is walked upward, so subtypes automatically -->
+	<!-- match their parent type. For example, an orbital subtype with baseSettlementType pointing -->
+	<!-- to WorldSettlementDef_Orbital will be allowed to build any building that lists -->
+	<!-- WorldSettlementDef_Orbital in its allow list. -->
+	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
+
 	<!-- ── Planet Layers ── -->
 	<!-- For settlement types that exist on non-surface planet layers (e.g. orbital). -->
 	<!-- List of PlanetLayerDefs this settlement type can exist on. -->

@@ -68,24 +68,27 @@
     <defName>WorldSettlementDef_Orbital_Logistics</defName>
     <label>logistics orbital colony</label>
     <description>50% faster tax delivery and special buildings</description>
+	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>OrbitalLogistics</li>
 	</researchProjects>
   </FactionColonies.WorldSettlementDef>
-  
+
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Advanced</defName>
     <label>advanced orbital colony</label>
     <description>25% lower base construction cost, larger size</description>
+	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>AdvancedOrbitalEngineering</li>
 	</researchProjects>
   </FactionColonies.WorldSettlementDef>
-  
+
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Glitter</defName>
     <label>glitterworld orbital colony</label>
     <description>Specialized production buildings with bonuses</description>
+	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>GlitterworldOrbitalSettlements</li>
 	</researchProjects>

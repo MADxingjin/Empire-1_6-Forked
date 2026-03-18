@@ -468,6 +468,16 @@ namespace FactionColonies
 
             desc += "\n" + building.AttributeDesc;
 
+            if (building.modExtensions != null)
+            {
+                foreach (IBuildingDetailSection section in building.modExtensions.OfType<IBuildingDetailSection>())
+                {
+                    string cardDesc = section.GetCardDescription(building);
+                    if (!cardDesc.NullOrEmpty())
+                        desc += "\n" + cardDesc;
+                }
+            }
+
             return desc.Trim();
         }
         public TaggedString GetBuildingDescFull(BuildingFCDef building)
