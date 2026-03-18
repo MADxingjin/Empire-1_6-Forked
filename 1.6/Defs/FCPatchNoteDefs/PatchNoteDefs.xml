@@ -62,6 +62,44 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_111_0</defName>
+		<label>Building Updates</label>
+		<description>Handful of changes and fixes related to buildings.</description>
+
+		<major>0</major>
+		<minor>111</minor>
+		<patch>0</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add an interface so that submods can inject their own information into a building&apos;s description in the building window</li>
+		<li>Add a &apos;baseSettlementType&apos; to WorldSettlementDef and add inheritence-aware settlementtype checks to buildings</li>
+		<li>Add several orbital buildings</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Building Updates</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_110_0</defName>
 		<label>New weapontags</label>
 		<description>Adds a couple of weapon tags that can be used to block a weapon from appearing in the weapon list for mercs.</description>
