@@ -1652,7 +1652,7 @@ namespace FactionColonies
         {
             if ((FCSettings.maxDaysTillRandomEvent - FCSettings.minDaysTillRandomEvent) == 0)
             {
-                return randomEventLastAdded - FCSettings.minDaysTillRandomEvent <= 0;
+                return randomEventLastAdded >= FCSettings.minDaysTillRandomEvent;
             }
             else
             {
