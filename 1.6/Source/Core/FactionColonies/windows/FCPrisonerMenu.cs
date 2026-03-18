@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FactionColonies.util;
 using RimWorld;
-using Verse;
-using UnityEngine;
+using System.Collections.Generic;
 using System.Reflection;
-using FactionColonies.util;
+using UnityEngine;
+using Verse;
 
 namespace FactionColonies
 {
@@ -87,7 +83,7 @@ namespace FactionColonies
                 //Pawn Health
                 Widgets.Label(pawnHealth, "Health".Translate().CapitalizeFirst() + " " + prisoner.health);
                 //Pawn Unrest
-                    //Widgets.Label(PawnUnrest, "Unrest".Translate().CapitalizeFirst() + " " + prisoner.unrest);
+                //Widgets.Label(PawnUnrest, "Unrest".Translate().CapitalizeFirst() + " " + prisoner.unrest);
 
 
 
@@ -175,7 +171,8 @@ namespace FactionColonies
                         if (prisoner.healthTracker != null)
                         {
                             prisoner.prisoner.health = prisoner.healthTracker;
-                        } else
+                        }
+                        else
                         {
                             prisoner.prisoner.health = new Pawn_HealthTracker(prisoner.prisoner);
                             prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
@@ -193,11 +190,11 @@ namespace FactionColonies
 
                         DeliveryEvent.CreateDeliveryEvent(new FCEvent
                         {
-                                location = Find.AnyPlayerHomeMap.Tile,
-                                source = settlement.Tile,
-                                goods = new List<Thing> { prisoner.prisoner },
-                                customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
-                                timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
+                            location = Find.AnyPlayerHomeMap.Tile,
+                            source = settlement.Tile,
+                            goods = new List<Thing> { prisoner.prisoner },
+                            customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
+                            timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
                         });
 
                         //reset window
@@ -211,7 +208,7 @@ namespace FactionColonies
                     FloatMenu menu = new FloatMenu(list);
                     Find.WindowStack.Add(menu);
                 }
-                
+
 
 
 

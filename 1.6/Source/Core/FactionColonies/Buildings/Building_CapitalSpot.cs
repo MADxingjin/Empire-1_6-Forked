@@ -1,7 +1,6 @@
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
-using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -10,7 +9,7 @@ namespace FactionColonies
     {
         private bool isActiveCapitalSpot = false;
         private int lastKnownTile = -1; // Track the last known tile location
-        
+
         public bool IsActiveCapitalSpot
         {
             get => isActiveCapitalSpot;
@@ -33,7 +32,7 @@ namespace FactionColonies
             foreach (Map map in Find.Maps)
             {
                 if (!map.IsPlayerHome) continue;
-                
+
                 foreach (Building building in map.listerBuildings.allBuildingsColonist)
                 {
                     if (building is Building_CapitalSpot otherCapitalSpot && otherCapitalSpot != this)
@@ -53,7 +52,7 @@ namespace FactionColonies
                 faction.capitalLocation = newTile;
                 faction.capitalPlanet = Find.World.info.name;
                 lastKnownTile = newTile;
-                
+
                 LogUtil.Message($"Capital Building: Set Empire capital to tile {newTile}");
             }
             else
@@ -68,16 +67,16 @@ namespace FactionColonies
             if (isActiveCapitalSpot && Map != null)
             {
                 PlanetTile currentTile = Map.Parent.Tile;
-                
+
                 // Initialize lastKnownTile if it's not set (shouldn't happen but just in case)
                 if (lastKnownTile == -1)
                 {
                     lastKnownTile = currentTile;
                     LogUtil.Message($"Capital Spot Debug: Initialized lastKnownTile to {currentTile}");
                 }
-                
+
                 LogUtil.Message($"Capital Spot Debug: Active={isActiveCapitalSpot}, CurrentTile={currentTile}, LastKnown={lastKnownTile}");
-                
+
                 if (lastKnownTile != currentTile)
                 {
                     // The gravship has moved! Update the capital location
@@ -88,12 +87,12 @@ namespace FactionColonies
                         faction.capitalLocation = currentTile;
                         faction.capitalPlanet = Find.World.info.name;
                         lastKnownTile = currentTile;
-                        
+
                         LogUtil.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
-                        
+
                         Find.LetterStack.ReceiveLetter(
-                            "Empire Relocated", 
-                            "Your Empire has moved accordingly after your travels", 
+                            "Empire Relocated",
+                            "Your Empire has moved accordingly after your travels",
                             LetterDefOf.NeutralEvent
                         );
                     }
@@ -114,7 +113,7 @@ namespace FactionColonies
             base.ExposeData();
             Scribe_Values.Look(ref isActiveCapitalSpot, "isActiveCapitalSpot", false);
             Scribe_Values.Look(ref lastKnownTile, "lastKnownTile", -1);
-            
+
             // After loading, if this is the active capital spot but lastKnownTile is uninitialized, set it
             if (Scribe.mode == LoadSaveMode.PostLoadInit && isActiveCapitalSpot && lastKnownTile == -1 && Map != null)
             {
@@ -125,7 +124,7 @@ namespace FactionColonies
         public override void TickRare()
         {
             base.TickRare();
-            
+
             // TickRare runs every 250 ticks automatically, perfect for our needs
             UpdateCapitalLocationIfMoved();
         }
@@ -142,8 +141,8 @@ namespace FactionColonies
                 yield return new Command_Toggle
                 {
                     defaultLabel = "Set Empire Capital",
-                    defaultDesc = isActiveCapitalSpot 
-                        ? "This is currently your Empire's capital seat. Click to disable." 
+                    defaultDesc = isActiveCapitalSpot
+                        ? "This is currently your Empire's capital seat. Click to disable."
                         : "Click to make this the seat of your Empire's capital. This location will be used for travel time calculations and event targeting.",
                     icon = TexLoad.iconCustomize, // Using existing customize icon
                     isActive = () => isActiveCapitalSpot,
@@ -151,9 +150,9 @@ namespace FactionColonies
                     {
                         bool wasActive = IsActiveCapitalSpot;
                         IsActiveCapitalSpot = !IsActiveCapitalSpot;
-                        
+
                         LogUtil.Message($"Capital Building: Toggle from {wasActive} to {IsActiveCapitalSpot}");
-                        
+
                         if (IsActiveCapitalSpot)
                         {
                             Messages.Message(
@@ -176,12 +175,12 @@ namespace FactionColonies
         public override string GetInspectString()
         {
             string baseString = base.GetInspectString();
-            string statusString = isActiveCapitalSpot 
-                ? "Active Empire Capital" 
+            string statusString = isActiveCapitalSpot
+                ? "Active Empire Capital"
                 : "Capital seat (inactive)";
-            
-            return string.IsNullOrEmpty(baseString) 
-                ? statusString 
+
+            return string.IsNullOrEmpty(baseString)
+                ? statusString
                 : baseString + "\n" + statusString;
         }
 

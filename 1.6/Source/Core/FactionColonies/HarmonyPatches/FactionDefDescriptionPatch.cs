@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Text;
+using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Verse;
-using FactionColonies.util;
 
 namespace FactionColonies
 {

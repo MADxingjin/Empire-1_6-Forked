@@ -393,7 +393,7 @@ namespace FactionColonies
             trader = new WorldSettlementTraderTracker(this);
 
             if (!(def is WorldSettlementDef))
-            { 
+            {
                 LogUtil.Error($"Created settlement {name} with an invalid def: {def}! Panic! Defaulting to base def!");
                 def = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
@@ -1582,7 +1582,7 @@ namespace FactionColonies
         {
             List<ResourcePool> pools = new List<ResourcePool>();
 
-            foreach(ResourceFC resource in resources)
+            foreach (ResourceFC resource in resources)
             {
                 if (resource.def.isPoolResource)
                 {

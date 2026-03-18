@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -73,8 +72,8 @@ namespace FactionColonies
             billTimeRemaining = new Rect(billLocationBase.x + billLocationBase.width, 0, 90, billHeight);
             //rect for bill resolve button
             billResolveBase = new Rect(billTimeRemaining.x + billTimeRemaining.width, 0, 140, billHeight);
-        }   
-            
+        }
+
 
         public override void WindowUpdate()
         {
@@ -96,9 +95,9 @@ namespace FactionColonies
             Widgets.DrawMenuSection(billsBox);
 
 
-            //loop through each bill
-            //GoTo Here if change
-            Reset:
+        //loop through each bill
+        //GoTo Here if change
+        Reset:
 
             int i = 0;
 
@@ -128,15 +127,15 @@ namespace FactionColonies
 
                 highlight = new Rect(settlement.x, settlement.y, resolve.x + resolve.width, billHeight);
 
-                
+
 
                 if (i % 2 == 0)
                 {
                     Widgets.DrawHighlight(highlight);
                 }
                 String settlementName;
-                if( bill.settlement != null) { settlementName = bill.settlement.Name; } else { settlementName = "Null"; }
-                if(Widgets.ButtonText(settlement, settlementName))
+                if (bill.settlement != null) { settlementName = bill.settlement.Name; } else { settlementName = "Null"; }
+                if (Widgets.ButtonText(settlement, settlementName))
                 {
                     if (bill.settlement != null)
                     {
@@ -152,7 +151,7 @@ namespace FactionColonies
                 //
                 bool bul;
                 bul = (bill.taxes.itemTithes.Count > 0);
-                Widgets.Checkbox(new Vector2(tithe.x + tithe.width/2 - 12, tithe.y), ref bul);
+                Widgets.Checkbox(new Vector2(tithe.x + tithe.width / 2 - 12, tithe.y), ref bul);
 
                 if (Widgets.ButtonText(resolve, "ResolveBill".Translate()))
                 {
@@ -172,7 +171,7 @@ namespace FactionColonies
             Widgets.ButtonTextSubtle(billDescBase, "DueFC".Translate());
             Widgets.ButtonTextSubtle(billLocationBase, "Amount".Translate());
             Widgets.ButtonTextSubtle(billTimeRemaining, "HasTithe".Translate());
-            if(Widgets.ButtonTextSubtle(billResolveBase, "FCAutoResolve".Translate()))
+            if (Widgets.ButtonTextSubtle(billResolveBase, "FCAutoResolve".Translate()))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
 
@@ -189,7 +188,7 @@ namespace FactionColonies
                             Messages.Message("FCBillsNotAutoResolving".Translate(), MessageTypeDefOf.NeutralEvent);
                             break;
                     }
-                    
+
                 });
                 list.Add(option);
 

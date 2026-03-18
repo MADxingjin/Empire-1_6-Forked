@@ -1,15 +1,11 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using FactionColonies;
-using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System;
+using System.Reflection;
+using TSA_WorldDomination.WorldActions;
 using Verse;
 using WorldDomination;
-using TSA_WorldDomination.RaidLogic;
-using TSA_WorldDomination.WorldActions;
 
 namespace FactionColonies.WD
 {

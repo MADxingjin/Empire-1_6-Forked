@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Media;
 using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using Object = System.Object;
 
 namespace FactionColonies
 {
     public abstract class Dialog_ManageExportsFC : Window
     {
         #region UIVars
-        
+
         static float ElementPadding = 5.0f;
         static float ElementHeight = 35f;
-        
+
         static float ElementNameWidth = 200f;
         static float ElementNameHeight = 35f;
-        
+
         static float ElementImportWidth = 80f;
         static float ElementImportHeight = 35f;
-        
+
         static float ElementDeleteWidth = 35f;
         static float ElementDeleteHeight = 35f;
 
@@ -54,22 +51,22 @@ namespace FactionColonies
         {
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect elemRect = new Rect(inRect.x, inRect.y, inRect.width, ElementHeight);
-            
+
             Rect nameRect = new Rect(inRect.x, inRect.y, ElementNameWidth, ElementNameHeight);
-            
+
             Rect deleteRect = new Rect(inRect.width - inRect.x - ElementDeleteWidth,
                 inRect.y, ElementDeleteWidth, ElementDeleteHeight);
             Rect importRect = new Rect(deleteRect.x - ElementImportWidth,
                 inRect.y, ElementImportWidth, ElementImportHeight);
-            
+
             bool alternate = false;
             foreach (string name in GetAll())
             {
-                if(alternate)
+                if (alternate)
                     Widgets.DrawAltRect(elemRect);
 
                 Widgets.Label(nameRect, name);
-                
+
                 if (Widgets.ButtonText(importRect, "FCImport".Translate()))
                 {
                     OnImport(name);
@@ -105,11 +102,11 @@ namespace FactionColonies
         protected override void OnDelete(string name)
         {
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "ConfirmDelete".Translate((NamedArgument) name), () => 
+                "ConfirmDelete".Translate((NamedArgument)name), () =>
             {
                 FactionColoniesMilitary.RemoveSquad(name);
                 this.squads.RemoveAll(squads => squads.name == name);
-                Messages.Message("FCDeleted".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
+                Messages.Message("FCDeleted".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
             }));
         }
 
@@ -135,7 +132,7 @@ namespace FactionColonies
             }
 
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
-            Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
+            Messages.Message("FCImported".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
             this.Close();
         }
         protected override IEnumerable<string> GetAll() => squads.Select(squad => squad.name);
@@ -151,11 +148,11 @@ namespace FactionColonies
         protected override void OnDelete(string name)
         {
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "ConfirmDelete".Translate((NamedArgument) name), () => 
+                "ConfirmDelete".Translate((NamedArgument)name), () =>
             {
                 FactionColoniesMilitary.RemoveUnit(name);
                 this.units.RemoveAll(unit => unit.name == name);
-                Messages.Message("FCDeleted".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
+                Messages.Message("FCDeleted".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
             }));
         }
 
@@ -181,7 +178,7 @@ namespace FactionColonies
             }
 
             MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
-            Messages.Message("FCImported".Translate((NamedArgument) name), MessageTypeDefOf.PositiveEvent);
+            Messages.Message("FCImported".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
             this.Close();
         }
         protected override IEnumerable<string> GetAll() => units.Select(unit => unit.name);

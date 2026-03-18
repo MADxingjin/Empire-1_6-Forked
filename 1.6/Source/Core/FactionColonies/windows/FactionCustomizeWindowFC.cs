@@ -1,6 +1,4 @@
-﻿using FactionColonies.util;
-using RimWorld;
-using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -82,7 +80,7 @@ namespace FactionColonies
 
             float headerHeight = labelFaction.yMax + margin;
 
-            Rect labelFactionName = new Rect(0, headerHeight + (margin*3), 100, 30);
+            Rect labelFactionName = new Rect(0, headerHeight + (margin * 3), 100, 30);
             Rect textfieldName = new Rect(105, labelFactionName.y, 250, 30);
 
             Rect labelFactionTitle = new Rect(0, labelFactionName.yMax + margin, 100, 30);
@@ -93,11 +91,11 @@ namespace FactionColonies
 
             Rect buttonAllowedRaces = new Rect(25, labelFactionIcon.yMax + margin, 200, 40);
 
-            Rect labelPickTrait = new Rect(400, headerHeight + (margin*3), 400, 60);
+            Rect labelPickTrait = new Rect(400, headerHeight + (margin * 3), 400, 60);
 
             Rect menusectionTrait = new Rect(400, 200, 400, 300);
 
-            Rect buttonConfirm = new Rect((inRect.xMax - 200f)/2f, 300, 200, 30);
+            Rect buttonConfirm = new Rect((inRect.xMax - 200f) / 2f, 300, 200, 30);
 
 
             //Settlement Tax Collection Header

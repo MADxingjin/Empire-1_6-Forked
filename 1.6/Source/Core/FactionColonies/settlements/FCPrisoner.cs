@@ -1,10 +1,5 @@
-﻿using FactionColonies.util;
-using RimWorld;
+﻿using RimWorld;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 
@@ -27,13 +22,13 @@ namespace FactionColonies
         public int loadID;
         public FCWorkLoad workload;
         public Pawn_HealthTracker healthTracker;
-        
 
-        public FCPrisoner () 
-        {            
+
+        public FCPrisoner()
+        {
         }
 
-        public FCPrisoner (Pawn pawn, WorldSettlementFC settlement)
+        public FCPrisoner(Pawn pawn, WorldSettlementFC settlement)
         {
             prisoner = pawn;
             this.settlement = settlement;
@@ -46,7 +41,7 @@ namespace FactionColonies
             pawn.guest.SetGuestStatus(FactionCache.PlayerColonyFaction, GuestStatus.Prisoner);
         }
 
-        
+
         public void ExposeData()
         {
             Scribe_Deep.Look(ref prisoner, "prisoner");

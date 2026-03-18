@@ -1,9 +1,9 @@
+using FactionColonies.util;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -246,7 +246,7 @@ namespace FactionColonies
         public static void DebugMarker(ref int i)
         {
             LogUtil.Message($"DebugMarker: {i}");
-            i ++;
+            i++;
         }
 
         // Difficulty preset values
@@ -530,7 +530,7 @@ namespace FactionColonies
         }
     }
 
-    
+
     public class FactionColoniesMod : Mod
     {
         public FCSettings settings = new FCSettings();

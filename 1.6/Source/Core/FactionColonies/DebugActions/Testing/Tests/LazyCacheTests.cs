@@ -1,7 +1,6 @@
+using RimWorld;
 using System;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 
 namespace FactionColonies
 {

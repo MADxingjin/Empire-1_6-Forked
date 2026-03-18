@@ -1,8 +1,7 @@
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -348,7 +347,7 @@ namespace FactionColonies
             if (Widgets.ButtonText(minusRect, "-"))
             {
                 //selectedSupport.projectiles.Remove(def);
-                count = Math.Max(0, count-1);
+                count = Math.Max(0, count - 1);
             }
             x = minusRect.xMax + 2f;
 

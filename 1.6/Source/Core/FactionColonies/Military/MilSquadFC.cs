@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using RimWorld;
 using Verse;
 
 namespace FactionColonies
 {
-    
+
     //Squad Class
     public class MilSquadFC : IExposable, ILoadReferenceable
     {
@@ -18,7 +16,7 @@ namespace FactionColonies
 
         public static void UpdateEquipmentTotalCostOfSquadsContaining(MilUnitFC unit)
         {
-            FactionCache.FactionComp.militaryCustomizationUtil.squads.ForEach(delegate(MilSquadFC squad)
+            FactionCache.FactionComp.militaryCustomizationUtil.squads.ForEach(delegate (MilSquadFC squad)
             {
                 if (squad.units.Contains(unit))
                 {
@@ -79,7 +77,7 @@ namespace FactionColonies
             }
 
             equipmentTotalCost = totalCost;
-            return (int) equipmentTotalCost;
+            return (int)equipmentTotalCost;
         }
 
         public void NewSquad()

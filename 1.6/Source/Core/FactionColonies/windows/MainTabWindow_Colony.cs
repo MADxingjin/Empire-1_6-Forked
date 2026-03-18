@@ -204,8 +204,8 @@ namespace FactionColonies
             float bodyH = rect.height - panelGap - headerHeight - margin;
 
             Rect headerPanel = new Rect(rect.x + margin, rect.y + margin, rect.width - (margin * 2), headerHeight);
-            Rect leftPanel   = new Rect(rect.x + margin, bodyY, leftWidth, bodyH);
-            Rect rightPanel  = new Rect(rect.xMax - margin - rightWidth, bodyY, rightWidth, bodyH);
+            Rect leftPanel = new Rect(rect.x + margin, bodyY, leftWidth, bodyH);
+            Rect rightPanel = new Rect(rect.xMax - margin - rightWidth, bodyY, rightWidth, bodyH);
             Rect centerPanel = new Rect(leftPanel.xMax + panelGap, bodyY, rightPanel.x - leftPanel.xMax - panelGap * 2, bodyH);
 
             DrawOverviewHeaderPanel(headerPanel);
@@ -226,7 +226,7 @@ namespace FactionColonies
             Rect customizeBtn = new Rect(panel.xMax - customizeBtnSize, panel.y + margin, customizeBtnSize, customizeBtnSize);
             Rect labelBox = new Rect(iconRect.xMax + margin, panel.y, panel.width - iconSz - margin, 30f);
             Rect labelTextBox = new Rect(labelBox.x + margin, labelBox.y, labelBox.width - (margin * 2), labelBox.height);
-            Rect titleBox = new Rect(labelBox.x, labelBox.yMax + margin, labelBox.width/2f, 22f);
+            Rect titleBox = new Rect(labelBox.x, labelBox.yMax + margin, labelBox.width / 2f, 22f);
             Rect foundingBox = new Rect(titleBox.xMax, titleBox.y, titleBox.width, titleBox.height);
 
             Text.Font = GameFont.Medium;
@@ -257,7 +257,7 @@ namespace FactionColonies
             Rect xpBar = new Rect(panel.x, y, panel.width, xpH);
             UIUtil.DrawProgressBarColors(xpBar, faction.factionXPCurrent / faction.factionXPGoal, Color.black, Color.green);
             Widgets.DrawShadowAround(xpBar);
-            Text.Font   = GameFont.Tiny;
+            Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(xpBar, Math.Round(faction.factionXPCurrent) + "/" + faction.factionXPGoal);
             y += xpH + margin;
@@ -272,7 +272,7 @@ namespace FactionColonies
             // --- Stats ---
             Text.Anchor = TextAnchor.MiddleLeft;
             string[] statKeys = { "happiness", "loyalty", "unrest", "prosperity" };
-            float statH   = 32f;
+            float statH = 32f;
 
             foreach (string statKey in statKeys)
             {
@@ -291,38 +291,38 @@ namespace FactionColonies
                 switch (statKey)
                 {
                     case "happiness":
-                        icon      = TexLoad.iconHappiness;
-                        statVal   = (float)faction.averageHappiness;
-                        value     = Convert.ToInt32(statVal) + "%";
-                        tooltip   = "FactionHappiness".Translate() + "\n-----\n" + "FactionHappinessDesc".Translate();
-                        inverted  = false;
+                        icon = TexLoad.iconHappiness;
+                        statVal = (float)faction.averageHappiness;
+                        value = Convert.ToInt32(statVal) + "%";
+                        tooltip = "FactionHappiness".Translate() + "\n-----\n" + "FactionHappinessDesc".Translate();
+                        inverted = false;
                         break;
                     case "loyalty":
-                        icon      = TexLoad.iconLoyalty;
-                        statVal   = (float)faction.averageLoyalty;
-                        value     = Convert.ToInt32(statVal) + "%";
-                        tooltip   = "FactionLoyalty".Translate() + "\n-----\n" + "FactionLoyaltyDesc".Translate();
-                        inverted  = false;
+                        icon = TexLoad.iconLoyalty;
+                        statVal = (float)faction.averageLoyalty;
+                        value = Convert.ToInt32(statVal) + "%";
+                        tooltip = "FactionLoyalty".Translate() + "\n-----\n" + "FactionLoyaltyDesc".Translate();
+                        inverted = false;
                         break;
                     case "unrest":
-                        icon      = TexLoad.iconUnrest;
-                        statVal   = (float)faction.averageUnrest;
-                        value     = Convert.ToInt32(statVal) + "%";
-                        tooltip   = "FactionUnrest".Translate() + "\n-----\n" + "FactionUnrestDesc".Translate();
-                        inverted  = true;
+                        icon = TexLoad.iconUnrest;
+                        statVal = (float)faction.averageUnrest;
+                        value = Convert.ToInt32(statVal) + "%";
+                        tooltip = "FactionUnrest".Translate() + "\n-----\n" + "FactionUnrestDesc".Translate();
+                        inverted = true;
                         break;
                     default: // prosperity
-                        icon      = TexLoad.iconProsperity;
-                        statVal   = (float)faction.averageProsperity;
-                        value     = Convert.ToInt32(statVal) + "%";
-                        tooltip   = "FactionProsperity".Translate() + "\n-----\n" + "FactionProsperityDesc".Translate();
-                        inverted  = false;
+                        icon = TexLoad.iconProsperity;
+                        statVal = (float)faction.averageProsperity;
+                        value = Convert.ToInt32(statVal) + "%";
+                        tooltip = "FactionProsperity".Translate() + "\n-----\n" + "FactionProsperityDesc".Translate();
+                        inverted = false;
                         break;
                 }
 
                 Widgets.Label(iconBox, new GUIContent(icon));
 
-                Text.Font   = GameFont.Small;
+                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Color origStatColor = GUI.color;
                 GUI.color = AccentUtil.GetStatColor(statVal, inverted);
@@ -340,7 +340,7 @@ namespace FactionColonies
             float policySize = 40f;
             if (faction.policies.Count == FCSettings.maxPolicyCount)
             {
-                float leftX = panel.x + (panel.width - (policySize * faction.policies.Count) - (margin * (faction.policies.Count - 1)))/2f;
+                float leftX = panel.x + (panel.width - (policySize * faction.policies.Count) - (margin * (faction.policies.Count - 1))) / 2f;
                 for (int i = 0; i < faction.policies.Count; i++)
                 {
                     Rect policyBox = new Rect(leftX + (i * (policySize + margin)), y, policySize, policySize);
@@ -350,7 +350,7 @@ namespace FactionColonies
             }
             else
             {
-                Text.Font   = GameFont.Small;
+                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Rect buttonRect = new Rect(panel.x, y, panel.width, policySize);
                 if (Widgets.ButtonText(buttonRect, "FCSelectPolicies".Translate()))
@@ -418,7 +418,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect roadBox = new Rect(panel.x, y, panel.width, 26f);
             Rect roadLabel = new Rect(roadBox.x + margin, y, 120f, roadBox.height);
-            Rect checkBox = new Rect(roadBox.xMax - 24f, y+1, 24f, 24f);
+            Rect checkBox = new Rect(roadBox.xMax - 24f, y + 1, 24f, 24f);
             Widgets.DrawMenuSection(roadBox);
             Widgets.Label(roadLabel, "FCBuildRoads".Translate());
             Widgets.DrawHighlight(checkBox);
@@ -493,11 +493,11 @@ namespace FactionColonies
             float width = panel.width;
 
             Rect profitBox = new Rect(x, y, width, 28f);
-            Rect profitLabel = new Rect(profitBox.x, profitBox.y, (width - margin)/2f, profitBox.height);
+            Rect profitLabel = new Rect(profitBox.x, profitBox.y, (width - margin) / 2f, profitBox.height);
             Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, profitLabel.width, profitLabel.height);
 
             // --- Economic Stats ---
-            Text.Font   = GameFont.Small;
+            Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.DrawHighlight(profitBox);
             Text.Anchor = TextAnchor.MiddleRight;
@@ -684,12 +684,12 @@ namespace FactionColonies
 
         private void DrawSettlementsTable(Rect tableRect)
         {
-            const float rowH      = 44f;
-            const float accentW   = 4f;
-            const float rowGap    = 2f;
-            const float pad       = 4f;
-            const float summaryH  = 24f;
-            const float iconSz    = 18f;
+            const float rowH = 44f;
+            const float accentW = 4f;
+            const float rowGap = 2f;
+            const float pad = 4f;
+            const float summaryH = 24f;
+            const float iconSz = 18f;
 
             float innerX = tableRect.x + pad;
             float innerW = tableRect.width - pad * 2f;
@@ -743,9 +743,9 @@ namespace FactionColonies
             }
 
             // Scrollable settlement list
-            float listY    = tableRect.y + pad + summaryH + 4f;
-            float viewH    = tableRect.yMax - listY - pad;
-            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float listY = tableRect.y + pad + summaryH + 4f;
+            float viewH = tableRect.yMax - listY - pad;
+            Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = faction.settlements.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
 
@@ -932,12 +932,12 @@ namespace FactionColonies
         private void DrawBillsTab(Rect rect)
         {
             List<BillFC> bills = faction.Bills;
-            const float pad       = 8f;
-            const float rowH      = 44f;
-            const float accentW   = 4f;
-            const float rowGap    = 2f;
-            const float resolveW  = 100f;
-            const float summaryH  = 24f;
+            const float pad = 8f;
+            const float rowH = 44f;
+            const float accentW = 4f;
+            const float rowGap = 2f;
+            const float resolveW = 100f;
+            const float summaryH = 24f;
 
             float innerX = rect.x + pad;
             float innerW = rect.width - pad * 2f;
@@ -999,9 +999,9 @@ namespace FactionColonies
             }
 
             // Scrollable bill list
-            float listY    = rect.y + pad + summaryH + 4f;
-            float viewH    = rect.yMax - listY - pad;
-            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float listY = rect.y + pad + summaryH + 4f;
+            float viewH = rect.yMax - listY - pad;
+            Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = bills.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
 
@@ -1182,14 +1182,14 @@ namespace FactionColonies
         private void DrawEventsTab(Rect rect)
         {
             List<FCEvent> events = faction.events;
-            const float pad       = 8f;
-            const float rowH      = 44f;
-            const float accentW   = 4f;
-            const float rowGap    = 2f;
+            const float pad = 8f;
+            const float rowH = 44f;
+            const float accentW = 4f;
+            const float rowGap = 2f;
             const float progressW = 160f;
             const float progressH = 14f;
-            const float summaryH  = 24f;
-            const float filterH   = 24f;
+            const float summaryH = 24f;
+            const float filterH = 24f;
 
             float innerX = rect.x + pad;
             float innerW = rect.width - pad * 2f;
@@ -1251,9 +1251,9 @@ namespace FactionColonies
             }
 
             // Scrollable event list
-            float listY    = rect.y + pad + summaryH + filterH + 6f;
-            float viewH    = rect.yMax - listY - pad;
-            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float listY = rect.y + pad + summaryH + filterH + 6f;
+            float viewH = rect.yMax - listY - pad;
+            Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = sorted.Count * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
 
@@ -1518,15 +1518,15 @@ namespace FactionColonies
             // --- Settlements Card List ---
             float tableH = rect.yMax - y - margin;
             if (tableH > 0f)
-                DrawMilitarySettlementCards(new Rect(x + margin, y, width - (margin*2), tableH));
+                DrawMilitarySettlementCards(new Rect(x + margin, y, width - (margin * 2), tableH));
         }
 
         private void DrawMilitarySettlementCards(Rect tableRect)
         {
-            const float rowH    = 44f;
+            const float rowH = 44f;
             const float accentW = 4f;
-            const float rowGap  = 2f;
-            const float pad     = 4f;
+            const float rowGap = 2f;
+            const float pad = 4f;
             const float summaryH = 24f;
 
             float innerX = tableRect.x + pad;
@@ -1571,9 +1571,9 @@ namespace FactionColonies
             }
 
             // Scrollable card list
-            float listY    = tableRect.y + pad + summaryH + 4f;
-            float viewH    = tableRect.yMax - listY - pad;
-            Rect viewRect  = new Rect(innerX, listY, innerW, viewH);
+            float listY = tableRect.y + pad + summaryH + 4f;
+            float viewH = tableRect.yMax - listY - pad;
+            Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = totalMilitaryCount * (rowH + rowGap);
             Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
 
@@ -1598,14 +1598,14 @@ namespace FactionColonies
 
                 float contentX = accentW + 6f;
                 float contentW = rowW - contentX - 4f;
-                float topY  = ry;
-                float botY  = ry + rowH / 2f;
+                float topY = ry;
+                float botY = ry + rowH / 2f;
                 float lineH = rowH / 2f;
 
                 // === TOP LINE ===
                 float statusW = 190f;
-                float badgeW  = 120f;
-                float nameW   = contentW - statusW - badgeW;
+                float badgeW = 120f;
+                float nameW = contentW - statusW - badgeW;
 
                 // Top-left: Settlement name (clickable, accent-colored)
                 fontBefore = Text.Font;
@@ -1658,10 +1658,10 @@ namespace FactionColonies
                 Text.Anchor = anchorBefore;
 
                 // === BOTTOM LINE ===
-                float btnW      = 80f;
-                float btnGap    = 2f;
-                float btnH      = lineH - 4f;
-                float btnY      = botY + 2f;
+                float btnW = 80f;
+                float btnGap = 2f;
+                float btnH = lineH - 4f;
+                float btnY = botY + 2f;
                 float totalBtnW = btnW * 5 + btnGap * 4;
 
                 // Bottom-left: Squad name with prefix
@@ -1812,14 +1812,14 @@ namespace FactionColonies
 
                 float contentX = accentW + 6f;
                 float contentW = rowW - contentX - 4f;
-                float topY  = ry;
-                float botY  = ry + rowH / 2f;
+                float topY = ry;
+                float botY = ry + rowH / 2f;
                 float lineH = rowH / 2f;
 
                 // === TOP LINE ===
                 float statusW = 190f;
-                float badgeW  = 120f;
-                float nameW   = contentW - statusW - badgeW;
+                float badgeW = 120f;
+                float nameW = contentW - statusW - badgeW;
 
                 // Top-left: Entry name (clickable, accent-colored — zooms to world object)
                 fontBefore = Text.Font;
@@ -1862,9 +1862,9 @@ namespace FactionColonies
                 Text.Anchor = anchorBefore;
 
                 // === BOTTOM LINE ===
-                float btnW   = 80f;
-                float btnH   = lineH - 4f;
-                float btnY   = botY + 2f;
+                float btnW = 80f;
+                float btnH = lineH - 4f;
+                float btnY = botY + 2f;
 
                 // Bottom-left: Type label
                 fontBefore = Text.Font;

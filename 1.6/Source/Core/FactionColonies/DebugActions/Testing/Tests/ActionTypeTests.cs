@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using FactionColonies.util;
+using System.Collections.Generic;
 using Verse;
 
 namespace FactionColonies

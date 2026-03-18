@@ -15,7 +15,7 @@ namespace FactionColonies
         {
             throw new ApplicationException("Trying to select " + selecting + " on window " + this);
         }
-        
+
         public void ScrollWindow(float num, float maxScroll)
         {
             if (scroll - num * 5 < -1 * maxScroll)
@@ -28,7 +28,7 @@ namespace FactionColonies
             }
             else
             {
-                scroll -= (int) Event.current.delta.y * 5;
+                scroll -= (int)Event.current.delta.y * 5;
             }
 
             Event.current.Use();

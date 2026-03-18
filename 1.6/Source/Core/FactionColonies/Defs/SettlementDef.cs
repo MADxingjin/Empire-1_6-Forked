@@ -1,12 +1,9 @@
 ﻿using FactionColonies.util;
 using RimWorld;
-using UnityEngine;
 using RimWorld.Planet;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -165,7 +162,7 @@ namespace FactionColonies
             IEnumerable<string> errors = base.ConfigErrors();
             if (errors != null)
             {
-                foreach(string error in errors)
+                foreach (string error in errors)
                 {
                     yield return error;
                 }

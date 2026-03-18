@@ -1,7 +1,6 @@
-using System;
-using FactionColonies.util;
 using RimWorld;
 using RimWorld.BaseGen;
+using System;
 using Verse;
 
 namespace FactionColonies
@@ -66,8 +65,8 @@ namespace FactionColonies
             BaseGen.globalSettings.map = map;
             double defenseBuildings = Settlement.GetDefenseBonus();
 
-            int defenseCount = (int) (CurveFactor * Math.Log(defenseBuildings+1));
-            resolveParams.edgeDefenseMortarsCount = (int) Math.Ceiling(defenseCount/3f);
+            int defenseCount = (int)(CurveFactor * Math.Log(defenseBuildings + 1));
+            resolveParams.edgeDefenseMortarsCount = (int)Math.Ceiling(defenseCount / 3f);
             resolveParams.edgeDefenseTurretsCount = defenseCount;
             BaseGen.globalSettings.minBuildings = Settlement.settlementLevel;
             BaseGen.globalSettings.minBarracks = Settlement.settlementLevel;

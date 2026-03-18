@@ -1,9 +1,5 @@
-﻿using RimWorld.Planet;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace FactionColonies
@@ -37,7 +33,7 @@ namespace FactionColonies
                 LogUtil.Error($"SettlementBuildingComp {this.ToStringSafe()} has null parentComp during RefreshBuildingSlots");
                 return;
             }
-            for(int i = 0; i < parentComp.Buildings.Count; i++)
+            for (int i = 0; i < parentComp.Buildings.Count; i++)
             {
                 BuildingFCDef building = parentComp.GetBuildingInSlot(i);
                 if (building.modExtensions?.Count > 0)

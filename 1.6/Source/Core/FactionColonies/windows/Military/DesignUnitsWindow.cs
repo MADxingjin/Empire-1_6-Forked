@@ -1,8 +1,8 @@
+using FactionColonies.util;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -382,19 +382,19 @@ namespace FactionColonies
             const float slotSize = 50f;
 
             // Unit and animal icons (positioned relative to gearArea)
-            Rect unitIcon   = new Rect(gearArea.x + 120, gearArea.y + 100f, iconSize, iconSize + 20f);
+            Rect unitIcon = new Rect(gearArea.x + 120, gearArea.y + 100f, iconSize, iconSize + 20f);
             //Rect animalIcon = new Rect(gearArea.x + 120, gearArea.y + 195, iconSize, iconSize);
 
             // Apparel/equipment slots (positioned relative to unitIcon)
-            Rect ApparelHead        = new Rect(unitIcon.x + (iconSize - slotSize) / 2f, unitIcon.y - 75, slotSize, slotSize);
-            Rect ApparelTorsoSkin   = new Rect(unitIcon.xMax + 20, unitIcon.y - 55, slotSize, slotSize);
-            Rect ApparelBelt        = new Rect(unitIcon.xMax + 20, unitIcon.y + 15,  slotSize, slotSize);
-            Rect ApparelLegs        = new Rect(unitIcon.xMax + 20, unitIcon.y + 85, slotSize, slotSize);
+            Rect ApparelHead = new Rect(unitIcon.x + (iconSize - slotSize) / 2f, unitIcon.y - 75, slotSize, slotSize);
+            Rect ApparelTorsoSkin = new Rect(unitIcon.xMax + 20, unitIcon.y - 55, slotSize, slotSize);
+            Rect ApparelBelt = new Rect(unitIcon.xMax + 20, unitIcon.y + 15, slotSize, slotSize);
+            Rect ApparelLegs = new Rect(unitIcon.xMax + 20, unitIcon.y + 85, slotSize, slotSize);
 
-            Rect AnimalCompanion    = new Rect(unitIcon.x - 60,  unitIcon.y - 55, slotSize, slotSize);
-            Rect ApparelTorsoShell  = new Rect(unitIcon.x - 60,  unitIcon.y + 15,  slotSize, slotSize);
-            Rect ApparelTorsoMiddle = new Rect(unitIcon.x - 60,  unitIcon.y + 85, slotSize, slotSize);
-            Rect EquipmentWeapon    = new Rect(unitIcon.x - 120, unitIcon.y + 15,  slotSize, slotSize);
+            Rect AnimalCompanion = new Rect(unitIcon.x - 60, unitIcon.y - 55, slotSize, slotSize);
+            Rect ApparelTorsoShell = new Rect(unitIcon.x - 60, unitIcon.y + 15, slotSize, slotSize);
+            Rect ApparelTorsoMiddle = new Rect(unitIcon.x - 60, unitIcon.y + 85, slotSize, slotSize);
+            Rect EquipmentWeapon = new Rect(unitIcon.x - 120, unitIcon.y + 15, slotSize, slotSize);
 
             ApparelSlotDef[] apparelSlots = new[]
             {

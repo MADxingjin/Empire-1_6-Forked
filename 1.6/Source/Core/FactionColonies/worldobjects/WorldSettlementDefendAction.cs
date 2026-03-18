@@ -1,9 +1,7 @@
-using System.Collections.Generic;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
 using Verse;
-using Verse.AI.Group;
 
 namespace FactionColonies
 {
@@ -15,24 +13,24 @@ namespace FactionColonies
         public WorldSettlementDefendAction()
         {
         }
-        
+
         public WorldSettlementDefendAction(WorldSettlementFC settlement)
         {
             this.settlement = settlement;
         }
 
-        public override void Arrived(Caravan caravan) => settlement.MilitaryComp?.StartDefence(MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile),() => settlement.MilitaryComp?.CaravanDefend(caravan));
-        
+        public override void Arrived(Caravan caravan) => settlement.MilitaryComp?.StartDefence(MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile), () => settlement.MilitaryComp?.CaravanDefend(caravan));
+
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_References.Look(ref settlement, "settlement");
         }
-        
+
         public override string Label => "DefendColony".Translate();
 
         public override string ReportString => "DefendColonyDesc".Translate();
-        
+
         public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(
             Caravan caravan,
             WorldSettlementFC settlement)

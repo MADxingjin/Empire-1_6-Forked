@@ -1,6 +1,5 @@
 using RimWorld;
 using System.Collections.Generic;
-using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -8,7 +7,7 @@ namespace FactionColonies
     public class Building_TaxSpot : Building
     {
         private bool isActiveTaxDeliverySpot = false;
-        
+
         public bool IsActiveTaxDeliverySpot
         {
             get => isActiveTaxDeliverySpot;
@@ -29,7 +28,7 @@ namespace FactionColonies
             foreach (Map map in Find.Maps)
             {
                 if (!map.IsPlayerHome) continue;
-                
+
                 foreach (Building building in map.listerBuildings.allBuildingsColonist)
                 {
                     if (building is Building_TaxSpot otherTaxSpot && otherTaxSpot != this)
@@ -58,8 +57,8 @@ namespace FactionColonies
                 yield return new Command_Toggle
                 {
                     defaultLabel = "Set Tax Delivery Spot",
-                    defaultDesc = isActiveTaxDeliverySpot 
-                        ? "This tax spot is currently the active tax delivery location. Click to disable." 
+                    defaultDesc = isActiveTaxDeliverySpot
+                        ? "This tax spot is currently the active tax delivery location. Click to disable."
                         : "Click to make this tax spot the active tax delivery location for your empire.",
                     icon = TexLoad.iconTrade, // Using existing trade icon
                     isActive = () => isActiveTaxDeliverySpot,
@@ -88,12 +87,12 @@ namespace FactionColonies
         public override string GetInspectString()
         {
             string baseString = base.GetInspectString();
-            string statusString = isActiveTaxDeliverySpot 
-                ? "Active tax delivery spot" 
+            string statusString = isActiveTaxDeliverySpot
+                ? "Active tax delivery spot"
                 : "Tax spot (delivery disabled)";
-            
-            return string.IsNullOrEmpty(baseString) 
-                ? statusString 
+
+            return string.IsNullOrEmpty(baseString)
+                ? statusString
                 : baseString + "\n" + statusString;
         }
     }

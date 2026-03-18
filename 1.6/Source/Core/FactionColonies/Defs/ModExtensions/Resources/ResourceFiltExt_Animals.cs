@@ -1,10 +1,6 @@
-using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace FactionColonies
@@ -33,7 +29,7 @@ namespace FactionColonies
             }
 
             List<Thing> output = new List<Thing>();
-            for(int i = 0; i < quantity; i++)
+            for (int i = 0; i < quantity; i++)
             {
                 Pawn animalPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(thingDef.race.AnyPawnKind, Faction.OfPlayer));
                 if (!(animalPawn is null))

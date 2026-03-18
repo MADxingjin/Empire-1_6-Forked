@@ -210,7 +210,7 @@ namespace FactionColonies
         {
             get
             {
-                if(_cachedCombatAnimalKinds == null)
+                if (_cachedCombatAnimalKinds == null)
                 {
                     _cachedCombatAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsCombatAnimal()).ToList();
                 }
@@ -232,7 +232,7 @@ namespace FactionColonies
         {
             get
             {
-                if(!_checkedForNonViolentXenos)
+                if (!_checkedForNonViolentXenos)
                 {
                     if (XenotypeDefs?.Count > 0)
                     {

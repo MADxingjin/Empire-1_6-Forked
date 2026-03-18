@@ -14,7 +14,7 @@ namespace FactionColonies
         public bool deployable = false;
         public int loadID;
         private bool isOnMap = false;
-        
+
         public Mercenary()
         {
 

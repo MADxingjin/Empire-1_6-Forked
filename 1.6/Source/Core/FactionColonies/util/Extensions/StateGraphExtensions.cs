@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Verse;
+﻿using System.Collections.Generic;
 using Verse.AI.Group;
 
 namespace FactionColonies.util
 {
-	static class StateGraphExtensions
-	{
+    static class StateGraphExtensions
+    {
         /// <summary>
         /// Same as <paramref name="stateGraph"/>.AddTransition, but for multiple <paramref name="transitions"/>
         /// </summary>

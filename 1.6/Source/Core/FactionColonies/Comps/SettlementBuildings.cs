@@ -1,10 +1,8 @@
-﻿using FactionColonies.util;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using UnityEngine;
 using Verse;
@@ -194,7 +192,7 @@ namespace FactionColonies
             if (buildings.Count > FC_MAX_BUILDINGS)
             {
                 /* Remove slots, starting at the end and working backwards */
-                for (int i = buildings.Count-1; i >= FC_MAX_BUILDINGS && i >= 0; i--)
+                for (int i = buildings.Count - 1; i >= FC_MAX_BUILDINGS && i >= 0; i--)
                 {
                     DeconstructBuilding(i);
                     buildings.RemoveAt(i);
@@ -583,7 +581,7 @@ namespace FactionColonies
                 /* Look through the comps and see if any of them need destroying.
                  * They *should* be destroyed when the associated building is deconstructed. But just in case one gets orphaned somehow,
                  *   we'll destroy it here. Don't want any memory leaks, after all. */
-                foreach(SettlementBuildingComp comp in settlementBuildingComps)
+                foreach (SettlementBuildingComp comp in settlementBuildingComps)
                 {
                     comp.RefreshBuildingSlotsWithErrorDetection();
                 }

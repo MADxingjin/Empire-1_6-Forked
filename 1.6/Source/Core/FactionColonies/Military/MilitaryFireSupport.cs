@@ -1,7 +1,4 @@
-﻿using FactionColonies.util;
-using LudeonTK;
-using RimWorld;
-using RimWorld.Planet;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +6,7 @@ using Verse;
 
 namespace FactionColonies
 {
-    
+
     public class MilitaryFireSupport : IExposable, ILoadReferenceable
     {
         public int loadID = -1;
@@ -127,7 +124,7 @@ namespace FactionColonies
 
         private bool ShouldFire => (timeRunning % 15) == 0 && timeRunning >= startupTime;
 
-        private IntVec3 SemiRandomSpawnCenter => (from x in GenRadial.RadialCellsAround(location, accuracy, true)where x.InBounds(map)select x).RandomElementByWeight(x =>new SimpleCurve { new CurvePoint(0f, 1f), new CurvePoint(accuracy, 0.1f) }.Evaluate(x.DistanceTo(location)));
+        private IntVec3 SemiRandomSpawnCenter => (from x in GenRadial.RadialCellsAround(location, accuracy, true) where x.InBounds(map) select x).RandomElementByWeight(x => new SimpleCurve { new CurvePoint(0f, 1f), new CurvePoint(accuracy, 0.1f) }.Evaluate(x.DistanceTo(location)));
 
         /// <summary>
         /// Launch a fire support projectile using CE's ballistic system.

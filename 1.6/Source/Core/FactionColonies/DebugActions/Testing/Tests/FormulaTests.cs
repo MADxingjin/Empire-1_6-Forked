@@ -1,4 +1,3 @@
-using System;
 using FactionColonies.util;
 
 namespace FactionColonies

@@ -1,8 +1,7 @@
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -108,7 +107,7 @@ namespace FactionColonies
 
             // Selection summary
             Rect summaryBox = new Rect(inRect.x, contentTop + contentHeight + 5f, inRect.width, summaryHeight);
-            Rect summaryRect = new Rect(summaryBox.x + margin, contentTop + contentHeight + 5f, inRect.width - (margin*2), summaryHeight);
+            Rect summaryRect = new Rect(summaryBox.x + margin, contentTop + contentHeight + 5f, inRect.width - (margin * 2), summaryHeight);
             Widgets.DrawHighlight(summaryBox);
             DrawSummary(summaryRect);
 
@@ -162,7 +161,7 @@ namespace FactionColonies
 
             // Scroll view
             Rect scrollOutRect = new Rect(panelRect.x, searchRect.yMax + 5f,
-                panelRect.width, panelRect.height - (SearchBarHeight*2) - (margin*2));
+                panelRect.width, panelRect.height - (SearchBarHeight * 2) - (margin * 2));
             Widgets.DrawMenuSection(scrollOutRect);
 
             List<ThingDef> filtered = string.IsNullOrEmpty(itemSearchTerm)
@@ -191,13 +190,13 @@ namespace FactionColonies
                     Widgets.DrawHighlight(row);
 
                 // Row layout: Icon | Info | Label | Cost
-                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
+                Rect iconRect = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
                 Widgets.ThingIcon(iconRect, item);
 
-                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                Rect infoRect = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
                 Widgets.InfoCardButton(infoRect, item);
 
-                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect costRect = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
                     costRect.x - infoRect.xMax - (margin * 2), RowHeight);
 
@@ -302,13 +301,13 @@ namespace FactionColonies
                     Widgets.DrawHighlight(row);
 
                 // Row layout: Icon | Info | Label | Cost
-                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
+                Rect iconRect = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
                 Widgets.ThingIcon(iconRect, stuff);
 
-                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                Rect infoRect = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
                 Widgets.InfoCardButton(infoRect, stuff);
 
-                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect costRect = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
                     costRect.x - infoRect.xMax - (margin * 2), RowHeight);
 

@@ -1,14 +1,12 @@
-using System;
+using FactionColonies.util;
+using LudeonTK;
+using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using FactionColonies.util;
+using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RimWorld;
-using UnityEngine;
-using LudeonTK;
-using RimWorld.Planet;
 
 
 namespace FactionColonies

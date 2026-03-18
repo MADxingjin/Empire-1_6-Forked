@@ -1,10 +1,8 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -26,7 +24,7 @@ namespace FactionColonies
 
         [NoTranslate]
         public readonly string modId = "";
-        
+
         [NoTranslate]
         private readonly string introStringBase = "";
 
@@ -65,7 +63,7 @@ namespace FactionColonies
 
                 if (modContentPackCached == null)
                 {
-                    LogUtil.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", releaseDay + (releaseMonth*10) + (releaseYear*1000));
+                    LogUtil.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", releaseDay + (releaseMonth * 10) + (releaseYear * 1000));
                 }
 
                 return modContentPackCached;

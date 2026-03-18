@@ -622,7 +622,7 @@ namespace FactionColonies
 
             if (def == null)
                 return;
-            
+
             def.FilterResource(randomTitheFilter, faction.techLevel, this);
         }
         /// <summary>
@@ -681,7 +681,7 @@ namespace FactionColonies
                 filteredThingsForRandomTithes = new List<ThingDef>();
                 List<ThingDef> possibleThings = GenerateThingDefList();
 
-                foreach(ThingDef thingDef in possibleThings)
+                foreach (ThingDef thingDef in possibleThings)
                 {
                     if (randomTitheFilter.Allows(thingDef))
                     {
@@ -1102,7 +1102,7 @@ namespace FactionColonies
                         }
                         else
                         {
-                            for(int i = 0; i < randomTitheList.Count; i++)
+                            for (int i = 0; i < randomTitheList.Count; i++)
                             {
                                 LogUtil.Message($"  randomTitheList[{i}]: {randomTitheList[i].LabelCap}");
                             }

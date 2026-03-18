@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Verse.AI.Group;
 
@@ -874,14 +874,15 @@ namespace FactionColonies
         {
             loadID = FactionCache.FactionComp.GetNextEventID();
         }
-        
+
         /// <summary>
         /// Defines parameters of event with custom description
         /// </summary>
         /// <param name="f">FactionFC object</param>
         /// <param name="mapLocation">Location of the event object</param>
         /// <param name="timeToFinish">Time of event's completion</param>
-        public void DefineEvent(FactionFC f, int mapLocation, int timeToFinish) {
+        public void DefineEvent(FactionFC f, int mapLocation, int timeToFinish)
+        {
             this.hasCustomDescription = true;
             this.tickStarted = Find.TickManager.TicksGame;
             this.timeTillTrigger = Find.TickManager.TicksGame + timeToFinish;

@@ -1,6 +1,4 @@
-﻿using RimWorld;
-using Verse;
-using Verse.AI;
+﻿using Verse;
 using Verse.AI.Group;
 
 namespace FactionColonies
@@ -22,7 +20,7 @@ namespace FactionColonies
             Scribe_References.Look(ref settlement, "settlement");
             Scribe_Values.Look(ref delay, "delay");
         }
-        
+
         public override StateGraph CreateGraph()
         {
             StateGraph stateGraph = new StateGraph();
@@ -34,7 +32,7 @@ namespace FactionColonies
             LordToil idleToil = new LordToil_IdleNearby();
             stateGraph.AddToil(idleToil);
             stateGraph.StartingToil = idleToil;
-                
+
             Transition startAssault = new Transition(idleToil, lordToil);
             startAssault.AddTrigger(new Trigger_TicksPassed(500));
             stateGraph.AddTransition(startAssault);

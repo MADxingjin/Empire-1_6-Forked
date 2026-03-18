@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using FactionColonies;
-using FactionColonies.util;
 using FactionTerritories;
 using FactionTerritories.Vassalise;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
+using System.Reflection;
 using Verse;
 
 namespace FactionColonies.FTV

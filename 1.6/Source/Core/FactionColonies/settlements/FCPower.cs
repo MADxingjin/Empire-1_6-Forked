@@ -1,19 +1,13 @@
-﻿using System;
+﻿using RimWorld;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RimWorld;
 using UnityEngine;
 using Verse;
-using HarmonyLib;
-using Verse.AI;
 
 namespace FactionColonies
 {
     public class CompPowerEmpire : CompPowerPlant
     {
-        
+
 
         protected override float DesiredPowerOutput
         {
@@ -35,7 +29,8 @@ namespace FactionColonies
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             base.CompGetGizmosExtra();
-            if (this.parent.Faction == Faction.OfPlayer) {
+            if (this.parent.Faction == Faction.OfPlayer)
+            {
                 yield return new Command_Action
                 {
                     action = delegate ()

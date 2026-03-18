@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -27,7 +25,7 @@ namespace FactionColonies
 
         // Tynan made the definitions in Verse internal so we gotta get them here
         public static readonly Texture2D deleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
-        
+
         //test icons
         public static readonly Texture2D iconHappiness = ContentFinder<Texture2D>.Get("GUI/Happiness");
         public static readonly Texture2D iconLoyalty = ContentFinder<Texture2D>.Get("GUI/Loyalty");
@@ -36,7 +34,7 @@ namespace FactionColonies
         public static readonly Texture2D iconMilitary = ContentFinder<Texture2D>.Get("GUI/MilitaryLevel");
         public static readonly Texture2D iconCustomize = ContentFinder<Texture2D>.Get("GUI/customizebutton");
         public static readonly Texture2D iconUpgrade = ContentFinder<Texture2D>.Get("UI/Buttons/ReorderUp");
-        
+
         public static readonly Texture2D iconTrade = ContentFinder<Texture2D>.Get("UI/Commands/Trade");
 
 

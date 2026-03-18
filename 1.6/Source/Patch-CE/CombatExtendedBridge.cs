@@ -1,8 +1,8 @@
+using CombatExtended;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CombatExtended;
-using HarmonyLib;
 using UnityEngine;
 using Verse;
 

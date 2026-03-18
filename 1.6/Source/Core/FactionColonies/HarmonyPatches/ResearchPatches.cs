@@ -13,7 +13,7 @@ namespace FactionColonies
             fc.DirtyTechLevelCache();
             fc.roadBuilder.CheckForTechChanges();
 
-            foreach(WorldSettlementFC settlement in fc.settlements)
+            foreach (WorldSettlementFC settlement in fc.settlements)
             {
                 settlement.PrepareResources(fc.techLevel);
             }

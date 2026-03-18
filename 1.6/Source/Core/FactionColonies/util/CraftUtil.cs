@@ -1,10 +1,5 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace FactionColonies.util
@@ -75,7 +70,7 @@ namespace FactionColonies.util
             List<ThingDef> list = new List<ThingDef>();
             if (ThingIsStuffable(thing) && filterList.Count > 0)
             {
-                foreach(ThingDef possible in filterList)
+                foreach (ThingDef possible in filterList)
                 {
                     if (possible.IsStuff && possible.stuffProps.CanMake(thing))
                     {

@@ -1692,7 +1692,7 @@ namespace FactionColonies
         }
         public void AddResourcePools(List<ResourcePool> pools)
         {
-            foreach(ResourcePool pool in pools)
+            foreach (ResourcePool pool in pools)
             {
                 AddResourcePool(pool);
             }
@@ -1710,7 +1710,7 @@ namespace FactionColonies
 
         public IEnumerable<FloatMenuOption> GetFactionMenuResourcePoolFloatMenuOptions()
         {
-            foreach(ResourcePool pool in resourcePools)
+            foreach (ResourcePool pool in resourcePools)
             {
                 IEnumerable<FloatMenuOption> options = pool.resource.GetFactionMenuFloatMenuOptions(pool);
                 if (options != null)
@@ -1732,7 +1732,7 @@ namespace FactionColonies
 
         public void UpdateDailyResourcePools()
         {
-            foreach(ResourcePool pool in resourcePools)
+            foreach (ResourcePool pool in resourcePools)
             {
                 LogUtil.Message($"Daily ResourcePool update for resourceTypeDef {pool.resource.defName}. Pool size: {pool.pool}");
                 pool.resource.DailyUpdate(pool);

@@ -1,13 +1,9 @@
-using FactionColonies.util;
-using HarmonyLib;
 using LudeonTK;
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -49,7 +45,7 @@ namespace FactionColonies
             savedSquads.RemoveAll(squad => squad.name == name);
             File.Delete(GetSquadPath(name));
         }
-        
+
         public static void RemoveSquad(SavedSquadFC squad)
         {
             savedSquads.Remove(squad);
@@ -61,7 +57,7 @@ namespace FactionColonies
             savedSquads.RemoveAll(unit => unit.name == name);
             File.Delete(GetUnitPath(name));
         }
-        
+
         public static void RemoveUnit(SavedUnitFC unit)
         {
             savedUnits.Remove(unit);
@@ -73,7 +69,7 @@ namespace FactionColonies
         {
             if (Scribe.mode != LoadSaveMode.Inactive)
                 throw new Exception("Empire - Attempt to load saved military while scribe is active");
-            
+
             savedSquads.Clear();
             savedUnits.Clear();
             foreach (string path in Directory.EnumerateFiles(EmpireMilitarySquadFolder))
@@ -186,7 +182,7 @@ namespace FactionColonies
         public List<SavedThing> apparel;
         public XenotypeDef xenotype;
 
-        public SavedUnitFC() {}
+        public SavedUnitFC() { }
 
         public SavedUnitFC(MilUnitFC unit)
         {
@@ -245,7 +241,7 @@ namespace FactionColonies
         public string name;
         public List<SavedUnitFC> unitTemplates = new List<SavedUnitFC>();
         public List<int> units = new List<int>(30);
-        public SavedSquadFC() {}
+        public SavedSquadFC() { }
 
         public SavedSquadFC(MilSquadFC squad)
         {
@@ -253,7 +249,7 @@ namespace FactionColonies
 
             // Dont store blank units
             var squadTemplates = squad.units.Distinct().Where(u => !u.isBlank).ToList();
-            
+
             unitTemplates = squadTemplates.Select(unit => new SavedUnitFC(unit)).ToList();
             units = squad.units.Select(unit => squadTemplates.IndexOf(unit)).ToList();
         }
@@ -269,7 +265,7 @@ namespace FactionColonies
 
             foreach (int i in units)
             {
-                if(i == -1)
+                if (i == -1)
                     squad.units.Add(fc.militaryCustomizationUtil.blankUnit);
                 else
                     squad.units.Add(milUnits[i]);
@@ -296,7 +292,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref units, "units", LookMode.Value);
         }
     }
-    
+
     public struct SavedThing : IExposable
     {
         public ThingDef thing;

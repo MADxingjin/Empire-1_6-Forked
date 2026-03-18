@@ -1,14 +1,10 @@
-﻿using System;
+﻿using FactionColonies.util;
+using HarmonyLib;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using RimWorld;
 using Verse;
-using RimWorld.Planet;
-using FactionColonies.util;
-using HarmonyLib;
 
 namespace FactionColonies
 {
@@ -123,9 +119,7 @@ namespace FactionColonies
 
                 highlight = new Rect(name.x, name.y, time.x + time.width, eventHeight);
 
-
-                
-                if(i % 2 == 0)
+                if (i % 2 == 0)
                 {
                     Widgets.DrawHighlight(highlight);
                 }
@@ -136,7 +130,7 @@ namespace FactionColonies
                     if (evt.hasCustomDescription == false)
                     {
                         //If desc button clicked
-                        
+
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
                         if (!settlementString.NullOrEmpty())
                         {
@@ -146,19 +140,21 @@ namespace FactionColonies
                         {
                             Find.WindowStack.Add(new DescWindowFc(evt.def.desc));
                         }
-                    } else
+                    }
+                    else
                     {
                         //has custom description
                         Find.WindowStack.Add(new DescWindowFc(evt.customDescription));
                     }
                 }
                 //
-                if(Widgets.ButtonText(location, "Location".Translate().CapitalizeFirst()))
+                if (Widgets.ButtonText(location, "Location".Translate().CapitalizeFirst()))
                 {
-                    if(evt.hasDestination == true)
+                    if (evt.hasDestination == true)
                     {
                         Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.location)));
-                    } else
+                    }
+                    else
                     {
                         if (evt.settlementTraitLocations.Count > 0)
                         {
@@ -173,10 +169,11 @@ namespace FactionColonies
                             }
                             if (list.Count == 0) { list.Add(new FloatMenuOption("None".Translate(), null)); }
                             Find.WindowStack.Add(new FloatMenu(list));
-                                
-                        } else
+
+                        }
+                        else
                         {
-                           if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
+                            if (evt.def == FCEventDefOf.taxColony && evt.source != -1)
                             {
                                 Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.source)));
                             }
@@ -208,7 +205,7 @@ namespace FactionColonies
 
                 ScrollWindow(Event.current.delta.y);
             }
-            
+
         }
 
 
@@ -232,5 +229,5 @@ namespace FactionColonies
             Event.current.Use();
         }
 
-        }
     }
+}

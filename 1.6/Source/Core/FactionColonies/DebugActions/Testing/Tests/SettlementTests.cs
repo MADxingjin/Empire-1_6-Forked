@@ -1,5 +1,5 @@
-using System.Linq;
 using FactionColonies.util;
+using System.Linq;
 
 namespace FactionColonies
 {

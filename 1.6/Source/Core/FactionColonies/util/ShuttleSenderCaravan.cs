@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -15,7 +10,7 @@ namespace FactionColonies.util
 
         public ShuttleSenderCaravan(PlanetTile Tile, Caravan caravan, SettlementBuildingComp_Shuttles comp) : base(Tile, comp)
         {
-			this.caravan = caravan;
+            this.caravan = caravan;
         }
 
         public override bool ChoseWorldTarget(GlobalTargetInfo target)
@@ -44,5 +39,5 @@ namespace FactionColonies.util
                 comp.shuttleUsesRemaining -= cost;
             }
         }
-	}
+    }
 }

@@ -78,9 +78,9 @@ namespace FactionColonies
                     Widgets.DrawHighlight(row);
 
                 // Row layout: Icon | Info | Label | Cost
-                Rect iconRect  = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
-                Rect infoRect  = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
-                Rect costRect  = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
+                Rect iconRect = new Rect(row.x + margin, row.y, RowHeight, RowHeight);
+                Rect infoRect = new Rect(iconRect.xMax, row.y + 2, RowHeight - 4, RowHeight - 4);
+                Rect costRect = new Rect(row.xMax - margin - 70f, row.y, 60f, RowHeight);
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
                     costRect.x - infoRect.xMax - (margin * 2), RowHeight);
 

@@ -1,8 +1,8 @@
+using FactionColonies.util;
+using RimWorld.Planet;
 using System;
 using System.Linq;
-using FactionColonies.util;
 using UnityEngine;
-using RimWorld.Planet;
 using Verse;
 
 namespace FactionColonies
@@ -10,20 +10,20 @@ namespace FactionColonies
     public static class AccentUtil
     {
         // === Profit/Loss (Overview, Bills) ===
-        public static readonly Color Income  = new Color(0.2f, 0.85f, 0.3f);
+        public static readonly Color Income = new Color(0.2f, 0.85f, 0.3f);
         public static readonly Color Expense = new Color(1.0f, 0.35f, 0.3f);
 
         // === Military Status ===
-        public static readonly Color MilUnderAttack   = new Color(1.0f, 0.25f, 0.25f);
+        public static readonly Color MilUnderAttack = new Color(1.0f, 0.25f, 0.25f);
         public static readonly Color MilActiveMission = new Color(1.0f, 0.65f, 0.1f);
-        public static readonly Color MilCooldown      = new Color(1.0f, 0.85f, 0.1f);
-        public static readonly Color MilReady         = new Color(0.2f, 0.85f, 0.3f);
-        public static readonly Color MilInactive      = new Color(0.65f, 0.65f, 0.65f);
+        public static readonly Color MilCooldown = new Color(1.0f, 0.85f, 0.1f);
+        public static readonly Color MilReady = new Color(0.2f, 0.85f, 0.3f);
+        public static readonly Color MilInactive = new Color(0.65f, 0.65f, 0.65f);
 
         // === Stat Thresholds ===
-        public static readonly Color StatGood   = new Color(0.2f, 0.85f, 0.3f);
+        public static readonly Color StatGood = new Color(0.2f, 0.85f, 0.3f);
         public static readonly Color StatMedium = new Color(1f, 0.7f, 0.2f);
-        public static readonly Color StatBad    = new Color(1f, 0.35f, 0.3f);
+        public static readonly Color StatBad = new Color(1f, 0.35f, 0.3f);
 
         // === Generic Color settings ===
         public static readonly Color Military = new Color(1.0f, 0.25f, 0.25f);

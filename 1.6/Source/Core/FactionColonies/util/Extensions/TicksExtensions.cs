@@ -10,9 +10,9 @@ namespace FactionColonies.util
             string fractionHours = $"{ticks % GenDate.TicksPerHour / ((float)GenDate.TicksPerHour)}";
 
             if (fractionHours.Length > 3)
-            { 
-                fractionHours = fractionHours.Substring(2, 2); 
-            } 
+            {
+                fractionHours = fractionHours.Substring(2, 2);
+            }
             else if (fractionHours.Length == 3)
             {
                 fractionHours = fractionHours.Substring(2, 1) + "0";

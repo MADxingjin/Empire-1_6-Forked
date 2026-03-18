@@ -10,7 +10,7 @@ namespace FactionColonies
         {
             get
             {
-                return (LordToilData_ExitMap) data;
+                return (LordToilData_ExitMap)data;
             }
         }
 

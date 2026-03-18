@@ -1,8 +1,7 @@
+using RimWorld;
 using System;
 using System.Collections.Generic;
-using RimWorld;
 using Verse;
-using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -128,7 +127,7 @@ namespace FactionColonies
 
         /// <summary>Return extra deployment options when a settlement's main squad is already deployed. Null means none.</summary>
         public virtual IEnumerable<FloatMenuOption> GetExtraDeploymentOptions(FactionFC faction, WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp) => null;
-        
+
         /// <summary>Return additional description lines to append to the policy's tooltip.</summary>
         public virtual TaggedString GetDescription() => TaggedString.Empty;
 

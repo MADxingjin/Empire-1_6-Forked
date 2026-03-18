@@ -8,7 +8,7 @@
         RecoverWoundedAndLeave
     }
 
-public enum Operation
+    public enum Operation
     {
         Addition,
         Multiplication

@@ -1,4 +1,3 @@
-using FactionColonies.util;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +72,7 @@ namespace FactionColonies
             Rect leftPanel = new Rect(inRect.x, headerHeight, traitWidth, alertRect.y - headerHeight - margin);
 
             // Right panel
-            Rect centerPanel = new Rect(leftPanel.xMax + margin, headerHeight, inRect.width - (traitWidth*2) - (margin * 2), alertRect.y - headerHeight - margin);
+            Rect centerPanel = new Rect(leftPanel.xMax + margin, headerHeight, inRect.width - (traitWidth * 2) - (margin * 2), alertRect.y - headerHeight - margin);
 
             Rect rightPanel = new Rect(centerPanel.xMax + margin, headerHeight, traitWidth, leftPanel.height);
 

@@ -1,14 +1,10 @@
-﻿using System;
+﻿using FactionColonies.util;
+using HarmonyLib;
+using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RimWorld.Planet;
-using RimWorld;
-using UnityEngine;
 using Verse;
-using HarmonyLib;
-using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -39,7 +35,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref daysBetweenTicks, "daysBetweenTicks");
             Scribe_Values.Look(ref roadBuildingEnabled, "roadBuildingEnabled");
             Scribe_Values.Look(ref wasRoadBuildingDisabled, "wasRoadBuildingDisabled");
-            Scribe_Deep.Look(ref roadQueue, "roadQueue", new object[]{ this.roadDef, this.daysBetweenTicks });
+            Scribe_Deep.Look(ref roadQueue, "roadQueue", new object[] { this.roadDef, this.daysBetweenTicks });
         }
 
         public void FirstTick()
@@ -64,7 +60,7 @@ namespace FactionColonies
                 wasRoadBuildingDisabled = true;
                 return;
             }
-            
+
             if (!roadBuildingEnabled)
             {
                 wasRoadBuildingDisabled = true;
@@ -73,8 +69,8 @@ namespace FactionColonies
 
             // Every 20 ticks causes a slight stutter, but the game is still playable
             // TODO: Make this a config option
-            if(Find.TickManager.TicksGame % 20 == 0)
-            {                
+            if (Find.TickManager.TicksGame % 20 == 0)
+            {
                 FactionFC faction = FactionCache.FactionComp;
 
                 if (roadQueue == null)
@@ -99,7 +95,7 @@ namespace FactionColonies
                 }
 
                 roadQueue.ProcessOnePath();
-                
+
                 bool segmentBuilt = roadQueue.BuildRoadSegments();
             }
         }
@@ -125,7 +121,7 @@ namespace FactionColonies
 
         public FCRoadQueue CreateRoadQueue(bool logFailure = true)
         {
-            if (roadQueue != null) 
+            if (roadQueue != null)
             {
                 if (logFailure)
                 {
@@ -141,7 +137,7 @@ namespace FactionColonies
         public void CheckForTechChanges()
         {
             LogUtil.Message("CheckForTechChanges: Starting tech check...");
-            
+
             FactionFC faction = FactionCache.FactionComp;
             RoadDef def = this.roadDef;
             RoadDef oldDef = def;
@@ -207,8 +203,10 @@ namespace FactionColonies
         public List<PlanetTile> settlementsToTiles = new List<PlanetTile>();
         IEnumerator<FCRoadPath> roadPathIterator;
 
-        public RoadDef RoadDef {
-            get {
+        public RoadDef RoadDef
+        {
+            get
+            {
                 return roadDef;
             }
             set
@@ -326,17 +324,17 @@ namespace FactionColonies
             {
                 built |= path.BuildSegment(this.roadDef);
             }
-            if(built)
+            if (built)
             {
                 var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
                 Find.World.renderer.SetDirty<WorldDrawLayer_Roads>(mainPlanetLayer);
                 Find.World.renderer.SetDirty<WorldDrawLayer_Paths>(mainPlanetLayer);
-                
+
                 // Send blue notification when roads are built
                 string roadTypeName = this.roadDef?.LabelCap ?? "Road";
                 Find.LetterStack.ReceiveLetter(
-                    "Roads Built", 
-                    $"Your Empire settlements have constructed new {roadTypeName} segments connecting your territories.", 
+                    "Roads Built",
+                    $"Your Empire settlements have constructed new {roadTypeName} segments connecting your territories.",
                     LetterDefOf.PositiveEvent
                 );
             }
@@ -579,7 +577,7 @@ namespace FactionColonies
         /// <param name="roadDef">Road def.</param>
         public bool BuildSegment(RoadDef roadDef)
         {
-            start:
+        start:
             if (!this.Path.Found || this.IsCompleted)
                 return false;
 

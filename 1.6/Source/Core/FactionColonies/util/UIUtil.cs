@@ -29,7 +29,7 @@ namespace FactionColonies
         {
             bool hovered = !disabled && Mouse.IsOver(rect);
             float normalBg = highlighted ? 0.15f : 0.22f;
-            float hoverBg  = highlighted ? 0.28f : 0.35f;
+            float hoverBg = highlighted ? 0.28f : 0.35f;
             float bg = hovered ? hoverBg : normalBg;
             Widgets.DrawBoxSolid(rect, new Color(bg, bg, bg));
 

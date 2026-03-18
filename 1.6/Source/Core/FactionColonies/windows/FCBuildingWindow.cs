@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FactionColonies.util;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactionColonies.util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -185,7 +185,7 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
             Text.Font = GameFont.Tiny;
 
-            float buttonWidth = (FilterArea.width - (smallMargin * filterButtonsPerRow-1)) / filterButtonsPerRow;
+            float buttonWidth = (FilterArea.width - (smallMargin * filterButtonsPerRow - 1)) / filterButtonsPerRow;
             float buttonHeight = filterButtonHeight;
 
             for (int i = 0; i < filterSize; i++)
@@ -1211,12 +1211,13 @@ namespace FactionColonies
 
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
             {
-                if(building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
+                if (building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {
                     if (building.techLevel <= factionfc.techLevel)
                     {
                         if (building.applicableBiomes.Count == 0 || building.applicableBiomes.Any()
-                            && building.applicableBiomes.Contains(settlement.biome)){
+                            && building.applicableBiomes.Contains(settlement.biome))
+                        {
 
                             if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
                             {

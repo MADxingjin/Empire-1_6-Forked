@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
@@ -364,7 +363,7 @@ namespace FactionColonies
                     LogUtil.Warning($"Baseliner fallback also failed: {ex.Message}");
                 }
             }
-            
+
             // Fallback 2: Absolute minimal request - no faction, no xenotype, no violence requirement
             if (newPawn == null)
             {
@@ -388,7 +387,7 @@ namespace FactionColonies
                         allowAddictions: false
                     );
                     newPawn = PawnGenerator.GeneratePawn(fallbackRequest);
-                    
+
                     // Set the faction after generation
                     if (newPawn != null)
                     {
@@ -404,14 +403,14 @@ namespace FactionColonies
                     LogUtil.Error($"Critical - all pawn generation attempts failed: {ex.Message}");
                 }
             }
-            
+
             // Final check - if still null, we cannot proceed
             if (newPawn == null)
             {
                 LogUtil.Error("Critical error - could not generate any pawn for mercenary squad. Skipping this mercenary.");
                 return;
             }
-            
+
             newPawn.apparel?.DestroyAll();
             newPawn.equipment?.DestroyAllEquipment();
             merc.squad = this;
@@ -424,11 +423,11 @@ namespace FactionColonies
             foreach (Mercenary merc in mercenaries)
             {
                 if (merc?.pawn?.skills == null) continue;
-                
+
                 var shooting = merc.pawn.skills.GetSkill(SkillDefOf.Shooting);
                 var melee = merc.pawn.skills.GetSkill(SkillDefOf.Melee);
                 var medicine = merc.pawn.skills.GetSkill(SkillDefOf.Medicine);
-                
+
                 if (shooting != null) shooting.Level = Math.Min(level * 2, 20);
                 if (melee != null) melee.Level = Math.Min(level * 2, 20);
                 if (medicine != null) medicine.Level = Math.Min(level * 1, 20);
@@ -453,7 +452,7 @@ namespace FactionColonies
             PawnKindDef kindDef = merc?.pawn?.kindDef ?? PawnKindDefOf.Colonist;
             XenotypeDef xenotype = merc?.pawn?.genes?.Xenotype ?? XenotypeDefOf.Baseliner;
             CreateNewPawn(ref pawn2, kindDef, xenotype);
-            
+
             // Only replace if new pawn was successfully created
             if (pawn2?.pawn != null)
             {
@@ -519,7 +518,7 @@ namespace FactionColonies
                             break;
                         }
                     }
-                    
+
                     // Skip if we still don't have enough mercenaries
                     if (count >= mercenaries.Count || mercenaries[count]?.pawn == null)
                     {
@@ -542,7 +541,7 @@ namespace FactionColonies
                             LogUtil.Warning($"Failed to create replacement pawn for slot {count}.");
                         }
                     }
-                    
+
                     // Skip operations if pawn is null
                     if (mercenaries[count]?.pawn == null)
                     {

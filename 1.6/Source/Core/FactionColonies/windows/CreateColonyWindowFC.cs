@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using static UnityEngine.GridBrushBase;
 
 namespace FactionColonies
 {
@@ -55,7 +54,7 @@ namespace FactionColonies
                 return;
             }
             prodBoxHeight = faction.FactionResources.Count * 22 + 10;
-            windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight/8f), InitialSize.x, InitialSize.y);
+            windowRect = new Rect(UI.screenWidth - InitialSize.x - 5, (UI.screenHeight - InitialSize.y) / 2f - (UI.screenHeight / 8f), InitialSize.x, InitialSize.y);
             currentSettlementType = GetDefaultSettlementType();
             oldSettlementType = null;
         }
@@ -107,7 +106,7 @@ namespace FactionColonies
             TextAnchor anchorBefore = Text.Anchor;
 
             CalculateSettlementCreationCost();
-            
+
             //Draw Label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -135,7 +134,7 @@ namespace FactionColonies
 
             //Lower menu
             Rect prodBox = new Rect(5, productionLabelBox.yMax + verticalMargins, 258, prodBoxHeight); //5, 210, 258, 220
-            Widgets.DrawMenuSection(prodBox); 
+            Widgets.DrawMenuSection(prodBox);
 
             //Draw production
             DrawProduction(prodBox);
@@ -246,7 +245,7 @@ namespace FactionColonies
 
             settlementCostModified = settlementCreationCost != (int)baseCost;
         }
-        
+
         private void DrawProduction(Rect prodBox)
         {
             Text.Font = GameFont.Small;
@@ -296,7 +295,7 @@ namespace FactionColonies
                     else
                     {
                         double baseProduction = biomeRes.additive + settleRes.additive + titheType.GetExtensionAdditives(currentTileSelected);
-                        double baseMultiplier = Math.Round(biomeRes.multiplier * settleRes.multiplier * titheType.GetExtensionMultipliers(currentTileSelected),2);
+                        double baseMultiplier = Math.Round(biomeRes.multiplier * settleRes.multiplier * titheType.GetExtensionMultipliers(currentTileSelected), 2);
                         double total = Math.Round(baseProduction * baseMultiplier, 2);
 
                         Widgets.Label(baseRect, (baseProduction).ToString());

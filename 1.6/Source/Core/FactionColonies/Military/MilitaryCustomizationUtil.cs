@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
 using Verse;
-using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -87,14 +86,14 @@ namespace FactionColonies
                 {
                     blankUnit = new MilUnitFC(true);
                 }
-                
+
                 if (squads == null) return;
-                
+
                 LogUtil.Message("MilitaryCustomizationUtil: checking for errors on tick " + Find.TickManager.TicksGame);
                 foreach (MilSquadFC squad in squads)
                 {
                     if (squad?.units == null) continue;
-                    
+
                     bool changed = false;
                     for (int count = 0; count < 30 && count < squad.units.Count; count++)
                     {

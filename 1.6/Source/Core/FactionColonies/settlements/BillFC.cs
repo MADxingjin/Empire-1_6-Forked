@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using FactionColonies.util;
-using RimWorld;
+﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace FactionColonies
@@ -61,7 +60,7 @@ namespace FactionColonies
         //internal variables
         public int loadID;
         public int dueTick;
-        
+
 
         //ref
         public WorldSettlementFC settlement;
@@ -73,11 +72,11 @@ namespace FactionColonies
         {
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_Values.Look(ref dueTick, "dueTick", -1);
-            
+
 
             Scribe_References.Look(ref settlement, "settlement");
             Scribe_Deep.Look(ref taxes, "taxes");
-            
+
         }
 
         public string GetUniqueLoadID()

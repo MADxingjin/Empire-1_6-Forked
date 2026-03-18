@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
-using Verse.Noise;
 
 namespace FactionColonies
 {
@@ -136,7 +135,7 @@ namespace FactionColonies
         public static void PlaceThing(Thing thing)
         {
             Map taxMap = GetActiveTaxDeliveryMap();
-            
+
             IntVec3 intvec;
             if (CheckForActiveTaxDeliverySpot(out intvec, out taxMap))
             {
@@ -283,12 +282,12 @@ namespace FactionColonies
             raceChoice = faction.RandomPawnKind();
 
             pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: raceChoice,
-                faction: FactionCache.PlayerColonyFaction, context: PawnGenerationContext.NonPlayer, tile: -1, 
-                forceGenerateNewPawn: false, allowDead: false, allowDowned: false, 
-                canGeneratePawnRelations: false, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0, 
-                forceAddFreeWarmLayerIfNeeded: false, allowGay: false, allowFood: false, allowAddictions: false, 
-                inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, 
-                worldPawnFactionDoesntMatter: false, biocodeWeaponChance: 0, extraPawnForExtraRelationChance: null, 
+                faction: FactionCache.PlayerColonyFaction, context: PawnGenerationContext.NonPlayer, tile: -1,
+                forceGenerateNewPawn: false, allowDead: false, allowDowned: false,
+                canGeneratePawnRelations: false, mustBeCapableOfViolence: true, colonistRelationChanceFactor: 0,
+                forceAddFreeWarmLayerIfNeeded: false, allowGay: false, allowFood: false, allowAddictions: false,
+                inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false,
+                worldPawnFactionDoesntMatter: false, biocodeWeaponChance: 0, extraPawnForExtraRelationChance: null,
                 relationWithExtraPawnChanceFactor: 0));
             pawn.equipment.DestroyAllEquipment();
             pawn.apparel.DestroyAll();
@@ -338,7 +337,7 @@ namespace FactionColonies
             foreach (Map map in Find.Maps)
             {
                 if (!map.IsPlayerHome) continue;
-                
+
                 foreach (Building building in map.listerBuildings.allBuildingsColonist)
                 {
                     if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
@@ -347,7 +346,7 @@ namespace FactionColonies
                     }
                 }
             }
-            
+
             // Fallback to existing tax map logic
             return FactionCache.FactionComp.TaxMap;
         }
@@ -358,7 +357,7 @@ namespace FactionColonies
             foreach (Map map in Find.Maps)
             {
                 if (!map.IsPlayerHome) continue;
-                
+
                 foreach (Building building in map.listerBuildings.allBuildingsColonist)
                 {
                     if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
@@ -369,7 +368,7 @@ namespace FactionColonies
                     }
                 }
             }
-            
+
             dropSpot = IntVec3.Invalid;
             taxMap = null;
             return false;

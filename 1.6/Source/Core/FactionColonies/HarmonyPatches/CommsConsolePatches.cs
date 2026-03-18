@@ -5,8 +5,8 @@ using Verse;
 namespace FactionColonies
 {
     /// <summary>
- /// This patch disables the military aid a player can receive through the comms console for our faction
- /// </summary>
+    /// This patch disables the military aid a player can receive through the comms console for our faction
+    /// </summary>
     [HarmonyPatch(typeof(FactionDialogMaker), "RequestMilitaryAidOption")]
     class DisableMilitaryAid
     {

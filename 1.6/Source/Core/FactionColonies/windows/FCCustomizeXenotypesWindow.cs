@@ -2,7 +2,6 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -111,7 +110,7 @@ namespace FactionColonies
 
             if (allRaces.Count > 1)
             {
-                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax, (boundingBox.width - (margin*2)) / 2, availHeight);
+                Rect xenoBox = new Rect(boundingBox.x, subHeader.yMax, (boundingBox.width - (margin * 2)) / 2, availHeight);
                 Rect raceBox = new Rect(xenoBox.xMax + (margin * 2), xenoBox.y, xenoBox.width, availHeight);
                 Widgets.DrawLineVertical(xenoBox.xMax + margin, xenoBox.y, xenoBox.height);
                 DoXenotypeSelection(xenoBox);
@@ -130,17 +129,17 @@ namespace FactionColonies
         private void DoXenotypeSelection(Rect boundingBox)
         {
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, bigRowHeight);
-            Rect headerText = new Rect (header.x + smallMargin, header.y, header.width - (smallMargin * 2), header.height);
+            Rect headerText = new Rect(header.x + smallMargin, header.y, header.width - (smallMargin * 2), header.height);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(header);
             Widgets.Label(headerText, "XenotypeSelection".Translate());
 
             float bottomY = boundingBox.yMax;
-            if(filter.XenoCompleteWeight == 0)
+            if (filter.XenoCompleteWeight == 0)
             {
                 Rect errorBox = new Rect(boundingBox.x, boundingBox.yMax - bigRowHeight, boundingBox.width, bigRowHeight);
-                Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y+smallMargin, errorBox.width - (smallMargin * 2), errorBox.height - smallMargin);
+                Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y + smallMargin, errorBox.width - (smallMargin * 2), errorBox.height - smallMargin);
                 TaggedString errorText = "XenotypeWeightError".Translate();
                 errorText = errorText.Colorize(Color.red);
 
@@ -217,7 +216,7 @@ namespace FactionColonies
                 Rect row = new Rect(innerScrollBox.x, innerScrollBox.y + (i * rowHeight), innerScrollBox.width, rowHeight);
                 Rect icon = new Rect(row.x + margin, row.y, rowHeight, rowHeight);
                 Rect percentLabel = new Rect(row.xMax - 60f, row.y, 60f, rowHeight);
-                Rect inputBox = new Rect(percentLabel.x - 80f, row.y + 2, 80f, rowHeight-4);
+                Rect inputBox = new Rect(percentLabel.x - 80f, row.y + 2, 80f, rowHeight - 4);
                 Rect label = new Rect(icon.x + margin, row.y, inputBox.x - icon.xMax, rowHeight);
                 if (i % 2 == 0)
                 {
@@ -267,7 +266,7 @@ namespace FactionColonies
                     {
                         Widgets.Label(label, xenotype.name);
                     }
-                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype.name)*100, 2).ToString() + "%");
+                    Widgets.Label(percentLabel, Math.Round(filter.GetCustomXenotypeChance(xenotype.name) * 100, 2).ToString() + "%");
 
                     float weight = filter.GetCustomXenotypeWeight(xenotype.name);
                     float oldWeight = weight;
@@ -375,7 +374,7 @@ namespace FactionColonies
                 //  doing so would've been easier than writing this comment. Hmm. Oh well.
                 //Widgets.Label(icon, new GUIContent(race.uiIcon));
                 Widgets.Label(label, race.LabelCap);
-                Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race)*100, 2).ToString() + "%");
+                Widgets.Label(percentLabel, Math.Round(filter.GetRaceChance(race) * 100, 2).ToString() + "%");
                 TooltipHandler.TipRegion(label, race.description);
 
                 float weight = filter.GetRaceWeight(race);

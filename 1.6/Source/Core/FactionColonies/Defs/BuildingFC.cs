@@ -2,7 +2,6 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -67,11 +66,11 @@ namespace FactionColonies
             get
             {
                 if (iconLoaded != null) return iconLoaded;
-                
-                if (!iconPath.NullOrEmpty()) 
+
+                if (!iconPath.NullOrEmpty())
                 {
                     iconLoaded = ContentFinder<Texture2D>.Get(iconPath);
-                } 
+                }
                 else
                 {
                     LogUtil.Error("Failed to load icon for building: " + LabelCap + " at " + (iconPath ?? "nullPath") + "!");
@@ -159,7 +158,7 @@ namespace FactionColonies
     public static class FCRoadsDef
     {
         public static RoadDef DirtRoad;
-        public static RoadDef DirtPath;        
+        public static RoadDef DirtPath;
 
         public static object RoadDef { get; internal set; }
     }

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactionColonies.util;
+using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RimWorld;
-using UnityEngine;
 
 namespace FactionColonies
 {

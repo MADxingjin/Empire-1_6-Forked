@@ -1,5 +1,4 @@
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -640,7 +639,7 @@ namespace FactionColonies.util
             {
                 securityGuardsByXenotype[xenotype] = new SecurityGuardList();
             }
-            
+
             if (FactionCache.XenotypeIsNonViolent(xenotype))
             {
                 // Find suitable security guard animals
@@ -668,7 +667,7 @@ namespace FactionColonies.util
             foreach (string xenoName in CustomXenotypeWeights.Keys)
             {
                 SetupSecurityGuards(xenoName);
-            }    
+            }
         }
 
         public static bool NameNeedsSecurityGuards(string name)

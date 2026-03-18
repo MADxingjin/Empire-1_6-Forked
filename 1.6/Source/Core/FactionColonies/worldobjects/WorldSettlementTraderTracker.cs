@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 using RimWorld;
 using RimWorld.Planet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -37,7 +37,7 @@ namespace FactionColonies
                             commonalityMultFromPopulationIntent = kind.commonalityMultFromPopulationIntent,
                             hideThingsNotWillingToTrade = true
                         };
-                        foreach (StockGenerator generator in 
+                        foreach (StockGenerator generator in
                             kind.stockGenerators.Where(generator => !generator.GetType().Name.Equals("StockGenerator_Techprints")))
                         {
                             temp.stockGenerators.Add(new ColonyStockGenerator(generator));
@@ -54,7 +54,7 @@ namespace FactionColonies
         {
             baseTraderKinds = null;
         }
-        
+
         public WorldSettlementFC settlement;
         private ThingOwner<Thing> stock;
         private int lastStockGenerationTicks = -1;
@@ -98,8 +98,8 @@ namespace FactionColonies
 
         public virtual string TraderName => settlement.Faction == null
             ? settlement.LabelCap
-            : (string) "SettlementTrader".Translate((NamedArgument) settlement.LabelCap,
-                (NamedArgument) settlement.Faction.Name);
+            : (string)"SettlementTrader".Translate((NamedArgument)settlement.LabelCap,
+                (NamedArgument)settlement.Faction.Name);
 
         private bool HasStockTraderKindWillTrade => stock == null || stock.InnerListForReading.Any(x => TraderKind.WillTrade(x.def));
 
