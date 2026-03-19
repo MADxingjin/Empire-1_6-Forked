@@ -141,6 +141,18 @@ namespace FactionColonies
         {
             return GetModExtension<SettlementTypeExtension>().GetTaxDeliveryMode(canUseShuttle, sourceTile);
         }
+        public bool IsInList(List<WorldSettlementDef> deflist)
+        {
+            if (deflist.Contains(this))
+            {
+                return true;
+            }
+            else if (!(baseSettlementType is null))
+            {
+                return baseSettlementType.IsInList(deflist);
+            }
+            return false;
+        }
 
         public override void ResolveReferences()
         {

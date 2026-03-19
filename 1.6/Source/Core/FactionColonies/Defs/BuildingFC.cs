@@ -104,13 +104,7 @@ namespace FactionColonies
 
         private bool MatchesAnySettlementType(List<WorldSettlementDef> list, WorldSettlementDef settlement)
         {
-            WorldSettlementDef current = settlement;
-            while (current != null)
-            {
-                if (list.Contains(current)) return true;
-                current = current.baseSettlementType;
-            }
-            return false;
+            return settlement.IsInList(list);
         }
 
         public override IEnumerable<string> ConfigErrors()
