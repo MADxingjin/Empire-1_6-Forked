@@ -16,7 +16,7 @@ namespace FactionColonies
 
     class PatchNotesDisplayWindow : Window
     {
-        public override Vector2 InitialSize => new Vector2(750f + (StandardMargin * 2), 595f + (StandardMargin * 2));
+        public override Vector2 InitialSize => new Vector2(750f + (StandardMargin * 2), 750f + (StandardMargin * 2));
 
         private const float HeaderHeight = 45f;
         private const float TitleBarHeight = 30f;
@@ -27,8 +27,11 @@ namespace FactionColonies
         private const float DateWidth = 90f;
         private const float IconSize = 45f;
         private const float LinkButtonSize = 24f;
+        private const float BannerHeight = 120f;
 
         private static readonly List<PatchNoteDef> patchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.ListFullCopy();
+
+        private Texture2D bannerImage;
 
         private readonly string title = "FCPatchNotesWindowTitle".Translate();
 
@@ -83,14 +86,17 @@ namespace FactionColonies
         public override void DoWindowContents(Rect inRect)
         {
             Rect titleRect = new Rect(inRect.x + Margin, inRect.y, inRect.width - Margin * 2, TitleBarHeight);
-            float contentTop = inRect.y + TitleBarHeight + DividerPad;
-            float contentHeight = inRect.height - TitleBarHeight - DividerPad;
+            float bannerTop = inRect.y + TitleBarHeight + DividerPad;
+            Rect bannerRect = new Rect(inRect.x + Margin, bannerTop, inRect.width - Margin * 2, BannerHeight);
+            float contentTop = bannerTop + BannerHeight + Margin;
+            float contentHeight = inRect.height - (contentTop - inRect.y);
             Rect contentPanel = new Rect(inRect.x + Margin, contentTop, inRect.width - Margin * 2, contentHeight);
 
             FixScrollingBug();
             CalculateScrollViewSize();
             DrawTitle(titleRect);
             DrawHorizontalDivider(inRect);
+            DrawBanner(bannerRect);
             DrawPatchNotes(contentPanel);
         }
 
@@ -148,6 +154,18 @@ namespace FactionColonies
             float lineY = inRect.y + TitleBarHeight + (DividerPad * 0.5f) - 1f;
             Widgets.DrawLineHorizontal(inRect.x + Margin, lineY, inRect.width - Margin * 2);
             ResetTextAndColor();
+        }
+
+        private void DrawBanner(Rect bannerRect)
+        {
+            if (bannerImage == null)
+            {
+                bannerImage = ContentFinder<Texture2D>.Get("UI/Banners/Empire", false);
+            }
+            if (bannerImage != null)
+            {
+                GUI.DrawTexture(bannerRect, bannerImage, ScaleMode.ScaleToFit);
+            }
         }
 
         private void DrawPatchNotes(Rect panelRect)
