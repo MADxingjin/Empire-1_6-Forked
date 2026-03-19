@@ -19,7 +19,7 @@ namespace FactionColonies.KCSG
     {
         static KCSGCompatInit()
         {
-            new Harmony("com.Saakra.Empire.KCSG").PatchAll(Assembly.GetExecutingAssembly());
+            new Harmony("com.Matathias.Empire.KCSG").PatchAll(Assembly.GetExecutingAssembly());
             LogUtil.MessageForce("KCSG compatibility module loaded.");
         }
     }
