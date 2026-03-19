@@ -124,7 +124,7 @@ namespace FactionColonies
         public static double loyaltyBaseLost = 0;
         public static double happinessBaseGain = 1;
         public static double happinessBaseLost = 0;
-        public static double prosperityBaseRecovery = 1;
+        public static double prosperityDriftRate = 1;
         public static int productionResearchBase = 100;
         public static double militaryAnimalCostMultiplier = 1.5;
         public static double militaryRaceCostMultiplier = 0.075;

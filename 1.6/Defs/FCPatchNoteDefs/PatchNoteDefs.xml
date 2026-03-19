@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_114_0</defName>
+		<label>Prosperity Change</label>
+		<description>Changes how settlement prosperity is handled.</description>
+
+		<major>0</major>
+		<minor>114</minor>
+		<patch>0</patch>
+
+		<releaseDay>19</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Settlement prosperity now targets the average value of happiness, loyalty, and (inverted) unrest. Prosperity will slowly drift towards this value.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Prosperity Change</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_113_0</defName>
 		<label>Late Payments</label>
 		<description>Small update to late payments to make them more visible.</description>
