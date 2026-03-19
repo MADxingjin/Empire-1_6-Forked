@@ -53,6 +53,11 @@ namespace FactionColonies
         public string Title => $"[{ModName}] {label} {VersionNumber}";
 
         /// <summary>
+        /// Short title without mod name prefix: "Prosperity Change 0.114.00"
+        /// </summary>
+        public string ShortTitle => $"{label} {VersionNumber}";
+
+        /// <summary>
         /// Returns the ModContentPack assosiated with the given ModId
         /// </summary>
         public ModContentPack ModContentPack
@@ -215,6 +220,20 @@ namespace FactionColonies
         public DateTime ReleaseDate => new DateTime(releaseYear, releaseMonth, releaseDay);
 
         public string CompletePatchNotesString => $"{description}\n\n{PatchNotesIntroString}\n{PatchNotesFormatted}\n\n{AuthorLine}{(additionalNotes.NullOrEmpty() ? "" : "\n" + AdditionalNotesFormatted)}";
+
+        /// <summary>
+        /// Compact body text for the patch notes window. Uses shorter labels than CompletePatchNotesString.
+        /// </summary>
+        public string CompactBodyString
+        {
+            get
+            {
+                string result = description + "\n\nChanges:\n" + PatchNotesFormatted + "\n\nContributors: " + AuthorsFormatted;
+                if (!additionalNotes.NullOrEmpty())
+                    result += "\n" + AdditionalNotesFormatted;
+                return result;
+            }
+        }
 
         /// <summary>
         /// Clears the cached data of this def

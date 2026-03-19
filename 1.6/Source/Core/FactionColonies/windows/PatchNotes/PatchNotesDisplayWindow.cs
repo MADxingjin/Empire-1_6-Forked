@@ -1,7 +1,6 @@
 using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -17,7 +16,7 @@ namespace FactionColonies
 
     class PatchNotesDisplayWindow : Window
     {
-        public override Vector2 InitialSize => new Vector2(1200f + (StandardMargin * 2), 595f + (StandardMargin * 2));
+        public override Vector2 InitialSize => new Vector2(750f + (StandardMargin * 2), 595f + (StandardMargin * 2));
 
         private const float HeaderHeight = 45f;
         private const float TitleBarHeight = 30f;
@@ -33,30 +32,22 @@ namespace FactionColonies
 
         private readonly string title = "FCPatchNotesWindowTitle".Translate();
 
-        // Left panel state
+        // Scroll state
         private HashSet<int> expandedDefs = new HashSet<int>();
         private Dictionary<int, float> expandedHeights = new Dictionary<int, float>();
-        private int selectedDef = -1;
         private bool shouldRefreshHeight = true;
         private float scrollViewHeight = 0f;
         private Vector2 patchNoteScrollPos = new Vector2();
 
-        // Right panel state
-        private int displayedImage = -1;
-        private Vector2 imageDescScrollPos = new Vector2();
-
         // Scrolling bug fix
         private bool firstRun = true;
         private bool fixDone = false;
-
-        private Texture2D defaultImage;
 
         // Badge colors
         private static readonly Color BadgeColorMajor = new Color(0.85f, 0.65f, 0.13f);
         private static readonly Color BadgeColorMinor = new Color(0.3f, 0.5f, 0.9f);
         private static readonly Color BadgeColorHotfix = new Color(0.9f, 0.2f, 0.2f);
         private static readonly Color BadgeColorPatch = new Color(0.5f, 0.5f, 0.5f);
-        private static readonly Color OrangeColor = Color.Lerp(Color.yellow, Color.red, 0.5f);
 
         public PatchNotesDisplayWindow()
         {
@@ -71,12 +62,6 @@ namespace FactionColonies
                 {
                     expandedDefs.Add(i);
                 }
-            }
-
-            // Default right panel to newest entry
-            if (patchNoteDefs.Count > 0)
-            {
-                selectedDef = 0;
             }
         }
 
@@ -97,20 +82,16 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-            // Compute layout from inRect
-            float dividerX = inRect.width * 0.55f;
             Rect titleRect = new Rect(inRect.x + Margin, inRect.y, inRect.width - Margin * 2, TitleBarHeight);
             float contentTop = inRect.y + TitleBarHeight + DividerPad;
             float contentHeight = inRect.height - TitleBarHeight - DividerPad;
-            Rect leftPanel = new Rect(inRect.x + Margin, contentTop, dividerX - Margin * 2, contentHeight);
-            Rect rightPanel = new Rect(dividerX + DividerPad, contentTop, inRect.width - dividerX - DividerPad - Margin, contentHeight);
+            Rect contentPanel = new Rect(inRect.x + Margin, contentTop, inRect.width - Margin * 2, contentHeight);
 
             FixScrollingBug();
-            CalculateScrollViewSize(leftPanel.width - 17f);
+            CalculateScrollViewSize();
             DrawTitle(titleRect);
-            DrawDividers(inRect, dividerX);
-            DrawPatchNotes(leftPanel);
-            DrawImageContent(rightPanel);
+            DrawHorizontalDivider(inRect);
+            DrawPatchNotes(contentPanel);
         }
 
         private void FixScrollingBug()
@@ -138,7 +119,7 @@ namespace FactionColonies
             if (patchNoteDefs.Count > 0)
             {
                 PatchNoteDef anyDef = patchNoteDefs[0];
-                float startX = titleRect.xMax - TitleBarHeight; // leave room for close button
+                float startX = titleRect.xMax - TitleBarHeight;
                 for (int i = anyDef.Links.Count - 1; i >= 0; i--)
                 {
                     startX -= LinkButtonSize + Margin;
@@ -161,12 +142,11 @@ namespace FactionColonies
             ResetTextAndColor();
         }
 
-        private void DrawDividers(Rect inRect, float dividerX)
+        private void DrawHorizontalDivider(Rect inRect)
         {
             GUI.color = Color.gray;
             float lineY = inRect.y + TitleBarHeight + (DividerPad * 0.5f) - 1f;
             Widgets.DrawLineHorizontal(inRect.x + Margin, lineY, inRect.width - Margin * 2);
-            Widgets.DrawLineVertical(dividerX + DividerPad * 0.5f, lineY, inRect.height - TitleBarHeight - DividerPad * 0.5f);
             ResetTextAndColor();
         }
 
@@ -184,7 +164,6 @@ namespace FactionColonies
                 PatchNoteDef def = patchNoteDefs[i];
                 bool isExpanded = expandedDefs.Contains(i);
                 bool isNew = def.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch);
-                bool isSelected = (i == selectedDef);
 
                 // --- Header ---
                 Rect headerRect = new Rect(0f, curY, scrollContentWidth, HeaderHeight);
@@ -194,10 +173,6 @@ namespace FactionColonies
                     Widgets.DrawHighlight(headerRect);
                 else
                     Widgets.DrawLightHighlight(headerRect);
-
-                // Selection highlight
-                if (isSelected)
-                    Widgets.DrawHighlightSelected(headerRect);
 
                 // New/unread border
                 if (isNew)
@@ -223,10 +198,10 @@ namespace FactionColonies
 
                 // Title (between badge and date)
                 float titleX = badgeRect.xMax + Margin;
-                Rect titleRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - Margin, HeaderHeight);
+                Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - Margin, HeaderHeight);
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(titleRect, def.Title);
+                Widgets.Label(titleLabelRect, def.ShortTitle);
                 ResetTextAndColor();
 
                 // Click handling
@@ -243,9 +218,6 @@ namespace FactionColonies
                         expandedDefs.Add(i);
                         SoundDefOf.TabOpen.PlayOneShotOnCamera();
                     }
-                    selectedDef = i;
-                    displayedImage = -1;
-                    imageDescScrollPos = new Vector2();
                     shouldRefreshHeight = true;
                 }
 
@@ -255,7 +227,7 @@ namespace FactionColonies
                 if (isExpanded)
                 {
                     Text.Font = GameFont.Small;
-                    string bodyText = def.CompletePatchNotesString;
+                    string bodyText = def.CompactBodyString;
                     float bodyWidth = scrollContentWidth - Margin * 4f;
                     Rect bodyRect = new Rect(Margin * 2f, curY, bodyWidth, 100f);
                     Widgets.LabelCacheHeight(ref bodyRect, bodyText);
@@ -304,133 +276,7 @@ namespace FactionColonies
             ResetTextAndColor();
         }
 
-        private void DrawImageContent(Rect panelRect)
-        {
-            Widgets.DrawBox(panelRect);
-
-            float imageHeight = panelRect.height * 0.5f;
-            Rect imageArea = new Rect(panelRect.x + Margin, panelRect.y + Margin, panelRect.width - Margin * 2, imageHeight);
-            Rect descArea = new Rect(panelRect.x + Margin, imageArea.yMax + Margin, panelRect.width - Margin * 2, panelRect.height - imageHeight - Margin * 3);
-
-            Widgets.DrawLightHighlight(descArea);
-
-            if (selectedDef == -1 || patchNoteDefs.Count == 0)
-            {
-                DrawImageContentMissing(imageArea, descArea, "FCSelectPatchNotes".Translate(), OrangeColor);
-            }
-            else
-            {
-                DrawImageContentOfDef(imageArea, descArea);
-            }
-        }
-
-        private void DrawImageContentOfDef(Rect imageArea, Rect descArea)
-        {
-            PatchNoteDef def = patchNoteDefs[selectedDef];
-            List<Texture2D> patchNoteImages = def.PatchNoteImages;
-
-            if (patchNoteImages.NullOrEmpty())
-            {
-                DrawImageContentMissing(imageArea, descArea, "FCPatchNotesImagesMissing".Translate(), OrangeColor);
-            }
-            else
-            {
-                displayedImage = displayedImage == -1 ? 0 : displayedImage;
-                Texture2D tex = patchNoteImages[displayedImage];
-                GUI.DrawTexture(imageArea, tex, ScaleMode.ScaleToFit);
-
-                DrawImageSelectors(imageArea, patchNoteImages.Count - 1);
-
-                // Tooltip for zoom
-                Rect tooltipRect = new Rect(imageArea);
-                if (displayedImage == 0)
-                {
-                    tooltipRect.x += 50f;
-                    tooltipRect.width -= 50f;
-                }
-                if (displayedImage == patchNoteImages.Count - 1)
-                {
-                    tooltipRect.width -= 50f;
-                }
-                TooltipHandler.TipRegion(tooltipRect, "FCPatchNotesImageZoomTooltip".Translate());
-                if (Widgets.ButtonInvisible(tooltipRect))
-                {
-                    Find.WindowStack.Add(new ImageViewerForPatchNoteDefs(def, displayedImage));
-                }
-
-                // Description
-                Text.Font = GameFont.Small;
-                Widgets.LabelScrollable(descArea.ContractedBy(Margin), def.PatchNoteImageDescriptions[displayedImage], ref imageDescScrollPos);
-            }
-
-            ResetTextAndColor();
-        }
-
-        private void DrawImageSelectors(Rect imageArea, int max)
-        {
-            Rect lastBtn = new Rect(imageArea.x, imageArea.y, 50f, imageArea.height);
-            Rect nextBtn = new Rect(imageArea.xMax - 50f, imageArea.y, 50f, imageArea.height);
-
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Medium;
-
-            DrawImageSelector(nextBtn, ">", () => displayedImage < max, () => displayedImage++);
-            DrawImageSelector(lastBtn, "<", () => displayedImage > 0, () => displayedImage--);
-
-            ResetTextAndColor();
-        }
-
-        private void DrawImageSelector(Rect buttonRect, string buttonLabel, Func<bool> predicate, Action action)
-        {
-            if (!predicate()) return;
-
-            Color guiColor = Color.black;
-            guiColor.a = Mouse.IsOver(buttonRect) ? 0.8f : 0.3f;
-            Widgets.DrawBoxSolid(buttonRect, guiColor);
-
-            GUI.color = Color.white;
-            if (!Mouse.IsOver(buttonRect))
-            {
-                Color faded = GUI.color;
-                faded.a = 0.3f;
-                GUI.color = faded;
-            }
-
-            if (Widgets.ButtonInvisible(buttonRect))
-            {
-                action();
-                SoundDefOf.Click.PlayOneShotOnCamera();
-                imageDescScrollPos = new Vector2();
-            }
-
-            Widgets.Label(buttonRect, buttonLabel);
-            ResetTextAndColor();
-        }
-
-        private void DrawImageContentMissing(Rect imageArea, Rect descArea, string reason, Color reasonColor)
-        {
-            if (DefaultImage != null)
-            {
-                GUI.DrawTexture(imageArea, DefaultImage, ScaleMode.ScaleToFit);
-                Text.Anchor = TextAnchor.UpperCenter;
-                Text.Font = GameFont.Small;
-                GUI.color = reasonColor;
-                Widgets.Label(descArea.ContractedBy(Margin), reason);
-            }
-            else
-            {
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Text.Font = GameFont.Medium;
-                GUI.color = reasonColor;
-                Widgets.DrawBoxSolid(imageArea, Color.black);
-                Widgets.Label(imageArea, reason);
-            }
-
-            displayedImage = -1;
-            ResetTextAndColor();
-        }
-
-        private void CalculateScrollViewSize(float contentWidth)
+        private void CalculateScrollViewSize()
         {
             if (!shouldRefreshHeight) return;
             shouldRefreshHeight = false;
@@ -445,7 +291,7 @@ namespace FactionColonies
                     if (expandedHeights.TryGetValue(i, out bodyH))
                         total += bodyH + Margin;
                     else
-                        total += 200f + Margin; // estimate for not-yet-measured
+                        total += 200f + Margin;
                 }
             }
 
@@ -457,19 +303,6 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
-        }
-
-        private Texture2D DefaultImage
-        {
-            get
-            {
-                if (defaultImage == null)
-                {
-                    defaultImage = ContentFinder<Texture2D>.Get("UI/Banners/Empire", false) ??
-                                  ContentFinder<Texture2D>.Get("GUI/questionmark", false);
-                }
-                return defaultImage;
-            }
         }
     }
 }
