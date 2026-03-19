@@ -159,6 +159,23 @@ namespace FactionColonies
             return false;
         }
 
+        /// <summary>
+        /// Returns the depth at which this def matches a list entry, walking baseSettlementType.
+        /// 0 = direct match on self, 1 = match on parent, 2 = grandparent, etc.
+        /// Returns -1 if no match found.
+        /// </summary>
+        public int DepthInList(List<WorldSettlementDef> deflist)
+        {
+            if (deflist == null || deflist.Count == 0) return -1;
+            if (deflist.Contains(this)) return 0;
+            if (baseSettlementType != null)
+            {
+                int parentDepth = baseSettlementType.DepthInList(deflist);
+                return parentDepth >= 0 ? parentDepth + 1 : -1;
+            }
+            return -1;
+        }
+
         public override void ResolveReferences()
         {
             base.ResolveReferences();

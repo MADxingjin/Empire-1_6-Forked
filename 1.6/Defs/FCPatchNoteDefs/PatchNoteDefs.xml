@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_112_3</defName>
+		<label>Minor change</label>
+		<description>Minor changes to settlementDef and buildingFC</description>
+
+		<major>0</major>
+		<minor>112</minor>
+		<patch>3</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>SettlementType blocklists and allowlists on building Defs now proritize specificity; if a building blocks a parent settlementtype but allows a child type, then the building is allowed, and vice versa</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor change</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_112_2</defName>
 		<label>Minor changes</label>
 		<description>Minor changes to settlementDefs and building processing.</description>

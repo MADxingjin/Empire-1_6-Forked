@@ -82,24 +82,36 @@ namespace FactionColonies
 
         public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)
         {
-            bool meetsSettlementTypeRequirement = true;
-            if (settlementTypeBlockList?.Count > 0)
+            bool meetsRequirement = true;
+
+            int allowDepth = (settlementTypeAllowList?.Count > 0)
+                ? settlement.DepthInList(settlementTypeAllowList) : -1;
+            int blockDepth = (settlementTypeBlockList?.Count > 0)
+                ? settlement.DepthInList(settlementTypeBlockList) : -1;
+
+            if (allowDepth >= 0 || blockDepth >= 0)
             {
-                if (MatchesAnySettlementType(settlementTypeBlockList, settlement))
+                if (allowDepth >= 0 && blockDepth >= 0)
                 {
-                    meetsSettlementTypeRequirement = false;
+                    // Both matched — most specific (shallowest depth) wins. Tie goes to block.
+                    meetsRequirement = allowDepth < blockDepth;
+                }
+                else if (allowDepth >= 0)
+                {
+                    meetsRequirement = true;
+                }
+                else
+                {
+                    meetsRequirement = false;
                 }
             }
-            if (settlementTypeAllowList?.Count > 0)
+            else if (settlementTypeAllowList?.Count > 0)
             {
-                //If we have an allowlist, then the default restriction is false
-                meetsSettlementTypeRequirement = false;
-                if (MatchesAnySettlementType(settlementTypeAllowList, settlement))
-                {
-                    meetsSettlementTypeRequirement = true;
-                }
+                // Allow list exists but didn't match — blocked by default
+                meetsRequirement = false;
             }
-            return meetsSettlementTypeRequirement && MeetsResourceRequirement(settlement);
+
+            return meetsRequirement && MeetsResourceRequirement(settlement);
         }
 
         private static Dictionary<BuildingFCDef, Dictionary<WorldSettlementDef, bool>> resourceMatchCache;
@@ -149,20 +161,11 @@ namespace FactionColonies
             return result;
         }
 
-        private bool MatchesAnySettlementType(List<WorldSettlementDef> list, WorldSettlementDef settlement)
-        {
-            return settlement.IsInList(list);
-        }
-
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (var err in base.ConfigErrors())
             {
                 yield return err;
-            }
-            if (settlementTypeAllowList?.Count > 0 && settlementTypeBlockList?.Count > 0)
-            {
-                yield return $"BuildingFCDef {defName} has both a settlementTypeAllowList and a settlementTypeBlockList";
             }
             if (HasCycle(this, d => d.upgrades))
             {
