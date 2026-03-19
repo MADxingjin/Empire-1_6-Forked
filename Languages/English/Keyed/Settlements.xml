@@ -66,6 +66,9 @@
 	<Unrest>unrest</Unrest>
 	<Prosperity>prosperity</Prosperity>
 	<BaseRecovery>Base Recovery</BaseRecovery>
+	<ProsperityTarget>Target: {0}%</ProsperityTarget>
+	<ProsperityDrift>Drift toward target</ProsperityDrift>
+	<ProsperityTargetBreakdown>Happiness ({0}) + Loyalty ({1}) + Stability ({2}) / 3</ProsperityTargetBreakdown>
 	<BaseGain>Base Gain</BaseGain>
 	<BaseLoss>Base Loss</BaseLoss>
 	<SettlementStatGain>Gaining {0} {1} per day</SettlementStatGain>
@@ -87,7 +90,7 @@ The higher unrest grows, the more likely dangerous events internal in your Settl
 	</SettlementUnrestDesc>
 	<SettlementProsperityDesc>The measure of the Settlement's overall prosperity.
 
-The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). If prosperity is damaged, it will slowly accumulate over time.
+The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
 	</SettlementProsperityDesc>
 
 	<!-- Settlement Table -->

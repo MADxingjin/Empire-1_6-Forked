@@ -986,10 +986,22 @@ namespace FactionColonies
             return desc.Trim();
         }
 
+        public double GetProsperityTarget()
+        {
+            return (happiness + loyalty + (100.0 - unrest)) / 3.0;
+        }
+
         public double GetProsperityGain()
         {
-            return FCSettings.prosperityBaseRecovery + GetStatValue(FCStatDefOf.prosperityBaseRecovery)
-                - GetStatValue(FCStatDefOf.prosperityLostBase);
+            double target = GetProsperityTarget();
+            double drift = 0;
+            double distance = Math.Abs(prosperity - target);
+            if (prosperity < target)
+                drift = Math.Min(FCSettings.prosperityDriftRate, distance);
+            else if (prosperity > target)
+                drift = -Math.Min(FCSettings.prosperityDriftRate, distance);
+
+            return drift + GetStatValue(FCStatDefOf.prosperityBaseRecovery) - GetStatValue(FCStatDefOf.prosperityLostBase);
         }
         public void UpdateProsperity()
         {
@@ -1000,13 +1012,23 @@ namespace FactionColonies
             double prosperityGain = GetProsperityGain();
             string desc = "";
             if (prosperityGain >= 0)
-                desc = "SettlementStatGain".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
+                desc = "SettlementStatGain".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "Prosperity".Translate());
             else
-                desc = "SettlementStatLoss".Translate(Math.Abs(prosperityGain), "Prosperity".Translate());
+                desc = "SettlementStatLoss".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "Prosperity".Translate());
 
             desc += "\n\n";
-            if (FCSettings.prosperityBaseRecovery != 0)
-                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
+
+            double target = Math.Round(GetProsperityTarget(), 1);
+            desc += "ProsperityTarget".Translate(target) + "\n";
+            desc += "ProsperityTargetBreakdown".Translate(
+                Math.Round(happiness, 1),
+                Math.Round(loyalty, 1),
+                Math.Round(100.0 - unrest, 1)) + "\n\n";
+
+            double distance = Math.Abs(prosperity - GetProsperityTarget());
+            double driftMagnitude = Math.Min(FCSettings.prosperityDriftRate, distance);
+            double drift = prosperity < GetProsperityTarget() ? driftMagnitude : (prosperity > GetProsperityTarget() ? -driftMagnitude : 0);
+            desc += TextUtil.ColorizeAdditiveBonus(Math.Round(drift, 1)) + " - " + "ProsperityDrift".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.prosperityBaseRecovery);
             desc += GetStatDesc(FCStatDefOf.prosperityLostBase, hardinvert: true);
