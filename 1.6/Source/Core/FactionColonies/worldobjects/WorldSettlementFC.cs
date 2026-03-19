@@ -988,7 +988,8 @@ namespace FactionColonies
 
         public double GetProsperityGain()
         {
-            return FCSettings.prosperityBaseRecovery + GetStatValue(FCStatDefOf.prosperityBaseRecovery);
+            return FCSettings.prosperityBaseRecovery + GetStatValue(FCStatDefOf.prosperityBaseRecovery)
+                - GetStatValue(FCStatDefOf.prosperityLostBase);
         }
         public void UpdateProsperity()
         {
@@ -1008,6 +1009,7 @@ namespace FactionColonies
                 desc += TextUtil.ColorizeAdditiveBonus(FCSettings.prosperityBaseRecovery) + " - " + "BaseRecovery".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.prosperityBaseRecovery);
+            desc += GetStatDesc(FCStatDefOf.prosperityLostBase, hardinvert: true);
 
             return desc.Trim();
         }

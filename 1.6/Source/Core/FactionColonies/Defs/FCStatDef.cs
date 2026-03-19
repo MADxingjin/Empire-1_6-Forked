@@ -174,6 +174,7 @@ namespace FactionColonies
 
         // ── Prosperity ────────────────────────────────────────────
         public static FCStatDef prosperityBaseRecovery;
+        public static FCStatDef prosperityLostBase;
 
         // ── Happiness (base) ──────────────────────────────────────
         public static FCStatDef happinessLostBase;

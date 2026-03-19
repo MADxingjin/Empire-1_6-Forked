@@ -253,6 +253,14 @@
         <descriptionKey>FCTraitDesc_prosperityBaseRecovery</descriptionKey>
     </FactionColonies.FCStatDef>
 
+    <FactionColonies.FCStatDef>
+        <defName>prosperityLostBase</defName>
+        <label>prosperity lost base</label>
+        <aggregation>Additive</aggregation>
+        <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_prosperityLostBase</descriptionKey>
+    </FactionColonies.FCStatDef>
+
     <!-- ── Happiness ───────────────────────────────────────────── -->
 
     <FactionColonies.FCStatDef>
