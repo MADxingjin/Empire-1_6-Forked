@@ -25,7 +25,7 @@ namespace FactionColonies.WDExp
     {
         static WorldDominationCompatInit()
         {
-            new Harmony("com.Saakra.Empire.WDExp").PatchAll(Assembly.GetExecutingAssembly());
+            new Harmony("com.Matathias.Empire.WDExp").PatchAll(Assembly.GetExecutingAssembly());
             BattleModifierRegistry.Register(new WDStrengthBattleModifier());
             LogUtil.MessageForce("World Domination (Experimental) compatibility module loaded.");
         }

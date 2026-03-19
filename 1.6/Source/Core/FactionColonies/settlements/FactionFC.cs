@@ -208,7 +208,7 @@ namespace FactionColonies
         {
             if (!harmonyPatched)
             {
-                var harmony = new Harmony("com.Saakra.Empire");
+                var harmony = new Harmony("com.Matathias.Empire");
 
                 if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
                 {
@@ -479,7 +479,7 @@ namespace FactionColonies
                 // Auto-open patch notes if a new version exceeds the player's threshold
                 if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
                 {
-                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod("saakra.empire");
+                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod("matathias.empire");
                     if (latest != null
                         && latest.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch)
                         && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)

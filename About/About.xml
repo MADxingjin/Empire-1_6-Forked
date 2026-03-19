@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 
-	<name>Empire 1_6 (Continued)</name>
-	<author>Saakra</author>
+	<name>Empire Refactored</name>
+	<author>Matathias</author>
 	<url>https://discord.gg/f3zFQqA</url>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>
-	<packageId>Saakra.Empire</packageId>
+	<packageId>Matathias.Empire</packageId>
 	<incompatibleWith>
 	</incompatibleWith>
 	<modDependencies>
