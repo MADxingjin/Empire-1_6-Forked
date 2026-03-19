@@ -19,6 +19,8 @@
 	<FCNoTithes>No tithes</FCNoTithes>
 	<FCOverdue>Overdue</FCOverdue>
 	<UnpaidTitheEffect>Unrest has increased by 10 and happiness has decreased in the settlement! </UnpaidTitheEffect>
+	<LateBillAutoPaidLabel>Overdue Bills Auto-Paid</LateBillAutoPaidLabel>
+	<LateBillAutoPaidDesc>{0} overdue bill(s) have been auto-paid from your silver reserves.\n\nAffected settlements:\n{1}\n\nYour dereliction in payment has caused a small amount of unhappiness and unrest in the affected settlements.</LateBillAutoPaidDesc>
 
 	<!-- Taxes -->
 	<SettlementTax>Settlement Tax</SettlementTax>
