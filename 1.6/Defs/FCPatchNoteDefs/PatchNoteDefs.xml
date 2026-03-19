@@ -950,7 +950,7 @@
 		<releaseMonth>3</releaseMonth>
 		<releaseYear>2026</releaseYear>
 
-		<patchNoteType>Minor</patchNoteType>
+		<patchNoteType>Major</patchNoteType>
 
 		<patchNoteLines>
 		<li>Reworked FactionColonies class and the settings</li>

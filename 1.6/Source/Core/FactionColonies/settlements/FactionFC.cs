@@ -476,6 +476,18 @@ namespace FactionColonies
 
                 militaryCustomizationUtil.CheckMilitaryUtilForErrors();
 
+                // Auto-open patch notes if a new version exceeds the player's threshold
+                if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
+                {
+                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod("saakra.empire");
+                    if (latest != null
+                        && latest.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch)
+                        && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
+                    {
+                        Find.WindowStack.Add(new PatchNotesDisplayWindow());
+                    }
+                }
+
                 /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
                 Map playerHome = Find.AnyPlayerHomeMap;
                 if (playerHome is null)
