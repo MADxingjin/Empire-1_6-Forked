@@ -143,6 +143,11 @@ namespace FactionColonies
         }
         public bool IsInList(List<WorldSettlementDef> deflist)
         {
+            if (deflist is null || deflist.Count == 0)
+            {
+                return false;
+            }
+
             if (deflist.Contains(this))
             {
                 return true;
