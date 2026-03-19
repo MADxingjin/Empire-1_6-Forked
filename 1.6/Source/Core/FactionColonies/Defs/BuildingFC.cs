@@ -99,7 +99,54 @@ namespace FactionColonies
                     meetsSettlementTypeRequirement = true;
                 }
             }
-            return meetsSettlementTypeRequirement;
+            return meetsSettlementTypeRequirement && MeetsResourceRequirement(settlement);
+        }
+
+        private static Dictionary<BuildingFCDef, Dictionary<WorldSettlementDef, bool>> resourceMatchCache;
+
+        /// <summary>
+        /// If this building grants beneficial resource production bonuses, the settlement must
+        /// produce at least one of those resources. Buildings with no resource production stats pass automatically.
+        /// </summary>
+        private bool MeetsResourceRequirement(WorldSettlementDef settlement)
+        {
+            if (resourceMatchCache == null)
+                resourceMatchCache = new Dictionary<BuildingFCDef, Dictionary<WorldSettlementDef, bool>>();
+
+            Dictionary<WorldSettlementDef, bool> inner;
+            if (!resourceMatchCache.TryGetValue(this, out inner))
+            {
+                inner = new Dictionary<WorldSettlementDef, bool>();
+                resourceMatchCache[this] = inner;
+            }
+
+            bool cached;
+            if (inner.TryGetValue(settlement, out cached))
+                return cached;
+
+            bool result = true;
+            if (statModifiers != null)
+            {
+                bool hasResourceStat = false;
+                bool matchesAny = false;
+                foreach (FCStatModifier mod in statModifiers)
+                {
+                    if (mod.stat != null && mod.stat.linkedResource != null && mod.IsBeneficial())
+                    {
+                        hasResourceStat = true;
+                        if (settlement.GetSettlementResource(mod.stat.linkedResource) != null)
+                        {
+                            matchesAny = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasResourceStat && !matchesAny)
+                    result = false;
+            }
+
+            inner[settlement] = result;
+            return result;
         }
 
         private bool MatchesAnySettlementType(List<WorldSettlementDef> list, WorldSettlementDef settlement)
