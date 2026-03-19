@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
 
 namespace FactionColonies
 {
@@ -49,6 +50,12 @@ namespace FactionColonies
             }
 
             Scribe_Values.Look(ref loadID, "loadID");
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && pawn != null && pawn.kindDef == null)
+            {
+                pawn.kindDef = PawnKindDefOf.Colonist;
+                LogUtil.Warning($"Mercenary pawn {pawn.LabelShort} had null kindDef on load, reset to Colonist.");
+            }
         }
 
         public string GetUniqueLoadID()

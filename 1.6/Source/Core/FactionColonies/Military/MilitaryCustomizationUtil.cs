@@ -117,41 +117,48 @@ namespace FactionColonies
                 return;
             }
 
-            foreach (MercenarySquadFC squad in mercenarySquads)
+            try
             {
-                if (squad.outfit == null || squads.Contains(squad.outfit) == false)
+                foreach (MercenarySquadFC squad in mercenarySquads)
                 {
-                    squad.StripSquad();
-                    squad.outfit = null;
-                }
-                else
-                {
-                    int settlementMilLevel = 0;
-                    if (squad.settlement != null)
-                        settlementMilLevel = squad.settlement.settlementMilitaryLevel;
-                    if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
-                                                  CalculateSquadBudget(settlementMilLevel)))
-                        continue;
-                    if (squad.settlement != null)
+                    if (squad.outfit == null || squads.Contains(squad.outfit) == false)
                     {
-                        Messages.Message(
-                            "The max allowed equipment cost for the squad assigned to " + squad.settlement.Name +
-                            " has been exceeded. Thus, the settlement's squad has been unassigned.",
-                            MessageTypeDefOf.RejectInput);
+                        squad.StripSquad();
+                        squad.outfit = null;
                     }
+                    else
+                    {
+                        int settlementMilLevel = 0;
+                        if (squad.settlement != null)
+                            settlementMilLevel = squad.settlement.settlementMilitaryLevel;
+                        if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
+                                                      CalculateSquadBudget(settlementMilLevel)))
+                            continue;
+                        if (squad.settlement != null)
+                        {
+                            Messages.Message(
+                                "The max allowed equipment cost for the squad assigned to " + squad.settlement.Name +
+                                " has been exceeded. Thus, the settlement's squad has been unassigned.",
+                                MessageTypeDefOf.RejectInput);
+                        }
 
-                    squad.outfit = null;
-                    squad.StripSquad();
+                        squad.outfit = null;
+                        squad.StripSquad();
+                    }
                 }
-            }
 
-            if (tickChanged >= GETLatestChange) return;
-            foreach (var merc in mercenarySquads.Where(merc => merc.outfit != null))
+                if (tickChanged >= GETLatestChange) return;
+                foreach (var merc in mercenarySquads.Where(merc => merc.outfit != null))
+                {
+                    merc.OutfitSquad(merc.outfit);
+                }
+
+                RebuildMercenaryPawnSet();
+            }
+            catch (Exception ex)
             {
-                merc.OutfitSquad(merc.outfit);
+                LogUtil.Error($"Error in CheckMilitaryUtilForErrors (squad reconciliation): {ex}");
             }
-
-            RebuildMercenaryPawnSet();
         }
 
         public int GETLatestChange

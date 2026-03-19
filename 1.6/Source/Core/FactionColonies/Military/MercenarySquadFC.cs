@@ -411,6 +411,12 @@ namespace FactionColonies
                 return;
             }
 
+            if (newPawn.kindDef == null)
+            {
+                newPawn.kindDef = raceChoice ?? PawnKindDefOf.Colonist;
+                LogUtil.Warning($"MercenarySquadFC.CreateNewPawn: detected null kindDef, setting to default");
+            }
+
             newPawn.apparel?.DestroyAll();
             newPawn.equipment?.DestroyAllEquipment();
             merc.squad = this;
@@ -602,9 +608,16 @@ namespace FactionColonies
         {
             if (merc?.pawn == null) return;
 
-            merc.pawn.apparel?.DestroyAll();
-            merc.pawn.equipment?.DestroyAllEquipment();
-            merc.pawn.inventory.innerContainer.ClearAndDestroyContents();
+            try
+            {
+                merc.pawn.apparel?.DestroyAll();
+                merc.pawn.equipment?.DestroyAllEquipment();
+                merc.pawn.inventory.innerContainer.ClearAndDestroyContents();
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error stripping pawn equipment (mod conflict likely): {e}");
+            }
             CombatExtendedUtil.UpdateInventory(merc.pawn);
         }
 
