@@ -62,6 +62,43 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_115_0</defName>
+		<label>Patch Notes Update</label>
+		<description>Updates the patch notes window</description>
+
+		<major>0</major>
+		<minor>115</minor>
+		<patch>0</patch>
+
+		<releaseDay>19</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Update the patch notes window to cut down redundant wording and to use less empty space</li>
+		<li>Lets users change in the settings when the patch notes auto-open on game start (or if they even auto-open at all)</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Patch Notes Update</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_114_0</defName>
 		<label>Prosperity Change</label>
 		<description>Changes how settlement prosperity is handled.</description>
@@ -950,7 +987,7 @@
 		<releaseMonth>3</releaseMonth>
 		<releaseYear>2026</releaseYear>
 
-		<patchNoteType>Minor</patchNoteType>
+		<patchNoteType>Major</patchNoteType>
 
 		<patchNoteLines>
 		<li>Reworked FactionColonies class and the settings</li>

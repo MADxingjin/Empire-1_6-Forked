@@ -4,4 +4,5 @@
 	<FCSelectPatchNotes>Select patch notes to see images</FCSelectPatchNotes>
 	<FCPatchNotesImagesMissing>No preview available</FCPatchNotesImagesMissing>
 	<FCPatchNotesImageZoomTooltip>Click to enlargen image</FCPatchNotesImageZoomTooltip>
+	<FCPatchNoteAutoOpenThreshold>Auto-open patch notes: </FCPatchNoteAutoOpenThreshold>
 </LanguageData>

@@ -147,6 +147,10 @@ namespace FactionColonies
         public static int lastSeenVersionMinor = 0;
         public static int lastSeenVersionPatch = 0;
 
+        // Patch notes auto-open threshold
+        public const PatchNoteType DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD = PatchNoteType.Major;
+        public static PatchNoteType patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -175,6 +179,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref lastSeenVersionMajor, "lastSeenVersionMajor", 0);
             Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
             Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
+            Scribe_Values.Look(ref patchNoteAutoOpenThreshold, "patchNoteAutoOpenThreshold", DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -499,6 +504,27 @@ namespace FactionColonies
 
             if (ls.ButtonText("FCOpenPatchNotes".Translate())) DebugActionsMisc.PatchNotesDisplayWindow();
 
+            string thresholdLabel;
+            switch (patchNoteAutoOpenThreshold)
+            {
+                case PatchNoteType.Major: thresholdLabel = "Major only"; break;
+                case PatchNoteType.Minor: thresholdLabel = "Minor and above"; break;
+                case PatchNoteType.Hotfix: thresholdLabel = "Hotfix and above"; break;
+                case PatchNoteType.Patch: thresholdLabel = "Patch and above"; break;
+                default: thresholdLabel = "Never"; break;
+            }
+            if (ls.ButtonText("FCPatchNoteAutoOpenThreshold".Translate() + thresholdLabel))
+            {
+                Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>
+                {
+                    new FloatMenuOption("Major only", () => patchNoteAutoOpenThreshold = PatchNoteType.Major),
+                    new FloatMenuOption("Minor and above", () => patchNoteAutoOpenThreshold = PatchNoteType.Minor),
+                    new FloatMenuOption("Hotfix and above", () => patchNoteAutoOpenThreshold = PatchNoteType.Hotfix),
+                    new FloatMenuOption("Patch and above", () => patchNoteAutoOpenThreshold = PatchNoteType.Patch),
+                    new FloatMenuOption("Never", () => patchNoteAutoOpenThreshold = PatchNoteType.Undefined)
+                }));
+            }
+
             if (ls.ButtonText("FCSettingResetButton".Translate()))
             {
                 silverPerResource = DEFAULT_SILVER_PER_RESOURCE;
@@ -520,6 +546,7 @@ namespace FactionColonies
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
                 difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
+                patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
                 ApplyDifficultyPreset(difficultyLevel);
             }
 

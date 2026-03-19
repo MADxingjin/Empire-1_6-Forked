@@ -1,7 +1,6 @@
-﻿using FactionColonies.util;
+using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -17,67 +16,58 @@ namespace FactionColonies
 
     class PatchNotesDisplayWindow : Window
     {
-        public override Vector2 InitialSize => new Vector2(1200f + (StandardMargin * 2), 595f + (StandardMargin * 2));
+        public override Vector2 InitialSize => new Vector2(750f + (StandardMargin * 2), 750f + (StandardMargin * 2));
 
-        private static readonly Rect PatchNotesWindowTitleRect = new Rect(5f, 0f, 1190f, 30f);
-        private static readonly Rect HorizontalLineRect = new Rect(5f, 30f, 1190f, 15f);
-        private static readonly Rect PatchNotesImageArea = new Rect(675f, 45f, 520f, 545f);
-        private static readonly Rect PatchNotesScrollArea = new Rect(5f, 45f, 655f, 545f);
-        private static readonly Rect PatchNotesImageRect = new Rect(685f, 55f, 500f, 280f);
-        private static readonly Rect PatchNotesImageToolTipRect = new Rect(735f, 55f, 400f, 280f);
-        private static readonly Rect LastImageButtonRect = new Rect(685f, 55f, 50f, 280f);
-        private static readonly Rect NextImageButtonRect = new Rect(1135f, 55f, 50f, 280f);
-        private static readonly Rect ImageDescRect = new Rect(685f, 345f, 500f, 161f);
-        private static readonly Rect LinkButtonsRect = new Rect(685f, 516f, 500f, 64f);
-        private static readonly Rect baseLinkButtonRect = new Rect(0f, 0f, 64f, 64f);
-        private static readonly Rect VerticalDeviderRect = new Rect(660f, 30f, 15f, 545f);
+        private const float HeaderHeight = 45f;
+        private const float TitleBarHeight = 30f;
+        private const float Margin = 5f;
+        private const float DividerPad = 15f;
+        private const float BadgeWidth = 55f;
+        private const float BadgeHeight = 22f;
+        private const float DateWidth = 90f;
+        private const float IconSize = 45f;
+        private const float LinkButtonSize = 24f;
+        private const float BannerHeight = 120f;
 
-        private static readonly float commonMargin = 5f;
-        private static readonly GameFont prevFont = Text.Font;
-        private static readonly TextAnchor prevAnchor = Text.Anchor;
-        private static readonly Color prevColor = GUI.color;
         private static readonly List<PatchNoteDef> patchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.ListFullCopy();
+
+        private Texture2D bannerImage;
 
         private readonly string title = "FCPatchNotesWindowTitle".Translate();
 
-        //For the patch note area
+        // Scroll state
+        private HashSet<int> expandedDefs = new HashSet<int>();
+        private Dictionary<int, float> expandedHeights = new Dictionary<int, float>();
+        private bool shouldRefreshHeight = true;
+        private float scrollViewHeight = 0f;
+        private Vector2 patchNoteScrollPos = new Vector2();
+
+        // Scrolling bug fix
         private bool firstRun = true;
         private bool fixDone = false;
-        private bool shouldRefreshHeight = true;
-        private int openDef = 0;
-        private float scrollViewHeight = 0f;
-        private float extraHeightRequired = 0f;
-        private Vector2 patchNoteScrollPos = new Vector2();
-        private Rect patchNotesScrollViewRect;
-        private Rect basePatchNoteRect;
 
-        //For the image area
-        private int displayedImage = -1;
-        private Vector2 imageDescScrollPos = new Vector2();
-        Vector2 baseLinkButtonOffset = new Vector2(baseLinkButtonRect.width + (LinkButtonsRect.width + baseLinkButtonRect.width) / baseLinkButtonRect.width, 0f);
-        private Color orange = Color.Lerp(Color.yellow, Color.red, 0.5f);
-        private Rect toolTipRect;
+        // Badge colors
+        private static readonly Color BadgeColorMajor = new Color(0.85f, 0.65f, 0.13f);
+        private static readonly Color BadgeColorMinor = new Color(0.3f, 0.5f, 0.9f);
+        private static readonly Color BadgeColorHotfix = new Color(0.9f, 0.2f, 0.2f);
+        private static readonly Color BadgeColorPatch = new Color(0.5f, 0.5f, 0.5f);
 
-        // Add this field to the class
-        private Texture2D defaultImage;
-
-        /// <summary>
-        /// Constructs a PatchNotesDisplayWindow class and saves the current Text.Font, Text.Anchor and GUI.color
-        /// </summary>
         public PatchNotesDisplayWindow()
         {
-            patchNotesScrollViewRect = PatchNotesScrollArea.LeftPartPixels(PatchNotesScrollArea.width - 17f);
-            basePatchNoteRect = patchNotesScrollViewRect.TopPartPixels(45f);
-            CalculateScrollViewSize();
-
             patchNoteDefs.SortBy((def) => def.ReleaseDate, (def) => def.ToOldEmpireVersion);
             patchNoteDefs.Reverse();
+
+            // Auto-expand unread entries
+            for (int i = 0; i < patchNoteDefs.Count; i++)
+            {
+                if (patchNoteDefs[i].IsNewerThan(FCSettings.lastSeenVersionMajor,
+                    FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                {
+                    expandedDefs.Add(i);
+                }
+            }
         }
 
-        /// <summary>
-        /// Constructs a PatchNotesDisplayWindow class and saves the current Text.Font, Text.Anchor and GUI.color and gives it the given <paramref name="title"/>
-        /// </summary>
-        /// <param name="title"></param>
         public PatchNotesDisplayWindow(string title) : this() => this.title = title;
 
         public override void PostClose()
@@ -85,7 +75,7 @@ namespace FactionColonies
             base.PostClose();
             if (patchNoteDefs.Count > 0)
             {
-                PatchNoteDef latest = patchNoteDefs[0]; // Already sorted newest-first
+                PatchNoteDef latest = patchNoteDefs[0];
                 FCSettings.lastSeenVersionMajor = latest.Major;
                 FCSettings.lastSeenVersionMinor = latest.Minor;
                 FCSettings.lastSeenVersionPatch = latest.Patch;
@@ -93,23 +83,23 @@ namespace FactionColonies
             }
         }
 
-        /// <summary>
-        /// This function draws the contents of this window class. The Rects were laid out using NesGui
-        /// </summary>
-        /// <param name="inRect"></param>
         public override void DoWindowContents(Rect inRect)
         {
+            Rect titleRect = new Rect(inRect.x + Margin, inRect.y, inRect.width - Margin * 2, TitleBarHeight);
+            float bannerTop = inRect.y + TitleBarHeight + DividerPad;
+            Rect bannerRect = new Rect(inRect.x + Margin, bannerTop, inRect.width - Margin * 2, BannerHeight);
+            float contentTop = bannerTop + BannerHeight + Margin;
+            float contentHeight = inRect.height - (contentTop - inRect.y);
+            Rect contentPanel = new Rect(inRect.x + Margin, contentTop, inRect.width - Margin * 2, contentHeight);
+
             FixScrollingBug();
             CalculateScrollViewSize();
-            DrawTitle();
-            DrawDividers();
-            DrawPatchNotes();
-            DrawImageContent();
+            DrawTitle(titleRect);
+            DrawHorizontalDivider(inRect);
+            DrawBanner(bannerRect);
+            DrawPatchNotes(contentPanel);
         }
 
-        /// <summary>
-        /// Fixes a bug where a note being opened in the first frame causes the scrolling bars to not appear as long as it isn't closed
-        /// </summary>
         private void FixScrollingBug()
         {
             if (fixDone) return;
@@ -125,317 +115,212 @@ namespace FactionColonies
             }
         }
 
-        /// <summary>
-        /// Draws the Image related content of any selected Def or a text instructing the user to select a def
-        /// </summary>
-        private void DrawImageContent()
+        private void DrawTitle(Rect titleRect)
         {
-            Widgets.DrawBox(PatchNotesImageArea);
-            Widgets.DrawLightHighlight(ImageDescRect);
-
-            if (openDef == -1)
-            {
-                DrawImageContentMissing("FCSelectPatchNotes".Translate(), orange);
-            }
-            else
-            {
-                DrawImageContentOfDef();
-                DrawLinkButtons();
-            }
-        }
-
-        /// <summary>
-        /// Draws buttons that open links defined in the defs
-        /// </summary>
-        public void DrawLinkButtons()
-        {
-            PatchNoteDef def = patchNoteDefs[openDef];
-
-            GUI.BeginGroup(LinkButtonsRect);
-
-            for (int i = 0; i < def.Links.Count; i++)
-            {
-                Rect tempButtonRect = baseLinkButtonRect.CopyAndShift(baseLinkButtonOffset * i);
-                TooltipHandler.TipRegion(tempButtonRect, def.LinkButtonToolTips[i]);
-                if (Widgets.ButtonImage(tempButtonRect, def.LinkButtonImages[i]))
-                {
-                    SteamUtility.OpenUrl(def.Links[i]);
-                    SoundDefOf.Click.PlayOneShotOnCamera();
-                }
-            }
-
-            GUI.EndGroup();
-        }
-
-        /// <summary>
-        /// Displays a tooltip instructing the user to click to enlargen an image.
-        /// Automatically scales the area in which the tool tip is displayed based on buttons being displayed.
-        /// </summary>
-        private void MakeToolTip()
-        {
-            toolTipRect = new Rect(PatchNotesImageToolTipRect);
-
-            if (displayedImage == 0)
-            {
-                toolTipRect.x -= LastImageButtonRect.width;
-                toolTipRect.width += LastImageButtonRect.width;
-            }
-
-            if (displayedImage == patchNoteDefs[openDef].PatchNoteImages.Count - 1)
-            {
-                toolTipRect.width += NextImageButtonRect.width;
-            }
-
-            TooltipHandler.TipRegion(toolTipRect, "FCPatchNotesImageZoomTooltip".Translate());
-        }
-
-        /// <summary>
-        /// retrieves the list of Images from the openDef and displays that image
-        /// Also draws the controls
-        /// </summary>
-        private void DrawImageContentOfDef()
-        {
-            PatchNoteDef def = patchNoteDefs[openDef];
-            List<Texture2D> patchNoteImages = def.PatchNoteImages;
-
-            if (patchNoteImages.NullOrEmpty())
-            {
-                DrawImageContentMissing("FCPatchNotesImagesMissing".Translate(), orange);
-            }
-            else
-            {
-                displayedImage = displayedImage == -1 ? 0 : displayedImage;
-                Texture2D tex = patchNoteImages[displayedImage];
-                GUI.DrawTexture(PatchNotesImageRect, tex, ScaleMode.ScaleToFit);
-
-                DrawImageSelectors(patchNoteImages.Count - 1);
-
-                Text.Font = GameFont.Small;
-                Widgets.LabelScrollable(ImageDescRect.ContractedBy(commonMargin), def.PatchNoteImageDescriptions[displayedImage], ref imageDescScrollPos);
-                MakeToolTip();
-                if (Widgets.ButtonInvisible(toolTipRect)) Find.WindowStack.Add(new ImageViewerForPatchNoteDefs(patchNoteDefs[openDef], displayedImage));
-            }
-
-            ResetTextAndColor();
-        }
-
-        /// <summary>
-        /// Draws two buttons labeled that change which image is displayed. <paramref name="max"/> is the last index of images displayable
-        /// </summary>
-        /// <param name="max"></param>
-        private void DrawImageSelectors(int max)
-        {
-            Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Widgets.Label(titleRect, title);
 
-            DrawImageSelector(NextImageButtonRect, ">", () => displayedImage < max, () => displayedImage++);
-            DrawImageSelector(LastImageButtonRect, "<", () => displayedImage  >  0, () => displayedImage--);
-
-            ResetTextAndColor();
-        }
-
-        /// <summary>
-        /// Draws a grey button into a given <paramref name="buttonRect"/> with the <paramref name="buttonLabel"/> 
-        /// when <paramref name="predicate"/> is true that executes <paramref name="action"/> 
-        /// when pressed
-        /// </summary>
-        /// <param name="buttonRect"></param>
-        /// <param name="buttonLabel"></param>
-        /// <param name="predicate"></param>
-        /// <param name="action"></param>
-        private void DrawImageSelector(Rect buttonRect, string buttonLabel, Func<bool> predicate, Action action)
-        {
-            GUI.color = prevColor;
-
-            if (predicate())
+            // Link buttons in title bar (right-aligned, before close button)
+            if (patchNoteDefs.Count > 0)
             {
-                Color guiColor = Color.black;
-                guiColor.a = 0.8f;
-
-                if (!Mouse.IsOver(buttonRect)) guiColor.a = 0.3f;
-                Widgets.DrawBoxSolid(buttonRect, guiColor);
-
-                guiColor = prevColor;
-                if (!Mouse.IsOver(buttonRect)) guiColor.a = 0.3f;
-
-                GUI.color = guiColor;
-
-                if (Widgets.ButtonInvisible(buttonRect))
+                PatchNoteDef anyDef = patchNoteDefs[0];
+                float startX = titleRect.xMax - TitleBarHeight;
+                for (int i = anyDef.Links.Count - 1; i >= 0; i--)
                 {
-                    action();
-                    SoundDefOf.Click.PlayOneShotOnCamera();
-                    imageDescScrollPos = new Vector2();
+                    startX -= LinkButtonSize + Margin;
+                    Rect btnRect = new Rect(startX, titleRect.y + 3f, LinkButtonSize, LinkButtonSize);
+                    TooltipHandler.TipRegion(btnRect, anyDef.LinkButtonToolTips[i]);
+                    if (Widgets.ButtonImage(btnRect, anyDef.LinkButtonImages[i]))
+                    {
+                        SteamUtility.OpenUrl(anyDef.Links[i]);
+                        SoundDefOf.Click.PlayOneShotOnCamera();
+                    }
                 }
-
-                Widgets.Label(buttonRect, buttonLabel);
             }
-        }
 
-        /// <summary>
-        /// Displays a warning in place of the image notifying the user of the <paramref name="reason"/> why no image can be displayed
-        /// </summary>
-        /// <param name="reason"></param>
-        private void DrawImageContentMissing(string reason, Color reasonColor)
-        {
-            if (DefaultImage != null)
+            // Close button
+            if (Widgets.ButtonImage(titleRect.RightPartPixels(TitleBarHeight).ContractedBy(6f), TexButton.CloseXSmall))
             {
-                // Draw the default image instead of text
-                GUI.DrawTexture(PatchNotesImageRect, DefaultImage, ScaleMode.ScaleToFit);
-
-                // Optionally show the reason text below the image in the description area
-                Text.Anchor = TextAnchor.UpperCenter;
-                Text.Font = GameFont.Small;
-                GUI.color = reasonColor;
-                Widgets.Label(ImageDescRect.ContractedBy(commonMargin), reason);
-            }
-            else
-            {
-                // Fallback to original text display if image fails to load
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Text.Font = GameFont.Medium;
-                GUI.color = reasonColor;
-
-                Widgets.DrawBoxSolid(PatchNotesImageRect, Color.black);
-                Widgets.Label(PatchNotesImageRect, reason);
+                Close();
             }
 
-            displayedImage = -1;
             ResetTextAndColor();
         }
 
-        /// <summary>
-        /// Draws the buttons used to select which patch notes to display and the patch notes
-        /// </summary>
-        private void DrawPatchNotes()
+        private void DrawHorizontalDivider(Rect inRect)
         {
-            Widgets.BeginScrollView(PatchNotesScrollArea, ref patchNoteScrollPos, patchNotesScrollViewRect);
+            GUI.color = Color.gray;
+            float lineY = inRect.y + TitleBarHeight + (DividerPad * 0.5f) - 1f;
+            Widgets.DrawLineHorizontal(inRect.x + Margin, lineY, inRect.width - Margin * 2);
+            ResetTextAndColor();
+        }
+
+        private void DrawBanner(Rect bannerRect)
+        {
+            if (bannerImage == null)
+            {
+                bannerImage = ContentFinder<Texture2D>.Get("UI/Banners/Empire", false);
+            }
+            if (bannerImage != null)
+            {
+                GUI.DrawTexture(bannerRect, bannerImage, ScaleMode.ScaleToFit);
+            }
+        }
+
+        private void DrawPatchNotes(Rect panelRect)
+        {
+            float scrollContentWidth = panelRect.width - 17f;
+            Rect scrollViewRect = new Rect(0f, 0f, scrollContentWidth, scrollViewHeight);
+
+            Widgets.BeginScrollView(panelRect, ref patchNoteScrollPos, scrollViewRect);
+
+            float curY = 0f;
 
             for (int i = 0; i < patchNoteDefs.Count; i++)
             {
-                Rect curPatchNoteRect = basePatchNoteRect.CopyAndShift(0f, i * (basePatchNoteRect.height + commonMargin) + (i > openDef ? extraHeightRequired : 0f));
-                Rect expandCollapseIconRect = curPatchNoteRect.LeftPartPixels(curPatchNoteRect.height);
+                PatchNoteDef def = patchNoteDefs[i];
+                bool isExpanded = expandedDefs.Contains(i);
+                bool isNew = def.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch);
 
+                // --- Header ---
+                Rect headerRect = new Rect(0f, curY, scrollContentWidth, HeaderHeight);
+
+                // Alternating highlight
                 if (i % 2 == 0)
-                    Widgets.DrawHighlight(curPatchNoteRect);
+                    Widgets.DrawHighlight(headerRect);
                 else
-                    Widgets.DrawLightHighlight(curPatchNoteRect);
+                    Widgets.DrawLightHighlight(headerRect);
 
-
-                if (patchNoteDefs[i].IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
-                {
+                // New/unread border
+                if (isNew)
                     GUI.color = Color.red;
-                }
-
-                Widgets.DrawBox(curPatchNoteRect);
-
+                Widgets.DrawBox(headerRect);
                 ResetTextAndColor();
 
+                // Badge
+                Rect badgeRect = new Rect(headerRect.x + Margin, headerRect.y + (HeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
+                DrawTypeBadge(badgeRect, def.GetPatchNoteType);
+
+                // Expand/collapse icon (rightmost)
+                Rect iconRect = new Rect(headerRect.xMax - IconSize, headerRect.y, IconSize, HeaderHeight);
+                Widgets.DrawTextureFitted(iconRect.ContractedBy(11f), isExpanded ? TexButton.Collapse : TexButton.Reveal, 1f);
+
+                // Date (right-aligned, before icon)
+                Rect dateRect = new Rect(iconRect.x - DateWidth - Margin, headerRect.y, DateWidth, HeaderHeight);
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleRight;
+                GUI.color = Color.gray;
+                Widgets.Label(dateRect, def.ReleaseDate.ToString("dd MMM yyyy"));
+                ResetTextAndColor();
+
+                // Title (between badge and date)
+                float titleX = badgeRect.xMax + Margin;
+                Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - Margin, HeaderHeight);
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(titleLabelRect, def.ShortTitle);
+                ResetTextAndColor();
 
-                Widgets.Label(curPatchNoteRect.RightPartPixels(curPatchNoteRect.width - expandCollapseIconRect.width - commonMargin), patchNoteDefs[i].Title);
-                Widgets.DrawTextureFitted(expandCollapseIconRect.ContractedBy(11f), i == openDef ? TexButton.Collapse : TexButton.Reveal, 1f);
-                if (Widgets.ButtonInvisible(curPatchNoteRect))
+                // Click handling
+                if (Widgets.ButtonInvisible(headerRect))
                 {
-                    if (i == openDef)
+                    if (isExpanded)
                     {
-                        openDef = -1;
+                        expandedDefs.Remove(i);
+                        expandedHeights.Remove(i);
                         SoundDefOf.TabClose.PlayOneShotOnCamera();
                     }
                     else
                     {
-                        openDef = i;
+                        expandedDefs.Add(i);
                         SoundDefOf.TabOpen.PlayOneShotOnCamera();
                     }
                     shouldRefreshHeight = true;
                 }
+
+                curY += HeaderHeight + Margin;
+
+                // --- Expanded body ---
+                if (isExpanded)
+                {
+                    Text.Font = GameFont.Small;
+                    string bodyText = def.CompactBodyString;
+                    float bodyWidth = scrollContentWidth - Margin * 4f;
+                    Rect bodyRect = new Rect(Margin * 2f, curY, bodyWidth, 100f);
+                    Widgets.LabelCacheHeight(ref bodyRect, bodyText);
+                    expandedHeights[i] = bodyRect.height;
+                    curY += bodyRect.height + Margin;
+                    ResetTextAndColor();
+                }
             }
 
-            if (openDef != -1 && patchNoteDefs.Count > openDef)
-            {
-                Text.Font = GameFont.Small;
-
-                PatchNoteDef def = patchNoteDefs[openDef];
-                string patchNotesString = def.CompletePatchNotesString;
-
-                Rect temp = new Rect(basePatchNoteRect.x + commonMargin * 2f, basePatchNoteRect.y + basePatchNoteRect.height + openDef * (basePatchNoteRect.height + commonMargin), basePatchNoteRect.width - commonMargin * 4f, 100f);
-
-                Widgets.LabelCacheHeight(ref temp, patchNotesString);
-                extraHeightRequired = temp.height;
-            }
-            else
-            {
-                extraHeightRequired = 0;
-            }
-
-            patchNotesScrollViewRect.height = scrollViewHeight;
-            ResetTextAndColor();
             Widgets.EndScrollView();
         }
 
-        /// <summary>
-        /// Draws the lines that separate the title, patch notes and patch note images
-        /// </summary>
-        private void DrawDividers()
+        private void DrawTypeBadge(Rect rect, PatchNoteType type)
         {
-            GUI.color = Color.gray;
-            Widgets.DrawLineHorizontal(HorizontalLineRect.x, HorizontalLineRect.center.y - 1f, HorizontalLineRect.width);
-            Widgets.DrawLineVertical(VerticalDeviderRect.center.x, HorizontalLineRect.center.y - 1f, VerticalDeviderRect.height + 45f - HorizontalLineRect.center.y);
+            Color badgeColor;
+            string badgeLabel;
+            switch (type)
+            {
+                case PatchNoteType.Major:
+                    badgeColor = BadgeColorMajor;
+                    badgeLabel = "MAJOR";
+                    break;
+                case PatchNoteType.Minor:
+                    badgeColor = BadgeColorMinor;
+                    badgeLabel = "MINOR";
+                    break;
+                case PatchNoteType.Hotfix:
+                    badgeColor = BadgeColorHotfix;
+                    badgeLabel = "HOTFIX";
+                    break;
+                case PatchNoteType.Patch:
+                    badgeColor = BadgeColorPatch;
+                    badgeLabel = "PATCH";
+                    break;
+                default:
+                    badgeColor = BadgeColorPatch;
+                    badgeLabel = "???";
+                    break;
+            }
 
+            Widgets.DrawBoxSolid(rect, badgeColor);
+            GUI.color = Color.white;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(rect, badgeLabel);
             ResetTextAndColor();
         }
 
-        /// <summary>
-        /// Draws this windows title and the close button
-        /// </summary>
-        private void DrawTitle()
-        {
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperLeft;
-
-            Widgets.Label(PatchNotesWindowTitleRect, title);
-            if (Widgets.ButtonImage(PatchNotesWindowTitleRect.RightPartPixels(PatchNotesWindowTitleRect.height).ContractedBy(6f), TexButton.CloseXSmall)) Close();
-
-            ResetTextAndColor();
-        }
-
-        /// <summary>
-        /// Resets the Text.Font, Text.Anchor and GUI.color setting
-        /// </summary>
-        private void ResetTextAndColor()
-        {
-            Text.Font = prevFont;
-            Text.Anchor = prevAnchor;
-            GUI.color = prevColor;
-        }
-
-        /// <summary>
-        /// Calculates the size of the PatchNotesScrollArea Rect
-        /// </summary>
         private void CalculateScrollViewSize()
         {
             if (!shouldRefreshHeight) return;
             shouldRefreshHeight = false;
 
-            scrollViewHeight = (basePatchNoteRect.height + commonMargin) * patchNoteDefs.Count + extraHeightRequired - commonMargin;
+            float total = 0f;
+            for (int i = 0; i < patchNoteDefs.Count; i++)
+            {
+                total += HeaderHeight + Margin;
+                float bodyH;
+                if (expandedDefs.Contains(i))
+                {
+                    if (expandedHeights.TryGetValue(i, out bodyH))
+                        total += bodyH + Margin;
+                    else
+                        total += 200f + Margin;
+                }
+            }
 
-            //for some reason you have to make the scroll rect extend higher than the height you want before setting it to the height you want
-            //I don't really know why but this fixes all the issues I have
-            patchNotesScrollViewRect.height = float.MaxValue;
-            basePatchNoteRect = patchNotesScrollViewRect.TopPartPixels(45f);
+            scrollViewHeight = total;
         }
 
-        private Texture2D DefaultImage
+        private void ResetTextAndColor()
         {
-            get
-            {
-                if (defaultImage == null)
-                {
-                    defaultImage = ContentFinder<Texture2D>.Get("UI/Banners/Empire", false) ??
-                                  ContentFinder<Texture2D>.Get("GUI/questionmark", false);
-                }
-                return defaultImage;
-            }
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.color = Color.white;
         }
     }
 }
