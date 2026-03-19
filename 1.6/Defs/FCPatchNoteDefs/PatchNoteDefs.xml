@@ -62,6 +62,43 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_112_1</defName>
+		<label>Minor bugfix</label>
+		<description>Adds some guards to mercenary pawn handling.</description>
+
+		<major>0</major>
+		<minor>112</minor>
+		<patch>1</patch>
+
+		<releaseDay>18</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Wrap merc pawn destruction in a try-catch to gracefully handle errors</li>
+		<li>Validate pawnKindDef when loading and creating mercs</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor bugfix</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_112_0</defName>
 		<label>Adds new stat</label>
 		<description>Adds a new stat to apply to buildings and events and such.</description>
