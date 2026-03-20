@@ -1032,19 +1032,14 @@ namespace FactionColonies
 
                     if (label == "Military".Translate() && settlement.MilitaryComp != null)
                     {
-                        bool canAutoDefend = settlement.MilitaryComp.IsMilitaryValid();
                         List<FloatMenuOption> list = new List<FloatMenuOption>
                         {
                             new FloatMenuOption(
-                            canAutoDefend
-                                ? "ToggleAutoDefend".Translate(settlement.MilitaryComp.autoDefend.ToString())
-                                : "ToggleAutoDefend".Translate(false.ToString()) + " (" + "FCMilAutoDefendDisabled".Translate() + ")",
-                            canAutoDefend
-                                ? (Action)delegate
+                                "ToggleAutoDefend".Translate(settlement.MilitaryComp.autoDefend.ToString()),
+                                delegate
                                 {
                                     settlement.MilitaryComp.autoDefend = !settlement.MilitaryComp.autoDefend;
-                                }
-                                : null)
+                                })
                         };
 
                         if (settlement.MilitaryComp.isUnderAttack)

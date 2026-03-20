@@ -1766,18 +1766,13 @@ namespace FactionColonies
 
                 // Auto-Defend toggle
                 bool autoDefendOn = milComp.autoDefend;
-                bool autoDefendDisabled = !milComp.IsMilitaryValid();
                 Rect autoDefRect = new Rect(bx, btnY, btnW, btnH);
-                if (UIUtil.ButtonFlat(autoDefRect, "FCMilAutoDefend".Translate(),
-                    labelColor: autoDefendOn && !autoDefendDisabled ? AccentUtil.MilReady : (Color?)null,
-                    disabled: autoDefendDisabled,
+                if (UIUtil.ButtonFlat(autoDefRect, "FCMilAutoDefend".Translate(), labelColor: autoDefendOn ? AccentUtil.MilReady : (Color?)null,
                     highlighted: isHighlighted))
                 {
                     milComp.autoDefend = !milComp.autoDefend;
                 }
-                TooltipHandler.TipRegion(autoDefRect, autoDefendDisabled
-                    ? "FCMilAutoDefendDisabled".Translate()
-                    : "FCMilBtnAutoDefendTip".Translate());
+                TooltipHandler.TipRegion(autoDefRect, "FCMilBtnAutoDefendTip".Translate());
 
                 Text.Font = fontBefore;
 
