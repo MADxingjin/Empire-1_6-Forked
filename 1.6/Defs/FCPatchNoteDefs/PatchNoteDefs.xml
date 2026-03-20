@@ -62,6 +62,43 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_117_1</defName>
+		<label>Auto-Defense bugfixes</label>
+		<description>Fixes a couple of issues with the auto-defend feature.</description>
+
+		<major>0</major>
+		<minor>117</minor>
+		<patch>1</patch>
+
+		<releaseDay>20</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>Loosens restrictions on what settlements can auto-defend</li>
+		<li>Bugfix: the settlementMilitaryLevel field would sometimes not update when it should, resulting in a settlement that *should* be auto-defending, not actually being chosen to auto-defend</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Auto-Defense bugfixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_117_0</defName>
 		<label>Event Def Upate</label>
 		<description>Updates the FCEventDef with some extra filtering options.</description>
