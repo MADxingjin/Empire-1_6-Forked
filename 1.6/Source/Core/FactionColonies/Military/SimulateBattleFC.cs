@@ -115,27 +115,40 @@ namespace FactionColonies
         public static militaryForce CreateMilitaryForceFromSettlement(WorldSettlementFC settlement, bool isAttacking = false, militaryForce homeDefendingForce = null)
         {
             FactionFC faction = FactionCache.FactionComp;
-            double homeForceLevel = 0;
-            if (homeDefendingForce != null)
+
+            double reinforcerLevel = settlement.settlementMilitaryLevel;
+            double reinforcerEff = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+
+            double combinedLevel = reinforcerLevel;
+            double blendedEff = reinforcerEff;
+
+            if (homeDefendingForce != null && homeDefendingForce.homeSettlement != null)
             {
-                homeForceLevel = homeDefendingForce.militaryLevel;
+                double homeLevel = homeDefendingForce.homeSettlement.settlementMilitaryLevel;
+                double homeEff = homeDefendingForce.homeSettlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+                combinedLevel = reinforcerLevel + homeLevel;
+                if (combinedLevel > 0)
+                {
+                    blendedEff = (reinforcerLevel * reinforcerEff + homeLevel * homeEff) / combinedLevel;
+                }
+            }
+            else if (homeDefendingForce != null)
+            {
+                combinedLevel += homeDefendingForce.militaryLevel;
             }
 
-            double militaryLevel = settlement.settlementMilitaryLevel + homeForceLevel;
-            double efficiency = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
             if (isAttacking)
             {
-                militaryLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
-                efficiency *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
+                combinedLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
+                blendedEff *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
             }
             else
             {
-                militaryLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
-                efficiency *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
+                combinedLevel += faction.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
+                blendedEff *= faction.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
             }
-            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, settlement, FactionCache.PlayerColonyFaction);
-            return returnForce;
-            //create and return force.
+
+            return new militaryForce(combinedLevel, blendedEff, settlement, FactionCache.PlayerColonyFaction);
         }
 
         public static void GetMilitaryLevelAndEfficiencyFromTechLevel(TechLevel techlevel, out double militaryLevel, out double efficiency)
