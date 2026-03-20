@@ -1604,7 +1604,7 @@ namespace FactionColonies
 
                 // === TOP LINE ===
                 float statusW = 190f;
-                float badgeW = 120f;
+                float badgeW = 150f;
                 float nameW = contentW - statusW - badgeW;
 
                 // Top-left: Settlement name (clickable, accent-colored)
