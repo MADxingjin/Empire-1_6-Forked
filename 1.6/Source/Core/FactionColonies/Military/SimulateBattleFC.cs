@@ -254,19 +254,21 @@ namespace FactionColonies
 
             foreach (WorldSettlementFC settlementCompare in factionfc.settlements)
             {
-                if (settlementCompare.MilitaryComp != null &&
-                    settlementCompare.MilitaryComp.autoDefend && !settlementCompare.MilitaryComp.militaryBusy &&
-                    !settlementCompare.MilitaryComp.isUnderAttack &&
-                    settlementCompare.settlementMilitaryLevel > settlement.settlementMilitaryLevel &&
-                    DefenseValidatorRegistry.CanDefend(settlementCompare, settlement) &&
-                    (highest == null || settlementCompare.settlementMilitaryLevel > highest.settlementMilitaryLevel))
+                if (settlementCompare == settlement) continue;
+
+                var mc = settlementCompare.MilitaryComp;
+                if (mc == null) continue;
+
+                if (mc.autoDefend && !mc.militaryBusy && !mc.isUnderAttack
+                    && DefenseValidatorRegistry.CanDefend(settlementCompare, settlement)
+                    && (highest == null || settlementCompare.settlementMilitaryLevel > highest.settlementMilitaryLevel))
                 {
                     highest = settlementCompare;
                 }
             }
 
             // Also check external auto-defenders (e.g., defensive outposts)
-            IAutoDefender bestExternalDefender = AutoDefenderRegistry.FindBestDefender(settlement.Tile, settlement.settlementMilitaryLevel);
+            IAutoDefender bestExternalDefender = AutoDefenderRegistry.FindBestDefender(settlement.Tile, 0);
 
             if (highest != null)
             {
@@ -348,7 +350,6 @@ namespace FactionColonies
                 if (settlementCompare.MilitaryComp != null &&
                     settlementCompare.MilitaryComp.autoDefend && !settlementCompare.MilitaryComp.militaryBusy &&
                     !settlementCompare.MilitaryComp.isUnderAttack &&
-                    settlementCompare.settlementMilitaryLevel > target.MilitaryLevel &&
                     (highestSettlement == null || settlementCompare.settlementMilitaryLevel > highestSettlement.settlementMilitaryLevel))
                 {
                     highestSettlement = settlementCompare;
@@ -356,7 +357,7 @@ namespace FactionColonies
             }
 
             // Check external auto-defenders
-            IAutoDefender bestExternalDefender = AutoDefenderRegistry.FindBestDefender(target.Tile, target.MilitaryLevel);
+            IAutoDefender bestExternalDefender = AutoDefenderRegistry.FindBestDefender(target.Tile, 0);
 
             // Pick the stronger defender (Empire settlement vs external)
             int externalLevel = bestExternalDefender != null ? bestExternalDefender.MilitaryLevel : 0;
