@@ -182,6 +182,7 @@ namespace FactionColonies
         {
             get
             {
+                if (dirtyStatsCache) RecomputeStats();
                 if (!(MilitaryComp is null))
                 {
                     return MilitaryComp.settlementMilitaryLevel;

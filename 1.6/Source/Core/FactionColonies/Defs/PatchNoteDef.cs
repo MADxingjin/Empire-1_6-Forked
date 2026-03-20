@@ -103,7 +103,7 @@ namespace FactionColonies
         /// <summary>
         /// The complete Version number formatted like: "1.02.03"
         /// </summary>
-        public string VersionNumber => $"{major}.{ToVersion(minor)}.{ToVersion(patch)}";
+        public string VersionNumber => $"{major}.{minor}.{patch}";
 
         /// <summary>
         /// Converts the version to the old Empire version format
