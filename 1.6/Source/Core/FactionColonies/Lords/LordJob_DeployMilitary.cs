@@ -211,5 +211,15 @@ namespace FactionColonies
             squad.isDeployed = false;
             base.Notify_LordDestroyed();
         }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            if (squad != null && squad.isDeployed)
+            {
+                squad.InitiateCooldownEvent();
+                squad.isDeployed = false;
+            }
+        }
     }
 }
