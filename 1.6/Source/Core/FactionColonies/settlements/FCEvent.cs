@@ -216,6 +216,7 @@ namespace FactionColonies
                         {
                             if (excludedSettlements.Contains(settlement)) continue;
                             if (!tempEvent.def.BiomeAllowed(settlement.biome)) continue;
+                            if (!tempEvent.def.SettlementTypeAllowed(settlement.settlementDef)) continue;
                             if (tempEvent.def.requiredResource != null)
                             {
                                 ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
@@ -1027,6 +1028,8 @@ namespace FactionColonies
         public int minimumProsperity = 0;
         public int maximumProsperity = 100;
         public ResourceTypeDef requiredResource;
+        public List<WorldSettlementDef> allowedSettlementTypes = new List<WorldSettlementDef>();
+        public List<WorldSettlementDef> blockedSettlementTypes = new List<WorldSettlementDef>();
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
 
         //Options
@@ -1059,6 +1062,29 @@ namespace FactionColonies
                 return applicableBiomes.Contains(biome);
             if (restrictedBiomes.Count > 0)
                 return !restrictedBiomes.Contains(biome);
+            return true;
+        }
+
+        /// <summary>
+        /// Checks whether this event can target the given settlement type.
+        /// Uses depth-based resolution matching <see cref="BuildingFCDef.CanBeBuiltForSettlementType"/>.
+        /// Both allow and block lists can coexist; most specific (shallowest depth) wins, tie goes to block.
+        /// </summary>
+        public bool SettlementTypeAllowed(WorldSettlementDef settlementDef)
+        {
+            int allowDepth = (allowedSettlementTypes.Count > 0)
+                ? settlementDef.DepthInList(allowedSettlementTypes) : -1;
+            int blockDepth = (blockedSettlementTypes.Count > 0)
+                ? settlementDef.DepthInList(blockedSettlementTypes) : -1;
+
+            if (allowDepth >= 0 || blockDepth >= 0)
+            {
+                if (allowDepth >= 0 && blockDepth >= 0)
+                    return allowDepth < blockDepth;
+                return allowDepth >= 0;
+            }
+            if (allowedSettlementTypes.Count > 0)
+                return false;
             return true;
         }
 

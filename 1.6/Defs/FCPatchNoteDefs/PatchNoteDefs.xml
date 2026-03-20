@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_117_0</defName>
+		<label>Event Def Upate</label>
+		<description>Updates the FCEventDef with some extra filtering options.</description>
+
+		<major>0</major>
+		<minor>117</minor>
+		<patch>0</patch>
+
+		<releaseDay>19</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds a &apos;allowedSettlementTypes&apos; and &apos;blockedSettlementTypes&apos; fields to FCEventDef</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Event Def Upate</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_116_0</defName>
 		<label>Update packageId</label>
 		<description>Updates Empire&apos;s Package ID to reflect the hefty refactoring, and force old compatibility patches to update.</description>

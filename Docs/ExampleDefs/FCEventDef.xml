@@ -43,6 +43,18 @@
 	<maximumProsperity>100</maximumProsperity>
 	<!-- If set, at least one settlement must be producing this resource for the event to fire. -->
 	<requiredResource>RTD_Food</requiredResource>
+	<!-- Settlement type allowlist (WorldSettlementDef defNames). If non-empty, only settlements whose type
+	     matches an entry (or inherits from one via baseSettlementType) are eligible. Uses depth-based
+	     resolution: if both allow and block lists match, the most specific (shallowest depth) wins;
+	     ties go to block. -->
+	<allowedSettlementTypes>
+		<li>WorldSettlementDef_Surface</li>
+	</allowedSettlementTypes>
+	<!-- Settlement type blocklist. Settlements whose type matches (or inherits from) an entry are excluded.
+	     Can coexist with allowedSettlementTypes; depth-based resolution handles conflicts. -->
+	<blockedSettlementTypes>
+		<li>WorldSettlementDef_Orbital</li>
+	</blockedSettlementTypes>
 	<!-- Events that cannot be active at the same time as this one. -->
 	<incompatibleEvents>
 		<li>anotherEvent</li>
