@@ -12,6 +12,7 @@
 	<FCSettingConfigureEvents>Enable or disable individual events below. Disabled events will not fire in any save.</FCSettingConfigureEvents>
 	<FCSettingsTabGeneral>General</FCSettingsTabGeneral>
 	<FCSettingsTabEvents>Events</FCSettingsTabEvents>
+	<FCSettingsTabMilitary>Military</FCSettingsTabMilitary>
 	<FCSettingEnableAllEvents>Enable All Events</FCSettingEnableAllEvents>
 	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
 	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
@@ -26,6 +27,13 @@
 	<FCSettingMaxThreatScaling>Maximum Threat Scaling</FCSettingMaxThreatScaling>
 	<FCSettingDefenderAdvantage>Defender Advantage</FCSettingDefenderAdvantage>
 	<FCSettingEfficiencyDamping>Efficiency Combat Influence (0 = HP only, 1 = full roll effect)</FCSettingEfficiencyDamping>
+	<FCSettingEfficiencyDampingTooltip>Controls how much the military efficiency stat affects auto-resolve battle outcomes.
+
+At 0, military efficiency affects only the effective level of both forces.
+
+At 1, military efficiency fully affects each round of auto combat. Military forces of lower level but higher efficiency can often beat forces of a higher level, but lower efficiency.
+
+Values in between dampen the effect of military efficiency on the auto combat.</FCSettingEfficiencyDampingTooltip>
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
 	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>

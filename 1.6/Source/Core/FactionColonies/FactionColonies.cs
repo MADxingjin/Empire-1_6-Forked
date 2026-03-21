@@ -349,6 +349,8 @@ namespace FactionColonies
         private float viewRectHeightGeneral = -1f;
         private Vector2 scrollVectorEvents = new Vector2();
         private float viewRectHeightEvents = -1f;
+        private Vector2 scrollVectorMilitary = new Vector2();
+        private float viewRectHeightMilitary = -1f;
 
         private bool firstRun = true;
         private bool fixDone = false;
@@ -413,6 +415,7 @@ namespace FactionColonies
             settingsTabs.Clear();
             settingsTabs.Add(new TabRecord("FCSettingsTabGeneral".Translate(), delegate { settingsTab = 0; }, settingsTab == 0));
             settingsTabs.Add(new TabRecord("FCSettingsTabEvents".Translate(), delegate { settingsTab = 1; }, settingsTab == 1));
+            settingsTabs.Add(new TabRecord("FCSettingsTabMilitary".Translate(), delegate { settingsTab = 2; }, settingsTab == 2));
 
             Rect contentRect = new Rect(inRect.x, inRect.y + 40f, inRect.width, inRect.height - 40f);
             Widgets.DrawMenuSection(contentRect);
@@ -425,6 +428,7 @@ namespace FactionColonies
             {
                 case 0: DoGeneralTab(innerRect); break;
                 case 1: DoEventsTab(innerRect); break;
+                case 2: DoMilitaryTab(innerRect); break;
             }
         }
 
@@ -512,27 +516,8 @@ namespace FactionColonies
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
             ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref medievalTechOnly);
-            ls.CheckboxLabeled("FCSettingDisableHostileMilActions".Translate(), ref disableHostileMilitaryActions);
-            ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref disableRandomEvents);
-            ls.CheckboxLabeled("FCSettingDeadPawnsIncreaseMilCooldown".Translate(), ref deadPawnsIncreaseMilitaryCooldown);
-            ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref disableForcedPausingDuringEvents);
-            if (ls.ButtonText("FCSettingBattleMode".Translate() + battleMode)) Find.WindowStack.Add(new FloatMenu(BattleModeOptions));
             if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
-
-            ls.Label("FCSettingMinMaxMilitaryAction".Translate());
-            ls.IntRange(ref minMaxDaysTillMilitaryAction, 1, 30);
-            minDaysTillMilitaryAction = minMaxDaysTillMilitaryAction.min;
-            maxDaysTillMilitaryAction = Math.Max(1, minMaxDaysTillMilitaryAction.max);
-
-            ls.Label("FCSettingMaxThreatScaling".Translate() + ": " + maxThreatMultiplier.ToString("0.0") + "x");
-            maxThreatMultiplier = ls.Slider(maxThreatMultiplier, 1.0f, 5.0f);
-
-            ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
-            defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
-
-            ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"));
-            efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
 
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
 
@@ -601,6 +586,11 @@ namespace FactionColonies
             Widgets.BeginScrollView(rect, ref scrollVectorEvents, viewRect);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
+
+            ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref disableRandomEvents);
+            ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref disableForcedPausingDuringEvents);
+
+            ls.Gap(5f);
 
             minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
             ls.Label("FCSettingMinMaxRandomEvent".Translate());
@@ -677,6 +667,44 @@ namespace FactionColonies
             }
 
             viewRectHeightEvents = ls.CurHeight + 5f;
+            ls.End();
+
+            Widgets.EndScrollView();
+        }
+
+        private void DoMilitaryTab(Rect rect)
+        {
+            minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
+
+            viewRectHeightMilitary = viewRectHeightMilitary == -1f ? float.MaxValue : viewRectHeightMilitary;
+            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightMilitary);
+            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
+
+            Widgets.BeginScrollView(rect, ref scrollVectorMilitary, viewRect);
+            Listing_Standard ls = new Listing_Standard();
+            ls.Begin(listRect);
+
+            ls.CheckboxLabeled("FCSettingDisableHostileMilActions".Translate(), ref disableHostileMilitaryActions);
+            ls.CheckboxLabeled("FCSettingDeadPawnsIncreaseMilCooldown".Translate(), ref deadPawnsIncreaseMilitaryCooldown);
+            if (ls.ButtonText("FCSettingBattleMode".Translate() + battleMode)) Find.WindowStack.Add(new FloatMenu(BattleModeOptions));
+
+            ls.Gap(10f);
+
+            ls.Label("FCSettingMinMaxMilitaryAction".Translate());
+            ls.IntRange(ref minMaxDaysTillMilitaryAction, 1, 30);
+            minDaysTillMilitaryAction = minMaxDaysTillMilitaryAction.min;
+            maxDaysTillMilitaryAction = Math.Max(1, minMaxDaysTillMilitaryAction.max);
+
+            ls.Label("FCSettingMaxThreatScaling".Translate() + ": " + maxThreatMultiplier.ToString("0.0") + "x");
+            maxThreatMultiplier = ls.Slider(maxThreatMultiplier, 1.0f, 5.0f);
+
+            ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
+            defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
+
+            ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"), -1f, "FCSettingEfficiencyDampingTooltip".Translate());
+            efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
+
+            viewRectHeightMilitary = ls.CurHeight + 5f;
             ls.End();
 
             Widgets.EndScrollView();
