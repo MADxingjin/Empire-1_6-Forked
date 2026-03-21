@@ -86,6 +86,8 @@ Defines a settlement type (e.g., Surface, Orbital). Controls resource availabili
 | `planetLayers` | `List<PlanetLayerDef>` | `[]` | Planet layers this settlement can exist on (for non-surface types). |
 | `maxSettlementLevel` | `int` | `99` | Hard cap on settlement level. |
 | `maxBuildingCount` | `int` | `99` | Hard cap on building slots. |
+| `baseUnlockedBuildings` | `int` | `3` | Building slots available at settlement level 0. |
+| `perLevelUnlockedBuildings` | `float` | `0.5` | Additional building slots per level (floored). Formula: `min(base + floor(perLevel x level), maxBuildingCount)`. |
 | `titleKey` | `string` | `null` | Key for settlement-type-specific town titles. Falls back to default titles. |
 | `isConstructed` | `bool` | `false` | If true, creation timer labeled "Construction Time" instead of "Travel Time". |
 | `accentColor` | `Color?` | `null` | UI accent color for this settlement type. |
@@ -270,6 +272,8 @@ Defines policies, traits, and edicts. The same def type serves multiple UI categ
 | `suppressMemberDeathPenalty` | `bool` | `false` | Suppresses happiness/loyalty penalty on member death. |
 | `behaviorClass` | `Type` | `null` | C# class for procedural logic. Must extend [FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior). |
 | `incompatiblePolicies` | `List<FCPolicyDef>` | `[]` | Mutually exclusive policies. |
+| `requiredPolicies` | `List<FCPolicyDef>` | `[]` | Policies/traits/edicts that must be active to enact this. Checked at enactment; dependent edicts auto-revoked if prerequisite is removed. |
+| `requirementMode` | `FCRequirementMode` | `All` | `All` = every listed policy required. `Any` = at least one required. |
 | `positiveEffects` | `List<string>` | — | Translation keys for positive effect descriptions. |
 | `negativeEffects` | `List<string>` | — | Translation keys for negative effect descriptions. |
 | `iconPathLight` / `iconPathDark` | `string` | — | Icon paths for light/dark themes. |

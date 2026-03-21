@@ -316,9 +316,33 @@ namespace FactionColonies
 
         private List<FCPolicyDef> GetAvailableTraits()
         {
-            return DefDatabase<FCPolicyDef>.AllDefs
-                .Where(d => d.category == FCPolicyCategory.Trait && !faction.HasTrait(d))
-                .ToList();
+            return DefDatabase<FCPolicyDef>.AllDefs.Where(d => d.category == FCPolicyCategory.Trait
+                                                               && !faction.HasTrait(d)
+                                                               && MeetsTraitPrerequisites(d)).ToList();
+        }
+
+        private bool MeetsTraitPrerequisites(FCPolicyDef def)
+        {
+            if (def.requiredPolicies.NullOrEmpty()) return true;
+
+            if (def.requirementMode == FCRequirementMode.Any)
+            {
+                foreach (FCPolicyDef req in def.requiredPolicies)
+                {
+                    if (faction.HasTrait(req) || selectedTraits.Contains(req)
+                        || faction.HasPolicy(req) || faction.HasEdict(req))
+                        return true;
+                }
+                return false;
+            }
+
+            foreach (FCPolicyDef req in def.requiredPolicies)
+            {
+                if (!faction.HasTrait(req) && !selectedTraits.Contains(req)
+                    && !faction.HasPolicy(req) && !faction.HasEdict(req))
+                    return false;
+            }
+            return true;
         }
 
         string returnTraitText(FCPolicyDef def)

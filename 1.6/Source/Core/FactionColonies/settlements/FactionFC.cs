@@ -1217,6 +1217,14 @@ namespace FactionColonies
                 }
             }
 
+            // Check policy prerequisites
+            string failReason;
+            if (!def.MeetsPolicyRequirements(this, out failReason))
+            {
+                Messages.Message(failReason, MessageTypeDefOf.RejectInput);
+                return;
+            }
+
             // Revoke existing edict in this category (if any)
             RevokeEdict(def.category, silent: true);
 
@@ -1241,12 +1249,32 @@ namespace FactionColonies
             }
 
             string label = edict.def?.LabelCap ?? "";
+            FCPolicyDef revokedDef = edict.def;
             edicts.Remove(category);
             pendingEdictActivations.Remove(category);
             RebuildBehaviorCache();
             DirtyFactionProfitCache();
             if (!silent)
                 Messages.Message("FCEdictRevoked".Translate(label), MessageTypeDefOf.NeutralEvent);
+
+            // Cascade: revoke any active edicts that depended on the one just removed
+            if (revokedDef != null)
+            {
+                List<FCPolicyCategory> toRevoke = new List<FCPolicyCategory>();
+                foreach (KeyValuePair<FCPolicyCategory, FCPolicy> kvp in edicts)
+                {
+                    if (kvp.Value.def.requiredPolicies.NullOrEmpty()) continue;
+                    string reason;
+                    if (!kvp.Value.def.MeetsPolicyRequirements(this, out reason))
+                        toRevoke.Add(kvp.Key);
+                }
+                foreach (FCPolicyCategory cat in toRevoke)
+                {
+                    string depLabel = edicts[cat].def?.LabelCap ?? "";
+                    Messages.Message("FCEdictRevokedDependency".Translate(depLabel, label), MessageTypeDefOf.NeutralEvent);
+                    RevokeEdict(cat, silent: true);
+                }
+            }
         }
 
         public void RevokeAllEdicts()

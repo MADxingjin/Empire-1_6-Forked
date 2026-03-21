@@ -105,6 +105,11 @@
 	<!-- This is the hard cap. Max building count in the code is based on the settlement level, and is usually lower than this value.
 	       So you only need to specify this field if you expect it to impact the normal max building count (which is 8).-->
 	<maxBuildingCount>99</maxBuildingCount>
+	<!-- Building slots available at settlement level 0. Default: 3 -->
+	<baseUnlockedBuildings>3</baseUnlockedBuildings>
+	<!-- Additional building slots gained per settlement level (floored). Default: 0.5 -->
+	<!-- Formula: unlocked = min(baseUnlockedBuildings + floor(perLevelUnlockedBuildings * level), maxBuildingCount) -->
+	<perLevelUnlockedBuildings>0.5</perLevelUnlockedBuildings>
 
 	<!-- ── UI / Flavor ── -->
 	<!-- Optional key for settlement-type-specific town titles. -->

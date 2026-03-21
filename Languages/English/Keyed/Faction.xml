@@ -93,6 +93,10 @@
 	<FCEdictRevoke>Revoke</FCEdictRevoke>
 	<FCEdictLockedUntilLevel>Locked until faction level {0}</FCEdictLockedUntilLevel>
 	<FCEdictIncompatible>{0} is incompatible with your active policy: {1}</FCEdictIncompatible>
+	<FCEdictRequiresPolicy>{0} requires: {1}</FCEdictRequiresPolicy>
+	<FCEdictRequiresPolicyAny>{0} requires one of: {1}</FCEdictRequiresPolicyAny>
+	<FCEdictRevokedDependency>{0} was automatically revoked because its prerequisite {1} was removed.</FCEdictRevokedDependency>
+	<FCPolicyRequires>Requires: {0}</FCPolicyRequires>
 
 	<!-- Research -->
 	<Researching>Researching</Researching>

@@ -96,6 +96,17 @@
 	<incompatiblePolicies>
 		<li>anotherPolicy</li>
 	</incompatiblePolicies>
+
+	<!-- ── Required Policies (Prerequisites) ── -->
+	<!-- Policies, traits, or edicts that must be active before this one can be enacted. -->
+	<!-- For edicts: checked at enactment time and shown grayed-out in the UI if unmet. -->
+	<!-- For traits: checked at selection time; traits with unmet prerequisites are hidden. -->
+	<!-- If a prerequisite edict is revoked, any active edicts that depend on it are auto-revoked. -->
+	<requiredPolicies>
+		<li>militaristic</li>
+	</requiredPolicies>
+	<!-- How to evaluate the list: All = must have all (default), Any = must have at least one. -->
+	<requirementMode>All</requirementMode>
   </FactionColonies.FCPolicyDef>
 
 </Defs>
