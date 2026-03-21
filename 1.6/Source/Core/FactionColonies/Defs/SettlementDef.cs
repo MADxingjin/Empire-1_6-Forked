@@ -47,6 +47,8 @@ namespace FactionColonies
 
         public int maxSettlementLevel = 99;
         public int maxBuildingCount = 99;
+        public int baseUnlockedBuildings = 3;
+        public float perLevelUnlockedBuildings = 0.5f;
 
         /// <summary>
         /// Optional key used for settlement-type-specific town titles.
@@ -240,6 +242,18 @@ namespace FactionColonies
                     }
                     current = current.baseSettlementType;
                 }
+            }
+            if (baseUnlockedBuildings < 0)
+            {
+                yield return "WorldSettlementDef " + defName + " has baseUnlockedBuildings < 0";
+            }
+            if (perLevelUnlockedBuildings < 0f)
+            {
+                yield return "WorldSettlementDef " + defName + " has perLevelUnlockedBuildings < 0";
+            }
+            if (baseUnlockedBuildings > maxBuildingCount)
+            {
+                yield return "WorldSettlementDef " + defName + " has baseUnlockedBuildings (" + baseUnlockedBuildings + ") > maxBuildingCount (" + maxBuildingCount + ")";
             }
             foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
                 yield return err;

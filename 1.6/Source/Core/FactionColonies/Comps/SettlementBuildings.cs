@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using FactionColonies.util;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -45,10 +46,18 @@ namespace FactionColonies
     /// A WorldObjectComp class for use with BuildingFCDefs. When a building is constructed, if it has a SettlementBuildingComp, then
     /// the comp is added to this comp's list and tracked.
     /// </summary>
-    // TODO: use this comp to do *all* building tracking, instead of storing the buildings in the worldsettlementfc itself?
     public class WorldObjectComp_SettlementBuildings : WorldObjectComp
     {
-        public int FC_MAX_BUILDINGS => (int)Math.Min(3 + Math.Floor(FCSettings.settlementMaxLevel / 2f), WorldSettlement.settlementDef.maxBuildingCount);
+        public int FC_MAX_BUILDINGS
+        {
+            get
+            {
+                WorldSettlementDef def = WorldSettlement.settlementDef;
+                int maxLevel = Math.Min(FCSettings.settlementMaxLevel, def.maxSettlementLevel);
+                return SettlementFormulas.CalculateBuildingSlots(maxLevel, def.maxBuildingCount,
+                    def.baseUnlockedBuildings, def.perLevelUnlockedBuildings);
+            }
+        }
         private List<BuildingFC> buildings = new List<BuildingFC>();
         private List<SettlementBuildingComp> settlementBuildingComps = new List<SettlementBuildingComp>();
 

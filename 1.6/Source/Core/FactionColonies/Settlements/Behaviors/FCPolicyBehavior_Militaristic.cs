@@ -13,9 +13,36 @@ namespace FactionColonies
             cooldownTicks = GenDate.TicksPerDay * 5
         };
 
+        public override void OnEnacted(FactionFC faction)
+        {
+            foreach (WorldSettlementFC settlement in faction.settlements)
+            {
+                TryPlaceBarracks(settlement);
+            }
+        }
+
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            settlement.ConstructBuilding(DefDatabase<BuildingFCDef>.GetNamed("barracks"), 0);
+            TryPlaceBarracks(settlement);
+        }
+
+        private static void TryPlaceBarracks(WorldSettlementFC settlement)
+        {
+            WorldObjectComp_SettlementBuildings buildingsComp = settlement.BuildingsComp;
+            if (buildingsComp == null) return;
+
+            BuildingFCDef barracks = DefDatabase<BuildingFCDef>.GetNamed("barracks");
+            if (buildingsComp.HasBuilding(barracks)) return;
+
+            int slots = buildingsComp.NumBuildingSlots;
+            for (int i = 0; i < slots; i++)
+            {
+                if (buildingsComp.BuildingSlotIsEmpty(i))
+                {
+                    settlement.ConstructBuilding(barracks, i);
+                    return;
+                }
+            }
         }
 
         public override double ModifyBuildingUpkeep(BuildingFCDef building, double currentUpkeep, WorldSettlementFC settlement)

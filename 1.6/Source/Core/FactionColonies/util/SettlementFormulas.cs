@@ -29,9 +29,21 @@ namespace FactionColonies.util
         /// <summary>
         /// Calculates the number of building slots available at a given settlement level.
         /// </summary>
-        public static int CalculateBuildingSlots(int settlementLevel, int maxBuildingCount)
+        public static int CalculateBuildingSlots(int settlementLevel, int maxBuildingCount, int baseSlots, float perLevelSlots)
         {
-            return Math.Min(3 + (int)Math.Floor(settlementLevel / 2f), maxBuildingCount);
+            return Math.Min(baseSlots + (int)Math.Floor(perLevelSlots * settlementLevel), maxBuildingCount);
+        }
+
+        /// <summary>
+        /// Returns the minimum settlement level required to unlock a given building slot index.
+        /// Returns 0 if the slot is available at level 0, or -1 if the slot can never be unlocked via leveling.
+        /// </summary>
+        public static int CalculateLevelForSlot(int slotIndex, int baseSlots, float perLevelSlots)
+        {
+            int needed = slotIndex - baseSlots + 1;
+            if (needed <= 0) return 0;
+            if (perLevelSlots <= 0f) return -1;
+            return (int)Math.Ceiling(needed / (double)perLevelSlots);
         }
 
         /// <summary>
