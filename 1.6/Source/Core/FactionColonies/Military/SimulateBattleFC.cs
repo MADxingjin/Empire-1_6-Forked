@@ -61,8 +61,8 @@ namespace FactionColonies
         public static void FightRound(militaryForce MFA, militaryForce MFB, IRandProvider rand = null)
         {
             rand = rand ?? new RimWorldRandProvider();
-            var randA = (rand.Range(0, 20) * MFA.militaryEfficiency);
-            var randB = (rand.Range(0, 20) * MFB.militaryEfficiency);
+            var randA = rand.Range(0, 20) * DampenEfficiency(MFA.militaryEfficiency);
+            var randB = rand.Range(0, 20) * DampenEfficiency(MFB.militaryEfficiency);
 
             if (randA > randB)
             {
@@ -72,7 +72,11 @@ namespace FactionColonies
             {
                 MFA.forceRemaining -= 1;
             }
+        }
 
+        private static double DampenEfficiency(double efficiency)
+        {
+            return 1.0 + (efficiency - 1.0) * FCSettings.efficiencyDamping;
         }
     }
 

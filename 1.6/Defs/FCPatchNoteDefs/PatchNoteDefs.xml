@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_117_3</defName>
+		<label>Battle auto-resolve update</label>
+		<description>Changes the calculations for auto-resolve battles.</description>
+
+		<major>0</major>
+		<minor>117</minor>
+		<patch>3</patch>
+
+		<releaseDay>20</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds a dampening factor to how much Military Efficiency affects the outcome of auto-resolve battles (its effect was a little too strong). The dampening factor can be changed in the settings.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Battle auto-resolve update</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_117_2</defName>
 		<label>More military fixes</label>
 		<description>Some more fixes for the military side of Empire.</description>

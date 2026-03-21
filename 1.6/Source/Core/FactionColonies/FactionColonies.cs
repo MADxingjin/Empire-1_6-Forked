@@ -77,6 +77,7 @@ namespace FactionColonies
         public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 6;
         public const float DEFAULT_MAX_THREAT_MULTIPLIER = 3.0f;
         public const float DEFAULT_DEFENDER_ADVANTAGE = 1.15f;
+        public const float DEFAULT_EFFICIENCY_DAMPING = 0.5f;
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
          *           ~  DEFAULTS END ~
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -131,6 +132,7 @@ namespace FactionColonies
 
         public static float maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
         public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
+        public static float efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
 
         public static int maxPolicyCount = 2;
 
@@ -176,6 +178,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref printDebug, "printDebug", false);
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
+            Scribe_Values.Look(ref efficiencyDamping, "efficiencyDamping", DEFAULT_EFFICIENCY_DAMPING);
             Scribe_Values.Look(ref lastSeenVersionMajor, "lastSeenVersionMajor", 0);
             Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
             Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
@@ -495,6 +498,9 @@ namespace FactionColonies
             ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
             defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
 
+            ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"));
+            efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
+
             ls.Label("FCSettingMinMaxRandomEvent".Translate());
             ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
             minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
@@ -542,6 +548,7 @@ namespace FactionColonies
                 battleMode = DEFAULT_BATTLE_MODE;
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
+                efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
