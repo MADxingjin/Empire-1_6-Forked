@@ -95,8 +95,8 @@ namespace FactionColonies
         {
             var mfa = CreateForce(5, 2.0, 5); // 2x efficiency
             var mfb = CreateForce(5, 1.0, 5);
-            // A rolls 5 * 2.0 = 10, B rolls 8 * 1.0 = 8 → A wins
-            var rand = new AlternatingRandProvider(5, 8);
+            // A rolls 6 * DampenEff(2.0)=1.5 = 9, B rolls 8 * DampenEff(1.0)=1.0 = 8 → A wins
+            var rand = new AlternatingRandProvider(6, 8);
 
             SimulateBattleFc.FightRound(mfa, mfb, rand);
 

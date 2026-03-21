@@ -231,7 +231,7 @@ namespace FactionColonies
         /// </summary>
         public virtual int GetBuildingSlots(int level, int maxCount)
         {
-            return SettlementFormulas.CalculateBuildingSlots(level, maxCount);
+            return SettlementFormulas.CalculateBuildingSlots(level, maxCount, parentDef.baseUnlockedBuildings, parentDef.perLevelUnlockedBuildings);
         }
 
         /// <summary>

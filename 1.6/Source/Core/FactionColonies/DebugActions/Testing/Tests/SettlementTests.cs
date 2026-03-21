@@ -53,9 +53,12 @@ namespace FactionColonies
             if (settlement.BuildingsComp == null) TestAssert.Skip("No BuildingsComp");
 
             int actual = settlement.BuildingsComp.NumBuildingSlots;
+            WorldSettlementDef def = settlement.settlementDef;
             int expected = SettlementFormulas.CalculateBuildingSlots(
                 settlement.settlementLevel,
-                settlement.settlementDef.maxBuildingCount);
+                def.maxBuildingCount,
+                def.baseUnlockedBuildings,
+                def.perLevelUnlockedBuildings);
             TestAssert.AreEqual(expected, actual, "NumBuildingSlots should match SettlementFormulas");
         }
 

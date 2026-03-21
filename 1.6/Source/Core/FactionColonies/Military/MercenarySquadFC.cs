@@ -299,7 +299,7 @@ namespace FactionColonies
 
             if (race == null || factionFc.xenotypeFilter.GetRaceWeight(raceChoice.race) <= 0)
             {
-                raceChoice = FactionCache.PlayerColonyFaction.RandomPawnKind();
+                raceChoice = PColonyPawnKindDefOf.PColony_Fighter;
             }
 
             // Try to generate pawn with the requested kind

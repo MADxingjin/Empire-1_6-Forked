@@ -1184,10 +1184,13 @@ namespace FactionColonies
                 }
                 else
                 {
-                    bool isCapLocked = settlement.BuildingsComp.NumBuildingSlots >= settlement.settlementDef.maxBuildingCount;
+                    WorldSettlementDef sDef = settlement.settlementDef;
+                    int requiredLevel = SettlementFormulas.CalculateLevelForSlot(i, sDef.baseUnlockedBuildings, sDef.perLevelUnlockedBuildings);
+                    bool isCapLocked = requiredLevel < 0 ||
+                                       settlement.BuildingsComp.NumBuildingSlots >= sDef.maxBuildingCount;
                     string lockTooltip = isCapLocked
                         ? "FCBuildingLockedMax".Translate()
-                        : "FCBuildingLockedLevel".Translate(2 * (i - 2));
+                        : "FCBuildingLockedLevel".Translate(requiredLevel);
                     TooltipHandler.TipRegion(nBox, lockTooltip);
                     if (Widgets.ButtonImage(nBuilding, TexLoad.buildingLocked))
                     {

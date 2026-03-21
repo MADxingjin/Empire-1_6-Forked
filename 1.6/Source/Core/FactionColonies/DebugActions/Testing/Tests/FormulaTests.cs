@@ -74,25 +74,64 @@ namespace FactionColonies
         [EmpireTest("Formula")]
         public static void BuildingSlots_Level0_Returns3()
         {
-            TestAssert.AreEqual(3, SettlementFormulas.CalculateBuildingSlots(0, 10));
+            TestAssert.AreEqual(3, SettlementFormulas.CalculateBuildingSlots(0, 10, 3, 0.5f));
         }
 
         [EmpireTest("Formula")]
         public static void BuildingSlots_Level4_Returns5()
         {
-            TestAssert.AreEqual(5, SettlementFormulas.CalculateBuildingSlots(4, 10));
+            TestAssert.AreEqual(5, SettlementFormulas.CalculateBuildingSlots(4, 10, 3, 0.5f));
         }
 
         [EmpireTest("Formula")]
         public static void BuildingSlots_Level10_Returns8()
         {
-            TestAssert.AreEqual(8, SettlementFormulas.CalculateBuildingSlots(10, 10));
+            TestAssert.AreEqual(8, SettlementFormulas.CalculateBuildingSlots(10, 10, 3, 0.5f));
         }
 
         [EmpireTest("Formula")]
         public static void BuildingSlots_CappedByMaxCount()
         {
-            TestAssert.AreEqual(4, SettlementFormulas.CalculateBuildingSlots(10, 4));
+            TestAssert.AreEqual(4, SettlementFormulas.CalculateBuildingSlots(10, 4, 3, 0.5f));
+        }
+
+        [EmpireTest("Formula")]
+        public static void BuildingSlots_ZeroBase_Level0_Returns0()
+        {
+            TestAssert.AreEqual(0, SettlementFormulas.CalculateBuildingSlots(0, 10, 0, 0.5f));
+        }
+
+        [EmpireTest("Formula")]
+        public static void BuildingSlots_ZeroPerLevel_AlwaysReturnsBase()
+        {
+            TestAssert.AreEqual(2, SettlementFormulas.CalculateBuildingSlots(10, 10, 2, 0f));
+        }
+
+        [EmpireTest("Formula")]
+        public static void BuildingSlots_CustomProgression()
+        {
+            // base 1 + floor(1.0 * 3) = 4
+            TestAssert.AreEqual(4, SettlementFormulas.CalculateBuildingSlots(3, 10, 1, 1f));
+        }
+
+        // --- CalculateLevelForSlot ---
+
+        [EmpireTest("Formula")]
+        public static void LevelForSlot_BaseSlot_Returns0()
+        {
+            TestAssert.AreEqual(0, SettlementFormulas.CalculateLevelForSlot(0, 3, 0.5f));
+        }
+
+        [EmpireTest("Formula")]
+        public static void LevelForSlot_FirstLocked_Returns2()
+        {
+            TestAssert.AreEqual(2, SettlementFormulas.CalculateLevelForSlot(3, 3, 0.5f));
+        }
+
+        [EmpireTest("Formula")]
+        public static void LevelForSlot_ZeroPerLevel_ReturnsNeg1()
+        {
+            TestAssert.AreEqual(-1, SettlementFormulas.CalculateLevelForSlot(3, 3, 0f));
         }
 
         // --- CalculateBuildingUpkeep ---
