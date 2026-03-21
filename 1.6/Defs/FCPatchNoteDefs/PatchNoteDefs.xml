@@ -62,6 +62,42 @@
 	========== END TEMPLATE ========== -->
 
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_119_0</defName>
+		<label>FCPolicyDef update</label>
+		<description>Adds the ability to set required policies/traits/edicts for a new policy/trait/edict to be applied.</description>
+
+		<major>0</major>
+		<minor>119</minor>
+		<patch>0</patch>
+
+		<releaseDay>21</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add requiredPolicies and requirementMode fields to FCPolicyDef. If requiredPolicies is not empty, then all (or any) of the given policies must be active in order for the main def to be selectable</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>FCPolicyDef update</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_118_3</defName>
 		<label>Minor performance improvement</label>
 		<description>Prevents unnecessary re-computed of designed mercenaries every time the main window is closed.</description>

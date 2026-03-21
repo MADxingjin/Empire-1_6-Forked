@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -101,6 +102,10 @@ namespace FactionColonies
         // Policies/traits that are incompatible with this one (mutual exclusion in selection UI)
         public List<FCPolicyDef> incompatiblePolicies = new List<FCPolicyDef>();
 
+        // Policies/traits/edicts that must be active before this one can be enacted
+        public List<FCPolicyDef> requiredPolicies = new List<FCPolicyDef>();
+        public FCRequirementMode requirementMode = FCRequirementMode.All;
+
         [Unsaved] private Texture2D resolvedIconLight;
         [Unsaved] private Texture2D resolvedIconDark;
         [Unsaved] private bool triedResolveLight;
@@ -192,11 +197,54 @@ namespace FactionColonies
                 str += "FCEdictUpkeep".Translate(upkeepSilver);
             }
 
+            if (!requiredPolicies.NullOrEmpty())
+            {
+                if (str.Length > 0) str += "\n\n";
+                string names = requirementMode == FCRequirementMode.Any
+                    ? string.Join(" / ", requiredPolicies.Select(p => p.LabelCap))
+                    : string.Join(", ", requiredPolicies.Select(p => p.LabelCap));
+                str += "FCPolicyRequires".Translate(names);
+            }
+
             return str.Trim();
         }
         public string CachedPolicyDesc()
         {
             return FactionCache.FCPolicyDescs?[this] ?? PolicyDesc();
+        }
+
+        /// <summary>
+        /// Checks whether the faction has all required policies/traits/edicts active.
+        /// </summary>
+        public bool MeetsPolicyRequirements(FactionFC faction, out string failReason)
+        {
+            failReason = null;
+            if (requiredPolicies.NullOrEmpty()) return true;
+
+            if (requirementMode == FCRequirementMode.Any)
+            {
+                foreach (FCPolicyDef required in requiredPolicies)
+                {
+                    if (faction.HasPolicy(required) || faction.HasTrait(required) || faction.HasEdict(required))
+                        return true;
+                }
+                string allNames = string.Join(", ", requiredPolicies.Select(p => p.label));
+                failReason = "FCEdictRequiresPolicyAny".Translate(LabelCap, allNames);
+                return false;
+            }
+
+            List<string> missing = new List<string>();
+            foreach (FCPolicyDef required in requiredPolicies)
+            {
+                if (!faction.HasPolicy(required) && !faction.HasTrait(required) && !faction.HasEdict(required))
+                    missing.Add(required.label);
+            }
+            if (missing.Count > 0)
+            {
+                failReason = "FCEdictRequiresPolicy".Translate(LabelCap, string.Join(", ", missing));
+                return false;
+            }
+            return true;
         }
 
         public override IEnumerable<string> ConfigErrors()
@@ -207,6 +255,16 @@ namespace FactionColonies
                 yield return err;
             if (behaviorClass != null && !typeof(FCPolicyBehavior).IsAssignableFrom(behaviorClass))
                 yield return defName + ": behaviorClass " + behaviorClass.Name + " is not a subclass of FCPolicyBehavior";
+            if (!requiredPolicies.NullOrEmpty())
+            {
+                for (int i = 0; i < requiredPolicies.Count; i++)
+                {
+                    if (requiredPolicies[i] == null)
+                        yield return defName + ": requiredPolicies[" + i + "] is null (unresolved defName?)";
+                    else if (requiredPolicies[i] == this)
+                        yield return defName + ": requiredPolicies contains self-reference";
+                }
+            }
         }
     }
 

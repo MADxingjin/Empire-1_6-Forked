@@ -256,7 +256,9 @@ namespace FactionColonies
             bool isActive = activeEdict != null && activeEdict.def == def;
             bool meetsLevel = def.factionLevelRequirement <= 0 || faction.factionLevel >= def.factionLevelRequirement;
             FCPolicyDef blocker = GetBlockingPolicy(def, faction);
-            bool available = meetsLevel && blocker == null;
+            string prereqFailReason;
+            bool meetsPrereqs = def.MeetsPolicyRequirements(faction, out prereqFailReason);
+            bool available = meetsLevel && blocker == null && meetsPrereqs;
 
             // Row background
             if (isActive)
@@ -321,6 +323,8 @@ namespace FactionColonies
                 tooltip += "\n\n" + "FCEdictLevelRequired".Translate(def.factionLevelRequirement);
             if (blocker != null)
                 tooltip += "\n\n" + "FCEdictIncompatible".Translate(def.LabelCap, blocker.LabelCap);
+            if (!meetsPrereqs)
+                tooltip += "\n\n" + prereqFailReason;
             TooltipHandler.TipRegion(rect, tooltip);
 
             Text.Anchor = TextAnchor.UpperLeft;
