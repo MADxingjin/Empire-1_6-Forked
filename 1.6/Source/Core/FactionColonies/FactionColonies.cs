@@ -153,6 +153,14 @@ namespace FactionColonies
         public const PatchNoteType DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD = PatchNoteType.Major;
         public static PatchNoteType patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
 
+        // Per-event disable list (defName strings)
+        public static HashSet<string> disabledEventDefs = new HashSet<string>();
+        public static bool IsEventDisabled(string defName) => disabledEventDefs.Contains(defName);
+
+        // Settings tab state
+        private static int settingsTab = 0;
+        private static List<TabRecord> settingsTabs = new List<TabRecord>();
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -183,6 +191,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
             Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
             Scribe_Values.Look(ref patchNoteAutoOpenThreshold, "patchNoteAutoOpenThreshold", DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD);
+            Scribe_Collections.Look(ref disabledEventDefs, "disabledEventDefs", LookMode.Value);
+            if (disabledEventDefs == null) disabledEventDefs = new HashSet<string>();
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -335,8 +345,10 @@ namespace FactionColonies
         string workerCost_buffer;
         string settlementMaxLevel_buffer;
 
-        private Vector2 scrollVector = new Vector2();
-        private float viewRectHeight = -1f;
+        private Vector2 scrollVectorGeneral = new Vector2();
+        private float viewRectHeightGeneral = -1f;
+        private Vector2 scrollVectorEvents = new Vector2();
+        private float viewRectHeightEvents = -1f;
 
         private bool firstRun = true;
         private bool fixDone = false;
@@ -397,6 +409,27 @@ namespace FactionColonies
 
         public void DoWindowContents(Rect inRect)
         {
+            // Build tabs
+            settingsTabs.Clear();
+            settingsTabs.Add(new TabRecord("FCSettingsTabGeneral".Translate(), delegate { settingsTab = 0; }, settingsTab == 0));
+            settingsTabs.Add(new TabRecord("FCSettingsTabEvents".Translate(), delegate { settingsTab = 1; }, settingsTab == 1));
+
+            Rect contentRect = new Rect(inRect.x, inRect.y + 40f, inRect.width, inRect.height - 40f);
+            Widgets.DrawMenuSection(contentRect);
+            TabDrawer.DrawTabs(contentRect, settingsTabs);
+
+            // Inset the content area slightly for padding
+            Rect innerRect = contentRect.ContractedBy(5f);
+
+            switch (settingsTab)
+            {
+                case 0: DoGeneralTab(innerRect); break;
+                case 1: DoEventsTab(innerRect); break;
+            }
+        }
+
+        private void DoGeneralTab(Rect rect)
+        {
             silverPerResource_buffer = silverPerResource.ToString();
             timeBetweenTaxes_buffer = timeBetweenTaxes_days.ToString();
             productionTitheMod_buffer = productionTitheMod.ToString();
@@ -406,11 +439,11 @@ namespace FactionColonies
             minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
             minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
 
-            viewRectHeight = viewRectHeight == -1f ? float.MaxValue : viewRectHeight;
-            Rect viewRect = new Rect(inRect.x, inRect.y, inRect.width - 17f, viewRectHeight);
-            Rect listRect = new Rect(inRect.x, inRect.y, inRect.width - 17f, float.MaxValue);
+            viewRectHeightGeneral = viewRectHeightGeneral == -1f ? float.MaxValue : viewRectHeightGeneral;
+            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightGeneral);
+            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
 
-            Widgets.BeginScrollView(inRect, ref scrollVector, viewRect);
+            Widgets.BeginScrollView(rect, ref scrollVectorGeneral, viewRect);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -501,11 +534,6 @@ namespace FactionColonies
             ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"));
             efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
 
-            ls.Label("FCSettingMinMaxRandomEvent".Translate());
-            ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
-            minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
-            maxDaysTillRandomEvent = Math.Max(1, minMaxDaysTillRandomEvent.max);
-
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
 
             if (ls.ButtonText("FCOpenPatchNotes".Translate())) DebugActionsMisc.PatchNotesDisplayWindow();
@@ -554,10 +582,101 @@ namespace FactionColonies
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
                 difficultyLevel = DEFAULT_DIFFICULTY_LEVEL;
                 patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
+                disabledEventDefs.Clear();
                 ApplyDifficultyPreset(difficultyLevel);
             }
 
-            viewRectHeight = ls.CurHeight + 5f;
+            viewRectHeightGeneral = ls.CurHeight + 5f;
+            ls.End();
+
+            Widgets.EndScrollView();
+        }
+
+        private void DoEventsTab(Rect rect)
+        {
+            viewRectHeightEvents = viewRectHeightEvents == -1f ? float.MaxValue : viewRectHeightEvents;
+            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightEvents);
+            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
+
+            Widgets.BeginScrollView(rect, ref scrollVectorEvents, viewRect);
+            Listing_Standard ls = new Listing_Standard();
+            ls.Begin(listRect);
+
+            minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
+            ls.Label("FCSettingMinMaxRandomEvent".Translate());
+            ls.IntRange(ref minMaxDaysTillRandomEvent, 0, 30);
+            minDaysTillRandomEvent = minMaxDaysTillRandomEvent.min;
+            maxDaysTillRandomEvent = Math.Max(1, minMaxDaysTillRandomEvent.max);
+
+            ls.GapLine();
+
+            ls.Label("FCSettingConfigureEvents".Translate());
+            ls.Gap(5f);
+
+            // Build set of events that are follow-ups of other events (not independent triggers)
+            HashSet<string> followUpDefNames = new HashSet<string>();
+            foreach (FCEventDef def in DefDatabase<FCEventDef>.AllDefsListForReading)
+            {
+                if (def.followingEvent != null) followUpDefNames.Add(def.followingEvent.defName);
+                if (def.followingEvent2 != null) followUpDefNames.Add(def.followingEvent2.defName);
+            }
+
+            List<FCEventDef> rootEvents = new List<FCEventDef>();
+            foreach (FCEventDef def in DefDatabase<FCEventDef>.AllDefsListForReading)
+            {
+                if (followUpDefNames.Contains(def.defName)) continue;
+                if (def.activateAtStart || (def.isRandomEvent && def.options.Count == 0))
+                {
+                    rootEvents.Add(def);
+                }
+            }
+
+            // Group by category, then sort alphabetically within each group
+            var grouped = new Dictionary<string, List<FCEventDef>>();
+            foreach (FCEventDef def in rootEvents)
+            {
+                string catLabel = def.category != null ? def.category.LabelCap.ToString() : "Other";
+                if (!grouped.ContainsKey(catLabel))
+                    grouped[catLabel] = new List<FCEventDef>();
+                grouped[catLabel].Add(def);
+            }
+
+            int rowIndex = 0;
+            foreach (string catLabel in grouped.Keys.OrderBy(k => k))
+            {
+                ls.Gap(3f);
+                ls.Label(catLabel);
+                foreach (FCEventDef def in grouped[catLabel].OrderBy(d => d.label))
+                {
+                    Rect rowRect = ls.GetRect(Text.LineHeight);
+
+                    if (rowIndex % 2 == 1)
+                    {
+                        Widgets.DrawLightHighlight(rowRect);
+                    }
+                    rowIndex++;
+
+                    bool enabled = !disabledEventDefs.Contains(def.defName);
+                    bool prev = enabled;
+                    Widgets.CheckboxLabeled(rowRect, "  " + def.label, ref enabled);
+                    if (enabled != prev)
+                    {
+                        if (enabled) disabledEventDefs.Remove(def.defName);
+                        else disabledEventDefs.Add(def.defName);
+                    }
+                }
+            }
+
+            if (disabledEventDefs.Count > 0)
+            {
+                ls.Gap(10f);
+                if (ls.ButtonText("FCSettingEnableAllEvents".Translate()))
+                {
+                    disabledEventDefs.Clear();
+                }
+            }
+
+            viewRectHeightEvents = ls.CurHeight + 5f;
             ls.End();
 
             Widgets.EndScrollView();

@@ -9,6 +9,10 @@
 	<FCSettingMaxSettlementLevel>Max Settlement Level</FCSettingMaxSettlementLevel>
 	<FCSettingDisableHostileMilActions>Disable Hostile Military Actions</FCSettingDisableHostileMilActions>
 	<FCSettingDisableRandomEvents>Disable Random Events</FCSettingDisableRandomEvents>
+	<FCSettingConfigureEvents>Enable or disable individual events below. Disabled events will not fire in any save.</FCSettingConfigureEvents>
+	<FCSettingsTabGeneral>General</FCSettingsTabGeneral>
+	<FCSettingsTabEvents>Events</FCSettingsTabEvents>
+	<FCSettingEnableAllEvents>Enable All Events</FCSettingEnableAllEvents>
 	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
 	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
 	<FCSettingBattleMode>Battle Mode: </FCSettingBattleMode>

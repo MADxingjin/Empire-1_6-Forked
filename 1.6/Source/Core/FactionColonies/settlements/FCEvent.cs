@@ -69,6 +69,7 @@ namespace FactionColonies
             FactionFC tmp = FactionCache.FactionComp;
 
             if (!cEvent.isRandomEvent) return false;
+            if (FCSettings.IsEventDisabled(cEvent.defName)) return false;
             if (Find.World.PlayerWealthForStoryteller < cEvent.requiredWealth) return false;
 
             // Stat range checks
