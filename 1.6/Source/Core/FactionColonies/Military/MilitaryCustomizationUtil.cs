@@ -89,7 +89,7 @@ namespace FactionColonies
 
                 if (squads == null) return;
 
-                LogUtil.Message("MilitaryCustomizationUtil: checking for errors on tick " + Find.TickManager.TicksGame);
+    
                 foreach (MilSquadFC squad in squads)
                 {
                     if (squad?.units == null) continue;
@@ -153,6 +153,7 @@ namespace FactionColonies
                     merc.OutfitSquad(merc.outfit);
                 }
 
+                ChangeTick();
                 RebuildMercenaryPawnSet();
             }
             catch (Exception ex)
