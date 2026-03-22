@@ -180,6 +180,10 @@ namespace FactionColonies
             {
                 InitiateSquad();
             }
+            else if (outfit != null && !EquippedMercenaries.Any())
+            {
+                OutfitSquad(outfit);
+            }
             squadInitialized = true;
         }
 
@@ -189,7 +193,6 @@ namespace FactionColonies
             {
                 if (merc.health == null)
                     merc.health = new Pawn_HealthTracker(merc);
-                HealthUtility.HealNonPermanentInjuriesAndRestoreLegs(merc);
                 if (merc.needs == null)
                     merc.needs = new Pawn_NeedsTracker(merc);
                 if (merc.needs.food == null)

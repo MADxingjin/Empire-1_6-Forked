@@ -128,6 +128,7 @@ namespace FactionColonies
                         new TransitionAction_Custom(delegate()
                         {
                             squad.isDeployed = false;
+                            FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
                             deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] = MilitaryOrder.RecoverWoundedAndLeave;
                             Messages.Message("militaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
                         })
@@ -209,6 +210,7 @@ namespace FactionColonies
         {
             squad.InitiateCooldownEvent();
             squad.isDeployed = false;
+            FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
             base.Notify_LordDestroyed();
         }
 
@@ -219,6 +221,7 @@ namespace FactionColonies
             {
                 squad.InitiateCooldownEvent();
                 squad.isDeployed = false;
+                FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
             }
         }
     }

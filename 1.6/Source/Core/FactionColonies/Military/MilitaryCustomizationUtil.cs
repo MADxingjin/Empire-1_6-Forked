@@ -177,26 +177,87 @@ namespace FactionColonies
             return 500 + (500.0 * militaryLevel * militaryLevel);
         }
 
+        // --- Mercenary Healing ---
+
+        private HashSet<Pawn> injuredMercs;
+
         /// <summary>
         /// Gradually heal injuries on undeployed mercenary pawns.
-        /// Called on a tick interval from FactionFC.
+        /// Only iterates the tracked injured set for performance.
         /// </summary>
         public void TickMercenaryHealing(int interval)
         {
+            if (injuredMercs == null) RebuildInjuredMercs();
+            if (injuredMercs.Count == 0) return;
+
             float healAmount = FCSettings.mercenaryHealRatePerHour * ((float)interval / (float)GenDate.TicksPerHour);
             if (healAmount <= 0f) return;
 
-            foreach (MercenarySquadFC squad in mercenarySquads)
+            List<Pawn> toRemove = null;
+            foreach (Pawn pawn in injuredMercs)
             {
-                if (squad.isDeployed) continue;
-                if (squad.mercenaries == null) continue;
-                foreach (Mercenary merc in squad.mercenaries)
+                if (pawn == null || pawn.Destroyed || pawn.Dead || pawn.Map != null)
                 {
-                    if (merc?.pawn == null || merc.pawn.Dead) continue;
-                    if (merc.pawn.Map != null) continue;
-                    HealMercenaryTick(merc.pawn, healAmount);
+                    if (toRemove == null) toRemove = new List<Pawn>();
+                    toRemove.Add(pawn);
+                    continue;
+                }
+                HealMercenaryTick(pawn, healAmount);
+                if (!HasInjuries(pawn))
+                {
+                    if (toRemove == null) toRemove = new List<Pawn>();
+                    toRemove.Add(pawn);
                 }
             }
+            if (toRemove != null)
+            {
+                foreach (Pawn p in toRemove) injuredMercs.Remove(p);
+            }
+        }
+
+        /// <summary>
+        /// Full scan of all undeployed squads to populate the injured mercs set.
+        /// Called lazily on first tick or after load.
+        /// </summary>
+        private void RebuildInjuredMercs()
+        {
+            injuredMercs = new HashSet<Pawn>();
+            foreach (MercenarySquadFC squad in mercenarySquads)
+            {
+                if (squad.isDeployed || squad.mercenaries == null) continue;
+                foreach (Mercenary merc in squad.mercenaries)
+                {
+                    if (merc?.pawn == null || merc.pawn.Dead || merc.pawn.Map != null) continue;
+                    if (HasInjuries(merc.pawn))
+                        injuredMercs.Add(merc.pawn);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Register injuries for a single squad's mercs after recall from deployment.
+        /// </summary>
+        public void RegisterSquadInjuries(MercenarySquadFC squad)
+        {
+            if (injuredMercs == null) injuredMercs = new HashSet<Pawn>();
+            if (squad.mercenaries == null) return;
+            foreach (Mercenary merc in squad.mercenaries)
+            {
+                if (merc?.pawn == null || merc.pawn.Dead || merc.pawn.Map != null) continue;
+                if (HasInjuries(merc.pawn))
+                    injuredMercs.Add(merc.pawn);
+            }
+        }
+
+        private static bool HasInjuries(Pawn pawn)
+        {
+            List<Hediff> hediffs = pawn.health?.hediffSet?.hediffs;
+            if (hediffs == null) return false;
+            for (int i = 0; i < hediffs.Count; i++)
+            {
+                if (hediffs[i] is Hediff_Injury) return true;
+            }
+            return false;
         }
 
         private static void HealMercenaryTick(Pawn pawn, float healAmount)

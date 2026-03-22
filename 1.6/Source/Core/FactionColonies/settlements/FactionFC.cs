@@ -69,7 +69,7 @@ namespace FactionColonies
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
         public int militaryTimeDue;
-        public const int MercenaryHealTickInterval = GenDate.TicksPerHour * 3;
+        public const int MercenaryHealTickInterval = GenDate.TicksPerHour;
         private bool firstTick = true;
 
         // ── Lazy-Cached Averages ──
