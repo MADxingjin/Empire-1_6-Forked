@@ -4,11 +4,11 @@
 
 $ErrorActionPreference = "Stop"
 
-$defsPath = "1.6\Defs\FCPatchNoteDefs\PatchNoteDefs.xml"
+$defsDir = "1.6\Defs\FCPatchNoteDefs"
 $manifestPath = "About\Manifest.xml"
 
 # Verify we're in the right directory
-if (-not (Test-Path $defsPath) -or -not (Test-Path $manifestPath)) {
+if (-not (Test-Path $defsDir) -or -not (Test-Path $manifestPath)) {
     Write-Host "ERROR: Run this script from the Empire/ directory (the one containing About/ and 1.6/)." -ForegroundColor Red
     exit 1
 }
@@ -131,17 +131,21 @@ ${indent}${indent}</authors>
 ${indent}</FactionColonies.PatchNoteDef>
 "@
 
-# --- Insert into PatchNoteDefs.xml ---
-$defsContent = Get-Content $defsPath -Raw
-$insertMarker = "========== END TEMPLATE ========== -->"
+# --- Insert into the correct version file ---
+$targetFile = "$defsDir\PatchNoteDefs_v$major.$minor.xml"
 
-if ($defsContent -notlike "*$insertMarker*") {
-    Write-Host "ERROR: Could not find template end marker in $defsPath" -ForegroundColor Red
-    exit 1
+if (Test-Path $targetFile) {
+    # Append to existing file: insert new def before </Defs>
+    $content = Get-Content $targetFile -Raw
+    $content = $content -replace '</Defs>', "$xmlBlock`n</Defs>"
+    Set-Content $targetFile -Value $content -NoNewline
+    Write-Host "  Appended to existing file: $targetFile" -ForegroundColor Cyan
+} else {
+    # Create new file for this minor version
+    $fileContent = "<?xml version=`"1.0`" encoding=`"utf-8`" ?>`n<Defs>$xmlBlock`n</Defs>`n"
+    Set-Content $targetFile -Value $fileContent -NoNewline
+    Write-Host "  Created new file: $targetFile" -ForegroundColor Cyan
 }
-
-$defsContent = $defsContent -replace [regex]::Escape($insertMarker), "$insertMarker`n$xmlBlock"
-Set-Content $defsPath -Value $defsContent -NoNewline
 
 # --- Update Manifest.xml ---
 $manifestContent = $manifestContent -replace '<version>[^<]+</version>', "<version>$version</version>"
@@ -150,7 +154,7 @@ Set-Content $manifestPath -Value $manifestContent -NoNewline
 # --- Summary ---
 Write-Host ""
 Write-Host "Done!" -ForegroundColor Green
-Write-Host "  PatchNoteDef '$defName' added to $defsPath"
+Write-Host "  PatchNoteDef '$defName' added to $targetFile"
 Write-Host "  Manifest.xml updated: $currentVersion -> $version"
 Write-Host "  Type: $patchNoteType | Date: $releaseYear-$releaseMonth-$releaseDay"
 Write-Host "  Changes: $($changeLines.Count) line(s) | Authors: $($authors -join ', ')"

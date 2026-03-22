@@ -126,6 +126,11 @@ namespace FactionColonies
         public int Patch => patch;
 
         /// <summary>
+        /// Integer sort key encoding the full version for correct ordering.
+        /// </summary>
+        public int VersionSortKey => major * 1000000 + minor * 1000 + patch;
+
+        /// <summary>
         /// Returns the PatchNoteType
         /// </summary>
         public PatchNoteType GetPatchNoteType => patchNoteType;
@@ -295,7 +300,7 @@ namespace FactionColonies
             }
 
             //This way of sorting produces a list: oldest => newest
-            patchNoteDefs.SortBy(def => def.ReleaseDate, def => def.ToOldEmpireVersion);
+            patchNoteDefs.SortBy(def => def.VersionSortKey);
             PatchNoteDef latest = patchNoteDefs.Last();
 
             string manifestVersion = FCSettings.GetModVersion();

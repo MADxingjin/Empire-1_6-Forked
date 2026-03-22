@@ -54,8 +54,7 @@ namespace FactionColonies
 
         public PatchNotesDisplayWindow()
         {
-            patchNoteDefs.SortBy((def) => def.ReleaseDate, (def) => def.ToOldEmpireVersion);
-            patchNoteDefs.Reverse();
+            patchNoteDefs.SortByDescending(def => def.VersionSortKey);
 
             // Auto-expand unread entries
             for (int i = 0; i < patchNoteDefs.Count; i++)

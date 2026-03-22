@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_40_09</defName>
+			<label>Added a new Trait</label>
+			<description>I added a new Faction Trait, Slaver. It's more of a proof of Concept than anything</description>
+	
+			<major>0</major>
+			<minor>40</minor>
+			<patch>9</patch>
+	
+			<releaseDay>11</releaseDay>
+			<releaseMonth>8</releaseMonth>
+			<releaseYear>2023</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+				<li>New Trait</li>
+			</patchNoteLines>
+	
+			<additionalNotes>
+				<li>I</li>
+				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
+			</additionalNotes>
+	
+			<authors>
+				<li>TheSeaMoon</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_40_08</defName>
+			<label>Rebalanced Biomes</label>
+			<description>Biomes were Rebalanced in this Update, I have also added a few more buildings</description>
+	
+			<major>0</major>
+			<minor>40</minor>
+			<patch>8</patch>
+	
+			<releaseDay>10</releaseDay>
+			<releaseMonth>8</releaseMonth>
+			<releaseYear>2023</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+				<li>Rebalanced Biomes</li>
+			</patchNoteLines>
+	
+			<additionalNotes>
+				<li>I</li>
+				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
+			</additionalNotes>
+	
+			<authors>
+				<li>TheSeaMoon</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_40_07</defName>
+			<label>Fixed Trait Newsletter</label>
+			<description>Fixed the Trait Newletter Appearing on load even though the trait were chosen</description>
+	
+			<major>0</major>
+			<minor>40</minor>
+			<patch>7</patch>
+	
+			<releaseDay>09</releaseDay>
+			<releaseMonth>8</releaseMonth>
+			<releaseYear>2023</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+				<li>Fixed Trait Newsletter</li>
+			</patchNoteLines>
+	
+			<additionalNotes>
+				<li>I</li>
+				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
+			</additionalNotes>
+	
+			<authors>
+				<li>TheSeaMoon</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_40_06</defName>
+		<label>Fixed Building</label>
+		<description>Fixed the Fur Hunter Camp building not working</description>
+	
+		<major>0</major>
+		<minor>40</minor>
+		<patch>6</patch>
+	
+		<releaseDay>09</releaseDay>
+		<releaseMonth>8</releaseMonth>
+		<releaseYear>2023</releaseYear>
+	
+		<patchNoteType>Patch</patchNoteType>
+	
+		<patchNoteLines>
+			<li>Fixed Building</li>
+		</patchNoteLines>
+	
+		<additionalNotes>
+			<li>The Fur Hunter Camp building was not working because I forgot to set some stuff</li>
+			<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
+		</additionalNotes>
+	
+		<authors>
+			<li>TheSeaMoon</li>
+		</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_40_05</defName>
+		<label>Added Buildings</label>
+		<description>Added 2 new buildings</description>
+	
+		<major>0</major>
+		<minor>40</minor>
+		<patch>5</patch>
+	
+		<releaseDay>09</releaseDay>
+		<releaseMonth>8</releaseMonth>
+		<releaseYear>2023</releaseYear>
+	
+		<patchNoteType>Patch</patchNoteType>
+	
+		<patchNoteLines>
+			<li>Added 2 new Buildings</li>
+		</patchNoteLines>
+	
+		<additionalNotes>
+			<li>I have added 2 new building for early era</li>
+			<li>I have taken it upon myself to update this mod</li>
+		</additionalNotes>
+	
+		<authors>
+			<li>TheSeaMoon</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+</Defs>
