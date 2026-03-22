@@ -1662,7 +1662,7 @@ namespace FactionColonies
                 float btnGap = 2f;
                 float btnH = lineH - 4f;
                 float btnY = botY + 2f;
-                float totalBtnW = btnW * 5 + btnGap * 4;
+                float totalBtnW = btnW * 4 + btnGap * 3;
 
                 // Bottom-left: Squad name with prefix
                 fontBefore = Text.Font;
@@ -1727,30 +1727,6 @@ namespace FactionColonies
                     HandleDeployClick(settlement, milComp);
                 }
                 TooltipHandler.TipRegion(deployRect, "FCMilBtnDeployTip".Translate());
-                bx += btnW + btnGap;
-
-                // Reset
-                Rect resetRect = new Rect(bx, btnY, btnW, btnH);
-                if (UIUtil.ButtonFlat(resetRect, "Reset".Translate(), disabled: noOutfit, highlighted: isHighlighted))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>
-                    {
-                        new FloatMenuOption("FCMilTableConfirm".Translate(), delegate
-                        {
-                            if (milComp.militarySquad != null)
-                            {
-                                Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
-                                milComp.militarySquad.InitiateSquad();
-                            }
-                            else
-                            {
-                                Messages.Message("FCResetSquadRejected".Translate(), MessageTypeDefOf.RejectInput);
-                            }
-                        })
-                    };
-                    Find.WindowStack.Add(new FloatMenu(list));
-                }
-                TooltipHandler.TipRegion(resetRect, "FCMilBtnResetTip".Translate());
                 bx += btnW + btnGap;
 
                 // Fire Support

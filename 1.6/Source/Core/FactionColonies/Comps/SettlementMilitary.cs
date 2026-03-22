@@ -1173,6 +1173,9 @@ namespace FactionColonies
 
             LifecycleRegistry.InvokeOnSquadRecalled(WorldSettlement);
 
+            if (militarySquad != null)
+                FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(militarySquad);
+
             if (alert)
             {
                 Find.LetterStack.ReceiveLetter("Military Cooldown", "FCMilitaryCooldown".Translate(WorldSettlement.Name),

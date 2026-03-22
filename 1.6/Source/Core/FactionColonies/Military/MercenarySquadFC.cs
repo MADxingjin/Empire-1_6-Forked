@@ -122,7 +122,7 @@ namespace FactionColonies
 
             if (outfit == null)
             {
-                for (int k = 0; k < 30; k++)
+                for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
                     CreateNewPawn(ref pawn, null, null);
@@ -139,7 +139,7 @@ namespace FactionColonies
             }
             else
             {
-                for (int k = 0; k < 30; k++)
+                for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
                     CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
@@ -180,6 +180,10 @@ namespace FactionColonies
             {
                 InitiateSquad();
             }
+            else if (outfit != null && !EquippedMercenaries.Any())
+            {
+                OutfitSquad(outfit);
+            }
             squadInitialized = true;
         }
 
@@ -189,7 +193,6 @@ namespace FactionColonies
             {
                 if (merc.health == null)
                     merc.health = new Pawn_HealthTracker(merc);
-                HealthUtility.HealNonPermanentInjuriesAndRestoreLegs(merc);
                 if (merc.needs == null)
                     merc.needs = new Pawn_NeedsTracker(merc);
                 if (merc.needs.food == null)
@@ -481,7 +484,7 @@ namespace FactionColonies
 
         public void StripSquad()
         {
-            for (int count = 0; count < mercenaries.Count && count < 30; count++)
+            for (int count = 0; count < mercenaries.Count && count < MilSquadFC.MaxSquadSize; count++)
             {
                 if (mercenaries[count]?.pawn != null)
                 {
@@ -556,7 +559,6 @@ namespace FactionColonies
                     }
 
                     StripPawn(mercenaries[count]);
-                    HealPawn(mercenaries[count]);
                     if (loadout != null)
                     {
                         //mercenaries[count];

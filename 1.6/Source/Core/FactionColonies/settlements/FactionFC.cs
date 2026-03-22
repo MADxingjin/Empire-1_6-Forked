@@ -69,6 +69,7 @@ namespace FactionColonies
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
         public int militaryTimeDue;
+        public const int MercenaryHealTickInterval = GenDate.TicksPerHour;
         private bool firstTick = true;
 
         // ── Lazy-Cached Averages ──
@@ -521,6 +522,10 @@ namespace FactionColonies
             UITick(faction);
             StatTick(faction);
             MilitaryTick(faction);
+            if (Find.TickManager.TicksGame % MercenaryHealTickInterval == 0)
+            {
+                militaryCustomizationUtil?.TickMercenaryHealing(MercenaryHealTickInterval);
+            }
             threatAdaptation.Tick();
             if (pendingEdictActivations.Count > 0 && Find.TickManager.TicksGame % 250 == 0)
                 CheckEdictActivations();

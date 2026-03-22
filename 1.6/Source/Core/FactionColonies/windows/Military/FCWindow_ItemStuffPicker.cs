@@ -17,6 +17,7 @@ namespace FactionColonies
         private readonly Action<ThingDef, ThingDef> onConfirm;
         private readonly Action onUnequip;
         private readonly string titleKey;
+        private readonly Func<ThingDef, string> conflictTooltipFunc;
 
         private ThingDef selectedItem;
         private ThingDef selectedStuff;
@@ -47,12 +48,14 @@ namespace FactionColonies
             Action onUnequip = null,
             string titleKey = "fcPickItem",
             ThingDef initialItem = null,
-            ThingDef initialStuff = null)
+            ThingDef initialStuff = null,
+            Func<ThingDef, string> conflictTooltipFunc = null)
         {
             this.items = items;
             this.onConfirm = onConfirm;
             this.onUnequip = onUnequip;
             this.titleKey = titleKey;
+            this.conflictTooltipFunc = conflictTooltipFunc;
 
             if (initialItem != null)
             {
@@ -184,10 +187,18 @@ namespace FactionColonies
                 ThingDef item = filtered[i];
                 Rect row = new Rect(scrollViewRect.x, scrollViewRect.y + (i * RowHeight), scrollViewRect.width, RowHeight);
 
+                string conflictTip = conflictTooltipFunc != null ? conflictTooltipFunc(item) : null;
+                bool hasConflict = !string.IsNullOrEmpty(conflictTip);
+
                 if (item == selectedItem)
                     Widgets.DrawHighlightSelected(row);
+                else if (hasConflict)
+                    Widgets.DrawBoxSolid(row, new Color(0.45f, 0.22f, 0.22f, 0.35f));
                 else if (i % 2 == 0)
                     Widgets.DrawHighlight(row);
+
+                if (hasConflict)
+                    TooltipHandler.TipRegion(row, conflictTip);
 
                 // Row layout: Icon | Info | Label | Cost
                 Rect iconRect = new Rect(row.x + margin, row.y, RowHeight, RowHeight);

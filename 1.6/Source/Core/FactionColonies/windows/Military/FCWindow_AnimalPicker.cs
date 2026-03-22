@@ -84,8 +84,7 @@ namespace FactionColonies
                 Rect labelRect = new Rect(infoRect.xMax + margin, row.y,
                     costRect.x - infoRect.xMax - (margin * 2), RowHeight);
 
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(iconRect, new GUIContent(animal.race.uiIcon));
+                Widgets.ThingIcon(iconRect, animal.race);
 
                 Widgets.InfoCardButton(infoRect, animal.race);
 
@@ -94,7 +93,7 @@ namespace FactionColonies
 
                 Text.Anchor = TextAnchor.MiddleRight;
                 double cost = Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier);
-                Widgets.Label(costRect, "$" + cost);
+                Widgets.Label(costRect, "$" + cost.ToString("F0"));
 
                 if (Widgets.ButtonInvisible(row))
                 {
@@ -106,7 +105,7 @@ namespace FactionColonies
             {
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(scrollOutRect, "changeUnitRaceNoRaces".Translate());
+                Widgets.Label(scrollOutRect, "fcNoAnimalsAvailable".Translate());
             }
 
             Widgets.EndScrollView();
