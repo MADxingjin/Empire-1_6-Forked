@@ -92,6 +92,9 @@
 	<FCNoSquadLoadoutAssigned>There is no squad loadout assigned to that settlement!</FCNoSquadLoadoutAssigned>
 	<FCNoSquadAssigned>There is no military squad assigned to that settlement!</FCNoSquadAssigned>
 	<FCSquadExceedsMaxCost>That squad exceeds the settlement's max allotted cost</FCSquadExceedsMaxCost>
+	<fcResetSquadPawns>Reset Pawns</fcResetSquadPawns>
+	<fcResetSquadPawnsConfirm>This will destroy all existing mercenary pawns in "{0}" and generate entirely new ones. Their identities, appearance, and any battle experience will be lost.\n\nThis is intended for fixing corrupted pawns. Are you sure?</fcResetSquadPawnsConfirm>
+	<fcResetSquadPawnsTip>Regenerate all mercenary pawns in this squad. Destroys existing pawns and creates new ones with different identities. Only available for squads assigned to a settlement.</fcResetSquadPawnsTip>
 	<FCCreateNewUnit>Create New Unit</FCCreateNewUnit>
 
 	<!-- Fire Support Design -->

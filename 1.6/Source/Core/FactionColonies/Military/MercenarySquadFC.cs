@@ -556,7 +556,6 @@ namespace FactionColonies
                     }
 
                     StripPawn(mercenaries[count]);
-                    HealPawn(mercenaries[count]);
                     if (loadout != null)
                     {
                         //mercenaries[count];

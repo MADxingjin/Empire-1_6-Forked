@@ -177,6 +177,43 @@ namespace FactionColonies
             return 500 + (500.0 * militaryLevel * militaryLevel);
         }
 
+        /// <summary>
+        /// Gradually heal injuries on undeployed mercenary pawns.
+        /// Called on a tick interval from FactionFC.
+        /// </summary>
+        public void TickMercenaryHealing(int interval)
+        {
+            float healAmount = FCSettings.mercenaryHealRatePerHour * ((float)interval / (float)GenDate.TicksPerHour);
+            if (healAmount <= 0f) return;
+
+            foreach (MercenarySquadFC squad in mercenarySquads)
+            {
+                if (squad.isDeployed) continue;
+                if (squad.mercenaries == null) continue;
+                foreach (Mercenary merc in squad.mercenaries)
+                {
+                    if (merc?.pawn == null || merc.pawn.Dead) continue;
+                    if (merc.pawn.Map != null) continue;
+                    HealMercenaryTick(merc.pawn, healAmount);
+                }
+            }
+        }
+
+        private static void HealMercenaryTick(Pawn pawn, float healAmount)
+        {
+            List<Hediff> hediffs = pawn.health?.hediffSet?.hediffs;
+            if (hediffs == null) return;
+            for (int i = hediffs.Count - 1; i >= 0; i--)
+            {
+                if (hediffs[i] is Hediff_Injury injury)
+                {
+                    injury.Heal(healAmount);
+                    // Only heal one injury at a time
+                    break;
+                }
+            }
+        }
+
         public MercenarySquadFC ReturnSquadFromUnit(Pawn unit)
         {
             foreach (var squad in mercenarySquads)

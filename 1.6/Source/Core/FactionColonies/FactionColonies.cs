@@ -129,6 +129,7 @@ namespace FactionColonies
         public static int productionResearchBase = 100;
         public static double militaryAnimalCostMultiplier = 1.5;
         public static double militaryRaceCostMultiplier = 0.075;
+        public static float mercenaryHealRatePerHour = 1f;
 
         public static float maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
         public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
@@ -187,6 +188,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
             Scribe_Values.Look(ref efficiencyDamping, "efficiencyDamping", DEFAULT_EFFICIENCY_DAMPING);
+            Scribe_Values.Look(ref mercenaryHealRatePerHour, "mercenaryHealRatePerHour", 1f);
             Scribe_Values.Look(ref lastSeenVersionMajor, "lastSeenVersionMajor", 0);
             Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
             Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
@@ -562,6 +564,7 @@ namespace FactionColonies
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
                 efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
+                mercenaryHealRatePerHour = 1f;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
                 taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
@@ -703,6 +706,9 @@ namespace FactionColonies
 
             ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"), -1f, "FCSettingEfficiencyDampingTooltip".Translate());
             efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
+
+            ls.Label("FCSettingMercHealRate".Translate() + ": " + mercenaryHealRatePerHour.ToString("0.0") + " HP/hr", -1f, "FCSettingMercHealRateTip".Translate());
+            mercenaryHealRatePerHour = ls.Slider(mercenaryHealRatePerHour, 0.1f, 100f);
 
             viewRectHeightMilitary = ls.CurHeight + 5f;
             ls.End();

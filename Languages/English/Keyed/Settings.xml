@@ -34,6 +34,8 @@ At 0, military efficiency affects only the effective level of both forces.
 At 1, military efficiency fully affects each round of auto combat. Military forces of lower level but higher efficiency can often beat forces of a higher level, but lower efficiency.
 
 Values in between dampen the effect of military efficiency on the auto combat.</FCSettingEfficiencyDampingTooltip>
+	<FCSettingMercHealRate>Mercenary Heal Rate</FCSettingMercHealRate>
+	<FCSettingMercHealRateTip>How fast undeployed mercenary pawns heal their injuries, in hit points per in-game hour. At the default of 1.0, a 20 HP injury takes about one day to heal. Set higher for faster recovery or if using mods that add high-HP pawns.</FCSettingMercHealRateTip>
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
 	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>

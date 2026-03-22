@@ -1042,6 +1042,22 @@ namespace FactionColonies
                                 })
                         };
 
+                        // Reset Pawns option — only if squad is assigned and not deployed
+                        MercenarySquadFC mercSquad = settlement.MilitaryComp.militarySquad;
+                        if (mercSquad != null && !mercSquad.isDeployed)
+                        {
+                            list.Add(new FloatMenuOption("fcResetSquadPawns".Translate(), delegate
+                            {
+                                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                                    "fcResetSquadPawnsConfirm".Translate((NamedArgument)(mercSquad.outfit?.name ?? settlement.Name)),
+                                    delegate
+                                    {
+                                        mercSquad.InitiateSquad();
+                                        Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
+                                    }));
+                            }));
+                        }
+
                         if (settlement.MilitaryComp.isUnderAttack)
                         {
                             FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
