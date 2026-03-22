@@ -255,7 +255,7 @@ namespace FactionColonies
             if (hediffs == null) return false;
             for (int i = 0; i < hediffs.Count; i++)
             {
-                if (hediffs[i] is Hediff_Injury) return true;
+                if (hediffs[i] is Hediff_Injury injury && !injury.IsPermanent()) return true;
             }
             return false;
         }
@@ -266,7 +266,7 @@ namespace FactionColonies
             if (hediffs == null) return;
             for (int i = hediffs.Count - 1; i >= 0; i--)
             {
-                if (hediffs[i] is Hediff_Injury injury)
+                if (hediffs[i] is Hediff_Injury injury && !injury.IsPermanent())
                 {
                     injury.Heal(healAmount);
                     // Only heal one injury at a time
