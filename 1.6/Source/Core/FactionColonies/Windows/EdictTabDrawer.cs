@@ -28,7 +28,9 @@ namespace FactionColonies
         private const float Margin = 5f;
         private const float ColumnGap = 8f;
         private const float HeaderHeight = 30f;
-        private const float EdictRowHeight = 100f;
+        private const float LabelHeight = 22f;
+        private const float UpkeepHeight = 20f;
+        private const float RowPadding = 4f;
         private const float BottomBarHeight = 35f;
         private const float RadioSize = 24f;
         private const float CategoryPadding = 6f;
@@ -203,7 +205,14 @@ namespace FactionColonies
                 Rect revokeRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 24f);
                 if (Widgets.ButtonText(revokeRect, "FCEdictRevoke".Translate()))
                 {
-                    faction.RevokeEdict(category);
+                    FCPolicy edictToRevoke = activeEdict;
+                    FCPolicyCategory cat = category;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCEdictRevokeConfirmation".Translate(edictToRevoke.def.LabelCap),
+                        delegate
+                        {
+                            faction.RevokeEdict(cat);
+                        }));
                 }
                 contentY = revokeRect.yMax + CategoryPadding;
             }
@@ -219,8 +228,15 @@ namespace FactionColonies
 
             // Edict list with scroll view
             float listHeight = rect.yMax - contentY;
-            float totalContentHeight = edicts.Count * (EdictRowHeight + 2f);
             Rect listOuterRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, listHeight);
+            // Use scrollbar-adjusted width for height calculation to avoid underestimating
+            // when the scrollbar narrows the view and causes more text wrapping
+            float textWidthForLayout = listOuterRect.width - RadioSize - Margin - 16f;
+
+            // Calculate total content height with dynamic row sizes
+            float totalContentHeight = 0f;
+            foreach (FCPolicyDef def in edicts)
+                totalContentHeight += GetEdictRowHeight(def, textWidthForLayout) + 2f;
 
             Vector2 scrollPos;
             if (!columnScrollPositions.TryGetValue(category, out scrollPos))
@@ -234,10 +250,14 @@ namespace FactionColonies
             Widgets.BeginScrollView(listOuterRect, ref scrollPos, listViewRect);
             columnScrollPositions[category] = scrollPos;
 
+            // Recalculate text width if scrollbar narrowed the view
+            float actualTextWidth = listViewRect.width - RadioSize - Margin;
+
             float rowY = listViewRect.y;
             foreach (FCPolicyDef def in edicts)
             {
-                Rect rowRect = new Rect(listViewRect.x, rowY, listViewRect.width, EdictRowHeight);
+                float rowHeight = GetEdictRowHeight(def, actualTextWidth);
+                Rect rowRect = new Rect(listViewRect.x, rowY, listViewRect.width, rowHeight);
                 DrawEdictRow(rowRect, def, faction, activeEdict);
                 rowY = rowRect.yMax + 2f;
             }
@@ -256,6 +276,14 @@ namespace FactionColonies
                     return blocked;
             }
             return null;
+        }
+
+        private static float GetEdictRowHeight(FCPolicyDef def, float textWidth)
+        {
+            Text.Font = GameFont.Tiny;
+            float descHeight = Text.CalcHeight(def.desc, textWidth);
+            Text.Font = GameFont.Small;
+            return RowPadding + LabelHeight + descHeight + UpkeepHeight;
         }
 
         private static void DrawEdictRow(Rect rect, FCPolicyDef def, FactionFC faction, FCPolicy activeEdict)
@@ -289,8 +317,9 @@ namespace FactionColonies
 
             Widgets.Label(labelRect, def.LabelCap);
 
-            // Description
-            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 54f);
+            // Description — fills remaining space between label and upkeep
+            float descHeight = rect.height - LabelHeight - UpkeepHeight - RowPadding;
+            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, descHeight);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(descRect, def.desc);
