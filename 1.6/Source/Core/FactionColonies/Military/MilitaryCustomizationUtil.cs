@@ -95,7 +95,7 @@ namespace FactionColonies
                     if (squad?.units == null) continue;
 
                     bool changed = false;
-                    for (int count = 0; count < 30 && count < squad.units.Count; count++)
+                    for (int count = 0; count < MilSquadFC.MaxSquadSize && count < squad.units.Count; count++)
                     {
                         if (squad.units[count] != null &&
                             (units.Contains(squad.units[count]) || squad.units[count] == blankUnit)) continue;

@@ -67,6 +67,7 @@
 
 	<!-- Unit Race/PawnKind Errors -->
 	<changeUnitRaceNoRaces>No available races</changeUnitRaceNoRaces>
+	<fcNoAnimalsAvailable>No available animals</fcNoAnimalsAvailable>
 	<changeUnitXenoNoXenos>No available Xeno</changeUnitXenoNoXenos>
 	<noPawnKindDefOfTypeOfRaceWarning>Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}.</noPawnKindDefOfTypeOfRaceWarning>
 	<noPawnKindDefOfTypeOfRaceError>Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated!</noPawnKindDefOfTypeOfRaceError>

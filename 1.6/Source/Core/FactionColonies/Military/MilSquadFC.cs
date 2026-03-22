@@ -8,6 +8,8 @@ namespace FactionColonies
     //Squad Class
     public class MilSquadFC : IExposable, ILoadReferenceable
     {
+        public const int MaxSquadSize = 30;
+
         public int loadID = -1;
         public string name;
         public List<MilUnitFC> units = new List<MilUnitFC>();
@@ -83,7 +85,7 @@ namespace FactionColonies
         public void NewSquad()
         {
             units = new List<MilUnitFC>();
-            for (int sq = 0; sq < 30; sq++)
+            for (int sq = 0; sq < MaxSquadSize; sq++)
             {
                 units.Add(FactionCache.FactionComp.militaryCustomizationUtil.blankUnit);
             }

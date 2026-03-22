@@ -122,7 +122,7 @@ namespace FactionColonies
 
             if (outfit == null)
             {
-                for (int k = 0; k < 30; k++)
+                for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
                     CreateNewPawn(ref pawn, null, null);
@@ -139,7 +139,7 @@ namespace FactionColonies
             }
             else
             {
-                for (int k = 0; k < 30; k++)
+                for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
                     CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
@@ -481,7 +481,7 @@ namespace FactionColonies
 
         public void StripSquad()
         {
-            for (int count = 0; count < mercenaries.Count && count < 30; count++)
+            for (int count = 0; count < mercenaries.Count && count < MilSquadFC.MaxSquadSize; count++)
             {
                 if (mercenaries[count]?.pawn != null)
                 {

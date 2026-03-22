@@ -181,6 +181,7 @@ namespace FactionColonies
         public List<SavedThing> weapons;
         public List<SavedThing> apparel;
         public XenotypeDef xenotype;
+        public ThingDef preferredAmmo;
 
         public SavedUnitFC() { }
 
@@ -192,6 +193,7 @@ namespace FactionColonies
             animal = unit.animal;
             pawnKind = unit.pawnKind;
             xenotype = unit.xenotype;
+            preferredAmmo = unit.preferredAmmo;
         }
 
         public MilUnitFC CreateMilUnit()
@@ -208,6 +210,7 @@ namespace FactionColonies
                 animal = animal,
                 pawnKind = resolvedKind,
                 xenotype = xenotype,
+                preferredAmmo = preferredAmmo,
                 weapons = weapons?.Where(w => w.thing != null).ToList() ?? new List<SavedThing>(),
                 apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>()
             };
@@ -231,6 +234,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref pawnKind, "pawnKind");
+            Scribe_Defs.Look(ref xenotype, "xenotype");
+            Scribe_Defs.Look(ref preferredAmmo, "preferredAmmo");
             Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
             Scribe_Collections.Look(ref apparel, "apparel", LookMode.Deep);
         }

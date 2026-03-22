@@ -257,7 +257,7 @@ namespace FactionColonies
             // Equipment cost
             float totalCost = (float)selectedUnit.getTotalCost;
             Rect costRect = new Rect(rect.x, infoRect.yMax + margin, rect.width, 20f);
-            Widgets.Label(costRect, "totalEquipmentCostLabel".Translate() + totalCost);
+            Widgets.Label(costRect, "totalEquipmentCostLabel".Translate() + totalCost.ToString("F0"));
 
             if (isSelectedUnitDeployed)
             {
