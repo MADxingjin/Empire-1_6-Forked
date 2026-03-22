@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_102_0</defName>
+			<label>New French Translation</label>
+			<description>New French translation, courtesy of Miriouki62.</description>
+	
+			<major>0</major>
+			<minor>102</minor>
+			<patch>0</patch>
+	
+			<releaseDay>17</releaseDay>
+			<releaseMonth>3</releaseMonth>
+			<releaseYear>2026</releaseYear>
+	
+			<patchNoteType>Minor</patchNoteType>
+	
+			<patchNoteLines>
+			<li>Updated French translation</li>
+			</patchNoteLines>
+	
+			<patchNoteImagePaths>
+				<li>PatchNoteImages/global/empire</li>
+			</patchNoteImagePaths>
+	
+			<patchNoteImageDescriptions>
+				<li>New French Translation</li>
+			</patchNoteImageDescriptions>
+	
+			<additionalNotes>
+				<li>Please raise any issues you find on the Github page.</li>
+			</additionalNotes>
+	
+			<authors>
+			<li>Miriouki62</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+</Defs>

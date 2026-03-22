@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_112_3</defName>
+			<label>Minor change</label>
+			<description>Minor changes to settlementDef and buildingFC</description>
+	
+			<major>0</major>
+			<minor>112</minor>
+			<patch>3</patch>
+	
+			<releaseDay>18</releaseDay>
+			<releaseMonth>3</releaseMonth>
+			<releaseYear>2026</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+			<li>SettlementType blocklists and allowlists on building Defs now proritize specificity; if a building blocks a parent settlementtype but allows a child type, then the building is allowed, and vice versa</li>
+			</patchNoteLines>
+	
+			<patchNoteImagePaths>
+				<li>PatchNoteImages/global/empire</li>
+			</patchNoteImagePaths>
+	
+			<patchNoteImageDescriptions>
+				<li>Minor change</li>
+			</patchNoteImageDescriptions>
+	
+			<additionalNotes>
+				<li>Please raise any issues you find on the Github page.</li>
+			</additionalNotes>
+	
+			<authors>
+			<li>Matathias</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_112_2</defName>
+			<label>Minor changes</label>
+			<description>Minor changes to settlementDefs and building processing.</description>
+	
+			<major>0</major>
+			<minor>112</minor>
+			<patch>2</patch>
+	
+			<releaseDay>18</releaseDay>
+			<releaseMonth>3</releaseMonth>
+			<releaseYear>2026</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+			<li>Minor changes to settlementDefs and building processing</li>
+			</patchNoteLines>
+	
+			<patchNoteImagePaths>
+				<li>PatchNoteImages/global/empire</li>
+			</patchNoteImagePaths>
+	
+			<patchNoteImageDescriptions>
+				<li>Minor changes</li>
+			</patchNoteImageDescriptions>
+	
+			<additionalNotes>
+				<li>Please raise any issues you find on the Github page.</li>
+			</additionalNotes>
+	
+			<authors>
+			<li>Matathias</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_112_1</defName>
+			<label>Minor bugfix</label>
+			<description>Adds some guards to mercenary pawn handling.</description>
+	
+			<major>0</major>
+			<minor>112</minor>
+			<patch>1</patch>
+	
+			<releaseDay>18</releaseDay>
+			<releaseMonth>3</releaseMonth>
+			<releaseYear>2026</releaseYear>
+	
+			<patchNoteType>Patch</patchNoteType>
+	
+			<patchNoteLines>
+			<li>Wrap merc pawn destruction in a try-catch to gracefully handle errors</li>
+			<li>Validate pawnKindDef when loading and creating mercs</li>
+			</patchNoteLines>
+	
+			<patchNoteImagePaths>
+				<li>PatchNoteImages/global/empire</li>
+			</patchNoteImagePaths>
+	
+			<patchNoteImageDescriptions>
+				<li>Minor bugfix</li>
+			</patchNoteImageDescriptions>
+	
+			<additionalNotes>
+				<li>Please raise any issues you find on the Github page.</li>
+			</additionalNotes>
+	
+			<authors>
+			<li>Matathias</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+			<defName>0_112_0</defName>
+			<label>Adds new stat</label>
+			<description>Adds a new stat to apply to buildings and events and such.</description>
+	
+			<major>0</major>
+			<minor>112</minor>
+			<patch>0</patch>
+	
+			<releaseDay>18</releaseDay>
+			<releaseMonth>3</releaseMonth>
+			<releaseYear>2026</releaseYear>
+	
+			<patchNoteType>Minor</patchNoteType>
+	
+			<patchNoteLines>
+			<li>Adds a prosperityLostBase FCStatDef</li>
+			</patchNoteLines>
+	
+			<patchNoteImagePaths>
+				<li>PatchNoteImages/global/empire</li>
+			</patchNoteImagePaths>
+	
+			<patchNoteImageDescriptions>
+				<li>Adds new stat</li>
+			</patchNoteImageDescriptions>
+	
+			<additionalNotes>
+				<li>Please raise any issues you find on the Github page.</li>
+			</additionalNotes>
+	
+			<authors>
+			<li>Matathias</li>
+			</authors>
+		</FactionColonies.PatchNoteDef>
+</Defs>

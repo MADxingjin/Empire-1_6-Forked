@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!-- PatchNoteTypes: Undefined, Hotfix, Patch, Minor, Major -->
+	<FactionColonies.PatchNoteDef Name="EmpirePatchBase" Abstract="True">
+		<modId>matathias.empire</modId>
+
+		<links>
+			<li>https://discord.gg/f3zFQqA</li>
+			<li>https://github.com/matathias/Empire-1_6-Continued/tree/development</li>
+		</links>
+
+		<linkButtonImagePaths>
+			<li>GUI/Buttons/discordlogo</li>
+			<li>GUI/Buttons/githublogo</li>
+		</linkButtonImagePaths>
+
+		<linkButtonToolTips>
+			<li>Join the Empire discord!</li>
+			<li>Please raise any issues you find on the Github page.</li>
+		</linkButtonToolTips>
+
+		<authorStringBase>All of the code for this update has been developed by {0}.</authorStringBase>
+		<introStringBase>A new update for {0} has been released: v.{1}. The following changes have occurred:</introStringBase>
+	</FactionColonies.PatchNoteDef>
+
+	<!-- ========== TEMPLATE: Copy this block and fill in fields to add a new patch note ==========
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>X_YY_ZZ</defName>
+		<label>Short Title</label>
+		<description>One-line summary of the update.</description>
+
+		<major>0</major>
+		<minor>0</minor>
+		<patch>0</patch>
+
+		<releaseDay>1</releaseDay>
+		<releaseMonth>1</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+			<li>Change description here.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Image description here.</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+			<li>YourName</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+	========== END TEMPLATE ========== -->
+</Defs>
