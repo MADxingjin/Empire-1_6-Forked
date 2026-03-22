@@ -93,6 +93,7 @@
 	<FCEdictActive>Active</FCEdictActive>
 	<FCEdictRevoke>Revoke</FCEdictRevoke>
 	<FCEdictLockedUntilLevel>Locked until faction level {0}</FCEdictLockedUntilLevel>
+	<FCEdictSwapConfirmation>Replace {0} with {1}? The new edict will take {2} days to fully activate.</FCEdictSwapConfirmation>
 	<FCEdictIncompatible>{0} is incompatible with your active policy: {1}</FCEdictIncompatible>
 	<FCEdictRequiresPolicy>{0} requires: {1}</FCEdictRequiresPolicy>
 	<FCEdictRequiresPolicyAny>{0} requires one of: {1}</FCEdictRequiresPolicyAny>

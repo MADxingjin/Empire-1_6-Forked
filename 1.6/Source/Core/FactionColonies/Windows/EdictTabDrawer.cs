@@ -1,3 +1,4 @@
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace FactionColonies
 {
     /// <summary>
     /// Draws the Edicts tab content in the main faction window.
-    /// Four columns (Social, Tax, Military, Doctrine), each showing available edicts
+    /// Four columns (Social, Tax, Doctrine, Military), each showing available edicts
     /// with radio-style selection and upkeep display.
     /// </summary>
     public static class EdictTabDrawer
@@ -16,8 +17,8 @@ namespace FactionColonies
         {
             FCPolicyCategory.Social,
             FCPolicyCategory.Tax,
-            FCPolicyCategory.Military,
-            FCPolicyCategory.Doctrine
+            FCPolicyCategory.Doctrine,
+            FCPolicyCategory.Military
         };
 
         private static Dictionary<FCPolicyCategory, List<FCPolicyDef>> cachedEdictsByCategory;
@@ -27,7 +28,7 @@ namespace FactionColonies
         private const float Margin = 5f;
         private const float ColumnGap = 8f;
         private const float HeaderHeight = 30f;
-        private const float EdictRowHeight = 86f;
+        private const float EdictRowHeight = 100f;
         private const float BottomBarHeight = 35f;
         private const float RadioSize = 24f;
         private const float CategoryPadding = 6f;
@@ -108,7 +109,7 @@ namespace FactionColonies
             float columnsHeight = bottomBarY - topY - Margin;
             float columnWidth = (rect.width - Margin * 2 - ColumnGap * (EdictCategories.Length - 1)) / EdictCategories.Length;
 
-            // Draw three columns
+            // Draw columns
             for (int i = 0; i < EdictCategories.Length; i++)
             {
                 FCPolicyCategory category = EdictCategories[i];
@@ -272,7 +273,7 @@ namespace FactionColonies
             else if (Mouse.IsOver(rect))
                 Widgets.DrawHighlight(rect);
 
-            // Radio button area
+            // Radio button visual (display only, not the click target)
             Rect radioRect = new Rect(rect.x, rect.y + (rect.height - RadioSize) / 2f, RadioSize, RadioSize);
 
             // Label and description
@@ -289,7 +290,7 @@ namespace FactionColonies
             Widgets.Label(labelRect, def.LabelCap);
 
             // Description
-            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 40f);
+            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 54f);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(descRect, def.desc);
@@ -302,25 +303,36 @@ namespace FactionColonies
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
 
-            // Radio button drawing and click handling
+            // Draw radio button visual (not interactive)
             if (available)
-            {
-                bool selected = isActive;
-                if (Widgets.RadioButton(radioRect.x, radioRect.y, selected))
-                {
-                    if (!isActive)
-                    {
-                        faction.EnactEdict(def);
-                        cachedEdictsByCategory = null; // Force refresh
-                    }
-                }
-            }
+                Widgets.RadioButton(radioRect.x, radioRect.y, isActive);
             else
             {
-                // Draw grayed radio
                 GUI.color = Color.gray;
                 Widgets.RadioButton(radioRect.x, radioRect.y, false);
                 GUI.color = Color.white;
+            }
+
+            // Whole-row click handling
+            if (available && !isActive && Widgets.ButtonInvisible(rect))
+            {
+                if (activeEdict != null)
+                {
+                    // Swapping — confirm first
+                    float enactDays = def.enactDuration / 60000f;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCEdictSwapConfirmation".Translate(activeEdict.def.LabelCap, def.LabelCap, enactDays.ToString("F0")),
+                        delegate
+                        {
+                            faction.EnactEdict(def);
+                            cachedEdictsByCategory = null;
+                        }));
+                }
+                else
+                {
+                    faction.EnactEdict(def);
+                    cachedEdictsByCategory = null;
+                }
             }
 
             // Tooltip
