@@ -1,3 +1,4 @@
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace FactionColonies
 {
     /// <summary>
     /// Draws the Edicts tab content in the main faction window.
-    /// Three columns (Social, Tax, Military), each showing available edicts
+    /// Four columns (Social, Tax, Doctrine, Military), each showing available edicts
     /// with radio-style selection and upkeep display.
     /// </summary>
     public static class EdictTabDrawer
@@ -16,6 +17,7 @@ namespace FactionColonies
         {
             FCPolicyCategory.Social,
             FCPolicyCategory.Tax,
+            FCPolicyCategory.Doctrine,
             FCPolicyCategory.Military
         };
 
@@ -26,7 +28,9 @@ namespace FactionColonies
         private const float Margin = 5f;
         private const float ColumnGap = 8f;
         private const float HeaderHeight = 30f;
-        private const float EdictRowHeight = 86f;
+        private const float LabelHeight = 22f;
+        private const float UpkeepHeight = 20f;
+        private const float RowPadding = 4f;
         private const float BottomBarHeight = 35f;
         private const float RadioSize = 24f;
         private const float CategoryPadding = 6f;
@@ -60,6 +64,7 @@ namespace FactionColonies
                 case FCPolicyCategory.Social: return "FCEdictCategorySocial".Translate();
                 case FCPolicyCategory.Tax: return "FCEdictCategoryTax".Translate();
                 case FCPolicyCategory.Military: return "FCEdictCategoryMilitary".Translate();
+                case FCPolicyCategory.Doctrine: return "FCEdictCategoryDoctrine".Translate();
                 default: return category.ToString();
             }
         }
@@ -79,6 +84,10 @@ namespace FactionColonies
                 case FCPolicyCategory.Military:
                     bodyColor = new Color(0.20f, 0.12f, 0.10f, 0.5f);
                     headerColor = new Color(0.28f, 0.16f, 0.13f, 0.8f);
+                    break;
+                case FCPolicyCategory.Doctrine:
+                    bodyColor = new Color(0.12f, 0.15f, 0.20f, 0.5f);
+                    headerColor = new Color(0.16f, 0.22f, 0.30f, 0.8f);
                     break;
                 default:
                     bodyColor = new Color(0.15f, 0.15f, 0.15f, 0.5f);
@@ -100,9 +109,9 @@ namespace FactionColonies
             float topY = descRect.yMax + Margin;
             float bottomBarY = rect.yMax - BottomBarHeight - margin;
             float columnsHeight = bottomBarY - topY - Margin;
-            float columnWidth = (rect.width - Margin * 2 - ColumnGap * 2) / 3f;
+            float columnWidth = (rect.width - Margin * 2 - ColumnGap * (EdictCategories.Length - 1)) / EdictCategories.Length;
 
-            // Draw three columns
+            // Draw columns
             for (int i = 0; i < EdictCategories.Length; i++)
             {
                 FCPolicyCategory category = EdictCategories[i];
@@ -196,7 +205,14 @@ namespace FactionColonies
                 Rect revokeRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, 24f);
                 if (Widgets.ButtonText(revokeRect, "FCEdictRevoke".Translate()))
                 {
-                    faction.RevokeEdict(category);
+                    FCPolicy edictToRevoke = activeEdict;
+                    FCPolicyCategory cat = category;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCEdictRevokeConfirmation".Translate(edictToRevoke.def.LabelCap),
+                        delegate
+                        {
+                            faction.RevokeEdict(cat);
+                        }));
                 }
                 contentY = revokeRect.yMax + CategoryPadding;
             }
@@ -212,8 +228,15 @@ namespace FactionColonies
 
             // Edict list with scroll view
             float listHeight = rect.yMax - contentY;
-            float totalContentHeight = edicts.Count * (EdictRowHeight + 2f);
             Rect listOuterRect = new Rect(rect.x + CategoryPadding, contentY, rect.width - CategoryPadding * 2, listHeight);
+            // Use scrollbar-adjusted width for height calculation to avoid underestimating
+            // when the scrollbar narrows the view and causes more text wrapping
+            float textWidthForLayout = listOuterRect.width - RadioSize - Margin - 16f;
+
+            // Calculate total content height with dynamic row sizes
+            float totalContentHeight = 0f;
+            foreach (FCPolicyDef def in edicts)
+                totalContentHeight += GetEdictRowHeight(def, textWidthForLayout) + 2f;
 
             Vector2 scrollPos;
             if (!columnScrollPositions.TryGetValue(category, out scrollPos))
@@ -227,10 +250,14 @@ namespace FactionColonies
             Widgets.BeginScrollView(listOuterRect, ref scrollPos, listViewRect);
             columnScrollPositions[category] = scrollPos;
 
+            // Recalculate text width if scrollbar narrowed the view
+            float actualTextWidth = listViewRect.width - RadioSize - Margin;
+
             float rowY = listViewRect.y;
             foreach (FCPolicyDef def in edicts)
             {
-                Rect rowRect = new Rect(listViewRect.x, rowY, listViewRect.width, EdictRowHeight);
+                float rowHeight = GetEdictRowHeight(def, actualTextWidth);
+                Rect rowRect = new Rect(listViewRect.x, rowY, listViewRect.width, rowHeight);
                 DrawEdictRow(rowRect, def, faction, activeEdict);
                 rowY = rowRect.yMax + 2f;
             }
@@ -251,6 +278,14 @@ namespace FactionColonies
             return null;
         }
 
+        private static float GetEdictRowHeight(FCPolicyDef def, float textWidth)
+        {
+            Text.Font = GameFont.Tiny;
+            float descHeight = Text.CalcHeight(def.desc, textWidth);
+            Text.Font = GameFont.Small;
+            return RowPadding + LabelHeight + descHeight + UpkeepHeight;
+        }
+
         private static void DrawEdictRow(Rect rect, FCPolicyDef def, FactionFC faction, FCPolicy activeEdict)
         {
             bool isActive = activeEdict != null && activeEdict.def == def;
@@ -266,7 +301,7 @@ namespace FactionColonies
             else if (Mouse.IsOver(rect))
                 Widgets.DrawHighlight(rect);
 
-            // Radio button area
+            // Radio button visual (display only, not the click target)
             Rect radioRect = new Rect(rect.x, rect.y + (rect.height - RadioSize) / 2f, RadioSize, RadioSize);
 
             // Label and description
@@ -282,8 +317,9 @@ namespace FactionColonies
 
             Widgets.Label(labelRect, def.LabelCap);
 
-            // Description
-            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, 40f);
+            // Description — fills remaining space between label and upkeep
+            float descHeight = rect.height - LabelHeight - UpkeepHeight - RowPadding;
+            Rect descRect = new Rect(textX, labelRect.yMax, textWidth, descHeight);
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(descRect, def.desc);
@@ -296,25 +332,36 @@ namespace FactionColonies
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
 
-            // Radio button drawing and click handling
+            // Draw radio button visual (not interactive)
             if (available)
-            {
-                bool selected = isActive;
-                if (Widgets.RadioButton(radioRect.x, radioRect.y, selected))
-                {
-                    if (!isActive)
-                    {
-                        faction.EnactEdict(def);
-                        cachedEdictsByCategory = null; // Force refresh
-                    }
-                }
-            }
+                Widgets.RadioButton(radioRect.x, radioRect.y, isActive);
             else
             {
-                // Draw grayed radio
                 GUI.color = Color.gray;
                 Widgets.RadioButton(radioRect.x, radioRect.y, false);
                 GUI.color = Color.white;
+            }
+
+            // Whole-row click handling
+            if (available && !isActive && Widgets.ButtonInvisible(rect))
+            {
+                if (activeEdict != null)
+                {
+                    // Swapping — confirm first
+                    float enactDays = def.enactDuration / 60000f;
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "FCEdictSwapConfirmation".Translate(activeEdict.def.LabelCap, def.LabelCap, enactDays.ToString("F0")),
+                        delegate
+                        {
+                            faction.EnactEdict(def);
+                            cachedEdictsByCategory = null;
+                        }));
+                }
+                else
+                {
+                    faction.EnactEdict(def);
+                    cachedEdictsByCategory = null;
+                }
             }
 
             // Tooltip

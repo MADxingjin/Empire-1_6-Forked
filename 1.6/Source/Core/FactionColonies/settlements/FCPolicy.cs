@@ -15,7 +15,8 @@ namespace FactionColonies
         Core = 2,
         Tax = 3,
         Military = 4,
-        Social = 5
+        Social = 5,
+        Doctrine = 6
     }
 
     public class FCPolicy : IExposable
@@ -83,7 +84,8 @@ namespace FactionColonies
 
         public bool IsEdict => category == FCPolicyCategory.Tax
             || category == FCPolicyCategory.Military
-            || category == FCPolicyCategory.Social;
+            || category == FCPolicyCategory.Social
+            || category == FCPolicyCategory.Doctrine;
         // Icon paths — set in XML, resolved lazily to textures
         public string iconPathLight;
         public string iconPathDark;

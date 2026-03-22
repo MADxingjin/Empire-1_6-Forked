@@ -152,6 +152,7 @@ namespace FactionColonies
         public static FCStatDef battleProsperityLossMultiplier;
         public static FCStatDef battleHappinessLossMultiplier;
         public static FCStatDef battleLoyaltyLossMultiplier;
+        public static FCStatDef buildingDestructionChance;
 
         // ── Economy ───────────────────────────────────────────────
         public static FCStatDef taxBasePercentage;
