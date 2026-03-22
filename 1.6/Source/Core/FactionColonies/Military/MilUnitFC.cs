@@ -234,9 +234,9 @@ namespace FactionColonies
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
-        public void RemoveApparel(ApparelLayerDef layer, BodyPartGroupDef bodyPart)
+        public void RemoveApparel(ThingDef def)
         {
-            apparel.RemoveAll(s => MatchesSlot(s.thing, layer, bodyPart));
+            apparel.RemoveAll(s => s.thing == def);
             pawnEquipmentDirty = true;
             ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
@@ -250,17 +250,6 @@ namespace FactionColonies
             pawnEquipmentDirty = true;
             ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
-        }
-
-        /// <summary>
-        /// Check if a ThingDef matches a given apparel slot (layer + optional body part).
-        /// </summary>
-        public static bool MatchesSlot(ThingDef def, ApparelLayerDef layer, BodyPartGroupDef bodyPart)
-        {
-            if (def?.apparel == null) return false;
-            if (!def.apparel.layers.Contains(layer)) return false;
-            if (bodyPart != null && !def.apparel.bodyPartGroups.Contains(bodyPart)) return false;
-            return true;
         }
 
         // --- Cost ---
