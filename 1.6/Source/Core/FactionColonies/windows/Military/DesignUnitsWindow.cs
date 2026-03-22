@@ -16,7 +16,6 @@ namespace FactionColonies
 
         private Vector2 unitListScrollPos;
         private string unitSearchTerm = "";
-        private Vector2 wornItemsScrollPos;
         private Vector2 apparelListScrollPos;
         private bool isSelectedUnitDeployed;
         private string selectedUnitDeployReason = "";
@@ -85,14 +84,12 @@ namespace FactionColonies
                     rightEdge - contentLeft - GearWidth - 10f, 61f);
                 DrawActionButtons(buttonsRect);
 
-                //Widgets.DrawMenuSection(gearRect);
                 DrawGearPanel(gearRect);
+
+                Rect apparelRect = new Rect(gearRect.xMax + 10f, gearRect.y,
+                    rightEdge - gearRect.xMax - 10f, gearRect.height);
+                DrawApparelList(apparelRect, selectedUnit);
             }
-
-
-            Rect wornRect = new Rect(gearRect.xMax + 10f, gearRect.y,
-                rightEdge - gearRect.xMax - 10f, gearRect.height);
-            DrawWornItemsSidebar(wornRect);
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
@@ -357,6 +354,7 @@ namespace FactionColonies
             const float pawnWidth = 100f;
             const float pawnHeight = 130f;
             const float slotSize = 50f;
+            const float slotGap = 15f;
 
             // Pawn preview centered near the top of the gear area
             Rect unitIcon = new Rect(
@@ -364,9 +362,13 @@ namespace FactionColonies
                 gearArea.y + 5f,
                 pawnWidth, pawnHeight);
 
-            // Weapon, animal, ammo slots to the left of the pawn preview
-            Rect AnimalCompanion = new Rect(unitIcon.x - slotSize - 20f, unitIcon.y, slotSize, slotSize);
-            Rect EquipmentWeapon = new Rect(unitIcon.x - slotSize - 20f, unitIcon.y + 65f, slotSize, slotSize);
+            // Weapon and animal slots below the pawn preview, side by side
+            float slotsY = unitIcon.yMax + slotGap + 15f; // +15 for label above
+            float slotsWidth = slotSize * 2 + 20f;
+            float slotsStartX = gearArea.x + (gearArea.width - slotsWidth) / 2f;
+
+            Rect AnimalCompanion = new Rect(slotsStartX, slotsY, slotSize, slotSize);
+            Rect EquipmentWeapon = new Rect(slotsStartX + slotSize + 20f, slotsY, slotSize, slotSize);
 
             // CE ammo slot below weapon
             Rect AmmoSlot = new Rect(EquipmentWeapon.x, EquipmentWeapon.yMax + 20f, slotSize, slotSize);
@@ -381,10 +383,10 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperCenter;
 
-            Widgets.Label(new Rect(EquipmentWeapon.x, EquipmentWeapon.y - 15f, EquipmentWeapon.width, 15f), "fcLabelWeapon".Translate());
-            Widgets.DrawMenuSection(EquipmentWeapon);
             Widgets.Label(new Rect(AnimalCompanion.x, AnimalCompanion.y - 15f, AnimalCompanion.width, 15f), "fcLabelAnimal".Translate());
             Widgets.DrawMenuSection(AnimalCompanion);
+            Widgets.Label(new Rect(EquipmentWeapon.x, EquipmentWeapon.y - 15f, EquipmentWeapon.width, 15f), "fcLabelWeapon".Translate());
+            Widgets.DrawMenuSection(EquipmentWeapon);
 
             if (showAmmoSlot)
             {
@@ -481,11 +483,6 @@ namespace FactionColonies
             {
                 Widgets.ButtonImage(EquipmentWeapon, selectedUnit.weapons[0].thing.uiIcon);
             }
-
-            // --- Apparel List ---
-            float apparelTop = unitIcon.yMax + 10f;
-            Rect apparelRect = new Rect(gearArea.x, apparelTop, gearArea.width, gearArea.yMax - apparelTop);
-            DrawApparelList(apparelRect, selectedUnit);
         }
 
         // --- Apparel List ---
@@ -544,6 +541,11 @@ namespace FactionColonies
                 Rect iconRect = new Rect(row.x + 2f, row.y + 2f, IconSize, IconSize);
                 Widgets.ThingIcon(iconRect, item.thing, item.stuff);
 
+                // Info card button
+                const float infoBtnSize = 24f;
+                Rect infoRect = new Rect(iconRect.xMax + 2f, row.y + (apparelRowHeight - infoBtnSize) / 2f, infoBtnSize, infoBtnSize);
+                Widgets.InfoCardButton(infoRect.x, infoRect.y, item.thing, item.stuff);
+
                 // Remove button (right side)
                 float costWidth = 55f;
                 Rect removeRect = Rect.zero;
@@ -566,7 +568,7 @@ namespace FactionColonies
                 Widgets.Label(costRect, "$" + item.MarketValue.ToString("F0"));
 
                 // Label
-                Rect labelRect = new Rect(iconRect.xMax + 4f, row.y, costRect.x - iconRect.xMax - 8f, apparelRowHeight);
+                Rect labelRect = new Rect(infoRect.xMax + 4f, row.y, costRect.x - infoRect.xMax - 8f, apparelRowHeight);
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 string label = item.stuff != null
@@ -574,15 +576,11 @@ namespace FactionColonies
                     : item.thing.LabelCap.ToString();
                 Widgets.Label(labelRect, label);
 
-                // Click row to open replace picker (or info card if deployed)
-                Rect clickRect = new Rect(row.x, row.y, (isSelectedUnitDeployed ? row.width : removeRect.x - row.x), apparelRowHeight);
-                if (Widgets.ButtonInvisible(clickRect))
+                // Click row to open replace picker
+                if (!isSelectedUnitDeployed)
                 {
-                    if (isSelectedUnitDeployed)
-                    {
-                        Find.WindowStack.Add(new Dialog_InfoCard(item.thing, item.stuff));
-                    }
-                    else
+                    Rect clickRect = new Rect(row.x, row.y, removeRect.x - row.x, apparelRowHeight);
+                    if (Widgets.ButtonInvisible(clickRect))
                     {
                         OpenApparelReplacePicker(unit, item);
                     }
@@ -593,60 +591,6 @@ namespace FactionColonies
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
-        }
-
-        // --- Worn Items Sidebar ---
-
-        private void DrawWornItemsSidebar(Rect rect)
-        {
-            if (selectedUnit == null) return;
-
-            Widgets.DrawMenuSection(rect);
-
-            List<(string label, ThingDef thing, ThingDef stuff)> wornEntries = new List<(string, ThingDef, ThingDef)>();
-
-            foreach (SavedThing item in selectedUnit.apparel)
-            {
-                if (item.thing == null) continue;
-                string label = item.stuff != null
-                    ? item.thing.LabelCap + " (" + item.stuff.LabelCap + ") Cost: " + item.MarketValue
-                    : item.thing.LabelCap + " Cost: " + item.MarketValue;
-                wornEntries.Add((label, item.thing, item.stuff));
-            }
-
-            foreach (SavedThing w in selectedUnit.weapons)
-            {
-                if (w.thing == null) continue;
-                string label = w.stuff != null
-                    ? w.thing.LabelCap + " (" + w.stuff.LabelCap + ") Cost: " + w.MarketValue
-                    : w.thing.LabelCap + " Cost: " + w.MarketValue;
-                wornEntries.Add((label, w.thing, w.stuff));
-            }
-
-            if (CombatExtendedUtil.IsCELoaded && selectedUnit.preferredAmmo != null)
-            {
-                string ammoLabel = "fcLabelAmmo".Translate() + ": " + selectedUnit.preferredAmmo.LabelCap;
-                wornEntries.Add((ammoLabel, selectedUnit.preferredAmmo, null));
-            }
-
-            float wornViewHeight = wornEntries.Count * 25f;
-            Rect scrollViewRect = new Rect(0f, 0f,
-                rect.width - (wornViewHeight > rect.height ? 16f : 0f),
-                Mathf.Max(wornViewHeight, rect.height));
-
-            Widgets.BeginScrollView(rect, ref wornItemsScrollPos, scrollViewRect);
-
-            for (int i = 0; i < wornEntries.Count; i++)
-            {
-                var (label, thing, stuff) = wornEntries[i];
-                Rect tmp = new Rect(scrollViewRect.x, scrollViewRect.y + i * 25f, scrollViewRect.width, 25f);
-                if (Widgets.CustomButtonText(ref tmp, label, Color.white, Color.black, Color.black))
-                {
-                    Find.WindowStack.Add(new Dialog_InfoCard(thing, stuff));
-                }
-            }
-
-            Widgets.EndScrollView();
         }
 
         // --- Apparel Picker ---
