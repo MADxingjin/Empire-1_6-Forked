@@ -196,6 +196,7 @@ namespace FactionColonies.util
             }
 
             RefreshPawnGroupMakers();
+            PawnKindTemplateUtil.FixupPawnKindDefs(factionFc);
             WorldSettlementTraderTracker.ReloadTraderKind();
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.

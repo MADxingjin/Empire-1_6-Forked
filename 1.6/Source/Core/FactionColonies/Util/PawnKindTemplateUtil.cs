@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -298,6 +299,97 @@ namespace FactionColonies.util
 
             raceGearCache[race] = data;
             return data;
+        }
+
+        /// <summary>
+        /// After loading, pawn kindDefs were remapped to base templates by BackCompatibility.
+        /// This restores the correct race-specific clone, preserving the pawn.def == kindDef.race
+        /// invariant that PawnGenerator.IsValidCandidateToRedress and other systems rely on.
+        /// Also handles stale clones after tech level changes.
+        /// </summary>
+        public static void FixupPawnKindDefs(FactionFC factionFc)
+        {
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            if (empireFaction == null) return;
+
+            TechLevel techLevel = factionFc.techLevel;
+            int fixedCount = 0;
+
+            // Mercenaries (direct access — most important)
+            if (factionFc.militaryCustomizationUtil?.mercenarySquads != null)
+            {
+                foreach (MercenarySquadFC squad in factionFc.militaryCustomizationUtil.mercenarySquads)
+                {
+                    if (squad?.mercenaries == null) continue;
+                    foreach (Mercenary merc in squad.mercenaries)
+                    {
+                        if (FixupPawn(merc?.pawn, techLevel)) fixedCount++;
+                    }
+                }
+            }
+
+            // Faction leader
+            if (FixupPawn(empireFaction.leader, techLevel)) fixedCount++;
+
+            // World pawns
+            if (Find.WorldPawns != null)
+            {
+                foreach (Pawn pawn in Find.WorldPawns.AllPawnsAliveOrDead)
+                {
+                    if (pawn != null && pawn.Faction == empireFaction)
+                    {
+                        if (FixupPawn(pawn, techLevel)) fixedCount++;
+                    }
+                }
+            }
+
+            // Map pawns
+            if (Find.Maps != null)
+            {
+                foreach (Map map in Find.Maps)
+                {
+                    if (map?.mapPawns == null) continue;
+                    foreach (Pawn pawn in map.mapPawns.AllPawns)
+                    {
+                        if (pawn != null && pawn.Faction == empireFaction)
+                        {
+                            if (FixupPawn(pawn, techLevel)) fixedCount++;
+                        }
+                    }
+                }
+            }
+
+            if (fixedCount > 0)
+                LogUtil.Message($"Fixed kindDef on {fixedCount} Empire pawns");
+        }
+
+        private static bool FixupPawn(Pawn pawn, TechLevel techLevel)
+        {
+            if (pawn?.kindDef == null || pawn.def == null) return false;
+            if (!pawn.kindDef.defName.StartsWith("PColony_")) return false;
+
+            int templateIndex = GetTemplateIndex(pawn.kindDef);
+            if (templateIndex < 0) return false;
+
+            List<PawnKindDef> clones = GetOrCreateClonesForRace(pawn.def, techLevel);
+            if (templateIndex >= clones.Count) return false;
+
+            PawnKindDef correctClone = clones[templateIndex];
+            if (pawn.kindDef == correctClone) return false;
+
+            pawn.kindDef = correctClone;
+            return true;
+        }
+
+        private static int GetTemplateIndex(PawnKindDef kindDef)
+        {
+            PawnKindDef[] templates = Templates;
+            for (int i = 0; i < templates.Length; i++)
+            {
+                if (kindDef == templates[i]) return i;
+                if (kindDef.defName.StartsWith(templates[i].defName + "_")) return i;
+            }
+            return -1;
         }
     }
 }
