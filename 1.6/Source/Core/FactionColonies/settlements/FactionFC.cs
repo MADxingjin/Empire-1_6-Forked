@@ -148,6 +148,7 @@ namespace FactionColonies
         {
             { FCPolicyCategory.Social, 2 },
             { FCPolicyCategory.Tax, 3 },
+            { FCPolicyCategory.Doctrine, 3 },
             { FCPolicyCategory.Military, 4 }
         };
 

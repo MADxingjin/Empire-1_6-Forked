@@ -905,6 +905,13 @@ namespace FactionColonies
             loyaltyLoss *= faction.GetStatValue(FCStatDefOf.battleLoyaltyLossMultiplier);
             var canDestroyBuildings = !faction.AnyPolicyPreventsBuildingDestruction();
 
+            // buildingDestructionChance stat scales the survival threshold:
+            // stat=1.0 -> threshold 7 (36% destruction, default)
+            // stat<1.0 -> higher threshold (less destruction)
+            // stat>1.0 -> lower threshold (more destruction)
+            double destructionStat = faction.GetStatValue(FCStatDefOf.buildingDestructionChance);
+            int deconstructChance = Math.Max(0, Math.Min(11, (int)Math.Round(11 - 4 * destructionStat)));
+
             WorldSettlement.prosperity -= prosperityLoss;
             WorldSettlement.happiness -= happinessLoss;
             WorldSettlement.loyalty -= loyaltyLoss;
@@ -938,7 +945,6 @@ namespace FactionColonies
                 for (var k = 0; k < 4; k++)
                 {
                     var deconstructRoll = new IntRange(0, 10).RandomInRange;
-                    var deconstructChance = 7;
                     if (deconstructRoll < deconstructChance ||
                         !WorldSettlement.BuildingsComp.BuildingSlotIsBuilding(k))
                     {
@@ -974,11 +980,11 @@ namespace FactionColonies
                 str += "\n  - " + "DefenseFailureBuildingsProtected".Translate();
             }
 
-            // level remover checker
+            // level remover checker — uses same destruction stat scaling
             if (WorldSettlement.settlementLevel > 1 && canDestroyBuildings)
             {
                 var num = new IntRange(0, 10).RandomInRange;
-                if (num >= 7)
+                if (num >= deconstructChance)
                 {
                     str += "\n  - " + "SettlementDeleveledRaid".Translate();
                     WorldSettlement.DelevelSettlement();

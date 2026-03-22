@@ -49,6 +49,7 @@
         <label>military efficiency bonus (defending)</label>
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_militaryEfficiencyBonusDefending</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -93,6 +94,7 @@
         <aggregation>Multiplicative</aggregation>
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_battleHappinessLossMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -102,6 +104,15 @@
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_battleLoyaltyLossMultiplier</descriptionKey>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>buildingDestructionChance</defName>
+        <label>building destruction chance</label>
+        <aggregation>Multiplicative</aggregation>
+        <appliesToSettlements>false</appliesToSettlements>
+        <invertedForDisplay>true</invertedForDisplay>
+        <descriptionKey>FCTraitDesc_BuildingDestructionChance</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <!-- ── Threat Scaling ──────────────────────────────────────── -->

@@ -7,7 +7,7 @@ namespace FactionColonies
 {
     /// <summary>
     /// Draws the Edicts tab content in the main faction window.
-    /// Three columns (Social, Tax, Military), each showing available edicts
+    /// Four columns (Social, Tax, Military, Doctrine), each showing available edicts
     /// with radio-style selection and upkeep display.
     /// </summary>
     public static class EdictTabDrawer
@@ -16,7 +16,8 @@ namespace FactionColonies
         {
             FCPolicyCategory.Social,
             FCPolicyCategory.Tax,
-            FCPolicyCategory.Military
+            FCPolicyCategory.Military,
+            FCPolicyCategory.Doctrine
         };
 
         private static Dictionary<FCPolicyCategory, List<FCPolicyDef>> cachedEdictsByCategory;
@@ -60,6 +61,7 @@ namespace FactionColonies
                 case FCPolicyCategory.Social: return "FCEdictCategorySocial".Translate();
                 case FCPolicyCategory.Tax: return "FCEdictCategoryTax".Translate();
                 case FCPolicyCategory.Military: return "FCEdictCategoryMilitary".Translate();
+                case FCPolicyCategory.Doctrine: return "FCEdictCategoryDoctrine".Translate();
                 default: return category.ToString();
             }
         }
@@ -79,6 +81,10 @@ namespace FactionColonies
                 case FCPolicyCategory.Military:
                     bodyColor = new Color(0.20f, 0.12f, 0.10f, 0.5f);
                     headerColor = new Color(0.28f, 0.16f, 0.13f, 0.8f);
+                    break;
+                case FCPolicyCategory.Doctrine:
+                    bodyColor = new Color(0.12f, 0.15f, 0.20f, 0.5f);
+                    headerColor = new Color(0.16f, 0.22f, 0.30f, 0.8f);
                     break;
                 default:
                     bodyColor = new Color(0.15f, 0.15f, 0.15f, 0.5f);
@@ -100,7 +106,7 @@ namespace FactionColonies
             float topY = descRect.yMax + Margin;
             float bottomBarY = rect.yMax - BottomBarHeight - margin;
             float columnsHeight = bottomBarY - topY - Margin;
-            float columnWidth = (rect.width - Margin * 2 - ColumnGap * 2) / 3f;
+            float columnWidth = (rect.width - Margin * 2 - ColumnGap * (EdictCategories.Length - 1)) / EdictCategories.Length;
 
             // Draw three columns
             for (int i = 0; i < EdictCategories.Length; i++)

@@ -89,6 +89,7 @@
 	<FCEdictCategorySocial>Social</FCEdictCategorySocial>
 	<FCEdictCategoryTax>Tax</FCEdictCategoryTax>
 	<FCEdictCategoryMilitary>Military</FCEdictCategoryMilitary>
+	<FCEdictCategoryDoctrine>Doctrine</FCEdictCategoryDoctrine>
 	<FCEdictActive>Active</FCEdictActive>
 	<FCEdictRevoke>Revoke</FCEdictRevoke>
 	<FCEdictLockedUntilLevel>Locked until faction level {0}</FCEdictLockedUntilLevel>
