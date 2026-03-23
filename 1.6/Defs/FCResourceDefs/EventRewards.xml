@@ -62,6 +62,9 @@
     <defName>RERD_Animals</defName>
     <label>animals</label>
     <thingSetMakerClass>FactionColonies.ThingSetMaker_Animals</thingSetMakerClass>
+    <modExtensions>
+      <li Class="FactionColonies.ResourceFilterExtension_Animals" />
+    </modExtensions>
     <useValueFactors>true</useValueFactors>
     <valueMinFactor>0.5</valueMinFactor>
     <valueMaxFactor>1.5</valueMaxFactor>

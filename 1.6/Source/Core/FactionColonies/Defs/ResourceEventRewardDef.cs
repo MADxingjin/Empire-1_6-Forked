@@ -1,6 +1,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace FactionColonies
@@ -114,6 +115,14 @@ namespace FactionColonies
             foreach (StuffCategoryDef stuff in stuffCategoryBlockList)
             {
                 param.filter.SetAllow(stuff, false);
+            }
+
+            if (modExtensions != null)
+            {
+                foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
+                {
+                    ext.SetFilter(param.filter, param.techLevel ?? TechLevel.Undefined);
+                }
             }
 
             // Count range
