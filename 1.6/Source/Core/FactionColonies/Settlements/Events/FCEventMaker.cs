@@ -719,6 +719,12 @@ namespace FactionColonies
                 return;
             }
 
+            double attackerEfficiency = temp.militaryForceAttacking.militaryEfficiency;
+            foreach (Pawn attacker in attackers)
+            {
+                MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(attacker, attackerEfficiency);
+            }
+
             parms.raidArrivalMode.Worker.Arrive(attackers, parms);
 
             worldSettlement.MilitaryComp.attackers = attackers;

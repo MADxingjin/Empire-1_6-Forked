@@ -659,6 +659,13 @@ namespace FactionColonies
                     squad.UpdateSquadStats(force.homeSettlement.settlementMilitaryLevel);
                     squad.ResetNeeds();
 
+                    double efficiency = force.militaryEfficiency;
+                    foreach (Pawn merc in squad.AllEquippedMercenaryPawns)
+                    {
+                        MilitaryEfficiencyUtil.ShiftPawnGearQuality(merc, efficiency);
+                        MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(merc, efficiency);
+                    }
+
                     friendlies = squad.AllEquippedMercenaryPawns.ToList();
 
                     foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
@@ -681,6 +688,12 @@ namespace FactionColonies
                         IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
                             PawnGroupKindDefOf.Combat, parms, true)).ToList();
                     if (!friendlies.Any()) LogUtil.Error("Got no pawns spawning raid from parms " + parms);
+
+                    double efficiency = force.militaryEfficiency;
+                    foreach (Pawn defender in friendlies)
+                    {
+                        MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(defender, efficiency);
+                    }
                 }
             } // end else (no external defender pawns)
 
@@ -1037,6 +1050,13 @@ namespace FactionColonies
                     extDefender.ReturnDefendingPawns(survivingPawns);
                     defenders.Clear();
                 }
+            }
+
+            // Strip combat efficiency hediffs from surviving defenders (squad mercs persist between battles)
+            foreach (Pawn defender in defenders)
+            {
+                if (defender != null && !defender.Dead && !defender.Destroyed)
+                    MilitaryEfficiencyUtil.RemoveCombatEfficiencyHediff(defender);
             }
 
             DeleteMap(won);

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_122_0</defName>
+		<label>Combat Update</label>
+		<description>Updates manual battles to actually take advantage of the combat efficiency stat.</description>
+
+		<major>0</major>
+		<minor>122</minor>
+		<patch>0</patch>
+
+		<releaseDay>23</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds two hediffs (a buff and a debuff) that impact a pawn&apos;s shooting accuracy, melee hit chance, melee dodge change, aiming dely factor, and move speed based on their combat efficiency</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Combat Update</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>
