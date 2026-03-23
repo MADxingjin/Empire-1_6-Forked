@@ -28,7 +28,7 @@ namespace FactionColonies
         public void RefreshBuildingSlots()
         {
             buildingSlots.Clear();
-            if (parentComp == null)
+            if (parentComp?.Buildings is null)
             {
                 LogUtil.Error($"SettlementBuildingComp {this.ToStringSafe()} has null parentComp during RefreshBuildingSlots");
                 return;

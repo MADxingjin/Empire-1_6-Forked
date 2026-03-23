@@ -497,7 +497,6 @@ namespace FactionColonies
 
         public int TotalUpkeep()
         {
-            FactionFC faction = FactionCache.FactionComp;
             int upkeep = 0;
             foreach (BuildingFC building in buildings)
             {
@@ -558,12 +557,13 @@ namespace FactionColonies
         public int GetFilterSize()
         {
             if (filters == null) RebuildFilters();
-            return filters.Count;
+            return filters?.Count ?? 0;
         }
 
         public string GetLabelForFilter(int i)
         {
             if (filters == null) RebuildFilters();
+            if (filters == null) return null;
             if (i < 0 || i >= filters.Count) return null;
             return filters[i].label;
         }
@@ -571,6 +571,7 @@ namespace FactionColonies
         public Texture2D GetIconForFilter(int i)
         {
             if (filters == null) RebuildFilters();
+            if (filters == null) return null;
             if (i < 0 || i >= filters.Count) return null;
             return filters[i].icon;
         }
@@ -578,6 +579,7 @@ namespace FactionColonies
         public bool FilterBuilding(int i, BuildingFCDef building)
         {
             if (filters == null) RebuildFilters();
+            if (filters == null) return true;
             if (i < 0 || i >= filters.Count) return true;
             return filters[i].predicate(building);
         }

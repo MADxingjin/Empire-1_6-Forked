@@ -732,11 +732,6 @@ namespace FactionColonies
             return "Empire";
         }
 
-        public override void WriteSettings()
-        {
-            base.WriteSettings();
-        }
-
         public override void DoSettingsWindowContents(Rect inRect) => settings.DoWindowContents(inRect);
     }
 }

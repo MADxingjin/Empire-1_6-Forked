@@ -183,7 +183,7 @@ namespace FactionColonies
                 {
                     totalCost = "  ";
                 }
-                Widgets.Label(selectedLabel, $"{stuffStr}{selectedThing.LabelCap}{qualityStr}\n{totalCost}");
+                Widgets.Label(selectedLabel, $"{stuffStr}{(selectedThing?.LabelCap ?? "null")}{qualityStr}\n{totalCost}");
                 panelY += selectedLabel.height + margin;
 
                 float buttonWidth = (selectionPanel.width - (margin * 3)) / 2f;

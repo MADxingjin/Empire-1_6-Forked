@@ -39,7 +39,7 @@ namespace FactionColonies.util
             Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
         }
 
-        public static void Action(FCEvent evt, Letter let = null, Message msg = null, bool CanUseShuttle = false)
+        public static void Action(FCEvent evt, Letter let, Message msg = null, bool CanUseShuttle = false)
         {
             evt.let = let;
             evt.msg = msg;
@@ -158,8 +158,6 @@ namespace FactionColonies.util
             MakeDeliveryLetterAndMessage(evt);
             List<Pawn> pawns = new List<Pawn>();
             List<Pawn> securityGuards = new List<Pawn>();
-
-            var factionFC = FactionCache.FactionComp;
 
             // Generate delivery pawns using allowed xenotypes first
             int maxAttempts = 100; // Prevent infinite loops
@@ -367,7 +365,7 @@ namespace FactionColonies.util
             return TaxDeliveryMode.Caravan;
         }
 
-        public static void Action(FCEvent evt, bool canUseShuttle = false)
+        public static void Action(FCEvent evt, bool canUseShuttle)
         {
             try
             {

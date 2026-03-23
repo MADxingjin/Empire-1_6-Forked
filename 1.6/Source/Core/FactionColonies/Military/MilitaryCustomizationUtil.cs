@@ -187,8 +187,8 @@ namespace FactionColonies
         /// </summary>
         public void TickMercenaryHealing(int interval)
         {
-            if (injuredMercs == null) RebuildInjuredMercs();
-            if (injuredMercs.Count == 0) return;
+            if (injuredMercs is null) RebuildInjuredMercs();
+            if ((injuredMercs?.Count ?? 0) == 0) return;
 
             float healAmount = FCSettings.mercenaryHealRatePerHour * ((float)interval / (float)GenDate.TicksPerHour);
             if (healAmount <= 0f) return;

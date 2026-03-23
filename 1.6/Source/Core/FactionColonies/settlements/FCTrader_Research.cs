@@ -31,7 +31,7 @@ namespace FactionColonies
                 {
                     foreach (Thing thing in map.listerThings.AllThings)
                     {
-                        if (thing.IsInAnyStorage() == true && thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, this) && !CraftUtil.CanCraftItem(thing.def, true))
+                        if (thing.IsInAnyStorage() && thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, this) && !CraftUtil.CanCraftItem(thing.def, true))
                         {
                             yield return thing;
                         }
@@ -132,7 +132,6 @@ namespace FactionColonies
 
         public override bool HandlesThingDef(ThingDef thingDef)
         {
-            FactionFC factionfc = FactionCache.FactionComp;
             return !CraftUtil.CanCraftItem(thingDef, true);
         }
     }

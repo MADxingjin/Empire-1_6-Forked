@@ -682,8 +682,6 @@ namespace FactionColonies
 
         public void TickActions()
         {
-            int tick = Find.TickManager.TicksGame;
-
             // Dispatch Tick to all active behavior instances
             ForEachBehavior(b => b.Tick(this));
         }
@@ -1270,8 +1268,7 @@ namespace FactionColonies
                 foreach (KeyValuePair<FCPolicyCategory, FCPolicy> kvp in edicts)
                 {
                     if (kvp.Value.def.requiredPolicies.NullOrEmpty()) continue;
-                    string reason;
-                    if (!kvp.Value.def.MeetsPolicyRequirements(this, out reason))
+                    if (!kvp.Value.def.MeetsPolicyRequirements(this, out _))
                         toRevoke.Add(kvp.Key);
                 }
                 foreach (FCPolicyCategory cat in toRevoke)

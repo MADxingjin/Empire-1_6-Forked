@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
-using System.Linq;
 using Verse;
 
 namespace FactionColonies.util

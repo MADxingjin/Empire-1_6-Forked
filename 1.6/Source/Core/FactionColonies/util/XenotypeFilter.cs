@@ -203,40 +203,23 @@ namespace FactionColonies.util
          * Due to caching tracking, we want to force other classes to go through our functions when interacting with the dictionary. */
         public void AddXenotypeWithWeight(XenotypeDef xenotype, float weight)
         {
-            if (xenotypeWeights.ContainsKey(xenotype))
-            {
-                xenotypeWeights[xenotype] = weight;
-            }
-            else
-            {
-                xenotypeWeights.Add(xenotype, weight);
-            }
+            if (xenotype is null) return;
+            xenotypeWeights[xenotype] = weight;
             dirtyXenotypeTotalWeight = true;
             checkedForNonViolent = false;
         }
         public void AddCustomXenotypeWithWeight(CustomXenotype xenotype, float weight)
         {
-            if (customXenotypeWeights.ContainsKey(xenotype.name))
-            {
-                customXenotypeWeights[xenotype.name] = weight;
-            }
-            else
-            {
-                customXenotypeWeights.Add(xenotype.name, weight);
-            }
+            if (xenotype is null) return;
+            
+            customXenotypeWeights[xenotype.name] = weight;
             dirtyCustomXenotypeTotalWeight = true;
             checkedForNonViolent = false;
         }
         public void AddRaceWithWeight(ThingDef race, float weight)
         {
-            if (raceWeights.ContainsKey(race))
-            {
-                raceWeights[race] = weight;
-            }
-            else
-            {
-                raceWeights.Add(race, weight);
-            }
+            if (race is null) return;
+            raceWeights[race] = weight;
             dirtyRaceTotalWeight = true;
         }
         public bool RemoveXenotype(XenotypeDef xenotype)

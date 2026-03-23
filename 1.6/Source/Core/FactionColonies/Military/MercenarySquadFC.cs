@@ -666,7 +666,7 @@ namespace FactionColonies
             LogUtil.MessageForce("Debug Mercenary Squad");
             foreach (Mercenary merc in mercenaries)
             {
-                LogUtil.MessageForce($"\t{merc.pawn.ToString()} \t{merc.pawn.health.Dead.ToString()} \t{merc.pawn.apparel.WornApparelCount} \t{merc.pawn.equipment.AllEquipmentListForReading.Count()}");
+                LogUtil.MessageForce($"\t{merc.pawn} \t{merc.pawn.health.Dead.ToString()} \t{merc.pawn.apparel.WornApparelCount} \t{merc.pawn.equipment.AllEquipmentListForReading.Count()}");
             }
         }
 

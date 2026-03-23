@@ -1,5 +1,4 @@
 using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace FactionColonies.util
             public FloatRange weaponMoney;
         }
 
-        private struct RaceTechKey
+        private struct RaceTechKey : IEquatable<RaceTechKey>
         {
             public ThingDef race;
             public TechLevel techLevel;
@@ -43,7 +42,19 @@ namespace FactionColonies.util
             public override bool Equals(object obj)
             {
                 if (!(obj is RaceTechKey other)) return false;
-                return race == other.race && techLevel == other.techLevel;
+                return Equals(other);
+            }
+
+            public bool Equals(RaceTechKey other) => race == other.race && techLevel == other.techLevel;
+
+            public static bool operator ==(RaceTechKey rtk1, RaceTechKey rtk2)
+            {
+                return rtk1.Equals(rtk2);
+            }
+
+            public static bool operator !=(RaceTechKey rtk1, RaceTechKey rtk2)
+            {
+                return !rtk1.Equals(rtk2);
             }
         }
 

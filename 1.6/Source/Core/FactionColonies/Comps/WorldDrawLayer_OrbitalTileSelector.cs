@@ -45,7 +45,7 @@ namespace FactionColonies
             else
             {
                 Dispose();
-                RegenerateWorldMeshColliders();
+                yield return RegenerateWorldMeshColliders();
             }
         }
     }

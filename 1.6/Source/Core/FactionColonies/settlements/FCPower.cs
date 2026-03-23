@@ -28,7 +28,10 @@ namespace FactionColonies
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            base.CompGetGizmosExtra();
+            foreach (Gizmo gizmo in base.CompGetGizmosExtra())
+            {
+                yield return gizmo;
+            }
             if (this.parent.Faction == Faction.OfPlayer)
             {
                 yield return new Command_Action

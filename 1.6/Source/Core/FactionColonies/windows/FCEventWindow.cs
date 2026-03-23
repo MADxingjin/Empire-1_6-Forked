@@ -1,8 +1,6 @@
 ﻿using FactionColonies.util;
 using HarmonyLib;
-using RimWorld;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -150,7 +148,7 @@ namespace FactionColonies
                 //
                 if (Widgets.ButtonText(location, "Location".Translate().CapitalizeFirst()))
                 {
-                    if (evt.hasDestination == true)
+                    if (evt.hasDestination)
                     {
                         Find.WindowStack.Add(new SettlementWindowFc(faction.ReturnSettlementByLocation(evt.location)));
                     }

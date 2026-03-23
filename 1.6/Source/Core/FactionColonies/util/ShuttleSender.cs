@@ -58,7 +58,7 @@ namespace FactionColonies.util
             return false;
         }
 
-        public string TargetingLabelGetter(GlobalTargetInfo target, PlanetTile tile, int ShuttleRange, IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
+        public string TargetingLabelGetter(GlobalTargetInfo target, PlanetTile tile, int shuttleRange, IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
         {
             if (!target.IsValid)
             {
@@ -69,7 +69,7 @@ namespace FactionColonies.util
                 return null;
             }
 
-            if (ShuttleRange > 0 && Find.WorldGrid.TraversalDistanceBetween(tile, target.Tile, true, int.MaxValue) > ShuttleRange)
+            if (shuttleRange > 0 && Find.WorldGrid.TraversalDistanceBetween(tile, target.Tile, true, int.MaxValue) > shuttleRange)
             {
                 GUI.color = ColorLibrary.RedReadable;
                 return "TransportPodDestinationBeyondMaximumRange".Translate();
@@ -83,7 +83,6 @@ namespace FactionColonies.util
             catch
             {
                 //There is a bug in base game RimWorld where a shuttle containing Animals and Humans crashes the UI here
-                List<IThingHolder> podsAnimalsRemoved = new List<IThingHolder>();
                 foreach (IThingHolder thingHolder in pods)
                 {
                     thingHolder.GetDirectlyHeldThings().RemoveAll(thing => thing.def.race?.Animal ?? false);

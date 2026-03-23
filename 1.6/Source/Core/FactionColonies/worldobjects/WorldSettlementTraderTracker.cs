@@ -69,9 +69,9 @@ namespace FactionColonies
         {
             get
             {
-                if (stock == null)
+                if (stock is null)
                     RegenerateStock();
-                return stock.InnerListForReading;
+                return stock?.InnerListForReading;
             }
         }
 
@@ -101,14 +101,12 @@ namespace FactionColonies
             : (string)"SettlementTrader".Translate((NamedArgument)settlement.LabelCap,
                 (NamedArgument)settlement.Faction.Name);
 
-        private bool HasStockTraderKindWillTrade => stock == null || stock.InnerListForReading.Any(x => TraderKind.WillTrade(x.def));
-
         public virtual bool CanTradeNow
         {
             get
             {
-                if (TraderKind == null) return false;
-                return HasStockTraderKindWillTrade;
+                if (TraderKind is null || stock is null) return false;
+                return stock.InnerListForReading.Any(x => TraderKind.WillTrade(x.def));
             }
         }
 
@@ -165,8 +163,14 @@ namespace FactionColonies
 
         public virtual void GiveSoldThingToTrader(Thing toGive, int countToGive, Pawn playerNegotiator)
         {
-            if (stock == null)
+            if (stock is null)
                 RegenerateStock();
+            if (stock is null)
+            {
+                // If stock is still null, then error and bail out
+                LogUtil.Error($"Stock in GiveSoldThingToTrader is null after regenerating");
+                return;
+            }
             Caravan caravan = playerNegotiator.GetCaravan();
             Thing thing = toGive.SplitOff(countToGive);
             thing.PreTraded(TradeAction.PlayerSells, playerNegotiator, settlement);

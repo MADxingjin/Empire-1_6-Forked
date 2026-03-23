@@ -1,5 +1,4 @@
 using RimWorld;
-using System;
 using System.Linq;
 
 namespace FactionColonies
@@ -180,22 +179,22 @@ namespace FactionColonies
             if (fc == null || fc.settlements.Count == 0) TestAssert.Skip("No faction/settlements");
 
             int count = fc.settlements.Count;
-            int sumH = 0, sumL = 0, sumU = 0, sumP = 0;
+            double sumH = 0, sumL = 0, sumU = 0, sumP = 0;
             foreach (var s in fc.settlements)
             {
-                sumH += Convert.ToInt32(s.happiness);
-                sumL += Convert.ToInt32(s.loyalty);
-                sumU += Convert.ToInt32(s.unrest);
-                sumP += Convert.ToInt32(s.prosperity);
+                sumH += s.happiness;
+                sumL += s.loyalty;
+                sumU += s.unrest;
+                sumP += s.prosperity;
             }
 
-            TestAssert.AreEqual((double)(sumH / count), fc.averageHappiness, tolerance: 1.0,
+            TestAssert.AreEqual((sumH / count), fc.averageHappiness, tolerance: 1.0,
                 message: $"averageHappiness ({fc.averageHappiness}) should match manual mean ({sumH / count})");
-            TestAssert.AreEqual((double)(sumL / count), fc.averageLoyalty, tolerance: 1.0,
+            TestAssert.AreEqual((sumL / count), fc.averageLoyalty, tolerance: 1.0,
                 message: $"averageLoyalty ({fc.averageLoyalty}) should match manual mean ({sumL / count})");
-            TestAssert.AreEqual((double)(sumU / count), fc.averageUnrest, tolerance: 1.0,
+            TestAssert.AreEqual((sumU / count), fc.averageUnrest, tolerance: 1.0,
                 message: $"averageUnrest ({fc.averageUnrest}) should match manual mean ({sumU / count})");
-            TestAssert.AreEqual((double)(sumP / count), fc.averageProsperity, tolerance: 1.0,
+            TestAssert.AreEqual((sumP / count), fc.averageProsperity, tolerance: 1.0,
                 message: $"averageProsperity ({fc.averageProsperity}) should match manual mean ({sumP / count})");
         }
 

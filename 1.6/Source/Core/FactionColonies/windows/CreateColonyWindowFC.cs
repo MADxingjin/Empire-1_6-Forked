@@ -223,8 +223,6 @@ namespace FactionColonies
 
         private IEnumerable<FloatMenuOption> GetAvailableSettlementTypes()
         {
-            var tiers = new List<WorldSettlementDef>();
-
             foreach (WorldSettlementDef settlementDef in DefDatabase<WorldSettlementDef>.AllDefs)
             {
                 if (settlementDef.IsUnlocked())

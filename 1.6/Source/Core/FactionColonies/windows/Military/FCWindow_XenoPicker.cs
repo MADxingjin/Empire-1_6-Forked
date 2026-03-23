@@ -49,7 +49,6 @@ namespace FactionColonies
             searchTerm = Widgets.TextField(searchRect, searchTerm);
 
             // Build xeno list (same logic as DesignUnitsWindow lines 214-236)
-            List<string> seenXenos = new List<string>();
             List<(XenotypeDef def, string label)> xenoOptions = new List<(XenotypeDef, string)>();
 
             foreach (XenotypeDef def in FactionCache.ViolentXenotypeDefs)

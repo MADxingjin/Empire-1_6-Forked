@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -42,29 +41,9 @@ namespace FactionColonies
             this.selectedSilver = 0;
         }
 
-        public override void PreOpen()
-        {
-            base.PreOpen();
-        }
-
-        public override void WindowUpdate()
-        {
-            base.WindowUpdate();
-        }
-
-        public override void OnAcceptKeyPressed()
-        {
-            base.OnAcceptKeyPressed();
-            //faction.title = title;
-
-
-        }
-
         public virtual float ReturnValue(int silver)
         {
-            float loyalty;
-            loyalty = silver / 100;
-            return loyalty;
+            return silver / 100f;
         }
 
         public virtual void UseValue(float value)
@@ -74,16 +53,9 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-
-
-
-
-
             //grab before anchor/font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
-
-
 
             //Settlement Tax Collection Header
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -110,9 +82,6 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
 
         }
-
-
-
     }
 }
 

@@ -21,11 +21,6 @@ namespace FactionColonies
             Scribe_References.Look(ref settlement, "settlement");
         }
 
-        public override void LordJobTick()
-        {
-            base.LordJobTick();
-        }
-
         public override StateGraph CreateGraph()
         {
             StateGraph stateGraph = new StateGraph();

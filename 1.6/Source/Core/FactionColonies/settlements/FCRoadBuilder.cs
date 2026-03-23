@@ -610,9 +610,8 @@ namespace FactionColonies
             {
                 // Replaces the road if this.Road.priority > the existing road's priority
                 grid.OverlayRoad(lastTile, tile, roadDef);
-                bool needsRecache;
-                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(lastTile, out needsRecache);
-                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(tile, out needsRecache);
+                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(lastTile, out _);
+                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(tile, out _);
             }
             else
             {

@@ -99,9 +99,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref battleMapInitialized, "battleMapInitialized");
         }
 
-        public override void Initialize(WorldObjectCompProperties props)
+        public override void Initialize(WorldObjectCompProperties props_l)
         {
-            base.Initialize(props);
+            base.Initialize(props_l);
 
             attackers = new List<Pawn>();
             defenders = new List<Pawn>();
@@ -403,8 +403,8 @@ namespace FactionColonies
             Current.Game.CurrentMap = Find.AnyPlayerHomeMap;
 
             //Ignore any empty caravans
-            var AllDowned = supporting.All(supporting => supporting.pawns.All(pawn => pawn.Downed || pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting => supporting.pawns.Any(pawn => pawn.Spawned && !pawn.Downed && !pawn.Dead)).ToList())
+            var AllDowned = supporting.All(supporting_l => supporting_l.pawns.All(pawn => pawn.Downed || pawn.Dead));
+            foreach (var caravanSupporting in supporting.Where(supporting_l => supporting_l.pawns.Any(pawn => pawn.Spawned && !pawn.Downed && !pawn.Dead)).ToList())
             {
                 CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
             }
@@ -841,7 +841,7 @@ namespace FactionColonies
 
         private void CooldownMilitary(int remaining, bool won)
         {
-            if (defenderForce?.homeSettlement == WorldSettlement)
+            if (defenderForce?.homeSettlement == WorldSettlement && defenderForce?.homeSettlement != null)
             {
                 var homeComp = defenderForce.homeSettlement.MilitaryComp;
                 // If squad was busy elsewhere (raid, capture, etc.), don't interfere — generated pawns were used
@@ -981,7 +981,7 @@ namespace FactionColonies
             }
 
             // level remover checker — uses same destruction stat scaling
-            if (WorldSettlement.settlementLevel > 1 && canDestroyBuildings)
+            if (WorldSettlement?.settlementLevel > 1 && canDestroyBuildings)
             {
                 var num = new IntRange(0, 10).RandomInRange;
                 if (num >= deconstructChance)

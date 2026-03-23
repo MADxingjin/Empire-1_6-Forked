@@ -412,6 +412,7 @@ namespace FactionColonies
             /* Footer box */
             Rect footerBox = new Rect(bodyX, titheBox.yMax + margin, bodyWidth, footerHeight);
             DrawTitheFooterBox(footerBox, titheRes);
+            GUI.color = origColor;
         }
         private void DrawTitheHeaderBox(Rect boundingBox, ResourceFC res)
         {
@@ -1132,7 +1133,7 @@ namespace FactionColonies
         {
             Widgets.DrawMenuSection(boundingBox);
 
-            if (settlement.BuildingsComp == null)
+            if (settlement?.BuildingsComp is null)
             {
                 // can't draw what doesn't exist
                 return;
@@ -1591,7 +1592,7 @@ namespace FactionColonies
         /// <summary>
         /// Increases the amount of workers in a settlement. Decreases if <paramref name="negative"/> is true. Modifies the amount based on if shift/ctrl are held
         /// </summary>
-        /// <param name="resourceType"></param>
+        /// <param name="resource"></param>
         /// <param name="negative"></param>
         private void IncreaseWorkers(ResourceFC resource, bool negative = false)
         {

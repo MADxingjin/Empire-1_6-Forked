@@ -3,7 +3,6 @@ using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Verse;
 
 namespace FactionColonies
@@ -294,7 +293,7 @@ namespace FactionColonies
                 {
                     ChangeDefendingMilitaryForce(tmp, highest);
                 }
-                else
+                else if (bestExternalDefender != null)
                 {
                     tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                     tmp.externalDefenderSource = bestExternalDefender.WorldObject;
@@ -445,7 +444,7 @@ namespace FactionColonies
 
             if (target.MilitaryComp == null)
             {
-                LogUtil.Warning($"ChangeDefendingMilitaryForce: target settlement {target?.Name} has no MilitaryComp. Aborting.");
+                LogUtil.Warning($"ChangeDefendingMilitaryForce: target settlement {target.Name} has no MilitaryComp. Aborting.");
                 return;
             }
             target.MilitaryComp.defenderForce = evt.militaryForceDefending;

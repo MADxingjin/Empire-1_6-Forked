@@ -106,21 +106,6 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Adds the ForceOpenOption to the FloatMenu <paramref name="options"/>
-        /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        private List<FloatMenuOption> AddForceOpenOption(List<FloatMenuOption> options)
-        {
-            List<FloatMenuOption> returnOptions = new List<FloatMenuOption>();
-
-            if (canBeForcedOpen) returnOptions.Add(ForceOpenOption);
-
-            returnOptions.AddRange(options);
-            return returnOptions;
-        }
-
-        /// <summary>
         /// Adds a fake option to the <paramref name="options"/>, only need this for the base constructor
         /// </summary>
         /// <param name="options"></param>
@@ -189,7 +174,7 @@ namespace FactionColonies
                 {
                     Widgets.Label(labelRect, $" {"FloatMenuSearchable".Translate()}");
                     options = filteredOptions.ToList();
-                    vanishIfMouseDistant = true && CanBeClosed;
+                    vanishIfMouseDistant = CanBeClosed;
                 }
 
                 Text.Anchor = TextAnchor.UpperLeft;

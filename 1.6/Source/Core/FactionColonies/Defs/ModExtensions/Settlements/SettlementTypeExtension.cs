@@ -28,17 +28,17 @@ namespace FactionColonies
             }
         }
 
-        public override void ResolveReferences(Def parentDef)
+        public override void ResolveReferences(Def parentDef_l)
         {
-            base.ResolveReferences(parentDef);
-            LogUtil.Message($"Calling ResolveReferences in SettlementTypeExtension for def {parentDef.defName}");
-            if (parentDef is WorldSettlementDef wpd)
+            base.ResolveReferences(parentDef_l);
+            LogUtil.Message($"Calling ResolveReferences in SettlementTypeExtension for def {parentDef_l.defName}");
+            if (parentDef_l is WorldSettlementDef wpd)
             {
                 this.parentDef = wpd;
             }
             else
             {
-                LogUtil.Error($"SettlementTypeExtension has non-WorldSettlementDef parent {parentDef.defName}! Setting to default");
+                LogUtil.Error($"SettlementTypeExtension has non-WorldSettlementDef parent {parentDef_l.defName}! Setting to default");
                 this.parentDef = WorldSettlementDefOf.WorldSettlementDef_Surface;
             }
         }
@@ -51,6 +51,7 @@ namespace FactionColonies
         public virtual bool TileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
         {
             if (!TileFinder.IsValidTileForNewSettlement(tile, reason)) return false;
+            if (tile.Tile is null) return false;
 
             foreach (WorldSettlementFC settlement in Find.WorldObjects.AllWorldObjects.Where(obj => obj.GetType() == typeof(WorldSettlementFC)))
             {

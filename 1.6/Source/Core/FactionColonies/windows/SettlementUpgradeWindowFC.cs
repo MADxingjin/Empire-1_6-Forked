@@ -97,7 +97,7 @@ namespace FactionColonies
 
             if (settlement.CanUpgrade) //if settlement is not max level
             {
-                if (Widgets.ButtonText(new Rect(xoffset + ((335 - 150) / 2), height + 10, 150, 40), "UpgradeSettlement".Translate() + ": " + settlementUpgradeCost)) Messages.Message(UpgradeSettlement());
+                if (Widgets.ButtonText(new Rect(xoffset + ((335 - 150) / 2f), height + 10, 150, 40), "UpgradeSettlement".Translate() + ": " + settlementUpgradeCost)) Messages.Message(UpgradeSettlement());
             }
             else //if settlement is max level
             {

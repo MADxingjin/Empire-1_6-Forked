@@ -112,16 +112,14 @@ namespace FactionColonies
         /// </summary>
         public static Faction PickWeightedEnemyFaction(double etl)
         {
-            var enemies = Find.FactionManager.AllFactionsVisible
-                .Where(f => f.HostileTo(Faction.OfPlayer) && !f.defeated && !f.Hidden);
+            var enemies = Find.FactionManager.AllFactionsVisible.Where(f => f.HostileTo(Faction.OfPlayer) && !f.defeated && !f.Hidden);
             if (!enemies.Any()) return null;
 
             return enemies.RandomElementByWeight(f =>
             {
                 double factionStrength;
-                double unused;
                 militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
-                    f.def.techLevel, out factionStrength, out unused);
+                    f.def.techLevel, out factionStrength, out _);
                 // At ETL 1.0: all factions equal weight (~1.0)
                 // At ETL 2.0: Spacer(6) weight ~2.5, Neolithic(2) weight ~0.7
                 double relevance = 1.0 + (factionStrength * (etl - 1.0) * 0.3);

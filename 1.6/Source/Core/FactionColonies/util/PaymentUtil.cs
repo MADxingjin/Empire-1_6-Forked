@@ -210,7 +210,7 @@ namespace FactionColonies
             {
                 if (map.IsPlayerHome)
                 {
-                    foreach (Thing thing in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage() == true))
+                    foreach (Thing thing in map.listerThings.ThingsOfDef(ThingDefOf.Silver).Where(s => s.IsInAnyStorage()))
                     {
                         silver += thing.stackCount;
                     }

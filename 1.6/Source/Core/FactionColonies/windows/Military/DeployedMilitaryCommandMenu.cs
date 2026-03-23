@@ -1,3 +1,4 @@
+using System;
 using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
@@ -139,7 +140,7 @@ namespace FactionColonies
             {
                 if (merc?.pawn?.Map != null)
                 {
-                    merc?.animal?.pawn?.Destroy();
+                    merc.animal?.pawn?.Destroy();
                     merc.pawn.Destroy();
                 }
             }
@@ -151,7 +152,10 @@ namespace FactionColonies
                     pawn.Destroy();
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error when destroying pawns in DespawnSquad: {e}");
+            }
 
             squad.isDeployed = false;
             squad.InitiateCooldownEvent();

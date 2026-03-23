@@ -129,8 +129,7 @@ namespace FactionColonies
                 //Info Button
                 if (Widgets.ButtonTextSubtle(buttonInfo, "ViewInfo".Translate()))
                 {
-                    Pawn pawn = new Pawn();
-                    pawn = prisoner.prisoner;
+                    Pawn pawn = prisoner.prisoner;
 
                     if (prisoner.healthTracker != null)
                     {
@@ -186,7 +185,7 @@ namespace FactionColonies
                         }
                         prisoner.prisoner.guest.guestStatusInt = GuestStatus.Prisoner;
                         FieldInfo hostFaction = typeof(Pawn_GuestTracker).GetField("hostFactionInt", BindingFlags.NonPublic | BindingFlags.Instance);
-                        hostFaction.SetValue(prisoner.prisoner.guest, Find.FactionManager.OfPlayer);
+                        hostFaction?.SetValue(prisoner.prisoner.guest, Find.FactionManager.OfPlayer);
 
                         DeliveryEvent.CreateDeliveryEvent(new FCEvent
                         {

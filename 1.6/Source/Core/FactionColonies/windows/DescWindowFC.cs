@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -53,36 +52,16 @@ namespace FactionColonies
             this.header = "Description".Translate() + ":";
         }
 
-        public override void PreOpen()
-        {
-            base.PreOpen();
-        }
-
-        public override void WindowUpdate()
-        {
-            base.WindowUpdate();
-        }
-
         public override void DoWindowContents(Rect inRect)
         {
-
-
-
-
-
             //grab before anchor/font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
-
-
 
             //Settlement Tax Collection Header
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(2, 0, 300, 60), header);
-
-
-
 
             //settlement buttons
 

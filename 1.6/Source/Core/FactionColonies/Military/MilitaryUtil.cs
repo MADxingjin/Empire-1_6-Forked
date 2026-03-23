@@ -127,7 +127,6 @@ namespace FactionColonies
         /// </summary>
         /// <param name="settlement"></param>
         /// <param name="DropPod"></param>
-        /// <param name="cost"></param>
         public static void CallinExtraForces(WorldSettlementFC settlement, bool DropPod)
         {
             MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.CreateMercenarySquad(settlement, true);
@@ -179,7 +178,7 @@ namespace FactionColonies
                 i < plusOrMinusRandomAttackValue * 10;
                 i++)
             {
-                list.Add((i / 10));
+                list.Add((i / 10f));
             }
 
             return list;

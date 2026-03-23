@@ -60,7 +60,7 @@ namespace FactionColonies.util
             {
                 while (enumerator.MoveNext())
                 {
-                    if (enumerator.Current.def == HediffDefOf.Scarification)
+                    if (enumerator.Current?.def == HediffDefOf.Scarification)
                     {
                         num++;
                     }

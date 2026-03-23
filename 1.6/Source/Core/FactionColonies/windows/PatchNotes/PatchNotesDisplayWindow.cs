@@ -20,7 +20,7 @@ namespace FactionColonies
 
         private const float HeaderHeight = 45f;
         private const float TitleBarHeight = 30f;
-        private const float Margin = 5f;
+        private const float margin = 5f;
         private const float DividerPad = 15f;
         private const float BadgeWidth = 55f;
         private const float BadgeHeight = 22f;
@@ -84,12 +84,12 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-            Rect titleRect = new Rect(inRect.x + Margin, inRect.y, inRect.width - Margin * 2, TitleBarHeight);
+            Rect titleRect = new Rect(inRect.x + margin, inRect.y, inRect.width - margin * 2, TitleBarHeight);
             float bannerTop = inRect.y + TitleBarHeight + DividerPad;
-            Rect bannerRect = new Rect(inRect.x + Margin, bannerTop, inRect.width - Margin * 2, BannerHeight);
-            float contentTop = bannerTop + BannerHeight + Margin;
+            Rect bannerRect = new Rect(inRect.x + margin, bannerTop, inRect.width - margin * 2, BannerHeight);
+            float contentTop = bannerTop + BannerHeight + margin;
             float contentHeight = inRect.height - (contentTop - inRect.y);
-            Rect contentPanel = new Rect(inRect.x + Margin, contentTop, inRect.width - Margin * 2, contentHeight);
+            Rect contentPanel = new Rect(inRect.x + margin, contentTop, inRect.width - margin * 2, contentHeight);
 
             FixScrollingBug();
             CalculateScrollViewSize();
@@ -127,7 +127,7 @@ namespace FactionColonies
                 float startX = titleRect.xMax - TitleBarHeight;
                 for (int i = anyDef.Links.Count - 1; i >= 0; i--)
                 {
-                    startX -= LinkButtonSize + Margin;
+                    startX -= LinkButtonSize + margin;
                     Rect btnRect = new Rect(startX, titleRect.y + 3f, LinkButtonSize, LinkButtonSize);
                     TooltipHandler.TipRegion(btnRect, anyDef.LinkButtonToolTips[i]);
                     if (Widgets.ButtonImage(btnRect, anyDef.LinkButtonImages[i]))
@@ -151,7 +151,7 @@ namespace FactionColonies
         {
             GUI.color = Color.gray;
             float lineY = inRect.y + TitleBarHeight + (DividerPad * 0.5f) - 1f;
-            Widgets.DrawLineHorizontal(inRect.x + Margin, lineY, inRect.width - Margin * 2);
+            Widgets.DrawLineHorizontal(inRect.x + margin, lineY, inRect.width - margin * 2);
             ResetTextAndColor();
         }
 
@@ -198,7 +198,7 @@ namespace FactionColonies
                 ResetTextAndColor();
 
                 // Badge
-                Rect badgeRect = new Rect(headerRect.x + Margin, headerRect.y + (HeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
+                Rect badgeRect = new Rect(headerRect.x + margin, headerRect.y + (HeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
                 DrawTypeBadge(badgeRect, def.GetPatchNoteType);
 
                 // Expand/collapse icon (rightmost)
@@ -206,7 +206,7 @@ namespace FactionColonies
                 Widgets.DrawTextureFitted(iconRect.ContractedBy(11f), isExpanded ? TexButton.Collapse : TexButton.Reveal, 1f);
 
                 // Date (right-aligned, before icon)
-                Rect dateRect = new Rect(iconRect.x - DateWidth - Margin, headerRect.y, DateWidth, HeaderHeight);
+                Rect dateRect = new Rect(iconRect.x - DateWidth - margin, headerRect.y, DateWidth, HeaderHeight);
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleRight;
                 GUI.color = Color.gray;
@@ -214,8 +214,8 @@ namespace FactionColonies
                 ResetTextAndColor();
 
                 // Title (between badge and date)
-                float titleX = badgeRect.xMax + Margin;
-                Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - Margin, HeaderHeight);
+                float titleX = badgeRect.xMax + margin;
+                Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - margin, HeaderHeight);
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(titleLabelRect, def.ShortTitle);
@@ -238,18 +238,18 @@ namespace FactionColonies
                     shouldRefreshHeight = true;
                 }
 
-                curY += HeaderHeight + Margin;
+                curY += HeaderHeight + margin;
 
                 // --- Expanded body ---
                 if (isExpanded)
                 {
                     Text.Font = GameFont.Small;
                     string bodyText = def.CompactBodyString;
-                    float bodyWidth = scrollContentWidth - Margin * 4f;
-                    Rect bodyRect = new Rect(Margin * 2f, curY, bodyWidth, 100f);
+                    float bodyWidth = scrollContentWidth - margin * 4f;
+                    Rect bodyRect = new Rect(margin * 2f, curY, bodyWidth, 100f);
                     Widgets.LabelCacheHeight(ref bodyRect, bodyText);
                     expandedHeights[i] = bodyRect.height;
-                    curY += bodyRect.height + Margin;
+                    curY += bodyRect.height + margin;
                     ResetTextAndColor();
                 }
             }
@@ -301,14 +301,14 @@ namespace FactionColonies
             float total = 0f;
             for (int i = 0; i < patchNoteDefs.Count; i++)
             {
-                total += HeaderHeight + Margin;
+                total += HeaderHeight + margin;
                 float bodyH;
                 if (expandedDefs.Contains(i))
                 {
                     if (expandedHeights.TryGetValue(i, out bodyH))
-                        total += bodyH + Margin;
+                        total += bodyH + margin;
                     else
-                        total += 200f + Margin;
+                        total += 200f + margin;
                 }
             }
 
