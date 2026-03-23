@@ -20,6 +20,10 @@ namespace FactionColonies
             AutoDefenderRegistry.ClearAll();
             MilitaryTabRegistry.ClearAll();
             RaidTargetRegistry.ClearAll();
+            DefenseValidatorRegistry.ClearAll();
+            SquadAssignmentRegistry.ClearAll();
+            ThreatScalingRegistry.ClearAll();
+            SilverPaymentRegistry.ClearAll();
 
             SettlementTypeExtension_Orbital.InvalidateCache();
             FactionDefDescriptionPatch.Invalidate();

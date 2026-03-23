@@ -24,6 +24,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementCreated(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementCreated: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -35,6 +36,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementRemoved(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementRemoved: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -46,6 +48,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementUpgraded(settlement, oldLevel, newLevel); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementUpgraded: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -57,6 +60,7 @@ namespace FactionColonies
             {
                 try { p.OnSettlementTypeChanged(settlement, oldDef, newDef); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSettlementTypeChanged: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -70,6 +74,7 @@ namespace FactionColonies
             {
                 try { p.OnBuildingConstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBuildingConstructed: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -81,6 +86,7 @@ namespace FactionColonies
             {
                 try { p.OnBuildingDeconstructed(settlement, building, slot); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBuildingDeconstructed: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -94,6 +100,7 @@ namespace FactionColonies
             {
                 try { p.OnSquadDeployed(settlement, job, isExtraSquad); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSquadDeployed: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -105,6 +112,7 @@ namespace FactionColonies
             {
                 try { p.OnSquadRecalled(settlement); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnSquadRecalled: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -116,6 +124,7 @@ namespace FactionColonies
             {
                 try { p.OnBattleResolved(settlement, job, victory, result); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnBattleResolved: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 settlement.InvalidateStatCache();
             }
             settlement.InvalidateStatCache();
@@ -129,6 +138,7 @@ namespace FactionColonies
             {
                 try { p.OnResearchCompleted(project); }
                 catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnResearchCompleted: {e}"); }
+                // Intentional: invalidate per-participant so the next participant sees fresh cache
                 FactionCache.FactionComp?.InvalidateAllSettlementStatCaches();
             }
             FactionCache.FactionComp?.InvalidateAllSettlementStatCaches();
