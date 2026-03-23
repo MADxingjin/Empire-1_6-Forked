@@ -355,7 +355,6 @@ namespace FactionColonies
         private float viewRectHeightMilitary = -1f;
 
         private bool firstRun = true;
-        private bool fixDone = false;
 
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive

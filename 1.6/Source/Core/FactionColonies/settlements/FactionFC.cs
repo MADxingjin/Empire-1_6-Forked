@@ -710,19 +710,19 @@ namespace FactionColonies
 
         private void RecomputeAverages()
         {
-            int avgHappiness = 0;
-            int avgLoyalty = 0;
-            int avgUnrest = 0;
-            int avgProsperity = 0;
+            double avgHappiness = 0;
+            double avgLoyalty = 0;
+            double avgUnrest = 0;
+            double avgProsperity = 0;
 
             if (settlements.Count > 0)
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
-                    avgHappiness += Convert.ToInt32(settlement.happiness);
-                    avgLoyalty += Convert.ToInt32(settlement.loyalty);
-                    avgUnrest += Convert.ToInt32(settlement.unrest);
-                    avgProsperity += Convert.ToInt32(settlement.prosperity);
+                    avgHappiness += settlement.happiness;
+                    avgLoyalty += settlement.loyalty;
+                    avgUnrest += settlement.unrest;
+                    avgProsperity += settlement.prosperity;
                 }
 
                 avgHappiness /= settlements.Count;
@@ -1783,17 +1783,6 @@ namespace FactionColonies
             }
         }
 
-        public ResourceDisplay ReturnResource(string name) //used to return the correct resource based on string name
-        {
-            ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef.defName == name);
-            if (res == null)
-            {
-                /* This should never happen! */
-                LogUtil.Error($"Requested resource {name} is not in the list of faction resources!");
-            }
-            return res;
-        }
-
         public ResourceDisplay ReturnResource(ResourceTypeDef resourceTypeDef)
         {
             ResourceDisplay res = factionResources.Find((ResourceDisplay rfc) => rfc.resourceDef == resourceTypeDef);
@@ -1945,20 +1934,6 @@ namespace FactionColonies
                 }
             }
             return null;
-        }
-
-        public int ReturnCapitalMapId()
-        {
-            for (int i = 0; i < Find.Maps.Count; i++)
-            {
-                if (Find.Maps[i].Tile == capitalLocation)
-                {
-                    return i;
-                }
-            }
-
-            LogUtil.Message("CouldNotFindMapOfCapital".Translate());
-            return -1;
         }
 
         public Map ReturnCapitalMap()

@@ -4,7 +4,7 @@ using Verse.AI;
 namespace FactionColonies.util
 {
     [StaticConstructorOnStartup]
-    public class GiddyUpUtil
+    public static class GiddyUpUtil
     {
         private static readonly JobDef Mounting;
 

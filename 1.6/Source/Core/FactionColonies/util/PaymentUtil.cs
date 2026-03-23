@@ -6,7 +6,7 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class PaymentUtil
+    public static class PaymentUtil
     {
         public const string Reason_SquadDeployment = "squad_deployment";
         public const string Reason_FireSupport = "fire_support";

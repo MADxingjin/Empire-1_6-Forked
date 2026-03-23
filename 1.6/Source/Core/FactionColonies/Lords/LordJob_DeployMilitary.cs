@@ -208,9 +208,13 @@ namespace FactionColonies
 
         public override void Notify_LordDestroyed()
         {
-            squad.InitiateCooldownEvent();
-            squad.isDeployed = false;
-            FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
+            if (squad != null && squad.isDeployed)
+            {
+                squad.InitiateCooldownEvent();
+                squad.isDeployed = false;
+                FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
+            }
+
             base.Notify_LordDestroyed();
         }
 

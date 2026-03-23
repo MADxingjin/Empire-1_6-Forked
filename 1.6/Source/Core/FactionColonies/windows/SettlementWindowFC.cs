@@ -129,6 +129,7 @@ namespace FactionColonies
             if (settlement == null)
             {
                 Close();
+                return;
             }
 
             this.settlement = settlement;

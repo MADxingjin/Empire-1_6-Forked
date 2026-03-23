@@ -94,10 +94,7 @@ namespace FactionColonies
         }
         public override bool TileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
         {
-            var worldGrid = Find.WorldGrid;
-            var existingObjectTiles = Find.WorldObjects.AllWorldObjects.Select(wo => wo.Tile).ToHashSet();
-
-            if (existingObjectTiles.Contains(tile))
+            if (Find.WorldObjects.AnyWorldObjectAt(tile))
             {
                 reason?.Append("OrbitalTileOccupied".Translate());
                 return false;

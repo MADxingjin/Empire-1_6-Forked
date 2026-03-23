@@ -214,8 +214,6 @@ namespace FactionColonies
     {
         public static RoadDef DirtRoad;
         public static RoadDef DirtPath;
-
-        public static object RoadDef { get; internal set; }
     }
 
     public class BuildingFC : IExposable

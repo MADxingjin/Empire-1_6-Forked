@@ -224,7 +224,7 @@ namespace FactionColonies
                                 if (res != null && res.InstantaneousProduction > 0)
                                 {
                                     // Settlements that produce more of a resource should have a higher weight
-                                    for (int i = 0; i < res.InstantaneousProduction; i++)
+                                    for (int i = 0; i < Math.Max(0, res.InstantaneousProduction); i++)
                                     {
                                         tmp.Add(settlement);
                                     }
