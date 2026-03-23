@@ -67,20 +67,20 @@ namespace FactionColonies
         [EmpireTest("Text")]
         public static void ToShortName_TwoWords_FirstPlusInitial()
         {
-            TestAssert.AreEqual("Imperial G", TextGen.ToShortName("Imperial Guard"));
+            TestAssert.AreEqual("Imperial G", TextUtil.ToShortName("Imperial Guard"));
         }
 
         [EmpireTest("Text")]
         public static void ToShortName_SingleWord_ReturnsWordWithSpace()
         {
             // Single capitalized word: Aggregate processes it against itself, appending a space
-            TestAssert.AreEqual("North ", TextGen.ToShortName("North"));
+            TestAssert.AreEqual("North ", TextUtil.ToShortName("North"));
         }
 
         [EmpireTest("Text")]
         public static void ToShortName_ThreeWords_FirstPlusInitials()
         {
-            TestAssert.AreEqual("The CF", TextGen.ToShortName("The Crimson Fleet"));
+            TestAssert.AreEqual("The CF", TextUtil.ToShortName("The Crimson Fleet"));
         }
 
         // --- TextUtil.ColorizeAdditiveBonus ---

@@ -65,4 +65,44 @@
 
         public static bool RequiresEnable(FCActionType action) => requiresEnable.Contains(action);
     }
+    
+
+    public enum TaxDeliveryMode
+    {
+        None,
+        TaxSpot,
+        Caravan,
+        DropPod,
+        Shuttle
+    }
+
+    public enum EmpireDifficultyLevel
+    {
+        Peaceful = 0,
+        CommunityBuilder = 1,
+        AdventureStory = 2,
+        StriveToSurvive = 3,
+        BloodAndDust = 4,
+        LosingIsFun = 5,
+        Custom = 6
+    }
+
+    public enum TaxNotificationMode
+    {
+        All,        // Show both Letter and Message
+        LetterOnly, // Only show Letter (blue notification)
+        MessageOnly,// Only show Message (top-screen text)
+        None        // Hide all tax delivery notifications
+    }
+    
+    public enum FCPolicyCategory : byte
+    {
+        Undefined = 0,
+        Trait = 1,
+        Core = 2,
+        Tax = 3,
+        Military = 4,
+        Social = 5,
+        Doctrine = 6
+    }
 }

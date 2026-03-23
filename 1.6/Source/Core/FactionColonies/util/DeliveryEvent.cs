@@ -517,33 +517,5 @@ namespace FactionColonies.util
             return result.IsValid ? result : map.Center;
         }
     }
-
-    public enum TaxDeliveryMode
-    {
-        None,
-        TaxSpot,
-        Caravan,
-        DropPod,
-        Shuttle
-    }
-
-    public enum EmpireDifficultyLevel
-    {
-        Peaceful = 0,
-        CommunityBuilder = 1,
-        AdventureStory = 2,
-        StriveToSurvive = 3,
-        BloodAndDust = 4,
-        LosingIsFun = 5,
-        Custom = 6
-    }
-
-    public enum TaxNotificationMode
-    {
-        All,        // Show both Letter and Message
-        LetterOnly, // Only show Letter (blue notification)
-        MessageOnly,// Only show Message (top-screen text)
-        None        // Hide all tax delivery notifications
-    }
 }
 

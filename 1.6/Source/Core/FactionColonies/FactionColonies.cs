@@ -354,8 +354,6 @@ namespace FactionColonies
         private Vector2 scrollVectorMilitary = new Vector2();
         private float viewRectHeightMilitary = -1f;
 
-        private bool firstRun = true;
-
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive
         /// </summary>

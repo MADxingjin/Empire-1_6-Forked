@@ -208,7 +208,7 @@ namespace FactionColonies
             {
                 if (!nameShort.NullOrEmpty()) return nameShort;
 
-                nameShort = TextGen.ToShortName(name);
+                nameShort = TextUtil.ToShortName(name);
 
                 return nameShort;
             }

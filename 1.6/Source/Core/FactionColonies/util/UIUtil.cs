@@ -95,5 +95,7 @@ namespace FactionColonies
             Widgets.DrawLineVertical(tab.xMax, tab.yMax, downy - tab.yMax);
             GUI.color = origColor;
         }
+
+        public static int GetModifier => 1 * (Event.current.shift ? 5 : 1) * (Event.current.control ? 10 : 1);
     }
 }

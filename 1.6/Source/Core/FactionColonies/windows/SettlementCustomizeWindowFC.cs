@@ -70,7 +70,7 @@ namespace FactionColonies
             shortName = Widgets.TextField(shortNameInputRect, shortName);
 
             if (Widgets.ButtonImage(resetFullNameButtonRect, TexLoad.refreshIcon)) name = settlement.Name;
-            if (Widgets.ButtonImage(resetShortNameButtonRect, TexLoad.refreshIcon)) shortName = TextGen.ToShortName(name);
+            if (Widgets.ButtonImage(resetShortNameButtonRect, TexLoad.refreshIcon)) shortName = TextUtil.ToShortName(name);
 
             Text.Anchor = TextAnchor.MiddleCenter;
 

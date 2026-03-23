@@ -1603,7 +1603,7 @@ namespace FactionColonies
                 return;
             }
             //if clicked to lower amount of workers
-            settlement.IncreaseWorkers(resource, (negative ? -1 : 1) * Modifiers.GetModifier);
+            settlement.IncreaseWorkers(resource, (negative ? -1 : 1) * UIUtil.GetModifier);
         }
     }
 }

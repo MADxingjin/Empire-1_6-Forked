@@ -1,10 +1,10 @@
-﻿using FactionColonies.util;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FactionColonies.util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Verse;
 using Verse.AI.Group;
 
@@ -275,9 +275,9 @@ namespace FactionColonies
                     if (tempEvent.settlementTraitLocations.Count == 0)
                     {
                         LogUtil.Warning($"Random event '{def.defName}' found no valid settlements"
-                            + (def.requiredResource != null ? $" (requires {def.requiredResource.defName} production)" : "")
-                            + (def.applicableBiomes.Count > 0 ? $" (biomes: {string.Join(", ", def.applicableBiomes)})" : "")
-                            + (def.restrictedBiomes.Count > 0 ? $" (excluded biomes: {string.Join(", ", def.restrictedBiomes)})" : ""));
+                                        + (def.requiredResource != null ? $" (requires {def.requiredResource.defName} production)" : "")
+                                        + (def.applicableBiomes.Count > 0 ? $" (biomes: {string.Join(", ", def.applicableBiomes)})" : "")
+                                        + (def.restrictedBiomes.Count > 0 ? $" (excluded biomes: {string.Join(", ", def.restrictedBiomes)})" : ""));
                         return null;
                     }
                 }
@@ -350,31 +350,31 @@ namespace FactionColonies
                     switch (evt.def.defName)
                     {
                         case "settleNewColony":
-                            {
-                                //Settle new colony event
-                                faction.AddExperienceToFactionLevel(10f);
+                        {
+                            //Settle new colony event
+                            faction.AddExperienceToFactionLevel(10f);
 
-                                ColonyUtil.CreatePlayerColonySettlement(evt.location, evt.settlementToCreate);
+                            ColonyUtil.CreatePlayerColonySettlement(evt.location, evt.settlementToCreate);
 
-                                faction.settlementCaravansList.Remove(evt.location);
-                                break;
-                            }
+                            faction.settlementCaravansList.Remove(evt.location);
+                            break;
+                        }
                         case "taxColony":
+                        {
+                            settlement = faction.ReturnSettlementByLocation(evt.source);
+                            if (settlement == null)
                             {
-                                settlement = faction.ReturnSettlementByLocation(evt.source);
-                                if (settlement == null)
-                                {
-                                    LogUtil.Warning($"taxColony event references missing settlement at tile {evt.source}. Skipping delivery.");
-                                    break;
-                                }
-
-                                string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
-
-                                Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
-
-                                PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                                LogUtil.Warning($"taxColony event references missing settlement at tile {evt.source}. Skipping delivery.");
                                 break;
                             }
+
+                            string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
+
+                            Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
+
+                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            break;
+                        }
                         case "constructBuilding":
                             //Create building
                             settlement = faction.ReturnSettlementByLocation(evt.source);
@@ -389,44 +389,44 @@ namespace FactionColonies
                             }
                             break;
                         case "upgradeSettlement":
+                        {
+                            if (faction.ReturnSettlementByLocation(evt.location) != null)
                             {
-                                if (faction.ReturnSettlementByLocation(evt.location) != null)
-                                {
-                                    //if settlement is not null
-                                    settlement = faction.ReturnSettlementByLocation(evt.location);
-                                    settlement.UpgradeSettlement();
-                                    Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
-                                        "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
-                                        LetterDefOf.PositiveEvent);
-                                    /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
+                                //if settlement is not null
+                                settlement = faction.ReturnSettlementByLocation(evt.location);
+                                settlement.UpgradeSettlement();
+                                Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
+                                    "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
+                                    LetterDefOf.PositiveEvent);
+                                /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
                                      * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
-                                    settlement.isUpgrading = false;
-                                    settlement.startUpgradeTick = -1;
-                                    settlement.finishUpgradeTick = -1;
-                                }
-
-                                break;
+                                settlement.isUpgrading = false;
+                                settlement.startUpgradeTick = -1;
+                                settlement.finishUpgradeTick = -1;
                             }
+
+                            break;
+                        }
                         case "captureEnemySettlement":
                         case "raidEnemySettlement":
                         case "enslaveEnemySettlement":
-                            {
-                                WorldSettlementFC militarySettlement = faction.ReturnSettlementByLocation(evt.location);
-                                if (militarySettlement != null)
-                                    militarySettlement.MilitaryComp?.ProcessMilitaryEvent();
-                                else
-                                    LogUtil.Warning($"Military event '{evt.def.defName}' references missing settlement at tile {evt.location}. Skipping.");
-                                break;
-                            }
+                        {
+                            WorldSettlementFC militarySettlement = faction.ReturnSettlementByLocation(evt.location);
+                            if (militarySettlement != null)
+                                militarySettlement.MilitaryComp?.ProcessMilitaryEvent();
+                            else
+                                LogUtil.Warning($"Military event '{evt.def.defName}' references missing settlement at tile {evt.location}. Skipping.");
+                            break;
+                        }
                         case "cooldownMilitary":
-                            {
-                                WorldSettlementFC cooldownSettlement = faction.ReturnSettlementByLocation(evt.location);
-                                if (cooldownSettlement != null)
-                                    cooldownSettlement.MilitaryComp?.ReturnMilitary(true);
-                                else
-                                    LogUtil.Warning($"cooldownMilitary event references missing settlement at tile {evt.location}. Skipping.");
-                                break;
-                            }
+                        {
+                            WorldSettlementFC cooldownSettlement = faction.ReturnSettlementByLocation(evt.location);
+                            if (cooldownSettlement != null)
+                                cooldownSettlement.MilitaryComp?.ReturnMilitary(true);
+                            else
+                                LogUtil.Warning($"cooldownMilitary event references missing settlement at tile {evt.location}. Skipping.");
+                            break;
+                        }
                     }
 
                     if (evt.def.defName == "settlementBeingAttacked")
@@ -819,316 +819,6 @@ namespace FactionColonies
             }
 
             faction.Bills.Remove(bill);
-        }
-    }
-    public class FCEvent : IExposable, ILoadReferenceable
-    {
-        public FCEventDef def = new FCEventDef();
-        public PlanetTile location = -1;
-        public int timeTillTrigger = -1;
-        public int tickStarted = -1;
-        public int loadID = -1;
-        public PlanetTile source = -1;
-        public bool hasDestination;
-        public int buildingSlot = -1;
-        public BuildingFCDef building;
-        public List<WorldSettlementFC> settlementTraitLocations = new List<WorldSettlementFC>();
-        public List<Thing> goods = new List<Thing>();
-        public bool hasCustomDescription;
-        public string customDescription = "";
-
-        //Delivery things
-        public Message msg = null;
-        public Letter let = null;
-        public bool isDelayed = false;
-
-        //Military Force stuff
-        public militaryForce militaryForceAttacking;
-        public Faction militaryForceAttackingFaction;
-        public militaryForce militaryForceDefending;
-        public Faction militaryForceDefendingFaction;
-        public WorldObject settlementFCDefending;
-        /// <summary>
-        /// If the defending force was provided by an external <see cref="IAutoDefender"/> (not an Empire settlement),
-        /// this references the defender's world object so it can be notified on battle completion.
-        /// </summary>
-        public WorldObject externalDefenderSource;
-
-        public WorldSettlementDef settlementToCreate = null;
-
-        public float Progress
-        {
-            get
-            {
-                if (tickStarted < 0 || timeTillTrigger <= tickStarted) return 1f;
-                int now = Find.TickManager.TicksGame;
-                if (now >= timeTillTrigger) return 1f;
-                return (float)(now - tickStarted) / (timeTillTrigger - tickStarted);
-            }
-        }
-
-        public FCEvent()
-        {
-            //Constructor
-        }
-
-        public FCEvent(bool New)
-        {
-            loadID = FactionCache.FactionComp.GetNextEventID();
-        }
-
-        /// <summary>
-        /// Defines parameters of event with custom description
-        /// </summary>
-        /// <param name="f">FactionFC object</param>
-        /// <param name="mapLocation">Location of the event object</param>
-        /// <param name="timeToFinish">Time of event's completion</param>
-        public void DefineEvent(FactionFC f, int mapLocation, int timeToFinish)
-        {
-            this.hasCustomDescription = true;
-            this.tickStarted = Find.TickManager.TicksGame;
-            this.timeTillTrigger = Find.TickManager.TicksGame + timeToFinish;
-            this.location = mapLocation;
-            f.AddEvent(this);
-        }
-
-        public void ExposeData()
-        {
-            //Ref
-            Scribe_Defs.Look(ref def, "def");
-            Scribe_Values.Look(ref location, "location");
-            Scribe_Values.Look(ref timeTillTrigger, "timeTillTrigger");
-            Scribe_Values.Look(ref tickStarted, "tickStarted", -1);
-            Scribe_Values.Look(ref source, "source");
-            Scribe_Values.Look(ref hasDestination, "hasDestination");
-            Scribe_Collections.Look(ref settlementTraitLocations, "settlementTraitLocations", LookMode.Reference);
-            Scribe_Collections.Look(ref goods, "goods", LookMode.Deep);
-            Scribe_Values.Look(ref loadID, "loadID");
-
-            Scribe_Values.Look(ref buildingSlot, "buildingSlot");
-
-            Scribe_Defs.Look(ref building, "building");
-
-
-            Scribe_Values.Look(ref hasCustomDescription, "hasCustomDescription");
-            Scribe_Values.Look(ref customDescription, "customDescription");
-
-            Scribe_Deep.Look(ref msg, "msg");
-            Scribe_Deep.Look(ref let, "let");
-            Scribe_Values.Look(ref isDelayed, "isDelayed", false);
-
-            //Military stuff
-            Scribe_Deep.Look(ref militaryForceAttacking, "militaryForceAttacking");
-            Scribe_References.Look(ref militaryForceAttackingFaction, "militaryForceAttackingFaction");
-            Scribe_Deep.Look(ref militaryForceDefending, "militaryForceDefending");
-            Scribe_References.Look(ref militaryForceDefendingFaction, "militaryForceDefendingFaction");
-            Scribe_References.Look(ref settlementFCDefending, "SettlementFCDefending");
-            Scribe_References.Look(ref externalDefenderSource, "externalDefenderSource");
-
-            Scribe_Defs.Look(ref settlementToCreate, "settlementToCreate");
-        }
-
-        public string GetUniqueLoadID()
-        {
-            return "FCEvent_" + loadID;
-        }
-
-        public void RunAction()
-        {
-            try
-            {
-                def?.GetModExtension<FCEventHandlerExtension>()?.OnEventTriggered(this);
-            }
-            catch (Exception e)
-            {
-                LogUtil.Error($"FCEvent.RunAction: OnEventTriggered threw for '{def?.defName ?? "NULL"}': {e}");
-            }
-        }
-
-        /// <summary>
-        /// Merges goods into properly-sized stacks respecting each ThingDef's stackLimit.
-        /// </summary>
-        public static List<Thing> ConsolidateGoods(List<Thing> goods)
-        {
-            List<Thing> consolidated = new List<Thing>();
-
-            foreach (Thing thing in goods)
-            {
-                if (thing.stackCount <= 0) continue;
-
-                bool merged = false;
-                for (int i = 0; i < consolidated.Count; i++)
-                {
-                    Thing existing = consolidated[i];
-                    if (existing.CanStackWith(thing) && existing.stackCount < existing.def.stackLimit)
-                    {
-                        existing.TryAbsorbStack(thing, true);
-                        if (thing.stackCount <= 0 || thing.Destroyed)
-                        {
-                            merged = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!merged && thing.stackCount > 0 && !thing.Destroyed)
-                {
-                    consolidated.Add(thing);
-                }
-            }
-
-            // Split any over-limit stacks that resulted from absorption
-            List<Thing> result = new List<Thing>();
-            foreach (Thing thing in consolidated)
-            {
-                // This while *shouldn't* loop infinitely, but just in case, we'll add a break-out case
-                int i = 0;
-                const int LOOP_LIMIT = 1000;
-                while (thing.stackCount > thing.def.stackLimit && i < LOOP_LIMIT)
-                {
-                    result.Add(thing.SplitOff(thing.def.stackLimit));
-                    i++;
-                }
-                if (i == LOOP_LIMIT)
-                {
-                    LogUtil.Error($"ConsolidateGoods: reached LOOP_LIMIT iterations when splitting stack of {thing.Label}");
-                }
-
-                if (thing.stackCount > 0)
-                {
-                    result.Add(thing);
-                }
-            }
-
-            return result;
-        }
-    }
-
-
-    public class FCEventDef : Def
-    {
-        public int timeTillTrigger = -1;
-        public string desc;
-        public FCEventCategoryDef category;
-
-        //Random Event Information
-        public bool isRandomEvent = false;
-        public bool activateAtStart;
-        public int requiredWealth = 0;
-        public IntRange rangeSettlementsAffected = new IntRange(0, 0);
-        public bool settlementsCarryOver = true;
-        public bool useProximity = true;
-        public float proximityFalloff = 20f;
-        public int weight = 0;
-        public int minimumHappiness = 0;
-        public int maximumHappiness = 100;
-        public int minimumLoyalty = 0;
-        public int maximumLoyalty = 100;
-        public int minimumUnrest = 0;
-        public int maximumUnrest = 100;
-        public int minimumProsperity = 0;
-        public int maximumProsperity = 100;
-        public ResourceTypeDef requiredResource;
-        public List<WorldSettlementDef> allowedSettlementTypes = new List<WorldSettlementDef>();
-        public List<WorldSettlementDef> blockedSettlementTypes = new List<WorldSettlementDef>();
-        public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
-
-        //Options
-        public List<FCOptionDef> options = new List<FCOptionDef>();
-        public string optionDescription = "";
-
-        //Event chain
-        public bool eventFollows = false;
-        public FCEventDef followingEvent = null;
-        public FCEventDef followingEvent2 = null;
-        public bool splitEventFollows = false;
-        public int splitEventChance = 50;
-
-        //Rewards
-        public List<ThingDef> loot = new List<ThingDef>();
-        public int randomThingValue = 0;
-        public ResourceEventRewardDef randomThingRewardDef;
-        public int prosperityLost = 0;
-        public List<string> applicableBiomes = new List<string>();
-        public List<string> restrictedBiomes = new List<string>();
-
-        //Stat modifiers during event
-        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
-
-        public bool isMilitaryEvent = false;
-
-        public bool BiomeAllowed(string biome)
-        {
-            if (applicableBiomes.Count > 0)
-                return applicableBiomes.Contains(biome);
-            if (restrictedBiomes.Count > 0)
-                return !restrictedBiomes.Contains(biome);
-            return true;
-        }
-
-        /// <summary>
-        /// Checks whether this event can target the given settlement type.
-        /// Uses depth-based resolution matching <see cref="BuildingFCDef.CanBeBuiltForSettlementType"/>.
-        /// Both allow and block lists can coexist; most specific (shallowest depth) wins, tie goes to block.
-        /// </summary>
-        public bool SettlementTypeAllowed(WorldSettlementDef settlementDef)
-        {
-            int allowDepth = (allowedSettlementTypes.Count > 0)
-                ? settlementDef.DepthInList(allowedSettlementTypes) : -1;
-            int blockDepth = (blockedSettlementTypes.Count > 0)
-                ? settlementDef.DepthInList(blockedSettlementTypes) : -1;
-
-            if (allowDepth >= 0 || blockDepth >= 0)
-            {
-                if (allowDepth >= 0 && blockDepth >= 0)
-                    return allowDepth < blockDepth;
-                return allowDepth >= 0;
-            }
-            if (allowedSettlementTypes.Count > 0)
-                return false;
-            return true;
-        }
-
-        public override IEnumerable<string> ConfigErrors()
-        {
-            foreach (string err in base.ConfigErrors())
-                yield return err;
-            foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
-                yield return err;
-            foreach (string biome in applicableBiomes)
-            {
-                if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)
-                    yield return $"{defName}: applicableBiomes contains unknown biome '{biome}'";
-            }
-            foreach (string biome in restrictedBiomes)
-            {
-                if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)
-                    yield return $"{defName}: restrictedBiomes contains unknown biome '{biome}'";
-            }
-        }
-    }
-
-    [DefOf]
-    public class FCEventDefOf
-    {
-        //List Events here - loads events at start
-        public static FCEventDef Null;
-        public static FCEventDef settleNewColony;
-        public static FCEventDef taxColony;
-        public static FCEventDef constructBuilding;
-        public static FCEventDef enactSettlementPolicy;
-        public static FCEventDef enactFactionPolicy;
-        public static FCEventDef upgradeSettlement;
-        public static FCEventDef raidEnemySettlement;
-        public static FCEventDef enslaveEnemySettlement;
-        public static FCEventDef captureEnemySettlement;
-        public static FCEventDef cooldownMilitary;
-        public static FCEventDef settlementBeingAttacked;
-        public static FCEventDef deliveryArrival;
-
-        static FCEventDefOf()
-        {
-            DefOfHelper.EnsureInitializedInCtor(typeof(FCEventDefOf));
         }
     }
 }

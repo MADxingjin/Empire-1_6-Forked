@@ -210,25 +210,4 @@ namespace FactionColonies
 
         static BuildingFCDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(BuildingFCDefOf));
     }
-    public static class FCRoadsDef
-    {
-        public static RoadDef DirtRoad;
-        public static RoadDef DirtPath;
-    }
-
-    public class BuildingFC : IExposable
-    {
-        public BuildingFCDef def;
-        public BuildingFCDef underConstructionDef = BuildingFCDefOf.Empty;
-        public int startedTick;
-        public int completionTick;
-
-        public void ExposeData()
-        {
-            Scribe_Defs.Look(ref def, "buildingdef");
-            Scribe_Defs.Look(ref underConstructionDef, "underConstructionDef");
-            Scribe_Values.Look(ref startedTick, "startedtick");
-            Scribe_Values.Look(ref completionTick, "completionTick");
-        }
-    }
 }

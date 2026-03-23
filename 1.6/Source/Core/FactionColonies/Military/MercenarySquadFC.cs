@@ -32,7 +32,6 @@ namespace FactionColonies
         public Lord lord;
         public XenotypeDef xenotype1;
         public List<Gene> GeneList;
-        private bool squadInitialized = false;
 
         public void ExposeData()
         {
@@ -169,7 +168,6 @@ namespace FactionColonies
             {
                 FactionCache.FactionComp.militaryCustomizationUtil.RebuildMercenaryPawnSet();
             }
-            squadInitialized = true;
         }
         /// <summary>
         /// Checks if the squad is initialized, and initializes it if it isn't.
@@ -184,7 +182,6 @@ namespace FactionColonies
             {
                 OutfitSquad(outfit);
             }
-            squadInitialized = true;
         }
 
         public void ResetNeeds()

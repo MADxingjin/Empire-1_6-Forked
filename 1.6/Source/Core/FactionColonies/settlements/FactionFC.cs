@@ -506,7 +506,7 @@ namespace FactionColonies
             }
 
             FCEventMaker.ProcessEvents(in events);
-            billUtility.ProcessBills();
+            BillUtility.ProcessBills();
 
             FireSupportTick();
 

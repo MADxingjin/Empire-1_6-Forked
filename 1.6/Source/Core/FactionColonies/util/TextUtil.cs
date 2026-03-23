@@ -1,5 +1,7 @@
 ﻿using RimWorld;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -128,6 +130,22 @@ namespace FactionColonies
                 return $"({"Select".Translate()})";
             }
             return QualityUtility.GetLabel(cat ?? QualityCategory.Normal).CapitalizeFirst();
+        }
+
+        /// <summary>
+        /// Converts the given string <paramref name="name"/> into a shorter version. The resulting string contains the first word and every uppercase char of the following words
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string ToShortName(string name)
+        {
+            IEnumerable<string> nameSplit = name.Split(' ').Where(str => !str.NullOrEmpty() && char.IsUpper(str[0]));
+
+            if (nameSplit.EnumerableNullOrEmpty()) return name;
+
+            string main = nameSplit.First();
+
+            return nameSplit.Aggregate(main, (total, next) => total + ((main == next) ? ' ' : next[0]));
         }
     }
 }
