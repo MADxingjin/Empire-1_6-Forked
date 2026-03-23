@@ -23,7 +23,7 @@
 		</negativeEffects>
 		<behaviorClass>FactionColonies.FCPolicyBehavior_Militaristic</behaviorClass>
 		<statModifiers>
-			<li><stat>militaryEfficiencyBonusAttacking</stat><value>1.2</value></li>
+			<li><stat>militaryCombatEfficiency</stat><value>1.2</value></li>
 			<li><stat>deadPawnCooldownOffset</stat><value>-2000</value></li>
 		</statModifiers>
 		<enabledActions>

@@ -286,7 +286,7 @@ namespace FactionColonies
             // Also check external auto-defenders (e.g., defensive outposts)
             IAutoDefender bestExternalDefender = AutoDefenderRegistry.FindBestDefender(settlement.Tile, 0);
 
-            if (highest != null)
+            if (highest != null && highest.settlementMilitaryLevel > settlement.settlementMilitaryLevel)
             {
                 int externalLevel = bestExternalDefender != null ? bestExternalDefender.MilitaryLevel : 0;
                 if (highest.settlementMilitaryLevel >= externalLevel)
@@ -301,7 +301,7 @@ namespace FactionColonies
                     tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
                 }
             }
-            else if (bestExternalDefender != null)
+            else if (bestExternalDefender != null && bestExternalDefender.MilitaryLevel > settlement.settlementMilitaryLevel)
             {
                 tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                 tmp.externalDefenderSource = bestExternalDefender.WorldObject;

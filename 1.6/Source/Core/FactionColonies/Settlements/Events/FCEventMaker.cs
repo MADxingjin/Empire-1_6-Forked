@@ -711,7 +711,13 @@ namespace FactionColonies
             if (!attackers.Any())
             {
                 LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-                worldSettlement.MilitaryComp.EndAttack();
+                // Queue cleanup as a separate LongEvent so the map's deferred initialization
+                // (MapDrawer.RegenerateEverythingNow) completes before we try to dispose it.
+                // Calling EndAttack synchronously here would crash in MapDrawer.Dispose()
+                // because MapDrawer.sections hasn't been initialized yet.
+                LongEventHandler.QueueLongEvent(
+                    () => worldSettlement.MilitaryComp.EndAttack(),
+                    "EndingAttack", false, null);
                 return;
             }
 
