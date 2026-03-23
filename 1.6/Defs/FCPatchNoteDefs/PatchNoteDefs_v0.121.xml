@@ -109,4 +109,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_121_3</defName>
+		<label>Medicine Resource Tweaks</label>
+		<description>Tweaks the medicine resource to be a bit more sensible.</description>
+
+		<major>0</major>
+		<minor>121</minor>
+		<patch>3</patch>
+
+		<releaseDay>23</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Removes organic organs from the Medicine resource. Where did they all come from, anyways...?</li>
+		<li>Adds drugs to the Medicine resource</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Medicine Resource Tweaks</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
