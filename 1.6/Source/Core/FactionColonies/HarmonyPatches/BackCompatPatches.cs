@@ -15,6 +15,8 @@ namespace FactionColonies
     [HarmonyPatch("BackCompatibleDefName")]
     static class BackCompatibleDefName_Patch
     {
+        // Must stay in sync with PawnKindTemplateUtil.FixupPawnKindDefs templates
+        // and PColonyPawnKindDefOf entries.
         private static readonly string[] TemplateNames =
         {
             "PColony_Fighter", "PColony_Elite", "PColony_Leader",

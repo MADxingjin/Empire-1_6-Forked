@@ -279,9 +279,10 @@ namespace FactionColonies
 
         private static float GetEdictRowHeight(FCPolicyDef def, float textWidth)
         {
+            GameFont prev = Text.Font;
             Text.Font = GameFont.Tiny;
             float descHeight = Text.CalcHeight(def.desc, textWidth);
-            Text.Font = GameFont.Small;
+            Text.Font = prev;
             return RowPadding + LabelHeight + descHeight + UpkeepHeight;
         }
 

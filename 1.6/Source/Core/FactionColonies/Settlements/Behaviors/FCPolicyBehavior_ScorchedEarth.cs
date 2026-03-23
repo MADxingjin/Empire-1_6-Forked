@@ -21,7 +21,7 @@ namespace FactionColonies
             {
                 if (!settlement.BuildingsComp.BuildingSlotIsBuilding(k)) continue;
                 // ~18% chance per occupied slot
-                if (new IntRange(0, 10).RandomInRange >= 9)
+                if (Rand.RangeInclusive(0, 10) >= 9)
                 {
                     damaged.Add(k);
                 }
