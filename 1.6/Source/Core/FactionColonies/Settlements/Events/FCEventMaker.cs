@@ -171,8 +171,12 @@ namespace FactionColonies
 
             try
             {
-                //if affects specific settlement(s) then get settlements.
-                if (tempEvent.def.rangeSettlementsAffected.max != 0)
+                // Carry over settlement locations from parent event, or pick new ones
+                if (SettlementTraitLocations != null && SettlementTraitLocations.Count > 0)
+                {
+                    tempEvent.settlementTraitLocations.AddRange(SettlementTraitLocations);
+                }
+                else if (tempEvent.def.rangeSettlementsAffected.max != 0)
                 {
                     int numSettlements = tempEvent.def.rangeSettlementsAffected.RandomInRange;
 
@@ -187,89 +191,81 @@ namespace FactionColonies
                     //temporary list of settlemnts.
                     List<WorldSettlementFC> tmp = new List<WorldSettlementFC>();
 
-
-                    if (SettlementTraitLocations == null || SettlementTraitLocations.Count == 0)
+                    // Exclude settlements already affected by the same or an incompatible event
+                    HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
+                    foreach (FCEvent activeEvt in worldcomp.events)
                     {
-                        // Exclude settlements already affected by the same or an incompatible event
-                        HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
-                        foreach (FCEvent activeEvt in worldcomp.events)
+                        if (activeEvt.def == null) continue;
+                        bool isSameDef = activeEvt.def == def;
+                        bool isIncompatible = false;
+                        if (!isSameDef)
                         {
-                            if (activeEvt.def == null) continue;
-                            bool isSameDef = activeEvt.def == def;
-                            bool isIncompatible = false;
-                            if (!isSameDef)
+                            foreach (FCEventDef inEvt in activeEvt.def.incompatibleEvents)
                             {
-                                foreach (FCEventDef inEvt in activeEvt.def.incompatibleEvents)
-                                {
-                                    if (inEvt == def) { isIncompatible = true; break; }
-                                }
-                            }
-                            if (isSameDef || isIncompatible)
-                            {
-                                foreach (WorldSettlementFC s in activeEvt.settlementTraitLocations)
-                                {
-                                    if (s != null) excludedSettlements.Add(s);
-                                }
+                                if (inEvt == def) { isIncompatible = true; break; }
                             }
                         }
-
-                        foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
+                        if (isSameDef || isIncompatible)
                         {
-                            if (excludedSettlements.Contains(settlement)) continue;
-                            if (!tempEvent.def.BiomeAllowed(settlement.biome)) continue;
-                            if (!tempEvent.def.SettlementTypeAllowed(settlement.settlementDef)) continue;
-                            if (tempEvent.def.requiredResource != null)
+                            foreach (WorldSettlementFC s in activeEvt.settlementTraitLocations)
                             {
-                                ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
-                                if (res != null && res.InstantaneousProduction > 0)
-                                {
-                                    // Settlements that produce more of a resource should have a higher weight
-                                    for (int i = 0; i < Math.Max(0, res.InstantaneousProduction); i++)
-                                    {
-                                        tmp.Add(settlement);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                tmp.Add(settlement);
+                                if (s != null) excludedSettlements.Add(s);
                             }
                         }
-
-                        // Pick first settlement randomly
-                        if (tmp.Count > 0)
-                        {
-                            WorldSettlementFC first = tmp.RandomElement();
-                            settlements.Add(first);
-                            tmp.Remove(first);
-                        }
-
-                        // Pick remaining settlements, weighted by proximity to the first
-                        while (tmp.Count > 0 && settlements.Count < numSettlements)
-                        {
-                            WorldSettlementFC next;
-                            if (tempEvent.def.useProximity && settlements.Count > 0)
-                            {
-                                next = SelectByProximity(tmp, settlements[0], tempEvent.def.proximityFalloff);
-                            }
-                            else
-                            {
-                                next = tmp.RandomElement();
-                            }
-
-                            if (!settlements.Contains(next))
-                            {
-                                settlements.Add(next);
-                            }
-                            tmp.Remove(next);
-                        }
-
-                        tempEvent.settlementTraitLocations.AddRange(settlements);
                     }
-                    else
+
+                    foreach (WorldSettlementFC settlement in worldcomp.settlements.InRandomOrder())
                     {
-                        tempEvent.settlementTraitLocations.AddRange(SettlementTraitLocations);
+                        if (excludedSettlements.Contains(settlement)) continue;
+                        if (!tempEvent.def.BiomeAllowed(settlement.biome)) continue;
+                        if (!tempEvent.def.SettlementTypeAllowed(settlement.settlementDef)) continue;
+                        if (tempEvent.def.requiredResource != null)
+                        {
+                            ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
+                            if (res != null && res.InstantaneousProduction > 0)
+                            {
+                                // Settlements that produce more of a resource should have a higher weight
+                                for (int i = 0; i < Math.Max(0, res.InstantaneousProduction); i++)
+                                {
+                                    tmp.Add(settlement);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            tmp.Add(settlement);
+                        }
                     }
+
+                    // Pick first settlement randomly
+                    if (tmp.Count > 0)
+                    {
+                        WorldSettlementFC first = tmp.RandomElement();
+                        settlements.Add(first);
+                        tmp.Remove(first);
+                    }
+
+                    // Pick remaining settlements, weighted by proximity to the first
+                    while (tmp.Count > 0 && settlements.Count < numSettlements)
+                    {
+                        WorldSettlementFC next;
+                        if (tempEvent.def.useProximity && settlements.Count > 0)
+                        {
+                            next = SelectByProximity(tmp, settlements[0], tempEvent.def.proximityFalloff);
+                        }
+                        else
+                        {
+                            next = tmp.RandomElement();
+                        }
+
+                        if (!settlements.Contains(next))
+                        {
+                            settlements.Add(next);
+                        }
+                        tmp.Remove(next);
+                    }
+
+                    tempEvent.settlementTraitLocations.AddRange(settlements);
 
                     // If no valid settlements were chosen, then return early instead of firing the event
                     if (tempEvent.settlementTraitLocations.Count == 0)
