@@ -154,6 +154,10 @@ namespace FactionColonies
         public const PatchNoteType DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD = PatchNoteType.Major;
         public static PatchNoteType patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
 
+        // Saved color picker colors (persisted across sessions)
+        public static List<Color> savedPickerColors = new List<Color>();
+        public const int MaxSavedPickerColors = 24;
+
         // Per-event disable list (defName strings)
         public static HashSet<string> disabledEventDefs = new HashSet<string>();
         public static bool IsEventDisabled(string defName) => disabledEventDefs.Contains(defName);
@@ -195,6 +199,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref patchNoteAutoOpenThreshold, "patchNoteAutoOpenThreshold", DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD);
             Scribe_Collections.Look(ref disabledEventDefs, "disabledEventDefs", LookMode.Value);
             if (disabledEventDefs == null) disabledEventDefs = new HashSet<string>();
+
+            Scribe_Collections.Look(ref savedPickerColors, "savedPickerColors", LookMode.Value);
+            if (savedPickerColors == null) savedPickerColors = new List<Color>();
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {

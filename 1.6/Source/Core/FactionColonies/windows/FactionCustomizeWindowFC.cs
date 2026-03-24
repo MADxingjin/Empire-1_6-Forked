@@ -226,13 +226,6 @@ namespace FactionColonies
 
         private void OpenFactionColorPicker(bool primary)
         {
-            List<Color> colors = new List<Color> { Color.white };
-            foreach (ColorDef cd in DefDatabase<ColorDef>.AllDefsListForReading)
-            {
-                if (cd.colorType == ColorType.Ideo)
-                    colors.Add(cd.color);
-            }
-
             Color current = primary
                 ? (tempHasPrimaryColor ? tempPrimaryColor : Color.white)
                 : (tempHasSecondaryColor ? tempSecondaryColor : Color.white);
@@ -241,10 +234,9 @@ namespace FactionColonies
                 ? "fcChoosePrimaryColor".Translate()
                 : "fcChooseSecondaryColor".Translate();
 
-            Find.WindowStack.Add(new Dialog_ChooseColor(
+            Find.WindowStack.Add(new FCWindow_ColorPicker(
                 header,
                 current,
-                colors,
                 delegate(Color color)
                 {
                     if (primary)

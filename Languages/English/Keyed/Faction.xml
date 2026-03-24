@@ -8,6 +8,10 @@
 	<fcChooseSecondaryColor>Choose Secondary Color</fcChooseSecondaryColor>
 	<fcPrimaryColorDesc>Applied to armor and outer layers (e.g. flak vests, plate armor, dusters). When no secondary is set, applies to all apparel.</fcPrimaryColorDesc>
 	<fcSecondaryColorDesc>Applied to base clothing (e.g. shirts, pants), headgear, belts, and accessories.</fcSecondaryColorDesc>
+	<fcColorPickerActiveIdeos>Active Ideologies</fcColorPickerActiveIdeos>
+	<fcColorPickerPresets>Preset Colors</fcColorPickerPresets>
+	<fcColorPickerSaved>Saved Colors</fcColorPickerSaved>
+	<fcColorPickerSaveCurrent>Save Current</fcColorPickerSaveCurrent>
 	<CustomizeFaction>Customize Faction</CustomizeFaction>
 	<FactionName>Faction Name</FactionName>
 	<FactionTitle>Faction Title</FactionTitle>

@@ -683,16 +683,9 @@ namespace FactionColonies
 
         private void OpenColorPicker(Color current, Action<Color> onApply)
         {
-            List<Color> colors = new List<Color> { Color.white };
-            foreach (ColorDef cd in DefDatabase<ColorDef>.AllDefsListForReading)
-            {
-                if (cd.colorType == ColorType.Ideo)
-                    colors.Add(cd.color);
-            }
-            Find.WindowStack.Add(new Dialog_ChooseColor(
+            Find.WindowStack.Add(new FCWindow_ColorPicker(
                 "fcChooseApparelColor".Translate(),
                 current,
-                colors,
                 onApply
             ));
         }

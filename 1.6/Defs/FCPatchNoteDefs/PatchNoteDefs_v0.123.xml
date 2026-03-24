@@ -72,4 +72,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_123_2</defName>
+		<label>New color picker</label>
+		<description>Adds a new color picker window to compliment the faction color settings.</description>
+
+		<major>0</major>
+		<minor>123</minor>
+		<patch>2</patch>
+
+		<releaseDay>23</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>New color picker</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>New color picker</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
