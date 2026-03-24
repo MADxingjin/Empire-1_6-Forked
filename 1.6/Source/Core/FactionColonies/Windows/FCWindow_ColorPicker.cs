@@ -27,7 +27,7 @@ namespace FactionColonies
         private const float SectionGap = 6f;
         private const float LabelHeight = 20f;
 
-        public override Vector2 InitialSize => new Vector2(620f, 580f);
+        public override Vector2 InitialSize => new Vector2(620f, 600f);
 
         public FCWindow_ColorPicker(string title, Color initialColor, Action<Color> onAccept)
         {
@@ -124,7 +124,21 @@ namespace FactionColonies
                 previousFocusedControlName = GUI.GetNameOfFocusedControl();
             }
 
-            y = wheelRect.yMax + SectionGap + 4f;
+            // Brightness slider below the wheel
+            float sliderY = wheelRect.yMax + 4f;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(inRect.x, sliderY, 55f, 20f), "Brightness");
+            Color.RGBToHSV(color, out float sliderH, out float sliderS, out float sliderV);
+            float newV = Widgets.HorizontalSlider(
+                new Rect(inRect.x + 58f, sliderY, WheelSize - 58f, 20f),
+                sliderV, 0f, 1f);
+            if (newV != sliderV)
+            {
+                color = Color.HSVToRGB(sliderH, sliderS, newV);
+            }
+
+            y = sliderY + 20f + SectionGap + 4f;
 
             // === Ideology Colors ===
             if (ModsConfig.IdeologyActive)
