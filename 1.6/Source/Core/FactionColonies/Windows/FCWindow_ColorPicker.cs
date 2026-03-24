@@ -27,7 +27,7 @@ namespace FactionColonies
         private const float SectionGap = 6f;
         private const float LabelHeight = 20f;
 
-        public override Vector2 InitialSize => new Vector2(620f, 520f);
+        public override Vector2 InitialSize => new Vector2(620f, 580f);
 
         public FCWindow_ColorPicker(string title, Color initialColor, Action<Color> onAccept)
         {
@@ -72,15 +72,14 @@ namespace FactionColonies
             y += SectionGap;
 
             // === Top section: HSV wheel (left) + preview/textfields (right) ===
-            float topSectionHeight = WheelSize + 10f;
+            float topY = y;
 
             // HSV Wheel
-            Rect wheelRect = new Rect(inRect.x, y, WheelSize, WheelSize);
+            Rect wheelRect = new Rect(inRect.x, topY, WheelSize, WheelSize);
             Widgets.HSVColorWheel(wheelRect, ref color, ref hsvWheelDragging, null, "fcColorWheel");
 
-            // Right side: preview + textfields
+            // Right side: preview + textfields (all using fixed positions, not advancing y)
             float rightX = wheelRect.xMax + 20f;
-            float rightWidth = inRect.xMax - rightX;
 
             // Current / Old color preview
             Text.Font = GameFont.Small;
@@ -89,27 +88,36 @@ namespace FactionColonies
             float previewBoxWidth = 60f;
             float previewRowHeight = 22f;
             float labelWidth = 55f;
+            float previewY = topY;
 
-            Widgets.Label(new Rect(rightX, y, labelWidth, previewRowHeight), "Current:");
+            Widgets.Label(new Rect(rightX, previewY, labelWidth, previewRowHeight), "Current:");
             Widgets.DrawBoxSolidWithOutline(
-                new Rect(rightX + labelWidth, y + 1f, previewBoxWidth, previewRowHeight - 2f),
+                new Rect(rightX + labelWidth, previewY + 1f, previewBoxWidth, previewRowHeight - 2f),
                 color, Color.gray);
 
-            y += previewRowHeight + 2f;
+            previewY += previewRowHeight + 2f;
 
-            Widgets.Label(new Rect(rightX, y, labelWidth, previewRowHeight), "Old:");
+            Widgets.Label(new Rect(rightX, previewY, labelWidth, previewRowHeight), "Old:");
             Widgets.DrawBoxSolidWithOutline(
-                new Rect(rightX + labelWidth, y + 1f, previewBoxWidth, previewRowHeight - 2f),
+                new Rect(rightX + labelWidth, previewY + 1f, previewBoxWidth, previewRowHeight - 2f),
                 oldColor, Color.gray);
 
-            y += previewRowHeight + 8f;
+            // Text fields: RGB column + HSV column, starting below previews
+            float fieldsY = previewY + previewRowHeight + 8f;
 
-            // RGB/HSV textfields
-            RectAggregator aggregator = new RectAggregator(
-                new Rect(rightX, y, 125f, 0f), 827364);
-            Widgets.ColorTextfields(ref aggregator, ref color, ref textfieldBuffers,
+            // RGB column
+            RectAggregator rgbAgg = new RectAggregator(new Rect(rightX, fieldsY, 125f, 0f), 827364);
+            Widgets.ColorTextfields(ref rgbAgg, ref color, ref textfieldBuffers,
                 ref textfieldColorBuffer, previousFocusedControlName, "fcColorTextfields",
-                Widgets.ColorComponents.All, Widgets.ColorComponents.All);
+                Widgets.ColorComponents.Red | Widgets.ColorComponents.Green | Widgets.ColorComponents.Blue,
+                Widgets.ColorComponents.Red | Widgets.ColorComponents.Green | Widgets.ColorComponents.Blue);
+
+            // HSV column
+            RectAggregator hsvAgg = new RectAggregator(new Rect(rightX + 140f, fieldsY, 125f, 0f), 827365);
+            Widgets.ColorTextfields(ref hsvAgg, ref color, ref textfieldBuffers,
+                ref textfieldColorBuffer, previousFocusedControlName, "fcColorTextfieldsHSV",
+                Widgets.ColorComponents.Hue | Widgets.ColorComponents.Sat | Widgets.ColorComponents.Value,
+                Widgets.ColorComponents.Hue | Widgets.ColorComponents.Sat | Widgets.ColorComponents.Value);
 
             if (Event.current.type == EventType.Layout)
             {
@@ -164,6 +172,13 @@ namespace FactionColonies
 
             if (ideos == null || ideos.Count == 0)
                 return y;
+
+            int visibleCount = 0;
+            foreach (Ideo ideo in ideos)
+            {
+                if (ideo.Color != Color.white) visibleCount++;
+            }
+            if (visibleCount == 0) return y;
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -228,10 +243,10 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(x, y, width, LabelHeight), "fcColorPickerSaved".Translate());
-            y += LabelHeight;
-
             List<Color> saved = FCSettings.savedPickerColors;
+            Widgets.Label(new Rect(x, y, width, LabelHeight),
+                "fcColorPickerSaved".Translate() + " (" + saved.Count + "/" + FCSettings.MaxSavedPickerColors + ")");
+            y += LabelHeight;
 
             float startX = x;
             int col = 0;
@@ -252,18 +267,23 @@ namespace FactionColonies
                     Widgets.DrawHighlight(swatchRect);
                 }
 
+                TooltipHandler.TipRegion(swatchRect, "fcColorPickerRightClickRemove".Translate());
+
+                // Right click to remove (must be checked before ButtonInvisible consumes mouse events)
+                if (Event.current.type == EventType.MouseDown
+                    && Event.current.button == 1
+                    && Mouse.IsOver(swatchRect))
+                {
+                    saved.RemoveAt(i);
+                    WriteSavedColors();
+                    Event.current.Use();
+                    break;
+                }
+
+                // Left click to select
                 if (Widgets.ButtonInvisible(swatchRect))
                 {
-                    // Left click selects, right click removes
-                    if (Event.current.button == 1)
-                    {
-                        saved.RemoveAt(i);
-                        break;
-                    }
-                    else
-                    {
-                        color = savedColor;
-                    }
+                    color = savedColor;
                 }
 
                 col++;
@@ -286,10 +306,16 @@ namespace FactionColonies
                 if (saved.Count >= FCSettings.MaxSavedPickerColors)
                     saved.RemoveAt(0);
                 saved.Add(color);
+                WriteSavedColors();
             }
 
             y += SwatchSize + SectionGap;
             return y;
+        }
+
+        private static void WriteSavedColors()
+        {
+            LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
         }
     }
 }

@@ -12,6 +12,7 @@
 	<fcColorPickerPresets>Preset Colors</fcColorPickerPresets>
 	<fcColorPickerSaved>Saved Colors</fcColorPickerSaved>
 	<fcColorPickerSaveCurrent>Save Current</fcColorPickerSaveCurrent>
+	<fcColorPickerRightClickRemove>Right-click to remove</fcColorPickerRightClickRemove>
 	<CustomizeFaction>Customize Faction</CustomizeFaction>
 	<FactionName>Faction Name</FactionName>
 	<FactionTitle>Faction Title</FactionTitle>
