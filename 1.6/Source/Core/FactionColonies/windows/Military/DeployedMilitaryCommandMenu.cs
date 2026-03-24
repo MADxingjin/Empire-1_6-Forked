@@ -117,8 +117,6 @@ namespace FactionColonies
             if (selectedSquad != null)
             {
                 squadMilitaryOrderDic.SetOrAdd(selectedSquad, MilitaryOrder.RecoverWoundedAndLeave);
-                selectedSquad.isDeployed = false;
-                FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(selectedSquad);
                 Messages.Message("commandLeave".Translate(selectedSquad.outfit.name, selectedSquad.dead), MessageTypeDefOf.NeutralEvent);
             }
         }

@@ -36,4 +36,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_123_1</defName>
+		<label>Squad Deployment Fix</label>
+		<description>Fixes an issue with squad deployment.</description>
+
+		<major>0</major>
+		<minor>123</minor>
+		<patch>1</patch>
+
+		<releaseDay>23</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Bugfix: squads that are deployed to a map, and then told to leave, will not actually enter cooldown, leaving their settlement stuck in a &quot;Deployed&quot; state</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Squad Deployment Fix</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

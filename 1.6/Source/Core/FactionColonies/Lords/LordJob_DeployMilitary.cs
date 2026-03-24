@@ -127,8 +127,6 @@ namespace FactionColonies
                     {
                         new TransitionAction_Custom(delegate()
                         {
-                            squad.isDeployed = false;
-                            FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
                             deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] = MilitaryOrder.RecoverWoundedAndLeave;
                             Messages.Message("militaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
                         })
