@@ -1969,13 +1969,17 @@ namespace FactionColonies
         {
             if (savedThing.hasColor)
                 return savedThing.color;
+            return ResolveApparelColor(savedThing.thing);
+        }
 
+        public Color ResolveApparelColor(ThingDef apparelDef)
+        {
             // Primary = outer/armor layers (Middle, Shell)
             // Secondary = base clothing + accessories (OnSkin, Belt, Overhead, EyeCover)
-            bool isPrimarySlot = savedThing.thing != null
-                && savedThing.thing.IsApparel
-                && (savedThing.thing.apparel.layers.Contains(ApparelLayerDefOf.Middle)
-                    || savedThing.thing.apparel.layers.Contains(ApparelLayerDefOf.Shell));
+            bool isPrimarySlot = apparelDef != null
+                && apparelDef.IsApparel
+                && (apparelDef.apparel.layers.Contains(ApparelLayerDefOf.Middle)
+                    || apparelDef.apparel.layers.Contains(ApparelLayerDefOf.Shell));
 
             if (isPrimarySlot)
             {
