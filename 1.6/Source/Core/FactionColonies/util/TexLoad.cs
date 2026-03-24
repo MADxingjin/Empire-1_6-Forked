@@ -16,6 +16,7 @@ namespace FactionColonies
             {
                 LogUtil.Error("No faction icons found, will probably result in Empire not working properly.");
             }
+            checkerboard = CreateCheckerboard();
         }
 
         public static readonly Texture2D iconTest100 = ContentFinder<Texture2D>.Get("GUI/100x");
@@ -67,6 +68,32 @@ namespace FactionColonies
         public static readonly Texture2D wikiIcon = ContentFinder<Texture2D>.Get("GUI/Buttons/wikilogo");
 
         public static List<Texture2D> factionIcons = new List<Texture2D>();
+        public static readonly Texture2D checkerboard;
+
+        private static Texture2D CreateCheckerboard()
+        {
+            int size = 8;
+            int cellSize = 4;
+            Color light = new Color(1f, 1f, 1f, 0.15f);
+            Color dark = new Color(0f, 0f, 0f, 0.1f);
+
+            Texture2D tex = new Texture2D(size, size, TextureFormat.ARGB32, false);
+            tex.name = "CheckerboardTex";
+            tex.filterMode = FilterMode.Point;
+            tex.wrapMode = TextureWrapMode.Repeat;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    bool isLight = ((x / cellSize) + (y / cellSize)) % 2 == 0;
+                    tex.SetPixel(x, y, isLight ? light : dark);
+                }
+            }
+
+            tex.Apply();
+            return tex;
+        }
 
     }
 }

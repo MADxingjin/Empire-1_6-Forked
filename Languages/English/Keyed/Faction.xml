@@ -2,12 +2,19 @@
 <LanguageData>
 
 	<!-- Faction Customization -->
-	<fcPrimaryColor>Primary Color</fcPrimaryColor>
-	<fcSecondaryColor>Secondary Color</fcSecondaryColor>
+	<fcPrimaryColor>Primary</fcPrimaryColor>
+	<fcSecondaryColor>Secondary</fcSecondaryColor>
 	<fcChoosePrimaryColor>Choose Primary Color</fcChoosePrimaryColor>
 	<fcChooseSecondaryColor>Choose Secondary Color</fcChooseSecondaryColor>
 	<fcPrimaryColorDesc>Applied to armor and outer layers (e.g. flak vests, plate armor, dusters). When no secondary is set, applies to all apparel.</fcPrimaryColorDesc>
 	<fcSecondaryColorDesc>Applied to base clothing (e.g. shirts, pants), headgear, belts, and accessories.</fcSecondaryColorDesc>
+	<fcSetPrimaryFirst>Set primary color first</fcSetPrimaryFirst>
+	<fcColorsRandomInfo>Pawns will generate with random colors when no faction colors are set.</fcColorsRandomInfo>
+	<fcColorNotSet>Not set</fcColorNotSet>
+	<fcColors>Colors</fcColors>
+	<fcConfigure>Configure</fcConfigure>
+	<fcClickToSelect>Click to select</fcClickToSelect>
+	<fcInsignia>Insignia</fcInsignia>
 	<fcColorPickerActiveIdeos>Active Ideologies</fcColorPickerActiveIdeos>
 	<fcColorPickerPresets>Preset Colors</fcColorPickerPresets>
 	<fcColorPickerSaved>Saved Colors</fcColorPickerSaved>
