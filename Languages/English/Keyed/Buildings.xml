@@ -55,4 +55,10 @@
 	<Facilities>Facilities</Facilities>
 	<FCSearchBuildings>Search buildings...</FCSearchBuildings>
 
+	<!-- Locked Buildings -->
+	<Empire_BuildingWindow_ShowLocked>Show locked buildings</Empire_BuildingWindow_ShowLocked>
+	<Empire_BuildingWindow_TechLocked>Locked — Requires {0} tech (research: {1})</Empire_BuildingWindow_TechLocked>
+	<Empire_BuildingWindow_LockedButton>Locked</Empire_BuildingWindow_LockedButton>
+	<Empire_BuildingWindow_TechLockedTooltip>This building requires researching {0} to unlock.</Empire_BuildingWindow_TechLockedTooltip>
+
 </LanguageData>

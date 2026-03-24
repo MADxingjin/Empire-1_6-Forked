@@ -28,6 +28,11 @@ namespace FactionColonies
         // Slot upgrade list (upgrades available for the current slot's building)
         private readonly List<BuildingUpgradeEntry> slotUpgradeList = new List<BuildingUpgradeEntry>();
 
+        // Locked buildings (above current tech level but otherwise valid)
+        private bool showLockedBuildings = false;
+        private readonly List<BuildingFCDef> lockedBuildingList;
+        private readonly HashSet<BuildingFCDef> lockedBuildingSet;
+
         // Collapsible section state
         private bool slotUpgradesExpanded = true;
         private bool upgradesExpanded = true;
@@ -65,9 +70,11 @@ namespace FactionColonies
         private const float indentWidth = 20f;
         private const float collapsibleHeaderHeight = 22f;
         private const float SearchBarHeight = 28f;
+        private const float toggleHeight = 24f;
 
         Rect FilterArea;
         Rect SearchBarArea;
+        Rect ToggleArea;
 
         public override Vector2 InitialSize => new Vector2(
             Math.Max(FCSettings.buildingWindowWidth, minWindowWidth),
@@ -103,6 +110,8 @@ namespace FactionColonies
             slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
             FilterArea = new Rect(margin, margin + headerHeight + slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
             SearchBarArea = new Rect(0, FilterArea.yMax + smallMargin, leftPanelWidth, SearchBarHeight);
+            if (lockedBuildingList.Count > 0)
+                ToggleArea = new Rect(margin, SearchBarArea.yMax + smallMargin, leftPanelWidth - (margin * 2), toggleHeight);
             CalculateScrollHeight(leftPanelWidth);
         }
 
@@ -173,6 +182,23 @@ namespace FactionColonies
                 if (req == buildingDef) return true;
             }
             return false;
+        }
+
+        private static string GetResearchRequirementForTechLevel(TechLevel level)
+        {
+            switch (level)
+            {
+                case TechLevel.Medieval:
+                    return FactionCache.TechLevelBarrierMedieval?.label ?? "Smithing";
+                case TechLevel.Industrial:
+                    return FactionCache.TechLevelBarrierIndustrial?.label ?? "Electricity";
+                case TechLevel.Spacer:
+                    return FactionCache.TechLevelBarrierSpacer?.label ?? "Fabrication";
+                case TechLevel.Ultra:
+                    return FactionCache.TechLevelBarrierUltra?.label ?? "Ship basics";
+                default:
+                    return level.ToStringHuman();
+            }
         }
 
         #endregion
@@ -258,6 +284,17 @@ namespace FactionColonies
                 if (ShouldShowBuilding(building))
                 {
                     filteredBuildingList.Add(building);
+                }
+            }
+
+            if (showLockedBuildings)
+            {
+                foreach (var building in lockedBuildingList)
+                {
+                    if (ShouldShowBuilding(building))
+                    {
+                        filteredBuildingList.Add(building);
+                    }
                 }
             }
 
@@ -387,13 +424,24 @@ namespace FactionColonies
                 GUI.color = prevColor;
             }
 
+            // Locked building toggle
+            if (lockedBuildingList.Count > 0)
+            {
+                bool prevShow = showLockedBuildings;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.CheckboxLabeled(ToggleArea, "Empire_BuildingWindow_ShowLocked".Translate(), ref showLockedBuildings);
+                if (showLockedBuildings != prevShow)
+                    ApplyFilter();
+            }
+
             // Recalculate if filter changed mid-frame
             if (layoutDirty)
             {
                 CalculateLayout(panel.width);
             }
 
-            float scrollTop = SearchBarArea.yMax + margin;
+            float scrollTop = (lockedBuildingList.Count > 0 ? ToggleArea.yMax : SearchBarArea.yMax) + margin;
             Rect outRect = new Rect(panel.x, scrollTop, panel.width, panel.yMax - scrollTop);
             float scrollMargin = fullScrollHeight > outRect.height ? 16f : 0f;
             Rect viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, fullScrollHeight);
@@ -452,6 +500,7 @@ namespace FactionColonies
 
             bool isSelected = selectedBuilding == building;
             bool unmetReqs = HasUnmetRequirements(building);
+            bool isLocked = lockedBuildingSet.Contains(building);
 
             // Background layers
             Widgets.DrawHighlight(row);
@@ -470,7 +519,7 @@ namespace FactionColonies
                 Widgets.DrawHighlight(row);
             }
 
-            // Click handler
+            // Click handler — locked buildings are still selectable for inspection
             if (Widgets.ButtonInvisible(row))
             {
                 if (selectedBuilding != building)
@@ -480,10 +529,18 @@ namespace FactionColonies
                 }
             }
 
-            if (unmetReqs)
+            if (isLocked || unmetReqs)
                 GUI.color = new Color(1f, 1f, 1f, 0.4f);
             DrawBuildingCard(row, building);
             GUI.color = Color.white;
+
+            // Lock icon overlay
+            if (isLocked)
+            {
+                float lockSize = 20f;
+                Rect lockRect = new Rect(row.xMax - lockSize - margin, row.y + margin, lockSize, lockSize);
+                GUI.DrawTexture(lockRect, TexLoad.buildingLocked);
+            }
         }
 
         #endregion
@@ -704,6 +761,24 @@ namespace FactionColonies
                 curY += smallMargin;
             }
 
+            // C3.3: Tech lock status
+            if (lockedBuildingSet.Contains(selectedBuilding))
+            {
+                float lockIconSize = 18f;
+                Rect lockIconRect = new Rect(scrollViewRect.x + margin, curY + 2f, lockIconSize, lockIconSize);
+                GUI.DrawTexture(lockIconRect, TexLoad.buildingLocked);
+
+                GUI.color = new Color(1f, 0.7f, 0.2f, 1f);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                string researchName = GetResearchRequirementForTechLevel(selectedBuilding.techLevel);
+                Rect techTextRect = new Rect(lockIconRect.xMax + smallMargin, curY, w - lockIconSize - margin * 2 - smallMargin, 22f);
+                Widgets.Label(techTextRect, "Empire_BuildingWindow_TechLocked".Translate(
+                    selectedBuilding.techLevel.ToStringHuman(), researchName));
+                GUI.color = Color.white;
+                curY += 22f + smallMargin;
+            }
+
             // Centered width for Modifiers + Settlement Impact
             float impactWidth = w * 0.8f;
             float impactMargin = w - impactWidth;
@@ -746,6 +821,9 @@ namespace FactionColonies
             // Required buildings prereqs
             if (selectedBuilding.requiredBuildings.Count > 0)
                 h += selectedBuilding.requiredBuildings.Count * 18f + smallMargin;
+            // Tech lock status
+            if (lockedBuildingSet.Contains(selectedBuilding))
+                h += 22f + smallMargin;
             // Modifiers
             h += CalculateModifiersHeight(width * 0.8f);
             // Extension sections
@@ -1188,6 +1266,7 @@ namespace FactionColonies
             );
 
             bool isSameBuilding = selectedBuilding == buildingDef;
+            bool isLocked = lockedBuildingSet.Contains(selectedBuilding);
 
             if (isSameBuilding)
             {
@@ -1195,6 +1274,15 @@ namespace FactionColonies
                 {
                     ExecuteDestroy();
                 }
+            }
+            else if (isLocked)
+            {
+                GUI.color = new Color(1f, 1f, 1f, 0.4f);
+                Widgets.ButtonText(buttonRect, "Empire_BuildingWindow_LockedButton".Translate());
+                GUI.color = Color.white;
+                string researchName = GetResearchRequirementForTechLevel(selectedBuilding.techLevel);
+                TooltipHandler.TipRegion(buttonRect,
+                    "Empire_BuildingWindow_TechLockedTooltip".Translate(researchName));
             }
             else
             {
@@ -1262,20 +1350,30 @@ namespace FactionColonies
 
             buildingList = new List<BuildingFCDef>();
             filteredBuildingList = new List<BuildingFCDef>();
+            lockedBuildingList = new List<BuildingFCDef>();
+            lockedBuildingSet = new HashSet<BuildingFCDef>();
+
+            TechLevel maxReachableTech = FCSettings.medievalTechOnly
+                ? TechLevel.Medieval
+                : TechLevel.Archotech;
 
             foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
             {
                 if (building.defName != "Empty" && building.defName != "Construction" && building.baseBuilding)
                 {
-                    if (building.techLevel <= factionfc.techLevel)
+                    if (building.applicableBiomes.Count == 0
+                        || building.applicableBiomes.Contains(settlement.biome))
                     {
-                        if (building.applicableBiomes.Count == 0 || building.applicableBiomes.Any()
-                            && building.applicableBiomes.Contains(settlement.biome))
+                        if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
                         {
-
-                            if (building.CanBeBuiltForSettlementType(settlement.settlementDef))
+                            if (building.techLevel <= factionfc.techLevel)
                             {
                                 buildingList.Add(building);
+                            }
+                            else if (building.techLevel <= maxReachableTech)
+                            {
+                                lockedBuildingList.Add(building);
+                                lockedBuildingSet.Add(building);
                             }
                         }
                     }
@@ -1283,6 +1381,7 @@ namespace FactionColonies
             }
 
             buildingList.Sort(CompareUtil.CompareBuildingDef);
+            lockedBuildingList.Sort(CompareUtil.CompareBuildingDef);
             filteredBuildingList.AddRange(buildingList);
 
             // Populate slot upgrade list
