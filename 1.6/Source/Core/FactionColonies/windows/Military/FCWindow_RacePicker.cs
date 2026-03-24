@@ -133,6 +133,13 @@ namespace FactionColonies
                 if (canConfirm)
                 {
                     unit.pawnKind = selectedDef;
+                    // Custom xenotypes only apply to humans
+                    if (selectedDef?.race != ThingDefOf.Human && unit.customXenotypeName != null)
+                    {
+                        unit.customXenotypeName = null;
+                        if (unit.xenotype == null)
+                            unit.xenotype = XenotypeDefOf.Baseliner;
+                    }
                     unit.RerollPreviewPawn();
                     Close();
                 }

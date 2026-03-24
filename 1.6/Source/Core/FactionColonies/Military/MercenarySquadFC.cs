@@ -141,7 +141,7 @@ namespace FactionColonies
                 for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
-                    CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype);
+                    CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype, outfit.units[k].customXenotypeName);
                     // Only add if pawn was successfully created
                     if (pawn?.pawn != null)
                     {
@@ -291,7 +291,7 @@ namespace FactionColonies
             }
         }
 
-        public void CreateNewPawn(ref Mercenary merc, PawnKindDef race, XenotypeDef _xenotype)
+        public void CreateNewPawn(ref Mercenary merc, PawnKindDef race, XenotypeDef _xenotype, string _customXenotypeName = null)
         {
             XenotypeDef xenotypeChoice = _xenotype;
             PawnKindDef raceChoice = race;
@@ -306,7 +306,25 @@ namespace FactionColonies
             Pawn newPawn = null;
             try
             {
-                newPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice));
+                PawnGenerationRequest request;
+                if (_customXenotypeName != null)
+                {
+                    CustomXenotype custom = null;
+                    FactionCache.CustomXenotypesDecoder?.TryGetValue(_customXenotypeName, out custom);
+
+                    if (custom != null)
+                        request = FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, custom);
+                    else
+                    {
+                        LogUtil.Warning($"Custom xenotype '{_customXenotypeName}' not found, falling back to Baseliner");
+                        request = FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, XenotypeDefOf.Baseliner);
+                    }
+                }
+                else
+                {
+                    request = FCPawnGenerator.WorkerOrMilitaryRequest(raceChoice, xenotypeChoice);
+                }
+                newPawn = FCPawnGenerator.GenerateWithForcedXenotype(request);
 
                 // Set faction after generation (since we generate without faction to avoid xenotype forcing)
                 if (newPawn != null && newPawn.Faction == null)
@@ -456,8 +474,28 @@ namespace FactionColonies
             //util.deadPawns.Add(pwn);
             Mercenary pawn2 = new Mercenary(true);
             PawnKindDef kindDef = merc?.pawn?.kindDef ?? PawnKindDefOf.Colonist;
-            XenotypeDef xenotype = merc?.pawn?.genes?.Xenotype ?? XenotypeDefOf.Baseliner;
-            CreateNewPawn(ref pawn2, kindDef, xenotype);
+            XenotypeDef xenotype = null;
+            string customXenoName = null;
+
+            // Recover xenotype — prefer loadout (most reliable), then pawn genes
+            if (merc?.loadout != null)
+            {
+                xenotype = merc.loadout.xenotype;
+                customXenoName = merc.loadout.customXenotypeName;
+            }
+            else if (merc?.pawn?.genes != null)
+            {
+                CustomXenotype customXeno = merc.pawn.genes.CustomXenotype;
+                if (customXeno != null)
+                    customXenoName = customXeno.name;
+                else
+                    xenotype = merc.pawn.genes.Xenotype;
+            }
+
+            if (xenotype == null && customXenoName == null)
+                xenotype = XenotypeDefOf.Baseliner;
+
+            CreateNewPawn(ref pawn2, kindDef, xenotype, customXenoName);
 
             // Only replace if new pawn was successfully created
             if (pawn2?.pawn != null)
@@ -513,7 +551,7 @@ namespace FactionColonies
                     while (mercenaries.Count <= count)
                     {
                         Mercenary newMerc = new Mercenary(true);
-                        CreateNewPawn(ref newMerc, loadout?.pawnKind, loadout?.xenotype);
+                        CreateNewPawn(ref newMerc, loadout?.pawnKind, loadout?.xenotype, loadout?.customXenotypeName);
                         if (newMerc?.pawn != null)
                         {
                             mercenaries.Add(newMerc);
@@ -536,7 +574,7 @@ namespace FactionColonies
                     if (mercenaries[count]?.pawn?.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
                     {
                         Mercenary pawn = new Mercenary(true);
-                        CreateNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype);
+                        CreateNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype, loadout.customXenotypeName);
                         // Only replace if new pawn was successfully created
                         if (pawn?.pawn != null)
                         {

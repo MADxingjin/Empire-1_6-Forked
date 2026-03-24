@@ -17,6 +17,7 @@ namespace FactionColonies
         public PawnKindDef animal;
         public PawnKindDef pawnKind;
         public XenotypeDef xenotype;
+        public string customXenotypeName;
 
         // Def-based equipment storage
         public List<SavedThing> weapons = new List<SavedThing>();
@@ -79,6 +80,61 @@ namespace FactionColonies
             return $"MilUnitFC_{loadID}";
         }
 
+        // --- Xenotype Helpers ---
+
+        public bool IsCustomXenotype => customXenotypeName != null;
+
+        public CustomXenotype ResolveCustomXenotype()
+        {
+            if (customXenotypeName == null) return null;
+            CustomXenotype result = null;
+            FactionCache.CustomXenotypesDecoder?.TryGetValue(customXenotypeName, out result);
+            return result;
+        }
+
+        public List<GeneDef> GetXenotypeGenes()
+        {
+            if (xenotype != null) return xenotype.genes;
+            CustomXenotype custom = ResolveCustomXenotype();
+            if (custom != null) return custom.genes;
+            return null;
+        }
+
+        public string GetXenotypeLabel()
+        {
+            if (xenotype != null) return xenotype.label.CapitalizeFirst();
+            if (customXenotypeName != null) return customXenotypeName.CapitalizeFirst();
+            return "None";
+        }
+
+        public Texture2D GetXenotypeIcon()
+        {
+            if (xenotype != null) return xenotype.Icon;
+            CustomXenotype custom = ResolveCustomXenotype();
+            if (custom != null) return custom.IconDef.Icon;
+            return null;
+        }
+
+        public void SetXenotype(XenotypeDef def)
+        {
+            xenotype = def;
+            customXenotypeName = null;
+            pawnIdentityDirty = true;
+            pawnEquipmentDirty = true;
+            ChangeTick();
+            MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
+        public void SetCustomXenotype(CustomXenotype custom)
+        {
+            xenotype = null;
+            customXenotypeName = custom.name;
+            pawnIdentityDirty = true;
+            pawnEquipmentDirty = true;
+            ChangeTick();
+            MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
         public void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID");
@@ -89,6 +145,7 @@ namespace FactionColonies
             Scribe_Defs.Look(ref pawnKind, "PawnKind");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref xenotype, "xenotype");
+            Scribe_Values.Look(ref customXenotypeName, "customXenotypeName");
 
             // Def-based equipment storage
             Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
@@ -99,6 +156,9 @@ namespace FactionColonies
             {
                 if (weapons == null) weapons = new List<SavedThing>();
                 if (apparel == null) apparel = new List<SavedThing>();
+                // Mutual exclusivity: prefer XenotypeDef if both are set
+                if (xenotype != null && customXenotypeName != null)
+                    customXenotypeName = null;
             }
         }
 
@@ -132,7 +192,7 @@ namespace FactionColonies
                     previewPawn.Destroy();
                 }
 
-                previewPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.WorkerOrMilitaryRequest(pawnKind, xenotype));
+                previewPawn = FCPawnGenerator.GenerateWithForcedXenotype(FCPawnGenerator.WorkerOrMilitaryRequestForUnit(this));
 
                 if (previewPawn != null && previewPawn.Faction == null)
                 {
@@ -349,9 +409,10 @@ namespace FactionColonies
             if (pawnKind?.race != null)
             {
                 float xenoFactor = 1f;
-                if (xenotype?.genes != null)
+                List<GeneDef> geneList = GetXenotypeGenes();
+                if (geneList != null)
                 {
-                    foreach (GeneDef gene in xenotype.genes)
+                    foreach (GeneDef gene in geneList)
                     {
                         /* Don't include genes that have 0 value (mostly just cosmetic genes) */
                         if (gene.marketValueFactor > 0)

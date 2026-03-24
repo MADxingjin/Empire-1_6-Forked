@@ -4,7 +4,7 @@ using Verse;
 
 namespace FactionColonies.util
 {
-    class FCPawnGenerator
+    internal static class FCPawnGenerator
     {
         /// <summary>
         /// Generates a pawn with a specific forced xenotype that the PawnGenerationPatches prefix
@@ -26,76 +26,77 @@ namespace FactionColonies.util
 
         public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
         {
-            var kindDef = pawnKindDef;
-            if (kindDef == null)
-            {
-                kindDef = PColonyPawnKindDefOf.PColony_Fighter;
-            }
+            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Fighter;
 
-            // Get a safe age value
-            float? fixedAge = null;
-            try
-            {
-                fixedAge = kindDef.GetReasonableMercenaryAge();
-            }
-            catch (Exception ex)
-            {
-                LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
-                fixedAge = null;
-            }
+            return HumanlikeRequest(kindDef, mustBeViolent: true, xenotypeDef: xenotypeDef);
+        }
 
-            return new PawnGenerationRequest(
-                kind: kindDef,
-                faction: FactionCache.PlayerColonyFaction,
-                context: PawnGenerationContext.NonPlayer,
-                tile: -1,
-                forceGenerateNewPawn: false,
-                allowDead: false,
-                allowDowned: false,
-                canGeneratePawnRelations: false,
-                mustBeCapableOfViolence: true,
-                colonistRelationChanceFactor: 0,
-                forceAddFreeWarmLayerIfNeeded: false,
-                allowGay: true,
-                allowFood: true,
-                allowAddictions: false,
-                inhabitant: false,
-                certainlyBeenInCryptosleep: false,
-                forceRedressWorldPawnIfFormerColonist: false,
-                worldPawnFactionDoesntMatter: true,
-                biocodeWeaponChance: 0,
-                extraPawnForExtraRelationChance: null,
-                relationWithExtraPawnChanceFactor: 0,
-                validatorPreGear: null,
-                validatorPostGear: null,
-                forcedTraits: null,
-                prohibitedTraits: null,
-                forcedXenotype: xenotypeDef,
-                fixedBiologicalAge: fixedAge
-            );
+        public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef, CustomXenotype customXenotype)
+        {
+            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Fighter;
+
+            return HumanlikeRequest(kindDef, mustBeViolent: true, customXenotype: customXenotype);
+        }
+
+        /// <summary>
+        /// Creates a WorkerOrMilitaryRequest dispatching to the correct overload
+        /// based on whether the unit uses a XenotypeDef or CustomXenotype.
+        /// </summary>
+        public static PawnGenerationRequest WorkerOrMilitaryRequestForUnit(MilUnitFC unit)
+        {
+            if (unit.IsCustomXenotype)
+            {
+                CustomXenotype custom = unit.ResolveCustomXenotype();
+                if (custom != null)
+                    return WorkerOrMilitaryRequest(unit.pawnKind, custom);
+                return WorkerOrMilitaryRequest(unit.pawnKind, (XenotypeDef)null);
+            }
+            return WorkerOrMilitaryRequest(unit.pawnKind, unit.xenotype);
         }
 
         public static PawnGenerationRequest CivilianRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
         {
-            var kindDef = pawnKindDef;
-            if (kindDef == null)
+            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Villager;
+
+            return HumanlikeRequest(kindDef, mustBeViolent: false, xenotypeDef: xenotypeDef);
+        }
+        public static PawnGenerationRequest CivilianRequest(PawnKindDef pawnKindDef, CustomXenotype customXenotype)
+        {
+            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Villager;
+
+            return HumanlikeRequest(kindDef, mustBeViolent: false, customXenotype: customXenotype);
+        }
+
+        private static PawnGenerationRequest HumanlikeRequest(PawnKindDef pawnKindDef = null,
+                                                              bool mustBeViolent = true,
+                                                              XenotypeDef xenotypeDef = null,
+                                                              CustomXenotype customXenotype = null)
+        {
+            if (pawnKindDef is null)
             {
-                kindDef = PColonyPawnKindDefOf.PColony_Villager;
+                LogUtil.Warning($"HumanlikeRequest called with null pawnKindDef. Defaulting to PColony_Fighter");
+                pawnKindDef = PColonyPawnKindDefOf.PColony_Fighter;
+            }
+
+            if (!(xenotypeDef is null) && !(customXenotype is null))
+            {
+                LogUtil.Warning($"HumanlikeRequest called with xenotypeDef {xenotypeDef.defName} and customXenotype {customXenotype.name}. Defaulting to xenotypeDef");
+                customXenotype = null;
             }
 
             float? fixedAge = null;
             try
             {
-                fixedAge = kindDef.GetReasonableMercenaryAge();
+                fixedAge = pawnKindDef.GetReasonableMercenaryAge();
             }
             catch (Exception ex)
             {
-                LogUtil.Warning($"Failed to get reasonable age for {kindDef?.defName}: {ex.Message}");
+                LogUtil.Warning($"Failed to get reasonable age for {pawnKindDef?.defName}: {ex.Message}");
                 fixedAge = null;
             }
 
             return new PawnGenerationRequest(
-                kind: kindDef,
+                kind: pawnKindDef,
                 faction: FactionCache.PlayerColonyFaction,
                 context: PawnGenerationContext.NonPlayer,
                 tile: -1,
@@ -103,7 +104,7 @@ namespace FactionColonies.util
                 allowDead: false,
                 allowDowned: false,
                 canGeneratePawnRelations: false,
-                mustBeCapableOfViolence: false,
+                mustBeCapableOfViolence: mustBeViolent,
                 colonistRelationChanceFactor: 0,
                 forceAddFreeWarmLayerIfNeeded: false,
                 allowGay: true,
@@ -121,6 +122,7 @@ namespace FactionColonies.util
                 forcedTraits: null,
                 prohibitedTraits: null,
                 forcedXenotype: xenotypeDef,
+                forcedCustomXenotype: customXenotype,
                 fixedBiologicalAge: fixedAge,
                 fixedChronologicalAge: fixedAge
             );

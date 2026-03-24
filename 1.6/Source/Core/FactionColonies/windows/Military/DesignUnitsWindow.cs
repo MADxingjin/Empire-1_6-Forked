@@ -250,7 +250,7 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             string raceName = selectedUnit.pawnKind?.race?.label?.CapitalizeFirst() ?? "Unknown";
-            string xenoName = selectedUnit.xenotype?.label?.CapitalizeFirst() ?? "None";
+            string xenoName = selectedUnit.GetXenotypeLabel();
             Rect infoRect = new Rect(rect.x, highlightBar.yMax + margin, rect.width, 20f);
             Widgets.Label(infoRect, "Race".Translate() + ": " + raceName + "   ·   " + "Xenotype".Translate() + ": " + xenoName);
 
