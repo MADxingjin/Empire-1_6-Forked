@@ -1545,7 +1545,7 @@ namespace FactionColonies
                 grandThingList = new List<ThingDef>();
                 foreach (ResourceFC res in resources)
                 {
-                    if (!res.def.isPoolResource)
+                    if (res.canTithe)
                     {
                         List<ThingDef> resList = res.GenerateThingDefList();
                         if (resList != null && resList.Count > 0)

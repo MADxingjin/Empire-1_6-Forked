@@ -31,6 +31,7 @@ Defines a resource category (e.g., Food, Weapons, Mining). Resources are the pri
 | `needsAllResearchRequirements` | `bool` | `true` | If true, both tech level AND research requirements must be met. |
 | `isPoolResource` | `bool` | `false` | If true, this resource is a point pool (like Research, Power) instead of generating items. Requires a `ResourcePoolExtension`. |
 | `isDefaultResource` | `bool` | `false` | If true, automatically included in any `WorldSettlementDef` with `defaultResources = true`. |
+| `canTithe` | `bool` | `true` | If false, this resource cannot generate tithes (excluded from tithe UI and tithe generation). Pool resources are never titheable regardless. Use for physical resources that should be stockpiled but not tithed. |
 | `defaultBiomeAdditive` | `double` | `1` | Base additive production for biomes that don't specify this resource. |
 | `defaultBiomeMultiplier` | `double` | `1` | Base multiplier for biomes that don't specify this resource. |
 | `productionAdditiveStat` | `FCStatDef` | — | **Required.** The Additive FCStatDef for production bonuses. |

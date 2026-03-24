@@ -61,6 +61,11 @@ namespace FactionColonies
         /// If true, this resource is automatically included in any WorldSettlementDef that has defaultResources set to true.
         /// </summary>
         public bool isDefaultResource = false;
+        /// <summary>
+        /// If false, this resource cannot generate tithes (excluded from tithe UI and tithe generation).
+        /// Pool resources are never titheable regardless of this flag. Defaults to true.
+        /// </summary>
+        public bool canTithe = true;
 
         /// <summary>
         /// Default additive production bonus for this resource in biomes that don't specify one.

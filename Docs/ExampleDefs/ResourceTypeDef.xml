@@ -92,6 +92,9 @@
 	<isPoolResource>true if the resource represents a pool of points instead of tangible items. Default: false</isPoolResource>
 	<!-- If true, this resource is automatically included in any WorldSettlementDef that has defaultResources set to true. -->
 	<isDefaultResource>true if this resource should be included by default in settlement types. Default: false</isDefaultResource>
+	<!-- If false, this resource cannot generate tithes. It will be excluded from the tithe UI and tithe generation. -->
+	<!-- Pool resources are never titheable regardless of this flag. Use this for physical resources that should be stockpiled but not tithed. -->
+	<canTithe>false to prevent this resource from being tithed. Default: true</canTithe>
 	<!-- defaultBiomeAdditive and defaultBiomeMultiplier set the baseline production values for biomes that don't specify their own. -->
 	<defaultBiomeAdditive>the base additive production bonus for biomes that don't define one for this resource. Default: 1</defaultBiomeAdditive>
 	<defaultBiomeMultiplier>the base multiplier production bonus for biomes that don't define one for this resource. Default: 1</defaultBiomeMultiplier>

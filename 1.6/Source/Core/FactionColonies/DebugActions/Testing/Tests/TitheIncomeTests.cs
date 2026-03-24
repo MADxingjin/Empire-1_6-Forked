@@ -20,7 +20,7 @@ namespace FactionColonies
 
         private static ResourceFC GetFirstNonPoolResource(WorldSettlementFC settlement)
         {
-            return settlement.Resources.FirstOrDefault(r => !r.def.isPoolResource);
+            return settlement.Resources.FirstOrDefault(r => r.canTithe);
         }
 
         private static void WithFactionModifier(FCStatDef stat, double value, Action action)

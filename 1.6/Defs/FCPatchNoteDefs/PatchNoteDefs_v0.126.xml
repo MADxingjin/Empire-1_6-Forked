@@ -107,4 +107,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_3</defName>
+		<label>ResourceTypeDef update</label>
+		<description>Small change to allow resources to be set as non-titheable, even if they aren&apos;t pool resources.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>3</patch>
+
+		<releaseDay>24</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds a canTithe field to ResourceTypeDef. If false, the resource cannot be tithed.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>ResourceTypeDef update</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

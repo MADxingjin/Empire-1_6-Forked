@@ -239,7 +239,7 @@ namespace FactionColonies
             ? (AccumulatedAverageProduction - totalStockpileAllocation) * FCSettings.silverPerResource - titheTotalValue + Math.Min(titheTotalValue, externalTitheBudget)
             : actualIncome;
 
-        public bool canTithe => !def.isPoolResource;
+        public bool canTithe => !def.isPoolResource && def.canTithe;
 
         public Texture2D getIcon
         {
