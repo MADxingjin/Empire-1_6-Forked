@@ -129,6 +129,7 @@ namespace FactionColonies
         {
             xenotype = null;
             customXenotypeName = custom.name;
+            FactionCache.EnsureInGameDatabase(custom);
             pawnIdentityDirty = true;
             pawnEquipmentDirty = true;
             ChangeTick();

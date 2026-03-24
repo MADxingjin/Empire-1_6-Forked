@@ -36,6 +36,9 @@ namespace FactionColonies
             doCloseX = true;
             absorbInputAroundWindow = true;
             forcePause = false;
+
+            // Rebuild cache so newly created xenotypes (including disk-only) appear
+            FactionCache.InvalidateCustomXenotypeCache();
         }
 
         private struct XenoOption

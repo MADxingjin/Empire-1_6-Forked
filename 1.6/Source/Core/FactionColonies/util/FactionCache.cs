@@ -139,10 +139,67 @@ namespace FactionColonies
             {
                 if (_cachedCustomXenotypeList == null)
                 {
-                    _cachedCustomXenotypeList = Current.Game?.customXenotypeDatabase?.customXenotypes;
+                    _cachedCustomXenotypeList = BuildMergedCustomXenotypeList();
                 }
                 return _cachedCustomXenotypeList;
             }
+        }
+
+        private static List<CustomXenotype> BuildMergedCustomXenotypeList()
+        {
+            var perSave = Current.Game?.customXenotypeDatabase?.customXenotypes;
+            var merged = new List<CustomXenotype>();
+            var seenNames = new HashSet<string>();
+
+            // Per-save entries first (preferred)
+            if (perSave != null)
+            {
+                foreach (CustomXenotype x in perSave)
+                {
+                    if (x?.name != null && seenNames.Add(x.name))
+                        merged.Add(x);
+                }
+            }
+
+            // Global disk entries (fill in anything not already in per-save)
+            try
+            {
+                List<CustomXenotype> disk = CharacterCardUtility.CustomXenotypesForReading;
+                if (disk != null)
+                {
+                    foreach (CustomXenotype x in disk)
+                    {
+                        if (x?.name != null && seenNames.Add(x.name))
+                            merged.Add(x);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Warning($"Failed to load disk custom xenotypes: {ex.Message}");
+            }
+
+            return merged;
+        }
+
+        /// <summary>
+        /// Adds a CustomXenotype to the per-save database if not already present.
+        /// This ensures disk-only xenotypes are persisted in the save file when used.
+        /// </summary>
+        public static void EnsureInGameDatabase(CustomXenotype xenotype)
+        {
+            if (xenotype is null) return;
+            var db = Current.Game?.customXenotypeDatabase?.customXenotypes;
+            if (db is null) return;
+
+            foreach (CustomXenotype existing in db)
+            {
+                if (existing.name == xenotype.name)
+                    return;
+            }
+
+            db.Add(xenotype);
+            InvalidateCustomXenotypeCache();
         }
         public static Dictionary<string, CustomXenotype> CustomXenotypesDecoder
         {
