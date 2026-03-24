@@ -52,6 +52,9 @@
 	<exportUnitButton>Export unit</exportUnitButton>
 
 	<!-- Unit Equipment -->
+	<fcChooseApparelColor>Choose Apparel Color</fcChooseApparelColor>
+	<fcSetAllColors>Set All Colors</fcSetAllColors>
+	<fcClearColors>Clear Colors</fcClearColors>
 	<fcEquippedApparel>Equipped Apparel</fcEquippedApparel>
 	<fcAddApparel>+ Add</fcAddApparel>
 	<fcReplacesApparel>Replaces</fcReplacesApparel>

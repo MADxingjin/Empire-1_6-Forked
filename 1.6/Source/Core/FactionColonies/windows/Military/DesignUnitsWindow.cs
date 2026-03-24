@@ -506,10 +506,36 @@ namespace FactionColonies
             {
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Rect addBtnRect = new Rect(rect.xMax - 70f, rect.y, 70f, headerHeight);
+
+                float btnX = rect.xMax;
+
+                btnX -= 70f;
+                Rect addBtnRect = new Rect(btnX, rect.y, 70f, headerHeight);
                 if (Widgets.ButtonText(addBtnRect, "fcAddApparel".Translate()))
                 {
                     OpenApparelPicker(unit);
+                }
+
+                if (unit.apparel.Any(a => a.thing != null))
+                {
+                    btnX -= 82f;
+                    Rect setAllBtn = new Rect(btnX, rect.y, 80f, headerHeight);
+                    if (Widgets.ButtonText(setAllBtn, "fcSetAllColors".Translate()))
+                    {
+                        Color current = FactionCache.FactionComp?.hasFactionColor == true
+                            ? FactionCache.FactionComp.factionColorPrimary : Color.white;
+                        OpenColorPicker(current, delegate(Color c) { unit.SetAllApparelColors(c); });
+                    }
+
+                    if (unit.apparel.Any(a => a.hasColor))
+                    {
+                        btnX -= 77f;
+                        Rect clearBtn = new Rect(btnX, rect.y, 75f, headerHeight);
+                        if (Widgets.ButtonText(clearBtn, "fcClearColors".Translate()))
+                        {
+                            unit.ClearAllApparelColors();
+                        }
+                    }
                 }
             }
 
@@ -548,6 +574,7 @@ namespace FactionColonies
 
                 // Remove button (right side)
                 float costWidth = 55f;
+                const float swatchSize = 16f;
                 Rect removeRect = Rect.zero;
                 if (!isSelectedUnitDeployed)
                 {
@@ -560,9 +587,21 @@ namespace FactionColonies
                     }
                 }
 
+                // Color swatch
+                float swatchRightEdge = isSelectedUnitDeployed ? row.xMax - 4f : removeRect.x - 4f;
+                Rect swatchRect = new Rect(swatchRightEdge - swatchSize, row.y + (apparelRowHeight - swatchSize) / 2f, swatchSize, swatchSize);
+                FactionFC factionComp = FactionCache.FactionComp;
+                Color resolvedColor = factionComp != null ? factionComp.ResolveApparelColor(item) : Color.white;
+                Color outlineColor = item.hasColor ? Color.white : new Color(0.5f, 0.5f, 0.5f);
+                Widgets.DrawBoxSolidWithOutline(swatchRect, resolvedColor, outlineColor);
+                if (!isSelectedUnitDeployed && Widgets.ButtonInvisible(swatchRect))
+                {
+                    ThingDef capturedDef = item.thing;
+                    OpenColorPicker(resolvedColor, delegate(Color c) { unit.SetApparelColor(capturedDef, c); });
+                }
+
                 // Cost
-                float rightEdge = isSelectedUnitDeployed ? row.xMax - 4f : removeRect.x - 2f;
-                Rect costRect = new Rect(rightEdge - costWidth, row.y, costWidth, apparelRowHeight);
+                Rect costRect = new Rect(swatchRect.x - costWidth - 2f, row.y, costWidth, apparelRowHeight);
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(costRect, "$" + item.MarketValue.ToString("F0"));
@@ -579,7 +618,7 @@ namespace FactionColonies
                 // Click row to open replace picker
                 if (!isSelectedUnitDeployed)
                 {
-                    Rect clickRect = new Rect(row.x, row.y, removeRect.x - row.x, apparelRowHeight);
+                    Rect clickRect = new Rect(row.x, row.y, costRect.x - row.x, apparelRowHeight);
                     if (Widgets.ButtonInvisible(clickRect))
                     {
                         OpenApparelReplacePicker(unit, item);
@@ -637,6 +676,24 @@ namespace FactionColonies
                 initialItem: current.thing,
                 initialStuff: current.stuff,
                 conflictTooltipFunc: t => GetConflictTooltip(otherApparel, t, body)
+            ));
+        }
+
+        // --- Color Picker ---
+
+        private void OpenColorPicker(Color current, Action<Color> onApply)
+        {
+            List<Color> colors = new List<Color> { Color.white };
+            foreach (ColorDef cd in DefDatabase<ColorDef>.AllDefsListForReading)
+            {
+                if (cd.colorType == ColorType.Ideo)
+                    colors.Add(cd.color);
+            }
+            Find.WindowStack.Add(new Dialog_ChooseColor(
+                "fcChooseApparelColor".Translate(),
+                current,
+                colors,
+                onApply
             ));
         }
 

@@ -626,12 +626,14 @@ namespace FactionColonies
 
             if (merc.pawn.apparel != null)
             {
+                FactionFC factionComp = FactionCache.FactionComp;
                 foreach (SavedThing apparelDef in loadout.apparel)
                 {
                     Thing thing = apparelDef.CreateThing();
                     if (thing is Apparel ap)
                     {
-                        thing.SetColor(Color.white);
+                        Color resolved = factionComp != null ? factionComp.ResolveApparelColor(apparelDef) : Color.white;
+                        thing.SetColor(resolved, reportFailure: false);
                         merc.pawn.apparel.Wear(ap);
                     }
                 }

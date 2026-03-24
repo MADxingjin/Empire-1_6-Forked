@@ -2,6 +2,7 @@ using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -165,11 +166,16 @@ namespace FactionColonies
             previewPawn.apparel.DestroyAll();
             previewPawn.equipment.DestroyAllEquipment();
 
+            FactionFC factionComp = FactionCache.FactionComp;
             foreach (SavedThing a in apparel)
             {
                 Thing t = a.CreateThing();
                 if (t is Apparel ap)
+                {
+                    Color resolved = factionComp != null ? factionComp.ResolveApparelColor(a) : Color.white;
+                    t.SetColor(resolved, reportFailure: false);
                     previewPawn.apparel.Wear(ap);
+                }
             }
 
             foreach (SavedThing w in weapons)
@@ -249,6 +255,68 @@ namespace FactionColonies
             pawnEquipmentDirty = true;
             ChangeTick();
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
+        }
+
+        // --- Apparel Color ---
+
+        public void SetApparelColor(ThingDef def, Color color)
+        {
+            for (int i = 0; i < apparel.Count; i++)
+            {
+                if (apparel[i].thing == def)
+                {
+                    SavedThing item = apparel[i];
+                    item.color = color;
+                    item.hasColor = true;
+                    apparel[i] = item;
+                    break;
+                }
+            }
+            pawnEquipmentDirty = true;
+            ChangeTick();
+        }
+
+        public void ClearApparelColor(ThingDef def)
+        {
+            for (int i = 0; i < apparel.Count; i++)
+            {
+                if (apparel[i].thing == def)
+                {
+                    SavedThing item = apparel[i];
+                    item.color = Color.white;
+                    item.hasColor = false;
+                    apparel[i] = item;
+                    break;
+                }
+            }
+            pawnEquipmentDirty = true;
+            ChangeTick();
+        }
+
+        public void SetAllApparelColors(Color color)
+        {
+            for (int i = 0; i < apparel.Count; i++)
+            {
+                SavedThing item = apparel[i];
+                item.color = color;
+                item.hasColor = true;
+                apparel[i] = item;
+            }
+            pawnEquipmentDirty = true;
+            ChangeTick();
+        }
+
+        public void ClearAllApparelColors()
+        {
+            for (int i = 0; i < apparel.Count; i++)
+            {
+                SavedThing item = apparel[i];
+                item.color = Color.white;
+                item.hasColor = false;
+                apparel[i] = item;
+            }
+            pawnEquipmentDirty = true;
+            ChangeTick();
         }
 
         // --- Cost ---

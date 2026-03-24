@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace FactionColonies
@@ -303,12 +304,16 @@ namespace FactionColonies
         public ThingDef thing;
         public ThingDef stuff;
         public QualityCategory? quality; // null = not specified (future feature)
+        public Color color;
+        public bool hasColor;
 
         public SavedThing(Thing t)
         {
             thing = t.def;
             stuff = t.Stuff;
             quality = t.TryGetQuality(out QualityCategory q) ? q : (QualityCategory?)null;
+            color = Color.white;
+            hasColor = false;
         }
 
         public SavedThing(ThingDef thing, ThingDef stuff)
@@ -316,6 +321,8 @@ namespace FactionColonies
             this.thing = thing;
             this.stuff = stuff;
             this.quality = null;
+            this.color = Color.white;
+            this.hasColor = false;
         }
 
         public Thing CreateThing()
@@ -345,6 +352,17 @@ namespace FactionColonies
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 quality = hasQuality ? qualityVal : (QualityCategory?)null;
+            }
+
+            // Apparel color override
+            Scribe_Values.Look(ref hasColor, "hasColor", false);
+            if (hasColor)
+            {
+                Scribe_Values.Look(ref color, "color", Color.white);
+            }
+            if (Scribe.mode == LoadSaveMode.LoadingVars && !hasColor)
+            {
+                color = Color.white;
             }
         }
     }

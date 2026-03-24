@@ -2,6 +2,12 @@
 <LanguageData>
 
 	<!-- Faction Customization -->
+	<fcPrimaryColor>Primary Color</fcPrimaryColor>
+	<fcSecondaryColor>Secondary Color</fcSecondaryColor>
+	<fcChoosePrimaryColor>Choose Primary Color</fcChoosePrimaryColor>
+	<fcChooseSecondaryColor>Choose Secondary Color</fcChooseSecondaryColor>
+	<fcPrimaryColorDesc>Applied to armor and outer layers (e.g. flak vests, plate armor, dusters). When no secondary is set, applies to all apparel.</fcPrimaryColorDesc>
+	<fcSecondaryColorDesc>Applied to base clothing (e.g. shirts, pants), headgear, belts, and accessories.</fcSecondaryColorDesc>
 	<CustomizeFaction>Customize Faction</CustomizeFaction>
 	<FactionName>Faction Name</FactionName>
 	<FactionTitle>Faction Title</FactionTitle>

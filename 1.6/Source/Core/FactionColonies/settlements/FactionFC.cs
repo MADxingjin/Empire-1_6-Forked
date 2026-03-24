@@ -20,6 +20,10 @@ namespace FactionColonies
         public string title = "Bastion".Translate();
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
+        public Color factionColorPrimary = Color.white;
+        public Color factionColorSecondary = Color.white;
+        public bool hasFactionColor;
+        public bool hasFactionColorSecondary;
         public bool factionCreated;
         private int foundingTick = 0;
         public int FoundingTick => foundingTick;
@@ -308,6 +312,10 @@ namespace FactionColonies
             Scribe_Values.Look(ref militaryTimeDue, "militaryTimeDue", -1);
             Scribe_Values.Look(ref _techLevel, "techLevel");
             Scribe_Values.Look(ref factionIconPath, "factionIconPath", "Base");
+            Scribe_Values.Look(ref hasFactionColor, "hasFactionColor", false);
+            Scribe_Values.Look(ref factionColorPrimary, "factionColorPrimary", Color.white);
+            Scribe_Values.Look(ref hasFactionColorSecondary, "hasFactionColorSecondary", false);
+            Scribe_Values.Look(ref factionColorSecondary, "factionColorSecondary", Color.white);
 
             Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
@@ -474,6 +482,9 @@ namespace FactionColonies
                     {
                         faction.Name = name;
                     }
+
+                    if (hasFactionColor)
+                        faction.color = factionColorPrimary;
                 }
 
                 militaryCustomizationUtil.CheckMilitaryUtilForErrors();
@@ -1953,6 +1964,31 @@ namespace FactionColonies
         #endregion
 
         #region Faction Definition
+
+        public Color ResolveApparelColor(SavedThing savedThing)
+        {
+            if (savedThing.hasColor)
+                return savedThing.color;
+
+            // Primary = outer/armor layers (Middle, Shell)
+            // Secondary = base clothing + accessories (OnSkin, Belt, Overhead, EyeCover)
+            bool isPrimarySlot = savedThing.thing != null
+                && savedThing.thing.IsApparel
+                && (savedThing.thing.apparel.layers.Contains(ApparelLayerDefOf.Middle)
+                    || savedThing.thing.apparel.layers.Contains(ApparelLayerDefOf.Shell));
+
+            if (isPrimarySlot)
+            {
+                if (hasFactionColor) return factionColorPrimary;
+            }
+            else
+            {
+                if (hasFactionColorSecondary) return factionColorSecondary;
+                if (hasFactionColor) return factionColorPrimary;
+            }
+
+            return Color.white;
+        }
 
         //TODO: this whole function is playing with defs. Doesn't seem great. Not sure if there's another way to set icons, though. Need to investigate
         public void UpdateFactionIcon(ref Faction faction, string iconPath)
