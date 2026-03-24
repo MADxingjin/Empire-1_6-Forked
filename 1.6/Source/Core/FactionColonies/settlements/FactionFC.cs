@@ -893,9 +893,26 @@ namespace FactionColonies
             return value;
         }
 
+        private double AccumulateStatModifiersValue(double value, FCStatDef stat, List<FCStatModifier> statModifiers)
+        {
+            foreach (FCStatModifier mod in statModifiers)
+            {
+                bool isAdditive = stat.aggregation == FCStatAggregation.Additive;
+                if (mod.stat == stat)
+                {
+                    if (isAdditive)
+                        value += mod.value;
+                    else
+                        value *= mod.value;
+                }
+            }
+
+            return value;
+        }
+
         /// <summary>
-        /// Computes and caches the faction-level stat partial (policies + traits only).
-        /// Starts from stat.IdentityValue, applies only faction-level static modifiers.
+        /// Computes and caches the faction-level stat partial (policies, traits, edicts, and faction-wide events).
+        /// Starts from stat.IdentityValue, applies only faction-level modifiers.
         /// </summary>
         public double GetFactionStatValue(FCStatDef stat)
         {
@@ -907,52 +924,46 @@ namespace FactionColonies
             foreach (FCPolicy p in policies)
             {
                 if (p?.def == null) continue;
-                foreach (FCStatModifier mod in p.def.statModifiers)
-                {
-                    if (mod.stat == stat)
-                    {
-                        if (stat.aggregation == FCStatAggregation.Additive)
-                            value += mod.value;
-                        else
-                            value *= mod.value;
-                    }
-                }
+                value = AccumulateStatModifiersValue(value, stat, p.def.statModifiers);
             }
             foreach (FCPolicy p in factionTraits)
             {
                 if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                foreach (FCStatModifier mod in p.def.statModifiers)
-                {
-                    if (mod.stat == stat)
-                    {
-                        if (stat.aggregation == FCStatAggregation.Additive)
-                            value += mod.value;
-                        else
-                            value *= mod.value;
-                    }
-                }
+                value = AccumulateStatModifiersValue(value, stat, p.def.statModifiers);
             }
             foreach (FCPolicy edict in edicts.Values)
             {
                 if (edict?.def == null || !edict.IsFullyActive) continue;
-                foreach (FCStatModifier mod in edict.def.statModifiers)
-                {
-                    if (mod.stat == stat)
-                    {
-                        if (stat.aggregation == FCStatAggregation.Additive)
-                            value += mod.value;
-                        else
-                            value *= mod.value;
-                    }
-                }
+                value = AccumulateStatModifiersValue(value, stat, edict.def.statModifiers);
+            }
+            foreach (FCEvent evt in events)
+            {
+                if (evt?.def == null) continue;
+                if (evt.settlementTraitLocations.Count > 0) continue;
+                value = AccumulateStatModifiersValue(value, stat, evt.def.statModifiers);
             }
 
             cachedFactionStatValues[stat] = value;
             return value;
         }
+        private string AccumulateStatModifiersDesc(string desc, FCStatDef stat, List<FCStatModifier> statModifiers, string label, bool hardinvert = false)
+        {
+            bool isAdditive = stat.aggregation == FCStatAggregation.Additive;
+            bool invert = stat.invertedForDisplay;
+            foreach (FCStatModifier mod in statModifiers)
+            {
+                if (mod.stat != stat) continue;
+                if (isAdditive)
+                    desc += $"{TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert)} - {label}\n";
+                else
+                    desc += $"{TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert)} - {label}\n";
+            }
+
+            return desc;
+        }
 
         /// <summary>
-        /// Builds a description string for faction-level stat contributions (policies + traits).
+        /// Builds a description string for faction-level stat contributions (policies, traits, edicts, and faction-wide events).
         /// Not cached — only used for UI tooltips.
         /// </summary>
         public string GetFactionStatDesc(FCStatDef stat, bool hardinvert = false)
@@ -964,38 +975,23 @@ namespace FactionColonies
             foreach (FCPolicy p in policies)
             {
                 if (p?.def == null) continue;
-                foreach (FCStatModifier mod in p.def.statModifiers)
-                {
-                    if (mod.stat != stat) continue;
-                    if (isAdditive)
-                        desc += TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
-                    else
-                        desc += TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
-                }
+                desc = AccumulateStatModifiersDesc(desc, stat, p.def.statModifiers, p.def.LabelCap, hardinvert);
             }
             foreach (FCPolicy p in factionTraits)
             {
                 if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
-                foreach (FCStatModifier mod in p.def.statModifiers)
-                {
-                    if (mod.stat != stat) continue;
-                    if (isAdditive)
-                        desc += TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + p.def.LabelCap + "\n";
-                    else
-                        desc += TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert) + " - " + p.def.LabelCap + "\n";
-                }
+                desc = AccumulateStatModifiersDesc(desc, stat, p.def.statModifiers, p.def.LabelCap, hardinvert);
             }
             foreach (FCPolicy edict in edicts.Values)
             {
                 if (edict?.def == null || !edict.IsFullyActive) continue;
-                foreach (FCStatModifier mod in edict.def.statModifiers)
-                {
-                    if (mod.stat != stat) continue;
-                    if (isAdditive)
-                        desc += TextUtil.ColorizeAdditiveBonus(mod.value, invert: invert, hardinvert: hardinvert) + " - " + edict.def.LabelCap + " (" + "FCEdict".Translate() + ")\n";
-                    else
-                        desc += TextUtil.ColorizeMultiplierBonus(mod.value, invert: invert) + " - " + edict.def.LabelCap + " (" + "FCEdict".Translate() + ")\n";
-                }
+                desc = AccumulateStatModifiersDesc(desc, stat, edict.def.statModifiers, $"{edict.def.LabelCap} ({"FCEdict".Translate()})", hardinvert);
+            }
+            foreach (FCEvent evt in events)
+            {
+                if (evt?.def == null) continue;
+                if (evt.settlementTraitLocations.Count > 0) continue;
+                desc = AccumulateStatModifiersDesc(desc, stat, evt.def.statModifiers, $"{evt.def.LabelCap} ({"FCEvent".Translate()})", hardinvert);
             }
 
             return desc;
@@ -1663,6 +1659,8 @@ namespace FactionColonies
                     settlement.AddStatModifiers(fcevent.def.statModifiers, sourceId, fcevent.def.label);
                 }
             }
+
+            InvalidateFactionStatCache();
         }
 
         private void MakeRandomEvent()

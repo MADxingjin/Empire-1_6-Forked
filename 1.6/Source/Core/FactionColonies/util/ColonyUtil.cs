@@ -146,6 +146,10 @@ namespace FactionColonies.util
             {
                 faction.events.Remove(evt);
             }
+            if (toRemove.Count > 0)
+            {
+                faction.InvalidateFactionStatCache();
+            }
         }
         public static Faction CreatePlayerColonyFaction()
         {

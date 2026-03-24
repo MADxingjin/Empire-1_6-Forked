@@ -514,6 +514,8 @@ namespace FactionColonies
                     }
                 }
 
+                faction.InvalidateFactionStatCache();
+
                 //if have options
                 if (evt.def != null && evt.def.options.Count > 0 && evt.def.activateAtStart == false)
                 {

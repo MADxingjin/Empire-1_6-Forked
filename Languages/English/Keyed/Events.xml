@@ -6,6 +6,7 @@
 	<TimeRemaining>Time Remaining</TimeRemaining>
 	<NewLand>New Land</NewLand>
 	<EventAffectingSettlements>This event is affecting the following settlements:</EventAffectingSettlements>
+	<FCEvent>Event</FCEvent>
 	<FCNoActiveEvents>No active events.</FCNoActiveEvents>
 	<FCActiveEventsCount>{0} active events</FCActiveEventsCount>
 	<FCActiveEventsFiltered>{0} of {1} active events</FCActiveEventsFiltered>
