@@ -126,6 +126,36 @@ namespace FactionColonies
             return true;
         }
 
+        /// <summary>
+        /// Returns false if the settlement type is locked, populating a human-readable reason string.
+        /// Does not check the 'available' field; that controls visibility, not lock state.
+        /// </summary>
+        public bool IsUnlocked(out string lockedReason)
+        {
+            List<string> reasons = new List<string>();
+            if (researchProjects?.Count > 0)
+            {
+                foreach (ResearchProjectDef rp in researchProjects)
+                {
+                    if (!rp.IsFinished)
+                        reasons.Add("FCRequiresResearch".Translate(rp.LabelCap));
+                }
+            }
+            if (techLevel != TechLevel.Undefined)
+            {
+                Faction faction = FactionCache.PlayerColonyFaction;
+                if (faction.def.techLevel < techLevel)
+                    reasons.Add("FCRequiresTechLevel".Translate(techLevel.ToStringHuman()));
+            }
+            if (reasons.Count > 0)
+            {
+                lockedReason = string.Join("\n", reasons.ToArray());
+                return false;
+            }
+            lockedReason = null;
+            return true;
+        }
+
         public int GetCreationTime(PlanetTile tile)
         {
             return GetModExtension<SettlementTypeExtension>().GetCreationTime(tile);

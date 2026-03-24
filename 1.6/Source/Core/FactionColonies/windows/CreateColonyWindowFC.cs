@@ -221,21 +221,6 @@ namespace FactionColonies
             return WorldSettlementDefOf.WorldSettlementDef_Surface;
         }
 
-        private IEnumerable<FloatMenuOption> GetAvailableSettlementTypes()
-        {
-            foreach (WorldSettlementDef settlementDef in DefDatabase<WorldSettlementDef>.AllDefs)
-            {
-                if (settlementDef.IsUnlocked())
-                {
-                    yield return new FloatMenuOption(settlementDef.LabelCap, delegate
-                    {
-                        currentSettlementType = settlementDef;
-                        FactionCache.FactionComp.layersForTilePicker = settlementDef.planetLayers;
-                    });
-                }
-            }
-        }
-
         private void CalculateSettlementCreationCost()
         {
             double baseCost = SettlementCreationBaseCost;
@@ -313,17 +298,11 @@ namespace FactionColonies
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
             if (Widgets.ButtonText(button, currentSettlementType.LabelCap))
             {
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-                IEnumerable<FloatMenuOption> options = GetAvailableSettlementTypes();
-                if (options != null)
+                Find.WindowStack.Add(new FCWindow_SettlementTypePicker(delegate(WorldSettlementDef selected)
                 {
-                    foreach (FloatMenuOption option in options)
-                    {
-                        list.Add(option);
-                    }
-                }
-                FloatMenu menu = new FloatMenu(list);
-                Find.WindowStack.Add(menu);
+                    currentSettlementType = selected;
+                    FactionCache.FactionComp.layersForTilePicker = selected.planetLayers;
+                }));
             }
             return button.yMax;
         }

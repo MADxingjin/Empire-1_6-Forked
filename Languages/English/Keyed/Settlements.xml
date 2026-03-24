@@ -18,6 +18,10 @@
 	<FCSettlementFormed>Settlement Formed</FCSettlementFormed>
 	<TheSettlement>The settlement</TheSettlement>
 	<HasBeenFormed> has been formed</HasBeenFormed>
+	<FCPickSettlementType>Choose Settlement Type</FCPickSettlementType>
+	<FCRequiresResearch>Requires research: {0}</FCRequiresResearch>
+	<FCRequiresTechLevel>Requires tech level: {0}</FCRequiresTechLevel>
+	<FCSettlementResources>Resources:</FCSettlementResources>
 	<SettleEventDesc>A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}.</SettleEventDesc>
 	<SettleEventCompletedDesc>{0} has been established as a new {1} in the {2}.</SettleEventCompletedDesc>
 	<PlayerColony>Player Colony</PlayerColony>
