@@ -12,7 +12,7 @@
     </WorldObjectDef>
     
     <!-- Custom Orbital Platform Definition -->
-    <WorldObjectDef>
+    <WorldObjectDef MayRequire="Ludeon.RimWorld.Odyssey">
         <defName>FCOrbitalPlatform</defName>
         <label>orbital platform</label>
         <description>A player-built orbital platform in space.</description>

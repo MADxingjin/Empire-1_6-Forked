@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	<ResearchProjectDef>
+	<ResearchProjectDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>OrbitalConstruction</defName>
 		<label>Basic Orbital Settlements</label>
 		<description>Learn the basics of constructing habitable structures in the void of space. Unlocks basic space station construction capabilities.</description>
@@ -18,7 +18,7 @@
 		<researchViewY>1.00</researchViewY>
 	</ResearchProjectDef>
 
-	<ResearchProjectDef>
+	<ResearchProjectDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>AdvancedOrbitalEngineering</defName>
 		<label>Advanced Orbital Settlements</label>
 		<description>Master advanced techniques for constructing larger and more efficient orbital installations. Reduces orbital platform construction costs by 25%.</description>
@@ -33,7 +33,7 @@
 		<researchViewY>1.00</researchViewY>
 	</ResearchProjectDef>
 
-	<ResearchProjectDef>
+	<ResearchProjectDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>OrbitalLogistics</defName>
 		<label>Orbital Logistics</label>
 		<description>Develop efficient systems for moving resources between orbital platforms and planetary surfaces. Reduces tax delivery time by 50% and unlocks special space station buildings.</description>
@@ -48,7 +48,7 @@
 		<researchViewY>2</researchViewY>
 	</ResearchProjectDef>
 
-	<ResearchProjectDef>
+	<ResearchProjectDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>GlitterworldOrbitalSettlements</defName>
 		<label>Glitterworld Orbital Settlements</label>
 		<description>A vision of orbital living inspired by glitterworld engineering.</description>

@@ -402,7 +402,7 @@
 		</resources>
 	</FactionColonies.BiomeResourceDef>
 
-	<FactionColonies.BiomeResourceDef>
+	<FactionColonies.BiomeResourceDef MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>OrbitalSpace</defName>
 		<label>orbital space</label>
 		<descriptionKey>FCDescOrbitalSpace</descriptionKey>

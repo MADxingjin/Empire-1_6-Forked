@@ -5,7 +5,7 @@
 	     Existing orbital buildings
 	     ═══════════════════════════════════════════════════════════ -->
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalFuelDepot</defName>
 		<label>Orbital Fuel Depot</label>
 		<desc>Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel.</desc>
@@ -20,7 +20,7 @@
 		<iconPath>GUI/Buildings/Orbital/OrbitalFuelDepot</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>asteroidMiningPlatform</defName>
 		<label>Asteroid Mining Platform</label>
 		<desc>Automated mining drones harvest resources from nearby asteroids and space debris. Much more efficient than planetary mining.</desc>
@@ -34,7 +34,7 @@
 		<iconPath>GUI/Buildings/Orbital/asteroidMining</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>solarCollectionArray</defName>
 		<label>Solar Collection Array</label>
 		<desc>Massive solar panel arrays with no atmospheric interference collect energy directly from the star. Powers the station and provides surplus energy.</desc>
@@ -52,7 +52,7 @@
 	     Universal orbital buildings (all orbital types)
 	     ═══════════════════════════════════════════════════════════ -->
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalHydroponicsBay</defName>
 		<label>Orbital Hydroponics Bay</label>
 		<desc>Soilless grow chambers producing food in artificial light. Essential for station self-sufficiency.</desc>
@@ -66,7 +66,7 @@
 		<iconPath>GUI/Buildings/Orbital/orbitalHydroponics</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalTreeFarm</defName>
 		<label>Orbital Tree Farm</label>
 		<desc>Pressurized arboretums growing fast-cycle timber in enriched CO2 atmospheres.</desc>
@@ -80,7 +80,7 @@
 		<iconPath>GUI/Buildings/Orbital/orbitalTreeFarm</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>fabricationModules</defName>
 		<label>Fabrication Modules</label>
 		<desc>Zero-G manufacturing bays that produce weapons and apparel with minimal waste.</desc>
@@ -95,7 +95,7 @@
 		<iconPath>GUI/Buildings/Orbital/fabricationModules</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalLaboratory</defName>
 		<label>Orbital Laboratory</label>
 		<desc>Microgravity labs enable experiments impossible planetside, advancing medicine and research.</desc>
@@ -110,7 +110,7 @@
 		<iconPath>GUI/Buildings/Orbital/orbitalLaboratory</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>workforceQuarters</defName>
 		<label>Workforce Quarters</label>
 		<desc>Functional dormitories with viewports to the stars. Houses additional station workers.</desc>
@@ -125,7 +125,7 @@
 		<iconPath>GUI/Buildings/Orbital/workforceQuarters</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>habitatRings</defName>
 		<label>Habitat Rings</label>
 		<desc>Centrifugal gravity rings housing workers in comfortable simulated-gravity conditions.</desc>
@@ -141,7 +141,7 @@
 		<iconPath>GUI/Buildings/Orbital/habitatRings</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalDefenseArray</defName>
 		<label>Orbital Defense Array</label>
 		<desc>Heavy weapons platform providing overwhelming defensive firepower against orbital threats.</desc>
@@ -156,7 +156,7 @@
 		<iconPath>GUI/Buildings/Orbital/orbitalDefenseArray</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>pointDefenseBattery</defName>
 		<label>Point Defense Battery</label>
 		<desc>Close-range interceptor turrets protecting the station from incoming projectiles and boarding parties.</desc>
@@ -171,7 +171,7 @@
 		<iconPath>GUI/Buildings/Orbital/pointDefense</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalCommsArray</defName>
 		<label>Orbital Communications Array</label>
 		<desc>Long-range comms relay improving diplomatic coordination and suppressing dissent through propaganda.</desc>
@@ -186,7 +186,7 @@
 		<iconPath>GUI/Buildings/Orbital/orbitalComms</iconPath>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalLuxurySuites</defName>
 		<label>Orbital Luxury Suites</label>
 		<desc>Premium quarters with artificial gravity beds and fine amenities imported from glitterworlds.</desc>
@@ -205,7 +205,7 @@
 	     Logistics-exclusive orbital buildings
 	     ═══════════════════════════════════════════════════════════ -->
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalTradeHub</defName>
 		<label>Orbital Trade Hub</label>
 		<desc>A commercial nexus coordinating interstellar trade routes and maximizing profit margins.</desc>
@@ -223,7 +223,7 @@
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>spaceDistillery</defName>
 		<label>Space Distillery</label>
 		<desc>Micro-gravity fermentation produces unique chemfuel compounds and exotic trade goods.</desc>
@@ -245,7 +245,7 @@
 	     Advanced-exclusive orbital buildings
 	     ═══════════════════════════════════════════════════════════ -->
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalShipyard</defName>
 		<label>Orbital Shipyard</label>
 		<desc>Full-scale drydock for constructing and repairing spacecraft. Accelerates all station construction.</desc>
@@ -263,7 +263,7 @@
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalSurfaceOps</defName>
 		<label>Orbital Surface Operations</label>
 		<desc>Coordinates surface resource extraction from orbit — managing livestock herds and mining operations remotely.</desc>
@@ -285,7 +285,7 @@
 	     Glitter-exclusive orbital buildings
 	     ═══════════════════════════════════════════════════════════ -->
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>orbitalAcademy</defName>
 		<label>Orbital Academy</label>
 		<desc>A premier research institution pushing the boundaries of science in microgravity.</desc>
@@ -303,7 +303,7 @@
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
 
-	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital">
+	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
 		<defName>navalAcademy</defName>
 		<label>Naval Academy</label>
 		<desc>Trains elite officers for fleet command. Significantly improves military readiness and reduces deployment cooldowns.</desc>
