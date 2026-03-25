@@ -366,4 +366,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_11</defName>
+		<label>Minor backend changes</label>
+		<description>Minor backend change to the static cache invalidation.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>11</patch>
+
+		<releaseDay>25</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Publicizes the EmpireCacheUtil class and adds two functions for submods to &quot;register&quot; themselves, so that their global caches are automatically invalidated at the same time as Empire&apos;s</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor backend changes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
