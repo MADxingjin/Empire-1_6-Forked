@@ -183,7 +183,7 @@
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>0_126_5</defName>
 		<label>Minor tech level change</label>
-		<description>Small change to how the Empire faction&apos;s tech level is calculated. </description>
+		<description>Small change to how the Empire faction&apos;s tech level is calculated.</description>
 
 		<major>0</major>
 		<minor>126</minor>
@@ -244,6 +244,42 @@
 
 		<patchNoteImageDescriptions>
 			<li>Minor changes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_8</defName>
+		<label>Minor UI Update</label>
+		<description>Changes the main tab window to always show pool resources.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>8</patch>
+
+		<releaseDay>25</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Always show pool resources on the main tab window, even if they are 0</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor UI Update</li>
 		</patchNoteImageDescriptions>
 
 		<additionalNotes>

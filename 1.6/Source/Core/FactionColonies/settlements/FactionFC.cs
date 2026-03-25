@@ -426,6 +426,8 @@ namespace FactionColonies
             }
             factionResources.Sort(ResourceDisplay.SortForUI);
 
+            EnsureResourcePools();
+
             LifecycleRegistry.Register(this);
 
             if (fromLoad)
@@ -1715,6 +1717,17 @@ namespace FactionColonies
         #endregion
 
         #region Resources
+
+        private void EnsureResourcePools()
+        {
+            foreach (ResourceTypeDef def in DefDatabase<ResourceTypeDef>.AllDefs)
+            {
+                if (def.isPoolResource && !resourcePools.Any(p => p.resource == def))
+                {
+                    resourcePools.Add(new ResourcePool { resource = def, pool = 0 });
+                }
+            }
+        }
 
         public void AddResourcePool(ResourcePool pool)
         {
