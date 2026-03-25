@@ -215,4 +215,43 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_7</defName>
+		<label>Minor changes</label>
+		<description>Minor backend changes.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>7</patch>
+
+		<releaseDay>24</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add a raidTargetingWeight field to WorldSettlementDef. Influences how likely settlements of that type are to be raided</li>
+		<li>Slight rewrite of the raid-targeting logic to include the above field and also make use of RandomElementByWeight</li>
+		<li>Add two functions to FCEventHandlerExtension to let events have dynamic odds of success</li>
+		<li>Add IsOptionAvailable to FCEventHandlerExtension to let events dynamically determine if an option is available</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor changes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

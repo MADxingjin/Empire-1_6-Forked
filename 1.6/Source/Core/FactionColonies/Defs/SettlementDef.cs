@@ -69,6 +69,13 @@ namespace FactionColonies
         /// </summary>
         public bool available = true;
 
+        /// <summary>
+        /// Multiplier applied to this settlement type's weight when the threat system selects raid targets.
+        /// Higher values make settlements of this type more likely to be attacked.
+        /// Default 1.0 = no change. Example: 2.0 = twice as likely to be targeted.
+        /// </summary>
+        public float raidTargetingWeight = 1.0f;
+
         public ResourceAvailability GetSettlementResource(ResourceTypeDef resourceTypeDef)
         {
             return resources.FirstOrDefault((ResourceAvailability b) => b.resourceDef == resourceTypeDef);

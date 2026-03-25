@@ -131,9 +131,16 @@ namespace FactionColonies
             cachedOptionLabelHeights = new float[options.Count];
             float labelWidth = contentWidth - StripeWidth - (OptionInnerPadding * 2);
             Text.Font = GameFont.Small;
+            FCEventHandlerExtension handler = parentEvent?.def?.GetModExtension<FCEventHandlerExtension>();
             for (int i = 0; i < options.Count; i++)
             {
-                cachedOptionLabelHeights[i] = Text.CalcHeight(options[i].label, labelWidth);
+                string measureLabel = options[i].label;
+                if (handler != null)
+                {
+                    string dynLabel = handler.GetDynamicOptionLabel(options[i], parentEvent);
+                    if (dynLabel != null) measureLabel = dynLabel;
+                }
+                cachedOptionLabelHeights[i] = Text.CalcHeight(measureLabel, labelWidth);
             }
 
             cachedEffectPreviews = new string[options.Count];
@@ -258,6 +265,7 @@ namespace FactionColonies
 
             // === Option cards ===
             int currentSilver = PaymentUtil.GetSilver();
+            FCEventHandlerExtension optHandler = parentEvent?.def?.GetModExtension<FCEventHandlerExtension>();
 
             for (int i = 0; i < options.Count; i++)
             {
@@ -268,7 +276,12 @@ namespace FactionColonies
                 bool isFree = opt.silverCost <= 0;
                 string requirementFailReason;
                 bool meetsRequirements = MeetsPolicyRequirements(opt, out requirementFailReason);
-                bool available = affordable && meetsRequirements;
+                string handlerUnavailableReason = null;
+                bool handlerAvailable = optHandler == null ||
+                    optHandler.IsOptionAvailable(opt, parentEvent, out handlerUnavailableReason);
+                bool available = affordable && meetsRequirements && handlerAvailable;
+                if (!handlerAvailable && requirementFailReason == null)
+                    requirementFailReason = handlerUnavailableReason;
 
                 // Card height
                 float cardH = OptionInnerPadding + cachedOptionLabelHeights[i] + 6f + MetadataRowHeight + OptionInnerPadding;
@@ -296,10 +309,16 @@ namespace FactionColonies
                 float innerY = cardRect.y + OptionInnerPadding;
 
                 // Option label text
+                string displayLabel = opt.label;
+                if (optHandler != null)
+                {
+                    string dynLabel = optHandler.GetDynamicOptionLabel(opt, parentEvent);
+                    if (dynLabel != null) displayLabel = dynLabel;
+                }
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = available ? Color.white : new Color(0.5f, 0.5f, 0.5f);
-                Widgets.Label(new Rect(innerX, innerY, innerW, cachedOptionLabelHeights[i]), opt.label);
+                Widgets.Label(new Rect(innerX, innerY, innerW, cachedOptionLabelHeights[i]), displayLabel);
                 GUI.color = colorBefore;
                 innerY += cachedOptionLabelHeights[i] + 6f;
 
@@ -311,7 +330,13 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 string successLabel;
                 Color successColor;
-                GetSuccessHint(opt.baseChanceOfSuccess, out successLabel, out successColor);
+                float displayChance = opt.baseChanceOfSuccess;
+                if (optHandler != null)
+                {
+                    float dynChance = optHandler.GetDynamicOptionSuccessChance(opt, parentEvent);
+                    if (dynChance >= 0f) displayChance = dynChance;
+                }
+                GetSuccessHint(displayChance, out successLabel, out successColor);
                 if (!available) successColor = new Color(successColor.r * 0.5f, successColor.g * 0.5f, successColor.b * 0.5f);
                 GUI.color = successColor;
                 Widgets.Label(new Rect(metaRect.x, metaRect.y, metaRect.width * 0.6f, metaRect.height), successLabel);

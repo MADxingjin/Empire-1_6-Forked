@@ -42,6 +42,36 @@ namespace FactionColonies
         {
             return false;
         }
+
+        // ── Option Display Hooks ────────────────────────────────────────
+
+        /// <summary>
+        /// Called to get dynamic label text for an option in this event's option window.
+        /// Return null to use the default label from XML.
+        /// </summary>
+        public virtual string GetDynamicOptionLabel(FCOptionDef option, FCEvent parentEvent)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Called to get a dynamic success chance for an option in this event's option window.
+        /// Return a negative value to use the static <see cref="FCOptionDef.baseChanceOfSuccess"/>.
+        /// </summary>
+        public virtual float GetDynamicOptionSuccessChance(FCOptionDef option, FCEvent parentEvent)
+        {
+            return -1f;
+        }
+
+        /// <summary>
+        /// Called to check whether an option should be available based on runtime state.
+        /// Checked after policy requirements. Return false with a reason to grey out the option.
+        /// </summary>
+        public virtual bool IsOptionAvailable(FCOptionDef option, FCEvent parentEvent, out string unavailableReason)
+        {
+            unavailableReason = null;
+            return true;
+        }
     }
 
     /// <summary>Internal handler for the deliveryArrival event.</summary>
