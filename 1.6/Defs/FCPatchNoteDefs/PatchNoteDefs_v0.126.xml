@@ -179,4 +179,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_5</defName>
+		<label>Minor tech level change</label>
+		<description>Small change to how the Empire faction&apos;s tech level is calculated. </description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>5</patch>
+
+		<releaseDay>24</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Uses the player faction&apos;s tech level as a floor when determining the Empire faction&apos;s tech level. Meant to provide compatibility with techlevel-advancing mods.</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor tech level change</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

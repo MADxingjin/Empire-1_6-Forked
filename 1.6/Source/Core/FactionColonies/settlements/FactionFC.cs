@@ -796,6 +796,19 @@ namespace FactionColonies
                 }
             }
 
+            // Floor: Empire tech level should never be below the player faction's tech level
+            TechLevel playerTech = FactionCache.PlayerFaction?.def?.techLevel ?? TechLevel.Undefined;
+            if (medievalOnly && playerTech > TechLevel.Medieval)
+            {
+                playerTech = TechLevel.Medieval;
+            }
+
+            if (playerTech > TechLevel.Undefined && _techLevel < playerTech)
+            {
+                _techLevel = playerTech;
+                LogUtil.Message("updateTechLevel: Matched player faction tech level " + playerTech);
+            }
+
             if (_techLevel != curTechLevel)
             {
                 xenotypeFilter.FinalizeInit(this);
