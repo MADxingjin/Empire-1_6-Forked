@@ -327,4 +327,43 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_10</defName>
+		<label>Policy Description Fixes</label>
+		<description>Handful of minor fixes for policy descriptions.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>10</patch>
+
+		<releaseDay>25</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Added displayDivisor field to FCStatDef</li>
+		<li>FCStatModifier descriptions will divide stat values by their displayDivisor if displayDivisor is non-zero</li>
+		<li>raidCooldownOffset and deadPawnCooldownOffset have 2500 displayDivisor (so they will show up in-game as hours instead of ticks)</li>
+		<li>Handful of grammar and clarity fixes</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Policy Description Fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -43,6 +43,12 @@ namespace FactionColonies
         public bool invertedForDisplay;
 
         /// <summary>
+        /// If non-zero, the raw stat value is divided by this before display.
+        /// Used for tick-based stats (e.g., 2500 to convert ticks to in-game hours).
+        /// </summary>
+        public double displayDivisor;
+
+        /// <summary>
         /// If non-null, this stat is a resource production stat linked to this ResourceTypeDef.
         /// Used for description formatting (resource name + icon instead of generic descriptionKey).
         /// </summary>

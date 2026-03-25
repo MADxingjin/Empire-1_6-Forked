@@ -38,8 +38,8 @@
 
 	<FCTraitDesc_militaryLevelBonusDefending>{0} Military Level (Defending)</FCTraitDesc_militaryLevelBonusDefending>
 	<FCTraitDesc_militaryEfficiencyBonusAttacking>{0} Combat Efficiency (Attacking)</FCTraitDesc_militaryEfficiencyBonusAttacking>
-	<FCTraitDesc_deadPawnCooldownOffset>{0} Dead Pawn Cooldown</FCTraitDesc_deadPawnCooldownOffset>
-	<FCTraitDesc_raidCooldownOffset>{0} Raid Cooldown</FCTraitDesc_raidCooldownOffset>
+	<FCTraitDesc_deadPawnCooldownOffset>{0}h Dead Pawn Cooldown Per Death</FCTraitDesc_deadPawnCooldownOffset>
+	<FCTraitDesc_raidCooldownOffset>{0}h Raid Cooldown</FCTraitDesc_raidCooldownOffset>
 	<FCTraitDesc_battleProsperityLossMultiplier>{0} Battle Prosperity Loss</FCTraitDesc_battleProsperityLossMultiplier>
 	<FCTraitDesc_battleLoyaltyLossMultiplier>{0} Battle Loyalty Loss</FCTraitDesc_battleLoyaltyLossMultiplier>
 	<FCTraitDesc_battleHappinessLossMultiplier>{0} Battle Happiness Loss</FCTraitDesc_battleHappinessLossMultiplier>

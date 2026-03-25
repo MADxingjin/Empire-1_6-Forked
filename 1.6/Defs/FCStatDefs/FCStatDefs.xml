@@ -66,6 +66,7 @@
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_raidCooldownOffset</descriptionKey>
+        <displayDivisor>2500</displayDivisor>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>
@@ -75,6 +76,7 @@
         <appliesToSettlements>false</appliesToSettlements>
         <invertedForDisplay>true</invertedForDisplay>
         <descriptionKey>FCTraitDesc_deadPawnCooldownOffset</descriptionKey>
+        <displayDivisor>2500</displayDivisor>
     </FactionColonies.FCStatDef>
 
     <!-- ── Battle Penalties ────────────────────────────────────── -->

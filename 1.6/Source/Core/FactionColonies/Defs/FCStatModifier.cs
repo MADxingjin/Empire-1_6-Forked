@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Verse;
 
 namespace FactionColonies
@@ -35,6 +36,8 @@ namespace FactionColonies
                 return stat.invertedForDisplay ? value < 1.0 : value > 1.0;
             return stat.invertedForDisplay ? value < 0.0 : value > 0.0;
         }
+        
+        public double DisplayValue => stat.displayDivisor > 0 ? Math.Round(value / stat.displayDivisor, 1) : value;
 
         /// <summary>
         /// Builds a human-readable description string from a list of stat modifiers.
@@ -59,10 +62,11 @@ namespace FactionColonies
                     else
                     {
                         if (mod.stat.descriptionKey.NullOrEmpty()) continue;
+                        double displayValue = mod.DisplayValue;
                         if (mod.stat.aggregation == FCStatAggregation.Additive)
-                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeAdditiveBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeAdditiveBonus(displayValue, mod.stat.invertedForDisplay)) + "\n";
                         else
-                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeMultiplierBonus(mod.value, mod.stat.invertedForDisplay)) + "\n";
+                            desc += mod.stat.descriptionKey.Translate(TextUtil.ColorizeMultiplierBonus(displayValue, mod.stat.invertedForDisplay)) + "\n";
                     }
                 }
             }

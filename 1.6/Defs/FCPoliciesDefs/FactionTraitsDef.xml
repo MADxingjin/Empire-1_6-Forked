@@ -205,7 +205,7 @@
 			<li>technocratic</li>
 		</incompatiblePolicies>
 		<positiveEffects>
-			<li>- Once per season, can request for an experienced mercenary from your faction to join your colony</li>
+			<li>- Once per season, can request for a mercenary from your faction to join your colony</li>
 			<li>- All tithes received have their value increased by 20%</li>
 		</positiveEffects>
 		<negativeEffects>
@@ -231,8 +231,8 @@
 			<li>egalitarian</li>
 		</incompatiblePolicies>
 		<positiveEffects>
-			<li>- Your Faction has been using Slaves for it's project since the start, gaining more worker at the cost of not being able to hire much normal citizen.</li>
-			<li>- +2 Base Workers</li>
+			<li>- Your Faction has been using slaves for its projects since the start, gaining more workers at the cost of not being able to hire as many normal citizens.</li>
+			<li>- +2 Workers Per Settlement Level</li>
 		</positiveEffects>
 		<negativeEffects>
 			<li>- -2 Over Max Workers</li>
