@@ -360,12 +360,21 @@ namespace FactionColonies
                     {
                         case "settleNewColony":
                         {
-                            //Settle new colony event
-                            faction.AddExperienceToFactionLevel(10f);
+                            try
+                            {
+                                //Settle new colony event
+                                faction.AddExperienceToFactionLevel(10f);
 
-                            ColonyUtil.CreatePlayerColonySettlement(evt.location, evt.settlementToCreate);
+                                ColonyUtil.CreatePlayerColonySettlement(evt.location, evt.settlementToCreate);
 
-                            faction.settlementCaravansList.Remove(evt.location);
+                                faction.settlementCaravansList.Remove(evt.location);
+                            }
+                            catch (Exception e)
+                            {
+                                LogUtil.Error($"Exception processing event '{evt.def?.defName ?? "NULL"}' (loadID={evt.loadID}): {e}");
+
+                                faction.settlementCaravansList.Remove(evt.location);
+                            }
                             break;
                         }
                         case "taxColony":
@@ -555,8 +564,7 @@ namespace FactionColonies
                             else
                             {
                                 //if second event
-                                tempEvent = MakeRandomEvent(evt.def.followingEvent2,
-                                    evt.settlementTraitLocations);
+                                tempEvent = MakeRandomEvent(evt.def.followingEvent2, evt.settlementTraitLocations);
                             }
                         }
                         else

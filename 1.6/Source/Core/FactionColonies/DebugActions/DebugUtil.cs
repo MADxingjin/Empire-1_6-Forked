@@ -1213,5 +1213,12 @@ namespace FactionColonies
                 LogUtil.MessageForce("Road Queue: null");
             }
         }
+
+        [DebugAction("Empire", "Validate Settlement Caravan List", allowedGameStates = AllowedGameStates.Playing)]
+        private static void DebugValidateSettlementCaravanList()
+        {
+            LogUtil.MessageForce($"Validating settlement caravan list...");
+            FactionCache.FactionComp?.ValidateSettlementCaravansList();
+        }
     }
 }

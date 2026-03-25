@@ -402,4 +402,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_126_12</defName>
+		<label>Settle Colony fixes</label>
+		<description>Adds a couple of checks and validations for the settle colony event.</description>
+
+		<major>0</major>
+		<minor>126</minor>
+		<patch>12</patch>
+
+		<releaseDay>25</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Wraps the settleNewColony portion of Process Events in a try/catch, so we can remove the target location from the caravans list if the event fails somehow</li>
+		<li>Adds new ValidateSettlementCaravansList function, firing daily to make sure that the settlementCaravansList has no orphaned locations</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Settle Colony fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

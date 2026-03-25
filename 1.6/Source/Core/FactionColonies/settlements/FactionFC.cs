@@ -516,6 +516,7 @@ namespace FactionColonies
 
                 firstTick = false;
             }
+            ValidateTick(faction);
 
             FCEventMaker.ProcessEvents(in events);
             BillUtility.ProcessBills();
@@ -547,6 +548,17 @@ namespace FactionColonies
                 roadBuilder.RoadTick();
                 TickActions();
             }
+        }
+        /// <summary>
+        /// Handles daily validation checks.
+        /// </summary>
+        /// <param name="faction"></param>
+        public void ValidateTick(Faction faction)
+        {
+            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
+                return;
+            
+            ValidateSettlementCaravansList();
         }
 
         public void TaxTick(Faction faction)
@@ -2169,6 +2181,62 @@ namespace FactionColonies
             }
 
             return false; //is not on list
+        }
+        /// <summary>
+        /// Checks the settlementCaravansList to see if it has any orphaned tile locations, and removes them.
+        /// </summary>
+        /// <returns>TRUE if an orphaned location was found. FALSE otherwise.</returns>
+        public bool ValidateSettlementCaravansList()
+        {
+            bool foundInvalidCaravan = false;
+            List<PlanetTile> matched = new List<PlanetTile>();
+            List<PlanetTile> toAdd = new List<PlanetTile>();
+            List<PlanetTile> toRemove = new List<PlanetTile>();
+
+            foreach (FCEvent evt in events)
+            {
+                if (evt.def.defName == "settleNewColony")
+                {
+                    if (settlementCaravansList.Contains(evt.location))
+                    {
+                        matched.Add(evt.location);
+                    }
+                    else
+                    {
+                        LogUtil.Warning($"ValidateSettlementCaravansList: found settleNewColony event at tile {evt.location}, NOT in settlementCaravansList. Adding.");
+                        toAdd.Add(evt.location);
+                    }
+                }
+            }
+
+            if (matched.Count != settlementCaravansList.Count)
+            {
+                foundInvalidCaravan = true;
+                foreach (PlanetTile tile in settlementCaravansList)
+                {
+                    if (!matched.Contains(tile))
+                    {
+                        toRemove.Add(tile);
+                    }
+                }
+
+                foreach (PlanetTile tile in toRemove)
+                {
+                    LogUtil.Warning($"ValidateSettlementCaravansList: removing orphaned tile {tile} from settlementCaravansList");
+                    settlementCaravansList.Remove(tile);
+                }
+            }
+            else if (toAdd.Count == 0)
+            {
+                LogUtil.Message($"ValidateSettlementCaravansList: all settleNewColony events have valid locations");
+            }
+
+            if (toAdd.Count > 0)
+            {
+                settlementCaravansList.AddRange(toAdd);
+            }
+
+            return foundInvalidCaravan;
         }
 
         #endregion
