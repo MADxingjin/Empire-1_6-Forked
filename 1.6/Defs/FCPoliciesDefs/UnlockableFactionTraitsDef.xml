@@ -133,6 +133,7 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Innovative</behaviorClass>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -147,6 +148,7 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
+		<behaviorClass>FactionColonies.FCPolicyBehavior_Lucky</behaviorClass>
 	</FactionColonies.FCPolicyDef>
 
 </Defs>

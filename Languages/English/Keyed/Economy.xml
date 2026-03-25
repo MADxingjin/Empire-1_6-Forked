@@ -35,6 +35,8 @@
 	<TaxesFromSettlementAreBeingDelivered>Taxes from {0} are en-route to your tax collection point!</TaxesFromSettlementAreBeingDelivered>
 	<TaxPercentage>Tithe %</TaxPercentage>
 	<TaxDeliveryMap>Tax Delivery Map</TaxDeliveryMap>
+	
+	<InnovativeMessage>{0}'s innovation has provided you with {1} research points.</InnovativeMessage>
 
 	<!-- Tax Reports -->
 	<TaxReports>Tax Reports</TaxReports>

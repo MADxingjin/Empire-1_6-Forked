@@ -14,6 +14,7 @@
 		</options>
 		<activateAtStart>true</activateAtStart>
 		<isRandomEvent>true</isRandomEvent>
+		<isNegative>true</isNegative>
 		<weight>10</weight>
 		<incompatibleEvents>
 			<li>deathInTheFamily_1-1</li>

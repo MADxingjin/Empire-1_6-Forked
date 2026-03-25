@@ -55,6 +55,7 @@ namespace FactionColonies
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
 
         public bool isMilitaryEvent = false;
+        public bool isNegative = false;
 
         public bool BiomeAllowed(string biome)
         {

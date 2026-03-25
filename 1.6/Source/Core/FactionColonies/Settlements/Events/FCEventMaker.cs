@@ -119,7 +119,6 @@ namespace FactionColonies
 
         public static FCEventDef ReturnRandomEvent()
         {
-            //create new list
             List<FCEventDef> tmpEventList = new List<FCEventDef>();
 
             foreach (FCEventDef eventDef in DefDatabase<FCEventDef>.AllDefsListForReading)
@@ -133,12 +132,26 @@ namespace FactionColonies
                 }
             }
 
-            if (tmpEventList.Count() != 0)
+            if (tmpEventList.Count() == 0)
+                return null;
+
+            FCEventDef selected = tmpEventList.RandomElement();
+
+            // Allow active behaviors to request a single re-roll
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction != null)
             {
-                return tmpEventList.RandomElement();
+                bool reroll = false;
+                faction.ForEachBehavior(b =>
+                {
+                    if (!reroll && b.ShouldRerollEvent(selected))
+                        reroll = true;
+                });
+                if (reroll)
+                    selected = tmpEventList.RandomElement();
             }
 
-            return null;
+            return selected;
         }
 
         public static FCEvent MakeEvent(FCEventDef def)

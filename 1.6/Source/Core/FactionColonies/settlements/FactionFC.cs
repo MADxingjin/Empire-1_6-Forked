@@ -165,7 +165,6 @@ namespace FactionColonies
         public bool autoResolveBillsChanged = false;
 
         // ── Resources ──
-        public float researchPointPool = 0;
         public List<ResourcePool> resourcePools = new List<ResourcePool>();
         public ThingWithComps powerOutput;
         public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();

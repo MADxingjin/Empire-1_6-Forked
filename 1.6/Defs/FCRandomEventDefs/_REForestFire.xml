@@ -14,6 +14,7 @@
 		</options>
 		<activateAtStart>true</activateAtStart>
 		<isRandomEvent>true</isRandomEvent>
+		<isNegative>true</isNegative>
 		<weight>25</weight>
 		<incompatibleEvents>
 			<li>forestFire_1-1</li>

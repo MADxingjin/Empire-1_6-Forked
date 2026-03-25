@@ -112,6 +112,14 @@ namespace FactionColonies
         /// <summary>Called when taxes are collected from a settlement.</summary>
         public virtual void OnTaxCollected(FactionFC faction, WorldSettlementFC settlement) { }
 
+        // ── Random Events ───────────────────────────────────────────
+
+        /// <summary>
+        /// Called when a random event is selected. Return true to re-roll the event selection.
+        /// Only one re-roll occurs per event trigger regardless of how many behaviors request it.
+        /// </summary>
+        public virtual bool ShouldRerollEvent(FCEventDef eventDef) => false;
+
         // ── Diplomacy ────────────────────────────────────────────────
 
         /// <summary>Handle sending a diplomatic envoy to a target faction. Return true if handled.</summary>
