@@ -1,6 +1,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace FactionColonies
@@ -44,8 +45,8 @@ namespace FactionColonies
      * in the ResourceFilterExtension for animals */
     public class ThingSetMaker_Animals : ThingSetMaker
     {
-        private const int MAX_ATTEMPTS = 1000;
-        private const int MAX_ATTEMPTS_FEW = 100;
+        private const int MAX_ATTEMPTS = 200;
+        private const int MAX_ATTEMPTS_FEW = 20;
         protected override void Generate(ThingSetMakerParams parms, List<Thing> outThings)
         {
             // Build animal pawn pool
@@ -75,6 +76,15 @@ namespace FactionColonies
                 return;
             }
 
+            // Pre-compute cheapest animal market value to allow early budget-exhaustion exit.
+            // Uses race.BaseMarketValue as a cheap estimate to avoid generating pawns just to check price.
+            float cheapestAnimalValue = animalDefs.Count > 0
+                ? animalDefs.Min(def => def.race.BaseMarketValue)
+                : float.MaxValue;
+            float cheapestProductValue = productDefs.Count > 0
+                ? productDefs.Min(def => def.BaseMarketValue)
+                : float.MaxValue;
+
             float totalValue = 0;
             int totalAttempts = 0;
             int minCount = parms.countRange?.min ?? 0;
@@ -83,17 +93,35 @@ namespace FactionColonies
 
             do
             {
+                float remainingBudget = maxBudget - totalValue;
+
+                // Early exit: nothing affordable remains
+                if (remainingBudget < cheapestAnimalValue && remainingBudget < cheapestProductValue)
+                {
+                    break;
+                }
+
                 // Randomly decide: animal or product, weighted by pool size
-                bool pickAnimal = animalDefs.Count > 0
-                    && (productDefs.Count == 0 || Rand.Range(0, totalOptions) < animalDefs.Count);
+                // Skip animals if budget can't afford even the cheapest one
+                bool canAffordAnimal = animalDefs.Count > 0 && remainingBudget >= cheapestAnimalValue;
+                bool canAffordProduct = productDefs.Count > 0 && remainingBudget >= cheapestProductValue;
+
+                bool pickAnimal = canAffordAnimal
+                    && (!canAffordProduct || Rand.Range(0, totalOptions) < animalDefs.Count);
 
                 if (pickAnimal)
                 {
-                    // Generate animal pawn
+                    // Generate animal pawn, destroying any over-budget pawns to prevent leaks
                     Pawn pawn = null;
                     int attempts = 0;
                     do
                     {
+                        if (pawn != null)
+                        {
+                            // Destroy the previous over-budget pawn before generating a new one
+                            pawn.Destroy();
+                            pawn = null;
+                        }
                         PawnGenerationRequest request = new PawnGenerationRequest(kind: animalDefs.RandomElement(),
                                                                                   faction: Find.FactionManager.OfPlayer,
                                                                                   allowAddictions: false,
@@ -106,6 +134,11 @@ namespace FactionColonies
                     if (attempts >= MAX_ATTEMPTS_FEW)
                     {
                         LogUtil.Warning($"ThingSetMaker_Animals: Attempted to generate valid animal pawn {MAX_ATTEMPTS_FEW} times, but failed. Moving on");
+                        // Destroy the last over-budget pawn
+                        if (pawn != null)
+                        {
+                            pawn.Destroy();
+                        }
                     }
                     else
                     {
@@ -113,11 +146,10 @@ namespace FactionColonies
                         outThings.Add(pawn);
                     }
                 }
-                else if (productDefs.Count > 0)
+                else if (canAffordProduct)
                 {
                     // Generate animal product
                     ThingDef productDef = productDefs.RandomElement();
-                    float remainingBudget = maxBudget - totalValue;
 
                     if (productDef.BaseMarketValue <= remainingBudget)
                     {

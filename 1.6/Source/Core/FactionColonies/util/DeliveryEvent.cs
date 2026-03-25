@@ -223,6 +223,12 @@ namespace FactionColonies.util
                     {
                         evt.goods.Remove(next);
                     }
+                    else
+                    {
+                        // Pawn can't carry this item (e.g. capacity issue) — skip to avoid infinite retry
+                        LogUtil.Warning($"Delivery pawn could not carry {next.LabelCap}, skipping item");
+                        evt.goods.Remove(next);
+                    }
 
                     pawns.Add(deliveryPawn);
                 }
