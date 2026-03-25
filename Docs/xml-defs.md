@@ -1,6 +1,6 @@
 # XML Def Types Reference
 
-Empire defines 12 custom def types. All support `modExtensions` for attaching [DefModExtensions](def-mod-extensions.md). Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
+Empire defines 11 custom def types. All support `modExtensions` for attaching [DefModExtensions](def-mod-extensions.md). Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
 
 ---
 
@@ -92,6 +92,7 @@ Defines a settlement type (e.g., Surface, Orbital). Controls resource availabili
 | `titleKey` | `string` | `null` | Key for settlement-type-specific town titles. Falls back to default titles. |
 | `isConstructed` | `bool` | `false` | If true, creation timer labeled "Construction Time" instead of "Travel Time". |
 | `accentColor` | `Color?` | `null` | UI accent color for this settlement type. |
+| `available` | `bool` | `true` | If false, this settlement type is hidden from the creation UI. Use to define abstract or internally-managed settlement types. |
 | `baseSettlementType` | `WorldSettlementDef` | `null` | Parent settlement type for inheritance-aware building allow/block list checks. When set, a building's allow/block list will match this def and all ancestors in the chain. |
 
 **Required modExtension**: [SettlementTypeExtension](def-mod-extensions.md#settlementtypeextension).

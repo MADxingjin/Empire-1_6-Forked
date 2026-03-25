@@ -1,6 +1,6 @@
 # DefModExtension Classes
 
-Empire provides 7 DefModExtension classes that attach custom behavior to specific def types. Add them via the standard `modExtensions` list on any def.
+Empire provides 7 DefModExtension classes and 1 extension interface that attach custom behavior to specific def types. Add them via the standard `modExtensions` list on any def.
 
 ```xml
 <modExtensions>
@@ -178,3 +178,55 @@ The base class provides sensible defaults for surface settlements. Subclass it f
 | `GetTileForSettlement` | `PlanetTile GetTileForSettlement(PlanetTile tile)` | Transform or replace the tile used for settlement. |
 
 **Base mod example**: `SettlementTypeExtension_Orbital` — custom naming with space-themed keywords, forced drop pod/shuttle delivery, orbital tile validation, custom creation cost/time.
+
+---
+
+## IBuildingDetailSection
+
+**Attaches to**: `BuildingFCDef`
+**Purpose**: Add custom sections to the building detail panel in the building construction window.
+
+Unlike the other entries on this page, `IBuildingDetailSection` is an **interface**, not a class. Implement it on a `DefModExtension` subclass attached to a `BuildingFCDef`. The window discovers implementors via `def.modExtensions.OfType<IBuildingDetailSection>()`. Sections render between the Modifiers block and the Settlement Impact block.
+
+```csharp
+public interface IBuildingDetailSection
+{
+    string SectionLabel { get; }
+    float GetSectionHeight(BuildingFCDef def, float width);
+    void DrawSection(BuildingFCDef def, Rect contentRect);
+    string GetCardDescription(BuildingFCDef def);
+}
+```
+
+| Member | Description |
+|--------|-------------|
+| `SectionLabel` | Header label for the section (rendered by the caller in standard style). |
+| `GetSectionHeight` | Total height needed for section content (excluding the header). Return `0` to hide the section entirely. |
+| `DrawSection` | Draws section content into `contentRect`. The header is drawn by the caller; implementors only draw below it. |
+| `GetCardDescription` | Short description appended to building card text in the left panel and tooltips. Return `null` or `""` to add nothing. |
+
+```xml
+<FactionColonies.BuildingFCDef>
+    <defName>MyBuilding</defName>
+    <modExtensions>
+        <li Class="YourNamespace.MyBuildingDetailSection" />
+    </modExtensions>
+    <!-- ... -->
+</FactionColonies.BuildingFCDef>
+```
+
+```csharp
+public class MyBuildingDetailSection : DefModExtension, IBuildingDetailSection
+{
+    public string SectionLabel => "Custom Info";
+
+    public float GetSectionHeight(BuildingFCDef def, float width) => 30f;
+
+    public void DrawSection(BuildingFCDef def, Rect contentRect)
+    {
+        Widgets.Label(contentRect, "Custom content here");
+    }
+
+    public string GetCardDescription(BuildingFCDef def) => "Has custom info";
+}
+```

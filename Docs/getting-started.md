@@ -49,6 +49,7 @@ Available comp interfaces:
 - `ISettlementWindowOverview` — add a tab to the settlement window
 - `IStatModifierProvider` — contribute to stat aggregation
 - `IResourceProductionModifier` — contribute to resource production
+- `ITitheBudgetModifier` — inject external tithe budget
 
 See [Settlement Comps](worldobject-comps.md).
 

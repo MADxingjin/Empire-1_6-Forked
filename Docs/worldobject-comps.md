@@ -114,6 +114,37 @@ public class MyComp : WorldObjectComp, IResourceProductionModifier
 ((WorldSettlementFC)parent).InvalidateResourceCaches();
 ```
 
+### ITitheBudgetModifier
+
+Injects external tithe budget into a settlement's resource production. The additional budget increases how many (or how valuable) tithe items are generated, without penalizing the settlement's `actualIncome` for externally-sourced goods.
+
+```csharp
+public class MyComp : WorldObjectComp, ITitheBudgetModifier
+{
+    public double GetExternalTitheBudget(ResourceFC resource)
+    {
+        // Add 50 silver worth of tithe budget to food
+        if (resource.def.defName == "RTD_Food")
+            return 50.0;
+        return 0;
+    }
+
+    public string GetExternalTitheBudgetDesc(ResourceFC resource)
+    {
+        if (resource.def.defName == "RTD_Food")
+            return "+50 - My Comp\n";
+        return null;
+    }
+}
+```
+
+**Discovery**: `ResourceFC.externalTitheBudget` iterates `settlement.AllComps` for `ITitheBudgetModifier`.
+
+**Caching**: Results are cached per settlement. Automatically invalidated after lifecycle events. For changes outside lifecycle callbacks:
+```csharp
+((WorldSettlementFC)parent).InvalidateStatCache();
+```
+
 ---
 
 ## Existing Base Mod Comps

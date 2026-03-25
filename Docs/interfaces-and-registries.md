@@ -1,6 +1,6 @@
 # Interfaces & Registries
 
-Empire provides 12 C# interfaces for submod extensibility. Some use static registries (global hooks); others are discovered on WorldObjectComps (per-settlement hooks).
+Empire provides 16 C# interfaces for submod extensibility. Some use static registries (global hooks); others are discovered on WorldObjectComps (per-settlement hooks) or DefModExtensions.
 
 All registry-based interfaces follow the same pattern — register an instance, and the base mod invokes it at the appropriate time.
 
@@ -227,6 +227,110 @@ Filters are cleared on cache invalidation — re-register them as needed (typica
 
 ---
 
+### IRaidTarget
+
+**Registry**: `RaidTargetRegistry`
+**Purpose**: Make external world objects (e.g., outposts from other mods) available as raid targets for Empire's military system.
+
+Registered targets appear in the attack target pool alongside Empire settlements, receive the same 24-hour warning, and auto-resolve via the standard battle simulation.
+
+```csharp
+public interface IRaidTarget
+{
+    WorldObject WorldObject { get; }
+    string Name { get; }
+    int Tile { get; }
+    int MilitaryLevel { get; }
+    bool IsUnderAttack { get; set; }
+    void OnRaidWon(BattleResult result);
+    void OnRaidLost(BattleResult result);
+}
+```
+
+| Property/Method | Description |
+|-----------------|-------------|
+| `WorldObject` | The world object this target wraps (for serialization and `LookTargets`). |
+| `Name` | Display name in the military UI. |
+| `Tile` | World tile for targeting weight and distance calculations. |
+| `MilitaryLevel` | Virtual military level used for targeting weight and auto-defend comparison. |
+| `IsUnderAttack` | Set by the attack system to prevent duplicate attacks. Cleared on resolution. |
+| `OnRaidWon` | Called when Empire wins the battle against this target. |
+| `OnRaidLost` | Called when Empire loses the battle against this target. |
+
+---
+
+### IAutoDefender
+
+**Registry**: `AutoDefenderRegistry`
+**Purpose**: Register external world objects as auto-defenders for Empire settlements (and other `IRaidTarget`s).
+
+When a settlement is attacked, the registry searches for the best available defender within range. The defender creates a `militaryForce` and is placed on cooldown after battle resolution.
+
+```csharp
+public interface IAutoDefender
+{
+    WorldObject WorldObject { get; }
+    int MilitaryLevel { get; }
+    int Range { get; }
+    bool CanAutoDefend { get; }
+    militaryForce CreateDefendingForce();
+    void OnDefenseStarted(WorldObject target);
+    void OnDefenseComplete(bool won, BattleResult result);
+    void OnDefenseReplaced();
+    List<Pawn> GetDefendingPawns();
+    void ReturnDefendingPawns(List<Pawn> pawns);
+}
+```
+
+| Property/Method | Description |
+|-----------------|-------------|
+| `WorldObject` | The world object this defender wraps. |
+| `MilitaryLevel` | Military strength for comparison when selecting the best defender. |
+| `Range` | Maximum tile distance for auto-defense eligibility. |
+| `CanAutoDefend` | True if the defender is available (enabled, not busy, etc.). |
+| `CreateDefendingForce` | Generate a `militaryForce` to defend with. |
+| `OnDefenseStarted` | Called when this defender is assigned to protect a target. |
+| `OnDefenseComplete` | Called when the battle resolves. |
+| `OnDefenseReplaced` | Called when this defender is replaced by another force (not defeated). |
+| `GetDefendingPawns` | Returns pawns for a manual battle, or null to generate from force points. Implementations should remove pawns from their source before returning. |
+| `ReturnDefendingPawns` | Called after a manual battle ends to return surviving pawns (already despawned from the battle map). |
+
+---
+
+### IMilitaryTabEntry
+
+**Registry**: `MilitaryTabRegistry`
+**Purpose**: Display external entries in Empire's military tab alongside settlements.
+
+Entries appear as simplified cards showing name, military level, status, and an auto-defend toggle.
+
+```csharp
+public interface IMilitaryTabEntry
+{
+    WorldObject WorldObject { get; }
+    string Name { get; }
+    int MilitaryLevel { get; }
+    bool AutoDefend { get; set; }
+    bool IsUnderAttack { get; }
+    bool IsBusy { get; }
+    string StatusLabel { get; }
+    Color AccentColor { get; }
+}
+```
+
+| Property | Description |
+|----------|-------------|
+| `WorldObject` | The world object this entry represents. |
+| `Name` | Display name in the military tab. |
+| `MilitaryLevel` | Military level shown on the card. |
+| `AutoDefend` | Whether auto-defend is enabled. Toggled by the player via the UI. |
+| `IsUnderAttack` | Whether this entry is currently under attack. |
+| `IsBusy` | Whether this entry is currently busy with a military operation. |
+| `StatusLabel` | Status text shown on the card (e.g., "Idle", "Defending"). |
+| `AccentColor` | UI accent color for the card. |
+
+---
+
 ## Comp-Based Interfaces
 
 These interfaces are implemented on `WorldObjectComp` classes attached to `WorldSettlementFC`. They are discovered by iterating `settlement.AllComps` — no registry needed. See [Settlement Comps](worldobject-comps.md) for how to attach a comp.
@@ -296,6 +400,41 @@ See [Stat System — Resource Production Formula](stat-system.md#resource-produc
 
 ---
 
+### ITitheBudgetModifier
+
+**Purpose**: Inject external tithe budget into a settlement's resource production. The additional budget increases how many (or how valuable) tithe items are generated, without penalizing the settlement's `actualIncome` for externally-sourced goods.
+
+```csharp
+public interface ITitheBudgetModifier
+{
+    double GetExternalTitheBudget(ResourceFC resource);
+    string GetExternalTitheBudgetDesc(ResourceFC resource);
+}
+```
+
+| Method | Description | No-op return |
+|--------|-------------|-------------|
+| `GetExternalTitheBudget` | Returns additional tithe budget (in silver value) for the given resource. | `0` |
+| `GetExternalTitheBudgetDesc` | Tooltip description for the tithe budget breakdown. | `null` or `""` |
+
+Must be implemented by a `WorldObjectComp` attached to the settlement. Queried during tithe budget calculation via `ResourceFC.externalTitheBudget`.
+
+**Caching**: Results are cached per settlement. Automatically invalidated after lifecycle events. For changes outside lifecycle callbacks, call `settlement.InvalidateStatCache()`.
+
+---
+
+## Extension-Based Interfaces
+
+### IBuildingDetailSection
+
+**Purpose**: Add custom sections to the building detail panel in the building construction window.
+
+This is an interface implemented on a `DefModExtension` attached to a `BuildingFCDef`. The window discovers implementors via `def.modExtensions.OfType<IBuildingDetailSection>()`. Sections render between the Modifiers block and the Settlement Impact block.
+
+See [DefModExtensions — IBuildingDetailSection](def-mod-extensions.md#ibuildingdetailsection) for the full interface and usage.
+
+---
+
 ## Registry API Summary
 
 All registries share the same API:
@@ -323,5 +462,8 @@ IReadOnlyList<T> items = MyRegistry.Items;  // property name varies
 | `SquadAssignmentRegistry` | (none) | No |
 | `ThreatScalingRegistry` | `.Contributors` | No |
 | `SilverPaymentRegistry` | `.Modifiers` | No |
+| `RaidTargetRegistry` | `.Targets` | No |
+| `AutoDefenderRegistry` | `.Defenders` | No |
+| `MilitaryTabRegistry` | `.Entries` | No |
 | `MainTableRegistry` | `.Tabs` | Yes |
 | `BuildingFilterRegistry` | `.Filters` | Yes |
