@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using Verse;
+using FactionColonies.util;
 
 namespace FactionColonies
 {
@@ -26,6 +27,7 @@ namespace FactionColonies
         public Message msg = null;
         public Letter let = null;
         public bool isDelayed = false;
+        public TaxDeliveryMode deliveryMode;
 
         //Military Force stuff
         public militaryForce militaryForceAttacking;
@@ -101,6 +103,7 @@ namespace FactionColonies
             Scribe_Deep.Look(ref msg, "msg");
             Scribe_Deep.Look(ref let, "let");
             Scribe_Values.Look(ref isDelayed, "isDelayed", false);
+            Scribe_Values.Look(ref deliveryMode, "deliveryMode");
 
             //Military stuff
             Scribe_Deep.Look(ref militaryForceAttacking, "militaryForceAttacking");

@@ -212,8 +212,10 @@ namespace FactionColonies.util
 
                     if (deliveryPawn == null)
                     {
-                        LogUtil.Error("Could not generate any pawn for delivery, skipping item");
-                        evt.goods.RemoveAt(0); // Remove the item we can't deliver
+                        LogUtil.Error("Could not generate any pawn for delivery, placing item on tax spot");
+                        Thing lostItem = evt.goods[0];
+                        evt.goods.RemoveAt(0);
+                        PaymentUtil.PlaceThing(lostItem);
                         continue;
                     }
 
@@ -225,9 +227,10 @@ namespace FactionColonies.util
                     }
                     else
                     {
-                        // Pawn can't carry this item (e.g. capacity issue) — skip to avoid infinite retry
-                        LogUtil.Warning($"Delivery pawn could not carry {next.LabelCap}, skipping item");
+                        // Pawn can't carry this item (e.g. capacity issue) — place on tax spot instead of losing it
+                        LogUtil.Warning($"Delivery pawn could not carry {next.LabelCap}, placing on tax spot");
                         evt.goods.Remove(next);
+                        PaymentUtil.PlaceThing(next);
                     }
 
                     pawns.Add(deliveryPawn);
@@ -235,7 +238,12 @@ namespace FactionColonies.util
                 catch (Exception ex)
                 {
                     LogUtil.Error($"Error generating pawn for delivery: {ex.Message}");
-                    evt.goods.RemoveAt(0); // Remove the problematic item
+                    if (evt.goods.Count > 0)
+                    {
+                        Thing lostItem = evt.goods[0];
+                        evt.goods.RemoveAt(0);
+                        PaymentUtil.PlaceThing(lostItem);
+                    }
                 }
             }
 
@@ -317,6 +325,12 @@ namespace FactionColonies.util
             // Combine all pawns
             pawns.AddRange(securityGuards);
 
+            if (pawns.Count == 0)
+            {
+                LogUtil.Warning("No caravan pawns could be generated. All items delivered via direct placement.");
+                return;
+            }
+
             PawnsArrivalModeWorker_EdgeWalkIn pawnsArrivalModeWorker = new PawnsArrivalModeWorker_EdgeWalkIn();
             IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, playerHomeMap);
             parms.spawnRotation = Rot4.FromAngleFlat((((Map)parms.target).Center - parms.spawnCenter).AngleFlat);
@@ -375,7 +389,9 @@ namespace FactionColonies.util
         {
             try
             {
-                TaxDeliveryMode taxDeliveryMode = TaxDeliveryModeForSettlement(canUseShuttle, evt.source);
+                TaxDeliveryMode taxDeliveryMode = evt.deliveryMode != TaxDeliveryMode.None
+                    ? evt.deliveryMode
+                    : TaxDeliveryModeForSettlement(canUseShuttle, evt.source);
 
                 switch (taxDeliveryMode)
                 {
@@ -411,6 +427,7 @@ namespace FactionColonies.util
             evt.let = evtParams.let;
             evt.msg = evtParams.msg;
             evt.isDelayed = evtParams.isDelayed;
+            evt.deliveryMode = evtParams.deliveryMode;
 
             FactionCache.FactionComp.AddEvent(evt);
         }

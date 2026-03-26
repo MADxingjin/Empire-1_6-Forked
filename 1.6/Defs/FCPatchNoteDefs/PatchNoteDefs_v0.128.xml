@@ -37,4 +37,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_1</defName>
+		<label>&quot;Ghost&quot; Caravan Fixes</label>
+		<description>Fixes a couple of issues that might cause &quot;Ghost&quot; caravans</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>1</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>If a delivery good can&apos;t be added to a pawn for some reason, then it is placed at the tax spot, instead of silently destroyed</li>
+		<li>Tax delivery method is locked in at event creation time, rather than delivery time</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>&quot;Ghost&quot; Caravan Fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

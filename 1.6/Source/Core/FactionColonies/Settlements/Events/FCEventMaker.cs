@@ -795,6 +795,11 @@ namespace FactionColonies
 
             tmp.location = faction.capitalLocation;
 
+            // Lock in delivery mode at creation time so changing settings mid-transit doesn't alter delivery
+            bool canUseShuttle = faction.settlements.FirstOrFallback(s => s.Tile == tmp.source)
+                ?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false;
+            tmp.deliveryMode = DeliveryEvent.TaxDeliveryModeForSettlement(canUseShuttle, tmp.source);
+
             // FIX: Handle case where source equals destination (local delivery)
             if (tmp.source == tmp.location)
             {
