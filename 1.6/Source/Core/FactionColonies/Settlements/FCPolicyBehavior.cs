@@ -10,14 +10,32 @@ namespace FactionColonies
     /// procedural logic (cooldowns, periodic spawns, conditional stat mods, custom UI).
     /// Pure-XML policies (e.g., Isolationist, Industrious) need no behavior class.
     ///
-    /// Created by FCPolicy constructor when def.behaviorClass is non-null.
+    /// Created by FCPolicyBehaviorExtension.CreateBehavior() when the def has a
+    /// behavior extension in its modExtensions list.
     /// Owns its own state directly.
     /// Serialized via Scribe_Deep so all state survives save/load.
+    /// XML-configurable parameters live on the FCPolicyBehaviorExtension subclass;
+    /// access them via Ext&lt;T&gt;().
     /// </summary>
     public abstract class FCPolicyBehavior : IExposable
     {
         /// <summary>Back-reference to the owning FCPolicy. Set after construction and after load.</summary>
         [Unsaved] public FCPolicy policy;
+
+        /// <summary>Reference to the extension that configured this behavior. Set after construction and after load.</summary>
+        [Unsaved] public FCPolicyBehaviorExtension extension;
+
+        /// <summary>Typed access to the extension for behaviors that have a parameterized extension subclass.</summary>
+        protected T Ext<T>() where T : FCPolicyBehaviorExtension
+        {
+            return (T)extension;
+        }
+
+        /// <summary>
+        /// Called after extension and policy are wired, both on fresh creation and after load.
+        /// Override to set [Unsaved] fields from extension parameters (e.g., CooldownAbility keys).
+        /// </summary>
+        public virtual void PostInitialize() { }
 
         // ── Lifecycle ────────────────────────────────────────────────
 

@@ -12,30 +12,31 @@ namespace FactionColonies
 
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            settlement.happiness = 60;
+            settlement.happiness = Ext<FCPolicyBehaviorExt_Egalitarian>().startingHappiness;
         }
 
         public override double ModifyStat(FCStatDef stat, double currentValue, WorldSettlementFC settlement)
         {
             if (settlement == null) return currentValue;
 
+            var ext = Ext<FCPolicyBehaviorExt_Egalitarian>();
             bool onTaxBreak = IsOnTaxBreak(settlement.Tile);
 
             // Happiness-based tax bonus
             if (stat == FCStatDefOf.taxBonusFlat)
             {
-                double bonus = Math.Floor(settlement.happiness / 10);
-                if (onTaxBreak) bonus -= 30;
+                double bonus = Math.Floor(settlement.happiness / ext.happinessDivisor);
+                if (onTaxBreak) bonus -= ext.taxBreakPenalty;
                 return currentValue + bonus;
             }
 
-            // Tax break bonuses: +2 happiness, +2 prosperity
+            // Tax break bonuses
             if (onTaxBreak)
             {
                 if (stat == FCStatDefOf.happinessGainedBase)
-                    return currentValue + 2;
+                    return currentValue + ext.taxBreakHappinessBonus;
                 if (stat == FCStatDefOf.prosperityBaseRecovery)
-                    return currentValue + 2;
+                    return currentValue + ext.taxBreakProsperityBonus;
             }
 
             return currentValue;
@@ -44,26 +45,28 @@ namespace FactionColonies
         public override string GetStatDescription(FCStatDef stat, WorldSettlementFC settlement)
         {
             if (settlement == null) return null;
+            var ext = Ext<FCPolicyBehaviorExt_Egalitarian>();
             bool onTaxBreak = IsOnTaxBreak(settlement.Tile);
 
             if (stat == FCStatDefOf.taxBonusFlat)
             {
-                double bonus = Math.Floor(settlement.happiness / 10);
-                if (onTaxBreak) bonus -= 30;
+                double bonus = Math.Floor(settlement.happiness / ext.happinessDivisor);
+                if (onTaxBreak) bonus -= ext.taxBreakPenalty;
                 return TextUtil.ColorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
             }
             if (onTaxBreak)
             {
                 if (stat == FCStatDefOf.happinessGainedBase)
-                    return TextUtil.ColorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
+                    return TextUtil.ColorizeAdditiveBonus(ext.taxBreakHappinessBonus) + " - " + policy.def.LabelCap + "\n";
                 if (stat == FCStatDefOf.prosperityBaseRecovery)
-                    return TextUtil.ColorizeAdditiveBonus(2) + " - " + policy.def.LabelCap + "\n";
+                    return TextUtil.ColorizeAdditiveBonus(ext.taxBreakProsperityBonus) + " - " + policy.def.LabelCap + "\n";
             }
             return null;
         }
 
         public override IEnumerable<FloatMenuOption> GetSettlementActions(FactionFC faction, WorldSettlementFC settlement)
         {
+            var ext = Ext<FCPolicyBehaviorExt_Egalitarian>();
             yield return new FloatMenuOption("FCGiveTaxBreak".Translate(), delegate
             {
                 if (!IsOnTaxBreak(settlement.Tile))
@@ -86,7 +89,7 @@ namespace FactionColonies
                     var data = GetOrCreate(settlement.Tile);
                     Messages.Message(
                         "FCAlreadyGivingTaxBreak".Translate(Math.Round(
-                            (data.startTick + GenDate.TicksPerDay * 10 -
+                            (data.startTick + GenDate.TicksPerDay * ext.taxBreakDurationDays -
                                 Find.TickManager.TicksGame) / (double)GenDate.TicksPerDay, 1)),
                         MessageTypeDefOf.RejectInput);
                 }
@@ -97,9 +100,10 @@ namespace FactionColonies
         {
             if (Find.TickManager.TicksGame % 250 != 0) return;
             int currentTick = Find.TickManager.TicksGame;
+            int durationTicks = GenDate.TicksPerDay * Ext<FCPolicyBehaviorExt_Egalitarian>().taxBreakDurationDays;
             foreach (var kvp in taxBreaks)
             {
-                if (kvp.Value.enabled && (kvp.Value.startTick + GenDate.TicksPerDay * 10) <= currentTick)
+                if (kvp.Value.enabled && (kvp.Value.startTick + durationTicks) <= currentTick)
                 {
                     kvp.Value.enabled = false;
                     faction.ReturnSettlementByLocation(kvp.Key)?.InvalidateStatCache();

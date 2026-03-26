@@ -15,11 +15,13 @@ namespace FactionColonies
             this.def = def;
             timeEnacted = Find.TickManager.TicksGame;
 
-            // Create behavior instance if this policy has procedural logic
-            if (def.behaviorClass != null)
+            // Create behavior instance if this policy has a behavior extension
+            FCPolicyBehaviorExtension ext = def.BehaviorExtension;
+            if (ext != null)
             {
-                behavior = (FCPolicyBehavior)Activator.CreateInstance(def.behaviorClass);
+                behavior = ext.CreateBehavior();
                 behavior.policy = this;
+                behavior.PostInitialize();
                 try
                 {
                     behavior.OnEnacted(faction);
@@ -46,7 +48,14 @@ namespace FactionColonies
             Scribe_Deep.Look(ref behavior, "behavior");
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit && behavior != null)
+            {
                 behavior.policy = this;
+                if (def?.BehaviorExtension != null)
+                {
+                    behavior.extension = def.BehaviorExtension;
+                    behavior.PostInitialize();
+                }
+            }
         }
     }
 }

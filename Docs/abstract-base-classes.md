@@ -7,25 +7,35 @@ Empire provides three abstract base classes that submods extend for custom proce
 ## FCPolicyBehavior
 
 **Purpose**: Add procedural logic to a policy — ticking, stat modification, lifecycle hooks, UI actions, abilities.
-**Instantiation**: Created per-policy when the `FCPolicyDef.behaviorClass` field is set. Automatically saved/loaded via `Scribe_Deep`.
+**Instantiation**: Created per-policy when the `FCPolicyDef` has a `FCPolicyBehaviorExtension` in its `modExtensions`. Automatically saved/loaded via `Scribe_Deep`.
 
 **Class**: `FactionColonies.FCPolicyBehavior` (implements `IExposable`)
 
 ### How to Use
 
-1. Create a class extending `FCPolicyBehavior`
-2. Override the virtual methods you need
-3. Set `behaviorClass` on your `FCPolicyDef`:
+1. Create a class extending `FCPolicyBehaviorExtension` with your XML-configurable parameters
+2. Create a class extending `FCPolicyBehavior` with your runtime logic
+3. Add the extension to your `FCPolicyDef`'s `modExtensions`:
 
 ```xml
 <FactionColonies.FCPolicyDef>
     <defName>MyPolicy</defName>
-    <behaviorClass>YourNamespace.MyPolicyBehavior</behaviorClass>
+    <modExtensions>
+        <li Class="YourNamespace.MyPolicyBehaviorExtension">
+            <behaviorClass>YourNamespace.MyPolicyBehavior</behaviorClass>
+            <myParam>42</myParam>
+        </li>
+    </modExtensions>
     <!-- ... -->
 </FactionColonies.FCPolicyDef>
 ```
 
-Your behavior instance has access to `this.policy` (the `FCPolicy` wrapper, which holds `policy.def`).
+Your behavior instance has access to:
+- `this.policy` — the `FCPolicy` wrapper (holds `policy.def`, `policy.timeEnacted`)
+- `this.extension` — the `FCPolicyBehaviorExtension` with XML parameters
+- `Ext<T>()` — typed access to your extension subclass (e.g. `Ext<MyPolicyBehaviorExtension>().myParam`)
+
+Override `PostInitialize()` to wire up `[Unsaved]` fields from extension parameters (called on both creation and load).
 
 ### Virtual Methods
 

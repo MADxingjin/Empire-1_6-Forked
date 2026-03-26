@@ -558,10 +558,13 @@ namespace FactionColonies
         {
             foreach (FCPolicyDef def in DefDatabase<FCPolicyDef>.AllDefsListForReading)
             {
-                if (def.behaviorClass != null)
+                FCPolicyBehaviorExtension ext = def.BehaviorExtension;
+                if (ext != null)
                 {
-                    TestAssert.IsTrue(typeof(FCPolicyBehavior).IsAssignableFrom(def.behaviorClass),
-                        $"{def.defName}: behaviorClass {def.behaviorClass.Name} must inherit FCPolicyBehavior");
+                    TestAssert.IsNotNull(ext.behaviorClass,
+                        $"{def.defName}: behavior extension has null behaviorClass");
+                    TestAssert.IsTrue(typeof(FCPolicyBehavior).IsAssignableFrom(ext.behaviorClass),
+                        $"{def.defName}: behaviorClass {ext.behaviorClass.Name} must inherit FCPolicyBehavior");
                 }
             }
         }

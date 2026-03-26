@@ -16,12 +16,12 @@ namespace FactionColonies
             if (job != MilitaryJobDefOf.DefendFriendlySettlement) return;
             if (settlement?.BuildingsComp == null) return;
 
+            var ext = Ext<FCPolicyBehaviorExt_ScorchedEarth>();
             List<int> damaged = new List<int>();
             for (int k = 0; k < 4; k++)
             {
                 if (!settlement.BuildingsComp.BuildingSlotIsBuilding(k)) continue;
-                // ~18% chance per occupied slot
-                if (Rand.RangeInclusive(0, 10) >= 9)
+                if (Rand.RangeInclusive(0, ext.damageRollMax) >= ext.damageThreshold)
                 {
                     damaged.Add(k);
                 }

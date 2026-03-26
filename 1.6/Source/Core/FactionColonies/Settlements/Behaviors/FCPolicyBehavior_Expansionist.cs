@@ -5,15 +5,20 @@ namespace FactionColonies
 {
     public class FCPolicyBehavior_Expansionist : FCPolicyBehavior
     {
-        private CooldownAbility feeReductionCooldown = new CooldownAbility
+        private CooldownAbility feeReductionCooldown = new CooldownAbility();
+
+        public override void PostInitialize()
         {
-            cooldownTicks = GenDate.TicksPerYear,
-            readyLetterKey = "FCActionAvailable"
-        };
+            var ext = Ext<FCPolicyBehaviorExt_Expansionist>();
+            feeReductionCooldown.readyLetterKey = ext.readyLetterKey;
+            if (feeReductionCooldown.cooldownTicks == 0)
+                feeReductionCooldown.cooldownTicks = ext.feeReductionCooldownTicks;
+        }
 
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            if (settlement.settlementLevel == 1)
+            int targetLevel = Ext<FCPolicyBehaviorExt_Expansionist>().autoUpgradeToLevel;
+            if (settlement.settlementLevel < targetLevel)
                 settlement.UpgradeSettlement();
         }
 
@@ -27,9 +32,9 @@ namespace FactionColonies
             if (!faction.settlements.Any() && !faction.settlementCaravansList.Any())
                 return 0;
 
-            // 50% discount when fee reduction is available
+            // Discount when fee reduction is available
             if (feeReductionCooldown.IsReady)
-                return currentValue * 0.5;
+                return currentValue * Ext<FCPolicyBehaviorExt_Expansionist>().discountMultiplier;
 
             return currentValue;
         }
@@ -42,7 +47,7 @@ namespace FactionColonies
             if (!faction.settlements.Any() && !faction.settlementCaravansList.Any())
                 return TextUtil.ColorizeMultiplierBonus(0) + " - " + policy.def.LabelCap + "\n";
             if (feeReductionCooldown.IsReady)
-                return TextUtil.ColorizeMultiplierBonus(0.5) + " - " + policy.def.LabelCap + "\n";
+                return TextUtil.ColorizeMultiplierBonus(Ext<FCPolicyBehaviorExt_Expansionist>().discountMultiplier) + " - " + policy.def.LabelCap + "\n";
             return null;
         }
 
@@ -60,11 +65,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             Scribe_Deep.Look(ref feeReductionCooldown, "feeReductionCooldown");
-            feeReductionCooldown = feeReductionCooldown ?? new CooldownAbility
-            {
-                cooldownTicks = GenDate.TicksPerYear,
-                readyLetterKey = "FCActionAvailable"
-            };
+            feeReductionCooldown = feeReductionCooldown ?? new CooldownAbility();
         }
 
         // Debug accessors

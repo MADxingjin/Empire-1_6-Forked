@@ -6,7 +6,8 @@ namespace FactionColonies
     {
         public override void OnEnacted(FactionFC faction)
         {
-            ResearchProjectDef researchDef = DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false);
+            string defName = Ext<FCPolicyBehaviorExt_RoadBuilders>().autoUnlockResearchDefName;
+            ResearchProjectDef researchDef = DefDatabase<ResearchProjectDef>.GetNamed(defName, false);
             if (researchDef == null)
                 LogUtil.Error("Road research returned Null");
             else if (Find.ResearchManager.GetProgress(researchDef) != researchDef.baseCost)

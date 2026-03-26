@@ -8,12 +8,16 @@ namespace FactionColonies
 {
     public class FCPolicyBehavior_Feudal : FCPolicyBehavior
     {
-        private CooldownAbility mercenaryCooldown = new CooldownAbility
+        private CooldownAbility mercenaryCooldown = new CooldownAbility();
+
+        public override void PostInitialize()
         {
-            cooldownTicks = GenDate.TicksPerSeason,
-            readyLetterKey = "FCActionAvailable",
-            cooldownMessageKey = "FCActionMercenaryOnCooldown"
-        };
+            var ext = Ext<FCPolicyBehaviorExt_Feudal>();
+            mercenaryCooldown.readyLetterKey = ext.readyLetterKey;
+            mercenaryCooldown.cooldownMessageKey = ext.cooldownMessageKey;
+            if (mercenaryCooldown.cooldownTicks == 0)
+                mercenaryCooldown.cooldownTicks = ext.mercenaryCooldownTicks;
+        }
 
         public override void Tick(FactionFC faction)
         {
@@ -30,7 +34,7 @@ namespace FactionColonies
                 mercenaryCooldown.Use();
 
                 PawnGenerationRequest request = FCPawnGenerator.WorkerOrMilitaryRequest();
-                request.ColonistRelationChanceFactor = 20f;
+                request.ColonistRelationChanceFactor = Ext<FCPolicyBehaviorExt_Feudal>().relationChanceFactor;
                 Pawn pawn = PawnGenerator.GeneratePawn(request);
 
                 IncidentParms parms = new IncidentParms
@@ -60,12 +64,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             Scribe_Deep.Look(ref mercenaryCooldown, "mercenaryCooldown");
-            mercenaryCooldown = mercenaryCooldown ?? new CooldownAbility
-            {
-                cooldownTicks = GenDate.TicksPerSeason,
-                readyLetterKey = "FCActionAvailable",
-                cooldownMessageKey = "FCActionMercenaryOnCooldown"
-            };
+            mercenaryCooldown = mercenaryCooldown ?? new CooldownAbility();
         }
 
         // Debug accessors

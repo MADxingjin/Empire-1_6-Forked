@@ -36,7 +36,13 @@
 		<category>Doctrine</category>
 		<upkeepSilver>150</upkeepSilver>
 		<enactDuration>300000</enactDuration>
-		<behaviorClass>FactionColonies.FCPolicyBehavior_ScorchedEarth</behaviorClass>
+		<modExtensions>
+			<li Class="FactionColonies.FCPolicyBehaviorExt_ScorchedEarth">
+				<behaviorClass>FactionColonies.FCPolicyBehavior_ScorchedEarth</behaviorClass>
+				<damageRollMax>10</damageRollMax>
+				<damageThreshold>9</damageThreshold>
+			</li>
+		</modExtensions>
 		<statModifiers>
 			<li><stat>buildingDestructionChance</stat><value>2.0</value></li>
 			<li><stat>militaryEfficiencyBonusDefending</stat><value>1.3</value></li>

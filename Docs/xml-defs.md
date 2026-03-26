@@ -272,7 +272,7 @@ Defines policies, traits, and edicts. The same def type serves multiple UI categ
 | `enabledMilitaryJobs` | `List<MilitaryJobDef>` | `[]` | Military jobs enabled by this policy. |
 | `preventBuildingDestruction` | `bool` | `false` | Prevents building demolition while active. |
 | `suppressMemberDeathPenalty` | `bool` | `false` | Suppresses happiness/loyalty penalty on member death. |
-| `behaviorClass` | `Type` | `null` | C# class for procedural logic. Must extend [FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior). |
+| `modExtensions` | `List<DefModExtension>` | `null` | Add an `FCPolicyBehaviorExtension` (or subclass) to attach procedural logic. See [FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior). |
 | `incompatiblePolicies` | `List<FCPolicyDef>` | `[]` | Mutually exclusive policies. |
 | `requiredPolicies` | `List<FCPolicyDef>` | `[]` | Policies/traits/edicts that must be active to enact this. Checked at enactment; dependent edicts auto-revoked if prerequisite is removed. |
 | `requirementMode` | `FCRequirementMode` | `All` | `All` = every listed policy required. `Any` = at least one required. |

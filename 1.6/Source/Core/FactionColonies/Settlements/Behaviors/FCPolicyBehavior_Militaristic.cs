@@ -7,38 +7,43 @@ namespace FactionColonies
 {
     public class FCPolicyBehavior_Militaristic : FCPolicyBehavior
     {
-        private CooldownAbility extraSquadCooldown = new CooldownAbility
+        private CooldownAbility extraSquadCooldown = new CooldownAbility();
+
+        public override void PostInitialize()
         {
-            cooldownTicks = GenDate.TicksPerDay * 5
-        };
+            var ext = Ext<FCPolicyBehaviorExt_Militaristic>();
+            if (extraSquadCooldown.cooldownTicks == 0)
+                extraSquadCooldown.cooldownTicks = GenDate.TicksPerDay * ext.extraSquadCooldownDays;
+        }
 
         public override void OnEnacted(FactionFC faction)
         {
             foreach (WorldSettlementFC settlement in faction.settlements)
             {
-                TryPlaceBarracks(settlement);
+                TryPlaceBuilding(settlement);
             }
         }
 
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            TryPlaceBarracks(settlement);
+            TryPlaceBuilding(settlement);
         }
 
-        private static void TryPlaceBarracks(WorldSettlementFC settlement)
+        private void TryPlaceBuilding(WorldSettlementFC settlement)
         {
             WorldObjectComp_SettlementBuildings buildingsComp = settlement.BuildingsComp;
             if (buildingsComp == null) return;
 
-            BuildingFCDef barracks = DefDatabase<BuildingFCDef>.GetNamed("barracks");
-            if (buildingsComp.HasBuilding(barracks)) return;
+            string defName = Ext<FCPolicyBehaviorExt_Militaristic>().autoPlaceBuildingDefName;
+            BuildingFCDef building = DefDatabase<BuildingFCDef>.GetNamed(defName);
+            if (buildingsComp.HasBuilding(building)) return;
 
             int slots = buildingsComp.NumBuildingSlots;
             for (int i = 0; i < slots; i++)
             {
                 if (buildingsComp.BuildingSlotIsEmpty(i))
                 {
-                    settlement.ConstructBuilding(barracks, i);
+                    settlement.ConstructBuilding(building, i);
                     return;
                 }
             }
@@ -48,7 +53,7 @@ namespace FactionColonies
         {
             if (building.statModifiers.Any(m => m.stat == FCStatDefOf.militaryBaseLevel
                                              || m.stat == FCStatDefOf.militaryCombatEfficiency))
-                return Math.Max(currentUpkeep - 100, 0);
+                return Math.Max(currentUpkeep - Ext<FCPolicyBehaviorExt_Militaristic>().militaryBuildingUpkeepDiscount, 0);
             return currentUpkeep;
         }
 
@@ -71,7 +76,8 @@ namespace FactionColonies
             if (milComp.militarySquad?.outfit == null)
                 yield break;
 
-            int cost = (int)Math.Round(milComp.militarySquad.outfit.UpdateEquipmentTotalCost() * .2);
+            var ext = Ext<FCPolicyBehaviorExt_Militaristic>();
+            int cost = (int)Math.Round(milComp.militarySquad.outfit.UpdateEquipmentTotalCost() * ext.extraSquadCostFraction);
             yield return new FloatMenuOption("FCDeploySecondarySquad".Translate(cost), delegate
             {
                 if (PaymentUtil.GetSilver() >= cost)
@@ -107,7 +113,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             Scribe_Deep.Look(ref extraSquadCooldown, "extraSquadCooldown");
-            extraSquadCooldown = extraSquadCooldown ?? new CooldownAbility { cooldownTicks = GenDate.TicksPerDay * 5 };
+            extraSquadCooldown = extraSquadCooldown ?? new CooldownAbility();
         }
 
         // Debug accessors

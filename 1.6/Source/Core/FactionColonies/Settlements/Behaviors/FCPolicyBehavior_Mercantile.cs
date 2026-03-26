@@ -47,16 +47,15 @@ namespace FactionColonies
 
         private void ScheduleNextCaravan(bool failCase = false)
         {
+            var ext = Ext<FCPolicyBehaviorExt_Mercantile>();
             float days;
             if (failCase)
             {
-                // If we're rescheduling due to a failure to spawn the caravan, then try
-                // again more quickly than we usually would.
-                days = 2;
+                days = ext.caravanRetryDays;
             }
             else
             {
-                days = Rand.RangeInclusive(3, 5);
+                days = Rand.RangeInclusive(ext.caravanMinDays, ext.caravanMaxDays);
             }
             nextCaravanTick = Find.TickManager.TicksGame + (int)(days * GenDate.TicksPerDay);
         }

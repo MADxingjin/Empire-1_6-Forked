@@ -6,10 +6,14 @@ namespace FactionColonies
 {
     public class FCPolicyBehavior_Pacifist : FCPolicyBehavior
     {
-        private CooldownAbility diplomatCooldown = new CooldownAbility
+        private CooldownAbility diplomatCooldown = new CooldownAbility();
+
+        public override void PostInitialize()
         {
-            cooldownTicks = GenDate.TicksPerDay * 5
-        };
+            var ext = Ext<FCPolicyBehaviorExt_Pacifist>();
+            if (diplomatCooldown.cooldownTicks == 0)
+                diplomatCooldown.cooldownTicks = GenDate.TicksPerDay * ext.diplomatCooldownDays;
+        }
 
         public override bool HandleDiplomaticEnvoy(FactionFC faction, Faction targetFaction)
         {
@@ -23,10 +27,11 @@ namespace FactionColonies
 
             diplomatCooldown.Use();
 
-            int random = Rand.Range(1, 10);
-            if (random > 5)
+            var ext = Ext<FCPolicyBehaviorExt_Pacifist>();
+            int random = Rand.Range(1, ext.successRollMax);
+            if (random > ext.successThreshold)
             {
-                int relationImprovement = Rand.Range(5, 15);
+                int relationImprovement = Rand.Range(ext.relationImprovementMin, ext.relationImprovementMax);
                 targetFaction.TryAffectGoodwillWith(Find.FactionManager.OfPlayer, relationImprovement);
                 Find.LetterStack.ReceiveLetter("FCRelationImproved".Translate(),
                     "FCRelationImprovedText".Translate(targetFaction.Name, relationImprovement),
@@ -44,7 +49,7 @@ namespace FactionColonies
         public override void ExposeData()
         {
             Scribe_Deep.Look(ref diplomatCooldown, "diplomatCooldown");
-            diplomatCooldown = diplomatCooldown ?? new CooldownAbility { cooldownTicks = GenDate.TicksPerDay * 5 };
+            diplomatCooldown = diplomatCooldown ?? new CooldownAbility();
         }
 
         // Debug accessors

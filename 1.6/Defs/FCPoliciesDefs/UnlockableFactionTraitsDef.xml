@@ -100,7 +100,12 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<behaviorClass>FactionColonies.FCPolicyBehavior_RoadBuilders</behaviorClass>
+		<modExtensions>
+			<li Class="FactionColonies.FCPolicyBehaviorExt_RoadBuilders">
+				<behaviorClass>FactionColonies.FCPolicyBehavior_RoadBuilders</behaviorClass>
+				<autoUnlockResearchDefName>FCRoadBuildingDirt</autoUnlockResearchDefName>
+			</li>
+		</modExtensions>
 		<enabledActions>
 			<li>BuildRoadsToAllies</li>
 		</enabledActions>
@@ -118,7 +123,14 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<behaviorClass>FactionColonies.FCPolicyBehavior_Mercantile</behaviorClass>
+		<modExtensions>
+			<li Class="FactionColonies.FCPolicyBehaviorExt_Mercantile">
+				<behaviorClass>FactionColonies.FCPolicyBehavior_Mercantile</behaviorClass>
+				<caravanMinDays>3</caravanMinDays>
+				<caravanMaxDays>5</caravanMaxDays>
+				<caravanRetryDays>2</caravanRetryDays>
+			</li>
+		</modExtensions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -133,7 +145,12 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<behaviorClass>FactionColonies.FCPolicyBehavior_Innovative</behaviorClass>
+		<modExtensions>
+			<li Class="FactionColonies.FCPolicyBehaviorExt_Innovative">
+				<behaviorClass>FactionColonies.FCPolicyBehavior_Innovative</behaviorClass>
+				<profitToResearchRate>0.05</profitToResearchRate>
+			</li>
+		</modExtensions>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -148,7 +165,12 @@
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
-		<behaviorClass>FactionColonies.FCPolicyBehavior_Lucky</behaviorClass>
+		<modExtensions>
+			<li Class="FactionColonies.FCPolicyBehaviorExt_Lucky">
+				<behaviorClass>FactionColonies.FCPolicyBehavior_Lucky</behaviorClass>
+				<rerollChance>0.2</rerollChance>
+			</li>
+		</modExtensions>
 	</FactionColonies.FCPolicyDef>
 
 </Defs>

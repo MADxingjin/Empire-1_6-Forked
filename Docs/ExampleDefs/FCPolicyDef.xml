@@ -85,11 +85,17 @@
 	<!-- If true, suppresses the happiness/loyalty penalty when faction members die. Default: false -->
 	<suppressMemberDeathPenalty>false</suppressMemberDeathPenalty>
 
-	<!-- ── Behavior Class ── -->
-	<!-- Optional C# class for policies with procedural logic (ticking, hooks, custom UI, abilities). -->
-	<!-- Must be a subclass of FCPolicyBehavior. Null/omitted for purely XML-driven policies. -->
+	<!-- ── Behavior Extension ── -->
+	<!-- Optional modExtension for policies with procedural logic (ticking, hooks, custom UI, abilities). -->
+	<!-- Subclass FCPolicyBehaviorExtension for XML-configurable parameters. -->
+	<!-- behaviorClass must be a subclass of FCPolicyBehavior. Omit modExtensions for purely XML-driven policies. -->
 	<!-- See existing behaviors (Militaristic, Pacifist, Feudal, etc.) for examples. -->
-	<behaviorClass>YourNamespace.YourPolicyBehavior</behaviorClass>
+	<modExtensions>
+		<li Class="YourNamespace.YourPolicyBehaviorExtension">
+			<behaviorClass>YourNamespace.YourPolicyBehavior</behaviorClass>
+			<!-- Add your XML-configurable parameters here -->
+		</li>
+	</modExtensions>
 
 	<!-- ── Incompatible Policies ── -->
 	<!-- Policies that cannot be active at the same time as this one (mutual exclusion in the UI). -->

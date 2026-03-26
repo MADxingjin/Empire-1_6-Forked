@@ -7,7 +7,7 @@ namespace FactionColonies
     {
         public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
         {
-            settlement.loyalty = 70;
+            settlement.loyalty = Ext<FCPolicyBehaviorExt_Authoritarian>().startingLoyalty;
         }
 
         public override IEnumerable<FloatMenuOption> GetSettlementActions(FactionFC faction, WorldSettlementFC settlement)

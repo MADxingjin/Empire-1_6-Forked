@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
@@ -39,9 +38,6 @@ namespace FactionColonies
         public List<MilitaryJobDef> enabledMilitaryJobs = new List<MilitaryJobDef>();
         public bool preventBuildingDestruction;
         public bool suppressMemberDeathPenalty;
-        // Optional behavior class for policies that need procedural logic.
-        // Must be a subclass of FCPolicyBehavior. Null for pure-XML policies.
-        public Type behaviorClass;
 
         // Policies/traits that are incompatible with this one (mutual exclusion in selection UI)
         public List<FCPolicyDef> incompatiblePolicies = new List<FCPolicyDef>();
@@ -54,6 +50,26 @@ namespace FactionColonies
         [Unsaved] private Texture2D resolvedIconDark;
         [Unsaved] private bool triedResolveLight;
         [Unsaved] private bool triedResolveDark;
+        [Unsaved] private FCPolicyBehaviorExtension _cachedBehaviorExt;
+        [Unsaved] private bool _triedResolveBehaviorExt;
+
+        /// <summary>
+        /// Returns the behavior extension on this def, or null if none.
+        /// </summary>
+        public FCPolicyBehaviorExtension BehaviorExtension
+        {
+            get
+            {
+                if (!_triedResolveBehaviorExt)
+                {
+                    _triedResolveBehaviorExt = true;
+                    _cachedBehaviorExt = this.GetModExtension<FCPolicyBehaviorExtension>();
+                }
+                return _cachedBehaviorExt;
+            }
+        }
+
+        public bool HasBehavior => BehaviorExtension != null;
 
         public Texture2D IconLight
         {
@@ -197,8 +213,6 @@ namespace FactionColonies
                 yield return err;
             foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
                 yield return err;
-            if (behaviorClass != null && !typeof(FCPolicyBehavior).IsAssignableFrom(behaviorClass))
-                yield return defName + ": behaviorClass " + behaviorClass.Name + " is not a subclass of FCPolicyBehavior";
             if (!requiredPolicies.NullOrEmpty())
             {
                 for (int i = 0; i < requiredPolicies.Count; i++)
