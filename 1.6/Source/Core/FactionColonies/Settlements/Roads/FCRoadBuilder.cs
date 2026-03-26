@@ -90,6 +90,13 @@ namespace FactionColonies
                     roadQueue.nextRoadTick = Find.TickManager.TicksGame + GenDate.TicksPerDay * roadQueue.daysBetweenTicks;
                 }
 
+                // Ensure settlement lists are populated before processing paths.
+                if (roadQueue.shouldUpdateSettlementsToProcess)
+                {
+                    roadQueue.UpdateSettlementsToProcess();
+                    roadQueue.shouldUpdateSettlementsToProcess = false;
+                }
+
                 if (!pathsFullyProcessed)
                 {
                     for (int i = 0; i < 5; i++)
@@ -175,6 +182,7 @@ namespace FactionColonies
                 this.roadDef = def;
 
                 roadQueue.RoadDef = def;
+                FlagUpdateRoadQueues();
             }
             else
             {
