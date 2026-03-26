@@ -1703,16 +1703,7 @@ namespace FactionColonies
                 Rect setSquadRect = new Rect(bx, btnY, btnW, btnH);
                 if (UIUtil.ButtonFlat(setSquadRect, "FCMilitaryTableSetSquad".Translate(), disabled: noSquads, highlighted: isHighlighted))
                 {
-                    if (militaryUtil.squads == null) militaryUtil.ResetSquads();
-
-                    List<FloatMenuOption> squads = new List<FloatMenuOption>();
-                    squads.AddRange(militaryUtil.squads.Select(squad => new FloatMenuOption(
-                        squad.name + " - " + "Cost".Translate() + ": " + squad.GetEquipmentTotalCost(),
-                        delegate { militaryUtil.AttemptToAssignSquad(settlement, squad); })));
-
-                    if (!squads.Any())
-                        squads.Add(new FloatMenuOption("FCNoSquadAvailable".Translate(), null));
-
+                    List<FloatMenuOption> squads = militaryUtil.BuildSquadAssignmentOptions(settlement);
                     Find.WindowStack.Add(new Searchable_FloatMenu(squads));
                 }
                 TooltipHandler.TipRegion(setSquadRect, "FCMilBtnSetSquadTip".Translate());

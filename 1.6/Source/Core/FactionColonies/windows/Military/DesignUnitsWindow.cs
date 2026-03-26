@@ -144,8 +144,6 @@ namespace FactionColonies
                 Rect iconRect = new Rect(row.x + 2f, row.y + 3f, IconSize, IconSize);
                 if (unit.HasWeapon)
                     Widgets.DefIcon(iconRect, unit.weapons[0].thing, unit.weapons[0].stuff);
-                UnitOverlayRegistry.InvokeDrawOverlay(iconRect, unit, null);
-
                 // Name label
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;

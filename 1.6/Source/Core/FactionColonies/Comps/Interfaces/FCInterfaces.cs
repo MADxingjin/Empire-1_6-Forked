@@ -202,8 +202,8 @@ namespace FactionColonies
     {
         /// <summary>
         /// Returns a weight multiplier for <paramref name="settlement"/> when attacked by <paramref name="attackingFaction"/>.
-        /// Return 1.0 for no effect. Return > 1.0 to make the settlement more likely to be targeted.
-        /// Return < 1.0 (but > 0) to make it less likely. Return 0 to completely exclude it.
+        /// Return 1.0 for no effect. Return &gt; 1.0 to make the settlement more likely to be targeted.
+        /// Return &lt; 1.0 (but &gt; 0) to make it less likely. Return 0 to completely exclude it.
         /// </summary>
         float GetSettlementRaidWeight(WorldSettlementFC settlement, RimWorld.Faction attackingFaction);
     }
@@ -273,21 +273,6 @@ namespace FactionColonies
         string StatusLabel { get; }
         Color AccentColor { get; }
     }
-    /// <summary>
-    /// Allows submods to draw overlays on unit icons in the military UI (e.g., veterancy rank badges).
-    /// Register implementations via <see cref="UnitOverlayRegistry"/>.
-    /// </summary>
-    public interface IUnitOverlayRenderer
-    {
-        /// <summary>
-        /// Draw an overlay on top of a rendered unit icon.
-        /// </summary>
-        /// <param name="unitRect">The Rect of the rendered unit icon.</param>
-        /// <param name="unit">The unit template (may be null if rendering a deployed merc without template context).</param>
-        /// <param name="merc">The mercenary instance (may be null in design-time contexts).</param>
-        void DrawOverlay(Rect unitRect, MilUnitFC unit, Mercenary merc);
-    }
-
     /// <summary>
     /// Allows DefModExtensions on <see cref="BuildingFCDef"/> to contribute additional sections
     /// to the building detail panel in FCBuildingWindow. Sections render between the Modifiers

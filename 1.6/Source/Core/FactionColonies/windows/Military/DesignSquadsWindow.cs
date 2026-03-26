@@ -335,7 +335,6 @@ namespace FactionColonies
             {
                 Widgets.ButtonImage(pawnRect, unit.animal.race.uiIcon);
             }
-            UnitOverlayRegistry.InvokeDrawOverlay(pawnRect, unit, null);
             x = pawnRect.xMax + 4f;
 
             // Weapon icon

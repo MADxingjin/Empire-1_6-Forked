@@ -80,86 +80,96 @@ namespace FactionColonies
 
         public void CheckMilitaryUtilForErrors()
         {
-            try
-            {
-                if (blankUnit == null)
-                {
-                    blankUnit = new MilUnitFC(true);
-                }
+            if (blankUnit is null)
+                blankUnit = new MilUnitFC(true);
+            if (squads is null) return;
 
-                if (squads == null) return;
-
-    
-                foreach (MilSquadFC squad in squads)
-                {
-                    if (squad?.units == null) continue;
-
-                    bool changed = false;
-                    for (int count = 0; count < MilSquadFC.MaxSquadSize && count < squad.units.Count; count++)
-                    {
-                        if (squad.units[count] != null &&
-                            (units.Contains(squad.units[count]) || squad.units[count] == blankUnit)) continue;
-                        squad.units[count] = blankUnit;
-                        changed = true;
-                    }
-
-                    if (!changed) continue;
-                    foreach (var squadMerc in mercenarySquads.Where(squadMerc =>
-                        squadMerc.outfit != null && squadMerc.outfit == squad))
-                    {
-                        squadMerc.OutfitSquad(squad);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogUtil.Error($"Error in CheckMilitaryUtilForErrors: {ex.Message}");
-                return;
-            }
+            try { ValidateTemplateUnits(); }
+            catch (Exception ex) { LogUtil.Error($"Error in ValidateTemplateUnits: {ex}"); }
 
             try
             {
-                foreach (MercenarySquadFC squad in mercenarySquads)
-                {
-                    if (squad.outfit == null || squads.Contains(squad.outfit) == false)
-                    {
-                        squad.StripSquad();
-                        squad.outfit = null;
-                    }
-                    else
-                    {
-                        int settlementMilLevel = 0;
-                        if (squad.settlement != null)
-                            settlementMilLevel = squad.settlement.settlementMilitaryLevel;
-                        if (squad.outfit == null || !(squad.outfit.GetEquipmentTotalCost() >
-                                                      CalculateSquadBudget(settlementMilLevel)))
-                            continue;
-                        if (squad.settlement != null)
-                        {
-                            Messages.Message(
-                                "The max allowed equipment cost for the squad assigned to " + squad.settlement.Name +
-                                " has been exceeded. Thus, the settlement's squad has been unassigned.",
-                                MessageTypeDefOf.RejectInput);
-                        }
-
-                        squad.outfit = null;
-                        squad.StripSquad();
-                    }
-                }
-
-                if (tickChanged >= GETLatestChange) return;
-                foreach (var merc in mercenarySquads.Where(merc => merc.outfit != null))
-                {
-                    merc.OutfitSquad(merc.outfit);
-                }
-
-                ChangeTick();
-                RebuildMercenaryPawnSet();
+                ValidateDeployedSquadOutfits();
+                PropagateTemplateChanges();
             }
-            catch (Exception ex)
+            catch (Exception ex) { LogUtil.Error($"Error in squad reconciliation: {ex}"); }
+        }
+
+        /// <summary>
+        /// Validates that all unit references in squad templates are still valid.
+        /// Replaces invalid refs with blankUnit and re-outfits affected deployed squads.
+        /// </summary>
+        public void ValidateTemplateUnits()
+        {
+            foreach (MilSquadFC squad in squads)
             {
-                LogUtil.Error($"Error in CheckMilitaryUtilForErrors (squad reconciliation): {ex}");
+                if (squad?.units is null) continue;
+
+                bool changed = false;
+                for (int count = 0; count < MilSquadFC.MaxSquadSize && count < squad.units.Count; count++)
+                {
+                    if (squad.units[count] != null &&
+                        (units.Contains(squad.units[count]) || squad.units[count] == blankUnit)) continue;
+                    squad.units[count] = blankUnit;
+                    changed = true;
+                }
+
+                if (!changed) continue;
+                foreach (var squadMerc in mercenarySquads.Where(squadMerc =>
+                    squadMerc.outfit != null && squadMerc.outfit == squad))
+                {
+                    squadMerc.OutfitSquad(squad);
+                }
             }
+        }
+
+        /// <summary>
+        /// Strips deployed squads whose outfit template was deleted or exceeds the settlement budget.
+        /// </summary>
+        public void ValidateDeployedSquadOutfits()
+        {
+            foreach (MercenarySquadFC squad in mercenarySquads)
+            {
+                if (squad.outfit is null || !squads.Contains(squad.outfit))
+                {
+                    squad.StripSquad();
+                    squad.outfit = null;
+                }
+                else
+                {
+                    int settlementMilLevel = 0;
+                    if (squad.settlement != null)
+                        settlementMilLevel = squad.settlement.settlementMilitaryLevel;
+                    if (squad.outfit is null || !(squad.outfit.GetEquipmentTotalCost() >
+                                                  CalculateSquadBudget(settlementMilLevel)))
+                        continue;
+                    if (squad.settlement != null)
+                    {
+                        Messages.Message(
+                            "The max allowed equipment cost for the squad assigned to " + squad.settlement.Name +
+                            " has been exceeded. Thus, the settlement's squad has been unassigned.",
+                            MessageTypeDefOf.RejectInput);
+                    }
+
+                    squad.outfit = null;
+                    squad.StripSquad();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Re-outfits all deployed squads if any template has changed since the last check.
+        /// </summary>
+        public void PropagateTemplateChanges()
+        {
+            if (tickChanged >= GETLatestChange) return;
+            foreach (var merc in mercenarySquads.Where(merc => merc.outfit != null))
+            {
+                merc.OutfitSquad(merc.outfit);
+            }
+
+            ChangeTick();
+            RebuildMercenaryPawnSet();
         }
 
         public int GETLatestChange
@@ -326,6 +336,25 @@ namespace FactionColonies
             {
                 unit.UpdateEquipmentTotalCost();
             }
+        }
+
+        public List<FloatMenuOption> BuildSquadAssignmentOptions(WorldSettlementFC settlement)
+        {
+            if (squads is null) ResetSquads();
+
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            foreach (MilSquadFC squad in squads)
+            {
+                MilSquadFC captured = squad;
+                options.Add(new FloatMenuOption(
+                    squad.name + " - " + "Cost".Translate() + ": " + squad.GetEquipmentTotalCost(),
+                    delegate { AttemptToAssignSquad(settlement, captured); }));
+            }
+
+            if (options.Count == 0)
+                options.Add(new FloatMenuOption("FCNoSquadAvailable".Translate(), null));
+
+            return options;
         }
 
         public void AttemptToAssignSquad(WorldSettlementFC settlement, MilSquadFC squad)
