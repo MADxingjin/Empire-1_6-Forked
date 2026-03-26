@@ -46,6 +46,7 @@ namespace FactionColonies
             SquadAssignmentRegistry.ClearAll();
             ThreatScalingRegistry.ClearAll();
             SilverPaymentRegistry.ClearAll();
+            RaidWeightRegistry.ClearAll();
 
             SettlementTypeExtension_Orbital.InvalidateCache();
             FactionDefDescriptionPatch.Invalidate();
@@ -72,7 +73,7 @@ namespace FactionColonies
     /// Page_SelectScenario.BeginScenarioConfiguration(). This ensures Empire's
     /// caches are invalidated when starting a new game or loading a save, not
     /// just on Game.Dispose(), which doesn't fire when backing out of the new
-    /// game flow through pages.
+    /// game flow.
     /// </summary>
     [HarmonyPatch(typeof(Game), nameof(Game.ClearCaches))]
     class ClearCachesPatch
