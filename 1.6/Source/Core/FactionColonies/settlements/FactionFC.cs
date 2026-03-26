@@ -469,6 +469,11 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
+                // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
+                // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
+                // after World.FinalizeInit already registered us during world generation)
+                LifecycleRegistry.Register(this);
+
                 roadBuilder.FirstTick();
 
                 if (!(faction is null))

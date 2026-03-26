@@ -148,4 +148,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_4</defName>
+		<label>Policy Fixes</label>
+		<description>Fixes an issue where some policies wouldn&apos;t properly apply until restarting the game.</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>4</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>Bugfix: Militaristic and Expansionist policies wouldn&apos;t correctly apply their bonuses until restarting the game</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Policy Fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
