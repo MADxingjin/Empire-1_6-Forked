@@ -27,6 +27,7 @@
 	<ReasonDefendingSquad>The squad is currently defending a settlement</ReasonDefendingSquad>
 	<importUnit>Import Unit</importUnit>
 	<clearUnitSlot>Clear Unit Slot</clearUnitSlot>
+	<FCDegraded>Degraded</FCDegraded>
 
 	<!-- Outfit Slots -->
 	<fcLabelHead>Head</fcLabelHead>

@@ -65,16 +65,18 @@ namespace FactionColonies
                 if (alternate)
                     Widgets.DrawAltRect(elemRect);
 
+                string displayName = name;
                 bool degraded = IsEntryDegraded(name);
                 if (degraded)
                 {
-                    GUI.color = Color.yellow;
+                    GUI.color = Color.red;
                     string tooltip = GetDegradedTooltip(name);
                     if (tooltip != null)
                         TooltipHandler.TipRegion(elemRect, tooltip);
+                    displayName = $"{name} ({"FCDegraded".Translate()})";
                 }
 
-                Widgets.Label(nameRect, name);
+                Widgets.Label(nameRect, displayName);
 
                 if (degraded)
                     GUI.color = Color.white;

@@ -220,4 +220,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_7</defName>
+		<label>Minor Fixes</label>
+		<description>Handful of minor fixes for unit importing and xenotype handling.</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>7</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Detect when an imported unit encountered errors during loading, and mark it in the Import Units UI</li>
+		<li>Patch out references to &quot;Xenotypes&quot; in the Manage Units window when Biotech isn&apos;t active</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor Fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -248,10 +248,17 @@ namespace FactionColonies
             // Race / Xeno info line
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
-            string raceName = selectedUnit.pawnKind?.race?.label?.CapitalizeFirst() ?? "Unknown";
-            string xenoName = selectedUnit.GetXenotypeLabel();
             Rect infoRect = new Rect(rect.x, highlightBar.yMax + margin, rect.width, 20f);
-            Widgets.Label(infoRect, "Race".Translate() + ": " + raceName + "   ·   " + "Xenotype".Translate() + ": " + xenoName);
+            string raceName = selectedUnit.pawnKind?.race?.label?.CapitalizeFirst() ?? "Unknown";
+            if (ModsConfig.BiotechActive)
+            {
+                string xenoName = selectedUnit.GetXenotypeLabel();
+                Widgets.Label(infoRect, "Race".Translate() + ": " + raceName + "   ·   " + "Xenotype".Translate() + ": " + xenoName);
+            }
+            else
+            {
+                Widgets.Label(infoRect, "Race".Translate() + ": " + raceName);
+            }
 
             // Equipment cost
             float totalCost = (float)selectedUnit.getTotalCost;
@@ -287,12 +294,15 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            if (Widgets.ButtonText(new Rect(rect.x, rect.y, btnW, btnH), "changeUnitRaceButton".Translate(), true, true))
+            float raceButtonWidth = ModsConfig.BiotechActive ? btnW : (2 * btnW) + gap;
+
+            if (Widgets.ButtonText(new Rect(rect.x, rect.y, raceButtonWidth, btnH), "changeUnitRaceButton".Translate(), true, true))
             {
                 Find.WindowStack.Add(new FCWindow_RacePicker(selectedUnit, faction));
             }
 
-            if (Widgets.ButtonText(new Rect(rect.x + btnW + gap, rect.y, btnW, btnH), "changeUnitXenoButton".Translate(), true, true))
+            if (ModsConfig.BiotechActive &&
+                Widgets.ButtonText(new Rect(rect.x + btnW + gap, rect.y, btnW, btnH), "changeUnitXenoButton".Translate(), true, true))
             {
                 Find.WindowStack.Add(new FCWindow_XenoPicker(selectedUnit));
             }
