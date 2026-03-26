@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationAdd" MayRequire="Ludeon.RimWorld.Biotech">
+		<xpath>Defs/FactionColonies.ResourceTypeDef[defName="RTD_Medicine"]/thingAllowList</xpath>
+		<value>
+			<li>
+				<thingDef>DeathrestCapacitySerum</thingDef>
+				<researchProjectDefs>
+					<li>Deathrest</li>
+				</researchProjectDefs>
+			</li>
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationAdd" MayRequire="Ludeon.RimWorld.Odyssey">
+		<xpath>Defs/FactionColonies.ResourceTypeDef[defName="RTD_Medicine"]/thingAllowList</xpath>
+		<value>
+			<li>
+				<thingDef>SentienceCatalyst</thingDef>
+				<minTechLevel>Spacer</minTechLevel>
+			</li>
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationAdd" MayRequire="Ludeon.RimWorld.Odyssey">
+		<xpath>Defs/FactionColonies.ResourceTypeDef[defName="RTD_Mining"]/thingBlockList</xpath>
+		<value>
+			<li>BlocksVacstone</li>
+		</value>
+	</Operation>
+</Patch>

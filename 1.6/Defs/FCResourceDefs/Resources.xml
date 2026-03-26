@@ -207,7 +207,6 @@
 	</thingAllowList>
 	<thingBlockList>
 		<li>Silver</li>
-		<li>BlocksVacstone</li>
 	</thingBlockList>
 	<thingCategoryAllowList>
 		<li>
@@ -254,18 +253,7 @@
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Medicine_ProductionAdditive</productionAdditiveStat>
 	<productionMultiplierStat>RTD_Medicine_ProductionMultiplier</productionMultiplierStat>
-	<thingAllowList>
-		<li>
-			<thingDef>DeathrestCapacitySerum</thingDef>
-			<researchProjectDefs>
-				<li>Deathrest</li>
-			</researchProjectDefs>
-		</li>
-		<li>
-			<thingDef>SentienceCatalyst</thingDef>
-			<minTechLevel>Spacer</minTechLevel>
-		</li>
-	</thingAllowList>
+	<thingAllowList />
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Medicine</thingCategoryDef>

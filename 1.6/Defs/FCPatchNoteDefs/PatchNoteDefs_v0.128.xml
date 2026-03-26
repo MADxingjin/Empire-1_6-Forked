@@ -74,4 +74,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_2</defName>
+		<label>Resource-DLC Patch</label>
+		<description>Fixes a DLC-access issue for some resources.</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>2</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>Move the tech-gates on Deathrest capacity serum and Sentience catalyst off of the base RTD_Medicine def and into DLC-gated XML patches</li>
+		<li>Move BlocksVacstone off of the base RTD_Mining and into a DLC-gated xml patch</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Resource-DLC Patch</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
