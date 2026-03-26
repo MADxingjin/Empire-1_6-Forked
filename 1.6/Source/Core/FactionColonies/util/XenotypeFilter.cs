@@ -513,6 +513,11 @@ namespace FactionColonies.util
 
         private void InitializeXenotypes(bool initAllTypes = true)
         {
+            if (!ModsConfig.BiotechActive)
+            {
+                LogUtil.Message("Biotech not present. Bailing out of InitializeXenotypes");
+                return;
+            }
             LogUtil.Message("Initializing Xenotype Weights in XenotypeFilter...");
             InitializeXenotypeWeights(initAllTypes);
             InitializeCustomXenotypeWeights(initAllTypes);

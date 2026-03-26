@@ -111,4 +111,41 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_3</defName>
+		<label>Biotech fixes</label>
+		<description>A couple of fixes to let Empire gracefully handle not having Biotech.</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>3</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>Gate xenotype initialization behind a check for the Biotech DLC</li>
+		<li>Don&apos;t render the xenotype filter button if Biotech is disabled/not intalled, and there is only one humanlike race</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Biotech fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

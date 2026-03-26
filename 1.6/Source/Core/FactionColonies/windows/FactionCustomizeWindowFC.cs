@@ -128,10 +128,19 @@ namespace FactionColonies
             y += colorsRowHeight + cardGap;
 
             // 4. Xenotypes + Policies Row
-            Rect xenoCard = new Rect(inRect.x, y, halfWidth, bottomRowHeight);
-            Rect policyCard = new Rect(inRect.x + halfWidth + cardGap, y, halfWidth, bottomRowHeight);
-            DrawXenotypesCard(xenoCard);
-            DrawPoliciesCard(policyCard);
+            bool showXenoCard = ModsConfig.BiotechActive || FactionCache.HumanlikeRacesCount > 1;
+            if (showXenoCard)
+            {
+                Rect xenoCard = new Rect(inRect.x, y, halfWidth, bottomRowHeight);
+                Rect policyCard = new Rect(inRect.x + halfWidth + cardGap, y, halfWidth, bottomRowHeight);
+                DrawXenotypesCard(xenoCard);
+                DrawPoliciesCard(policyCard);
+            }
+            else
+            {
+                Rect policyCard = new Rect(inRect.x, y, inRect.width, bottomRowHeight);
+                DrawPoliciesCard(policyCard);
+            }
             y += bottomRowHeight + cardGap;
 
             // 5. Confirm Button
