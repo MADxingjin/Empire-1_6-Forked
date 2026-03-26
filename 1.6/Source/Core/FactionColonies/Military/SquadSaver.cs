@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using Verse;
 
@@ -103,7 +104,7 @@ namespace FactionColonies
                 }
                 catch (Exception e)
                 {
-                    LogUtil.Error($"Failed to load squad at path {path} due to exception: {e.Message}");
+                    LogUtil.Error($"Failed to load unit at path {path} due to exception: {e.Message}");
                 }
                 finally
                 {
@@ -185,6 +186,10 @@ namespace FactionColonies
         public string customXenotypeName;
         public ThingDef preferredAmmo;
 
+        // Set during load when defs fail to resolve (e.g. mod removed). Not serialized.
+        public bool isDegraded;
+        public List<string> missingDefs;
+
         public SavedUnitFC() { }
 
         public SavedUnitFC(MilUnitFC unit)
@@ -205,6 +210,14 @@ namespace FactionColonies
             if (pawnKind != null && FactionCache.FactionComp.xenotypeFilter.GetRaceWeight(pawnKind.race) <= 0)
             {
                 resolvedKind = FactionCache.PlayerColonyFaction.RandomPawnKind();
+            }
+
+            if (resolvedKind == null)
+            {
+                resolvedKind = FactionCache.PlayerColonyFaction?.RandomPawnKind()
+                    ?? PawnKindDefOf.Colonist;
+                LogUtil.Warning($"Saved unit '{name}' has no pawnKind (mod removed?), "
+                    + $"using {resolvedKind.defName}");
             }
 
             MilUnitFC unit = new MilUnitFC(false)
@@ -235,6 +248,10 @@ namespace FactionColonies
 
         public void ExposeData()
         {
+            // Capture XML parent before any collection loading can shift the cursor.
+            XmlNode xmlParent = (Scribe.mode == LoadSaveMode.LoadingVars)
+                ? Scribe.loader.curXmlParent : null;
+
             Scribe_Values.Look(ref name, "name");
             Scribe_Defs.Look(ref animal, "animal");
             Scribe_Defs.Look(ref pawnKind, "pawnKind");
@@ -243,6 +260,46 @@ namespace FactionColonies
             Scribe_Defs.Look(ref preferredAmmo, "preferredAmmo");
             Scribe_Collections.Look(ref weapons, "weapons", LookMode.Deep);
             Scribe_Collections.Look(ref apparel, "apparel", LookMode.Deep);
+
+            if (xmlParent != null)
+            {
+                ValidateAfterLoad(xmlParent);
+            }
+        }
+
+        private void ValidateAfterLoad(XmlNode xmlParent)
+        {
+            List<string> missing = new List<string>();
+
+            CheckDef(xmlParent, "pawnKind", pawnKind, missing);
+            CheckDef(xmlParent, "animal", animal, missing);
+            CheckDef(xmlParent, "xenotype", xenotype, missing);
+            CheckDef(xmlParent, "preferredAmmo", preferredAmmo, missing);
+
+            int nullWeapons = weapons?.Count(w => w.thing == null) ?? 0;
+            int nullApparel = apparel?.Count(a => a.thing == null) ?? 0;
+            if (nullWeapons > 0) missing.Add($"{nullWeapons} weapon(s)");
+            if (nullApparel > 0) missing.Add($"{nullApparel} apparel item(s)");
+
+            if (missing.Count > 0)
+            {
+                isDegraded = true;
+                missingDefs = missing;
+                LogUtil.Warning($"Saved unit '{name}' references missing defs (unloaded mod?): "
+                    + string.Join(", ", missing));
+            }
+        }
+
+        private static void CheckDef(XmlNode parent, string label, Def resolved, List<string> missing)
+        {
+            XmlNode node = parent?[label];
+            if (node == null) return;
+            string raw = node.InnerText;
+            if (string.IsNullOrEmpty(raw) || raw == "null") return;
+            if (resolved == null)
+            {
+                missing.Add($"{label}={raw}");
+            }
         }
     }
 
@@ -251,6 +308,8 @@ namespace FactionColonies
         public string name;
         public List<SavedUnitFC> unitTemplates = new List<SavedUnitFC>();
         public List<int> units = new List<int>(30);
+        public bool IsDegraded => unitTemplates != null && unitTemplates.Any(u => u.isDegraded);
+
         public SavedSquadFC() { }
 
         public SavedSquadFC(MilSquadFC squad)

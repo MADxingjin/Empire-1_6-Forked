@@ -65,7 +65,19 @@ namespace FactionColonies
                 if (alternate)
                     Widgets.DrawAltRect(elemRect);
 
+                bool degraded = IsEntryDegraded(name);
+                if (degraded)
+                {
+                    GUI.color = Color.yellow;
+                    string tooltip = GetDegradedTooltip(name);
+                    if (tooltip != null)
+                        TooltipHandler.TipRegion(elemRect, tooltip);
+                }
+
                 Widgets.Label(nameRect, name);
+
+                if (degraded)
+                    GUI.color = Color.white;
 
                 if (Widgets.ButtonText(importRect, "FCImport".Translate()))
                 {
@@ -89,6 +101,8 @@ namespace FactionColonies
         protected abstract void OnDelete(string name);
         protected abstract void OnImport(string name);
         protected abstract IEnumerable<string> GetAll();
+        protected virtual bool IsEntryDegraded(string name) => false;
+        protected virtual string GetDegradedTooltip(string name) => null;
     }
 
     public class Dialog_ManageSquadExportsFC : Dialog_ManageExportsFC
@@ -136,6 +150,25 @@ namespace FactionColonies
             this.Close();
         }
         protected override IEnumerable<string> GetAll() => squads.Select(squad => squad.name);
+
+        protected override bool IsEntryDegraded(string name)
+        {
+            SavedSquadFC squad = squads.FirstOrDefault(s => s.name == name);
+            return squad != null && squad.IsDegraded;
+        }
+
+        protected override string GetDegradedTooltip(string name)
+        {
+            SavedSquadFC squad = squads.FirstOrDefault(s => s.name == name);
+            if (squad == null || !squad.IsDegraded) return null;
+            List<string> allMissing = squad.unitTemplates
+                .Where(u => u.isDegraded)
+                .SelectMany(u => u.missingDefs)
+                .ToList();
+            return "This template references defs from unloaded mods: "
+                + string.Join(", ", allMissing)
+                + ".\nImporting will substitute defaults for missing items.";
+        }
     }
     public class Dialog_ManageUnitExportsFC : Dialog_ManageExportsFC
     {
@@ -182,5 +215,20 @@ namespace FactionColonies
             this.Close();
         }
         protected override IEnumerable<string> GetAll() => units.Select(unit => unit.name);
+
+        protected override bool IsEntryDegraded(string name)
+        {
+            SavedUnitFC unit = units.FirstOrDefault(u => u.name == name);
+            return unit != null && unit.isDegraded;
+        }
+
+        protected override string GetDegradedTooltip(string name)
+        {
+            SavedUnitFC unit = units.FirstOrDefault(u => u.name == name);
+            if (unit == null || !unit.isDegraded) return null;
+            return "This template references defs from unloaded mods: "
+                + string.Join(", ", unit.missingDefs)
+                + ".\nImporting will substitute defaults for missing items.";
+        }
     }
 }
