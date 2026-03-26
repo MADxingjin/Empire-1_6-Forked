@@ -300,6 +300,7 @@ namespace FactionColonies
     public static class WorldSettlementDefOf
     {
         public static WorldSettlementDef WorldSettlementDef_Surface;
+        [MayRequire("Ludeon.RimWorld.Odyssey")]
         public static WorldSettlementDef WorldSettlementDef_Orbital;
         static WorldSettlementDefOf()
         {

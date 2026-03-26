@@ -91,8 +91,8 @@
 		<patchNoteType>Hotfix</patchNoteType>
 
 		<patchNoteLines>
-		<li>Move the tech-gates on Deathrest capacity serum and Sentience catalyst off of the base RTD_Medicine def and into DLC-gated XML patches</li>
-		<li>Move BlocksVacstone off of the base RTD_Mining and into a DLC-gated xml patch</li>
+		<li>Bugfix: Deathrest capacity serum and Sentience catalyst on RTD_Medicine weren't gated behind DLC checks, causing problems for players without those DLC</li>
+		<li>Updated several other items to also check for DLC</li>
 		</patchNoteLines>
 
 		<patchNoteImagePaths>

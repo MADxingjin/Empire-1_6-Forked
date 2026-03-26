@@ -207,6 +207,7 @@
 	</thingAllowList>
 	<thingBlockList>
 		<li>Silver</li>
+		<li MayRequire="Ludeon.RimWorld.Odyssey">BlocksVacstone</li>
 	</thingBlockList>
 	<thingCategoryAllowList>
 		<li>
@@ -253,7 +254,18 @@
 	<isDefaultResource>true</isDefaultResource>
 	<productionAdditiveStat>RTD_Medicine_ProductionAdditive</productionAdditiveStat>
 	<productionMultiplierStat>RTD_Medicine_ProductionMultiplier</productionMultiplierStat>
-	<thingAllowList />
+	<thingAllowList>
+		<li MayRequire="Ludeon.RimWorld.Biotech">
+			<thingDef>DeathrestCapacitySerum</thingDef>
+			<researchProjectDefs>
+				<li>Deathrest</li>
+			</researchProjectDefs>
+		</li>
+		<li MayRequire="Ludeon.RimWorld.Odyssey">
+			<thingDef>SentienceCatalyst</thingDef>
+			<minTechLevel>Spacer</minTechLevel>
+		</li>
+	</thingAllowList>
 	<thingCategoryAllowList>
 		<li>
 			<thingCategoryDef>Medicine</thingCategoryDef>

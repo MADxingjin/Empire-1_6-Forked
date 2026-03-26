@@ -484,6 +484,7 @@ namespace FactionColonies
         public static ResourceTypeDef RTD_Power;
         public static ResourceTypeDef RTD_Medicine;
         public static ResourceTypeDef RTD_Chemfuel;
+        [MayRequire("Ludeon.RimWorld.Odyssey")]
         public static ResourceTypeDef RTD_Gravtech;
 
         static ResourceTypeDefOf()

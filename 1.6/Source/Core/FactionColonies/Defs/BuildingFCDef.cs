@@ -206,6 +206,7 @@ namespace FactionColonies
         public static BuildingFCDef Empty;
         public static BuildingFCDef Construction;
         public static BuildingFCDef artilleryOutpost;
+        [MayRequire("Ludeon.RimWorld.Royalty")]
         public static BuildingFCDef shuttlePort;
 
         static BuildingFCDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(BuildingFCDefOf));
