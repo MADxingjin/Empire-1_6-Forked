@@ -613,7 +613,8 @@ namespace FactionColonies
                             if (enemy != null)
                             {
                                 float settlementTotalWeight = validSettlements.Sum(
-                                    s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight);
+                                    s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
+                                         * RaidWeightRegistry.GetCombinedWeight(s, enemy));
                                 float externalTotalWeight = validExternalTargets.Sum(
                                     t => (float)GetMilitaryTargetWeight(t.MilitaryLevel));
                                 float totalWeight = settlementTotalWeight + externalTotalWeight;
@@ -621,7 +622,8 @@ namespace FactionColonies
                                 if (Rand.Value * totalWeight < settlementTotalWeight && validSettlements.Any())
                                 {
                                     WorldSettlementFC target = validSettlements.RandomElementByWeight(
-                                        s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight);
+                                        s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
+                                             * RaidWeightRegistry.GetCombinedWeight(s, enemy));
                                     MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
                                 }
                                 else if (validExternalTargets.Any())
@@ -1474,6 +1476,11 @@ namespace FactionColonies
         void ILifecycleParticipant.OnResearchCompleted(ResearchProjectDef project)
         {
             ForEachBehavior(b => b.OnResearchCompleted(this, project));
+        }
+
+        void ILifecycleParticipant.OnMercenaryDeath(MercenaryDeathEvent evt)
+        {
+            // No policy behavior hook for merc death currently — submods handle this via their own listener
         }
 
         #endregion

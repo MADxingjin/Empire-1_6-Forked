@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_128_0</defName>
+		<label>Military Backend Changes</label>
+		<description>Handful of changes to the military backend for submod support.</description>
+
+		<major>0</major>
+		<minor>128</minor>
+		<patch>0</patch>
+
+		<releaseDay>25</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Minor</patchNoteType>
+
+		<patchNoteLines>
+		<li>Add RaidWeightRegistry and associated interface, for submods to influence the raid weighting for Empire settlements</li>
+		<li>Add UnitOverlayRegistry and associated interface, for submods to add information to the military squad screen</li>
+		<li>Add MercenaryDeathEvent, for submods to potentially intercept mercenary deaths</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Military Backend Changes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

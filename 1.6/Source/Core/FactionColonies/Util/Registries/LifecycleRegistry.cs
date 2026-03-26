@@ -130,6 +130,17 @@ namespace FactionColonies
             settlement.InvalidateStatCache();
         }
 
+        // ── Mercenary ──
+
+        public static void InvokeOnMercenaryDeath(MercenaryDeathEvent evt)
+        {
+            foreach (ILifecycleParticipant p in _participants)
+            {
+                try { p.OnMercenaryDeath(evt); }
+                catch (Exception e) { LogUtil.Error($"ILifecycleParticipant {p.GetType().Name} threw in OnMercenaryDeath: {e}"); }
+            }
+        }
+
         // ── Research ──
 
         public static void InvokeOnResearchCompleted(ResearchProjectDef project)

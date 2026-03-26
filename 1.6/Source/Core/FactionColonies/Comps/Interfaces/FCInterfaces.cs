@@ -120,6 +120,11 @@ namespace FactionColonies
         void OnSquadRecalled(WorldSettlementFC settlement);
         void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result);
         void OnResearchCompleted(ResearchProjectDef project);
+        /// <summary>
+        /// Called when a mercenary is killed, before the default auto-replacement.
+        /// Set <see cref="MercenaryDeathEvent.CancelReplacement"/> to prevent auto-replacement.
+        /// </summary>
+        void OnMercenaryDeath(MercenaryDeathEvent evt);
     }
     /// <summary>
     /// Defines an interface to let classes modify military forces before a battle is resolved.
@@ -188,6 +193,22 @@ namespace FactionColonies
         void ModifyPayment(SilverPaymentContext context);
     }
     /// <summary>
+    /// Allows submods to influence which settlement gets attacked by enemy factions.
+    /// Each provider returns a weight multiplier per settlement. The final weight for
+    /// settlement selection is: base weight * product of all provider weights.
+    /// Register implementations via <see cref="RaidWeightRegistry"/>.
+    /// </summary>
+    public interface IRaidWeightProvider
+    {
+        /// <summary>
+        /// Returns a weight multiplier for <paramref name="settlement"/> when attacked by <paramref name="attackingFaction"/>.
+        /// Return 1.0 for no effect. Return > 1.0 to make the settlement more likely to be targeted.
+        /// Return < 1.0 (but > 0) to make it less likely. Return 0 to completely exclude it.
+        /// </summary>
+        float GetSettlementRaidWeight(WorldSettlementFC settlement, RimWorld.Faction attackingFaction);
+    }
+
+    /// <summary>
     /// Allows external mods to register world objects as raid targets for Empire's military system.
     /// Registered targets are included in the attack target pool alongside Empire settlements,
     /// receive the same 24-hour warning, and auto-resolve via <see cref="SimulateBattleFc.FightBattle"/>.
@@ -252,6 +273,21 @@ namespace FactionColonies
         string StatusLabel { get; }
         Color AccentColor { get; }
     }
+    /// <summary>
+    /// Allows submods to draw overlays on unit icons in the military UI (e.g., veterancy rank badges).
+    /// Register implementations via <see cref="UnitOverlayRegistry"/>.
+    /// </summary>
+    public interface IUnitOverlayRenderer
+    {
+        /// <summary>
+        /// Draw an overlay on top of a rendered unit icon.
+        /// </summary>
+        /// <param name="unitRect">The Rect of the rendered unit icon.</param>
+        /// <param name="unit">The unit template (may be null if rendering a deployed merc without template context).</param>
+        /// <param name="merc">The mercenary instance (may be null in design-time contexts).</param>
+        void DrawOverlay(Rect unitRect, MilUnitFC unit, Mercenary merc);
+    }
+
     /// <summary>
     /// Allows DefModExtensions on <see cref="BuildingFCDef"/> to contribute additional sections
     /// to the building detail panel in FCBuildingWindow. Sections render between the Modifiers

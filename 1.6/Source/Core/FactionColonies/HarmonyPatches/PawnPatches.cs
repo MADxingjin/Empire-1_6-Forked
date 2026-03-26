@@ -28,7 +28,14 @@ namespace FactionColonies
                             squad.settlement.GainHappiness(-1d);
                         }
 
-                        squad.PassPawnToDeadMercenaries(merc);
+                        // Fire death event before replacement — listeners can cancel auto-replacement
+                        MercenaryDeathEvent deathEvt = new MercenaryDeathEvent(merc, squad, squad.settlement);
+                        LifecycleRegistry.InvokeOnMercenaryDeath(deathEvt);
+
+                        if (!deathEvt.CancelReplacement)
+                        {
+                            squad.PassPawnToDeadMercenaries(merc);
+                        }
                     }
 
                     squad.RemoveDroppedEquipment();

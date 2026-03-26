@@ -18,5 +18,6 @@ namespace FactionColonies
         public virtual void OnSquadRecalled(WorldSettlementFC settlement) { }
         public virtual void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result) { }
         public virtual void OnResearchCompleted(ResearchProjectDef project) { }
+        public virtual void OnMercenaryDeath(MercenaryDeathEvent evt) { }
     }
 }
