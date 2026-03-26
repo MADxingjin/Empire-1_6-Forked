@@ -83,6 +83,13 @@ namespace FactionColonies.util
 
         private static void SendShuttle(FCEvent evt)
         {
+            if (!ModsConfig.RoyaltyActive)
+            {
+                LogUtil.Warning("Shuttle delivery requires Royalty DLC. Falling back to drop pod.");
+                SendDropPod(evt);
+                return;
+            }
+
             Map playerHomeMap = FactionCache.FactionComp.TaxMap;
             List<ShipLandingArea> landingZones = ShipLandingBeaconUtility.GetLandingZones(playerHomeMap);
 

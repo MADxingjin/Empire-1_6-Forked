@@ -183,6 +183,10 @@ namespace FactionColonies
         {
             if (FCSettings.forcedTaxDeliveryMode != default)
             {
+                if (FCSettings.forcedTaxDeliveryMode == TaxDeliveryMode.Shuttle && !ModsConfig.RoyaltyActive)
+                {
+                    return FactionCache.TechTransportPods.IsFinished ? TaxDeliveryMode.DropPod : TaxDeliveryMode.Caravan;
+                }
                 return FCSettings.forcedTaxDeliveryMode;
             }
 
