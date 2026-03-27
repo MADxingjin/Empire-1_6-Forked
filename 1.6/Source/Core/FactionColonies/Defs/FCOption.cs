@@ -510,7 +510,7 @@ namespace FactionColonies
             else if (chance >= 40f)
             {
                 label = "FCEventSuccessUncertain".Translate();
-                color = AccentUtil.StatMedium;
+                color = AccentUtil.StatMedBad;
             }
             else
             {

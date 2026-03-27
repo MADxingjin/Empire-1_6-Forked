@@ -21,8 +21,9 @@ namespace FactionColonies
 
         // === Stat Thresholds ===
         public static readonly Color StatGood = new Color(0.2f, 0.85f, 0.3f);
-        public static readonly Color StatMedium = new Color(1f, 0.7f, 0.2f);
-        public static readonly Color StatBad = new Color(1f, 0.35f, 0.3f);
+        public static readonly Color StatMedGood = Color.yellow;
+        public static readonly Color StatMedBad = new Color(1f, 0.7f, 0.2f);
+        public static readonly Color StatBad = Color.red; //new Color(1f, 0.35f, 0.3f);
 
         // === Generic Color settings ===
         public static readonly Color Military = new Color(1.0f, 0.25f, 0.25f);
@@ -37,11 +38,13 @@ namespace FactionColonies
             if (inverted)
             {
                 if (value <= 10f) return StatGood;
-                if (value <= 30f) return StatMedium;
+                if (value <= 40f) return StatMedGood;
+                if (value <= 80f) return StatMedBad;
                 return StatBad;
             }
             if (value >= 80f) return StatGood;
-            if (value >= 50f) return StatMedium;
+            if (value >= 50f) return StatMedGood;
+            if (value >= 20f) return StatMedBad;
             return StatBad;
         }
 
