@@ -1286,7 +1286,8 @@ namespace FactionColonies
             }
             else
             {
-                bool canBuild = !HasUnmetRequirements(selectedBuilding);
+                bool canBuild = !HasUnmetRequirements(selectedBuilding)
+                    && !settlement.BuildingsComp.HasBuildingOrUpgrade(selectedBuilding);
                 if (!canBuild)
                 {
                     GUI.color = new Color(1f, 1f, 1f, 0.4f);

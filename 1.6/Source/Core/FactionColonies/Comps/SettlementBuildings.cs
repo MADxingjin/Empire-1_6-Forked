@@ -260,14 +260,10 @@ namespace FactionColonies
                 Messages.Message("FCBuildingLocked".Translate(), MessageTypeDefOf.RejectInput);
             }
 
-            foreach (BuildingFC slot in buildings) //check if already a building of that type constructed
+            if (HasBuildingOrUpgrade(building))
             {
-                if (slot.def == building)
-                {
-                    valid = false;
-                    Messages.Message("BuildingAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
-                    break;
-                }
+                valid = false;
+                Messages.Message("BuildingAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
             }
 
             if (PaymentUtil.GetSilver() < building.cost) //check if the player has enough money
@@ -286,8 +282,8 @@ namespace FactionColonies
                     valid = false;
                     Messages.Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
                 }
-                if (event1.source == WorldSettlement.Tile && event1.building == building &&
-                    event1.def.defName == "constructBuilding")
+                if (event1.source == WorldSettlement.Tile && event1.def.defName == "constructBuilding" &&
+                    FactionCache.SatisfiesRequirementFor(event1.building, building))
                 {
                     valid = false;
                     Messages.Message("BuildingBeingBuiltAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
