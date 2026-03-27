@@ -47,15 +47,19 @@ namespace FactionColonies
             Scribe_Values.Look(ref timeEnacted, "timeEnacted");
             Scribe_Deep.Look(ref behavior, "behavior");
 
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && behavior != null)
+            // Wire unsaved back-references every load phase so they're available
+            // as early as possible. WorldObjects load before WorldComponents in
+            // World.ExposeComponents, so settlement comps' PostExposeData can
+            // trigger behavior hooks before FactionFC reaches PostLoadInit.
+            if (Scribe.mode != LoadSaveMode.Saving && behavior != null)
             {
                 behavior.policy = this;
                 if (def?.BehaviorExtension != null)
-                {
                     behavior.extension = def.BehaviorExtension;
-                    behavior.PostInitialize();
-                }
             }
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && behavior != null)
+                behavior.PostInitialize();
         }
     }
 }
