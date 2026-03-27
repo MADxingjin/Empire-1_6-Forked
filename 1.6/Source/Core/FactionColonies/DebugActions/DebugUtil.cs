@@ -637,7 +637,7 @@ namespace FactionColonies
                             {
                                 settlement.AddStatModifiers(
                                     new List<FCStatModifier> { new FCStatModifier { stat = localStat, value = localVal } },
-                                    "debug");
+                                    "debug", "Debug: " + localStat.defName);
                                 LogUtil.MessageForce($"Debug - Added stat {localStat.defName} = {localVal} to {settlement.Name}");
                             }));
                         }

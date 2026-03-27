@@ -608,7 +608,7 @@ namespace FactionColonies
             float iconSm = 20f;
             int resourceCount = faction.FactionResources.Count;
             float totalHeight2 = resourceCount * (rowHeight + rowSpacing) - rowSpacing;
-            float maxHeight = 264f;
+            float maxHeight = panel.yMax - y;
             float sectionHeight2 = Math.Min(totalHeight2, maxHeight);
             float rowWidth2 = width;
 
@@ -616,7 +616,7 @@ namespace FactionColonies
             bool needsScroll = totalHeight2 > sectionHeight2;
             if (needsScroll)
             {
-                Rect scrollContent = new Rect(x, y, width, totalHeight2);
+                Rect scrollContent = new Rect(x, y, width-16f, totalHeight2);
                 Widgets.BeginScrollView(sectionBox, ref productionScroll, scrollContent);
                 rowWidth2 -= 16f;
             }
