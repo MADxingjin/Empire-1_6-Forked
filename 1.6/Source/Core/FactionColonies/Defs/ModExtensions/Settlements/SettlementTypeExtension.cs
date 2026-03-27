@@ -240,6 +240,16 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Returns the minimum settlement level required to unlock a given building slot index.
+        /// Returns 0 if available at founding, or -1 if the slot can never be unlocked via leveling.
+        /// Override to match custom building slot progression logic.
+        /// </summary>
+        public virtual int GetRequiredLevelForSlot(int slotIndex, int maxCount)
+        {
+            return SettlementFormulas.CalculateLevelForSlot(slotIndex, parentDef.baseUnlockedBuildings, parentDef.perLevelUnlockedBuildings);
+        }
+
+        /// <summary>
         /// Returns the silver cost to upgrade from the given settlement level.
         /// Override to customize upgrade costs for this settlement type.
         /// </summary>

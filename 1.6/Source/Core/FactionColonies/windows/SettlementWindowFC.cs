@@ -315,7 +315,7 @@ namespace FactionColonies
 
         private void DrawBasicOverviewBottom(Rect boundingBox)
         {
-            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 8) ? scrollSpacing : 0;
+            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 12) ? scrollSpacing : 0;
             float buildingBoxWidth = Math.Max(boundingBox.x * 0.7f, (buildingSpacingFromSide * 2) + (buildingBoxSide * 4) + (buildingSpacing * 3) + scrollMargin);
             float constructionBoxWidth = boundingBox.width - buildingBoxWidth;
 
@@ -1142,7 +1142,7 @@ namespace FactionColonies
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 8) ? scrollSpacing : 0;
+            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 12) ? scrollSpacing : 0;
 
             Rect labelHighlight = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
             Rect labelTextBox = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin * 2), labelHighlight.height - (smallMargin * 2));
@@ -1152,7 +1152,8 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;
 
-            int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2)) / (buildingBoxSide + buildingSpacing));
+            // For a row of n buildings, there will only be n-1 spaces between them. So to offset the denominator, we add one buildingSpacing to the numerator.
+            int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2) + buildingSpacing) / (buildingBoxSide + buildingSpacing));
             float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
             float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);
 
@@ -1203,7 +1204,7 @@ namespace FactionColonies
                 else
                 {
                     WorldSettlementDef sDef = settlement.settlementDef;
-                    int requiredLevel = SettlementFormulas.CalculateLevelForSlot(i, sDef.baseUnlockedBuildings, sDef.perLevelUnlockedBuildings);
+                    int requiredLevel = sDef.GetSettlementTypeExtension().GetRequiredLevelForSlot(i, sDef.maxBuildingCount);
                     bool isCapLocked = requiredLevel < 0 ||
                                        settlement.BuildingsComp.NumBuildingSlots >= sDef.maxBuildingCount;
                     string lockTooltip = isCapLocked
