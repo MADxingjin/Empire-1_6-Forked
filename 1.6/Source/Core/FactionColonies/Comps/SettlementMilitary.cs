@@ -971,8 +971,8 @@ namespace FactionColonies
                 {
                     BuildingFCDef defA = WorldSettlement.BuildingsComp.GetBuildingInSlot(a);
                     BuildingFCDef defB = WorldSettlement.BuildingsComp.GetBuildingInSlot(b);
-                    bool aRequiresB = defA.requiredBuildings != null && defA.requiredBuildings.Contains(defB);
-                    bool bRequiresA = defB.requiredBuildings != null && defB.requiredBuildings.Contains(defA);
+                    bool aRequiresB = FactionCache.SatisfiesAnyRequirement(defB, defA.requiredBuildings);
+                    bool bRequiresA = FactionCache.SatisfiesAnyRequirement(defA, defB.requiredBuildings);
                     if (aRequiresB) return -1; // a depends on b, demolish a first
                     if (bRequiresA) return 1;  // b depends on a, demolish b first
                     // Buildings with any requirements go before those without

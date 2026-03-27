@@ -178,7 +178,7 @@ namespace FactionColonies
             if (building.requiredBuildings.Count == 0) return false;
             foreach (BuildingFCDef req in building.requiredBuildings)
             {
-                if (!settlement.BuildingsComp.HasBuilding(req)) return true;
+                if (!settlement.BuildingsComp.HasBuildingOrUpgrade(req)) return true;
                 if (req == buildingDef) return true;
             }
             return false;
@@ -748,7 +748,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 foreach (BuildingFCDef req in selectedBuilding.requiredBuildings)
                 {
-                    bool has = settlement.BuildingsComp?.HasBuilding(req) == true;
+                    bool has = settlement.BuildingsComp?.HasBuildingOrUpgrade(req) == true;
                     bool isSlotBuilding = req == buildingDef;
                     bool satisfied = has && !isSlotBuilding;
                     Rect statusRect = new Rect(scrollViewRect.x + margin, curY, w - margin * 2, 18f);
@@ -1169,7 +1169,7 @@ namespace FactionColonies
 
         private float DrawRequiredBy(float x, float curY, float width)
         {
-            if (!FactionCache.RequiredByMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
+            if (!FactionCache.RequiredByBuildingMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
                 return curY;
 
             curY += smallMargin;
@@ -1214,7 +1214,7 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.MiddleLeft;
                     foreach (BuildingFCDef req in building.requiredBuildings)
                     {
-                        bool has = settlement.BuildingsComp?.HasBuilding(req) == true;
+                        bool has = settlement.BuildingsComp?.HasBuildingOrUpgrade(req) == true;
                         Rect statusRect = new Rect(x + margin * 2, curY, width - margin * 4, 18f);
                         GUI.color = has ? Color.green : Color.red;
                         string checkmark = has ? "✓ " : "✗ ";
@@ -1233,7 +1233,7 @@ namespace FactionColonies
         private float CalculateRequiredByHeight(float width)
         {
             if (selectedBuilding == null) return 0;
-            if (!FactionCache.RequiredByMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
+            if (!FactionCache.RequiredByBuildingMap.TryGetValue(selectedBuilding, out List<BuildingFCDef> requiredBy) || requiredBy.Count == 0)
                 return 0;
 
             float h = smallMargin + collapsibleHeaderHeight + smallMargin;

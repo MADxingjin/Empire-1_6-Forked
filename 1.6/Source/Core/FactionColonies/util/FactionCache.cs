@@ -38,6 +38,7 @@ namespace FactionColonies
         private static List<FCPolicyDef> _cachedFCPolicyDefs = null;
         private static Dictionary<FCPolicyDef, string> _cachedFCPolicyDescs = null;
         private static Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>> _cachedUpgradeTrees = null;
+        private static Dictionary<BuildingFCDef, HashSet<BuildingFCDef>> _cachedUpgradeDescendants = null;
         private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
         private static List<FCEventCategoryDef> _cachedEventCategoryDefs = null;
         private static List<MilitaryJobDef> _cachedHostileMilitaryJobs = null;
@@ -507,9 +508,60 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// For each building that has upgrades, the set of all transitive upgrade descendants.
+        /// Used for O(1) "does this building satisfy a requirement for that building?" checks.
+        /// </summary>
+        public static Dictionary<BuildingFCDef, HashSet<BuildingFCDef>> UpgradeDescendants
+        {
+            get
+            {
+                if (_cachedUpgradeDescendants == null)
+                {
+                    _cachedUpgradeDescendants = new Dictionary<BuildingFCDef, HashSet<BuildingFCDef>>();
+                    foreach (var kvp in UpgradeTrees)
+                    {
+                        HashSet<BuildingFCDef> set = new HashSet<BuildingFCDef>();
+                        foreach (BuildingUpgradeEntry entry in kvp.Value)
+                        {
+                            set.Add(entry.def);
+                        }
+                        _cachedUpgradeDescendants[kvp.Key] = set;
+                    }
+                }
+                return _cachedUpgradeDescendants;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="candidate"/> is the same as <paramref name="required"/>,
+        /// or is a transitive upgrade of it.
+        /// </summary>
+        public static bool SatisfiesRequirementFor(BuildingFCDef candidate, BuildingFCDef required)
+        {
+            if (candidate == required) return true;
+            if (UpgradeDescendants.TryGetValue(required, out HashSet<BuildingFCDef> descendants))
+                return descendants.Contains(candidate);
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="candidate"/> satisfies any entry in the given requirements list
+        /// (i.e. equals or is an upgrade of any required building).
+        /// </summary>
+        public static bool SatisfiesAnyRequirement(BuildingFCDef candidate, List<BuildingFCDef> requirements)
+        {
+            if (requirements == null || requirements.Count == 0) return false;
+            foreach (BuildingFCDef req in requirements)
+            {
+                if (SatisfiesRequirementFor(candidate, req)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Reverse lookup: for each building, all buildings that list it in their requiredBuildings.
         /// </summary>
-        public static Dictionary<BuildingFCDef, List<BuildingFCDef>> RequiredByMap
+        public static Dictionary<BuildingFCDef, List<BuildingFCDef>> RequiredByBuildingMap
         {
             get
             {
@@ -527,6 +579,26 @@ namespace FactionColonies
                                 _cachedRequiredByMap[req] = list;
                             }
                             list.Add(building);
+                        }
+                    }
+                    // Propagate: if X requires Beta, then Beta_V2 (upgrade of Beta) also
+                    // effectively satisfies that requirement — so show X in Beta_V2's
+                    // "Required By" list as well.
+                    foreach (var kvp in UpgradeDescendants)
+                    {
+                        List<BuildingFCDef> baseRequiredBy;
+                        if (!_cachedRequiredByMap.TryGetValue(kvp.Key, out baseRequiredBy)) continue;
+                        foreach (BuildingFCDef descendant in kvp.Value)
+                        {
+                            if (!_cachedRequiredByMap.TryGetValue(descendant, out List<BuildingFCDef> descList))
+                            {
+                                descList = new List<BuildingFCDef>();
+                                _cachedRequiredByMap[descendant] = descList;
+                            }
+                            foreach (BuildingFCDef dep in baseRequiredBy)
+                            {
+                                if (!descList.Contains(dep)) descList.Add(dep);
+                            }
                         }
                     }
                 }
@@ -583,6 +655,7 @@ namespace FactionColonies
             _cachedFCPolicyDefs = null;
             _cachedFCPolicyDescs = null;
             _cachedUpgradeTrees = null;
+            _cachedUpgradeDescendants = null;
             _cachedRequiredByMap = null;
             _cachedEventCategoryDefs = null;
             _cachedHostileMilitaryJobs = null;

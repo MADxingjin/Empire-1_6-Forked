@@ -34,8 +34,8 @@ namespace FactionColonies
             {
                 BuildingFCDef defA = settlement.BuildingsComp.GetBuildingInSlot(a);
                 BuildingFCDef defB = settlement.BuildingsComp.GetBuildingInSlot(b);
-                bool aRequiresB = defA.requiredBuildings != null && defA.requiredBuildings.Contains(defB);
-                bool bRequiresA = defB.requiredBuildings != null && defB.requiredBuildings.Contains(defA);
+                bool aRequiresB = FactionCache.SatisfiesAnyRequirement(defB, defA.requiredBuildings);
+                bool bRequiresA = FactionCache.SatisfiesAnyRequirement(defA, defB.requiredBuildings);
                 if (aRequiresB) return -1;
                 if (bRequiresA) return 1;
                 int aReqCount = defA.requiredBuildings?.Count ?? 0;

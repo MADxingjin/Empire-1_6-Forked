@@ -100,20 +100,20 @@ namespace FactionColonies
         }
         /// <summary>
         /// Returns true if any currently-built building in this settlement
-        /// lists the given building in its requiredBuildings.
+        /// has a requirement satisfied by the given building (exact match or upgrade).
         /// </summary>
         public bool IsBuildingRequiredByOther(BuildingFCDef building)
         {
             foreach (BuildingFC bfc in buildings)
             {
                 if (bfc.def == BuildingFCDefOf.Empty || bfc.def == BuildingFCDefOf.Construction) continue;
-                if (bfc.def.requiredBuildings != null && bfc.def.requiredBuildings.Contains(building))
+                if (FactionCache.SatisfiesAnyRequirement(building, bfc.def.requiredBuildings))
                     return true;
             }
             return false;
         }
         /// <summary>
-        /// Returns all currently-built buildings that directly require the given building.
+        /// Returns all currently-built buildings that have a requirement satisfied by the given building.
         /// </summary>
         public List<BuildingFCDef> GetBuildingsDependingOn(BuildingFCDef building)
         {
@@ -121,7 +121,7 @@ namespace FactionColonies
             foreach (BuildingFC bfc in buildings)
             {
                 if (bfc.def == BuildingFCDefOf.Empty || bfc.def == BuildingFCDefOf.Construction) continue;
-                if (bfc.def.requiredBuildings != null && bfc.def.requiredBuildings.Contains(building))
+                if (FactionCache.SatisfiesAnyRequirement(building, bfc.def.requiredBuildings))
                     result.Add(bfc.def);
             }
             return result;
@@ -236,6 +236,17 @@ namespace FactionColonies
             foreach (BuildingFC slot in buildings)
             {
                 if (slot.def == building) return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns true if the settlement has the given building or any transitive upgrade of it.
+        /// </summary>
+        public bool HasBuildingOrUpgrade(BuildingFCDef required)
+        {
+            foreach (BuildingFC slot in buildings)
+            {
+                if (FactionCache.SatisfiesRequirementFor(slot.def, required)) return true;
             }
             return false;
         }
