@@ -46,7 +46,8 @@ namespace FactionColonies
 
         public int GetBuildingSlots()
         {
-            return settlementDef.GetSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
+            int slots = settlementDef.GetSettlementTypeExtension().GetBuildingSlots(settlementLevel, settlementDef.maxBuildingCount);
+            return Math.Min(slots, settlementDef.maxBuildingCount);
         }
 
         public int GetUpgradeCost(int baseCost)

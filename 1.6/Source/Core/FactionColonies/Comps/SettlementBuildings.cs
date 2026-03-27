@@ -54,8 +54,8 @@ namespace FactionColonies
             {
                 WorldSettlementDef def = WorldSettlement.settlementDef;
                 int maxLevel = Math.Min(FCSettings.settlementMaxLevel, def.maxSettlementLevel);
-                return SettlementFormulas.CalculateBuildingSlots(maxLevel, def.maxBuildingCount,
-                    def.baseUnlockedBuildings, def.perLevelUnlockedBuildings);
+                int slots = def.GetSettlementTypeExtension().GetBuildingSlots(maxLevel, def.maxBuildingCount);
+                return Math.Min(slots, def.maxBuildingCount);
             }
         }
         private List<BuildingFC> buildings = new List<BuildingFC>();
@@ -242,6 +242,12 @@ namespace FactionColonies
         public bool ValidConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
             bool valid = true;
+
+            if (buildingSlot >= NumBuildingSlots)
+            {
+                valid = false;
+                Messages.Message("FCBuildingLocked".Translate(), MessageTypeDefOf.RejectInput);
+            }
 
             foreach (BuildingFC slot in buildings) //check if already a building of that type constructed
             {
