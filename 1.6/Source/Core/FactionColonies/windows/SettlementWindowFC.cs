@@ -982,6 +982,12 @@ namespace FactionColonies
                 Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
                 string label = buttons[i];
                 bool enabled = true;
+                if (i == 2) // Prisoners button
+                {
+                    int prisonerCount = settlement.prisonerList.Count;
+                    if (prisonerCount > 0)
+                        label = label + " (" + prisonerCount + ")";
+                }
                 if (label == "UpgradeTown".Translate() && settlement.isUpgrading)
                 {
                     label = "SettlementUpgradeInProgress".Translate();
@@ -1027,7 +1033,7 @@ namespace FactionColonies
                         Find.WindowStack.Add(new FloatMenu(list));
                     }
 
-                    if (label == "PrisonersMenu".Translate())
+                    if (i == 2) // Prisoners button
                     {
                         Find.WindowStack.Add(new FCPrisonerMenu(settlement));
                     }

@@ -14,23 +14,25 @@ namespace FactionColonies
         public FactionFC faction;
 
         public Vector2 scrollPosition = Vector2.zero;
-        public int scrollBoxHeight = 440;
 
-        public int optionHeight = 90;
+        private const int optionHeight = 95;
+        private const float titleHeight = 30f;
+        private const float dividerGap = 8f;
+        private const float portraitW = 70f;
+        private const float gap = 4f;
+        private const float rightColW = 128f;
+        private const float pad = 4f;
 
-        public override Vector2 InitialSize => new Vector2(538f, 478f); //19
+        private static readonly Color healthBarBg = new Color(0.15f, 0.15f, 0.15f);
 
-
-
+        public override Vector2 InitialSize => new Vector2(538f, 518f);
 
         public FCPrisonerMenu(WorldSettlementFC settlement)
         {
-            //Window Information
             this.faction = FactionCache.FactionComp;
             this.settlement = settlement;
             this.prisoners = settlement.prisonerList;
 
-            //Window Properties
             this.forcePause = false;
             this.draggable = true;
             this.doCloseX = true;
@@ -39,98 +41,219 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-            //grab before anchor/font
             GameFont fontBefore = Text.Font;
             TextAnchor anchorBefore = Text.Anchor;
+            Color origColor = GUI.color;
 
-            //top label
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-
-
+            // Title bar
+            Rect titleRect = new Rect(inRect.x, inRect.y, inRect.width, titleHeight);
+            Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleLeft;
-            var outRect = new Rect(0, 0, inRect.width, inRect.height);
-            var viewRect = new Rect(outRect.x, outRect.y, outRect.width - 16f, prisoners.Count * optionHeight);
-            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-            var ls = new Listing_Standard();
-            ls.Begin(viewRect);
-            int i = 0;
-            foreach (FCPrisoner prisoner in prisoners)
+            Widgets.Label(titleRect, "FCPrisonerWindowTitle".Translate(settlement.Name));
+
+            if (prisoners.Count > 0)
             {
-                Rect box = ls.GetRect(optionHeight);
-                Rect pawnIcon = new Rect(box.x, box.y + 18, 50, 50);
-                Rect pawnName = new Rect(box.x + 50, box.y + 4, 300, 20);
-                Rect pawnHealth = new Rect(pawnName.x, pawnName.y + 20, 300, 20);
-                Rect pawnUnrest = new Rect(pawnHealth.x, pawnHealth.y + 20, 300, 20);
-                Rect pawnWorkload = new Rect(pawnUnrest.x, pawnUnrest.y + 20, 150, 20);
-                Rect buttonInfo = new Rect(box.xMax - 150 - 10, pawnHealth.y + 20, 150, 20);
-                Rect buttonAction = new Rect(box.xMax - 150 - 10, pawnUnrest.y + 20, 150, 20);
+                Text.Anchor = TextAnchor.MiddleRight;
+                GUI.color = Color.gray;
+                Widgets.Label(titleRect, "(" + prisoners.Count + ")");
+                GUI.color = origColor;
+            }
 
+            // Divider
+            float contentY = titleRect.yMax + dividerGap;
+            Color divColor = GUI.color;
+            GUI.color = Color.gray;
+            Widgets.DrawLineHorizontal(inRect.x, titleRect.yMax + (dividerGap / 2f), inRect.width);
+            GUI.color = divColor;
 
-                //display stuff now
-                Widgets.DrawMenuSection(box);
-                //on every other box
-                if (i % 2 == 0)
+            float contentHeight = inRect.height - contentY;
+
+            if (prisoners.Count == 0)
+            {
+                // Empty state
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                GUI.color = Color.gray;
+                Widgets.Label(new Rect(inRect.x, contentY + contentHeight * 0.35f, inRect.width, 40f),
+                    "FCNoPrisoners".Translate());
+                GUI.color = origColor;
+            }
+            else
+            {
+                // Prisoner list
+                Text.Anchor = TextAnchor.MiddleLeft;
+                var outRect = new Rect(0, contentY, inRect.width, contentHeight);
+                float scrollMargin = prisoners.Count * optionHeight > contentHeight ? 16f : 0f;
+                var viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, prisoners.Count * optionHeight);
+                Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+                var ls = new Listing_Standard();
+                ls.Begin(viewRect);
+                int i = 0;
+                foreach (FCPrisoner prisoner in prisoners)
                 {
-                    Widgets.DrawHighlight(box);
+                    DrawPrisonerRow(ls, prisoner, i, origColor);
+                    i++;
+                }
+                ls.End();
+                Widgets.EndScrollView();
+            }
+
+            Text.Font = fontBefore;
+            Text.Anchor = anchorBefore;
+        }
+
+        private void DrawPrisonerRow(Listing_Standard ls, FCPrisoner prisoner, int index, Color origColor)
+        {
+            Rect box = ls.GetRect(optionHeight);
+
+            // Background
+            Widgets.DrawMenuSection(box);
+            if (index % 2 == 0)
+            {
+                Widgets.DrawHighlight(box);
+            }
+
+            // Portrait
+            Rect portraitRect = new Rect(box.x + pad, box.y + 6f, portraitW, 78f);
+            if (prisoner.prisoner != null)
+            {
+                UIUtil.DrawPawnPortrait(portraitRect, prisoner.prisoner, 1.2f);
+            }
+
+            // Center column
+            float cx = box.x + portraitW + gap + pad;
+            float cw = box.width - portraitW - rightColW - (gap * 2) - (pad * 2);
+
+            // Name
+            Rect nameRect = new Rect(cx, box.y + pad, cw, 20f);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(nameRect, prisoner.prisoner.Name.ToStringShort);
+
+            // Health bar
+            Rect healthBarRect = new Rect(cx, nameRect.yMax + 2f, cw, 14f);
+            float healthFrac = prisoner.health / 100f;
+            Color healthColor = AccentUtil.GetStatColor(prisoner.health, false);
+            UIUtil.DrawProgressBarColors(healthBarRect, healthFrac, healthBarBg, healthColor);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(healthBarRect, "Health".Translate().CapitalizeFirst() + ": " + (int)prisoner.health);
+
+            // Workload button
+            Rect workloadRect = new Rect(cx, healthBarRect.yMax + 4f, 150f, 22f);
+            string workloadLabel;
+            string trendText;
+            Color trendColor;
+            switch (prisoner.workload)
+            {
+                case FCWorkLoad.Heavy:
+                    workloadLabel = "FCHeavy".Translate().CapitalizeFirst();
+                    trendText = "-20/tick";
+                    trendColor = AccentUtil.StatBad;
+                    break;
+                case FCWorkLoad.Medium:
+                    workloadLabel = "FCMedium".Translate().CapitalizeFirst();
+                    trendText = "-10/tick";
+                    trendColor = AccentUtil.StatMedGood;
+                    break;
+                case FCWorkLoad.Light:
+                    workloadLabel = "FCLight".Translate().CapitalizeFirst();
+                    trendText = "+4/tick";
+                    trendColor = AccentUtil.StatGood;
+                    break;
+                default:
+                    workloadLabel = "null";
+                    trendText = "";
+                    trendColor = Color.white;
+                    break;
+            }
+
+            if (Widgets.ButtonText(workloadRect, "FCWorkload".Translate().CapitalizeFirst() + ": " + workloadLabel))
+            {
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                list.Add(new FloatMenuOption("FCHeavy".Translate().CapitalizeFirst() + " - " + "FCHeavyExplanation".Translate(), delegate
+                {
+                    prisoner.workload = FCWorkLoad.Heavy;
+                    settlement.DirtyStatsCache();
+                }));
+                list.Add(new FloatMenuOption("FCMedium".Translate().CapitalizeFirst() + " - " + "FCMediumExplanation".Translate(), delegate
+                {
+                    prisoner.workload = FCWorkLoad.Medium;
+                    settlement.DirtyStatsCache();
+                }));
+                list.Add(new FloatMenuOption("FCLight".Translate().CapitalizeFirst() + " - " + "FCLightExplanation".Translate(), delegate
+                {
+                    prisoner.workload = FCWorkLoad.Light;
+                    settlement.DirtyStatsCache();
+                }));
+                Find.WindowStack.Add(new FloatMenu(list));
+            }
+
+            // Health trend indicator
+            Rect trendRect = new Rect(workloadRect.xMax + 4f, workloadRect.y, 60f, 22f);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            GUI.color = trendColor;
+            Widgets.Label(trendRect, trendText);
+            GUI.color = origColor;
+
+            // Right column
+            float rx = box.xMax - rightColW - pad;
+
+            // Market value
+            Rect valueRect = new Rect(rx, box.y + pad, rightColW, 20f);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            Widgets.Label(valueRect, "$" + (int)prisoner.prisoner.MarketValue);
+
+            // Faction of origin
+            Rect factionRect = new Rect(rx, valueRect.yMax + 2f, rightColW, 14f);
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            string factionName = prisoner.prisoner.Faction != null ? (string)prisoner.prisoner.Faction.NameColored : "";
+            Widgets.Label(factionRect, factionName);
+
+            // View Info button
+            Rect infoBtn = new Rect(rx, factionRect.yMax + 4f, rightColW, 22f);
+            if (UIUtil.ButtonFlat(infoBtn, "ViewInfo".Translate()))
+            {
+                Pawn pawn = prisoner.prisoner;
+
+                if (prisoner.healthTracker != null)
+                {
+                    prisoner.prisoner.health = prisoner.healthTracker;
+                }
+                else
+                {
+                    prisoner.prisoner.health = new Pawn_HealthTracker(prisoner.prisoner);
+                    prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
                 }
 
-                //show pawn;
-                Widgets.ThingIcon(pawnIcon, prisoner.prisoner);
-                //Pawn Name
-                Widgets.Label(pawnName, prisoner.prisoner.Name.ToString());
-                //Pawn Health
-                Widgets.Label(pawnHealth, "Health".Translate().CapitalizeFirst() + " " + prisoner.health);
-                //Pawn Unrest
-                //Widgets.Label(PawnUnrest, "Unrest".Translate().CapitalizeFirst() + " " + prisoner.unrest);
+                pawn.health = prisoner.healthTracker;
 
+                Find.WindowStack.Add(new Dialog_InfoCard(pawn));
+            }
 
+            // Actions button
+            Rect actionsBtn = new Rect(rx, infoBtn.yMax + 2f, rightColW, 22f);
+            if (UIUtil.ButtonFlat(actionsBtn, "Actions".Translate()))
+            {
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-                //Pawn Workload
-                string workload;
-                switch (prisoner.workload)
+                if (FactionCache.FactionComp.IsActionAllowed(FCActionType.SellPrisoner))
                 {
-                    case FCWorkLoad.Heavy:
-                        workload = "FCHeavy".Translate().CapitalizeFirst();
-                        break;
-                    case FCWorkLoad.Medium:
-                        workload = "FCMedium".Translate().CapitalizeFirst();
-                        break;
-                    case FCWorkLoad.Light:
-                        workload = "FCLight".Translate().CapitalizeFirst();
-                        break;
-                    default:
-                        workload = "null";
-                        break;
-                }
-                if (Widgets.ButtonText(pawnWorkload, "FCWorkload".Translate().CapitalizeFirst() + ": " + workload))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-                    list.Add(new FloatMenuOption("FCHeavy".Translate().CapitalizeFirst() + " - " + "FCHeavyExplanation".Translate(), delegate
+                    list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
                     {
-                        prisoner.workload = FCWorkLoad.Heavy;
+                        settlement.AddOneTimeSilverIncome(prisoner.prisoner.MarketValue);
+
+                        prisoners.Remove(prisoner);
                         settlement.DirtyStatsCache();
+                        WindowUpdate();
                     }));
-                    list.Add(new FloatMenuOption("FCMedium".Translate().CapitalizeFirst() + " - " + "FCMediumExplanation".Translate(), delegate
-                    {
-                        prisoner.workload = FCWorkLoad.Medium;
-                        settlement.DirtyStatsCache();
-                    }));
-                    list.Add(new FloatMenuOption("FCLight".Translate().CapitalizeFirst() + " - " + "FCLightExplanation".Translate(), delegate
-                    {
-                        prisoner.workload = FCWorkLoad.Light;
-                        settlement.DirtyStatsCache();
-                    }));
-                    FloatMenu menu = new FloatMenu(list);
-                    Find.WindowStack.Add(menu);
                 }
 
-                //Info Button
-                if (Widgets.ButtonTextSubtle(buttonInfo, "ViewInfo".Translate()))
+                list.Add(new FloatMenuOption("ReturnToPlayer".Translate(), delegate
                 {
-                    Pawn pawn = prisoner.prisoner;
-
                     if (prisoner.healthTracker != null)
                     {
                         prisoner.prisoner.health = prisoner.healthTracker;
@@ -141,84 +264,32 @@ namespace FactionColonies
                         prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
                     }
 
-                    pawn.health = prisoner.healthTracker;
+                    if (!HealthUtility.TryAnesthetize(prisoner.prisoner)) HealthUtility.DamageUntilDowned(prisoner.prisoner, false);
 
-
-                    Find.WindowStack.Add(new Dialog_InfoCard(pawn));
-                }
-
-                //Action button
-                if (Widgets.ButtonTextSubtle(buttonAction, "Actions".Translate()))
-                {
-                    List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-                    if (FactionCache.FactionComp.IsActionAllowed(FCActionType.SellPrisoner))
+                    if (prisoner.prisoner.guest == null)
                     {
-                        list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
-                        {
-                            settlement.AddOneTimeSilverIncome(prisoner.prisoner.MarketValue);
-
-                            //reset window
-                            prisoners.Remove(prisoner);
-                            settlement.DirtyStatsCache();
-                            WindowUpdate();
-                        }));
+                        prisoner.prisoner.guest = new Pawn_GuestTracker();
                     }
+                    prisoner.prisoner.guest.guestStatusInt = GuestStatus.Prisoner;
+                    FieldInfo hostFaction = typeof(Pawn_GuestTracker).GetField("hostFactionInt", BindingFlags.NonPublic | BindingFlags.Instance);
+                    hostFaction?.SetValue(prisoner.prisoner.guest, Find.FactionManager.OfPlayer);
 
-                    list.Add(new FloatMenuOption("ReturnToPlayer".Translate(), delegate
+                    DeliveryEvent.CreateDeliveryEvent(new FCEvent
                     {
-                        if (prisoner.healthTracker != null)
-                        {
-                            prisoner.prisoner.health = prisoner.healthTracker;
-                        }
-                        else
-                        {
-                            prisoner.prisoner.health = new Pawn_HealthTracker(prisoner.prisoner);
-                            prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
-                        }
+                        location = Find.AnyPlayerHomeMap.Tile,
+                        source = settlement.Tile,
+                        goods = new List<Thing> { prisoner.prisoner },
+                        customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
+                        timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
+                    });
 
-                        if (!HealthUtility.TryAnesthetize(prisoner.prisoner)) HealthUtility.DamageUntilDowned(prisoner.prisoner, false);
+                    prisoners.Remove(prisoner);
+                    settlement.DirtyStatsCache();
+                    WindowUpdate();
+                }));
 
-                        if (prisoner.prisoner.guest == null)
-                        {
-                            prisoner.prisoner.guest = new Pawn_GuestTracker();
-                        }
-                        prisoner.prisoner.guest.guestStatusInt = GuestStatus.Prisoner;
-                        FieldInfo hostFaction = typeof(Pawn_GuestTracker).GetField("hostFactionInt", BindingFlags.NonPublic | BindingFlags.Instance);
-                        hostFaction?.SetValue(prisoner.prisoner.guest, Find.FactionManager.OfPlayer);
-
-                        DeliveryEvent.CreateDeliveryEvent(new FCEvent
-                        {
-                            location = Find.AnyPlayerHomeMap.Tile,
-                            source = settlement.Tile,
-                            goods = new List<Thing> { prisoner.prisoner },
-                            customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
-                            timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
-                        });
-
-                        //reset window
-                        prisoners.Remove(prisoner);
-                        settlement.DirtyStatsCache();
-                        WindowUpdate();
-                        return;
-                    }));
-
-
-                    FloatMenu menu = new FloatMenu(list);
-                    Find.WindowStack.Add(menu);
-                }
-
-
-
-
-                //increment i
-                i++;
+                Find.WindowStack.Add(new FloatMenu(list));
             }
-
-            ls.End();
-            Widgets.EndScrollView();
-            Text.Font = fontBefore;
-            Text.Anchor = anchorBefore;
         }
     }
 }
