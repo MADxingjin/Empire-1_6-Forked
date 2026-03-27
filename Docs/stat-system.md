@@ -33,7 +33,7 @@ The base mod defines ~36 stats across these categories:
 | **Battle penalties** | `battleProsperityLossMultiplier`, `battleHappinessLossMultiplier`, `battleLoyaltyLossMultiplier` |
 | **Economy** | `taxBasePercentage`, `taxBaseRandomModifier`, `taxBonusFlat`, `titheValueMultiplier`, `lootMultiplier`, `settlementCostMultiplier`, `buildTimeMultiplier`, `createSettlementBaseCost`, `createSettlementMultiplier`, `researchContributionMultiplier` |
 | **Workers** | `workerBaseCost`, `workerBaseMax`, `workerBaseOverMax`, `extraWorkersSoftcap`, `overMaxWorkersAdjustment` |
-| **Social** | `happinessLostBase/GainedBase`, `happinessLostMultiplier/GainedMultiplier`, `loyaltyLostBase/GainedBase`, `loyaltyLostMultiplier/GainedMultiplier`, `unrestLostBase/GainedBase`, `unrestLostMultiplier/GainedMultiplier`, `prosperityBaseRecovery` |
+| **Social** | `happinessLostBase/GainedBase`, `happinessLostMultiplier/GainedMultiplier`, `loyaltyLostBase/GainedBase`, `loyaltyLostMultiplier/GainedMultiplier`, `unrestLostBase/GainedBase`, `unrestLostMultiplier/GainedMultiplier`, `prosperityGainedBase` |
 | **Resource production** | 2 stats per resource type (additive + multiplier), linked via `ResourceTypeDef.productionAdditiveStat/productionMultiplierStat` |
 
 ---

@@ -27,7 +27,7 @@
 		</incompatiblePolicies>
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>15</value></li>
-			<li><stat>prosperityBaseRecovery</stat><value>0.5</value></li>
+			<li><stat>prosperityGainedBase</stat><value>0.5</value></li>
 			<li><stat>unrestGainedMultiplier</stat><value>1.5</value></li>
 		</statModifiers>
 	</FactionColonies.FCPolicyDef>

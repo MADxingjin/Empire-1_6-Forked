@@ -12,7 +12,9 @@
 	<FCTraitDesc_MilitaryCombatEfficiency>{0} Military Combat Efficiency</FCTraitDesc_MilitaryCombatEfficiency>
 	<FCTraitDesc_taxBasePercentage>{0} Base Tax Percentage</FCTraitDesc_taxBasePercentage>
 	<FCTraitDesc_taxBaseRandomModifier>{0} Tithe Modifier</FCTraitDesc_taxBaseRandomModifier>
-	<FCTraitDesc_prosperityBaseRecovery>{0} Base Prosperity Recovery</FCTraitDesc_prosperityBaseRecovery>
+	<FCTraitDesc_prosperityGainedBase>{0} Base Prosperity Gained</FCTraitDesc_prosperityGainedBase>
+	<FCTraitDesc_workerProductionBase>{0} Base Worker Production</FCTraitDesc_workerProductionBase>
+	<FCTraitDesc_workerProductionMultiplier>{0} Worker Production</FCTraitDesc_workerProductionMultiplier>
 	<FCTraitDesc_workerBaseCost>{0} Worker Cost</FCTraitDesc_workerBaseCost>
 	<FCTraitDesc_workerBaseMax>{0} Worker Cap</FCTraitDesc_workerBaseMax>
 	<FCTraitDesc_workerBaseOverMax>{0} Overmax Worker Cap</FCTraitDesc_workerBaseOverMax>

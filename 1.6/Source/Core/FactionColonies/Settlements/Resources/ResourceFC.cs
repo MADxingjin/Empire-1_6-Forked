@@ -328,7 +328,8 @@ namespace FactionColonies
                         compBase += provider.GetResourceAdditiveModifier(this);
                 }
             }
-            return dictBase + statBase + compBase;
+            double workerBase = (settlement != null) ? settlement.GetStatValue(FCStatDefOf.workerProductionBase) : 0;
+            return dictBase + statBase + compBase + workerBase;
         }
         /// <summary>
         /// Calculates the total production multiplier from three sources:
@@ -353,7 +354,8 @@ namespace FactionColonies
                 }
             }
             double prosperityMult = (settlement != null) ? (settlement.prosperity / 100.0) : 1.0;
-            return dictMult * statMult * compMult * taxBonus * prosperityMult;
+            double workerMult = (settlement != null) ? settlement.GetStatValue(FCStatDefOf.workerProductionMultiplier) : 1;
+            return dictMult * statMult * compMult * taxBonus * prosperityMult * workerMult;
         }
         public double GetTitheModifierPerWorker()
         {
@@ -539,6 +541,10 @@ namespace FactionColonies
                         }
                     }
                 }
+                if (settlement != null)
+                {
+                    desc += settlement.GetStatDesc(FCStatDefOf.workerProductionBase);
+                }
                 cachedProdBaseDesc = desc.Trim();
                 dirtyProductionBaseDescCache = false;
             }
@@ -597,6 +603,10 @@ namespace FactionColonies
                                 desc += compDesc + "\n";
                         }
                     }
+                }
+                if (settlement != null)
+                {
+                    desc += settlement.GetStatDesc(FCStatDefOf.workerProductionMultiplier);
                 }
                 desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
 

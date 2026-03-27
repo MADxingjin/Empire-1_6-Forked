@@ -19,7 +19,7 @@
 	
   <FCTraitDesc_taxBaseRandomModifier>{0} Modificateur de dîme</FCTraitDesc_taxBaseRandomModifier>
 	
-  <FCTraitDesc_prosperityBaseRecovery>{0} Récupération de prospérité de base</FCTraitDesc_prosperityBaseRecovery>
+  <FCTraitDesc_prosperityGainedBase>{0} Prospérité gagnée de base</FCTraitDesc_prosperityGainedBase>
 	
   <FCTraitDesc_workerBaseCost>{0} coût des ouvriers</FCTraitDesc_workerBaseCost>
 	

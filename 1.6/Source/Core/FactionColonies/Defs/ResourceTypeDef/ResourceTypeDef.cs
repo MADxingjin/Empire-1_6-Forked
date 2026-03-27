@@ -338,7 +338,7 @@ namespace FactionColonies
             {
                 yield return item;
             }
-            if (thingAllowList.Count == 0 && thingCategoryAllowList.Count == 0 && stuffCategoryAllowList.Count == 0 && (modExtensions?.Count ?? 0) == 0)
+            if (canTithe && thingAllowList.Count == 0 && thingCategoryAllowList.Count == 0 && stuffCategoryAllowList.Count == 0 && (modExtensions?.Count ?? 0) == 0)
             {
                 yield return "ResourceTypeDef " + this.defName + " does not specify any allowed resources";
             }

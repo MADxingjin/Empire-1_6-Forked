@@ -111,9 +111,11 @@ namespace FactionColonies
         public static FCStatDef workerBaseOverMax;
         public static FCStatDef extraWorkersSoftcap;
         public static FCStatDef overMaxWorkersAdjustment;
+        public static FCStatDef workerProductionBase;
+        public static FCStatDef workerProductionMultiplier;
 
         // ── Prosperity ────────────────────────────────────────────
-        public static FCStatDef prosperityBaseRecovery;
+        public static FCStatDef prosperityGainedBase;
         public static FCStatDef prosperityLostBase;
 
         // ── Happiness (base) ──────────────────────────────────────

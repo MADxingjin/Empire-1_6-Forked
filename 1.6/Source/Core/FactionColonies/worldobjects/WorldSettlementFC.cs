@@ -1002,7 +1002,7 @@ namespace FactionColonies
             else if (prosperity > target)
                 drift = -Math.Min(FCSettings.prosperityDriftRate, distance);
 
-            return drift + GetStatValue(FCStatDefOf.prosperityBaseRecovery) - GetStatValue(FCStatDefOf.prosperityLostBase);
+            return drift + GetStatValue(FCStatDefOf.prosperityGainedBase) - GetStatValue(FCStatDefOf.prosperityLostBase);
         }
         public void UpdateProsperity()
         {
@@ -1031,7 +1031,7 @@ namespace FactionColonies
             double drift = prosperity < GetProsperityTarget() ? driftMagnitude : (prosperity > GetProsperityTarget() ? -driftMagnitude : 0);
             desc += TextUtil.ColorizeAdditiveBonus(Math.Round(drift, 1)) + " - " + "ProsperityDrift".Translate() + "\n";
 
-            desc += GetStatDesc(FCStatDefOf.prosperityBaseRecovery);
+            desc += GetStatDesc(FCStatDefOf.prosperityGainedBase);
             desc += GetStatDesc(FCStatDefOf.prosperityLostBase, hardinvert: true);
 
             return desc.Trim();

@@ -74,7 +74,7 @@
   <overMaxWorkersAdjustment.label>ajustement des ouvriers au-delà du maximum</overMaxWorkersAdjustment.label>
   
   
-  <prosperityBaseRecovery.label>récupération de prospérité de base</prosperityBaseRecovery.label>
+  <prosperityGainedBase.label>prospérité gagnée de base</prosperityGainedBase.label>
   
   
   <raidCooldownOffset.label>réduction du délai de récupération des raids</raidCooldownOffset.label>

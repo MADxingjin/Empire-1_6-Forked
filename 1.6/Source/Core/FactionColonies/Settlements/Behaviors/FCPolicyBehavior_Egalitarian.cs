@@ -35,7 +35,7 @@ namespace FactionColonies
             {
                 if (stat == FCStatDefOf.happinessGainedBase)
                     return currentValue + ext.taxBreakHappinessBonus;
-                if (stat == FCStatDefOf.prosperityBaseRecovery)
+                if (stat == FCStatDefOf.prosperityGainedBase)
                     return currentValue + ext.taxBreakProsperityBonus;
             }
 
@@ -58,7 +58,7 @@ namespace FactionColonies
             {
                 if (stat == FCStatDefOf.happinessGainedBase)
                     return TextUtil.ColorizeAdditiveBonus(ext.taxBreakHappinessBonus) + " - " + policy.def.LabelCap + "\n";
-                if (stat == FCStatDefOf.prosperityBaseRecovery)
+                if (stat == FCStatDefOf.prosperityGainedBase)
                     return TextUtil.ColorizeAdditiveBonus(ext.taxBreakProsperityBonus) + " - " + policy.def.LabelCap + "\n";
             }
             return null;

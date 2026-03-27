@@ -257,13 +257,27 @@
         <descriptionKey>FCTraitDesc_overMaxWorkersAdjustment</descriptionKey>
     </FactionColonies.FCStatDef>
 
+    <FactionColonies.FCStatDef>
+        <defName>workerProductionBase</defName>
+        <label>worker production base</label>
+        <aggregation>Additive</aggregation>
+        <descriptionKey>FCTraitDesc_workerProductionBase</descriptionKey>
+    </FactionColonies.FCStatDef>
+
+    <FactionColonies.FCStatDef>
+        <defName>workerProductionMultiplier</defName>
+        <label>worker production multiplier</label>
+        <aggregation>Multiplicative</aggregation>
+        <descriptionKey>FCTraitDesc_workerProductionMultiplier</descriptionKey>
+    </FactionColonies.FCStatDef>
+
     <!-- ── Prosperity ──────────────────────────────────────────── -->
 
     <FactionColonies.FCStatDef>
-        <defName>prosperityBaseRecovery</defName>
-        <label>prosperity base recovery</label>
+        <defName>prosperityGainedBase</defName>
+        <label>prosperity gained base</label>
         <aggregation>Additive</aggregation>
-        <descriptionKey>FCTraitDesc_prosperityBaseRecovery</descriptionKey>
+        <descriptionKey>FCTraitDesc_prosperityGainedBase</descriptionKey>
     </FactionColonies.FCStatDef>
 
     <FactionColonies.FCStatDef>

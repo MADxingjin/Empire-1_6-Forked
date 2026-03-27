@@ -553,7 +553,7 @@ namespace FactionColonies
                 FCStatDefOf.happinessGainedBase,
                 FCStatDefOf.militaryBaseLevel,
                 FCStatDefOf.settlementCostMultiplier,
-                FCStatDefOf.prosperityBaseRecovery
+                FCStatDefOf.prosperityGainedBase
             };
 
             foreach (WorldSettlementFC settlement in faction.settlements)
