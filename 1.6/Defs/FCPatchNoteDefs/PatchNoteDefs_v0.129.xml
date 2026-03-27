@@ -145,4 +145,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_129_4</defName>
+		<label>Settlement type fixes</label>
+		<description>Fix for handling of settlement types. Mostly relevant for submods.</description>
+
+		<major>0</major>
+		<minor>129</minor>
+		<patch>4</patch>
+
+		<releaseDay>26</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>When getting a WorldSettlementDef&apos;s SettlementTypeExtension, always grab the last one in the modExtensions list. This should account for xml inheritance</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Settlement type fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

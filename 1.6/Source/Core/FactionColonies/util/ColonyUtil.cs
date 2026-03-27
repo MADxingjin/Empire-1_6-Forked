@@ -16,7 +16,7 @@ namespace FactionColonies.util
             }
 
             /* Do any pre-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().PreCreation(ref tile, ref settlementType);
+            settlementType.GetSettlementTypeExtension().PreCreation(ref tile, ref settlementType);
 
             LogUtil.Message($"Creating settlement of type {settlementType.defName}");
             Faction faction = FactionCache.PlayerColonyFaction;
@@ -37,7 +37,7 @@ namespace FactionColonies.util
             worldcomp.roadBuilder.FlagUpdateRoadQueues();
 
             /* Do any post-settlement-creation demanded of the settlement type */
-            settlementType.GetModExtension<SettlementTypeExtension>().PostCreation(settlement);
+            settlementType.GetSettlementTypeExtension().PostCreation(settlement);
 
             LifecycleRegistry.InvokeOnSettlementCreated(settlement);
 

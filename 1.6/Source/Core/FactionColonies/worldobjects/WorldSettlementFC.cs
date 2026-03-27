@@ -229,7 +229,7 @@ namespace FactionColonies
             {
                 if (cachedlocationText.NullOrEmpty())
                 {
-                    cachedlocationText = settlementDef.GetModExtension<SettlementTypeExtension>().GetLocationText(this);
+                    cachedlocationText = settlementDef.GetSettlementTypeExtension().GetLocationText(this);
                 }
                 return cachedlocationText;
             }

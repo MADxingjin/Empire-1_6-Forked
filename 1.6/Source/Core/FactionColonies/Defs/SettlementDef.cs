@@ -106,7 +106,14 @@ namespace FactionColonies
         }
         public SettlementTypeExtension GetSettlementTypeExtension()
         {
-            return GetModExtension<SettlementTypeExtension>();
+            if (modExtensions == null) return null;
+            SettlementTypeExtension result = null;
+            for (int i = 0; i < modExtensions.Count; i++)
+            {
+                if (modExtensions[i] is SettlementTypeExtension ext)
+                    result = ext;
+            }
+            return result;
         }
 
         public bool IsUnlocked()
@@ -165,19 +172,19 @@ namespace FactionColonies
 
         public int GetCreationTime(PlanetTile tile)
         {
-            return GetModExtension<SettlementTypeExtension>().GetCreationTime(tile);
+            return GetSettlementTypeExtension().GetCreationTime(tile);
         }
         public int GetCreationCost()
         {
-            return GetModExtension<SettlementTypeExtension>().GetCreationCost();
+            return GetSettlementTypeExtension().GetCreationCost();
         }
         public PlanetTile GetTileForSettlement(PlanetTile tile)
         {
-            return GetModExtension<SettlementTypeExtension>().GetTileForSettlement(tile);
+            return GetSettlementTypeExtension().GetTileForSettlement(tile);
         }
         public TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
         {
-            return GetModExtension<SettlementTypeExtension>().GetTaxDeliveryMode(canUseShuttle, sourceTile);
+            return GetSettlementTypeExtension().GetTaxDeliveryMode(canUseShuttle, sourceTile);
         }
         public bool IsInList(List<WorldSettlementDef> deflist)
         {
@@ -261,7 +268,7 @@ namespace FactionColonies
             {
                 yield return "WorldSettlementDef " + defName + "specifies both blocked Biomes and allowed Biomes. Only one list should be specified";
             }
-            if (GetModExtension<SettlementTypeExtension>() == null)
+            if (GetSettlementTypeExtension() == null)
             {
                 yield return "WorldSettlementDef " + defName + " does not specify a SettlementTypeExtension_Base";
             }

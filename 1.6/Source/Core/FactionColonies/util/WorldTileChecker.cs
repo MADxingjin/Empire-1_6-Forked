@@ -31,7 +31,7 @@ namespace FactionColonies.util
                 }
             }
 
-            if (!(settlementdef.GetModExtension<SettlementTypeExtension>().TileIsValidForSettlement(tile, reason)))
+            if (!(settlementdef.GetSettlementTypeExtension().TileIsValidForSettlement(tile, reason)))
             {
                 return false;
             }

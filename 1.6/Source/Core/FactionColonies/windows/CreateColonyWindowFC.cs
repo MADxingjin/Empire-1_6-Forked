@@ -27,7 +27,7 @@ namespace FactionColonies
         private readonly FactionFC faction = null;
 
         private int SettlementCreationBaseCost => (int)(faction.GetStatValue(FCStatDefOf.createSettlementMultiplier) *
-                                                        (currentSettlementType.GetModExtension<SettlementTypeExtension>().GetCreationCost() + faction.GetStatValue(FCStatDefOf.createSettlementBaseCost)));
+                                                        (currentSettlementType.GetSettlementTypeExtension().GetCreationCost() + faction.GetStatValue(FCStatDefOf.createSettlementBaseCost)));
 
         /* UI math stuff! Yaaaay!
          * what a pain
