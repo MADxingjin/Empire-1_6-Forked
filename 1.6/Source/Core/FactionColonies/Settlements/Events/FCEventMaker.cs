@@ -192,6 +192,11 @@ namespace FactionColonies
                 duration = Rand.Range(def.timeTillTrigger, def.timeTillTriggerMax);
                 tempEvent.timeMinTrigger = Find.TickManager.TicksGame + def.timeTillTrigger;
                 tempEvent.timeMaxTrigger = Find.TickManager.TicksGame + def.timeTillTriggerMax;
+                LogUtil.Message($"Making event {def.defName} with variable duration. Min: {def.timeTillTrigger}, Max: {def.timeTillTriggerMax}, Duration: {duration}");
+            }
+            else
+            {
+                LogUtil.Message($"Making event {def.defName} with duration {duration}");
             }
             tempEvent.timeTillTrigger = Find.TickManager.TicksGame + duration;
             return tempEvent;
