@@ -117,6 +117,25 @@ namespace FactionColonies
                 }
             }
 
+            // Tech level and research requirements
+            if (!cEvent.SatisfiesTechRequirements(tmp.techLevel)) return false;
+
+            // Cooldown check
+            if (tmp.IsEventOnCooldown(cEvent)) return false;
+
+            // Minimum settlements prerequisite (independent of rangeSettlementsAffected targeting)
+            if (cEvent.minSettlements > 0 && tmp.settlements.Count < cEvent.minSettlements) return false;
+
+            // Required policy/trait/edict
+            if (cEvent.requiredPolicy != null
+                && !tmp.HasPolicy(cEvent.requiredPolicy)
+                && !tmp.HasTrait(cEvent.requiredPolicy)
+                && !tmp.HasEdict(cEvent.requiredPolicy)) return false;
+
+            // Minimum faction age
+            if (cEvent.minDaysSinceFounded > 0
+                && (Find.TickManager.TicksGame - tmp.FoundingTick) < cEvent.minDaysSinceFounded * GenDate.TicksPerDay) return false;
+
             return true;
         }
 
@@ -388,6 +407,12 @@ namespace FactionColonies
 
                 FCEvent evt = events[i];
                 faction.events.RemoveAt(i);
+
+                // Record cooldown for events that define one
+                if (evt.def != null && evt.def.cooldownTicks > 0)
+                {
+                    faction.RecordEventCooldown(evt.def);
+                }
 
                 if (evt.def == null)
                 {

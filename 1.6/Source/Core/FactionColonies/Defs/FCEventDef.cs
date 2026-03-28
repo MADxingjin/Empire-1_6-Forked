@@ -29,9 +29,16 @@ namespace FactionColonies
         public int minimumProsperity = 0;
         public int maximumProsperity = 100;
         public ResourceTypeDef requiredResource;
+        public List<ResearchProjectDef> requiredResearch = new List<ResearchProjectDef>();
+        public TechLevel minTechLevel = TechLevel.Undefined;
+        public TechLevel maxTechLevel = TechLevel.Undefined;
         public List<WorldSettlementDef> allowedSettlementTypes = new List<WorldSettlementDef>();
         public List<WorldSettlementDef> blockedSettlementTypes = new List<WorldSettlementDef>();
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
+        public int cooldownTicks = 0;
+        public int minSettlements = 0;
+        public FCPolicyDef requiredPolicy;
+        public int minDaysSinceFounded = 0;
 
         //Options
         public List<FCOptionDef> options = new List<FCOptionDef>();
@@ -96,6 +103,25 @@ namespace FactionColonies
             return true;
         }
 
+        /// <summary>
+        /// Checks whether this event's tech level and research prerequisites are met.
+        /// Tech level is checked against <see cref="FactionFC.techLevel"/>, which is
+        /// already clamped by <see cref="FCSettings.medievalTechOnly"/>.
+        /// </summary>
+        public bool SatisfiesTechRequirements(TechLevel factionTechLevel)
+        {
+            if (minTechLevel != TechLevel.Undefined && factionTechLevel < minTechLevel)
+                return false;
+            if (maxTechLevel != TechLevel.Undefined && factionTechLevel > maxTechLevel)
+                return false;
+            foreach (ResearchProjectDef project in requiredResearch)
+            {
+                if (!project.IsFinished)
+                    return false;
+            }
+            return true;
+        }
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string err in base.ConfigErrors())
@@ -117,6 +143,21 @@ namespace FactionColonies
                 if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)
                     yield return $"{defName}: restrictedBiomes contains unknown biome '{biome}'";
             }
+
+            if (minTechLevel != TechLevel.Undefined && maxTechLevel != TechLevel.Undefined
+                && minTechLevel > maxTechLevel)
+                yield return $"{defName}: minTechLevel ({minTechLevel}) > maxTechLevel ({maxTechLevel})";
+            for (int i = 0; i < requiredResearch.Count; i++)
+            {
+                if (requiredResearch[i] == null)
+                    yield return $"{defName}: requiredResearch contains a null entry at index {i} (bad defName?)";
+            }
+            if (cooldownTicks < 0)
+                yield return $"{defName}: cooldownTicks ({cooldownTicks}) must not be negative";
+            if (minSettlements < 0)
+                yield return $"{defName}: minSettlements ({minSettlements}) must not be negative";
+            if (minDaysSinceFounded < 0)
+                yield return $"{defName}: minDaysSinceFounded ({minDaysSinceFounded}) must not be negative";
         }
     }
     

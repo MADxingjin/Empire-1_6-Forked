@@ -159,6 +159,7 @@ namespace FactionColonies
         // ── Events & Bills ──
         public List<FCEvent> events = new List<FCEvent>();
         public float randomEventLastAdded = 0f;
+        public Dictionary<string, int> eventCooldowns = new Dictionary<string, int>();
         public List<BillFC> Bills = new List<BillFC>();
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
@@ -386,6 +387,8 @@ namespace FactionColonies
 
             //Random Event
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
+            Scribe_Collections.Look(ref eventCooldowns, "eventCooldowns", LookMode.Value, LookMode.Value);
+            if (eventCooldowns == null) eventCooldowns = new Dictionary<string, int>();
         }
 
         public override void FinalizeInit(bool fromLoad)
@@ -1213,6 +1216,19 @@ namespace FactionColonies
             FCPolicy edict;
             if (!edicts.TryGetValue(def.category, out edict)) return false;
             return edict.def == def;
+        }
+
+        public void RecordEventCooldown(FCEventDef def)
+        {
+            eventCooldowns[def.defName] = Find.TickManager.TicksGame;
+        }
+
+        public bool IsEventOnCooldown(FCEventDef def)
+        {
+            if (def.cooldownTicks <= 0) return false;
+            int lastTick;
+            if (!eventCooldowns.TryGetValue(def.defName, out lastTick)) return false;
+            return Find.TickManager.TicksGame - lastTick < def.cooldownTicks;
         }
 
         public void EnactEdict(FCPolicyDef def)

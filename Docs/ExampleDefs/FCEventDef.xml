@@ -59,6 +59,26 @@
 	<incompatibleEvents>
 		<li>anotherEvent</li>
 	</incompatibleEvents>
+	<!-- Tech level range for this event to be eligible. Uses TechLevel enum values. -->
+	<!-- Undefined (default) means no restriction. Checked against FactionFC.techLevel, -->
+	<!-- which is automatically clamped when medievalTechOnly is enabled. -->
+	<minTechLevel>Industrial</minTechLevel>
+	<maxTechLevel>Spacer</maxTechLevel>
+	<!-- All listed research projects must be completed for this event to fire. -->
+	<requiredResearch>
+		<li>Electricity</li>
+		<li>Machining</li>
+	</requiredResearch>
+	<!-- Minimum ticks after this event resolves before it can fire again. 0 = no cooldown.
+	     Example: 600000 = 10 in-game days. Default: 0 -->
+	<cooldownTicks>0</cooldownTicks>
+	<!-- Minimum faction settlements required for eligibility.
+	     Independent from rangeSettlementsAffected (which controls targeting). Default: 0 -->
+	<minSettlements>3</minSettlements>
+	<!-- Event only fires if this policy, trait, or edict is active. References FCPolicyDef defName. -->
+	<requiredPolicy>militaristic</requiredPolicy>
+	<!-- Minimum days since faction founding. 1 day = 60,000 ticks. Default: 0 -->
+	<minDaysSinceFounded>30</minDaysSinceFounded>
 
 	<!-- ── Options ── -->
 	<!-- If this event presents choices to the player, list the FCOptionDefs here. -->
