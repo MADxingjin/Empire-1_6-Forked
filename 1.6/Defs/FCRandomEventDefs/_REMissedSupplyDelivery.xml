@@ -68,6 +68,7 @@
 		<desc>The craftsmen wait for the next delivery. -0.5 weapons and -0.5 apparel base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-0.5</value></li>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>-0.5</value></li>
@@ -86,6 +87,7 @@
 		<desc>Trade connections help source replacement supplies locally. -0.25 weapons and -0.25 apparel base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>360000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-0.25</value></li>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>-0.25</value></li>
@@ -104,6 +106,7 @@
 		<desc>The craftsmen improvise with local materials, focusing their limited supplies on apparel. -1 weapons base production for a shorter period.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>

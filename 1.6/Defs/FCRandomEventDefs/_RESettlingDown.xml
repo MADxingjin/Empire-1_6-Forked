@@ -8,6 +8,7 @@
 		<category>EC_Settlement</category>
 
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 
 		<statModifiers>
 			<li><stat>createSettlementMultiplier</stat><value>2</value></li>

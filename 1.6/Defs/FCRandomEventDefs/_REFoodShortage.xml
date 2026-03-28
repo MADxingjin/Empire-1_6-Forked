@@ -84,6 +84,7 @@
 		<desc>Your settlements endure the food shortage. -1 food base production for the period.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -101,6 +102,7 @@
 		<desc>Emergency imports have arrived, lessening the impact of the food shortage. -0.5 food base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
@@ -118,6 +120,7 @@
 		<desc>Strict rationing is in effect. Citizens admire the shared sacrifice. -1 food base production, +1 loyalty.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>loyaltyGainedBase</stat><value>1</value></li>
@@ -136,6 +139,7 @@
 		<desc>The slaves bear the brunt of the shortage. Food production continues unaffected, but the workforce is diminished. -2 max workers.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-2</value></li>
 		</statModifiers>

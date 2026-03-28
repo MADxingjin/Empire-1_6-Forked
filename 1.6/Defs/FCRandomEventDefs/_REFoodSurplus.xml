@@ -66,6 +66,7 @@
 		<desc>The surplus is stored for continued production. +1 food base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
@@ -98,6 +99,7 @@
 		<desc>A grand feast is held to celebrate the bounty! Citizens are happy and loyal. +2 happiness, +1 loyalty.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>240000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>happinessGainedBase</stat><value>2</value></li>
 			<li><stat>loyaltyGainedBase</stat><value>1</value></li>

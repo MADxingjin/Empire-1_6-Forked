@@ -73,6 +73,7 @@
 		<desc>The fire burns unchecked through the forests. -1 logging base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -90,6 +91,7 @@
 		<desc>The firefighting crews managed to contain the blaze! The damage is limited. -0.5 logging base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>150000</timeTillTrigger>
+		<timeTillTriggerMax>210000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
@@ -107,6 +109,7 @@
 		<desc>Despite their best efforts, the firefighting crews couldn't contain the blaze. The fire rages on. -1 logging base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -124,6 +127,7 @@
 		<desc>The controlled burn clears damaged forest, opening land for farming. -1 logging base production, +0.5 food base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>

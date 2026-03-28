@@ -119,6 +119,7 @@
 		<desc>Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process. -1 max workers for three days.</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>240000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-1</value></li>
 		</statModifiers>

@@ -75,6 +75,7 @@
 		<desc>The expanded logging operations continue. +1 logging base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
@@ -107,6 +108,7 @@
 		<desc>Lumber is stockpiled for construction projects. +0.5 logging base production, and construction speeds up.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>buildTimeMultiplier</stat><value>0.5</value></li>

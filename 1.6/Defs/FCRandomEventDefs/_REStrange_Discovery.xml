@@ -133,6 +133,7 @@
 		<desc>The miners struck an exceptionally rich vein near the disturbance! Someone must have wanted us to find this... \n +0.5 base mining production. You will receive a haul of ores that the miners dug up.</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<statModifiers>
@@ -152,6 +153,7 @@
 		<desc>After investigating, the miners found several veins of ore all clumped together! Someone must have wanted us to find this... \n +0.25 base mining production. You will receive a small group of ores that the miners dug up.</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<statModifiers>
@@ -185,6 +187,7 @@
 		<desc>When your miners investigated, a large insectoid attacked! A few of the miners were killed before the creature was slain. Due to this, a number of workers have decided to stay home after the traumatic event. \n -3 max workers</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<statModifiers>

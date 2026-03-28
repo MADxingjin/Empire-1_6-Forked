@@ -69,6 +69,7 @@
 		<desc>The petitions continue unopposed. The movement grows as more settlements consider independence. -5 loyalty a day, -5 prosperity a day, +1 unrest a day.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>5</value></li>
 			<li><stat>unrestGainedBase</stat><value>1</value></li>
@@ -87,6 +88,7 @@
 		<desc>Aid is distributed to the discontented settlements. The gesture helps, but the underlying tensions remain. -3 loyalty a day, -3 prosperity a day.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>3</value></li>
 			<li><stat>prosperityGainedBase</stat><value>-3</value></li>
@@ -104,6 +106,7 @@
 		<desc>The independence movement is crushed by force. The dissidents are silenced, but the heavy-handed response breeds further resentment. -1 loyalty a day, +3 unrest a day.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>300000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>1</value></li>
 			<li><stat>unrestGainedBase</stat><value>3</value></li>

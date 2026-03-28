@@ -73,6 +73,7 @@
 		<desc>The blacksmith is working on your commission...</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>240000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
@@ -88,6 +89,7 @@
 		<desc>The blacksmith's inspiration has produced a true masterwork! The result exceeds all expectations.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>240000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
@@ -103,6 +105,7 @@
 		<desc>The blacksmith's ambition outpaced his skill. The result is serviceable, but far from the masterwork promised.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
+		<timeTillTriggerMax>240000</timeTillTriggerMax>
 		<rangeSettlementsAffected>1~1</rangeSettlementsAffected>
 		<settlementsCarryOver>true</settlementsCarryOver>
 		<randomThingRewardDef>RERD_Weapons</randomThingRewardDef>
@@ -118,6 +121,7 @@
 		<desc>The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -1 weapons base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>

@@ -72,6 +72,7 @@
 		<desc>Your settlements make do without the wildlife. -1 animals base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -89,6 +90,7 @@
 		<desc>Hunting parties range further to compensate. -0.5 animals base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-0.5</value></li>
 		</statModifiers>
@@ -106,6 +108,7 @@
 		<desc>Settlers shift their focus from hunting to farming. -1 animals base production, +0.5 food base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>360000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>

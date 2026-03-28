@@ -80,6 +80,7 @@
 			<desc>Your settlement may be hooked on drugs, but they seem content with their reality. You doubt you'll hear any complaints anytime soon. \n -10% base tax, +25% happiness gain, -25% unrest gain.</desc>
 			<category>EC_Economy</category>
 			<timeTillTrigger>600000</timeTillTrigger>
+			<timeTillTriggerMax>780000</timeTillTriggerMax>
 			<statModifiers>
 				<li><stat>happinessGainedMultiplier</stat><value>1.25</value></li>
 				<li><stat>unrestGainedMultiplier</stat><value>.75</value></li>

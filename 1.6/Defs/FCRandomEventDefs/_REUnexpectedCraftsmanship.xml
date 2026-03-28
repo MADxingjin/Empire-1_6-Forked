@@ -64,6 +64,7 @@
 		<desc>The craftsmen continue their excellent work across all disciplines. +0.5 weapons and +0.5 apparel base production. Their broad excellence boosts morale. +2 happiness.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>0.5</value></li>
@@ -83,6 +84,7 @@
 		<desc>The craftsmen focus their talents on weaponsmithing. +1 weapons base production. Their focused efforts produce a fine weapon.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Weapons_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
@@ -102,6 +104,7 @@
 		<desc>The craftsmen focus their talents on tailoring. +1 apparel base production. Their focused efforts produce a fine piece of armor.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Apparel_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>

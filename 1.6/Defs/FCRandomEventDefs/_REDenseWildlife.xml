@@ -70,6 +70,7 @@
 		<desc>The herds flourish and boost animal production. +1 animals base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>1</value></li>
 		</statModifiers>
@@ -101,6 +102,7 @@
 		<desc>Some of the animals are captured and domesticated for long-term gains. +0.5 animals and +0.5 food base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>360000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Animals_ProductionAdditive</stat><value>0.5</value></li>
 			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.5</value></li>

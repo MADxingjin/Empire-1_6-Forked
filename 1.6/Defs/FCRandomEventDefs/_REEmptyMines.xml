@@ -69,6 +69,7 @@
 		<desc>The miners wait for new veins to surface. -1 mining base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -86,6 +87,7 @@
 		<desc>The prospectors found nothing. The mines remain empty. -1 mining base production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>480000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>-1</value></li>
 		</statModifiers>
@@ -103,6 +105,7 @@
 		<desc>Idle miners are put to work on settlement construction projects. -1 mining base production, but construction speeds up.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
+		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>-1</value></li>
 			<li><stat>buildTimeMultiplier</stat><value>0.5</value></li>
