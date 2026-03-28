@@ -473,6 +473,21 @@ namespace FactionColonies
                 }
             }
 
+            // Permanent stat modifiers
+            if (resultEvent.permanentStatModifiers != null && resultEvent.permanentStatModifiers.Count > 0)
+            {
+                TaggedString permDesc = FCStatModifier.GetDescription(resultEvent.permanentStatModifiers);
+                if (!permDesc.NullOrEmpty())
+                {
+                    string[] lines = permDesc.ToString().Split('\n');
+                    foreach (string line in lines)
+                    {
+                        string trimmed = line.Trim();
+                        if (!trimmed.NullOrEmpty()) parts.Add(trimmed + " (permanent)");
+                    }
+                }
+            }
+
             // Item rewards
             if (resultEvent.randomThingValue > 0 && resultEvent.randomThingRewardDef != null)
             {
