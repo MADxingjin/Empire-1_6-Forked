@@ -79,8 +79,11 @@ namespace FactionColonies
             if (cEvent.minimumProsperity > tmp.averageProsperity || tmp.averageProsperity > cEvent.maximumProsperity) return false;
 
             // Settlement count check
-            bool noSettlementRequirement = cEvent.rangeSettlementsAffected.min == 0 && cEvent.rangeSettlementsAffected.max == 0;
-            if (!noSettlementRequirement && FactionCache.FactionComp.settlements.Count() < cEvent.rangeSettlementsAffected.min) return false;
+            bool noSettlementRequirement = cEvent.rangeSettlementsAffected.min == 0
+                                           && cEvent.rangeSettlementsAffected.max == 0
+                                           && !cEvent.targetAllSettlements;
+            if (!noSettlementRequirement && FactionCache.FactionComp.settlements.Count < cEvent.rangeSettlementsAffected.min) return false;
+            if (cEvent.targetAllSettlements && FactionCache.FactionComp.settlements.Count == 0) return false;
 
             // Biome check — for settlement-targeting events, at least one settlement must qualify
             if (!noSettlementRequirement && (cEvent.applicableBiomes.Count > 0 || cEvent.restrictedBiomes.Count > 0))
@@ -188,6 +191,51 @@ namespace FactionColonies
                 if (SettlementTraitLocations != null && SettlementTraitLocations.Count > 0)
                 {
                     tempEvent.settlementTraitLocations.AddRange(SettlementTraitLocations);
+                }
+                else if (tempEvent.def.targetAllSettlements)
+                {
+                    // Deterministically target every qualifying settlement
+                    HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
+                    foreach (FCEvent activeEvt in worldcomp.events)
+                    {
+                        if (activeEvt.def == null) continue;
+                        bool isSameDef = activeEvt.def == def;
+                        bool isIncompatible = false;
+                        if (!isSameDef)
+                        {
+                            foreach (FCEventDef inEvt in activeEvt.def.incompatibleEvents)
+                            {
+                                if (inEvt == def) { isIncompatible = true; break; }
+                            }
+                        }
+                        if (isSameDef || isIncompatible)
+                        {
+                            foreach (WorldSettlementFC s in activeEvt.settlementTraitLocations)
+                            {
+                                if (s != null) excludedSettlements.Add(s);
+                            }
+                        }
+                    }
+
+                    foreach (WorldSettlementFC settlement in worldcomp.settlements)
+                    {
+                        if (excludedSettlements.Contains(settlement)) continue;
+                        if (!tempEvent.def.BiomeAllowed(settlement.biome)) continue;
+                        if (!tempEvent.def.SettlementTypeAllowed(settlement.settlementDef)) continue;
+                        if (tempEvent.def.requiredResource != null)
+                        {
+                            ResourceFC res = settlement.GetResource(tempEvent.def.requiredResource);
+                            // null always fails theta comparisons, so this check is safe
+                            if (res?.InstantaneousProduction <= 0) continue;
+                        }
+                        tempEvent.settlementTraitLocations.Add(settlement);
+                    }
+
+                    if (tempEvent.settlementTraitLocations.Count == 0)
+                    {
+                        LogUtil.Warning($"targetAllSettlements event '{def.defName}' found no qualifying settlements");
+                        return null;
+                    }
                 }
                 else if (tempEvent.def.rangeSettlementsAffected.max != 0)
                 {

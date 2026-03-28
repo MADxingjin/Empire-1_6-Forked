@@ -1672,6 +1672,8 @@ namespace FactionColonies
                 foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
                     location.AddStatModifiers(fcevent.def.statModifiers, sourceId, fcevent.def.label);
+                    if (fcevent.def.permanentStatModifiers.Count > 0)
+                        location.AddPermanentModifiers(fcevent.def.permanentStatModifiers, sourceId, fcevent.def.label);
                 }
             }
             else
@@ -1680,6 +1682,8 @@ namespace FactionColonies
                 foreach (WorldSettlementFC settlement in settlements)
                 {
                     settlement.AddStatModifiers(fcevent.def.statModifiers, sourceId, fcevent.def.label);
+                    if (fcevent.def.permanentStatModifiers.Count > 0)
+                        settlement.AddPermanentModifiers(fcevent.def.permanentStatModifiers, sourceId, fcevent.def.label);
                 }
             }
 

@@ -15,6 +15,7 @@ namespace FactionColonies
         public bool activateAtStart;
         public int requiredWealth = 0;
         public IntRange rangeSettlementsAffected = new IntRange(0, 0);
+        public bool targetAllSettlements = false;
         public bool settlementsCarryOver = true;
         public bool useProximity = true;
         public float proximityFalloff = 20f;
@@ -51,8 +52,11 @@ namespace FactionColonies
         public List<string> applicableBiomes = new List<string>();
         public List<string> restrictedBiomes = new List<string>();
 
-        //Stat modifiers during event
+        //Stat modifiers during event (removed when event expires)
         public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
+
+        //Permanent stat modifiers (persist on settlement after event expires)
+        public List<FCStatModifier> permanentStatModifiers = new List<FCStatModifier>();
 
         public bool isMilitaryEvent = false;
         public bool isNegative = false;
@@ -98,6 +102,10 @@ namespace FactionColonies
                 yield return err;
             foreach (string err in FCStatModifier.ConfigErrors(statModifiers, defName))
                 yield return err;
+            foreach (string err in FCStatModifier.ConfigErrors(permanentStatModifiers, defName + ".permanentStatModifiers"))
+                yield return err;
+            if (targetAllSettlements && rangeSettlementsAffected.max != 0)
+                yield return $"{defName}: targetAllSettlements is true but rangeSettlementsAffected.max is {rangeSettlementsAffected.max}";
             foreach (string biome in applicableBiomes)
             {
                 if (DefDatabase<BiomeDef>.GetNamed(biome, false) == null)

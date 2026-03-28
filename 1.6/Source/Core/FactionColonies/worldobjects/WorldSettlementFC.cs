@@ -103,6 +103,13 @@ namespace FactionColonies
             public FCStatModifier mod;
         }
         private List<TaggedStatModifier> statModifiers = new List<TaggedStatModifier>();
+
+        /// <summary>
+        /// Permanent stat modifiers that survive event expiry and are serialized with the settlement.
+        /// Use AddPermanentModifiers/RemovePermanentModifiersBySource to modify.
+        /// </summary>
+        private List<PermanentStatModifier> permanentModifiers = new List<PermanentStatModifier>();
+
         private Dictionary<FCStatDef, double> cachedStatValues = new Dictionary<FCStatDef, double>();
         private Dictionary<FCStatDef, string> cachedStatDescs = new Dictionary<FCStatDef, string>();
 
@@ -495,7 +502,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref oneTimeSilverIncome, "silverIncome");
 
 
-            //Stat modifiers — not serialized directly; rebuilt from buildings/settlement type on load
+            //Stat modifiers — transient list not serialized; rebuilt from buildings/settlement type on load
+            //Permanent modifiers ARE serialized — they survive event expiry
+            Scribe_Collections.Look(ref permanentModifiers, "permanentModifiers", LookMode.Deep);
 
             //Biome_info
             Scribe_Values.Look(ref biome, "biome");
@@ -507,6 +516,9 @@ namespace FactionColonies
 
             //Prisoners
             Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
+            
+            // We never want permanentModifiers to be null. So just always check it here.
+            if (permanentModifiers is null) permanentModifiers = new List<PermanentStatModifier>();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -1321,12 +1333,58 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Clears all settlement-level stat modifiers (from buildings, settlement type).
+        /// Clears all settlement-level transient stat modifiers (from buildings, settlement type).
+        /// Does NOT clear permanent modifiers.
         /// </summary>
         public void ClearStatModifiers()
         {
             statModifiers.Clear();
             InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// Adds permanent stat modifiers that survive event expiry and are serialized with the settlement.
+        /// </summary>
+        public void AddPermanentModifiers(List<FCStatModifier> mods, string sourceId, string sourceLabel)
+        {
+            if (mods is null || mods.Count == 0) return;
+            foreach (FCStatModifier mod in mods)
+            {
+                permanentModifiers.Add(new PermanentStatModifier
+                {
+                    stat = mod.stat,
+                    value = mod.value,
+                    sourceId = sourceId,
+                    sourceLabel = sourceLabel ?? sourceId
+                });
+            }
+            InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// Removes all permanent modifiers that were added with the given sourceId.
+        /// </summary>
+        public void RemovePermanentModifiersBySource(string sourceId)
+        {
+            for (int i = permanentModifiers.Count - 1; i >= 0; i--)
+            {
+                if (permanentModifiers[i].sourceId == sourceId)
+                    permanentModifiers.RemoveAt(i);
+            }
+            InvalidateStatCache();
+        }
+
+        /// <summary>
+        /// Returns true if this settlement has any permanent modifier from the given source.
+        /// </summary>
+        public bool HasPermanentModifier(string sourceId)
+        {
+            foreach (PermanentStatModifier psm in permanentModifiers)
+            {
+                if (psm.sourceId == sourceId)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -1363,6 +1421,17 @@ namespace FactionColonies
                         value += tagged.mod.value;
                     else
                         value *= tagged.mod.value;
+                }
+            }
+
+            foreach (PermanentStatModifier perm in permanentModifiers)
+            {
+                if (perm.stat == stat)
+                {
+                    if (stat.aggregation == FCStatAggregation.Additive)
+                        value += perm.value;
+                    else
+                        value *= perm.value;
                 }
             }
 
@@ -1414,6 +1483,16 @@ namespace FactionColonies
                         desc += TextUtil.ColorizeAdditiveBonus(tagged.mod.value, invert: invert, hardinvert: hardinvert) + " - " + tagged.sourceLabel + "\n";
                     else
                         desc += TextUtil.ColorizeMultiplierBonus(tagged.mod.value, invert: invert) + " - " + tagged.sourceLabel + "\n";
+                }
+
+                // Permanent modifiers (persist after event expiry)
+                foreach (PermanentStatModifier perm in permanentModifiers)
+                {
+                    if (perm.stat != stat) continue;
+                    if (isAdditive)
+                        desc += TextUtil.ColorizeAdditiveBonus(perm.value, invert: invert, hardinvert: hardinvert) + " - " + perm.sourceLabel + " (permanent)\n";
+                    else
+                        desc += TextUtil.ColorizeMultiplierBonus(perm.value, invert: invert) + " - " + perm.sourceLabel + " (permanent)\n";
                 }
 
                 // IStatModifierProvider comps

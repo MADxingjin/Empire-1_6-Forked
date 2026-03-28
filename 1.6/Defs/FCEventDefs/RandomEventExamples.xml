@@ -35,8 +35,13 @@
 		
 		
 		<rangeSettlementsAffected>1~3</rangeSettlementsAffected> <!-- The amount of settlements event can affect. Leave this out if you want it to affect the faction as a whole -->
+		<targetAllSettlements>false</targetAllSettlements> <!-- If true, deterministically targets every qualifying settlement (after biome/type/resource filters). Overrides rangeSettlementsAffected. -->
 		<settlementsCarryOver>true</settlementsCarryOver> <!-- If affecting settlements, use this for it to keep the same settlements selected. It's reccommended to leave this to true. -->
 		<prosperityLost>0</prosperityLost> <!-- amount of prosperity to deduct from current prosperity -->
+
+		<permanentStatModifiers> <!-- Like statModifiers, but these persist on the settlement permanently after the event expires. Use for lasting effects like "Ancient ruins discovered: +2 research forever". -->
+			<!-- <li><stat>RTD_Research_ProductionAdditive</stat><value>2</value></li> -->
+		</permanentStatModifiers>
 		
 		
 		<!-- Random Event Prerequisites -->
