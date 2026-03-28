@@ -17,6 +17,8 @@
 
 		<isRandomEvent>true</isRandomEvent>
 		<weight>10</weight>
+		<cooldownTicks>1800000</cooldownTicks>
+		<minDaysSinceFounded>5</minDaysSinceFounded>
 		<incompatibleEvents>
 			<li>moonlitRitual_1-1</li>
 			<li>moonlitRitual_2-1</li>

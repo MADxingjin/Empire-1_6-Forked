@@ -16,6 +16,9 @@
 		<isRandomEvent>true</isRandomEvent>
 		<isNegative>true</isNegative>
 		<weight>25</weight>
+		<cooldownTicks>600000</cooldownTicks>
+		<minSettlements>3</minSettlements>
+		<minDaysSinceFounded>15</minDaysSinceFounded>
 		<incompatibleEvents>
 			<li>independencePetitions_1-1</li>
 			<li>independencePetitions_1-2</li>

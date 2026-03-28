@@ -19,6 +19,8 @@
 
 		<isRandomEvent>true</isRandomEvent>
 		<weight>25</weight>
+		<cooldownTicks>900000</cooldownTicks>
+		<minSettlements>2</minSettlements>
 		<incompatibleEvents>
 		<li>wanderlust</li>
 		</incompatibleEvents>

@@ -35,4 +35,45 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_133_1</defName>
+		<label>Event updates</label>
+		<description>Update some events to use the new FCEventDef fields.</description>
+
+		<major>0</major>
+		<minor>133</minor>
+		<patch>1</patch>
+
+		<releaseDay>28</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Drug Trade has a 30-day cooldown, and can only fire after the Empire faction is 5 days old</li>
+		<li>Independence Petitions has a 10-day cooldown, can only fire after the Empire faction is 5 days old, and requires at least 3 settlements in the faction</li>
+		<li>Moonlit Ritual has a 30-day cooldown, and can only fire after the Empire faction is 5 days old</li>
+		<li>Settling Down has a 15-day cooldown, and requires at least 2 settlements in the faction</li>
+		<li>Strange Discovery has a 30-day cooldown, and can only fire after the Empire faction is 5 days old</li>
+		<li>Wanderlust has a 15-day cooldown</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Event updates</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

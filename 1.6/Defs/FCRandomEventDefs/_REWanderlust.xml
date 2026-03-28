@@ -19,6 +19,7 @@
 
 		<isRandomEvent>true</isRandomEvent>
 		<weight>25</weight>
+		<cooldownTicks>900000</cooldownTicks>
 		<incompatibleEvents>
 		<li>settlingDown</li>
 		</incompatibleEvents>
