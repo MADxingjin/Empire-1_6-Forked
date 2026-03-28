@@ -16,6 +16,10 @@
 	<category>EC_Other</category>
 	<!-- Time in ticks until the event triggers/resolves. -1 means it triggers immediately. Default: -1 -->
 	<timeTillTrigger>60000</timeTillTrigger>
+	<!-- Maximum duration in ticks. If greater than timeTillTrigger, the actual duration is
+	     randomized between the two values. The player sees a range, not the exact end time.
+	     Default: -1 (no variable duration, uses exact timeTillTrigger). -->
+	<timeTillTriggerMax>120000</timeTillTriggerMax>
 
 	<!-- ── Random Event Configuration ── -->
 	<!-- Set to true if this event should be eligible for random selection. Default: false -->

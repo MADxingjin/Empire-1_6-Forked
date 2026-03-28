@@ -186,7 +186,14 @@ namespace FactionColonies
             FCEvent tempEvent = new FCEvent(true);
             tempEvent.def = def;
             tempEvent.tickStarted = Find.TickManager.TicksGame;
-            tempEvent.timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame;
+            int duration = def.timeTillTrigger;
+            if (def.HasVariableDuration)
+            {
+                duration = Rand.Range(def.timeTillTrigger, def.timeTillTriggerMax);
+                tempEvent.timeMinTrigger = Find.TickManager.TicksGame + def.timeTillTrigger;
+                tempEvent.timeMaxTrigger = Find.TickManager.TicksGame + def.timeTillTriggerMax;
+            }
+            tempEvent.timeTillTrigger = Find.TickManager.TicksGame + duration;
             return tempEvent;
         }
 
@@ -196,13 +203,21 @@ namespace FactionColonies
 
             FactionFC worldcomp = FactionCache.FactionComp;
 
+            int now = Find.TickManager.TicksGame;
+            int duration = def.timeTillTrigger;
             FCEvent tempEvent = new FCEvent(true)
             {
                 def = def,
-                tickStarted = Find.TickManager.TicksGame,
-                timeTillTrigger = def.timeTillTrigger + Find.TickManager.TicksGame,
+                tickStarted = now,
                 settlementTraitLocations = new List<WorldSettlementFC>()
             };
+            if (def.HasVariableDuration)
+            {
+                duration = Rand.Range(def.timeTillTrigger, def.timeTillTriggerMax);
+                tempEvent.timeMinTrigger = now + def.timeTillTrigger;
+                tempEvent.timeMaxTrigger = now + def.timeTillTriggerMax;
+            }
+            tempEvent.timeTillTrigger = now + duration;
 
             try
             {

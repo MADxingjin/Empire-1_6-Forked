@@ -1344,9 +1344,27 @@ namespace FactionColonies
                 Text.Anchor = anchorBefore;
 
                 // Bottom-right: Progress bar + time label
-                int ticksLeft = evt.timeTillTrigger - Find.TickManager.TicksGame;
-                string timeStr = Math.Max(ticksLeft, 0).ToTimeString();
                 float progress = evt.Progress;
+                string timeStr;
+                if (evt.HasVariableDuration)
+                {
+                    int now = Find.TickManager.TicksGame;
+                    if (now < evt.timeMinTrigger)
+                    {
+                        int ticksLeft = evt.timeMinTrigger - now;
+                        timeStr = Math.Max(ticksLeft, 0).ToTimeString();
+                    }
+                    else
+                    {
+                        int ticksLeft = evt.timeMaxTrigger - now;
+                        timeStr = "FCEndsWithin".Translate(Math.Max(ticksLeft, 0).ToTimeString());
+                    }
+                }
+                else
+                {
+                    int ticksLeft = evt.timeTillTrigger - Find.TickManager.TicksGame;
+                    timeStr = Math.Max(ticksLeft, 0).ToTimeString();
+                }
 
                 float barX = contentX + contentW - progressW;
                 float barY = botY + (lineH - progressH) / 2f;

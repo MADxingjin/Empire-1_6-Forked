@@ -7,6 +7,7 @@ namespace FactionColonies
     public class FCEventDef : Def
     {
         public int timeTillTrigger = -1;
+        public int timeTillTriggerMax = -1;
         public string desc;
         public FCEventCategoryDef category;
 
@@ -67,6 +68,8 @@ namespace FactionColonies
 
         public bool isMilitaryEvent = false;
         public bool isNegative = false;
+
+        public bool HasVariableDuration => timeTillTriggerMax > timeTillTrigger && timeTillTrigger >= 0;
 
         public bool BiomeAllowed(string biome)
         {
@@ -158,6 +161,8 @@ namespace FactionColonies
                 yield return $"{defName}: minSettlements ({minSettlements}) must not be negative";
             if (minDaysSinceFounded < 0)
                 yield return $"{defName}: minDaysSinceFounded ({minDaysSinceFounded}) must not be negative";
+            if (timeTillTriggerMax != -1 && timeTillTriggerMax < timeTillTrigger)
+                yield return $"{defName}: timeTillTriggerMax ({timeTillTriggerMax}) < timeTillTrigger ({timeTillTrigger})";
         }
     }
     

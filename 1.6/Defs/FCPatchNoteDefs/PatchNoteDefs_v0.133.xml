@@ -76,4 +76,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_133_2</defName>
+		<label>Variable-length Events</label>
+		<description>Add the ability to set a variable duration for Empire Events.</description>
+
+		<major>0</major>
+		<minor>133</minor>
+		<patch>2</patch>
+
+		<releaseDay>28</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>Adds timeTillTriggerMax field to FCEventDef. If set, and larger than timeTillTriger, then the event&apos;s duration will be randomly chosen from the range (timeTillTrigger, timeTillTriggerMax)</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Variable-length Events</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

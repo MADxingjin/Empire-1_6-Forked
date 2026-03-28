@@ -1,4 +1,5 @@
-﻿using FactionColonies.util;
+﻿using System;
+using FactionColonies.util;
 using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
@@ -178,7 +179,20 @@ namespace FactionColonies
                         }
                     }
                 }
-                Widgets.Label(time, (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+                string timeStr;
+                if (evt.HasVariableDuration)
+                {
+                    int now = Find.TickManager.TicksGame;
+                    if (now < evt.timeMinTrigger)
+                        timeStr = Math.Max(evt.timeMinTrigger - now, 0).ToTimeString();
+                    else
+                        timeStr = "FCEndsWithin".Translate(Math.Max(evt.timeMaxTrigger - now, 0).ToTimeString());
+                }
+                else
+                {
+                    timeStr = (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString();
+                }
+                Widgets.Label(time, timeStr);
             }
 
 

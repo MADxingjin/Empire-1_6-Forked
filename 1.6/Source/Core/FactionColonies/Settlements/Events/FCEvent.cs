@@ -12,6 +12,8 @@ namespace FactionColonies
         public FCEventDef def = new FCEventDef();
         public PlanetTile location = -1;
         public int timeTillTrigger = -1;
+        public int timeMinTrigger = -1;
+        public int timeMaxTrigger = -1;
         public int tickStarted = -1;
         public int loadID = -1;
         public PlanetTile source = -1;
@@ -43,14 +45,18 @@ namespace FactionColonies
 
         public WorldSettlementDef settlementToCreate = null;
 
+        public bool HasVariableDuration => timeMinTrigger > 0 && timeMaxTrigger > 0;
+
         public float Progress
         {
             get
             {
-                if (tickStarted < 0 || timeTillTrigger <= tickStarted) return 1f;
+                if (tickStarted < 0) return 1f;
+                int endpoint = HasVariableDuration ? timeMinTrigger : timeTillTrigger;
+                if (endpoint <= tickStarted) return 1f;
                 int now = Find.TickManager.TicksGame;
-                if (now >= timeTillTrigger) return 1f;
-                return (float)(now - tickStarted) / (timeTillTrigger - tickStarted);
+                if (now >= endpoint) return 1f;
+                return (float)(now - tickStarted) / (endpoint - tickStarted);
             }
         }
 
@@ -86,6 +92,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref location, "location");
             Scribe_Values.Look(ref timeTillTrigger, "timeTillTrigger");
             Scribe_Values.Look(ref tickStarted, "tickStarted", -1);
+            Scribe_Values.Look(ref timeMinTrigger, "timeMinTrigger", -1);
+            Scribe_Values.Look(ref timeMaxTrigger, "timeMaxTrigger", -1);
             Scribe_Values.Look(ref source, "source");
             Scribe_Values.Look(ref hasDestination, "hasDestination");
             Scribe_Collections.Look(ref settlementTraitLocations, "settlementTraitLocations", LookMode.Reference);

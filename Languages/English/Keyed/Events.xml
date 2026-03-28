@@ -12,6 +12,7 @@
 	<FCActiveEventsFiltered>{0} of {1} active events</FCActiveEventsFiltered>
 	<FCEventCatAll>All</FCEventCatAll>
 	<FCNoEventsMatchFilter>No events match the current filters.</FCNoEventsMatchFilter>
+	<FCEndsWithin>Ends within {0}</FCEndsWithin>
 	<FCMultipleSettlements>Multiple ({0})</FCMultipleSettlements>
 
 	<!-- Event Option Window -->
