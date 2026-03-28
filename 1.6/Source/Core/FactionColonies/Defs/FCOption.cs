@@ -500,10 +500,22 @@ namespace FactionColonies
             string durationStr = "";
             if (resultEvent.timeTillTrigger > 1500)
             {
-                int days = (int)(resultEvent.timeTillTrigger / (double)GenDate.TicksPerDay);
-                if (days > 0)
+                int minDays = (int)(resultEvent.timeTillTrigger / (double)GenDate.TicksPerDay);
+                if (resultEvent.HasVariableDuration)
                 {
-                    durationStr = " " + "FCEffectPreviewDuration".Translate(days);
+                    int maxDays = (int)(resultEvent.timeTillTriggerMax / (double)GenDate.TicksPerDay);
+                    if (minDays > 0 && maxDays > minDays)
+                    {
+                        durationStr = " " + "FCEffectPreviewDurationRange".Translate(minDays, maxDays);
+                    }
+                    else if (minDays > 0)
+                    {
+                        durationStr = " " + "FCEffectPreviewDuration".Translate(minDays);
+                    }
+                }
+                else if (minDays > 0)
+                {
+                    durationStr = " " + "FCEffectPreviewDuration".Translate(minDays);
                 }
             }
 

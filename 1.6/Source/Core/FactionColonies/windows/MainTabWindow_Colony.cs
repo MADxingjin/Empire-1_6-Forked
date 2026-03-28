@@ -1187,7 +1187,7 @@ namespace FactionColonies
             const float accentW = 4f;
             const float rowGap = 2f;
             const float progressW = 160f;
-            const float progressH = 14f;
+            const float progressH = 16f;
             const float summaryH = 24f;
             const float filterH = 24f;
 
@@ -1255,7 +1255,8 @@ namespace FactionColonies
             float viewH = rect.yMax - listY - pad;
             Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = sorted.Count * (rowH + rowGap);
-            Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
+            float scrollMargin = contentH > viewH ? 16f : 0f;
+            Rect scrollRect = new Rect(0f, 0f, viewRect.width - scrollMargin, Mathf.Max(contentH, viewH));
 
             // Filtered empty state
             if (sorted.Count == 0)
@@ -1351,8 +1352,11 @@ namespace FactionColonies
                     int now = Find.TickManager.TicksGame;
                     if (now < evt.timeMinTrigger)
                     {
-                        int ticksLeft = evt.timeMinTrigger - now;
-                        timeStr = Math.Max(ticksLeft, 0).ToTimeString();
+                        int minLeft = evt.timeMinTrigger - now;
+                        int maxLeft = evt.timeMaxTrigger - now;
+                        timeStr = "FCDurationRange".Translate(
+                            Math.Max(minLeft, 0).ToTimeString(),
+                            Math.Max(maxLeft, 0).ToTimeString());
                     }
                     else
                     {

@@ -13,6 +13,8 @@
 	<FCEventCatAll>All</FCEventCatAll>
 	<FCNoEventsMatchFilter>No events match the current filters.</FCNoEventsMatchFilter>
 	<FCEndsWithin>Ends within {0}</FCEndsWithin>
+	<FCDurationRange>{0} - {1}</FCDurationRange>
+	<FCEffectPreviewDurationRange>({0}-{1} days)</FCEffectPreviewDurationRange>
 	<FCMultipleSettlements>Multiple ({0})</FCMultipleSettlements>
 
 	<!-- Event Option Window -->
