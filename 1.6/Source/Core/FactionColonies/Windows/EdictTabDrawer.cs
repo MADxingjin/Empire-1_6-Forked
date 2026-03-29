@@ -195,7 +195,10 @@ namespace FactionColonies
                     Text.Anchor = TextAnchor.UpperLeft;
                     float effectsHeight = Text.CalcHeight(effectsText, effectsWidth);
                     Rect effectsRect = new Rect(rect.x + CategoryPadding, contentY + 2f, effectsWidth, effectsHeight);
+                    if (!activeEdict.IsFullyActive)
+                        GUI.color = Color.gray;
                     Widgets.Label(effectsRect, effectsText);
+                    GUI.color = Color.white;
                     contentY = effectsRect.yMax + 2f;
                     Text.Font = GameFont.Small;
                 }
