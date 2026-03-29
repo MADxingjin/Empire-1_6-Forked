@@ -148,4 +148,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_133_5</defName>
+		<label>Minor Manual Battle Fixes</label>
+		<description>Adds some extra pawn-cleanup after manual battles.</description>
+
+		<major>0</major>
+		<minor>133</minor>
+		<patch>5</patch>
+
+		<releaseDay>29</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Patch</patchNoteType>
+
+		<patchNoteLines>
+		<li>After a manual battle, all non-player pawns that were drafted are moved back to the Empire faction</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Minor Manual Battle Fixes</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

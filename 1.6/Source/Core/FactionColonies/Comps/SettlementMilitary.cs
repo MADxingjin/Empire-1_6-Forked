@@ -392,10 +392,30 @@ namespace FactionColonies
             var map = Map;
             if (map == null) return;
 
+            // Snapshot supporting (player) pawns before caravan formation modifies the lists.
+            // Used to distinguish player pawns from Empire defenders during cleanup.
+            var supportingPawns = new HashSet<Pawn>();
+            foreach (var cs in supporting)
+                foreach (var p in cs.pawns)
+                    if (p != null) supportingPawns.Add(p);
+
             var lords = map.lordManager.lords.ListFullCopy();
             foreach (var lord in lords)
             {
                 map.lordManager.RemoveLord(lord);
+            }
+
+            // Restore faction on any drafted defenders before despawn/caravan formation.
+            // Drafting sets defenders to Faction.OfPlayer (GizmosPatches), which makes them
+            // count as free colonists. Restore to Empire faction to prevent ghost colonists
+            // in the world pawn pool after map removal.
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            foreach (Pawn defender in defenders)
+            {
+                if (defender is null || defender.Dead || defender.Destroyed) continue;
+                if (supportingPawns.Contains(defender)) continue;
+                if (defender.Faction == Faction.OfPlayer)
+                    defender.SetFaction(empireFaction);
             }
 
             CameraJumper.TryJump(WorldSettlement.Tile);
@@ -471,29 +491,27 @@ namespace FactionColonies
 
             Current.Game.DeinitAndRemoveMap(map, false);
 
-            // Safety net: reclaim any defender pawns that escaped into caravans
-            var empireDefenders = new HashSet<Pawn>(defenders);
-            foreach (var cs in supporting)
-                foreach (var p in cs.pawns)
-                    empireDefenders.Remove(p);
-
-            if (empireDefenders.Count > 0)
+            // Clean up non-supporting defenders: remove from stray caravans and destroy
+            // generated (non-squad) pawns to prevent ghost colonists in the world pawn pool.
+            foreach (Pawn defender in defenders)
             {
+                if (defender is null || defender.Destroyed) continue;
+                if (supportingPawns.Contains(defender)) continue;
+
+                // Remove from any caravan they may have ended up in
                 foreach (var caravan in Find.WorldObjects.Caravans.ToList())
                 {
-                    foreach (var pawn in caravan.PawnsListForReading.ToList())
+                    if (caravan.PawnsListForReading.Contains(defender))
                     {
-                        if (empireDefenders.Contains(pawn) && pawn.Faction != Faction.OfPlayer)
-                        {
-                            caravan.RemovePawn(pawn);
-                            if (!pawn.Destroyed) pawn.Destroy();
-                        }
-                    }
-                    if (!caravan.Destroyed && !caravan.PawnsListForReading.Any())
-                    {
-                        caravan.Destroy();
+                        caravan.RemovePawn(defender);
+                        if (!caravan.Destroyed && !caravan.PawnsListForReading.Any())
+                            caravan.Destroy();
                     }
                 }
+
+                // Only destroy generated (non-squad) pawns — squad mercs persist between battles
+                if (!defender.IsMercenary() && !defender.Destroyed)
+                    defender.Destroy();
             }
         }
 
