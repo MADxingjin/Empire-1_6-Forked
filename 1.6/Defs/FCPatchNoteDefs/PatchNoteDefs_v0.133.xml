@@ -184,4 +184,40 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_133_6</defName>
+		<label>Linux Patch Fix</label>
+		<description>Attempts to fix an issue with the existing Linux patch.</description>
+
+		<major>0</major>
+		<minor>133</minor>
+		<patch>6</patch>
+
+		<releaseDay>29</releaseDay>
+		<releaseMonth>3</releaseMonth>
+		<releaseYear>2026</releaseYear>
+
+		<patchNoteType>Hotfix</patchNoteType>
+
+		<patchNoteLines>
+		<li>Bugfix: existing linux patch hadn&apos;t been updated for the new refactored code patterns</li>
+		</patchNoteLines>
+
+		<patchNoteImagePaths>
+			<li>PatchNoteImages/global/empire</li>
+		</patchNoteImagePaths>
+
+		<patchNoteImageDescriptions>
+			<li>Linux Patch Fix</li>
+		</patchNoteImageDescriptions>
+
+		<additionalNotes>
+			<li>Please raise any issues you find on the Github page.</li>
+		</additionalNotes>
+
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

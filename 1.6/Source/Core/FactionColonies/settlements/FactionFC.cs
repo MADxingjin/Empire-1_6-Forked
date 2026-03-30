@@ -247,11 +247,18 @@ namespace FactionColonies
 
             var methods = typeof(FactionFC).Assembly.GetTypes().Where(t0 => t0 != null && t0.IsClass && !typeof(Delegate).IsAssignableFrom(t0) && t0.GetCustomAttributes(typeof(HarmonyPatch)).Any()).SelectMany(t1 =>
             {
-                HarmonyPatch patch = (HarmonyPatch)Attribute.GetCustomAttribute(t1, typeof(HarmonyPatch));
-                MethodInfo[] m = patch?.info?.declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                Type declaringType = null;
+                string methodName = null;
+                foreach (HarmonyPatch attr in t1.GetCustomAttributes(typeof(HarmonyPatch), false))
+                {
+                    if (attr.info.declaringType != null) declaringType = attr.info.declaringType;
+                    if (attr.info.methodName != null) methodName = attr.info.methodName;
+                }
+
+                MethodInfo[] m = declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 if (m == null) return new List<MethodInfo>();
 
-                return m.Where(met => met.Name == patch.info.methodName);
+                return m.Where(met => met.Name == methodName);
             }).Where(WouldCrash);
 
             foreach (MethodInfo i in methods)
