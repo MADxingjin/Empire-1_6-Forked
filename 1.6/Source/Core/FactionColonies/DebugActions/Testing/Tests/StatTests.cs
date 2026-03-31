@@ -281,11 +281,10 @@ namespace FactionColonies
                 $"Combined additive stat should not be NaN");
             // Verify the sum matches (within tolerance for behavior adjustments)
             double expected = settlementPart + factionPart;
-            // If the difference is large, a behavior is contributing — log it for inspection
-            if (Math.Abs(combined - expected) > 0.001)
-            {
-                LogUtil.Message($"Additive stat {stat.defName}: settlement={settlementPart:F2} + faction={factionPart:F2} = {expected:F2}, combined={combined:F2} (behavior delta={combined - expected:F2})");
-            }
+            double delta = combined - expected;
+            // Behaviors may adjust, but the delta should be bounded
+            TestAssert.IsTrue(Math.Abs(delta) < 50,
+                $"Stat {stat.defName}: combined ({combined:F2}) diverges too far from settlement+faction ({expected:F2}), delta={delta:F2}");
         }
 
         [EmpireTest("Stat")]
@@ -308,10 +307,10 @@ namespace FactionColonies
             TestAssert.IsFalse(double.IsNaN(combined),
                 $"Combined multiplicative stat should not be NaN");
             double expected = settlementPart * factionPart;
-            if (Math.Abs(combined - expected) > 0.001)
-            {
-                LogUtil.Message($"Multiplicative stat {stat.defName}: settlement={settlementPart:F2} * faction={factionPart:F2} = {expected:F2}, combined={combined:F2} (behavior delta={combined - expected:F2})");
-            }
+            double delta = combined - expected;
+            // Behaviors may adjust, but the delta should be bounded
+            TestAssert.IsTrue(Math.Abs(delta) < 50,
+                $"Stat {stat.defName}: combined ({combined:F2}) diverges too far from settlement*faction ({expected:F2}), delta={delta:F2}");
         }
 
         // ============================
@@ -585,11 +584,35 @@ namespace FactionColonies
 
             double taxBonus = faction.GetStatValue(FCStatDefOf.taxBonusFlat, settlement);
             double expectedMinBonus = Math.Floor(settlement.happiness / 10);
-            // The behavior adds floor(happiness/10) and subtracts 30 if on tax break.
-            // At minimum (no tax break), the bonus should include at least floor(happiness/10).
             TestAssert.IsFalse(double.IsNaN(taxBonus),
                 "Egalitarian taxBonusFlat should not be NaN");
-            LogUtil.Message($"Egalitarian taxBonusFlat for {settlement.Name}: {taxBonus:F2} (happiness={settlement.happiness:F0}, expected contribution ~{expectedMinBonus:F0})");
+
+            // The behavior adds floor(happiness/10), minus 30 if on tax break.
+            // Compute what the stat would be without the behavior contribution.
+            double baseWithoutBehavior = faction.GetFactionStatValue(FCStatDefOf.taxBonusFlat);
+            double behaviorDelta = taxBonus - baseWithoutBehavior;
+            // At worst (tax break active), delta = floor(happiness/10) - 30
+            double minExpected = expectedMinBonus - 30;
+            TestAssert.IsTrue(behaviorDelta >= minExpected - 0.01,
+                $"Egalitarian delta ({behaviorDelta:F2}) should be >= {minExpected:F0} (floor(happiness/10) - taxBreakPenalty)");
+        }
+
+        [EmpireTest("Stat")]
+        public static void CombinedStat_TitheMultiplier_RespectsSettlementModifiers()
+        {
+            var faction = GetFaction();
+            var settlement = GetFirstSettlement();
+            if (faction == null || settlement == null)
+                TestAssert.Skip("No faction/settlement");
+
+            FCStatDef stat = FCStatDefOf.titheValueMultiplier;
+            TestAssert.IsTrue(stat.appliesToSettlements,
+                "titheValueMultiplier should apply to settlements");
+            double combined = faction.GetStatValue(stat, settlement);
+            TestAssert.IsFalse(double.IsNaN(combined),
+                "titheValueMultiplier combined value should not be NaN");
+            TestAssert.GreaterThan(combined, 0,
+                "titheValueMultiplier combined value should be positive");
         }
     }
 }

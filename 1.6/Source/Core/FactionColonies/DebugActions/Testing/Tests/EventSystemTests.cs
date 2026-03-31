@@ -69,11 +69,22 @@ namespace FactionColonies
         {
             foreach (FCEventDef def in DefDatabase<FCEventDef>.AllDefsListForReading)
             {
-                if (def.statModifiers == null) continue;
-                for (int i = 0; i < def.statModifiers.Count; i++)
+                if (def.statModifiers == null && def.permanentStatModifiers == null) continue;
+                if (def.statModifiers != null)
                 {
-                    TestAssert.IsNotNull(def.statModifiers[i].stat,
-                        $"{def.defName}: statModifiers[{i}] has null stat");
+                    for (int i = 0; i < def.statModifiers.Count; i++)
+                    {
+                        TestAssert.IsNotNull(def.statModifiers[i].stat,
+                            $"{def.defName}: statModifiers[{i}] has null stat");
+                    }
+                }
+                if (def.permanentStatModifiers != null)
+                {
+                    for (int i = 0; i < def.permanentStatModifiers.Count; i++)
+                    {
+                        TestAssert.IsNotNull(def.permanentStatModifiers[i].stat,
+                            $"{def.defName}: permanentStatModifiers[{i}] has null stat");
+                    }
                 }
             }
         }
@@ -151,6 +162,16 @@ namespace FactionColonies
                     TestAssert.IsNotNull(DefDatabase<BiomeDef>.GetNamed(biome, false),
                         $"{def.defName}: restrictedBiomes contains unknown biome '{biome}'");
                 }
+            }
+        }
+
+        [EmpireTest("EventSystem")]
+        public static void AllEventOptions_ParentEvent_ResolvedCorrectly()
+        {
+            foreach (FCOptionDef def in DefDatabase<FCOptionDef>.AllDefsListForReading)
+            {
+                TestAssert.IsNotNull(def.parentEvent,
+                    $"{def.defName}: parentEvent is null (bad defName in XML?)");
             }
         }
 

@@ -138,5 +138,25 @@ namespace FactionColonies
             TestAssert.AreEqual(incomeBefore, incomeRestored,
                 message: "Tithe income should restore after removing modifier");
         }
+
+        [EmpireTest("TitheIncome")]
+        public static void TitheIncome_AllResources_NonNegative()
+        {
+            var faction = FactionCache.FactionComp;
+            if (faction == null || faction.settlements.Count == 0)
+                TestAssert.Skip("No faction/settlements");
+
+            foreach (var settlement in faction.settlements)
+            {
+                foreach (var resource in settlement.Resources)
+                {
+                    double tithe = resource.GetTitheIncome();
+                    TestAssert.IsTrue(tithe >= 0,
+                        $"{settlement.Name}/{resource.def?.defName}: tithe income should be >= 0, got {tithe:F2}");
+                    TestAssert.IsFalse(double.IsNaN(tithe),
+                        $"{settlement.Name}/{resource.def?.defName}: tithe income should not be NaN");
+                }
+            }
+        }
     }
 }

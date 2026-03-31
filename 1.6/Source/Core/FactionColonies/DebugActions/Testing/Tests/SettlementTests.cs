@@ -1,5 +1,6 @@
-using FactionColonies.util;
+using System;
 using System.Linq;
+using Verse;
 
 namespace FactionColonies
 {
@@ -85,6 +86,42 @@ namespace FactionColonies
 
             TestAssert.IsTrue(settlement.prosperity >= 1 && settlement.prosperity <= 100,
                 $"Prosperity should be in [1, 100], got {settlement.prosperity}");
+        }
+
+        [EmpireTest("Settlement")]
+        public static void Settlement_AllBuildingSlots_MatchGetBuildingSlots()
+        {
+            var settlements = FactionCache.FactionComp?.settlements;
+            if (settlements == null || settlements.Count == 0) TestAssert.Skip("No settlements");
+
+            foreach (var settlement in settlements)
+            {
+                if (settlement.BuildingsComp == null) continue;
+                int actual = settlement.BuildingsComp.NumBuildingSlots;
+                int expected = settlement.GetBuildingSlots();
+                TestAssert.AreEqual(expected, actual,
+                    $"{settlement.Name} ({settlement.settlementDef.defName}): NumBuildingSlots should match GetBuildingSlots");
+            }
+        }
+
+        [EmpireTest("Settlement")]
+        public static void Settlement_AllDefs_BuildingSlotsNonDecreasingByLevel()
+        {
+            foreach (WorldSettlementDef def in DefDatabase<WorldSettlementDef>.AllDefsListForReading)
+            {
+                var ext = def.GetSettlementTypeExtension();
+                int prev = 0;
+                int maxLevel = Math.Min(10, def.maxSettlementLevel);
+                for (int level = 0; level <= maxLevel; level++)
+                {
+                    int slots = ext.GetBuildingSlots(level, def.maxBuildingCount);
+                    TestAssert.IsTrue(slots >= prev,
+                        $"{def.defName}: building slots decreased from {prev} at level {level - 1} to {slots} at level {level}");
+                    TestAssert.IsTrue(slots <= def.maxBuildingCount,
+                        $"{def.defName}: building slots {slots} exceeds maxBuildingCount {def.maxBuildingCount} at level {level}");
+                    prev = slots;
+                }
+            }
         }
     }
 }
