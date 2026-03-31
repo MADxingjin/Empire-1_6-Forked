@@ -66,5 +66,7 @@
 	<noCaravansToSendShuttleTo>There are no caravans to send a shuttle to!</noCaravansToSendShuttleTo>
 	<noShuttleUsesRemaining>No shuttle uses remaining in this tax period!</noShuttleUsesRemaining>
 	<notEnoughShuttleUsesRemaining>Not enough shuttle uses remaining in this tax period!</notEnoughShuttleUsesRemaining>
+	
+	<FCRandomEventLetterLabel>Random Event</FCRandomEventLetterLabel>
 
 </LanguageData>

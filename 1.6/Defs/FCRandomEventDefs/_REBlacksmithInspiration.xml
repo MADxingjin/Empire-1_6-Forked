@@ -118,7 +118,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>blacksmithInspiration_1-3</defName>
 		<label>Blacksmith Inspiration (Workshop Materials)</label>
-		<desc>The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -1 weapons base production.</desc>
+		<desc>The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

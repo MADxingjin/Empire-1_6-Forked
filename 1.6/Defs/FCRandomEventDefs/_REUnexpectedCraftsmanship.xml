@@ -61,7 +61,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>unexpectedCraftsmanship_1-1</defName>
 		<label>Unexpected Craftsmanship</label>
-		<desc>The craftsmen continue their excellent work across all disciplines. +0.5 weapons and +0.5 apparel base production. Their broad excellence boosts morale. +2 happiness.</desc>
+		<desc>The craftsmen continue their excellent work across all disciplines. Their broad excellence boosts morale.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -81,7 +81,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>unexpectedCraftsmanship_1-2</defName>
 		<label>Unexpected Craftsmanship (Weapons Focus)</label>
-		<desc>The craftsmen focus their talents on weaponsmithing. +1 weapons base production. Their focused efforts produce a fine weapon.</desc>
+		<desc>The craftsmen focus their talents on weaponsmithing, and their focused efforts produce a fine weapon.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -101,7 +101,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>unexpectedCraftsmanship_1-3</defName>
 		<label>Unexpected Craftsmanship (Apparel Focus)</label>
-		<desc>The craftsmen focus their talents on tailoring. +1 apparel base production. Their focused efforts produce a fine piece of armor.</desc>
+		<desc>The craftsmen focus their talents on tailoring, and their focused efforts produce a fine piece of armor.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

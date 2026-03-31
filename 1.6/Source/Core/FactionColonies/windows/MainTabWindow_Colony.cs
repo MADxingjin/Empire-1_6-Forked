@@ -1432,17 +1432,7 @@ namespace FactionColonies
 
         private string GetEventFullTooltip(FCEvent evt)
         {
-            string desc = GetEventDescription(evt);
-            string tooltip = $"{evt.def.label}\n\n{desc}";
-            if (evt.settlementTraitLocations.Count > 0)
-            {
-                string settlements = evt.settlementTraitLocations
-                    .Where(s => s != null)
-                    .Join(s => s.Name, ", ");
-                if (!settlements.NullOrEmpty())
-                    tooltip += $"\n\n{"EventAffectingSettlements".Translate()}\n{settlements}";
-            }
-            return tooltip;
+            return $"{evt.def.label}\n\n{FCEventMaker.BuildEventLetterBody(evt)}";
         }
 
         private void HandleLocationClick(FCEvent evt)

@@ -70,7 +70,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>forestFire_1-1</defName>
 		<label>Forest Fire</label>
-		<desc>The fire burns unchecked through the forests. -1 logging base production.</desc>
+		<desc>The fire burns unchecked through the forests.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -88,7 +88,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>forestFire_1-2s</defName>
 		<label>Forest Fire (Contained)</label>
-		<desc>The firefighting crews managed to contain the blaze! The damage is limited. -0.5 logging base production.</desc>
+		<desc>The firefighting crews managed to contain the blaze! The damage is limited.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>150000</timeTillTrigger>
 		<timeTillTriggerMax>210000</timeTillTriggerMax>
@@ -106,7 +106,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>forestFire_1-2f</defName>
 		<label>Forest Fire (Containment Failed)</label>
-		<desc>Despite their best efforts, the firefighting crews couldn't contain the blaze. The fire rages on. -1 logging base production.</desc>
+		<desc>Despite their best efforts, the firefighting crews couldn't contain the blaze. The fire rages on.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -124,7 +124,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>forestFire_1-3</defName>
 		<label>Forest Fire (Controlled Burn)</label>
-		<desc>The controlled burn clears damaged forest, opening land for farming. -1 logging base production, +0.5 food base production.</desc>
+		<desc>The controlled burn clears damaged forest, opening land for farming.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

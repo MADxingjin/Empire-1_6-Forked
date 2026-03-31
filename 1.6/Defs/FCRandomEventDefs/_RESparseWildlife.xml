@@ -69,7 +69,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>sparseWildlife_1-1</defName>
 		<label>Sparse Wildlife</label>
-		<desc>Your settlements make do without the wildlife. -1 animals base production.</desc>
+		<desc>Your settlements make do without the wildlife.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -87,7 +87,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>sparseWildlife_1-2</defName>
 		<label>Sparse Wildlife (Extended Hunts)</label>
-		<desc>Hunting parties range further to compensate. -0.5 animals base production.</desc>
+		<desc>Hunting parties range further to compensate.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -105,7 +105,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>sparseWildlife_1-3</defName>
 		<label>Sparse Wildlife (Farming Shift)</label>
-		<desc>Settlers shift their focus from hunting to farming. -1 animals base production, +0.5 food base production.</desc>
+		<desc>Settlers shift their focus from hunting to farming.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>360000</timeTillTriggerMax>

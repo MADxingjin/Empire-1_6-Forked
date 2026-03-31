@@ -1725,18 +1725,7 @@ namespace FactionColonies
                     FactionCache.FactionComp.AddEvent(tmpEvt);
                     randomEventLastAdded = 0f;
 
-                    //letter code
-                    string settlementString = tmpEvt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
-
-                    if (!settlementString.NullOrEmpty())
-                    {
-                        Find.LetterStack.ReceiveLetter("Random Event", $"{tmpEvt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
-                    }
-                    else
-                    {
-                        Find.LetterStack.ReceiveLetter("Random Event", tmpEvt.def.desc,
-                            LetterDefOf.NeutralEvent);
-                    }
+                    Find.LetterStack.ReceiveLetter("FCRandomEventLetterLabel".Translate(), FCEventMaker.BuildEventLetterBody(tmpEvt), LetterDefOf.NeutralEvent);
                 }
                 else
                 {

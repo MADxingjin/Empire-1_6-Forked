@@ -59,7 +59,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-1</defName>
 		<label>Death In The Family</label>
-		<desc>The settlements mourn in private. The grief weighs heavily on the people. -4 happiness a day.</desc>
+		<desc>The settlements mourn in private. The grief weighs heavily on the people.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>600000</timeTillTrigger>
 		<timeTillTriggerMax>780000</timeTillTriggerMax>
@@ -76,7 +76,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-2</defName>
 		<label>Death In The Family (Memorial)</label>
-		<desc>A public memorial is held, honoring the fallen figure's legacy. The gesture helps ease the grief and strengthens loyalty. -4 happiness lost a day, +1 happiness gained a day, +1 loyalty a day.</desc>
+		<desc>A public memorial is held, honoring the fallen figure's legacy. The gesture helps ease the grief and strengthens loyalty.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>600000</timeTillTrigger>
 		<timeTillTriggerMax>780000</timeTillTriggerMax>
@@ -95,7 +95,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-3s</defName>
 		<label>Death In The Family (Justice Found)</label>
-		<desc>The investigation uncovers the assassin and brings them to justice. The people still grieve, but finding the killer eases the pain. -4 happiness lost a day, +1 happiness gained a day.</desc>
+		<desc>The investigation uncovers the assassin and brings them to justice. The people still grieve, but finding the killer eases the pain.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -113,7 +113,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>deathInTheFamily_1-3f</defName>
 		<label>Death In The Family (Investigation Failed)</label>
-		<desc>The investigation turns up nothing and only fuels the rumors that you were behind the assassination. The people grow restless. -4 happiness a day, +2 unrest a day.</desc>
+		<desc>The investigation turns up nothing and only fuels the rumors that you were behind the assassination. The people grow restless.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>600000</timeTillTrigger>
 		<timeTillTriggerMax>780000</timeTillTriggerMax>

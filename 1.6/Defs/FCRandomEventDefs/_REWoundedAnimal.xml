@@ -83,7 +83,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>woundedAnimal_1-2</defName>
 		<label>Wounded Animal</label>
-		<desc>As the animal is guided in, it starts to fight against the settlers delivering it. It quickly becomes more and more aggressive and all attempts to calm it start to fail... Several settlers are heavily injured or die. Unfortunately, this will affect production for a period of time. Max workers -3 for five days.</desc>
+		<desc>As the animal is guided in, it starts to fight against the settlers delivering it. It quickly becomes more and more aggressive and all attempts to calm it start to fail. Several settlers are heavily injured or die. Unfortunately, this will affect production for a period of time.</desc>
 		<category>EC_Other</category>
 
 		<timeTillTrigger>300000</timeTillTrigger>
@@ -116,7 +116,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>woundedAnimal_1-3f</defName>
 		<label>Wounded Animal</label>
-		<desc>Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process. -1 max workers for three days.</desc>
+		<desc>Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process.</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<timeTillTriggerMax>240000</timeTillTriggerMax>

@@ -72,7 +72,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>expandedForestry_1-1</defName>
 		<label>Expanded Forestry</label>
-		<desc>The expanded logging operations continue. +1 logging base production.</desc>
+		<desc>The expanded logging operations continue.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -105,13 +105,13 @@
 	<FactionColonies.FCEventDef>
 		<defName>expandedForestry_1-3</defName>
 		<label>Expanded Forestry (Construction Stockpile)</label>
-		<desc>Lumber is stockpiled for construction projects. +0.5 logging base production, and construction speeds up.</desc>
+		<desc>Lumber is stockpiled for construction projects, and construction speeds up.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Logging_ProductionAdditive</stat><value>0.5</value></li>
-			<li><stat>buildTimeMultiplier</stat><value>0.5</value></li>
+			<li><stat>buildTimeMultiplier</stat><value>0.75</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>expandedForestry_0</li>

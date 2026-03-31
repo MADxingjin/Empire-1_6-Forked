@@ -118,7 +118,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>armorerInspiration_1-3</defName>
 		<label>Armorer Inspiration (Workshop Materials)</label>
-		<desc>The armorer works with materials diverted from your settlement's production lines. The diversion slows apparel output, but the armorer's work proceeds well. -1 apparel base production.</desc>
+		<desc>The armorer works with materials diverted from your settlement's production lines. The diversion slows apparel output, but the armorer's work proceeds well.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

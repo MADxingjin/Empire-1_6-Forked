@@ -192,7 +192,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>moonlitRitual_4-1</defName>
 		<label>A Moonlit Ritual</label>
-		<desc>After not reporting back, a search for the investigator was conducted. He was found dead. His body was stripped, his chest cavity split, and his skin carved with runic symbols. The group, whoever they were, were not seen again. Dread falls upon us all. \n Coincidently enough, this week's harvests seem to have spoiled... \n -2 happiness a day, -1 food base production.</desc>
+		<desc>After not reporting back, a search for the investigator was conducted. He was found dead. His body was stripped, his chest cavity split, and his skin carved with runic symbols. The group, whoever they were, were not seen again. Dread falls upon us all.\n\nCoincidentally, this week's harvests seem to have spoiled...</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -226,7 +226,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>moonlitRitual_4-2</defName>
 		<label>A Moonlit Ritual</label>
-		<desc>The investigator reported back early in the morning looking quite disheaveled. However, his story says otherwise. They expected him this time and gave an invintation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to enjoyed himself! \n +1 food base production.</desc>
+		<desc>The investigator reported back early in the morning looking quite disheveled. However, his story says otherwise. They expected him this time and gave an invitation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to have enjoyed himself!</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -244,7 +244,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>moonlitRitual_3-3</defName>
 		<label>A Moonlit Ritual</label>
-		<desc>This week's harvests seem to be unnaturally more plentiful than usual... +.5 food base production.</desc>
+		<desc>This week's harvests seem to be unnaturally more plentiful than usual...</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -262,7 +262,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>moonlitRitual_3-4</defName>
 		<label>A Moonlit Ritual</label>
-		<desc>This week's harvests seem to be unnaturally less plentiful than usual... -.5 food base production.</desc>
+		<desc>This week's harvests seem to be unnaturally less plentiful than usual...</desc>
 		<category>EC_Other</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

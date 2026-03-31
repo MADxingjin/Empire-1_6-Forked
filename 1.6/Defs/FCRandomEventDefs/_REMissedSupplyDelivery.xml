@@ -65,7 +65,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>missedSupplyDelivery_1-1</defName>
 		<label>Missed Supply Delivery</label>
-		<desc>The craftsmen wait for the next delivery. -0.5 weapons and -0.5 apparel base production.</desc>
+		<desc>The craftsmen wait for the next delivery.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -84,7 +84,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>missedSupplyDelivery_1-2</defName>
 		<label>Missed Supply Delivery (Local Sourcing)</label>
-		<desc>Trade connections help source replacement supplies locally. -0.25 weapons and -0.25 apparel base production.</desc>
+		<desc>Trade connections help source replacement supplies locally.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>360000</timeTillTriggerMax>
@@ -103,7 +103,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>missedSupplyDelivery_1-3</defName>
 		<label>Missed Supply Delivery (Improvised)</label>
-		<desc>The craftsmen improvise with local materials, focusing their limited supplies on apparel. -1 weapons base production for a shorter period.</desc>
+		<desc>The craftsmen improvise with local materials, focusing their limited supplies on apparel.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>180000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

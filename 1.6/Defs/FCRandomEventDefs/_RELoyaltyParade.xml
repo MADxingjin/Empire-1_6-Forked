@@ -59,7 +59,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>loyaltyParade_1-1</defName>
 		<label>Loyalty Parade</label>
-		<desc>The parade continues unhindered. Citizens feel proud and loyal. +1 loyalty a day, -2 unrest a day.</desc>
+		<desc>The parade continues unhindered. Citizens feel proud and loyal.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -77,7 +77,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>loyaltyParade_1-2</defName>
 		<label>Loyalty Parade (Rally)</label>
-		<desc>Your personal appearance at the parade electrifies the crowd! The people are inspired by their leader's presence. +2 loyalty a day, -2 unrest a day, +1 happiness a day.</desc>
+		<desc>Your personal appearance at the parade electrifies the crowd! The people are inspired by their leader's presence.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>360000</timeTillTriggerMax>
@@ -96,7 +96,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>loyaltyParade_1-3</defName>
 		<label>Loyalty Parade (Recruitment)</label>
-		<desc>The enthusiastic gathering is used to recruit new workers for the empire's settlements. +2 max workers.</desc>
+		<desc>The enthusiastic gathering is used to recruit new workers for the empire's settlements.</desc>
 		<category>EC_Social</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

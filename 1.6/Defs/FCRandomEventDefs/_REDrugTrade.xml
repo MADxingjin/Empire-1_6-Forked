@@ -56,7 +56,7 @@
 	<FactionColonies.FCEventDef>
 			<defName>drugTrade_1-1</defName>
 			<label>Drug Trade</label>
-			<desc>Investigating drug trade...\n -10% basetax</desc>
+			<desc>Investigating drug trade...</desc>
 			<category>EC_Economy</category>
 			<timeTillTrigger>120000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
@@ -77,7 +77,7 @@
 	<FactionColonies.FCEventDef>
 			<defName>drugTrade_1-2</defName>
 			<label>Drug Trade</label>
-			<desc>Your settlement may be hooked on drugs, but they seem content with their reality. You doubt you'll hear any complaints anytime soon. \n -10% base tax, +25% happiness gain, -25% unrest gain.</desc>
+			<desc>Your settlement may be hooked on drugs, but they seem content with their reality. You doubt you'll hear any complaints anytime soon.</desc>
 			<category>EC_Economy</category>
 			<timeTillTrigger>600000</timeTillTrigger>
 			<timeTillTriggerMax>780000</timeTillTriggerMax>
@@ -135,7 +135,7 @@
 	<FactionColonies.FCEventDef>
 			<defName>drugTrade_2-2</defName>
 			<label>Drug Trade</label>
-			<desc>The authorities you directed to find the source of the drug production has turned up nothing. Locals are unhappy with the upheaval. The investigators are going to have to lay back for a short while...  \n -10% base Tax</desc>
+			<desc>The authorities you directed to find the source of the drug production has turned up nothing. Locals are unhappy with the upheaval. The investigators are going to have to lay back for a short while.</desc>
 			<category>EC_Economy</category>
 			<timeTillTrigger>300000</timeTillTrigger>
 			<eventFollows>true</eventFollows>
@@ -151,7 +151,7 @@
 	<FactionColonies.FCEventDef>
 			<defName>drugTrade_3-1</defName>
 			<label>Drug Trade</label>
-			<desc>The drug line has been incorporated into the settlement's official production. A random tithe of drugs will be delivered to you on a 5-day basis. -10% base tax.</desc>
+			<desc>The drug line has been incorporated into the settlement's official production. A random tithe of drugs will be delivered to you on a 5-day basis.</desc>
 			<category>EC_Economy</category>
 			<timeTillTrigger>300000</timeTillTrigger>
 			<eventFollows>true</eventFollows>

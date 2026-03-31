@@ -67,7 +67,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>denseWildlife_1-1</defName>
 		<label>Dense Wildlife</label>
-		<desc>The herds flourish and boost animal production. +1 animals base production.</desc>
+		<desc>The herds flourish and boost animal production.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -99,7 +99,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>denseWildlife_1-3</defName>
 		<label>Dense Wildlife (Domestication)</label>
-		<desc>Some of the animals are captured and domesticated for long-term gains. +0.5 animals and +0.5 food base production.</desc>
+		<desc>Some of the animals are captured and domesticated for long-term gains.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>360000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>

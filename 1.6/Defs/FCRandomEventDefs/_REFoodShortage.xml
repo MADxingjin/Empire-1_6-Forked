@@ -81,7 +81,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>foodShortage_1-1</defName>
 		<label>Food Shortage</label>
-		<desc>Your settlements endure the food shortage. -1 food base production for the period.</desc>
+		<desc>Your settlements endure the food shortage.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -99,7 +99,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>foodShortage_1-2</defName>
 		<label>Food Shortage (Imports)</label>
-		<desc>Emergency imports have arrived, lessening the impact of the food shortage. -0.5 food base production.</desc>
+		<desc>Emergency imports have arrived, lessening the impact of the food shortage.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -117,7 +117,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>foodShortage_1-3</defName>
 		<label>Food Shortage (Rationing)</label>
-		<desc>Strict rationing is in effect. Citizens admire the shared sacrifice. -1 food base production, +1 loyalty.</desc>
+		<desc>Strict rationing is in effect. Citizens admire the shared sacrifice.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
@@ -136,7 +136,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>foodShortage_1-4</defName>
 		<label>Food Shortage (Slaves Starved)</label>
-		<desc>The slaves bear the brunt of the shortage. Food production continues unaffected, but the workforce is diminished. -2 max workers.</desc>
+		<desc>The slaves bear the brunt of the shortage. Food production continues unaffected, but the workforce is diminished.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>

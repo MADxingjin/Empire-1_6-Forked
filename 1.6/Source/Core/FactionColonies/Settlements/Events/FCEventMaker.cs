@@ -48,20 +48,45 @@ namespace FactionColonies
             {
                 FactionCache.FactionComp.AddEvent(tempEvent);
 
-                //letter
+                Find.LetterStack.ReceiveLetter(tempEvent.def.label, BuildEventLetterBody(tempEvent), LetterDefOf.NeutralEvent);
+            }
+        }
 
+        public static string BuildEventLetterBody(FCEvent evt)
+        {
+            string desc = evt.hasCustomDescription && !evt.customDescription.NullOrEmpty()
+                ? evt.customDescription
+                : evt.def.desc ?? "";
 
-                string settlementString = tempEvent.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
+            string body = desc;
 
+            // Stat modifiers
+            TaggedString statDesc = FCStatModifier.GetDescription(evt.def.statModifiers);
+            if (!statDesc.NullOrEmpty())
+            {
+                body += "\n\n" + statDesc;
+            }
+
+            // Permanent stat modifiers
+            TaggedString permDesc = FCStatModifier.GetDescription(evt.def.permanentStatModifiers);
+            if (!permDesc.NullOrEmpty())
+            {
+                body += "\n\n" + permDesc;
+            }
+
+            // Affected settlements
+            if (evt.settlementTraitLocations != null && evt.settlementTraitLocations.Count > 0)
+            {
+                string settlementString = evt.settlementTraitLocations
+                    .Where(s => s != null)
+                    .Join(s => " " + s.Name, "\n");
                 if (!settlementString.NullOrEmpty())
                 {
-                    Find.LetterStack.ReceiveLetter(tempEvent.def.label, $"{tempEvent.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
-                }
-                else
-                {
-                    Find.LetterStack.ReceiveLetter(tempEvent.def.label, tempEvent.def.desc, LetterDefOf.NeutralEvent);
+                    body += "\n\n" + "EventAffectingSettlements".Translate() + "\n" + settlementString;
                 }
             }
+
+            return body;
         }
 
         public static bool IsValidRandomEvent(FCEventDef cEvent)
@@ -692,17 +717,7 @@ namespace FactionColonies
                     {
                         faction.AddEvent(tempEvent);
 
-                        string settlementString = tempEvent.settlementTraitLocations.Join((worldsettlement) => $" {worldsettlement.Name}", "\n");
-
-                        if (!settlementString.NullOrEmpty())
-                        {
-                            Find.LetterStack.ReceiveLetter(tempEvent.def.label, $"{tempEvent.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
-                        }
-                        else
-                        {
-                            Find.LetterStack.ReceiveLetter(tempEvent.def.label, tempEvent.def.desc,
-                                LetterDefOf.NeutralEvent);
-                        }
+                        Find.LetterStack.ReceiveLetter(tempEvent.def.label, BuildEventLetterBody(tempEvent), LetterDefOf.NeutralEvent);
                     }
                 }
 

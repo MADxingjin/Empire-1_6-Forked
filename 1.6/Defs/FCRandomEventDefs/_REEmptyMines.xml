@@ -66,7 +66,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>emptyMines_1-1</defName>
 		<label>Empty Mines</label>
-		<desc>The miners wait for new veins to surface. -1 mining base production.</desc>
+		<desc>The miners wait for new veins to surface.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -84,7 +84,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>emptyMines_1-2f</defName>
 		<label>Empty Mines (Prospectors Failed)</label>
-		<desc>The prospectors found nothing. The mines remain empty. -1 mining base production.</desc>
+		<desc>The prospectors found nothing. The mines remain empty.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>480000</timeTillTriggerMax>
@@ -102,7 +102,7 @@
 	<FactionColonies.FCEventDef>
 		<defName>emptyMines_1-3</defName>
 		<label>Empty Mines (Construction Redirect)</label>
-		<desc>Idle miners are put to work on settlement construction projects. -1 mining base production, but construction speeds up.</desc>
+		<desc>Idle miners are put to work on settlement construction projects.</desc>
 		<category>EC_Economy</category>
 		<timeTillTrigger>300000</timeTillTrigger>
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
