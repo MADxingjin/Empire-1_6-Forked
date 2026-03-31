@@ -213,7 +213,7 @@
 		<techLevel>Spacer</techLevel>
 		<constructionDuration>300000</constructionDuration>
 		<statModifiers>
-			<li><stat>taxBasePercentage</stat><value>0.5</value></li>
+			<li><stat>taxBasePercentage</stat><value>15</value></li>
 			<li><stat>titheValueMultiplier</stat><value>1.2</value></li>
 		</statModifiers>
 		<upkeep>600</upkeep>
@@ -232,7 +232,7 @@
 		<constructionDuration>300000</constructionDuration>
 		<statModifiers>
 			<li><stat>RTD_Chemfuel_ProductionAdditive</stat><value>1</value></li>
-			<li><stat>taxBasePercentage</stat><value>0.3</value></li>
+			<li><stat>taxBasePercentage</stat><value>5</value></li>
 		</statModifiers>
 		<upkeep>400</upkeep>
 		<iconPath>GUI/Buildings/Orbital/spaceDistillery</iconPath>
