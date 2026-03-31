@@ -68,6 +68,9 @@ namespace FactionColonies
         private string[] cachedEffectPreviews;
         private float[] cachedEffectPreviewHeights;
         private const float EffectPreviewSpacing = 4f;
+        private Vector2 scrollPosition;
+        private float cachedHeaderHeight;
+        private float cachedTotalOptionsHeight;
 
         public override Vector2 InitialSize
         {
@@ -155,37 +158,41 @@ namespace FactionColonies
                 }
             }
 
-            // Sum up total height
-            float y = AccentBarHeight + Padding;     // accent bar + top padding
-            y += cachedTitleHeight;                    // title
-            y += Padding;                             // gap
-            y += cachedDescHeight;                     // description
+            // Header height (everything above the options)
+            float headerH = AccentBarHeight + Padding;  // accent bar + top padding
+            headerH += cachedTitleHeight;                // title
+            headerH += Padding;                          // gap
+            headerH += cachedDescHeight;                  // description
 
             if (affectedSettlements.Count > 0)
             {
-                y += 8f;                              // gap
-                y += 16f;                             // "Affecting:" label
-                y += 2f;                              // gap
-                y += SettlementButtonHeight;           // settlement buttons row
+                headerH += 8f;                           // gap
+                headerH += 16f;                          // "Affecting:" label
+                headerH += 2f;                           // gap
+                headerH += SettlementButtonHeight;        // settlement buttons row
             }
 
-            y += Padding;                             // gap before separator
-            y += 1f;                                  // separator
-            y += Padding;                             // gap after separator
+            headerH += Padding;                          // gap before separator
+            headerH += 1f;                               // separator
+            headerH += Padding;                          // gap after separator
+            cachedHeaderHeight = headerH;
 
+            // Total options height (all option cards + spacing + bottom padding)
+            float optH = 0f;
             for (int i = 0; i < options.Count; i++)
             {
-                if (i > 0) y += OptionSpacing;
+                if (i > 0) optH += OptionSpacing;
                 float cardH = OptionInnerPadding + cachedOptionLabelHeights[i] + 6f + MetadataRowHeight + OptionInnerPadding;
                 if (cachedEffectPreviews[i] != null)
                 {
                     cardH += EffectPreviewSpacing + cachedEffectPreviewHeights[i];
                 }
-                y += Math.Max(cardH, MinOptionHeight);
+                optH += Math.Max(cardH, MinOptionHeight);
             }
+            optH += Padding;                             // bottom margin
+            cachedTotalOptionsHeight = optH;
 
-            y += Padding;                             // bottom margin
-            cachedWindowHeight = Math.Min(y + (Margin * 2), MaxWindowHeight);
+            cachedWindowHeight = Math.Min(cachedHeaderHeight + cachedTotalOptionsHeight + (Margin * 2), MaxWindowHeight);
         }
 
         public override void PreOpen()
@@ -263,13 +270,24 @@ namespace FactionColonies
             Widgets.DrawBoxSolid(new Rect(inRect.x + Padding, curY, textWidth, 1f), dimCategoryColor);
             curY += 1f + Padding;
 
-            // === Option cards ===
+            // === Option cards (scrollable) ===
             int currentSilver = PaymentUtil.GetSilver();
             FCEventHandlerExtension optHandler = parentEvent?.def?.GetModExtension<FCEventHandlerExtension>();
 
+            float scrollOuterHeight = inRect.yMax - curY;
+            Rect scrollOuterRect = new Rect(inRect.x, curY, contentWidth, scrollOuterHeight);
+            float scrollInnerWidth = cachedTotalOptionsHeight > scrollOuterHeight
+                ? contentWidth - 16f
+                : contentWidth;
+            Rect scrollInnerRect = new Rect(0f, 0f, scrollInnerWidth, cachedTotalOptionsHeight);
+
+            Widgets.BeginScrollView(scrollOuterRect, ref scrollPosition, scrollInnerRect);
+
+            float optY = 0f;
+
             for (int i = 0; i < options.Count; i++)
             {
-                if (i > 0) curY += OptionSpacing;
+                if (i > 0) optY += OptionSpacing;
 
                 FCOptionDef opt = options[i];
                 bool affordable = currentSilver >= opt.silverCost;
@@ -291,7 +309,7 @@ namespace FactionColonies
                 }
                 cardH = Math.Max(cardH, MinOptionHeight);
 
-                Rect cardRect = new Rect(inRect.x, curY, contentWidth, cardH);
+                Rect cardRect = new Rect(0f, optY, scrollInnerRect.width, cardH);
 
                 // Card background
                 float bgVal = available ? 0.18f : 0.12f;
@@ -441,8 +459,10 @@ namespace FactionColonies
                     }
                 }
 
-                curY += cardH;
+                optY += cardH;
             }
+
+            Widgets.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

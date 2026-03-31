@@ -50,6 +50,7 @@ namespace FactionColonies
          */
         private int currentFilter = 0;
         private int filterSize = 0;
+        private readonly Dictionary<string, string> filterTruncateCache = new Dictionary<string, string>();
         private int filterRows = 2;
         private const int filterButtonsPerRow = 4;
         private static readonly int filterButtonHeight = 25;
@@ -106,6 +107,7 @@ namespace FactionColonies
             if (leftPanelWidth == lastLayoutWidth && !layoutDirty) return;
             lastLayoutWidth = leftPanelWidth;
             layoutDirty = false;
+            filterTruncateCache.Clear();
 
             slotUpgradesHeight = CalculateSlotUpgradesHeight(leftPanelWidth);
             FilterArea = new Rect(margin, margin + headerHeight + slotUpgradesHeight, leftPanelWidth - (margin * 2), filterRowHeight * filterRows);
@@ -253,11 +255,21 @@ namespace FactionColonies
                     Rect iconRect = new Rect(buttonRect.x + 2f, buttonRect.y + 2f, iconSize, iconSize);
                     GUI.DrawTexture(iconRect, filterIcon);
                     Rect labelRect = new Rect(iconRect.xMax + 2f, buttonRect.y, buttonRect.width - iconSize - 6f, buttonRect.height);
-                    Widgets.Label(labelRect, filterLabel);
+                    string truncatedLabel = filterLabel.Truncate(labelRect.width, filterTruncateCache);
+                    Widgets.Label(labelRect, truncatedLabel);
+                    if (truncatedLabel != filterLabel)
+                    {
+                        TooltipHandler.TipRegion(buttonRect, filterLabel);
+                    }
                 }
                 else
                 {
-                    Widgets.Label(buttonRect, filterLabel);
+                    string truncatedLabel = filterLabel.Truncate(buttonRect.width, filterTruncateCache);
+                    Widgets.Label(buttonRect, truncatedLabel);
+                    if (truncatedLabel != filterLabel)
+                    {
+                        TooltipHandler.TipRegion(buttonRect, filterLabel);
+                    }
                 }
                 GUI.color = Color.white;
 
