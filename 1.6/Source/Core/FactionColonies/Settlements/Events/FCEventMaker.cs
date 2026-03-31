@@ -957,12 +957,21 @@ namespace FactionColonies
 
 
             // add event to queue and remove bill
-            if (tmp.goods.Count > 0) //if any silver or tithe in bill create event. else, well, don't
+            try
             {
-                faction.AddEvent(tmp);
+                if (tmp.goods.Count > 0) //if any silver or tithe in bill create event. else, well, don't
+                {
+                    faction.AddEvent(tmp);
+                }
             }
-
-            faction.Bills.Remove(bill);
+            catch (Exception e)
+            {
+                LogUtil.Error($"Error in CreateTaxEvent: {e}");
+            }
+            finally
+            {
+                faction.Bills.Remove(bill);
+            }
         }
     }
 }

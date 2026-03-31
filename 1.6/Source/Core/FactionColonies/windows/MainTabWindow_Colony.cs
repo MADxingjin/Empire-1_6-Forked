@@ -1073,7 +1073,13 @@ namespace FactionColonies
                 if (Widgets.ButtonText(resolveRect, "ResolveBill".Translate()))
                 {
                     if (!bill.AttemptResolve())
-                        Messages.Message("NotEnoughSilverOnMapToPayBill".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    {
+                        int needed = (int)(-1 * bill.taxes.silverAmount);
+                        int available = PaymentUtil.GetSilver();
+                        Messages.Message(
+                            $"{"NotEnoughSilverOnMapToPayBill".Translate()} ({available} / {needed} {"Silver".Translate()})",
+                            MessageTypeDefOf.RejectInput);
+                    }
                     break;
                 }
 

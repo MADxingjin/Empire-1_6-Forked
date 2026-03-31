@@ -58,9 +58,16 @@ namespace FactionColonies
                 return true;
             }
 
-            string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
-            settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
-            settlement.GainHappiness(-10d);
+            if (settlement != null)
+            {
+                string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
+                settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
+                settlement.GainHappiness(-10d);
+            }
+            else
+            {
+                LogUtil.Warning("BillFC.Resolve: bill has null settlement (loadID=" + loadID + "). Skipping penalty.");
+            }
             factionfc.Bills.Remove(this);
             return false;
         }

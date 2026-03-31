@@ -29,12 +29,19 @@ namespace FactionColonies
                     }
                     else
                     {
-                        string messageString = "NotEnoughSilverForBill".Translate() + " "
-                            + settlement.Name + ". "
-                            + "ConfiscatedTithes".Translate() + "."
-                            + " " + "UnpaidTitheEffect".Translate();
-                        settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
-                        settlement.GainHappiness(-10d);
+                        if (settlement != null)
+                        {
+                            string messageString = "NotEnoughSilverForBill".Translate() + " "
+                                + settlement.Name + ". "
+                                + "ConfiscatedTithes".Translate() + "."
+                                + " " + "UnpaidTitheEffect".Translate();
+                            settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
+                            settlement.GainHappiness(-10d);
+                        }
+                        else
+                        {
+                            LogUtil.Warning("ProcessBills: overdue bill has null settlement (loadID=" + bill.loadID + "). Removing orphaned bill.");
+                        }
                         factionfc.Bills.Remove(bill);
                     }
                 }
