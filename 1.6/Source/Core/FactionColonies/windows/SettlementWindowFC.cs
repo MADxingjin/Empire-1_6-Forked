@@ -1401,6 +1401,7 @@ namespace FactionColonies
 
             TooltipHandler.TipRegion(incomeBox, settlement.incomeExp);
             TooltipHandler.TipRegion(costsBox, settlement.upkeepExp);
+            TooltipHandler.TipRegion(taxBonusBox, settlement.GetTaxBaseDesc());
         }
 
         private void DrawWorkerBreakdown(Rect boundingBox)

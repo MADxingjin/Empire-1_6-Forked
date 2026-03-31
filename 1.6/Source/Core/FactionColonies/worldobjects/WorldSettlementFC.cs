@@ -1103,6 +1103,34 @@ namespace FactionColonies
             return bonus;
         }
 
+        public string GetTaxBaseDesc()
+        {
+            double taxBonus = GetSettlementTaxBonus();
+            string desc = "TaxBase".Translate() + ": " + (taxBonus * 100d).ToString() + "%";
+            desc += "\n\n";
+
+            // taxBasePercentage: buildings, events, settlement type, plus faction-level policies
+            string settlementMods = GetStatDesc(FCStatDefOf.taxBasePercentage);
+            if (!settlementMods.NullOrEmpty())
+                desc += settlementMods;
+
+            // taxBonusFlat: faction-only stat (appliesToSettlements=false, so GetStatDesc skips it)
+            FactionFC faction = FactionCache.FactionComp;
+            string factionMods = faction.GetFactionStatDesc(FCStatDefOf.taxBonusFlat);
+            if (!factionMods.NullOrEmpty())
+                desc += factionMods;
+
+            // Behavior contributions for taxBonusFlat (e.g., Egalitarian happiness bonus)
+            faction.ForEachBehavior(b =>
+            {
+                string behaviorDesc = b.GetStatDescription(FCStatDefOf.taxBonusFlat, this);
+                if (!behaviorDesc.NullOrEmpty())
+                    desc += behaviorDesc;
+            });
+
+            return desc.Trim();
+        }
+
         public double GetTotalIncome() => totalIncome;
 
         public int GetTotalWorkers()
