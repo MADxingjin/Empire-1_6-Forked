@@ -75,7 +75,7 @@ namespace FactionColonies
                 resource.assignedWorkers = 0;
                 resource.SetDirtyCache();
 
-                double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
+                double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier, settlement);
                 double expected = resource.taxableProductionMarketValue * multForTotal + resource.externalTitheBudget;
                 double actual = resource.GetTitheIncome();
 
@@ -100,7 +100,7 @@ namespace FactionColonies
 
             // Manually compute using the same formula that GetTitheIncome should use
             double workerMod = resource.GetTitheModifierPerWorker() * resource.assignedWorkers;
-            double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
+            double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier, settlement);
             double expected = (resource.taxableProductionMarketValue + workerMod) * multForTotal + resource.externalTitheBudget;
             double actual = resource.GetTitheIncome();
 

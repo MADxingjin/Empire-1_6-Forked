@@ -367,7 +367,7 @@ namespace FactionColonies
         }
         public double GetTitheIncome()
         {
-            double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier);
+            double multForTotal = FactionCache.FactionComp.GetStatValue(FCStatDefOf.titheValueMultiplier, settlement);
             return ((taxableProductionMarketValue + GetTotalTitheModifierForWorkers()) * multForTotal) + externalTitheBudget;
         }
         public void RefreshOnRandomTitheBudgetChange()

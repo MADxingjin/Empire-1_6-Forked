@@ -53,13 +53,8 @@ namespace FactionColonies
             if (settlement.BuildingsComp == null) TestAssert.Skip("No BuildingsComp");
 
             int actual = settlement.BuildingsComp.NumBuildingSlots;
-            WorldSettlementDef def = settlement.settlementDef;
-            int expected = SettlementFormulas.CalculateBuildingSlots(
-                settlement.settlementLevel,
-                def.maxBuildingCount,
-                def.baseUnlockedBuildings,
-                def.perLevelUnlockedBuildings);
-            TestAssert.AreEqual(expected, actual, "NumBuildingSlots should match SettlementFormulas");
+            int expected = settlement.GetBuildingSlots();
+            TestAssert.AreEqual(expected, actual, "NumBuildingSlots should match GetBuildingSlots");
         }
 
         [EmpireTest("Settlement")]

@@ -161,7 +161,7 @@
         <defName>titheValueMultiplier</defName>
         <label>tithe value multiplier</label>
         <aggregation>Multiplicative</aggregation>
-        <appliesToSettlements>false</appliesToSettlements>
+        <appliesToSettlements>true</appliesToSettlements>
         <descriptionKey>FCTraitDesc_titheValueMultiplier</descriptionKey>
     </FactionColonies.FCStatDef>
 
