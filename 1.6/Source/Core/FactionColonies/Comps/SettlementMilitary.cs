@@ -176,7 +176,7 @@ namespace FactionColonies
                 }
             };
             /* If auto-battle is enabled, then disable the button. We leave it visible, though, so that the player knows that this is an option if
-             * they change their settings. (Once manual fighting becomes an option the player can use, at least) */
+             * they change their settings. */
             AcceptanceReport canUse = CanDoManualFight();
             if (!canUse.Accepted)
             {
