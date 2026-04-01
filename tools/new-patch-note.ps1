@@ -82,9 +82,7 @@ if ($changeLines.Count -eq 0) {
 
 # --- Auto-fill date ---
 $today = Get-Date
-$releaseDay = $today.Day
-$releaseMonth = $today.Month
-$releaseYear = $today.Year
+$releaseDateStr = $today.ToString("yyyy-MM-dd")
 
 # --- Build XML block ---
 $indent = "`t"
@@ -98,33 +96,11 @@ ${indent}<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 ${indent}${indent}<defName>$defName</defName>
 ${indent}${indent}<label>$([System.Security.SecurityElement]::Escape($label))</label>
 ${indent}${indent}<description>$([System.Security.SecurityElement]::Escape($description))</description>
-
-${indent}${indent}<major>$major</major>
-${indent}${indent}<minor>$minor</minor>
-${indent}${indent}<patch>$patch</patch>
-
-${indent}${indent}<releaseDay>$releaseDay</releaseDay>
-${indent}${indent}<releaseMonth>$releaseMonth</releaseMonth>
-${indent}${indent}<releaseYear>$releaseYear</releaseYear>
-
+${indent}${indent}<releaseDate>$releaseDateStr</releaseDate>
 ${indent}${indent}<patchNoteType>$patchNoteType</patchNoteType>
-
 ${indent}${indent}<patchNoteLines>
 $changeLinesXml
 ${indent}${indent}</patchNoteLines>
-
-${indent}${indent}<patchNoteImagePaths>
-${indent}${indent}${indent}<li>PatchNoteImages/global/empire</li>
-${indent}${indent}</patchNoteImagePaths>
-
-${indent}${indent}<patchNoteImageDescriptions>
-${indent}${indent}${indent}<li>$([System.Security.SecurityElement]::Escape($label))</li>
-${indent}${indent}</patchNoteImageDescriptions>
-
-${indent}${indent}<additionalNotes>
-${indent}${indent}${indent}<li>Please raise any issues you find on the Github page.</li>
-${indent}${indent}</additionalNotes>
-
 ${indent}${indent}<authors>
 $authorsXml
 ${indent}${indent}</authors>
@@ -156,5 +132,5 @@ Write-Host ""
 Write-Host "Done!" -ForegroundColor Green
 Write-Host "  PatchNoteDef '$defName' added to $targetFile"
 Write-Host "  Manifest.xml updated: $currentVersion -> $version"
-Write-Host "  Type: $patchNoteType | Date: $releaseYear-$releaseMonth-$releaseDay"
+Write-Host "  Type: $patchNoteType | Date: $releaseDateStr"
 Write-Host "  Changes: $($changeLines.Count) line(s) | Authors: $($authors -join ', ')"

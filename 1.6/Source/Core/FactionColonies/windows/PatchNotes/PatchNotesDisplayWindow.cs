@@ -29,7 +29,19 @@ namespace FactionColonies
         private const float LinkButtonSize = 24f;
         private const float BannerHeight = 120f;
 
-        private static readonly List<PatchNoteDef> patchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.ListFullCopy();
+        private static List<PatchNoteDef> cachedPatchNoteDefs;
+
+        private static List<PatchNoteDef> GetPatchNoteDefs()
+        {
+            if (cachedPatchNoteDefs == null)
+            {
+                cachedPatchNoteDefs = DefDatabase<PatchNoteDef>.AllDefsListForReading.ListFullCopy();
+                cachedPatchNoteDefs.SortByDescending(def => def.VersionSortKey);
+            }
+            return cachedPatchNoteDefs;
+        }
+
+        private readonly List<PatchNoteDef> patchNoteDefs;
 
         private Texture2D bannerImage;
 
@@ -54,7 +66,7 @@ namespace FactionColonies
 
         public PatchNotesDisplayWindow()
         {
-            patchNoteDefs.SortByDescending(def => def.VersionSortKey);
+            patchNoteDefs = GetPatchNoteDefs();
 
             // Auto-expand unread entries
             for (int i = 0; i < patchNoteDefs.Count; i++)

@@ -4,14 +4,7 @@
 		<defName>0_123_0</defName>
 		<label>Faction Colors</label>
 		<description>Adds ability to set apparel colors for faction pawns.</description>
-
-		<major>0</major>
-		<minor>123</minor>
-		<patch>0</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
@@ -19,18 +12,6 @@
 		<li>Can set primary and secondary faction colors in the faction customize menu</li>
 		<li>Can set individual apparel colors for military units in the Manage Units menu</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Faction Colors</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -41,32 +22,13 @@
 		<defName>0_123_1</defName>
 		<label>Squad Deployment Fix</label>
 		<description>Fixes an issue with squad deployment.</description>
-
-		<major>0</major>
-		<minor>123</minor>
-		<patch>1</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Bugfix: squads that are deployed to a map, and then told to leave, will not actually enter cooldown, leaving their settlement stuck in a &quot;Deployed&quot; state</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Squad Deployment Fix</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -77,32 +39,13 @@
 		<defName>0_123_2</defName>
 		<label>New color picker</label>
 		<description>Adds a new color picker window to compliment the faction color settings.</description>
-
-		<major>0</major>
-		<minor>123</minor>
-		<patch>2</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
 		<patchNoteLines>
 		<li>New color picker</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>New color picker</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -113,32 +56,13 @@
 		<defName>0_123_3</defName>
 		<label>New Faction Customization Window</label>
 		<description>Reworks the faction customization window.</description>
-
-		<major>0</major>
-		<minor>123</minor>
-		<patch>3</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
 		<patchNoteLines>
 		<li>Reworks the faction customization window</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>New Faction Customization Window</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>

@@ -4,14 +4,7 @@
 		<defName>0_132_0</defName>
 		<label>Minor Events Update</label>
 		<description>Adds a couple of useful new fields to the Event def.</description>
-
-		<major>0</major>
-		<minor>132</minor>
-		<patch>0</patch>
-
-		<releaseDay>28</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-28</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
@@ -20,18 +13,6 @@
 		<li>Adds serialized list of permanent stat modifiers to WorldSettlementFC, so that settlements can track permanent stat modifiers that aren&apos;t attached to buildings or events</li>
 		<li>Adds permanentStatModifiers field to FCEventDef. Listed modifiers will be permanently applied to all settlements affected by the event</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Minor Events Update</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -42,32 +23,13 @@
 		<defName>0_132_1</defName>
 		<label>Minor Event Fix</label>
 		<description>Minor fix to the display of event options.</description>
-
-		<major>0</major>
-		<minor>132</minor>
-		<patch>1</patch>
-
-		<releaseDay>28</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-28</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Show permanent stat modifiers for each event option alongside the temporary ones</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Minor Event Fix</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>

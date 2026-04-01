@@ -4,25 +4,13 @@
 			<defName>0_41_0</defName>
 			<label>Added Xenotype Selection</label>
 			<description>I added a way to select Xenotype when creating a Military Unit, currently does not cost anything to change it.</description>
-	
-			<major>0</major>
-			<minor>41</minor>
-			<patch>0</patch>
-	
-			<releaseDay>13</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2023</releaseYear>
+			<releaseDate>2023-08-13</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>Xenotype</li>
 			</patchNoteLines>
-	
-			<additionalNotes>
-				<li>I</li>
-				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>TheSeaMoon</li>

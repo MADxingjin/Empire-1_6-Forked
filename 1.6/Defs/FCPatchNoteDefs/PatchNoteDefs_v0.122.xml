@@ -4,32 +4,13 @@
 		<defName>0_122_0</defName>
 		<label>Combat Update</label>
 		<description>Updates manual battles to actually take advantage of the combat efficiency stat.</description>
-
-		<major>0</major>
-		<minor>122</minor>
-		<patch>0</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
 		<patchNoteLines>
 		<li>Adds two hediffs (a buff and a debuff) that impact a pawn&apos;s shooting accuracy, melee hit chance, melee dodge change, aiming dely factor, and move speed based on their combat efficiency</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Combat Update</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -40,32 +21,13 @@
 		<defName>0_122_1</defName>
 		<label>Event Rewards Fix</label>
 		<description>Fixes events that grant animal rewords.</description>
-
-		<major>0</major>
-		<minor>122</minor>
-		<patch>1</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Fixes the animal event reward to properly include all animals in its filter</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Event Rewards Fix</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -76,32 +38,13 @@
 		<defName>0_122_2</defName>
 		<label>Pawn generation fixes</label>
 		<description>Changes Empire-generated pawns to not generate pawn relations.</description>
-
-		<major>0</major>
-		<minor>122</minor>
-		<patch>2</patch>
-
-		<releaseDay>23</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-23</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Disables pawn relation generation for Empire-generated pawns</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Pawn generation fixes</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>

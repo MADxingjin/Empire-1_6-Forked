@@ -4,14 +4,7 @@
 		<defName>0_129_0</defName>
 		<label>Stats Update</label>
 		<description>Adds a couple new stats to influence resource production.</description>
-
-		<major>0</major>
-		<minor>129</minor>
-		<patch>0</patch>
-
-		<releaseDay>26</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-26</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
@@ -19,18 +12,6 @@
 		<li>Renames prosperityBaseRecovery -&gt; prosperityGainedBase</li>
 		<li>Add workerProductionBase and workerProductionMultiplier to easily modify production for all of a settlement&apos;s resources</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Stats Update</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -41,14 +22,7 @@
 		<defName>0_129_1</defName>
 		<label>Minor fixes</label>
 		<description>Minor UI and debug action fixes</description>
-
-		<major>0</major>
-		<minor>129</minor>
-		<patch>1</patch>
-
-		<releaseDay>26</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-26</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
@@ -56,18 +30,6 @@
 		<li>Updates the &quot;Add Stat Modifier&quot; debug action to add the stat&apos;s label to the new modifier description</li>
 		<li>Updates the resource display on the main tab window to actually use the full space</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Minor fixes</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -78,32 +40,13 @@
 		<defName>0_129_2</defName>
 		<label>Building slot fixes</label>
 		<description>Actually respect the max building slot count specified by a WorldSettlementDef</description>
-
-		<major>0</major>
-		<minor>129</minor>
-		<patch>2</patch>
-
-		<releaseDay>26</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-26</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>When calculating a settlement&apos;s max building slots, enforce the settlement type&apos;s def as a hard cap</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Building slot fixes</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -114,32 +57,13 @@
 		<defName>0_129_3</defName>
 		<label>Minor building slot fixes</label>
 		<description>Extensibility fixes for settlement building slots.</description>
-
-		<major>0</major>
-		<minor>129</minor>
-		<patch>3</patch>
-
-		<releaseDay>26</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-26</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Changes the tooltip for locked building slots to show the actual requirements, if overriden</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Minor building slot fixes</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -150,32 +74,13 @@
 		<defName>0_129_4</defName>
 		<label>Settlement type fixes</label>
 		<description>Fix for handling of settlement types. Mostly relevant for submods.</description>
-
-		<major>0</major>
-		<minor>129</minor>
-		<patch>4</patch>
-
-		<releaseDay>26</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-26</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>When getting a WorldSettlementDef&apos;s SettlementTypeExtension, always grab the last one in the modExtensions list. This should account for xml inheritance</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Settlement type fixes</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>

@@ -4,32 +4,13 @@
 			<defName>0_103_0</defName>
 			<label>Add tithe indicators</label>
 			<description>Small update to increase the readability of the settlement window.</description>
-	
-			<major>0</major>
-			<minor>103</minor>
-			<patch>0</patch>
-	
-			<releaseDay>17</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-17</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
 			<patchNoteLines>
 			<li>Added a small indicator to the tithing tab of the settlement window, indicating if a resource has a non-zero tithe budget</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Add tithe indicators</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>

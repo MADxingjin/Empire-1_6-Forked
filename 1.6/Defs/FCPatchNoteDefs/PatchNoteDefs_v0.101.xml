@@ -4,32 +4,13 @@
 			<defName>0_101_2</defName>
 			<label>Fix for goods deliveries</label>
 			<description>Some deliveries delivered goods one at a time; this patch fixes that.</description>
-	
-			<major>0</major>
-			<minor>101</minor>
-			<patch>2</patch>
-	
-			<releaseDay>17</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-17</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 			<li>Bugfix: some delivery types would deliver goods 1-3 at a time instead of stacking them</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Fix for goods deliveries</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -40,14 +21,7 @@
 			<defName>0_101_1</defName>
 			<label>Fix event stacking &amp; incompatibilities</label>
 			<description>Various fixes for Empire&apos;s events.</description>
-	
-			<major>0</major>
-			<minor>101</minor>
-			<patch>1</patch>
-	
-			<releaseDay>17</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-17</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
@@ -55,18 +29,6 @@
 			<li>Update the event system so that events won&apos;t stack on the same settlement</li>
 			<li>Update event chains to have the proper incompatible tags, so that incompatible events won&apos;t fire at the same time</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Fix event stacking &amp; incompatibilities</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -77,14 +39,7 @@
 			<defName>0_101_0</defName>
 			<label>Compatibility with Vanilla Base Generation Expanded</label>
 			<description>Update&apos;s Empire&apos;s compatibility with Vanilla Base Generation Expanded, including a transpiler fix to an out-of-bounds error in the Vanilla Expanded Framework.</description>
-	
-			<major>0</major>
-			<minor>101</minor>
-			<patch>0</patch>
-	
-			<releaseDay>17</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-17</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
@@ -93,18 +48,6 @@
 			<li>Fix the spawning of defense turrets for settlements that have weapons production</li>
 			<li>Extensiblity: tithe injections are properly reflected in the &quot;net income&quot; display on the settlement window</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Compatibility with Vanilla Base Generation Expanded</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>

@@ -4,14 +4,7 @@
 			<defName>0_111_0</defName>
 			<label>Building Updates</label>
 			<description>Handful of changes and fixes related to buildings.</description>
-	
-			<major>0</major>
-			<minor>111</minor>
-			<patch>0</patch>
-	
-			<releaseDay>18</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-18</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
@@ -20,18 +13,6 @@
 			<li>Add a &apos;baseSettlementType&apos; to WorldSettlementDef and add inheritence-aware settlementtype checks to buildings</li>
 			<li>Add several orbital buildings</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Building Updates</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>

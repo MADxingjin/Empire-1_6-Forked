@@ -4,14 +4,7 @@
 			<defName>0_117_4</defName>
 			<label>Update settings</label>
 			<description>Updates the mod settings.</description>
-	
-			<major>0</major>
-			<minor>117</minor>
-			<patch>4</patch>
-	
-			<releaseDay>20</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-20</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
@@ -19,18 +12,6 @@
 			<li>Reorganize the mod settings to put events settings and military settings in their own tabs</li>
 			<li>Empire Events can be individually disabled in the settings</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Update settings</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -41,32 +22,13 @@
 			<defName>0_117_3</defName>
 			<label>Battle auto-resolve update</label>
 			<description>Changes the calculations for auto-resolve battles.</description>
-	
-			<major>0</major>
-			<minor>117</minor>
-			<patch>3</patch>
-	
-			<releaseDay>20</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-20</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
 			<patchNoteLines>
 			<li>Adds a dampening factor to how much Military Efficiency affects the outcome of auto-resolve battles (its effect was a little too strong). The dampening factor can be changed in the settings.</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Battle auto-resolve update</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -77,14 +39,7 @@
 			<defName>0_117_2</defName>
 			<label>More military fixes</label>
 			<description>Some more fixes for the military side of Empire.</description>
-	
-			<major>0</major>
-			<minor>117</minor>
-			<patch>2</patch>
-	
-			<releaseDay>20</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-20</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
@@ -93,18 +48,6 @@
 			<li>Bugfix: deploying a squad to a map and then leaving the map before the squad does can result in the squad&apos;s settlement being stuck in the &quot;Deployed&quot; state</li>
 			<li>Changed auto-resolve defense battles: if a defending settlement is being reinforced by another (e.g. through auto-defend), then the combined defensive force uses a mix of the military efficiency of the defending settlement and the reinforcing settlement</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>More military fixes</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -115,14 +58,7 @@
 			<defName>0_117_1</defName>
 			<label>Auto-Defense bugfixes</label>
 			<description>Fixes a couple of issues with the auto-defend feature.</description>
-	
-			<major>0</major>
-			<minor>117</minor>
-			<patch>1</patch>
-	
-			<releaseDay>20</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-20</releaseDate>
 	
 			<patchNoteType>Hotfix</patchNoteType>
 	
@@ -130,18 +66,6 @@
 			<li>Loosens restrictions on what settlements can auto-defend</li>
 			<li>Bugfix: the settlementMilitaryLevel field would sometimes not update when it should, resulting in a settlement that *should* be auto-defending, not actually being chosen to auto-defend</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Auto-Defense bugfixes</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>
@@ -152,32 +76,13 @@
 			<defName>0_117_0</defName>
 			<label>Event Def Upate</label>
 			<description>Updates the FCEventDef with some extra filtering options.</description>
-	
-			<major>0</major>
-			<minor>117</minor>
-			<patch>0</patch>
-	
-			<releaseDay>19</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-19</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
 			<patchNoteLines>
 			<li>Adds a &apos;allowedSettlementTypes&apos; and &apos;blockedSettlementTypes&apos; fields to FCEventDef</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Event Def Upate</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>

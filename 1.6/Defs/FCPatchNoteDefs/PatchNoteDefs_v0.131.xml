@@ -4,32 +4,13 @@
 		<defName>0_131_0</defName>
 		<label>UI updates</label>
 		<description>Updates the prisoner window.</description>
-
-		<major>0</major>
-		<minor>131</minor>
-		<patch>0</patch>
-
-		<releaseDay>27</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-27</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
 		<patchNoteLines>
 		<li>Updates the prisoner window to be more useful and visually interesting</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>UI updates</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
@@ -40,32 +21,13 @@
 		<defName>0_131_1</defName>
 		<label>Policy bugfix</label>
 		<description>Fixes a backend bug with policy loading.</description>
-
-		<major>0</major>
-		<minor>131</minor>
-		<patch>1</patch>
-
-		<releaseDay>27</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-27</releaseDate>
 
 		<patchNoteType>Patch</patchNoteType>
 
 		<patchNoteLines>
 		<li>Bugfix: FCPolicy might not set its behavior correctly due to the loading order of WorldObjectComps and WorldComponents</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Policy bugfix</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>
