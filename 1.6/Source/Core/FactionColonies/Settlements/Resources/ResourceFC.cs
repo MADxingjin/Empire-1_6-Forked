@@ -535,7 +535,7 @@ namespace FactionColonies
                     {
                         if (comp is IResourceProductionModifier provider)
                         {
-                            string compDesc = provider.GetResourceModifierDesc(this);
+                            string compDesc = provider.GetResourceAdditiveDesc(this);
                             if (!compDesc.NullOrEmpty())
                                 desc += compDesc + "\n";
                         }
@@ -598,7 +598,7 @@ namespace FactionColonies
                     {
                         if (comp is IResourceProductionModifier provider)
                         {
-                            string compDesc = provider.GetResourceModifierDesc(this);
+                            string compDesc = provider.GetResourceMultiplierDesc(this);
                             if (!compDesc.NullOrEmpty())
                                 desc += compDesc + "\n";
                         }

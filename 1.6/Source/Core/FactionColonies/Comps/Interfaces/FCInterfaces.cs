@@ -59,10 +59,15 @@ namespace FactionColonies
         /// </summary>
         double GetResourceMultiplierModifier(ResourceFC resource);
         /// <summary>
-        /// Returns a description of this comp's contribution for tooltip display.
-        /// Return null or empty if not contributing to this resource.
+        /// Returns a description of this comp's additive contribution for the additive tooltip.
+        /// Return null or empty if not contributing additively to this resource.
         /// </summary>
-        string GetResourceModifierDesc(ResourceFC resource);
+        string GetResourceAdditiveDesc(ResourceFC resource);
+        /// <summary>
+        /// Returns a description of this comp's multiplier contribution for the multiplier tooltip.
+        /// Return null or empty if not contributing a multiplier to this resource.
+        /// </summary>
+        string GetResourceMultiplierDesc(ResourceFC resource);
     }
     /// <summary>
     /// A WorldObjectComp interface for injecting additional tithe budget into a resource.
