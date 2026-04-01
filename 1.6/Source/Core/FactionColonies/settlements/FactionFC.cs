@@ -160,6 +160,7 @@ namespace FactionColonies
         public List<FCEvent> events = new List<FCEvent>();
         public float randomEventLastAdded = 0f;
         public Dictionary<string, int> eventCooldowns = new Dictionary<string, int>();
+        public Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
         public List<BillFC> Bills = new List<BillFC>();
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
@@ -396,6 +397,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
             Scribe_Collections.Look(ref eventCooldowns, "eventCooldowns", LookMode.Value, LookMode.Value);
             if (eventCooldowns == null) eventCooldowns = new Dictionary<string, int>();
+            Scribe_Collections.Look(ref eventFireCounts, "eventFireCounts", LookMode.Value, LookMode.Value);
+            if (eventFireCounts == null) eventFireCounts = new Dictionary<string, int>();
         }
 
         public override void FinalizeInit(bool fromLoad)
@@ -1236,6 +1239,21 @@ namespace FactionColonies
             int lastTick;
             if (!eventCooldowns.TryGetValue(def.defName, out lastTick)) return false;
             return Find.TickManager.TicksGame - lastTick < def.cooldownTicks;
+        }
+
+        public void RecordEventFired(FCEventDef def)
+        {
+            int count = 0;
+            eventFireCounts.TryGetValue(def.defName, out count);
+            eventFireCounts[def.defName] = count + 1;
+        }
+
+        public bool HasReachedMaxFireCount(FCEventDef def)
+        {
+            if (def.maxFireCount <= 0) return false;
+            int count = 0;
+            if (!eventFireCounts.TryGetValue(def.defName, out count)) return false;
+            return count >= def.maxFireCount;
         }
 
         public void EnactEdict(FCPolicyDef def)

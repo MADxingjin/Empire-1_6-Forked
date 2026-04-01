@@ -148,6 +148,9 @@ namespace FactionColonies
             // Cooldown check
             if (tmp.IsEventOnCooldown(cEvent)) return false;
 
+            // Max fire count check
+            if (tmp.HasReachedMaxFireCount(cEvent)) return false;
+
             // Minimum settlements prerequisite (independent of rangeSettlementsAffected targeting)
             if (cEvent.minSettlements > 0 && tmp.settlements.Count < cEvent.minSettlements) return false;
 
@@ -457,6 +460,12 @@ namespace FactionColonies
                 if (evt.def != null && evt.def.cooldownTicks > 0)
                 {
                     faction.RecordEventCooldown(evt.def);
+                }
+
+                // Track fire count for events with a max
+                if (evt.def?.maxFireCount > 0)
+                {
+                    faction.RecordEventFired(evt.def);
                 }
 
                 if (evt.def == null)

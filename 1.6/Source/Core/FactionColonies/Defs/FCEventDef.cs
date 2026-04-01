@@ -37,6 +37,7 @@ namespace FactionColonies
         public List<WorldSettlementDef> blockedSettlementTypes = new List<WorldSettlementDef>();
         public List<FCEventDef> incompatibleEvents = new List<FCEventDef>();
         public int cooldownTicks = 0;
+        public int maxFireCount = -1;
         public int minSettlements = 0;
         public FCPolicyDef requiredPolicy;
         public int minDaysSinceFounded = 0;
@@ -157,6 +158,8 @@ namespace FactionColonies
             }
             if (cooldownTicks < 0)
                 yield return $"{defName}: cooldownTicks ({cooldownTicks}) must not be negative";
+            if (maxFireCount != -1 && maxFireCount <= 0)
+                yield return $"{defName}: maxFireCount ({maxFireCount}) must be -1 (unlimited) or a positive integer";
             if (minSettlements < 0)
                 yield return $"{defName}: minSettlements ({minSettlements}) must not be negative";
             if (minDaysSinceFounded < 0)

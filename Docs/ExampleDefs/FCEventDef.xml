@@ -76,6 +76,8 @@
 	<!-- Minimum ticks after this event resolves before it can fire again. 0 = no cooldown.
 	     Example: 600000 = 10 in-game days. Default: 0 -->
 	<cooldownTicks>0</cooldownTicks>
+	<!-- Maximum number of times this event can fire in a playthrough. -1 = unlimited. Default: -1 -->
+	<maxFireCount>-1</maxFireCount>
 	<!-- Minimum faction settlements required for eligibility.
 	     Independent from rangeSettlementsAffected (which controls targeting). Default: 0 -->
 	<minSettlements>3</minSettlements>
