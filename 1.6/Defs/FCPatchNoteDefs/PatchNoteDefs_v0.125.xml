@@ -4,32 +4,13 @@
 		<defName>0_125_0</defName>
 		<label>Create Settlement Augments</label>
 		<description>A UI change for clarity in the Create Settlement window.</description>
-
-		<major>0</major>
-		<minor>125</minor>
-		<patch>0</patch>
-
-		<releaseDay>24</releaseDay>
-		<releaseMonth>3</releaseMonth>
-		<releaseYear>2026</releaseYear>
+		<releaseDate>2026-03-24</releaseDate>
 
 		<patchNoteType>Minor</patchNoteType>
 
 		<patchNoteLines>
 		<li>Replaces the floatmenu for settlement type selection with a full dialog.</li>
 		</patchNoteLines>
-
-		<patchNoteImagePaths>
-			<li>PatchNoteImages/global/empire</li>
-		</patchNoteImagePaths>
-
-		<patchNoteImageDescriptions>
-			<li>Create Settlement Augments</li>
-		</patchNoteImageDescriptions>
-
-		<additionalNotes>
-			<li>Please raise any issues you find on the Github page.</li>
-		</additionalNotes>
 
 		<authors>
 		<li>Matathias</li>

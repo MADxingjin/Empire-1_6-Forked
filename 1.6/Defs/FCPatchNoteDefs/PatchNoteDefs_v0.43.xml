@@ -4,14 +4,7 @@
 			<defName>0_43_3</defName>
 			<label>SOS2 Support and updating Conflicting Textures</label>
 			<description>This is a hotfix to update SOS2 support and address conflicting textures.</description>
-	
-			<major>0</major>
-			<minor>43</minor>
-			<patch>3</patch>
-	
-			<releaseDay>27</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2025</releaseYear>
+			<releaseDate>2025-08-27</releaseDate>
 	
 			<patchNoteType>Hotfix</patchNoteType>
 	
@@ -20,18 +13,6 @@
 				<li>Be advised, make sure Vehicle Framework is up to date as this point of time as it's spewing errors.</li>
 				<li>Some building textures were removed and replaced with placeholders whilst we work on new textures.</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>SOS2 support has been updated and conflicting textures removed.</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>Epistatic</li>
@@ -42,14 +23,7 @@
 			<defName>0_43_2</defName>
 			<label>Building Menu Overhaul and Stability Fixes</label>
 			<description>Major improvements to the building menu system, expanded biome support, enhanced road functionality, and numerous critical bug fixes for improved stability.</description>
-	
-			<major>0</major>
-			<minor>43</minor>
-			<patch>2</patch>
-	
-			<releaseDay>25</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2025</releaseYear>
+			<releaseDate>2025-08-25</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
@@ -69,18 +43,6 @@
 				<li>Better user experience with branded default imagery</li>
 			</patchNoteLines>
 	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Fixing policy errors.</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
-	
 			<authors>
 				<li>Epistatic</li>
 			</authors>
@@ -90,32 +52,13 @@
 			<defName>0_43_1</defName>
 			<label>Fixing policy errors.</label>
 			<description>This is a quick patch to fix policy errors.</description>
-	
-			<major>0</major>
-			<minor>43</minor>
-			<patch>1</patch>
-	
-			<releaseDay>21</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2025</releaseYear>
+			<releaseDate>2025-08-21</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>Fixing policy errors.</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Fixing policy errors.</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>Epistatic</li>
@@ -126,32 +69,13 @@
 			<defName>0_43_0</defName>
 			<label>Initial Release for 1.6</label>
 			<description>We have released Empire for 1.6, this is an unstable release and may contain bugs and errors.</description>
-	
-			<major>0</major>
-			<minor>43</minor>
-			<patch>0</patch>
-	
-			<releaseDay>19</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2025</releaseYear>
+			<releaseDate>2025-08-19</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>Inital support for Odyssey.</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/0.43.00/1</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>This is the initial release for 1.6, it is an unstable release and may contain bugs and errors.</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>Epistatic</li>

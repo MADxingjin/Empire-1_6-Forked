@@ -4,25 +4,13 @@
 			<defName>0_42_2</defName>
 			<label>Bug Fixes and Settlements Defense Rebalance</label>
 			<description>Fixed some bugs related to Traits and rebalance the Automatic Defense system a bit to be more fair, would appreciate feedback on it</description>
-	
-			<major>0</major>
-			<minor>42</minor>
-			<patch>2</patch>
-	
-			<releaseDay>27</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2023</releaseYear>
+			<releaseDate>2023-08-27</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>We have a new member on the team! @AutumnLight has contributed to the mod first by fixing and optimizing the Trait Selection Screen!</li>
 			</patchNoteLines>
-	
-			<additionalNotes>
-				<li>Code written by AutumnLight and TheSeaMoon</li>
-				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>TheSeaMoon</li>
@@ -33,25 +21,13 @@
 			<defName>0_42_1</defName>
 			<label>Fixed Xenotype generation</label>
 			<description>Xenotype Generation is working now!</description>
-	
-			<major>0</major>
-			<minor>42</minor>
-			<patch>1</patch>
-	
-			<releaseDay>19</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2023</releaseYear>
+			<releaseDate>2023-08-19</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>With the help of the Talented pinedog, we have managed to fix the Xenotype Generation, so now Xenotypes Unit works Perfectly!</li>
 			</patchNoteLines>
-	
-			<additionalNotes>
-				<li>Code written mostly by pinedog with some small tweaks of my own</li>
-				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>TheSeaMoon</li>
@@ -62,25 +38,13 @@
 			<defName>0_42_0</defName>
 			<label>Integrated Additional Building Addon</label>
 			<description>I integrated the Empire - Additional Buildings mod in the main version of Empire</description>
-	
-			<major>0</major>
-			<minor>42</minor>
-			<patch>0</patch>
-	
-			<releaseDay>14</releaseDay>
-			<releaseMonth>8</releaseMonth>
-			<releaseYear>2023</releaseYear>
+			<releaseDate>2023-08-14</releaseDate>
 	
 			<patchNoteType>Patch</patchNoteType>
 	
 			<patchNoteLines>
 				<li>Buildings</li>
 			</patchNoteLines>
-	
-			<additionalNotes>
-				<li>I</li>
-				<li>I have taken it upon myself to update this mod - TheSeaMoon</li>
-			</additionalNotes>
 	
 			<authors>
 				<li>TheSeaMoon</li>

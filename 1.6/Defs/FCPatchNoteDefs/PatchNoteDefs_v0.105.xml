@@ -4,14 +4,7 @@
 			<defName>0_105_0</defName>
 			<label>Improve faction overview</label>
 			<description>Add further settlement upgrade info to the faction overview.</description>
-	
-			<major>0</major>
-			<minor>105</minor>
-			<patch>0</patch>
-	
-			<releaseDay>17</releaseDay>
-			<releaseMonth>3</releaseMonth>
-			<releaseYear>2026</releaseYear>
+			<releaseDate>2026-03-17</releaseDate>
 	
 			<patchNoteType>Minor</patchNoteType>
 	
@@ -19,18 +12,6 @@
 			<li>Adds an &quot;Upgrade&quot; button to each upgradable settlement in the faction overview</li>
 			<li>Adds an &quot;Upgrading...&quot; progress bar to each actively upgrading settlement in the faction overview</li>
 			</patchNoteLines>
-	
-			<patchNoteImagePaths>
-				<li>PatchNoteImages/global/empire</li>
-			</patchNoteImagePaths>
-	
-			<patchNoteImageDescriptions>
-				<li>Improve faction overview</li>
-			</patchNoteImageDescriptions>
-	
-			<additionalNotes>
-				<li>Please raise any issues you find on the Github page.</li>
-			</additionalNotes>
 	
 			<authors>
 			<li>Matathias</li>

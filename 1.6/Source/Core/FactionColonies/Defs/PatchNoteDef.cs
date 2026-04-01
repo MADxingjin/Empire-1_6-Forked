@@ -10,26 +10,22 @@ namespace FactionColonies
 {
     class PatchNoteDef : Def
     {
-        private readonly int major = 0;
-        private readonly int minor = 0;
-        private readonly int patch = 0;
-        private readonly int releaseDay = 01;
-        private readonly int releaseMonth = 01;
-        private readonly int releaseYear = 2000;
+        private int major = 0;
+        private int minor = 0;
+        private int patch = 0;
+
+        [NoTranslate]
+        private readonly string releaseDate = "";
+
+        private DateTime releaseDateParsed;
+
         private readonly PatchNoteType patchNoteType = PatchNoteType.Undefined;
         private readonly List<string> patchNoteLines = new List<string>();
         private readonly List<string> additionalNotes = new List<string>();
         private readonly List<string> linkButtonToolTips = new List<string>();
-        private readonly List<string> patchNoteImageDescriptions = new List<string>();
 
         [NoTranslate]
         public readonly string modId = "";
-
-        [NoTranslate]
-        private readonly string introStringBase = "";
-
-        [NoTranslate]
-        private readonly string authorStringBase = "";
 
         [NoTranslate]
         private readonly List<string> links = new List<string>();
@@ -38,13 +34,9 @@ namespace FactionColonies
         private readonly List<string> authors = new List<string>();
 
         [NoTranslate]
-        private readonly List<string> patchNoteImagePaths = new List<string>();
-
-        [NoTranslate]
         private readonly List<string> linkButtonImagePaths = new List<string>();
 
         private ModContentPack modContentPackCached = null;
-        private List<Texture2D> imagesCached = new List<Texture2D>();
         private List<Texture2D> linkButtonImagesCached = new List<Texture2D>();
 
         /// <summary>
@@ -68,7 +60,7 @@ namespace FactionColonies
 
                 if (modContentPackCached == null)
                 {
-                    LogUtil.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", releaseDay + (releaseMonth * 10) + (releaseYear * 1000));
+                    LogUtil.ErrorOnce($"Couldn't find mod with ModId: {modId} Please check the spelling in the PatchNoteDef!", VersionSortKey);
                 }
 
                 return modContentPackCached;
@@ -104,11 +96,6 @@ namespace FactionColonies
         /// The complete Version number formatted like: "1.02.03"
         /// </summary>
         public string VersionNumber => $"{major}.{minor}.{patch}";
-
-        /// <summary>
-        /// Converts the version to the old Empire version format
-        /// </summary>
-        public double ToOldEmpireVersion => double.Parse($"{major}.{ToVersion(minor)}{ToVersion(patch)}", System.Globalization.CultureInfo.InvariantCulture);
 
         /// <summary>
         /// The Major version number
@@ -151,11 +138,6 @@ namespace FactionColonies
         public string AdditionalNotesFormatted => string.Join("\n", additionalNotes);
 
         /// <summary>
-        /// Returns the opening sentence of the patch notes
-        /// </summary>
-        public string PatchNotesIntroString => string.Format(introStringBase, ModName, VersionNumber);
-
-        /// <summary>
         /// Returns the list of authors in this format: "name0, name1, name2, ..., nameN-1 and nameN" where N is the amount of authors
         /// only returns the name of one author if there is only one
         /// </summary>
@@ -171,11 +153,6 @@ namespace FactionColonies
                 return $"{string.Join(", ", workList)} and {lastAuthor}";
             }
         }
-
-        /// <summary>
-        /// Returns a string that contains the authors in a sentence
-        /// </summary>
-        public string AuthorLine => string.Format(authorStringBase, AuthorsFormatted);
 
         /// <summary>
         /// Returns the cached link button images, caches them if not yet cached
@@ -201,34 +178,8 @@ namespace FactionColonies
         /// </summary>
         public List<string> LinkButtonToolTips => linkButtonToolTips;
 
-        /// <summary>
-        /// Returns the cached patchnote images, caches them if not yet cached
-        /// </summary>
-        public List<Texture2D> PatchNoteImages
-        {
-            get
-            {
-                if (imagesCached.NullOrEmpty())
-                {
-                    foreach (string path in patchNoteImagePaths)
-                    {
-                        imagesCached.Add(ContentFinder<Texture2D>.Get(path));
-                    }
-                }
+        public DateTime ReleaseDate => releaseDateParsed;
 
-                return imagesCached;
-            }
-        }
-
-        public List<string> PatchNoteImageDescriptions => patchNoteImageDescriptions;
-
-        public DateTime ReleaseDate => new DateTime(releaseYear, releaseMonth, releaseDay);
-
-        public string CompletePatchNotesString => $"{description}\n\n{PatchNotesIntroString}\n{PatchNotesFormatted}\n\n{AuthorLine}{(additionalNotes.NullOrEmpty() ? "" : "\n" + AdditionalNotesFormatted)}";
-
-        /// <summary>
-        /// Compact body text for the patch notes window. Uses shorter labels than CompletePatchNotesString.
-        /// </summary>
         public string CompactBodyString
         {
             get
@@ -240,6 +191,35 @@ namespace FactionColonies
             }
         }
 
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+
+            // Parse version from defName (format: major_minor_patch)
+            if (defName != null)
+            {
+                string[] parts = defName.Split('_');
+                if (parts.Length >= 3
+                    && int.TryParse(parts[0], out int maj)
+                    && int.TryParse(parts[1], out int min)
+                    && int.TryParse(parts[2], out int pat))
+                {
+                    major = maj;
+                    minor = min;
+                    patch = pat;
+                }
+            }
+
+            // Parse release date
+            if (!string.IsNullOrEmpty(releaseDate))
+            {
+                DateTime.TryParseExact(releaseDate, "yyyy-MM-dd",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out releaseDateParsed);
+            }
+        }
+
         /// <summary>
         /// Clears the cached data of this def
         /// </summary>
@@ -247,7 +227,6 @@ namespace FactionColonies
         {
             base.ClearCachedData();
 
-            imagesCached = new List<Texture2D>();
             linkButtonImagesCached = new List<Texture2D>();
             modContentPackCached = null;
         }
@@ -271,19 +250,15 @@ namespace FactionColonies
 
             if (patchNoteLines.NullOrEmpty())
                 yield return "patchNoteLines is empty";
-            if (major < 0 || minor < 0 || patch < 0)
-                yield return $"version components must be non-negative: {major}.{minor}.{patch}";
-            if (releaseMonth < 1 || releaseMonth > 12 || releaseDay < 1 || releaseDay > 31)
-                yield return $"invalid release date: {releaseYear}-{releaseMonth}-{releaseDay}";
-            if (!patchNoteImagePaths.NullOrEmpty() && patchNoteImagePaths.Count != patchNoteImageDescriptions.Count)
-                yield return $"patchNoteImagePaths count ({patchNoteImagePaths.Count}) != patchNoteImageDescriptions count ({patchNoteImageDescriptions.Count})";
+            if (major == 0 && minor == 0 && patch == 0)
+                yield return $"defName '{defName}' did not parse to a valid version (expected format: major_minor_patch)";
+            if (releaseDateParsed == default(DateTime))
+                yield return $"releaseDate '{releaseDate}' did not parse (expected format: yyyy-MM-dd)";
             if (string.IsNullOrEmpty(modId))
                 yield return "modId is empty";
             if (authors.NullOrEmpty())
                 yield return "authors list is empty";
         }
-
-        private static string ToVersion(int num) => (num > 10) ? num.ToString() : '0' + num.ToString();
 
         /// <summary>
         /// Sorts all patchNoteDefs to find the latest one for a mod using it's <paramref name="modId"/>.
@@ -310,12 +285,6 @@ namespace FactionColonies
             }
 
             return latest;
-        }
-
-        [DefOf]
-        public class PatchNoteDefOf
-        {
-            static PatchNoteDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(PatchNoteDefOf));
         }
     }
 }
