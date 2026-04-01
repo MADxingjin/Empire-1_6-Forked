@@ -52,12 +52,14 @@ namespace FactionColonies
 
         // Comps with overview tabs
         private List<ISettlementWindowOverview> overviews = new List<ISettlementWindowOverview>();
+        private Color accentColor;
 
         public override void PreOpen()
         {
             base.PreOpen();
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
             factionfc = FactionCache.FactionComp;
+            accentColor = settlement.settlementDef.accentColor ?? Color.gray;
 
             foreach (WorldObjectComp comp in settlement.AllComps)
             {
@@ -175,7 +177,7 @@ namespace FactionColonies
             Rect botBoxInner = new Rect(botBox.x + margin, botBox.y + margin, botBox.width - (margin * 2), botBox.height - (margin * 2));
 
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = accentColor;
             Widgets.DrawBox(topBox);
             Widgets.DrawBox(botBox);
             GUI.color = origColor;
@@ -185,7 +187,9 @@ namespace FactionColonies
 
         private void DrawCenterInfo(Rect boundingBox)
         {
-            int newTab = UIUtil.DrawTabRow(boundingBox, overviewTabs, overviewTab, out Rect contentRect);
+            Color? tabBaseColor = accentColor != Color.gray ? (Color?)accentColor : null;
+            int newTab = UIUtil.DrawTabRow(boundingBox, overviewTabs, overviewTab, out Rect contentRect,
+                baseColor: tabBaseColor, borderColor: accentColor);
             if (newTab != overviewTab)
             {
                 overviewTab = newTab;
@@ -502,7 +506,7 @@ namespace FactionColonies
         private void DrawTitheScrollBox(Rect boundingBox, ResourceFC res)
         {
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = accentColor;
             Widgets.DrawBox(boundingBox);
             GUI.color = origColor;
 
@@ -686,7 +690,7 @@ namespace FactionColonies
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
         {
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = accentColor;
             Widgets.DrawBox(boundingBox);
             GUI.color = origColor;
 
@@ -1296,7 +1300,7 @@ namespace FactionColonies
         private void DrawRightInfo(Rect boundingBox)
         {
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = accentColor;
             Widgets.DrawBox(boundingBox);
             GUI.color = origColor;
             Rect prodBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2), boundingBox.height - (margin * 2));

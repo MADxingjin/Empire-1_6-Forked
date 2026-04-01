@@ -27,19 +27,33 @@ namespace FactionColonies
             GUI.DrawTexture(rect, portrait);
         }
 
-        public static bool ButtonFlat(Rect rect, string label, Color? labelColor = null, bool disabled = false, bool highlighted = false)
+        public static bool ButtonFlat(Rect rect, string label, Color? labelColor = null,
+            bool disabled = false, bool highlighted = false, Color? baseColor = null)
         {
-            return ButtonFlatIcon(rect, label, null, labelColor, disabled, highlighted);
+            return ButtonFlatIcon(rect, label, null, labelColor, disabled, highlighted, baseColor);
         }
 
         public static bool ButtonFlatIcon(Rect rect, string label, Texture2D icon = null,
-            Color? labelColor = null, bool disabled = false, bool highlighted = false)
+            Color? labelColor = null, bool disabled = false, bool highlighted = false,
+            Color? baseColor = null)
         {
             bool hovered = !disabled && Mouse.IsOver(rect);
-            float normalBg = highlighted ? 0.15f : 0.22f;
-            float hoverBg = highlighted ? 0.28f : 0.35f;
-            float bg = hovered ? hoverBg : normalBg;
-            Widgets.DrawBoxSolid(rect, new Color(bg, bg, bg));
+            if (baseColor.HasValue)
+            {
+                Color c = baseColor.Value;
+                float mult = hovered ? (highlighted ? 1.3f : 1.6f) : (highlighted ? 0.7f : 1.0f);
+                Widgets.DrawBoxSolid(rect, new Color(
+                    Mathf.Clamp01(c.r * mult),
+                    Mathf.Clamp01(c.g * mult),
+                    Mathf.Clamp01(c.b * mult)));
+            }
+            else
+            {
+                float normalBg = highlighted ? 0.15f : 0.22f;
+                float hoverBg = highlighted ? 0.28f : 0.35f;
+                float bg = hovered ? hoverBg : normalBg;
+                Widgets.DrawBoxSolid(rect, new Color(bg, bg, bg));
+            }
 
             float iconSpace = 0f;
             if (icon != null)
@@ -74,7 +88,7 @@ namespace FactionColonies
         public static void DrawTabDecoratorHorizontalTop(Rect tab, float leftx, float rightx, Color color)
         {
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = color;
             Widgets.DrawLineHorizontal(leftx, tab.yMax, tab.x - leftx);
             Widgets.DrawLineVertical(tab.x, tab.y, tab.height);
             Widgets.DrawLineHorizontal(tab.x, tab.y, tab.width);
@@ -108,8 +122,9 @@ namespace FactionColonies
         /// </summary>
         public static int DrawTabRow(Rect boundingBox, List<string> tabLabels, int selectedTab,
             out Rect contentRect, Func<Rect, string, bool, bool> buttonDrawer,
-            float tabHeight = 20f, float minTabWidth = 100f)
+            float tabHeight = 20f, float minTabWidth = 100f, Color? borderColor = null)
         {
+            Color border = borderColor ?? Color.gray;
             int tabCount = tabLabels.Count;
             int rows = Math.Max(1, Mathf.CeilToInt(tabCount * minTabWidth / boundingBox.width));
             int basePerRow = Mathf.FloorToInt((float)tabCount / rows);
@@ -159,20 +174,17 @@ namespace FactionColonies
 
             // Border drawing
             Color origColor = GUI.color;
-            GUI.color = Color.gray;
+            GUI.color = border;
 
             if (selectedRow == rows - 1)
             {
                 // Selected tab is in the bottom row — draw notch border
-                DrawTabDecoratorHorizontalTop(chosenRect, boundingBox.x, boundingBox.xMax, Color.gray);
+                DrawTabDecoratorHorizontalTop(chosenRect, boundingBox.x, boundingBox.xMax, border);
             }
             else
             {
                 // Selected tab is in an upper row — straight line across content top
                 Widgets.DrawLineHorizontal(boundingBox.x, contentTop, boundingBox.width);
-                GUI.color = Color.gray;
-                Widgets.DrawBox(chosenRect);
-                GUI.color = Color.gray;
             }
 
             // Content box sides and bottom
@@ -188,38 +200,41 @@ namespace FactionColonies
 
         /// <summary>Draws tabs using <see cref="ButtonFlat"/> with highlighted selection. Default overload.</summary>
         public static int DrawTabRow(Rect boundingBox, List<string> tabLabels, int selectedTab,
-            out Rect contentRect, float tabHeight = 20f, float minTabWidth = 100f)
+            out Rect contentRect, float tabHeight = 20f, float minTabWidth = 100f,
+            Color? baseColor = null, Color? borderColor = null)
         {
             return DrawTabRow(boundingBox, tabLabels, selectedTab, out contentRect,
-                (r, l, sel) => ButtonFlat(r, l, highlighted: sel), tabHeight, minTabWidth);
+                (r, l, sel) => ButtonFlat(r, l, highlighted: sel, baseColor: baseColor),
+                tabHeight, minTabWidth, borderColor);
         }
 
         /// <summary>Draws tabs using <see cref="Widgets.ButtonText"/>.</summary>
         public static int DrawTabRowButtonText(Rect boundingBox, List<string> tabLabels, int selectedTab,
-            out Rect contentRect, float tabHeight = 20f, float minTabWidth = 100f)
+            out Rect contentRect, float tabHeight = 20f, float minTabWidth = 100f,
+            Color? borderColor = null)
         {
             return DrawTabRow(boundingBox, tabLabels, selectedTab, out contentRect,
-                (r, l, sel) => Widgets.ButtonText(r, l), tabHeight, minTabWidth);
+                (r, l, sel) => Widgets.ButtonText(r, l), tabHeight, minTabWidth, borderColor);
         }
 
         /// <summary>Draws tabs using <see cref="ButtonFlat"/> with optional label color.</summary>
         public static int DrawTabRowButtonFlat(Rect boundingBox, List<string> tabLabels, int selectedTab,
-            out Rect contentRect, Color? labelColor = null,
-            float tabHeight = 20f, float minTabWidth = 100f)
+            out Rect contentRect, Color? labelColor = null, Color? baseColor = null,
+            float tabHeight = 20f, float minTabWidth = 100f, Color? borderColor = null)
         {
             return DrawTabRow(boundingBox, tabLabels, selectedTab, out contentRect,
-                (r, l, sel) => ButtonFlat(r, l, labelColor: labelColor, highlighted: sel),
-                tabHeight, minTabWidth);
+                (r, l, sel) => ButtonFlat(r, l, labelColor: labelColor, highlighted: sel, baseColor: baseColor),
+                tabHeight, minTabWidth, borderColor);
         }
 
         /// <summary>Draws tabs using <see cref="ButtonFlatIcon"/> with optional icon and label color.</summary>
         public static int DrawTabRowButtonFlatIcon(Rect boundingBox, List<string> tabLabels, int selectedTab,
-            out Rect contentRect, Texture2D icon = null, Color? labelColor = null,
-            float tabHeight = 20f, float minTabWidth = 100f)
+            out Rect contentRect, Texture2D icon = null, Color? labelColor = null, Color? baseColor = null,
+            float tabHeight = 20f, float minTabWidth = 100f, Color? borderColor = null)
         {
             return DrawTabRow(boundingBox, tabLabels, selectedTab, out contentRect,
-                (r, l, sel) => ButtonFlatIcon(r, l, icon, labelColor: labelColor, highlighted: sel),
-                tabHeight, minTabWidth);
+                (r, l, sel) => ButtonFlatIcon(r, l, icon, labelColor: labelColor, highlighted: sel, baseColor: baseColor),
+                tabHeight, minTabWidth, borderColor);
         }
     }
 }
