@@ -185,49 +185,16 @@ namespace FactionColonies
 
         private void DrawCenterInfo(Rect boundingBox)
         {
-            Color origColor = GUI.color;
-            float nTabs = overviewTabs.Count;
-            float tabY = boundingBox.y;
-            float tabHeight = 20f;
-            float tabWidth = boundingBox.width / nTabs;
-            Rect chosenRect = new Rect();
-            for (int i = 0; i < nTabs; i++)
+            int newTab = UIUtil.DrawTabRow(boundingBox, overviewTabs, overviewTab, out Rect contentRect);
+            if (newTab != overviewTab)
             {
-                Rect tabRect = new Rect(boundingBox.x + (tabWidth * i), tabY, tabWidth, tabHeight);
-                TaggedString label = overviewTabs[i];
-                string nulabel = Text.ClampTextWithEllipsis(tabRect, label);
-                if (nulabel != label)
+                overviewTab = newTab;
+                if (overviewTab >= 2 && (overviewTab - 2) < overviews.Count)
                 {
-                    TooltipHandler.TipRegion(tabRect, label);
-                }
-                if (Widgets.ButtonText(tabRect, label))
-                {
-                    overviewTab = i;
-                    if (overviews.Count > 0 && overviewTab >= 2 && (overviewTab - 2) < overviews.Count)
-                    {
-                        ISettlementWindowOverview overview = overviews[overviewTab - 2];
-                        overview.OnTabSwitch();
-                    }
-                }
-                if (overviewTab == i)
-                {
-                    chosenRect = tabRect;
+                    overviews[overviewTab - 2].OnTabSwitch();
                 }
             }
-            //tabs for different sections: Overview, Tithing, sub-mod added windows
-            Rect overviewBounds = new Rect(boundingBox.x, tabY + tabHeight, boundingBox.width, boundingBox.height - tabHeight);
-            Rect infobox = new Rect(overviewBounds.x + margin, overviewBounds.y + margin, overviewBounds.width - (margin * 2), overviewBounds.height - (margin * 2)); //originally: 520 width, 340 height
-            GUI.color = Color.gray;
-            //fancy custom tab stuff
-            Widgets.DrawLineHorizontal(boundingBox.x, chosenRect.yMax, chosenRect.x - boundingBox.x);
-            Widgets.DrawLineVertical(chosenRect.x, chosenRect.y, chosenRect.height);
-            Widgets.DrawLineHorizontal(chosenRect.x, chosenRect.y, chosenRect.width);
-            Widgets.DrawLineVertical(chosenRect.xMax, chosenRect.y, chosenRect.height);
-            Widgets.DrawLineHorizontal(chosenRect.xMax, chosenRect.yMax, boundingBox.xMax - chosenRect.xMax);
-            Widgets.DrawLineVertical(boundingBox.x, chosenRect.yMax, boundingBox.height - chosenRect.height);
-            Widgets.DrawLineVertical(boundingBox.xMax, chosenRect.yMax, boundingBox.height - chosenRect.height);
-            Widgets.DrawLineHorizontal(boundingBox.x, boundingBox.yMax - 1, boundingBox.width);
-            GUI.color = origColor;
+            Rect infobox = contentRect.ContractedBy(margin);
             DrawOverview(infobox);
         }
         private void DrawOverview(Rect boundingBox)
