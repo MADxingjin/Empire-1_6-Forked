@@ -17,12 +17,61 @@ namespace FactionColonies
         /// <summary>If true, animals must have at least one trade tag to be included.</summary>
         public bool requireTradeTags = true;
 
+        private HashSet<ThingDef> _blockedProducts;
+        private HashSet<ThingDef> BlockedProducts => _blockedProducts ?? (_blockedProducts = BuildBlockedProductSet());
+
         public override void SetFilter(ThingFilter filter, TechLevel techlevel, ResourceFC resource = null)
         {
             foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)
             {
                 filter.SetAllow(def.race, true);
             }
+            foreach (ThingDef blocked in BlockedProducts)
+            {
+                filter.SetAllow(blocked, false);
+            }
+        }
+
+        private HashSet<ThingDef> BuildBlockedProductSet()
+        {
+            HashSet<ThingDef> allowedRaces = new HashSet<ThingDef>();
+            foreach (PawnKindDef kind in FactionCache.AllAnimalKindDefs)
+            {
+                allowedRaces.Add(kind.race);
+            }
+
+            HashSet<ThingDef> allowedProducts = new HashSet<ThingDef>();
+            HashSet<ThingDef> allProducts = new HashSet<ThingDef>();
+
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
+            {
+                if (def.race is null || !def.race.Animal) continue;
+
+                CollectProducts(def, allProducts);
+                if (allowedRaces.Contains(def))
+                {
+                    CollectProducts(def, allowedProducts);
+                }
+            }
+
+            allProducts.ExceptWith(allowedProducts);
+            return allProducts;
+        }
+
+        private static void CollectProducts(ThingDef race, HashSet<ThingDef> products)
+        {
+            if (race.race.meatDef != null) products.Add(race.race.meatDef);
+            if (race.race.leatherDef != null) products.Add(race.race.leatherDef);
+
+            CompProperties_Shearable shearable = race.GetCompProperties<CompProperties_Shearable>();
+            if (shearable?.woolDef != null) products.Add(shearable.woolDef);
+
+            CompProperties_EggLayer eggLayer = race.GetCompProperties<CompProperties_EggLayer>();
+            if (eggLayer?.eggUnfertilizedDef != null) products.Add(eggLayer.eggUnfertilizedDef);
+            if (eggLayer?.eggFertilizedDef != null) products.Add(eggLayer.eggFertilizedDef);
+
+            CompProperties_Milkable milkable = race.GetCompProperties<CompProperties_Milkable>();
+            if (milkable?.milkDef != null) products.Add(milkable.milkDef);
         }
         public override ThingSetMaker GetThingSetMaker(out TechLevel tlevel, ResourceFC resource = null)
         {
