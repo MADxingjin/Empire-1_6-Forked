@@ -9,36 +9,14 @@ namespace FactionColonies
     /// </summary>
     public static class LogUtil
     {
-        public const string slug = "[Empire]";
-        public static void LogMessage(string message, LogMessageType messageType = LogMessageType.Message, bool forceLog = false, bool errorOnce = false, int errorOnceKey = 0)
-        {
-            switch (messageType)
-            {
-                case LogMessageType.Message:
-                    if (FCSettings.PrintDebug || forceLog)
-                    {
-                        Log.Message(slug + " " + message);
-                    }
-                    break;
-                case LogMessageType.Warning:
-                    Log.Warning(slug + " " + message);
-                    break;
-                case LogMessageType.Error:
-                    if (errorOnce)
-                    {
-                        Log.ErrorOnce(slug + " " + message, errorOnceKey);
-                    }
-                    else
-                    {
-                        Log.Error(slug + " " + message);
-                    }
-                    break;
-            }
-        }
+        private const string slug = "[Empire]";
 
         public static void Message(string message)
         {
-            LogMessage(message, LogMessageType.Message);
+            if (FCSettings.PrintDebug)
+            {
+                Log.Message($"{slug} {message}");
+            }
         }
         /// <summary>
         /// Prints a non-warning, non-error message to the log even if the user has disabled Verbose Logging.
@@ -46,19 +24,19 @@ namespace FactionColonies
         /// <param name="message"></param>
         public static void MessageForce(string message)
         {
-            LogMessage(message, LogMessageType.Message, true);
+            Log.Message($"{slug} {message}");
         }
         public static void Warning(string message)
         {
-            LogMessage(message, LogMessageType.Warning);
+            Log.Warning($"{slug} {message}");
         }
         public static void Error(string message)
         {
-            LogMessage(message, LogMessageType.Error);
+            Log.Error($"{slug} {message}");
         }
         public static void ErrorOnce(string message, int key)
         {
-            LogMessage(message, LogMessageType.Error, true, true, key);
+            Log.ErrorOnce($"{slug} {message}", key);
         }
     }
 }

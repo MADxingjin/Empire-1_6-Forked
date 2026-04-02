@@ -67,6 +67,8 @@ namespace FactionColonies
         /// </summary>
         public bool canTithe = true;
 
+        public bool CanTithe => canTithe && !isPoolResource;
+
         /// <summary>
         /// Default additive production bonus for this resource in biomes that don't specify one.
         /// </summary>

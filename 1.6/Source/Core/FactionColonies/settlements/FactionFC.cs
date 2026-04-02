@@ -33,14 +33,14 @@ namespace FactionColonies
         // ── Capital & Maps ──
         public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
-        public Map taxMap;
+        private Map taxMap;
 
         public Map TaxMap
         {
             get
             {
                 Map map;
-                if (taxMap == null)
+                if (taxMap is null)
                 {
                     map = Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map;
                     if (map is null)
@@ -122,7 +122,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedBehaviors == null)
+                if (_cachedBehaviors is null)
                     RebuildBehaviorCache();
                 return _cachedBehaviors;
             }
@@ -164,7 +164,6 @@ namespace FactionColonies
         public List<BillFC> Bills = new List<BillFC>();
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
-        public bool autoResolveBillsChanged = false;
 
         // ── Resources ──
         public List<ResourcePool> resourcePools = new List<ResourcePool>();
@@ -233,13 +232,13 @@ namespace FactionColonies
         {
             bool WouldCrash(MethodInfo method)
             {
-                if (method == null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
+                if (method is null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
                 {
                     return false;
                 }
 
                 byte[] bytes = method.GetMethodBody()?.GetILAsByteArray();
-                if (bytes == null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
+                if (bytes is null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
                 {
                     return true;
                 }
@@ -257,7 +256,7 @@ namespace FactionColonies
                 }
 
                 MethodInfo[] m = declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                if (m == null) return new List<MethodInfo>();
+                if (m is null) return new List<MethodInfo>();
 
                 return m.Where(met => met.Name == methodName);
             }).Where(WouldCrash);
@@ -283,10 +282,7 @@ namespace FactionColonies
             {
                 return GenDate.DateFullStringAt(foundingTick, startingLongLat);
             }
-            else
-            {
-                return GenDate.DateShortStringAt(foundingTick, startingLongLat);
-            }
+            return GenDate.DateShortStringAt(foundingTick, startingLongLat);
         }
 
         #endregion
@@ -331,7 +327,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
-            //New Producitons types
+            //New Production types
             Scribe_Collections.Look(ref resourcePools, "resourcePools", LookMode.Deep);
             Scribe_References.Look(ref powerOutput, "powerOutput");
 
@@ -422,7 +418,7 @@ namespace FactionColonies
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
-            if (xenotypeFilter == null)
+            if (xenotypeFilter is null)
             {
                 LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
@@ -448,21 +444,20 @@ namespace FactionColonies
                 // Events live on FactionFC, so they aren't available during individual settlement PostLoadInit.
                 foreach (FCEvent evt in events)
                 {
-                    if (evt?.def == null || evt.def.statModifiers == null) continue;
+                    if (evt?.def?.statModifiers is null) continue;
                     string sourceId = "event_" + evt.def.defName;
                     if (evt.settlementTraitLocations.Any())
                     {
                         foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                         {
-                            if (location != null)
-                                location.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                            location?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                         }
                     }
                     else
                     {
                         foreach (WorldSettlementFC settlement in settlements)
                         {
-                            settlement.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                            settlement?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                         }
                     }
                 }
@@ -545,7 +540,7 @@ namespace FactionColonies
             //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
             if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
             {
-                if (faction != null && (faction.leader == null || faction.leader.Dead))
+                if (faction != null && (faction.leader is null || faction.leader.Dead))
                 {
                     ColonyUtil.CreatePlayerFactionLeader(faction);
                 }
@@ -581,7 +576,7 @@ namespace FactionColonies
 
         public void TaxTick(Faction faction)
         {
-            if (faction == null || Find.TickManager.TicksGame < taxTimeDue)
+            if (faction is null || Find.TickManager.TicksGame < taxTimeDue)
                 return;
 
             AddTax();
@@ -593,7 +588,7 @@ namespace FactionColonies
 
         public void StatTick(Faction faction)
         {
-            if (faction == null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
+            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
                 return;
 
             UpdateSettlementStats();
@@ -610,7 +605,7 @@ namespace FactionColonies
             if (Find.TickManager.TicksGame >= militaryTimeDue)
             {
                 if (faction != null &&
-                    FCSettings.disableHostileMilitaryActions == false &&
+                    !FCSettings.disableHostileMilitaryActions &&
                     Find.TickManager.TicksGame > (timeStart + GenDate.TicksPerSeason))
                 {
                     //if military actions not disabled or game has not passed through the first season
@@ -699,7 +694,7 @@ namespace FactionColonies
 
         public void FireSupportTick()
         {
-            if (militaryCustomizationUtil.fireSupport == null)
+            if (militaryCustomizationUtil.fireSupport is null)
             {
                 militaryCustomizationUtil.fireSupport = new List<MilitaryFireSupport>();
             }
@@ -779,27 +774,28 @@ namespace FactionColonies
             TechLevel curTechLevel = _techLevel;
 
             if (!medievalOnly && FactionCache.TechLevelBarrierUltra != null &&
-                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) == FactionCache.TechLevelBarrierUltra.baseCost && _techLevel < TechLevel.Ultra)
+                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) >= FactionCache.TechLevelBarrierUltra.baseCost &&
+                _techLevel < TechLevel.Ultra)
             {
                 _techLevel = TechLevel.Ultra;
                 LogUtil.Message("updateTechLevel: Ultra");
             }
             else if (!medievalOnly && FactionCache.TechLevelBarrierSpacer != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) == FactionCache.TechLevelBarrierSpacer.baseCost &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) >= FactionCache.TechLevelBarrierSpacer.baseCost &&
                      _techLevel < TechLevel.Spacer)
             {
                 _techLevel = TechLevel.Spacer;
                 LogUtil.Message("updateTechLevel: Spacer");
             }
             else if (!medievalOnly && FactionCache.TechLevelBarrierIndustrial != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) == FactionCache.TechLevelBarrierIndustrial.baseCost &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) >= FactionCache.TechLevelBarrierIndustrial.baseCost &&
                      _techLevel < TechLevel.Industrial)
             {
                 _techLevel = TechLevel.Industrial;
                 LogUtil.Message("updateTechLevel: Industrial");
             }
             else if (FactionCache.TechLevelBarrierMedieval != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) == FactionCache.TechLevelBarrierMedieval.baseCost &&
+                     researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) >= FactionCache.TechLevelBarrierMedieval.baseCost &&
                      _techLevel < TechLevel.Medieval)
             {
                 _techLevel = TechLevel.Medieval;
@@ -834,7 +830,7 @@ namespace FactionColonies
             }
 
             Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
-            if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
+            if (playerColonyfaction?.def.techLevel < _techLevel)
             {
                 LogUtil.Message("Updating Tech Level");
                 UpdateFactionDef(_techLevel, ref playerColonyfaction);
@@ -954,22 +950,22 @@ namespace FactionColonies
 
             foreach (FCPolicy p in policies)
             {
-                if (p?.def == null) continue;
+                if (p?.def is null) continue;
                 value = AccumulateStatModifiersValue(value, stat, p.def.statModifiers);
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 value = AccumulateStatModifiersValue(value, stat, p.def.statModifiers);
             }
             foreach (FCPolicy edict in edicts.Values)
             {
-                if (edict?.def == null || !edict.IsFullyActive) continue;
+                if (edict?.def is null || !edict.IsFullyActive) continue;
                 value = AccumulateStatModifiersValue(value, stat, edict.def.statModifiers);
             }
             foreach (FCEvent evt in events)
             {
-                if (evt?.def == null) continue;
+                if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
                 value = AccumulateStatModifiersValue(value, stat, evt.def.statModifiers);
             }
@@ -1005,22 +1001,22 @@ namespace FactionColonies
 
             foreach (FCPolicy p in policies)
             {
-                if (p?.def == null) continue;
+                if (p?.def is null) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, p.def.statModifiers, p.def.LabelCap, hardinvert);
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, p.def.statModifiers, p.def.LabelCap, hardinvert);
             }
             foreach (FCPolicy edict in edicts.Values)
             {
-                if (edict?.def == null || !edict.IsFullyActive) continue;
+                if (edict?.def is null || !edict.IsFullyActive) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, edict.def.statModifiers, $"{edict.def.LabelCap} ({"FCEdict".Translate()})", hardinvert);
             }
             foreach (FCEvent evt in events)
             {
-                if (evt?.def == null) continue;
+                if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, evt.def.statModifiers, $"{evt.def.LabelCap} ({"FCEvent".Translate()})", hardinvert);
             }
@@ -1065,7 +1061,7 @@ namespace FactionColonies
         /// </summary>
         public void RebuildBehaviorCache()
         {
-            LogUtil.Message($"Rebuilding faction behavior cache");
+            LogUtil.Message("Rebuilding faction behavior cache");
             _cachedBehaviors = new List<FCPolicyBehavior>();
             foreach (FCPolicy p in policies)
             {
@@ -1074,7 +1070,7 @@ namespace FactionColonies
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 if (p.behavior != null)
                     _cachedBehaviors.Add(p.behavior);
             }
@@ -1098,7 +1094,7 @@ namespace FactionColonies
             _cachedEnabledJobs = new HashSet<MilitaryJobDef>();
             foreach (FCPolicy p in policies)
             {
-                if (p?.def == null) continue;
+                if (p?.def is null) continue;
                 if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
                 if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
                 if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
@@ -1106,7 +1102,7 @@ namespace FactionColonies
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 if (p.def.blockedActions != null) foreach (var a in p.def.blockedActions) _cachedBlockedActions.Add(a);
                 if (p.def.enabledActions != null) foreach (var a in p.def.enabledActions) _cachedEnabledActions.Add(a);
                 if (p.def.blockedMilitaryJobs != null) foreach (var j in p.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
@@ -1114,7 +1110,7 @@ namespace FactionColonies
             }
             foreach (FCPolicy edict in edicts.Values)
             {
-                if (edict?.def == null || !edict.IsFullyActive) continue;
+                if (edict?.def is null || !edict.IsFullyActive) continue;
                 if (edict.def.blockedActions != null) foreach (var a in edict.def.blockedActions) _cachedBlockedActions.Add(a);
                 if (edict.def.enabledActions != null) foreach (var a in edict.def.enabledActions) _cachedEnabledActions.Add(a);
                 if (edict.def.blockedMilitaryJobs != null) foreach (var j in edict.def.blockedMilitaryJobs) _cachedBlockedJobs.Add(j);
@@ -1208,23 +1204,20 @@ namespace FactionColonies
 
         public bool IsEdictCategoryUnlocked(FCPolicyCategory category)
         {
-            int required;
-            if (!EdictCategoryUnlockLevels.TryGetValue(category, out required))
+            if (!EdictCategoryUnlockLevels.TryGetValue(category, out int required))
                 return false;
             return factionLevel >= required;
         }
 
         public FCPolicy GetActiveEdict(FCPolicyCategory category)
         {
-            FCPolicy edict;
-            edicts.TryGetValue(category, out edict);
+            edicts.TryGetValue(category, out FCPolicy edict);
             return edict;
         }
 
         public bool HasEdict(FCPolicyDef def)
         {
-            FCPolicy edict;
-            if (!edicts.TryGetValue(def.category, out edict)) return false;
+            if (!edicts.TryGetValue(def.category, out FCPolicy edict)) return false;
             return edict.def == def;
         }
 
@@ -1236,23 +1229,20 @@ namespace FactionColonies
         public bool IsEventOnCooldown(FCEventDef def)
         {
             if (def.cooldownTicks <= 0) return false;
-            int lastTick;
-            if (!eventCooldowns.TryGetValue(def.defName, out lastTick)) return false;
+            if (!eventCooldowns.TryGetValue(def.defName, out int lastTick)) return false;
             return Find.TickManager.TicksGame - lastTick < def.cooldownTicks;
         }
 
         public void RecordEventFired(FCEventDef def)
         {
-            int count = 0;
-            eventFireCounts.TryGetValue(def.defName, out count);
+            eventFireCounts.TryGetValue(def.defName, out int count);
             eventFireCounts[def.defName] = count + 1;
         }
 
         public bool HasReachedMaxFireCount(FCEventDef def)
         {
             if (def.maxFireCount <= 0) return false;
-            int count = 0;
-            if (!eventFireCounts.TryGetValue(def.defName, out count)) return false;
+            if (!eventFireCounts.TryGetValue(def.defName, out int count)) return false;
             return count >= def.maxFireCount;
         }
 
@@ -1288,8 +1278,7 @@ namespace FactionColonies
             }
 
             // Check policy prerequisites
-            string failReason;
-            if (!def.MeetsPolicyRequirements(this, out failReason))
+            if (!def.MeetsPolicyRequirements(this, out string failReason))
             {
                 Messages.Message(failReason, MessageTypeDefOf.RejectInput);
                 return;
@@ -1309,8 +1298,7 @@ namespace FactionColonies
 
         public void RevokeEdict(FCPolicyCategory category, bool silent = false)
         {
-            FCPolicy edict;
-            if (!edicts.TryGetValue(category, out edict)) return;
+            if (!edicts.TryGetValue(category, out FCPolicy edict)) return;
 
             if (edict.behavior != null)
             {
@@ -1373,8 +1361,7 @@ namespace FactionColonies
             List<FCPolicyCategory> toRemove = new List<FCPolicyCategory>();
             foreach (FCPolicyCategory cat in pendingEdictActivations)
             {
-                FCPolicy edict;
-                if (!edicts.TryGetValue(cat, out edict) || edict.IsFullyActive)
+                if (!edicts.TryGetValue(cat, out FCPolicy edict) || edict.IsFullyActive)
                 {
                     toRemove.Add(cat);
                     if (edicts.ContainsKey(cat))
@@ -1431,7 +1418,7 @@ namespace FactionColonies
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 if (p.def.preventBuildingDestruction)
                     return true;
             }
@@ -1456,7 +1443,7 @@ namespace FactionColonies
             }
             foreach (FCPolicy p in factionTraits)
             {
-                if (p?.def == null || p.def == FCPolicyDefOf.empty) continue;
+                if (p?.def is null || p.def == FCPolicyDefOf.empty) continue;
                 if (p.def.suppressMemberDeathPenalty)
                     return true;
             }
@@ -1542,12 +1529,10 @@ namespace FactionColonies
 
         public WorldSettlementFC ReturnSettlementByLocation(PlanetTile location)
         {
-            for (int i = 0; i < settlements.Count; i++)
+            foreach (WorldSettlementFC settlement in settlements)
             {
-                if (settlements[i].Tile == location)
-                {
-                    return settlements[i];
-                }
+                if (settlement.Tile == location)
+                    return settlement;
             }
 
             return null;
@@ -1607,8 +1592,7 @@ namespace FactionColonies
                     AddExperienceToFactionLevel(2f);
 
                     List<Thing> list = new List<Thing>();
-                    int silverAmount = 0;
-                    list = settlement.CreateTax(out silverAmount);
+                    list = settlement.CreateTax(out int silverAmount);
                     List<ResourcePool> resourcePools = settlement.CreateResourcePools();
 
                     BillFC bill = new BillFC(settlement);
@@ -1708,7 +1692,7 @@ namespace FactionColonies
             string sourceId = "event_" + fcevent.def.defName;
 
             //check if event has a location, if does, add stat modifiers to that specific location;
-            if (fcevent.settlementTraitLocations.Count() > 0) //if has specific locations
+            if (fcevent.settlementTraitLocations.Count > 0) //if has specific locations
             {
                 foreach (WorldSettlementFC location in fcevent.settlementTraitLocations)
                 {
@@ -1788,14 +1772,8 @@ namespace FactionColonies
 
         public void AddResourcePool(ResourcePool pool)
         {
-            if (pool == null)
-            {
-                return;
-            }
-            else if (pool.pool == 0)
-            {
-                return;
-            }
+            if (pool is null || pool.pool == 0) return;
+            
             /* If the pool wants to do any pre-adding-to-global-pool shenanigans, let it do so now. */
             pool.pool = pool.resource.PreAddToGlobalPool(pool.pool);
 
@@ -1820,7 +1798,7 @@ namespace FactionColonies
         public double GetResourcePoolValue(ResourceTypeDef res)
         {
             ResourcePool rpool = resourcePools.Find((ResourcePool p) => p.resource == res);
-            if (rpool == null)
+            if (rpool is null)
             {
                 LogUtil.Warning($"Tried to get resource pool value for ResourceTypeDef {res}, but there was no faction resource pool");
                 return 0;
@@ -1969,10 +1947,7 @@ namespace FactionColonies
             Building_CapitalSpot activeCapitalSpot = GetActiveCapitalSpot();
             if (activeCapitalSpot != null)
             {
-                Messages.Message(
-                    "FCCapitalAlreadyEstablished".Translate(activeCapitalSpot.Map.Parent.LabelCap),
-                    MessageTypeDefOf.RejectInput
-                );
+                Messages.Message("FCCapitalAlreadyEstablished".Translate(activeCapitalSpot.Map.Parent.LabelCap), MessageTypeDefOf.RejectInput);
                 return;
             }
 
@@ -1980,14 +1955,11 @@ namespace FactionColonies
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
 
-                Messages.Message("SetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap),
-                    MessageTypeDefOf.NeutralEvent);
+                Messages.Message("SetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap), MessageTypeDefOf.NeutralEvent);
             }
             else
             {
-                Messages.Message(
-                    "FCUnableToSetCapitalHere".Translate(),
-                    MessageTypeDefOf.NegativeEvent);
+                Messages.Message("FCUnableToSetCapitalHere".Translate(), MessageTypeDefOf.NegativeEvent);
             }
         }
 
@@ -2099,7 +2071,6 @@ namespace FactionColonies
                 case TechLevel.Ultra:
                 case TechLevel.Spacer:
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");
-
                     break;
                 case TechLevel.Industrial:
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("OutlanderCivil");

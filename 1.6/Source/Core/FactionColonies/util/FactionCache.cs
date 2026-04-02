@@ -49,51 +49,23 @@ namespace FactionColonies
         private static ResearchProjectDef _cachedTechLevelBarrierMedieval = null;
         private static ResearchProjectDef _cachedTransportPods = null;
 
-        public static FactionFC FactionComp
-        {
-            get
-            {
-                if (_cachedFactionWorldComp == null)
-                {
-                    _cachedFactionWorldComp = Find.World.GetComponent<FactionFC>();
-                }
-                return _cachedFactionWorldComp;
-            }
-        }
+        public static FactionFC FactionComp => _cachedFactionWorldComp ?? (_cachedFactionWorldComp = Find.World.GetComponent<FactionFC>());
         /// <summary>
         /// The NPC Empire faction that the player created and controls.
         /// </summary>
-        public static Faction PlayerColonyFaction
-        {
-            get
-            {
-                if (_cachedColonyFaction == null)
-                {
-                    _cachedColonyFaction = Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed("PColony"));
-                }
-                return _cachedColonyFaction;
-            }
-        }
+        public static Faction PlayerColonyFaction => _cachedColonyFaction ??
+                                                     (_cachedColonyFaction = Find.FactionManager.FirstFactionOfDef(EmpireFactionDef));
         public static bool IsPlayerColonyFaction(Faction f) => !(PlayerColonyFaction is null) && f == PlayerColonyFaction;
         /// <summary>
         /// The player faction itself.
         /// </summary>
-        public static Faction PlayerFaction
-        {
-            get
-            {
-                if (_cachedPlayerFaction == null)
-                {
-                    _cachedPlayerFaction = Find.FactionManager.AllFactions.FirstOrDefault(faction => faction.IsPlayer);
-                }
-                return _cachedPlayerFaction;
-            }
-        }
+        public static Faction PlayerFaction => _cachedPlayerFaction ??
+                                               (_cachedPlayerFaction = Find.FactionManager.AllFactions.FirstOrDefault(faction => faction.IsPlayer));
         public static List<PawnKindDef> AllPawnKindDefs
         {
             get
             {
-                if (_cachedPawnKindDefs == null || _cachedPawnKindDefs.Count == 0)
+                if (_cachedPawnKindDefs is null || _cachedPawnKindDefs.Count == 0)
                 {
                     _cachedPawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
                 }
@@ -103,8 +75,7 @@ namespace FactionColonies
         public static Dictionary<(Type, string), FieldInfo> FieldCache => _cachedFields;
         public static FieldInfo GetFieldCacheValue(Type typ, string field)
         {
-            FieldInfo fieldInfo;
-            if (FieldCache.TryGetValue((typ, field), out fieldInfo))
+            if (FieldCache.TryGetValue((typ, field), out FieldInfo fieldInfo))
             {
                 return fieldInfo;
             }
@@ -112,39 +83,9 @@ namespace FactionColonies
             FieldCache.Add((typ, field), fieldInfo);
             return fieldInfo;
         }
-        public static FactionDef EmpireFactionDef
-        {
-            get
-            {
-                if (_cachedFactionDef == null)
-                {
-                    _cachedFactionDef = DefDatabase<FactionDef>.GetNamed("PColony");
-                }
-                return _cachedFactionDef;
-            }
-        }
-        public static List<XenotypeDef> XenotypeDefs
-        {
-            get
-            {
-                if (_cachedXenotypeList == null)
-                {
-                    _cachedXenotypeList = DefDatabase<XenotypeDef>.AllDefsListForReading;
-                }
-                return _cachedXenotypeList;
-            }
-        }
-        public static List<CustomXenotype> CustomXenotypes
-        {
-            get
-            {
-                if (_cachedCustomXenotypeList == null)
-                {
-                    _cachedCustomXenotypeList = BuildMergedCustomXenotypeList();
-                }
-                return _cachedCustomXenotypeList;
-            }
-        }
+        public static FactionDef EmpireFactionDef => _cachedFactionDef ?? (_cachedFactionDef = DefDatabase<FactionDef>.GetNamed("PColony"));
+        public static List<XenotypeDef> XenotypeDefs => _cachedXenotypeList ?? (_cachedXenotypeList = DefDatabase<XenotypeDef>.AllDefsListForReading);
+        public static List<CustomXenotype> CustomXenotypes => _cachedCustomXenotypeList ?? (_cachedCustomXenotypeList = BuildMergedCustomXenotypeList());
 
         private static List<CustomXenotype> BuildMergedCustomXenotypeList()
         {
@@ -190,7 +131,7 @@ namespace FactionColonies
         public static void EnsureInGameDatabase(CustomXenotype xenotype)
         {
             if (xenotype is null) return;
-            var db = Current.Game?.customXenotypeDatabase?.customXenotypes;
+            List<CustomXenotype> db = Current.Game?.customXenotypeDatabase?.customXenotypes;
             if (db is null) return;
 
             foreach (CustomXenotype existing in db)
@@ -206,7 +147,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedCustomXenotypeDecoder == null)
+                if (_cachedCustomXenotypeDecoder is null)
                 {
                     if (!(CustomXenotypes is null || CustomXenotypes.Count == 0))
                     {
@@ -239,53 +180,13 @@ namespace FactionColonies
             }
         }
         // Technically there should *always* be at least one race: ThingDefOf.Human. But it probably can't hurt to null-check, just in case of edge cases...
-        public static int HumanlikeRacesCount
-        {
-            get
-            {
-                if (HumanlikeRaces == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return HumanlikeRaces.Count;
-                }
-            }
-        }
-        public static List<PawnKindDef> AllAnimalKindDefs
-        {
-            get
-            {
-                if (_cachedAnimalKinds == null)
-                {
-                    _cachedAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsAnimalAndAllowed()).ToList();
-                }
-                return _cachedAnimalKinds;
-            }
-        }
-        public static List<PawnKindDef> AllCombatAnimalKindDefs
-        {
-            get
-            {
-                if (_cachedCombatAnimalKinds == null)
-                {
-                    _cachedCombatAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsCombatAnimal()).ToList();
-                }
-                return _cachedCombatAnimalKinds;
-            }
-        }
-        public static List<PawnKindDef> AllPackAnimalKinds
-        {
-            get
-            {
-                if (_cachedPackAnimalKinds == null)
-                {
-                    _cachedPackAnimalKinds = AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal).ToList();
-                }
-                return _cachedPackAnimalKinds;
-            }
-        }
+        public static int HumanlikeRacesCount => HumanlikeRaces?.Count ?? 0;
+        public static List<PawnKindDef> AllAnimalKindDefs => _cachedAnimalKinds ??
+                                                             (_cachedAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsAnimalAndAllowed()).ToList());
+        public static List<PawnKindDef> AllCombatAnimalKindDefs => _cachedCombatAnimalKinds ??
+                                                                   (_cachedCombatAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsCombatAnimal()).ToList());
+        public static List<PawnKindDef> AllPackAnimalKinds => _cachedPackAnimalKinds ??
+                                                              (_cachedPackAnimalKinds = AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal).ToList());
         public static bool NonViolentXenotypesExist
         {
             get
@@ -323,7 +224,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedXenotypeViolenceDict == null && XenotypeDefs?.Count > 0)
+                if (_cachedXenotypeViolenceDict is null && XenotypeDefs?.Count > 0)
                 {
                     _cachedXenotypeViolenceDict = new Dictionary<XenotypeDef, bool>();
                     foreach (XenotypeDef xenotype in XenotypeDefs)
@@ -338,7 +239,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedCustomXenotypeViolenceDict == null && CustomXenotypes?.Count > 0)
+                if (_cachedCustomXenotypeViolenceDict is null && CustomXenotypes?.Count > 0)
                 {
                     _cachedCustomXenotypeViolenceDict = new Dictionary<string, bool>();
                     foreach (CustomXenotype xenotype in CustomXenotypes)
@@ -369,22 +270,12 @@ namespace FactionColonies
         {
             return CustomXenotypeIsNonViolent(xenotype.name);
         }
-        public static List<FCPolicyDef> AllFCPolicies
-        {
-            get
-            {
-                if (_cachedFCPolicyDefs == null)
-                {
-                    _cachedFCPolicyDefs = DefDatabase<FCPolicyDef>.AllDefsListForReading;
-                }
-                return _cachedFCPolicyDefs;
-            }
-        }
+        public static List<FCPolicyDef> AllFCPolicies => _cachedFCPolicyDefs ?? (_cachedFCPolicyDefs = DefDatabase<FCPolicyDef>.AllDefsListForReading);
         public static Dictionary<FCPolicyDef, string> FCPolicyDescs
         {
             get
             {
-                if (_cachedFCPolicyDescs == null)
+                if (_cachedFCPolicyDescs is null)
                 {
                     _cachedFCPolicyDescs = new Dictionary<FCPolicyDef, string>();
                     foreach (FCPolicyDef policy in AllFCPolicies)
@@ -395,85 +286,22 @@ namespace FactionColonies
                 return _cachedFCPolicyDescs;
             }
         }
-        public static List<XenotypeDef> ViolentXenotypeDefs
-        {
-            get
-            {
-                if (_cachedViolentXenotypeList == null)
-                {
-                    _cachedViolentXenotypeList = XenotypeDefs.Where(x => !XenotypeIsNonViolent(x)).ToList();
-                }
-                return _cachedViolentXenotypeList;
-            }
-        }
-        public static List<CustomXenotype> ViolentCustomXenotypes
-        {
-            get
-            {
-                if (_cachedViolentCustomXenotypeList == null)
-                {
-                    _cachedViolentCustomXenotypeList = CustomXenotypes.Where(x => !CustomXenotypeIsNonViolent(x)).ToList();
-                }
-                return _cachedViolentCustomXenotypeList;
-            }
-        }
+        public static List<XenotypeDef> ViolentXenotypeDefs => _cachedViolentXenotypeList ??
+                                                               (_cachedViolentXenotypeList = XenotypeDefs.Where(x => !XenotypeIsNonViolent(x)).ToList());
+        public static List<CustomXenotype> ViolentCustomXenotypes => _cachedViolentCustomXenotypeList ??
+                                                                     (_cachedViolentCustomXenotypeList = CustomXenotypes.Where(x => !CustomXenotypeIsNonViolent(x)).ToList());
 
         /* Tech caching */
-        public static ResearchProjectDef TechLevelBarrierUltra
-        {
-            get
-            {
-                if (_cachedTechLevelBarrierUltra == null)
-                {
-                    _cachedTechLevelBarrierUltra = DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false);
-                }
-                return _cachedTechLevelBarrierUltra;
-            }
-        }
-        public static ResearchProjectDef TechLevelBarrierSpacer
-        {
-            get
-            {
-                if (_cachedTechLevelBarrierSpacer == null)
-                {
-                    _cachedTechLevelBarrierSpacer = DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false);
-                }
-                return _cachedTechLevelBarrierSpacer;
-            }
-        }
-        public static ResearchProjectDef TechLevelBarrierIndustrial
-        {
-            get
-            {
-                if (_cachedTechLevelBarrierIndustrial == null)
-                {
-                    _cachedTechLevelBarrierIndustrial = DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false);
-                }
-                return _cachedTechLevelBarrierIndustrial;
-            }
-        }
-        public static ResearchProjectDef TechLevelBarrierMedieval
-        {
-            get
-            {
-                if (_cachedTechLevelBarrierMedieval == null)
-                {
-                    _cachedTechLevelBarrierMedieval = DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false);
-                }
-                return _cachedTechLevelBarrierMedieval;
-            }
-        }
-        public static ResearchProjectDef TechTransportPods
-        {
-            get
-            {
-                if (_cachedTransportPods == null)
-                {
-                    _cachedTransportPods = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false);
-                }
-                return _cachedTransportPods;
-            }
-        }
+        public static ResearchProjectDef TechLevelBarrierUltra => _cachedTechLevelBarrierUltra ??
+                                                                  (_cachedTechLevelBarrierUltra = DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false));
+        public static ResearchProjectDef TechLevelBarrierSpacer => _cachedTechLevelBarrierSpacer ??
+                                                                   (_cachedTechLevelBarrierSpacer = DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false));
+        public static ResearchProjectDef TechLevelBarrierIndustrial => _cachedTechLevelBarrierIndustrial ??
+                                                                       (_cachedTechLevelBarrierIndustrial = DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false));
+        public static ResearchProjectDef TechLevelBarrierMedieval => _cachedTechLevelBarrierMedieval ??
+                                                                     (_cachedTechLevelBarrierMedieval = DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false));
+        public static ResearchProjectDef TechTransportPods => _cachedTransportPods ??
+                                                              (_cachedTransportPods = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false));
 
         /// <summary>
         /// For each building, a flattened list of all upgrades reachable through the upgrade tree.
@@ -482,12 +310,12 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedUpgradeTrees == null)
+                if (_cachedUpgradeTrees is null)
                 {
                     _cachedUpgradeTrees = new Dictionary<BuildingFCDef, List<BuildingUpgradeEntry>>();
                     foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
                     {
-                        if (building.upgrades == null || building.upgrades.Count == 0) continue;
+                        if (building.upgrades is null || building.upgrades.Count == 0) continue;
                         List<BuildingUpgradeEntry> tree = new List<BuildingUpgradeEntry>();
                         CollectUpgradeTree(building, 0, null, tree);
                         _cachedUpgradeTrees[building] = tree;
@@ -499,7 +327,7 @@ namespace FactionColonies
 
         private static void CollectUpgradeTree(BuildingFCDef building, int depth, BuildingFCDef parent, List<BuildingUpgradeEntry> result)
         {
-            if (building.upgrades == null) return;
+            if (building.upgrades is null) return;
             foreach (BuildingFCDef upgrade in building.upgrades)
             {
                 result.Add(new BuildingUpgradeEntry { def = upgrade, depth = depth, parent = parent ?? building });
@@ -515,7 +343,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedUpgradeDescendants == null)
+                if (_cachedUpgradeDescendants is null)
                 {
                     _cachedUpgradeDescendants = new Dictionary<BuildingFCDef, HashSet<BuildingFCDef>>();
                     foreach (var kvp in UpgradeTrees)
@@ -550,7 +378,7 @@ namespace FactionColonies
         /// </summary>
         public static bool SatisfiesAnyRequirement(BuildingFCDef candidate, List<BuildingFCDef> requirements)
         {
-            if (requirements == null || requirements.Count == 0) return false;
+            if (requirements is null || requirements.Count == 0) return false;
             foreach (BuildingFCDef req in requirements)
             {
                 if (SatisfiesRequirementFor(candidate, req)) return true;
@@ -565,7 +393,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedRequiredByMap == null)
+                if (_cachedRequiredByMap is null)
                 {
                     _cachedRequiredByMap = new Dictionary<BuildingFCDef, List<BuildingFCDef>>();
                     foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
@@ -586,8 +414,7 @@ namespace FactionColonies
                     // "Required By" list as well.
                     foreach (var kvp in UpgradeDescendants)
                     {
-                        List<BuildingFCDef> baseRequiredBy;
-                        if (!_cachedRequiredByMap.TryGetValue(kvp.Key, out baseRequiredBy)) continue;
+                        if (!_cachedRequiredByMap.TryGetValue(kvp.Key, out List<BuildingFCDef> baseRequiredBy)) continue;
                         foreach (BuildingFCDef descendant in kvp.Value)
                         {
                             if (!_cachedRequiredByMap.TryGetValue(descendant, out List<BuildingFCDef> descList))
@@ -605,17 +432,9 @@ namespace FactionColonies
                 return _cachedRequiredByMap;
             }
         }
-        public static List<FCEventCategoryDef> FCEventCategoryDefs
-        {
-            get
-            {
-                if (_cachedEventCategoryDefs == null)
-                {
-                    _cachedEventCategoryDefs = DefDatabase<FCEventCategoryDef>.AllDefsListForReading;
-                }
-                return _cachedEventCategoryDefs;
-            }
-        }
+        public static List<FCEventCategoryDef> FCEventCategoryDefs =>_cachedEventCategoryDefs ??
+                                    (_cachedEventCategoryDefs = DefDatabase<FCEventCategoryDef>.AllDefsListForReading);
+        
         /// <summary>
         /// MilitaryJobDefs that have a floatMenuLabelKey, i.e. hostile operations shown in the world gizmo menu.
         /// </summary>
@@ -623,7 +442,7 @@ namespace FactionColonies
         {
             get
             {
-                if (_cachedHostileMilitaryJobs == null)
+                if (_cachedHostileMilitaryJobs is null)
                 {
                     _cachedHostileMilitaryJobs = new List<MilitaryJobDef>();
                     foreach (MilitaryJobDef job in DefDatabase<MilitaryJobDef>.AllDefsListForReading)

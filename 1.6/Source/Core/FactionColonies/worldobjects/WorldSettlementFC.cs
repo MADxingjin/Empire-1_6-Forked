@@ -81,7 +81,7 @@ namespace FactionColonies
         private double _prosperity = 100;
         public double prosperity
         {
-            get { return _prosperity; }
+            get => _prosperity;
             set
             {
                 if (_prosperity == value) return;
@@ -191,11 +191,8 @@ namespace FactionColonies
             get
             {
                 if (dirtyStatsCache) RecomputeStats();
-                if (!(MilitaryComp is null))
-                {
-                    return MilitaryComp.settlementMilitaryLevel;
-                }
-                return 0;
+                
+                return MilitaryComp?.settlementMilitaryLevel ?? 0;
             }
             set
             {
@@ -240,10 +237,7 @@ namespace FactionColonies
                 }
                 return cachedlocationText;
             }
-            set
-            {
-                cachedlocationText = value;
-            }
+            set => cachedlocationText = value;
         }
 
         public static readonly FieldInfo traitCachedIcon = typeof(WorldObjectDef).GetField("expandingIconTextureInt",
@@ -262,21 +256,16 @@ namespace FactionColonies
 
         public new string Name
         {
-            get
-            {
-                return name ?? (name = "");
-            }
+            get => name ?? (name = "");
             set => name = value;
         }
-
         public override string Label => Name;
-
 
         public new TraderKindDef TraderKind
         {
             get
             {
-                if (trader.settlement == null) trader.settlement = this;
+                if (trader.settlement is null) trader.settlement = this;
                 return trader?.TraderKind;
             }
         }
@@ -314,10 +303,7 @@ namespace FactionColonies
         /// </summary>
         public override void Destroy()
         {
-            if (MilitaryComp != null)
-            {
-                MilitaryComp.EndBattle(false, 0);
-            }
+            MilitaryComp?.EndBattle(false, 0);
 
             if (destroyFlag)
             {
@@ -388,9 +374,9 @@ namespace FactionColonies
                     LogUtil.Message($"Removing resource {rtd.resourceDef.label} from settlement {Name}");
                     resources.Remove(res);
                 }
-                else if (!(res is null))
+                else
                 {
-                    res.SetDirtyCache();
+                    res?.SetDirtyCache();
                 }
             }
             resources.Sort(ResourceFC.SortForUI);
@@ -467,10 +453,7 @@ namespace FactionColonies
             {
                 return GenDate.DateFullStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
             }
-            else
-            {
-                return GenDate.DateShortStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
-            }
+            return GenDate.DateShortStringAt(foundingTick, FactionCache.FactionComp?.StartingLongLat ?? default(Vector2));
         }
 
         public override void ExposeData()
@@ -581,7 +564,7 @@ namespace FactionColonies
             {
                 yield return option;
             }
-            if ((MilitaryComp == null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
+            if ((MilitaryComp is null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
                 foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
                     yield return option;
         }
@@ -638,13 +621,13 @@ namespace FactionColonies
         /// </summary>
         public bool TransitionType(WorldSettlementDef newDef)
         {
-            if (newDef == null || newDef == settlementDef) return false;
+            if (newDef is null || newDef == settlementDef) return false;
 
             WorldSettlementDef oldDef = settlementDef;
 
             // --- Validation: tile must be valid for new type ---
             SettlementTypeExtension newExt = newDef.GetSettlementTypeExtension();
-            if (newExt == null)
+            if (newExt is null)
             {
                 LogUtil.Error($"Cannot transition {Name}: {newDef.defName} has no SettlementTypeExtension");
                 return false;
@@ -859,7 +842,7 @@ namespace FactionColonies
             _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, GetBaseWorkerCost());
             if (_workerTotalUpkeep > 0)
             {
-                _upkeepExp += "+" + Math.Round(_workerTotalUpkeep, 2).ToString() + " - " + "Workers".Translate() + "\n";
+                _upkeepExp += $"+{Math.Round(_workerTotalUpkeep, 2)} - {"Workers".Translate()}\n";
             }
 
             upkeep += _workerTotalUpkeep;
@@ -868,12 +851,12 @@ namespace FactionColonies
             if (buildingsUpkeep > 0)
             {
                 upkeep += buildingsUpkeep;
-                _upkeepExp += "+" + Math.Round(buildingsUpkeep, 2).ToString() + " - " + "Buildings".Translate() + "\n";
+                _upkeepExp += $"+{Math.Round(buildingsUpkeep, 2)} - {"Buildings".Translate()}\n";
             }
             else if (buildingsUpkeep < 0)
             {
                 income += Math.Abs(buildingsUpkeep);
-                _incomeExp += "+" + Math.Round(Math.Abs(buildingsUpkeep), 2).ToString() + " - " + "Buildings".Translate() + "\n";
+                _incomeExp += $"+{Math.Round(Math.Abs(buildingsUpkeep), 2)} - {"Buildings".Translate()}\n";
             }
 
             foreach (ResourceFC resource in resources)
@@ -881,12 +864,12 @@ namespace FactionColonies
                 if (resource.actualIncome > 0)
                 {
                     income += resource.actualIncome;
-                    _incomeExp += "+" + Math.Round(resource.actualIncome, 2).ToString() + " - " + resource.label + " " + "Income".Translate() + "\n";
+                    _incomeExp += $"+{Math.Round(resource.actualIncome, 2)} - {resource.label} {"Income".Translate()}\n";
                 }
                 else if (resource.actualIncome < 0)
                 {
                     upkeep += (-1) * resource.actualIncome;
-                    _upkeepExp += "+" + Math.Round(-1 * resource.actualIncome, 2).ToString() + " - " + resource.label + " " + "Tithing".Translate() + "\n";
+                    _upkeepExp += $"+{Math.Round(-1 * resource.actualIncome, 2)} - {resource.label} {"Tithing".Translate()}\n";
                 }
             }
 
@@ -1194,7 +1177,7 @@ namespace FactionColonies
         public bool IncreaseWorkers(ResourceFC resource, int numWorkers)
         {
             int singleMod = (numWorkers > 0) ? 1 : -1;
-            if (resource == null)
+            if (resource is null)
             {
                 if (numWorkers >= 0 && _workers <= workersUltraMax)
                 {
@@ -1242,30 +1225,12 @@ namespace FactionColonies
         {
             return FCSettings.workerCost + GetStatValue(FCStatDefOf.workerBaseCost);
         }
-
         public double GetTotalUpkeep() => totalUpkeep;
-
         public double GetTotalProfit() => totalProfit;
-
-        public float Happiness
-        {
-            get { return (float)Math.Round(happiness, 1); }
-        }
-
-        public float Unrest
-        {
-            get { return (float)Math.Round(unrest, 1); }
-        }
-
-        public float Loyalty
-        {
-            get { return (float)Math.Round(loyalty, 1); }
-        }
-
-        public float Prosperity
-        {
-            get { return (float)Math.Round(prosperity, 1); }
-        }
+        public float Happiness => (float)Math.Round(happiness, 1);
+        public float Unrest => (float)Math.Round(unrest, 1);
+        public float Loyalty => (float)Math.Round(loyalty, 1);
+        public float Prosperity => (float)Math.Round(prosperity, 1);
 
         public ResourceFC ReturnHighestResource()
         {
@@ -1579,27 +1544,19 @@ namespace FactionColonies
 
         public bool ValidConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
-            if (BuildingsComp == null)
-            {
-                return false;
-            }
-            return BuildingsComp.ValidConstructBuilding(building, buildingSlot);
+            return BuildingsComp?.ValidConstructBuilding(building, buildingSlot) ?? false;
         }
 
 
         public void ConstructBuilding(BuildingFCDef building, int buildingSlot)
         {
-            if (BuildingsComp == null)
-            {
-                return;
-            }
-            BuildingsComp.ConstructBuilding(building, buildingSlot);
+            BuildingsComp?.ConstructBuilding(building, buildingSlot);
         }
 
         public ResourceFC ReturnResource(string defName) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def.defName == defName);
-            if (res == null)
+            if (res is null)
             {
                 LogUtil.Message($"Requested resource {defName} is not in settlement {Name}'s resource list");
             }
@@ -1609,7 +1566,7 @@ namespace FactionColonies
         public ResourceFC GetResource(ResourceTypeDef type) //used to return the correct resource based on string name
         {
             ResourceFC res = resources.Find((ResourceFC rfc) => rfc.def == type);
-            if (res == null)
+            if (res is null)
             {
                 LogUtil.Message($"Requested resource {type.defName} is not in settlement {Name}'s resource list");
             }
@@ -1742,18 +1699,11 @@ namespace FactionColonies
         }
         public void DirtyResourceCache(ResourceTypeDef resDef)
         {
-            ResourceFC res = GetResource(resDef);
-            if (!(res is null))
-            {
-                res.SetDirtyCache();
-            }
+            GetResource(resDef)?.SetDirtyCache();
         }
         public void DirtyResourceCache(ResourceFC res)
         {
-            if (!(res is null))
-            {
-                res.SetDirtyCache();
-            }
+            res?.SetDirtyCache();
         }
         public void DirtyResourceCaches()
         {
@@ -1790,7 +1740,7 @@ namespace FactionColonies
             }
         }
         /// <summary>
-        /// This function handles the calculations for determing this settlement's taxes at tax time. It handles both tithes and silver taxes.
+        /// This function handles the calculations for determining this settlement's taxes at tax time. It handles both tithes and silver taxes.
         /// </summary>
         /// <param name="silverAmount">The amount of silver to tax; positive if the player gains silver, negative otherwise.</param>
         /// <returns>A list of things produced by tithing resources. May be empty if there are no tithes.</returns>
@@ -1807,8 +1757,7 @@ namespace FactionColonies
             {
                 if (resource.canTithe)
                 {
-                    int resExtraSilver = 0;
-                    List<Thing> resTitheThings = resource.GenerateTithe(out resExtraSilver);
+                    List<Thing> resTitheThings = resource.GenerateTithe(out int resExtraSilver);
 
                     if (resTitheThings.Count > 0)
                     {

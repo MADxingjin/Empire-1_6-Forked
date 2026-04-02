@@ -125,11 +125,7 @@ namespace FactionColonies
 
         public static string GetQualityLabelCap(QualityCategory? cat)
         {
-            if (cat is null)
-            {
-                return $"({"Select".Translate()})";
-            }
-            return QualityUtility.GetLabel(cat ?? QualityCategory.Normal).CapitalizeFirst();
+            return cat is QualityCategory cat2 ? cat2.GetLabel().CapitalizeFirst() : $"({"Select".Translate()})";
         }
 
         /// <summary>
