@@ -369,16 +369,35 @@ namespace FactionColonies
                     else
                         policyTag = string.Join(", ", opt.requiredPolicies.Select(p => p.LabelCap));
 
+                    // Measure cost area so the tag gets all remaining space
+                    float costAreaWidth;
+                    if (isFree)
+                    {
+                        Text.Font = GameFont.Small;
+                        costAreaWidth = Text.CalcSize("FCEventOptionFree".Translate()).x;
+                    }
+                    else
+                    {
+                        Text.Font = GameFont.Small;
+                        costAreaWidth = Text.CalcSize(opt.silverCost.ToString()).x + SilverIconSize + 2f;
+                    }
+
                     Text.Font = GameFont.Tiny;
                     float successWidth = Text.CalcSize(successLabel).x;
                     float tagX = metaRect.x + successWidth + 6f;
+                    float tagW = metaRect.width - successWidth - 6f - costAreaWidth - 8f;
+                    Rect tagRect = new Rect(tagX, metaRect.y, tagW, metaRect.height);
+
+                    string fullTagText = "[" + policyTag + "]";
+                    string clampedTag = Text.ClampTextWithEllipsis(tagRect, fullTagText);
+
                     GUI.color = available
                         ? new Color(0.6f, 0.75f, 0.9f)
                         : new Color(0.4f, 0.4f, 0.4f);
-                    Widgets.Label(
-                        new Rect(tagX, metaRect.y, metaRect.width * 0.6f - successWidth - 6f, metaRect.height),
-                        "[" + policyTag + "]");
+                    Widgets.Label(tagRect, clampedTag);
                     GUI.color = colorBefore;
+
+                    TooltipHandler.TipRegion(tagRect, fullTagText);
                 }
 
                 // Silver cost (right-aligned)
@@ -476,9 +495,10 @@ namespace FactionColonies
             FCEventDef resultEvent = opt.successEvent;
             if (resultEvent == null || resultEvent == FCEventDefOf.Null) return null;
 
-            List<string> parts = new List<string>();
+            List<string> tempParts = new List<string>();
+            List<string> permParts = new List<string>();
 
-            // Stat modifiers — reuse existing formatter
+            // Temporary stat modifiers
             if (resultEvent.statModifiers != null && resultEvent.statModifiers.Count > 0)
             {
                 TaggedString statDesc = FCStatModifier.GetDescription(resultEvent.statModifiers);
@@ -488,7 +508,7 @@ namespace FactionColonies
                     foreach (string line in lines)
                     {
                         string trimmed = line.Trim();
-                        if (!trimmed.NullOrEmpty()) parts.Add(trimmed);
+                        if (!trimmed.NullOrEmpty()) tempParts.Add(trimmed);
                     }
                 }
             }
@@ -503,18 +523,18 @@ namespace FactionColonies
                     foreach (string line in lines)
                     {
                         string trimmed = line.Trim();
-                        if (!trimmed.NullOrEmpty()) parts.Add(trimmed + " (permanent)");
+                        if (!trimmed.NullOrEmpty()) permParts.Add(trimmed + " (permanent)");
                     }
                 }
             }
 
-            // Item rewards
+            // Item rewards (delivered, not permanent)
             if (resultEvent.randomThingValue > 0 && resultEvent.randomThingRewardDef != null)
             {
-                parts.Add("FCEffectPreviewReward".Translate(resultEvent.randomThingValue));
+                tempParts.Add("FCEffectPreviewReward".Translate(resultEvent.randomThingValue));
             }
 
-            if (parts.Count == 0) return null;
+            if (tempParts.Count == 0 && permParts.Count == 0) return null;
 
             // Duration context (skip near-instant deliveries)
             string durationStr = "";
@@ -539,7 +559,18 @@ namespace FactionColonies
                 }
             }
 
-            return string.Join(", ", parts) + durationStr;
+            // Attach duration only to temporary modifiers; permanent listed after
+            string result = "";
+            if (tempParts.Count > 0)
+            {
+                result = string.Join(", ", tempParts) + durationStr;
+            }
+            if (permParts.Count > 0)
+            {
+                if (result.Length > 0) result += ", ";
+                result += string.Join(", ", permParts);
+            }
+            return result.Length > 0 ? result : null;
         }
 
         private static void GetSuccessHint(float chance, out string label, out Color color)
