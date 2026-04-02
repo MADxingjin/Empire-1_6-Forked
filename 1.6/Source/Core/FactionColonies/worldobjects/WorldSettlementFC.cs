@@ -927,7 +927,7 @@ namespace FactionColonies
         }
         public string GetHappinessDesc()
         {
-            double happinessGain = GetTotalHappinessGain();
+            double happinessGain = Math.Round(GetTotalHappinessGain(), 2);
             string desc = "";
 
             if (happinessGain >= 0)
@@ -974,7 +974,7 @@ namespace FactionColonies
         }
         public string GetLoyaltyDesc()
         {
-            double loyaltyGain = GetTotalLoyaltyGain();
+            double loyaltyGain = Math.Round(GetTotalLoyaltyGain(), 2);
             string desc = "";
             if (loyaltyGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
@@ -1023,7 +1023,7 @@ namespace FactionColonies
         }
         public string GetProsperityDesc()
         {
-            double prosperityGain = GetProsperityGain();
+            double prosperityGain = Math.Round(GetProsperityGain(), 2);
             string desc = "";
             if (prosperityGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "Prosperity".Translate());
@@ -1069,7 +1069,7 @@ namespace FactionColonies
         }
         public string GetUnrestDesc()
         {
-            double unrestGain = GetTotalUnrestGain();
+            double unrestGain = Math.Round(GetTotalUnrestGain(), 2);
             string desc = "";
             if (unrestGain >= 0)
                 desc = "SettlementStatGain".Translate(Math.Abs(unrestGain), "Unrest".Translate());

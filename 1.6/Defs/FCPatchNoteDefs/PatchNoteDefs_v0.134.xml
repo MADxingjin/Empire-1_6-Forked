@@ -27,4 +27,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_134_2</defName>
+		<label>Settlement Window UI Update</label>
+		<description>Small improvements to the settlement window UI</description>
+		<releaseDate>2026-04-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Round stat gain to 2 decimal places for the Happiness, Loyalty, Unrest, and Prosperity tooltips</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
