@@ -873,6 +873,34 @@ namespace FactionColonies
                 }
             }
 
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is IProfitContributor contributor)
+                {
+                    double upkeepContrib = contributor.GetUpkeepContribution();
+                    if (upkeepContrib > 0)
+                    {
+                        upkeep += upkeepContrib;
+                        string upkeepDesc = contributor.GetUpkeepContributionDesc();
+                        if (!upkeepDesc.NullOrEmpty())
+                        {
+                            _upkeepExp += upkeepDesc + "\n";
+                        }
+                    }
+
+                    double incomeContrib = contributor.GetIncomeContribution();
+                    if (incomeContrib > 0)
+                    {
+                        income += incomeContrib;
+                        string incomeDesc = contributor.GetIncomeContributionDesc();
+                        if (!incomeDesc.NullOrEmpty())
+                        {
+                            _incomeExp += incomeDesc + "\n";
+                        }
+                    }
+                }
+            }
+
             _upkeepExp = _upkeepExp.Trim();
             _incomeExp = _incomeExp.Trim();
 

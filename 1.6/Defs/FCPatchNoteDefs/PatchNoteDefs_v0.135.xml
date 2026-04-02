@@ -29,4 +29,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_2</defName>
+		<label>Extensibility update</label>
+		<description>Adds an interface to let submods contribute to a settlement&apos;s income or upkeep directly.</description>
+		<releaseDate>2026-04-02</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds IProfitContributor interface. Can be implemented on a WorldObjectComp to affect the income and upkeep of the associated WorldSettlementFC</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
