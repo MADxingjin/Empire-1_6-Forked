@@ -160,7 +160,13 @@
 	<titheMaxCountBase>3</titheMaxCountBase>
 	<titheMaxCountScaler>1</titheMaxCountScaler>
 	<modExtensions>
-		<li Class="FactionColonies.ResourceFilterExtension_Animals" />
+		<li Class="FactionColonies.ResourceFilterExtension_Animals">
+			<blacklistedTradeTags>
+				<li>AnimalDryad</li>
+				<li>AnimalMonster</li>
+				<li>AnimalGenetic</li>
+			</blacklistedTradeTags>
+		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
   

@@ -8,6 +8,15 @@ namespace FactionColonies
 {
     public class ResourceFilterExtension_Animals : ResourceFilterExtension
     {
+        /// <summary>Trade tags that disqualify an animal from Empire's animal lists. XML-configurable.</summary>
+        public List<string> blacklistedTradeTags = new List<string>();
+
+        /// <summary>Specific ThingDef defNames to exclude. For surgical exclusions of individual animals.</summary>
+        public List<string> blacklistedDefNames = new List<string>();
+
+        /// <summary>If true, animals must have at least one trade tag to be included.</summary>
+        public bool requireTradeTags = true;
+
         public override void SetFilter(ThingFilter filter, TechLevel techlevel, ResourceFC resource = null)
         {
             foreach (PawnKindDef def in FactionCache.AllAnimalKindDefs)

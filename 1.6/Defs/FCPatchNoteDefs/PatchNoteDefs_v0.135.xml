@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_0</defName>
+		<label>Animal Filtering Update</label>
+		<description>Some changes to how animals are filtered.</description>
+		<releaseDate>2026-04-02</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Remove the &quot;AnimalAlpha&quot; trade tag from the blacklist</li>
+		<li>Expose the list of blacklisted trade tags and animal defs in XML, specifically on the ResourceFilterExtension_Animals (found on RTD_Animals)</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

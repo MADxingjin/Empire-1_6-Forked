@@ -21,25 +21,29 @@ namespace FactionColonies
         {
             return xenotypeDef?.label != null;
         }
-        private static readonly List<string> BlackListedTradeTags = new List<string>()
-                                                                     {
-                                                                        "AnimalDryad",
-                                                                        "AnimalMonster",
-                                                                        "AnimalGenetic",
-                                                                        "AnimalAlpha"
-                                                                     };
+
+        private static ResourceFilterExtension_Animals _animalFilterConfig;
+        private static ResourceFilterExtension_Animals AnimalFilterConfig =>
+            _animalFilterConfig ?? (_animalFilterConfig = ResourceTypeDefOf.RTD_Animals?.GetModExtension<ResourceFilterExtension_Animals>());
+
+        private static HashSet<string> _blacklistedDefNamesSet;
+        private static HashSet<string> BlacklistedDefNames =>
+            _blacklistedDefNamesSet ?? (_blacklistedDefNamesSet = new HashSet<string>(AnimalFilterConfig.blacklistedDefNames ?? new List<string>()));
 
         /// <summary>
-        ///		Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is an Animal and if it is not blacklisted by tradeTag 
+        ///		Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is an Animal and if it is not blacklisted.
+        ///		Blacklists are configured via XML on <see cref="ResourceFilterExtension_Animals"/> (attached to RTD_Animals).
         /// </summary>
-        /// <param name="pawnKindDef"></param>
-        /// <returns></returns>
         public static bool IsAnimalAndAllowed(this PawnKindDef pawnKindDef)
         {
-            return pawnKindDef.race.race.Animal && pawnKindDef.RaceProps.IsFlesh &&
-                                    pawnKindDef.race.race.animalType != AnimalType.Dryad &&
-                                    pawnKindDef.race.tradeTags != null &&
-                                    !pawnKindDef.race.tradeTags.Any(tag => BlackListedTradeTags.Contains(tag));
+            var config = AnimalFilterConfig;
+            return pawnKindDef.race.race.Animal
+                && pawnKindDef.RaceProps.IsFlesh
+                && pawnKindDef.race.race.animalType != AnimalType.Dryad
+                && (!config.requireTradeTags || pawnKindDef.race.tradeTags != null)
+                && !BlacklistedDefNames.Contains(pawnKindDef.race.defName)
+                && (pawnKindDef.race.tradeTags is null
+                    || !pawnKindDef.race.tradeTags.Any(tag => config.blacklistedTradeTags.Contains(tag)));
         }
         /// <summary>
         /// Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is a valid combat animal.
