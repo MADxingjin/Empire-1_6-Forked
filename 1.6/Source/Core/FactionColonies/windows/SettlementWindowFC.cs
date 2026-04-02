@@ -53,13 +53,16 @@ namespace FactionColonies
         // Comps with overview tabs
         private List<ISettlementWindowOverview> overviews = new List<ISettlementWindowOverview>();
         private Color accentColor;
+        private Color highlightColor;
 
         public override void PreOpen()
         {
             base.PreOpen();
             maxScroll = (settlement.Resources.Count * ScrollSpacing) - ScrollHeight;
             factionfc = FactionCache.FactionComp;
-            accentColor = settlement.settlementDef.accentColor ?? Color.gray;
+            Color baseColor = settlement.settlementDef.accentColor ?? Color.white;
+            accentColor = baseColor * Color.gray;
+            highlightColor = baseColor * Color.white;
 
             foreach (WorldObjectComp comp in settlement.AllComps)
             {
@@ -241,8 +244,8 @@ namespace FactionColonies
             //gotta love aligning text
             Rect levelBox = new Rect(levelBoundingBox.x + 14, levelBoundingBox.y + 14, 30, 30);
             Widgets.DrawShadowAround(levelBox);
-            Widgets.DrawHighlight(levelBoundingBox);
-            Widgets.DrawBox(levelBoundingBox);
+            UIUtil.DrawColoredHighlight(levelBoundingBox, highlightColor);
+            UIUtil.DrawColoredBox(levelBoundingBox, accentColor);
             Widgets.Label(levelBox, settlement.settlementLevel.ToString());
 
             // Draw settlement type, basic description (from def), and location text
@@ -256,14 +259,14 @@ namespace FactionColonies
             Rect basicDescTextBox = new Rect(basicDescBox.x + margin, basicDescBox.y, basicDescBox.width - (margin * 2), basicDescBox.height);
             Rect locBox = new Rect(basicDescBox.xMax + margin, typeBox.yMax, (rightSideWidth * 0.6f) - margin, levelBoundingBox.height / 2);
             Rect locTextBox = new Rect(locBox.x + margin, locBox.y, locBox.width - (margin * 2), locBox.height);
-            Widgets.DrawHighlight(typeBox);
+            UIUtil.DrawColoredHighlight(typeBox, highlightColor);
             Widgets.Label(typeTextBox, settlement.settlementDef.LabelCap);
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(foundTextBox, "FCFoundedOn".Translate(settlement.GetFoundingDate()));
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Tiny;
             Widgets.Label(basicDescTextBox, TextUtil.GetTownTitle(settlement));
-            Widgets.DrawLineVertical(basicDescBox.xMax, basicDescBox.y + margin, basicDescBox.height - (margin * 2));
+            UIUtil.DrawColoredVerticalLine(basicDescBox.xMax, basicDescBox.y + margin, basicDescBox.height - (margin * 2), accentColor);
             //TODO: localize this. LabelCap and description can be localized through def injection, but locationText is derived differently
             Widgets.Label(locTextBox, settlement.locationText);
         }
@@ -690,9 +693,7 @@ namespace FactionColonies
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
         {
             Color origColor = GUI.color;
-            GUI.color = accentColor;
-            Widgets.DrawBox(boundingBox);
-            GUI.color = origColor;
+            UIUtil.DrawColoredBox(boundingBox, accentColor);
 
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1300,9 +1301,7 @@ namespace FactionColonies
         private void DrawRightInfo(Rect boundingBox)
         {
             Color origColor = GUI.color;
-            GUI.color = accentColor;
-            Widgets.DrawBox(boundingBox);
-            GUI.color = origColor;
+            UIUtil.DrawColoredBox(boundingBox, accentColor);
             Rect prodBox = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2), boundingBox.height - (margin * 2));
             DrawProduction(prodBox);
         }
@@ -1336,7 +1335,7 @@ namespace FactionColonies
             Rect profitBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 28f);
             Rect profitLabel = new Rect(profitBox.x, profitBox.y, labelWidth, profitBox.height);
             Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, labelWidth, profitBox.height);
-            Widgets.DrawHighlight(profitBox);
+            UIUtil.DrawColoredHighlight(profitBox, highlightColor);
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "Total".Translate() + " " + "Profit".Translate() + ":");
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1357,9 +1356,9 @@ namespace FactionColonies
             Rect costsNum = new Rect(costLabel.x, costLabel.yMax + smallMargin, costsBox.width, costsBox.height / 2f);
             Rect taxBonusNum = new Rect(taxBonusLabel.x, taxBonusLabel.yMax + smallMargin, taxBonusBox.width, taxBonusBox.height / 2f);
 
-            Widgets.DrawHighlight(incomeBox);
-            Widgets.DrawHighlight(costsBox);
-            Widgets.DrawHighlight(taxBonusBox);
+            UIUtil.DrawColoredHighlight(incomeBox, highlightColor);
+            UIUtil.DrawColoredHighlight(costsBox, highlightColor);
+            UIUtil.DrawColoredHighlight(taxBonusBox, highlightColor);
 
             Widgets.Label(incomeLabel, "Total".Translate() + " " + "Income".Translate());
             Widgets.Label(costLabel, "FCUpkeep".Translate());
@@ -1395,9 +1394,9 @@ namespace FactionColonies
             Rect overMaxNum = new Rect(overMaxLabel.xMax, overMaxLabel.y, labelWidth * 0.25f, labelHeight);
             Rect upkeepNum = new Rect(upkeepLabel.xMax, upkeepLabel.y, labelWidth * 0.25f, labelHeight);
 
-            Widgets.DrawHighlight(workerBox);
+            UIUtil.DrawColoredHighlight(workerBox, highlightColor);
             TooltipHandler.TipRegion(overMaxBox, "AssignedOvermaxWorkersTooltip".Translate());
-            Widgets.DrawHighlight(upkeepBox);
+            UIUtil.DrawColoredHighlight(upkeepBox, highlightColor);
 
             Widgets.Label(workerLabel, "AssignedWorkers".Translate());
             Widgets.Label(overMaxLabel, "AssignedOvermaxWorkers".Translate());
@@ -1429,29 +1428,29 @@ namespace FactionColonies
             Rect incomeBox = new Rect(prodTotalBox.xMax + margin, boundingBox.y, colWidth * 2 + margin, headerHeight / 2f);
             Rect incomeRawBox = new Rect(incomeBox.x, incomeBox.yMax, colWidth, headerHeight / 2f);
             Rect incomeNetBox = new Rect(incomeRawBox.xMax + margin, incomeRawBox.y, colWidth, headerHeight / 2f);
-            Widgets.DrawHighlight(workersBox);
+            UIUtil.DrawColoredHighlight(workersBox, highlightColor);
             Widgets.Label(workersBox, "Workers".Translate());
 
-            Widgets.DrawHighlight(prodHeaderBox);
+            UIUtil.DrawColoredHighlight(prodHeaderBox, highlightColor);
             Widgets.Label(prodHeaderBox, "PerWorkerProduction".Translate());
-            Widgets.DrawLineHorizontal(prodHeaderBox.x, prodHeaderBox.yMax, prodHeaderBox.width);
-            Widgets.DrawHighlight(prodBaseBox);
+            UIUtil.DrawColoredHorizontalLine(prodHeaderBox.x, prodHeaderBox.yMax, prodHeaderBox.width, accentColor);
+            UIUtil.DrawColoredHighlight(prodBaseBox, highlightColor);
             Widgets.Label(prodBaseBox, "Base".Translate());
-            Widgets.DrawHighlight(prodMultBox);
+            UIUtil.DrawColoredHighlight(prodMultBox, highlightColor);
             Widgets.Label(prodMultBox, "Mult".Translate());
-            Widgets.DrawHighlight(prodFinalBox);
+            UIUtil.DrawColoredHighlight(prodFinalBox, highlightColor);
             Widgets.Label(prodFinalBox, "Final".Translate());
 
-            Widgets.DrawHighlight(prodTotalBox);
+            UIUtil.DrawColoredHighlight(prodTotalBox, highlightColor);
             Widgets.Label(prodTotalBox, "Total".Translate());
 
-            Widgets.DrawHighlight(incomeBox);
+            UIUtil.DrawColoredHighlight(incomeBox, highlightColor);
             Widgets.Label(incomeBox, "Income".Translate());
-            Widgets.DrawLineHorizontal(incomeBox.x, incomeBox.yMax, incomeBox.width);
-            Widgets.DrawHighlight(incomeRawBox);
+            UIUtil.DrawColoredHorizontalLine(incomeBox.x, incomeBox.yMax, incomeBox.width, accentColor);
+            UIUtil.DrawColoredHighlight(incomeRawBox, highlightColor);
             Widgets.Label(incomeRawBox, "Raw".Translate());
             TooltipHandler.TipRegion(incomeRawBox, "RawIncomeDesc".Translate());
-            Widgets.DrawHighlight(incomeNetBox);
+            UIUtil.DrawColoredHighlight(incomeNetBox, highlightColor);
             Widgets.Label(incomeNetBox, "Net".Translate());
             TooltipHandler.TipRegion(incomeNetBox, "NetIncomeDesc".Translate());
 
@@ -1471,8 +1470,8 @@ namespace FactionColonies
             Rect totalProdCol = new Rect(viewRect.x + (5f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
             Rect incomeRawCol = new Rect(viewRect.x + (6f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
             Rect incomeNetCol = new Rect(viewRect.x + (7f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
-            Widgets.DrawHighlight(totalProdCol);
-            Widgets.DrawHighlight(incomeRawCol);
+            UIUtil.DrawColoredHighlight(totalProdCol, highlightColor);
+            UIUtil.DrawColoredHighlight(incomeRawCol, highlightColor);
             Widgets.DrawMenuSection(incomeNetCol);
             TooltipHandler.TipRegion(incomeRawCol, "RawIncomeDesc".Translate());
 
@@ -1486,7 +1485,7 @@ namespace FactionColonies
                 if (i % 2 == 0)
                 {
                     Rect rowHighlight = new Rect(viewRect.x, rectY - (margin / 2f), viewRect.width, rowHeight + margin);
-                    Widgets.DrawHighlight(rowHighlight);
+                    UIUtil.DrawColoredHighlight(rowHighlight, highlightColor);
                 }
 
                 // Resource color accent

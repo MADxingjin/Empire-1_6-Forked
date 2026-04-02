@@ -112,6 +112,46 @@ namespace FactionColonies
             GUI.color = origColor;
         }
 
+        public static void DrawColoredHighlight(Rect rect, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.DrawHighlight(rect);
+            GUI.color = origColor;
+        }
+
+        public static void DrawColoredBox(Rect rect, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.DrawBox(rect);
+            GUI.color = origColor;
+        }
+
+        public static void DrawColoredLabel(Rect rect, string text, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.Label(rect, text);
+            GUI.color = origColor;
+        }
+
+        public static void DrawColoredVerticalLine(float x, float y, float len, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.DrawLineVertical(x, y, len);
+            GUI.color = origColor;
+        }
+        
+        public static void DrawColoredHorizontalLine(float x, float y, float len, Color color)
+        {
+            Color origColor = GUI.color;
+            GUI.color = color;
+            Widgets.DrawLineHorizontal(x, y, len);
+            GUI.color = origColor;
+        }
+
         public static int GetModifier => 1 * (Event.current.shift ? 5 : 1) * (Event.current.control ? 10 : 1);
 
         /// <summary>
