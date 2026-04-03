@@ -71,4 +71,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_5</defName>
+		<label>Extensibility update</label>
+		<description>Makes it easier for submods to do stuff after a settlement has been fully loaded.</description>
+		<releaseDate>2026-04-03</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a ISettlementPostLoadInit interface to let other comps know when a WorldSettlementFC has fully finished loading</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

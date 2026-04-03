@@ -508,13 +508,25 @@ namespace FactionColonies
                 if (trader != null && trader.settlement == null) trader.settlement = this;
 
                 // Rebuild stat modifiers from buildings and settlement type before calculating stats.
-                // statModifiers is intentionally not serialized — it's rebuilt from sources on load.
+                // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
                 // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
                 ClearStatModifiers();
                 BuildingsComp?.ReapplyBuildingStatModifiers();
                 // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
                 AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
                 DirtyDescriptionCache();
+
+                // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type).
+                // PostExposeData runs before this point, so comps that depend on production/stat values
+                // should defer that work to this callback.
+                foreach (WorldObjectComp comp in AllComps)
+                {
+                    if (comp is ISettlementPostLoadInit postLoad)
+                    {
+                        try { postLoad.PostSettlementLoadInit(this); }
+                        catch (Exception e) { LogUtil.Error($"ISettlementPostLoadInit {comp.GetType().Name} threw: {e}"); }
+                    }
+                }
             }
         }
 
