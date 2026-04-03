@@ -12,15 +12,7 @@ namespace FactionColonies
         private readonly List<WorldSettlementDef> allTypes;
         private Vector2 scrollPos;
 
-        private const float margin = 5f;
         private const float TitleHeight = 35f;
-        private const float NameHeight = 22f;
-        private const float ResourceIconSize = 18f;
-        private const float ResourceIconGap = 3f;
-        private const float ResourceRowHeight = 22f;
-        private const float AccentBarWidth = 4f;
-        private const float LockReasonHeight = 18f;
-        private const float RowPadding = 6f;
         private const float SeparatorHeight = 1f;
 
         public override Vector2 InitialSize => new Vector2(480f, 550f);
@@ -51,7 +43,7 @@ namespace FactionColonies
             Widgets.Label(new Rect(0, 0, inRect.width, TitleHeight), "FCPickSettlementType".Translate());
 
             // Scroll view
-            float listTop = TitleHeight + margin;
+            float listTop = TitleHeight + SettlementCardDrawer.margin;
             float listHeight = inRect.height - listTop;
             Rect scrollOutRect = new Rect(0, listTop, inRect.width, listHeight);
 
@@ -83,7 +75,8 @@ namespace FactionColonies
                 if (i < allTypes.Count - 1)
                 {
                     GUI.color = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-                    Widgets.DrawLineHorizontal(AccentBarWidth + margin, curY, contentWidth - AccentBarWidth - margin * 2);
+                    Widgets.DrawLineHorizontal(SettlementCardDrawer.AccentBarWidth + SettlementCardDrawer.margin, curY,
+                        contentWidth - SettlementCardDrawer.AccentBarWidth - SettlementCardDrawer.margin * 2);
                     GUI.color = Color.white;
                     curY += SeparatorHeight;
                 }
@@ -97,29 +90,17 @@ namespace FactionColonies
 
         private float GetRowHeight(WorldSettlementDef def, float width)
         {
-            float contentWidth = width - AccentBarWidth - margin * 3;
+            float height = SettlementCardDrawer.GetCardHeight(def, width);
 
-            // Description height
-            Text.Font = GameFont.Tiny;
-            float descHeight = Text.CalcHeight(def.description, contentWidth);
-
-            float height = RowPadding + NameHeight + descHeight + margin;
-
-            // Resource icons row
-            if (def.resources != null && def.resources.Count > 0)
-            {
-                height += ResourceRowHeight;
-            }
-
-            // Lock reason
+            // Lock reason adds extra height
             string lockedReason;
             if (!def.IsUnlocked(out lockedReason))
             {
+                float contentWidth = width - SettlementCardDrawer.AccentBarWidth - SettlementCardDrawer.margin * 3;
                 Text.Font = GameFont.Tiny;
-                height += Text.CalcHeight(lockedReason, contentWidth) + margin;
+                height += Text.CalcHeight(lockedReason, contentWidth) + SettlementCardDrawer.margin;
             }
 
-            height += RowPadding;
             return height;
         }
 
@@ -138,54 +119,29 @@ namespace FactionColonies
                 Widgets.DrawHighlight(rect);
             }
 
-            // Accent bar
-            if (def.accentColor.HasValue)
-            {
-                GUI.color = def.accentColor.Value;
-                Widgets.DrawBoxSolid(new Rect(rect.x, rect.y, AccentBarWidth, rect.height), def.accentColor.Value);
-                GUI.color = Color.white;
-            }
-
-            float xOffset = rect.x + AccentBarWidth + margin;
-            float contentWidth = rect.width - AccentBarWidth - margin * 3;
-            float curY = rect.y + RowPadding;
-
             if (!unlocked)
             {
                 GUI.color = new Color(0.5f, 0.5f, 0.5f);
             }
 
-            // Name
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(xOffset, curY, contentWidth, NameHeight), def.LabelCap);
-            curY += NameHeight;
-
-            // Description
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperLeft;
-            float descHeight = Text.CalcHeight(def.description, contentWidth);
-            Widgets.Label(new Rect(xOffset, curY, contentWidth, descHeight), def.description);
-            curY += descHeight + margin;
-
-            // Resource icons
-            if (def.resources != null && def.resources.Count > 0)
-            {
-                DrawResourceRow(new Rect(xOffset, curY, contentWidth, ResourceRowHeight), def);
-                curY += ResourceRowHeight;
-            }
+            // Card content (accent bar, name, description, resources)
+            SettlementCardDrawer.DrawSettlementCard(rect, def);
 
             GUI.color = Color.white;
 
             // Lock reason (drawn in red, after resetting GUI.color)
             if (!unlocked && lockedReason != null)
             {
-                curY += margin;
+                float cardHeight = SettlementCardDrawer.GetCardHeight(def, rect.width);
+                float xOffset = rect.x + SettlementCardDrawer.AccentBarWidth + SettlementCardDrawer.margin;
+                float contentWidth = rect.width - SettlementCardDrawer.AccentBarWidth - SettlementCardDrawer.margin * 3;
+                float reasonY = rect.y + cardHeight;
+
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = new Color(0.8f, 0.2f, 0.2f);
                 float reasonHeight = Text.CalcHeight(lockedReason, contentWidth);
-                Widgets.Label(new Rect(xOffset, curY, contentWidth, reasonHeight), lockedReason);
+                Widgets.Label(new Rect(xOffset, reasonY, contentWidth, reasonHeight), lockedReason);
                 GUI.color = Color.white;
             }
 
@@ -199,62 +155,6 @@ namespace FactionColonies
             {
                 TooltipHandler.TipRegion(rect, lockedReason);
             }
-        }
-
-        private void DrawResourceRow(Rect rect, WorldSettlementDef def)
-        {
-            float xCursor = rect.x;
-
-            // "Resources:" label
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleLeft;
-            float labelWidth = Text.CalcSize("FCSettlementResources".Translate()).x + margin;
-            Widgets.Label(new Rect(xCursor, rect.y, labelWidth, rect.height), "FCSettlementResources".Translate());
-            xCursor += labelWidth;
-
-            foreach (ResourceAvailability ra in def.resources)
-            {
-                if (ra.resourceDef == null) continue;
-
-                // Icon
-                Rect iconRect = new Rect(xCursor, rect.y + (rect.height - ResourceIconSize) / 2f, ResourceIconSize, ResourceIconSize);
-                GUI.DrawTexture(iconRect, ra.resourceDef.Icon);
-                TooltipHandler.TipRegion(iconRect, GetResourceTooltip(ra));
-                xCursor += ResourceIconSize;
-
-                // Bonus text
-                string bonusText = GetBonusText(ra);
-                if (bonusText != null)
-                {
-                    Text.Font = GameFont.Tiny;
-                    float bonusWidth = Text.CalcSize(bonusText).x + 2f;
-                    Widgets.Label(new Rect(xCursor, rect.y, bonusWidth, rect.height), bonusText);
-                    xCursor += bonusWidth;
-                }
-
-                xCursor += ResourceIconGap;
-            }
-        }
-
-        private static string GetResourceTooltip(ResourceAvailability ra)
-        {
-            string tooltip = ra.resourceDef.LabelCap;
-            if (ra.additive != 0)
-                tooltip += "\n+" + ra.additive;
-            if (ra.multiplier != 1)
-                tooltip += "\nx" + ra.multiplier;
-            return tooltip;
-        }
-
-        private static string GetBonusText(ResourceAvailability ra)
-        {
-            if (ra.additive != 0 && ra.multiplier != 1)
-                return "+" + ra.additive + " x" + ra.multiplier;
-            if (ra.additive != 0)
-                return "+" + ra.additive;
-            if (ra.multiplier != 1)
-                return "x" + ra.multiplier;
-            return null;
         }
     }
 }

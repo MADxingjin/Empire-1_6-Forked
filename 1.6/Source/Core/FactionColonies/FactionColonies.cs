@@ -60,6 +60,7 @@ namespace FactionColonies
         /* Defaults for Research settings */
         public const bool DEFAULT_MEDIEVAL_TECH_ONLY = false;
         /* Defaults for Settlement settings */
+        public const bool DEFAULT_SHOW_SETTLE_CONFIRM = true;
         public const TaxDeliveryMode DEFAULT_TAX_DELIVERY_MODE = TaxDeliveryMode.None;
         public const TaxNotificationMode DEFAULT_TAX_NOTIFICATION_MODE = TaxNotificationMode.All;
         public static double DEFAULT_SETTLEMENT_FOUNDING_COST = 1000;
@@ -99,6 +100,7 @@ namespace FactionColonies
         public static double settlementBaseUpgradeCost = DEFAULT_SETTLEMENT_BASE_UPGRADE_COST;
         public static int settlementMaxLevel = DEFAULT_SETTLEMENT_MAX_LEVEL;
 
+        public static bool showSettleConfirm = DEFAULT_SHOW_SETTLE_CONFIRM;
         public static bool medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
         public static bool disableHostileMilitaryActions = DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS;
         public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
@@ -174,6 +176,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod", DEFAULT_PRODUCTION_TITHE_MOD);
             Scribe_Values.Look(ref workerCost, "workerCost", DEFAULT_WORKER_COST);
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
+            Scribe_Values.Look(ref showSettleConfirm, "showSettleConfirm", DEFAULT_SHOW_SETTLE_CONFIRM);
             Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
@@ -522,6 +525,7 @@ namespace FactionColonies
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
             ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref medievalTechOnly);
+            ls.CheckboxLabeled("FCSettingShowSettleConfirm".Translate(), ref showSettleConfirm);
             if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 

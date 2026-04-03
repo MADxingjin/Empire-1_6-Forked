@@ -43,4 +43,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_3</defName>
+		<label>Settlement Founding Change</label>
+		<description>Adds a &quot;Confirm&quot; dialog when founding a new settlement.</description>
+		<releaseDate>2026-04-03</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a &quot;confirm&quot; dialog when founding a settlement, with a setting to disable the dialog</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

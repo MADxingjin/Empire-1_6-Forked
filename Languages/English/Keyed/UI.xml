@@ -43,6 +43,8 @@
 	<ConfirmChanges>Confirm Changes</ConfirmChanges>
 	<FCConfirm>Confirm</FCConfirm>
 	<FCConfirmDecision>Confirm Decision</FCConfirmDecision>
+	<FCConfirmSettle>Found a {0} for {1} silver?</FCConfirmSettle>
+	<FCConfirmDontShowAgain>Don't show this again</FCConfirmDontShowAgain>
 	<View>View</View>
 	<GoTo>Go To</GoTo>
 	<Report>Report</Report>

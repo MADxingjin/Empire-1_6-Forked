@@ -37,6 +37,7 @@ Values in between dampen the effect of military efficiency on the auto combat.</
 	<FCSettingMercHealRate>Mercenary Heal Rate</FCSettingMercHealRate>
 	<FCSettingMercHealRateTip>How fast undeployed mercenary pawns heal their injuries, in hit points per in-game hour. Only one injury heals at a time.</FCSettingMercHealRateTip>
 	<FCSettingMinMaxRandomEvent>Min/Max Days Until Random Event</FCSettingMinMaxRandomEvent>
+	<FCSettingShowSettleConfirm>Show confirmation when founding settlements</FCSettingShowSettleConfirm>
 	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
 	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>

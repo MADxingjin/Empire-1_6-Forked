@@ -317,37 +317,57 @@ namespace FactionColonies
             {
                 if (!CanCreateSettlementHere()) return button.yMax;
 
-                LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
-
-                PaymentUtil.PaySilver(settlementCreationCost, PaymentUtil.Reason_SettlementCreation);
-
-                //create settle event
-                FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
-                evt.location = currentTileSelected;
-                evt.timeTillTrigger = Find.TickManager.TicksGame + timeToTravel;
-                evt.source = faction.capitalLocation;
-                evt.settlementToCreate = currentSettlementType;
-                if (currentSettlementType.isConstructed)
+                if (FCSettings.showSettleConfirm)
                 {
-                    evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
+                    Find.WindowStack.Add(new FCWindow_ConfirmSettle(
+                        currentSettlementType,
+                        settlementCreationCost,
+                        () =>
+                        {
+                            DoFoundSettlement();
+                            this.Close();
+                        },
+                        dontShow => FCSettings.showSettleConfirm = !dontShow));
                 }
                 else
                 {
-                    evt.customDescription = "SettleEventDesc".Translate(
-                        currentSettlementType.LabelCap,
-                        currentTileSelected.Tile.PrimaryBiome.LabelCap,
-                        (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+                    DoFoundSettlement();
                 }
-                evt.hasCustomDescription = true;
-                faction.AddEvent(evt);
-
-                faction.settlementCaravansList.Add(evt.location);
-                Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
-                                 (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
-
-                DoPostEventCreationTraitThings();
             }
             return button.yMax;
+        }
+
+        private void DoFoundSettlement()
+        {
+            LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
+
+            PaymentUtil.PaySilver(settlementCreationCost, PaymentUtil.Reason_SettlementCreation);
+
+            //create settle event
+            FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
+            evt.location = currentTileSelected;
+            evt.timeTillTrigger = Find.TickManager.TicksGame + timeToTravel;
+            evt.source = faction.capitalLocation;
+            evt.settlementToCreate = currentSettlementType;
+            if (currentSettlementType.isConstructed)
+            {
+                evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
+            }
+            else
+            {
+                evt.customDescription = "SettleEventDesc".Translate(
+                    currentSettlementType.LabelCap,
+                    currentTileSelected.Tile.PrimaryBiome.LabelCap,
+                    (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
+            }
+            evt.hasCustomDescription = true;
+            faction.AddEvent(evt);
+
+            faction.settlementCaravansList.Add(evt.location);
+            Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
+                             (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
+
+            DoPostEventCreationTraitThings();
         }
 
         private bool CanCreateSettlementHere(bool silent = false)
