@@ -158,6 +158,8 @@ namespace FactionColonies
 
         // ── Events & Bills ──
         public List<FCEvent> events = new List<FCEvent>();
+        internal int eventsVersion = 0;
+        public int EventsVersion => eventsVersion;
         public float randomEventLastAdded = 0f;
         public Dictionary<string, int> eventCooldowns = new Dictionary<string, int>();
         public Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
@@ -1686,6 +1688,7 @@ namespace FactionColonies
 
             //Add event to events
             events.Add(fcevent);
+            eventsVersion++;
 
             LogUtil.Message($"AddEvent: adding new fcevent {fcevent.def.defName}");
 

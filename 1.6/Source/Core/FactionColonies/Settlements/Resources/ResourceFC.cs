@@ -109,14 +109,14 @@ namespace FactionColonies
         /// </summary>
         public void PruneStockpileAllocations()
         {
-            if (totalStockpileAllocation <= rawTotalProduction)
+            if (totalStockpileAllocation <= rawTotalProduction + 0.01)
                 return;
             foreach (var key in stockpileAllocations
                          .OrderByDescending(kv => kv.Value.amount)
                          .Select(kv => kv.Key)
                          .ToList())
             {
-                if (totalStockpileAllocation <= rawTotalProduction) break;
+                if (totalStockpileAllocation <= rawTotalProduction + 0.01) break;
                 var entry = stockpileAllocations[key];
                 stockpileAllocations.Remove(key);
                 entry.onEvicted?.Invoke();

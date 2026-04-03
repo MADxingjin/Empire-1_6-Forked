@@ -57,7 +57,7 @@ namespace FactionColonies
         private List<BillFC> cachedSortedBills;
         private int cachedBillsCount = -1;
         private List<FCEvent> cachedSortedEvents;
-        private int cachedEventsCount = -1;
+        private int cachedEventsVersion = -1;
         private int cachedHiddenCategoriesCount = -1;
         private static List<FCEventCategoryDef> cachedSortedCategories;
 
@@ -1202,8 +1202,8 @@ namespace FactionColonies
 
             // Build sorted + filtered cache
             bool filtering = hiddenEventCategories.Count > 0;
-            bool needsRebuild = cachedSortedEvents == null
-                || cachedEventsCount != events.Count
+            bool needsRebuild = cachedSortedEvents is null
+                || cachedEventsVersion != faction.EventsVersion
                 || cachedHiddenCategoriesCount != hiddenEventCategories.Count;
             if (needsRebuild)
             {
@@ -1214,7 +1214,7 @@ namespace FactionColonies
                         .Where(e => !hiddenEventCategories.Contains(AccentUtil.GetEventCategory(e)))
                         .ToList();
                 }
-                cachedEventsCount = events.Count;
+                cachedEventsVersion = faction.EventsVersion;
                 cachedHiddenCategoriesCount = hiddenEventCategories.Count;
             }
             List<FCEvent> sorted = cachedSortedEvents;

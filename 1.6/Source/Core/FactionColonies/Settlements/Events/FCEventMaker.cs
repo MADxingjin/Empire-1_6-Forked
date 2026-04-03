@@ -455,6 +455,7 @@ namespace FactionColonies
 
                 FCEvent evt = events[i];
                 faction.events.RemoveAt(i);
+                faction.eventsVersion++;
 
                 // Record cooldown for events that define one
                 if (evt.def != null && evt.def.cooldownTicks > 0)

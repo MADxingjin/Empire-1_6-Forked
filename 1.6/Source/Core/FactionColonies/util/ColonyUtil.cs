@@ -159,6 +159,7 @@ namespace FactionColonies.util
             }
             if (toRemove.Count > 0)
             {
+                faction.eventsVersion++;
                 faction.InvalidateFactionStatCache();
             }
         }
