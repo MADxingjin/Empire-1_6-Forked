@@ -216,26 +216,9 @@ namespace FactionColonies
 
         public static string GetModVersion()
         {
-            try
-            {
-                var mod = LoadedModManager.GetMod<FactionColoniesMod>();
-                string manifestPath = Path.Combine(mod.Content.RootDir, "About", "Manifest.xml");
-                if (File.Exists(manifestPath))
-                {
-                    string content = File.ReadAllText(manifestPath);
-                    int versionStart = content.IndexOf("<version>") + 9;
-                    int versionEnd = content.IndexOf("</version>");
-                    if (versionStart > 8 && versionEnd > versionStart)
-                    {
-                        return content.Substring(versionStart, versionEnd - versionStart);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogUtil.Warning("Failed to read version from manifest: " + ex.Message);
-            }
-            return "Unknown";
+            var mod = LoadedModManager.GetMod<FactionColoniesMod>();
+            string version = mod?.Content?.ModMetaData?.ModVersion;
+            return version.NullOrEmpty() ? "Unknown" : version;
         }
         public static void ReapplyStatModifiers()
         {

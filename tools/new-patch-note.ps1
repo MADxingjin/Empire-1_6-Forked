@@ -1,21 +1,21 @@
 # new-patch-note.ps1
-# Interactive script to add a new PatchNoteDef and update Manifest.xml
+# Interactive script to add a new PatchNoteDef and update About.xml modVersion
 # Run from the Empire/ directory (the one containing About/, 1.6/, etc.)
 
 $ErrorActionPreference = "Stop"
 
 $defsDir = "1.6\Defs\FCPatchNoteDefs"
-$manifestPath = "About\Manifest.xml"
+$aboutPath = "About\About.xml"
 
 # Verify we're in the right directory
-if (-not (Test-Path $defsDir) -or -not (Test-Path $manifestPath)) {
+if (-not (Test-Path $defsDir) -or -not (Test-Path $aboutPath)) {
     Write-Host "ERROR: Run this script from the Empire/ directory (the one containing About/ and 1.6/)." -ForegroundColor Red
     exit 1
 }
 
-# Read current version from Manifest.xml
-$manifestContent = Get-Content $manifestPath -Raw
-if ($manifestContent -match '<version>([^<]+)</version>') {
+# Read current version from About.xml
+$aboutContent = Get-Content $aboutPath -Raw
+if ($aboutContent -match '<modVersion>([^<]+)</modVersion>') {
     $currentVersion = $Matches[1]
 } else {
     $currentVersion = "unknown"
@@ -123,9 +123,14 @@ if (Test-Path $targetFile) {
     Write-Host "  Created new file: $targetFile" -ForegroundColor Cyan
 }
 
-# --- Update Manifest.xml ---
-$manifestContent = $manifestContent -replace '<version>[^<]+</version>', "<version>$version</version>"
-Set-Content $manifestPath -Value $manifestContent -NoNewline
+# --- Update modVersion in About.xml ---
+$aboutContent = Get-Content $aboutPath -Raw
+if ($aboutContent -match '<modVersion>') {
+    $aboutContent = $aboutContent -replace '<modVersion>[^<]+</modVersion>', "<modVersion>$version</modVersion>"
+} else {
+    $aboutContent = $aboutContent -replace '(<packageId>[^<]+</packageId>)', "`$1`n`t<modVersion>$version</modVersion>"
+}
+Set-Content $aboutPath -Value $aboutContent -NoNewline
 
 # --- Update AssemblyVersion in .csproj ---
 $csprojPath = "1.6\Source\Core\Empire.csproj"
@@ -148,7 +153,7 @@ if (Test-Path $csprojPath) {
 Write-Host ""
 Write-Host "Done!" -ForegroundColor Green
 Write-Host "  PatchNoteDef '$defName' added to $targetFile"
-Write-Host "  Manifest.xml updated: $currentVersion -> $version"
+Write-Host "  About.xml modVersion updated: $currentVersion -> $version"
 Write-Host "  AssemblyVersion: $major.$minor.$patch.0"
 Write-Host "  Type: $patchNoteType | Date: $releaseDateStr"
 Write-Host "  Changes: $($changeLines.Count) line(s) | Authors: $($authors -join ', ')"

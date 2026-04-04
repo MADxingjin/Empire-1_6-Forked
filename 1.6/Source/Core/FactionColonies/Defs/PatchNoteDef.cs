@@ -262,7 +262,7 @@ namespace FactionColonies
 
         /// <summary>
         /// Sorts all patchNoteDefs to find the latest one for a mod using it's <paramref name="modId"/>.
-        /// Logs a warning if the latest def's version doesn't match Manifest.xml.
+        /// Logs a warning if the latest def's version doesn't match About.xml modVersion.
         /// </summary>
         public static PatchNoteDef GetLatestForMod(string modId)
         {
@@ -281,7 +281,7 @@ namespace FactionColonies
             string manifestVersion = FCSettings.GetModVersion();
             if (manifestVersion != "Unknown" && manifestVersion != latest.VersionNumber)
             {
-                LogUtil.Warning($"Latest PatchNoteDef version {latest.VersionNumber} does not match Manifest.xml version {manifestVersion}");
+                LogUtil.Warning($"Latest PatchNoteDef version {latest.VersionNumber} does not match About.xml modVersion {manifestVersion}");
             }
 
             return latest;
