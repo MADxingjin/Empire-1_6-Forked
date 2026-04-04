@@ -86,7 +86,7 @@
 		<timeTillTriggerMax>360000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>RTD_Mining_ProductionAdditive</stat><value>2.5</value></li>
-			<li><stat>happinessGainedBase</stat><value>-3</value></li>
+			<li><stat>happinessLostBase</stat><value>3</value></li>
 			<li><stat>workerBaseMax</stat><value>-1</value></li>
 		</statModifiers>
 		<incompatibleEvents>

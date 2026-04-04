@@ -73,7 +73,7 @@
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>5</value></li>
 			<li><stat>unrestGainedBase</stat><value>1</value></li>
-			<li><stat>prosperityGainedBase</stat><value>-5</value></li>
+			<li><stat>prosperityLostBase</stat><value>5</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>independencePetitions_0</li>
@@ -91,7 +91,7 @@
 		<timeTillTriggerMax>420000</timeTillTriggerMax>
 		<statModifiers>
 			<li><stat>loyaltyLostBase</stat><value>3</value></li>
-			<li><stat>prosperityGainedBase</stat><value>-3</value></li>
+			<li><stat>prosperityLostBase</stat><value>3</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>independencePetitions_0</li>

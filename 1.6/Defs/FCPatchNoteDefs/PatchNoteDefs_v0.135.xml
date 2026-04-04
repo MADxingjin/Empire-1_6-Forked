@@ -157,4 +157,21 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_11</defName>
+		<label>Stat fixes</label>
+		<description>Fixes a building and couple of events that used stats incorrectly.</description>
+		<releaseDate>2026-04-04</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Slave Market -0.4 happinessLostBase -&gt; 0.4 happinessLostBase (this aligns with the original description; the stat was just always wrong)</li>
+		<li>Independence Petitions: multiple options changed to use prosperityLostBase instead of prosperityGainedBase. No actual gameplay affect</li>
+		<li>Local Millitias Form: changed an option to use happinessLostBase instead of happinessGainedBase. No actual gameplay affect</li>
+		<li>Rich Ore Vein: changed an option to use happinessLostBase insteead of happinessGainedBase. No actual gameplay affect</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

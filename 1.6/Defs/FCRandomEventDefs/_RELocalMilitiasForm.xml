@@ -88,7 +88,7 @@
 		<statModifiers>
 			<li><stat>taxBasePercentage</stat><value>-5</value></li>
 			<li><stat>militaryBaseLevel</stat><value>1</value></li>
-			<li><stat>happinessGainedBase</stat><value>-1</value></li>
+			<li><stat>happinessLostBase</stat><value>1</value></li>
 		</statModifiers>
 		<incompatibleEvents>
 			<li>localMilitiasForm_0</li>

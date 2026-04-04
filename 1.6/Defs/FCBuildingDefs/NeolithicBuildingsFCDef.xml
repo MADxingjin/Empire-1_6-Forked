@@ -203,7 +203,7 @@
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>3</value></li>
 			<li><stat>workerBaseOverMax</stat><value>3</value></li>
-			<li><stat>happinessLostBase</stat><value>-0.4</value></li>
+			<li><stat>happinessLostBase</stat><value>0.4</value></li>
 		</statModifiers>
 		<upkeep></upkeep> <!-- cost per week for the building -->
 		<iconPath>GUI/Buildings/slaveMarket</iconPath>
