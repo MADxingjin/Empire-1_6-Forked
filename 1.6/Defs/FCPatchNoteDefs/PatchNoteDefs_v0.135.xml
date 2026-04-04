@@ -128,4 +128,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_9</defName>
+		<label>More Patch Notes Updates</label>
+		<description>Updates patch notes handling to let submods take advantage of the existing infrastructure.</description>
+		<releaseDate>2026-04-03</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a banner image path to the patch note def</li>
+		<li>Changes the patch notes window to accept a modId and filter patch notes by the id</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

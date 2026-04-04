@@ -36,8 +36,12 @@ namespace FactionColonies
         [NoTranslate]
         private readonly List<string> linkButtonImagePaths = new List<string>();
 
+        [NoTranslate]
+        private readonly string bannerImagePath = "";
+
         private ModContentPack modContentPackCached = null;
         private List<Texture2D> linkButtonImagesCached = new List<Texture2D>();
+        private Texture2D bannerImageCached;
 
         /// <summary>
         /// The title of the update example: [Empire] Update 0.38.00
@@ -178,6 +182,19 @@ namespace FactionColonies
         /// </summary>
         public List<string> LinkButtonToolTips => linkButtonToolTips;
 
+        /// <summary>
+        /// Returns the cached banner image, or null if no bannerImagePath is set.
+        /// </summary>
+        public Texture2D BannerImage
+        {
+            get
+            {
+                if (bannerImageCached is null && !bannerImagePath.NullOrEmpty())
+                    bannerImageCached = ContentFinder<Texture2D>.Get(bannerImagePath, false);
+                return bannerImageCached;
+            }
+        }
+
         public DateTime ReleaseDate => releaseDateParsed;
 
         public string CompactBodyString
@@ -199,10 +216,11 @@ namespace FactionColonies
             if (defName != null)
             {
                 string[] parts = defName.Split('_');
-                if (parts.Length >= 3
-                    && int.TryParse(parts[0], out int maj)
-                    && int.TryParse(parts[1], out int min)
-                    && int.TryParse(parts[2], out int pat))
+                int len = parts.Length;
+                if (len >= 3
+                    && int.TryParse(parts[len - 3], out int maj)
+                    && int.TryParse(parts[len - 2], out int min)
+                    && int.TryParse(parts[len - 1], out int pat))
                 {
                     major = maj;
                     minor = min;
@@ -228,6 +246,7 @@ namespace FactionColonies
             base.ClearCachedData();
 
             linkButtonImagesCached = new List<Texture2D>();
+            bannerImageCached = null;
             modContentPackCached = null;
         }
 

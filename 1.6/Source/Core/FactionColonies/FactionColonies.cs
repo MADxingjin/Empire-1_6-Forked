@@ -2,7 +2,6 @@ using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -147,10 +146,8 @@ namespace FactionColonies
         public static float buildingWindowWidth = 800f;
         public static float buildingWindowHeight = 600f;
 
-        // Patch notes version tracking — marks the latest version the player has seen
-        public static int lastSeenVersionMajor = 0;
-        public static int lastSeenVersionMinor = 0;
-        public static int lastSeenVersionPatch = 0;
+        // Patch notes version tracking — per-mod dictionary of "major.minor.patch" strings
+        public static Dictionary<string, string> lastSeenVersions = new Dictionary<string, string>();
 
         // Patch notes auto-open threshold
         public const PatchNoteType DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD = PatchNoteType.Major;
@@ -196,21 +193,30 @@ namespace FactionColonies
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
             Scribe_Values.Look(ref efficiencyDamping, "efficiencyDamping", DEFAULT_EFFICIENCY_DAMPING);
             Scribe_Values.Look(ref mercenaryHealRatePerHour, "mercenaryHealRatePerHour", 1f);
-            Scribe_Values.Look(ref lastSeenVersionMajor, "lastSeenVersionMajor", 0);
-            Scribe_Values.Look(ref lastSeenVersionMinor, "lastSeenVersionMinor", 0);
-            Scribe_Values.Look(ref lastSeenVersionPatch, "lastSeenVersionPatch", 0);
+            Scribe_Collections.Look(ref lastSeenVersions, "lastSeenVersions", LookMode.Value, LookMode.Value);
+            if (lastSeenVersions is null) lastSeenVersions = new Dictionary<string, string>();
             Scribe_Values.Look(ref patchNoteAutoOpenThreshold, "patchNoteAutoOpenThreshold", DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD);
             Scribe_Collections.Look(ref disabledEventDefs, "disabledEventDefs", LookMode.Value);
-            if (disabledEventDefs == null) disabledEventDefs = new HashSet<string>();
+            if (disabledEventDefs is null) disabledEventDefs = new HashSet<string>();
 
             Scribe_Collections.Look(ref savedPickerColors, "savedPickerColors", LookMode.Value);
-            if (savedPickerColors == null) savedPickerColors = new List<Color>();
+            if (savedPickerColors is null) savedPickerColors = new List<Color>();
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 /* Re-construct the intranges */
                 minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
                 minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
+
+                // Migrate old single-mod lastSeenVersion fields
+                int oldMajor = 0, oldMinor = 0, oldPatch = 0;
+                Scribe_Values.Look(ref oldMajor, "lastSeenVersionMajor", -1);
+                Scribe_Values.Look(ref oldMinor, "lastSeenVersionMinor", -1);
+                Scribe_Values.Look(ref oldPatch, "lastSeenVersionPatch", -1);
+                if (oldMajor >= 0 && !lastSeenVersions.ContainsKey("matathias.empire"))
+                {
+                    SetLastSeenVersion("matathias.empire", oldMajor, oldMinor, oldPatch);
+                }
             }
         }
 
@@ -220,6 +226,28 @@ namespace FactionColonies
             string version = mod?.Content?.ModMetaData?.ModVersion;
             return version.NullOrEmpty() ? "Unknown" : version;
         }
+
+        public static void GetLastSeenVersion(string modId, out int major, out int minor, out int patch)
+        {
+            if (lastSeenVersions.TryGetValue(modId, out string v))
+            {
+                string[] parts = v.Split('.');
+                if (parts.Length == 3
+                    && int.TryParse(parts[0], out major)
+                    && int.TryParse(parts[1], out minor)
+                    && int.TryParse(parts[2], out patch))
+                    return;
+            }
+            major = 0;
+            minor = 0;
+            patch = 0;
+        }
+
+        public static void SetLastSeenVersion(string modId, int major, int minor, int patch)
+        {
+            lastSeenVersions[modId] = major + "." + minor + "." + patch;
+        }
+
         public static void ReapplyStatModifiers()
         {
             FactionFC faction = FactionCache.FactionComp;
@@ -716,6 +744,16 @@ namespace FactionColonies
         public FactionColoniesMod(ModContentPack content) : base(content)
         {
             settings = GetSettings<FCSettings>();
+            
+            string modVersion = content?.ModMetaData?.ModVersion;
+            if (modVersion.NullOrEmpty())
+            {
+                LogUtil.MessageForce("Did not load a mod version");
+            }
+            else
+            {
+                LogUtil.MessageForce($"v{modVersion}");
+            }
         }
 
         public override string SettingsCategory()

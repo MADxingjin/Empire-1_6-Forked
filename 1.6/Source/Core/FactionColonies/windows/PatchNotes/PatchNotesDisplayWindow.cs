@@ -2,6 +2,7 @@ using FactionColonies.util;
 using LudeonTK;
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -14,7 +15,7 @@ namespace FactionColonies
         public static void PatchNotesDisplayWindow() => Find.WindowStack.Add(new PatchNotesDisplayWindow());
     }
 
-    class PatchNotesDisplayWindow : Window
+    public class PatchNotesDisplayWindow : Window
     {
         private class PatchNoteGroup
         {
@@ -55,11 +56,12 @@ namespace FactionColonies
             return cachedPatchNoteDefs;
         }
 
+        private readonly string modId;
         private readonly List<PatchNoteGroup> groups;
 
         private Texture2D bannerImage;
 
-        private readonly string title = "FCPatchNotesWindowTitle".Translate();
+        private string title = "FCPatchNotesWindowTitle".Translate();
 
         // Scroll state
         private HashSet<int> expandedGroups = new HashSet<int>();
@@ -79,10 +81,14 @@ namespace FactionColonies
         private static readonly Color BadgeColorHotfix = new Color(0.9f, 0.2f, 0.2f);
         private static readonly Color BadgeColorPatch = new Color(0.5f, 0.5f, 0.5f);
 
-        public PatchNotesDisplayWindow()
+        public PatchNotesDisplayWindow(string modId = "matathias.empire")
         {
+            this.modId = modId;
             List<PatchNoteDef> allDefs = GetPatchNoteDefs();
-            groups = BuildGroups(allDefs);
+            List<PatchNoteDef> filtered = allDefs.Where(d => d.modId == modId).ToList();
+
+            FCSettings.GetLastSeenVersion(modId, out int lsMajor, out int lsMinor, out int lsPatch);
+            groups = BuildGroups(filtered, lsMajor, lsMinor, lsPatch);
 
             // Auto-expand groups with new entries, and individual new entries within them
             for (int gi = 0; gi < groups.Count; gi++)
@@ -92,8 +98,7 @@ namespace FactionColonies
                     expandedGroups.Add(gi);
                     foreach (PatchNoteDef def in groups[gi].entries)
                     {
-                        if (def.IsNewerThan(FCSettings.lastSeenVersionMajor,
-                            FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                        if (def.IsNewerThan(lsMajor, lsMinor, lsPatch))
                         {
                             expandedEntries.Add(def.VersionSortKey);
                         }
@@ -102,9 +107,9 @@ namespace FactionColonies
             }
         }
 
-        public PatchNotesDisplayWindow(string title) : this() => this.title = title;
+        public PatchNotesDisplayWindow(string modId, string title) : this(modId) => this.title = title;
 
-        private List<PatchNoteGroup> BuildGroups(List<PatchNoteDef> sortedDefs)
+        private List<PatchNoteGroup> BuildGroups(List<PatchNoteDef> sortedDefs, int lsMajor, int lsMinor, int lsPatch)
         {
             var result = new List<PatchNoteGroup>();
             if (sortedDefs.Count == 0) return result;
@@ -135,8 +140,7 @@ namespace FactionColonies
                 if (def.GetPatchNoteType > current.highestSeverity)
                     current.highestSeverity = def.GetPatchNoteType;
 
-                if (def.IsNewerThan(FCSettings.lastSeenVersionMajor,
-                    FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                if (def.IsNewerThan(lsMajor, lsMinor, lsPatch))
                     current.hasNewEntries = true;
             }
             if (current != null) result.Add(current);
@@ -161,9 +165,7 @@ namespace FactionColonies
             if (groups.Count > 0 && groups[0].entries.Count > 0)
             {
                 PatchNoteDef latest = groups[0].entries[0];
-                FCSettings.lastSeenVersionMajor = latest.Major;
-                FCSettings.lastSeenVersionMinor = latest.Minor;
-                FCSettings.lastSeenVersionPatch = latest.Patch;
+                FCSettings.SetLastSeenVersion(modId, latest.Major, latest.Minor, latest.Patch);
                 LoadedModManager.GetMod<FactionColoniesMod>().WriteSettings();
             }
         }
@@ -243,14 +245,10 @@ namespace FactionColonies
 
         private void DrawBanner(Rect bannerRect)
         {
-            if (bannerImage == null)
-            {
-                bannerImage = ContentFinder<Texture2D>.Get("UI/Banners/Empire", false);
-            }
+            if (bannerImage is null && groups.Count > 0 && groups[0].entries.Count > 0)
+                bannerImage = groups[0].entries[0].BannerImage;
             if (bannerImage != null)
-            {
                 GUI.DrawTexture(bannerRect, bannerImage, ScaleMode.ScaleToFit);
-            }
         }
 
         private void DrawPatchNotes(Rect panelRect)
@@ -296,8 +294,8 @@ namespace FactionColonies
                         PatchNoteDef def = group.entries[ei];
                         int entryKey = def.VersionSortKey;
                         bool entryExpanded = expandedEntries.Contains(entryKey);
-                        bool isNew = def.IsNewerThan(FCSettings.lastSeenVersionMajor,
-                            FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch);
+                        FCSettings.GetLastSeenVersion(modId, out int lsMaj, out int lsMin, out int lsPat);
+                        bool isNew = def.IsNewerThan(lsMaj, lsMin, lsPat);
 
                         // Entry header (indented)
                         Rect headerRect = new Rect(EntryIndent, curY, scrollContentWidth - EntryIndent, HeaderHeight);

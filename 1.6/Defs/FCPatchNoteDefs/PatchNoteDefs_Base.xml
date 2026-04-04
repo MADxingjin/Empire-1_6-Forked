@@ -3,6 +3,7 @@
 	<!-- PatchNoteTypes: Undefined, Hotfix, Patch, Minor, Major -->
 	<FactionColonies.PatchNoteDef Name="EmpirePatchBase" Abstract="True">
 		<modId>matathias.empire</modId>
+		<bannerImagePath>UI/Banners/Empire</bannerImagePath>
 
 		<links>
 			<li>https://discord.gg/f3zFQqA</li>

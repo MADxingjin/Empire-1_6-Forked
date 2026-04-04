@@ -505,15 +505,23 @@ namespace FactionColonies
 
                 militaryCustomizationUtil.CheckMilitaryUtilForErrors();
 
-                // Auto-open patch notes if a new version exceeds the player's threshold
+                // Auto-open patch notes for each mod that has new entries exceeding the player's threshold
                 if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
                 {
-                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod("matathias.empire");
-                    if (latest != null
-                        && latest.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch)
-                        && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
+                    HashSet<string> modIds = new HashSet<string>();
+                    foreach (PatchNoteDef def in DefDatabase<PatchNoteDef>.AllDefsListForReading)
+                        modIds.Add(def.modId);
+
+                    foreach (string modId in modIds)
                     {
-                        Find.WindowStack.Add(new PatchNotesDisplayWindow());
+                        PatchNoteDef latest = PatchNoteDef.GetLatestForMod(modId);
+                        if (latest is null) continue;
+                        FCSettings.GetLastSeenVersion(modId, out int maj, out int min, out int pat);
+                        if (latest.IsNewerThan(maj, min, pat)
+                            && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
+                        {
+                            Find.WindowStack.Add(new PatchNotesDisplayWindow(modId));
+                        }
                     }
                 }
 
