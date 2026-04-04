@@ -11,7 +11,7 @@ If you do run into a bug, please report it in the issues section with logs and, 
 **Rimworld v1.6 only!**
 
 # Empire
-Spread your rule across the Rimworld with self governing colonies that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies. But politics is always a deadly game.
+Spread your rule across the Rimworld with self governing colonies that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies.
 
 Events will periodically influence your colonies, or your faction as a whole. You must decide how best to respond to these situations.
 
