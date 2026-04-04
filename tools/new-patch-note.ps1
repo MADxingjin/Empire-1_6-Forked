@@ -127,10 +127,28 @@ if (Test-Path $targetFile) {
 $manifestContent = $manifestContent -replace '<version>[^<]+</version>', "<version>$version</version>"
 Set-Content $manifestPath -Value $manifestContent -NoNewline
 
+# --- Update AssemblyVersion in .csproj ---
+$csprojPath = "1.6\Source\Core\Empire.csproj"
+if (Test-Path $csprojPath) {
+    $assemblyVersion = "$major.$minor.$patch.0"
+    $csprojContent = Get-Content $csprojPath -Raw
+    $csprojContent = $csprojContent -replace '<AssemblyVersion>[^<]+</AssemblyVersion>', "<AssemblyVersion>$assemblyVersion</AssemblyVersion>"
+    if ($csprojContent -match '<FileVersion>') {
+        $csprojContent = $csprojContent -replace '<FileVersion>[^<]+</FileVersion>', "<FileVersion>$assemblyVersion</FileVersion>"
+    } else {
+        $csprojContent = $csprojContent -replace '(<AssemblyVersion>[^<]+</AssemblyVersion>)', "`$1`n        <FileVersion>$assemblyVersion</FileVersion>"
+    }
+    Set-Content $csprojPath -Value $csprojContent -NoNewline
+    Write-Host "  Empire.csproj AssemblyVersion/FileVersion updated to $assemblyVersion" -ForegroundColor Cyan
+} else {
+    Write-Host "  WARNING: Could not find $csprojPath - AssemblyVersion not updated" -ForegroundColor Yellow
+}
+
 # --- Summary ---
 Write-Host ""
 Write-Host "Done!" -ForegroundColor Green
 Write-Host "  PatchNoteDef '$defName' added to $targetFile"
 Write-Host "  Manifest.xml updated: $currentVersion -> $version"
+Write-Host "  AssemblyVersion: $major.$minor.$patch.0"
 Write-Host "  Type: $patchNoteType | Date: $releaseDateStr"
 Write-Host "  Changes: $($changeLines.Count) line(s) | Authors: $($authors -join ', ')"

@@ -521,6 +521,7 @@ namespace FactionColonies
                 // should defer that work to this callback.
                 foreach (WorldObjectComp comp in AllComps)
                 {
+                    LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on comps...");
                     if (comp is ISettlementPostLoadInit postLoad)
                     {
                         try { postLoad.PostSettlementLoadInit(this); }
