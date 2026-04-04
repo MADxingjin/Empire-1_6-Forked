@@ -519,9 +519,9 @@ namespace FactionColonies
                 // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type).
                 // PostExposeData runs before this point, so comps that depend on production/stat values
                 // should defer that work to this callback.
+                LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on {AllComps.Count} comps...");
                 foreach (WorldObjectComp comp in AllComps)
                 {
-                    LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on comps...");
                     if (comp is ISettlementPostLoadInit postLoad)
                     {
                         try { postLoad.PostSettlementLoadInit(this); }

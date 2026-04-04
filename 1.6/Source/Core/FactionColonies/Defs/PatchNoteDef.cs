@@ -297,12 +297,6 @@ namespace FactionColonies
             patchNoteDefs.SortBy(def => def.VersionSortKey);
             PatchNoteDef latest = patchNoteDefs.Last();
 
-            string manifestVersion = FCSettings.GetModVersion();
-            if (manifestVersion != "Unknown" && manifestVersion != latest.VersionNumber)
-            {
-                LogUtil.Warning($"Latest PatchNoteDef version {latest.VersionNumber} does not match About.xml modVersion {manifestVersion}");
-            }
-
             return latest;
         }
     }
