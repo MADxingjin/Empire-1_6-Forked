@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Кастомизация фракции -->
+  <fcPrimaryColor>Основной</fcPrimaryColor>
+  <fcSecondaryColor>Вторичный</fcSecondaryColor>
+  <fcChoosePrimaryColor>Выбрать основной цвет</fcChoosePrimaryColor>
+  <fcChooseSecondaryColor>Выбрать вторичный цвет</fcChooseSecondaryColor>
+  <fcPrimaryColorDesc>Применяется к броне и верхним слоям одежды (например, бронежилеты, латы, пыльники). Если вторичный цвет не установлен, применяется ко всей одежде.</fcPrimaryColorDesc>
+  <fcSecondaryColorDesc>Применяется к базовой одежде (например, рубашки, штаны), головным уборам, ремням и аксессуарам.</fcSecondaryColorDesc>
+  <fcSetPrimaryFirst>Сначала установите основной цвет</fcSetPrimaryFirst>
+  <fcColorsRandomInfo>Если цвета фракции не установлены, персонажи будут генерироваться со случайными цветами.</fcColorsRandomInfo>
+  <fcColorNotSet>Не установлен</fcColorNotSet>
+  <fcColors>Цвета</fcColors>
+  <fcConfigure>Настроить</fcConfigure>
+  <fcClickToSelect>Нажмите, чтобы выбрать</fcClickToSelect>
+  <fcInsignia>Герб</fcInsignia>
+  <fcColorPickerActiveIdeos>Активные идеологии</fcColorPickerActiveIdeos>
+  <fcColorPickerPresets>Предустановленные цвета</fcColorPickerPresets>
+  <fcColorPickerSaved>Сохраненные цвета</fcColorPickerSaved>
+  <fcColorPickerSaveCurrent>Сохранить текущий</fcColorPickerSaveCurrent>
+  <fcColorPickerRightClickRemove>ПКМ, чтобы удалить</fcColorPickerRightClickRemove>
+  <CustomizeFaction>Настроить фракцию</CustomizeFaction>
+  <FactionName>Название фракции</FactionName>
+  <FactionTitle>Титул фракции</FactionTitle>
+  <FactionIcon>Иконка фракции</FactionIcon>
+  <InvalidFaction>Эта фракция не может управлять империей самостоятельно!</InvalidFaction>
+  <PlayerFaction>Фракция игрока</PlayerFaction>
+  <Bastion>Оплот</Bastion>
+  <FCFoundedOn>Основана {0}</FCFoundedOn>
+
+  <!-- Статистика фракции -->
+  <FactionHappiness>Счастье фракции</FactionHappiness>
+  <FactionLoyalty>Лояльность фракции</FactionLoyalty>
+  <FactionUnrest>Нестабильность фракции</FactionUnrest>
+  <FactionProsperity>Процветание фракции</FactionProsperity>
+  <FactionHappinessDesc>Показатель общего счастья фракции. Высокое счастье означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</FactionHappinessDesc>
+  <FactionLoyaltyDesc>Показатель общей лояльности фракции. Лояльность поселения определяет, насколько охотно оно будет вас слушаться. Высокая лояльность снижает шанс отделения.</FactionLoyaltyDesc>
+  <FactionUnrestDesc>Показатель общей нестабильности фракции. Чем выше нестабильность, тем вероятнее возникновение опасных событий внутри вашей фракции. Если она станет слишком высокой, может вспыхнуть мятеж по всей фракции.</FactionUnrestDesc>
+  <FactionProsperityDesc>Показатель общего процветания фракции. Процветание города напрямую связано с производством ресурсов. 50% процветания = 50% производства. Если процветание повреждено, оно будет медленно восстанавливаться со временем.</FactionProsperityDesc>
+
+  <!-- Уровни фракции -->
+  <FCLevel>Уровень фракции: {0}</FCLevel>
+  <FCFactionLevelUp>Повышение уровня фракции</FCFactionLevelUp>
+  <FCFactionLevelUpDesc>Ваша фракция {0} повысила уровень до {1}!</FCFactionLevelUpDesc>
+  <ReachedMaxLevel>достигнут максимальный уровень</ReachedMaxLevel>
+
+  <!-- Политики -->
+  <Policies-Traits>Политики/Черты</Policies-Traits>
+  <FactionPoliciesAndTraits>Политики и черты фракции</FactionPoliciesAndTraits>
+  <TaxLaw>Налоговое право</TaxLaw>
+  <SocialPolicy>Социальная политика</SocialPolicy>
+  <MilitaryPolicy>Военная политика</MilitaryPolicy>
+  <FCPolicySelection>Выбор политики</FCPolicySelection>
+  <FCSelectPolicies>Выбрать политики</FCSelectPolicies>
+  <PolicyAlreadyEnacted>Эта политика уже введена</PolicyAlreadyEnacted>
+  <AlreadyPolicyTypeBeingEnacted>Политика такого типа уже вводится</AlreadyPolicyTypeBeingEnacted>
+  <AlreadyPolicyInSlot>В этом слоте уже вводится политика</AlreadyPolicyInSlot>
+  <Enact>Ввести</Enact>
+  <Enacted>Введена</Enacted>
+  <Repeal>Отменить</Repeal>
+  <WillBeEnactedIn>будет введена через</WillBeEnactedIn>
+  <EnactPolicy>Ввести политику</EnactPolicy>
+  <HasBeenEnactedAt>была введена в</HasBeenEnactedAt>
+  <EnactedInYourFaction>была введена в вашей фракции</EnactedInYourFaction>
+
+  <!-- Черты -->
+  <FactionTraits>Черты фракции</FactionTraits>
+  <AddTrait>Добавить черту</AddTrait>
+  <FCTraitSelection>Выбор черты</FCTraitSelection>
+  <FCSelectTraits>Выбрать черты</FCSelectTraits>
+  <FCTraitSlots>Слоты черт</FCTraitSlots>
+  <FCAvailableTraits>Доступные черты</FCAvailableTraits>
+  <FCTraitSelectedPreview>{0}</FCTraitSelectedPreview>
+  <FCNoOpenTraitSlots>Все доступные слоты для черт заполнены!</FCNoOpenTraitSlots>
+  <FCAllTraitSlotsFilled>Все слоты для черт назначены.</FCAllTraitSlotsFilled>
+  <FCSelectTraitsPrompt>Выберите еще {0} черту(ы) из списка выше.</FCSelectTraitsPrompt>
+  <FCTraitSelectionReady>Нажмите Подтвердить, чтобы назначить выбранные черты. Это действие нельзя отменить!</FCTraitSelectionReady>
+  <FCHoverTraitForDetails>Наведите курсор на черту, чтобы увидеть ее описание.</FCHoverTraitForDetails>
+  <FCSelectedPolicies>Выбрано ({0}/{1})</FCSelectedPolicies>
+  <FCAvailablePolicies>Доступные политики</FCAvailablePolicies>
+  <FCConflictsWith>Конфликтует с: {0}</FCConflictsWith>
+  <FCTraits>Черты</FCTraits>
+  <FCSelectTraits0>Выберите {0} политик для добавления! Но помните, ваш выбор необратим!</FCSelectTraits0>
+  <FCSelectTraits2>Помните, ваш выбор необратим после закрытия этого окна!</FCSelectTraits2>
+  <FCConflictingTraits>У вас не может быть конфликтующих черт фракции!</FCConflictingTraits>
+  <FCUnselectTrait>Вы должны отменить одну из текущих черт, чтобы выбрать другую!</FCUnselectTrait>
+  <FCTraitsChosen>Вы уже выбрали свои черты. Вы больше не можете их редактировать!</FCTraitsChosen>
+  <FCSelectANewTrait>Выбрать новую черту</FCSelectANewTrait>
+  <FCTraitLockedUntilLevel>Заблокировано до уровня {0}</FCTraitLockedUntilLevel>
+  <FCConfirmTrait>Вы уверены, что хотите выбрать {0}? Вы не сможете отменить это решение</FCConfirmTrait>
+  <FCSelectYourTraits>Начальные черты вашей фракции не выбраны. Перейдите на вкладку настройки фракции, чтобы выбрать их!</FCSelectYourTraits>
+
+  <!-- Эдикты -->
+  <FCEdicts>Эдикты</FCEdicts>
+  <FCEdict>Эдикт</FCEdict>
+  <FCEdictsDesc>Включение общефракционных эдиктов. По одному эдикту в каждой категории может быть активно одновременно. Активные эдикты требуют постоянной платы серебром.</FCEdictsDesc>
+  <FCEdictUpkeep>Стоимость: {0} серебра/цикл</FCEdictUpkeep>
+  <FCEdictUpkeepUnpaid>Невозможно оплатить содержание эдиктов. Все эдикты отменены.</FCEdictUpkeepUnpaid>
+  <FCEdictEnacted>Эдикт введен: {0}</FCEdictEnacted>
+  <FCEdictRevoked>Эдикт отменен: {0}</FCEdictRevoked>
+  <FCEdictNone>Нет</FCEdictNone>
+  <FCEdictActivating>Введение... (осталось {0} дней)</FCEdictActivating>
+  <FCEdictTotalUpkeep>Общая стоимость эдиктов: {0} серебра/цикл</FCEdictTotalUpkeep>
+  <FCEdictCategoryLocked>Эта категория эдиктов еще не разблокирована.</FCEdictCategoryLocked>
+  <FCEdictLevelRequired>Требуется уровень фракции {0}.</FCEdictLevelRequired>
+  <FCEdictCategorySocial>Социальные</FCEdictCategorySocial>
+  <FCEdictCategoryTax>Налоговые</FCEdictCategoryTax>
+  <FCEdictCategoryMilitary>Военные</FCEdictCategoryMilitary>
+  <FCEdictCategoryDoctrine>Доктрины</FCEdictCategoryDoctrine>
+  <FCEdictActive>Активен</FCEdictActive>
+  <FCEdictRevoke>Отменить</FCEdictRevoke>
+  <FCEdictLockedUntilLevel>Заблокировано до уровня фракции {0}</FCEdictLockedUntilLevel>
+  <FCEdictSwapConfirmation>Заменить {0} на {1}? Для полного введения нового эдикта потребуется {2} дней.</FCEdictSwapConfirmation>
+  <FCEdictRevokeConfirmation>Отменить эдикт {0}?</FCEdictRevokeConfirmation>
+  <FCEdictIncompatible>{0} несовместим с вашей активной политикой: {1}</FCEdictIncompatible>
+  <FCEdictRequiresPolicy>{0} требует: {1}</FCEdictRequiresPolicy>
+  <FCEdictRequiresPolicyAny>{0} требует одного из: {1}</FCEdictRequiresPolicyAny>
+  <FCEdictRevokedDependency>{0} был автоматически отменен, поскольку его необходимое условие {1} было удалено.</FCEdictRevokedDependency>
+  <FCPolicyRequires>Требуется: {0}</FCPolicyRequires>
+
+  <!-- Исследования -->
+  <Researching>Исследование</Researching>
+  <ResearchExpended>{0} очков исследований было использовано для изучения {1}. У вас осталось {2} очков.</ResearchExpended>
+  <ResearchPointsExpended>Использовано очков исследований</ResearchPointsExpended>
+  <NoResearchExpended>Сегодня не было использовано исследований. У вас осталось {0} очков.</NoResearchExpended>
+  <PointsAddedToResearchPool>{0} очков добавлено в пул исследований!</PointsAddedToResearchPool>
+  <ResearchGeneratedWaste>Очки исследований, сгенерированные вашей фракцией, были потрачены впустую, так как у вас не выбрано исследование</ResearchGeneratedWaste>
+  <ActivateResearch>Активировать исследование</ActivateResearch>
+  <FCSendResearchItems>Отправить предметы для исследований</FCSendResearchItems>
+  <FCFactionResearch>Исследования фракции</FCFactionResearch>
+  <ResearchLevel>Проверить технологический уровень</ResearchLevel>
+  <CurrentResearchLevel>Ваш текущий технологический уровень - {0}. Чтобы достичь следующего уровня, вам нужно исследовать {1}</CurrentResearchLevel>
+  <FCShipBasics>Основы кораблестроения</FCShipBasics>
+  <FCFabrication>Производство</FCFabrication>
+  <FCElectricity>Электричество</FCElectricity>
+  <FCSmithing>Кузнечное дело</FCSmithing>
+
+  <!-- Отношения -->
+  <FCRelationImproved>Отношения улучшены!</FCRelationImproved>
+  <FCRelationImprovedText>Ваше общение с {0} привело к улучшению отношений на {1}!</FCRelationImprovedText>
+  <FCRelationNotImproved>Провал переговоров</FCRelationNotImproved>
+  <FCFailedToImproveRelationship>Ваше общение с {0} не смогло улучшить отношения.</FCFailedToImproveRelationship>
+  <XDaysToSendDiplomat>{0} дней осталось до обновления возможности улучшать отношения</XDaysToSendDiplomat>
+  <FCIncreaseRelations>Попытаться улучшить отношения</FCIncreaseRelations>
+  <FCCannotImproveRelationsWithType>Вы не можете улучшать отношения с фракциями этого типа</FCCannotImproveRelationsWithType>
+
+  <!-- Столица -->
+  <CouldNotFindMapOfCapital>Не удалось найти карту столицы</CouldNotFindMapOfCapital>
+  <FCCapitalAlreadyEstablished>Столица империи уже установлена в {0}. Сначала отключите там место столицы, если хотите ее переместить.</FCCapitalAlreadyEstablished>
+  <FCUnableToSetCapitalHere>Невозможно установить столицу фракции на этой карте. Пожалуйста, перейдите на карту столицы и используйте кнопку «Установить столицу» или постройте Место столицы.</FCUnableToSetCapitalHere>
+
+</LanguageData>

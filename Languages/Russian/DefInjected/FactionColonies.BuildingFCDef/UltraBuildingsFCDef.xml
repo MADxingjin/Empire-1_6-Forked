@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <LightConverter.label>Архотехнический световой преобразователь</LightConverter.label>
+  <AnimalBeacon.label>Архотехнический маяк для животных</AnimalBeacon.label>
+  <TrappedAI.label>Пленный архотехнический ИИ</TrappedAI.label>
+  <UnionOffices.label>Офисы профсоюза</UnionOffices.label>
+  <OrbitalSpaceLaser.label>Орбитальный космический лазер</OrbitalSpaceLaser.label>
+  <TransdimensionalMarket.label>Трансмерный рынок</TransdimensionalMarket.label>
+  <archotechGenerator.label>Архотехнический генератор</archotechGenerator.label>
+
+</LanguageData>

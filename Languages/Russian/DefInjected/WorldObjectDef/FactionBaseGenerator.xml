@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <FactionBaseGenerator.label>База колонии</FactionBaseGenerator.label>
+
+
+  <!-- Определение пользовательской орбитальной платформы -->
+
+  <FCOrbitalPlatform.label>орбитальная платформа</FCOrbitalPlatform.label>
+  <FCOrbitalPlatform.description>Построенная игроком орбитальная платформа в космосе.</FCOrbitalPlatform.description>
+
+
+</LanguageData>

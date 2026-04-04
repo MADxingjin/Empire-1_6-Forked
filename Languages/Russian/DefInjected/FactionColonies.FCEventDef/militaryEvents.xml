@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <raidEnemySettlement.label>Ограбление вражеского поселения</raidEnemySettlement.label>
+  <enslaveEnemySettlement.label>Порабощение вражеского поселения</enslaveEnemySettlement.label>
+  <captureEnemySettlement.label>Захват вражеского поселения</captureEnemySettlement.label>
+  <cooldownMilitary.label>Перезарядка военных</cooldownMilitary.label>
+  <settlementBeingAttacked.label>Поселение атаковано</settlementBeingAttacked.label>
+
+</LanguageData>

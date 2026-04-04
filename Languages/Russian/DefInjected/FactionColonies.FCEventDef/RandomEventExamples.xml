@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <randomEventExample.label>Происходит пример события!</randomEventExample.label>
+
+
+  <!-- Базовое событие без всех комментариев -->
+
+  <randomEventExample2.label>Происходит пример события!</randomEventExample2.label>
+
+</LanguageData>

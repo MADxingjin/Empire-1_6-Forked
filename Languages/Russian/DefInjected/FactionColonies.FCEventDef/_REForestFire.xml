@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <forestFire_0.label>Массивный лесной пожар</forestFire_0.label>
+  <forestFire_1-1.label>Лесной пожар</forestFire_1-1.label>
+  <forestFire_1-2s.label>Лесной пожар (Локализован)</forestFire_1-2s.label>
+  <forestFire_1-2f.label>Лесной пожар (Не удалось локализовать)</forestFire_1-2f.label>
+  <forestFire_1-3.label>Лесной пожар (Контролируемый отжиг)</forestFire_1-3.label>
+
+</LanguageData>

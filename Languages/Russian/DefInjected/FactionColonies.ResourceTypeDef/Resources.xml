@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <RTD_Food.label>еда</RTD_Food.label>
+  <RTD_Food.description>Категория ресурсов для еды и растительной пищи.</RTD_Food.description>
+
+  <RTD_Weapons.label>оружие</RTD_Weapons.label>
+  <RTD_Weapons.description>Категория ресурсов для оружия.</RTD_Weapons.description>
+
+  <RTD_Apparel.label>одежда</RTD_Apparel.label>
+  <RTD_Apparel.description>Категория ресурсов для одежды.</RTD_Apparel.description>
+
+  <RTD_Animals.label>животные</RTD_Animals.label>
+  <RTD_Animals.description>Категория ресурсов для скота и продуктов животноводства.</RTD_Animals.description>
+
+  <RTD_Logging.label>лесозаготовка</RTD_Logging.label>
+  <RTD_Logging.description>Категория ресурсов для лесозаготовки.</RTD_Logging.description>
+
+  <RTD_Mining.label>добыча</RTD_Mining.label>
+  <RTD_Mining.description>Категория ресурсов для добычи материалов.</RTD_Mining.description>
+
+  <RTD_Medicine.label>медицина</RTD_Medicine.label>
+  <RTD_Medicine.description>Категория ресурсов для медицины.</RTD_Medicine.description>
+
+  <RTD_Research.label>исследования</RTD_Research.label>
+  <RTD_Research.description>Категория ресурсов для исследований.</RTD_Research.description>
+
+  <RTD_Power.label>энергия</RTD_Power.label>
+  <RTD_Power.description>Категория ресурсов для энергии.</RTD_Power.description>
+
+  <RTD_Chemfuel.label>химтопливо</RTD_Chemfuel.label>
+  <RTD_Chemfuel.description>Категория ресурсов для химтоплива.</RTD_Chemfuel.description>
+
+  <RTD_Gravtech.label>гравитехника</RTD_Gravtech.label>
+  <RTD_Gravtech.description>Категория ресурсов для ресурсов гравитехники.</RTD_Gravtech.description>
+
+</LanguageData>

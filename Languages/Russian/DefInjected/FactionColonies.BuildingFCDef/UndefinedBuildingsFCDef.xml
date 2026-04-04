@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <barracks.label>Казармы</barracks.label>
+  <tradingPost.label>Торговая лавка</tradingPost.label>
+  <migrantHousing.label>Жильё для мигрантов</migrantHousing.label>
+  <quarry.label>Карьер</quarry.label>
+  <trainingYard.label>Учебный плац</trainingYard.label>
+  <FurHunterCamp.label>Лагерь охотников на пушного зверя</FurHunterCamp.label>
+  <FlintStorage.label>Хранилище кремня</FlintStorage.label>
+  <SlavePit.label>Яма для рабов</SlavePit.label>
+  <Farmland.label>Пахотные земли</Farmland.label>
+  <AmmunitionMines.label>Шахты боеприпасов</AmmunitionMines.label>
+
+
+  <!-- TODO: изменить это с плоских модификаторов на преобразование производства животных в производство одежды? -->
+
+  <TanningWorkshop.label>Дубильная мастерская</TanningWorkshop.label>
+  <DrugDen.label>Притон психоделических наркотиков</DrugDen.label>
+  <HamsterWheel.label>Гигантское хомячье колесо</HamsterWheel.label>
+  <deforestationCamp.label>Лагерь вырубки леса</deforestationCamp.label>
+  <herbalMedicineFarm.label>Ферма лекарственных трав</herbalMedicineFarm.label>
+
+</LanguageData>

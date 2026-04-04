@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <missedSupplyDelivery_0.label>Недоставленная поставка припасов</missedSupplyDelivery_0.label>
+  <missedSupplyDelivery_1-1.label>Недоставленная поставка припасов</missedSupplyDelivery_1-1.label>
+  <missedSupplyDelivery_1-2.label>Недоставленная поставка припасов (Местное снабжение)</missedSupplyDelivery_1-2.label>
+  <missedSupplyDelivery_1-3.label>Недоставленная поставка припасов (Импровизация)</missedSupplyDelivery_1-3.label>
+
+</LanguageData>

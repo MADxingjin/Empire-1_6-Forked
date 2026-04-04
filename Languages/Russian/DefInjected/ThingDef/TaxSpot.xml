@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <TaxSpot.label>место сбора налогов</TaxSpot.label>
+  <TaxSpot.description>Определяет место для получения налогов и десятины. Может быть установлено как активное место доставки налогов для всей вашей империи.</TaxSpot.description>
+  <TaxSpot_Blueprint.label>место сбора налогов (чертеж)</TaxSpot_Blueprint.label>
+  <TaxSpot_Frame.label>место сбора налогов (строительство)</TaxSpot_Frame.label>
+  <TaxSpot_Frame.description>Определяет место для получения налогов и десятины. Может быть установлено как активное место доставки налогов для всей вашей империи.</TaxSpot_Frame.description>
+
+</LanguageData>

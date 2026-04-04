@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <foodShortage_0.label>Повальная нехватка продовольствия</foodShortage_0.label>
+  <foodShortage_1-1.label>Нехватка продовольствия</foodShortage_1-1.label>
+  <foodShortage_1-2.label>Нехватка продовольствия (Импорт)</foodShortage_1-2.label>
+  <foodShortage_1-3.label>Нехватка продовольствия (Нормирование)</foodShortage_1-3.label>
+  <foodShortage_1-4.label>Нехватка продовольствия (Голод рабов)</foodShortage_1-4.label>
+
+</LanguageData>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <researchLabs.label>Научно-исследовательские лаборатории</researchLabs.label>
+  <indoorHydroponics.label>Комнатная гидропоника</indoorHydroponics.label>
+  <firearmsFactory.label>Оружейная фабрика</firearmsFactory.label>
+  <rimazonWarehouse.label>Склад Rimazon</rimazonWarehouse.label>
+  <inhouseMercCompany.label>Собственная наёмная компания</inhouseMercCompany.label>
+  <adultEntertainmentCentre.label>Центр развлечений для взрослых</adultEntertainmentCentre.label>
+  <forcedWorkCamps.label>Лагеря принудительных работ</forcedWorkCamps.label>
+  <artilleryOutpost.label>Артиллерийский форпост</artilleryOutpost.label>
+  <JunkFoodFactory.label>Фабрика вредной еды</JunkFoodFactory.label>
+  <TextileFactory.label>Текстильная фабрика</TextileFactory.label>
+  <LocalZoo.label>Местный зоопарк</LocalZoo.label>
+
+
+  <!-- Лесная ферма -->
+
+  <TreeFarm.label>Лесная ферма</TreeFarm.label>
+  <IMED.label>Депо промышленного горного оборудования</IMED.label>
+  <soilFixer.label>Бюро рекультивации почв</soilFixer.label>
+  <lavaPlant.label>Геотермальная электростанция</lavaPlant.label>
+  <lavaLab.label>Вулканологическая лаборатория</lavaLab.label>
+  <batteryPowerStation.label>Аккумуляторная электростанция</batteryPowerStation.label>
+  <solarPlant.label>Солнечная электростанция</solarPlant.label>
+  <cleanEnergyLab.label>Лаборатория чистой энергии</cleanEnergyLab.label>
+  <animalTestingFacility.label>Центр испытаний на животных</animalTestingFacility.label>
+  <apartmentHousing.label>Многоквартирное жильё</apartmentHousing.label>
+
+</LanguageData>

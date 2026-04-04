@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Зерновые поля -->
+
+  <cerealFarmland.label>Зерновые поля</cerealFarmland.label>
+
+
+  <!-- Зерновая мельница -->
+
+  <grainMill.label>Зерновая мельница</grainMill.label>
+
+
+  <!-- Зернохранилище -->
+
+  <granary.label>Зернохранилище</granary.label>
+
+
+  <!-- Лучная мастерская -->
+
+  <fletcher.label>Лучная мастерская</fletcher.label>
+
+
+  <!-- Каменотёс -->
+
+  <stoneMason.label>Каменотёс</stoneMason.label>
+
+
+  <!-- Меховая мастерская -->
+
+  <furrier.label>Меховая мастерская</furrier.label>
+
+
+  <!-- Охотничья хижина -->
+
+  <huntersHut.label>Охотничья хижина</huntersHut.label>
+
+
+  <!-- Пивоварня -->
+
+  <brewer.label>Пивоварня</brewer.label>
+
+
+  <!-- Плотницкая мастерская -->
+
+  <carpenter.label>Плотницкая мастерская</carpenter.label>
+
+
+  <!-- Аптека -->
+
+  <apothecary.label>Аптека</apothecary.label>
+
+
+  <!-- Алхимик -->
+
+  <alchemist.label>Алхимик</alchemist.label>
+
+
+  <!-- Древняя академия -->
+
+  <ancientAcademy.label>Древняя академия</ancientAcademy.label>
+
+
+  <!-- Невольничий рынок -->
+
+  <slaveMarket.label>Невольничий рынок</slaveMarket.label>
+
+
+  <!-- Пристав -->
+
+  <bailiff.label>Пристав</bailiff.label>
+
+
+  <!-- Ополчение -->
+
+  <militia.label>Ополчение</militia.label>
+
+</LanguageData>

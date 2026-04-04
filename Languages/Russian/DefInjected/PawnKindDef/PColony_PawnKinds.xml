@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Основной боевой персонаж -->
+
+  <PColony_Fighter.label>солдат империи</PColony_Fighter.label>
+  <PColony_Fighter.labelPlural>солдаты империи</PColony_Fighter.labelPlural>
+
+
+  <!-- Высокоуровневый боевой персонаж -->
+
+  <PColony_Elite.label>элитный солдат империи</PColony_Elite.label>
+  <PColony_Elite.labelPlural>элитные солдаты империи</PColony_Elite.labelPlural>
+
+
+  <!-- Лидер фракции -->
+
+  <PColony_Leader.label>лидер империи</PColony_Leader.label>
+  <PColony_Leader.labelPlural>лидеры империи</PColony_Leader.labelPlural>
+
+
+  <!-- Караванный торговец -->
+
+  <PColony_Trader.label>торговец империи</PColony_Trader.label>
+  <PColony_Trader.labelPlural>торговцы империи</PColony_Trader.labelPlural>
+
+
+  <!-- Охранник торгового каравана -->
+
+  <PColony_Guard.label>страж империи</PColony_Guard.label>
+  <PColony_Guard.labelPlural>стражи империи</PColony_Guard.labelPlural>
+
+
+  <!-- Обычный гражданин -->
+
+  <PColony_Villager.label>гражданин империи</PColony_Villager.label>
+  <PColony_Villager.labelPlural>граждане империи</PColony_Villager.labelPlural>
+
+</LanguageData>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <strangeDiscovery_0.label>Странная находка</strangeDiscovery_0.label>
+
+
+  <!-- Успех варианта 1: шахтеры углубляются (путь к большей награде) -->
+
+  <strangeDiscovery_1-1b.label>Странная находка</strangeDiscovery_1-1b.label>
+
+
+  <!-- Успех варианта 2: военный эскорт находит стандартную награду -->
+
+  <strangeDiscovery_1-1.label>Странная находка</strangeDiscovery_1-1.label>
+
+
+  <!-- Провал варианта 2: военные защищают шахтеров, без потерь -->
+
+  <strangeDiscovery_1-2.label>Странная находка</strangeDiscovery_1-2.label>
+
+
+  <!-- Провал варианта 1: незащищенные шахтеры атакованы -->
+
+  <strangeDiscovery_1-3.label>Странная находка</strangeDiscovery_1-3.label>
+
+
+  <!-- Большая награда: исключительно богатая жила (путь успеха варианта 1) -->
+
+  <strangeDiscovery_2-1b.label>Странная находка</strangeDiscovery_2-1b.label>
+
+
+  <!-- Стандартная награда: найдены рудные жилы (путь успеха варианта 2) -->
+
+  <strangeDiscovery_2-1.label>Странная находка</strangeDiscovery_2-1.label>
+
+
+  <!-- Безопасный провал: военные защищают шахтеров -->
+
+  <strangeDiscovery_2-2.label>Странная находка</strangeDiscovery_2-2.label>
+
+
+  <!-- Опасный провал: рабочие убиты -->
+
+  <strangeDiscovery_2-3.label>Странная находка</strangeDiscovery_2-3.label>
+
+</LanguageData>

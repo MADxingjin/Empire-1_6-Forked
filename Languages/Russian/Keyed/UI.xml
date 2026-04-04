@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Общие метки -->
+  <Name>Название</Name>
+  <Set>Установить</Set>
+  <Deploy>Развернуть</Deploy>
+  <Base>База</Base>
+  <Modifier>Модификатор</Modifier>
+  <Final>Итог</Final>
+  <Effect>Эффект</Effect>
+  <Info>Инфо</Info>
+  <Total>Всего</Total>
+  <Mult>Множитель</Mult>
+  <Date>Дата</Date>
+  <Selected>Выбрано</Selected>
+  <Select>Выбрать</Select>
+  <FCIsAllowed>Включено</FCIsAllowed>
+  <FCIsNotAllowed>Отключено</FCIsNotAllowed>
+  <PerWorker>На рабочего</PerWorker>
+  <NumRatio>{0}/{1}</NumRatio>
+  <aSettlement> поселение </aSettlement>
+  <AddedInFuture>Будет добавлено в будущем</AddedInFuture>
+  <Item>Предмет</Item>
+
+  <!-- Метки вкладок -->
+  <Colonies>Колонии</Colonies>
+  <Bills>Счета</Bills>
+  <Events>События</Events>
+  <Settlement>Поселение</Settlement>
+  <Settlements>Поселения</Settlements>
+  <Overview>Обзор</Overview>
+  <FCOverview>Обзор</FCOverview>
+  <TravelTime>Время в пути</TravelTime>
+  <ConstructionTime>Время строительства</ConstructionTime>
+
+  <!-- Кнопки -->
+  <ButtonNotAvailable>Эта кнопка пока недоступна</ButtonNotAvailable>
+  <ConfirmChanges>Подтвердить изменения</ConfirmChanges>
+  <FCConfirm>Подтвердить</FCConfirm>
+  <FCConfirmDecision>Подтвердить решение</FCConfirmDecision>
+  <FCConfirmSettle>Основать {0} за {1} серебра?</FCConfirmSettle>
+  <FCConfirmDontShowAgain>Больше не показывать это</FCConfirmDontShowAgain>
+  <View>Просмотр</View>
+  <GoTo>Перейти</GoTo>
+  <Report>Отчет</Report>
+  <Reports>Отчеты</Reports>
+  <Actions>Действия</Actions>
+  <ViewInfo>Просмотр инфо</ViewInfo>
+  <SetMap>Установить карту</SetMap>
+  <FCActionAvailable>Действие доступно</FCActionAvailable>
+
+  <!-- Общие действия -->
+  <FCAutoResolve>Авто-разрешение</FCAutoResolve>
+  <FCAutoResolving>Авто-разрешение: {0}</FCAutoResolving>
+  <FCBillsAutoResolving>Счета теперь разрешаются автоматически!</FCBillsAutoResolving>
+  <FCBillsNotAutoResolving>Счета теперь не разрешаются автоматически.</FCBillsNotAutoResolving>
+  <FCDesc>Описание</FCDesc>
+  <FCCreateNewFaction>Создать новую фракцию</FCCreateNewFaction>
+  <FCResetToDefault>Сбросить к стандартному</FCResetToDefault>
+  <FCSetPointRef>Установить точку отсчета</FCSetPointRef>
+  <FCNoValidSettlements>Нет подходящих поселений</FCNoValidSettlements>
+  <FCNoSpecialActions>Нет особых действий</FCNoSpecialActions>
+  <FCBuildingLocked>Это здание заблокировано</FCBuildingLocked>
+  <FCBuildingLockedLevel>Открывается на уровне поселения {0}.</FCBuildingLockedLevel>
+  <FCBuildingLockedMax>Достигнуто максимальное количество слотов для зданий для этого типа поселения.</FCBuildingLockedMax>
+  <Capital>Столица</Capital>
+
+  <!-- Меню по нажатию -->
+  <FloatMenuSearchable>Введите для поиска:</FloatMenuSearchable>
+  <FCSMFForceOpen>Принудительно открыть</FCSMFForceOpen>
+
+  <!-- Ошибки -->
+  <FCGenericError>Если вы это читаете, что-то пошло не так.</FCGenericError>
+  <FCNotEnoughSilverOption>У вас недостаточно серебра на карте для оплаты этой опции</FCNotEnoughSilverOption>
+  <FCOptionRequiresPolicy>Требуется: {0}</FCOptionRequiresPolicy>
+  <FCOptionRequiresPolicyAny>Требуется одно из: {0}</FCOptionRequiresPolicyAny>
+
+</LanguageData>

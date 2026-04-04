@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <WorldSettlementDef_Surface.label>поселение империи</WorldSettlementDef_Surface.label>
+  <WorldSettlementDef_Surface.description>База игровой фракции Империи</WorldSettlementDef_Surface.description>
+
+
+  <!-- Орбитальные поселения -->
+
+  <WorldSettlementDef_Orbital.label>базовая орбитальная колония</WorldSettlementDef_Orbital.label>
+  <WorldSettlementDef_Orbital.description>Стандартные возможности орбитального строительства</WorldSettlementDef_Orbital.description>
+
+  <WorldSettlementDef_Orbital_Logistics.label>логистическая орбитальная колония</WorldSettlementDef_Orbital_Logistics.label>
+  <WorldSettlementDef_Orbital_Logistics.description>Доставка налогов на 50% быстрее и особые здания</WorldSettlementDef_Orbital_Logistics.description>
+
+  <WorldSettlementDef_Orbital_Advanced.label>продвинутая орбитальная колония</WorldSettlementDef_Orbital_Advanced.label>
+  <WorldSettlementDef_Orbital_Advanced.description>Базовая стоимость строительства на 25% ниже, увеличенный размер</WorldSettlementDef_Orbital_Advanced.description>
+
+  <WorldSettlementDef_Orbital_Glitter.label>орбитальная колония блестящего мира</WorldSettlementDef_Orbital_Glitter.label>
+  <WorldSettlementDef_Orbital_Glitter.description>Специализированные производственные здания с бонусами</WorldSettlementDef_Orbital_Glitter.description>
+
+</LanguageData>

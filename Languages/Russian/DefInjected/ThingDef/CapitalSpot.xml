@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <CapitalSpot.label>место столицы</CapitalSpot.label>
+  <CapitalSpot.description>Определяет место столицы вашей Империи. Это место служит центральной точкой отсчета для расчетов путешествий, выбора целей событий и административных функций. Может быть перемещено вместе с вашей империей гравикораблей.</CapitalSpot.description>
+  <CapitalSpot_Blueprint.label>место столицы (чертеж)</CapitalSpot_Blueprint.label>
+  <CapitalSpot_Frame.label>место столицы (строительство)</CapitalSpot_Frame.label>
+  <CapitalSpot_Frame.description>Определяет место столицы вашей Империи. Это место служит центральной точкой отсчета для расчетов путешествий, выбора целей событий и административных функций. Может быть перемещено вместе с вашей империей гравикораблей.</CapitalSpot_Frame.description>
+
+</LanguageData>
