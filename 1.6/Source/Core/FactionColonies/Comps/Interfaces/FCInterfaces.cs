@@ -180,6 +180,33 @@ namespace FactionColonies
         bool CanAssign(WorldSettlementFC settlement, MilSquadFC squad, out string reason);
     }
     /// <summary>
+    /// Allows submods to add custom validation, display additional costs, and perform
+    /// side effects (e.g., resource consumption) when settlements are founded.
+    /// Register implementations via <see cref="FoundingValidatorRegistry"/>.
+    /// </summary>
+    public interface ISettlementFoundingValidator
+    {
+        /// <summary>
+        /// Called during settlement creation validation. Return false with a reason
+        /// to prevent the player from founding the settlement.
+        /// </summary>
+        bool CanFoundSettlement(PlanetTile tile, WorldSettlementDef type, out string reason);
+
+        /// <summary>
+        /// Returns additional cost text to display in the settlement creation UI,
+        /// below the silver cost (e.g., "100 Food, 50 Lumber from [Settlement]").
+        /// Return null if no additional costs to display.
+        /// </summary>
+        string GetAdditionalCostDescription(PlanetTile tile, WorldSettlementDef type);
+
+        /// <summary>
+        /// Called in DoFoundSettlement() after silver payment succeeds.
+        /// Consume resources or perform other founding side effects here.
+        /// <para>Note that at this point, the settlement has not actually been created yet.</para>
+        /// </summary>
+        void OnSettlementFounded(PlanetTile tile, WorldSettlementDef type);
+    }
+    /// <summary>
     /// Allows submods to contribute additive or multiplicative modifiers to the Empire Threat Level (ETL).
     /// Register implementations via <see cref="ThreatScalingRegistry"/>.
     /// </summary>

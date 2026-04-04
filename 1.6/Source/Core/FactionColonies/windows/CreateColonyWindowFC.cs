@@ -124,11 +124,30 @@ namespace FactionColonies
             DrawLabelBox(new Rect(10, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
             DrawLabelBox(new Rect(153, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
 
+            // Additional founding costs from registered validators
+            float additionalCostHeight = 0f;
+            if (currentTileSelected.Valid)
+            {
+                List<string> additionalCosts = FoundingValidatorRegistry.GetCostDescriptions(currentTileSelected, currentSettlementType);
+                if (additionalCosts.Count > 0)
+                {
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.UpperCenter;
+                    float costY = upperBox.yMax + verticalMargins;
+                    foreach (string costDesc in additionalCosts)
+                    {
+                        float lineHeight = Text.CalcHeight(costDesc, 258f);
+                        Widgets.Label(new Rect(5, costY, 258, lineHeight), costDesc);
+                        costY += lineHeight;
+                    }
+                    additionalCostHeight = costY - (upperBox.yMax + verticalMargins);
+                }
+            }
 
             //Lower Menu label
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Rect productionLabelBox = new Rect(0, upperBox.yMax + verticalMargins, 268, productionLabel_height); //0, 270, 268, 40
+            Rect productionLabelBox = new Rect(0, upperBox.yMax + verticalMargins + additionalCostHeight, 268, productionLabel_height); //0, 270, 268, 40
             Widgets.Label(productionLabelBox, "BaseProductionStats".Translate());
 
 
@@ -294,7 +313,7 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            int buttonLength = 130;
+            int buttonLength = 175;
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
             if (Widgets.ButtonText(button, currentSettlementType.LabelCap))
             {
@@ -342,6 +361,7 @@ namespace FactionColonies
             LogUtil.Message($"DrawCreateSettlementButton: creating settleNewColony event");
 
             PaymentUtil.PaySilver(settlementCreationCost, PaymentUtil.Reason_SettlementCreation);
+            FoundingValidatorRegistry.NotifyFounded(currentTileSelected, currentSettlementType);
 
             //create settle event
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.settleNewColony);
@@ -373,12 +393,16 @@ namespace FactionColonies
         private bool CanCreateSettlementHere(bool silent = false)
         {
             StringBuilder reason = new StringBuilder();
-            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, reason) || faction.CheckSettlementCaravansList(currentTileSelected) || !PlayerHasEnoughSilver(reason))
+            if (!WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, reason)
+                || faction.CheckSettlementCaravansList(currentTileSelected)
+                || !PlayerHasEnoughSilver(reason)
+                || !FoundingValidatorRegistry.CanFound(currentTileSelected, currentSettlementType, reason))
             {
                 if (!silent)
                 {
                     Messages.Message(reason.ToString(), MessageTypeDefOf.RejectInput);
                 }
+                LogUtil.Message($"Rejected settlement founding due to reason: {reason}");
                 return false;
             }
 

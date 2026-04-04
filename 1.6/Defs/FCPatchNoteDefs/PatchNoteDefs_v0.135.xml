@@ -203,4 +203,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_14</defName>
+		<label>Backend interface update</label>
+		<description>Adds an interface to let other classes/submods inject their own validation logic for settlement founding.</description>
+		<releaseDate>2026-04-04</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds an ISettlementFoundingValidator interface to let other classes/submods control when or if a settlement can be founded</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
