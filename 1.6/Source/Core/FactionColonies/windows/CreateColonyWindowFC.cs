@@ -313,7 +313,7 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            int buttonLength = 175;
+            int buttonLength = 200;
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
             if (Widgets.ButtonText(button, currentSettlementType.LabelCap))
             {
@@ -330,7 +330,7 @@ namespace FactionColonies
         {
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            int buttonLength = 130;
+            int buttonLength = 200;
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
             if (Widgets.ButtonText(button, "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
             {
