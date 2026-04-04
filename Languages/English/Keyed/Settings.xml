@@ -2,6 +2,8 @@
 <LanguageData>
 
 	<!-- Mod Settings -->
+	<FCSettingsModName>Empire Refactored</FCSettingsModName>
+	
 	<FCSettingSilverPerResource>Silver amount gained per resource</FCSettingSilverPerResource>
 	<FCSettingDaysBetweenTax>Days between tax time</FCSettingDaysBetweenTax>
 	<FCSettingProductionTitheMod>Production Tithe Modifier</FCSettingProductionTitheMod>

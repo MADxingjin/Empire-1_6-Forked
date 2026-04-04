@@ -3,12 +3,11 @@
 
 	<name>Empire Refactored</name>
 	<author>Matathias</author>
-	<url>https://discord.gg/f3zFQqA</url>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>Matathias.Empire</packageId>
-	<modVersion>0.135.7</modVersion>
+	<modVersion>0.135.8</modVersion>
 	<incompatibleWith>
 	</incompatibleWith>
 	<modDependencies>
@@ -34,6 +33,6 @@
 Events will periodically influence your colonies, or your faction as a whole. You must decide how best to respond to these situations.
 
 Your colonists will pay taxes, be it in silver, or goods. You can tell them where you want your taxes, and they will dutifully pay them. A fully customizable faction name and title allows you to put your own spin on your subjects. They can be feudal vassals, a megacorporation’s branch offices, or even a shining beacon of truth and liberty. It is all part of the greater story.
-</description>
-<modIconPath IgnoreIfNoMatchingField="True">UI/Icons/Logo</modIconPath>
+	</description>
+	<modIconPath IgnoreIfNoMatchingField="True">UI/Icons/EmpireLogo</modIconPath>
 </ModMetaData>

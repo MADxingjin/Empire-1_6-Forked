@@ -720,7 +720,7 @@ namespace FactionColonies
 
         public override string SettingsCategory()
         {
-            return "Empire";
+            return "FCSettingsModName".Translate();
         }
 
         public override void DoSettingsWindowContents(Rect inRect) => settings.DoWindowContents(inRect);

@@ -16,9 +16,19 @@ namespace FactionColonies
 
     class PatchNotesDisplayWindow : Window
     {
+        private class PatchNoteGroup
+        {
+            public string versionLabel;
+            public string dateRange;
+            public PatchNoteType highestSeverity;
+            public bool hasNewEntries;
+            public List<PatchNoteDef> entries;
+        }
+
         public override Vector2 InitialSize => new Vector2(750f + (StandardMargin * 2), 750f + (StandardMargin * 2));
 
         private const float HeaderHeight = 45f;
+        private const float GroupHeaderHeight = 35f;
         private const float TitleBarHeight = 30f;
         private const float margin = 5f;
         private const float DividerPad = 15f;
@@ -28,6 +38,10 @@ namespace FactionColonies
         private const float IconSize = 45f;
         private const float LinkButtonSize = 24f;
         private const float BannerHeight = 120f;
+        private const float EntryIndent = 10f;
+        private const float NewIndicatorWidth = 4f;
+
+        private static readonly Color GroupBgColor = new Color(0.15f, 0.15f, 0.15f, 0.6f);
 
         private static List<PatchNoteDef> cachedPatchNoteDefs;
 
@@ -41,15 +55,16 @@ namespace FactionColonies
             return cachedPatchNoteDefs;
         }
 
-        private readonly List<PatchNoteDef> patchNoteDefs;
+        private readonly List<PatchNoteGroup> groups;
 
         private Texture2D bannerImage;
 
         private readonly string title = "FCPatchNotesWindowTitle".Translate();
 
         // Scroll state
-        private HashSet<int> expandedDefs = new HashSet<int>();
-        private Dictionary<int, float> expandedHeights = new Dictionary<int, float>();
+        private HashSet<int> expandedGroups = new HashSet<int>();
+        private HashSet<int> expandedEntries = new HashSet<int>();
+        private Dictionary<int, float> entryBodyHeights = new Dictionary<int, float>();
         private bool shouldRefreshHeight = true;
         private float scrollViewHeight = 0f;
         private Vector2 patchNoteScrollPos = new Vector2();
@@ -66,27 +81,86 @@ namespace FactionColonies
 
         public PatchNotesDisplayWindow()
         {
-            patchNoteDefs = GetPatchNoteDefs();
+            List<PatchNoteDef> allDefs = GetPatchNoteDefs();
+            groups = BuildGroups(allDefs);
 
-            // Auto-expand unread entries
-            for (int i = 0; i < patchNoteDefs.Count; i++)
+            // Auto-expand groups with new entries, and individual new entries within them
+            for (int gi = 0; gi < groups.Count; gi++)
             {
-                if (patchNoteDefs[i].IsNewerThan(FCSettings.lastSeenVersionMajor,
-                    FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                if (groups[gi].hasNewEntries)
                 {
-                    expandedDefs.Add(i);
+                    expandedGroups.Add(gi);
+                    foreach (PatchNoteDef def in groups[gi].entries)
+                    {
+                        if (def.IsNewerThan(FCSettings.lastSeenVersionMajor,
+                            FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                        {
+                            expandedEntries.Add(def.VersionSortKey);
+                        }
+                    }
                 }
             }
         }
 
         public PatchNotesDisplayWindow(string title) : this() => this.title = title;
 
+        private List<PatchNoteGroup> BuildGroups(List<PatchNoteDef> sortedDefs)
+        {
+            var result = new List<PatchNoteGroup>();
+            if (sortedDefs.Count == 0) return result;
+
+            int currentMajor = -1;
+            int currentMinor = -1;
+            PatchNoteGroup current = null;
+
+            for (int i = 0; i < sortedDefs.Count; i++)
+            {
+                PatchNoteDef def = sortedDefs[i];
+                if (def.Major != currentMajor || def.Minor != currentMinor)
+                {
+                    if (current != null) result.Add(current);
+                    currentMajor = def.Major;
+                    currentMinor = def.Minor;
+                    current = new PatchNoteGroup
+                    {
+                        versionLabel = "v" + def.Major + "." + def.Minor,
+                        highestSeverity = PatchNoteType.Undefined,
+                        hasNewEntries = false,
+                        entries = new List<PatchNoteDef>()
+                    };
+                }
+
+                current.entries.Add(def);
+
+                if (def.GetPatchNoteType > current.highestSeverity)
+                    current.highestSeverity = def.GetPatchNoteType;
+
+                if (def.IsNewerThan(FCSettings.lastSeenVersionMajor,
+                    FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch))
+                    current.hasNewEntries = true;
+            }
+            if (current != null) result.Add(current);
+
+            // Compute date ranges
+            foreach (PatchNoteGroup g in result)
+            {
+                System.DateTime oldest = g.entries[g.entries.Count - 1].ReleaseDate;
+                System.DateTime newest = g.entries[0].ReleaseDate;
+                if (oldest.Date == newest.Date)
+                    g.dateRange = newest.ToString("dd MMM yyyy");
+                else
+                    g.dateRange = oldest.ToString("dd MMM") + " - " + newest.ToString("dd MMM yyyy");
+            }
+
+            return result;
+        }
+
         public override void PostClose()
         {
             base.PostClose();
-            if (patchNoteDefs.Count > 0)
+            if (groups.Count > 0 && groups[0].entries.Count > 0)
             {
-                PatchNoteDef latest = patchNoteDefs[0];
+                PatchNoteDef latest = groups[0].entries[0];
                 FCSettings.lastSeenVersionMajor = latest.Major;
                 FCSettings.lastSeenVersionMinor = latest.Minor;
                 FCSettings.lastSeenVersionPatch = latest.Patch;
@@ -133,9 +207,9 @@ namespace FactionColonies
             Widgets.Label(titleRect, title);
 
             // Link buttons in title bar (right-aligned, before close button)
-            if (patchNoteDefs.Count > 0)
+            if (groups.Count > 0 && groups[0].entries.Count > 0)
             {
-                PatchNoteDef anyDef = patchNoteDefs[0];
+                PatchNoteDef anyDef = groups[0].entries[0];
                 float startX = titleRect.xMax - TitleBarHeight;
                 for (int i = anyDef.Links.Count - 1; i >= 0; i--)
                 {
@@ -188,85 +262,155 @@ namespace FactionColonies
 
             float curY = 0f;
 
-            for (int i = 0; i < patchNoteDefs.Count; i++)
+            for (int gi = 0; gi < groups.Count; gi++)
             {
-                PatchNoteDef def = patchNoteDefs[i];
-                bool isExpanded = expandedDefs.Contains(i);
-                bool isNew = def.IsNewerThan(FCSettings.lastSeenVersionMajor, FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch);
+                PatchNoteGroup group = groups[gi];
+                bool groupExpanded = expandedGroups.Contains(gi);
 
-                // --- Header ---
-                Rect headerRect = new Rect(0f, curY, scrollContentWidth, HeaderHeight);
+                // --- Group Header ---
+                Rect groupRect = new Rect(0f, curY, scrollContentWidth, GroupHeaderHeight);
+                DrawGroupHeader(groupRect, group, groupExpanded);
 
-                // Alternating highlight
-                if (i % 2 == 0)
-                    Widgets.DrawHighlight(headerRect);
-                else
-                    Widgets.DrawLightHighlight(headerRect);
-
-                // New/unread border
-                if (isNew)
-                    GUI.color = Color.red;
-                Widgets.DrawBox(headerRect);
-                ResetTextAndColor();
-
-                // Badge
-                Rect badgeRect = new Rect(headerRect.x + margin, headerRect.y + (HeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
-                DrawTypeBadge(badgeRect, def.GetPatchNoteType);
-
-                // Expand/collapse icon (rightmost)
-                Rect iconRect = new Rect(headerRect.xMax - IconSize, headerRect.y, IconSize, HeaderHeight);
-                Widgets.DrawTextureFitted(iconRect.ContractedBy(11f), isExpanded ? TexButton.Collapse : TexButton.Reveal, 1f);
-
-                // Date (right-aligned, before icon)
-                Rect dateRect = new Rect(iconRect.x - DateWidth - margin, headerRect.y, DateWidth, HeaderHeight);
-                Text.Font = GameFont.Tiny;
-                Text.Anchor = TextAnchor.MiddleRight;
-                GUI.color = Color.gray;
-                Widgets.Label(dateRect, def.ReleaseDate.ToString("dd MMM yyyy"));
-                ResetTextAndColor();
-
-                // Title (between badge and date)
-                float titleX = badgeRect.xMax + margin;
-                Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - margin, HeaderHeight);
-                Text.Font = GameFont.Medium;
-                Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(titleLabelRect, def.ShortTitle);
-                ResetTextAndColor();
-
-                // Click handling
-                if (Widgets.ButtonInvisible(headerRect))
+                if (Widgets.ButtonInvisible(groupRect))
                 {
-                    if (isExpanded)
+                    if (groupExpanded)
                     {
-                        expandedDefs.Remove(i);
-                        expandedHeights.Remove(i);
+                        expandedGroups.Remove(gi);
                         SoundDefOf.TabClose.PlayOneShotOnCamera();
                     }
                     else
                     {
-                        expandedDefs.Add(i);
+                        expandedGroups.Add(gi);
                         SoundDefOf.TabOpen.PlayOneShotOnCamera();
                     }
                     shouldRefreshHeight = true;
                 }
 
-                curY += HeaderHeight + margin;
+                curY += GroupHeaderHeight + margin;
 
-                // --- Expanded body ---
-                if (isExpanded)
+                // --- Entries within expanded group ---
+                if (groupExpanded)
                 {
-                    Text.Font = GameFont.Small;
-                    string bodyText = def.CompactBodyString;
-                    float bodyWidth = scrollContentWidth - margin * 4f;
-                    Rect bodyRect = new Rect(margin * 2f, curY, bodyWidth, 100f);
-                    Widgets.LabelCacheHeight(ref bodyRect, bodyText);
-                    expandedHeights[i] = bodyRect.height;
-                    curY += bodyRect.height + margin;
-                    ResetTextAndColor();
+                    for (int ei = 0; ei < group.entries.Count; ei++)
+                    {
+                        PatchNoteDef def = group.entries[ei];
+                        int entryKey = def.VersionSortKey;
+                        bool entryExpanded = expandedEntries.Contains(entryKey);
+                        bool isNew = def.IsNewerThan(FCSettings.lastSeenVersionMajor,
+                            FCSettings.lastSeenVersionMinor, FCSettings.lastSeenVersionPatch);
+
+                        // Entry header (indented)
+                        Rect headerRect = new Rect(EntryIndent, curY, scrollContentWidth - EntryIndent, HeaderHeight);
+
+                        if (ei % 2 == 0)
+                            Widgets.DrawHighlight(headerRect);
+                        else
+                            Widgets.DrawLightHighlight(headerRect);
+
+                        if (isNew)
+                            GUI.color = Color.red;
+                        Widgets.DrawBox(headerRect);
+                        ResetTextAndColor();
+
+                        // Badge
+                        Rect badgeRect = new Rect(headerRect.x + margin, headerRect.y + (HeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
+                        DrawTypeBadge(badgeRect, def.GetPatchNoteType);
+
+                        // Expand/collapse icon
+                        Rect iconRect = new Rect(headerRect.xMax - IconSize, headerRect.y, IconSize, HeaderHeight);
+                        Widgets.DrawTextureFitted(iconRect.ContractedBy(11f), entryExpanded ? TexButton.Collapse : TexButton.Reveal, 1f);
+
+                        // Date
+                        Rect dateRect = new Rect(iconRect.x - DateWidth - margin, headerRect.y, DateWidth, HeaderHeight);
+                        Text.Font = GameFont.Tiny;
+                        Text.Anchor = TextAnchor.MiddleRight;
+                        GUI.color = Color.gray;
+                        Widgets.Label(dateRect, def.ReleaseDate.ToString("dd MMM yyyy"));
+                        ResetTextAndColor();
+
+                        // Title
+                        float titleX = badgeRect.xMax + margin;
+                        Rect titleLabelRect = new Rect(titleX, headerRect.y, dateRect.x - titleX - margin, HeaderHeight);
+                        Text.Font = GameFont.Medium;
+                        Text.Anchor = TextAnchor.MiddleLeft;
+                        Widgets.Label(titleLabelRect, def.ShortTitle);
+                        ResetTextAndColor();
+
+                        // Click handling
+                        if (Widgets.ButtonInvisible(headerRect))
+                        {
+                            if (entryExpanded)
+                            {
+                                expandedEntries.Remove(entryKey);
+                                entryBodyHeights.Remove(entryKey);
+                                SoundDefOf.TabClose.PlayOneShotOnCamera();
+                            }
+                            else
+                            {
+                                expandedEntries.Add(entryKey);
+                                SoundDefOf.TabOpen.PlayOneShotOnCamera();
+                            }
+                            shouldRefreshHeight = true;
+                        }
+
+                        curY += HeaderHeight + margin;
+
+                        // Expanded body
+                        if (entryExpanded)
+                        {
+                            Text.Font = GameFont.Small;
+                            string bodyText = def.CompactBodyString;
+                            float bodyWidth = scrollContentWidth - EntryIndent - margin * 4f;
+                            Rect bodyRect = new Rect(EntryIndent + margin * 2f, curY, bodyWidth, 100f);
+                            Widgets.LabelCacheHeight(ref bodyRect, bodyText);
+                            entryBodyHeights[entryKey] = bodyRect.height;
+                            curY += bodyRect.height + margin;
+                            ResetTextAndColor();
+                        }
+                    }
                 }
             }
 
             Widgets.EndScrollView();
+        }
+
+        private void DrawGroupHeader(Rect rect, PatchNoteGroup group, bool expanded)
+        {
+            // Background
+            Widgets.DrawBoxSolid(rect, GroupBgColor);
+
+            // New indicator — red left-border accent
+            if (group.hasNewEntries)
+            {
+                Rect newBar = new Rect(rect.x, rect.y, NewIndicatorWidth, rect.height);
+                Widgets.DrawBoxSolid(newBar, Color.red);
+            }
+
+            // Version label
+            float labelX = rect.x + margin + (group.hasNewEntries ? NewIndicatorWidth + margin : 0f);
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect versionRect = new Rect(labelX, rect.y, 80f, rect.height);
+            Widgets.Label(versionRect, group.versionLabel);
+            ResetTextAndColor();
+
+            // Badge
+            Rect badgeRect = new Rect(versionRect.xMax + margin, rect.y + (GroupHeaderHeight - BadgeHeight) * 0.5f, BadgeWidth, BadgeHeight);
+            DrawTypeBadge(badgeRect, group.highestSeverity);
+
+            // Expand/collapse icon
+            Rect iconRect = new Rect(rect.xMax - IconSize, rect.y, IconSize, GroupHeaderHeight);
+            Widgets.DrawTextureFitted(iconRect.ContractedBy(11f), expanded ? TexButton.Collapse : TexButton.Reveal, 1f);
+
+            // Entry count + date range (right-aligned, before icon)
+            string rightText = group.entries.Count + " entries  \u2022  " + group.dateRange;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.MiddleRight;
+            GUI.color = Color.gray;
+            float rightWidth = rect.xMax - iconRect.width - badgeRect.xMax - margin * 3f;
+            Rect rightRect = new Rect(badgeRect.xMax + margin, rect.y, rightWidth, rect.height);
+            Widgets.Label(rightRect, rightText);
+            ResetTextAndColor();
         }
 
         private void DrawTypeBadge(Rect rect, PatchNoteType type)
@@ -311,16 +455,23 @@ namespace FactionColonies
             shouldRefreshHeight = false;
 
             float total = 0f;
-            for (int i = 0; i < patchNoteDefs.Count; i++)
+            for (int gi = 0; gi < groups.Count; gi++)
             {
-                total += HeaderHeight + margin;
-                float bodyH;
-                if (expandedDefs.Contains(i))
+                total += GroupHeaderHeight + margin;
+                if (expandedGroups.Contains(gi))
                 {
-                    if (expandedHeights.TryGetValue(i, out bodyH))
-                        total += bodyH + margin;
-                    else
-                        total += 200f + margin;
+                    foreach (PatchNoteDef def in groups[gi].entries)
+                    {
+                        total += HeaderHeight + margin;
+                        if (expandedEntries.Contains(def.VersionSortKey))
+                        {
+                            float bodyH;
+                            if (entryBodyHeights.TryGetValue(def.VersionSortKey, out bodyH))
+                                total += bodyH + margin;
+                            else
+                                total += 200f + margin;
+                        }
+                    }
                 }
             }
 
