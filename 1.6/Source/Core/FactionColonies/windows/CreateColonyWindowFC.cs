@@ -325,7 +325,7 @@ namespace FactionColonies
                         () =>
                         {
                             DoFoundSettlement();
-                            this.Close();
+                            Close();
                         },
                         dontShow => FCSettings.showSettleConfirm = !dontShow));
                 }

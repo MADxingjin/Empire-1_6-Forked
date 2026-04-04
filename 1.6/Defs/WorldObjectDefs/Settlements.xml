@@ -35,7 +35,7 @@
     <label>basic orbital colony</label>
     <description>Standard orbital construction capabilities</description>
 	<titleKey>Orbital</titleKey>
-	<accentColor>(0.15, 0.15, 0.15)</accentColor>
+	<accentColor>(0.50, 0.50, 0.50)</accentColor>
 	<defaultResources>true</defaultResources>
 	<resources>
 		<li>
