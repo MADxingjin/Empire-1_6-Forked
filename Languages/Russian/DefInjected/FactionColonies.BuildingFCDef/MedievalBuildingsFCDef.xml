@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <slavePlantation.label>Рабовладельческая плантация</slavePlantation.label>
+  <adventurersGuild.label>Гильдия искателей приключений</adventurersGuild.label>
+  <publicMarket.label>Общественный рынок</publicMarket.label>
+  <jailhouse.label>Тюрьма</jailhouse.label>
+  <wildernessGuild.label>Гильдия дикой природы</wildernessGuild.label>
+  <apparelSweatshop.label>Швейная потогонка</apparelSweatshop.label>
+  <loggingCamp.label>Лесозаготовительный лагерь</loggingCamp.label>
+  <RedlightDistrict.label>Район красных фонарей</RedlightDistrict.label>
+  <Smithy.label>Кузница</Smithy.label>
+  <UndergroundMine.label>Подземная шахта</UndergroundMine.label>
+  <Mills.label>Мельницы</Mills.label>
+  <ServantHousing.label>Жильё для слуг</ServantHousing.label>
+  <plagueCamp.label>Чумной лагерь</plagueCamp.label>
+
+</LanguageData>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- ScaleFactor(baseFactor, severity) = 1 - (1 - baseFactor) * severity -->
+
+  <FC_CombatEfficiency_Buff.label>хорошо обучен</FC_CombatEfficiency_Buff.label>
+  <FC_CombatEfficiency_Buff.description>Этот боец получает преимущество от превосходной подготовки и координации, обеспечиваемых военной инфраструктурой своего поселения.</FC_CombatEfficiency_Buff.description>
+
+
+  <!-- Применяется к боевым персонажам, когда боевая эффективность поселения < 1.0 -->
+
+  <FC_CombatEfficiency_Debuff.label>плохо обучен</FC_CombatEfficiency_Debuff.label>
+  <FC_CombatEfficiency_Debuff.description>Этот боец страдает от неадекватной подготовки и плохой координации из-за слабой военной инфраструктуры своего поселения.</FC_CombatEfficiency_Debuff.description>
+
+</LanguageData>

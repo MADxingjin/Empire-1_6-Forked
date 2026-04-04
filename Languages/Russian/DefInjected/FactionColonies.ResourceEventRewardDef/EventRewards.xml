@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Еда: блюда и растительные продукты -->
+
+  <RERD_Food.label>еда</RERD_Food.label>
+
+
+  <!-- Оружие -->
+
+  <RERD_Weapons.label>оружие</RERD_Weapons.label>
+
+
+  <!-- Одежда (общая) -->
+
+  <RERD_Apparel.label>одежда</RERD_Apparel.label>
+
+
+  <!-- Броня (подмножество одежды) -->
+
+  <RERD_Armor.label>броня</RERD_Armor.label>
+
+
+  <!-- Животные -->
+
+  <RERD_Animals.label>животные</RERD_Animals.label>
+
+
+  <!-- Лесозаготовка -->
+
+  <RERD_Logging.label>лесозаготовка</RERD_Logging.label>
+
+
+  <!-- Добыча -->
+
+  <RERD_Mining.label>добыча</RERD_Mining.label>
+
+
+  <!-- Серебро -->
+
+  <RERD_Silver.label>серебро</RERD_Silver.label>
+
+
+  <!-- Наркотики -->
+
+  <RERD_Drugs.label>наркотики</RERD_Drugs.label>
+
+</LanguageData>

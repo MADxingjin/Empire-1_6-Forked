@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <PColony.label>Фракция игрока</PColony.label>
+  <PColony.description>Эта фракция находится под вашим контролем.</PColony.description>
+  <PColony.pawnsPlural>чужаки</PColony.pawnsPlural>
+  <PColony.leaderTitle>главный советник</PColony.leaderTitle>
+
+</LanguageData>

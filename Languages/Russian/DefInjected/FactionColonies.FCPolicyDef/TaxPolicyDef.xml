@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <minimizeTaxation.label>Минимизация налогообложения</minimizeTaxation.label>
+  <heavyTaxation.label>Высокое налогообложение</heavyTaxation.label>
+  <goodsEconomy.label>Товарная экономика</goodsEconomy.label>
+  <silverStandard.label>Серебряный стандарт</silverStandard.label>
+
+</LanguageData>

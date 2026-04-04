@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <FCRoadBuildingDirt.label>Строительство грунтовых дорог в поселениях</FCRoadBuildingDirt.label>
+  <FCRoadBuildingDirt.description>Позволяет поселениям вашей Империи автоматически строить грунтовые дороги с течением времени. Если опция строительства дорог включена, будет строиться один сегмент каждые 3 дня.</FCRoadBuildingDirt.description>
+
+  <FCRoadBuildingRoad.label>Строительство асфальтовых дорог в поселениях</FCRoadBuildingRoad.label>
+  <FCRoadBuildingRoad.description>Позволяет поселениям вашей Империи автоматически строить асфальтовые дороги с течением времени. Если опция строительства дорог включена, будет строиться один сегмент каждые 3 дня.</FCRoadBuildingRoad.description>
+
+  <FCRoadBuildingHighway.label>Строительство асфальтовых шоссе в поселениях</FCRoadBuildingHighway.label>
+  <FCRoadBuildingHighway.description>Позволяет поселениям вашей Империи автоматически строить асфальтовые шоссе с течением времени. Если опция строительства дорог включена, будет строиться один сегмент каждые 3 дня.</FCRoadBuildingHighway.description>
+
+</LanguageData>

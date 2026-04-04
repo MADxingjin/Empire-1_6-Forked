@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <militaristic.label>Милитаризм</militaristic.label>
+  <pacifist.label>Пацифизм</pacifist.label>
+  <authoritarian.label>Авторитаризм</authoritarian.label>
+  <egalitarian.label>Эгалитаризм</egalitarian.label>
+  <isolationist.label>Изоляционизм</isolationist.label>
+  <expansionist.label>Экспансионизм</expansionist.label>
+  <technocratic.label>Технократия</technocratic.label>
+  <feudal.label>Феодализм</feudal.label>
+  <slaver.label>Рабовладение</slaver.label>
+
+</LanguageData>

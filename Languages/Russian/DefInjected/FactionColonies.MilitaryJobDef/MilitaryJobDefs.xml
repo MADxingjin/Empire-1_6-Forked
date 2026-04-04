@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Undefined.label>не определено</Undefined.label>
+  <Cooldown.label>перезарядка</Cooldown.label>
+  <Deploy.label>развернуть</Deploy.label>
+  <RaidEnemySettlement.label>ограбить вражеское поселение</RaidEnemySettlement.label>
+  <EnslaveEnemySettlement.label>поработить вражеское поселение</EnslaveEnemySettlement.label>
+  <CaptureEnemySettlement.label>захватить вражеское поселение</CaptureEnemySettlement.label>
+  <DefendFriendlySettlement.label>защитить дружественное поселение</DefendFriendlySettlement.label>
+
+</LanguageData>

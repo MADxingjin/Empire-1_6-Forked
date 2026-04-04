@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Управление отрядами -->
+  <FCMilitaryTableSquad>Назначенный отряд</FCMilitaryTableSquad>
+  <FCMilitaryTableSetSquad>Назначить отряд</FCMilitaryTableSetSquad>
+  <FCMilitaryTableDeploySquad>Развернуть отряд</FCMilitaryTableDeploySquad>
+  <FCMilitaryTableResetSquad>Сбросить отряд</FCMilitaryTableResetSquad>
+  <FCMilitaryTableButtonCreateSquad>Управление отрядами</FCMilitaryTableButtonCreateSquad>
+  <FCMilitaryTableButtonCreateUnit>Управление юнитами</FCMilitaryTableButtonCreateUnit>
+  <FCMilitaryTableButtonCreateFireSupport>Управление огневой поддержкой</FCMilitaryTableButtonCreateFireSupport>
+  <FCMilTableConfirm>Вы уверены? Нажмите для подтверждения</FCMilTableConfirm>
+  <FCNoSquadAvailable>Нет доступных отрядов</FCNoSquadAvailable>
+  <FCResetSquadPawns>Участники отряда были пересозданы</FCResetSquadPawns>
+  <FCResetSquadRejected>Нет участников для сброса. Сначала назначьте отряд.</FCResetSquadRejected>
+  <selectDeployedSquad>Выбрать развернутый отряд</selectDeployedSquad>
+  <selectedDeployedSquad>{0} - {1}</selectedDeployedSquad>
+  <noSquadsAvailable>Нет доступных отрядов</noSquadsAvailable>
+
+  <!-- Настройка юнитов -->
+  <ExportUnit>Экспортированный юнит</ExportUnit>
+  <ExportSquad>Экспортированный отряд</ExportSquad>
+  <CantBeModified>{0} нельзя изменить: {1}</CantBeModified>
+  <ReasonDeployed>Отряд, содержащий его, развернут</ReasonDeployed>
+  <ReasonDefending>Отряд, содержащий его, защищает поселение</ReasonDefending>
+  <ReasonDeployedSquad>Отряд в данный момент развернут</ReasonDeployedSquad>
+  <ReasonDefendingSquad>Отряд в данный момент защищает поселение</ReasonDefendingSquad>
+  <importUnit>Импортировать юнит</importUnit>
+  <clearUnitSlot>Очистить слот юнита</clearUnitSlot>
+  <FCDegraded>Деградирован</FCDegraded>
+
+  <!-- Слоты экипировки -->
+  <fcLabelHead>Голова</fcLabelHead>
+  <fcLabelShirt>Рубашка</fcLabelShirt>
+  <fcLabelChest>Грудь</fcLabelChest>
+  <fcLabelOver>Верх</fcLabelOver>
+  <fcLabelBelt>Пояс</fcLabelBelt>
+  <fcLabelPants>Штаны</fcLabelPants>
+  <fcLabelWeapon>Оружие</fcLabelWeapon>
+  <fcLabelAnimal>Животное</fcLabelAnimal>
+  <fcLabelAmmo>Боеприпасы</fcLabelAmmo>
+  <fcAmmoAny>Любые</fcAmmoAny>
+
+  <!-- Кнопки юнитов -->
+  <FCRenameUnit>Переименовать юнит</FCRenameUnit>
+  <FCConfirmDeleteUnit>Вы уверены, что хотите удалить "{0}"?</FCConfirmDeleteUnit>
+  <resetUnitToDefaultButton>Сбросить к стандартному</resetUnitToDefaultButton>
+  <deleteUnitButton>Удалить юнит</deleteUnitButton>
+  <selectAUnitButton>Выбрать юнит</selectAUnitButton>
+  <rollANewUnitButton>Создать нового персонажа</rollANewUnitButton>
+  <changeUnitRaceButton>Сменить расу</changeUnitRaceButton>
+  <changeUnitXenoButton>Сменить ксенотип</changeUnitXenoButton>
+  <exportUnitButton>Экспортировать юнит</exportUnitButton>
+
+  <!-- Экипировка юнитов -->
+  <fcChooseApparelColor>Выбрать цвет одежды</fcChooseApparelColor>
+  <fcSetAllColors>Установить все цвета</fcSetAllColors>
+  <fcClearColors>Очистить цвета</fcClearColors>
+  <fcEquippedApparel>Экипированная одежда</fcEquippedApparel>
+  <fcAddApparel>+ Добавить</fcAddApparel>
+  <fcReplacesApparel>Заменяет</fcReplacesApparel>
+  <totalEquipmentCostLabel>Общая стоимость экипировки: </totalEquipmentCostLabel>
+  <unitActionUnequipThing>Снять</unitActionUnequipThing>
+  <fcPickWeapon>Выбрать оружие</fcPickWeapon>
+  <fcPickApparel>Выбрать одежду</fcPickApparel>
+  <fcPickAnimal>Выбрать животное</fcPickAnimal>
+  <fcNoMaterialNeeded>Выбор материала не требуется</fcNoMaterialNeeded>
+  <fcPickerSummary>Выбрано: {0} - Стоимость: {1}</fcPickerSummary>
+  <fcPickerSelectItem>Сначала выберите предмет</fcPickerSelectItem>
+  <fcPickerSelectStuff>Выберите материал для этого предмета</fcPickerSelectStuff>
+
+  <!-- Ошибки расы/типа персонажа -->
+  <changeUnitRaceNoRaces>Нет доступных рас</changeUnitRaceNoRaces>
+  <fcNoAnimalsAvailable>Нет доступных животных</fcNoAnimalsAvailable>
+  <changeUnitXenoNoXenos>Нет доступных ксенотипов</changeUnitXenoNoXenos>
+  <noPawnKindDefOfTypeOfRaceWarning>Не удалось найти {0} PawnKindDef для технологических уровней: {1} с расой {2}. Империя создаст {2}{3}, используя технологический уровень: {4}.</noPawnKindDefOfTypeOfRaceWarning>
+  <noPawnKindDefOfTypeOfRaceError>Не удалось найти {0} PawnKindDef ни для одного технологического уровня с расой {1}. Они не могут быть созданы!</noPawnKindDefOfTypeOfRaceError>
+  <missingPawnKindDefsCriticalError>Выбранным вами расам не хватает критически важных PawnKindDef! Ваша фракция может создавать людей для заполнения пробелов.</missingPawnKindDefsCriticalError>
+
+  <!-- Конструирование отрядов -->
+  <FCCreateNewSquad>Создать новый отряд</FCCreateNewSquad>
+  <FCImportSquad>Импортировать отряд</FCImportSquad>
+  <FCRenameSquad>Переименовать отряд</FCRenameSquad>
+  <FCConfirmDeleteSquad>Вы уверены, что хотите удалить "{0}"?</FCConfirmDeleteSquad>
+  <FCSquadFull>Отряд полон (30/30 юнитов)</FCSquadFull>
+  <FCAddUnit>Добавить юнит</FCAddUnit>
+  <FCSquadUnitCount>Юнитов: {0} / 30</FCSquadUnitCount>
+  <exportSquadButton>Экспортировать отряд</exportSquadButton>
+  <DeleteSquadButton>Удалить отряд</DeleteSquadButton>
+  <FCTotalSquadEquipmentCost>Общая стоимость экипировки отряда: {0} / {1} (Макс. стоимость)</FCTotalSquadEquipmentCost>
+  <FCTotalSquadEquipmentCostNoRef>Общая стоимость экипировки отряда: {0} / Нет ограничений</FCTotalSquadEquipmentCostNoRef>
+  <FCDeleteSquad>Удалить отряд</FCDeleteSquad>
+  <FCSelectASquad>Выбрать отряд</FCSelectASquad>
+  <FCMilitaryLevelLabel> - Военный уровень: </FCMilitaryLevelLabel>
+  <FCNoSquadEquipped>Нельзя развернуть отряд без экипированного личного состава!</FCNoSquadEquipped>
+  <FCNoSquadLoadoutAssigned>Этому поселению не назначен отряд!</FCNoSquadLoadoutAssigned>
+  <FCNoSquadAssigned>Этому поселению не назначен военный отряд!</FCNoSquadAssigned>
+  <FCSquadExceedsMaxCost>Этот отряд превышает максимально допустимую стоимость для поселения</FCSquadExceedsMaxCost>
+  <fcResetSquadPawns>Сбросить персонажей</fcResetSquadPawns>
+  <fcResetSquadPawnsConfirm>Это уничтожит всех существующих наемников в "{0}" и создаст совершенно новых. Их личность, внешность и боевой опыт будут потеряны.\n\nЭто предназначено для исправления поврежденных персонажей. Вы уверены?</fcResetSquadPawnsConfirm>
+  <fcResetSquadPawnsTip>Заново создать всех наемников в этом отряде. Уничтожает существующих персонажей и создает новых с другими личностями. Доступно только для отрядов, назначенных поселению.</fcResetSquadPawnsTip>
+  <FCCreateNewUnit>Создать новый юнит</FCCreateNewUnit>
+
+  <!-- Конструирование огневой поддержки -->
+  <FCCreateNewFireSupport>Создать новую огневую поддержку</FCCreateNewFireSupport>
+  <FCDeleteSupport>Удалить поддержку</FCDeleteSupport>
+  <FCAddNewProjectile>Добавить новый снаряд</FCAddNewProjectile>
+  <FCRenameFireSupport>Переименовать огневую поддержку</FCRenameFireSupport>
+  <FCConfirmDeleteFireSupport>Вы уверены, что хотите удалить "{0}"?</FCConfirmDeleteFireSupport>
+  <deleteFireSupportButton>Удалить</deleteFireSupportButton>
+  <FCFireSupportCostLabel>Стоимость: {0}</FCFireSupportCostLabel>
+  <FCFireSupportCostRefLabel>Стоимость: {0} / {1} (Макс.)</FCFireSupportCostRefLabel>
+  <FCFireSupportProjectileCount>Снарядов: {0}</FCFireSupportProjectileCount>
+  <FCFireSupportDuration>Длительность: {0} с</FCFireSupportDuration>
+  <FCFireSupportAccuracyLabel>Точность (радиус в тайлах): {0}  ·  Модификатор стоимости: +{1}%</FCFireSupportAccuracyLabel>
+  <FCSelectAFireSupport>Выбрать огневую поддержку</FCSelectAFireSupport>
+  <FCNoProjectilesFound>Не найдено доступных снарядов</FCNoProjectilesFound>
+  <FCFireSupportOptions>Опции</FCFireSupportOptions>
+  <FCInsertProjectileAbove>Вставить снаряд над слотом</FCInsertProjectileAbove>
+  <FCDuplicate>Дублировать</FCDuplicate>
+
+  <!-- Кнопки навигации -->
+  <FCNavUnits>Юниты</FCNavUnits>
+  <FCNavSquads>Отряды</FCNavSquads>
+  <FCNavFireSupport>Огневая поддержка</FCNavFireSupport>
+  <FCEditUnitTooltip>Редактировать экипировку этого юнита</FCEditUnitTooltip>
+
+  <!-- Типы юнитов -->
+  <FCPawns>Персонажи</FCPawns>
+  <FCTrader>Торговец</FCTrader>
+  <FCFighter>Боец</FCFighter>
+  <FCNonMercenary>Не наемник</FCNonMercenary>
+
+  <!-- Импорт/Экспорт -->
+  <FCImport>Импорт</FCImport>
+  <FCImported>Импортирован {0}</FCImported>
+  <FCDeleted>Удален {0}</FCDeleted>
+
+  <!-- Заключенные -->
+  <PrisonersMenu>Заключенные</PrisonersMenu>
+  <FCWorkload>нагрузка</FCWorkload>
+  <FCHeavy>тяжелая</FCHeavy>
+  <FCMedium>средняя</FCMedium>
+  <FCLight>легкая</FCLight>
+  <FCHeavyExplanation>Добавляет +2 к мягкому лимиту рабочих (макс. до увеличения стоимости). Уменьшает здоровье на 20.</FCHeavyExplanation>
+  <FCMediumExplanation>Добавляет +1 к мягкому лимиту рабочих (макс. до увеличения стоимости). Уменьшает здоровье на 10.</FCMediumExplanation>
+  <FCLightExplanation>Добавляет +1 к жесткому лимиту рабочих (сверхлимитные). Увеличивает здоровье на 4.</FCLightExplanation>
+  <SellPawn>Продать персонажа</SellPawn>
+  <ReturnToPlayer>Вернуть игроку</ReturnToPlayer>
+  <SellPawnInfo>Стоимость будет добавлена к следующему счету из колонии</SellPawnInfo>
+  <PrisonerCaptureInfo>Заключенный {0} был порабощен и доставлен в {1}</PrisonerCaptureInfo>
+  <cantSendWithDangerLevel>Вы не можете отправить заключенного в ваши поселения, когда уровень опасности карты равен {0}!</cantSendWithDangerLevel>
+  <floatMenuOptionSendPrisonerToSettlement>{0} - Уровень поселения: {1}, Заключенные: {2}</floatMenuOptionSendPrisonerToSettlement>
+  <aPrisonerIsBeingDeliveredToYou>Вам доставляют заключенного</aPrisonerIsBeingDeliveredToYou>
+  <FCNoPrisoners>Нет заключенных в этом поселении.</FCNoPrisoners>
+  <FCPrisonerWindowTitle>Заключенные — {0}</FCPrisonerWindowTitle>
+
+  <!-- Наемники -->
+  <FCRequestMercenary>Запросить наемника</FCRequestMercenary>
+  <FCActionMercenaryRefreshed>Действие «Запросить наемника» снова доступно для использования</FCActionMercenaryRefreshed>
+  <FCActionMercenaryOnCooldown>Вы не можете использовать это действие еще {0}</FCActionMercenaryOnCooldown>
+
+</LanguageData>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <OrbitalConstruction.label>Базовые орбитальные поселения</OrbitalConstruction.label>
+  <OrbitalConstruction.description>Изучите основы строительства пригодных для жизни сооружений в космической пустоте. Открывает базовые возможности строительства космических станций.</OrbitalConstruction.description>
+
+  <AdvancedOrbitalEngineering.label>Продвинутая орбитальная инженерия</AdvancedOrbitalEngineering.label>
+  <AdvancedOrbitalEngineering.description>Освойте продвинутые техники строительства более крупных и эффективных орбитальных установок. Снижает стоимость строительства орбитальной платформы на 25%.</AdvancedOrbitalEngineering.description>
+
+  <OrbitalLogistics.label>Орбитальная логистика</OrbitalLogistics.label>
+  <OrbitalLogistics.description>Разработайте эффективные системы для перемещения ресурсов между орбитальными платформами и поверхностью планет. Сокращает время доставки налогов на 50% и открывает особые здания космических станций.</OrbitalLogistics.description>
+
+  <GlitterworldOrbitalSettlements.label>Орбитальные поселения блестящего мира</GlitterworldOrbitalSettlements.label>
+  <GlitterworldOrbitalSettlements.description>Видение орбитальной жизни, вдохновленное инженерией блестящих миров.</GlitterworldOrbitalSettlements.description>
+
+</LanguageData>

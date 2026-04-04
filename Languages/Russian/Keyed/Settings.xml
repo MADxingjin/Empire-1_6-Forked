@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Настройки мода -->
+  <FCSettingsModName>Empire Refactored</FCSettingsModName>
+
+  <FCSettingSilverPerResource>Количество серебра за ресурс</FCSettingSilverPerResource>
+  <FCSettingDaysBetweenTax>Дней между сборами налогов</FCSettingDaysBetweenTax>
+  <FCSettingProductionTitheMod>Модификатор десятины от производства</FCSettingProductionTitheMod>
+  <FCSettingWorkerCost>Стоимость за рабочего</FCSettingWorkerCost>
+  <FCSettingMaxSettlementLevel>Максимальный уровень поселения</FCSettingMaxSettlementLevel>
+  <FCSettingDisableHostileMilActions>Отключить враждебные военные действия</FCSettingDisableHostileMilActions>
+  <FCSettingDisableRandomEvents>Отключить случайные события</FCSettingDisableRandomEvents>
+  <FCSettingConfigureEvents>Включите или отключите отдельные события ниже. Отключенные события не будут происходить ни в одном сохранении.</FCSettingConfigureEvents>
+  <FCSettingsTabGeneral>Общие</FCSettingsTabGeneral>
+  <FCSettingsTabEvents>События</FCSettingsTabEvents>
+  <FCSettingsTabMilitary>Военные</FCSettingsTabMilitary>
+  <FCSettingEnableAllEvents>Включить все события</FCSettingEnableAllEvents>
+  <FCSettingDeadPawnsIncreaseMilCooldown>Мертвые персонажи увеличивают перезарядку военных</FCSettingDeadPawnsIncreaseMilCooldown>
+  <FCSettingForcedPausing>Отключить принудительную паузу во время событий</FCSettingForcedPausing>
+  <FCSettingBattleMode>Режим битвы: </FCSettingBattleMode>
+  <FCBattleModeAuto>Авто-разрешение</FCBattleModeAuto>
+  <FCBattleModeAutoDesc>Все битвы разрешаются автоматически.</FCBattleModeAutoDesc>
+  <FCBattleModeManual>Ручной</FCBattleModeManual>
+  <FCBattleModeManualDesc>Для всех битв генерируется карта для ручного боя.</FCBattleModeManualDesc>
+  <FCBattleModeHybrid>Гибридный</FCBattleModeHybrid>
+  <FCBattleModeHybridDesc>Битвы разрешаются автоматически, если вы не отправите караван для защиты.</FCBattleModeHybridDesc>
+  <FCSettingMinMaxMilitaryAction>Мин./Макс. дней до военного действия (напр., атака на поселения)</FCSettingMinMaxMilitaryAction>
+  <FCSettingMaxThreatScaling>Максимальное масштабирование угрозы</FCSettingMaxThreatScaling>
+  <FCSettingDefenderAdvantage>Преимущество защитника</FCSettingDefenderAdvantage>
+  <FCSettingEfficiencyDamping>Влияние эффективности в бою (0 = только ХП, 1 = полный эффект бросков)</FCSettingEfficiencyDamping>
+  <FCSettingEfficiencyDampingTooltip>Определяет, насколько сильно показатель военной эффективности влияет на исход битвы в авто-разрешении.
+
+При 0 военная эффективность влияет только на эффективный уровень обеих сил.
+
+При 1 военная эффективность полностью влияет на каждый раунд авто-боя. Военные силы более низкого уровня, но с более высокой эффективностью, часто могут победить силы более высокого уровня, но с низкой эффективностью.
+
+Промежуточные значения ослабляют влияние военной эффективности на авто-бой.</FCSettingEfficiencyDampingTooltip>
+  <FCSettingMercHealRate>Скорость лечения наемников</FCSettingMercHealRate>
+  <FCSettingMercHealRateTip>Как быстро неразвернутые наемники залечивают свои раны, в очках здоровья за час игрового времени. За один раз лечится только одно ранение.</FCSettingMercHealRateTip>
+  <FCSettingMinMaxRandomEvent>Мин./Макс. дней до случайного события</FCSettingMinMaxRandomEvent>
+  <FCSettingShowSettleConfirm>Показывать подтверждение при основании поселений</FCSettingShowSettleConfirm>
+  <FCSettingEnableDebugLogging>Включить подробное логирование</FCSettingEnableDebugLogging>
+  <FCSettingResetButton>Сбросить настройки</FCSettingResetButton>
+  <FCOpenPatchNotes>Открыть окно примечаний к обновлению</FCOpenPatchNotes>
+
+  <!-- Настройки сложности -->
+  <FCSettingEmpireDifficulty>Сложность империи</FCSettingEmpireDifficulty>
+  <FCDifficultyPeaceful>Мирная</FCDifficultyPeaceful>
+  <FCDifficultyCommunityBuilder>Строитель сообщества</FCDifficultyCommunityBuilder>
+  <FCDifficultyAdventureStory>(По умолчанию) Приключение</FCDifficultyAdventureStory>
+  <FCDifficultyStriveToSurvive>Борьба за выживание</FCDifficultyStriveToSurvive>
+  <FCDifficultyBloodAndDust>Кровь и пыль</FCDifficultyBloodAndDust>
+  <FCDifficultyLosingIsFun>Проигрывать весело</FCDifficultyLosingIsFun>
+  <FCDifficultyCustom>Особая</FCDifficultyCustom>
+  <FCDifficultyPeacefulDesc>Для игроков, которые хотят расслабленного управления империей с щедрым получением ресурсов и частым сбором налогов.</FCDifficultyPeacefulDesc>
+  <FCDifficultyCommunityBuilderDesc>Легкая сложность с хорошим получением ресурсов и умеренной частотой налогов.</FCDifficultyCommunityBuilderDesc>
+  <FCDifficultyAdventureStoryDesc>Сбалансированная сложность для большинства игроков. Умеренное получение ресурсов с разумными интервалами налогообложения.</FCDifficultyAdventureStoryDesc>
+  <FCDifficultyStriveToSurviveDesc>Сложная сложность с уменьшенным количеством ресурсов и большими интервалами налогообложения.</FCDifficultyStriveToSurviveDesc>
+  <FCDifficultyBloodAndDustDesc>Трудная сложность с ограниченными ресурсами и нечастым сбором налогов.</FCDifficultyBloodAndDustDesc>
+  <FCDifficultyLosingIsFunDesc>Жестокая сложность для мазохистов. Минимум ресурсов и очень долгие интервалы налогообложения.</FCDifficultyLosingIsFunDesc>
+  <FCDifficultyCustomDesc>Настройте все параметры империи вручную.</FCDifficultyCustomDesc>
+
+  <FCModVersion>Версия мода Empire: {0}</FCModVersion>
+
+  <!-- Предупреждения -->
+  <FCResetCapitalLocationWarning>Пожалуйста, сбросьте местоположение вашей столицы. Если вы продолжаете видеть это после сброса, пожалуйста, сообщите об этом.</FCResetCapitalLocationWarning>
+  <FCTaxMapNotSetWarning>Ваша карта для сбора налогов не установлена. Пожалуйста, установите ее через меню фракции.</FCTaxMapNotSetWarning>
+  <FCAutoResolveDisabledWarning>Активен ручной или гибридный режим битвы. Если возникают ошибки генерации карты, переключитесь обратно на авто-разрешение.</FCAutoResolveDisabledWarning>
+  <FCManualDefenseWarningLabel>Ручная оборона поселения</FCManualDefenseWarningLabel>
+  <FCManualDefenseWarningDesc>Ручной и гибридный режимы битвы генерируют карты для обороны поселений. Если возникают проблемы, переключитесь на режим авто-разрешения в настройках.</FCManualDefenseWarningDesc>
+  <FCTaxDeliveryNotSetWarning>Не установлено место доставки налогов. Либо установите карту доставки налогов, либо включите доставку налогов на место сбора.</FCTaxDeliveryNotSetWarning>
+  <FCCapitalNotSetWarning>Столица империи не установлена. Либо используйте «Установить столицу» в меню Империи, либо постройте и активируйте Место столицы.</FCCapitalNotSetWarning>
+
+</LanguageData>

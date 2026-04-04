@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Действия атаки/рейда/захвата -->
+  <AttackSettlementfc>Атаковать поселение</AttackSettlementfc>
+  <CaptureSettlementfc>Захватить поселение</CaptureSettlementfc>
+  <CaptureSettlement>Захватить поселение</CaptureSettlement>
+  <EnslavePopulation>Поработить население</EnslavePopulation>
+  <RaidSettlement>Ограбить поселение</RaidSettlement>
+  <FCCaptureFloatMenuOption>Попытаться захватить, используя военные силы {0} (Уровень {1}).</FCCaptureFloatMenuOption>
+  <FCRaidFloatMenuOption>Попытаться ограбить, используя военные силы {0} (Уровень {1}).</FCRaidFloatMenuOption>
+  <FCEnslaveFloatMenuOption>Попытаться поработить, используя военные силы {0} (Уровень {1}).</FCEnslaveFloatMenuOption>
+
+  <!-- Уведомления об атаках -->
+  <settlementAboutToBeAttacked>{0} вот-вот будет атакован фракцией {1}</settlementAboutToBeAttacked>
+  <settlementAttackEstimate>Предполагаемая мощь врага: {0}\nТекущая мощь обороны: {1}</settlementAttackEstimate>
+  <settlementInDanger>Поселение в опасности</settlementInDanger>
+  <settlementMilitaryForcesRaiding>Военные силы {0} грабят {1}</settlementMilitaryForcesRaiding>
+  <settlementMilitaryForcesEnslave>Военные силы {0} пытаются поработить население {1}</settlementMilitaryForcesEnslave>
+  <settlementMilitaryForcesCapturing>Военные силы {0} пытаются захватить {1}</settlementMilitaryForcesCapturing>
+  <SettlementUnderAttack>Это поселение находится под атакой</SettlementUnderAttack>
+  <SettlementNotBeingAttacked>Поселение не атаковано</SettlementNotBeingAttacked>
+  <targetAlreadyBeingAttacked>Цель уже атакуется</targetAlreadyBeingAttacked>
+
+  <!-- Уведомления об отправке военных -->
+  <militarySent>Военные отправлены</militarySent>
+  <militarySentToDefend>Военные силы {0} были отправлены защищать {1}</militarySentToDefend>
+  <militaryAlreadyAssigned>Военная сила уже назначена.</militaryAlreadyAssigned>
+  <ForeignMilitarySwitch>Военные силы {0} были отправлены защищать {1}. Их эффективная мощь составляет {2}</ForeignMilitarySwitch>
+  <FCMilitarySentCapture>Военные силы {0} были отправлены захватить {1}</FCMilitarySentCapture>
+  <FCMilitarySentRaid>Военные силы {0} были отправлены ограбить {1}</FCMilitarySentRaid>
+  <FCMilitarySentEnslave>Военные силы {0} были отправлены поработить население {1}</FCMilitarySentEnslave>
+  <MilitaryForcesReorganizing>Военные силы {0} реорганизуются после последней миссии.</MilitaryForcesReorganizing>
+  <FCMilitaryCooldown>Военные силы {0} снова готовы к использованию</FCMilitaryCooldown>
+  <NoFactionForMilitary>Нельзя создать военные силы без фракции!</NoFactionForMilitary>
+
+  <!-- Результаты рейда/захвата -->
+  <RaidLoot>Награбленное</RaidLoot>
+  <RaidEnemySettlementSuccess>Рейд на {0} успешно завершен</RaidEnemySettlementSuccess>
+  <RaidFailure>Провал рейда</RaidFailure>
+  <RaidEnemySettlementFailure>Рейд на {0} провалился</RaidEnemySettlementFailure>
+  <CaptureEnemySettlementSuccess>Военным силам {0} удалось захватить {1}. Из-за технологического уровня предыдущей фракции начальный уровень нового поселения составляет {2}.</CaptureEnemySettlementSuccess>
+  <CaptureEnemySettlementFailure>Военным силам {0} не удалось захватить {1}</CaptureEnemySettlementFailure>
+  <OverwhelmingVictory>Подавляющая победа</OverwhelmingVictory>
+  <OverwhelmingVictoryDesc>Благодаря подавляющей победе ваших военных сил, они все еще доступны для развертывания.</OverwhelmingVictoryDesc>
+
+  <!-- Оборона -->
+  <DefenseSuccessful>Оборона успешна</DefenseSuccessful>
+  <DefenseSuccessfulFull>Оборона {0} была успешной!</DefenseSuccessfulFull>
+  <DefenseFailure>Провал обороны</DefenseFailure>
+  <DefenseFailureFull>Оборона нашего поселения {0} была сокрушена.</DefenseFailureFull>
+  <ManualBattleStarted>Битва за {0}</ManualBattleStarted>
+  <ManualBattleStartedDesc>{0} атакован {1}! Возьмите на себя командование обороной поселения.</ManualBattleStartedDesc>
+  <DefendColony>Защищать</DefendColony>
+  <DefendColonyDesc>Защитить ваше поселение вручную</DefendColonyDesc>
+  <DefendSettlement>Назначить обороняющую силу</DefendSettlement>
+  <SettlementDefendingInformation>Поселение защищает: {0} - Мощь {1}</SettlementDefendingInformation>
+  <ResetToHomeSettlement>Сбросить на оборону домашнего поселения - Мощь {0}</ResetToHomeSettlement>
+  <ChangeDefendingForce>Изменить обороняющую силу</ChangeDefendingForce>
+  <militaryAlreadyDefendingSettlement>Эта военная сила уже защищает цель</militaryAlreadyDefendingSettlement>
+  <defendingMilitaryReset>Защищающая военная сила сброшена как сила обороны поселения</defendingMilitaryReset>
+  <externalDefenderAssigned>{0} теперь защищает это поселение.</externalDefenderAssigned>
+  <externalDefenderAutoAssigned>{0} был автоматически назначен для защиты.</externalDefenderAutoAssigned>
+  <ToggleAutoDefend>Автоматически защищать атакованные поселения: {0}</ToggleAutoDefend>
+  <autoDefendWarning>Имейте в виду, эта настройка не то же самое, что настройка автоматического разрешения битв в меню настроек!</autoDefendWarning>
+  <autoBattleEnabledNoManualFight>Включен режим авто-разрешения. Переключитесь на Ручной или Гибридный режим в настройках, чтобы сражаться вручную.</autoBattleEnabledNoManualFight>
+  <hybridBattleEnabledNoManualFight>Включен гибридный режим боя. Отправьте караван в это поселение до атаки, чтобы сражаться вручную.</hybridBattleEnabledNoManualFight>
+  <settlementAttackHybridHint>Отправьте караван в это поселение до начала атаки, чтобы сражаться вручную.</settlementAttackHybridHint>
+
+  <!-- Ущерб от рейда -->
+  <DefenseFailurePenaltiesHeader>Полученные штрафы:</DefenseFailurePenaltiesHeader>
+  <DefenseFailureProsperityLoss>Процветание: -{0}</DefenseFailureProsperityLoss>
+  <DefenseFailureHappinessLoss>Счастье: -{0}</DefenseFailureHappinessLoss>
+  <DefenseFailureLoyaltyLoss>Лояльность: -{0}</DefenseFailureLoyaltyLoss>
+  <DefenseFailureBuildingsProtected>Здания были защищены от разрушения вашими политиками.</DefenseFailureBuildingsProtected>
+  <BuildingDestroyedInRaid>{0} был уничтожен во время рейда.</BuildingDestroyedInRaid>
+  <SettlementDeleveledRaid>Уровень поселения снизился на один.</SettlementDeleveledRaid>
+  <ScorchedEarthCollateralTitle>Сопутствующий ущерб</ScorchedEarthCollateralTitle>
+  <ScorchedEarthCollateralHeader>Оборона {0} была успешной, но доктрина выжженной земли нанесла сопутствующий ущерб:</ScorchedEarthCollateralHeader>
+  <InjuredCaravanMembersReturning>{0} раненых членов каравана транспортируются домой. Предполагаемое прибытие: через {1} дней.</InjuredCaravanMembersReturning>
+
+  <!-- Завершение битвы -->
+  <EndingAttack>Завершение атаки...</EndingAttack>
+  <ErrorEndingAttack>Ошибка завершения атаки</ErrorEndingAttack>
+  <ErrorEndingAttackDescription>Возникла проблема при завершении атаки. Скорее всего, карта не была удалена правильно.
+		Пожалуйста, сообщите об этом, если ваши отправленные на защиту колонисты не вернутся или ваши военные силы не выйдут из перезарядки.
+	</ErrorEndingAttackDescription>
+
+  <!-- Развертывание -->
+  <SendToSettlement>Отправить в поселение</SendToSettlement>
+  <NotEnoughSilverToDeploySquad>У вас недостаточно серебра для повторного развертывания этого отряда!</NotEnoughSilverToDeploySquad>
+  <XDaysToRedeploy>{0} дней осталось до обновления возможности повторного развертывания отрядов</XDaysToRedeploy>
+  <dropPodDeploymentOption>Дроп-под</dropPodDeploymentOption>
+  <walkIntoMapDeploymentOption>Вход на карту</walkIntoMapDeploymentOption>
+  <dropPodDeploymentOptionUnavailableReasonMedieval> отключено, так как включена опция «Только средневековые технологии»</dropPodDeploymentOptionUnavailableReasonMedieval>
+  <dropPodDeploymentOptionUnavailableReasonTech> недоступно без исследования {0}</dropPodDeploymentOptionUnavailableReasonTech>
+  <errorDropPodResearchCouldNotBeFound>Не удалось найти исследование дроп-подов! Возможно, ваш список модов удаляет его?</errorDropPodResearchCouldNotBeFound>
+  <FCMilitaryTriedDeployingToSettlementFC>Вы не можете развернуть свои военные силы в другом поселении!</FCMilitaryTriedDeployingToSettlementFC>
+  <FCMilitaryAction>Военное действие</FCMilitaryAction>
+  <selectMilitaryMovePosition>Выбрать позицию для перемещения</selectMilitaryMovePosition>
+  <selectDeploymentPosition>Выбрать позицию для развертывания</selectDeploymentPosition>
+  <selectedPosOutOfBounds>Выбранная позиция находится за пределами этой карты!</selectedPosOutOfBounds>
+  <selectedPosTooCloseToEdge>Выбранная позиция слишком близко к краю карты!</selectedPosTooCloseToEdge>
+  <deploymentSuccessLabel>Военные развернуты</deploymentSuccessLabel>
+  <deploymentSuccessDesc>Военные силы {0} были развернуты в {1}</deploymentSuccessDesc>
+  <militaryPawnsLeavingTimeOut>Отряд покидает карту, так как его доступное время истекло!</militaryPawnsLeavingTimeOut>
+
+  <!-- Команды битвы -->
+  <commandAttack>Атаковать</commandAttack>
+  <attackSuccess>{0} атакуют врага.</attackSuccess>
+  <commandMove>Переместиться</commandMove>
+  <moveSuccess>{0} перемещаются на позицию и ждут.</moveSuccess>
+  <commandLeave>Покинуть</commandLeave>
+  <leaveSuccess>{0} покидают карту. {1} мертвых.</leaveSuccess>
+
+  <!-- Огневая поддержка -->
+  <FCFireSupportSelectPosition>Выбрать позицию для артиллерии</FCFireSupportSelectPosition>
+  <FCFireSupportNameWillBeFiredOnPosition>По {0} скоро будет нанесен удар по отмеченной позиции!</FCFireSupportNameWillBeFiredOnPosition>
+  <FCFireSupportNoSilver>У вас недостаточно серебра для оплаты удара!</FCFireSupportNoSilver>
+
+  <!-- Развертывание -->
+  <FCDeploySecondarySquad>Развернуть дополнительный отряд - ${0} серебра</FCDeploySecondarySquad>
+  <FCNotEnoughSilverFireSupport>У вас недостаточно серебра для использования этого варианта огневой поддержки!</FCNotEnoughSilverFireSupport>
+  <FCFireSupportCooldown>Этот вариант огневой поддержки перезаряжается еще {0}</FCFireSupportCooldown>
+  <FCRequiresArtilleryOutpost>Поселение требует постройки артиллерийского форпоста для использования этого варианта огневой поддержки</FCRequiresArtilleryOutpost>
+  <FCRequiresHigherMilLevel>Для использования этой огневой поддержки поселению требуется более высокий военный уровень!</FCRequiresHigherMilLevel>
+  <FCNoFireSupportsMade>В данный момент нет доступных средств огневой поддержки. Создайте их</FCNoFireSupportsMade>
+  <FCAssaultBeginning>Штурм начинается!</FCAssaultBeginning>
+
+  <!-- Военная таблица -->
+  <Military>Военные</Military>
+  <MilitaryLevel>Воен. уровень</MilitaryLevel>
+  <FCMilitaryTableMilitaryBudget>Военный бюджет</FCMilitaryTableMilitaryBudget>
+  <FCMilitaryTableAvailable>Военные доступны?</FCMilitaryTableAvailable>
+  <FCMilitaryTableUnderAttack>Под атакой</FCMilitaryTableUnderAttack>
+  <FCMilitaryTableFireSupport>Огневая поддержка</FCMilitaryTableFireSupport>
+  <NoValidMilitaries>Нет доступных военных сил для использования.</NoValidMilitaries>
+  <FCAvailable>Доступны</FCAvailable>
+  <ShortMilitary>ВС</ShortMilitary>
+  <FCPower>Мощь</FCPower>
+  <MedievalTechOnly>Только средневековые технологии</MedievalTechOnly>
+  <FCMilitaryLevel>военныйУровень</FCMilitaryLevel>
+  <FCUnsupportedMilJobError>Выбранное задание для этого пункта меню не имеет зарегистрированных ключей перевода в AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
+  <debugRemoveAllCommand>[Отладка] Удалить все</debugRemoveAllCommand>
+
+  <!-- UI карточки военных -->
+  <FCMilSquadPrefix>Отряд</FCMilSquadPrefix>
+  <FCMilFireSupportCooldownShort>Огневая поддержка</FCMilFireSupportCooldownShort>
+  <FCMilitarySettlementCount>{0} поселений</FCMilitarySettlementCount>
+  <FCNoMilitarySettlements>Нет поселений с военными компонентами</FCNoMilitarySettlements>
+  <FCMilStatusUnderAttack>ПОД АТАКОЙ</FCMilStatusUnderAttack>
+  <FCMilStatusDeployed>Развернуты</FCMilStatusDeployed>
+  <FCMilStatusRaiding>Грабят</FCMilStatusRaiding>
+  <FCMilStatusEnslaving>Порабощают</FCMilStatusEnslaving>
+  <FCMilStatusCapturing>Захватывают</FCMilStatusCapturing>
+  <FCMilStatusDefending>Защищают</FCMilStatusDefending>
+  <FCMilStatusDefendingTarget>Защищают {0}</FCMilStatusDefendingTarget>
+  <FCMilStatusCooldown>Перезарядка развертывания</FCMilStatusCooldown>
+  <FCMilStatusBusy>Заняты</FCMilStatusBusy>
+  <FCMilStatusReady>Готовы</FCMilStatusReady>
+  <FCMilStatusNoSquad>Нет отряда</FCMilStatusNoSquad>
+  <FCMilAutoDefend>Авто-защита</FCMilAutoDefend>
+  <FCMilBtnSetSquadTip>Назначить военный отряд этому поселению</FCMilBtnSetSquadTip>
+  <FCMilBtnDeployTip>Развернуть назначенный отряд в выбранном месте карты</FCMilBtnDeployTip>
+  <FCMilBtnResetTip>Сбросить и заново сгенерировать членов отряда</FCMilBtnResetTip>
+  <FCMilBtnFireSupportTip>Вызвать артиллерийскую огневую поддержку</FCMilBtnFireSupportTip>
+  <FCMilBtnAutoDefendTip>Автоматически отправлять силы этого поселения для защиты других атакованных поселений</FCMilBtnAutoDefendTip>
+  <FCMilAutoDefendDisabled>Военный уровень этого поселения слишком низок для автоматической защиты. Улучшите поселение, чтобы повысить его военный уровень.</FCMilAutoDefendDisabled>
+  <FCMilBadge>Атк {0} / Защ {1}  •  ${2}</FCMilBadge>
+
+</LanguageData>

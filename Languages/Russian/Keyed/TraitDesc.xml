@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <RTDproductionAdditive>{0} производство {1}</RTDproductionAdditive>
+  <RTDproductionMultiplier>{0} производство {1}</RTDproductionMultiplier>
+  <RTDproductionAdditiveFrom>{0} производство {1} от {2}</RTDproductionAdditiveFrom>
+  <RTDproductionMultiplierFrom>{0} производство {1} от {2}</RTDproductionMultiplierFrom>
+
+  <FCTraitDesc_ResourceBonusLabel>Бонусы к ресурсам</FCTraitDesc_ResourceBonusLabel>
+
+  <FCTraitDesc_MilitaryLevel>{0} Военный уровень</FCTraitDesc_MilitaryLevel>
+  <FCTraitDesc_MilitaryCombatEfficiency>{0} Боевая эффективность</FCTraitDesc_MilitaryCombatEfficiency>
+  <FCTraitDesc_taxBasePercentage>{0} Базовый процент налога</FCTraitDesc_taxBasePercentage>
+  <FCTraitDesc_taxBaseRandomModifier>{0} Модификатор десятины</FCTraitDesc_taxBaseRandomModifier>
+  <FCTraitDesc_prosperityGainedBase>{0} Базовый прирост процветания</FCTraitDesc_prosperityGainedBase>
+  <FCTraitDesc_workerProductionBase>{0} Базовое производство рабочего</FCTraitDesc_workerProductionBase>
+  <FCTraitDesc_workerProductionMultiplier>{0} Производство рабочего</FCTraitDesc_workerProductionMultiplier>
+  <FCTraitDesc_workerBaseCost>{0} Стоимость рабочего</FCTraitDesc_workerBaseCost>
+  <FCTraitDesc_workerBaseMax>{0} Лимит рабочих</FCTraitDesc_workerBaseMax>
+  <FCTraitDesc_workerBaseOverMax>{0} Сверхлимитный лимит рабочих</FCTraitDesc_workerBaseOverMax>
+
+  <FCTraitDesc_happinessLostBase>{0} Базовая потеря счастья</FCTraitDesc_happinessLostBase>
+  <FCTraitDesc_happinessGainedBase>{0} Базовый прирост счастья</FCTraitDesc_happinessGainedBase>
+  <FCTraitDesc_happinessLostMultiplier>{0} Потеря счастья</FCTraitDesc_happinessLostMultiplier>
+  <FCTraitDesc_happinessGainedMultiplier>{0} Прирост счастья</FCTraitDesc_happinessGainedMultiplier>
+
+  <FCTraitDesc_loyaltyLostBase>{0} Базовая потеря лояльности</FCTraitDesc_loyaltyLostBase>
+  <FCTraitDesc_loyaltyGainedBase>{0} Базовый прирост лояльности</FCTraitDesc_loyaltyGainedBase>
+  <FCTraitDesc_loyaltyLostMultiplier>{0} Потеря лояльности</FCTraitDesc_loyaltyLostMultiplier>
+  <FCTraitDesc_loyaltyGainedMultiplier>{0} Прирост лояльности</FCTraitDesc_loyaltyGainedMultiplier>
+
+  <FCTraitDesc_unrestLostBase>{0} Базовая потеря нестабильности</FCTraitDesc_unrestLostBase>
+  <FCTraitDesc_unrestGainedBase>{0} Базовый прирост нестабильности</FCTraitDesc_unrestGainedBase>
+  <FCTraitDesc_unrestLostMultiplier>{0} Потеря нестабильности</FCTraitDesc_unrestLostMultiplier>
+  <FCTraitDesc_unrestGainedMultiplier>{0} Прирост нестабильности</FCTraitDesc_unrestGainedMultiplier>
+
+  <FCTraitDesc_createSettlementBaseCost>{0} Базовая стоимость поселения</FCTraitDesc_createSettlementBaseCost>
+  <FCTraitDesc_createSettlementMultiplier>{0} Стоимость поселения</FCTraitDesc_createSettlementMultiplier>
+  <FCTraitDesc_buildTimeMultiplier>{0} Время строительства</FCTraitDesc_buildTimeMultiplier>
+
+  <FCTraitDesc_militaryLevelBonusDefending>{0} Военный уровень (оборона)</FCTraitDesc_militaryLevelBonusDefending>
+  <FCTraitDesc_militaryEfficiencyBonusAttacking>{0} Боевая эффективность (атака)</FCTraitDesc_militaryEfficiencyBonusAttacking>
+  <FCTraitDesc_deadPawnCooldownOffset>{0} ч к перезарядке за смерть</FCTraitDesc_deadPawnCooldownOffset>
+  <FCTraitDesc_raidCooldownOffset>{0} ч перезарядки рейда</FCTraitDesc_raidCooldownOffset>
+  <FCTraitDesc_battleProsperityLossMultiplier>{0} Потеря процветания от битвы</FCTraitDesc_battleProsperityLossMultiplier>
+  <FCTraitDesc_battleLoyaltyLossMultiplier>{0} Потеря лояльности от битвы</FCTraitDesc_battleLoyaltyLossMultiplier>
+  <FCTraitDesc_battleHappinessLossMultiplier>{0} Потеря счастья от битвы</FCTraitDesc_battleHappinessLossMultiplier>
+  <FCTraitDesc_BuildingDestructionChance>{0} Риск разрушения зданий</FCTraitDesc_BuildingDestructionChance>
+  <FCTraitDesc_militaryEfficiencyBonusDefending>{0} Боевая эффективность (оборона)</FCTraitDesc_militaryEfficiencyBonusDefending>
+  <FCTraitDesc_taxBonusFlat>{0} Фиксированный налоговый бонус</FCTraitDesc_taxBonusFlat>
+  <FCTraitDesc_titheValueMultiplier>{0} Стоимость десятины</FCTraitDesc_titheValueMultiplier>
+  <FCTraitDesc_lootMultiplier>{0} Стоимость добычи</FCTraitDesc_lootMultiplier>
+  <FCTraitDesc_settlementCostMultiplier>{0} Стоимость поселения</FCTraitDesc_settlementCostMultiplier>
+  <FCTraitDesc_researchContributionMultiplier>{0} Вклад в исследования</FCTraitDesc_researchContributionMultiplier>
+  <FCTraitDesc_extraWorkersSoftcap>{0} Дополнительные рабочие (мягкий лимит)</FCTraitDesc_extraWorkersSoftcap>
+  <FCTraitDesc_overMaxWorkersAdjustment>{0} Штраф сверхлимитных рабочих</FCTraitDesc_overMaxWorkersAdjustment>
+
+  <FCBuildingUpkeep>Обслуживание: ${0}</FCBuildingUpkeep>
+  <FCBuildingIncome>Доход: ${0}</FCBuildingIncome>
+
+</LanguageData>

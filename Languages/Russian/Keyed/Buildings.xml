@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Строительство зданий -->
+  <ConstructBuilding>Построить здание</ConstructBuilding>
+  <Construct>Построить</Construct>
+  <Build>Возвести</Build>
+  <Built>Построено</Built>
+  <WillBeConstructedIn>будет построено в</WillBeConstructedIn>
+  <HasBeenConstructedAt>было построено в</HasBeenConstructedAt>
+  <Empire_BuildingWindow_ConstructionDesc>В данный момент строится: {0}</Empire_BuildingWindow_ConstructionDesc>
+  <BuildTime>Время постройки: {0}</BuildTime>
+
+  <!-- Ограничения на строительство -->
+  <BuildingSurfaceOnly>Это здание можно построить только в наземных поселениях</BuildingSurfaceOnly>
+  <BuildingOrbitalOnly>Это здание можно построить только на орбитальных платформах</BuildingOrbitalOnly>
+  <BuildingInvalidSettlement>{0} нельзя построить в {1}</BuildingInvalidSettlement>
+  <BuildingAlreadyType>Здание такого типа уже существует</BuildingAlreadyType>
+  <BuildingBeingBuiltAlreadyType>Здание такого типа уже строится</BuildingBeingBuiltAlreadyType>
+  <BuildingAlreadyConstructed>Там уже строится здание</BuildingAlreadyConstructed>
+
+  <!-- Снос зданий -->
+  <Destroy>Уничтожить</Destroy>
+  <FCDemolish>Снести</FCDemolish>
+  <FCDemolishConfirmation>Вы уверены, что хотите снести {0}? Это будет стоить {1} серебра.</FCDemolishConfirmation>
+  <FCBuildingDemolished>{0} был снесен</FCBuildingDemolished>
+  <FCChangeBuildingButton>Изменить здание</FCChangeBuildingButton>
+
+  <!-- Фильтры зданий -->
+  <BuildingFilterAll>Все</BuildingFilterAll>
+  <BuildingFilterHappiness>Счастье</BuildingFilterHappiness>
+  <BuildingFilterBasetax>Базовый налог</BuildingFilterBasetax>
+  <BuildingFilterWorkers>Рабочие</BuildingFilterWorkers>
+  <BuildingFilterMilitary>Военные</BuildingFilterMilitary>
+
+  <!-- Местоположение столицы -->
+  <FCCapitalEstablished>Столица империи основана в {0}! Это место будет использоваться как центр вашей империи.</FCCapitalEstablished>
+  <FCCapitalSeatDisabled>Местоположение столицы отключено. Империя будет использовать запасное место для столицы, если оно доступно.</FCCapitalSeatDisabled>
+  <FCCapitalLost>Столица империи потеряна! Вам следует основать новое местоположение столицы.</FCCapitalLost>
+
+  <!-- Окно зданий -->
+  <Empire_BuildingWindow_Header>Здания — {0}</Empire_BuildingWindow_Header>
+  <Empire_BuildingWindow_EmptySlot>Пустой слот для здания</Empire_BuildingWindow_EmptySlot>
+  <Empire_BuildingWindow_CurrentBuilding>Текущее здание</Empire_BuildingWindow_CurrentBuilding>
+  <Empire_BuildingWindow_SelectBuilding>Выберите здание, чтобы увидеть его детали</Empire_BuildingWindow_SelectBuilding>
+  <Empire_BuildingWindow_Modifiers>Модификаторы</Empire_BuildingWindow_Modifiers>
+  <Empire_BuildingWindow_SettlementImpact>Влияние на поселение</Empire_BuildingWindow_SettlementImpact>
+  <Empire_BuildingWindow_Upgrades>Возможные улучшения</Empire_BuildingWindow_Upgrades>
+  <Empire_BuildingWindow_RequiredBy>Необходимо для</Empire_BuildingWindow_RequiredBy>
+  <Empire_BuildingWindow_Requires>Требуется: {0}</Empire_BuildingWindow_Requires>
+  <Empire_BuildingWindow_CannotDemolishRequired>Невозможно снести: требуется для {0}</Empire_BuildingWindow_CannotDemolishRequired>
+  <Empire_BuildingWindow_SlotUpgrades>Улучшения</Empire_BuildingWindow_SlotUpgrades>
+  <BuildingUpgrades>Улучшения зданий</BuildingUpgrades>
+  <!--[Core] <Buildings>Здания</Buildings>-->
+  <Facilities>Сооружения</Facilities>
+  <FCSearchBuildings>Поиск зданий...</FCSearchBuildings>
+
+  <!-- Заблокированные здания -->
+  <Empire_BuildingWindow_ShowLocked>Показывать заблокированные здания</Empire_BuildingWindow_ShowLocked>
+  <Empire_BuildingWindow_TechLocked>Заблокировано — Требуется технология {0} (исследование: {1})</Empire_BuildingWindow_TechLocked>
+  <Empire_BuildingWindow_LockedButton>Заблокировано</Empire_BuildingWindow_LockedButton>
+  <Empire_BuildingWindow_TechLockedTooltip>Для постройки этого здания требуется исследовать {0}.</Empire_BuildingWindow_TechLockedTooltip>
+
+</LanguageData>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <intergalacticMarket.label>Межгалактический рынок</intergalacticMarket.label>
+  <glitterworldResearchFacility.label>Исследовательский центр блестящего мира</glitterworldResearchFacility.label>
+  <automatedDefenseSystems.label>Автоматизированные оборонные системы</automatedDefenseSystems.label>
+  <FoodReconstruction.label>Реконструкция пищи</FoodReconstruction.label>
+  <MechSalvage.label>Мастерская по утилизации механоидов</MechSalvage.label>
+  <ClothingPrinters.label>Принтеры одежды</ClothingPrinters.label>
+  <SyntheticWoodFactory.label>Фабрика синтетической древесины</SyntheticWoodFactory.label>
+  <AsteroidMagnet.label>Астероидный магнит</AsteroidMagnet.label>
+  <WorkerBots.label>Рабочие боты</WorkerBots.label>
+  <SubliminalMessageCenter.label>Центр сублиминальных сообщений</SubliminalMessageCenter.label>
+  <CloningLab.label>Лаборатория клонирования</CloningLab.label>
+  <perpetualMotionGenerator.label>Генератор вечного движения</perpetualMotionGenerator.label>
+  <bionicsManufacturingPlant.label>Завод по производству биопротезов</bionicsManufacturingPlant.label>
+
+</LanguageData>

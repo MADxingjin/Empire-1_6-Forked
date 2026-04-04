@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Общие титулы (используются наземными поселениями и как запасной вариант для любого типа) -->
+
+  <FCTitle_RTD_Food_1>Сельскохозяйственная коммуна</FCTitle_RTD_Food_1>
+  <FCTitle_RTD_Food_2>Аграрный город</FCTitle_RTD_Food_2>
+  <FCTitle_RTD_Food_3>Региональная житница</FCTitle_RTD_Food_3>
+
+  <FCTitle_RTD_Weapons_1>Деревня кузнецов</FCTitle_RTD_Weapons_1>
+  <FCTitle_RTD_Weapons_2>Гильдия кузнецов</FCTitle_RTD_Weapons_2>
+  <FCTitle_RTD_Weapons_3>Военная кузница</FCTitle_RTD_Weapons_3>
+
+  <FCTitle_RTD_Apparel_1>Потогонка</FCTitle_RTD_Apparel_1>
+  <FCTitle_RTD_Apparel_2>Производство одежды</FCTitle_RTD_Apparel_2>
+  <FCTitle_RTD_Apparel_3>Завод одежды</FCTitle_RTD_Apparel_3>
+
+  <FCTitle_RTD_Animals_1>Животноводческая ферма</FCTitle_RTD_Animals_1>
+  <FCTitle_RTD_Animals_2>Плантация скота</FCTitle_RTD_Animals_2>
+  <FCTitle_RTD_Animals_3>Региональная плантация скота</FCTitle_RTD_Animals_3>
+
+  <FCTitle_RTD_Logging_1>Лесопилка</FCTitle_RTD_Logging_1>
+  <FCTitle_RTD_Logging_2>Лесозаготовительный город</FCTitle_RTD_Logging_2>
+  <FCTitle_RTD_Logging_3>Центры вырубки леса</FCTitle_RTD_Logging_3>
+
+  <FCTitle_RTD_Mining_1>Горнодобывающий форпост</FCTitle_RTD_Mining_1>
+  <FCTitle_RTD_Mining_2>Горнодобывающая колония</FCTitle_RTD_Mining_2>
+  <FCTitle_RTD_Mining_3>Карьер открытой разработки</FCTitle_RTD_Mining_3>
+
+  <FCTitle_RTD_Research_1>Исследовательский форпост</FCTitle_RTD_Research_1>
+  <FCTitle_RTD_Research_2>Исследовательский центр</FCTitle_RTD_Research_2>
+  <FCTitle_RTD_Research_3>Университет</FCTitle_RTD_Research_3>
+
+  <FCTitle_RTD_Power_1>Малая электростанция</FCTitle_RTD_Power_1>
+  <FCTitle_RTD_Power_2>Энергетический центр</FCTitle_RTD_Power_2>
+  <FCTitle_RTD_Power_3>Мощная электростанция</FCTitle_RTD_Power_3>
+
+  <FCTitle_RTD_Medicine_1>Местная клиника</FCTitle_RTD_Medicine_1>
+  <FCTitle_RTD_Medicine_2>Медицинский центр</FCTitle_RTD_Medicine_2>
+  <FCTitle_RTD_Medicine_3>Региональный поставщик медицины</FCTitle_RTD_Medicine_3>
+
+  <FCTitle_RTD_Chemfuel_1>Топливный депо</FCTitle_RTD_Chemfuel_1>
+  <FCTitle_RTD_Chemfuel_2>Топливный НПЗ</FCTitle_RTD_Chemfuel_2>
+  <FCTitle_RTD_Chemfuel_3>Промышленный топливный комплекс</FCTitle_RTD_Chemfuel_3>
+
+  <FCTitle_RTD_Gravtech_1>Лаборатория гравитехники</FCTitle_RTD_Gravtech_1>
+  <FCTitle_RTD_Gravtech_2>Центр гравитехники</FCTitle_RTD_Gravtech_2>
+  <FCTitle_RTD_Gravtech_3>Институт гравитехники</FCTitle_RTD_Gravtech_3>
+
+  <!-- Титулы для орбитальных поселений (переопределяют общие, когда у поселения titleKey="Orbital") -->
+
+  <FCTitle_Orbital_RTD_Food_1>Орбитальный гидропонный отсек</FCTitle_Orbital_RTD_Food_1>
+  <FCTitle_Orbital_RTD_Food_2>Космический сельскохозяйственный модуль</FCTitle_Orbital_RTD_Food_2>
+  <FCTitle_Orbital_RTD_Food_3>Орбитальный агрокомплекс</FCTitle_Orbital_RTD_Food_3>
+
+  <FCTitle_Orbital_RTD_Weapons_1>Орбитальный арсенал</FCTitle_Orbital_RTD_Weapons_1>
+  <FCTitle_Orbital_RTD_Weapons_2>Невесомая оружейная фабрика</FCTitle_Orbital_RTD_Weapons_2>
+  <FCTitle_Orbital_RTD_Weapons_3>Орбитальный арсенал</FCTitle_Orbital_RTD_Weapons_3>
+
+  <FCTitle_Orbital_RTD_Apparel_1>Орбитальный текстильный модуль</FCTitle_Orbital_RTD_Apparel_1>
+  <FCTitle_Orbital_RTD_Apparel_2>Невесомая швейная мастерская</FCTitle_Orbital_RTD_Apparel_2>
+  <FCTitle_Orbital_RTD_Apparel_3>Орбитальное швейное производство</FCTitle_Orbital_RTD_Apparel_3>
+
+  <FCTitle_Orbital_RTD_Animals_1>Орбитальный виварий</FCTitle_Orbital_RTD_Animals_1>
+  <FCTitle_Orbital_RTD_Animals_2>Космический животноводческий модуль</FCTitle_Orbital_RTD_Animals_2>
+  <FCTitle_Orbital_RTD_Animals_3>Орбитальный биокупол</FCTitle_Orbital_RTD_Animals_3>
+
+  <FCTitle_Orbital_RTD_Logging_1>Орбитальный дендрарий</FCTitle_Orbital_RTD_Logging_1>
+  <FCTitle_Orbital_RTD_Logging_2>Отсек синтеза древесины</FCTitle_Orbital_RTD_Logging_2>
+  <FCTitle_Orbital_RTD_Logging_3>Орбитальный комплекс биороста</FCTitle_Orbital_RTD_Logging_3>
+
+  <FCTitle_Orbital_RTD_Mining_1>Участок бурения астероидов</FCTitle_Orbital_RTD_Mining_1>
+  <FCTitle_Orbital_RTD_Mining_2>Орбитальная буровая установка</FCTitle_Orbital_RTD_Mining_2>
+  <FCTitle_Orbital_RTD_Mining_3>Центр добычи в глубоком космосе</FCTitle_Orbital_RTD_Mining_3>
+
+  <FCTitle_Orbital_RTD_Research_1>Орбитальная исследовательская капсула</FCTitle_Orbital_RTD_Research_1>
+  <FCTitle_Orbital_RTD_Research_2>Модуль космических наук</FCTitle_Orbital_RTD_Research_2>
+  <FCTitle_Orbital_RTD_Research_3>Орбитальный исследовательский институт</FCTitle_Orbital_RTD_Research_3>
+
+  <FCTitle_Orbital_RTD_Power_1>Массив солнечных батарей</FCTitle_Orbital_RTD_Power_1>
+  <FCTitle_Orbital_RTD_Power_2>Орбитальная энергосистема</FCTitle_Orbital_RTD_Power_2>
+  <FCTitle_Orbital_RTD_Power_3>Энергетический узел глубокого космоса</FCTitle_Orbital_RTD_Power_3>
+
+  <FCTitle_Orbital_RTD_Medicine_1>Орбитальный медицинский отсек</FCTitle_Orbital_RTD_Medicine_1>
+  <FCTitle_Orbital_RTD_Medicine_2>Невесомая медицинская станция</FCTitle_Orbital_RTD_Medicine_2>
+  <FCTitle_Orbital_RTD_Medicine_3>Орбитальный больничный комплекс</FCTitle_Orbital_RTD_Medicine_3>
+
+  <FCTitle_Orbital_RTD_Chemfuel_1>Орбитальный топливный заборник</FCTitle_Orbital_RTD_Chemfuel_1>
+  <FCTitle_Orbital_RTD_Chemfuel_2>Орбитальный НПЗ</FCTitle_Orbital_RTD_Chemfuel_2>
+  <FCTitle_Orbital_RTD_Chemfuel_3>Топливный комплекс глубокого космоса</FCTitle_Orbital_RTD_Chemfuel_3>
+
+  <FCTitle_Orbital_RTD_Gravtech_1>Невесомая исследовательская капсула</FCTitle_Orbital_RTD_Gravtech_1>
+  <FCTitle_Orbital_RTD_Gravtech_2>Орбитальная станция гравитехники</FCTitle_Orbital_RTD_Gravtech_2>
+  <FCTitle_Orbital_RTD_Gravtech_3>Узел гравитехники</FCTitle_Orbital_RTD_Gravtech_3>
+
+</LanguageData>

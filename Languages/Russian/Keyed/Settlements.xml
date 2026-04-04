@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Создание поселения -->
+  <SettleANewColony>Основать новую колонию</SettleANewColony>
+  <CreateNewColony>Создать новую колонию</CreateNewColony>
+  <SelectTile>Выберите тайл для создания колонии</SelectTile>
+  <selectedInvalidTile>Вы не можете построить здесь поселение!</selectedInvalidTile>
+  <Settle>Основать</Settle>
+  <CaravanOnWay>Караван уже в пути</CaravanOnWay>
+  <CaravanSentToLocation>Караван был отправлен к месту! Они прибудут через</CaravanSentToLocation>
+  <ConstructionToLocation>Строительные бригады были отправлены к месту! Их работа завершится через</ConstructionToLocation>
+  <ColonyConstruction>Строительство {0}</ColonyConstruction>
+  <ImpassableMountains>Вы не можете основать {0} на непроходимых горах.</ImpassableMountains>
+  <NotAllowedBiome>Вы не можете основать {0} в этом биоме.</NotAllowedBiome>
+  <InvalidPlanetLayer>Неверный слой планеты.</InvalidPlanetLayer>
+  <OrbitalTileOccupied>Этот орбитальный тайл занят.</OrbitalTileOccupied>
+  <FCSettlementFormed>Поселение основано</FCSettlementFormed>
+  <TheSettlement>Поселение</TheSettlement>
+  <HasBeenFormed> было основано</HasBeenFormed>
+  <FCPickSettlementType>Выберите тип поселения</FCPickSettlementType>
+  <FCRequiresResearch>Требуется исследование: {0}</FCRequiresResearch>
+  <FCRequiresTechLevel>Требуется технологический уровень: {0}</FCRequiresTechLevel>
+  <FCSettlementResources>Ресурсы:</FCSettlementResources>
+  <SettleEventDesc>Караван направляется для основания нового {0} в {1}. Предполагаемое прибытие: {2}.</SettleEventDesc>
+  <SettleEventCompletedDesc>{0} был основан как новый {1} в {2}.</SettleEventCompletedDesc>
+  <PlayerColony>Колония игрока</PlayerColony>
+  <SetCapital>Установить столицу</SetCapital>
+  <SetAsFactionCapital>{0} был установлен как столица фракции</SetAsFactionCapital>
+
+  <!-- Улучшение поселения -->
+  <AlreadyUpgradeSettlement>Это поселение уже улучшается!</AlreadyUpgradeSettlement>
+  <StartUpgradeSettlement>Поселение теперь улучшается...</StartUpgradeSettlement>
+  <UpgradeSettlement>Улучшить поселение</UpgradeSettlement>
+  <Upgrade>Улучшить</Upgrade>
+  <SettlementUpgradeInProgress>Улучшение...</SettlementUpgradeInProgress>
+  <CanBeUpgraded>можно улучшить за</CanBeUpgraded>
+  <UpgradeColonyDesc>Улучшение этой колонии увеличит максимальное количество рабочих до начала роста стоимости на 3 рабочих. Военный уровень этой колонии также увеличится на 1.</UpgradeColonyDesc>
+  <HasBeenUpgraded>было улучшено до уровня</HasBeenUpgraded>
+  <UpgradeEventDesc>{0} улучшается с уровня {1} до уровня {2}.\n\n{3}</UpgradeEventDesc>
+  <UpgradeEventCompletedDesc>{0} был улучшен до уровня {1}!\n\n{2}</UpgradeEventCompletedDesc>
+  <AlreadyMaxLevel>уже максимального уровня</AlreadyMaxLevel>
+  <NotEnoughSilverUpgrade>На текущей карте недостаточно серебра для оплаты улучшения поселения.</NotEnoughSilverUpgrade>
+  <CannotBeUpgradedPastMax>Это поселение не может быть улучшено выше максимального уровня</CannotBeUpgradedPastMax>
+  <UpgradeTown>Улучшить город</UpgradeTown>
+  <FCUpgradeBadgeInProgress>Улучшение: осталось {0}</FCUpgradeBadgeInProgress>
+  <FCUpgradeBadgeAvailable>Нажмите для улучшения (стоимость: {0} серебра)</FCUpgradeBadgeAvailable>
+
+  <!-- Окно поселения -->
+  <TownLog>Журнал города</TownLog>
+  <GoToLocation>Перейти к месту</GoToLocation>
+  <Located>Расположен в</Located>
+  <LandOf>землях</LandOf>
+  <openSettlementWindowDefaultLabel>Просмотреть информацию о поселении</openSettlementWindowDefaultLabel>
+  <openSettlementWindowDefaultDesc>Открывает окно колонии поселения</openSettlementWindowDefaultDesc>
+  <FCBuildRoads>Строить дороги</FCBuildRoads>
+
+  <!-- Статистика поселения -->
+  <SettlementMilitaryLevel>Военный уровень поселения</SettlementMilitaryLevel>
+  <SettlementHappiness>Счастье поселения</SettlementHappiness>
+  <SettlementLoyalty>Лояльность поселения</SettlementLoyalty>
+  <SettlementUnrest>Нестабильность поселения</SettlementUnrest>
+  <SettlementProsperity>Процветание поселения</SettlementProsperity>
+  <FCHappiness>счастье</FCHappiness>
+  <FCLoyality>лояльность</FCLoyality>
+  <FCUnrest>нестабильность</FCUnrest>
+  <FCProsperity>процветание</FCProsperity>
+  <Happiness>счастье</Happiness>
+  <Loyalty>лояльность</Loyalty>
+  <Unrest>нестабильность</Unrest>
+  <Prosperity>процветание</Prosperity>
+  <BaseRecovery>Базовая скорость восстановления</BaseRecovery>
+  <ProsperityTarget>Цель: {0}%</ProsperityTarget>
+  <ProsperityDrift>Дрейф к цели</ProsperityDrift>
+  <ProsperityTargetBreakdown>Счастье ({0}) + Лояльность ({1}) + Стабильность ({2}) / 3</ProsperityTargetBreakdown>
+  <BaseGain>Базовый прирост</BaseGain>
+  <BaseLoss>Базовые потери</BaseLoss>
+  <SettlementStatGain>Прирост {1} на {0} в день</SettlementStatGain>
+  <SettlementStatLoss>Потеря {1} на {0} в день</SettlementStatLoss>
+
+  <!-- Описания статистики поселения -->
+  <SettlementMilitaryLevelDesc>Военный уровень напрямую влияет на способность поселения защищать себя и атаковать внешние угрозы.</SettlementMilitaryLevelDesc>
+  <SettlementHappinessDesc>Показатель общего счастья поселения.
+
+Высокий уровень счастья означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</SettlementHappinessDesc>
+  <SettlementLoyaltyDesc>Показатель общей лояльности поселения.
+
+Лояльность поселения определяет, насколько охотно поселение будет вас слушаться. Высокая лояльность снижает шанс отделения.</SettlementLoyaltyDesc>
+  <SettlementUnrestDesc>Показатель общей нестабильности поселения.
+
+Чем выше нестабильность, тем вероятнее возникновение опасных внутренних событий в вашем поселении. Если она станет слишком высокой, может вспыхнуть мятеж.</SettlementUnrestDesc>
+  <SettlementProsperityDesc>Показатель общего процветания поселения.
+
+Процветание города напрямую связано с производством ресурсов (например, 50% процветания = 50% производства). Процветание дрейфует к цели, определяемой счастьем, лояльностью и нестабильностью поселения.</SettlementProsperityDesc>
+
+  <!-- Таблица поселений -->
+  <SettlementManager>Управление поселениями</SettlementManager>
+  <FCSettlementTableName>Название</FCSettlementTableName>
+  <FCSettlementTableLevel>Уровень</FCSettlementTableLevel>
+  <FCSettlementTableMilLevel>Военный уровень</FCSettlementTableMilLevel>
+  <FCSettlementTableProfit>Прибыль</FCSettlementTableProfit>
+  <FCSettlementTableWorkers>Свободные рабочие</FCSettlementTableWorkers>
+  <FCSettlementTableHappiness>Счастье</FCSettlementTableHappiness>
+  <FCSettlementTableLoyalty>Лояльность</FCSettlementTableLoyalty>
+  <FCSettlementTableUnrest>Нестабильность</FCSettlementTableUnrest>
+  <FCSettlementTableProsperity>Процветание</FCSettlementTableProsperity>
+  <FCSettlementTableFounding>Дата основания</FCSettlementTableFounding>
+  <FCNoSettlements>Нет поселений.</FCNoSettlements>
+  <FCSettlementCount>{0} поселений</FCSettlementCount>
+  <FCSortBy>Сортировка: {0}</FCSortBy>
+  <ColonyLevel>Уровень колонии</ColonyLevel>
+  <Hamlet>деревушка</Hamlet>
+
+  <!-- Удаление поселения -->
+  <DeleteSettlement>Удалить поселение</DeleteSettlement>
+  <DeleteSettlementConfirm>Удалить поселение {0}?</DeleteSettlementConfirm>
+  <AreYouSureRemove>Вы уверены?</AreYouSureRemove>
+  <SettlementRemoved>Поселение {0} было удалено.</SettlementRemoved>
+
+  <!-- Настройка поселения -->
+  <FCCustomizeSettlement>Настроить поселение</FCCustomizeSettlement>
+  <FCSettlementFullName>Полное название:</FCSettlementFullName>
+  <FCSettlementShortName>Краткое название:</FCSettlementShortName>
+  <FCUnsupportedSettlementFaction>У фракции этого поселения нет названия, или что-то пошло ужасно не так.</FCUnsupportedSettlementFaction>
+
+  <!-- Особые действия поселения -->
+  <FCSpecialActions>Особые действия</FCSpecialActions>
+  <FCBuyLoyalty>Купить лояльность</FCBuyLoyalty>
+  <SendSilverToColony>Отправить серебро в колонию</SendSilverToColony>
+  <SendingXSilver>Отправка {0} серебра</SendingXSilver>
+  <SettlementGainsXLoyalty>Поселение получит {0} лояльности</SettlementGainsXLoyalty>
+
+  <!-- Статус строительства -->
+  <numUnderConstruction>Активных строек: {0}</numUnderConstruction>
+  <ActiveConstruction>Активные стройки</ActiveConstruction>
+  <closeConstructionBox>Закрыть список строек</closeConstructionBox>
+  <openConstructionBox>Открыть список строек</openConstructionBox>
+  <settlementupgrading>Улучшение поселения</settlementupgrading>
+  <completiontimer>Завершится через: {0}</completiontimer>
+
+  <!-- Описания биомов -->
+  <FCDescSeaIce>Бескрайние ледяные просторы, не нарушаемые ничем, кроме мелкой и редкой дикой природы. Никакая еда не растет, кроме как в отапливаемых помещениях. Здесь выживают только самые стойкие формы жизни.</FCDescSeaIce>
+  <FCDescIceSheet>Безрадостная, бесконечная мерзлота покрывает землю, прерываемая лишь каменными выступами и руинами. Единственный источник пищи — выносливая дикая природа, которая называет это место своим домом.</FCDescIceSheet>
+  <FCDescTundra>Приграничные земли вмещают разнообразную флору и фауну, которая существует на покрытом мхом ландшафте. Когда приходит лето, земля расцветает, пусть и ненадолго.</FCDescTundra>
+  <FCDescColdBog>Суровая красота этой земли сочетается с ее негостеприимностью. Ландшафт усеян болотами, а также частыми стадами мигрирующих травоядных и хищниками, которые на них охотятся.</FCDescColdBog>
+  <FCDescBorealForest>Хотя здесь обычно менее холодно, чем в тундре, суровая зимняя погода бореального леса сочетается с теплым летом, когда зелень ненадолго расцветает, а еды становится много.</FCDescBorealForest>
+  <FCDescTropicalRainforest>Деревья закрывают небо, пропуская мало света к земле. Но под пологом леса существует ослепительный, но смертоносный набор флоры и фауны. Красота этого биома сочетается с его опасностями.</FCDescTropicalRainforest>
+  <FCDescTemperateForest>Обильные леса и ручьи делят землю. Животные бродят по густым лесам, и еды и укрытия здесь в изобилии.</FCDescTemperateForest>
+  <FCDescTemperateSwamp>Земля покрыта болотами и топями, а то, что не покрыто ими, покрыто разнообразной растительностью. Доступное пространство для строительства здесь очень ограничено.</FCDescTemperateSwamp>
+  <FCDescTropicalSwamp>Земля опутана густой растительностью, деревья тянутся к небу, пропуская мало света к коварной земле. Болезни здесь свирепствуют и часты.</FCDescTropicalSwamp>
+  <FCDescAridShrubland>Хотя это и не настоящая пустыня, плодородная почва здесь в дефиците из-за неумолимой жары. Большая часть земли открыта, с уединенными рощами, нарушающими пустой горизонт.</FCDescAridShrubland>
+  <FCDescDesert>Пахотная земля здесь редкость, поскольку большая часть земли покрыта песком, иногда слишком опасным для строительства. Тем не менее, жизнь здесь цепляется за существование, и пески таят в себе яркое разнообразие жизни.</FCDescDesert>
+  <FCDescExtremeDesert>Солнце превратило эту землю в пустошь. Почвы, способной поддерживать нормальную растительность, почти нет, а та, что есть, низкого качества.</FCDescExtremeDesert>
+  <FCDescUnknown>Мало что широко известно об окружающих землях, но колония умудряется выживать и процветать в текущих условиях.</FCDescUnknown>
+  <FCDescOrbitalSpace>Обширная пустота космоса простирается во всех направлениях, нарушаемая лишь далеким мерцанием звезд и случайными пролетающими астероидами. Солнечные панели сверкают в вечном солнечном свете, а системы жизнеобеспечения тихо гудят в искусственной среде. Станция парит в пустоте, маяк цивилизации в космической глуши.</FCDescOrbitalSpace>
+
+  <!-- Описания уровней города -->
+  <FCTownLevel1>Само поселение представляет собой небольшую группу зданий, сгруппированных вокруг центральной структуры.</FCTownLevel1>
+  <FCTownLevel2>В поселении преобладают несколько больших структур, но оно все еще довольно маленькое. Ряд мешков с песком и баррикад опоясывают его снаружи.</FCTownLevel2>
+  <FCTownLevel3>Поселение имеет большое количество строений — в основном ориентированных на производство, — а также специальные складские помещения, и занятые рабочие снуют между ними. Скромная стена защищает поселение.</FCTownLevel3>
+  <FCTownLevel4>Поселение довольно большое и хорошо организованное, с несколькими промышленными зданиями, сгруппированными вместе для максимальной эффективности. Толстая стена и внутренние укрепления защищают колонию от атак.</FCTownLevel4>
+  <FCTownLevel5>Четко обозначенные здания отмечают промышленное сердце этого оживленного маяка цивилизации, а также различные другие коммунальные службы. Множество стен окружают колонию, с многочисленными внутренними укреплениями в тщательно спланированных узких местах.</FCTownLevel5>
+
+  <!-- Местоположения орбитальных поселений -->
+  <FCOrbitalLocation1>На орбите в глубоком космосе</FCOrbitalLocation1>
+  <FCOrbitalLocation2>Расположена на низкой орбите</FCOrbitalLocation2>
+  <FCOrbitalLocation3>Парит в пустоте космоса</FCOrbitalLocation3>
+  <FCOrbitalLocation4>Закреплена на орбите</FCOrbitalLocation4>
+  <FCOrbitalLocation5>Расположена на низкой орбите</FCOrbitalLocation5>
+  <FCOrbitalLocation6>Парит над поверхностью</FCOrbitalLocation6>
+  <FCOrbitalLocation7>Развернута в орбитальном пространстве</FCOrbitalLocation7>
+
+  <!-- Ключевые слова для названий орбитальных поселений -->
+  <FCOrbitalKeyword1>Космическая станция</FCOrbitalKeyword1>
+  <FCOrbitalKeyword2>Станция</FCOrbitalKeyword2>
+  <FCOrbitalKeyword3>Спутник</FCOrbitalKeyword3>
+  <FCOrbitalKeyword4>Солнечная база</FCOrbitalKeyword4>
+  <FCOrbitalKeyword5>Орбитальный узел</FCOrbitalKeyword5>
+  <FCOrbitalKeyword6>Космическая платформа</FCOrbitalKeyword6>
+  <FCOrbitalKeyword7>Космическая станция</FCOrbitalKeyword7>
+  <FCOrbitalKeyword8>Звездная база</FCOrbitalKeyword8>
+  <FCOrbitalKeyword9>Станция в пустоте</FCOrbitalKeyword9>
+  <FCOrbitalKeyword10>Астральная платформа</FCOrbitalKeyword10>
+
+  <!-- Ограничения по окружению для зданий -->
+  <BuildingInvalidEnvironment>Это здание не может быть построено в биоме этого поселения!</BuildingInvalidEnvironment>
+
+</LanguageData>

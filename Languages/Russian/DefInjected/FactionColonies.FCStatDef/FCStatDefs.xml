@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- ── Военные ────────────────────────────────────────────── -->
+
+  <militaryBaseLevel.label>базовый военный уровень</militaryBaseLevel.label>
+  <militaryCombatEfficiency.label>боевая эффективность</militaryCombatEfficiency.label>
+  <militaryLevelBonusDefending.label>бонус военного уровня (оборона)</militaryLevelBonusDefending.label>
+  <militaryLevelBonusAttacking.label>бонус военного уровня (атака)</militaryLevelBonusAttacking.label>
+  <militaryEfficiencyBonusAttacking.label>бонус боевой эффективности (атака)</militaryEfficiencyBonusAttacking.label>
+  <militaryEfficiencyBonusDefending.label>бонус боевой эффективности (оборона)</militaryEfficiencyBonusDefending.label>
+  <militaryCooldownOffset.label>сдвиг перезарядки военных</militaryCooldownOffset.label>
+  <raidCooldownOffset.label>сдвиг перезарядки рейдов</raidCooldownOffset.label>
+  <deadPawnCooldownOffset.label>сдвиг перезарядки за мертвых персонажей</deadPawnCooldownOffset.label>
+
+
+  <!-- ── Штрафы за битву ────────────────────────────────────── -->
+
+  <battleProsperityLossMultiplier.label>множитель потери процветания от битвы</battleProsperityLossMultiplier.label>
+  <battleHappinessLossMultiplier.label>множитель потери счастья от битвы</battleHappinessLossMultiplier.label>
+  <battleLoyaltyLossMultiplier.label>множитель потери лояльности от битвы</battleLoyaltyLossMultiplier.label>
+  <buildingDestructionChance.label>шанс разрушения зданий</buildingDestructionChance.label>
+
+
+  <!-- ── Масштабирование угрозы ──────────────────────────────── -->
+
+  <threatScalingBase.label>база масштабирования угрозы</threatScalingBase.label>
+  <threatScalingMultiplier.label>множитель масштабирования угрозы</threatScalingMultiplier.label>
+
+
+  <!-- ── Экономика ─────────────────────────────────────────────── -->
+
+  <taxBasePercentage.label>базовый процент налога</taxBasePercentage.label>
+  <taxBaseRandomModifier.label>случайный модификатор базы налога</taxBaseRandomModifier.label>
+  <taxBonusFlat.label>фиксированный налоговый бонус</taxBonusFlat.label>
+  <titheValueMultiplier.label>множитель стоимости десятины</titheValueMultiplier.label>
+  <lootMultiplier.label>множитель добычи</lootMultiplier.label>
+  <settlementCostMultiplier.label>множитель стоимости поселения</settlementCostMultiplier.label>
+  <buildTimeMultiplier.label>множитель времени строительства</buildTimeMultiplier.label>
+  <createSettlementBaseCost.label>базовая стоимость создания поселения</createSettlementBaseCost.label>
+  <createSettlementMultiplier.label>множитель стоимости создания поселения</createSettlementMultiplier.label>
+  <researchContributionMultiplier.label>множитель вклада в исследования</researchContributionMultiplier.label>
+
+
+  <!-- ── Рабочие ─────────────────────────────────────────────── -->
+
+  <workerBaseCost.label>базовая стоимость рабочего</workerBaseCost.label>
+  <workerBaseMax.label>базовый максимум рабочих</workerBaseMax.label>
+  <workerBaseOverMax.label>базовый сверхлимитный максимум рабочих</workerBaseOverMax.label>
+  <extraWorkersSoftcap.label>дополнительные рабочие (мягкий лимит)</extraWorkersSoftcap.label>
+  <overMaxWorkersAdjustment.label>корректировка сверхлимитных рабочих</overMaxWorkersAdjustment.label>
+  <workerProductionBase.label>базовое производство рабочего</workerProductionBase.label>
+  <workerProductionMultiplier.label>множитель производства рабочего</workerProductionMultiplier.label>
+
+
+  <!-- ── Процветание ──────────────────────────────────────────── -->
+
+  <prosperityGainedBase.label>базовый прирост процветания</prosperityGainedBase.label>
+  <prosperityLostBase.label>базовая потеря процветания</prosperityLostBase.label>
+
+
+  <!-- ── Счастье ───────────────────────────────────────────── -->
+
+  <happinessLostBase.label>базовая потеря счастья</happinessLostBase.label>
+  <happinessGainedBase.label>базовый прирост счастья</happinessGainedBase.label>
+  <happinessLostMultiplier.label>множитель потери счастья</happinessLostMultiplier.label>
+  <happinessGainedMultiplier.label>множитель прироста счастья</happinessGainedMultiplier.label>
+
+
+  <!-- ── Лояльность ─────────────────────────────────────────────── -->
+
+  <loyaltyLostBase.label>базовая потеря лояльности</loyaltyLostBase.label>
+  <loyaltyGainedBase.label>базовый прирост лояльности</loyaltyGainedBase.label>
+  <loyaltyLostMultiplier.label>множитель потери лояльности</loyaltyLostMultiplier.label>
+  <loyaltyGainedMultiplier.label>множитель прироста лояльности</loyaltyGainedMultiplier.label>
+
+
+  <!-- ── Нестабильность ──────────────────────────────────────────────── -->
+
+  <unrestLostBase.label>базовая потеря нестабильности</unrestLostBase.label>
+  <unrestGainedBase.label>базовый прирост нестабильности</unrestGainedBase.label>
+  <unrestLostMultiplier.label>множитель потери нестабильности</unrestLostMultiplier.label>
+  <unrestGainedMultiplier.label>множитель прироста нестабильности</unrestGainedMultiplier.label>
+
+</LanguageData>
