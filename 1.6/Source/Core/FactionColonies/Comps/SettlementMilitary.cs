@@ -363,7 +363,7 @@ namespace FactionColonies
                     {
                         if (defenders.Contains(pawn)) continue;
                         if (defenders.Any())
-                            defenders[0].GetLord().AddPawn(pawn);
+                            defenders[0].GetLord()?.AddPawn(pawn);
                         else
                             LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(WorldSettlement), WorldSettlement.Map, pawns);
                     }

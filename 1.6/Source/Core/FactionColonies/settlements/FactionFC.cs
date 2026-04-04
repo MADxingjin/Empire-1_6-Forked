@@ -1337,7 +1337,8 @@ namespace FactionColonies
                 }
                 foreach (FCPolicyCategory cat in toRevoke)
                 {
-                    string depLabel = edicts[cat].def?.LabelCap ?? "";
+                    if (!edicts.TryGetValue(cat, out FCPolicy policy)) continue;
+                    string depLabel = policy.def?.LabelCap ?? "";
                     Messages.Message("FCEdictRevokedDependency".Translate(depLabel, label), MessageTypeDefOf.NeutralEvent);
                     RevokeEdict(cat, silent: true);
                 }

@@ -188,4 +188,19 @@
 		<li>CreeeesP</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_13</defName>
+		<label>Couple minor fixes</label>
+		<description>Couple of minor bugfixes.</description>
+		<releaseDate>2026-04-04</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Patch a potential NRE in WorldObjectComp_SettlementMilitary.AddToDefenceFromList</li>
+		<li>Patch a potential dictionary access issue in FactionFC.RevokeEdict</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
