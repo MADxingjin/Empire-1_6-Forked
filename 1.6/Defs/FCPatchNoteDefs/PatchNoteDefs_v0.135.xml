@@ -174,4 +174,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_135_12</defName>
+		<label>Updated Russian Translation</label>
+		<description>Updated Russian translation, courtesy of CreeeesP.</description>
+		<releaseDate>2026-04-04</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Updated Russian translation</li>
+		</patchNoteLines>
+		<authors>
+		<li>CreeeesP</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
