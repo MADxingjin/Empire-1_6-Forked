@@ -50,6 +50,8 @@ Available comp interfaces:
 - `IStatModifierProvider` — contribute to stat aggregation
 - `IResourceProductionModifier` — contribute to resource production
 - `ITitheBudgetModifier` — inject external tithe budget
+- `IProfitContributor` — contribute upkeep or income to settlement economics
+- `ISettlementPostLoadInit` — run initialization after settlement state is fully rebuilt on load
 
 See [Settlement Comps](worldobject-comps.md).
 

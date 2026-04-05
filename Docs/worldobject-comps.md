@@ -98,11 +98,16 @@ public class MyComp : WorldObjectComp, IResourceProductionModifier
         return 1; // no-op (multiplicative)
     }
 
-    public string GetResourceModifierDesc(ResourceFC resource)
+    public string GetResourceAdditiveDesc(ResourceFC resource)
     {
         if (resource.def.defName == "RTD_Food")
             return "+1 - My Comp\n";
         return null;
+    }
+
+    public string GetResourceMultiplierDesc(ResourceFC resource)
+    {
+        return null; // no-op
     }
 }
 ```
@@ -144,6 +149,58 @@ public class MyComp : WorldObjectComp, ITitheBudgetModifier
 ```csharp
 ((WorldSettlementFC)parent).InvalidateStatCache();
 ```
+
+### IProfitContributor
+
+Contributes upkeep or income to a settlement's economic calculations (displayed in the settlement profit breakdown).
+
+```csharp
+public class MyComp : WorldObjectComp, IProfitContributor
+{
+    public double GetUpkeepContribution()
+    {
+        return 25; // +25 silver upkeep
+    }
+
+    public string GetUpkeepContributionDesc()
+    {
+        return "+25 - My Comp\n";
+    }
+
+    public double GetIncomeContribution()
+    {
+        return 0; // no income contribution
+    }
+
+    public string GetIncomeContributionDesc()
+    {
+        return null;
+    }
+}
+```
+
+**Discovery**: `WorldSettlementFC.GetTotalUpkeep()` and `GetTotalIncome()` iterate `AllComps` for `IProfitContributor`.
+
+**Caching**: Results are cached per settlement. Automatically invalidated after lifecycle events. For changes outside lifecycle callbacks:
+```csharp
+((WorldSettlementFC)parent).DirtyProfitCache();
+```
+
+### ISettlementPostLoadInit
+
+Runs initialization that depends on fully-rebuilt settlement state after a save is loaded.
+
+```csharp
+public class MyComp : WorldObjectComp, ISettlementPostLoadInit
+{
+    public void PostSettlementLoadInit(WorldSettlementFC settlement)
+    {
+        // Safe to read computed stats, resource production, etc.
+    }
+}
+```
+
+**Discovery**: Called during `FinalizeInit` after stat modifiers and resource caches are rebuilt. Use this when your comp needs to read computed values that aren't available in `PostExposeData`.
 
 ---
 

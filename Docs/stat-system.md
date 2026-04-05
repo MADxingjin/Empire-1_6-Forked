@@ -16,6 +16,7 @@ A named stat defined in XML. Referenced by `defName` in `FCStatModifier` entries
 | `appliesToSettlements` | `bool` | `true` | If true, settlement-level sources (buildings, settlement type, events, comps) contribute. If false, only faction-level sources (policies, traits, edicts) apply. |
 | `descriptionKey` | `string` | `null` | Translation key for UI display. Receives the formatted bonus value as `{0}`. |
 | `invertedForDisplay` | `bool` | `false` | If true, lower values are shown as "good" in the UI (green). Use for costs, losses, penalties. |
+| `displayDivisor` | `double` | `0` | If non-zero, divides the raw stat value before display. Used for tick-based stats (e.g., `2500` to convert ticks to in-game hours). |
 | `linkedResource` | `ResourceTypeDef` | `null` | If set, this stat is a resource production stat. The UI uses the resource's name and icon instead of `descriptionKey`. |
 
 **Identity value**: `0` for Additive stats, `1` for Multiplicative stats. This is the starting value before any modifiers are applied.

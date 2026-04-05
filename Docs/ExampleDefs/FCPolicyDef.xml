@@ -16,7 +16,7 @@
 	<!-- Description shown in the policy info panel. -->
 	<desc>A description of this policy's effects and purpose.</desc>
 	<!-- The policy category. Determines which UI section this policy appears in. -->
-	<!-- Valid values: Undefined, Trait, Core, Tax, Military -->
+	<!-- Valid values: Undefined, Trait, Core, Tax, Military, Social, Doctrine -->
 	<category>Core</category>
 	<!-- Minimum faction tech level required to enact this policy. Default: Undefined (no restriction) -->
 	<techLevelRequirement>Undefined</techLevelRequirement>

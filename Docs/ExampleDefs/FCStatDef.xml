@@ -22,6 +22,9 @@
 	<!-- If true, lower values are considered "better" for UI coloring purposes (e.g. costs, losses).
 	     Default: false -->
 	<invertedForDisplay>false</invertedForDisplay>
+	<!-- If non-zero, the raw stat value is divided by this before display.
+	     Used for tick-based stats (e.g. 2500 to convert ticks to in-game hours). Default: 0 (no division) -->
+	<displayDivisor>0</displayDivisor>
 	<!-- If non-null, this stat is a resource production stat linked to the given ResourceTypeDef.
 	     When linked, the stat description uses the resource name and icon instead of the generic descriptionKey.
 	     Only set this if you are defining production stats for a custom ResourceTypeDef. -->

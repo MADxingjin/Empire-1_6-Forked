@@ -88,6 +88,7 @@ Override `PostInitialize()` to wire up `[Unsaved]` fields from extension paramet
 |--------|-----------|-------------|
 | `OnResearchCompleted` | `void OnResearchCompleted(FactionFC faction, ResearchProjectDef project)` | A research project was completed. |
 | `OnTaxCollected` | `void OnTaxCollected(FactionFC faction, WorldSettlementFC settlement)` | Taxes were collected from a settlement. |
+| `ShouldRerollEvent` | `bool ShouldRerollEvent(FCEventDef eventDef)` | Return `true` to request that this random event be rerolled (picked again). Default: `false`. |
 
 #### Diplomacy
 
@@ -204,7 +205,7 @@ Override `ExposeData()` to save/load custom state. Uses standard `Scribe_*` meth
 
 ## LifecycleParticipantBase
 
-**Purpose**: Convenience base class for `ILifecycleParticipant`. All 10 methods are empty virtuals — override only what you need.
+**Purpose**: Convenience base class for `ILifecycleParticipant`. All 11 methods are empty virtuals; override only what you need.
 
 **Class**: `FactionColonies.LifecycleParticipantBase` (abstract, implements `ILifecycleParticipant`)
 

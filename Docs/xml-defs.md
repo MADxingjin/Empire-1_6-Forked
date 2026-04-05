@@ -23,6 +23,7 @@ Defines a resource category (e.g., Food, Weapons, Mining). Resources are the pri
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `iconPath` | `string` | — | Path to the resource icon texture (without extension). |
+| `color` | `Color` | `(0.65, 0.65, 0.65)` | UI color for this resource (used in icons and labels). |
 | `uiPriority` | `int` | `10000` | Sort order in resource lists. Lower = higher in list. |
 | `minTechLevel` | `TechLevel` | `Undefined` | Minimum faction tech level to unlock this resource. |
 | `maxTechLevel` | `TechLevel` | `Undefined` | Maximum faction tech level where this resource is available. |
@@ -94,6 +95,7 @@ Defines a settlement type (e.g., Surface, Orbital). Controls resource availabili
 | `accentColor` | `Color?` | `null` | UI accent color for this settlement type. |
 | `available` | `bool` | `true` | If false, this settlement type is hidden from the creation UI. Use to define abstract or internally-managed settlement types. |
 | `baseSettlementType` | `WorldSettlementDef` | `null` | Parent settlement type for inheritance-aware building allow/block list checks. When set, a building's allow/block list will match this def and all ancestors in the chain. |
+| `raidTargetingWeight` | `float` | `1.0` | Multiplier applied to this settlement type's weight when the threat system selects raid targets. Higher = more likely to be raided. |
 
 **Required modExtension**: [SettlementTypeExtension](def-mod-extensions.md#settlementtypeextension).
 
@@ -115,6 +117,7 @@ Defines a named stat. See [Stat System](stat-system.md) for the full aggregation
 | `appliesToSettlements` | `bool` | `true` | Whether settlement-level sources contribute. |
 | `descriptionKey` | `string` | `null` | Translation key for UI display. Receives bonus value as `{0}`. |
 | `invertedForDisplay` | `bool` | `false` | If true, lower = better in UI coloring. |
+| `displayDivisor` | `double` | `0` | If non-zero, divides the raw stat value before display. Used for tick-based stats (e.g., `2500` to convert ticks to in-game hours). |
 | `linkedResource` | `ResourceTypeDef` | `null` | Links this stat to a resource for UI formatting. |
 
 See [ExampleDefs/FCStatDef.xml](ExampleDefs/FCStatDef.xml).
@@ -185,29 +188,60 @@ See [ExampleDefs/BiomeResourceDef.xml](ExampleDefs/BiomeResourceDef.xml).
 
 Defines events — both scripted (triggered by code) and random (selected by the random event system). See [Event System](event-system.md) for the full lifecycle.
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `timeTillTrigger` | `int` | `-1` | Ticks until resolution. -1 = immediate. |
-| `desc` | `string` | — | Description shown in the event notification. |
-| `category` | `FCEventCategoryDef` | — | Event category for UI accent color. |
-| `isRandomEvent` | `bool` | `false` | Eligible for random selection. |
-| `weight` | `int` | `0` | Random selection weight (higher = more likely). |
-| `requiredWealth` | `int` | `0` | Minimum player wealth for random events. |
-| `rangeSettlementsAffected` | `IntRange` | `(0,0)` | How many settlements affected. (0,0) = faction-wide. |
-| `requiredResource` | `ResourceTypeDef` | `null` | At least one settlement must produce this resource. |
-| `allowedSettlementTypes` | `List<WorldSettlementDef>` | `[]` | Settlement type allowlist. Walks `baseSettlementType` chain via depth-based resolution. |
-| `blockedSettlementTypes` | `List<WorldSettlementDef>` | `[]` | Settlement type blocklist. Can coexist with allow list — most specific (shallowest depth) wins, ties go to block. |
-| `applicableBiomes` | `List<string>` | `[]` | Biome allowlist (BiomeDef defNames). Only settlements in listed biomes are eligible. Empty = all. |
+| Field | Type | Default | Description                                                                                                           |
+|-------|------|---------|-----------------------------------------------------------------------------------------------------------------------|
+| `desc` | `string` | — | Description shown in the event notification.                                                                          |
+| `category` | `FCEventCategoryDef` | — | Event category for UI accent color.                                                                                   |
+| `isMilitaryEvent` | `bool` | `false` | Whether this is a combat event.                                                                                       |
+| `isNegative` | `bool` | `false` | Whether this is a negative event (for UI/behavior).                                                                   |
+| **Timing** |||                                                                                                                       |
+| `timeTillTrigger` | `int` | `-1` | Ticks until resolution. -1 = immediate.                                                                               |
+| `timeTillTriggerMax` | `int` | `-1` | If > `timeTillTrigger`, duration is randomized within the range.                                                      |
+| `activateAtStart` | `bool` | `false` | If true, event options are shown when the event activates, rather than when its timer runs down.                      |
+| **Targeting** |||                                                                                                                       |
+| `rangeSettlementsAffected` | `IntRange` | `(0,0)` | How many settlements affected. (0,0) = faction-wide.                                                                  |
+| `targetAllSettlements` | `bool` | `false` | If true, all settlements are affected.                                                                                |
+| `useProximity` | `bool` | `true` | If true, random settlement selection uses proximity-based weighting.                                                  |
+| `proximityFalloff` | `float` | `20` | Falloff distance for proximity weighting. Higher = distance matters less.                                             |
+| `allowedSettlementTypes` | `List<WorldSettlementDef>` | `[]` | Settlement type allowlist. Walks `baseSettlementType` chain via depth-based resolution.                               |
+| `blockedSettlementTypes` | `List<WorldSettlementDef>` | `[]` | Settlement type blocklist. Can coexist with allow list — most specific wins, ties go to blocklist.                    |
+| `applicableBiomes` | `List<string>` | `[]` | Biome allowlist (BiomeDef defNames). Only settlements in listed biomes are eligible. Empty = all.                     |
 | `restrictedBiomes` | `List<string>` | `[]` | Biome blocklist (BiomeDef defNames). Settlements in listed biomes are excluded. Ignored if `applicableBiomes` is set. |
-| `options` | `List<FCOptionDef>` | `[]` | Player choices for this event. |
-| `eventFollows` | `bool` | `false` | Whether a follow-up event fires on resolution. |
-| `followingEvent` | `FCEventDef` | `null` | The follow-up event. |
-| `loot` | `List<ThingDef>` | `[]` | Specific items given on resolution. |
-| `randomThingValue` | `int` | `0` | Base market value for random rewards. |
-| `statModifiers` | `List<FCStatModifier>` | `[]` | Stats applied while event is active. |
-| `useProximity` | `bool` | `true` | If true, random settlement selection uses proximity-based weighting. |
-| `proximityFalloff` | `float` | `20` | Falloff distance for proximity weighting. Higher = distance matters less. |
-| `isMilitaryEvent` | `bool` | `false` | Whether this is a combat event. |
+| **Random event config** |||                                                                                                                       |
+| `isRandomEvent` | `bool` | `false` | Eligible for random selection.                                                                                        |
+| `weight` | `int` | `0` | Random selection weight (higher = more likely).                                                                       |
+| `requiredWealth` | `int` | `0` | Minimum player wealth.                                                                                                |
+| `minimumHappiness` / `maximumHappiness` | `int` | `0` / `100` | Required faction average happiness range.                                                                             |
+| `minimumLoyalty` / `maximumLoyalty` | `int` | `0` / `100` | Required faction average loyalty range.                                                                               |
+| `minimumUnrest` / `maximumUnrest` | `int` | `0` / `100` | Required faction average unrest range.                                                                                |
+| `minimumProsperity` / `maximumProsperity` | `int` | `0` / `100` | Required faction average prosperity range.                                                                            |
+| `requiredResource` | `ResourceTypeDef` | `null` | At least one settlement must produce this resource.                                                                   |
+| `requiredResearch` | `List<ResearchProjectDef>` | `[]` | Research projects that must be completed.                                                                             |
+| `minTechLevel` | `TechLevel` | `Undefined` | Minimum faction tech level required.                                                                                  |
+| `maxTechLevel` | `TechLevel` | `Undefined` | Maximum faction tech level allowed.                                                                                   |
+| `requiredPolicy` | `FCPolicyDef` | `null` | Policy that must be active.                                                                                           |
+| `minSettlements` | `int` | `0` | Minimum number of settlements required.                                                                               |
+| `minDaysSinceFounded` | `int` | `0` | Minimum in-game days since the target settlement was founded.                                                         |
+| `incompatibleEvents` | `List<FCEventDef>` | `[]` | Cannot fire while these events are active.                                                                            |
+| `cooldownTicks` | `int` | `0` | Minimum ticks between firings of this event.                                                                          |
+| `maxFireCount` | `int` | `-1` | Maximum total times this event can fire per save. -1 = unlimited.                                                     |
+| **Player options** |||                                                                                                                       |
+| `options` | `List<FCOptionDef>` | `[]` | Player choices for this event.                                                                                        |
+| `optionDescription` | `string` | `""` | Description shown in the options window.                                                                              |
+| **Event chains** |||                                                                                                                       |
+| `eventFollows` | `bool` | `false` | Whether a follow-up event fires on resolution.                                                                        |
+| `followingEvent` | `FCEventDef` | `null` | The primary follow-up event.                                                                                          |
+| `followingEvent2` | `FCEventDef` | `null` | Alternative follow-up event (used with `splitEventFollows`).                                                          |
+| `splitEventFollows` | `bool` | `false` | If true, randomly chooses between `followingEvent` and `followingEvent2`.                                             |
+| `splitEventChance` | `int` | `50` | Percent chance (0-100) of choosing `followingEvent`. Remainder goes to `followingEvent2`.                             |
+| `settlementsCarryOver` | `bool` | `true` | If true, affected settlements carry over to the follow-up event.                                                      |
+| **Rewards & effects** |||                                                                                                                       |
+| `loot` | `List<ThingDef>` | `[]` | Specific items given on resolution.                                                                                   |
+| `randomThingValue` | `int` | `0` | Base market value for random rewards.                                                                                 |
+| `randomThingRewardDef` | `ResourceEventRewardDef` | `null` | Configuration for random reward generation. See [ResourceEventRewardDef](#resourceeventrewarddef).                    |
+| `prosperityLost` | `int` | `0` | Prosperity deducted from affected settlements on resolution.                                                          |
+| `statModifiers` | `List<FCStatModifier>` | `[]` | Stats applied while event is active (removed on resolution).                                                          |
+| `permanentStatModifiers` | `List<FCStatModifier>` | `[]` | Stats applied to affected settlements permanently (survive event resolution).                                         |
 
 See [ExampleDefs/FCEventDef.xml](ExampleDefs/FCEventDef.xml) for all fields including random event config and event chains.
 

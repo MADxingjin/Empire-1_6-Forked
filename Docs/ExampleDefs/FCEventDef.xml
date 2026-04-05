@@ -24,13 +24,19 @@
 	<!-- ── Random Event Configuration ── -->
 	<!-- Set to true if this event should be eligible for random selection. Default: false -->
 	<isRandomEvent>false</isRandomEvent>
-	<!-- If true, this event activates as soon as the game starts (used for intro events). Default: false -->
+	<!-- Controls when the options window is shown for events that have options.
+	     If true: options are presented immediately when the event is created (the event is consumed
+	     and not tracked in the events list). If false: options are shown when the event timer expires
+	     (normal resolution flow). Also makes the event appear in the per-event disable list in
+	     mod settings. Default: false -->
 	<activateAtStart>false</activateAtStart>
 	<!-- Minimum player wealth required for this random event to fire. Default: 0 -->
 	<requiredWealth>0</requiredWealth>
 	<!-- How many settlements this event affects. (0, 0) means it's faction-wide, not settlement-specific.
 	     The actual number is randomly chosen within this range. Default: (0, 0) -->
 	<rangeSettlementsAffected>(0, 0)</rangeSettlementsAffected>
+	<!-- If true, all settlements are affected (overrides rangeSettlementsAffected). Default: false -->
+	<targetAllSettlements>false</targetAllSettlements>
 	<!-- If true, affected settlements carry over to follow-up events. Default: true -->
 	<settlementsCarryOver>true</settlementsCarryOver>
 	<!-- Weight for random selection — higher weight = more likely to be picked. Default: 0 -->
@@ -139,6 +145,14 @@
 			<value>5</value>
 		</li>
 	</statModifiers>
+	<!-- Permanent stat modifiers applied to affected settlements. Unlike statModifiers, these persist
+	     after the event resolves and remain on the settlement permanently. -->
+	<permanentStatModifiers>
+		<li>
+			<stat>taxBasePercentage</stat>
+			<value>0.05</value>
+		</li>
+	</permanentStatModifiers>
 
 	<!-- ── Settlement Selection ── -->
 	<!-- If true, random settlement selection uses proximity-based weighting (closer settlements more likely). Default: true -->
@@ -146,9 +160,11 @@
 	<!-- Falloff distance for proximity weighting. Higher values make distance matter less. Default: 20 -->
 	<proximityFalloff>20</proximityFalloff>
 
-	<!-- ── Military ── -->
+	<!-- ── Classification ── -->
 	<!-- If true, this event involves military combat (e.g. settlement attacks). Default: false -->
 	<isMilitaryEvent>false</isMilitaryEvent>
+	<!-- If true, this event is classified as negative (for UI and behavioral purposes). Default: false -->
+	<isNegative>false</isNegative>
 
 	<!-- ── Mod Extensions ── -->
 	<!-- FCEventHandlerExtension: provides custom event resolution logic. -->

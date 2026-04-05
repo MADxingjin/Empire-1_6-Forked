@@ -9,9 +9,9 @@ Empire exposes a layered extensibility system designed for submods to add conten
 | Guide | What it covers                                                                                  |
 |-------|-------------------------------------------------------------------------------------------------|
 | [Getting Started](getting-started.md) | Empire-specific conventions, access points, registration patterns                               |
-| [XML Def Types](xml-defs.md) | All 12 custom def types — fields, defaults, cross-references                                    |
+| [XML Def Types](xml-defs.md) | All 11 custom def types — fields, defaults, cross-references                                    |
 | [Stat & Production System](stat-system.md) | FCStatDef, aggregation pipeline, resource production formula                                    |
-| [Interfaces & Registries](interfaces-and-registries.md) | 16 C# interfaces, 12 static registries — method signatures, invocation timing                   |
+| [Interfaces & Registries](interfaces-and-registries.md) | 20 C# interfaces, 14 static registries — method signatures, invocation timing                   |
 | [DefModExtensions](def-mod-extensions.md) | 7 DefModExtension classes + 1 extension interface for events, buildings, resources, settlements |
 | [Abstract Base Classes](abstract-base-classes.md) | FCPolicyBehavior, SettlementBuildingComp, MilitaryJobHandler                                    |
 | [Settlement Comps](worldobject-comps.md) | WorldObjectComp pattern for per-settlement extensibility in Empire                              |
@@ -36,6 +36,8 @@ Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
 | Intercept or modify tax collection | [Interfaces & Registries](interfaces-and-registries.md#itaxtickparticipant) |
 | Modify battle outcomes | [Interfaces & Registries](interfaces-and-registries.md#ibattlemodifier) |
 | Restrict defense assignments or squad assignments | [Interfaces & Registries](interfaces-and-registries.md#idefensevalidator) |
+| Validate or restrict settlement founding | [Interfaces & Registries](interfaces-and-registries.md#isettlementfoundingvalidator) |
+| Influence which settlements get raided | [Interfaces & Registries](interfaces-and-registries.md#iraidweightprovider) |
 | Modify Empire Threat Level | [Interfaces & Registries](interfaces-and-registries.md#ithreatscalingcontributor) |
 | Intercept silver payments | [Interfaces & Registries](interfaces-and-registries.md#isilverpaymentmodifier) |
 | Create a custom policy with procedural logic | [Abstract Base Classes — FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior) |
@@ -48,4 +50,6 @@ Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
 | Register external auto-defenders for settlements | [Interfaces & Registries](interfaces-and-registries.md#iautodefender) |
 | Display external entries in the military tab | [Interfaces & Registries](interfaces-and-registries.md#imilitarytabentry) |
 | Inject external tithe budget into a settlement | [Settlement Comps](worldobject-comps.md) (ITitheBudgetModifier) |
+| Contribute upkeep or income to a settlement | [Settlement Comps](worldobject-comps.md) (IProfitContributor) |
+| Run initialization after settlement loads | [Settlement Comps](worldobject-comps.md) (ISettlementPostLoadInit) |
 | Add custom sections to the building detail panel | [DefModExtensions](def-mod-extensions.md#ibuildingdetailsection) |

@@ -123,6 +123,9 @@
 	<!-- If false, this settlement type will not appear in the settlement type picker. Default: true -->
 	<!-- Submods can XML-patch this to false to hide settlement types they replace. -->
 	<available>true</available>
+	<!-- Multiplier applied to this settlement type's weight when the threat system selects raid targets. -->
+	<!-- Higher values make settlements of this type more likely to be attacked. Default: 1.0 -->
+	<raidTargetingWeight>1.0</raidTargetingWeight>
 
 	<!-- ── Required Mod Extension ── -->
 	<!-- Every WorldSettlementDef MUST include a SettlementTypeExtension (or a subclass). -->

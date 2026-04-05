@@ -1,6 +1,6 @@
 # Interfaces & Registries
 
-Empire provides 16 C# interfaces for submod extensibility. Some use static registries (global hooks); others are discovered on WorldObjectComps (per-settlement hooks) or DefModExtensions.
+Empire provides 20 C# interfaces for submod extensibility. Some use static registries (global hooks); others are discovered on WorldObjectComps (per-settlement hooks) or DefModExtensions.
 
 All registry-based interfaces follow the same pattern — register an instance, and the base mod invokes it at the appropriate time.
 
@@ -30,8 +30,11 @@ public interface ILifecycleParticipant
     void OnSquadRecalled(WorldSettlementFC settlement);
     void OnBattleResolved(WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result);
     void OnResearchCompleted(ResearchProjectDef project);
+    void OnMercenaryDeath(MercenaryDeathEvent evt);
 }
 ```
+
+`OnMercenaryDeath` is called before auto-replacement of killed mercenaries. Set `evt.CancelReplacement = true` to prevent the squad from auto-filling the empty slot.
 
 **Convenience base class**: `LifecycleParticipantBase` — all methods are empty virtuals. Extend this to avoid stubbing unused methods.
 
@@ -143,6 +146,48 @@ public interface IThreatScalingContributor
 | `GetMultiplicativeContribution` | Multiplied into final ETL result | `1.0` |
 
 All additive contributions are summed, then all multiplicative contributions are multiplied together.
+
+---
+
+### ISettlementFoundingValidator
+
+**Registry**: `FoundingValidatorRegistry`
+**Purpose**: Validate, restrict, or add side effects when settlements are founded.
+
+```csharp
+public interface ISettlementFoundingValidator
+{
+    bool CanFoundSettlement(PlanetTile tile, WorldSettlementDef type, out string reason);
+    string GetAdditionalCostDescription(PlanetTile tile, WorldSettlementDef type);
+    void OnSettlementFounded(PlanetTile tile, WorldSettlementDef type);
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `CanFoundSettlement` | Return `false` to prevent founding. Set `reason` for player feedback. |
+| `GetAdditionalCostDescription` | Return additional cost text for the founding UI (e.g., "100 Steel"). Return `null` for no extra text. |
+| `OnSettlementFounded` | Called after silver payment succeeds. Consume custom resources or perform side effects here. |
+
+---
+
+### IRaidWeightProvider
+
+**Registry**: `RaidWeightRegistry`
+**Purpose**: Influence which settlement is selected as a raid target by enemy factions.
+
+```csharp
+public interface IRaidWeightProvider
+{
+    float GetSettlementRaidWeight(WorldSettlementFC settlement, Faction attackingFaction);
+}
+```
+
+| Method | Description | No-op return |
+|--------|-------------|-------------|
+| `GetSettlementRaidWeight` | Weight multiplier for raid targeting. `>1` = more likely, `<1` = less likely, `0` = excluded. | `1.0f` |
+
+All provider weights are multiplied together per settlement. A settlement's final targeting weight is `baseWeight * product(allProviderWeights)`.
 
 ---
 
@@ -384,7 +429,8 @@ public interface IResourceProductionModifier
 {
     double GetResourceAdditiveModifier(ResourceFC resource);
     double GetResourceMultiplierModifier(ResourceFC resource);
-    string GetResourceModifierDesc(ResourceFC resource);
+    string GetResourceAdditiveDesc(ResourceFC resource);
+    string GetResourceMultiplierDesc(ResourceFC resource);
 }
 ```
 
@@ -392,7 +438,8 @@ public interface IResourceProductionModifier
 |--------|-------------|-------------|
 | `GetResourceAdditiveModifier` | Added to the production base | `0` |
 | `GetResourceMultiplierModifier` | Multiplied into the production multiplier | `1` |
-| `GetResourceModifierDesc` | Tooltip description | `null` or `""` |
+| `GetResourceAdditiveDesc` | Tooltip description for additive contribution | `null` or `""` |
+| `GetResourceMultiplierDesc` | Tooltip description for multiplier contribution | `null` or `""` |
 
 **Caching**: Results are lazily cached by `ResourceFC`'s dirty flags. Invalidated automatically after lifecycle events. For changes outside lifecycle callbacks, call `settlement.InvalidateResourceCaches()`.
 
@@ -420,6 +467,50 @@ public interface ITitheBudgetModifier
 Must be implemented by a `WorldObjectComp` attached to the settlement. Queried during tithe budget calculation via `ResourceFC.externalTitheBudget`.
 
 **Caching**: Results are cached per settlement. Automatically invalidated after lifecycle events. For changes outside lifecycle callbacks, call `settlement.InvalidateStatCache()`.
+
+---
+
+### IProfitContributor
+
+**Purpose**: Contribute upkeep or income to a settlement's economic calculations.
+
+```csharp
+public interface IProfitContributor
+{
+    double GetUpkeepContribution();
+    string GetUpkeepContributionDesc();
+    double GetIncomeContribution();
+    string GetIncomeContributionDesc();
+}
+```
+
+| Method | Description | No-op return |
+|--------|-------------|-------------|
+| `GetUpkeepContribution` | Additional upkeep cost added to the settlement's total. | `0` |
+| `GetUpkeepContributionDesc` | Tooltip line for the upkeep breakdown. | `null` or `""` |
+| `GetIncomeContribution` | Additional income added to the settlement's total. | `0` |
+| `GetIncomeContributionDesc` | Tooltip line for the income breakdown. | `null` or `""` |
+
+Must be implemented by a `WorldObjectComp` attached to the settlement.
+
+**Caching**: Results are cached per settlement. Automatically invalidated after lifecycle events. For changes outside lifecycle callbacks, call `settlement.DirtyProfitCache()`.
+
+---
+
+### ISettlementPostLoadInit
+
+**Purpose**: Run initialization that depends on fully-rebuilt settlement state after a save is loaded.
+
+```csharp
+public interface ISettlementPostLoadInit
+{
+    void PostSettlementLoadInit(WorldSettlementFC settlement);
+}
+```
+
+Called after stat modifiers and resource caches are rebuilt during `FinalizeInit`. Use this when your comp needs to read computed values (stat totals, resource production, etc.) that aren't available in `PostExposeData`.
+
+Must be implemented by a `WorldObjectComp` attached to the settlement.
 
 ---
 
@@ -460,6 +551,8 @@ IReadOnlyList<T> items = MyRegistry.Items;  // property name varies
 | `BattleModifierRegistry` | `.Modifiers` | No |
 | `DefenseValidatorRegistry` | (none) | No |
 | `SquadAssignmentRegistry` | (none) | No |
+| `FoundingValidatorRegistry` | (none) | No |
+| `RaidWeightRegistry` | `.Providers` | No |
 | `ThreatScalingRegistry` | `.Contributors` | No |
 | `SilverPaymentRegistry` | `.Modifiers` | No |
 | `RaidTargetRegistry` | `.Targets` | No |
