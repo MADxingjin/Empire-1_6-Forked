@@ -93,5 +93,40 @@ namespace FactionColonies.util
             }
             return list;
         }
+        
+        public static float ThingValue(ThingQualityTuple thing)
+        {
+            return ThingValue(thing.thingDef, thing.stuffDef, thing.quality);
+        }
+
+        public static float ThingValueNoQual(ThingDef thing, ThingDef stuff)
+        {
+            return ThingValue(thing, stuff, QualityCategory.Normal);
+        }
+        public static float ThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
+        {
+            float value;
+            if (stuff != null && ThingHasQuality(thing))
+            {
+                value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing, stuff, quality));
+            }
+            else
+            {
+                if (stuff != null && ThingIsStuffable(thing))
+                {
+                    value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff);
+                }
+                else
+                {
+                    value = thing.BaseMarketValue;
+                }
+            }
+            // Prevent shenanigans
+            if (value <= 0)
+            {
+                value = 10;
+            }
+            return value;
+        }
     }
 }

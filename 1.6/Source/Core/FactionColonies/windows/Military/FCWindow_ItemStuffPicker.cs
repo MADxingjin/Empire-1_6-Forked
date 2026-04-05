@@ -2,6 +2,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FactionColonies.util;
 using UnityEngine;
 using Verse;
 
@@ -21,6 +22,8 @@ namespace FactionColonies
 
         private ThingDef selectedItem;
         private ThingDef selectedStuff;
+        private QualityCategory? selectedQuality = null;
+        private QualityCategory SelectedQuality => selectedQuality ?? QualityCategory.Normal;
         private List<ThingDef> currentStuffs = new List<ThingDef>();
 
         private string itemSearchTerm = "";
@@ -327,7 +330,7 @@ namespace FactionColonies
                 Widgets.Label(labelRect, stuff.LabelCap);
 
                 Text.Anchor = TextAnchor.MiddleRight;
-                float totalValue = StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, stuff);
+                float totalValue = CraftUtil.ThingValue(selectedItem, stuff, SelectedQuality);
                 Widgets.Label(costRect, "$" + totalValue.ToString("F0"));
 
                 // Click to select
@@ -351,9 +354,7 @@ namespace FactionColonies
             if (selectedStuff != null)
                 itemName += " (" + selectedStuff.LabelCap + ")";
 
-            float cost = selectedStuff != null
-                ? StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, selectedStuff)
-                : selectedItem.BaseMarketValue;
+            float cost = CraftUtil.ThingValue(selectedItem, selectedStuff, SelectedQuality);
 
             Widgets.Label(rect, "fcPickerSummary".Translate(itemName, cost.ToString("F0")));
         }
@@ -408,11 +409,11 @@ namespace FactionColonies
                     return list.OrderByDescending(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
                 case 2: // Price Low-High
                     if (isStuffList && selectedItem != null)
-                        return list.OrderBy(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                        return list.OrderBy(t => CraftUtil.ThingValue(selectedItem, t, SelectedQuality)).ToList();
                     return list.OrderBy(t => t.BaseMarketValue).ToList();
                 case 3: // Price High-Low
                     if (isStuffList && selectedItem != null)
-                        return list.OrderByDescending(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedItem, t)).ToList();
+                        return list.OrderByDescending(t => CraftUtil.ThingValue(selectedItem, t, SelectedQuality)).ToList();
                     return list.OrderByDescending(t => t.BaseMarketValue).ToList();
                 default: // 0: Name A-Z
                     return list.OrderBy(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();

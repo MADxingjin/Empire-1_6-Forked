@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using FactionColonies.util;
 using UnityEngine;
 using Verse;
 
@@ -398,7 +399,7 @@ namespace FactionColonies
         }
 
         public float MarketValue =>
-            thing != null ? StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff) : 0f;
+            thing != null ? CraftUtil.ThingValue(thing, stuff, quality ?? QualityCategory.Normal) : 0f;
 
         public void ExposeData()
         {

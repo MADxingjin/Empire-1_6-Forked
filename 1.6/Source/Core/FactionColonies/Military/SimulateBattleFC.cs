@@ -168,19 +168,19 @@ namespace FactionColonies
                     break;
                 case TechLevel.Neolithic:
                     militaryLevel = 2;
-                    efficiency = 1;
+                    efficiency = .9;
                     break;
                 case TechLevel.Medieval:
                     militaryLevel = 3;
-                    efficiency = 1.2;
+                    efficiency = 1;
                     break;
                 case TechLevel.Industrial:
                     militaryLevel = 5;
-                    efficiency = 1.2;
+                    efficiency = 1.1;
                     break;
                 case TechLevel.Spacer:
                     militaryLevel = 6;
-                    efficiency = 1.3;
+                    efficiency = 1.2;
                     break;
                 case TechLevel.Ultra:
                     militaryLevel = 7;

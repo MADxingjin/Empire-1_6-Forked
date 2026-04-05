@@ -901,36 +901,15 @@ namespace FactionColonies
         }
         public float TitheThingValue(ThingQualityTuple thing)
         {
-            return TitheThingValue(thing.thingDef, thing.stuffDef, thing.quality);
+            return CraftUtil.ThingValue(thing);
         }
         public float TitheThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
         {
-            float value;
-            if (CraftUtil.ThingHasQuality(thing))
-            {
-                value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing, stuff, quality));
-            }
-            else
-            {
-                if (CraftUtil.ThingIsStuffable(thing))
-                {
-                    value = StatWorker_MarketValue.CalculatedBaseMarketValue(thing, stuff);
-                }
-                else
-                {
-                    value = thing.BaseMarketValue;
-                }
-            }
-            // Prevent shenanigans
-            if (value <= 0)
-            {
-                value = 100;
-            }
-            return value;
+            return CraftUtil.ThingValue(thing, stuff, quality);
         }
         public float TitheThingTotalValue(ThingQualityTuple thing, int quanity)
         {
-            return TitheThingValue(thing) * quanity;
+            return CraftUtil.ThingValue(thing) * quanity;
         }
         public bool CanAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
@@ -942,7 +921,7 @@ namespace FactionColonies
         }
         public int MaxThingCanAfford(ThingQualityTuple thing, double budget)
         {
-            return ResourceFormulas.MaxThingCanAfford(budget, TitheThingValue(thing));
+            return ResourceFormulas.MaxThingCanAfford(budget, CraftUtil.ThingValue(thing));
         }
         public float CalcTotalTitheValue()
         {

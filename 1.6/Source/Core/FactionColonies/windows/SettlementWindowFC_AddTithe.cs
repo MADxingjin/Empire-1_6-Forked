@@ -17,6 +17,7 @@ namespace FactionColonies
 
         private ThingDef selectedThing = null;
         private QualityCategory? selectedQuality = null;
+        private QualityCategory SelectedQuality => selectedQuality ?? QualityCategory.Normal;
         private ThingDef selectedStuff = null;
         private List<ThingDef> currentStuffs = new List<ThingDef>();
 
@@ -41,9 +42,10 @@ namespace FactionColonies
 
         public SettlementWindowFC_AddTithe(WorldSettlementFC settlement, ResourceFC resource)
         {
-            if (resource == null || settlement == null)
+            if (resource is null || settlement is null)
             {
                 Close();
+                return;
             }
             this.settlement = settlement;
             this.resource = resource;
@@ -209,7 +211,7 @@ namespace FactionColonies
                 ThingQualityTuple tuple = new ThingQualityTuple
                 {
                     thingDef = selectedThing,
-                    quality = thingHasQuality ? selectedQuality ?? QualityCategory.Normal : QualityCategory.Normal,
+                    quality = thingHasQuality ? SelectedQuality : QualityCategory.Normal,
                     stuffDef = thingIsStuffable ? selectedStuff : null
                 };
                 if (canConfirm && resource.HasTitheListKey(tuple))
@@ -461,9 +463,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(label, iStuff.LabelCap);
                 Text.Anchor = TextAnchor.MiddleRight;
-                float stuffPrice = selectedQuality != null
-                    ? resource.TitheThingValue(selectedThing, iStuff, selectedQuality ?? QualityCategory.Normal)
-                    : StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, iStuff);
+                float stuffPrice = CraftUtil.ThingValue(selectedThing, iStuff, SelectedQuality);
                 Widgets.Label(valueLabel, $"${Math.Round(stuffPrice)}");
                 Text.Anchor = TextAnchor.MiddleLeft;
             }
@@ -479,11 +479,11 @@ namespace FactionColonies
                     return list.OrderByDescending(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
                 case 2: // Price Low-High
                     if (isStuffList && selectedThing != null)
-                        return list.OrderBy(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, t)).ToList();
+                        return list.OrderBy(t => CraftUtil.ThingValue(selectedThing, t, SelectedQuality)).ToList();
                     return list.OrderBy(t => t.BaseMarketValue).ToList();
                 case 3: // Price High-Low
                     if (isStuffList && selectedThing != null)
-                        return list.OrderByDescending(t => StatWorker_MarketValue.CalculatedBaseMarketValue(selectedThing, t)).ToList();
+                        return list.OrderByDescending(t => CraftUtil.ThingValue(selectedThing, t, SelectedQuality)).ToList();
                     return list.OrderByDescending(t => t.BaseMarketValue).ToList();
                 default: // 0: Name A-Z
                     return list.OrderBy(t => t.label, StringComparer.OrdinalIgnoreCase).ToList();
