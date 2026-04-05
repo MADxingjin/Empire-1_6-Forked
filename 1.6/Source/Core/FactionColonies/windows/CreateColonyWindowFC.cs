@@ -220,7 +220,7 @@ namespace FactionColonies
                 }
             }
 
-            if (CanCreateSettlementHere(true))
+            if (IsTileValidForSettlement())
             {
                 currentTileSelected = currentSettlementType.GetTileForSettlement(currentTileSelected);
                 timeToTravel = currentSettlementType.GetCreationTime(currentTileSelected);
@@ -390,6 +390,16 @@ namespace FactionColonies
             DoPostEventCreationTraitThings();
         }
 
+        /// <summary>
+        /// Checks only tile validity (location, adjacency, caravan list). Used for travel time
+        /// and production preview — does NOT check silver or founding validator resource costs.
+        /// </summary>
+        private bool IsTileValidForSettlement()
+        {
+            return WorldTileChecker.IsValidTileForNewSettlement(currentTileSelected, currentSettlementType, null)
+                && !faction.CheckSettlementCaravansList(currentTileSelected);
+        }
+
         private bool CanCreateSettlementHere(bool silent = false)
         {
             StringBuilder reason = new StringBuilder();
@@ -446,6 +456,14 @@ namespace FactionColonies
                 faction.layersForTilePicker = null;
             }
             Find.TilePicker.StopTargeting();
+        }
+
+        /// <summary>
+        /// A stub for harmony patch targeting
+        /// </summary>
+        public override void PostOpen()
+        {
+            base.PostOpen();
         }
     }
 }
