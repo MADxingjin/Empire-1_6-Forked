@@ -508,8 +508,10 @@ namespace FactionColonies
             // Header: "Equipped Apparel" label + "+ Add" button
             Rect headerRect = new Rect(rect.x, rect.y, rect.width, headerHeight);
             Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(headerRect, "fcEquippedApparel".Translate());
+            float btnY = rect.y + headerHeight + 3f;
+            float btnW = (rect.width - 4f) / 3f;
 
             if (!isSelectedUnitDeployed)
             {
@@ -518,8 +520,8 @@ namespace FactionColonies
 
                 float btnX = rect.xMax;
 
-                btnX -= 70f;
-                Rect addBtnRect = new Rect(btnX, rect.y, 70f, headerHeight);
+                btnX -= btnW;
+                Rect addBtnRect = new Rect(btnX, btnY, btnW, headerHeight);
                 if (Widgets.ButtonText(addBtnRect, "fcAddApparel".Translate()))
                 {
                     OpenApparelPicker(unit);
@@ -527,8 +529,8 @@ namespace FactionColonies
 
                 if (unit.apparel.Any(a => a.thing != null))
                 {
-                    btnX -= 82f;
-                    Rect setAllBtn = new Rect(btnX, rect.y, 80f, headerHeight);
+                    btnX -= btnW + 2f;
+                    Rect setAllBtn = new Rect(btnX, btnY, btnW, headerHeight);
                     if (Widgets.ButtonText(setAllBtn, "fcSetAllColors".Translate()))
                     {
                         Color current = FactionCache.FactionComp?.hasFactionColor == true
@@ -538,8 +540,8 @@ namespace FactionColonies
 
                     if (unit.apparel.Any(a => a.hasColor))
                     {
-                        btnX -= 77f;
-                        Rect clearBtn = new Rect(btnX, rect.y, 75f, headerHeight);
+                        btnX -= btnW + 2f;
+                        Rect clearBtn = new Rect(btnX, btnY, btnW, headerHeight);
                         if (Widgets.ButtonText(clearBtn, "fcClearColors".Translate()))
                         {
                             unit.ClearAllApparelColors();
@@ -549,7 +551,7 @@ namespace FactionColonies
             }
 
             // Scrollable apparel list
-            Rect listOutRect = new Rect(rect.x, rect.y + headerHeight + 2f, rect.width, rect.height - headerHeight - 2f);
+            Rect listOutRect = new Rect(rect.x, btnY + headerHeight + 2f, rect.width, rect.height - (2 * (headerHeight + 2f)));
 
             // Sort apparel: outermost layer first, then alphabetical
             List<SavedThing> sortedApparel = unit.apparel

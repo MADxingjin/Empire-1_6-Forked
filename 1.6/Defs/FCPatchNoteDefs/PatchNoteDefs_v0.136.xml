@@ -14,4 +14,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_136_1</defName>
+		<label>Manage Units Fix</label>
+		<description>Cleans up a UI issue in the Manage Units window.</description>
+		<releaseDate>2026-04-05</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Changes Manage Units window so that the &quot;Equipped Apparel&quot; label won&apos;t overlap with the &quot;Clear Colors&quot; button</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
