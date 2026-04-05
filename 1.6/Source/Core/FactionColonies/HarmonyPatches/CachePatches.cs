@@ -47,6 +47,7 @@ namespace FactionColonies
             ThreatScalingRegistry.ClearAll();
             SilverPaymentRegistry.ClearAll();
             RaidWeightRegistry.ClearAll();
+            FoundingValidatorRegistry.ClearAll();
 
             SettlementTypeExtension_Orbital.InvalidateCache();
             FactionDefDescriptionPatch.Invalidate();

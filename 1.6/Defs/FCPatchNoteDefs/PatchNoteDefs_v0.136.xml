@@ -42,4 +42,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>0_136_3</defName>
+		<label>Cache Fix</label>
+		<description>Minor caching fix.</description>
+		<releaseDate>2026-04-05</releaseDate>
+		<patchNoteType>Hotfix</patchNoteType>
+		<patchNoteLines>
+		<li>Clears the FoundingValidatorRegistry in EmpireCacheUtil.InvalidateAll</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
