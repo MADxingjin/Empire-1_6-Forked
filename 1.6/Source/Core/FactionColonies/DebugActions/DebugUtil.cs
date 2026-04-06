@@ -396,13 +396,64 @@ namespace FactionColonies
         [DebugAction("Empire", "Reset All Military Squads", allowedGameStates = AllowedGameStates.Playing)]
         private static void ResetMilitarySquads()
         {
-            FactionCache.FactionComp.militaryCustomizationUtil.mercenarySquads =
-                new List<MercenarySquadFC>();
             LogUtil.MessageForce("Debug - Reset All Military Squads");
+            MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
+
+            for (int i = util.mercenarySquads.Count - 1; i >= 0; i--)
+            {
+                MercenarySquadFC squad = util.mercenarySquads[i];
+                if (squad.hasLord)
+                {
+                    squad.map?.lordManager.RemoveLord(squad.lord);
+                }
+
+                foreach (Mercenary merc in squad.mercenaries.Concat(squad.animals).ToList())
+                {
+                    if (merc?.pawn != null && !merc.pawn.Destroyed)
+                        merc.pawn.Destroy();
+                }
+
+                if (squad.settlement?.MilitaryComp != null)
+                    squad.settlement.MilitaryComp.militarySquad = null;
+
+                util.mercenarySquads.RemoveAt(i);
+            }
+
             foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
             {
                 settlement.MilitaryComp?.ReturnMilitary(false);
             }
+
+            util.CheckMilitaryUtilForErrors();
+        }
+
+        [DebugAction("Empire", "Reset All Military Cooldowns", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ResetAllMilitaryCooldowns()
+        {
+            LogUtil.MessageForce("Debug - Reset All Military Cooldowns");
+            FactionFC faction = FactionCache.FactionComp;
+            int count = 0;
+
+            foreach (WorldSettlementFC settlement in faction.settlements)
+            {
+                if (settlement.MilitaryComp is null || settlement.MilitaryComp.militaryJob != MilitaryJobDefOf.Cooldown)
+                    continue;
+
+                for (int i = faction.events.Count - 1; i >= 0; i--)
+                {
+                    if (faction.events[i].def == FCEventDefOf.cooldownMilitary
+                        && faction.events[i].location == settlement.Tile)
+                    {
+                        faction.events.RemoveAt(i);
+                        faction.eventsVersion++;
+                    }
+                }
+
+                settlement.MilitaryComp.ReturnMilitary(false);
+                count++;
+            }
+
+            LogUtil.MessageForce($"Debug - Reset {count} military cooldown(s)");
         }
 
         [DebugAction("Empire", "Clear Old Bills", allowedGameStates = AllowedGameStates.Playing)]
@@ -557,49 +608,73 @@ namespace FactionColonies
             });
         }
 
-        [DebugAction("Empire", "Create Settlement (Instant)", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
+        [DebugAction("Empire", "Create Settlement (Instant)", allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         private static void CreateSettlementInstant()
         {
-            PlanetTile tile = GenWorld.MouseTile();
-            if (tile == -1)
-            {
-                Messages.Message("Invalid tile selected.", MessageTypeDefOf.RejectInput);
-                return;
-            }
-
             List<WorldSettlementDef> defs = DefDatabase<WorldSettlementDef>.AllDefsListForReading;
             if (defs.Count == 1)
             {
-                TryCreateInstantSettlement(tile, defs[0]);
+                StartTilePickerForSettlement(defs[0]);
+                return;
             }
-            else
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (WorldSettlementDef def in defs)
             {
-                List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (WorldSettlementDef def in defs)
-                {
-                    WorldSettlementDef localDef = def;
-                    list.Add(new DebugMenuOption(localDef.LabelCap, DebugMenuOptionMode.Action,
-                        () => TryCreateInstantSettlement(tile, localDef)));
-                }
-                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+                WorldSettlementDef localDef = def;
+                string layerLabel = localDef.planetLayers.Count > 0
+                    ? localDef.planetLayers[0].defName
+                    : "Surface";
+                list.Add(new DebugMenuOption($"{localDef.LabelCap} [{layerLabel}]", DebugMenuOptionMode.Action,
+                    () => StartTilePickerForSettlement(localDef)));
             }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
-        private static void TryCreateInstantSettlement(PlanetTile tile, WorldSettlementDef def)
+        private static void StartTilePickerForSettlement(WorldSettlementDef def)
         {
-            StringBuilder reason = new StringBuilder();
-            if (!WorldTileChecker.IsValidTileForNewSettlement(tile, def, reason))
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction is null)
             {
-                Messages.Message($"Cannot settle here: {reason}", MessageTypeDefOf.RejectInput);
+                LogUtil.MessageForce("Debug - FactionFC WorldComponent is null, cannot create settlement.");
                 return;
             }
-            if (FactionCache.FactionComp.CheckSettlementCaravansList(tile))
-            {
-                Messages.Message("A settlement caravan is already heading to this tile.", MessageTypeDefOf.RejectInput);
-                return;
-            }
-            LogUtil.MessageForce($"Debug - Create Settlement (Instant) at tile {tile.Tile} with type {def.defName}");
-            ColonyUtil.CreatePlayerColonySettlement(tile, def);
+
+            faction.layersForTilePicker = def.planetLayers;
+
+            Find.TilePicker.StartTargeting_NewTemp(
+                delegate (PlanetTile tile)
+                {
+                    StringBuilder reason = new StringBuilder();
+                    if (!WorldTileChecker.IsValidTileForNewSettlement(tile, def, reason))
+                    {
+                        Messages.Message($"Cannot settle here: {reason}", MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    if (faction.CheckSettlementCaravansList(tile))
+                    {
+                        Messages.Message("A settlement caravan is already heading to this tile.", MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    return true;
+                },
+                delegate (PlanetTile tile)
+                {
+                    PlanetTile settlementTile = def.GetTileForSettlement(tile);
+                    LogUtil.MessageForce($"Debug - Create Settlement (Instant) at tile {settlementTile.Tile} with type {def.defName}");
+                    ColonyUtil.CreatePlayerColonySettlement(settlementTile, def);
+                    faction.layersForTilePicker = null;
+                },
+                allowEscape: true,
+                noTileChosen: delegate
+                {
+                    faction.layersForTilePicker = null;
+                },
+                title: $"Select tile for {def.LabelCap}",
+                showRandomButton: false,
+                showNextButton: true,
+                canCancel: true
+            );
         }
 
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
