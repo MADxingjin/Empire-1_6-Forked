@@ -82,6 +82,7 @@ namespace FactionColonies
         public static FCStatDef militaryCooldownOffset;
         public static FCStatDef raidCooldownOffset;
         public static FCStatDef deadPawnCooldownOffset;
+        public static FCStatDef mercHealRateMultiplier;
 
         // ── Threat Scaling ───────────────────────────────────────
         public static FCStatDef threatScalingBase;

@@ -189,40 +189,64 @@ namespace FactionColonies
 
         // --- Mercenary Healing ---
 
-        private HashSet<Pawn> injuredMercs;
+        private HashSet<Mercenary> injuredMercs;
 
         /// <summary>
         /// Gradually heal injuries on undeployed mercenary pawns.
         /// Only iterates the tracked injured set for performance.
+        /// Per-settlement heal rate is determined by the mercHealRateMultiplier stat.
         /// </summary>
         public void TickMercenaryHealing(int interval)
         {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction is null) return;
+            
             if (injuredMercs is null) RebuildInjuredMercs();
             if ((injuredMercs?.Count ?? 0) == 0) return;
 
-            float healAmount = FCSettings.mercenaryHealRatePerHour * ((float)interval / (float)GenDate.TicksPerHour);
-            if (healAmount <= 0f) return;
+            float baseHealAmount = FCSettings.mercenaryHealRatePerHour * ((float)interval / (float)GenDate.TicksPerHour);
+            if (baseHealAmount <= 0f) return;
 
-            List<Pawn> toRemove = null;
-            foreach (Pawn pawn in injuredMercs)
+            Dictionary<WorldSettlementFC, float> healCache = null;
+
+            List<Mercenary> toRemove = null;
+            foreach (Mercenary merc in injuredMercs)
             {
-                if (pawn == null || pawn.Destroyed || pawn.Dead || pawn.Map != null)
+                Pawn pawn = merc.pawn;
+                if (pawn is null || pawn.Destroyed || pawn.Dead || pawn.Map != null)
                 {
-                    if (toRemove == null) toRemove = new List<Pawn>();
-                    toRemove.Add(pawn);
+                    if (toRemove is null) toRemove = new List<Mercenary>();
+                    toRemove.Add(merc);
                     continue;
                 }
+
+                float healAmount = GetSettlementHealAmount(merc, baseHealAmount, faction, ref healCache);
                 HealMercenaryTick(pawn, healAmount);
                 if (!HasInjuries(pawn))
                 {
-                    if (toRemove == null) toRemove = new List<Pawn>();
-                    toRemove.Add(pawn);
+                    if (toRemove is null) toRemove = new List<Mercenary>();
+                    toRemove.Add(merc);
                 }
             }
             if (toRemove != null)
             {
-                foreach (Pawn p in toRemove) injuredMercs.Remove(p);
+                foreach (Mercenary m in toRemove) injuredMercs.Remove(m);
             }
+        }
+
+        private float GetSettlementHealAmount(Mercenary merc, float baseHealAmount, FactionFC faction,
+            ref Dictionary<WorldSettlementFC, float> cache)
+        {
+            WorldSettlementFC settlement = merc.settlement ?? merc.squad?.getSettlement;
+            if (faction is null || settlement is null) return baseHealAmount;
+
+            if (cache is null) cache = new Dictionary<WorldSettlementFC, float>();
+            if (cache.TryGetValue(settlement, out float cached)) return cached;
+
+            double multiplier = faction.GetStatValue(FCStatDefOf.mercHealRateMultiplier, settlement);
+            float result = baseHealAmount * (float)multiplier;
+            cache[settlement] = result;
+            return result;
         }
 
         /// <summary>
@@ -231,16 +255,11 @@ namespace FactionColonies
         /// </summary>
         private void RebuildInjuredMercs()
         {
-            injuredMercs = new HashSet<Pawn>();
+            injuredMercs = new HashSet<Mercenary>();
             foreach (MercenarySquadFC squad in mercenarySquads)
             {
-                if (squad.isDeployed || squad.mercenaries == null) continue;
-                foreach (Mercenary merc in squad.mercenaries)
-                {
-                    if (merc?.pawn == null || merc.pawn.Dead || merc.pawn.Map != null) continue;
-                    if (HasInjuries(merc.pawn))
-                        injuredMercs.Add(merc.pawn);
-                }
+                if (squad.isDeployed) continue;
+                RegisterSquadInjuries(squad);
             }
         }
 
@@ -249,13 +268,13 @@ namespace FactionColonies
         /// </summary>
         public void RegisterSquadInjuries(MercenarySquadFC squad)
         {
-            if (injuredMercs == null) injuredMercs = new HashSet<Pawn>();
-            if (squad.mercenaries == null) return;
+            if (injuredMercs is null) injuredMercs = new HashSet<Mercenary>();
+            if (squad.mercenaries is null) return;
             foreach (Mercenary merc in squad.mercenaries)
             {
-                if (merc?.pawn == null || merc.pawn.Dead || merc.pawn.Map != null) continue;
+                if (merc?.pawn is null || merc.pawn.Dead || merc.pawn.Map != null) continue;
                 if (HasInjuries(merc.pawn))
-                    injuredMercs.Add(merc.pawn);
+                    injuredMercs.Add(merc);
             }
         }
 

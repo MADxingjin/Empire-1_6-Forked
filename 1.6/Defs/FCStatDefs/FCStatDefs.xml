@@ -79,6 +79,14 @@
         <displayDivisor>2500</displayDivisor>
     </FactionColonies.FCStatDef>
 
+    <FactionColonies.FCStatDef>
+        <defName>mercHealRateMultiplier</defName>
+        <label>mercenary heal rate</label>
+        <aggregation>Multiplicative</aggregation>
+        <appliesToSettlements>true</appliesToSettlements>
+        <descriptionKey>FCTraitDesc_mercHealRateMultiplier</descriptionKey>
+    </FactionColonies.FCStatDef>
+
     <!-- ── Battle Penalties ────────────────────────────────────── -->
 
     <FactionColonies.FCStatDef>
