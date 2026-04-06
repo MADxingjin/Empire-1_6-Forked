@@ -216,7 +216,7 @@ namespace FactionColonies
             float infoY = highlightBar.yMax + margin;
             float halfWidth = rect.width / 2f;
 
-            Rect costRect = new Rect(rect.x, infoY, halfWidth, 18f);
+            Rect costRect = new Rect(rect.x, infoY, halfWidth, 20f);
             if (settlementPointReference != null)
             {
                 Widgets.Label(costRect, "FCFireSupportCostRefLabel".Translate(
@@ -228,7 +228,7 @@ namespace FactionColonies
                 Widgets.Label(costRect, "FCFireSupportCostLabel".Translate(selectedSupport.ReturnTotalCost()));
             }
 
-            Rect countRect = new Rect(rect.x + halfWidth, infoY, halfWidth, 18f);
+            Rect countRect = new Rect(rect.x + halfWidth, infoY, halfWidth, 22f);
             Widgets.Label(countRect, "FCFireSupportProjectileCount".Translate(selectedSupport.projectiles.Count));
 
             // Info line 2: Duration
@@ -239,7 +239,7 @@ namespace FactionColonies
 
             // Info line 3: Accuracy label
             float line3Y = line2Y + 18f + 2f;
-            Rect accuracyLabelRect = new Rect(rect.x, line3Y, rect.width, 18f);
+            Rect accuracyLabelRect = new Rect(rect.x, line3Y, rect.width, 22f);
             Widgets.Label(accuracyLabelRect, "FCFireSupportAccuracyLabel".Translate(
                 selectedSupport.accuracy,
                 selectedSupport.ReturnAccuracyCostPercentage()));
