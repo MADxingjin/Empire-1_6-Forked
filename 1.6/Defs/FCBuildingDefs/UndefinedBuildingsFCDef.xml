@@ -73,7 +73,7 @@
 		<constructionDuration>60000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<statModifiers>
-			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>1.5</value></li>
+			<li><stat>RTD_Animals_ProductionMultiplier</stat><value>1.25</value></li>
 		</statModifiers>
 		<iconPath>GUI/Buildings/WildernessGuild</iconPath>
 	</FactionColonies.BuildingFCDef>
