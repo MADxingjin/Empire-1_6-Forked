@@ -10,7 +10,7 @@ namespace FactionColonies
     public class FactionCustomizePoliciesWindowFC : Window
     {
         private const float fullwidth = 900f;
-        private const float fullheight = 550f;
+        private const float fullheight = 600f;
         private const float margin = 5f;
         private const float smallMargin = 3f;
         private const float policyRowHeight = 30f;
@@ -30,6 +30,7 @@ namespace FactionColonies
         private FCPolicyDef hoveredPolicy;
 
         private Vector2 availableListScroll;
+        private Vector2[] cardScrollPositions;
 
         // Cached list of all core policies from DefDatabase
         private List<FCPolicyDef> allCorePolicies;
@@ -46,6 +47,8 @@ namespace FactionColonies
             allCorePolicies = DefDatabase<FCPolicyDef>.AllDefs
                 .Where(d => d.category == FCPolicyCategory.Core)
                 .ToList();
+
+            cardScrollPositions = new Vector2[FCSettings.maxPolicyCount];
 
             if (faction.policies.Count != 0)
             {
@@ -202,6 +205,7 @@ namespace FactionColonies
                 if (Widgets.ButtonText(removeBtn, "X"))
                 {
                     selectedPolicies.RemoveAt(slotIndex);
+                    ResetCardScrollPositions();
                     GUI.color = Color.white;
                     return;
                 }
@@ -233,7 +237,21 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             string desc = returnPolicyDesc(policy);
-            Widgets.Label(descRect, desc);
+            float textHeight = Text.CalcHeight(desc, descRect.width);
+
+            if (textHeight > descRect.height)
+            {
+                float scrollWidth = descRect.width - 16f;
+                textHeight = Text.CalcHeight(desc, scrollWidth);
+                Rect scrollContent = new Rect(descRect.x, descRect.y, scrollWidth, textHeight);
+                Widgets.BeginScrollView(descRect, ref cardScrollPositions[slotIndex], scrollContent);
+                Widgets.Label(scrollContent, desc);
+                Widgets.EndScrollView();
+            }
+            else
+            {
+                Widgets.Label(descRect, desc);
+            }
 
             GUI.color = Color.white;
         }
@@ -324,6 +342,7 @@ namespace FactionColonies
                 if (selected)
                 {
                     selectedPolicies.Remove(policy);
+                    ResetCardScrollPositions();
                 }
                 else if (IsBlockedByIncompatible(policy))
                 {
@@ -332,12 +351,19 @@ namespace FactionColonies
                 else
                 {
                     selectedPolicies.Add(policy);
+                    ResetCardScrollPositions();
                 }
             }
             else
             {
                 Messages.Message("FCUnselectTrait".Translate(), MessageTypeDefOf.RejectInput);
             }
+        }
+
+        private void ResetCardScrollPositions()
+        {
+            for (int i = 0; i < cardScrollPositions.Length; i++)
+                cardScrollPositions[i] = Vector2.zero;
         }
 
         string returnPolicyDesc(FCPolicyDef def)
