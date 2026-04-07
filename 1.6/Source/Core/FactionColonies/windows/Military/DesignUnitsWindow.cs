@@ -392,9 +392,9 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperCenter;
 
-            Widgets.Label(new Rect(AnimalCompanion.x, AnimalCompanion.y - 15f, AnimalCompanion.width, 15f), "fcLabelAnimal".Translate());
+            Widgets.Label(new Rect(AnimalCompanion.x, AnimalCompanion.y - 15f, AnimalCompanion.width, 18f), "fcLabelAnimal".Translate());
             Widgets.DrawMenuSection(AnimalCompanion);
-            Widgets.Label(new Rect(EquipmentWeapon.x, EquipmentWeapon.y - 15f, EquipmentWeapon.width, 15f), "fcLabelWeapon".Translate());
+            Widgets.Label(new Rect(EquipmentWeapon.x, EquipmentWeapon.y - 15f, EquipmentWeapon.width, 18f), "fcLabelWeapon".Translate());
             Widgets.DrawMenuSection(EquipmentWeapon);
 
             if (showAmmoSlot)
