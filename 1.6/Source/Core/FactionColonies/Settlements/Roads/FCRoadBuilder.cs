@@ -116,6 +116,9 @@ namespace FactionColonies
         // Returns whether or not a settlement would be built to.
         public static bool IsValidRoadTarget(Settlement settlement)
         {
+            if (!settlement.Tile.Layer.IsRootSurface)
+                return false;
+
             FactionFC fC = FactionCache.FactionComp;
 
             // If faction exists and is either player or player has roadBuilders trait and the faction is an ally

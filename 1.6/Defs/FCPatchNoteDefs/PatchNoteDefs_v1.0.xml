@@ -13,4 +13,21 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_0_1</defName>
+		<label>Various fixes</label>
+		<description>A handful of fixes ahead of release.</description>
+		<releaseDate>2026-04-07</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: the orbit worlddrawlayer throws errors when launching with a gravship</li>
+		<li>Bugfix: roads would build to/from the surface location of orbital settlements</li>
+		<li>Various minor UI fixes</li>
+		<li>Swapped the production bonuses of Fur Hunter Camp and Wilderness Guild</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

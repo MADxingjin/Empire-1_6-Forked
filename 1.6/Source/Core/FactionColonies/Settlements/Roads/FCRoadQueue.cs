@@ -252,6 +252,8 @@ namespace FactionColonies
             FactionFC fC = FactionCache.FactionComp;
             foreach (WorldSettlementFC settlement in fC.settlements)
             {
+                if (!settlement.Tile.Layer.IsRootSurface)
+                    continue;
                 settlementsFromTiles.Add(settlement.Tile);
             }
             foreach (Settlement settlement in Find.World.worldObjects.Settlements)
