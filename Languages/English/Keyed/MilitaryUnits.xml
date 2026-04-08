@@ -114,6 +114,9 @@
 	<FCFireSupportDuration>Duration: {0}s</FCFireSupportDuration>
 	<FCFireSupportAccuracyLabel>Accuracy (tile radius): {0}  ·  Cost modifier: +{1}%</FCFireSupportAccuracyLabel>
 	<FCSelectAFireSupport>Select a fire support</FCSelectAFireSupport>
+	<importFireSupport>Import</importFireSupport>
+	<exportFireSupportButton>Export</exportFireSupportButton>
+	<ExportFireSupport>Exported Fire Support</ExportFireSupport>
 	<FCNoProjectilesFound>No available projectiles found</FCNoProjectilesFound>
 	<FCFireSupportOptions>Options</FCFireSupportOptions>
 	<FCInsertProjectileAbove>Insert Projectile Above Slot</FCInsertProjectileAbove>

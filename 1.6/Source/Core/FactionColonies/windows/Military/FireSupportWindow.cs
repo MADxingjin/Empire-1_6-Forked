@@ -35,6 +35,13 @@ namespace FactionColonies
             util.CheckMilitaryUtilForErrors();
         }
 
+        public override void Select(IExposable selecting)
+        {
+            MilitaryFireSupport support = (MilitaryFireSupport)selecting;
+            selectedSupport = support;
+            selectedText = support.name;
+        }
+
         public override void DrawTab(Rect rect)
         {
             Widgets.DrawLineHorizontal(rect.x, rect.y + 45, rect.width);
@@ -93,9 +100,8 @@ namespace FactionColonies
             Rect searchRect = new Rect(rect.x, rect.y, rect.width, SearchBarHeight);
             supportSearchTerm = Widgets.TextField(searchRect, supportSearchTerm);
 
-            // Button area: Create + conditionally Delete (stacked full-width)
-            int buttonCount = selectedSupport != null ? 2 : 1;
-            float buttonsHeight = ButtonHeight * buttonCount + margin * (buttonCount - 1);
+            // Button area: 2x2 grid (Create/Import, Delete/Export)
+            float buttonsHeight = ButtonHeight * 2 + margin;
 
             // Support list (fills space between search bar and buttons)
             float listHeight = rect.yMax - searchRect.yMax - margin - buttonsHeight - margin;
@@ -140,13 +146,18 @@ namespace FactionColonies
 
             Widgets.EndScrollView();
 
-            // Buttons (stacked full-width)
+            // Buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
+            float buttonW = (rect.width - margin) / 2f;
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            Rect createBtn = new Rect(rect.x, btnY, rect.width, ButtonHeight);
+            Rect createBtn = new Rect(rect.x, btnY, buttonW, ButtonHeight);
+            Rect importBtn = new Rect(rect.x + buttonW + margin, btnY, buttonW, ButtonHeight);
+            Rect deleteBtn = new Rect(rect.x, btnY + ButtonHeight + margin, buttonW, ButtonHeight);
+            Rect exportBtn = new Rect(rect.x + buttonW + margin, btnY + ButtonHeight + margin, buttonW, ButtonHeight);
+
             if (Widgets.ButtonText(createBtn, "FCCreateNewFireSupport".Translate()))
             {
                 MilitaryFireSupport newSupport = new MilitaryFireSupport();
@@ -158,9 +169,14 @@ namespace FactionColonies
                 util.fireSupportDefs.Add(newSupport);
             }
 
-            if (selectedSupport != null)
+            if (Widgets.ButtonText(importBtn, "importFireSupport".Translate()))
             {
-                Rect deleteBtn = new Rect(rect.x, createBtn.yMax + margin, rect.width, ButtonHeight);
+                Find.WindowStack.Add(new Dialog_ManageFireSupportExportsFC(
+                    FactionColoniesMilitary.SavedFireSupports.ToList()));
+            }
+
+            if (selectedSupport is object)
+            {
                 if (Widgets.ButtonText(deleteBtn, "deleteFireSupportButton".Translate()))
                 {
                     MilitaryFireSupport supportToDelete = selectedSupport;
@@ -176,6 +192,12 @@ namespace FactionColonies
                                 selectedText = "FCSelectAFireSupport".Translate();
                             }
                         }));
+                }
+
+                if (Widgets.ButtonText(exportBtn, "exportFireSupportButton".Translate()))
+                {
+                    FactionColoniesMilitary.SaveFireSupport(new SavedFireSupportFC(selectedSupport));
+                    Messages.Message("ExportFireSupport".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
 

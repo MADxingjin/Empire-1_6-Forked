@@ -16,25 +16,31 @@ namespace FactionColonies
     {
         private static List<SavedUnitFC> savedUnits = new List<SavedUnitFC>();
         private static List<SavedSquadFC> savedSquads = new List<SavedSquadFC>();
+        private static List<SavedFireSupportFC> savedFireSupports = new List<SavedFireSupportFC>();
         public static IEnumerable<SavedSquadFC> SavedSquads => savedSquads;
         public static IEnumerable<SavedUnitFC> SavedUnits => savedUnits;
+        public static IEnumerable<SavedFireSupportFC> SavedFireSupports => savedFireSupports;
 
         public static string EmpireConfigFolderPath;
         public static string EmpireMilitaryUnitFolder;
         public static string EmpireMilitarySquadFolder;
+        public static string EmpireMilitaryFireSupportFolder;
 
         static FactionColoniesMilitary()
         {
             EmpireConfigFolderPath = Path.Combine(GenFilePaths.SaveDataFolderPath, "Empire");
             EmpireMilitarySquadFolder = Path.Combine(EmpireConfigFolderPath, "Squads");
             EmpireMilitaryUnitFolder = Path.Combine(EmpireConfigFolderPath, "Units");
+            EmpireMilitaryFireSupportFolder = Path.Combine(EmpireConfigFolderPath, "FireSupports");
             if (!Directory.Exists(EmpireConfigFolderPath) ||
                 !Directory.Exists(EmpireMilitarySquadFolder) ||
-                !Directory.Exists(EmpireMilitaryUnitFolder))
+                !Directory.Exists(EmpireMilitaryUnitFolder) ||
+                !Directory.Exists(EmpireMilitaryFireSupportFolder))
             {
                 Directory.CreateDirectory(EmpireConfigFolderPath);
                 Directory.CreateDirectory(EmpireMilitarySquadFolder);
                 Directory.CreateDirectory(EmpireMilitaryUnitFolder);
+                Directory.CreateDirectory(EmpireMilitaryFireSupportFolder);
             }
 
             Read();
@@ -42,6 +48,7 @@ namespace FactionColonies
 
         public static SavedSquadFC GetSquad(string name) => savedSquads.FirstOrFallback(s => s.name == name);
         public static SavedUnitFC GetUnit(string name) => savedUnits.FirstOrFallback(u => u.name == name);
+        public static SavedFireSupportFC GetFireSupport(string name) => savedFireSupports.FirstOrFallback(f => f.name == name);
 
         public static void RemoveSquad(string name)
         {
@@ -57,7 +64,7 @@ namespace FactionColonies
 
         public static void RemoveUnit(string name)
         {
-            savedSquads.RemoveAll(unit => unit.name == name);
+            savedUnits.RemoveAll(unit => unit.name == name);
             File.Delete(GetUnitPath(name));
         }
 
@@ -65,6 +72,18 @@ namespace FactionColonies
         {
             savedUnits.Remove(unit);
             File.Delete(GetUnitPath(unit.name));
+        }
+
+        public static void RemoveFireSupport(string name)
+        {
+            savedFireSupports.RemoveAll(f => f.name == name);
+            File.Delete(GetFireSupportPath(name));
+        }
+
+        public static void RemoveFireSupport(SavedFireSupportFC fireSupport)
+        {
+            savedFireSupports.Remove(fireSupport);
+            File.Delete(GetFireSupportPath(fireSupport.name));
         }
 
         [DebugAction("Empire", "Reload Saved Military", allowedGameStates = AllowedGameStates.Playing)]
@@ -75,6 +94,7 @@ namespace FactionColonies
 
             savedSquads.Clear();
             savedUnits.Clear();
+            savedFireSupports.Clear();
             foreach (string path in Directory.EnumerateFiles(EmpireMilitarySquadFolder))
             {
                 try
@@ -112,10 +132,30 @@ namespace FactionColonies
                     Scribe.loader.FinalizeLoading();
                 }
             }
+
+            foreach (string path in Directory.EnumerateFiles(EmpireMilitaryFireSupportFolder))
+            {
+                try
+                {
+                    SavedFireSupportFC fs = new SavedFireSupportFC();
+                    Scribe.loader.InitLoading(path);
+                    fs.ExposeData();
+                    savedFireSupports.Add(fs);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Error($"Failed to load fire support at path {path} due to exception: {e.Message}");
+                }
+                finally
+                {
+                    Scribe.loader.FinalizeLoading();
+                }
+            }
         }
 
         public static string GetUnitPath(string name) => Path.Combine(EmpireMilitaryUnitFolder, $"{name}.xml");
         public static string GetSquadPath(string name) => Path.Combine(EmpireMilitarySquadFolder, $"{name}.xml");
+        public static string GetFireSupportPath(string name) => Path.Combine(EmpireMilitaryFireSupportFolder, $"{name}.xml");
 
         public static void SaveSquad(SavedSquadFC squad)
         {
@@ -170,6 +210,33 @@ namespace FactionColonies
             }
             savedUnits.RemoveAll(u => u.name == unit.name);
             savedUnits.Add(unit);
+        }
+
+        public static void SaveFireSupport(SavedFireSupportFC fireSupport)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive)
+            {
+                throw new Exception("Empire - Attempt to save fire support while scribe is active");
+            }
+
+            string path = GetFireSupportPath(fireSupport.name);
+            try
+            {
+                Scribe.saver.InitSaving(path, "fireSupport");
+                int version = 0;
+                Scribe_Values.Look(ref version, "version");
+                fireSupport.ExposeData();
+            }
+            catch (Exception e)
+            {
+                LogUtil.Error($"Failed to save fire support {fireSupport.name} {e}");
+            }
+            finally
+            {
+                Scribe.saver.FinalizeSaving();
+            }
+            savedFireSupports.RemoveAll(f => f.name == fireSupport.name);
+            savedFireSupports.Add(fireSupport);
         }
 
         public static void SaveAllUnits() => savedUnits.ForEach(SaveUnit);
@@ -360,6 +427,94 @@ namespace FactionColonies
             Scribe_Values.Look(ref name, "name");
             Scribe_Collections.Look(ref unitTemplates, "unitTemplates", LookMode.Deep);
             Scribe_Collections.Look(ref units, "units", LookMode.Value);
+        }
+    }
+
+    public class SavedFireSupportFC : IExposable
+    {
+        public string name;
+        public float accuracy;
+        public List<ThingDef> projectiles;
+        public string fireSupportType;
+
+        // Set during load when defs fail to resolve (e.g. mod removed). Not serialized.
+        public bool isDegraded;
+        public List<string> missingDefs;
+
+        public SavedFireSupportFC() { }
+
+        public SavedFireSupportFC(MilitaryFireSupport fireSupport)
+        {
+            name = fireSupport.name;
+            accuracy = fireSupport.accuracy;
+            projectiles = fireSupport.projectiles is object
+                ? new List<ThingDef>(fireSupport.projectiles)
+                : new List<ThingDef>();
+            fireSupportType = fireSupport.fireSupportType;
+        }
+
+        public MilitaryFireSupport CreateFireSupport()
+        {
+            MilitaryFireSupport fs = new MilitaryFireSupport();
+            fs.name = name;
+            fs.accuracy = accuracy;
+            fs.fireSupportType = fireSupportType;
+            fs.projectiles = projectiles?.Where(p => p is object).ToList() ?? new List<ThingDef>();
+            fs.SetLoadID();
+            return fs;
+        }
+
+        public MilitaryFireSupport Import()
+        {
+            MilitaryFireSupport fs = CreateFireSupport();
+            FactionCache.FactionComp.militaryCustomizationUtil.fireSupportDefs.Add(fs);
+            return fs;
+        }
+
+        public void ExposeData()
+        {
+            XmlNode xmlParent = (Scribe.mode == LoadSaveMode.LoadingVars)
+                ? Scribe.loader.curXmlParent : null;
+
+            Scribe_Values.Look(ref name, "name");
+            Scribe_Values.Look(ref accuracy, "accuracy");
+            Scribe_Values.Look(ref fireSupportType, "fireSupportType");
+            Scribe_Collections.Look(ref projectiles, "projectiles", LookMode.Def);
+
+            if (xmlParent is object)
+            {
+                ValidateAfterLoad(xmlParent);
+            }
+        }
+
+        private void ValidateAfterLoad(XmlNode xmlParent)
+        {
+            List<string> missing = new List<string>();
+
+            XmlNode projNode = xmlParent["projectiles"];
+            if (projNode is object)
+            {
+                int xmlCount = 0;
+                foreach (XmlNode li in projNode.ChildNodes)
+                {
+                    if (li.Name != "li") continue;
+                    xmlCount++;
+                    string defName = li.InnerText;
+                    if (!string.IsNullOrEmpty(defName)
+                        && DefDatabase<ThingDef>.GetNamedSilentFail(defName) is null)
+                    {
+                        missing.Add(defName);
+                    }
+                }
+            }
+
+            if (missing.Count > 0)
+            {
+                isDegraded = true;
+                missingDefs = missing;
+                LogUtil.Warning($"Saved fire support '{name}' references missing defs (unloaded mod?): "
+                    + string.Join(", ", missing));
+            }
         }
     }
 

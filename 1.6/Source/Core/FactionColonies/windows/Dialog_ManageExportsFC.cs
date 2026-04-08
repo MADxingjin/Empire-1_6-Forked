@@ -233,4 +233,68 @@ namespace FactionColonies
                 + ".\nImporting will substitute defaults for missing items.";
         }
     }
+
+    public class Dialog_ManageFireSupportExportsFC : Dialog_ManageExportsFC
+    {
+        private List<SavedFireSupportFC> fireSupports;
+
+        public Dialog_ManageFireSupportExportsFC(List<SavedFireSupportFC> elements)
+        {
+            fireSupports = elements;
+        }
+
+        protected override void OnDelete(string name)
+        {
+            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                "ConfirmDelete".Translate((NamedArgument)name), () =>
+            {
+                FactionColoniesMilitary.RemoveFireSupport(name);
+                this.fireSupports.RemoveAll(f => f.name == name);
+                Messages.Message("FCDeleted".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
+            }));
+        }
+
+        protected override void OnImport(string name)
+        {
+            MilitaryFireSupport fs = FactionColoniesMilitary.GetFireSupport(name).Import();
+
+            FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
+                window => window is FCWindow_Military fcw &&
+                          fcw.GetMilitaryWindow() is FireSupportWindow);
+
+            if (milWindow is object)
+            {
+                milWindow.SetActive(fs);
+            }
+            else
+            {
+                MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
+                FireSupportWindow fsw = new FireSupportWindow(util);
+                FCWindow_Military newWindow = new FCWindow_Military(fsw, "FCMilitaryTableButtonCreateFireSupport".Translate());
+                Find.WindowStack.Add(newWindow);
+                newWindow.SetActive(fs);
+            }
+
+            MessageTypeDefOf.PositiveEvent.sound.PlayOneShotOnCamera();
+            Messages.Message("FCImported".Translate((NamedArgument)name), MessageTypeDefOf.PositiveEvent);
+            this.Close();
+        }
+
+        protected override IEnumerable<string> GetAll() => fireSupports.Select(f => f.name);
+
+        protected override bool IsEntryDegraded(string name)
+        {
+            SavedFireSupportFC fs = fireSupports.FirstOrDefault(f => f.name == name);
+            return fs is object && fs.isDegraded;
+        }
+
+        protected override string GetDegradedTooltip(string name)
+        {
+            SavedFireSupportFC fs = fireSupports.FirstOrDefault(f => f.name == name);
+            if (fs is null || !fs.isDegraded) return null;
+            return "This template references defs from unloaded mods: "
+                + string.Join(", ", fs.missingDefs)
+                + ".\nImporting will drop missing projectiles.";
+        }
+    }
 }

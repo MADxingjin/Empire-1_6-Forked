@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_0</defName>
+		<label>Fire Support Importing</label>
+		<description>Allows custom fire supports to be imported or exported, just like units and squads.</description>
+		<releaseDate>2026-04-07</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Allows custom fire supports to be imported or exported. Uses same design as unit and squad import/export</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>
