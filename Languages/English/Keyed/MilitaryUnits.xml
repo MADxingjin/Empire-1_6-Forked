@@ -102,7 +102,7 @@
 	<FCCreateNewUnit>Create New Unit</FCCreateNewUnit>
 
 	<!-- Fire Support Design -->
-	<FCCreateNewFireSupport>Create New Fire Support</FCCreateNewFireSupport>
+	<FCCreateNewFireSupport>New Fire Support</FCCreateNewFireSupport>
 	<FCDeleteSupport>Delete Support</FCDeleteSupport>
 	<FCAddNewProjectile>Add new projectile</FCAddNewProjectile>
 	<FCRenameFireSupport>Rename Fire Support</FCRenameFireSupport>

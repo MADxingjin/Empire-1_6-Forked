@@ -36,6 +36,7 @@ namespace FactionColonies
 
             string defName = Ext<FCPolicyBehaviorExt_Militaristic>().autoPlaceBuildingDefName;
             BuildingFCDef building = DefDatabase<BuildingFCDef>.GetNamed(defName);
+            if (!building.CanBeBuiltForSettlementType(settlement.settlementDef)) return;
             if (buildingsComp.HasBuilding(building)) return;
 
             int slots = buildingsComp.NumBuildingSlots;
