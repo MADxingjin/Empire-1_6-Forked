@@ -41,6 +41,7 @@
   <FCTraitDesc_militaryLevelBonusDefending>{0} Военный уровень (оборона)</FCTraitDesc_militaryLevelBonusDefending>
   <FCTraitDesc_militaryEfficiencyBonusAttacking>{0} Боевая эффективность (атака)</FCTraitDesc_militaryEfficiencyBonusAttacking>
   <FCTraitDesc_deadPawnCooldownOffset>{0} ч к перезарядке за смерть</FCTraitDesc_deadPawnCooldownOffset>
+  <FCTraitDesc_mercHealRateMultiplier>{0} Скорость исцеления наемника</FCTraitDesc_mercHealRateMultiplier>
   <FCTraitDesc_raidCooldownOffset>{0} ч перезарядки рейда</FCTraitDesc_raidCooldownOffset>
   <FCTraitDesc_battleProsperityLossMultiplier>{0} Потеря процветания от битвы</FCTraitDesc_battleProsperityLossMultiplier>
   <FCTraitDesc_battleLoyaltyLossMultiplier>{0} Потеря лояльности от битвы</FCTraitDesc_battleLoyaltyLossMultiplier>
