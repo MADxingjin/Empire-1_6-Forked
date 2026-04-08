@@ -165,6 +165,13 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCTownLevel4>The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack.</FCTownLevel4>
 	<FCTownLevel5>Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints.</FCTownLevel5>
 
+	<!-- Orbital Town Level Descriptions -->
+	<FCTownLevel_Orbital_1>The station is little more than a pressurized habitat module with a handful of docking ports, its hull still gleaming from recent construction.</FCTownLevel_Orbital_1>
+	<FCTownLevel_Orbital_2>A cluster of interconnected modules forms the station core, with basic airlocks and cargo bays serving a small but growing crew.</FCTownLevel_Orbital_2>
+	<FCTownLevel_Orbital_3>The station has expanded into a respectable orbital platform, with dedicated production modules, rotating crew quarters, and an array of solar collectors stretching outward.</FCTownLevel_Orbital_3>
+	<FCTownLevel_Orbital_4>A substantial orbital installation bristles with sensor arrays and docking spires. Multiple pressurized decks house specialized facilities, and point-defense turrets sweep the surrounding void.</FCTownLevel_Orbital_4>
+	<FCTownLevel_Orbital_5>The station dominates the local orbital space; a sprawling complex of interconnected rings and spars, humming with industry. Layered shielding and weapons platforms ensure nothing approaches unchallenged.</FCTownLevel_Orbital_5>
+
 	<!-- Orbital Settlement Locations -->
 	<FCOrbitalLocation1>Orbiting in deep space</FCOrbitalLocation1>
 	<FCOrbitalLocation2>Stationed in low orbit</FCOrbitalLocation2>

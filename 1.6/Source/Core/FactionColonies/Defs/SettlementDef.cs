@@ -57,6 +57,13 @@ namespace FactionColonies
         public string titleKey;
 
         /// <summary>
+        /// Optional key used for settlement-type-specific town level descriptions.
+        /// When set, GetSettlementLevelDesc tries FCTownLevel_{descriptionKey}_{compressedLevel} first,
+        /// falling back to FCTownLevel{compressedLevel} if the type-specific key doesn't exist.
+        /// </summary>
+        public string descriptionKey;
+
+        /// <summary>
         /// Entirely flavor. Determines whether time to create is labeled in menus as "Construction Time" or "Travel Time".
         /// </summary>
         public bool isConstructed = false;

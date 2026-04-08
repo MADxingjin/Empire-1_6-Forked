@@ -203,24 +203,32 @@ namespace FactionColonies
 
         /// <summary>
         /// Returns a description of the settlement's current level for display in the settlement window.
+        /// If the parent def has a descriptionKey, tries a type-specific translation key first,
+        /// falling back to the generic key if it doesn't exist.
         /// </summary>
         public virtual string GetSettlementLevelDesc(int level)
         {
+            int compressed;
             switch (level)
             {
-                case 1:
-                    return "FCTownLevel1".Translate();
-                case 2:
-                    return "FCTownLevel2".Translate();
+                case 1: compressed = 1; break;
+                case 2: compressed = 2; break;
                 case 3:
-                case 4:
-                    return "FCTownLevel3".Translate();
+                case 4: compressed = 3; break;
                 case 5:
-                case 6:
-                    return "FCTownLevel4".Translate();
-                default:
-                    return "FCTownLevel5".Translate();
+                case 6: compressed = 4; break;
+                default: compressed = 5; break;
             }
+
+            string descKey = parentDef?.descriptionKey;
+            if (descKey is object)
+            {
+                string typeSpecificKey = "FCTownLevel_" + descKey + "_" + compressed;
+                if (typeSpecificKey.CanTranslate())
+                    return typeSpecificKey.Translate();
+            }
+
+            return ("FCTownLevel" + compressed).Translate();
         }
 
         /// <summary>

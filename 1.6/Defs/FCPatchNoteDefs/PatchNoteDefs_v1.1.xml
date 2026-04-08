@@ -13,4 +13,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_1</defName>
+		<label>Settlement Description Update</label>
+		<description>Changes how settlement descriptions are created to let specific settlement types specify their own descriptions, e.g. orbital settlements having more space-themed descriptions.</description>
+		<releaseDate>2026-04-07</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Generate settlement descriptions based on optional new descriptionKey on WorldSettlementDef</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -116,6 +116,11 @@
 	<!-- When set, the title system tries FCTitle_{titleKey}_{resourceDefName}_{level} first, -->
 	<!-- falling back to FCTitle_{resourceDefName}_{level} if the type-specific key doesn't exist. -->
 	<titleKey>mySettlementType</titleKey>
+	<!-- Optional key for settlement-type-specific town level descriptions. -->
+	<!-- When set, GetSettlementLevelDesc tries FCTownLevel_{descriptionKey}_{compressedLevel} first, -->
+	<!-- falling back to FCTownLevel{compressedLevel} if the type-specific key doesn't exist. -->
+	<!-- The compressedLevel maps actual levels to 5 buckets: 1, 2, 3-4, 5-6, 7+. -->
+	<descriptionKey>mySettlementType</descriptionKey>
 	<!-- If true, the creation timer is labeled "Construction Time" instead of "Travel Time". Default: false -->
 	<isConstructed>false</isConstructed>
 	<!-- Optional UI accent color for this settlement type. -->
