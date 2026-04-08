@@ -41,4 +41,21 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_3</defName>
+		<label>Orbital Settlement Fixes</label>
+		<description>A handful of fixes related to orbital settlements.</description>
+		<releaseDate>2026-04-08</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: ReturnTicksToArrive() doesn&apos;t properly handle cross-layer pathfinding</li>
+		<li>Add canBeRaided and supportsManualBattle fields to WorldSettlementDef</li>
+		<li>Add virtual CanBeRaidedByFaction function to SettlementTypeExtension, allowing settlements to determine what kinds of factions can attack them. Defaults true</li>
+		<li>Use the new fields/functions to make Orbital Settlements raidable only by factions with Spacer tech or above. Orbital Settlements also do not support manual battles</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

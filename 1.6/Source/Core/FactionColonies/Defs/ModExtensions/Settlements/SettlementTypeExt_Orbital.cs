@@ -157,5 +157,10 @@ namespace FactionColonies
 
             return base.GetTaxDeliveryMode(canUseShuttle, sourceTile);
         }
+
+        public override bool CanBeRaidedByFaction(Faction attackingFaction)
+        {
+            return attackingFaction?.def?.techLevel >= TechLevel.Spacer;
+        }
     }
 }

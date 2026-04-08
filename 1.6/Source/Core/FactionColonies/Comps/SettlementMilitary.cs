@@ -314,11 +314,15 @@ namespace FactionColonies
 
         private AcceptanceReport CanDoManualFight()
         {
+            if (!WorldSettlement.settlementDef.supportsManualBattle)
+            {
+                return new AcceptanceReport("settlementTypeNoManualBattle".Translate());
+            }
             if (FCSettings.battleMode == BattleMode.Auto)
             {
                 return new AcceptanceReport("autoBattleEnabledNoManualFight".Translate());
             }
-            else if (FCSettings.battleMode == BattleMode.Hybrid && !IsPlayerCaravanOnTile())
+            if (FCSettings.battleMode == BattleMode.Hybrid && !IsPlayerCaravanOnTile())
             {
                 return new AcceptanceReport("hybridBattleEnabledNoManualFight".Translate());
             }
@@ -519,7 +523,7 @@ namespace FactionColonies
         {
             currentBattleEvent = evt;
             bool shouldAutoResolve = false;
-            if (FCSettings.battleMode == BattleMode.Auto)
+            if (FCSettings.battleMode == BattleMode.Auto || !WorldSettlement.settlementDef.supportsManualBattle)
             {
                 shouldAutoResolve = true;
             }

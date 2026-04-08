@@ -371,5 +371,12 @@ namespace FactionColonies
         public virtual void PostTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)
         {
         }
+
+        /// <summary>
+        /// Returns whether the given faction is eligible to raid settlements of this type.
+        /// Called after enemy faction selection to filter the target pool.
+        /// Base implementation returns true (any faction can raid).
+        /// </summary>
+        public virtual bool CanBeRaidedByFaction(Faction attackingFaction) => true;
     }
 }

@@ -38,6 +38,7 @@
 	<descriptionKey>Orbital</descriptionKey>
 	<accentColor>(0.50, 0.50, 0.50)</accentColor>
 	<defaultResources>true</defaultResources>
+	<supportsManualBattle>false</supportsManualBattle>
 	<resources>
 		<li>
 			<resourceDef>RTD_Chemfuel</resourceDef>

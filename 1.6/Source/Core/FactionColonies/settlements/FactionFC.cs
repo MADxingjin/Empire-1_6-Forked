@@ -623,7 +623,7 @@ namespace FactionColonies
                     if (settlements.Any() || RaidTargetRegistry.Targets.Count > 0)
                     {
                         List<WorldSettlementFC> validSettlements = settlements
-                            .Where(s => s.MilitaryComp?.isUnderAttack != true)
+                            .Where(s => s.MilitaryComp?.isUnderAttack != true && s.settlementDef.canBeRaided)
                             .ToList();
                         List<IRaidTarget> validExternalTargets = RaidTargetRegistry.Targets
                             .Where(t => !t.IsUnderAttack)
@@ -635,16 +635,20 @@ namespace FactionColonies
                             Faction enemy = ThreatScalingUtil.PickWeightedEnemyFaction(etl);
                             if (enemy != null)
                             {
-                                float settlementTotalWeight = validSettlements.Sum(
+                                List<WorldSettlementFC> raidableSettlements = validSettlements
+                                    .Where(s => s.settlementDef.GetSettlementTypeExtension()?.CanBeRaidedByFaction(enemy) != false)
+                                    .ToList();
+
+                                float settlementTotalWeight = raidableSettlements.Sum(
                                     s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
                                          * RaidWeightRegistry.GetCombinedWeight(s, enemy));
                                 float externalTotalWeight = validExternalTargets.Sum(
                                     t => (float)GetMilitaryTargetWeight(t.MilitaryLevel));
                                 float totalWeight = settlementTotalWeight + externalTotalWeight;
 
-                                if (Rand.Value * totalWeight < settlementTotalWeight && validSettlements.Any())
+                                if (Rand.Value * totalWeight < settlementTotalWeight && raidableSettlements.Any())
                                 {
-                                    WorldSettlementFC target = validSettlements.RandomElementByWeight(
+                                    WorldSettlementFC target = raidableSettlements.RandomElementByWeight(
                                         s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
                                              * RaidWeightRegistry.GetCombinedWeight(s, enemy));
                                     MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);

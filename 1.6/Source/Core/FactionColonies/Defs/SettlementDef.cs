@@ -83,6 +83,19 @@ namespace FactionColonies
         /// </summary>
         public float raidTargetingWeight = 1.0f;
 
+        /// <summary>
+        /// If false, this settlement type is completely excluded from enemy raid targeting.
+        /// Default true. Set to false for settlement types that should never be attacked.
+        /// </summary>
+        public bool canBeRaided = true;
+
+        /// <summary>
+        /// If false, battles at this settlement type always auto-resolve, even if the player
+        /// has selected Manual or Hybrid battle mode. Use for settlement types whose maps
+        /// cannot be generated (e.g. orbital stations).
+        /// </summary>
+        public bool supportsManualBattle = true;
+
         public ResourceAvailability GetSettlementResource(ResourceTypeDef resourceTypeDef)
         {
             return resources.FirstOrDefault((ResourceAvailability b) => b.resourceDef == resourceTypeDef);
