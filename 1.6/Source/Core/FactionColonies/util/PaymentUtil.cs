@@ -221,7 +221,13 @@ namespace FactionColonies
 
         public static bool CheckForTaxSpot(Map map, out IntVec3 dropSpot)
         {
-            foreach (Building building in map.listerBuildings.allBuildingsColonist.Where(b => b.def.defName == "TaxSpot"))
+            if (map is null)
+            {
+                LogUtil.Warning("CheckForTaxSpot received null map, bailing out");
+                dropSpot = new IntVec3();
+                return false;
+            }
+            foreach (Building building in map.listerBuildings.allBuildingsColonist.Where(b => b?.def?.defName == "TaxSpot"))
             {
                 if (building is Building_TaxSpot taxSpot && taxSpot.IsActiveTaxDeliverySpot)
                 {
