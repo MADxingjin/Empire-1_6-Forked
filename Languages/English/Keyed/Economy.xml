@@ -12,6 +12,7 @@
 	<ResolveBill>Resolve Bill</ResolveBill>
 	<NotEnoughSilverOnMapToPayBill>You do not have enough silver on the current map to pay the bill</NotEnoughSilverOnMapToPayBill>
 	<NumberTaxesHasBeenSolved>{0} bills have been auto-resolved!</NumberTaxesHasBeenSolved>
+	<BillResolved>Bill resolved.</BillResolved>
 	<DueFC>Due</DueFC>
 	<FCNoPendingBills>No pending bills.</FCNoPendingBills>
 	<FCPendingBillsCount>{0} pending bills</FCPendingBillsCount>

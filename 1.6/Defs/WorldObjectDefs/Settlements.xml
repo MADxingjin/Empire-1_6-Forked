@@ -33,7 +33,7 @@
   <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Orbital" ParentName="WorldSettlementDefBase" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital</defName>
     <label>basic orbital colony</label>
-    <description>Standard orbital construction capabilities</description>
+    <description>A general-purpose orbital station. Produces all standard resources plus chemfuel and gravtech. Only raidable by spacer-tech factions. Battles auto-resolve only.</description>
 	<titleKey>Orbital</titleKey>
 	<descriptionKey>Orbital</descriptionKey>
 	<accentColor>(0.50, 0.50, 0.50)</accentColor>
@@ -69,7 +69,7 @@
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Logistics</defName>
     <label>logistics orbital colony</label>
-    <description>50% faster tax delivery and special buildings</description>
+    <description>A trade-focused orbital station. Unlocks exclusive buildings that increase tax rate and tithe value.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>OrbitalLogistics</li>
@@ -79,7 +79,7 @@
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Advanced</defName>
     <label>advanced orbital colony</label>
-    <description>25% lower base construction cost, larger size</description>
+    <description>An industrial orbital station. Unlocks exclusive buildings that reduce construction time and boost animal and mining production.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>AdvancedOrbitalEngineering</li>
@@ -89,7 +89,7 @@
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Glitter</defName>
     <label>glitterworld orbital colony</label>
-    <description>Specialized production buildings with bonuses</description>
+    <description>A high-tech orbital station. Unlocks exclusive buildings that enhance research output and military effectiveness.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
 		<li>GlitterworldOrbitalSettlements</li>

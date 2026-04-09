@@ -100,4 +100,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_7</defName>
+		<label>Fixes &amp; Updates</label>
+		<description>A couple of fixes and a small update.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Update orbital settlement descriptions for the settlement type picker</li>
+		<li>Bugfix: clicking the &apos;Resolve Bill&apos; button may not make the bill disappear when it should</li>
+		<li>Adds Synthread and Hyperweave to the Apparel resource, gated behind the Ultra tech level</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
