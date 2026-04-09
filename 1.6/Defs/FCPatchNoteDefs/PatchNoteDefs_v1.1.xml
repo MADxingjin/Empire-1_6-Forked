@@ -131,4 +131,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_9</defName>
+		<label>Orbital buildings fix</label>
+		<description>Fixes an issue where several orbital buildings that are supposed to be locked to one type of orbital were actually buildable in any of them.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Orbital Trade Hub and Space Distillery only buildable on logistics orbital platforms</li>
+		<li>Orbital Shipyard and Orbital Surface Operations only buildable on advanced orbital platforms</li>
+		<li>Orbital Academy and Naval Academy only buildable on glitterworld orbital platforms</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
