@@ -49,7 +49,7 @@ namespace FactionColonies
         private static ResearchProjectDef _cachedTechLevelBarrierMedieval = null;
         private static ResearchProjectDef _cachedTransportPods = null;
 
-        public static FactionFC FactionComp => _cachedFactionWorldComp ?? (_cachedFactionWorldComp = Find.World.GetComponent<FactionFC>());
+        public static FactionFC FactionComp => _cachedFactionWorldComp ?? (_cachedFactionWorldComp = Find.World?.GetComponent<FactionFC>());
         /// <summary>
         /// The NPC Empire faction that the player created and controls.
         /// </summary>

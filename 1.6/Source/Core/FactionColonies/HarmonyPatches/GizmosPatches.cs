@@ -171,6 +171,7 @@ namespace FactionColonies
                 return;
             }
 
+            if (FactionCache.FactionComp is null) return;
             if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.SendPrisoner)) return;
             if (!CanSendPrisoner(__instance)) return;
 
@@ -264,10 +265,11 @@ namespace FactionColonies
         {
             if (__instance.def.defName != "Settlement") return;
             if (!HasValidFaction(__instance)) return;
+            FactionFC factionFC = FactionCache.FactionComp;
+            if (factionFC is null) return;
 
             int tile = __instance.Tile;
             Faction faction = __instance.Faction;
-            FactionFC factionFC = FactionCache.FactionComp;
 
             if (factionFC.IsActionAllowed(FCActionType.SendDiplomat))
                 __result = __result.AddItem(PeacefulAction(factionFC, faction));
