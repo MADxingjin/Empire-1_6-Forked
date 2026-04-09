@@ -798,7 +798,7 @@ namespace FactionColonies
         public void DirtyStatsCache()
         {
             dirtyStatsCache = true;
-            dirtyProfitCache = true;
+            DirtyProfitCache();
         }
 
         /// <summary>
