@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_0</defName>
+		<label>Performance Update</label>
+		<description>A handful of changes made in the aim of improving performance. Perf was generally better than old Empire, but there were still some things to improve, so here we are. Hopefully nothing breaks!</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Add more tick guards for sensitive code paths, and remove some redundant code</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

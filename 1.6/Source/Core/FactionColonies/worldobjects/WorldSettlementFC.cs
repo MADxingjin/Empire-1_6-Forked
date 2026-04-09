@@ -585,7 +585,10 @@ namespace FactionColonies
         protected override void Tick()
         {
             base.Tick();
-            trader?.TraderTrackerTick();
+            if (Find.TickManager.TicksGame % 250 == 0)
+            {
+                trader?.TraderTrackerTick();
+            }
         }
 
         public void PublicTick()
