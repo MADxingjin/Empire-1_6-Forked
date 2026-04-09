@@ -100,4 +100,66 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_7</defName>
+		<label>Fixes &amp; Updates</label>
+		<description>A couple of fixes and a small update.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Update orbital settlement descriptions for the settlement type picker</li>
+		<li>Bugfix: clicking the &apos;Resolve Bill&apos; button may not make the bill disappear when it should</li>
+		<li>Adds Synthread and Hyperweave to the Apparel resource, gated behind the Ultra tech level</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_8</defName>
+		<label>Craft &amp; Building Fixes</label>
+		<description>Fixes a couple of bugs with item pricing and build times.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: Non-stuffable Things would not have variable prices based on quality</li>
+		<li>Bugfix: the building build time multplier wouldn&apos;t apply when granted via building</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_9</defName>
+		<label>Orbital buildings fix</label>
+		<description>Fixes an issue where several orbital buildings that are supposed to be locked to one type of orbital were actually buildable in any of them.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Orbital Trade Hub and Space Distillery only buildable on logistics orbital platforms</li>
+		<li>Orbital Shipyard and Orbital Surface Operations only buildable on advanced orbital platforms</li>
+		<li>Orbital Academy and Naval Academy only buildable on glitterworld orbital platforms</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_1_10</defName>
+		<label>Tests &amp; Caching</label>
+		<description>Couple of minor fixes.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Update military tests to reflect the combat efficiency change from a little bit ago</li>
+		<li>Update settlement profit cache invalidation</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

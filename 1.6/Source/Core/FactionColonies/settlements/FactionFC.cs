@@ -539,51 +539,51 @@ namespace FactionColonies
 
                 firstTick = false;
             }
-            ValidateTick(faction);
+            int ticksGame = Find.TickManager.TicksGame;
 
-            FCEventMaker.ProcessEvents(in events);
-            BillUtility.ProcessBills();
-
+            // The FireSupportTick governs when artillery shells enter the map, which requires tick precision.
+            // The function will early-return if there are no active fire supports, so the overhead in the no-active-support case is hopefully minimal
             FireSupportTick();
-
-            /* Check on the leader */
-            //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
-            if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
+            if (faction is object)
             {
-                if (faction != null && (faction.leader is null || faction.leader.Dead))
-                {
-                    ColonyUtil.CreatePlayerFactionLeader(faction);
-                }
+                // TickActions dispatches the tick to interfaces and registries, so it has to run every tick.
+                TickActions();
             }
-            TaxTick(faction);
-            UITick(faction);
-            StatTick(faction);
-            MilitaryTick(faction);
-            if (Find.TickManager.TicksGame % MercenaryHealTickInterval == 0)
+
+            // Rare tick
+            if (ticksGame % 250 == 0)
+            {
+                FCEventMaker.ProcessEvents(in events);
+                BillUtility.ProcessBills();
+                if (pendingEdictActivations.Count > 0)
+                    CheckEdictActivations();
+                if (faction is object)
+                    roadBuilder.RoadTick();
+            }
+
+            // Hourly tick
+            if (ticksGame % MercenaryHealTickInterval == 0)
             {
                 militaryCustomizationUtil?.TickMercenaryHealing(MercenaryHealTickInterval);
             }
-            threatAdaptation.Tick();
-            if (pendingEdictActivations.Count > 0 && Find.TickManager.TicksGame % 250 == 0)
-                CheckEdictActivations();
-            if (!(faction is null))
-            {
-                roadBuilder.RoadTick();
-                TickActions();
-            }
-        }
-        /// <summary>
-        /// Handles daily validation checks.
-        /// </summary>
-        /// <param name="faction"></param>
-        public void ValidateTick(Faction faction)
-        {
-            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
-                return;
-            
-            ValidateSettlementCaravansList();
-        }
 
+            // Daily tick
+            if (ticksGame % GenDate.TicksPerDay == 0 && !(faction is null))
+            {
+                ValidateSettlementCaravansList();
+
+                if (faction.leader is null || faction.leader.Dead)
+                    ColonyUtil.CreatePlayerFactionLeader(faction);
+
+                // Just for future's sake; StatTick expects a non-null faction. If it's ever moved from this if-block, remember to keep the null check
+                StatTick();
+            }
+
+            // These checks have variable tick times, so they're in charge of their own tick guards
+            TaxTick(faction);
+            MilitaryTick(faction);
+            threatAdaptation.Tick();
+        }
         public void TaxTick(Faction faction)
         {
             if (faction is null || Find.TickManager.TicksGame < taxTimeDue)
@@ -596,11 +596,9 @@ namespace FactionColonies
                 PaymentUtil.AutoresolveBills(Bills);
         }
 
-        public void StatTick(Faction faction)
+        public void StatTick()
         {
-            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
-                return;
-
+            // Tick guard moved up into the world component tick
             UpdateSettlementStats();
             AccumulateDailyProduction();
             DirtyAveragesCache();
@@ -686,34 +684,18 @@ namespace FactionColonies
             }
         }
 
-        public void UITick(Faction faction)
-        {
-            if (uiTimeUpdate <= 0) //update per time?
-            {
-                uiTimeUpdate = FCSettings.updateUiTimer;
-
-                if (faction != null)
-                {
-                    //already built in ui update -.-
-                    Find.WindowStack.WindowsUpdate();
-
-                    // Profit and averages are lazy-cached — no eager update needed
-                }
-            }
-            else
-            {
-                uiTimeUpdate -= 1;
-            }
-        }
-
         public void FireSupportTick()
         {
             if (militaryCustomizationUtil.fireSupport is null)
             {
                 militaryCustomizationUtil.fireSupport = new List<MilitaryFireSupport>();
             }
+            if (militaryCustomizationUtil.fireSupport.Count == 0)
+            {
+                return;
+            }
 
-            //Other functions
+            //Process ongoing fire supports
             militaryCustomizationUtil.fireSupport.RemoveAll(support => support.ShouldBeOver);
             militaryCustomizationUtil.fireSupport.ForEach(support => support.Process());
         }

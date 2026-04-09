@@ -24,8 +24,6 @@ namespace FactionColonies
         private const int margin = 5;
         private const int smallMargin = 3;
 
-        //time variables
-        private int uiUpdateTimer;
         private int maxScroll;
         private FactionFC factionfc;
 
@@ -83,24 +81,6 @@ namespace FactionColonies
             {
                 overview.PostCloseWindow();
             }
-        }
-
-        public void UiUpdate()
-        {
-            if (uiUpdateTimer == 0)
-            {
-                uiUpdateTimer = FCSettings.updateUiTimer;
-            }
-            else
-            {
-                uiUpdateTimer -= 1;
-            }
-        }
-
-        public override void WindowUpdate()
-        {
-            base.WindowUpdate();
-            UiUpdate();
         }
 
         private List<string> overviewTabs = new List<string>

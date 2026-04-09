@@ -47,7 +47,7 @@ namespace FactionColonies
             militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 TechLevel.Neolithic, out double level, out double eff);
             TestAssert.AreEqual(2.0, level, message: "Neolithic level");
-            TestAssert.AreEqual(1.0, eff, message: "Neolithic efficiency");
+            TestAssert.AreEqual(0.9, eff, message: "Neolithic efficiency");
         }
 
         [EmpireTest("MilitaryForce")]
@@ -56,7 +56,7 @@ namespace FactionColonies
             militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 TechLevel.Spacer, out double level, out double eff);
             TestAssert.AreEqual(6.0, level, message: "Spacer level");
-            TestAssert.AreEqual(1.3, eff, message: "Spacer efficiency");
+            TestAssert.AreEqual(1.2, eff, message: "Spacer efficiency");
         }
 
         [EmpireTest("MilitaryForce")]

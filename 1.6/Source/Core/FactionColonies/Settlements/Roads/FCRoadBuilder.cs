@@ -64,53 +64,50 @@ namespace FactionColonies
                 wasRoadBuildingDisabled = true;
                 return;
             }
+            
+            FactionFC faction = FactionCache.FactionComp;
 
-            if (Find.TickManager.TicksGame % 250 == 0)
+            if (roadQueue == null)
             {
-                FactionFC faction = FactionCache.FactionComp;
+                LogUtil.Message("RoadTick: No road queue found");
+                return;
+            }
 
-                if (roadQueue == null)
-                {
-                    LogUtil.Message("RoadTick: No road queue found");
-                    return;
-                }
+            if (!hasRoadBuildersBoost && faction.IsActionAllowed(FCActionType.BuildRoadsToAllies))
+            {
+                roadQueue.shouldUpdateSettlementsToProcess = true;
+                roadQueue.daysBetweenTicks = 1;
+                hasRoadBuildersBoost = true;
+                daysBetweenTicks = 1;
+            }
 
-                if (!hasRoadBuildersBoost && faction.IsActionAllowed(FCActionType.BuildRoadsToAllies))
-                {
-                    roadQueue.shouldUpdateSettlementsToProcess = true;
-                    roadQueue.daysBetweenTicks = 1;
-                    hasRoadBuildersBoost = true;
-                    daysBetweenTicks = 1;
-                }
+            // If road building was disabled, then set the next tick to make a road to the correct time
+            if (wasRoadBuildingDisabled)
+            {
+                wasRoadBuildingDisabled = false;
+                roadQueue.nextRoadTick = Find.TickManager.TicksGame + GenDate.TicksPerDay * roadQueue.daysBetweenTicks;
+            }
 
-                // If road building was disabled, then set the next tick to make a road to the correct time
-                if (wasRoadBuildingDisabled)
-                {
-                    wasRoadBuildingDisabled = false;
-                    roadQueue.nextRoadTick = Find.TickManager.TicksGame + GenDate.TicksPerDay * roadQueue.daysBetweenTicks;
-                }
+            // Ensure settlement lists are populated before processing paths.
+            if (roadQueue.shouldUpdateSettlementsToProcess)
+            {
+                roadQueue.UpdateSettlementsToProcess();
+                roadQueue.shouldUpdateSettlementsToProcess = false;
+            }
 
-                // Ensure settlement lists are populated before processing paths.
-                if (roadQueue.shouldUpdateSettlementsToProcess)
+            if (!pathsFullyProcessed)
+            {
+                for (int i = 0; i < 5; i++)
                 {
-                    roadQueue.UpdateSettlementsToProcess();
-                    roadQueue.shouldUpdateSettlementsToProcess = false;
-                }
-
-                if (!pathsFullyProcessed)
-                {
-                    for (int i = 0; i < 5; i++)
+                    if (!roadQueue.ProcessOnePath())
                     {
-                        if (!roadQueue.ProcessOnePath())
-                        {
-                            pathsFullyProcessed = true;
-                            break;
-                        }
+                        pathsFullyProcessed = true;
+                        break;
                     }
                 }
-
-                bool segmentBuilt = roadQueue.BuildRoadSegments();
             }
+
+            bool segmentBuilt = roadQueue.BuildRoadSegments();
         }
 
         // Returns whether or not a settlement would be built to.
