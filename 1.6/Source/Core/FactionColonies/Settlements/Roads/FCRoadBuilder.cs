@@ -9,6 +9,7 @@ namespace FactionColonies
     {
         public FCRoadQueue roadQueue;
         public RoadDef roadDef;
+        public bool shouldDrawPaths = false;
 
         public int daysBetweenTicks = 3;
         public bool roadBuildingEnabled = true;

@@ -155,4 +155,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_11</defName>
+		<label>Roads &amp; Events</label>
+		<description>A couple of fixes and changes to road drawing and event timing.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>The paths of roads-to-be-built are drawn more consistently (when the Create New Colony window is open)</li>
+		<li>The defaults for minimum time between events and maximum time between events have been changed from 0 -&gt; 2 and 6 -&gt; 8, respectively. Average event interval should be around 5 days.</li>
+		<li>Actually save the &quot;disable forced pausing during events&quot; setting so it persists between game launches</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

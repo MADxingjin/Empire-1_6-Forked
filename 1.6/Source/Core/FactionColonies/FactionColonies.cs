@@ -74,8 +74,8 @@ namespace FactionColonies
         public const BattleMode DEFAULT_BATTLE_MODE = BattleMode.Auto;
         public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
         public const int DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION = 10;
-        public const int DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT = 0;
-        public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 6;
+        public const int DEFAULT_MIN_DAYS_TIL_RANDOM_EVENT = 2;
+        public const int DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT = 8;
         public const float DEFAULT_MAX_THREAT_MULTIPLIER = 3.0f;
         public const float DEFAULT_DEFENDER_ADVANTAGE = 1.15f;
         public const float DEFAULT_EFFICIENCY_DAMPING = 0.5f;
@@ -179,6 +179,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
+            Scribe_Values.Look(ref disableForcedPausingDuringEvents, "disableForcedPausingDuringEvents", DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS);
             Scribe_Values.Look(ref eventOptionDelaySeconds, "eventOptionDelaySeconds", DEFAULT_EVENT_OPTION_DELAY_SECONDS);
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
             Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);

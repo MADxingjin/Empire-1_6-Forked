@@ -427,6 +427,14 @@ namespace FactionColonies
 
         #endregion
 
+        public override void WorldComponentUpdate()
+        {
+            if (roadBuilder.shouldDrawPaths)
+            {
+                roadBuilder.DrawPaths();
+            }
+        }
+
         #region Tick Loop
 
         public override void WorldComponentTick()
@@ -1685,6 +1693,8 @@ namespace FactionColonies
         {
             if (RandomEventsDisabledOrNoSettlements()) return;
 
+            randomEventLastAdded += 1f;
+
             if (CanMakeRandomEventNow())
             {
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.ReturnRandomEvent(), null);
@@ -1695,16 +1705,7 @@ namespace FactionColonies
 
                     Find.LetterStack.ReceiveLetter("FCRandomEventLetterLabel".Translate(), FCEventMaker.BuildEventLetterBody(tmpEvt), LetterDefOf.NeutralEvent);
                 }
-                else
-                {
-                    randomEventLastAdded += 1f;
-                }
             }
-            else
-            {
-                randomEventLastAdded += 1f;
-            }
-
         }
 
         private bool CanMakeRandomEventNow()
