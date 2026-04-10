@@ -12,6 +12,8 @@ namespace FactionColonies.util
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
         private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
+        private bool _initialized = false;
+        public bool IsInitialized => _initialized;
 
 
         private Dictionary<XenotypeDef, SecurityGuardList> securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
@@ -198,6 +200,7 @@ namespace FactionColonies.util
             RefreshPawnGroupMakers();
             PawnKindTemplateUtil.FixupPawnKindDefs(factionFc);
             WorldSettlementTraderTracker.ReloadTraderKind();
+            _initialized = true;
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.
          * Due to caching tracking, we want to force other classes to go through our functions when interacting with the dictionary. */
