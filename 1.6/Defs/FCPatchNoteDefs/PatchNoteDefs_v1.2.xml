@@ -141,4 +141,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_10</defName>
+		<label>Create New Colony Window fix</label>
+		<description>Fixes an issue that could cause the Create New Colony window to error out and show nothing.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Hotfix</patchNoteType>
+		<patchNoteLines>
+		<li>Add a null check to FCRoadBuilder.DrawPaths() to prevent the Create New Colony window from crashing on a null road builder</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

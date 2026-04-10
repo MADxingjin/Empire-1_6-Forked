@@ -192,6 +192,7 @@ namespace FactionColonies
 
         public void DrawPaths()
         {
+            if (roadQueue is null) return;
             roadQueue.DrawPaths();
         }
 
