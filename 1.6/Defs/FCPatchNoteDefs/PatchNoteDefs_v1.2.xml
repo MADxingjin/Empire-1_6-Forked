@@ -84,4 +84,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_6</defName>
+		<label>Manual Battle Error Handling</label>
+		<description>Adds more graceful error handling on pawn spawning for manual defense battles. This isn&apos;t an Empire bug per se, so much as defensive coding against bugs in other mods&apos; code.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add try/catch guards to pawn spawning for manual battles. Pawns that fail to spawn are logged with the corresponding error message.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

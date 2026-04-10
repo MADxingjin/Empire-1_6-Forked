@@ -735,6 +735,7 @@ namespace FactionColonies
                 }
             }
 
+            var spawnedFriendlies = new List<Pawn>();
             foreach (var friendly in friendlies)
             {
                 if (friendly.IsWildMan()) continue;
@@ -770,15 +771,22 @@ namespace FactionColonies
                     tryFindLoc(out loc, friendly);
                 }
 
-                GenSpawn.Spawn(friendly, loc, Map, new Rot4());
-                friendly.drafter = new Pawn_DraftController(friendly);
-
-                Map.mapPawns.RegisterPawn(friendly);
+                try
+                {
+                    GenSpawn.Spawn(friendly, loc, Map, new Rot4());
+                    friendly.drafter = new Pawn_DraftController(friendly);
+                    Map.mapPawns.RegisterPawn(friendly);
+                    spawnedFriendlies.Add(friendly);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Warning($"Failed to spawn defender {friendly.LabelShort} (likely a mod conflict): {e}");
+                }
             }
 
-            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(WorldSettlement, riders), Map, friendlies);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DefendColony(WorldSettlement, riders), Map, spawnedFriendlies);
 
-            defenders = friendlies;
+            defenders = spawnedFriendlies;
             initialDefenderCount = defenders.Count;
         }
 
@@ -813,14 +821,23 @@ namespace FactionColonies
             }
 
             // Spawn additional civilians if needed
-            while (inhabitants.Count < targetCount)
+            int spawnAttempts = 0;
+            while (inhabitants.Count < targetCount && spawnAttempts < targetCount * 2)
             {
+                spawnAttempts++;
                 Pawn civilian = PawnGenerator.GeneratePawn(FCPawnGenerator.CivilianRequest());
                 IntVec3 loc;
                 if (!CellFinder.TryFindRandomCellNear(Map.Center, Map, 15, c => c.Standable(Map), out loc))
                     loc = Map.Center;
-                GenSpawn.Spawn(civilian, loc, Map);
-                inhabitants.Add(civilian);
+                try
+                {
+                    GenSpawn.Spawn(civilian, loc, Map);
+                    inhabitants.Add(civilian);
+                }
+                catch (Exception e)
+                {
+                    LogUtil.Warning($"Failed to spawn civilian (likely a mod conflict): {e}");
+                }
             }
 
             // Strip weapons from most civilians so they are visually distinct from guards (~12% keep weapons)
