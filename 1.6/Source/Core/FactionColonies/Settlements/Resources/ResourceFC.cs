@@ -59,6 +59,7 @@ namespace FactionColonies
         public bool disburseTitheStock = false;
 
         public bool hasRandomTithe = false;
+        public bool autoMaxRandomTithe = false;
         public ThingFilter randomTitheFilter = new ThingFilter();
         private bool dirtyRandomTitheCache = true;
         private List<ThingDef> thingsForRandomTithes = new List<ThingDef>();
@@ -126,14 +127,12 @@ namespace FactionColonies
         {
             get
             {
-                if (hasRandomTithe)
+                if (!hasRandomTithe) return 0;
+                if (autoMaxRandomTithe)
                 {
-                    return storedRandomTitheBudget;
+                    return Math.Max(0, (int)(GetTitheIncome() - CalcTotalTitheValue()));
                 }
-                else
-                {
-                    return 0;
-                }
+                return storedRandomTitheBudget;
             }
             set
             {
@@ -297,6 +296,7 @@ namespace FactionColonies
             Scribe_Deep.Look(ref randomTitheFilter, "filter");
             Scribe_Values.Look(ref storedRandomTitheBudget, "randomTitheBudget");
             Scribe_Values.Look(ref hasRandomTithe, "hasRandomTithe");
+            Scribe_Values.Look(ref autoMaxRandomTithe, "autoMaxRandomTithe");
 
             //Tax Stock
             Scribe_Values.Look(ref randomTitheStock, "taxStock");
@@ -913,11 +913,17 @@ namespace FactionColonies
         }
         public bool CanAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            return ResourceFormulas.CanAffordThingAmount(TitheThingTotalValue(thing, quanity), GetTitheIncome() - titheTotalValue);
+            double available = autoMaxRandomTithe
+                ? GetTitheIncome() - CalcTotalTitheValue()
+                : GetTitheIncome() - titheTotalValue;
+            return ResourceFormulas.CanAffordThingAmount(TitheThingTotalValue(thing, quanity), available);
         }
         public int MaxThingCanAfford(ThingQualityTuple thing)
         {
-            return MaxThingCanAfford(thing, GetTitheIncome() - titheTotalValue);
+            double available = autoMaxRandomTithe
+                ? GetTitheIncome() - CalcTotalTitheValue()
+                : GetTitheIncome() - titheTotalValue;
+            return MaxThingCanAfford(thing, available);
         }
         public int MaxThingCanAfford(ThingQualityTuple thing, double budget)
         {
@@ -997,7 +1003,7 @@ namespace FactionColonies
                     DecrementInTitheList(maxValueThing, quantity);
                 }
             }
-            if (totalValue > titheIncome && tithes.Count == 0)
+            if (totalValue > titheIncome && tithes.Count == 0 && !autoMaxRandomTithe)
             {
                 /* In this case, the total tithe value must consist entirely of the random tithe budget. So just cap the random tithe budget at
                  * titheIncome */

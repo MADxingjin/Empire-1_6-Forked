@@ -695,11 +695,30 @@ namespace FactionColonies
 
             if (res.hasRandomTithe)
             {
-                Rect budgetBox = new Rect(boundingBox.x, disburseBox.yMax, boundingBox.width * 0.6f, 23f);
+                float budgetRowWidth = boundingBox.width * 0.6f;
+                float checkboxWidth = 55f;
+                Rect budgetBox = new Rect(boundingBox.x, disburseBox.yMax, budgetRowWidth - checkboxWidth, 23f);
                 Rect budgetTextBox = new Rect(budgetBox.x + margin, budgetBox.y, budgetBox.width - (margin * 2), budgetBox.height);
-                Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.GetTitheIncome() - res.titheTotalValueNoRandom));
-                res.RefreshOnRandomTitheBudgetChange();
-                Rect selectBox = new Rect(budgetBox.xMax, budgetBox.y, boundingBox.width * 0.4f - margin, budgetBox.height);
+                if (res.autoMaxRandomTithe)
+                {
+                    Widgets.Label(budgetTextBox, "RandomTitheBudget".Translate() + ": " + res.randomTitheBudget);
+                }
+                else
+                {
+                    Widgets.TextFieldNumericLabeled(budgetTextBox, "RandomTitheBudget".Translate() + ": ", ref res.storedRandomTitheBudget, ref res.storedRandomTitheBudgetBuffer, 0, (float)(res.GetTitheIncome() - res.titheTotalValueNoRandom));
+                    res.RefreshOnRandomTitheBudgetChange();
+                }
+                Rect maxCheckBox = new Rect(budgetBox.xMax, budgetBox.y, checkboxWidth, budgetBox.height);
+                bool prevAutoMax = res.autoMaxRandomTithe;
+                Widgets.CheckboxLabeled(maxCheckBox, "AutoMaxRandomTithe".Translate(), ref res.autoMaxRandomTithe);
+                TooltipHandler.TipRegion(maxCheckBox, "AutoMaxRandomTitheDesc".Translate());
+                if (res.autoMaxRandomTithe && !prevAutoMax)
+                {
+                    res.storedRandomTitheBudget = res.randomTitheBudget;
+                    res.storedRandomTitheBudgetBuffer = res.storedRandomTitheBudget.ToString();
+                    res.settlement.DirtyProfitCache();
+                }
+                Rect selectBox = new Rect(boundingBox.x + budgetRowWidth, budgetBox.y, boundingBox.width * 0.4f - margin, budgetBox.height);
                 if (Widgets.ButtonText(selectBox, "ItemSelection".Translate()))
                 {
                     Find.WindowStack.Add(new SettlementWindowFC_RandomTithe(settlement, res));
