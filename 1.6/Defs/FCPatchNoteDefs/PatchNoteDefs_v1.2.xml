@@ -70,4 +70,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_5</defName>
+		<label>Settlement Capture Fix</label>
+		<description>Fixes an issue where, on capturing a settlement with a squad, the squad&apos;s home settlement is penalized, instead of the captured settlement.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Change several lines in MilitaryJobHandler_Capture.OnResolved to use worldsettlement instead of milComp.WorldSettlement</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
