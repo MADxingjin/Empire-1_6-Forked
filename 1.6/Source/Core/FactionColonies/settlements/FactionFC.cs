@@ -424,7 +424,16 @@ namespace FactionColonies
             {
                 LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
-                xenotypeFilter.FinalizeInit(this);
+                // Do NOT call FinalizeInit here if the Scribe is still loading.
+                // CustomXenotypesForReading reads files from disk via InitLoadingMetaHeaderOnly,
+                // which calls Scribe.ForceStop() when mode != Inactive, which destroys the
+                // active save-load pipeline and nulls all cross-references.
+                // Man, who thought adding custom xenotype support would be so fraught with peril?
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    xenotypeFilter.FinalizeInit(this);
+                }
+                // Otherwise deferred to firstTick (see WorldComponentTick)
             }
 
             // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
@@ -479,6 +488,18 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
+                // Finalize xenotypeFilter if it was deferred from FinalizeInit
+                // (happens when Empire is added to an existing save)
+                if (xenotypeFilter is null)
+                {
+                    LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
+                    xenotypeFilter = new XenotypeFilter(this);
+                }
+                if (!xenotypeFilter.IsInitialized)
+                {
+                    xenotypeFilter.FinalizeInit(this);
+                }
+
                 // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
                 // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
                 // after World.FinalizeInit already registered us during world generation)
