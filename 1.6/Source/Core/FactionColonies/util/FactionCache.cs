@@ -85,7 +85,24 @@ namespace FactionColonies
         }
         public static FactionDef EmpireFactionDef => _cachedFactionDef ?? (_cachedFactionDef = DefDatabase<FactionDef>.GetNamed("PColony"));
         public static List<XenotypeDef> XenotypeDefs => _cachedXenotypeList ?? (_cachedXenotypeList = DefDatabase<XenotypeDef>.AllDefsListForReading);
-        public static List<CustomXenotype> CustomXenotypes => _cachedCustomXenotypeList ?? (_cachedCustomXenotypeList = BuildMergedCustomXenotypeList());
+        public static List<CustomXenotype> CustomXenotypes
+        {
+            get
+            {
+                if (_cachedCustomXenotypeList != null)
+                    return _cachedCustomXenotypeList;
+
+                List<CustomXenotype> list = BuildMergedCustomXenotypeList();
+
+                // Only cache when the Scribe is inactive. During loading, the disk read is
+                // skipped (see BuildMergedCustomXenotypeList), so the list is incomplete.
+                // Returning without caching ensures the next post-load access rebuilds fully.
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                    _cachedCustomXenotypeList = list;
+
+                return list;
+            }
+        }
 
         private static List<CustomXenotype> BuildMergedCustomXenotypeList()
         {
@@ -103,22 +120,32 @@ namespace FactionColonies
                 }
             }
 
-            // Global disk entries (fill in anything not already in per-save)
-            try
+            // Global disk entries (fill in anything not already in per-save).
+            // Skip during active Scribe loading. CharacterCardUtility.CustomXenotypesForReading
+            // reads files via InitLoadingMetaHeaderOnly, which calls Scribe.ForceStop() when the
+            // Scribe is already active, destroying the entire save-load pipeline.
+            if (Scribe.mode == LoadSaveMode.Inactive)
             {
-                List<CustomXenotype> disk = CharacterCardUtility.CustomXenotypesForReading;
-                if (disk != null)
+                try
                 {
-                    foreach (CustomXenotype x in disk)
+                    List<CustomXenotype> disk = CharacterCardUtility.CustomXenotypesForReading;
+                    if (disk != null)
                     {
-                        if (x?.name != null && seenNames.Add(x.name))
-                            merged.Add(x);
+                        foreach (CustomXenotype x in disk)
+                        {
+                            if (x?.name != null && seenNames.Add(x.name))
+                                merged.Add(x);
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    LogUtil.Warning($"Failed to load disk custom xenotypes: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                LogUtil.Warning($"Failed to load disk custom xenotypes: {ex.Message}");
+                LogUtil.Warning($"BuildMergedCustomXenotypeList called while Scribe mode is not Inactive. Skipping CustomXenotypesForReading");
             }
 
             return merged;
