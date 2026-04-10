@@ -152,6 +152,48 @@ namespace FactionColonies
         }
     }
 
+    [HarmonyPatch(typeof(Faction), "Notify_BuildingTookDamage")]
+    class GoodwillPatchFunctionsBuildingTookDamage
+    {
+        static bool Prefix(ref Faction __instance, Building building, DamageInfo dinfo)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(Faction), "Notify_MemberStripped")]
+    class GoodwillPatchFunctionsMemberStripped
+    {
+        static bool Prefix(ref Faction __instance, Pawn member, Faction violator)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(Faction), "Notify_BuildingRemoved")]
+    class GoodwillPatchFunctionsBuildingRemoved
+    {
+        static bool Prefix(ref Faction __instance, Building building, Pawn deconstructor)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
     //Exclude Empire faction from quest faction selection
     [HarmonyPatch(typeof(QuestNode_GetFaction))]
     [HarmonyPatch("IsGoodFaction")]

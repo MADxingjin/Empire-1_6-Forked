@@ -127,4 +127,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_9</defName>
+		<label>Faction Goodwill Patches</label>
+		<description>Adds a few patches onto the game&apos;s goodwill functions to block goodwill drops between the player&apos;s faction and the Empire faction.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Notify_BuildingTookDamage, Notify_MemberStripped, and Notify_BuildingRemoved all patched to return early for the Empire NPC faction, just like Notify_MemberTookDamage</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
