@@ -112,4 +112,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_8</defName>
+		<label>Conditionally allow settlements on Impassable tiles</label>
+		<description>Adds a mechanism to conditinally allow settlements to be founded on Impassable tiles.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add impassableAllowedMutators field to WorldSettlementDef. If an impassable tile has a tile mutator that is in a settlement&apos;s impassableAllowedMutators list, then the settlement can be founded on that tile</li>
+		<li>Reworks the tile check to skip the base game&apos;s Impassable check if a settlement has an impassible override</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

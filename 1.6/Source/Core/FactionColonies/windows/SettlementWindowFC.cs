@@ -712,9 +712,9 @@ namespace FactionColonies
                 bool prevAutoMax = res.autoMaxRandomTithe;
                 Widgets.CheckboxLabeled(maxCheckBox, "AutoMaxRandomTithe".Translate(), ref res.autoMaxRandomTithe);
                 TooltipHandler.TipRegion(maxCheckBox, "AutoMaxRandomTitheDesc".Translate());
-                if (res.autoMaxRandomTithe && !prevAutoMax)
+                if (!res.autoMaxRandomTithe && prevAutoMax)
                 {
-                    res.storedRandomTitheBudget = res.randomTitheBudget;
+                    res.storedRandomTitheBudget = Math.Max(0, (int)(res.GetTitheIncome() - res.titheTotalValueNoRandom));
                     res.storedRandomTitheBudgetBuffer = res.storedRandomTitheBudget.ToString();
                     res.settlement.DirtyProfitCache();
                 }
