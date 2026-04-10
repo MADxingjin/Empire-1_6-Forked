@@ -13,4 +13,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_1</defName>
+		<label>Critical Fix for adding Empire mid-save</label>
+		<description>Fixes a crash when trying to add Empire mid-save. In this circumstance, Empire attempted to initialize the XenotypeFilter in the FactionFC.FinalizeInit function. As part of initializing the filter, Empire attempts to load all custom xenotypes through CustomXenotypesForReading. That calls CheckVersionAndLoad, which in turn calls InitLoadingMetaHeaderOnly. Fun fact: if the Scribe mode is *not* Inactive, then InitLoadingMetaHeaderOnly panics and force stops the scribe process. And guess what Empire&apos;s custom xenotype loading does? That&apos;s right: it calls InitLoadingMetaHeaderOnly when the Scribe mode is not Inactive. Thus, loading stops, and everything breaks. Fun.\n\nThis issue does not affect new saves.</description>
+		<releaseDate>2026-04-09</releaseDate>
+		<patchNoteType>Hotfix</patchNoteType>
+		<patchNoteLines>
+		<li>Change the xenotype filter to be initialized on the first tick instead of during loading</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
