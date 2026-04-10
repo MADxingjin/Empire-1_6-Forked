@@ -130,7 +130,8 @@ namespace FactionColonies
                 if (!hasRandomTithe) return 0;
                 if (autoMaxRandomTithe)
                 {
-                    return Math.Max(0, (int)(GetTitheIncome() - CalcTotalTitheValue()));
+                    RefreshTitheCacheIfDirty();
+                    return Math.Max(0, (int)(GetTitheIncome() - cachedTitheTotalValue));
                 }
                 return storedRandomTitheBudget;
             }
@@ -166,6 +167,15 @@ namespace FactionColonies
                 return cachedProductionMult;
             }
         }
+        private void RefreshTitheCacheIfDirty()
+        {
+            if (dirtyTitheCache)
+            {
+                PruneTitheList();
+                cachedTitheTotalValue = CalcTotalTitheValue();
+                dirtyTitheCache = false;
+            }
+        }
         public double titheTotalValue
         {
             get
@@ -176,12 +186,7 @@ namespace FactionColonies
                 {
                     return taxableProductionMarketValue;
                 }
-                if (dirtyTitheCache)
-                {
-                    PruneTitheList();
-                    cachedTitheTotalValue = CalcTotalTitheValue();
-                    dirtyTitheCache = false;
-                }
+                RefreshTitheCacheIfDirty();
                 return cachedTitheTotalValue + randomTitheBudget;
             }
         }
@@ -913,16 +918,30 @@ namespace FactionColonies
         }
         public bool CanAffordThingAmount(ThingQualityTuple thing, int quanity)
         {
-            double available = autoMaxRandomTithe
-                ? GetTitheIncome() - CalcTotalTitheValue()
-                : GetTitheIncome() - titheTotalValue;
+            double available;
+            if (autoMaxRandomTithe)
+            {
+                RefreshTitheCacheIfDirty();
+                available = GetTitheIncome() - cachedTitheTotalValue;
+            }
+            else
+            {
+                available = GetTitheIncome() - titheTotalValue;
+            }
             return ResourceFormulas.CanAffordThingAmount(TitheThingTotalValue(thing, quanity), available);
         }
         public int MaxThingCanAfford(ThingQualityTuple thing)
         {
-            double available = autoMaxRandomTithe
-                ? GetTitheIncome() - CalcTotalTitheValue()
-                : GetTitheIncome() - titheTotalValue;
+            double available;
+            if (autoMaxRandomTithe)
+            {
+                RefreshTitheCacheIfDirty();
+                available = GetTitheIncome() - cachedTitheTotalValue;
+            }
+            else
+            {
+                available = GetTitheIncome() - titheTotalValue;
+            }
             return MaxThingCanAfford(thing, available);
         }
         public int MaxThingCanAfford(ThingQualityTuple thing, double budget)

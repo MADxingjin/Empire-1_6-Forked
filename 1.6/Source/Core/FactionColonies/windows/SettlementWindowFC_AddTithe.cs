@@ -108,7 +108,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             double totalBudget = Math.Round(resource.GetTitheIncome(), 2);
             double usedBudget = resource.autoMaxRandomTithe
-                ? Math.Round(resource.CalcTotalTitheValue(), 2)
+                ? Math.Round(resource.titheTotalValueNoRandom, 2)
                 : Math.Round(resource.titheTotalValue, 2);
             double remaining = Math.Round(totalBudget - usedBudget, 2);
             string remainingStr;
