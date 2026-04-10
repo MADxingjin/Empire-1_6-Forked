@@ -18,6 +18,7 @@
 	<FCSettingEnableAllEvents>Enable All Events</FCSettingEnableAllEvents>
 	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
 	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
+	<FCSettingEventOptionDelay>Event option delay: {0}s</FCSettingEventOptionDelay>
 	<FCSettingBattleMode>Battle Mode: </FCSettingBattleMode>
 	<FCBattleModeAuto>Auto-Resolve</FCBattleModeAuto>
 	<FCBattleModeAutoDesc>All battles resolve automatically.</FCBattleModeAutoDesc>

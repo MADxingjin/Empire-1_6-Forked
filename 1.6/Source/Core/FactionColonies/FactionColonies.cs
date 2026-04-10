@@ -69,6 +69,7 @@ namespace FactionColonies
         public const bool DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS = false;
         public const bool DEFAULT_DISABLE_RANDOM_EVENTS = false;
         public const bool DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS = true;
+        public const float DEFAULT_EVENT_OPTION_DELAY_SECONDS = 1.0f;
         public const bool DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN = true;
         public const BattleMode DEFAULT_BATTLE_MODE = BattleMode.Auto;
         public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
@@ -104,6 +105,7 @@ namespace FactionColonies
         public static bool disableHostileMilitaryActions = DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS;
         public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
         public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
+        public static float eventOptionDelaySeconds = DEFAULT_EVENT_OPTION_DELAY_SECONDS;
         public static bool deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
         public static BattleMode battleMode = DEFAULT_BATTLE_MODE;
         public static TaxDeliveryMode forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
@@ -177,6 +179,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
+            Scribe_Values.Look(ref eventOptionDelaySeconds, "eventOptionDelaySeconds", DEFAULT_EVENT_OPTION_DELAY_SECONDS);
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
             Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);
             Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown", DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN);
@@ -611,6 +614,10 @@ namespace FactionColonies
 
             ls.CheckboxLabeled("FCSettingDisableRandomEvents".Translate(), ref disableRandomEvents);
             ls.CheckboxLabeled("FCSettingForcedPausing".Translate(), ref disableForcedPausingDuringEvents);
+            eventOptionDelaySeconds = ls.SliderLabeled(
+                "FCSettingEventOptionDelay".Translate(eventOptionDelaySeconds.ToString("0.0")),
+                eventOptionDelaySeconds, 0f, 2f);
+            eventOptionDelaySeconds = (float)Math.Round(eventOptionDelaySeconds, 1);
 
             ls.Gap(5f);
 
