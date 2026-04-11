@@ -48,12 +48,12 @@ namespace FactionColonies
 
             // Build animal list
             List<PawnKindDef> animals = FactionCache.AllAnimalKindDefs
-                .OrderBy(a => a.label, StringComparer.OrdinalIgnoreCase)
+                .OrderBy(a => a.label ?? a.defName, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
             // Filter by search
             if (!string.IsNullOrEmpty(searchTerm))
-                animals = animals.Where(a => a.label.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                animals = animals.Where(a => (a.label ?? a.defName).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             // Scroll view
             float listTop = searchRect.yMax + margin;

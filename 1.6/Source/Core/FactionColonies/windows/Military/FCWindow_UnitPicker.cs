@@ -50,7 +50,7 @@ namespace FactionColonies
             // Filter
             List<MilUnitFC> filtered = units;
             if (!string.IsNullOrEmpty(searchTerm))
-                filtered = units.Where(u => u.name.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                filtered = units.Where(u => (u.name ?? "").IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             // Scroll view
             float listTop = searchRect.yMax + margin;
