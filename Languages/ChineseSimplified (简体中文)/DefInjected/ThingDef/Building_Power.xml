@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: faction power generator -->
+  <EmpirePowerGenerator.label>派系电网接口</EmpirePowerGenerator.label>
+  <!-- EN: Outputs energy created by your settlements to your colony!\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <EmpirePowerGenerator.description>接入你派系的电网来获得地图外的电力。</EmpirePowerGenerator.description>
+  
+</LanguageData>

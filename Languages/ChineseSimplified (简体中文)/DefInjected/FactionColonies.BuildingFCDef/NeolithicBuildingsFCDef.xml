@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Alchemist -->
+  <alchemist.label>炼金学家</alchemist.label>
+  <!-- EN: Turn steel into gold? We'll find a way! -->
+  <alchemist.desc>点钢成金？一定有办法！</alchemist.desc>
+  
+  <!-- EN: Ancient Academy -->
+  <ancientAcademy.label>古代史课堂</ancientAcademy.label>
+  <!-- EN: Unlocks secrets of the universe which may or may not be true but not both! -->
+  <ancientAcademy.desc>这里的课程讲述宇宙的过去，星球的秘密，不管这些知识的对与错。</ancientAcademy.desc>
+  
+  <!-- EN: Apothecary -->
+  <apothecary.label>草药师</apothecary.label>
+  <!-- EN: Makes elixirs to cure all ailments! (Results may vary.) -->
+  <apothecary.desc>制作药水来治愈所有疾病！（不保证疗效）</apothecary.desc>
+  
+  <!-- EN: bailiff -->
+  <bailiff.label>法务官</bailiff.label>
+  <!-- EN: Does not accept excuses for late rent payments. -->
+  <bailiff.desc>在收房租时不接受任何借口。</bailiff.desc>
+  
+  <!-- EN: Brewer -->
+  <brewer.label>酿酒工</brewer.label>
+  <!-- EN: Brews the finest ethanols and ethanol biproducts. Please drink responsibly. -->
+  <brewer.desc>酿造村里最好的美酒和酒糟。适量饮酒！</brewer.desc>
+  
+  <!-- EN: Carpenter -->
+  <carpenter.label>木工</carpenter.label>
+  <!-- EN: Makes wonderful furniture to prevent the most heinous of war crimes. -->
+  <carpenter.desc>用制造出的优质桌椅防止世上最邪恶的战争罪行。</carpenter.desc>
+  
+  <!-- EN: Cereal Farmland -->
+  <cerealFarmland.label>谷物耕地</cerealFarmland.label>
+  <!-- EN: Land for growing cereal crops to feed more than a single village. -->
+  <cerealFarmland.desc>种植谷物的耕地，用来养活许多个村落。</cerealFarmland.desc>
+  
+  <!-- EN: Fletcher -->
+  <fletcher.label>制箭师</fletcher.label>
+  <!-- EN: A creator of arrows - the best ammuniotion in the neolithic! -->
+  <fletcher.desc>箭矢的制作者，这是石器时代最好的弹药！</fletcher.desc>
+  
+  <!-- EN: Furrier -->
+  <furrier.label>皮革工匠</furrier.label>
+  <!-- EN: Makes goods from furs and pelts. Ignore the funky smell. -->
+  <furrier.desc>用皮草制作商品。有一股味道。</furrier.desc>
+  
+  <!-- EN: Grain Mill -->
+  <grainMill.label>谷物磨盘</grainMill.label>
+  <!-- EN: A mill to process cereal crops with big, grindy rocks. -->
+  <grainMill.desc>使用巨大的磨石来处理谷物。</grainMill.desc>
+  
+  <!-- EN: Granary -->
+  <granary.label>粮仓</granary.label>
+  <!-- EN: A safe place to store cereal crops from those pesky rats. -->
+  <granary.desc>此地用来从讨厌的鼠鼠嘴下保卫珍贵的粮食。</granary.desc>
+  
+  <!-- EN: Hunter's Hut -->
+  <huntersHut.label>猎人小屋</huntersHut.label>
+  <!-- EN: Hunts the surrounding woods for food. Endangered species are delicious! -->
+  <huntersHut.desc>在森林中获得猎获。越濒临灭绝的物种吃起来越香！</huntersHut.desc>
+  
+  <!-- EN: Militia -->
+  <militia.label>民兵</militia.label>
+  <!-- EN: Ready to fight for their families, though not very effectively. -->
+  <militia.desc>准备好保卫他们的家庭，虽然效率不尽人意。</militia.desc>
+  
+  <!-- EN: Slave Market -->
+  <slaveMarket.label>奴隶市场</slaveMarket.label>
+  <!-- EN: Need some free labour? -->
+  <slaveMarket.desc>你需要免费的劳力吗？</slaveMarket.desc>
+  
+  <!-- EN: Stone Mason -->
+  <stoneMason.label>切石工</stoneMason.label>
+  <!-- EN: An artisan of stone by day - rules the world by night. -->
+  <stoneMason.desc>白天用石头搞艺术，晚上用它们统治世界。</stoneMason.desc>
+  
+</LanguageData>

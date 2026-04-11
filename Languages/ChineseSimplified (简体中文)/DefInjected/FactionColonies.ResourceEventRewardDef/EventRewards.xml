@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: animals -->
+  <RERD_Animals.label>动物</RERD_Animals.label>
+  
+  <!-- EN: apparel -->
+  <RERD_Apparel.label>衣物</RERD_Apparel.label>
+  
+  <!-- EN: armor -->
+  <RERD_Armor.label>装甲</RERD_Armor.label>
+  
+  <!-- EN: drugs -->
+  <RERD_Drugs.label>成瘾品</RERD_Drugs.label>
+  
+  <!-- EN: food -->
+  <RERD_Food.label>食物</RERD_Food.label>
+  
+  <!-- EN: logging -->
+  <RERD_Logging.label>木材</RERD_Logging.label>
+  
+  <!-- EN: mining -->
+  <RERD_Mining.label>矿物</RERD_Mining.label>
+  
+  <!-- EN: silver -->
+  <RERD_Silver.label>白银</RERD_Silver.label>
+  
+  <!-- EN: weapons -->
+  <RERD_Weapons.label>武器</RERD_Weapons.label>
+  
+</LanguageData>

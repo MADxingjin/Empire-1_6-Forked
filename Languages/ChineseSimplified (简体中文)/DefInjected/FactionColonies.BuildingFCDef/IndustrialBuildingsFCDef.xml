@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Adult Entertainment Centre -->
+  <adultEntertainmentCentre.label>成人娱乐中心</adultEntertainmentCentre.label>
+  <!-- EN: A place for the local people to spend a dime and have a good time. -->
+  <adultEntertainmentCentre.desc>花上一点钱就能爽到不能呼吸的好去处.+0.5基础幸福度/日.</adultEntertainmentCentre.desc>
+  
+  <!-- EN: Animal Testing Facility -->
+  <animalTestingFacility.label>动物测试中心</animalTestingFacility.label>
+  <!-- EN: A research lab dedicated to testing products on animals. Unethical, but useful. -->
+  <animalTestingFacility.desc>在动物上测试各种产品的研发中心，也许不道德，但绝对有用。</animalTestingFacility.desc>
+  
+  <!-- EN: Apartment Housing -->
+  <apartmentHousing.label>公寓楼</apartmentHousing.label>
+  <!-- EN: A large apartment block to house local workers. -->
+  <apartmentHousing.desc>一个足够大的公寓来住下本地劳工。</apartmentHousing.desc>
+  
+  <!-- EN: Artillery Outpost -->
+  <artilleryOutpost.label>火炮哨所</artilleryOutpost.label>
+  <!-- EN: When this building is built, an artillery strike can be called for a cost in the military menu. -->
+  <artilleryOutpost.desc>可在军事栏内向建有该建筑的领地要求炮击支援，炮弹需要付费。</artilleryOutpost.desc>
+  
+  <!-- EN: Battery Power Station -->
+  <batteryPowerStation.label>电池储能站</batteryPowerStation.label>
+  <!-- EN: A power station to store excess energy production. -->
+  <batteryPowerStation.desc>用来存储多余能源产出的站点</batteryPowerStation.desc>
+  
+  <!-- EN: Clean Energy Lab -->
+  <cleanEnergyLab.label>清洁能源实验室</cleanEnergyLab.label>
+  <!-- EN: A research lab dedicated to researching and producing more efficient clean forms of energy. -->
+  <cleanEnergyLab.desc>专注于研发和生产清洁能源的实验室</cleanEnergyLab.desc>
+  
+  <!-- EN: Firearms Factory -->
+  <firearmsFactory.label>枪械厂</firearmsFactory.label>
+  <!-- EN: A factory that produces mass quantities of firearms. -->
+  <firearmsFactory.desc>生产大量枪支的地方.+0.5基础武器产出.</firearmsFactory.desc>
+  
+  <!-- EN: Forced Work Camps -->
+  <forcedWorkCamps.label>劳改营</forcedWorkCamps.label>
+  <!-- EN: Put those prisoners to work and increase your production! -->
+  <forcedWorkCamps.desc>不能让这帮犯人闲着!+2工人软上限,+0.5叛乱度/日,-25%叛乱度降速/日.</forcedWorkCamps.desc>
+  
+  <!-- EN: Industrial Mining Equipment Depot -->
+  <IMED.label>工业开矿装备维护地</IMED.label>
+  <!-- EN: Build a place to store and maintain big ugly machines that chew through rock like it's cardboard. -->
+  <IMED.desc>用来维护那些又大又丑但是能把石头当纸板一样敲碎的开矿机器。</IMED.desc>
+  
+  <!-- EN: Indoor Hydroponics -->
+  <indoorHydroponics.label>水培基地</indoorHydroponics.label>
+  <!-- EN: Food is produced indoors, protecting it from the harshes from the world. -->
+  <indoorHydroponics.desc>在此生产食物能免遭外界恶劣环境的干扰.+0.5基础食物产出.</indoorHydroponics.desc>
+  
+  <!-- EN: In-House Merc Company -->
+  <inhouseMercCompany.label>私人安保公司</inhouseMercCompany.label>
+  <!-- EN: Barracks for an in-house mercenary company. They will provide security for the colony. -->
+  <inhouseMercCompany.desc>雇佣军的营房.他们将为领地提供安全保障.</inhouseMercCompany.desc>
+  
+  <!-- EN: Junk Food Factory -->
+  <JunkFoodFactory.label>垃圾食品工厂</JunkFoodFactory.label>
+  <!-- EN: It's quick, cheap, and unhealthy. The locals will complain about the lack of quality, but they'll be too unhealthy to do anything about it. -->
+  <JunkFoodFactory.desc>廉价，易产，不健康。本地人会抱怨这种低质量食物，但很快他们的健康状况就会下滑到无法做出实际行动的程度。</JunkFoodFactory.desc>
+  
+  <!-- EN: Volcanology Lab -->
+  <lavaLab.label>火山学研究室</lavaLab.label>
+  <!-- EN: A research facility dedicated to studying volcanology and any potential practical applications. -->
+  <lavaLab.desc>专注于研究火山及其应用场景的研究室</lavaLab.desc>
+  
+  <!-- EN: Geothermal Power Plant -->
+  <lavaPlant.label>地热发电厂</lavaPlant.label>
+  <!-- EN: Harness the easily accessible geothermal energy of volcanically active areas for power generation. -->
+  <lavaPlant.desc>将地热活跃区域的能量收集起来。</lavaPlant.desc>
+  
+  <!-- EN: Local Zoo -->
+  <LocalZoo.label>本地动物园</LocalZoo.label>
+  <!-- EN: A place for people to ogle various different animals as they pass through the settlement for fun and profit! -->
+  <LocalZoo.desc>可供游客们观赏各种不同动物的地方，这些动物在经过定居点时，会产出足够的幸福度和盈利。</LocalZoo.desc>
+  
+  <!-- EN: Research Labs -->
+  <researchLabs.label>实验室</researchLabs.label>
+  <!-- EN: Scienctists spend their days researching here. -->
+  <researchLabs.desc>研究者整日在这里研究。</researchLabs.desc>
+  
+  <!-- EN: Rimazon Warehouse -->
+  <rimazonWarehouse.label>边马逊货仓</rimazonWarehouse.label>
+  <!-- EN: A warehouse stocked full of goods marked to be shipped. -->
+  <rimazonWarehouse.desc>仓库里装满了待发货的货物。</rimazonWarehouse.desc>
+  
+  <!-- EN: Soil Reclamation Bureau -->
+  <soilFixer.label>土地再开拓局</soilFixer.label>
+  <!-- EN: Restores fertility to the damaged and depleted soil of Scarlands. -->
+  <soilFixer.desc>负责恢复焦痕废土那受损且肥力早已耗竭的土地的部门。</soilFixer.desc>
+  
+  <!-- EN: Solar Plant -->
+  <solarPlant.label>太阳能发电厂</solarPlant.label>
+  <!-- EN: A solar powerplant to produce extra energy. -->
+  <solarPlant.desc>使用太阳能发电的场地。</solarPlant.desc>
+  
+  <!-- EN: Textile Factory -->
+  <TextileFactory.label>织物工厂</TextileFactory.label>
+  <!-- EN: Making clothes is so much easier when machines do most of the work! -->
+  <TextileFactory.desc>缝制衣物在机器替代了巨大比例的工作量后轻松了许多！</TextileFactory.desc>
+  
+  <!-- EN: Tree Farm -->
+  <TreeFarm.label>树场</TreeFarm.label>
+  <!-- EN: Stop stripping forest of trees and just grow your own! -->
+  <TreeFarm.desc>停止伐倒森林，开始种你自己的树！</TreeFarm.desc>
+  
+</LanguageData>

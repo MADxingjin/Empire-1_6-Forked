@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: glacial plain -->
+  <GlacialPlain.label>冰原</GlacialPlain.label>
+  
+  <!-- EN: glowforest -->
+  <Glowforest.label>荧光森林</Glowforest.label>
+  
+  <!-- EN: grassland -->
+  <Grasslands.label>草原</Grasslands.label>
+  
+  <!-- EN: lava field -->
+  <LavaField.label>熔岩平原</LavaField.label>
+  
+  <!-- EN: scarlands -->
+  <Scarlands.label>焦痕废土</Scarlands.label>
+  
+</LanguageData>

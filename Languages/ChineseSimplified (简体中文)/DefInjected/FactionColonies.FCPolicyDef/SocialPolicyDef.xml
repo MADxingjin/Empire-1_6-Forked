@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Company Union -->
+  <companyUnion.label>巨型企业</companyUnion.label>
+  <!-- EN: A corporation that has struck out to create their own self-sufficient trade empire. -->
+  <companyUnion.desc>巨型企业尝试建立自己的内循环贸易帝国。</companyUnion.desc>
+  
+  <!-- EN: Diversity We Embrace -->
+  <diversityWeEmbrace.label>拥抱多样性</diversityWeEmbrace.label>
+  <!-- EN: A diverse society has no unfilled cracks that could collapse itself. -->
+  <diversityWeEmbrace.desc>足够多样化的社会中没有未被填满的裂口会撕裂社会。</diversityWeEmbrace.desc>
+  
+  <!-- EN: One People United -->
+  <onePeopleUnited.label>团结一心</onePeopleUnited.label>
+  <!-- EN: A society united by common cause holds the strongest of wills for the hardest duties. -->
+  <onePeopleUnited.desc>基于共同目标团结起来的社会有着最坚强的意志来执行最困难的任务。</onePeopleUnited.desc>
+  
+  <!-- EN: Royal Heritage -->
+  <royalHeritage.label>贵族传统</royalHeritage.label>
+  <!-- EN: A society under the command of a royal family is unified in its traditions. -->
+  <royalHeritage.desc>该社会团结在一个贵族家庭及其传统下。</royalHeritage.desc>
+  
+  <!-- EN: Science Foundation -->
+  <scienceFoundation.label>科学基础</scienceFoundation.label>
+  <!-- EN: A society that values knowledge and exploring the unknown. -->
+  <scienceFoundation.desc>该社会尊重知识，并探索未知。</scienceFoundation.desc>
+  
+  <!-- EN: Trader's Federation -->
+  <tradersFederation.label>商人联邦</tradersFederation.label>
+  <!-- EN: A society in which those of power are those with the wealth to spend. -->
+  <tradersFederation.desc>该社会的权力滑向足够富有的商人们。</tradersFederation.desc>
+  
+</LanguageData>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Unexpected Craftsmanship -->
+  <unexpectedCraftsmanship_0.label>不寻常的手艺</unexpectedCraftsmanship_0.label>
+  <!-- EN: The craftsmen in your settlements have been working unusually well! How should their talents be directed? -->
+  <unexpectedCraftsmanship_0.desc>TODO</unexpectedCraftsmanship_0.desc>
+  
+  <!-- EN: Unexpected Craftsmanship -->
+  <unexpectedCraftsmanship_1-1.label>TODO</unexpectedCraftsmanship_1-1.label>
+  <!-- EN: The craftsmen continue their excellent work across all disciplines. Their broad excellence boosts morale. -->
+  <unexpectedCraftsmanship_1-1.desc>TODO</unexpectedCraftsmanship_1-1.desc>
+  
+  <!-- EN: Unexpected Craftsmanship (Weapons Focus) -->
+  <unexpectedCraftsmanship_1-2.label>TODO</unexpectedCraftsmanship_1-2.label>
+  <!-- EN: The craftsmen focus their talents on weaponsmithing, and their focused efforts produce a fine weapon. -->
+  <unexpectedCraftsmanship_1-2.desc>TODO</unexpectedCraftsmanship_1-2.desc>
+  
+  <!-- EN: Unexpected Craftsmanship (Apparel Focus) -->
+  <unexpectedCraftsmanship_1-3.label>TODO</unexpectedCraftsmanship_1-3.label>
+  <!-- EN: The craftsmen focus their talents on tailoring, and their focused efforts produce a fine piece of armor. -->
+  <unexpectedCraftsmanship_1-3.desc>TODO</unexpectedCraftsmanship_1-3.desc>
+  
+</LanguageData>

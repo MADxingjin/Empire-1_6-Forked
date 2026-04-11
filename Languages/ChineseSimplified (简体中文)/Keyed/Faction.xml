@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Faction Customization -->
+	<!-- EN: Primary -->
+  <fcPrimaryColor>主色</fcPrimaryColor>
+	<!-- EN: Secondary -->
+  <fcSecondaryColor>辅色</fcSecondaryColor>
+	<!-- EN: Choose Primary Color -->
+  <fcChoosePrimaryColor>选择主色</fcChoosePrimaryColor>
+	<!-- EN: Choose Secondary Color -->
+  <fcChooseSecondaryColor>选择辅色</fcChooseSecondaryColor>
+	<!-- EN: Applied to armor and outer layers (e.g. flak vests, plate armor, dusters). When no secondary is set, applies to all apparel. -->
+  <fcPrimaryColorDesc>对护甲和外层衣物染色，如果没有设置辅色，将应用到所有衣物。</fcPrimaryColorDesc>
+	<!-- EN: Applied to base clothing (e.g. shirts, pants), headgear, belts, and accessories. -->
+  <fcSecondaryColorDesc>对贴身衣物，头盔，腰带和其他饰品染色</fcSecondaryColorDesc>
+	<!-- EN: Set primary color first -->
+  <fcSetPrimaryFirst>首先设置一个主要颜色。</fcSetPrimaryFirst>
+	<!-- EN: Pawns will generate with random colors when no faction colors are set. -->
+  <fcColorsRandomInfo>没有设置主要颜色时，生成的派系单位将使用随机颜色。</fcColorsRandomInfo>
+	<!-- EN: Not set -->
+  <fcColorNotSet>未设置</fcColorNotSet>
+	<!-- EN: Colors -->
+  <fcColors>颜色</fcColors>
+	<!-- EN: Configure -->
+  <fcConfigure>设置</fcConfigure>
+	<!-- EN: Click to select -->
+  <fcClickToSelect>点击以选择</fcClickToSelect>
+	<!-- EN: Insignia -->
+  <fcInsignia>TODO</fcInsignia>
+	<!-- EN: Active Ideologies -->
+  <fcColorPickerActiveIdeos>激活的文化模因</fcColorPickerActiveIdeos>
+	<!-- EN: Preset Colors -->
+  <fcColorPickerPresets>预设颜色</fcColorPickerPresets>
+	<!-- EN: Saved Colors -->
+  <fcColorPickerSaved>已保存的颜色</fcColorPickerSaved>
+	<!-- EN: Save Current -->
+  <fcColorPickerSaveCurrent>保存当前颜色</fcColorPickerSaveCurrent>
+	<!-- EN: Right-click to remove -->
+  <fcColorPickerRightClickRemove>右键点击以移除</fcColorPickerRightClickRemove>
+	<!-- EN: Customize Faction -->
+  <CustomizeFaction>自定义派系</CustomizeFaction>
+	<!-- EN: Faction Name -->
+  <FactionName>派系名称</FactionName>
+	<!-- EN: Faction Title -->
+  <FactionTitle>派系称号</FactionTitle>
+	<!-- EN: Faction Icon -->
+  <FactionIcon>派系图标</FactionIcon>
+	<!-- EN: That faction can't run an empire on its own! -->
+  <InvalidFaction>TODO</InvalidFaction>
+	<!-- EN: Player Faction -->
+  <PlayerFaction>玩家派系</PlayerFaction>
+	<!-- EN: Bastion -->
+  <Bastion>城堡</Bastion>
+	<!-- EN: Founded on {0} -->
+  <FCFoundedOn>在{0}建立</FCFoundedOn>
+
+	<!-- Faction Stats -->
+	<!-- EN: Faction Happiness -->
+  <FactionHappiness>派系幸福度</FactionHappiness>
+	<!-- EN: Faction Loyalty -->
+  <FactionLoyalty>派系忠诚度</FactionLoyalty>
+	<!-- EN: Faction Unrest -->
+  <FactionUnrest>派系叛乱度</FactionUnrest>
+	<!-- EN: Faction Prosperity -->
+  <FactionProsperity>派系繁荣度</FactionProsperity>
+	<!-- EN: The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor. -->
+  <FactionHappinessDesc>衡量派系居民总体幸福感的标准.高幸福度对和解内部冲突极有帮助.</FactionHappinessDesc>
+	<!-- EN: The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection. -->
+  <FactionLoyaltyDesc>衡量派系居民总体是否忠诚的标准.忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能. </FactionLoyaltyDesc>
+	<!-- EN: The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow. -->
+  <FactionUnrestDesc>衡量派系总体动荡程度的标准.动乱越严重,你的派系内部就越有可能发生危险事件.高叛乱度会增加内部冲突.</FactionUnrestDesc>
+	<!-- EN: The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time. -->
+  <FactionProsperityDesc>衡量派系总体运行状况的标准.一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度受损,它将随着时间慢慢回复.</FactionProsperityDesc>
+
+	<!-- Faction Levels -->
+	<!-- EN: Faction Level: {0} -->
+  <FCLevel>派系等级：{0}</FCLevel>
+	<!-- EN: Faction Level Up -->
+  <FCFactionLevelUp>派系已升级</FCFactionLevelUp>
+	<!-- EN: Your faction {0} has leveled up to {1}! -->
+  <FCFactionLevelUpDesc>你的派系 {0} 已升级到 {1}。</FCFactionLevelUpDesc>
+	<!-- EN: reached max level -->
+  <ReachedMaxLevel>已到达最大派系等级</ReachedMaxLevel>
+
+	<!-- Policies -->
+	<!-- EN: Policies/Traits -->
+  <Policies-Traits>政策/特性</Policies-Traits>
+	<!-- EN: Faction Policies and Traits -->
+  <FactionPoliciesAndTraits>派系的政策/特性</FactionPoliciesAndTraits>
+	<!-- EN: Tax Law -->
+  <TaxLaw>税法</TaxLaw>
+	<!-- EN: Social Policy -->
+  <SocialPolicy>社会政策</SocialPolicy>
+	<!-- EN: Military Policy -->
+  <MilitaryPolicy>军事政策</MilitaryPolicy>
+	<!-- EN: Policy Selection -->
+  <FCPolicySelection>政策选择页</FCPolicySelection>
+	<!-- EN: Select Policies -->
+  <FCSelectPolicies>选择政策</FCSelectPolicies>
+	<!-- EN: That policy has already been enacted -->
+  <PolicyAlreadyEnacted>政策已颁布</PolicyAlreadyEnacted>
+	<!-- EN: There is already a policy of that type being enacted -->
+  <AlreadyPolicyTypeBeingEnacted>已经有一种此类型的政策正在实施</AlreadyPolicyTypeBeingEnacted>
+	<!-- EN: There is already a policy being enacted in that slot -->
+  <AlreadyPolicyInSlot>已经有一项政策在那个槽位颁布了</AlreadyPolicyInSlot>
+	<!-- EN: Enact -->
+  <Enact>制定</Enact>
+	<!-- EN: Enacted -->
+  <Enacted>颁布</Enacted>
+	<!-- EN: Repeal -->
+  <Repeal>废除</Repeal>
+	<!-- EN: will be enacted in -->
+  <WillBeEnactedIn>将颁布于</WillBeEnactedIn>
+	<!-- EN: Enact Policy -->
+  <EnactPolicy>制定政策</EnactPolicy>
+	<!-- EN: has been enacted at -->
+  <HasBeenEnactedAt>颁布于</HasBeenEnactedAt>
+	<!-- EN: has been enacted in your faction -->
+  <EnactedInYourFaction>已经在你的派系里颁布了</EnactedInYourFaction>
+
+	<!-- Traits -->
+	<!-- EN: Faction Traits -->
+  <FactionTraits>派系特性</FactionTraits>
+	<!-- EN: Add Trait -->
+  <AddTrait>添加特性</AddTrait>
+	<!-- EN: Trait Selection -->
+  <FCTraitSelection>特性选择页</FCTraitSelection>
+	<!-- EN: Select Traits -->
+  <FCSelectTraits>选择特性</FCSelectTraits>
+	<!-- EN: Trait Slots -->
+  <FCTraitSlots>特性槽</FCTraitSlots>
+	<!-- EN: Available Traits -->
+  <FCAvailableTraits>可选择的特性</FCAvailableTraits>
+	<!-- EN: {0} -->
+  <FCTraitSelectedPreview>TODO</FCTraitSelectedPreview>
+	<!-- EN: All available trait slots are filled! -->
+  <FCNoOpenTraitSlots>TODO</FCNoOpenTraitSlots>
+	<!-- EN: All trait slots have been assigned. -->
+  <FCAllTraitSlotsFilled>TODO</FCAllTraitSlotsFilled>
+	<!-- EN: Select {0} more trait(s) from the list above. -->
+  <FCSelectTraitsPrompt>TODO</FCSelectTraitsPrompt>
+	<!-- EN: Press Confirm to assign the selected traits. This cannot be undone! -->
+  <FCTraitSelectionReady>TODO</FCTraitSelectionReady>
+	<!-- EN: Hover over a trait to see its details. -->
+  <FCHoverTraitForDetails>TODO</FCHoverTraitForDetails>
+	<!-- EN: Selected ({0}/{1}) -->
+  <FCSelectedPolicies>TODO</FCSelectedPolicies>
+	<!-- EN: Available Policies -->
+  <FCAvailablePolicies>TODO</FCAvailablePolicies>
+	<!-- EN: Conflicts with: {0} -->
+  <FCConflictsWith>TODO</FCConflictsWith>
+	<!-- EN: Traits -->
+  <FCTraits>TODO</FCTraits>
+	<!-- EN: Select {0} policies to be added! But be warned, your choice is irreversible! -->
+  <FCSelectTraits0>TODO</FCSelectTraits0>
+	<!-- EN: Remember, your choice is irreversible after you exit this window! -->
+  <FCSelectTraits2>TODO</FCSelectTraits2>
+	<!-- EN: You cannot have conflicting faction traits! -->
+  <FCConflictingTraits>TODO</FCConflictingTraits>
+	<!-- EN: You have to unselect one of your current traits to select another! -->
+  <FCUnselectTrait>TODO</FCUnselectTrait>
+	<!-- EN: You have already chosen your traits. You cannot edit them any longer! -->
+  <FCTraitsChosen>TODO</FCTraitsChosen>
+	<!-- EN: Select a new trait -->
+  <FCSelectANewTrait>TODO</FCSelectANewTrait>
+	<!-- EN: Locked until level {0} -->
+  <FCTraitLockedUntilLevel>TODO</FCTraitLockedUntilLevel>
+	<!-- EN: Are you sure you wish to select {0}? You will not be able to reverse this decision -->
+  <FCConfirmTrait>TODO</FCConfirmTrait>
+	<!-- EN: Your faction's starting traits are not selected. Go to the faction customization tab to select them! -->
+  <FCSelectYourTraits>TODO</FCSelectYourTraits>
+
+	<!-- Edicts -->
+	<!-- EN: Edicts -->
+  <FCEdicts>TODO</FCEdicts>
+	<!-- EN: Edict -->
+  <FCEdict>TODO</FCEdict>
+	<!-- EN: Toggle faction-wide edicts. One edict per category may be active at a time. Active edicts have an ongoing silver cost. -->
+  <FCEdictsDesc>TODO</FCEdictsDesc>
+	<!-- EN: Upkeep: {0} silver/cycle -->
+  <FCEdictUpkeep>TODO</FCEdictUpkeep>
+	<!-- EN: Cannot afford edict upkeep. All edicts have been revoked. -->
+  <FCEdictUpkeepUnpaid>TODO</FCEdictUpkeepUnpaid>
+	<!-- EN: Edict enacted: {0} -->
+  <FCEdictEnacted>TODO</FCEdictEnacted>
+	<!-- EN: Edict revoked: {0} -->
+  <FCEdictRevoked>TODO</FCEdictRevoked>
+	<!-- EN: None -->
+  <FCEdictNone>TODO</FCEdictNone>
+	<!-- EN: Enacting... ({0} days remaining) -->
+  <FCEdictActivating>TODO</FCEdictActivating>
+	<!-- EN: Total Edict Upkeep: {0} silver/cycle -->
+  <FCEdictTotalUpkeep>TODO</FCEdictTotalUpkeep>
+	<!-- EN: This edict category is not yet unlocked. -->
+  <FCEdictCategoryLocked>TODO</FCEdictCategoryLocked>
+	<!-- EN: Requires faction level {0}. -->
+  <FCEdictLevelRequired>TODO</FCEdictLevelRequired>
+	<!-- EN: Social -->
+  <FCEdictCategorySocial>TODO</FCEdictCategorySocial>
+	<!-- EN: Tax -->
+  <FCEdictCategoryTax>TODO</FCEdictCategoryTax>
+	<!-- EN: Military -->
+  <FCEdictCategoryMilitary>TODO</FCEdictCategoryMilitary>
+	<!-- EN: Doctrine -->
+  <FCEdictCategoryDoctrine>TODO</FCEdictCategoryDoctrine>
+	<!-- EN: Active -->
+  <FCEdictActive>激活</FCEdictActive>
+	<!-- EN: Revoke -->
+  <FCEdictRevoke>撤销</FCEdictRevoke>
+	<!-- EN: Locked until faction level {0} -->
+  <FCEdictLockedUntilLevel>TODO</FCEdictLockedUntilLevel>
+	<!-- EN: Replace {0} with {1}? The new edict will take {2} days to fully activate. -->
+  <FCEdictSwapConfirmation>将{0}替换为{1}？新法令需要{2}天才能完全生效</FCEdictSwapConfirmation>
+	<!-- EN: Revoke the {0} edict? -->
+  <FCEdictRevokeConfirmation>撤回{0}？</FCEdictRevokeConfirmation>
+	<!-- EN: {0} is incompatible with your active policy: {1} -->
+  <FCEdictIncompatible>{0}与当前活跃的{1}不兼容</FCEdictIncompatible>
+	<!-- EN: {0} requires: {1} -->
+  <FCEdictRequiresPolicy>{0}需要：{1}</FCEdictRequiresPolicy>
+	<!-- EN: {0} requires one of: {1} -->
+  <FCEdictRequiresPolicyAny>{0}需要任意之一：{1}</FCEdictRequiresPolicyAny>
+	<!-- EN: {0} was automatically revoked because its prerequisite {1} was removed. -->
+  <FCEdictRevokedDependency>由于前置{1}被移除，已自动移除{0}</FCEdictRevokedDependency>
+	<!-- EN: Requires: {0} -->
+  <FCPolicyRequires>需求：{0}</FCPolicyRequires>
+
+	<!-- Research -->
+	<!-- EN: Researching -->
+  <Researching>研究</Researching>
+	<!-- EN: {0} points of research have been used to research {1}. You have {2} points remaining. -->
+  <ResearchExpended>TODO</ResearchExpended>
+	<!-- EN: Research Expended -->
+  <ResearchPointsExpended>TODO</ResearchPointsExpended>
+	<!-- EN: No research has been used today. You have {0} points remaining. -->
+  <NoResearchExpended>TODO</NoResearchExpended>
+	<!-- EN: {0} points have been added to the research pool! -->
+  <PointsAddedToResearchPool>TODO</PointsAddedToResearchPool>
+	<!-- EN: Research points generated by your faction has been wasted as you have no research selected
+	 -->
+  <ResearchGeneratedWaste>你没有活跃的研究项目，派系产生的科研点数被浪费了。</ResearchGeneratedWaste>
+	<!-- EN: Activate Research -->
+  <ActivateResearch>激活研究</ActivateResearch>
+	<!-- EN: Send Research Items -->
+  <FCSendResearchItems>送出研究物品</FCSendResearchItems>
+	<!-- EN: Faction Research -->
+  <FCFactionResearch>TODO</FCFactionResearch>
+	<!-- EN: Check Tech Level -->
+  <ResearchLevel>检查科技等级</ResearchLevel>
+	<!-- EN: Your current tech level is {0}. To reach the next tech level you must research {1} -->
+  <CurrentResearchLevel>TODO</CurrentResearchLevel>
+	<!-- EN: Ship Basics -->
+  <FCShipBasics>TODO</FCShipBasics>
+	<!-- EN: Fabrication -->
+  <FCFabrication>精密装配</FCFabrication>
+	<!-- EN: Electricity -->
+  <FCElectricity>电力</FCElectricity>
+	<!-- EN: Smithing -->
+  <FCSmithing>锻造</FCSmithing>
+
+	<!-- Relations -->
+	<!-- EN: Relation Improved! -->
+  <FCRelationImproved>TODO</FCRelationImproved>
+	<!-- EN: Your communications with {0} has led to an improvement in relations of {1}! -->
+  <FCRelationImprovedText>TODO</FCRelationImprovedText>
+	<!-- EN: Failed Relations -->
+  <FCRelationNotImproved>TODO</FCRelationNotImproved>
+	<!-- EN: Your communications with {0} have failed to improve relations. -->
+  <FCFailedToImproveRelationship>TODO</FCFailedToImproveRelationship>
+	<!-- EN: {0} days are left until the ability to improve relations is refreshed -->
+  <XDaysToSendDiplomat>TODO</XDaysToSendDiplomat>
+	<!-- EN: Attempt to Increase Relations -->
+  <FCIncreaseRelations>TODO</FCIncreaseRelations>
+	<!-- EN: You cannot improve relations with factions of that type -->
+  <FCCannotImproveRelationsWithType>TODO</FCCannotImproveRelationsWithType>
+
+	<!-- Capital -->
+	<!-- EN: Could not find map of capital -->
+  <CouldNotFindMapOfCapital>地图上找不到首都</CouldNotFindMapOfCapital>
+	<!-- EN: Empire capital is already established at {0}. Disable the capital seat there first if you want to move it. -->
+  <FCCapitalAlreadyEstablished>你已设置{0}为首都。迁都需要首先将首都席位关闭。</FCCapitalAlreadyEstablished>
+	<!-- EN: Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat. -->
+  <FCUnableToSetCapitalHere>TODO</FCUnableToSetCapitalHere>
+
+</LanguageData>

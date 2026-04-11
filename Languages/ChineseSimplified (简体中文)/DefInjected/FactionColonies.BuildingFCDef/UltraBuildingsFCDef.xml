@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Archotech Animal Beacon -->
+  <AnimalBeacon.label>超凡科技动物信标</AnimalBeacon.label>
+  <!-- EN: An archotech tower that emits a signal which lures distant animals and calms nearby ones. -->
+  <AnimalBeacon.desc>一座超凡科技塔，发出能够吸引遥远动物并安抚本地兽群的信号。</AnimalBeacon.desc>
+  
+  <!-- EN: Archotech Generator -->
+  <archotechGenerator.label>超凡科技发电机</archotechGenerator.label>
+  <!-- EN: An arcane generator that even the maintainers can't hope to understand, but have acquired. -->
+  <archotechGenerator.desc>使用超凡科技的神秘发电机，其维护者甚至不奢求于理解原理，但仍然被给予了这方面知识。</archotechGenerator.desc>
+  
+  <!-- EN: Archotech Light Converter -->
+  <LightConverter.label>超凡科技光转化器</LightConverter.label>
+  <!-- EN: A large, vanometrically powered, archotech machine that can turn light into just about anything that isn't alive. Needs a constant military presence to ward off raiders. -->
+  <LightConverter.desc>巨大的，虚空供能的超凡科技机器，可将光线转化成任意无机物。你需要足够强的军力来击退为它而来的袭击者。</LightConverter.desc>
+  
+  <!-- EN: Orbital Space Laser -->
+  <OrbitalSpaceLaser.label>轨道太空激光</OrbitalSpaceLaser.label>
+  <!-- EN: It's kind of like a nuclear bomb, but reusable and solar powered. -->
+  <OrbitalSpaceLaser.desc>就像核弹一样，但是可重用，并且是太阳能的。</OrbitalSpaceLaser.desc>
+  
+  <!-- EN: Transdimentional Market -->
+  <TransdimensionalMarket.label>超维度市场</TransdimensionalMarket.label>
+  <!-- EN: It's one thing to trade across the galaxy. It's another to build a flaming obsidian monolith to trade with the residents of a hell-dimension. -->
+  <TransdimensionalMarket.desc>在银河内交易是一回事，修建一个燃烧着的巨大黑曜石柱来和一个地狱维度的居民交易是另一回事。</TransdimensionalMarket.desc>
+  
+  <!-- EN: Trapped Archotech AI -->
+  <TrappedAI.label>困住的超凡智能</TrappedAI.label>
+  <!-- EN: An archotech level AI trapped in a closed network. It's perfectly safe unless someone lets it out. -->
+  <TrappedAI.desc>一个超凡智能等级的AI，被设下陷阱困在了完全隔离的网络中。只要没有人放它出来，它就是安全的。</TrappedAI.desc>
+  
+  <!-- EN: Union Offices -->
+  <UnionOffices.label>工会办公室</UnionOffices.label>
+  <!-- EN: A central building for local unions to operate out of. It's amazing how much happier and willing to work people are when you treat them well. -->
+  <UnionOffices.desc>本地各行业的工会集中在此办公。很难想象人们在获得良好的待遇后所获得的幸福感和生产积极性。</UnionOffices.desc>
+  
+</LanguageData>

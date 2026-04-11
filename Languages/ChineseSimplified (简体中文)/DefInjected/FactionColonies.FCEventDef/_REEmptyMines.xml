@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Empty Mines -->
+  <emptyMines_0.label>无资源的矿井</emptyMines_0.label>
+  <!-- EN: The affected region(s) have been stricken with barren mines. What should be done? -->
+  <emptyMines_0.desc>受影响的区域的矿井里空空如也。我们要怎么做？</emptyMines_0.desc>
+  
+  <!-- EN: Empty Mines -->
+  <emptyMines_1-1.label>无资源的矿井</emptyMines_1-1.label>
+  <!-- EN: The miners wait for new veins to surface. -->
+  <emptyMines_1-1.desc>让矿工等待新矿脉的出现</emptyMines_1-1.desc>
+  
+  <!-- EN: Empty Mines (Prospectors Failed) -->
+  <emptyMines_1-2f.label>无资源的矿井（勘探失败）</emptyMines_1-2f.label>
+  <!-- EN: The prospectors found nothing. The mines remain empty. -->
+  <emptyMines_1-2f.desc>勘探人员什么都没发现，矿井仍然空置。</emptyMines_1-2f.desc>
+  
+  <!-- EN: Empty Mines (Construction Redirect) -->
+  <emptyMines_1-3.label>无资源的矿井（调转至建筑工程）</emptyMines_1-3.label>
+  <!-- EN: Idle miners are put to work on settlement construction projects. -->
+  <emptyMines_1-3.desc>无事可干的矿工们被调转到领地的各种建筑工程上。</emptyMines_1-3.desc>
+  
+</LanguageData>

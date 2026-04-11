@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: well-trained -->
+  <FC_CombatEfficiency_Buff.label>充分训练</FC_CombatEfficiency_Buff.label>
+  <!-- EN: This combatant benefits from superior training and coordination provided by their settlement's military infrastructure. -->
+  <FC_CombatEfficiency_Buff.description>该作战人员因其所接受的完备训练和其所属领地的军事指挥基建辅助获得战斗力增益</FC_CombatEfficiency_Buff.description>
+  
+  <!-- EN: poorly trained -->
+  <FC_CombatEfficiency_Debuff.label>训练不足</FC_CombatEfficiency_Debuff.label>
+  <!-- EN: This combatant suffers from inadequate training and poor coordination due to their settlement's weak military infrastructure. -->
+  <FC_CombatEfficiency_Debuff.description>该作战人员因未接受完备训练和所属领地的缺陷军事指挥基础设施而受到战斗力损益</FC_CombatEfficiency_Debuff.description>
+  
+</LanguageData>

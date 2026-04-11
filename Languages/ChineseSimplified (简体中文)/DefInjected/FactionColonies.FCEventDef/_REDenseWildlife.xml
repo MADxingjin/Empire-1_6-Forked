@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Dense Wildlife -->
+  <denseWildlife_0.label>TODO</denseWildlife_0.label>
+  <!-- EN: There is a great amount of animals roaming the region. How should your settlements take advantage? -->
+  <denseWildlife_0.desc>TODO</denseWildlife_0.desc>
+  
+  <!-- EN: Dense Wildlife -->
+  <denseWildlife_1-1.label>TODO</denseWildlife_1-1.label>
+  <!-- EN: The herds flourish and boost animal production. -->
+  <denseWildlife_1-1.desc>TODO</denseWildlife_1-1.desc>
+  
+  <!-- EN: Dense Wildlife (Grand Hunt) -->
+  <denseWildlife_1-2.label>TODO</denseWildlife_1-2.label>
+  <!-- EN: A grand hunt is organized, bringing back valuable animal products. -->
+  <denseWildlife_1-2.desc>TODO</denseWildlife_1-2.desc>
+  
+  <!-- EN: Dense Wildlife (Domestication) -->
+  <denseWildlife_1-3.label>TODO</denseWildlife_1-3.label>
+  <!-- EN: Some of the animals are captured and domesticated for long-term gains. -->
+  <denseWildlife_1-3.desc>TODO</denseWildlife_1-3.desc>
+  
+</LanguageData>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Massive Forest Fire -->
+  <forestFire_0.label>大规模森林火灾</forestFire_0.label>
+  <!-- EN: The affected region(s) have forest fires blazing out of control. How should your settlements respond? -->
+  <forestFire_0.desc>受影响的区域当前正发生不可控的森林火灾，你的领地应当如何应对？</forestFire_0.desc>
+  
+  <!-- EN: Forest Fire -->
+  <forestFire_1-1.label>森林火灾</forestFire_1-1.label>
+  <!-- EN: The fire burns unchecked through the forests. -->
+  <forestFire_1-1.desc>大火继续升腾，无人在意。</forestFire_1-1.desc>
+  
+  <!-- EN: Forest Fire (Containment Failed) -->
+  <forestFire_1-2f.label>森林火灾（遏制尝试失败）</forestFire_1-2f.label>
+  <!-- EN: Despite their best efforts, the firefighting crews couldn't contain the blaze. The fire rages on. -->
+  <forestFire_1-2f.desc>消防员们的全力以赴依然没能阻止火焰蔓延。大火继续升腾。</forestFire_1-2f.desc>
+  
+  <!-- EN: Forest Fire (Contained) -->
+  <forestFire_1-2s.label>森林火灾（遏制成功）</forestFire_1-2s.label>
+  <!-- EN: The firefighting crews managed to contain the blaze! The damage is limited. -->
+  <forestFire_1-2s.desc>消防员们成功的遏制了火势。大火损害已得到控制。</forestFire_1-2s.desc>
+  
+  <!-- EN: Forest Fire (Controlled Burn) -->
+  <forestFire_1-3.label>森林火灾（受控燃烧）</forestFire_1-3.label>
+  <!-- EN: The controlled burn clears damaged forest, opening land for farming. -->
+  <forestFire_1-3.desc>受控燃烧的火焰将森林烧灼为可耕种的地块。</forestFire_1-3.desc>
+  
+</LanguageData>

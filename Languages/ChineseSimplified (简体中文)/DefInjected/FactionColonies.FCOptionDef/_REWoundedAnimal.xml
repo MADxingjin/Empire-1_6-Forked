@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Get that THING out of my court! -->
+  <woundedAnimal_0_1.label>把那东西赶出去!</woundedAnimal_0_1.label>
+  
+  <!-- EN: We shall take care of it. Surely it cannot be of harm to us. -->
+  <woundedAnimal_0_2.label>我们会处理的,显然这对我们并有什么影响.</woundedAnimal_0_2.label>
+  
+  <!-- EN: Send for a trained handler to approach it carefully. -->
+  <woundedAnimal_0_3.label>送到训练有素的驯兽师那里来小心照料。</woundedAnimal_0_3.label>
+  
+</LanguageData>

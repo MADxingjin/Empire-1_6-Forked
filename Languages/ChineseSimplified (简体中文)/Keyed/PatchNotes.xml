@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+	<!-- EN: Patch Notes -->
+  <FCPatchNotesWindowTitle>更新日志</FCPatchNotesWindowTitle>
+	<!-- EN: Auto-open patch notes:  -->
+  <FCPatchNoteAutoOpenThreshold>自动打开更新日志窗口</FCPatchNoteAutoOpenThreshold>
+</LanguageData>

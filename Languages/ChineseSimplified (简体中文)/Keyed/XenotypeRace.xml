@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Xenotype/Race Selection -->
+	<!-- EN: Xenotype Selection -->
+  <XenotypeSelection>选择异种类型</XenotypeSelection>
+	<!-- EN: Race Selection -->
+  <RaceSelection>选择种族</RaceSelection>
+	<!-- EN: Xenotype and Race Selection -->
+  <XenotypeRaceSelection>选择生物科技异种类型和种族</XenotypeRaceSelection>
+	<!-- EN: Allowed Races -->
+  <AllowedRaces>允许的种族</AllowedRaces>
+	<!-- EN: Cannot have less than one race in your faction -->
+  <CannotHaveLessThanOneRace>你的派系至少需要一个种族</CannotHaveLessThanOneRace>
+	<!-- EN: Allowed Xenotypes -->
+  <AllowedXenotypes>允许的物种</AllowedXenotypes>
+	<!-- EN: Cannot have less than one xenotype in your faction -->
+  <CannotHaveLessThanOneXenotype>你的派系需要至少一个生物科技异种</CannotHaveLessThanOneXenotype>
+	<!-- EN: Security guards will be provided for non-violent xenotypes -->
+  <SecurityGuardsIncluded>将为无暴力能力的生物科技异种提供安保护卫</SecurityGuardsIncluded>
+
+	<!-- Weight Errors -->
+	<!-- EN: All Xenotypes have 0 weight! -->
+  <XenotypeWeightError>错误：所有生物科技异种的权重均为0</XenotypeWeightError>
+	<!-- EN: If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight. -->
+  <XenotypeWeightErrorDesc>在当前状态下关闭此窗口将重置所有生物科技异种的权重为1。</XenotypeWeightErrorDesc>
+	<!-- EN: All races have 0 weight! -->
+  <RaceWeightError>错误：所有种族的权重均为0</RaceWeightError>
+	<!-- EN: If you close this window while all races have 0 weight, then they will all be reset to 1 weight. -->
+  <RaceWeightErrorDesc>在当前状态下关闭此窗口将重置所有物种的权重为1。</RaceWeightErrorDesc>
+
+	<!-- Enable/Disable Options -->
+	<!-- EN: Enable All -->
+  <XenoRaceEnableAll>允许所有</XenoRaceEnableAll>
+	<!-- EN: Disable Non-Baseliner -->
+  <XenoDisableNonBaseliner>禁用除智人种外所有</XenoDisableNonBaseliner>
+	<!-- EN: Disable Non-Human -->
+  <RaceDisableNonHuman>禁用非人类种族</RaceDisableNonHuman>
+	<!-- EN: Enable All -->
+  <Empire_XenotypeMenus_EnableAll>允许所有</Empire_XenotypeMenus_EnableAll>
+	<!-- EN: Disable Non-Baseliner -->
+  <Empire_XenotypeMenus_DisableNonBaseliner>禁用除智人种外所有</Empire_XenotypeMenus_DisableNonBaseliner>
+
+	<!-- Faction Tooltip -->
+	<!-- EN: Member Race Chances -->
+  <EmpireMemberRaceChances>成员种族概率</EmpireMemberRaceChances>
+
+	<!-- Warnings -->
+	<!-- EN: The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options. -->
+  <DisabledHumanWarning>即使你禁用了人类种族，当你所选的种族没有可生成的方案时，人类仍可能作为替代种族被生成</DisabledHumanWarning>
+	<!-- EN: Xenotype is considered non-violent. -->
+  <XenoNonViolentIndicatorDesc>该生物科技异种是无暴力能力的</XenoNonViolentIndicatorDesc>
+	<!-- EN: Only non-violent xenotypes are selected. You will still see Baseliners if violence is required. -->
+  <OnlyNonViolentXenoWarning>你仅选择了无暴力能力的生物科技异种。在需要战斗的场景中将回退到智人种。</OnlyNonViolentXenoWarning>
+
+</LanguageData>

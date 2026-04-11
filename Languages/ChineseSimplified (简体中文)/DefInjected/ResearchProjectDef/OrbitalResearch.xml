@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Advanced Orbital Settlements -->
+  <AdvancedOrbitalEngineering.label>先进轨道殖民地</AdvancedOrbitalEngineering.label>
+  <!-- EN: Master advanced techniques for constructing larger and more efficient orbital installations. Reduces orbital platform construction costs by 25%. -->
+  <AdvancedOrbitalEngineering.description>掌握用于建造更大更先进的轨道设施的技术，降低轨道平台建筑成本25%。</AdvancedOrbitalEngineering.description>
+  
+  <!-- EN: Glitterworld Orbital Settlements -->
+  <GlitterworldOrbitalSettlements.label>闪耀世界轨道殖民地</GlitterworldOrbitalSettlements.label>
+  <!-- EN: A vision of orbital living inspired by glitterworld engineering. -->
+  <GlitterworldOrbitalSettlements.description>闪耀世界工程学提供了同级别的轨道居住地生活标准的一瞥。</GlitterworldOrbitalSettlements.description>
+  
+  <!-- EN: Basic Orbital Settlements -->
+  <OrbitalConstruction.label>基础轨道聚落</OrbitalConstruction.label>
+  <!-- EN: Learn the basics of constructing habitable structures in the void of space. Unlocks basic space station construction capabilities. -->
+  <OrbitalConstruction.description>习得在太空的虚无中建造可居住的平台结构的方法。此研究解锁在太空中建造轨道居住地的能力。</OrbitalConstruction.description>
+  
+  <!-- EN: Orbital Logistics -->
+  <OrbitalLogistics.label>轨道物流学</OrbitalLogistics.label>
+  <!-- EN: Develop efficient systems for moving resources between orbital platforms and planetary surfaces. Reduces tax delivery time by 50% and unlocks special space station buildings. -->
+  <OrbitalLogistics.description>研发足够高效的轨道-地表物流系统来运送各种资源。降低税收送达时长50%，并解锁特殊的轨道空间站建筑。</OrbitalLogistics.description>
+  
+</LanguageData>

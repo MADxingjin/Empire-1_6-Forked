@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Shuttle Port -->
+  <shuttlePort.label>穿梭机场</shuttlePort.label>
+  <!-- EN: A small scale airport, this building provides the infrastructure to rapidly send goods around the planet. This building allows you to send three shuttles every tax cycle. -->
+  <shuttlePort.desc>小型穿梭机场，提供快速运输物资所需的基建。每个此建筑允许在收集税务时提供三艘穿梭机来运送。</shuttlePort.desc>
+  
+</LanguageData>

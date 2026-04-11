@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_0.label>月光下的仪式</moonlitRitual_0.label>
+  <!-- EN: One of your settlements reports seeing strange figures wander into the forest at night. They are described as wearing strange costumes. -->
+  <moonlitRitual_0.desc>您的一个领地向您报告说有人看到一些奇怪的人在晚上涉水进入森林.根据描述,这些人都穿着奇怪的衣服.</moonlitRitual_0.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_1-1.label>月光下的仪式</moonlitRitual_1-1.label>
+  <!-- EN: Someone has been sent to investigate... -->
+  <moonlitRitual_1-1.desc>派人前去调查...</moonlitRitual_1-1.desc>
+  <!-- EN: You receive news that an investigator followed an individual into the woods. They reported back seeing the group perform a series of almost ritualistic carnal acts. Not caring to stick around for it, he returned. -->
+  <moonlitRitual_1-1.optionDescription>你收到了消息,一个调查人员跟踪了其中一个人进入树林.根据他的报告,他看到这群人进行了一系列近乎仪式般的肉欲行为.而他对此并不感兴趣,于是便回来了</moonlitRitual_1-1.optionDescription>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_2-1.label>月光下的仪式</moonlitRitual_2-1.label>
+  <!-- EN: Investigating further... -->
+  <moonlitRitual_2-1.desc>进一步调查...</moonlitRitual_2-1.desc>
+  <!-- EN: The investigator reports back that the group returned again. They continued the same activities as the night prior- however, after not leaving, he observed that the group brought out an ornate chest with religious-looking symbols. He stepped closer for a better look, but after stepping on a dead leaf, the group heard him. He fled before they could find him. -->
+  <moonlitRitual_2-1.optionDescription>调查者报告说,,这群人又回来了,他们继续着之前的宗教仪.在他之后的观察中,他发现这群人还拿出了一个十分华丽的圣物,上面有着看上去像是宗教图案的符文,当他想靠近一点以便更清楚的观察时,他不小心踩到枯叶,而发出的声响使得那群人发现了他.于是在被找到之前,他就匆匆离开了.</moonlitRitual_2-1.optionDescription>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_2-2.label>月光下的仪式</moonlitRitual_2-2.label>
+  <!-- EN: You have decided to leave them be. -->
+  <moonlitRitual_2-2.desc>你决定不在理会他们.</moonlitRitual_2-2.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-1.label>月光下的仪式</moonlitRitual_3-1.label>
+  <!-- EN: You have ordered the investigation to continue... -->
+  <moonlitRitual_3-1.desc>你下令继续深入调查.</moonlitRitual_3-1.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-2.label>月光下的仪式</moonlitRitual_3-2.label>
+  <!-- EN: You have ordered the investigation to continue... -->
+  <moonlitRitual_3-2.desc>你下令继续深入调查.</moonlitRitual_3-2.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-3.label>月光下的仪式</moonlitRitual_3-3.label>
+  <!-- EN: This week's harvests seem to be unnaturally more plentiful than usual... -->
+  <moonlitRitual_3-3.desc>本周的收成要远比平时多得多... +0.5基础食物产出.</moonlitRitual_3-3.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_3-4.label>月光下的仪式</moonlitRitual_3-4.label>
+  <!-- EN: This week's harvests seem to be unnaturally less plentiful than usual... -->
+  <moonlitRitual_3-4.desc>本周的收成要远比平时少的多...-0.5基础食物产出.</moonlitRitual_3-4.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_4-1.label>月光下的仪式</moonlitRitual_4-1.label>
+  <!-- EN: After not reporting back, a search for the investigator was conducted. He was found dead. His body was stripped, his chest cavity split, and his skin carved with runic symbols. The group, whoever they were, were not seen again. Dread falls upon us all.\n\nCoincidentally, this week's harvests seem to have spoiled... -->
+  <moonlitRitual_4-1.desc>在那之后,您并没有再收到报告.在对当时派遣的调查员进行一番搜寻之后,他被发现已经死了.他浑身赤裸,并被人开膛破肚,身上也被刻上了宗教符文.而这群人,无论是谁,都没有再见过他们. 恐惧萦绕着我们,久久无法散去. 而巧合的是,这周的收成似乎也被破坏了...\n-2满意度/日,-1基础食物产出.</moonlitRitual_4-1.desc>
+  
+  <!-- EN: A Moonlit Ritual -->
+  <moonlitRitual_4-2.label>月光下的仪式</moonlitRitual_4-2.label>
+  <!-- EN: The investigator reported back early in the morning looking quite disheveled. However, his story says otherwise. They expected him this time and gave an invitation to join. As he explains it, they were performing a fertility ritual to their goddess for hopes of a good harvest. Regardless, he seems to have enjoyed himself! -->
+  <moonlitRitual_4-2.desc>调查员一大早便回来报告,而他看上去衣衫凌乱.然而他的故事却与之前大不相同.这些人这次期待着他的到来,并邀请他加入到仪式中来.根据他的解释,这些教徒是在用肉欲仪式祭祀他们的女神,以祈求丰收.不管怎么说,他似乎非常享受这次调查中的遭遇.\n+1基础食物产出.</moonlitRitual_4-2.desc>
+  
+</LanguageData>

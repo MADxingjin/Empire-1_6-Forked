@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Generic Labels -->
+	<!-- EN: Name -->
+  <Name>名字</Name>
+	<!-- EN: None -->
+  <None>无</None>
+	<!-- EN: No -->
+  <No>否</No>
+	<!-- EN: Yes -->
+  <Yes>是</Yes>
+	<!-- EN: Set -->
+  <Set>设置</Set>
+	<!-- EN: Deploy -->
+  <Deploy>部署</Deploy>
+	<!-- EN: Reset -->
+  <Reset>重置</Reset>
+	<!-- EN: Base -->
+  <Base>基础</Base>
+	<!-- EN: Modifier -->
+  <Modifier>加成系数</Modifier>
+	<!-- EN: Final -->
+  <Final>最终值</Final>
+	<!-- EN: Effect -->
+  <Effect>效果</Effect>
+	<!-- EN: Info -->
+  <Info>信息</Info>
+	<!-- EN: Total -->
+  <Total>总计</Total>
+	<!-- EN: Mult -->
+  <Mult>乘数</Mult>
+	<!-- EN: Date -->
+  <Date>日期</Date>
+	<!-- EN: Selected -->
+  <Selected>已选中</Selected>
+	<!-- EN: Select -->
+  <Select>选择</Select>
+	<!-- EN: Enabled -->
+  <FCIsAllowed>已启用</FCIsAllowed>
+	<!-- EN: Disabled -->
+  <FCIsNotAllowed>已禁用</FCIsNotAllowed>
+	<!-- EN: Per-Worker -->
+  <PerWorker>每劳动力</PerWorker>
+	<!-- EN: {0}/{1} -->
+  <NumRatio>{0}/{1}</NumRatio>
+	<!-- EN:  a settlement  -->
+  <aSettlement>一个殖民地</aSettlement>
+	<!-- EN: This will be added to in the future -->
+  <AddedInFuture>待更新</AddedInFuture>
+	<!-- EN: Item -->
+  <Item>物品</Item>
+
+	<!-- Tab Labels -->
+	<!-- EN: Colonies -->
+  <Colonies>殖民地</Colonies>
+	<!-- EN: Bills -->
+  <Bills>账单</Bills>
+	<!-- EN: Events -->
+  <Events>事件</Events>
+	<!-- EN: Settlement -->
+  <Settlement>领地</Settlement>
+	<!-- EN: Settlements -->
+  <Settlements>领地</Settlements>
+	<!-- EN: Overview -->
+  <Overview>总览</Overview>
+	<!-- EN: Overview -->
+  <FCOverview>总览</FCOverview>
+	<!-- EN: Travel Time -->
+  <TravelTime>旅途用时</TravelTime>
+	<!-- EN: Construction Time -->
+  <ConstructionTime>建筑用时</ConstructionTime>
+
+	<!-- Buttons -->
+	<!-- EN: This button is not available yet -->
+  <ButtonNotAvailable>此按钮尚不可用</ButtonNotAvailable>
+	<!-- EN: Confirm Changes -->
+  <ConfirmChanges>确认更改</ConfirmChanges>
+	<!-- EN: Confirm -->
+  <FCConfirm>确认</FCConfirm>
+	<!-- EN: Confirm Decision -->
+  <FCConfirmDecision>确认</FCConfirmDecision>
+	<!-- EN: Found a {0} for {1} silver? -->
+  <FCConfirmSettle>要使用 {1} 白银 建立 {0} 吗？</FCConfirmSettle>
+	<!-- EN: Don't show this again -->
+  <FCConfirmDontShowAgain>不再提示</FCConfirmDontShowAgain>
+	<!-- EN: View -->
+  <View>查看</View>
+	<!-- EN: Go To -->
+  <GoTo>去往</GoTo>
+	<!-- EN: Report -->
+  <Report>报告</Report>
+	<!-- EN: Reports -->
+  <Reports>报告</Reports>
+	<!-- EN: Actions -->
+  <Actions>行动</Actions>
+	<!-- EN: View Info -->
+  <ViewInfo>查看详情</ViewInfo>
+	<!-- EN: Set Map -->
+  <SetMap>设置地图</SetMap>
+	<!-- EN: Action Available -->
+  <FCActionAvailable>有操作可执行</FCActionAvailable>
+
+	<!-- Generic Actions -->
+	<!-- EN: Auto-Resolve -->
+  <FCAutoResolve>自动解决</FCAutoResolve>
+	<!-- EN: Auto-Resolving : {0} -->
+  <FCAutoResolving>自动解决：{0}</FCAutoResolving>
+	<!-- EN: Bills are now autoresolving! -->
+  <FCBillsAutoResolving>正自动解决账单。</FCBillsAutoResolving>
+	<!-- EN: Bills are now not autoresolving. -->
+  <FCBillsNotAutoResolving>停止自动解决账单。</FCBillsNotAutoResolving>
+	<!-- EN: Desc -->
+  <FCDesc>详情</FCDesc>
+	<!-- EN: Create New Faction -->
+  <FCCreateNewFaction>建立新派系</FCCreateNewFaction>
+	<!-- EN: Reset to Default -->
+  <FCResetToDefault>重置为默认值</FCResetToDefault>
+	<!-- EN: Set Point Ref -->
+  <FCSetPointRef>从领地设置参考值</FCSetPointRef>
+	<!-- EN: No Valid Settlements -->
+  <FCNoValidSettlements>没有可用领地</FCNoValidSettlements>
+	<!-- EN: No special actions to take -->
+  <FCNoSpecialActions>没有特殊操作可执行</FCNoSpecialActions>
+	<!-- EN: That Building is locked -->
+  <FCBuildingLocked>目标建筑被锁定</FCBuildingLocked>
+	<!-- EN: Unlocks at settlement level {0}. -->
+  <FCBuildingLockedLevel>将在殖民地等级{0}解锁。</FCBuildingLockedLevel>
+	<!-- EN: Maximum building slots reached for this settlement type. -->
+  <FCBuildingLockedMax>已达到此聚落类型所能支持的最大建筑槽位。</FCBuildingLockedMax>
+	<!-- EN: Capital -->
+  <Capital>首都</Capital>
+
+	<!-- Float Menu -->
+	<!-- EN: Type to search: -->
+  <FloatMenuSearchable>输入以搜索</FloatMenuSearchable>
+	<!-- EN: Force Open -->
+  <FCSMFForceOpen>强制打开</FCSMFForceOpen>
+
+	<!-- Errors -->
+	<!-- EN: If you can read this, something went wrong. -->
+  <FCGenericError>看到此文本表示出现了错误。</FCGenericError>
+	<!-- EN: You do not have enough silver on the map to pay for that option -->
+  <FCNotEnoughSilverOption>你的地图上没有足够的白银来支付这个选项的成本</FCNotEnoughSilverOption>
+	<!-- EN: Requires: {0} -->
+  <FCOptionRequiresPolicy>需要：{0}</FCOptionRequiresPolicy>
+	<!-- EN: Requires one of: {0} -->
+  <FCOptionRequiresPolicyAny>需要{0}中之一</FCOptionRequiresPolicyAny>
+
+</LanguageData>

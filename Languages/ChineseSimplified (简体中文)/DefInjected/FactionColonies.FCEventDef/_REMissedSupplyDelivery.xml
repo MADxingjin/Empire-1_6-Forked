@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Missed Supply Delivery -->
+  <missedSupplyDelivery_0.label>TODO</missedSupplyDelivery_0.label>
+  <!-- EN: The craftsmen in the affected region(s) are suffering from a lack of supplies. How should they adapt? -->
+  <missedSupplyDelivery_0.desc>TODO</missedSupplyDelivery_0.desc>
+  
+  <!-- EN: Missed Supply Delivery -->
+  <missedSupplyDelivery_1-1.label>TODO</missedSupplyDelivery_1-1.label>
+  <!-- EN: The craftsmen wait for the next delivery. -->
+  <missedSupplyDelivery_1-1.desc>TODO</missedSupplyDelivery_1-1.desc>
+  
+  <!-- EN: Missed Supply Delivery (Local Sourcing) -->
+  <missedSupplyDelivery_1-2.label>TODO</missedSupplyDelivery_1-2.label>
+  <!-- EN: Trade connections help source replacement supplies locally. -->
+  <missedSupplyDelivery_1-2.desc>TODO</missedSupplyDelivery_1-2.desc>
+  
+  <!-- EN: Missed Supply Delivery (Improvised) -->
+  <missedSupplyDelivery_1-3.label>TODO</missedSupplyDelivery_1-3.label>
+  <!-- EN: The craftsmen improvise with local materials, focusing their limited supplies on apparel. -->
+  <missedSupplyDelivery_1-3.desc>TODO</missedSupplyDelivery_1-3.desc>
+  
+</LanguageData>

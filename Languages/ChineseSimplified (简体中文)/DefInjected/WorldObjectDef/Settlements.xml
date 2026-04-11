@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: basic orbital colony -->
+  <WorldSettlementDef_Orbital.label>基础轨道领地</WorldSettlementDef_Orbital.label>
+  <!-- EN: Standard orbital construction capabilities -->
+  <WorldSettlementDef_Orbital.description>标准轨道基地负载。</WorldSettlementDef_Orbital.description>
+  
+  <!-- EN: advanced orbital colony -->
+  <WorldSettlementDef_Orbital_Advanced.label>高级轨道领地。</WorldSettlementDef_Orbital_Advanced.label>
+  <!-- EN: 25% lower base construction cost, larger size -->
+  <WorldSettlementDef_Orbital_Advanced.description>降低25%基建成本的同时有更大的空间。</WorldSettlementDef_Orbital_Advanced.description>
+  
+  <!-- EN: glitterworld orbital colony -->
+  <WorldSettlementDef_Orbital_Glitter.label>闪耀世界轨道领地</WorldSettlementDef_Orbital_Glitter.label>
+  <!-- EN: Specialized production buildings with bonuses -->
+  <WorldSettlementDef_Orbital_Glitter.description>可建造带有特定加成的生产建筑物。</WorldSettlementDef_Orbital_Glitter.description>
+  
+  <!-- EN: logistics orbital colony -->
+  <WorldSettlementDef_Orbital_Logistics.label>物流用轨道领地</WorldSettlementDef_Orbital_Logistics.label>
+  <!-- EN: 50% faster tax delivery and special buildings -->
+  <WorldSettlementDef_Orbital_Logistics.description>提高50%税收送达速度，并提供特殊建筑。</WorldSettlementDef_Orbital_Logistics.description>
+  
+  <!-- EN: empire settlement -->
+  <WorldSettlementDef_Surface.label>Empire 模组基地</WorldSettlementDef_Surface.label>
+  <!-- EN: A base of the Empire player faction -->
+  <WorldSettlementDef_Surface.description>所属于玩家派系的一个基地</WorldSettlementDef_Surface.description>
+  
+</LanguageData>

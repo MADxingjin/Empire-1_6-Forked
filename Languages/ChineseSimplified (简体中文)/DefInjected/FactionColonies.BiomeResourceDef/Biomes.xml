@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: arid shrubland -->
+  <AridShrubland.label>干旱灌木丛</AridShrubland.label>
+  
+  <!-- EN: boreal forest -->
+  <BorealForest.label>寒带森林</BorealForest.label>
+  
+  <!-- EN: cold bog -->
+  <ColdBog.label>寒带沼泽</ColdBog.label>
+  
+  <!-- EN: Default Biome -->
+  <defaultBiome.label>默认生物群系</defaultBiome.label>
+  
+  <!-- EN: desert -->
+  <Desert.label>沙漠</Desert.label>
+  
+  <!-- EN: extreme desert -->
+  <ExtremeDesert.label>极端沙漠</ExtremeDesert.label>
+  
+  <!-- EN: ice sheet -->
+  <IceSheet.label>冰盖</IceSheet.label>
+  
+  <!-- EN: orbital space -->
+  <OrbitalSpace.label>轨道空间</OrbitalSpace.label>
+  
+  <!-- EN: sea ice -->
+  <SeaIce.label>海洋冰盖</SeaIce.label>
+  
+  <!-- EN: temperate forest -->
+  <TemperateForest.label>温带森林</TemperateForest.label>
+  
+  <!-- EN: temperate swamp -->
+  <TemperateSwamp.label>温带沼泽</TemperateSwamp.label>
+  
+  <!-- EN: tropical rainforest -->
+  <TropicalRainforest.label>热带雨林</TropicalRainforest.label>
+  
+  <!-- EN: tropical swamp -->
+  <TropicalSwamp.label>热带沼泽</TropicalSwamp.label>
+  
+  <!-- EN: tundra -->
+  <Tundra.label>冻原</Tundra.label>
+  
+</LanguageData>

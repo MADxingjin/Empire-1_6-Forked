@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Ammunition Mines -->
+  <AmmunitionMines.label>弹药装配井</AmmunitionMines.label>
+  <!-- EN: From flint for arrows to the materials for bullets and gunpowder, these mines take up space that could be used for other resource mining. -->
+  <AmmunitionMines.desc>从箭矢需要的箭头到枪弹需要的火药和金属，这些深井占据了本该用作矿业的空间。</AmmunitionMines.desc>
+  
+  <!-- EN: Barracks -->
+  <barracks.label>兵营</barracks.label>
+  <!-- EN: A buildings to house the local troops. -->
+  <barracks.desc>安置军队的地方。</barracks.desc>
+  
+  <!-- EN: Deforestation Camp -->
+  <deforestationCamp.label>林地砍伐营</deforestationCamp.label>
+  <!-- EN: A camp that the local forests are stripped of all their resources and the life within. -->
+  <deforestationCamp.desc>此营地彻底清理本地营地和所有其内居住的生命以收集资源。</deforestationCamp.desc>
+  
+  <!-- EN: Psychedelic Drug Den -->
+  <DrugDen.label>精神性药物窝点</DrugDen.label>
+  <!-- EN: It's amazing the discoveries people make while absurdly high. Sometimes those discoveries are even useful! -->
+  <DrugDen.desc>人们在嗑药磕嗨时做出的发现往往令他人惊叹，有时这些发现居然真的有用！</DrugDen.desc>
+  
+  <!-- EN: Farmland -->
+  <Farmland.label>田地</Farmland.label>
+  <!-- EN: A section of land dedicated to growing edible plants. -->
+  <Farmland.desc>种植可食用植物的连续地块。</Farmland.desc>
+  
+  <!-- EN: Flint Storage -->
+  <FlintStorage.label>燧石库房</FlintStorage.label>
+  <!-- EN: A Storage for Flint. -->
+  <FlintStorage.desc>存放燧石的地方。</FlintStorage.desc>
+  
+  <!-- EN: Fur Hunter Camp -->
+  <FurHunterCamp.label>皮毛猎人营地</FurHunterCamp.label>
+  <!-- EN: A camp for your Fur Hunter. -->
+  <FurHunterCamp.desc>为你的皮草猎人设立的营地。</FurHunterCamp.desc>
+  
+  <!-- EN: Giant Hamster Wheel -->
+  <HamsterWheel.label>巨大仓鼠轮</HamsterWheel.label>
+  <!-- EN: It's not much, but it's better than nothing! -->
+  <HamsterWheel.desc>不多也比没有强！</HamsterWheel.desc>
+  
+  <!-- EN: Herbal Medicine Farm -->
+  <herbalMedicineFarm.label>草药种植场</herbalMedicineFarm.label>
+  <!-- EN: A small farm to grow herbal medicine. -->
+  <herbalMedicineFarm.desc>专注于草药的小种植场</herbalMedicineFarm.desc>
+  
+  <!-- EN: Migrant Housing -->
+  <migrantHousing.label>移民住所</migrantHousing.label>
+  <!-- EN: Local housing for traveling migrants to stay in. -->
+  <migrantHousing.desc>为四处漂泊的移民提供稳定的住所。</migrantHousing.desc>
+  
+  <!-- EN: Quarry -->
+  <quarry.label>采石场</quarry.label>
+  <!-- EN: Torn up land being used to mine for valuable ore. -->
+  <quarry.desc>搞砸一块区域来挖取矿石。</quarry.desc>
+  
+  <!-- EN: SlavePit -->
+  <SlavePit.label>奴隶深坑</SlavePit.label>
+  <!-- EN: A pit where Slaves goes to sleep. -->
+  <SlavePit.desc>一个坑，奴隶们就睡在这里面。</SlavePit.desc>
+  
+  <!-- EN: Tanning Workshop -->
+  <TanningWorkshop.label>皮革工房</TanningWorkshop.label>
+  <!-- EN: A workshop designed to turn animal hides into leather. -->
+  <TanningWorkshop.desc>处理生皮为皮革的工房。</TanningWorkshop.desc>
+  
+  <!-- EN: Trading Post -->
+  <tradingPost.label>贸易站</tradingPost.label>
+  <!-- EN: A small outpost that roving traders frequent. -->
+  <tradingPost.desc>流动商贩经常光顾的小站。</tradingPost.desc>
+  
+  <!-- EN: Training Yard -->
+  <trainingYard.label>训练场</trainingYard.label>
+  <!-- EN: A place for your soldiers to train. -->
+  <trainingYard.desc>一个训练士兵的地方。</trainingYard.desc>
+  
+</LanguageData>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: animals -->
+  <RTD_Animals.label>动物</RTD_Animals.label>
+  <!-- EN: A resource category for livestock and animal products. -->
+  <RTD_Animals.description>这个资源类别包括动物本身和其产物</RTD_Animals.description>
+  
+  <!-- EN: apparel -->
+  <RTD_Apparel.label>服装</RTD_Apparel.label>
+  <!-- EN: A resource category for apparel. -->
+  <RTD_Apparel.description>这个资源类别包括各种服装</RTD_Apparel.description>
+  
+  <!-- EN: chemfuel -->
+  <RTD_Chemfuel.label>化合燃料</RTD_Chemfuel.label>
+  <!-- EN: A resource category for chemfuel. -->
+  <RTD_Chemfuel.description>专属于化合燃料的资源类别</RTD_Chemfuel.description>
+  
+  <!-- EN: food -->
+  <RTD_Food.label>食物</RTD_Food.label>
+  <!-- EN: A resource category for meals and plant foods. -->
+  <RTD_Food.description>这个资源类别包括已烹饪的餐食和生的原材料</RTD_Food.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Food.modExtensions.0.extDesc>地块地形起伏</RTD_Food.modExtensions.0.extDesc>
+  
+  <!-- EN: gravtech -->
+  <RTD_Gravtech.label>逆重科技</RTD_Gravtech.label>
+  <!-- EN: A resource category for gravtech resources. -->
+  <RTD_Gravtech.description>这个资源类别包括各种和逆重科技有关的物品</RTD_Gravtech.description>
+  
+  <!-- EN: logging -->
+  <RTD_Logging.label>木材</RTD_Logging.label>
+  <!-- EN: A resource category for logging. -->
+  <RTD_Logging.description>这个资源类别包括各种木制品</RTD_Logging.description>
+  
+  <!-- EN: medicine -->
+  <RTD_Medicine.label>医药</RTD_Medicine.label>
+  <!-- EN: A resource category for medicine. -->
+  <RTD_Medicine.description>这个资源类别包括各种药物。</RTD_Medicine.description>
+  
+  <!-- EN: mining -->
+  <RTD_Mining.label>矿物</RTD_Mining.label>
+  <!-- EN: A resource category for mining materials. -->
+  <RTD_Mining.description>这个资源类别包括各种矿物产出。</RTD_Mining.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Mining.modExtensions.0.extDesc>地块地形起伏</RTD_Mining.modExtensions.0.extDesc>
+  
+  <!-- EN: power -->
+  <RTD_Power.label>电能</RTD_Power.label>
+  <!-- EN: A resource category for power. -->
+  <RTD_Power.description>专属于电力的资源类别</RTD_Power.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Power.modExtensions.1.extDesc>地块地形起伏</RTD_Power.modExtensions.1.extDesc>
+  
+  <!-- EN: research -->
+  <RTD_Research.label>研究</RTD_Research.label>
+  <!-- EN: A resource category for research. -->
+  <RTD_Research.description>专属于研究的资源类别</RTD_Research.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Research.modExtensions.1.extDesc>地块地形起伏</RTD_Research.modExtensions.1.extDesc>
+  
+  <!-- EN: weapons -->
+  <RTD_Weapons.label>武器</RTD_Weapons.label>
+  <!-- EN: A resource category for weapons. -->
+  <RTD_Weapons.description>这个资源类别包括各种武器（也包括Combat Extended的弹药，如果你使用它）</RTD_Weapons.description>
+  <!-- EN: Tile hilliness -->
+  <RTD_Weapons.modExtensions.0.extDesc>地块地形起伏</RTD_Weapons.modExtensions.0.extDesc>
+  
+</LanguageData>

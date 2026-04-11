@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Mod Settings -->
+	<!-- EN: Empire Refactored -->
+  <FCSettingsModName>TODO</FCSettingsModName>
+	
+	<!-- EN: Silver amount gained per resource -->
+  <FCSettingSilverPerResource>TODO</FCSettingSilverPerResource>
+	<!-- EN: Days between tax time -->
+  <FCSettingDaysBetweenTax>TODO</FCSettingDaysBetweenTax>
+	<!-- EN: Production Tithe Modifier -->
+  <FCSettingProductionTitheMod>TODO</FCSettingProductionTitheMod>
+	<!-- EN: Cost Per Worker -->
+  <FCSettingWorkerCost>TODO</FCSettingWorkerCost>
+	<!-- EN: Max Settlement Level -->
+  <FCSettingMaxSettlementLevel>TODO</FCSettingMaxSettlementLevel>
+	<!-- EN: Disable Hostile Military Actions -->
+  <FCSettingDisableHostileMilActions>TODO</FCSettingDisableHostileMilActions>
+	<!-- EN: Disable Random Events -->
+  <FCSettingDisableRandomEvents>TODO</FCSettingDisableRandomEvents>
+	<!-- EN: Enable or disable individual events below. Disabled events will not fire in any save. -->
+  <FCSettingConfigureEvents>TODO</FCSettingConfigureEvents>
+	<!-- EN: General -->
+  <FCSettingsTabGeneral>TODO</FCSettingsTabGeneral>
+	<!-- EN: Events -->
+  <FCSettingsTabEvents>TODO</FCSettingsTabEvents>
+	<!-- EN: Military -->
+  <FCSettingsTabMilitary>TODO</FCSettingsTabMilitary>
+	<!-- EN: Enable All Events -->
+  <FCSettingEnableAllEvents>TODO</FCSettingEnableAllEvents>
+	<!-- EN: Dead Pawns Increase Military Cooldown -->
+  <FCSettingDeadPawnsIncreaseMilCooldown>TODO</FCSettingDeadPawnsIncreaseMilCooldown>
+	<!-- EN: Disable Forced Pausing During Events -->
+  <FCSettingForcedPausing>TODO</FCSettingForcedPausing>
+	<!-- EN: Battle Mode:  -->
+  <FCSettingBattleMode>TODO</FCSettingBattleMode>
+	<!-- EN: Auto-Resolve -->
+  <FCBattleModeAuto>TODO</FCBattleModeAuto>
+	<!-- EN: All battles resolve automatically. -->
+  <FCBattleModeAutoDesc>TODO</FCBattleModeAutoDesc>
+	<!-- EN: Manual -->
+  <FCBattleModeManual>TODO</FCBattleModeManual>
+	<!-- EN: All battles generate a map for manual combat. -->
+  <FCBattleModeManualDesc>TODO</FCBattleModeManualDesc>
+	<!-- EN: Hybrid -->
+  <FCBattleModeHybrid>TODO</FCBattleModeHybrid>
+	<!-- EN: Battles auto-resolve unless you send a caravan to defend. -->
+  <FCBattleModeHybridDesc>TODO</FCBattleModeHybridDesc>
+	<!-- EN: Min/Max Days Until Military Action (ex. Settlements being attacked) -->
+  <FCSettingMinMaxMilitaryAction>TODO</FCSettingMinMaxMilitaryAction>
+	<!-- EN: Maximum Threat Scaling -->
+  <FCSettingMaxThreatScaling>TODO</FCSettingMaxThreatScaling>
+	<!-- EN: Defender Advantage -->
+  <FCSettingDefenderAdvantage>TODO</FCSettingDefenderAdvantage>
+	<!-- EN: Efficiency Combat Influence (0 = HP only, 1 = full roll effect) -->
+  <FCSettingEfficiencyDamping>TODO</FCSettingEfficiencyDamping>
+	<!-- EN: Controls how much the military efficiency stat affects auto-resolve battle outcomes.
+
+At 0, military efficiency affects only the effective level of both forces.
+
+At 1, military efficiency fully affects each round of auto combat. Military forces of lower level but higher efficiency can often beat forces of a higher level, but lower efficiency.
+
+Values in between dampen the effect of military efficiency on the auto combat. -->
+  <FCSettingEfficiencyDampingTooltip>TODO</FCSettingEfficiencyDampingTooltip>
+	<!-- EN: Mercenary Heal Rate -->
+  <FCSettingMercHealRate>TODO</FCSettingMercHealRate>
+	<!-- EN: How fast undeployed mercenary pawns heal their injuries, in hit points per in-game hour. Only one injury heals at a time. -->
+  <FCSettingMercHealRateTip>TODO</FCSettingMercHealRateTip>
+	<!-- EN: Min/Max Days Until Random Event -->
+  <FCSettingMinMaxRandomEvent>TODO</FCSettingMinMaxRandomEvent>
+	<!-- EN: Show confirmation when founding settlements -->
+  <FCSettingShowSettleConfirm>TODO</FCSettingShowSettleConfirm>
+	<!-- EN: Enable Verbose Logging -->
+  <FCSettingEnableDebugLogging>TODO</FCSettingEnableDebugLogging>
+	<!-- EN: Reset Settings -->
+  <FCSettingResetButton>TODO</FCSettingResetButton>
+	<!-- EN: Open Patch Notes Window -->
+  <FCOpenPatchNotes>TODO</FCOpenPatchNotes>
+
+	<!-- Difficulty Settings -->
+	<!-- EN: Empire Difficulty -->
+  <FCSettingEmpireDifficulty>TODO</FCSettingEmpireDifficulty>
+	<!-- EN: Peaceful -->
+  <FCDifficultyPeaceful>TODO</FCDifficultyPeaceful>
+	<!-- EN: Community Builder -->
+  <FCDifficultyCommunityBuilder>TODO</FCDifficultyCommunityBuilder>
+	<!-- EN: (Default) Adventure Story -->
+  <FCDifficultyAdventureStory>TODO</FCDifficultyAdventureStory>
+	<!-- EN: Strive To Survive -->
+  <FCDifficultyStriveToSurvive>TODO</FCDifficultyStriveToSurvive>
+	<!-- EN: Blood and Dust -->
+  <FCDifficultyBloodAndDust>TODO</FCDifficultyBloodAndDust>
+	<!-- EN: Losing Is Fun -->
+  <FCDifficultyLosingIsFun>TODO</FCDifficultyLosingIsFun>
+	<!-- EN: Custom -->
+  <FCDifficultyCustom>TODO</FCDifficultyCustom>
+	<!-- EN: For players who want a relaxed empire management experience with generous resource gains and frequent tax collection. -->
+  <FCDifficultyPeacefulDesc>TODO</FCDifficultyPeacefulDesc>
+	<!-- EN: Easy difficulty with good resource gains and moderate tax frequency. -->
+  <FCDifficultyCommunityBuilderDesc>TODO</FCDifficultyCommunityBuilderDesc>
+	<!-- EN: Balanced difficulty for most players.Moderate resource gains with reasonable tax intervals. -->
+  <FCDifficultyAdventureStoryDesc>TODO</FCDifficultyAdventureStoryDesc>
+	<!-- EN: Challenging difficulty with reduced resources and longer tax intervals. -->
+  <FCDifficultyStriveToSurviveDesc>TODO</FCDifficultyStriveToSurviveDesc>
+	<!-- EN: Hard difficulty with limited resources and infrequent tax collection. -->
+  <FCDifficultyBloodAndDustDesc>TODO</FCDifficultyBloodAndDustDesc>
+	<!-- EN: Brutal difficulty for masochists. Minimal resources and very long tax intervals. -->
+  <FCDifficultyLosingIsFunDesc>TODO</FCDifficultyLosingIsFunDesc>
+	<!-- EN: Customize all empire settings manually. -->
+  <FCDifficultyCustomDesc>TODO</FCDifficultyCustomDesc>
+
+	<!-- EN: Empire Mod Version: {0} -->
+  <FCModVersion>TODO</FCModVersion>
+
+	<!-- Warnings -->
+	<!-- EN: Please reset your capital location. If you continue to see this after reseting, please report it. -->
+  <FCResetCapitalLocationWarning>TODO</FCResetCapitalLocationWarning>
+	<!-- EN: Your tax map has not been set. Please set it using the faction menu. -->
+  <FCTaxMapNotSetWarning>TODO</FCTaxMapNotSetWarning>
+	<!-- EN: Manual or Hybrid battle mode is active. If you encounter map generation errors, switch back to Auto-Resolve. -->
+  <FCAutoResolveDisabledWarning>TODO</FCAutoResolveDisabledWarning>
+	<!-- EN: Manual Settlement Defence -->
+  <FCManualDefenseWarningLabel>TODO</FCManualDefenseWarningLabel>
+	<!-- EN: Manual and Hybrid battle modes generate maps for settlement defense. If you encounter issues, switch to Auto-Resolve mode in settings. -->
+  <FCManualDefenseWarningDesc>TODO</FCManualDefenseWarningDesc>
+	<!-- EN: No tax delivery location set. Either set a tax delivery map or enable tax delivery on a tax spot. -->
+  <FCTaxDeliveryNotSetWarning>TODO</FCTaxDeliveryNotSetWarning>
+	<!-- EN: No empire capital established. Either use 'Set Capital' in the Empire menu or build and activate a Capital Seat. -->
+  <FCCapitalNotSetWarning>TODO</FCCapitalNotSetWarning>
+
+</LanguageData>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: I cannot spare the funds for such an endeavor. -->
+  <blacksmithInspiration_0_1.label>我没有可用于如此举措的资金。</blacksmithInspiration_0_1.label>
+  
+  <!-- EN: A modest commission — 500 silver should suffice. -->
+  <blacksmithInspiration_0_2.label>我会赞助你500白银。</blacksmithInspiration_0_2.label>
+  
+  <!-- EN: Fund the masterwork! Spare no expense. -->
+  <blacksmithInspiration_0_3.label>我将见证杰作的诞生。不计一切代价。</blacksmithInspiration_0_3.label>
+  
+  <!-- EN: I'll provide workshop materials from our settlement stores. -->
+  <blacksmithInspiration_0_4.label>下令调拨领地的资源优先供应。</blacksmithInspiration_0_4.label>
+  
+</LanguageData>

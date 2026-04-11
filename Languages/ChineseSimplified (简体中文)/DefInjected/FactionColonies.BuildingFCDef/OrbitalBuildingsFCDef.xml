@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Asteroid Mining Platform -->
+  <asteroidMiningPlatform.label>小行星采集平台</asteroidMiningPlatform.label>
+  <!-- EN: Automated mining drones harvest resources from nearby asteroids and space debris. Much more efficient than planetary mining. -->
+  <asteroidMiningPlatform.desc>自动采矿无人机从附近的小行星和轨道垃圾碎片中收集资源。效率远高于地表采矿。</asteroidMiningPlatform.desc>
+  
+  <!-- EN: Fabrication Modules -->
+  <fabricationModules.label>装配模块</fabricationModules.label>
+  <!-- EN: Zero-G manufacturing bays that produce weapons and apparel with minimal waste. -->
+  <fabricationModules.desc>零重力装配区最大程度的减少了武器装备和服装的废料率</fabricationModules.desc>
+  
+  <!-- EN: Habitat Rings -->
+  <habitatRings.label>居住环</habitatRings.label>
+  <!-- EN: Centrifugal gravity rings housing workers in comfortable simulated-gravity conditions. -->
+  <habitatRings.desc>离心人造重力环为劳动力提供了足够健康生活的温馨空间</habitatRings.desc>
+  
+  <!-- EN: Naval Academy -->
+  <navalAcademy.label>海军学院</navalAcademy.label>
+  <!-- EN: Trains elite officers for fleet command. Significantly improves military readiness and reduces deployment cooldowns. -->
+  <navalAcademy.desc>此地为你派系的军事部队训练精锐军官。显著提升军队强度并缩短部署冷却。</navalAcademy.desc>
+  
+  <!-- EN: Orbital Academy -->
+  <orbitalAcademy.label>轨道学院</orbitalAcademy.label>
+  <!-- EN: A premier research institution pushing the boundaries of science in microgravity. -->
+  <orbitalAcademy.desc>在微重力环境下的研究学院专注于推进科学的边界。</orbitalAcademy.desc>
+  
+  <!-- EN: Orbital Communications Array -->
+  <orbitalCommsArray.label>轨道通讯阵列</orbitalCommsArray.label>
+  <!-- EN: Long-range comms relay improving diplomatic coordination and suppressing dissent through propaganda. -->
+  <orbitalCommsArray.desc>长距通讯阵列能显著的改善外交行动效率并抑制传播的异见</orbitalCommsArray.desc>
+  
+  <!-- EN: Orbital Defense Array -->
+  <orbitalDefenseArray.label>轨道防御阵列</orbitalDefenseArray.label>
+  <!-- EN: Heavy weapons platform providing overwhelming defensive firepower against orbital threats. -->
+  <orbitalDefenseArray.desc>重型武器平台提供可以压制各种在轨目标威胁的强大防御火力。</orbitalDefenseArray.desc>
+  
+  <!-- EN: Orbital Fuel Depot -->
+  <orbitalFuelDepot.label>轨道燃料站</orbitalFuelDepot.label>
+  <!-- EN: Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel. -->
+  <orbitalFuelDepot.desc>处理并储存太空船使用的燃料。支援轨道开发和深空探索的必要环节。</orbitalFuelDepot.desc>
+  
+  <!-- EN: Orbital Hydroponics Bay -->
+  <orbitalHydroponicsBay.label>轨道水培湾</orbitalHydroponicsBay.label>
+  <!-- EN: Soilless grow chambers producing food in artificial light. Essential for station self-sufficiency. -->
+  <orbitalHydroponicsBay.desc>无土栽培仓和人工光源。轨道站自持的必要设施。</orbitalHydroponicsBay.desc>
+  
+  <!-- EN: Orbital Laboratory -->
+  <orbitalLaboratory.label>轨道实验室</orbitalLaboratory.label>
+  <!-- EN: Microgravity labs enable experiments impossible planetside, advancing medicine and research. -->
+  <orbitalLaboratory.desc>微重力实验室能够进行多种无法在地表操作的实验，推动药物和其他方面的开发。</orbitalLaboratory.desc>
+  
+  <!-- EN: Orbital Luxury Suites -->
+  <orbitalLuxurySuites.label>轨道豪华公寓</orbitalLuxurySuites.label>
+  <!-- EN: Premium quarters with artificial gravity beds and fine amenities imported from glitterworlds. -->
+  <orbitalLuxurySuites.desc>配有人造重力床和各种从闪耀世界引进的优质辅助设施的高级公寓。</orbitalLuxurySuites.desc>
+  
+  <!-- EN: Orbital Shipyard -->
+  <orbitalShipyard.label>轨道船坞</orbitalShipyard.label>
+  <!-- EN: Full-scale drydock for constructing and repairing spacecraft. Accelerates all station construction. -->
+  <orbitalShipyard.desc>完整规模的轨道干船坞，用于建筑和修理太空船。加速所有太空站的建设。</orbitalShipyard.desc>
+  
+  <!-- EN: Orbital Surface Operations -->
+  <orbitalSurfaceOps.label>在轨地表行动规划部</orbitalSurfaceOps.label>
+  <!-- EN: Coordinates surface resource extraction from orbit — managing livestock herds and mining operations remotely. -->
+  <orbitalSurfaceOps.desc>从轨道上俯瞰地表并规划各种资源采集行动，远程管理牧群和采掘队伍。</orbitalSurfaceOps.desc>
+  
+  <!-- EN: Orbital Trade Hub -->
+  <orbitalTradeHub.label>在轨贸易站</orbitalTradeHub.label>
+  <!-- EN: A commercial nexus coordinating interstellar trade routes and maximizing profit margins. -->
+  <orbitalTradeHub.desc>商业枢纽，协调星际贸易路线，最大化获利。</orbitalTradeHub.desc>
+  
+  <!-- EN: Orbital Tree Farm -->
+  <orbitalTreeFarm.label>轨道树场</orbitalTreeFarm.label>
+  <!-- EN: Pressurized arboretums growing fast-cycle timber in enriched CO2 atmospheres. -->
+  <orbitalTreeFarm.desc>在加压高浓度二氧化碳的植物园内种植速生木。</orbitalTreeFarm.desc>
+  
+  <!-- EN: Point Defense Battery -->
+  <pointDefenseBattery.label>点防御炮台组</pointDefenseBattery.label>
+  <!-- EN: Close-range interceptor turrets protecting the station from incoming projectiles and boarding parties. -->
+  <pointDefenseBattery.desc>安装了近距离拦截炮塔用来从来袭的投射物和跳帮袭击者中保卫站点。</pointDefenseBattery.desc>
+  
+  <!-- EN: Solar Collection Array -->
+  <solarCollectionArray.label>太阳能阵列</solarCollectionArray.label>
+  <!-- EN: Massive solar panel arrays with no atmospheric interference collect energy directly from the star. Powers the station and provides surplus energy. -->
+  <solarCollectionArray.desc>巨大的太阳能阵列在这里不受大气层干扰的直接收集恒星的能源。为站点提供足够的能源外还有多余的产出。</solarCollectionArray.desc>
+  
+  <!-- EN: Space Distillery -->
+  <spaceDistillery.label>太空蒸馏室</spaceDistillery.label>
+  <!-- EN: Micro-gravity fermentation produces unique chemfuel compounds and exotic trade goods. -->
+  <spaceDistillery.desc>微重力环境的发酵环节产生独有的化合物和珍惜商品。</spaceDistillery.desc>
+  
+  <!-- EN: Workforce Quarters -->
+  <workforceQuarters.label>劳动力区划</workforceQuarters.label>
+  <!-- EN: Functional dormitories with viewports to the stars. Houses additional station workers. -->
+  <workforceQuarters.desc>实用的，带有能看到群星的视窗的宿舍区划。为更多站点劳动力提供住所。</workforceQuarters.desc>
+  
+</LanguageData>

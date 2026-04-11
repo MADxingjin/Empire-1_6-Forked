@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Settlement Creation -->
+	<!-- EN: Settle A New Colony -->
+  <SettleANewColony>开辟新领地</SettleANewColony>
+	<!-- EN: Create New Colony -->
+  <CreateNewColony>开辟新领地</CreateNewColony>
+	<!-- EN: Select a tile to create the colony -->
+  <SelectTile>选择一个地块来开辟新领地吧</SelectTile>
+	<!-- EN: You can't build a settlement here! -->
+  <selectedInvalidTile>TODO</selectedInvalidTile>
+	<!-- EN: Settle -->
+  <Settle>定居</Settle>
+	<!-- EN: A caravan is already on its way -->
+  <CaravanOnWay>一支远行队正在路上</CaravanOnWay>
+	<!-- EN: A caravan has been sent to the location! They will arrive in -->
+  <CaravanSentToLocation>一支远行队正在路上</CaravanSentToLocation>
+	<!-- EN: Construction crews have been sent to the location! Their work will complete in -->
+  <ConstructionToLocation>TODO</ConstructionToLocation>
+	<!-- EN: {0} Construction -->
+  <ColonyConstruction>TODO</ColonyConstruction>
+	<!-- EN: You cannot found a {0} on impassable mountains. -->
+  <ImpassableMountains>TODO</ImpassableMountains>
+	<!-- EN: You cannot found a {0} in this biome. -->
+  <NotAllowedBiome>TODO</NotAllowedBiome>
+	<!-- EN: Invalid planet layer. -->
+  <InvalidPlanetLayer>TODO</InvalidPlanetLayer>
+	<!-- EN: This orbital tile is occupied. -->
+  <OrbitalTileOccupied>TODO</OrbitalTileOccupied>
+	<!-- EN: Settlement Formed -->
+  <FCSettlementFormed>TODO</FCSettlementFormed>
+	<!-- EN: The settlement -->
+  <TheSettlement>领地</TheSettlement>
+	<!-- EN:  has been formed -->
+  <HasBeenFormed>已建成</HasBeenFormed>
+	<!-- EN: Choose Settlement Type -->
+  <FCPickSettlementType>TODO</FCPickSettlementType>
+	<!-- EN: Requires research: {0} -->
+  <FCRequiresResearch>TODO</FCRequiresResearch>
+	<!-- EN: Requires tech level: {0} -->
+  <FCRequiresTechLevel>TODO</FCRequiresTechLevel>
+	<!-- EN: Resources: -->
+  <FCSettlementResources>TODO</FCSettlementResources>
+	<!-- EN: A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}. -->
+  <SettleEventDesc>TODO</SettleEventDesc>
+	<!-- EN: {0} has been established as a new {1} in the {2}. -->
+  <SettleEventCompletedDesc>TODO</SettleEventCompletedDesc>
+	<!-- EN: Player Colony -->
+  <PlayerColony>玩家的领地</PlayerColony>
+	<!-- EN: Set Capital -->
+  <SetCapital>设为首都</SetCapital>
+	<!-- EN: {0} has been set as the faction capital -->
+  <SetAsFactionCapital>{0}被定为派系首都</SetAsFactionCapital>
+
+	<!-- Settlement Upgrading -->
+	<!-- EN: This settlement is already being upgraded! -->
+  <AlreadyUpgradeSettlement>TODO</AlreadyUpgradeSettlement>
+	<!-- EN: The settlement is now being upgraded... -->
+  <StartUpgradeSettlement>TODO</StartUpgradeSettlement>
+	<!-- EN: Upgrade Settlement -->
+  <UpgradeSettlement>升级领地</UpgradeSettlement>
+	<!-- EN: Upgrade -->
+  <Upgrade>TODO</Upgrade>
+	<!-- EN: Upgrading... -->
+  <SettlementUpgradeInProgress>TODO</SettlementUpgradeInProgress>
+	<!-- EN: can be upgraded for -->
+  <CanBeUpgraded>可升级</CanBeUpgraded>
+	<!-- EN: Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1. -->
+  <UpgradeColonyDesc>升级领地后,+3工人软上限,+3工人硬上限,+1军事级别.</UpgradeColonyDesc>
+	<!-- EN: has been upgraded to level -->
+  <HasBeenUpgraded>已升级</HasBeenUpgraded>
+	<!-- EN: {0} is being upgraded from level {1} to level {2}.\n\n{3} -->
+  <UpgradeEventDesc>TODO</UpgradeEventDesc>
+	<!-- EN: {0} has been upgraded to level {1}!\n\n{2} -->
+  <UpgradeEventCompletedDesc>TODO</UpgradeEventCompletedDesc>
+	<!-- EN: is already max level -->
+  <AlreadyMaxLevel>已经是最高级别了</AlreadyMaxLevel>
+	<!-- EN: The current map does not have enough silver to pay for the settlement upgrade. -->
+  <NotEnoughSilverUpgrade>你没有足够的白银升级你的领地.</NotEnoughSilverUpgrade>
+	<!-- EN: This settlement cannot be upgraded past max level -->
+  <CannotBeUpgradedPastMax>领地级别已达上限</CannotBeUpgradedPastMax>
+	<!-- EN: Upgrade Town -->
+  <UpgradeTown>升级城镇</UpgradeTown>
+	<!-- EN: Upgrading: {0} remaining -->
+  <FCUpgradeBadgeInProgress>TODO</FCUpgradeBadgeInProgress>
+	<!-- EN: Click to upgrade (cost: {0} silver) -->
+  <FCUpgradeBadgeAvailable>TODO</FCUpgradeBadgeAvailable>
+
+	<!-- Settlement Window -->
+	<!-- EN: Town Log -->
+  <TownLog>城镇日志</TownLog>
+	<!-- EN: Go To Location -->
+  <GoToLocation>定位</GoToLocation>
+	<!-- EN: Located in the -->
+  <Located>位于</Located>
+	<!-- EN: land of a -->
+  <LandOf>用地</LandOf>
+	<!-- EN: See settlement information -->
+  <openSettlementWindowDefaultLabel>TODO</openSettlementWindowDefaultLabel>
+	<!-- EN: Opens the settlements colony window -->
+  <openSettlementWindowDefaultDesc>TODO</openSettlementWindowDefaultDesc>
+	<!-- EN: Build Roads -->
+  <FCBuildRoads>TODO</FCBuildRoads>
+
+	<!-- Settlement Stats -->
+	<!-- EN: Settlement Military Level -->
+  <SettlementMilitaryLevel>领地军事级别</SettlementMilitaryLevel>
+	<!-- EN: Settlement Happiness -->
+  <SettlementHappiness>领地幸福度</SettlementHappiness>
+	<!-- EN: Settlement Loyalty -->
+  <SettlementLoyalty>领地忠诚度</SettlementLoyalty>
+	<!-- EN: Settlement Unrest -->
+  <SettlementUnrest>领地叛乱度</SettlementUnrest>
+	<!-- EN: Settlement Prosperity -->
+  <SettlementProsperity>领地繁荣度</SettlementProsperity>
+	<!-- EN: happiness -->
+  <FCHappiness>TODO</FCHappiness>
+	<!-- EN: loyalty -->
+  <FCLoyality>TODO</FCLoyality>
+	<!-- EN: unrest -->
+  <FCUnrest>TODO</FCUnrest>
+	<!-- EN: prosperity -->
+  <FCProsperity>TODO</FCProsperity>
+	<!-- EN: happiness -->
+  <Happiness>TODO</Happiness>
+	<!-- EN: loyalty -->
+  <Loyalty>忠诚度</Loyalty>
+	<!-- EN: unrest -->
+  <Unrest>叛乱度</Unrest>
+	<!-- EN: prosperity -->
+  <Prosperity>TODO</Prosperity>
+	<!-- EN: Base Recovery -->
+  <BaseRecovery>TODO</BaseRecovery>
+	<!-- EN: Target: {0}% -->
+  <ProsperityTarget>TODO</ProsperityTarget>
+	<!-- EN: Drift toward target -->
+  <ProsperityDrift>TODO</ProsperityDrift>
+	<!-- EN: Happiness ({0}) + Loyalty ({1}) + Stability ({2}) / 3 -->
+  <ProsperityTargetBreakdown>TODO</ProsperityTargetBreakdown>
+	<!-- EN: Base Gain -->
+  <BaseGain>TODO</BaseGain>
+	<!-- EN: Base Loss -->
+  <BaseLoss>TODO</BaseLoss>
+	<!-- EN: Gaining {0} {1} per day -->
+  <SettlementStatGain>TODO</SettlementStatGain>
+	<!-- EN: Losing {0} {1} per day -->
+  <SettlementStatLoss>TODO</SettlementStatLoss>
+
+	<!-- Settlement Stat Descriptions -->
+	<!-- EN: The military level directly affects the settlement's ability to defend itself and attack external threats. -->
+  <SettlementMilitaryLevelDesc>衡量领地军事能力的标准.一个城镇的军事水平直接影响到城镇的自卫能力和对外威胁的打击能力.</SettlementMilitaryLevelDesc>
+	<!-- EN: The measure of the Settlement's overall happiness.
+
+A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
+	 -->
+  <SettlementHappinessDesc>衡量领地居民幸福感的标准.高幸福度对和解内部冲突极有帮助.</SettlementHappinessDesc>
+	<!-- EN: The measure of the Settlement's overall loyalty.
+
+The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
+	 -->
+  <SettlementLoyaltyDesc>衡量领地居民是否忠诚的标准.忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能.</SettlementLoyaltyDesc>
+	<!-- EN: The measure of the Settlement's overall unrest.
+
+The higher unrest grows, the more likely dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may grow.
+	 -->
+  <SettlementUnrestDesc>衡量领地动荡程度的标准.动乱越严重,你的领地就越有可能发生危险事件.高叛乱度会增加内部冲突.</SettlementUnrestDesc>
+	<!-- EN: The measure of the Settlement's overall prosperity.
+
+The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
+	 -->
+  <SettlementProsperityDesc>衡量领地运行状况的标准.一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度降低,它将随着时间慢慢回复.</SettlementProsperityDesc>
+
+	<!-- Settlement Table -->
+	<!-- EN: Settlement Manager -->
+  <SettlementManager>收税员</SettlementManager>
+	<!-- EN: Name -->
+  <FCSettlementTableName>TODO</FCSettlementTableName>
+	<!-- EN: Level -->
+  <FCSettlementTableLevel>TODO</FCSettlementTableLevel>
+	<!-- EN: Military Level -->
+  <FCSettlementTableMilLevel>TODO</FCSettlementTableMilLevel>
+	<!-- EN: Profit -->
+  <FCSettlementTableProfit>TODO</FCSettlementTableProfit>
+	<!-- EN: Free Workers -->
+  <FCSettlementTableWorkers>TODO</FCSettlementTableWorkers>
+	<!-- EN: Happiness -->
+  <FCSettlementTableHappiness>TODO</FCSettlementTableHappiness>
+	<!-- EN: Loyalty -->
+  <FCSettlementTableLoyalty>TODO</FCSettlementTableLoyalty>
+	<!-- EN: Unrest -->
+  <FCSettlementTableUnrest>TODO</FCSettlementTableUnrest>
+	<!-- EN: Prosperity -->
+  <FCSettlementTableProsperity>TODO</FCSettlementTableProsperity>
+	<!-- EN: Founding Date -->
+  <FCSettlementTableFounding>TODO</FCSettlementTableFounding>
+	<!-- EN: No settlements. -->
+  <FCNoSettlements>TODO</FCNoSettlements>
+	<!-- EN: {0} settlements -->
+  <FCSettlementCount>TODO</FCSettlementCount>
+	<!-- EN: Sort: {0} -->
+  <FCSortBy>TODO</FCSortBy>
+	<!-- EN: Colony Level -->
+  <ColonyLevel>领地级别</ColonyLevel>
+	<!-- EN: hamlet -->
+  <Hamlet>城镇</Hamlet>
+
+	<!-- Settlement Delete -->
+	<!-- EN: Delete Settlement -->
+  <DeleteSettlement>删除领地</DeleteSettlement>
+	<!-- EN: Remove settlement {0}? -->
+  <DeleteSettlementConfirm>TODO</DeleteSettlementConfirm>
+	<!-- EN: Are you sure? -->
+  <AreYouSureRemove>确定?</AreYouSureRemove>
+	<!-- EN: The settlement {0} has been removed. -->
+  <SettlementRemoved>领地{0}已被移除.</SettlementRemoved>
+
+	<!-- Settlement Customization -->
+	<!-- EN: Customize Settlement -->
+  <FCCustomizeSettlement>TODO</FCCustomizeSettlement>
+	<!-- EN: Full name: -->
+  <FCSettlementFullName>TODO</FCSettlementFullName>
+	<!-- EN: Short name: -->
+  <FCSettlementShortName>TODO</FCSettlementShortName>
+	<!-- EN: The faction of this settlement has no name or something went terribly wrong. -->
+  <FCUnsupportedSettlementFaction>TODO</FCUnsupportedSettlementFaction>
+
+	<!-- Settlement Special Actions -->
+	<!-- EN: Special Actions -->
+  <FCSpecialActions>TODO</FCSpecialActions>
+	<!-- EN: Buy Loyalty -->
+  <FCBuyLoyalty>TODO</FCBuyLoyalty>
+	<!-- EN: Send Silver to Colony -->
+  <SendSilverToColony>TODO</SendSilverToColony>
+	<!-- EN: Sending {0} silver -->
+  <SendingXSilver>TODO</SendingXSilver>
+	<!-- EN: Settlement will gain {0} loyalty -->
+  <SettlementGainsXLoyalty>TODO</SettlementGainsXLoyalty>
+
+	<!-- Construction Status -->
+	<!-- EN: Active Construction: {0} -->
+  <numUnderConstruction>TODO</numUnderConstruction>
+	<!-- EN: Active Construction -->
+  <ActiveConstruction>TODO</ActiveConstruction>
+	<!-- EN: Close Constructions List -->
+  <closeConstructionBox>TODO</closeConstructionBox>
+	<!-- EN: Open Constructions List -->
+  <openConstructionBox>TODO</openConstructionBox>
+	<!-- EN: Settlement Upgrade -->
+  <settlementupgrading>TODO</settlementupgrading>
+	<!-- EN: Finishes in: {0} -->
+  <completiontimer>TODO</completiontimer>
+
+	<!-- Biome Descriptions -->
+	<!-- EN: Endless sheets of ice unbroken by nothing but small, sparse wildlife. No food grows except within heated rooms. Only the most tenacious of life survives here. -->
+  <FCDescSeaIce>TODO</FCDescSeaIce>
+	<!-- EN: Bleak, unending frost blankets the land, interrupted only by outcroppings of stone and ruins. The only source of food is the hardy wildlife which calls this place its home. -->
+  <FCDescIceSheet>TODO</FCDescIceSheet>
+	<!-- EN: The hinterland houses a variety of rugged flora and fauna eking out an existance on the moss-covered landscape. When the summer comes, the land blooms into life, if only briefly. -->
+  <FCDescTundra>TODO</FCDescTundra>
+	<!-- EN: The rugged beauty of this land is matched only by its inhospitability. Marshes dot the landscape, as do frequent packs of migrating herbivores and the predators that hunt them. -->
+  <FCDescColdBog>TODO</FCDescColdBog>
+	<!-- EN: While typically less cold than the hinterland of a tundra, a boreal forest's harsh winter weather is only matched by its warm summers, where greenery briefly blooms and food becomes plentiful. -->
+  <FCDescBorealForest>TODO</FCDescBorealForest>
+	<!-- EN: Trees choke the sky, ensuring little light reaches the floor. Yet under the canopy, there exists a dazzling, but deadly, array of flora and fauna. The beauty of this biome is matched only by the dangers within. -->
+  <FCDescTropicalRainforest>TODO</FCDescTropicalRainforest>
+	<!-- EN: Abundant forests and streams split the land. Animals roam the thick forests and both food and shelter are aplenty. -->
+  <FCDescTemperateForest>TODO</FCDescTemperateForest>
+	<!-- EN: The land is covered by bogs and marshes, and what isn't, is covered by a variety of vegetation. Available building space is at a premium here. -->
+  <FCDescTemperateSwamp>TODO</FCDescTemperateSwamp>
+	<!-- EN: The land is strangled by thick vegetation as trees reach for the sky, ensuring little light reaches the treacherous grounds. Disease is rampant and frequent. -->
+  <FCDescTropicalSwamp>TODO</FCDescTropicalSwamp>
+	<!-- EN: While not a true desert, growing soil is at a premium thanks to the relentless heat. Most of the land is open, with secluded groves breaking the otherwise empty skyline. -->
+  <FCDescAridShrubland>TODO</FCDescAridShrubland>
+	<!-- EN: Arable soil is a rarity, as the majority of the land here is covered in sand, some too treacherous to build on. Still, life clings to existance here, and the sands harbour a vibrant array of life. -->
+  <FCDescDesert>TODO</FCDescDesert>
+	<!-- EN: The sun has baked this land into a wasteland. There is almost no soil that can support proper vegetation, and that which there is, is poor in quality. -->
+  <FCDescExtremeDesert>TODO</FCDescExtremeDesert>
+	<!-- EN: Little is widely known about the surrounding land, but the colony manages to survive and prosper in their present conditions. -->
+  <FCDescUnknown>TODO</FCDescUnknown>
+	<!-- EN: The vast emptiness of space stretches in all directions, broken only by the distant twinkle of stars and the occasional passing asteroid. Solar panels gleam in the eternal sunlight, while life support systems hum quietly in the artificial environment. The station floats in the void, a beacon of civilization in the cosmic wilderness. -->
+  <FCDescOrbitalSpace>TODO</FCDescOrbitalSpace>
+
+	<!-- Town Level Descriptions -->
+	<!-- EN: The settlement itself is simply a small cluster of buildings grouped around a central structure. -->
+  <FCTownLevel1>TODO</FCTownLevel1>
+	<!-- EN: The settlement is dominated by a few large structures, but it is still quite small. A number of sandbags and barricades ring the outside. -->
+  <FCTownLevel2>TODO</FCTownLevel2>
+	<!-- EN: The settlement has a good number of structures — largely production oriented — as well as dedicated storehouses, and busy workers scurry between them. A modest wall protects the settlement. -->
+  <FCTownLevel3>TODO</FCTownLevel3>
+	<!-- EN: The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack. -->
+  <FCTownLevel4>TODO</FCTownLevel4>
+	<!-- EN: Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints. -->
+  <FCTownLevel5>TODO</FCTownLevel5>
+
+	<!-- Orbital Town Level Descriptions -->
+	<!-- EN: The station is little more than a pressurized habitat module with a handful of docking ports, its hull still gleaming from recent construction. -->
+  <FCTownLevel_Orbital_1>TODO</FCTownLevel_Orbital_1>
+	<!-- EN: A cluster of interconnected modules forms the station core, with basic airlocks and cargo bays serving a small but growing crew. -->
+  <FCTownLevel_Orbital_2>TODO</FCTownLevel_Orbital_2>
+	<!-- EN: The station has expanded into a respectable orbital platform, with dedicated production modules, rotating crew quarters, and an array of solar collectors stretching outward. -->
+  <FCTownLevel_Orbital_3>TODO</FCTownLevel_Orbital_3>
+	<!-- EN: A substantial orbital installation bristles with sensor arrays and docking spires. Multiple pressurized decks house specialized facilities, and point-defense turrets sweep the surrounding void. -->
+  <FCTownLevel_Orbital_4>TODO</FCTownLevel_Orbital_4>
+	<!-- EN: The station dominates the local orbital space; a sprawling complex of interconnected rings and spars, humming with industry. Layered shielding and weapons platforms ensure nothing approaches unchallenged. -->
+  <FCTownLevel_Orbital_5>TODO</FCTownLevel_Orbital_5>
+
+	<!-- Orbital Settlement Locations -->
+	<!-- EN: Orbiting in deep space -->
+  <FCOrbitalLocation1>TODO</FCOrbitalLocation1>
+	<!-- EN: Stationed in low orbit -->
+  <FCOrbitalLocation2>TODO</FCOrbitalLocation2>
+	<!-- EN: Floating in the emptiness of space -->
+  <FCOrbitalLocation3>TODO</FCOrbitalLocation3>
+	<!-- EN: Anchored in orbit -->
+  <FCOrbitalLocation4>TODO</FCOrbitalLocation4>
+	<!-- EN: Positioned in low orbit -->
+  <FCOrbitalLocation5>TODO</FCOrbitalLocation5>
+	<!-- EN: Suspended above the surface -->
+  <FCOrbitalLocation6>TODO</FCOrbitalLocation6>
+	<!-- EN: Deployed in orbital space -->
+  <FCOrbitalLocation7>TODO</FCOrbitalLocation7>
+
+	<!-- Orbital Settlement Name Keywords -->
+	<!-- EN: Space Station -->
+  <FCOrbitalKeyword1>TODO</FCOrbitalKeyword1>
+	<!-- EN: Station -->
+  <FCOrbitalKeyword2>TODO</FCOrbitalKeyword2>
+	<!-- EN: Satellite -->
+  <FCOrbitalKeyword3>TODO</FCOrbitalKeyword3>
+	<!-- EN: Solar Base -->
+  <FCOrbitalKeyword4>TODO</FCOrbitalKeyword4>
+	<!-- EN: Orbital Hub -->
+  <FCOrbitalKeyword5>TODO</FCOrbitalKeyword5>
+	<!-- EN: Space Platform -->
+  <FCOrbitalKeyword6>TODO</FCOrbitalKeyword6>
+	<!-- EN: Cosmic Station -->
+  <FCOrbitalKeyword7>TODO</FCOrbitalKeyword7>
+	<!-- EN: Stellar Base -->
+  <FCOrbitalKeyword8>TODO</FCOrbitalKeyword8>
+	<!-- EN: Void Station -->
+  <FCOrbitalKeyword9>TODO</FCOrbitalKeyword9>
+	<!-- EN: Astral Platform -->
+  <FCOrbitalKeyword10>TODO</FCOrbitalKeyword10>
+
+	<!-- Building Environment Restrictions -->
+	<!-- EN: That building cannot be built on this settlement's biome! -->
+  <BuildingInvalidEnvironment>TODO</BuildingInvalidEnvironment>
+
+</LanguageData>

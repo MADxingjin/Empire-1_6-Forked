@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Mine the vein at a steady, sustainable pace. -->
+  <struckRichOreVein_0_1.label>以可持续的稳定速度开采矿脉</struckRichOreVein_0_1.label>
+  
+  <!-- EN: Rush the extraction — push the miners hard. -->
+  <struckRichOreVein_0_2.label>推动开采进程，加重矿工负担</struckRichOreVein_0_2.label>
+  
+  <!-- EN: Sell the mining rights to outside interests. -->
+  <struckRichOreVein_0_3.label>将采矿权卖给外来买家</struckRichOreVein_0_3.label>
+  
+</LanguageData>

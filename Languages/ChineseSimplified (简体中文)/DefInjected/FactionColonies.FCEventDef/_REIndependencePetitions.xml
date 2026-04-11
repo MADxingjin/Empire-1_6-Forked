@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Independence Petitions -->
+  <independencePetitions_0.label>TODO</independencePetitions_0.label>
+  <!-- EN: Due to unrest in your faction, a growing number of your towns have the idea of independence growing. How will you address the dissent? -->
+  <independencePetitions_0.desc>TODO</independencePetitions_0.desc>
+  
+  <!-- EN: Independence Petitions -->
+  <independencePetitions_1-1.label>TODO</independencePetitions_1-1.label>
+  <!-- EN: The petitions continue unopposed. The movement grows as more settlements consider independence. -->
+  <independencePetitions_1-1.desc>TODO</independencePetitions_1-1.desc>
+  
+  <!-- EN: Independence Petitions (Grievances Addressed) -->
+  <independencePetitions_1-2.label>TODO</independencePetitions_1-2.label>
+  <!-- EN: Aid is distributed to the discontented settlements. The gesture helps, but the underlying tensions remain. -->
+  <independencePetitions_1-2.desc>TODO</independencePetitions_1-2.desc>
+  
+  <!-- EN: Independence Petitions (Suppressed) -->
+  <independencePetitions_1-3.label>TODO</independencePetitions_1-3.label>
+  <!-- EN: The independence movement is crushed by force. The dissidents are silenced, but the heavy-handed response breeds further resentment. -->
+  <independencePetitions_1-3.desc>TODO</independencePetitions_1-3.desc>
+  
+</LanguageData>

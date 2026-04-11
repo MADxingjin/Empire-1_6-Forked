@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Keep the expanded logging operations running. -->
+  <expandedForestry_0_1.label>TODO</expandedForestry_0_1.label>
+  
+  <!-- EN: Sell the extra timber to passing traders. -->
+  <expandedForestry_0_2.label>把多伐出的木材卖给经过的商人。</expandedForestry_0_2.label>
+  
+  <!-- EN: Stockpile the lumber for settlement construction. -->
+  <expandedForestry_0_3.label>把多伐出的木材储存起来以备领地建设使用。</expandedForestry_0_3.label>
+  
+</LanguageData>

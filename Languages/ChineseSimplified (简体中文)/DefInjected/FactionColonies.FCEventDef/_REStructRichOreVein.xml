@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Struck Rich Ore Vein -->
+  <struckRichOreVein_0.label>TODO</struckRichOreVein_0.label>
+  <!-- EN: Some of your settlements have managed to strike veins of rich ore in their mines! How should they proceed? -->
+  <struckRichOreVein_0.desc>TODO</struckRichOreVein_0.desc>
+  
+  <!-- EN: Rich Ore Vein -->
+  <struckRichOreVein_1-1.label>TODO</struckRichOreVein_1-1.label>
+  <!-- EN: The miners extract ore at a steady pace. -->
+  <struckRichOreVein_1-1.desc>TODO</struckRichOreVein_1-1.desc>
+  
+  <!-- EN: Rich Ore Vein (Rush Extraction) -->
+  <struckRichOreVein_1-2.label>TODO</struckRichOreVein_1-2.label>
+  <!-- EN: The miners are pushed hard to extract as much ore as possible, but the overwork takes its toll. -->
+  <struckRichOreVein_1-2.desc>TODO</struckRichOreVein_1-2.desc>
+  
+  <!-- EN: Rich Ore Vein (Rights Sold) -->
+  <struckRichOreVein_1-3.label>TODO</struckRichOreVein_1-3.label>
+  <!-- EN: The mining rights are sold to outside interests for immediate profit. -->
+  <struckRichOreVein_1-3.desc>TODO</struckRichOreVein_1-3.desc>
+  
+</LanguageData>

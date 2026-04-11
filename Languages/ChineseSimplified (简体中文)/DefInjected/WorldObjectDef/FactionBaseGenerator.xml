@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: ColonyBase -->
+  <FactionBaseGenerator.label>领地地基</FactionBaseGenerator.label>
+  
+  <!-- EN: orbital platform -->
+  <FCOrbitalPlatform.label>轨道平台领地</FCOrbitalPlatform.label>
+  <!-- EN: A player-built orbital platform in space -->
+  <FCOrbitalPlatform.description>由玩家派系建立的轨道平台。</FCOrbitalPlatform.description>
+  
+</LanguageData>

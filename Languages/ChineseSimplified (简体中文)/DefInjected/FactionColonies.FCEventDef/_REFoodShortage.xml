@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Widespread Food Shortage -->
+  <foodShortage_0.label>大规模食物短缺</foodShortage_0.label>
+  <!-- EN: There's a widespread food shortage in the affected regions. Your settlements need guidance on how to handle this crisis. -->
+  <foodShortage_0.desc>受影响的区域当前出现了大规模食物短缺。你的领地正等待你的指示。</foodShortage_0.desc>
+  
+  <!-- EN: Food Shortage -->
+  <foodShortage_1-1.label>食物短缺</foodShortage_1-1.label>
+  <!-- EN: Your settlements endure the food shortage. -->
+  <foodShortage_1-1.desc>你的领地将忍受食物短缺。</foodShortage_1-1.desc>
+  
+  <!-- EN: Food Shortage (Imports) -->
+  <foodShortage_1-2.label>食物短缺（进口）</foodShortage_1-2.label>
+  <!-- EN: Emergency imports have arrived, lessening the impact of the food shortage. -->
+  <foodShortage_1-2.desc>紧急进口的食物已到达，可缓解短缺的影响。</foodShortage_1-2.desc>
+  
+  <!-- EN: Food Shortage (Rationing) -->
+  <foodShortage_1-3.label>食物短缺（配给制）</foodShortage_1-3.label>
+  <!-- EN: Strict rationing is in effect. Citizens admire the shared sacrifice. -->
+  <foodShortage_1-3.desc>你的领地将实行食物配给制。居民们对共同受难感到倾佩。</foodShortage_1-3.desc>
+  
+  <!-- EN: Food Shortage (Slaves Starved) -->
+  <foodShortage_1-4.label>食物短缺（剥夺奴隶食物）</foodShortage_1-4.label>
+  <!-- EN: The slaves bear the brunt of the shortage. Food production continues unaffected, but the workforce is diminished. -->
+  <foodShortage_1-4.desc>奴隶们承担了食物短缺所有的负面影响。其余人的食物获取与生产不受限制，但劳动力还是因为奴隶的牺牲出现了下滑。</foodShortage_1-4.desc>
+  
+</LanguageData>

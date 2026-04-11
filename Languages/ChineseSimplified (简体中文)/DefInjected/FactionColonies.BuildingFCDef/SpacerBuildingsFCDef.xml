@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Asteroid Magnet -->
+  <AsteroidMagnet.label>小行星磁铁</AsteroidMagnet.label>
+  <!-- EN: People may not like it, but it's hard to deny the amount of resources gathered when you just pull the metals you want out of the sky. -->
+  <AsteroidMagnet.desc>人们也许不喜欢它，但一定很难否认直接从天上把想要的资源吸下来的效率。</AsteroidMagnet.desc>
+  
+  <!-- EN: Automated Defense Systems -->
+  <automatedDefenseSystems.label>自动防御系统</automatedDefenseSystems.label>
+  <!-- EN: Androids roam the streets, keeping the colonists safe from external and internal harm. -->
+  <automatedDefenseSystems.desc>机器人在街上漫游,使殖民者免受伤害.+2军事级别.</automatedDefenseSystems.desc>
+  
+  <!-- EN: Bionics Manufacturing Plant -->
+  <bionicsManufacturingPlant.label>仿生体装配厂</bionicsManufacturingPlant.label>
+  <!-- EN: A factory dedicated to the development of new bionics. -->
+  <bionicsManufacturingPlant.desc>专注于开发新仿生体的工厂。</bionicsManufacturingPlant.desc>
+  
+  <!-- EN: Cloning Lab -->
+  <CloningLab.label>克隆实验室</CloningLab.label>
+  <!-- EN: Why breed or capture animals when you can just grow them in vats? -->
+  <CloningLab.desc>你可以直接克隆动物的时候为什么还要再人工育种或者活抓呢？</CloningLab.desc>
+  
+  <!-- EN: Clothing Printers -->
+  <ClothingPrinters.label>衣物打印机</ClothingPrinters.label>
+  <!-- EN: Remove the human element altogether! Dump raw materials in and watch as each article of clothing is printed as a single, seamless piece! -->
+  <ClothingPrinters.desc>完全无人工参与！仅需将材料倒进机器，然后就可以欣赏你所需的每件衣物被打印成完整无缝的整体！</ClothingPrinters.desc>
+  
+  <!-- EN: Food Reconstruction -->
+  <FoodReconstruction.label>食材重组</FoodReconstruction.label>
+  <!-- EN: Nobody likes nutrient paste, but with a little flavoring and cosmetic tweaks, it can look and taste like whatever you want it to! -->
+  <FoodReconstruction.desc>没有人喜欢营养膏，但只需要加上一些香料和外观调整，它就可以看着和吃着都和你想要的任何食物一样！</FoodReconstruction.desc>
+  
+  <!-- EN: Glitterworld Research Facility -->
+  <glitterworldResearchFacility.label>闪耀世界研究院</glitterworldResearchFacility.label>
+  <!-- EN: From this building, researchers equipped with the highest-grade tools search for the answers of the universe. -->
+  <glitterworldResearchFacility.desc>资深的科学家们在这个建筑里用最顶级的设备探寻宇宙的答案。</glitterworldResearchFacility.desc>
+  
+  <!-- EN: Intergalactic Market -->
+  <intergalacticMarket.label>星际市场</intergalacticMarket.label>
+  <!-- EN: From here, ships fly in and deposit their goods and replace their cargo before returning home. -->
+  <intergalacticMarket.desc>各种飞船在这里装卸交易它们的货物。</intergalacticMarket.desc>
+  
+  <!-- EN: Mechanoid Salvage Shop -->
+  <MechSalvage.label>机械族拆解工房</MechSalvage.label>
+  <!-- EN: With the right tools, you can do more than shred dead mechanoids, you can salvage their tech to use against them. -->
+  <MechSalvage.desc>使用适当的工具，你就可以从砸开死掉的机械族这一举措中更进一步，你可以拆解它们的技术来回击它们。</MechSalvage.desc>
+  
+  <!-- EN: Perpetual Motion Generator -->
+  <perpetualMotionGenerator.label>永动发电机</perpetualMotionGenerator.label>
+  <!-- EN: An impossibility against the laws of physics, a generator that produces extra energy using the concept of perpetual motion. -->
+  <perpetualMotionGenerator.desc>无视物理法则的永动发电机。</perpetualMotionGenerator.desc>
+  
+  <!-- EN: Subliminal Message Center -->
+  <SubliminalMessageCenter.label>潜意识广播中心</SubliminalMessageCenter.label>
+  <!-- EN: Weave subliminal messaging into the settlement's local broadcasts. -->
+  <SubliminalMessageCenter.desc>在此领地的广播内植入潜意识信息。</SubliminalMessageCenter.desc>
+  
+  <!-- EN: Synthetic Wood Factory -->
+  <SyntheticWoodFactory.label>合成木材工厂</SyntheticWoodFactory.label>
+  <!-- EN: It's new! It's space-age! It's just as good as the real thing and it's definitely not vinyl, we swear! -->
+  <SyntheticWoodFactory.desc>全新的！太空时代的！我们保证本品和真品一模一样且绝对不是什么聚乙烯！</SyntheticWoodFactory.desc>
+  
+  <!-- EN: Worker Bots -->
+  <WorkerBots.label>工作机器人</WorkerBots.label>
+  <!-- EN: Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere. -->
+  <WorkerBots.desc>让机器人去干那些重复繁琐的工作，以将人类劳动力从领地里这些工作中投入到其他地方。</WorkerBots.desc>
+  
+</LanguageData>

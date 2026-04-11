@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Event Window -->
+	<!-- EN: Current Ongoing Events -->
+  <CurrentOngoingEvents>正在进行中的事件</CurrentOngoingEvents>
+	<!-- EN: Time Remaining -->
+  <TimeRemaining>剩余时间</TimeRemaining>
+	<!-- EN: New Land -->
+  <NewLand>新领地</NewLand>
+	<!-- EN: This event is affecting the following settlements: -->
+  <EventAffectingSettlements>此事件正影响以下领地</EventAffectingSettlements>
+	<!-- EN: Event -->
+  <FCEvent>事件</FCEvent>
+	<!-- EN: No active events. -->
+  <FCNoActiveEvents>无活跃事件</FCNoActiveEvents>
+	<!-- EN: {0} active events -->
+  <FCActiveEventsCount>{0}个活跃事件</FCActiveEventsCount>
+	<!-- EN: {0} of {1} active events -->
+  <FCActiveEventsFiltered>{0}/{1}个活跃事件</FCActiveEventsFiltered>
+	<!-- EN: All -->
+  <FCEventCatAll>所有</FCEventCatAll>
+	<!-- EN: No events match the current filters. -->
+  <FCNoEventsMatchFilter>没有满足当前筛选的事件</FCNoEventsMatchFilter>
+	<!-- EN: Ends within {0} -->
+  <FCEndsWithin>在{0}后结束</FCEndsWithin>
+	<!-- EN: {0} - {1} -->
+  <FCDurationRange>{0} - {1}</FCDurationRange>
+	<!-- EN: ({0}-{1} days) -->
+  <FCEffectPreviewDurationRange>{0} - {1}天</FCEffectPreviewDurationRange>
+	<!-- EN: Multiple ({0}) -->
+  <FCMultipleSettlements>多个（{0}）</FCMultipleSettlements>
+
+	<!-- Event Option Window -->
+	<!-- EN: Affecting: -->
+  <FCEventAffecting>影响了</FCEventAffecting>
+	<!-- EN: Free -->
+  <FCEventOptionFree>免费</FCEventOptionFree>
+	<!-- EN: Success: Guaranteed -->
+  <FCEventSuccessGuaranteed>成功率：必然</FCEventSuccessGuaranteed>
+	<!-- EN: Success: Likely -->
+  <FCEventSuccessLikely>成功率：应当</FCEventSuccessLikely>
+	<!-- EN: Success: Uncertain -->
+  <FCEventSuccessUncertain>成功率：不确定</FCEventSuccessUncertain>
+	<!-- EN: Success: Risky -->
+  <FCEventSuccessRisky>成功率：有风险</FCEventSuccessRisky>
+	<!-- EN: reward worth ~{0} silver -->
+  <FCEffectPreviewReward>价值{0}白银的回报</FCEffectPreviewReward>
+	<!-- EN: ({0} days) -->
+  <FCEffectPreviewDuration>（{0}天）</FCEffectPreviewDuration>
+
+	<!-- Building Events -->
+	<!-- EN: {0} is under construction at {1}. Estimated completion: {2}. -->
+  <BuildingEventDesc>正在{1}建筑{0}，预计在{2}建成</BuildingEventDesc>
+	<!-- EN: {0} has been constructed at {1}! -->
+  <BuildingEventCompletedMsg>建筑{0}已在{1}完工！</BuildingEventCompletedMsg>
+
+	<!-- Pawn Events -->
+	<!-- EN: Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements. -->
+  <DeathOfFactionPawn>你的无能致使领地的居民死亡,领地的不满度因此提升。</DeathOfFactionPawn>
+	<!-- EN: Capturing one of your settlement's pawns has caused great unrest in your subject settlements! -->
+  <CaptureOfFactionPawn>一名居民被俘虏,领地的动荡程度大大的提高了.</CaptureOfFactionPawn>
+	<!-- EN: Prisoner Has Died -->
+  <PrisonerHasDiedLetter>囚犯死亡</PrisonerHasDiedLetter>
+	<!-- EN: {0} at {1} has died from overworking -->
+  <PrisonerHasDied>在{1}的囚犯{0}因过劳而死</PrisonerHasDied>
+
+	<!-- Mercenary Events -->
+	<!-- EN: Mercenary Joined -->
+  <FCMercenaryJoined>雇佣兵加入</FCMercenaryJoined>
+	<!-- EN: A mercenary, {0}, from your faction has joined your colony! -->
+  <FCMercenaryJoinedText>来自你派系的一位雇佣兵，{0}，已加入你的殖民地！</FCMercenaryJoinedText>
+
+	<!-- Shuttle/Transport Events -->
+	<!-- EN: A shuttle is transporting injured colonists back to you after a successful settlement defence -->
+  <transportingInjuredShuttle>一个穿梭机正向你的殖民地运回在成功的领地保卫中负伤的殖民者</transportingInjuredShuttle>
+	<!-- EN: Drop pods are transporting injured colonists back to you after a successful settlement defence -->
+  <transportingInjuredDropPod>空投仓正向你的殖民地运回在成功的领地保卫中负伤的殖民者</transportingInjuredDropPod>
+	<!-- EN: A caravan is transporting injured colonists back to you after a successful settlement defence -->
+  <transportingInjuredCaravan>一支远行队正向你的殖民地运回在成功的领地保卫中负伤的殖民者</transportingInjuredCaravan>
+	<!-- EN: A shuttle is transporting injured colonists back to you after a failed settlement defence -->
+  <transportingInjuredShuttleLost>一个穿梭机正向你的殖民地运回在失败的领地保卫中负伤的殖民者</transportingInjuredShuttleLost>
+	<!-- EN: Drop pods are transporting injured colonists back to you after a failed settlement defence -->
+  <transportingInjuredDropPodLost>空投仓正向你的殖民地运回在失败的领地保卫中负伤的殖民者</transportingInjuredDropPodLost>
+	<!-- EN: A caravan is transporting injured colonists back to you after a failed settlement defence -->
+  <transportingInjuredCaravanLost>一支远行队正向你的殖民地运回在失败的领地保卫中负伤的殖民者</transportingInjuredCaravanLost>
+	<!-- EN: A shuttle couldn't find a free landing spot and is waiting for one to be cleared. It contains: {0}. -->
+  <shuttleLandingBlockedWithItems>装有{0}的穿梭机正在你基地的上方等待你清理一个降落场地。</shuttleLandingBlockedWithItems>
+	<!-- EN: A shuttle couldn't find a free landing spot and is waiting for one to be cleared. -->
+  <shuttleLandingBlocked>穿梭机正在你基地的上方等待你清理一个降落场地。</shuttleLandingBlocked>
+	<!-- EN: A caravan is waiting with it's delivery until your map is clear of danger. -->
+  <caravanDangerTooHigh>一只护送队伍正在你地图的外面等候你清理完地图上的威胁。</caravanDangerTooHigh>
+	<!-- EN: A caravan is waiting with it's delivery until your map is clear of danger. They carry: {0}. -->
+  <caravanDangerTooHighWithItems>带有{0}的护送队伍正在你地图的外面等候你清理完地图上的威胁。</caravanDangerTooHighWithItems>
+
+	<!-- Shuttle Port -->
+	<!-- EN: Request a shuttle -->
+  <shuttlePortCallShuttleLabel>要求一个穿梭机航次</shuttlePortCallShuttleLabel>
+	<!-- EN: Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1}) -->
+  <shuttlePortCallShuttleDesc>要求你的领地为你派遣穿梭机进行一次远行队航程。\n{0}次可用（成本：{1}）</shuttlePortCallShuttleDesc>
+	<!-- EN: Target anything with free colonists to send the shuttle -->
+  <targetAnythingWithColonists></targetAnythingWithColonists>
+	<!-- EN: Request a shuttle for this caravan -->
+  <requestShuttleToCaravan>为该远行队要求一个穿梭机</requestShuttleToCaravan>
+	<!-- EN: Request a shuttle for this colony -->
+  <requestShuttleToColony>为该殖民地要求一个穿梭机</requestShuttleToColony>
+	<!-- EN: Request a shuttle for this map -->
+  <requestShuttleToMap>为该地图要求一个穿梭机</requestShuttleToMap>
+	<!-- EN: Request a shuttle for a caravan -->
+  <shuttlePortCallShuttleForCaravanLabel>为这个远行队要求一个穿梭机</shuttlePortCallShuttleForCaravanLabel>
+	<!-- EN: Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1}) -->
+  <targetAnyWorldObject>选定你要穿梭机飞往的世界目的地：\n{0}次可用（成本：{1}）</targetAnyWorldObject>
+	<!-- EN: Send the caravan here -->
+  <sendCaravanHere>将远行队送到</sendCaravanHere>
+	<!-- EN: There are no caravans to send a shuttle to! -->
+  <noCaravansToSendShuttleTo>没有可要求穿梭机送达的远行队！</noCaravansToSendShuttleTo>
+	<!-- EN: No shuttle uses remaining in this tax period! -->
+  <noShuttleUsesRemaining>当前税期里不能再呼叫穿梭机</noShuttleUsesRemaining>
+	<!-- EN: Not enough shuttle uses remaining in this tax period! -->
+  <notEnoughShuttleUsesRemaining>当前税期里的剩余穿梭机航次不足</notEnoughShuttleUsesRemaining>
+	
+	<!-- EN: Random Event -->
+  <FCRandomEventLetterLabel>随机事件</FCRandomEventLetterLabel>
+
+</LanguageData>

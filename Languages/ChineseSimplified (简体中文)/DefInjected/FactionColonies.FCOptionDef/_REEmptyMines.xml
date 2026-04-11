@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: The miners will have to wait for new veins to appear. -->
+  <emptyMines_0_1.label>让矿工等待新矿脉出现。</emptyMines_0_1.label>
+  
+  <!-- EN: Hire prospectors to search for untapped deposits. -->
+  <emptyMines_0_2.label>雇佣勘探人员寻找未发现的矿石储备。</emptyMines_0_2.label>
+  
+  <!-- EN: Redirect the idle miners to settlement construction. -->
+  <emptyMines_0_3.label>将矿工们调整到领地建筑工程项目。</emptyMines_0_3.label>
+  
+</LanguageData>

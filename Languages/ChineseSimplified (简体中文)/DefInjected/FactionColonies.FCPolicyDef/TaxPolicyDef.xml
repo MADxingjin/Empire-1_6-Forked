@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Goods Economy -->
+  <goodsEconomy.label>优先实物税</goodsEconomy.label>
+  <!-- EN: Settlements prioritize sending physical goods over silver. Tithe budgets increase significantly, but silver income decreases. -->
+  <goodsEconomy.desc>领地优先以实物支付税款，增加什一税额，降低白银税额。</goodsEconomy.desc>
+  
+  <!-- EN: Heavy Taxation -->
+  <heavyTaxation.label>重税</heavyTaxation.label>
+  <!-- EN: Increase the amount of taxes on your settlements at the cost of happiness and unrest. -->
+  <heavyTaxation.desc>高税率的同时高领地动乱，低幸福度</heavyTaxation.desc>
+  
+  <!-- EN: Minimize Taxation -->
+  <minimizeTaxation.label>轻税</minimizeTaxation.label>
+  <!-- EN: Collect less taxes from your settlements. This will make them happier and reduce unrest. -->
+  <minimizeTaxation.desc>低税率，让领民更幸福，并降低动乱</minimizeTaxation.desc>
+  
+  <!-- EN: Silver Standard -->
+  <silverStandard.label>优先白银税</silverStandard.label>
+  <!-- EN: Settlements sell goods locally and remit coin instead. Silver income increases, but tithe budgets are reduced. -->
+  <silverStandard.desc>领地优先销货并以白银支付税款。增加白银税额，降低什一税额。</silverStandard.desc>
+  
+</LanguageData>

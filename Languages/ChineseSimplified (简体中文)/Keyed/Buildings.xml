@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Building Construction -->
+	<!-- EN: Construct Building -->
+  <ConstructBuilding>建造建筑</ConstructBuilding>
+	<!-- EN: Construct -->
+  <Construct>建造</Construct>
+	<!-- EN: Build -->
+  <Build>建造</Build>
+	<!-- EN: Built -->
+  <Built>已建成</Built>
+	<!-- EN: will be constructed in -->
+  <WillBeConstructedIn>将建造于</WillBeConstructedIn>
+	<!-- EN: has been constructed at -->
+  <HasBeenConstructedAt>建造于</HasBeenConstructedAt>
+	<!-- EN: Currently under construction: {0} -->
+  <Empire_BuildingWindow_ConstructionDesc>建造{0}中</Empire_BuildingWindow_ConstructionDesc>
+	<!-- EN: Build Time: {0} -->
+  <BuildTime>建筑用时：{0}</BuildTime>
+
+	<!-- Building Restrictions -->
+	<!-- EN: This building can only be constructed on surface settlements -->
+  <BuildingSurfaceOnly>此建筑只能在地表聚落建造</BuildingSurfaceOnly>
+	<!-- EN: This building can only be constructed on orbital platforms -->
+  <BuildingOrbitalOnly>此建筑只能在轨道平台上建造</BuildingOrbitalOnly>
+	<!-- EN: {0} cannot be built in a {1} -->
+  <BuildingInvalidSettlement>{0}不能在{1}建造</BuildingInvalidSettlement>
+	<!-- EN: There is already a building of that type -->
+  <BuildingAlreadyType>已经有这样的建筑了</BuildingAlreadyType>
+	<!-- EN: There is already a building of that type being built -->
+  <BuildingBeingBuiltAlreadyType>已经有一座这种类型的建筑在建了</BuildingBeingBuiltAlreadyType>
+	<!-- EN: There is already a building being constructed there -->
+  <BuildingAlreadyConstructed>那里已经在建一座建筑了</BuildingAlreadyConstructed>
+
+	<!-- Building Demolition -->
+	<!-- EN: Destroy -->
+  <Destroy>摧毁</Destroy>
+	<!-- EN: Demolish -->
+  <FCDemolish>拆除</FCDemolish>
+	<!-- EN: Are you sure you want to demolish {0}? This will cost {1} silver. -->
+  <FCDemolishConfirmation>你确定要拆除{0}吗？这将花费{1}白银。</FCDemolishConfirmation>
+	<!-- EN: {0} has been demolished -->
+  <FCBuildingDemolished>{0}已被拆除。</FCBuildingDemolished>
+	<!-- EN: Change Building -->
+  <FCChangeBuildingButton>更改建筑</FCChangeBuildingButton>
+
+	<!-- Building Filters -->
+	<!-- EN: All -->
+  <BuildingFilterAll>所有</BuildingFilterAll>
+	<!-- EN: Happiness -->
+  <BuildingFilterHappiness>幸福度</BuildingFilterHappiness>
+	<!-- EN: Base Tax -->
+  <BuildingFilterBasetax>基础税收</BuildingFilterBasetax>
+	<!-- EN: Workers -->
+  <BuildingFilterWorkers>劳动力</BuildingFilterWorkers>
+	<!-- EN: Military -->
+  <BuildingFilterMilitary>军事能力</BuildingFilterMilitary>
+
+	<!-- Capital Seat -->
+	<!-- EN: Empire capital established at {0}! This location will be used as the center of your empire. -->
+  <FCCapitalEstablished>Empire 首都已设立在{0}！此地点将作为你的派系的枢纽。</FCCapitalEstablished>
+	<!-- EN: Capital seat disabled. Empire will use fallback capital location if available. -->
+  <FCCapitalSeatDisabled>已禁用首都符号。模组将使用可找到的备用都城位置。</FCCapitalSeatDisabled>
+	<!-- EN: Empire capital has been lost! You should establish a new capital seat. -->
+  <FCCapitalLost>派系的都城已丢失！你应该重建一个首都符号。</FCCapitalLost>
+
+	<!-- Building Window -->
+	<!-- EN: Buildings — {0} -->
+  <Empire_BuildingWindow_Header>建筑 ——{0}</Empire_BuildingWindow_Header>
+	<!-- EN: Empty Building Slot -->
+  <Empire_BuildingWindow_EmptySlot>空建筑槽</Empire_BuildingWindow_EmptySlot>
+	<!-- EN: Current Building -->
+  <Empire_BuildingWindow_CurrentBuilding>当前建筑</Empire_BuildingWindow_CurrentBuilding>
+	<!-- EN: Select a building to view its details -->
+  <Empire_BuildingWindow_SelectBuilding>选择一个建筑来检查其详情</Empire_BuildingWindow_SelectBuilding>
+	<!-- EN: Modifiers -->
+  <Empire_BuildingWindow_Modifiers>修改器</Empire_BuildingWindow_Modifiers>
+	<!-- EN: Settlement Impact -->
+  <Empire_BuildingWindow_SettlementImpact>聚落影响</Empire_BuildingWindow_SettlementImpact>
+	<!-- EN: Possible Upgrades -->
+  <Empire_BuildingWindow_Upgrades>可升级到</Empire_BuildingWindow_Upgrades>
+	<!-- EN: Required By -->
+  <Empire_BuildingWindow_RequiredBy>作为依赖项</Empire_BuildingWindow_RequiredBy>
+	<!-- EN: Requires: {0} -->
+  <Empire_BuildingWindow_Requires>依赖于：{0}</Empire_BuildingWindow_Requires>
+	<!-- EN: Cannot demolish: required by {0} -->
+  <Empire_BuildingWindow_CannotDemolishRequired>不能拆除：被{0}依赖</Empire_BuildingWindow_CannotDemolishRequired>
+	<!-- EN: Upgrades -->
+  <Empire_BuildingWindow_SlotUpgrades>升级</Empire_BuildingWindow_SlotUpgrades>
+	<!-- EN: Building Upgrades -->
+  <BuildingUpgrades>建筑升级</BuildingUpgrades>
+	<!-- EN: Buildings -->
+  <Buildings>建筑设备</Buildings>
+	<!-- EN: Facilities -->
+  <Facilities>设施</Facilities>
+	<!-- EN: Search buildings... -->
+  <FCSearchBuildings>搜索建筑</FCSearchBuildings>
+
+	<!-- Locked Buildings -->
+	<!-- EN: Show locked buildings -->
+  <Empire_BuildingWindow_ShowLocked>展示当前不可用建筑</Empire_BuildingWindow_ShowLocked>
+	<!-- EN: Locked — Requires {0} tech (research: {1}) -->
+  <Empire_BuildingWindow_TechLocked>不可用：需要{0}科技（研究：{1}）</Empire_BuildingWindow_TechLocked>
+	<!-- EN: Locked -->
+  <Empire_BuildingWindow_LockedButton>不可用</Empire_BuildingWindow_LockedButton>
+	<!-- EN: This building requires researching {0} to unlock. -->
+  <Empire_BuildingWindow_TechLockedTooltip>此建筑需要你完成研究项目{0}来解锁。</Empire_BuildingWindow_TechLockedTooltip>
+
+</LanguageData>

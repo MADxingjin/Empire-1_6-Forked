@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: tax spot -->
+  <TaxSpot.label>税收收集点</TaxSpot.label>
+  <!-- EN: Designates a spot to receive taxes and tithes. Can be set as the active tax delivery location for your entire empire. -->
+  <TaxSpot.description>该点位将被用于收集白银和什一税实物。</TaxSpot.description>
+  
+</LanguageData>

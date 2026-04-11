@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Under Construction -->
+  <Construction.label>施工中</Construction.label>
+  <!-- EN: A building is being constructed here... -->
+  <Construction.desc>该槽位正在施工一个建筑</Construction.desc>
+  
+  <!-- EN: Empty Building Slot -->
+  <Empty.label>空建筑槽</Empty.label>
+  <!-- EN: Click here to construct a building -->
+  <Empty.desc>单击此处以安排建筑</Empty.desc>
+  
+</LanguageData>

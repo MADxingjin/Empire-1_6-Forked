@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Constructing Building -->
+  <constructBuilding.label>修建建筑</constructBuilding.label>
+  <!-- EN: A building is being constructed. -->
+  <constructBuilding.desc>一座建筑物正在建造中。</constructBuilding.desc>
+  
+  <!-- EN: Enacting a Policy -->
+  <enactFactionPolicy.label>制定一个政策</enactFactionPolicy.label>
+  <!-- EN: A faction-wide policy is being enacted. -->
+  <enactFactionPolicy.desc>一个正在制定中的政策将于近日在派系内发布。</enactFactionPolicy.desc>
+  
+  <!-- EN: Enacting a Policy -->
+  <enactSettlementPolicy.label>制定一个政策</enactSettlementPolicy.label>
+  <!-- EN: A settlement-wide policy is being enacted. -->
+  <enactSettlementPolicy.desc>一个正在制定中的政策将于近日在领地内发布。</enactSettlementPolicy.desc>
+  
+  <!-- EN: null -->
+  <Null.label>DEV:NULL</Null.label>
+  <!-- EN: A blank event. -->
+  <Null.desc>DEV:空事件</Null.desc>
+  
+  <!-- EN: Settle Colony -->
+  <settleNewColony.label>建立新的领地</settleNewColony.label>
+  <!-- EN: A caravan is forming a new colony. -->
+  <settleNewColony.desc>一队殖民者正在被派往新的领地。</settleNewColony.desc>
+  
+  <!-- EN: Settlement Taxes En-Route -->
+  <taxColony.label>税金队伍出发</taxColony.label>
+  <!-- EN: A caravan is delivering taxes. -->
+  <taxColony.desc>运送税金的队伍已经上路了.</taxColony.desc>
+  
+  <!-- EN: Upgrading A Settlement -->
+  <upgradeSettlement.label>升级领地</upgradeSettlement.label>
+  <!-- EN: A settlement is being upgraded. -->
+  <upgradeSettlement.desc>正在升级领地。</upgradeSettlement.desc>
+  
+</LanguageData>

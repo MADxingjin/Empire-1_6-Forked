@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Defense In Depth -->
+  <defenseInDepth.label>纵深防御</defenseInDepth.label>
+  <!-- EN: - Military forces receive a +2 level bonus to combat when defending -->
+  <defenseInDepth.positiveEffects.0>防守领地时军事强度+2</defenseInDepth.positiveEffects.0>
+  
+  <!-- EN: No trait -->
+  <empty.label>无特性</empty.label>
+  
+  <!-- EN: Industrious -->
+  <industrious.label>勤奋</industrious.label>
+  <!-- EN: - All settlements receive a steady +5 to base tax -->
+  <industrious.positiveEffects.0>所有领地的税基增加5</industrious.positiveEffects.0>
+  
+  <!-- EN: Innovative -->
+  <innovative.label>进取</innovative.label>
+  <!-- EN: - Settlements passively generate research points equal to 5% of their total profit -->
+  <innovative.positiveEffects.0>领地自动被动产出等价于其总产值5%的研究点数</innovative.positiveEffects.0>
+  
+  <!-- EN: Lucky -->
+  <lucky.label>幸运</lucky.label>
+  <!-- EN: - Negative random Empire events have a 20% chance to be re-rolled in exchange for a new event -->
+  <lucky.positiveEffects.0>随机到的负面Empire事件有20%概率被重新随机为新事件</lucky.positiveEffects.0>
+  
+  <!-- EN: Mercantile -->
+  <mercantile.label>重商</mercantile.label>
+  <!-- EN: - A random trade caravan will arrive to your capital every 3-5 days -->
+  <mercantile.positiveEffects.0>每3到5天将有一个随机商队到达你的都城。</mercantile.positiveEffects.0>
+  
+  <!-- EN: Raiders -->
+  <raiders.label>掠夺者</raiders.label>
+  <!-- EN: - Increases the value of loot by 20% when raiding -->
+  <raiders.positiveEffects.0>增加袭击他人基地成功时掠得的货值20%</raiders.positiveEffects.0>
+  <!-- EN: - Military forces are available 1 day sooner after using them to raid -->
+  <raiders.positiveEffects.1>军事力量用于袭击他人基地时，减少1天的冷却</raiders.positiveEffects.1>
+  
+  <!-- EN: Resilient -->
+  <resilient.label>坚韧</resilient.label>
+  <!-- EN: - Reduce prosperity loss by 50% when attacked -->
+  <resilient.positiveEffects.0>被袭击时的繁荣度损失降低50%</resilient.positiveEffects.0>
+  <!-- EN: - Cannot lose buildings or settlement levels upon a failed defense -->
+  <resilient.positiveEffects.1>即使防御领地失败，也不损失建筑物和领地等级</resilient.positiveEffects.1>
+  
+  <!-- EN: Road Builders -->
+  <roadBuilders.label>筑路者</roadBuilders.label>
+  <!-- EN: - Automatically unlocks the first road technology -->
+  <roadBuilders.positiveEffects.0>自动解锁一级道路科技</roadBuilders.positiveEffects.0>
+  <!-- EN: - Roads are constructed in 33% of the required time -->
+  <roadBuilders.positiveEffects.1>道路建造所需用时缩短为三分之一</roadBuilders.positiveEffects.1>
+  <!-- EN: - Roads will also be constructed to connect to allied faction's settlements -->
+  <roadBuilders.positiveEffects.2>将建造道路以连接友好派系的基地</roadBuilders.positiveEffects.2>
+  
+</LanguageData>

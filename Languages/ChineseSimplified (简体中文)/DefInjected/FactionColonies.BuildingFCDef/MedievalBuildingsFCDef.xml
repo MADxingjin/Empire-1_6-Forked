@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Adventurer's Guild -->
+  <adventurersGuild.label>冒险家工会</adventurersGuild.label>
+  <!-- EN: A place for traveling adventurers to meet up and spend a night. -->
+  <adventurersGuild.desc>一个给冒险家们暂住过夜和聚会的地方。</adventurersGuild.desc>
+  
+  <!-- EN: Apparel Sweatshop -->
+  <apparelSweatshop.label>血汗制衣厂</apparelSweatshop.label>
+  <!-- EN: A place to work slaves and colonists alike! -->
+  <apparelSweatshop.desc>由殖民者管理,奴隶们干活的地方。</apparelSweatshop.desc>
+  
+  <!-- EN: Jailhouse -->
+  <jailhouse.label>监狱</jailhouse.label>
+  <!-- EN: A place to store criminal scum. -->
+  <jailhouse.desc>关押罪犯。</jailhouse.desc>
+  
+  <!-- EN: Logging Camp -->
+  <loggingCamp.label>伐木营地</loggingCamp.label>
+  <!-- EN: A camp dedicated to the logging industry. Includes a lumber mill and everything! -->
+  <loggingCamp.desc>包含了锯木场和其他支援业务的完备伐木营地。</loggingCamp.desc>
+  
+  <!-- EN: Mills -->
+  <Mills.label>磨坊</Mills.label>
+  <!-- EN: Mills! Wind or water, these are useful for a number of things! -->
+  <Mills.desc>磨坊使用水力或风力加工各种物品。</Mills.desc>
+  
+  <!-- EN: Plague Camp -->
+  <plagueCamp.label>瘟疫隔离营</plagueCamp.label>
+  <!-- EN: A containment camp to keep the sick and the dying. -->
+  <plagueCamp.desc>隔离瘟疫病患和将死者的营地。</plagueCamp.desc>
+  
+  <!-- EN: Public Market -->
+  <publicMarket.label>公共市场</publicMarket.label>
+  <!-- EN: A public market to exchange goods. -->
+  <publicMarket.desc>商人们在此交易货物。</publicMarket.desc>
+  
+  <!-- EN: Redlight District -->
+  <RedlightDistrict.label>红灯区</RedlightDistrict.label>
+  <!-- EN: A place for Merchant and common people to spend a night with questionable people. -->
+  <RedlightDistrict.desc>让富商和普通人们与一些不可细说的人们度过整夜的地方。</RedlightDistrict.desc>
+  
+  <!-- EN: Servant Housing -->
+  <ServantHousing.label>仆从宿舍</ServantHousing.label>
+  <!-- EN: Servants are a delight to have and more places to house them means you can hire more! -->
+  <ServantHousing.desc>仆从总是不嫌多，有更多的地方给他们居住自然就能招来更多的仆从。</ServantHousing.desc>
+  
+  <!-- EN: Slave Plantation -->
+  <slavePlantation.label>奴隶种植园</slavePlantation.label>
+  <!-- EN: Slaves work the fields here. -->
+  <slavePlantation.desc>奴隶们在这里种田。</slavePlantation.desc>
+  
+  <!-- EN: Smithy -->
+  <Smithy.label>铁匠铺</Smithy.label>
+  <!-- EN: A sturdy forge and sturdier anvil. Perfect for shaping metal into weapons and tools alike. -->
+  <Smithy.desc>一个坚固的熔炉和更坚固的铁砧。足以将金属塑造为各种武器和工具。</Smithy.desc>
+  
+  <!-- EN: Subterranean Mine -->
+  <UndergroundMine.label>地下矿井</UndergroundMine.label>
+  <!-- EN: Dig down into the planet's surface in search of those really valuable materials. Don't forget to build supports! -->
+  <UndergroundMine.desc>挖到行星的地表下来收集那些珍惜的材料。别忘了支护！</UndergroundMine.desc>
+  
+  <!-- EN: Wilderness Guild -->
+  <wildernessGuild.label>荒野行会</wildernessGuild.label>
+  <!-- EN: A guild dedicated to taming the wilderness. -->
+  <wildernessGuild.desc>致力于驯服荒野的行会。</wildernessGuild.desc>
+  
+</LanguageData>

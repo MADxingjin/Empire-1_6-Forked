@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Blacksmith Inspiration -->
+  <blacksmithInspiration_0.label>武器工匠的灵感</blacksmithInspiration_0.label>
+  <!-- EN: A blacksmith in a nearby settlement has received a great inspiration and is seeking patrons for what he claims will be a work of unparalleled quality! He plans to give it to his patron as a token of his loyalty. -->
+  <blacksmithInspiration_0.desc>领地内的武器工匠最近获得了灵感，正在寻找资金支持，并承诺送给支持者一支神兵利器以表示忠诚。</blacksmithInspiration_0.desc>
+  
+  <!-- EN: Blacksmith Inspiration -->
+  <blacksmithInspiration_1-1.label>武器工匠的灵感</blacksmithInspiration_1-1.label>
+  <!-- EN: The blacksmith is working on your commission... -->
+  <blacksmithInspiration_1-1.desc>武器工匠正在打造你的订单</blacksmithInspiration_1-1.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Disappointing) -->
+  <blacksmithInspiration_1-2f.label>武器工匠的灵感（失望的）</blacksmithInspiration_1-2f.label>
+  <!-- EN: The blacksmith's ambition outpaced his skill. The result is serviceable, but far from the masterwork promised. -->
+  <blacksmithInspiration_1-2f.desc>武器工匠的野心超出了他的实力。结果堪堪可用，但离承诺的杰作相差甚远。</blacksmithInspiration_1-2f.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Masterwork) -->
+  <blacksmithInspiration_1-2s.label>武器工匠的灵感（杰作）</blacksmithInspiration_1-2s.label>
+  <!-- EN: The blacksmith's inspiration has produced a true masterwork! The result exceeds all expectations. -->
+  <blacksmithInspiration_1-2s.desc>武器工匠的灵感化作了一套杰作！成品超出了所有人的预期。</blacksmithInspiration_1-2s.desc>
+  
+  <!-- EN: Blacksmith Inspiration (Workshop Materials) -->
+  <blacksmithInspiration_1-3.label>武器工匠的灵感（工坊材料优先供应）</blacksmithInspiration_1-3.label>
+  <!-- EN: The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -->
+  <blacksmithInspiration_1-3.desc>武器工匠正优先使用从领地内生产的材料。这减缓了领地内武器的产出。</blacksmithInspiration_1-3.desc>
+  
+</LanguageData>

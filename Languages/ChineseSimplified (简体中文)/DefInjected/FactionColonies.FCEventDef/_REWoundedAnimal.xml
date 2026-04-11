@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Wounded Animal -->
+  <woundedAnimal_0.label>受伤的动物</woundedAnimal_0.label>
+  <!-- EN: A farmer of one of your settlements has brought a wounded animal to your capital. He states that it entered their town and would refuse to leave. The animal looks sickly and on edge. It looks like it could snap at any moment... -->
+  <woundedAnimal_0.desc>您领地上的一位农民将一只受伤的动物带到了你的首都.农夫解释说,这个动物进入了他们的小镇,并且不想离开.这只动物看起来病得很重,处境非常危险.随时都可能夭折...</woundedAnimal_0.desc>
+  
+  <!-- EN: Wounded Animal -->
+  <woundedAnimal_1-1.label>受伤的动物</woundedAnimal_1-1.label>
+  <!-- EN: The animal remains calm. Your colonists guide it in without issue. -->
+  <woundedAnimal_1-1.desc>动物的情况稳定了下来.你的人毫不费力的把它带了进来.</woundedAnimal_1-1.desc>
+  
+  <!-- EN: Wounded Animal -->
+  <woundedAnimal_1-2.label>受伤的动物</woundedAnimal_1-2.label>
+  <!-- EN: As the animal is guided in, it starts to fight against the settlers delivering it. It quickly becomes more and more aggressive and all attempts to calm it start to fail. Several settlers are heavily injured or die. Unfortunately, this will affect production for a period of time. -->
+  <woundedAnimal_1-2.desc>当这只动物被带进来的时候,它开始反抗引导它的人.很快这只动物变得极具攻击性,所有试图让他冷静下来的方法都失败了,一些人甚至被他重创而导致死亡.不幸的是,这也影响了您领地的生产,五天内工人软上限-3</woundedAnimal_1-2.desc>
+  
+  <!-- EN: Wounded Animal -->
+  <woundedAnimal_1-3f.label>TODO</woundedAnimal_1-3f.label>
+  <!-- EN: Despite the handler's best efforts, the animal lashes out. The handler manages to contain the situation, but sustains injuries in the process. -->
+  <woundedAnimal_1-3f.desc>TODO</woundedAnimal_1-3f.desc>
+  
+  <!-- EN: Wounded Animal -->
+  <woundedAnimal_1-3s.label>TODO</woundedAnimal_1-3s.label>
+  <!-- EN: The trained handler approaches the animal with care and expertise. It calms down and allows itself to be guided in safely. -->
+  <woundedAnimal_1-3s.desc>TODO</woundedAnimal_1-3s.desc>
+  
+</LanguageData>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: A Faction Disarmed -->
+  <aFactionDisarmed.label>低武装派系</aFactionDisarmed.label>
+  <!-- EN: There is very little, if any trained military forces in the faction. -->
+  <aFactionDisarmed.desc>派系内仅有极小甚至可忽略的武装力量。</aFactionDisarmed.desc>
+  
+  <!-- EN: Heavy Conscription -->
+  <heavyConscription.label>征召兵</heavyConscription.label>
+  <!-- EN: A large number of the populace is conscripted into the settlement's military forces. -->
+  <heavyConscription.desc>领地内的许多人被征召到军事力量中。</heavyConscription.desc>
+  
+  <!-- EN: Slave Army -->
+  <slaveArmy.label>奴隶军队</slaveArmy.label>
+  <!-- EN: The majority of your settlements' military forces is comprised of slaves or those in forced servitude. -->
+  <slaveArmy.desc>领地军力主要由奴隶和其他服强制劳役的人组成。</slaveArmy.desc>
+  
+  <!-- EN: Volunteer Service -->
+  <volunteerService.label>志愿兵</volunteerService.label>
+  <!-- EN: The military force of your settlements is by volunteers only. -->
+  <volunteerService.desc>领地的军事力量完全由志愿者组成。</volunteerService.desc>
+  
+</LanguageData>

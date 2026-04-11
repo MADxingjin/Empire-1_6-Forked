@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Empty Policy Slot -->
+  <Empty.label>空政策槽</Empty.label>
+  <!-- EN: Click here to enact this policy. -->
+  <Empty.desc>点击以发布该政策</Empty.desc>
+  
+  <!-- EN: Policy being drafted... -->
+  <Enacting.label>正在起草政策</Enacting.label>
+  <!-- EN: A policy is being drafted. -->
+  <Enacting.desc>正在起草政策。</Enacting.desc>
+  
+</LanguageData>

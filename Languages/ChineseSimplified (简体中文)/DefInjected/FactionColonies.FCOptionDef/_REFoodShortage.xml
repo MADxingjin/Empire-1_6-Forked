@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: There's little we can do. We'll endure the shortage. -->
+  <foodShortage_0_1.label>我们没有什么可以做的，只能硬挺。</foodShortage_0_1.label>
+  
+  <!-- EN: Purchase emergency food imports to soften the blow. -->
+  <foodShortage_0_2.label>购买应急食物进口来缓解危机。</foodShortage_0_2.label>
+  
+  <!-- EN: Enforce strict rationing — shared sacrifice builds loyalty. -->
+  <foodShortage_0_3.label>实行严格配给制度，共同牺牲构筑忠诚。</foodShortage_0_3.label>
+  
+  <!-- EN: Let the slaves starve. The workers will eat. -->
+  <foodShortage_0_4.label>让奴隶们挨饿。其余工人照常吃饭。</foodShortage_0_4.label>
+  
+</LanguageData>

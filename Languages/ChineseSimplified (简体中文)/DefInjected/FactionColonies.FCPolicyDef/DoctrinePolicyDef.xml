@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Aggressive Counterattack -->
+  <aggressiveCounterattack.label>猛烈反击</aggressiveCounterattack.label>
+  <!-- EN: Settlements commit everything to repelling attackers. Higher chance of victory, but infrastructure suffers in the chaos. -->
+  <aggressiveCounterattack.desc>领地将为击退进攻者进行任何所需的操作。提高胜利概率，但牺牲基础设施。</aggressiveCounterattack.desc>
+  
+  <!-- EN: Bunker Down -->
+  <bunkerDown.label>坚定守住</bunkerDown.label>
+  <!-- EN: Settlements prioritize fortifying infrastructure. Defenders fight cautiously to protect buildings. -->
+  <bunkerDown.desc>领地将专注于基础设施保卫，防御者们会为了保护建筑物而谨慎战斗。</bunkerDown.desc>
+  
+  <!-- EN: Scorched Earth -->
+  <scorchedEarth.label>焦土战术</scorchedEarth.label>
+  <!-- EN: Your forces fight with total disregard for collateral damage. Even victories leave the settlement scarred. -->
+  <scorchedEarth.desc>完全不考虑连带损伤的战术。这种胜利往往在领地的瓦砾堆里发表。</scorchedEarth.desc>
+  
+  <!-- EN: Total Mobilization -->
+  <totalMobilization.label>全面动员</totalMobilization.label>
+  <!-- EN: Every able body is on the walls. Massive combat power, but morale suffers and defeat is catastrophic. -->
+  <totalMobilization.desc>动员所有能拿起武器的人参与战斗。提供高战斗力加成，但降低士气，且增加失败惩罚。</totalMobilization.desc>
+  
+</LanguageData>
