@@ -231,4 +231,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_16</defName>
+		<label>Update WD Experimental Compat Patch</label>
+		<description>Updates the compatibility patch for World Domination Experimental.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates use of comp.strength to comp.GetTotalLocalDefensePower()</li>
+		<li>Updates world stats to remove the Empire faction&apos;s per-tier strength</li>
+		<li>Add a prefix to one of WDExp&apos;s prefixes to prevent WDExp from destroying Empire settlements</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
