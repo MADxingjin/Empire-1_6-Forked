@@ -13,7 +13,7 @@
 
 	<!-- Attack Notifications -->
 	<settlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction</settlementAboutToBeAttacked>
-	<settlementAttackEstimate>Estimated enemy power: {0}\nCurrent defense power: {1}</settlementAttackEstimate>
+	<battleForecast>Battle Forecast:\nEnemy power: {0} (Efficiency: x{1})\nDefense power: {2} (Efficiency: x{3})\nEstimated chance of victory: {4}%</battleForecast>
 	<settlementInDanger>Settlement In Danger</settlementInDanger>
 	<settlementMilitaryForcesRaiding>{0}'s military forces are raiding {1}</settlementMilitaryForcesRaiding>
 	<settlementMilitaryForcesEnslave>{0}'s military forces are attempting to enslave the population of {1}</settlementMilitaryForcesEnslave>
@@ -54,8 +54,8 @@
 	<DefendColony>Defend</DefendColony>
 	<DefendColonyDesc>Defend your Settlement manually</DefendColonyDesc>
 	<DefendSettlement>Set Defending Force</DefendSettlement>
-	<SettlementDefendingInformation>Settlement Defending: {0}'s - Power {1}</SettlementDefendingInformation>
-	<ResetToHomeSettlement>Reset to home settlement's defense - Power {0}</ResetToHomeSettlement>
+	<SettlementDefendingInformation>Settlement Defending: {0}'s - Power {1} - Victory: {2}%</SettlementDefendingInformation>
+	<ResetToHomeSettlement>Reset to home settlement's defense - Power {0} - Victory: {1}%</ResetToHomeSettlement>
 	<ChangeDefendingForce>Change Defending Force</ChangeDefendingForce>
 	<militaryAlreadyDefendingSettlement>That military force is already defending the target</militaryAlreadyDefendingSettlement>
 	<defendingMilitaryReset>The defending military has been reset as the defense force for the settlement</defendingMilitaryReset>

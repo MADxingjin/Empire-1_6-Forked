@@ -261,4 +261,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_18</defName>
+		<label>Battle Forecast</label>
+		<description>Improves the impending battle notification by showing the probability of victory.</description>
+		<releaseDate>2026-04-11</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds victory percentages to the battle notification, as well as to all menus that let the player swap defenders.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -133,10 +133,13 @@ namespace FactionColonies
             }
         }
 
-        private static string FoundSettlementString(WorldSettlementFC settlement)
+        private static string FoundSettlementString(WorldSettlementFC settlement, string winChanceText = null)
         {
-            return settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel +
-                   " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
+            string s = settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel;
+            if (!winChanceText.NullOrEmpty())
+                s += " - Victory: " + winChanceText + "%";
+            s += " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
+            return s;
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -202,10 +205,12 @@ namespace FactionColonies
                         return;
                     }
 
+                    double winChance = SimulateBattleFc.CalculateDefenderWinChance(evt.militaryForceAttacking, evt.militaryForceDefending);
                     var list = new List<FloatMenuOption>()
                     {
                         new FloatMenuOption("SettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
-                                                                                       evt.militaryForceDefending.DefensivePower),
+                                                                                       evt.militaryForceDefending.DefensivePower,
+                                                                                       (winChance * 100).ToString("F0")),
                                             null, MenuOptionPriority.High),
                         new FloatMenuOption("ChangeDefendingForce".Translate(), () => ChangeDefendingForceAction(evt))
                     };
@@ -224,33 +229,43 @@ namespace FactionColonies
         private void ChangeDefendingForceAction(FCEvent evt)
         {
             var faction = FactionCache.FactionComp;
+            militaryForce attackForce = evt.militaryForceAttacking;
+
+            // "Reset to Home Settlement" option with win chance
+            militaryForce homeForce = militaryForce.CreateMilitaryForceFromSettlement(WorldSettlement);
+            double homeWinChance = SimulateBattleFc.CalculateDefenderWinChance(attackForce, homeForce);
             var settlementList = new List<FloatMenuOption>
             {
                 new FloatMenuOption
                 (
-                    "ResetToHomeSettlement".Translate(settlementMilitaryLevel),
+                    "ResetToHomeSettlement".Translate(settlementMilitaryLevel, (homeWinChance * 100).ToString("F0")),
                     delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, WorldSettlement); },
                     MenuOptionPriority.High
                 )
             };
 
+            // Other Empire settlements with win chance per option
+            foreach (WorldSettlementFC foundSettlement in faction.settlements)
+            {
+                if (foundSettlement == WorldSettlement) continue;
+                if (foundSettlement.MilitaryComp?.IsMilitaryValid() != true) continue;
+                if (!DefenseValidatorRegistry.CanDefend(foundSettlement, WorldSettlement)) continue;
 
-            settlementList.AddRange
-            (
-                from foundSettlement in faction.settlements
-                where foundSettlement != WorldSettlement
-                    && foundSettlement.MilitaryComp?.IsMilitaryValid() == true
-                    && DefenseValidatorRegistry.CanDefend(foundSettlement, WorldSettlement)
-                select new FloatMenuOption
-                (
-                    FoundSettlementString(foundSettlement),
+                militaryForce tmpHome = militaryForce.CreateMilitaryForceFromSettlement(WorldSettlement, true);
+                militaryForce hypothetical = militaryForce.CreateMilitaryForceFromSettlement(foundSettlement, homeDefendingForce: tmpHome);
+                double wc = SimulateBattleFc.CalculateDefenderWinChance(attackForce, hypothetical);
+                string wcText = (wc * 100).ToString("F0");
+
+                WorldSettlementFC s = foundSettlement;
+                settlementList.Add(new FloatMenuOption(
+                    FoundSettlementString(s, wcText),
                     delegate
                     {
-                        if (foundSettlement.MilitaryComp?.IsMilitaryBusy() != true)
-                            MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, foundSettlement);
+                        if (s.MilitaryComp?.IsMilitaryBusy() != true)
+                            MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, s);
                     }
-                )
-            );
+                ));
+            }
 
             // Add external auto-defenders (VOE outposts, etc.)
             foreach (IAutoDefender defender in AutoDefenderRegistry.Defenders)
@@ -261,8 +276,11 @@ namespace FactionColonies
                 if (distance > defender.Range) continue;
 
                 IAutoDefender d = defender;
+                militaryForce extForce = d.CreateDefendingForce();
+                double extWc = SimulateBattleFc.CalculateDefenderWinChance(attackForce, extForce);
                 settlementList.Add(new FloatMenuOption(
-                    d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel + ")",
+                    d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel
+                        + " - Victory: " + (extWc * 100).ToString("F0") + "%)",
                     delegate { MilitaryUtilFC.ChangeDefendingToExternalForce(evt, d); }
                 ));
             }
