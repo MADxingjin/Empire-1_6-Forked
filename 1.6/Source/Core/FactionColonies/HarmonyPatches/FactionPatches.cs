@@ -258,6 +258,33 @@ namespace FactionColonies
         }
     }
 
+    //Make PColony hostile to factionless pawns that are actively fighting
+    [HarmonyPatch(typeof(GenHostility))]
+    [HarmonyPatch("HostileTo", typeof(Thing), typeof(Thing))]
+    class PColonyHostileToFactionless
+    {
+        static void Postfix(Thing a, Thing b, ref bool __result)
+        {
+            if (__result) return;
+
+            Faction pcFaction = FactionCache.PlayerColonyFaction;
+            if (pcFaction is null) return;
+
+            Pawn factionless;
+            if (a.Faction == pcFaction && b.Faction is null)
+                factionless = b as Pawn;
+            else if (b.Faction == pcFaction && a.Faction is null)
+                factionless = a as Pawn;
+            else return;
+
+            if (factionless is null) return;
+
+            __result = factionless.IsFighting()
+                    || factionless.InAggroMentalState
+                    || (factionless.mindState?.duty?.def == DutyDefOf.AssaultColony);
+        }
+    }
+
     //Mirror direct relation changes to Empire faction (for factions without goodwill)
     [HarmonyPatch(typeof(Faction))]
     [HarmonyPatch("SetRelationDirect")]

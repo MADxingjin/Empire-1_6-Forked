@@ -247,4 +247,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_17</defName>
+		<label>Factionless Relations Update</label>
+		<description>Updates the Empire NPC faction to consider factionless pawns as hostile if the factionless pawn is fighting or has the AssaultColony duty.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a Postfix on GenHostility.HostileTo for Empire pawns to consider aggressive factionless pawns as hostile</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
