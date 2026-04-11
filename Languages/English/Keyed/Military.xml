@@ -12,7 +12,7 @@
 	<FCEnslaveFloatMenuOption>Try to enslave using {0}'s military (Level {1}).</FCEnslaveFloatMenuOption>
 
 	<!-- Attack Notifications -->
-	<settlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction</settlementAboutToBeAttacked>
+	<settlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction.</settlementAboutToBeAttacked>
 	<battleForecast>Battle Forecast:\nEnemy power: {0} (Efficiency: x{1})\nDefense power: {2} (Efficiency: x{3})\nEstimated chance of victory: {4}%</battleForecast>
 	<settlementInDanger>Settlement In Danger</settlementInDanger>
 	<settlementMilitaryForcesRaiding>{0}'s military forces are raiding {1}</settlementMilitaryForcesRaiding>

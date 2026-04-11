@@ -9,6 +9,7 @@
 	<packageId>Matathias.Empire</packageId>
 	<modVersion>1.2.19</modVersion>
 	<incompatibleWith>
+		<li>Saakra.Empire</li>
 	</incompatibleWith>
 	<modDependencies>
 		<li>
