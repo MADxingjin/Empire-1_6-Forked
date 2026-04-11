@@ -17,7 +17,7 @@ namespace FactionColonies
 
             if (pawn.carryTracker.CarriedThing == null)
             {
-                pawn.GetLord().Notify_ReachedDutyLocation(pawn);
+                pawn.GetLord()?.Notify_ReachedDutyLocation(pawn);
                 return null;
             }
 

@@ -18,6 +18,7 @@ namespace FactionColonies
     {
         static void Postfix(Apparel apparel, Pawn pawn)
         {
+            if (pawn is null) return;
             if (pawn.Faction != FactionCache.PlayerColonyFaction) return;
             FactionFC factionComp = FactionCache.FactionComp;
             if (factionComp == null) return;

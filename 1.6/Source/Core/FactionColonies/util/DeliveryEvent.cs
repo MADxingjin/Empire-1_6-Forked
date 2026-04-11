@@ -36,14 +36,14 @@ namespace FactionColonies.util
 
         public static void Action(FCEvent evt)
         {
-            Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
+            Action(evt, FactionCache.FactionComp?.settlements?.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
         }
 
         public static void Action(FCEvent evt, Letter let, Message msg = null, bool CanUseShuttle = false)
         {
             evt.let = let;
             evt.msg = msg;
-            Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
+            Action(evt, CanUseShuttle || (FactionCache.FactionComp?.settlements?.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
         }
 
         private static void MakeDeliveryLetterAndMessage(FCEvent evt)
@@ -63,7 +63,8 @@ namespace FactionColonies.util
                     }
                     else
                     {
-                        Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(evt.def.label.ToLower()), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
+                        string eventLabel = evt.def?.label?.ToLower() ?? "delivery";
+                        Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(eventLabel), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
                     }
                 }
 

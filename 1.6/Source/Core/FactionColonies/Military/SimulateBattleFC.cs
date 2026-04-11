@@ -200,12 +200,15 @@ namespace FactionColonies
 
         public static militaryForce CreateMilitaryForceFromEnemySettlement(Settlement settlement)
         {
-            double militaryLevel = 0;
-            double efficiency = 0;
+            double militaryLevel = 1;
+            double efficiency = 1;
 
-            GetMilitaryLevelAndEfficiencyFromTechLevel(settlement.Faction.def.techLevel, out militaryLevel, out efficiency);
+            if (settlement?.Faction?.def != null)
+            {
+                GetMilitaryLevelAndEfficiencyFromTechLevel(settlement.Faction.def.techLevel, out militaryLevel, out efficiency);
+            }
 
-            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, null, settlement.Faction);
+            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, null, settlement?.Faction);
             return returnForce;
         }
 

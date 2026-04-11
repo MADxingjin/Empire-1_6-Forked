@@ -57,7 +57,12 @@ namespace FactionColonies
         {
             deployedMilitaryCommandMenu = new DeployedMilitaryCommandMenu(this);
             if (!Find.WindowStack.IsOpen(typeof(DeployedMilitaryCommandMenu))) Find.WindowStack.Add(deployedMilitaryCommandMenu);
-            else deployedMilitaryCommandMenu = (DeployedMilitaryCommandMenu)Find.WindowStack.Windows.First(window => window.GetType() == typeof(DeployedMilitaryCommandMenu));
+            else
+            {
+                var existing = Find.WindowStack.Windows.FirstOrDefault(w => w is DeployedMilitaryCommandMenu);
+                if (existing is DeployedMilitaryCommandMenu menu)
+                    deployedMilitaryCommandMenu = menu;
+            }
 
             deployedMilitaryCommandMenu.squadMilitaryOrderDic.SetOrAdd(squad, currentOrder);
             deployedMilitaryCommandMenu.currentOrderPositionDic[squad] = currentOrderPosition;
@@ -117,10 +122,11 @@ namespace FactionColonies
         /// </summary>
         private void UpdateOrderPosition()
         {
-            currentOrderPosition = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
+            if (!deployedMilitaryCommandMenu.currentOrderPositionDic.TryGetValue(squad, out IntVec3 newPos)) return;
+            currentOrderPosition = newPos;
 
-            lordToil_DefendPoint.SetDefendPoint(deployedMilitaryCommandMenu.currentOrderPositionDic[squad]);
-            ((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
+            lordToil_DefendPoint.SetDefendPoint(newPos);
+            ((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = newPos;
 
             lord.CurLordToil.UpdateAllDuties();
         }
@@ -141,7 +147,7 @@ namespace FactionColonies
                     {
                         new TransitionAction_Custom(delegate()
                         {
-                            deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] = MilitaryOrder.RecoverWoundedAndLeave;
+                            deployedMilitaryCommandMenu.squadMilitaryOrderDic.SetOrAdd(squad, MilitaryOrder.RecoverWoundedAndLeave);
                             Messages.Message("militaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
                         })
                     }
@@ -168,7 +174,7 @@ namespace FactionColonies
                     {
                         triggers = new List<Trigger>(1)
                         {
-                            new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] == (MilitaryOrder)k + 1 && ReadyForCommands)
+                            new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.squadMilitaryOrderDic.TryGetValue(squad, out MilitaryOrder order) && order == (MilitaryOrder)k + 1 && ReadyForCommands)
                         },
                         preActions = new List<TransitionAction>(1)
                         {
@@ -191,7 +197,7 @@ namespace FactionColonies
             {
                 triggers = new List<Trigger>(1)
                 {
-                    new Trigger_Custom((TriggerSignal _) => currentOrderPosition != deployedMilitaryCommandMenu.currentOrderPositionDic[squad] && squad.isDeployed)
+                    new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.currentOrderPositionDic.TryGetValue(squad, out IntVec3 pos) && currentOrderPosition != pos && squad.isDeployed)
                 },
                 preActions = new List<TransitionAction>(1)
                 {

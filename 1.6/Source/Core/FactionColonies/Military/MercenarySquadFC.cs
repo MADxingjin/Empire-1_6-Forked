@@ -571,7 +571,7 @@ namespace FactionColonies
                         continue;
                     }
 
-                    if (mercenaries[count]?.pawn?.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
+                    if (mercenaries[count].pawn.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
                     {
                         Mercenary pawn = new Mercenary(true);
                         CreateNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype, loadout.customXenotypeName);
@@ -649,7 +649,7 @@ namespace FactionColonies
             {
                 merc.pawn.apparel?.DestroyAll();
                 merc.pawn.equipment?.DestroyAllEquipment();
-                merc.pawn.inventory.innerContainer.ClearAndDestroyContents();
+                merc.pawn.inventory?.innerContainer?.ClearAndDestroyContents();
             }
             catch (Exception e)
             {

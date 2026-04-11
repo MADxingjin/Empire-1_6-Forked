@@ -80,6 +80,10 @@ namespace FactionColonies
                 return fieldInfo;
             }
             fieldInfo = typ.GetField(field);
+            if (fieldInfo == null)
+            {
+                LogUtil.Warning($"FactionCache.GetFieldCacheValue: field '{field}' not found on type '{typ.FullName}'");
+            }
             FieldCache.Add((typ, field), fieldInfo);
             return fieldInfo;
         }

@@ -291,6 +291,8 @@ namespace FactionColonies
             Color origColor = GUI.color;
             List<ResourceFC> resources = settlement.GetTitheableResources();
             int numResources = resources.Count;
+            if (numResources == 0) return;
+            if (titheTab >= numResources) titheTab = 0;
             /* Draw resource tabs on the left */
             float tabWidth = 25f;
             float tabHeight = boundingBox.height / numResources;

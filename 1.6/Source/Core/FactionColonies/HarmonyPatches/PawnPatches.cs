@@ -12,10 +12,12 @@ namespace FactionColonies
             if (__instance.IsMercenary())
             {
                 if (__instance.Faction != FactionCache.PlayerColonyFaction) __instance.SetFaction(FactionCache.PlayerColonyFaction);
-                MercenarySquadFC squad = FactionCache.FactionComp.militaryCustomizationUtil.ReturnSquadFromUnit(__instance);
+                var util = FactionCache.FactionComp?.militaryCustomizationUtil;
+                if (util is null) return true;
+                MercenarySquadFC squad = util.ReturnSquadFromUnit(__instance);
                 if (squad != null)
                 {
-                    Mercenary merc = FactionCache.FactionComp.militaryCustomizationUtil.ReturnMercenaryFromUnit(__instance, squad);
+                    Mercenary merc = util.ReturnMercenaryFromUnit(__instance, squad);
                     if (merc != null)
                     {
                         if (squad.settlement != null)
