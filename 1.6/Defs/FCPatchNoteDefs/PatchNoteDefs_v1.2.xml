@@ -275,4 +275,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_19</defName>
+		<label>Settlement Gizmo Update</label>
+		<description>Changes how gizmos are assigned to non-Empire NPC settlements to increase general mod compatibility.</description>
+		<releaseDate>2026-04-11</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Replaces the semi-destructive harmony patches with a comp-based approach to add gizmos to non-Empire NPC settlements</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
