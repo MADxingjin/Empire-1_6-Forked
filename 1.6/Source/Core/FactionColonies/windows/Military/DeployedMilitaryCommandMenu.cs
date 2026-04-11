@@ -191,10 +191,15 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect rect)
         {
-            if (faction.militaryCustomizationUtil.DeployedSquads.Count() == 0)
+            if (!faction.militaryCustomizationUtil.DeployedSquads.Any())
             {
                 Close();
                 return;
+            }
+
+            if (selectedSquad is null || !selectedSquad.isDeployed)
+            {
+                selectedSquad = faction.militaryCustomizationUtil.DeployedSquads.FirstOrDefault();
             }
 
             GameFont prevFont = Text.Font;
@@ -242,7 +247,7 @@ namespace FactionColonies
                 Widgets.DrawHighlight(settlementRect);
                 if (settlementHovered) Widgets.DrawHighlight(settlementRect);
 
-                string settlementFullName = selectedSquad.getSettlement.Name;
+                string settlementFullName = selectedSquad.getSettlement?.Name ?? "Unknown";
                 string settlementTruncated = settlementFullName.Truncate(contentWidth - 10f, truncateCache);
                 GUI.color = settlementHovered ? Color.white : new Color(0.8f, 0.8f, 0.8f);
                 Widgets.Label(settlementRect, settlementTruncated);
@@ -253,7 +258,7 @@ namespace FactionColonies
                     TooltipHandler.TipRegion(settlementRect, settlementFullName);
                 }
 
-                if (Widgets.ButtonInvisible(settlementRect))
+                if (selectedSquad.getSettlement is object && Widgets.ButtonInvisible(settlementRect))
                 {
                     SoundDefOf.Click.PlayOneShotOnCamera();
                     Find.WindowStack.Add(new SettlementWindowFc(selectedSquad.getSettlement));

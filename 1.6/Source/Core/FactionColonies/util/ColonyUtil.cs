@@ -202,6 +202,7 @@ namespace FactionColonies.util
             }
 
             Find.FactionManager.Add(faction);
+            RelationsUtilFC.ResetPlayerColonyRelations();
             worldcomp.OnCreation();
             return faction;
         }

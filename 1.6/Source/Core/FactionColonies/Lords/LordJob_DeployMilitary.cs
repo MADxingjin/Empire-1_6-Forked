@@ -42,7 +42,6 @@ namespace FactionColonies
         {
             this.currentOrderPosition = currentOrderPosition;
             this.squad = squad;
-            squad.lord = lord;
 
             whenToForceLeave = maxDeploymentTime + Find.TickManager.TicksGame;
             timeDeployed = Find.TickManager.TicksGame;
@@ -73,6 +72,12 @@ namespace FactionColonies
             {
                 if (readyForCommands) return true;
 
+                if (Find.TickManager.TicksGame - timeDeployed > 300)
+                {
+                    readyForCommands = true;
+                    return true;
+                }
+
                 if (lord.ownedPawns.All(pawn => pawn.Spawned))
                 {
                     readyForCommands = true;
@@ -80,6 +85,16 @@ namespace FactionColonies
                 }
 
                 return false;
+            }
+        }
+
+        public override void Notify_AddedToLord()
+        {
+            base.Notify_AddedToLord();
+            if (squad is object)
+            {
+                squad.lord = lord;
+                squad.hasLord = true;
             }
         }
 
@@ -105,8 +120,7 @@ namespace FactionColonies
             currentOrderPosition = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
 
             lordToil_DefendPoint.SetDefendPoint(deployedMilitaryCommandMenu.currentOrderPositionDic[squad]);
-            lordToil_HuntEnemies = new LordToil_HuntEnemies(deployedMilitaryCommandMenu.currentOrderPositionDic[squad]);
-            //((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
+            ((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
 
             lord.CurLordToil.UpdateAllDuties();
         }

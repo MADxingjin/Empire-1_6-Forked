@@ -199,4 +199,22 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_14</defName>
+		<label>Squad Fixes</label>
+		<description>Fixes a handful of issues related to military squads.</description>
+		<releaseDate>2026-04-10</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>At Empire faction creation, copy all faction relations from the player faction</li>
+		<li>Bugfix: the deployed squad menu could get stuck with a stale squad selection, leaving the menu unusable</li>
+		<li>Additional null protections in the deployed squad menu</li>
+		<li>Bugfix: when a squad is deployed, if one of the pawns fails to spawn for any reason, the entire squad will never become ready for commands</li>
+		<li>Update lord handling for deployed squads</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
