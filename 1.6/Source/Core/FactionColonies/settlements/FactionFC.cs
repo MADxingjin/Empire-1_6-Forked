@@ -608,6 +608,9 @@ namespace FactionColonies
 
             if (autoResolveBills)
                 PaymentUtil.AutoresolveBills(Bills);
+
+            // Rebuild caravan trader kinds to reflect current worker assignments
+            faction.def.caravanTraderKinds = BuildCaravanTraderKinds(techLevel);
         }
 
         public void StatTick()
