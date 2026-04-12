@@ -2,106 +2,106 @@
 <LanguageData>
 
 	<!-- EN: {0} {1} production -->
-  <RTDproductionAdditive>TODO</RTDproductionAdditive>
+  <RTDproductionAdditive>产出{0}{1}</RTDproductionAdditive>
 	<!-- EN: {0} {1} production -->
-  <RTDproductionMultiplier>TODO</RTDproductionMultiplier>
+  <RTDproductionMultiplier>产出{0}{1}</RTDproductionMultiplier>
 	<!-- EN: {0} {1} production from {2} -->
-  <RTDproductionAdditiveFrom>TODO</RTDproductionAdditiveFrom>
+  <RTDproductionAdditiveFrom>基于{2}产出{0}{1}</RTDproductionAdditiveFrom>
 	<!-- EN: {0} {1} production from {2} -->
-  <RTDproductionMultiplierFrom>TODO</RTDproductionMultiplierFrom>
+  <RTDproductionMultiplierFrom>基于{2}产出{0}{1}</RTDproductionMultiplierFrom>
 	
 	<!-- EN: Resource Bonuses -->
-  <FCTraitDesc_ResourceBonusLabel>TODO</FCTraitDesc_ResourceBonusLabel>
+  <FCTraitDesc_ResourceBonusLabel>资源加成</FCTraitDesc_ResourceBonusLabel>
 	
 	<!-- EN: {0} Military Level -->
-  <FCTraitDesc_MilitaryLevel>TODO</FCTraitDesc_MilitaryLevel>
+  <FCTraitDesc_MilitaryLevel>{0}军事等级</FCTraitDesc_MilitaryLevel>
 	<!-- EN: {0} Military Combat Efficiency -->
-  <FCTraitDesc_MilitaryCombatEfficiency>TODO</FCTraitDesc_MilitaryCombatEfficiency>
+  <FCTraitDesc_MilitaryCombatEfficiency>{0}军力战斗效率</FCTraitDesc_MilitaryCombatEfficiency>
 	<!-- EN: {0} Base Tax Percentage -->
-  <FCTraitDesc_taxBasePercentage>TODO</FCTraitDesc_taxBasePercentage>
+  <FCTraitDesc_taxBasePercentage>{0}基础税率加成</FCTraitDesc_taxBasePercentage>
 	<!-- EN: {0} Tithe Modifier -->
-  <FCTraitDesc_taxBaseRandomModifier>TODO</FCTraitDesc_taxBaseRandomModifier>
+  <FCTraitDesc_taxBaseRandomModifier>{0}什一税修正</FCTraitDesc_taxBaseRandomModifier>
 	<!-- EN: {0} Base Prosperity Gained -->
-  <FCTraitDesc_prosperityGainedBase>TODO</FCTraitDesc_prosperityGainedBase>
+  <FCTraitDesc_prosperityGainedBase>{0}繁荣度获取基值</FCTraitDesc_prosperityGainedBase>
 	<!-- EN: {0} Base Worker Production -->
-  <FCTraitDesc_workerProductionBase>TODO</FCTraitDesc_workerProductionBase>
+  <FCTraitDesc_workerProductionBase>{0}劳动力基础产值</FCTraitDesc_workerProductionBase>
 	<!-- EN: {0} Worker Production -->
-  <FCTraitDesc_workerProductionMultiplier>TODO</FCTraitDesc_workerProductionMultiplier>
+  <FCTraitDesc_workerProductionMultiplier>{0}劳动力产值乘数</FCTraitDesc_workerProductionMultiplier>
 	<!-- EN: {0} Worker Cost -->
-  <FCTraitDesc_workerBaseCost>TODO</FCTraitDesc_workerBaseCost>
+  <FCTraitDesc_workerBaseCost>{0}劳动力成本</FCTraitDesc_workerBaseCost>
 	<!-- EN: {0} Worker Cap -->
-  <FCTraitDesc_workerBaseMax>TODO</FCTraitDesc_workerBaseMax>
+  <FCTraitDesc_workerBaseMax>{0}劳动力上限</FCTraitDesc_workerBaseMax>
 	<!-- EN: {0} Overmax Worker Cap -->
-  <FCTraitDesc_workerBaseOverMax>TODO</FCTraitDesc_workerBaseOverMax>
+  <FCTraitDesc_workerBaseOverMax>{0}超限劳动力上限</FCTraitDesc_workerBaseOverMax>
 	
 	<!-- EN: {0} Base Happiness Lost -->
-  <FCTraitDesc_happinessLostBase>TODO</FCTraitDesc_happinessLostBase>
+  <FCTraitDesc_happinessLostBase>{0}幸福度损失基值</FCTraitDesc_happinessLostBase>
 	<!-- EN: {0} Base Happiness Gained -->
-  <FCTraitDesc_happinessGainedBase>TODO</FCTraitDesc_happinessGainedBase>
+  <FCTraitDesc_happinessGainedBase>{0}幸福度增长基值</FCTraitDesc_happinessGainedBase>
 	<!-- EN: {0} Happiness Lost -->
-  <FCTraitDesc_happinessLostMultiplier>TODO</FCTraitDesc_happinessLostMultiplier>
+  <FCTraitDesc_happinessLostMultiplier>{0}幸福度损失乘数</FCTraitDesc_happinessLostMultiplier>
 	<!-- EN: {0} Happiness Gained -->
-  <FCTraitDesc_happinessGainedMultiplier>TODO</FCTraitDesc_happinessGainedMultiplier>
+  <FCTraitDesc_happinessGainedMultiplier>{0}幸福度获取乘数</FCTraitDesc_happinessGainedMultiplier>
 	
 	<!-- EN: {0} Base Loyalty Lost -->
-  <FCTraitDesc_loyaltyLostBase>TODO</FCTraitDesc_loyaltyLostBase>
+  <FCTraitDesc_loyaltyLostBase>{0}忠诚度损失基值</FCTraitDesc_loyaltyLostBase>
 	<!-- EN: {0} Base Loyalty Gained -->
-  <FCTraitDesc_loyaltyGainedBase>TODO</FCTraitDesc_loyaltyGainedBase>
+  <FCTraitDesc_loyaltyGainedBase>{0}忠诚度增长基值</FCTraitDesc_loyaltyGainedBase>
 	<!-- EN: {0} Loyalty Lost -->
-  <FCTraitDesc_loyaltyLostMultiplier>TODO</FCTraitDesc_loyaltyLostMultiplier>
+  <FCTraitDesc_loyaltyLostMultiplier>{0}忠诚度损失乘数</FCTraitDesc_loyaltyLostMultiplier>
 	<!-- EN: {0} Loyalty Gained -->
-  <FCTraitDesc_loyaltyGainedMultiplier>TODO</FCTraitDesc_loyaltyGainedMultiplier>
+  <FCTraitDesc_loyaltyGainedMultiplier>{0}忠诚度获取乘数</FCTraitDesc_loyaltyGainedMultiplier>
 	
 	<!-- EN: {0} Base Unrest Lost -->
-  <FCTraitDesc_unrestLostBase>TODO</FCTraitDesc_unrestLostBase>
+  <FCTraitDesc_unrestLostBase>{0}动乱度损失基值</FCTraitDesc_unrestLostBase>
 	<!-- EN: {0} Base Unrest Gained -->
-  <FCTraitDesc_unrestGainedBase>TODO</FCTraitDesc_unrestGainedBase>
+  <FCTraitDesc_unrestGainedBase>{0}动乱度损失基值</FCTraitDesc_unrestGainedBase>
 	<!-- EN: {0} Unrest Lost -->
-  <FCTraitDesc_unrestLostMultiplier>TODO</FCTraitDesc_unrestLostMultiplier>
+  <FCTraitDesc_unrestLostMultiplier>{0}动乱度损失基值</FCTraitDesc_unrestLostMultiplier>
 	<!-- EN: {0} Unrest Gained -->
-  <FCTraitDesc_unrestGainedMultiplier>TODO</FCTraitDesc_unrestGainedMultiplier>
+  <FCTraitDesc_unrestGainedMultiplier>{0}动乱度损失基值</FCTraitDesc_unrestGainedMultiplier>
 	
 	<!-- EN: {0} Base Settlement Cost -->
-  <FCTraitDesc_createSettlementBaseCost>TODO</FCTraitDesc_createSettlementBaseCost>
+  <FCTraitDesc_createSettlementBaseCost>{0}领地设立成本基值</FCTraitDesc_createSettlementBaseCost>
 	<!-- EN: {0} Settlement Cost -->
-  <FCTraitDesc_createSettlementMultiplier>TODO</FCTraitDesc_createSettlementMultiplier>
+  <FCTraitDesc_createSettlementMultiplier>{0}领地设立花费乘数</FCTraitDesc_createSettlementMultiplier>
 	<!-- EN: {0} Build Time -->
-  <FCTraitDesc_buildTimeMultiplier>TODO</FCTraitDesc_buildTimeMultiplier>
+  <FCTraitDesc_buildTimeMultiplier>{0}建筑用时</FCTraitDesc_buildTimeMultiplier>
 
 	<!-- EN: {0} Military Level (Defending) -->
-  <FCTraitDesc_militaryLevelBonusDefending>TODO</FCTraitDesc_militaryLevelBonusDefending>
+  <FCTraitDesc_militaryLevelBonusDefending>{0}军事等级加成（防守时）</FCTraitDesc_militaryLevelBonusDefending>
 	<!-- EN: {0} Combat Efficiency (Attacking) -->
-  <FCTraitDesc_militaryEfficiencyBonusAttacking>TODO</FCTraitDesc_militaryEfficiencyBonusAttacking>
+  <FCTraitDesc_militaryEfficiencyBonusAttacking>{0}战斗效率加成（进攻时）</FCTraitDesc_militaryEfficiencyBonusAttacking>
 	<!-- EN: {0}h Dead Pawn Cooldown Per Death -->
-  <FCTraitDesc_deadPawnCooldownOffset>TODO</FCTraitDesc_deadPawnCooldownOffset>
+  <FCTraitDesc_deadPawnCooldownOffset>{0}小时额外冷却每编队成员死亡时</FCTraitDesc_deadPawnCooldownOffset>
 	<!-- EN: {0} Mercenary Heal Rate -->
-  <FCTraitDesc_mercHealRateMultiplier>TODO</FCTraitDesc_mercHealRateMultiplier>
+  <FCTraitDesc_mercHealRateMultiplier>{0}雇佣兵治愈速率乘数</FCTraitDesc_mercHealRateMultiplier>
 	<!-- EN: {0}h Raid Cooldown -->
-  <FCTraitDesc_raidCooldownOffset>TODO</FCTraitDesc_raidCooldownOffset>
+  <FCTraitDesc_raidCooldownOffset>{0}小时袭击冷却偏移</FCTraitDesc_raidCooldownOffset>
 	<!-- EN: {0} Battle Prosperity Loss -->
-  <FCTraitDesc_battleProsperityLossMultiplier>TODO</FCTraitDesc_battleProsperityLossMultiplier>
+  <FCTraitDesc_battleProsperityLossMultiplier>{0}战斗导致繁荣度损失乘数</FCTraitDesc_battleProsperityLossMultiplier>
 	<!-- EN: {0} Battle Loyalty Loss -->
-  <FCTraitDesc_battleLoyaltyLossMultiplier>TODO</FCTraitDesc_battleLoyaltyLossMultiplier>
+  <FCTraitDesc_battleLoyaltyLossMultiplier>{0}战斗导致忠诚度损失乘数</FCTraitDesc_battleLoyaltyLossMultiplier>
 	<!-- EN: {0} Battle Happiness Loss -->
-  <FCTraitDesc_battleHappinessLossMultiplier>TODO</FCTraitDesc_battleHappinessLossMultiplier>
+  <FCTraitDesc_battleHappinessLossMultiplier>{0}战斗导致幸福度损失乘数</FCTraitDesc_battleHappinessLossMultiplier>
 	<!-- EN: {0} Building Destruction Risk -->
-  <FCTraitDesc_BuildingDestructionChance>TODO</FCTraitDesc_BuildingDestructionChance>
+  <FCTraitDesc_BuildingDestructionChance>{0}建筑物摧毁风险</FCTraitDesc_BuildingDestructionChance>
 	<!-- EN: {0} Combat Efficiency (Defending) -->
-  <FCTraitDesc_militaryEfficiencyBonusDefending>TODO</FCTraitDesc_militaryEfficiencyBonusDefending>
+  <FCTraitDesc_militaryEfficiencyBonusDefending>{0}战斗效率加成（防守时）</FCTraitDesc_militaryEfficiencyBonusDefending>
 	<!-- EN: {0} Flat Tax Bonus -->
-  <FCTraitDesc_taxBonusFlat>TODO</FCTraitDesc_taxBonusFlat>
+  <FCTraitDesc_taxBonusFlat>{0}固定税收加成</FCTraitDesc_taxBonusFlat>
 	<!-- EN: {0} Tithe Value -->
-  <FCTraitDesc_titheValueMultiplier>TODO</FCTraitDesc_titheValueMultiplier>
+  <FCTraitDesc_titheValueMultiplier>{0}什一税货值乘数</FCTraitDesc_titheValueMultiplier>
 	<!-- EN: {0} Loot Value -->
-  <FCTraitDesc_lootMultiplier>TODO</FCTraitDesc_lootMultiplier>
+  <FCTraitDesc_lootMultiplier>{0}袭击掠获货值乘数</FCTraitDesc_lootMultiplier>
 	<!-- EN: {0} Settlement Cost -->
-  <FCTraitDesc_settlementCostMultiplier>TODO</FCTraitDesc_settlementCostMultiplier>
+  <FCTraitDesc_settlementCostMultiplier>{0}领地成本乘数</FCTraitDesc_settlementCostMultiplier>
 	<!-- EN: {0} Research Contribution -->
-  <FCTraitDesc_researchContributionMultiplier>TODO</FCTraitDesc_researchContributionMultiplier>
+  <FCTraitDesc_researchContributionMultiplier>{0}研究贡献点乘数</FCTraitDesc_researchContributionMultiplier>
 	<!-- EN: {0} Extra Workers Softcap -->
-  <FCTraitDesc_extraWorkersSoftcap>TODO</FCTraitDesc_extraWorkersSoftcap>
+  <FCTraitDesc_extraWorkersSoftcap>{0}劳动力额外软上限</FCTraitDesc_extraWorkersSoftcap>
 	<!-- EN: {0} Over-Max Workers Penalty -->
-  <FCTraitDesc_overMaxWorkersAdjustment>TODO</FCTraitDesc_overMaxWorkersAdjustment>
+  <FCTraitDesc_overMaxWorkersAdjustment>{0}劳动力超限惩罚</FCTraitDesc_overMaxWorkersAdjustment>
 
 	<!-- EN: Upkeep: ${0} -->
   <FCBuildingUpkeep>维持：{0}</FCBuildingUpkeep>

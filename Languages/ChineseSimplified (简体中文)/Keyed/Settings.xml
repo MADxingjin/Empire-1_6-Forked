@@ -3,58 +3,58 @@
 
 	<!-- Mod Settings -->
 	<!-- EN: Empire Refactored -->
-  <FCSettingsModName>TODO</FCSettingsModName>
+  <FCSettingsModName>Empire Refactored</FCSettingsModName>
 	
 	<!-- EN: Silver amount gained per resource -->
-  <FCSettingSilverPerResource>TODO</FCSettingSilverPerResource>
+  <FCSettingSilverPerResource>每单位资源等价白银</FCSettingSilverPerResource>
 	<!-- EN: Days between tax time -->
-  <FCSettingDaysBetweenTax>TODO</FCSettingDaysBetweenTax>
+  <FCSettingDaysBetweenTax>每次征税间隔</FCSettingDaysBetweenTax>
 	<!-- EN: Production Tithe Modifier -->
-  <FCSettingProductionTitheMod>TODO</FCSettingProductionTitheMod>
+  <FCSettingProductionTitheMod>产能什一税修正</FCSettingProductionTitheMod>
 	<!-- EN: Cost Per Worker -->
-  <FCSettingWorkerCost>TODO</FCSettingWorkerCost>
+  <FCSettingWorkerCost>每劳动力成本</FCSettingWorkerCost>
 	<!-- EN: Max Settlement Level -->
-  <FCSettingMaxSettlementLevel>TODO</FCSettingMaxSettlementLevel>
+  <FCSettingMaxSettlementLevel>最大领地等级</FCSettingMaxSettlementLevel>
 	<!-- EN: Disable Hostile Military Actions -->
-  <FCSettingDisableHostileMilActions>TODO</FCSettingDisableHostileMilActions>
+  <FCSettingDisableHostileMilActions>禁用敌对军事行动</FCSettingDisableHostileMilActions>
 	<!-- EN: Disable Random Events -->
-  <FCSettingDisableRandomEvents>TODO</FCSettingDisableRandomEvents>
+  <FCSettingDisableRandomEvents>禁用随机事件</FCSettingDisableRandomEvents>
 	<!-- EN: Enable or disable individual events below. Disabled events will not fire in any save. -->
-  <FCSettingConfigureEvents>TODO</FCSettingConfigureEvents>
+  <FCSettingConfigureEvents>单独启用或禁用下列事件。此选项跨存档生效</FCSettingConfigureEvents>
 	<!-- EN: General -->
-  <FCSettingsTabGeneral>TODO</FCSettingsTabGeneral>
+  <FCSettingsTabGeneral>常规</FCSettingsTabGeneral>
 	<!-- EN: Events -->
-  <FCSettingsTabEvents>TODO</FCSettingsTabEvents>
+  <FCSettingsTabEvents>事件</FCSettingsTabEvents>
 	<!-- EN: Military -->
-  <FCSettingsTabMilitary>TODO</FCSettingsTabMilitary>
+  <FCSettingsTabMilitary>军事</FCSettingsTabMilitary>
 	<!-- EN: Enable All Events -->
-  <FCSettingEnableAllEvents>TODO</FCSettingEnableAllEvents>
+  <FCSettingEnableAllEvents>启用所有事件</FCSettingEnableAllEvents>
 	<!-- EN: Dead Pawns Increase Military Cooldown -->
-  <FCSettingDeadPawnsIncreaseMilCooldown>TODO</FCSettingDeadPawnsIncreaseMilCooldown>
+  <FCSettingDeadPawnsIncreaseMilCooldown>每个死亡成员增加军力冷却</FCSettingDeadPawnsIncreaseMilCooldown>
 	<!-- EN: Disable Forced Pausing During Events -->
-  <FCSettingForcedPausing>TODO</FCSettingForcedPausing>
+  <FCSettingForcedPausing>停用事件发生时强制游戏暂停</FCSettingForcedPausing>
 	<!-- EN: Battle Mode:  -->
-  <FCSettingBattleMode>TODO</FCSettingBattleMode>
+  <FCSettingBattleMode>战斗模式</FCSettingBattleMode>
 	<!-- EN: Auto-Resolve -->
-  <FCBattleModeAuto>TODO</FCBattleModeAuto>
+  <FCBattleModeAuto>自动结算</FCBattleModeAuto>
 	<!-- EN: All battles resolve automatically. -->
-  <FCBattleModeAutoDesc>TODO</FCBattleModeAutoDesc>
+  <FCBattleModeAutoDesc>所有战斗自动结算</FCBattleModeAutoDesc>
 	<!-- EN: Manual -->
-  <FCBattleModeManual>TODO</FCBattleModeManual>
+  <FCBattleModeManual>手动</FCBattleModeManual>
 	<!-- EN: All battles generate a map for manual combat. -->
-  <FCBattleModeManualDesc>TODO</FCBattleModeManualDesc>
+  <FCBattleModeManualDesc>所有战斗均将生成一个地图以由你手动指挥。</FCBattleModeManualDesc>
 	<!-- EN: Hybrid -->
-  <FCBattleModeHybrid>TODO</FCBattleModeHybrid>
+  <FCBattleModeHybrid>混合</FCBattleModeHybrid>
 	<!-- EN: Battles auto-resolve unless you send a caravan to defend. -->
-  <FCBattleModeHybridDesc>TODO</FCBattleModeHybridDesc>
+  <FCBattleModeHybridDesc>除非你派出远行队保卫，战斗将自动结算</FCBattleModeHybridDesc>
 	<!-- EN: Min/Max Days Until Military Action (ex. Settlements being attacked) -->
-  <FCSettingMinMaxMilitaryAction>TODO</FCSettingMinMaxMilitaryAction>
+  <FCSettingMinMaxMilitaryAction>每次军事行动间最小/最大间隔（例如：领地被攻击）</FCSettingMinMaxMilitaryAction>
 	<!-- EN: Maximum Threat Scaling -->
-  <FCSettingMaxThreatScaling>TODO</FCSettingMaxThreatScaling>
+  <FCSettingMaxThreatScaling>最大威胁缩放</FCSettingMaxThreatScaling>
 	<!-- EN: Defender Advantage -->
-  <FCSettingDefenderAdvantage>TODO</FCSettingDefenderAdvantage>
+  <FCSettingDefenderAdvantage>防守方优势</FCSettingDefenderAdvantage>
 	<!-- EN: Efficiency Combat Influence (0 = HP only, 1 = full roll effect) -->
-  <FCSettingEfficiencyDamping>TODO</FCSettingEfficiencyDamping>
+  <FCSettingEfficiencyDamping>战斗效能对战局的影响程度（0 = 仅影响生命值，1 = 完整影响）</FCSettingEfficiencyDamping>
 	<!-- EN: Controls how much the military efficiency stat affects auto-resolve battle outcomes.
 
 At 0, military efficiency affects only the effective level of both forces.
@@ -62,71 +62,80 @@ At 0, military efficiency affects only the effective level of both forces.
 At 1, military efficiency fully affects each round of auto combat. Military forces of lower level but higher efficiency can often beat forces of a higher level, but lower efficiency.
 
 Values in between dampen the effect of military efficiency on the auto combat. -->
-  <FCSettingEfficiencyDampingTooltip>TODO</FCSettingEfficiencyDampingTooltip>
+  <FCSettingEfficiencyDampingTooltip>控制战斗效能属性对自动结算的战斗结果的影响。
+
+此值为 0 时，战斗效能仅影响交战双方的军力等级。
+
+此值为 1 时，战斗效能将影响自动交战的每个回合。低级别高效能的队伍在此数值下常能击败高级别低效能的敌人。
+
+其余的中间值将从1到0平滑战斗效能对作战结果的影响。
+
+
+  </FCSettingEfficiencyDampingTooltip>
 	<!-- EN: Mercenary Heal Rate -->
-  <FCSettingMercHealRate>TODO</FCSettingMercHealRate>
+  <FCSettingMercHealRate>雇佣兵治愈速率</FCSettingMercHealRate>
 	<!-- EN: How fast undeployed mercenary pawns heal their injuries, in hit points per in-game hour. Only one injury heals at a time. -->
-  <FCSettingMercHealRateTip>TODO</FCSettingMercHealRateTip>
+  <FCSettingMercHealRateTip>未参展的雇佣兵治愈伤口的速率，以每点每小时计。每次仅治疗一个伤口。</FCSettingMercHealRateTip>
 	<!-- EN: Min/Max Days Until Random Event -->
-  <FCSettingMinMaxRandomEvent>TODO</FCSettingMinMaxRandomEvent>
+  <FCSettingMinMaxRandomEvent>随机事件的最小/最大间隔天数</FCSettingMinMaxRandomEvent>
 	<!-- EN: Show confirmation when founding settlements -->
-  <FCSettingShowSettleConfirm>TODO</FCSettingShowSettleConfirm>
+  <FCSettingShowSettleConfirm>建立新领地时需要二次确认</FCSettingShowSettleConfirm>
 	<!-- EN: Enable Verbose Logging -->
-  <FCSettingEnableDebugLogging>TODO</FCSettingEnableDebugLogging>
+  <FCSettingEnableDebugLogging>启用详细日志</FCSettingEnableDebugLogging>
 	<!-- EN: Reset Settings -->
-  <FCSettingResetButton>TODO</FCSettingResetButton>
+  <FCSettingResetButton>重置设置</FCSettingResetButton>
 	<!-- EN: Open Patch Notes Window -->
-  <FCOpenPatchNotes>TODO</FCOpenPatchNotes>
+  <FCOpenPatchNotes>打开更新日志窗口</FCOpenPatchNotes>
 
 	<!-- Difficulty Settings -->
 	<!-- EN: Empire Difficulty -->
-  <FCSettingEmpireDifficulty>TODO</FCSettingEmpireDifficulty>
+  <FCSettingEmpireDifficulty>Empire难度设置</FCSettingEmpireDifficulty>
 	<!-- EN: Peaceful -->
-  <FCDifficultyPeaceful>TODO</FCDifficultyPeaceful>
+  <FCDifficultyPeaceful>和平</FCDifficultyPeaceful>
 	<!-- EN: Community Builder -->
-  <FCDifficultyCommunityBuilder>TODO</FCDifficultyCommunityBuilder>
+  <FCDifficultyCommunityBuilder>社区缔造者</FCDifficultyCommunityBuilder>
 	<!-- EN: (Default) Adventure Story -->
-  <FCDifficultyAdventureStory>TODO</FCDifficultyAdventureStory>
+  <FCDifficultyAdventureStory>（默认）冒险故事</FCDifficultyAdventureStory>
 	<!-- EN: Strive To Survive -->
-  <FCDifficultyStriveToSurvive>TODO</FCDifficultyStriveToSurvive>
+  <FCDifficultyStriveToSurvive>艰难求存</FCDifficultyStriveToSurvive>
 	<!-- EN: Blood and Dust -->
-  <FCDifficultyBloodAndDust>TODO</FCDifficultyBloodAndDust>
+  <FCDifficultyBloodAndDust>血与尘</FCDifficultyBloodAndDust>
 	<!-- EN: Losing Is Fun -->
-  <FCDifficultyLosingIsFun>TODO</FCDifficultyLosingIsFun>
+  <FCDifficultyLosingIsFun>失败即乐趣</FCDifficultyLosingIsFun>
 	<!-- EN: Custom -->
-  <FCDifficultyCustom>TODO</FCDifficultyCustom>
+  <FCDifficultyCustom>自动逸</FCDifficultyCustom>
 	<!-- EN: For players who want a relaxed empire management experience with generous resource gains and frequent tax collection. -->
-  <FCDifficultyPeacefulDesc>TODO</FCDifficultyPeacefulDesc>
+  <FCDifficultyPeacefulDesc>适合想要轻松体验帝国管理的玩家，资源获取更丰厚，税期更短。</FCDifficultyPeacefulDesc>
 	<!-- EN: Easy difficulty with good resource gains and moderate tax frequency. -->
-  <FCDifficultyCommunityBuilderDesc>TODO</FCDifficultyCommunityBuilderDesc>
+  <FCDifficultyCommunityBuilderDesc>简单难度，良好的资源获取率和适当的税期。</FCDifficultyCommunityBuilderDesc>
 	<!-- EN: Balanced difficulty for most players.Moderate resource gains with reasonable tax intervals. -->
-  <FCDifficultyAdventureStoryDesc>TODO</FCDifficultyAdventureStoryDesc>
+  <FCDifficultyAdventureStoryDesc>适合大多数玩家的平衡难度。资源获取适中，税收间隔合理。</FCDifficultyAdventureStoryDesc>
 	<!-- EN: Challenging difficulty with reduced resources and longer tax intervals. -->
-  <FCDifficultyStriveToSurviveDesc>TODO</FCDifficultyStriveToSurviveDesc>
+  <FCDifficultyStriveToSurviveDesc>具备挑战性的难度，资源获取降低，征税间隔变长。</FCDifficultyStriveToSurviveDesc>
 	<!-- EN: Hard difficulty with limited resources and infrequent tax collection. -->
-  <FCDifficultyBloodAndDustDesc>TODO</FCDifficultyBloodAndDustDesc>
+  <FCDifficultyBloodAndDustDesc>高难度，资源获取有限，征税间隔较长。</FCDifficultyBloodAndDustDesc>
 	<!-- EN: Brutal difficulty for masochists. Minimal resources and very long tax intervals. -->
-  <FCDifficultyLosingIsFunDesc>TODO</FCDifficultyLosingIsFunDesc>
+  <FCDifficultyLosingIsFunDesc>为受虐狂准备的残酷难度。资源极少，税期极长。</FCDifficultyLosingIsFunDesc>
 	<!-- EN: Customize all empire settings manually. -->
-  <FCDifficultyCustomDesc>TODO</FCDifficultyCustomDesc>
+  <FCDifficultyCustomDesc>手动自定义每个选项。</FCDifficultyCustomDesc>
 
 	<!-- EN: Empire Mod Version: {0} -->
-  <FCModVersion>TODO</FCModVersion>
+  <FCModVersion>Empire Refactored 版本：{0}</FCModVersion>
 
 	<!-- Warnings -->
 	<!-- EN: Please reset your capital location. If you continue to see this after reseting, please report it. -->
-  <FCResetCapitalLocationWarning>TODO</FCResetCapitalLocationWarning>
+  <FCResetCapitalLocationWarning>WARN：请重设你玩家派系的首都位置。如果你在操作后仍看见此警告，请到Github提交Issue报告。</FCResetCapitalLocationWarning>
 	<!-- EN: Your tax map has not been set. Please set it using the faction menu. -->
-  <FCTaxMapNotSetWarning>TODO</FCTaxMapNotSetWarning>
+  <FCTaxMapNotSetWarning>WARN：你尚未确定征税的目标地图。请使用Empire的菜单设置它。</FCTaxMapNotSetWarning>
 	<!-- EN: Manual or Hybrid battle mode is active. If you encounter map generation errors, switch back to Auto-Resolve. -->
-  <FCAutoResolveDisabledWarning>TODO</FCAutoResolveDisabledWarning>
+  <FCAutoResolveDisabledWarning>WARN：选择了手动或混合战斗结算模式。如果你遇到地图生成错误，请到Mod设置里将战斗模式调整为自动结算。</FCAutoResolveDisabledWarning>
 	<!-- EN: Manual Settlement Defence -->
-  <FCManualDefenseWarningLabel>TODO</FCManualDefenseWarningLabel>
+  <FCManualDefenseWarningLabel>手动领地防卫模式</FCManualDefenseWarningLabel>
 	<!-- EN: Manual and Hybrid battle modes generate maps for settlement defense. If you encounter issues, switch to Auto-Resolve mode in settings. -->
-  <FCManualDefenseWarningDesc>TODO</FCManualDefenseWarningDesc>
+  <FCManualDefenseWarningDesc>手动或混合战斗结算模式将在战斗时生成地图。如果你遇到地图生成错误，请到Mod设置里将战斗模式调整为自动结算。</FCManualDefenseWarningDesc>
 	<!-- EN: No tax delivery location set. Either set a tax delivery map or enable tax delivery on a tax spot. -->
-  <FCTaxDeliveryNotSetWarning>TODO</FCTaxDeliveryNotSetWarning>
+  <FCTaxDeliveryNotSetWarning>没有设置税收目标地点。设置一个地图为税收目标，或到Mod设置里选中将税收送到税收点建筑上。</FCTaxDeliveryNotSetWarning>
 	<!-- EN: No empire capital established. Either use 'Set Capital' in the Empire menu or build and activate a Capital Seat. -->
-  <FCCapitalNotSetWarning>TODO</FCCapitalNotSetWarning>
+  <FCCapitalNotSetWarning>没有指定玩家派系首都。在Empire菜单中使用“设置首都”，或在你的地图上建立并激活一个首都符号。</FCCapitalNotSetWarning>
 
 </LanguageData>

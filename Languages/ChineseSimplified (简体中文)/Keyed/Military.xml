@@ -59,13 +59,13 @@
 	<!-- EN: The military forces of {0} are ready to be used again -->
   <FCMilitaryCooldown>{0}的军队已准备好再次出征</FCMilitaryCooldown>
 	<!-- EN: You cannot make a military without a faction! -->
-  <NoFactionForMilitary>你不能在未建立派系的情况下组建军队</NoFactionForMilitary>
+  <NoFactionForMilitary>你不能在未建立派系的情况下组建军队！</NoFactionForMilitary>
 
 	<!-- Raid/Capture Results -->
 	<!-- EN: Raid Loot -->
   <RaidLoot>袭击掠获</RaidLoot>
 	<!-- EN: The raid on {0} has been completed successfully -->
-  <RaidEnemySettlementSuccess>TODO</RaidEnemySettlementSuccess>
+  <RaidEnemySettlementSuccess>已成功的袭击了{0}。</RaidEnemySettlementSuccess>
 	<!-- EN: Raid Failure -->
   <RaidFailure>袭击失败</RaidFailure>
 	<!-- EN: The raid on {0} has resulted in failure -->
@@ -77,11 +77,11 @@
 	<!-- EN: Overwhelming Victory -->
   <OverwhelmingVictory>压倒性胜利</OverwhelmingVictory>
 	<!-- EN: Due to your military force's overwhelming victory, the military force is still available for deployment. -->
-  <OverwhelmingVictoryDesc>基于你军队的压倒性胜利，他们可以立即投入到下一次部署。</OverwhelmingVictoryDesc>
+  <OverwhelmingVictoryDesc>你的军队取得了压倒性胜利，这支军队可以立即投入到下一次部署。</OverwhelmingVictoryDesc>
 
 	<!-- Defense -->
 	<!-- EN: Defense Successful -->
-  <DefenseSuccessful>防御成功</DefenseSuccessful>
+  <DefenseSuccessful>成功防守</DefenseSuccessful>
 	<!-- EN: The defense of {0} was successful! -->
   <DefenseSuccessfulFull>成功防卫了{0}。</DefenseSuccessfulFull>
 	<!-- EN: Defense Failure -->
@@ -91,7 +91,7 @@
 	<!-- EN: Battle for {0} -->
   <ManualBattleStarted>{0}之战</ManualBattleStarted>
 	<!-- EN: {0} is under attack by {1}! Take command of the settlement's defenses. -->
-  <ManualBattleStartedDesc>{0}正遭受来自{1}的进攻！指挥他们！</ManualBattleStartedDesc>
+  <ManualBattleStartedDesc>{0}正遭受来自{1}的进攻！请指挥领地的守军！</ManualBattleStartedDesc>
 	<!-- EN: Defend -->
   <DefendColony>防守</DefendColony>
 	<!-- EN: Defend your Settlement manually -->
@@ -99,13 +99,13 @@
 	<!-- EN: Set Defending Force -->
   <DefendSettlement>设置防御编队</DefendSettlement>
 	<!-- EN: Settlement Defending: {0}'s - Power {1} -->
-  <SettlementDefendingInformation>防守领地{0}的{1}力量</SettlementDefendingInformation>
+  <SettlementDefendingInformation>防守领地{0} ——战斗力{1}</SettlementDefendingInformation>
 	<!-- EN: Reset to home settlement's defense - Power {0} -->
-  <ResetToHomeSettlement>已重设到根据地防御-{0}力量</ResetToHomeSettlement>
+  <ResetToHomeSettlement>已重设到根据地防御 ——战斗力{0}</ResetToHomeSettlement>
 	<!-- EN: Change Defending Force -->
   <ChangeDefendingForce>变更防守编队</ChangeDefendingForce>
 	<!-- EN: That military force is already defending the target -->
-  <militaryAlreadyDefendingSettlement>所选军力已有需要防守的目标</militaryAlreadyDefendingSettlement>
+  <militaryAlreadyDefendingSettlement>所选军力已经在防守该目标</militaryAlreadyDefendingSettlement>
 	<!-- EN: The defending military has been reset as the defense force for the settlement -->
   <defendingMilitaryReset>所选军力已重置为本领地的防守编队</defendingMilitaryReset>
 	<!-- EN: {0} is now defending this settlement. -->
@@ -115,11 +115,11 @@
 	<!-- EN: Automatically defending attacked settlements: {0} -->
   <ToggleAutoDefend>正自动防卫被攻击的领地：{0}</ToggleAutoDefend>
 	<!-- EN: Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu! -->
-  <autoDefendWarning>此选项与自动结算战斗并不一致！</autoDefendWarning>
+  <autoDefendWarning>注意！此选项与自动结算战斗并不一致！</autoDefendWarning>
 	<!-- EN: Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually. -->
   <autoBattleEnabledNoManualFight>已激活自动结算模式。切换到人工或混合模式来手动战斗。</autoBattleEnabledNoManualFight>
 	<!-- EN: Hybrid battle mode is enabled. Send a caravan to manually defend this settlement. -->
-  <hybridBattleEnabledNoManualFight>混合战斗模式。设置远行队或手动防卫此领地。</hybridBattleEnabledNoManualFight>
+  <hybridBattleEnabledNoManualFight>混合战斗模式。派出远行队或手动防卫此领地。</hybridBattleEnabledNoManualFight>
 	<!-- EN: This settlement type does not support manual battles. All battles here are auto-resolved. -->
   <settlementTypeNoManualBattle>该领地的类型不支持手动战斗。所有发生于此的战斗将自动结算。</settlementTypeNoManualBattle>
 	<!-- EN: Send a caravan to this settlement before the attack to fight manually. -->
@@ -127,7 +127,7 @@
 
 	<!-- Raid Damage -->
 	<!-- EN: Penalties suffered: -->
-  <DefenseFailurePenaltiesHeader>遭受了惩罚：</DefenseFailurePenaltiesHeader>
+  <DefenseFailurePenaltiesHeader>遭受了损失：</DefenseFailurePenaltiesHeader>
 	<!-- EN: Prosperity: -{0} -->
   <DefenseFailureProsperityLoss>繁荣度损失：{0}</DefenseFailureProsperityLoss>
 	<!-- EN: Happiness: -{0} -->
@@ -151,12 +151,12 @@
 	<!-- EN: Ending attack... -->
   <EndingAttack>结束战斗中</EndingAttack>
 	<!-- EN: Error ending attack -->
-  <ErrorEndingAttack>ERR：结束战斗出错。</ErrorEndingAttack>
+  <ErrorEndingAttack>ERR：结束战斗出错</ErrorEndingAttack>
 	<!-- EN: There was a problem ending the attack. Most likely, the map didn't delete correctly.
 		Please report this if you don't get your colonists sent to defend back, or your military never comes off
 		cooldown.
 	 -->
-  <ErrorEndingAttackDescription>ERR：结束战斗时出现错误。最常见的情况是临时地图未能成功销毁。如果你的殖民者未能按时返回，或你参战的Empire军事编队不正常冷却，请到本项目的Github提交Issue。</ErrorEndingAttackDescription>
+  <ErrorEndingAttackDescription>ERR：结束战斗时出现错误。最常见的情况是临时地图未能成功销毁。如果你派出参战的殖民者未能按时返回，或你参战的Empire军事编队不正常冷却，请到本项目的Github提交Issue。</ErrorEndingAttackDescription>
 
 	<!-- Deployment -->
 	<!-- EN: Send To Settlement -->
@@ -168,11 +168,11 @@
 	<!-- EN: Drop-Pod -->
   <dropPodDeploymentOption>空投仓</dropPodDeploymentOption>
 	<!-- EN: Walk into Map -->
-  <walkIntoMapDeploymentOption>从地图边缘步入。</walkIntoMapDeploymentOption>
+  <walkIntoMapDeploymentOption>从地图边缘步入</walkIntoMapDeploymentOption>
 	<!-- EN:  disabled because "Medieval Tech Only" is enabled -->
-  <dropPodDeploymentOptionUnavailableReasonMedieval>由于你设置了“仅中世纪科技”而被禁用。</dropPodDeploymentOptionUnavailableReasonMedieval>
+  <dropPodDeploymentOptionUnavailableReasonMedieval>由于你设置了“仅中世纪科技”而被禁用</dropPodDeploymentOptionUnavailableReasonMedieval>
 	<!-- EN:  unavailable without the {0} research -->
-  <dropPodDeploymentOptionUnavailableReasonTech>未研究{0}。</dropPodDeploymentOptionUnavailableReasonTech>
+  <dropPodDeploymentOptionUnavailableReasonTech>未研究{0}</dropPodDeploymentOptionUnavailableReasonTech>
 	<!-- EN: The drop pod research could not be found! Are you running a mod list that removes it? -->
   <errorDropPodResearchCouldNotBeFound>未找到所需的研究：“运输仓”！你是否运行了其他模组修改了它？</errorDropPodResearchCouldNotBeFound>
 	<!-- EN: You cannot deploy your military to another settlement! -->
@@ -192,13 +192,13 @@
 	<!-- EN: The military forces of {0} have been deployed to {1} -->
   <deploymentSuccessDesc>领地{0}的军力已部署到{1}</deploymentSuccessDesc>
 	<!-- EN: A squad is leaving, because it's available time ran out! -->
-  <militaryPawnsLeavingTimeOut>一支编队因计时到达而正在撤退。</militaryPawnsLeavingTimeOut>
+  <militaryPawnsLeavingTimeOut>一支编队因可用时长到限而正在撤退。</militaryPawnsLeavingTimeOut>
 
 	<!-- Battle Commands -->
 	<!-- EN: Attack -->
   <commandAttack>进攻</commandAttack>
 	<!-- EN: {0} are now charging the enemy. -->
-  <attackSuccess>{0}正在进攻。</attackSuccess>
+  <attackSuccess>{0}正在进攻敌人。</attackSuccess>
 	<!-- EN: Move -->
   <commandMove>移动</commandMove>
 	<!-- EN: {0} are moving to the position and standing by. -->
@@ -226,9 +226,9 @@
 	<!-- EN: The settlement requires an artillery outpost to be built to use that firesupport option -->
   <FCRequiresArtilleryOutpost>领地首先需要建立一个火炮前哨才能进行火力支援。</FCRequiresArtilleryOutpost>
 	<!-- EN: The settlement requires a higher military level to use that fire support! -->
-  <FCRequiresHigherMilLevel>所选的炮火方案需要领地有更高的军力等级</FCRequiresHigherMilLevel>
+  <FCRequiresHigherMilLevel>所选的炮火方案需要领地有更高的军事等级</FCRequiresHigherMilLevel>
 	<!-- EN: No fire supports currently made. Make one -->
-  <FCNoFireSupportsMade>你没有炮火方案。你应该编辑一个。</FCNoFireSupportsMade>
+  <FCNoFireSupportsMade>你没有火力支援方案。你应该编辑一个。</FCNoFireSupportsMade>
 	<!-- EN: The assault is beginning! -->
   <FCAssaultBeginning>开始进攻！</FCAssaultBeginning>
 
@@ -256,9 +256,9 @@
 	<!-- EN: Medieval Tech Only -->
   <MedievalTechOnly>仅限中世纪科技</MedievalTechOnly>
 	<!-- EN: militaryLevel -->
-  <FCMilitaryLevel>军力等级</FCMilitaryLevel>
+  <FCMilitaryLevel>军事等级</FCMilitaryLevel>
 	<!-- EN: The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic -->
-  <FCUnsupportedMilJobError>DEV：为此FloatMenuOption绑定的Job不具备已注册到AddButtonsToNonEmpireObjects.MilJobOptionStringsDic的翻译键值</FCUnsupportedMilJobError>
+  <FCUnsupportedMilJobError>DEV：为此FloatMenuOption绑定的Job不具备任何已注册到AddButtonsToNonEmpireObjects.MilJobOptionStringsDic的翻译键值</FCUnsupportedMilJobError>
 	<!-- EN: [Debug] Remove all -->
   <debugRemoveAllCommand>[DEBUG]删除所有</debugRemoveAllCommand>
 
@@ -266,48 +266,48 @@
 	<!-- EN: Squad -->
   <FCMilSquadPrefix>编队</FCMilSquadPrefix>
 	<!-- EN: Fire Support -->
-  <FCMilFireSupportCooldownShort>火力方案</FCMilFireSupportCooldownShort>
+  <FCMilFireSupportCooldownShort>火力支援</FCMilFireSupportCooldownShort>
 	<!-- EN: {0} settlements -->
-  <FCMilitarySettlementCount>TODO</FCMilitarySettlementCount>
+  <FCMilitarySettlementCount>{0}个领地</FCMilitarySettlementCount>
 	<!-- EN: No settlements with military components -->
-  <FCNoMilitarySettlements>TODO</FCNoMilitarySettlements>
+  <FCNoMilitarySettlements>没有包含军事组件的领地</FCNoMilitarySettlements>
 	<!-- EN: UNDER ATTACK -->
-  <FCMilStatusUnderAttack>TODO</FCMilStatusUnderAttack>
+  <FCMilStatusUnderAttack>！遭到攻击！</FCMilStatusUnderAttack>
 	<!-- EN: Deployed -->
-  <FCMilStatusDeployed>TODO</FCMilStatusDeployed>
+  <FCMilStatusDeployed>已部署</FCMilStatusDeployed>
 	<!-- EN: Raiding -->
-  <FCMilStatusRaiding>TODO</FCMilStatusRaiding>
+  <FCMilStatusRaiding>袭击中</FCMilStatusRaiding>
 	<!-- EN: Enslaving -->
-  <FCMilStatusEnslaving>TODO</FCMilStatusEnslaving>
+  <FCMilStatusEnslaving>捕奴中</FCMilStatusEnslaving>
 	<!-- EN: Capturing -->
-  <FCMilStatusCapturing>TODO</FCMilStatusCapturing>
+  <FCMilStatusCapturing>占领中</FCMilStatusCapturing>
 	<!-- EN: Defending -->
-  <FCMilStatusDefending>TODO</FCMilStatusDefending>
+  <FCMilStatusDefending>防守中</FCMilStatusDefending>
 	<!-- EN: Defending {0} -->
-  <FCMilStatusDefendingTarget>TODO</FCMilStatusDefendingTarget>
+  <FCMilStatusDefendingTarget>正防守{0}</FCMilStatusDefendingTarget>
 	<!-- EN: Deployment Cooldown -->
-  <FCMilStatusCooldown>TODO</FCMilStatusCooldown>
+  <FCMilStatusCooldown>部署冷却中</FCMilStatusCooldown>
 	<!-- EN: Busy -->
-  <FCMilStatusBusy>TODO</FCMilStatusBusy>
+  <FCMilStatusBusy>当前正忙</FCMilStatusBusy>
 	<!-- EN: Ready -->
-  <FCMilStatusReady>TODO</FCMilStatusReady>
+  <FCMilStatusReady>就绪</FCMilStatusReady>
 	<!-- EN: No Squad -->
-  <FCMilStatusNoSquad>TODO</FCMilStatusNoSquad>
+  <FCMilStatusNoSquad>无编队</FCMilStatusNoSquad>
 	<!-- EN: Auto-Defend -->
-  <FCMilAutoDefend>TODO</FCMilAutoDefend>
+  <FCMilAutoDefend>自动防御</FCMilAutoDefend>
 	<!-- EN: Assign a military squad to this settlement -->
-  <FCMilBtnSetSquadTip>TODO</FCMilBtnSetSquadTip>
+  <FCMilBtnSetSquadTip>为此领地指派一个军事编队</FCMilBtnSetSquadTip>
 	<!-- EN: Deploy the assigned squad to a map location -->
-  <FCMilBtnDeployTip>TODO</FCMilBtnDeployTip>
+  <FCMilBtnDeployTip>将所分配的编队部署到地图位置</FCMilBtnDeployTip>
 	<!-- EN: Reset and regenerate squad members -->
-  <FCMilBtnResetTip>TODO</FCMilBtnResetTip>
+  <FCMilBtnResetTip>重置并重新生成编队成员</FCMilBtnResetTip>
 	<!-- EN: Call in artillery fire support -->
-  <FCMilBtnFireSupportTip>TODO</FCMilBtnFireSupportTip>
+  <FCMilBtnFireSupportTip>呼叫炮兵火力支援。</FCMilBtnFireSupportTip>
 	<!-- EN: Automatically send this settlement's forces to defend other settlements under attack -->
-  <FCMilBtnAutoDefendTip>TODO</FCMilBtnAutoDefendTip>
+  <FCMilBtnAutoDefendTip>自动派出此领地的军力来协助防卫其他遭受攻击的领地。</FCMilBtnAutoDefendTip>
 	<!-- EN: This settlement's military level is too low to auto-defend. Upgrade the settlement to increase its military level. -->
-  <FCMilAutoDefendDisabled>TODO</FCMilAutoDefendDisabled>
+  <FCMilAutoDefendDisabled>此领地的军事等级太低，不支持自动防守。升级该领地以提升其军事等级</FCMilAutoDefendDisabled>
 	<!-- EN: Atk {0} / Def {1}  •  ${2} -->
-  <FCMilBadge>TODO</FCMilBadge>
+  <FCMilBadge>进攻方 {0} /防守方 {1} * {2}白银</FCMilBadge>
 
 </LanguageData>

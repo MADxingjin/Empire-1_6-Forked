@@ -278,8 +278,8 @@
 	<!-- EN: Could not find map of capital -->
   <CouldNotFindMapOfCapital>地图上找不到首都</CouldNotFindMapOfCapital>
 	<!-- EN: Empire capital is already established at {0}. Disable the capital seat there first if you want to move it. -->
-  <FCCapitalAlreadyEstablished>你已设置{0}为首都。迁都需要首先将首都席位关闭。</FCCapitalAlreadyEstablished>
+  <FCCapitalAlreadyEstablished>你已设置{0}为首都。迁都需要首先将首都符号关闭。</FCCapitalAlreadyEstablished>
 	<!-- EN: Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat. -->
-  <FCUnableToSetCapitalHere>TODO</FCUnableToSetCapitalHere>
+  <FCUnableToSetCapitalHere>不能将该地图设置为首都。前往你当前活跃的首都地图并使用Empire菜单中设置首都功能，或在此处建筑一个首都符号。</FCUnableToSetCapitalHere>
 
 </LanguageData>

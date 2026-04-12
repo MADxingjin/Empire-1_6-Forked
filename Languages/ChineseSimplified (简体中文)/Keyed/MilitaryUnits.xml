@@ -3,19 +3,19 @@
 
 	<!-- 编队 Management -->
 	<!-- EN: 已指派 编队 -->
-  <FCMilitaryTableSquad>TODO</FCMilitaryTableSquad>
+  <FCMilitaryTableSquad>已指派编队</FCMilitaryTableSquad>
 	<!-- EN: 设置 编队 -->
-  <FCMilitaryTableSetSquad>TODO</FCMilitaryTableSetSquad>
+  <FCMilitaryTableSetSquad>设置编队</FCMilitaryTableSetSquad>
 	<!-- EN: 部署 编队 -->
-  <FCMilitaryTableDeploySquad>TODO</FCMilitaryTableDeploySquad>
+  <FCMilitaryTableDeploySquad>部署编队</FCMilitaryTableDeploySquad>
 	<!-- EN: 重置 编队 -->
-  <FCMilitaryTableResetSquad>TODO</FCMilitaryTableResetSquad>
+  <FCMilitaryTableResetSquad>重置编队</FCMilitaryTableResetSquad>
 	<!-- EN: 管理编队  -->
-  <FCMilitaryTableButtonCreateSquad>TODO</FCMilitaryTableButtonCreateSquad>
+  <FCMilitaryTableButtonCreateSquad>创建编队</FCMilitaryTableButtonCreateSquad>
 	<!-- EN: 管理单位 Units -->
-  <FCMilitaryTableButtonCreateUnit>TODO</FCMilitaryTableButtonCreateUnit>
+  <FCMilitaryTableButtonCreateUnit>管理单位</FCMilitaryTableButtonCreateUnit>
 	<!-- EN: 管理火力支援 Fire Support -->
-  <FCMilitaryTableButtonCreateFireSupport>TODO</FCMilitaryTableButtonCreateFireSupport>
+  <FCMilitaryTableButtonCreateFireSupport>管理火力支援</FCMilitaryTableButtonCreateFireSupport>
 	<!-- EN: Are you sure? Click to confirm -->
   <FCMilTableConfirm>你确定吗？</FCMilTableConfirm>
 	<!-- EN: No Available Squads -->
@@ -85,7 +85,7 @@
 	<!-- EN: Delete unit -->
   <deleteUnitButton>删除单位</deleteUnitButton>
 	<!-- EN: Select a unit -->
-  <selectAUnitButton>TODO选择一个单位</selectAUnitButton>
+  <selectAUnitButton>选择一个单位</selectAUnitButton>
 	<!-- EN: Roll a new pawn -->
   <rollANewUnitButton>随机一个新Pawn</rollANewUnitButton>
 	<!-- EN: Change Race -->
@@ -99,41 +99,41 @@
 	<!-- EN: Choose Apparel Color -->
   <fcChooseApparelColor>选择服装颜色</fcChooseApparelColor>
 	<!-- EN: Set All Colors -->
-  <fcSetAllColors>TODO设置所有服装颜色</fcSetAllColors>
+  <fcSetAllColors>设置所有服装颜色</fcSetAllColors>
 	<!-- EN: Clear Colors -->
-  <fcClearColors>TODO清空颜色</fcClearColors>
+  <fcClearColors>清空颜色</fcClearColors>
 	<!-- EN: Equipped Apparel -->
   <fcEquippedApparel>已装备的服装</fcEquippedApparel>
 	<!-- EN: + Add -->
   <fcAddApparel>添加</fcAddApparel>
 	<!-- EN: Replaces -->
-  <fcReplacesApparel>替换TODO</fcReplacesApparel>
+  <fcReplacesApparel>替换</fcReplacesApparel>
 	<!-- EN: Total Equipment Cost:  -->
-  <totalEquipmentCostLabel>装备总成本：TODO</totalEquipmentCostLabel>
+  <totalEquipmentCostLabel>装备总成本：</totalEquipmentCostLabel>
 	<!-- EN: Unequip -->
-  <unitActionUnequipThing>卸除TODO</unitActionUnequipThing>
+  <unitActionUnequipThing>卸除</unitActionUnequipThing>
 	<!-- EN: Select Weapon -->
-  <fcPickWeapon>选择武器TODO</fcPickWeapon>
+  <fcPickWeapon>选择武器</fcPickWeapon>
 	<!-- EN: Select Apparel -->
-  <fcPickApparel>TODO选择服装</fcPickApparel>
+  <fcPickApparel>选择服装</fcPickApparel>
 	<!-- EN: Select Animal -->
-  <fcPickAnimal>TODO选择动物</fcPickAnimal>
+  <fcPickAnimal>选择动物</fcPickAnimal>
 	<!-- EN: No material selection needed -->
-  <fcNoMaterialNeeded>TODO不需要选择材质</fcNoMaterialNeeded>
+  <fcNoMaterialNeeded>不需要选择材质</fcNoMaterialNeeded>
 	<!-- EN: Selected: {0} - Cost: {1} -->
-  <fcPickerSummary>TODO选择了：{0} ——成本：{1}</fcPickerSummary>
+  <fcPickerSummary>选择了：{0} ——成本：{1}</fcPickerSummary>
 	<!-- EN: Select an item first -->
-  <fcPickerSelectItem>TODO首先选择一个物品</fcPickerSelectItem>
+  <fcPickerSelectItem>首先选择一个物品</fcPickerSelectItem>
 	<!-- EN: Select a material for this item -->
-  <fcPickerSelectStuff>TODO为该物品选择材质</fcPickerSelectStuff>
+  <fcPickerSelectStuff>为该物品选择材质</fcPickerSelectStuff>
 
 	<!-- Unit Race/PawnKind Errors -->
 	<!-- EN: No available races -->
   <changeUnitRaceNoRaces>没有可用种族</changeUnitRaceNoRaces>
 	<!-- EN: No available animals -->
-  <fcNoAnimalsAvailable>TODO没有可用动物</fcNoAnimalsAvailable>
+  <fcNoAnimalsAvailable>没有可用动物</fcNoAnimalsAvailable>
 	<!-- EN: No available Xeno -->
-  <changeUnitXenoNoXenos>TODO没有可用生物科技异种</changeUnitXenoNoXenos>
+  <changeUnitXenoNoXenos>没有可用生物科技异种</changeUnitXenoNoXenos>
 	<!-- EN: Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}. -->
   <noPawnKindDefOfTypeOfRaceWarning>警告：当前科技等级{1}在种族{2}中没有可用的{0}PawnKindDef。Empire将尝试用科技等级{4}生成{2}{3}。</noPawnKindDefOfTypeOfRaceWarning>
 	<!-- EN: Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated! -->
@@ -143,49 +143,49 @@
 
 	<!-- 编队 Design -->
 	<!-- EN:  新建编队 -->
-  <FCCreateNewSquad>TODO</FCCreateNewSquad>
+  <FCCreateNewSquad>新建编队</FCCreateNewSquad>
 	<!-- EN: 导入编队 -->
-  <FCImportSquad>TODO</FCImportSquad>
+  <FCImportSquad>导入编队</FCImportSquad>
 	<!-- EN: 重命名编队 -->
-  <FCRenameSquad>TODO</FCRenameSquad>
+  <FCRenameSquad>重命名编队</FCRenameSquad>
 	<!-- EN: Are you sure you want to delete "{0}"? -->
-  <FCConfirmDeleteSquad>TODO</FCConfirmDeleteSquad>
+  <FCConfirmDeleteSquad>你确定要删除“{0}”吗？</FCConfirmDeleteSquad>
 	<!-- EN: 编队 is full (30/30 units) -->
-  <FCSquadFull>TODO</FCSquadFull>
+  <FCSquadFull>编队已满（最多30个单位）</FCSquadFull>
 	<!-- EN: Add Unit -->
-  <FCAddUnit>TODO</FCAddUnit>
+  <FCAddUnit>增加单位</FCAddUnit>
 	<!-- EN: Units: {0} / 30 -->
-  <FCSquadUnitCount>TODO</FCSquadUnitCount>
+  <FCSquadUnitCount>单位：{0}/30</FCSquadUnitCount>
 	<!-- EN: Export squad -->
-  <exportSquadButton>TODO</exportSquadButton>
+  <exportSquadButton>导出编队</exportSquadButton>
 	<!-- EN: Delete squad -->
-  <DeleteSquadButton>TODO</DeleteSquadButton>
+  <DeleteSquadButton>删除编队</DeleteSquadButton>
 	<!-- EN: Total 编队 Equipment Cost: {0} / {1} (Max Cost) -->
-  <FCTotalSquadEquipmentCost>TODO</FCTotalSquadEquipmentCost>
+  <FCTotalSquadEquipmentCost>编队装备成本共计：{0}/最大{1}</FCTotalSquadEquipmentCost>
 	<!-- EN: Total 编队 Equipment Cost: {0} / No Reference -->
-  <FCTotalSquadEquipmentCostNoRef>TODO</FCTotalSquadEquipmentCostNoRef>
+  <FCTotalSquadEquipmentCostNoRef>编队装备成本合计：{0}/未设置参考</FCTotalSquadEquipmentCostNoRef>
 	<!-- EN: Delete 编队 -->
-  <FCDeleteSquad>TODO</FCDeleteSquad>
+  <FCDeleteSquad>删除编队</FCDeleteSquad>
 	<!-- EN: Select A 编队 -->
-  <FCSelectASquad>TODO</FCSelectASquad>
+  <FCSelectASquad>选择一个编队</FCSelectASquad>
 	<!-- EN:  - Military Level :  -->
-  <FCMilitaryLevelLabel>TODO</FCMilitaryLevelLabel>
+  <FCMilitaryLevelLabel>——军事等级</FCMilitaryLevelLabel>
 	<!-- EN: You can't deploy a squad with no equipped personnel! -->
-  <FCNoSquadEquipped>TODO</FCNoSquadEquipped>
+  <FCNoSquadEquipped>你不能部署没有装备的小队！</FCNoSquadEquipped>
 	<!-- EN: There is no squad loadout assigned to that settlement! -->
-  <FCNoSquadLoadoutAssigned>TODO</FCNoSquadLoadoutAssigned>
+  <FCNoSquadLoadoutAssigned>未向此领地指派编队方案</FCNoSquadLoadoutAssigned>
 	<!-- EN: There is no military squad assigned to that settlement! -->
-  <FCNoSquadAssigned>TODO</FCNoSquadAssigned>
+  <FCNoSquadAssigned>没有分配到此领地的编队</FCNoSquadAssigned>
 	<!-- EN: That squad exceeds the settlement's max allotted cost -->
-  <FCSquadExceedsMaxCost>TODO</FCSquadExceedsMaxCost>
+  <FCSquadExceedsMaxCost>所选编队超出目标领地的最大允许成本</FCSquadExceedsMaxCost>
 	<!-- EN: Reset Pawns -->
-  <fcResetSquadPawns>TODO</fcResetSquadPawns>
+  <fcResetSquadPawns>重置Pawn</fcResetSquadPawns>
 	<!-- EN: This will destroy all existing mercenary pawns in "{0}" and generate entirely new ones. Their identities, appearance, and any battle experience will be lost.\n\nThis is intended for fixing corrupted pawns. Are you sure? -->
-  <fcResetSquadPawnsConfirm>TODO</fcResetSquadPawnsConfirm>
+  <fcResetSquadPawnsConfirm>这将删除“{0}”编队中所有已生成的Pawn然后重新生成一批。将移除它们的身份，外貌，和此前战斗的经验。\n\n此选项是为了修复出错的Pawn而设计的。你确定要继续吗？</fcResetSquadPawnsConfirm>
 	<!-- EN: Regenerate all mercenary pawns in this squad. Destroys existing pawns and creates new ones with different identities. Only available for squads assigned to a settlement. -->
-  <fcResetSquadPawnsTip>TODO</fcResetSquadPawnsTip>
+  <fcResetSquadPawnsTip>已删除此编队中所有已生成的Pawn并重新生成了一批。此选项仅对已经指派到某个领地的编队有效。</fcResetSquadPawnsTip>
 	<!-- EN: Create New Unit -->
-  <FCCreateNewUnit>TODO</FCCreateNewUnit>
+  <FCCreateNewUnit>创建新单位</FCCreateNewUnit>
 
 	<!-- Fire Support Design -->
 	<!-- EN: New Fire Support -->
@@ -193,17 +193,17 @@
 	<!-- EN: Delete Support -->
   <FCDeleteSupport>删除方案</FCDeleteSupport>
 	<!-- EN: Add new projectile -->
-  <FCAddNewProjectile>TODO添加新投射物</FCAddNewProjectile>
+  <FCAddNewProjectile>添加新投射物</FCAddNewProjectile>
 	<!-- EN: Rename Fire Support -->
-  <FCRenameFireSupport>TODO重命名方案</FCRenameFireSupport>
+  <FCRenameFireSupport>重命名方案</FCRenameFireSupport>
 	<!-- EN: Are you sure you want to delete "{0}"? -->
-  <FCConfirmDeleteFireSupport>TODO你确定要删除“{0}”吗？</FCConfirmDeleteFireSupport>
+  <FCConfirmDeleteFireSupport>你确定要删除“{0}”吗？</FCConfirmDeleteFireSupport>
 	<!-- EN: Delete -->
-  <deleteFireSupportButton>TODO删除</deleteFireSupportButton>
+  <deleteFireSupportButton>删除</deleteFireSupportButton>
 	<!-- EN: Cost: {0} -->
-  <FCFireSupportCostLabel>TODO成本：{0}</FCFireSupportCostLabel>
+  <FCFireSupportCostLabel>成本：{0}</FCFireSupportCostLabel>
 	<!-- EN: Cost: {0} / {1} (Max) -->
-  <FCFireSupportCostRefLabel>TODO成本：{0}/{1} （最大）</FCFireSupportCostRefLabel>
+  <FCFireSupportCostRefLabel>成本：{0}/{1} （最大）</FCFireSupportCostRefLabel>
 	<!-- EN: Projectiles: {0} -->
   <FCFireSupportProjectileCount>投射物：{0}</FCFireSupportProjectileCount>
 	<!-- EN: Duration: {0}s -->
@@ -213,17 +213,17 @@
 	<!-- EN: Select a fire support -->
   <FCSelectAFireSupport>选择一个方案</FCSelectAFireSupport>
 	<!-- EN: Import -->
-  <importFireSupport>TODO导入</importFireSupport>
+  <importFireSupport>导入</importFireSupport>
 	<!-- EN: Export -->
-  <exportFireSupportButton>TODO导出</exportFireSupportButton>
+  <exportFireSupportButton>导出</exportFireSupportButton>
 	<!-- EN: Exported Fire Support -->
-  <ExportFireSupport>TODO已导出方案</ExportFireSupport>
+  <ExportFireSupport>已导出方案</ExportFireSupport>
 	<!-- EN: No available projectiles found -->
-  <FCNoProjectilesFound>TODO没有可用的投射物</FCNoProjectilesFound>
+  <FCNoProjectilesFound>没有可用的投射物</FCNoProjectilesFound>
 	<!-- EN: Options -->
   <FCFireSupportOptions>选项</FCFireSupportOptions>
 	<!-- EN: Insert Projectile Above Slot -->
-  <FCInsertProjectileAbove>将选中投射物插入到槽位上方TODO</FCInsertProjectileAbove>
+  <FCInsertProjectileAbove>将选中投射物插入到槽位上方</FCInsertProjectileAbove>
 	<!-- EN: Duplicate -->
   <FCDuplicate>复制</FCDuplicate>
 
@@ -231,21 +231,21 @@
 	<!-- EN: Units -->
   <FCNavUnits>单位</FCNavUnits>
 	<!-- EN: Squads -->
-  <FCNavSquads>编队TODO</FCNavSquads>
+  <FCNavSquads>编队</FCNavSquads>
 	<!-- EN: Fire Support -->
-  <FCNavFireSupport>火力支援方案TODO</FCNavFireSupport>
+  <FCNavFireSupport>火力支援方案</FCNavFireSupport>
 	<!-- EN: Edit this unit's equipment -->
-  <FCEditUnitTooltip>编辑该单位的装备TODO</FCEditUnitTooltip>
+  <FCEditUnitTooltip>编辑该单位的装备</FCEditUnitTooltip>
 
 	<!-- Unit Types -->
 	<!-- EN: Pawns -->
-  <FCPawns>普通TODO</FCPawns>
+  <FCPawns>普通</FCPawns>
 	<!-- EN: Trader -->
-  <FCTrader>商人TODO</FCTrader>
+  <FCTrader>商人</FCTrader>
 	<!-- EN: Fighter -->
-  <FCFighter>战士TODO</FCFighter>
+  <FCFighter>战士</FCFighter>
 	<!-- EN: Non Mercenary -->
-  <FCNonMercenary>非雇佣兵TODO</FCNonMercenary>
+  <FCNonMercenary>非雇佣兵</FCNonMercenary>
 
 	<!-- Import/Export -->
 	<!-- EN: Import -->
@@ -257,21 +257,21 @@
 
 	<!-- Prisoners -->
 	<!-- EN: Prisoners -->
-  <PrisonersMenu>囚犯TODO</PrisonersMenu>
+  <PrisonersMenu>囚犯</PrisonersMenu>
 	<!-- EN: workload -->
-  <FCWorkload>TODO工作量</FCWorkload>
+  <FCWorkload>工作负但</FCWorkload>
 	<!-- EN: heavy -->
-  <FCHeavy>TODO较重</FCHeavy>
+  <FCHeavy>较重</FCHeavy>
 	<!-- EN: medium -->
-  <FCMedium>TODO适中</FCMedium>
+  <FCMedium>适中</FCMedium>
 	<!-- EN: light -->
-  <FCLight>TODO较轻</FCLight>
+  <FCLight>较轻</FCLight>
 	<!-- EN: Adds +2 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 20. -->
-  <FCHeavyExplanation>TODO</FCHeavyExplanation>
+  <FCHeavyExplanation>增加劳动力软上限2（普通劳动力），每税期扣除健康20点</FCHeavyExplanation>
 	<!-- EN: Adds +1 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 10. -->
-  <FCMediumExplanation>TODO</FCMediumExplanation>
+  <FCMediumExplanation>增加劳动力软上限1（普通劳动力），每税期扣除健康10点</FCMediumExplanation>
 	<!-- EN: Adds +1 to worker hard cap (Over-Max Workers). Increases health by 4 -->
-  <FCLightExplanation>TODO</FCLightExplanation>
+  <FCLightExplanation>增加劳动力硬上限1（超限劳动力），每税期增加健康4点</FCLightExplanation>
 	<!-- EN: Sell Pawn -->
   <SellPawn>卖出此人</SellPawn>
 	<!-- EN: Return To Player -->
