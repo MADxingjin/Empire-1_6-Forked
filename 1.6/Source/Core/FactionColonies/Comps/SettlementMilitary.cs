@@ -1228,6 +1228,12 @@ namespace FactionColonies
 
         public void ProcessMilitaryEvent()
         {
+            if (militaryJob is null || militaryJob == MilitaryJobDefOf.Undefined || militaryJob == MilitaryJobDefOf.Cooldown)
+            {
+                LogUtil.Warning($"ProcessMilitaryEvent: {WorldSettlement.Name} has no active operation (job={militaryJob?.defName ?? "null"}). Skipping.");
+                return;
+            }
+
             FactionFC faction = FactionCache.FactionComp;
             if (faction.militaryTargets.Contains(militaryLocation))
             {
@@ -1249,6 +1255,8 @@ namespace FactionColonies
 
         public void ReturnMilitary(bool alert)
         {
+            if (!militaryBusy) return; // Already returned; duplicate cooldown event
+
             militaryBusy = false;
             militaryJob = MilitaryJobDefOf.Undefined;
             militaryLocation = -1;
@@ -1269,6 +1277,13 @@ namespace FactionColonies
         public void CooldownMilitaryFinal(int battleDeaths = 0)
         {
             FactionFC faction = FactionCache.FactionComp;
+
+            // Prevent duplicate cooldown events for the same settlement
+            if (faction.events.Any(e => e.def == FCEventDefOf.cooldownMilitary && e.location == WorldSettlement.Tile))
+            {
+                LogUtil.Warning($"CooldownMilitaryFinal: cooldownMilitary event already exists for {WorldSettlement.Name}. Skipping duplicate.");
+                return;
+            }
 
             int cooldown = GenDate.TicksPerDay * 3;
             cooldown += (int)faction.GetStatValue(FCStatDefOf.militaryCooldownOffset);

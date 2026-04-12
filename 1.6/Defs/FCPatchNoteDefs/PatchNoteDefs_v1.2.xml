@@ -373,4 +373,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_26</defName>
+		<label>Building &amp; Military Fixes</label>
+		<description>Couples fixes for a wrong building bonus, and military cooldown event issues.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Synthetic Wood Factory&apos;s 0.5 multiplier changed to a 0.5 additive bonus</li>
+		<li>Add several guards to prevent duplicate cooldown events or letters from firing</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
