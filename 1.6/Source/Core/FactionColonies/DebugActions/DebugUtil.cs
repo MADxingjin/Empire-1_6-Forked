@@ -677,6 +677,33 @@ namespace FactionColonies
             );
         }
 
+        [DebugAction("Empire", "Create 10 Random Settlements", allowedGameStates = AllowedGameStates.Playing)]
+        private static void CreateTenRandomSettlements()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction is null)
+            {
+                LogUtil.MessageForce("Debug - FactionFC WorldComponent is null, cannot create settlements.");
+                return;
+            }
+
+            WorldSettlementDef def = WorldSettlementDefOf.WorldSettlementDef_Surface;
+            int created = 0;
+            int maxAttempts = 500;
+
+            for (int attempts = 0; attempts < maxAttempts && created < 10; attempts++)
+            {
+                PlanetTile tile = TileFinder.RandomSettlementTileFor(Find.WorldGrid.Surface, FactionCache.PlayerColonyFaction);
+                if (tile == -1) continue;
+                if (!WorldTileChecker.IsValidTileForNewSettlement(tile, def)) continue;
+
+                ColonyUtil.CreatePlayerColonySettlement(tile, def);
+                created++;
+            }
+
+            LogUtil.MessageForce($"Debug - Created {created}/10 random settlements.");
+        }
+
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
         private static void RemovePlayerSettlement()
         {
