@@ -1,3 +1,4 @@
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace FactionColonies
         private List<PawnKindDef> allAnimals;
         private List<PawnKindDef> filteredAnimals;
         private string searchTerm = "";
+        private int viewFilter; // 0=All, 1=Combat, 2=Pack
         private Vector2 scrollPos;
 
         public override Vector2 InitialSize => new Vector2(450f, 600f);
@@ -95,6 +97,20 @@ namespace FactionColonies
                 RebuildFilteredList();
             }
 
+            // View filter buttons: All | Combat | Pack
+            float filterBtnHeight = 24f;
+            float filterRowY = searchRect.yMax + margin;
+            float filterBtnWidth = (inRect.width - margin * 2) / 3f;
+
+            Rect allBtn = new Rect(inRect.x, filterRowY, filterBtnWidth, filterBtnHeight);
+            Rect combatBtn = new Rect(allBtn.xMax + margin, filterRowY, filterBtnWidth, filterBtnHeight);
+            Rect packBtn = new Rect(combatBtn.xMax + margin, filterRowY, filterBtnWidth, filterBtnHeight);
+
+            Text.Font = GameFont.Small;
+            DrawFilterButton(allBtn, "AnimalFilterShowAll".Translate(), 0);
+            DrawFilterButton(combatBtn, "AnimalFilterShowCombat".Translate(), 1);
+            DrawFilterButton(packBtn, "AnimalFilterShowPack".Translate(), 2);
+
             float bottomY = inRect.yMax - CloseButSize.y - margin;
 
             // Warnings and errors at bottom (drawn bottom-up)
@@ -156,7 +172,7 @@ namespace FactionColonies
             bottomY -= (enableButton.height + margin);
 
             // Scrollable animal list
-            float listTop = searchRect.yMax + margin;
+            float listTop = filterRowY + filterBtnHeight + margin;
             float listHeight = bottomY - listTop;
             Rect scrollOutRect = new Rect(inRect.x, listTop, inRect.width, listHeight);
             Widgets.DrawMenuSection(scrollOutRect);
@@ -196,12 +212,53 @@ namespace FactionColonies
                     filter.SetAllowed(animal, allowed);
                 }
 
+                // Tags (combat/pack) - drawn right-to-left before checkbox
+                bool isCombat = animal.IsCombatAnimal();
+                bool isPack = animal.RaceProps.packAnimal;
+                float tagX = checkRect.x - margin;
+
+                if (isPack)
+                {
+                    float tagW = Text.CalcSize("AnimalTagPack".Translate()).x + 8f;
+                    tagX -= tagW;
+                    Rect tagRect = new Rect(tagX, row.y + 4f, tagW, RowHeight - 8f);
+                    Widgets.DrawBoxSolid(tagRect, new Color(0.2f, 0.4f, 0.55f, 0.6f));
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(tagRect, "AnimalTagPack".Translate());
+                    tagX -= 3f;
+                }
+
+                if (isCombat)
+                {
+                    float tagW = Text.CalcSize("AnimalTagCombat".Translate()).x + 8f;
+                    tagX -= tagW;
+                    Rect tagRect = new Rect(tagX, row.y + 4f, tagW, RowHeight - 8f);
+                    Widgets.DrawBoxSolid(tagRect, new Color(0.55f, 0.2f, 0.2f, 0.6f));
+                    Text.Font = GameFont.Tiny;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(tagRect, "AnimalTagCombat".Translate());
+                    tagX -= 3f;
+                }
+
                 // Label
-                Rect labelRect = new Rect(infoRect.xMax + margin, row.y, checkRect.x - infoRect.xMax - (margin * 2), RowHeight);
+                float labelEnd = tagX - margin;
+                Rect labelRect = new Rect(infoRect.xMax + margin, row.y, labelEnd - infoRect.xMax - margin, RowHeight);
+                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(labelRect, animal.LabelCap);
 
-                TooltipHandler.TipRegion(labelRect, animal.race.description);
+                // Tooltip with combat disqualification reasons
+                string tooltip = animal.race.description ?? "";
+                if (!isCombat)
+                {
+                    string reasons = GetNonCombatReasons(animal);
+                    if (!string.IsNullOrEmpty(reasons))
+                    {
+                        tooltip += "\n\n" + "AnimalNotCombatHeader".Translate() + "\n" + reasons;
+                    }
+                }
+                TooltipHandler.TipRegion(row, tooltip);
             }
 
             if (filteredAnimals.Count == 0)
@@ -217,18 +274,57 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
         }
 
+        private static string GetNonCombatReasons(PawnKindDef animal)
+        {
+            List<string> reasons = new List<string>();
+
+            if (animal.RaceProps.trainability is null
+                || animal.RaceProps.trainability.intelligenceOrder < TrainabilityDefOf.Intermediate.intelligenceOrder)
+            {
+                reasons.Add("- " + "AnimalNotCombatTrainability".Translate());
+            }
+
+            if (animal.combatPower <= 50f)
+            {
+                reasons.Add("- " + "AnimalNotCombatPowerLow".Translate(animal.combatPower.ToString("F0")));
+            }
+
+            return string.Join("\n", reasons);
+        }
+
+        private void DrawFilterButton(Rect rect, string label, int filterValue)
+        {
+            bool active = viewFilter == filterValue;
+            TextAnchor origAnchor = Text.Anchor;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            if (UIUtil.ButtonFlat(rect, label, highlighted: active))
+            {
+                viewFilter = filterValue;
+                RebuildFilteredList();
+            }
+
+            Text.Anchor = origAnchor;
+        }
+
         private void RebuildFilteredList()
         {
-            if (string.IsNullOrEmpty(searchTerm))
+            IEnumerable<PawnKindDef> source = allAnimals;
+
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                filteredAnimals = allAnimals;
+                source = source.Where(a => (a.label ?? a.defName).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            else
+
+            if (viewFilter == 1)
             {
-                filteredAnimals = allAnimals
-                    .Where(a => (a.label ?? a.defName).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
+                source = source.Where(a => a.IsCombatAnimal());
             }
+            else if (viewFilter == 2)
+            {
+                source = source.Where(a => a.RaceProps.packAnimal);
+            }
+
+            filteredAnimals = source.ToList();
         }
     }
 }

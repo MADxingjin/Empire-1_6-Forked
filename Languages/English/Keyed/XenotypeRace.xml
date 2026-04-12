@@ -40,5 +40,13 @@
 	<AnimalFilterNoneError>No animals are allowed! All animals will be re-enabled on close.</AnimalFilterNoneError>
 	<AnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</AnimalFilterNoCombatWarning>
 	<AnimalFilterNoPackWarning>No pack animals are allowed. Faction caravans will have no carriers.</AnimalFilterNoPackWarning>
+	<AnimalTagCombat>Combat</AnimalTagCombat>
+	<AnimalTagPack>Pack</AnimalTagPack>
+	<AnimalNotCombatHeader>Not a combat animal:</AnimalNotCombatHeader>
+	<AnimalNotCombatTrainability>Trainability too low (needs Intermediate or higher)</AnimalNotCombatTrainability>
+	<AnimalNotCombatPowerLow>Combat power too low ({0}, needs more than 50)</AnimalNotCombatPowerLow>
+	<AnimalFilterShowAll>All</AnimalFilterShowAll>
+	<AnimalFilterShowCombat>Combat</AnimalFilterShowCombat>
+	<AnimalFilterShowPack>Pack</AnimalFilterShowPack>
 
 </LanguageData>
