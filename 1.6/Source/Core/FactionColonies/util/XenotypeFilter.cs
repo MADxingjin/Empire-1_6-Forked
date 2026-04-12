@@ -1016,9 +1016,9 @@ namespace FactionColonies.util
                 }
             }
         }
-        private void RefreshPawnGroupMakers()
+        internal void RefreshPawnGroupMakers()
         {
-            if (faction == null || factionFc == null) return;
+            if (faction is null || factionFc is null) return;
             LogUtil.Message("Refreshing pawn group makers");
 
             PawnKindTemplateUtil.InvalidateCache();

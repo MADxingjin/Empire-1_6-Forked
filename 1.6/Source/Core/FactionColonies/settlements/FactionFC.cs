@@ -2084,7 +2084,6 @@ namespace FactionColonies
             def.techLevel = tech;
             def.basicMemberKind = replacingDef.basicMemberKind;
             def.visitorTraderKinds = replacingDef.visitorTraderKinds;
-            def.baseTraderKinds = replacingDef.baseTraderKinds;
             if (replacingDef.apparelStuffFilter != null)
                 def.apparelStuffFilter = replacingDef.apparelStuffFilter;
 

@@ -313,23 +313,28 @@ namespace FactionColonies.util
             }
 
             int guardsAdded = 0;
-            foreach (var guardAnimal in guardAnimals)
+            int loopCount = 0;
+            int loopGuard = 10;
+            while (guardsAdded < 2 && availableGuardAnimals.Any() && loopCount < loopGuard)
             {
+                PawnKindDef guardAnimal = availableGuardAnimals.RandomElement();
                 try
                 {
                     Pawn guard = PawnGenerator.GeneratePawn(FCPawnGenerator.AnimalRequest(guardAnimal));
-                    if (guard != null)
+                    if (guard is object)
                     {
                         securityGuards.Add(guard);
                         guardsAdded++;
                         LogUtil.Message($"Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
-                        if (guardsAdded >= 2) break; // Always add at least 2 guards
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.Warning($"Failed to spawn security guard {guardAnimal.label}: {ex.Message}");
+                    LogUtil.Warning($"Failed to spawn security guard {guardAnimal.label}: {ex}");
+                    availableGuardAnimals.Remove(guardAnimal);
                 }
+
+                loopCount++;
             }
 
             // Combine all pawns

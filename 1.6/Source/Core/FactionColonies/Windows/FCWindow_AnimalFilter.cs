@@ -63,6 +63,7 @@ namespace FactionColonies
         {
             base.PostClose();
             filter.Validate();
+            faction.xenotypeFilter?.RefreshPawnGroupMakers();
             FactionDefDescriptionPatch.Invalidate();
         }
 

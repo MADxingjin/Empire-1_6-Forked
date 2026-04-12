@@ -35,6 +35,8 @@ namespace FactionColonies
         {
             if (settlement is null)
                 yield break;
+            
+            LogUtil.Message($"Generating stock for settlement {settlement.Name}");
 
             float levelScale = settlement.settlementLevel / AnchorLevel;
 

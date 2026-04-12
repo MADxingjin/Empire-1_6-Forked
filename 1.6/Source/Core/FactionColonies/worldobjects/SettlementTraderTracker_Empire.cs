@@ -16,6 +16,8 @@ namespace FactionColonies
         protected override void RegenerateStock()
         {
             WorldSettlementFC worldSettlement = settlement as WorldSettlementFC;
+            
+            LogUtil.Message($"SettlementTraderTracker_Empire: Regenerating Stock");
 
             // Set settlement reference on each EmpireStockGenerator
             if (worldSettlement is object && TraderKind is object)

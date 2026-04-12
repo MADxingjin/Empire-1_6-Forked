@@ -1295,5 +1295,20 @@ namespace FactionColonies
             LogUtil.MessageForce($"Validating settlement caravan list...");
             FactionCache.FactionComp?.ValidateSettlementCaravansList();
         }
+
+        [DebugAction("Empire", "Force Restock Settlement Trader", allowedGameStates = AllowedGameStates.Playing)]
+        private static void DebugForceRestockSettlementTrader()
+        {
+            List<DebugMenuOption> options = new List<DebugMenuOption>();
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+            {
+                options.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, () =>
+                {
+                    settlement.trader?.TryDestroyStock();
+                    LogUtil.MessageForce($"Destroyed trader stock for {settlement.Name}. Will regenerate on next trade access.");
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(options));
+        }
     }
 }
