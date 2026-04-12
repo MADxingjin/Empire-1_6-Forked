@@ -181,6 +181,12 @@ namespace FactionColonies
 
         // ── Caravans ──
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
+        /// <summary>
+        /// Player-selected caravan types. Strings are logical identifiers:
+        /// resource defNames (e.g. "RTD_Food"), "Exotic", or "Slaver".
+        /// Resolved to actual TraderKindDefs in UpdateFactionDef().
+        /// </summary>
+        public List<string> enabledCaravanTypes = new List<string>();
 
         // ── Leveling ──
         public int factionLevel = 1;
@@ -215,7 +221,7 @@ namespace FactionColonies
         {
             // We used to do the harmony patching here, but I moved it to HarmonyPatcher.cs with a
             // [StaticConstructoreOnStartup] tag. Honestly not sure why the harmony patch was run here.
-            // Leaveing this comment mostly for posterity.
+            // Leaving this comment mostly for posterity.
         }
 
         /// <summary>
@@ -275,6 +281,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
+            Scribe_Collections.Look(ref enabledCaravanTypes, "enabledCaravanTypes", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
             //New Production types
@@ -392,6 +399,17 @@ namespace FactionColonies
                 if (Scribe.mode == LoadSaveMode.Inactive)
                 {
                     animalFilter.FinalizeInit();
+                }
+            }
+
+            // Initialize caravan types with defaults if empty (new game or old save)
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                enabledCaravanTypes = new List<string>();
+                foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
+                {
+                    if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
+                        enabledCaravanTypes.Add(rtd.defName);
                 }
             }
 
@@ -2078,12 +2096,11 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     break;
             }
-            def.caravanTraderKinds = replacingDef.caravanTraderKinds;
+            def.caravanTraderKinds = BuildCaravanTraderKinds(tech);
             if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
                 def.backstoryFilters = replacingDef.backstoryFilters;
             def.techLevel = tech;
             def.basicMemberKind = replacingDef.basicMemberKind;
-            def.visitorTraderKinds = replacingDef.visitorTraderKinds;
             if (replacingDef.apparelStuffFilter != null)
                 def.apparelStuffFilter = replacingDef.apparelStuffFilter;
 
@@ -2097,6 +2114,60 @@ namespace FactionColonies
             UpdateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
 
             LogUtil.Message("FactionFC.UpdateFactionDef - Completed tech update");
+        }
+
+        /// <summary>
+        /// Builds the caravanTraderKinds list from <see cref="enabledCaravanTypes"/>.
+        /// Resource types resolve to Caravan_Empire_{Name} defs.
+        /// Exotic/Slaver resolve to tech-appropriate vanilla defs with policy/level gating.
+        /// </summary>
+        private List<TraderKindDef> BuildCaravanTraderKinds(TechLevel tech)
+        {
+            List<TraderKindDef> result = new List<TraderKindDef>();
+            bool isNeolithic = tech <= TechLevel.Medieval;
+
+            foreach (string typeId in enabledCaravanTypes)
+            {
+                TraderKindDef resolved = null;
+
+                if (typeId == "Exotic")
+                {
+                    bool hasLevel = factionLevel >= 4;
+                    bool hasMercantile = HasPolicy(FCPolicyDefOf.mercantile);
+                    if (!hasLevel && !hasMercantile)
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_ShamanMerchant"
+                        : "Caravan_Outlander_Exotic";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else if (typeId == "Slaver")
+                {
+                    if (HasPolicy(FCPolicyDefOf.pacifist) || HasPolicy(FCPolicyDefOf.egalitarian))
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_Slaver"
+                        : "Caravan_Outlander_PirateMerchant";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else
+                {
+                    // Resource-based: RTD_Food -> Caravan_Empire_Food
+                    ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.GetNamedSilentFail(typeId);
+                    if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
+                        continue;
+
+                    string suffix = rtd.defName.Replace("RTD_", "");
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
+                }
+
+                if (resolved is object)
+                    result.Add(resolved);
+            }
+
+            return result;
         }
 
         public string ReturnNextTechToLevel()

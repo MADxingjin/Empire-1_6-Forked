@@ -124,10 +124,10 @@ namespace FactionColonies
                 && res.def.CanTithe;
         }
         /// <summary>
-        /// Provides extra scaling for the trader's wealth. Centralized for easy of editing.
+        /// Provides extra scaling for the trader's wealth. Centralized for ease of editing.
         /// </summary>
         /// <returns></returns>
-        private static float ExtraScaling()
+        internal static float ExtraScaling()
         {
             // Triple the income to start with. At default settings, a level 5 settlement will have 15 workers,
             // 20 if overmax is assigned. If we assume that each worker produces 1.5 production, and that 1 production

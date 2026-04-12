@@ -317,4 +317,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_22</defName>
+		<label>New Caravan Type Picker</label>
+		<description>Adds ability for player to select what types of trading caravans their Empire will send.</description>
+		<releaseDate>2026-04-11</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds menus and machinery for picking caravan types for the Empire faction. One caravan type per tithe-able resource, plus slaver and exotic (if certain conditions are met)</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

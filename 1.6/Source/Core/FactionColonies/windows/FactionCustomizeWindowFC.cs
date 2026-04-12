@@ -143,9 +143,12 @@ namespace FactionColonies
             }
             y += bottomRowHeight + cardGap;
 
-            // 5. Animals Row
-            Rect animalCard = new Rect(inRect.x, y, inRect.width, bottomRowHeight);
+            // 5. Animals & Caravan Types Row
+            float halfBottomWidth = (inRect.width - cardGap) / 2f;
+            Rect animalCard = new Rect(inRect.x, y, halfBottomWidth, bottomRowHeight);
+            Rect caravanCard = new Rect(inRect.x + halfBottomWidth + cardGap, y, halfBottomWidth, bottomRowHeight);
             DrawAnimalsCard(animalCard);
+            DrawCaravanTypesCard(caravanCard);
             y += bottomRowHeight + cardGap;
 
             // 6. Confirm Button
@@ -371,6 +374,19 @@ namespace FactionColonies
             if (UIUtil.ButtonFlat(btnRect, "fcConfigure".Translate()))
             {
                 Find.WindowStack.Add(new FCWindow_AnimalFilter());
+            }
+        }
+
+        private void DrawCaravanTypesCard(Rect rect)
+        {
+            DrawCard(rect);
+            DrawCardLabel(rect, "FCCaravanTypes".Translate());
+            float btnWidth = rect.width - cardPadding * 2;
+            float btnHeight = 28f;
+            Rect btnRect = new Rect(rect.x + cardPadding, rect.y + (rect.height - btnHeight) / 2f + 8f, btnWidth, btnHeight);
+            if (UIUtil.ButtonFlat(btnRect, "fcConfigure".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_CaravanTypePicker());
             }
         }
 
