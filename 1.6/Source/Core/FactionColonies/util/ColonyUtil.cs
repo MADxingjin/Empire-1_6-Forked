@@ -210,7 +210,17 @@ namespace FactionColonies.util
         public static bool CreatePlayerFactionLeader(Faction faction)
         {
             bool success = true;
-            if (!faction.TryGenerateNewLeader())
+            bool leaderGenerated = false;
+            try
+            {
+                leaderGenerated = faction.TryGenerateNewLeader();
+            }
+            catch (System.Exception ex)
+            {
+                LogUtil.Warning("TryGenerateNewLeader threw an exception. Falling back to manual generation. Exception: " + ex);
+            }
+
+            if (!leaderGenerated)
             {
                 LogUtil.Warning("TryGenerateNewLeader failed. Falling back to manual generation.");
                 PawnKindDef fallbackKind = faction.RandomPawnKind();

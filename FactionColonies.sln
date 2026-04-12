@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.HAR", "1.6\Source\Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.KCSG", "1.6\Source\Patch-KCSG\Empire.KCSG.csproj", "{ADD38221-BC00-9C01-65F2-553F6475D46D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empire.PRD", "1.6\Source\Patch-PRD\Empire.PRD.csproj", "{C23C61BC-1DAA-406A-AF2F-542003644CDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,24 @@ Global
 		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x64.Build.0 = Testing|Any CPU
 		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x86.ActiveCfg = Testing|Any CPU
 		{ADD38221-BC00-9C01-65F2-553F6475D46D}.Testing|x86.Build.0 = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|x64.Build.0 = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Debug|x86.Build.0 = Debug|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|x64.ActiveCfg = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|x64.Build.0 = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|x86.ActiveCfg = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Release|x86.Build.0 = Release|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|x64.ActiveCfg = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|x64.Build.0 = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|x86.ActiveCfg = Testing|Any CPU
+		{C23C61BC-1DAA-406A-AF2F-542003644CDC}.Testing|x86.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

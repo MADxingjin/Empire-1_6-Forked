@@ -359,4 +359,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_25</defName>
+		<label>Pawnkind Race Diversification Patch</label>
+		<description>Provides compatibility with Pawnkind Race Diversification.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Patch PRD&apos;s ResetRequest to ignore Empire&apos;s runtime-generated pawnkinds</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
