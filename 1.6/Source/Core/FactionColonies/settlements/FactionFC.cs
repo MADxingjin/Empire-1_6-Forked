@@ -380,6 +380,17 @@ namespace FactionColonies
                 InitEnabledCaravanTypes();
             }
 
+            // Initialize animal filter
+            if (animalFilter is null)
+            {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
+                animalFilter = new AnimalFilter();
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    animalFilter.FinalizeInit();
+                }
+            }
+
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
@@ -397,17 +408,6 @@ namespace FactionColonies
                     xenotypeFilter.FinalizeInit(this);
                 }
                 // Otherwise deferred to firstTick (see WorldComponentTick)
-            }
-
-            // Initialize animal filter
-            if (animalFilter is null)
-            {
-                LogUtil.Warning("Null animalFilter detected - Creating new one");
-                animalFilter = new AnimalFilter();
-                if (Scribe.mode == LoadSaveMode.Inactive)
-                {
-                    animalFilter.FinalizeInit();
-                }
             }
 
             // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
@@ -470,18 +470,7 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
-                // Finalize xenotypeFilter if it was deferred from FinalizeInit
-                // (happens when Empire is added to an existing save)
-                if (xenotypeFilter is null)
-                {
-                    LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
-                    xenotypeFilter = new XenotypeFilter(this);
-                }
-                if (!xenotypeFilter.IsInitialized)
-                {
-                    xenotypeFilter.FinalizeInit(this);
-                }
-
+                bool reinitXenoFilter = false;
                 if (animalFilter is null)
                 {
                     animalFilter = new AnimalFilter();
@@ -489,6 +478,19 @@ namespace FactionColonies
                 if (!animalFilter.IsInitialized)
                 {
                     animalFilter.FinalizeInit();
+                    reinitXenoFilter = true;
+                }
+                
+                // Finalize xenotypeFilter if it was deferred from FinalizeInit
+                // (happens when Empire is added to an existing save)
+                if (xenotypeFilter is null)
+                {
+                    LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
+                    xenotypeFilter = new XenotypeFilter(this);
+                }
+                if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
+                {
+                    xenotypeFilter.FinalizeInit(this);
                 }
 
                 // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit

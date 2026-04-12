@@ -9,9 +9,9 @@ namespace FactionColonies
         private HashSet<PawnKindDef> allowedAnimals = new HashSet<PawnKindDef>();
         private bool _initialized;
 
-        private List<PawnKindDef> _cachedAllowed;
-        private List<PawnKindDef> _cachedAllowedCombat;
-        private List<PawnKindDef> _cachedAllowedPack;
+        private List<PawnKindDef> _cachedAllowed = null;
+        private List<PawnKindDef> _cachedAllowedCombat = null;
+        private List<PawnKindDef> _cachedAllowedPack = null;
 
         public bool IsInitialized => _initialized;
         public int AllowedCount => allowedAnimals.Count;
@@ -102,16 +102,7 @@ namespace FactionColonies
 
         public void ExposeData()
         {
-            List<PawnKindDef> allowedList = allowedAnimals?.ToList() ?? new List<PawnKindDef>();
-            Scribe_Collections.Look(ref allowedList, "allowedAnimals", LookMode.Def);
-
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                allowedAnimals = allowedList is object
-                    ? new HashSet<PawnKindDef>(allowedList.Where(d => d is object))
-                    : new HashSet<PawnKindDef>();
-                InvalidateCache();
-            }
+            Scribe_Collections.Look(ref allowedAnimals, "allowedAnimals", LookMode.Def);
         }
     }
 }
