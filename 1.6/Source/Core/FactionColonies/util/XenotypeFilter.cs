@@ -11,7 +11,6 @@ namespace FactionColonies.util
         private FactionDef faction;
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
-        private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
         private bool _initialized = false;
         public bool IsInitialized => _initialized;
 
@@ -157,7 +156,6 @@ namespace FactionColonies.util
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
-            origBaseTraderKinds.AddRange(faction.baseTraderKinds);
         }
 
         public void FinalizeInit(FactionFC factionFc)
@@ -199,7 +197,6 @@ namespace FactionColonies.util
 
             RefreshPawnGroupMakers();
             PawnKindTemplateUtil.FixupPawnKindDefs(factionFc);
-            WorldSettlementTraderTracker.ReloadTraderKind();
             _initialized = true;
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.
@@ -924,12 +921,8 @@ namespace FactionColonies.util
                 LogUtil.Error("RefreshPawnGroupMakers: trader pawnGroupMaker has no traders after template population");
             if (!faction.pawnGroupMakers[3].options.Any())
                 LogUtil.Error("RefreshPawnGroupMakers: peaceful pawnGroupMaker has no options after template population");
-            if (WorldSettlementTraderTracker.BaseTraderKinds != null && !WorldSettlementTraderTracker.BaseTraderKinds.Any())
-            {
-                LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting fallback");
-                faction.baseTraderKinds.AddRange(origBaseTraderKinds);
-                WorldSettlementTraderTracker.ReloadTraderKind();
-            }
+            if (faction.baseTraderKinds is null || !faction.baseTraderKinds.Any())
+                LogUtil.Error("RefreshPawnGroupMakers: faction has no baseTraderKinds after refresh");
         }
         private void SetPawnGroupMakers()
         {
@@ -1287,8 +1280,6 @@ namespace FactionColonies.util
 
             Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
             Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
-
-            Scribe_Collections.Look(ref origBaseTraderKinds, "origBaseTraderKinds", LookMode.Def);
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

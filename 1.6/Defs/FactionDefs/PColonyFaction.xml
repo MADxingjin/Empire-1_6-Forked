@@ -15,5 +15,8 @@
 		<maxConfigurableAtWorldCreation>0</maxConfigurableAtWorldCreation>
 		<startingCountAtWorldCreation>0</startingCountAtWorldCreation>
 		<canGenerateQuestSites>false</canGenerateQuestSites>
+		<baseTraderKinds Inherit="False">
+			<li>Base_Empire_Standard</li>
+		</baseTraderKinds>
 	</FactionDef>
 </Defs>

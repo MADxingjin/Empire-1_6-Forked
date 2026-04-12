@@ -289,4 +289,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_20</defName>
+		<label>Settlement Trading Rework</label>
+		<description>Reworks settlement trading. Settlement inventories are based on the resources they produce, and their wealth is based on settlement income and the Empire faction&apos;s tech level.</description>
+		<releaseDate>2026-04-11</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Replace the old trader code with actual functional code that won&apos;t needlessly harm performance</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
