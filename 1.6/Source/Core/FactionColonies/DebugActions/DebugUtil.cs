@@ -1053,6 +1053,32 @@ namespace FactionColonies
             LogUtil.MessageForce($"Debug - Build Road Segment Now: {(built ? "segment built" : "no segment to build")}");
         }
 
+        [DebugAction("Empire", "Build 10 Road Segments", allowedGameStates = AllowedGameStates.Playing)]
+        private static void BuildTenRoadSegments()
+        {
+            var rb = FactionCache.FactionComp.roadBuilder;
+            if (rb.roadDef is null)
+            {
+                LogUtil.MessageForce("Debug - No road research completed yet");
+                return;
+            }
+            if (rb.roadQueue is null)
+            {
+                LogUtil.MessageForce("Debug - No road queue exists");
+                return;
+            }
+
+            int built = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                rb.roadQueue.nextRoadTick = Find.TickManager.TicksGame;
+                rb.roadQueue.ProcessOnePath();
+                if (!rb.roadQueue.BuildRoadSegments()) break;
+                built++;
+            }
+            LogUtil.MessageForce($"Debug - Built {built}/10 road segments.");
+        }
+
         // ============================
         // Policy Debug Actions
         // ============================
