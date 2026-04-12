@@ -258,10 +258,25 @@ namespace FactionColonies
         }
     }
 
-    //Make PColony hostile to factionless pawns that are actively fighting
+    //Mirror player hostility to PColony: if something is hostile to the player, PColony considers it hostile too.
+    //Covers the Thing-vs-Faction overload used by AttackTargetsCache.RegisterTarget to build the hostile target cache.
+    [HarmonyPatch(typeof(GenHostility))]
+    [HarmonyPatch("HostileTo", typeof(Thing), typeof(Faction))]
+    class PColonyMirrorHostileTo_ThingFaction
+    {
+        static void Postfix(Thing t, Faction fac, ref bool __result)
+        {
+            if (__result) return;
+            if (fac != FactionCache.PlayerColonyFaction) return;
+            __result = t.HostileTo(Faction.OfPlayer);
+        }
+    }
+
+    //Mirror player hostility to PColony: Thing-vs-Thing overload used by GetPotentialTargetsFor double-checks
+    //and direct pawn-to-pawn hostility queries.
     [HarmonyPatch(typeof(GenHostility))]
     [HarmonyPatch("HostileTo", typeof(Thing), typeof(Thing))]
-    class PColonyHostileToFactionless
+    class PColonyMirrorHostileTo_ThingThing
     {
         static void Postfix(Thing a, Thing b, ref bool __result)
         {
@@ -270,18 +285,14 @@ namespace FactionColonies
             Faction pcFaction = FactionCache.PlayerColonyFaction;
             if (pcFaction is null) return;
 
-            Pawn factionless;
-            if (a.Faction == pcFaction && b.Faction is null)
-                factionless = b as Pawn;
-            else if (b.Faction == pcFaction && a.Faction is null)
-                factionless = a as Pawn;
+            Thing other;
+            if (a.Faction == pcFaction)
+                other = b;
+            else if (b.Faction == pcFaction)
+                other = a;
             else return;
 
-            if (factionless is null) return;
-
-            __result = factionless.IsFighting()
-                    || factionless.InAggroMentalState
-                    || (factionless.mindState?.duty?.def == DutyDefOf.AssaultColony);
+            __result = other.HostileTo(Faction.OfPlayer);
         }
     }
 
