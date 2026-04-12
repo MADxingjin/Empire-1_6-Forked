@@ -373,6 +373,13 @@ namespace FactionColonies
                 }
             }
 
+            // Initialize caravan types with defaults if empty (new game or old save)
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
+                InitEnabledCaravanTypes();
+            }
+
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
@@ -395,21 +402,11 @@ namespace FactionColonies
             // Initialize animal filter
             if (animalFilter is null)
             {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
                 animalFilter = new AnimalFilter();
                 if (Scribe.mode == LoadSaveMode.Inactive)
                 {
                     animalFilter.FinalizeInit();
-                }
-            }
-
-            // Initialize caravan types with defaults if empty (new game or old save)
-            if (enabledCaravanTypes.NullOrEmpty())
-            {
-                enabledCaravanTypes = new List<string>();
-                foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
-                {
-                    if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
-                        enabledCaravanTypes.Add(rtd.defName);
                 }
             }
 
@@ -2116,6 +2113,16 @@ namespace FactionColonies
             LogUtil.Message("FactionFC.UpdateFactionDef - Completed tech update");
         }
 
+        private void InitEnabledCaravanTypes()
+        {
+            enabledCaravanTypes = new List<string>();
+            foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
+            {
+                if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
+                    enabledCaravanTypes.Add(rtd.defName);
+            }
+        }
+
         /// <summary>
         /// Builds the caravanTraderKinds list from <see cref="enabledCaravanTypes"/>.
         /// Resource types resolve to Caravan_Empire_{Name} defs.
@@ -2125,6 +2132,12 @@ namespace FactionColonies
         {
             List<TraderKindDef> result = new List<TraderKindDef>();
             bool isNeolithic = tech <= TechLevel.Medieval;
+
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("enabledCaravanTypes null or empty in BuildCaravanTraderKinds");
+                InitEnabledCaravanTypes();
+            }
 
             foreach (string typeId in enabledCaravanTypes)
             {
