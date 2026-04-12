@@ -12,6 +12,7 @@ namespace FactionColonies
         public WorldPath Path { get; protected set; }
         public int From { get; protected set; }
         public int To { get; protected set; }
+        public RoadDef builtRoadDef;
 
         /// <summary>
         /// Parameterless constructor required for Scribe deserialization.
@@ -70,6 +71,7 @@ namespace FactionColonies
             int to = this.To;
             Scribe_Values.Look(ref from, "from");
             Scribe_Values.Look(ref to, "to");
+            Scribe_Defs.Look(ref builtRoadDef, "builtRoadDef");
 
             List<int> nodeIds = null;
             float totalCost = 0f;

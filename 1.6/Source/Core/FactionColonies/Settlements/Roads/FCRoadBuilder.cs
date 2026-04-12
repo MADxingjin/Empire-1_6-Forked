@@ -150,44 +150,29 @@ namespace FactionColonies
 
         public void CheckForTechChanges()
         {
-            LogUtil.Message("CheckForTechChanges: Starting tech check...");
-
-            FactionFC faction = FactionCache.FactionComp;
             RoadDef def = this.roadDef;
-            RoadDef oldDef = def;
 
             if (DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingHighway", false).IsFinished)
             {
                 def = RoadDefOf.AncientAsphaltHighway;
-                LogUtil.Message("CheckForTechChanges: Highway research complete, using AncientAsphaltHighway");
             }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingRoad", false).IsFinished)
             {
                 def = RoadDefOf.AncientAsphaltRoad;
-                LogUtil.Message("CheckForTechChanges: Road research complete, using AncientAsphaltRoad");
             }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false).IsFinished)
             {
                 // Use DirtPath (priority 10) to match existing world-generated dirt paths
                 def = DefDatabase<RoadDef>.GetNamed("DirtPath", false);
-                LogUtil.Message($"CheckForTechChanges: Dirt road research complete, using {def?.defName ?? "null"}");
-            }
-            else
-            {
-                LogUtil.Message("CheckForTechChanges: No road research completed yet");
             }
 
             if (this.roadDef != def)
             {
-                LogUtil.Message($"CheckForTechChanges: Road type changed from {oldDef?.defName ?? "null"} to {def?.defName ?? "null"}");
+                LogUtil.Message($"Road type changed from {this.roadDef?.defName ?? "null"} to {def?.defName ?? "null"}");
                 this.roadDef = def;
 
                 roadQueue.RoadDef = def;
                 FlagUpdateRoadQueues();
-            }
-            else
-            {
-                LogUtil.Message($"CheckForTechChanges: Road type unchanged: {this.roadDef?.defName ?? "null"}");
             }
         }
 

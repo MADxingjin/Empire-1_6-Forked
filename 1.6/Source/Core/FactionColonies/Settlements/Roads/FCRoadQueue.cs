@@ -165,10 +165,12 @@ namespace FactionColonies
 
         IEnumerator<FCRoadPath> ProcessPath()
         {
-            // Phase 0: Purge incomplete paths so the MST can re-optimize
-            // the network when settlements change. Partially-built road tiles
-            // remain on the world map but no further effort is spent on them.
-            roadPaths.RemoveAll(p => !p.IsCompleted);
+            // Phase 0: Purge incomplete paths and completed paths with inferior
+            // road types so the MST can re-optimize the network when settlements
+            // change or road tech upgrades. Partially-built road tiles remain on
+            // the world map but no further effort is spent on them.
+            roadPaths.RemoveAll(p => !p.IsCompleted ||
+                FCRoadPath.IsNewRoadBetter(p.builtRoadDef, this.roadDef));
 
             // Phase 1: Collect all unique tile IDs from both settlement lists
             HashSet<int> allTileSet = new HashSet<int>();
@@ -236,11 +238,16 @@ namespace FactionColonies
 
                 bool alreadyExists = this.roadPaths.Any(path =>
                     path.IsCompleted &&
+                    !FCRoadPath.IsNewRoadBetter(path.builtRoadDef, this.roadDef) &&
                     ((path.From == from && path.To == to) ||
                      (path.From == to && path.To == from)));
 
                 if (!alreadyExists)
-                    yield return new FCRoadPath(from, to);
+                {
+                    FCRoadPath newPath = new FCRoadPath(from, to);
+                    newPath.builtRoadDef = this.roadDef;
+                    yield return newPath;
+                }
             }
         }
 

@@ -388,4 +388,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_27</defName>
+		<label>Update the road builder</label>
+		<description>Updates the road builder so that it actually upgrades existing roads when higher-tech roads become available.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Road paths track what road def they were built with, and if new, better roads become available, old paths are wiped from the MST, enabling new paths with the new road type to be built</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
