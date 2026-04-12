@@ -53,7 +53,7 @@ namespace FactionColonies
             return pawnKindDef.IsAnimalAndAllowed()
                    && pawnKindDef.RaceProps.trainability is object
                    && pawnKindDef.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder
-                   && pawnKindDef.combatPower > 50f;
+                   && pawnKindDef.combatPower >= 50f;
         }
 
 

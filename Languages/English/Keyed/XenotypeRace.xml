@@ -44,7 +44,7 @@
 	<AnimalTagPack>Pack</AnimalTagPack>
 	<AnimalNotCombatHeader>Not a combat animal:</AnimalNotCombatHeader>
 	<AnimalNotCombatTrainability>Trainability too low (needs Intermediate or higher)</AnimalNotCombatTrainability>
-	<AnimalNotCombatPowerLow>Combat power too low ({0}, needs more than 50)</AnimalNotCombatPowerLow>
+	<AnimalNotCombatPowerLow>Combat power too low ({0}, needs 50 or more)</AnimalNotCombatPowerLow>
 	<AnimalFilterShowAll>All</AnimalFilterShowAll>
 	<AnimalFilterShowCombat>Combat</AnimalFilterShowCombat>
 	<AnimalFilterShowPack>Pack</AnimalFilterShowPack>

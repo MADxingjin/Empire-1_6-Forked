@@ -284,7 +284,7 @@ namespace FactionColonies
                 reasons.Add("- " + "AnimalNotCombatTrainability".Translate());
             }
 
-            if (animal.combatPower <= 50f)
+            if (animal.combatPower < 50f)
             {
                 reasons.Add("- " + "AnimalNotCombatPowerLow".Translate(animal.combatPower.ToString("F0")));
             }
