@@ -303,4 +303,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_21</defName>
+		<label>New Animal Picker</label>
+		<description>Adds the ability to pick what animals can accompany Empire pawns during delivery events.</description>
+		<releaseDate>2026-04-11</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds the ability to pick what animals can accompany Empire pawns during delivery events</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

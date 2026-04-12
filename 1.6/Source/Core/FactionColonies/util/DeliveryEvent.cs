@@ -206,7 +206,8 @@ namespace FactionColonies.util
                     if (deliveryPawn == null)
                     {
                         LogUtil.Warning("Failed to generate human pawn, falling back to animals");
-                        var availableAnimals = FactionCache.AllCombatAnimalKindDefs
+                        var combatPool = FactionCache.FactionComp?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+                        var availableAnimals = combatPool
                             .OrderByDescending(def => def.combatPower)
                             .Take(5)
                             .ToList();
@@ -299,7 +300,8 @@ namespace FactionColonies.util
 
             // Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
             // This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-            var guardAnimals = FactionCache.AllCombatAnimalKindDefs
+            var guardPool = FactionCache.FactionComp?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+            var guardAnimals = guardPool
                 .OrderByDescending(def => def.combatPower)
                 .Take(5); // Take more options to ensure we can get 2 guards
 

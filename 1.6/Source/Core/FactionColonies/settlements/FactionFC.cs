@@ -203,6 +203,7 @@ namespace FactionColonies
 
         // ── Filters & Misc ──
         public XenotypeFilter xenotypeFilter;
+        public AnimalFilter animalFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
         public float tradedAmount = 0;
 
@@ -284,6 +285,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
+            Scribe_Deep.Look(ref animalFilter, "animalFilter");
 
             //Update
             Scribe_Values.Look(ref nextSettlementFCID, "nextSettlementFCID");
@@ -383,6 +385,16 @@ namespace FactionColonies
                 // Otherwise deferred to firstTick (see WorldComponentTick)
             }
 
+            // Initialize animal filter
+            if (animalFilter is null)
+            {
+                animalFilter = new AnimalFilter();
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    animalFilter.FinalizeInit();
+                }
+            }
+
             // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
             factionResources.Clear();
             foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
@@ -453,6 +465,15 @@ namespace FactionColonies
                 if (!xenotypeFilter.IsInitialized)
                 {
                     xenotypeFilter.FinalizeInit(this);
+                }
+
+                if (animalFilter is null)
+                {
+                    animalFilter = new AnimalFilter();
+                }
+                if (!animalFilter.IsInitialized)
+                {
+                    animalFilter.FinalizeInit();
                 }
 
                 // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit

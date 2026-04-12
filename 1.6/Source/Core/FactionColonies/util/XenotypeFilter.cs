@@ -101,10 +101,15 @@ namespace FactionColonies.util
             {
                 if (cachedGuardAnimals == null)
                 {
-                    cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
+                    var combatPool = factionFc?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+                    cachedGuardAnimals = combatPool.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
                 }
                 return cachedGuardAnimals;
             }
+        }
+        public void InvalidateGuardAnimalCache()
+        {
+            cachedGuardAnimals = null;
         }
         private bool checkedForNonViolent = false;
         private bool cachedHasOnlyNonViolent = false;
@@ -1042,7 +1047,8 @@ namespace FactionColonies.util
             ValidatePawnGroupMakers();
 
             // Add pack animals for caravans
-            foreach (PawnKindDef animalKindDef in FactionCache.AllPackAnimalKinds)
+            var packPool = factionFc?.animalFilter?.AllowedPackAnimals ?? FactionCache.AllPackAnimalKinds;
+            foreach (PawnKindDef animalKindDef in packPool)
             {
                 faction.pawnGroupMakers[1].carriers.Add(new PawnGenOption { kind = animalKindDef, selectionWeight = 1 });
             }

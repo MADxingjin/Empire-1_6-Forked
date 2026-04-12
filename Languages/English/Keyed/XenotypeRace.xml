@@ -32,4 +32,13 @@
 	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>
 	<OnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</OnlyNonViolentXenoWarning>
 
+	<!-- Animal Filter -->
+	<AllowedAnimals>Allowed Animals</AllowedAnimals>
+	<AnimalSelection>Animal Selection</AnimalSelection>
+	<AnimalEnableAll>Enable All</AnimalEnableAll>
+	<AnimalDisableAll>Disable All</AnimalDisableAll>
+	<AnimalFilterNoneError>No animals are allowed! All animals will be re-enabled on close.</AnimalFilterNoneError>
+	<AnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</AnimalFilterNoCombatWarning>
+	<AnimalFilterNoPackWarning>No pack animals are allowed. Faction caravans will have no carriers.</AnimalFilterNoPackWarning>
+
 </LanguageData>
