@@ -345,4 +345,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_24</defName>
+		<label>Tech scaling bugfix</label>
+		<description>Fixes an issue where generated pawns might not have tech-level appropriate gear.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: several pawn generation request used the template pawnKindDefs instead of the tech-level derived clones, resulting in pawns generating with the wrong gear</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

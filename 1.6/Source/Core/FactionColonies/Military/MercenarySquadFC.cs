@@ -299,7 +299,7 @@ namespace FactionColonies
 
             if (race == null || factionFc.xenotypeFilter.GetRaceWeight(raceChoice.race) <= 0)
             {
-                raceChoice = PColonyPawnKindDefOf.PColony_Fighter;
+                raceChoice = PawnKindTemplateUtil.GetFighterForRace(ThingDefOf.Human);
             }
 
             // Try to generate pawn with the requested kind

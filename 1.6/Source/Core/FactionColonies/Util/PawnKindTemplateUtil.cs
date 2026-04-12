@@ -134,6 +134,17 @@ namespace FactionColonies.util
         }
 
         /// <summary>
+        /// Returns the Villager template clone for a given race at the current Empire tech level.
+        /// </summary>
+        public static PawnKindDef GetVillagerForRace(ThingDef race)
+        {
+            TechLevel techLevel = FactionCache.FactionComp != null ? FactionCache.FactionComp.techLevel : TechLevel.Industrial;
+            List<PawnKindDef> clones = GetOrCreateClonesForRace(race, techLevel);
+            // Villager is the last template in the array (index 5)
+            return clones.Count > 5 ? clones[5] : PColonyPawnKindDefOf.PColony_Villager;
+        }
+
+        /// <summary>
         /// Clears the clone cache. Must be called when race weights or tech level change.
         /// </summary>
         public static void InvalidateCache()
