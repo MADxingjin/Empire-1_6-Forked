@@ -331,4 +331,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_23</defName>
+		<label>HAR Pawkind Update</label>
+		<description>Updates Empire&apos;s pawnkind handling to take tech level into account for HAR races.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates Empire&apos;s pawnkind handling to take tech level into account for HAR races. Techlevel was already accounted for for the base human race; only HAR races had this issue</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
