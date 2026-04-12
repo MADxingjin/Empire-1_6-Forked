@@ -76,6 +76,10 @@ namespace FactionColonies
             {
                 AllowAll();
             }
+            if (AllowedPackAnimals.Count == 0)
+            {
+                allowedAnimals.AddRange(FactionCache.AllPackAnimalKinds);
+            }
             _initialized = true;
             InvalidateCache();
         }
@@ -89,6 +93,14 @@ namespace FactionColonies
             {
                 LogUtil.Warning("AnimalFilter has no allowed animals. Re-enabling all");
                 AllowAll();
+                return;
+            }
+
+            if (AllowedPackAnimals.Count == 0)
+            {
+                LogUtil.Warning("AnimalFilter has no allowed pack animals. Re-enabling all pack animals");
+                allowedAnimals.AddRange(FactionCache.AllPackAnimalKinds);
+                InvalidateCache();
             }
         }
 

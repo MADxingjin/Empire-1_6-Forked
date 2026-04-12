@@ -146,16 +146,16 @@ namespace FactionColonies
             bool noPack = filter.AllowedPackAnimals.Count == 0 && filter.AllowedCount > 0;
             if (noPack)
             {
-                string warnText = "AnimalFilterNoPackWarning".Translate();
-                float textHeight = Text.CalcHeight(warnText, inRect.width - (smallMargin * 2));
-                Rect warnBox = new Rect(inRect.x, bottomY - textHeight - (smallMargin * 2), inRect.width, textHeight + (smallMargin * 2));
-                Rect warnLabel = new Rect(warnBox.x + smallMargin, warnBox.y + smallMargin, warnBox.width - (smallMargin * 2), textHeight);
+                string errorText = "AnimalFilterNoPackError".Translate();
+                float textHeight = Text.CalcHeight(errorText, inRect.width - (smallMargin * 2));
+                Rect errorBox = new Rect(inRect.x, bottomY - textHeight - (smallMargin * 2), inRect.width, textHeight + (smallMargin * 2));
+                Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y + smallMargin, errorBox.width - (smallMargin * 2), textHeight);
 
-                Widgets.DrawHighlight(warnBox);
+                Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(warnLabel, warnText.Colorize(Color.yellow));
-                bottomY -= (warnBox.height + margin);
+                Widgets.Label(errorLabel, errorText.Colorize(Color.red));
+                bottomY -= (errorBox.height + margin);
             }
 
             // Enable All / Disable All buttons

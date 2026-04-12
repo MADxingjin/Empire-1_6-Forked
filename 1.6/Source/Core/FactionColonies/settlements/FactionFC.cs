@@ -2174,6 +2174,10 @@ namespace FactionColonies
                     if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
                         continue;
 
+                    // Skip if this resource has no production
+                    if ((ReturnResource(rtd)?.amount ?? 0) == 0)
+                        continue;
+
                     string suffix = rtd.defName.Replace("RTD_", "");
                     resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
                 }
