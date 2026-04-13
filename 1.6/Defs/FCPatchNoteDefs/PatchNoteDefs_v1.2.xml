@@ -410,7 +410,8 @@
 		<releaseDate>2026-04-12</releaseDate>
 		<patchNoteType>Patch</patchNoteType>
 		<patchNoteLines>
-		<li>Spreads the MST computation out over several road ticks, reducing the possibility of a hang any time the MST is recomputed.</li>
+			<li>Spreads the MST computation out over several road ticks, reducing the possibility of a hang any time the MST is recomputed.</li>
+			<li>Updates the road builder to build from both ends, instead of just one</li>
 		</patchNoteLines>
 		<authors>
 		<li>Matathias</li>

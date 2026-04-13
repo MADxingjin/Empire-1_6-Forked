@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -13,6 +12,10 @@ namespace FactionColonies
         public int From { get; protected set; }
         public int To { get; protected set; }
         public RoadDef builtRoadDef;
+
+        List<int> nodeIds;
+        int forwardIndex;
+        int backwardIndex;
 
         /// <summary>
         /// Parameterless constructor required for Scribe deserialization.
@@ -63,6 +66,10 @@ namespace FactionColonies
             this.Path.SetupFound(path.TotalCost, mainPlanetLayer);
             this.Path.inUse = true;
             path.Dispose();
+
+            this.nodeIds = this.Path.NodesReversed.Select(t => t.tileId).ToList();
+            this.forwardIndex = 0;
+            this.backwardIndex = this.nodeIds.Count - 1;
         }
 
         public void ExposeData()
@@ -72,80 +79,93 @@ namespace FactionColonies
             Scribe_Values.Look(ref from, "from");
             Scribe_Values.Look(ref to, "to");
             Scribe_Defs.Look(ref builtRoadDef, "builtRoadDef");
+            Scribe_Values.Look(ref forwardIndex, "forwardIndex");
+            Scribe_Values.Look(ref backwardIndex, "backwardIndex");
 
-            List<int> nodeIds = null;
+            List<int> savedNodeIds = nodeIds;
             float totalCost = 0f;
-            int nodesLeft = 0;
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                nodeIds = this.Path.NodesReversed.Select(t => t.tileId).ToList();
                 totalCost = this.Path.TotalCost;
-                nodesLeft = this.Path.NodesLeftCount;
             }
 
-            Scribe_Collections.Look(ref nodeIds, "pathNodes", LookMode.Value);
+            Scribe_Collections.Look(ref savedNodeIds, "pathNodes", LookMode.Value);
             Scribe_Values.Look(ref totalCost, "totalCost");
-            Scribe_Values.Look(ref nodesLeft, "nodesLeft");
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 this.From = from;
                 this.To = to;
+                this.nodeIds = savedNodeIds;
 
                 var mainPlanetLayer = Find.WorldGrid.PlanetLayers[0];
                 this.Path = new WorldPath();
-                foreach (int nodeId in nodeIds)
+                foreach (int nodeId in this.nodeIds)
                 {
                     this.Path.AddNodeAtStart(new PlanetTile(nodeId, mainPlanetLayer));
                 }
                 this.Path.SetupFound(totalCost, mainPlanetLayer);
                 this.Path.inUse = true;
-
-                // Restore build progress (curNodeIndex is private in WorldPath)
-                Traverse.Create(this.Path).Field("curNodeIndex").SetValue(nodesLeft - 1);
             }
         }
 
         /// <summary>
-        ///  Builds 1 segment of road. Returns if a segment was built
+        /// Builds 1 segment from each end of the road. Returns true if any segment was built.
         /// </summary>
-        /// <returns> this.IsCompleted </returns>
-        /// <param name="roadDef">Road def.</param>
         public bool BuildSegment(RoadDef roadDef)
         {
-            start:
             if (!this.Path.Found || this.IsCompleted)
                 return false;
 
-            int tile = this.Path.ConsumeNextNode();
-            int lastTile = this.Path.Peek(-1);
-
-            WorldGrid grid = Find.WorldGrid;
-
-            RoadDef existingRoad = grid.GetRoadDef(lastTile, tile);
-            if (IsNewRoadBetter(existingRoad, roadDef))
-            {
-                // Replaces the road if this.Road.priority > the existing road's priority
-                grid.OverlayRoad(lastTile, tile, roadDef);
-                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(lastTile, out _);
-                Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(tile, out _);
-            }
-            else
-            {
-                goto start;
-            }
-            return true;
+            bool builtForward = BuildForward(roadDef);
+            bool builtBackward = BuildBackward(roadDef);
+            return builtForward || builtBackward;
         }
 
-
-        public bool IsCompleted
+        bool BuildForward(RoadDef roadDef)
         {
-            get
+            WorldGrid grid = Find.WorldGrid;
+            while (forwardIndex < backwardIndex)
             {
-                return this.Path.NodesLeftCount == 1;
+                int from = nodeIds[forwardIndex];
+                int to = nodeIds[forwardIndex + 1];
+                forwardIndex++;
+
+                RoadDef existingRoad = grid.GetRoadDef(from, to);
+                if (IsNewRoadBetter(existingRoad, roadDef))
+                {
+                    grid.OverlayRoad(from, to, roadDef);
+                    Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(from, out _);
+                    Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(to, out _);
+                    return true;
+                }
             }
+            return false;
         }
+
+        bool BuildBackward(RoadDef roadDef)
+        {
+            WorldGrid grid = Find.WorldGrid;
+            while (backwardIndex > forwardIndex)
+            {
+                int from = nodeIds[backwardIndex];
+                int to = nodeIds[backwardIndex - 1];
+                backwardIndex--;
+
+                RoadDef existingRoad = grid.GetRoadDef(from, to);
+                if (IsNewRoadBetter(existingRoad, roadDef))
+                {
+                    grid.OverlayRoad(from, to, roadDef);
+                    Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(from, out _);
+                    Find.WorldPathGrid.RecalculatePerceivedMovementDifficultyAt(to, out _);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsCompleted => forwardIndex >= backwardIndex;
 
         public static bool IsNewRoadBetter(RoadDef oldRoad, RoadDef newRoad)
         {
@@ -165,7 +185,8 @@ namespace FactionColonies
 
         public void ResetProgress()
         {
-            Traverse.Create(this.Path).Field("curNodeIndex").SetValue(this.Path.NodesReversed.Count - 1);
+            this.forwardIndex = 0;
+            this.backwardIndex = this.nodeIds.Count - 1;
         }
     }
 }
