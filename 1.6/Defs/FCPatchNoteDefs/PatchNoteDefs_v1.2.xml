@@ -499,7 +499,7 @@
 		<releaseDate>2026-04-13</releaseDate>
 		<patchNoteType>Patch</patchNoteType>
 		<patchNoteLines>
-		<li>Move the event modifier application code out of FactionFC.FinalizeInit and into the &quot;first tick&quot; processing. WorldComponents are finalized before WorldObjects are, and event modifiers got lost in that difference</li>
+		<li>Move the event modifier application code out of FactionFC.FinalizeInit and into each settlement's PostLoadInit phase. WorldComponents are finalized before WorldObjects are, and event modifiers got lost in that difference</li>
 		</patchNoteLines>
 		<authors>
 		<li>Matathias</li>

@@ -521,32 +521,6 @@ namespace FactionColonies
             {
                 startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
             }
-
-            // Re-apply active event stat modifiers to settlements.
-            // Must happen in firstTick, not FinalizeInit, because:
-            //   - FinalizeInit runs before Scribe.loader.FinalizeLoading
-            //   - Cross-references (settlements, settlementTraitLocations) aren't resolved until FinalizeLoading
-            //   - Settlement PostLoadInit clears transient modifiers and rebuilds only buildings + type
-            // By firstTick, cross-refs are resolved and PostLoadInit is complete.
-            foreach (FCEvent evt in events)
-            {
-                if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
-                string sourceId = "event_" + evt.def.defName;
-                if (evt.settlementTraitLocations.Any())
-                {
-                    foreach (WorldSettlementFC location in evt.settlementTraitLocations)
-                    {
-                        location?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                    }
-                }
-                else
-                {
-                    foreach (WorldSettlementFC settlement in settlements)
-                    {
-                        settlement?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                    }
-                }
-            }
         }
 
         public override void WorldComponentTick()

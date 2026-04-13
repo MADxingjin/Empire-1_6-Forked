@@ -476,30 +476,67 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // Safety net: if trader is null or wrong type (e.g., loading old save), recreate it
-                if (!(trader is SettlementTraderTracker_Empire))
-                    trader = new SettlementTraderTracker_Empire(this);
+                PostLoadInit();
+            }
+        }
 
-                // Rebuild stat modifiers from buildings and settlement type before calculating stats.
-                // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
-                // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
-                ClearStatModifiers();
-                BuildingsComp?.ReapplyBuildingStatModifiers();
-                // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-                AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
-                DirtyDescriptionCache();
+        /// <summary>
+        /// Handles all post-load initialization.
+        /// </summary>
+        private void PostLoadInit()
+        {
+            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+            {
+                LogUtil.Error($"Settlement {Name} attempted to call PostLoadInit during Scribe mode {Scribe.mode}. Bailing out.");
+                return;
+            }
+            
+            // Safety net: if trader is null or wrong type (e.g., loading old save), recreate it
+            if (!(trader is SettlementTraderTracker_Empire))
+                trader = new SettlementTraderTracker_Empire(this);
 
-                // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type).
-                // PostExposeData runs before this point, so comps that depend on production/stat values
-                // should defer that work to this callback.
-                LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on {AllComps.Count} comps...");
-                foreach (WorldObjectComp comp in AllComps)
+            // Rebuild stat modifiers from buildings and settlement type before calculating stats.
+            // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
+            // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
+            ClearStatModifiers();
+            BuildingsComp?.ReapplyBuildingStatModifiers();
+            // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
+            AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
+
+            // Re-apply active event stat modifiers that target this settlement.
+            // Cross-references are resolved before DoAllPostLoadInits, so
+            // FactionFC.events and each event's settlementTraitLocations are populated.
+            FactionFC factionComp = FactionCache.FactionComp;
+            if (factionComp != null)
+            {
+                foreach (FCEvent evt in factionComp.events)
                 {
-                    if (comp is ISettlementPostLoadInit postLoad)
+                    if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
+                    if (evt.settlementTraitLocations.Count == 0
+                        || evt.settlementTraitLocations.Contains(this))
                     {
-                        try { postLoad.PostSettlementLoadInit(this); }
-                        catch (Exception e) { LogUtil.Error($"ISettlementPostLoadInit {comp.GetType().Name} threw: {e}"); }
+                        string sourceId = "event_" + evt.def.defName;
+                        AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                     }
+                }
+            }
+            else
+            {
+                LogUtil.Warning($"factionComp is null in PoastLoadInit phase for settlement {Name}");
+            }
+
+            DirtyDescriptionCache();
+
+            // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type, events).
+            // PostExposeData runs before this point, so comps that depend on production/stat values
+            // should defer that work to this callback.
+            LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on {AllComps.Count} comps...");
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is ISettlementPostLoadInit postLoad)
+                {
+                    try { postLoad.PostSettlementLoadInit(this); }
+                    catch (Exception e) { LogUtil.Error($"ISettlementPostLoadInit {comp.GetType().Name} threw: {e}"); }
                 }
             }
         }
