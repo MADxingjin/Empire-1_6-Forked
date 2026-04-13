@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Threading;
-using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -114,11 +113,6 @@ namespace FactionColonies
         /// </summary>
         public bool BuildRoadSegments()
         {
-            if (this.shouldUpdateSettlementsToProcess)
-            {
-                this.UpdateSettlementsToProcess();
-                this.shouldUpdateSettlementsToProcess = false;
-            }
             if (this.nextRoadTick > Find.TickManager.TicksGame)
                 return false;
 
@@ -162,6 +156,17 @@ namespace FactionColonies
         /// Runs on a background thread. Computes all pairwise A* pathfinding costs
         /// and builds the MST using Kruskal's algorithm. Results are stored for the
         /// main thread to pick up via ProcessPath.
+        ///
+        /// Thread-safety notes:
+        /// - WorldPathing.FindPath reads Find.World/WorldGrid/WorldReachability and
+        ///   PlanetLayer NativeArrays. These are read-only during normal gameplay so
+        ///   concurrent access is safe in practice. During game teardown (exit to menu)
+        ///   these can be invalidated; we guard against that with a Current.Game null
+        ///   check each iteration and catch any residual exceptions.
+        /// - WorldPathPool access is synchronized via Harmony patches in
+        ///   WorldPathPoolPatches.cs (Monitor lock around Get/Release). The pool's
+        ///   internal leak detection may fire an ErrorOnce log due to the background
+        ///   thread's borrowed paths inflating the count — this is harmless.
         /// </summary>
         void ComputeMSTBackground(List<int> allTiles, PlanetLayer layer, int generation)
         {
@@ -180,8 +185,8 @@ namespace FactionColonies
                     {
                         for (int j = i + 1; j < n; j++)
                         {
-                            // Bail early if a newer generation was triggered
-                            if (generation != mstGeneration)
+                            // Bail early if superseded or the game is being torn down
+                            if (generation != mstGeneration || Current.Game is null)
                                 return;
 
                             var fromTile = new PlanetTile(allTiles[i], layer);
@@ -199,8 +204,8 @@ namespace FactionColonies
                     }
                 }
 
-                // Bail if superseded
-                if (generation != mstGeneration)
+                // Bail if superseded or game torn down
+                if (generation != mstGeneration || Current.Game is null)
                     return;
 
                 // Kruskal's MST

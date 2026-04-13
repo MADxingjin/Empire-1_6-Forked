@@ -9,6 +9,12 @@ namespace FactionColonies
     /// Makes WorldPathPool thread-safe so FCRoadQueue can run A* pathfinding
     /// on a background thread. The lock is only held during pool operations;
     /// the actual A* computation runs completely lock-free.
+    ///
+    /// Note: The pool's leak detection (paths.Count > CaravansCount + 2) may
+    /// fire an ErrorOnce when a background thread has borrowed a path, since
+    /// the count temporarily exceeds the expected threshold. This is manageable;
+    /// the orphaned path is GC'd and the ErrorOnce is suppressed after the
+    /// first occurrence.
     /// </summary>
     [HarmonyPatch(typeof(WorldPathPool))]
     [HarmonyPatch("GetEmptyWorldPath")]
