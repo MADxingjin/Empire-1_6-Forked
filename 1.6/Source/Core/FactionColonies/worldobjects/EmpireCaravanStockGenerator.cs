@@ -84,9 +84,23 @@ namespace FactionColonies
 
                 int stackCount = Mathf.Max(1, Mathf.RoundToInt(randomizedBudget / marketValue));
 
-                foreach (Thing thing in StockGeneratorUtility.TryMakeForStock(td, stackCount, faction))
+                if (td.race is object && td.race.Animal)
                 {
-                    yield return thing;
+                    for (int i = 0; i < stackCount; i++)
+                    {
+                        PawnKindDef pawnKind = td.race.AnyPawnKind;
+                        if (pawnKind is null) continue;
+                        PawnGenerationRequest request = new PawnGenerationRequest(pawnKind, null, PawnGenerationContext.NonPlayer);
+                        Pawn pawn = PawnGenerator.GeneratePawn(request);
+                        if (pawn is object) yield return pawn;
+                    }
+                }
+                else
+                {
+                    foreach (Thing thing in StockGeneratorUtility.TryMakeForStock(td, stackCount, faction))
+                    {
+                        yield return thing;
+                    }
                 }
             }
         }
