@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_0</defName>
+		<label>Threaded Roadbuilder</label>
+		<description>Performance update: the calculation of the Minimum Spanning Tree for the road builder now uses threading!</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Use a background thread for computation of the road builder MST</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>
