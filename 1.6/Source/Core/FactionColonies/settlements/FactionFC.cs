@@ -1,11 +1,9 @@
 using FactionColonies.util;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Verse;
 
@@ -423,33 +421,10 @@ namespace FactionColonies
 
             LifecycleRegistry.Register(this);
 
-            if (fromLoad)
-            {
-                // Reapply active event stat modifiers to settlements.
-                // Events live on FactionFC, so they aren't available during individual settlement PostLoadInit.
-                foreach (FCEvent evt in events)
-                {
-                    if (evt?.def?.statModifiers is null) continue;
-                    string sourceId = "event_" + evt.def.defName;
-                    if (evt.settlementTraitLocations.Any())
-                    {
-                        foreach (WorldSettlementFC location in evt.settlementTraitLocations)
-                        {
-                            location?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                        }
-                    }
-                    else
-                    {
-                        foreach (WorldSettlementFC settlement in settlements)
-                        {
-                            settlement?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                        }
-                    }
-                }
-
-                // addStatModifiers already calls InvalidateStatCache -> DirtyStatsCache,
-                // so values will recompute lazily on next access
-            }
+            // Event stat modifier re-application is deferred to firstTick (see WorldComponentTick).
+            // FinalizeInit runs before Scribe.loader.FinalizeLoading,
+            // so cross-references (settlements, settlementTraitLocations) aren't resolved yet,
+            // and settlement PostLoadInit hasn't rebuilt base modifiers.
         }
 
         #endregion
@@ -464,93 +439,123 @@ namespace FactionColonies
 
         #region Tick Loop
 
+        private void FirstTick(Faction faction)
+        {
+            bool reinitXenoFilter = false;
+            if (animalFilter is null)
+            {
+                animalFilter = new AnimalFilter();
+            }
+            if (!animalFilter.IsInitialized)
+            {
+                animalFilter.FinalizeInit();
+                reinitXenoFilter = true;
+            }
+
+            // Finalize xenotypeFilter if it was deferred from FinalizeInit
+            // (happens when Empire is added to an existing save)
+            if (xenotypeFilter is null)
+            {
+                LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
+                xenotypeFilter = new XenotypeFilter(this);
+            }
+            if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
+            {
+                xenotypeFilter.FinalizeInit(this);
+            }
+
+            // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
+            // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
+            // after World.FinalizeInit already registered us during world generation)
+            LifecycleRegistry.Register(this);
+
+            roadBuilder.FirstTick();
+
+            if (!(faction is null))
+            {
+                _ = techLevel;
+                factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
+                    TexLoad.factionIcons.First());
+                UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
+                factionIconPath = factionIcon.name;
+
+                if (!name.NullOrEmpty() && faction.Name != name)
+                {
+                    faction.Name = name;
+                }
+
+                if (hasFactionColor)
+                    faction.color = factionColorPrimary;
+            }
+
+            militaryCustomizationUtil.CheckMilitaryUtilForErrors();
+
+            // Auto-open patch notes for each mod that has new entries exceeding the player's threshold
+            if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
+            {
+                HashSet<string> modIds = new HashSet<string>();
+                foreach (PatchNoteDef def in DefDatabase<PatchNoteDef>.AllDefsListForReading)
+                    modIds.Add(def.modId);
+
+                foreach (string modId in modIds)
+                {
+                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod(modId);
+                    if (latest is null) continue;
+                    FCSettings.GetLastSeenVersion(modId, out int maj, out int min, out int pat);
+                    if (latest.IsNewerThan(maj, min, pat)
+                        && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
+                    {
+                        Find.WindowStack.Add(new PatchNotesDisplayWindow(modId));
+                    }
+                }
+            }
+
+            /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
+            Map playerHome = Find.AnyPlayerHomeMap;
+            if (playerHome is null)
+            {
+                LogUtil.Warning("Found NULL for player map on first tick. This probably shouldn't happen...");
+                startingLongLat = default(Vector2);
+            }
+            else
+            {
+                startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
+            }
+
+            // Re-apply active event stat modifiers to settlements.
+            // Must happen in firstTick, not FinalizeInit, because:
+            //   - FinalizeInit runs before Scribe.loader.FinalizeLoading
+            //   - Cross-references (settlements, settlementTraitLocations) aren't resolved until FinalizeLoading
+            //   - Settlement PostLoadInit clears transient modifiers and rebuilds only buildings + type
+            // By firstTick, cross-refs are resolved and PostLoadInit is complete.
+            foreach (FCEvent evt in events)
+            {
+                if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
+                string sourceId = "event_" + evt.def.defName;
+                if (evt.settlementTraitLocations.Any())
+                {
+                    foreach (WorldSettlementFC location in evt.settlementTraitLocations)
+                    {
+                        location?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                    }
+                }
+                else
+                {
+                    foreach (WorldSettlementFC settlement in settlements)
+                    {
+                        settlement?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
+                    }
+                }
+            }
+        }
+
         public override void WorldComponentTick()
         {
             base.WorldComponentTick();
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
-                bool reinitXenoFilter = false;
-                if (animalFilter is null)
-                {
-                    animalFilter = new AnimalFilter();
-                }
-                if (!animalFilter.IsInitialized)
-                {
-                    animalFilter.FinalizeInit();
-                    reinitXenoFilter = true;
-                }
-                
-                // Finalize xenotypeFilter if it was deferred from FinalizeInit
-                // (happens when Empire is added to an existing save)
-                if (xenotypeFilter is null)
-                {
-                    LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
-                    xenotypeFilter = new XenotypeFilter(this);
-                }
-                if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
-                {
-                    xenotypeFilter.FinalizeInit(this);
-                }
-
-                // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
-                // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
-                // after World.FinalizeInit already registered us during world generation)
-                LifecycleRegistry.Register(this);
-
-                roadBuilder.FirstTick();
-
-                if (!(faction is null))
-                {
-                    _ = techLevel;
-                    factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
-                        TexLoad.factionIcons.First());
-                    UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
-                    factionIconPath = factionIcon.name;
-
-                    if (!name.NullOrEmpty() && faction.Name != name)
-                    {
-                        faction.Name = name;
-                    }
-
-                    if (hasFactionColor)
-                        faction.color = factionColorPrimary;
-                }
-
-                militaryCustomizationUtil.CheckMilitaryUtilForErrors();
-
-                // Auto-open patch notes for each mod that has new entries exceeding the player's threshold
-                if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
-                {
-                    HashSet<string> modIds = new HashSet<string>();
-                    foreach (PatchNoteDef def in DefDatabase<PatchNoteDef>.AllDefsListForReading)
-                        modIds.Add(def.modId);
-
-                    foreach (string modId in modIds)
-                    {
-                        PatchNoteDef latest = PatchNoteDef.GetLatestForMod(modId);
-                        if (latest is null) continue;
-                        FCSettings.GetLastSeenVersion(modId, out int maj, out int min, out int pat);
-                        if (latest.IsNewerThan(maj, min, pat)
-                            && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
-                        {
-                            Find.WindowStack.Add(new PatchNotesDisplayWindow(modId));
-                        }
-                    }
-                }
-
-                /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
-                Map playerHome = Find.AnyPlayerHomeMap;
-                if (playerHome is null)
-                {
-                    LogUtil.Warning("Found NULL for player map on first tick. This probably shouldn't happen...");
-                    startingLongLat = default(Vector2);
-                }
-                else
-                {
-                    startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
-                }
-
+                FirstTick(faction);
                 firstTick = false;
             }
             int ticksGame = Find.TickManager.TicksGame;
