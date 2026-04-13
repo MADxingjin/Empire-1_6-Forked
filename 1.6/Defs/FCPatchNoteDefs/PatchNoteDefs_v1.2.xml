@@ -459,4 +459,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_33</defName>
+		<label>New Buildings &amp; Icons</label>
+		<description>Adds a couple of new buildings and icons.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Updates the Orbital Fuel Depot to have an actual icon</li>
+		<li>Adds Salvage Guild, Fungal Farm, Wood Gatherer, Woodcutter buildings</li>
+		</patchNoteLines>
+		<authors>
+		<li>Pecha</li>
+		<li>Midnight</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
