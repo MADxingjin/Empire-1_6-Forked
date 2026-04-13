@@ -82,6 +82,10 @@
 	<deliveryHeldUpArriving>A delivery that was forced to wait has arrived!</deliveryHeldUpArriving>
 
 	<!-- Tithes -->
+	<PauseTithes>Pause Tithes</PauseTithes>
+	<UnPauseTithes>Unpause Tithes</UnPauseTithes>
+	<FCTithesPaused>Tithes Paused</FCTithesPaused>
+	<PauseTithesDesc>When enabled, no tithe items will be collected for this resource at tax time. Its production value will be converted to silver income instead. Your tithe settings are preserved and will resume when unpaused.</PauseTithesDesc>
 	<TitheList>Tithe List</TitheList>
 	<StackCount>Stack Count</StackCount>
 	<FCTotalValue>Total Value</FCTotalValue>

@@ -1757,7 +1757,7 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                if (resource.canTithe)
+                if (resource.canTithe && !resource.tithesPaused)
                 {
                     List<Thing> resTitheThings = resource.GenerateTithe(out int resExtraSilver);
 

@@ -58,6 +58,7 @@ namespace FactionColonies
         public double randomTitheStock = 0;
         public bool disburseTitheStock = false;
 
+        public bool tithesPaused = false;
         public bool hasRandomTithe = false;
         public bool autoMaxRandomTithe = false;
         public ThingFilter randomTitheFilter = new ThingFilter();
@@ -186,6 +187,10 @@ namespace FactionColonies
                 {
                     return taxableProductionMarketValue;
                 }
+                if (tithesPaused)
+                {
+                    return 0;
+                }
                 RefreshTitheCacheIfDirty();
                 return cachedTitheTotalValue + randomTitheBudget;
             }
@@ -302,6 +307,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref storedRandomTitheBudget, "randomTitheBudget");
             Scribe_Values.Look(ref hasRandomTithe, "hasRandomTithe");
             Scribe_Values.Look(ref autoMaxRandomTithe, "autoMaxRandomTithe");
+            Scribe_Values.Look(ref tithesPaused, "tithesPaused", defaultValue: false);
 
             //Tax Stock
             Scribe_Values.Look(ref randomTitheStock, "taxStock");
@@ -984,6 +990,10 @@ namespace FactionColonies
         //   decent place to start.
         public void PruneTitheList()
         {
+            if (tithesPaused)
+            {
+                return;
+            }
             if (tithes.Count == 0)
             {
                 return;

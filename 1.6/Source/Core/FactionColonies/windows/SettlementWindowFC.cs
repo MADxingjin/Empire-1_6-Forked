@@ -311,18 +311,26 @@ namespace FactionColonies
                 Widgets.Label(iconBox, new GUIContent(resources[i].def.Icon));
                 // Resource color accent
                 Widgets.DrawBoxSolid(new Rect(tabBox.x, tabBox.y, 3f, tabBox.height), resources[i].def.color);
-                TooltipHandler.TipRegion(tabBox, resources[i].def.LabelCap);// Tithe budget status indicator on right edge
+                TooltipHandler.TipRegion(tabBox, resources[i].def.LabelCap);
+                // Tithe budget status indicator on right edge
                 double titheIncome = resources[i].GetTitheIncome();
                 if (titheIncome > 0)
                 {
-                    float ratio = (float)(resources[i].titheTotalValue / titheIncome);
                     Color alertColor;
-                    if (ratio >= 1f)
-                        alertColor = Color.red;
-                    else if (ratio >= 0.5f)
-                        alertColor = Color.yellow;
+                    if (resources[i].tithesPaused)
+                    {
+                        alertColor = Color.grey;
+                    }
                     else
-                        alertColor = Color.green;
+                    {
+                        float ratio = (float)(resources[i].titheTotalValue / titheIncome);
+                        if (ratio >= 1f)
+                            alertColor = Color.red;
+                        else if (ratio >= 0.5f)
+                            alertColor = Color.yellow;
+                        else
+                            alertColor = Color.green;
+                    }
 
                     float alertSize = 3f;
                     Widgets.DrawBoxSolid(new Rect(tabBox.xMax - alertSize - 2f, tabBox.y + 5f, alertSize, alertSize), alertColor);
@@ -337,6 +345,8 @@ namespace FactionColonies
             ResourceFC titheRes = resources[titheTab];
 
             /* Calculate heights */
+            float bodyX = boundingBox.x + tabWidth + margin;
+            float bodyWidth = boundingBox.width - tabWidth - margin;
             float headerHeight = 30 + margin + (23f * 3);//60f;
             float footerHeight = 23f;
             float bodyHeight = boundingBox.height - headerHeight - footerHeight - (margin * 2);
@@ -351,12 +361,15 @@ namespace FactionColonies
             }
             float scrollboxHeight = bodyHeight - randomboxHeight;
 
-            float bodyX = boundingBox.x + tabWidth + margin;
-            float bodyWidth = boundingBox.width - tabWidth - margin;
-
-            /* Header box */
+            /* Header box (contains pause button — always interactive) */
             Rect headerBox = new Rect(bodyX, boundingBox.y, bodyWidth, headerHeight);
             DrawTitheHeaderBox(headerBox, titheRes);
+
+            /* Dim content below header when paused */
+            if (titheRes.tithesPaused)
+            {
+                GUI.enabled = false;
+            }
 
             /* Scrollbox */
             Rect scrollBox = new Rect(bodyX, headerBox.yMax + margin, bodyWidth, scrollboxHeight);
@@ -369,13 +382,27 @@ namespace FactionColonies
             /* Footer box */
             Rect footerBox = new Rect(bodyX, titheBox.yMax + margin, bodyWidth, footerHeight);
             DrawTitheFooterBox(footerBox, titheRes);
+            GUI.enabled = true;
             GUI.color = origColor;
+
+            /* Blocking overlay when paused — covers content below header */
+            if (titheRes.tithesPaused)
+            {
+                float overlayY = boundingBox.y + 30f + margin;
+                Rect contentArea = new Rect(bodyX, overlayY, bodyWidth, boundingBox.yMax - overlayY);
+                Widgets.DrawBoxSolid(contentArea, new Color(0f, 0f, 0f, 0.75f));
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(contentArea, "FCTithesPaused".Translate());
+            }
         }
         private void DrawTitheHeaderBox(Rect boundingBox, ResourceFC res)
         {
+            float pauseBtnWidth = 90f;
             Rect iconBox = new Rect(boundingBox.x, boundingBox.y, 30f, 30f);
-            Rect labelHighlight = new Rect(iconBox.xMax + margin, boundingBox.y, boundingBox.width - margin - iconBox.width, 30f);
+            Rect labelHighlight = new Rect(iconBox.xMax + margin, boundingBox.y, boundingBox.width - margin - iconBox.width - pauseBtnWidth - margin, 30f);
             Rect labelText = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin * 2), labelHighlight.height - (smallMargin * 2));
+            Rect pauseBtn = new Rect(labelHighlight.xMax + margin, boundingBox.y + 3f, pauseBtnWidth, 27f);
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -385,10 +412,23 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(labelHighlight);
             Widgets.Label(labelText, res.def.LabelCap);
+
+            /* Pause button */
+            Text.Font = GameFont.Tiny;
+            string buttonText = res.tithesPaused ? "UnPauseTithes".Translate() : "PauseTithes".Translate();
+            if (UIUtil.ButtonFlat(pauseBtn, buttonText, highlighted: res.tithesPaused))
+            {
+                res.tithesPaused = !res.tithesPaused;
+                res.settlement.DirtyProfitCache();
+            }
+            TooltipHandler.TipRegion(pauseBtn, "PauseTithesDesc".Translate());
+
             Rect iconAccent = new Rect(iconBox.x, iconBox.y, iconBox.width, 3f);
             Rect labelAccent = new Rect(labelHighlight.x, labelHighlight.y, labelHighlight.width, 3f);
+            Rect btnAccent = new Rect(pauseBtn.x, pauseBtn.y - 3f, pauseBtn.width, 3f);
             Widgets.DrawBoxSolid(iconAccent, res.def.color);
             Widgets.DrawBoxSolid(labelAccent, res.def.color);
+            Widgets.DrawBoxSolid(btnAccent, res.def.color);
 
             /* Info boxes */
             Text.Font = GameFont.Tiny;
@@ -683,7 +723,7 @@ namespace FactionColonies
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, rowHeight);
             Rect headerText = new Rect(header.x + margin, header.y, header.width - (margin * 2), header.height);
             Widgets.DrawHighlight(header);
-            Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe);
+            Widgets.CheckboxLabeled(headerText, "RandomTithesEnabled".Translate(), ref res.hasRandomTithe, disabled: res.tithesPaused);
             TooltipHandler.TipRegion(header, "RandomTithesDesc".Translate());
 
             Rect accruedBox = new Rect(boundingBox.x, header.yMax, boundingBox.width * 0.6f, rowHeight);
@@ -691,7 +731,7 @@ namespace FactionColonies
             Rect disburseBox = new Rect(accruedBox.xMax, header.yMax, boundingBox.width - accruedBox.width, rowHeight);
             Rect disbursedTextBox = new Rect(disburseBox.x + smallMargin, disburseBox.y, disburseBox.width - (smallMargin * 2), disburseBox.height);
             Widgets.Label(accruedTextBox, "RandomTitheAccrued".Translate(res.randomTitheStock));
-            Widgets.CheckboxLabeled(disbursedTextBox, "DisburseAccruedRandomTithe".Translate(), ref res.disburseTitheStock);
+            Widgets.CheckboxLabeled(disbursedTextBox, "DisburseAccruedRandomTithe".Translate(), ref res.disburseTitheStock, disabled: res.tithesPaused);
             TooltipHandler.TipRegion(accruedBox, "RandomTitheAccruedDesc".Translate());
             TooltipHandler.TipRegion(disburseBox, "DisburseAccruedRandomTitheDesc".Translate());
 
@@ -712,7 +752,7 @@ namespace FactionColonies
                 }
                 Rect maxCheckBox = new Rect(budgetBox.xMax, budgetBox.y, checkboxWidth, budgetBox.height);
                 bool prevAutoMax = res.autoMaxRandomTithe;
-                Widgets.CheckboxLabeled(maxCheckBox, "AutoMaxRandomTithe".Translate(), ref res.autoMaxRandomTithe);
+                Widgets.CheckboxLabeled(maxCheckBox, "AutoMaxRandomTithe".Translate(), ref res.autoMaxRandomTithe, disabled: res.tithesPaused);
                 TooltipHandler.TipRegion(maxCheckBox, "AutoMaxRandomTitheDesc".Translate());
                 if (!res.autoMaxRandomTithe && prevAutoMax)
                 {

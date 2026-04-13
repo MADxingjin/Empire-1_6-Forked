@@ -417,4 +417,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_30</defName>
+		<label>Tithe Pausing</label>
+		<description>Adds the ability to &apos;pause&apos; tithes, stopping the item shipping while preserving the tithe settings.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds the ability to &apos;pasue&apos; tithes, preserving the tithe settings while sending silver instead of items</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
