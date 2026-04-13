@@ -207,6 +207,7 @@ namespace FactionColonies
                     yield return null; // Spread A* pathfinds across ticks
                 }
             }
+            LogUtil.Message($"Road MST computed for {n * (n - 1) / 2} edges");
 
             // Sort edges by cost (Kruskal's algorithm)
             edges.Sort((a, b) => a.cost.CompareTo(b.cost));
@@ -250,6 +251,7 @@ namespace FactionColonies
                     yield return newPath;
                 }
             }
+            LogUtil.Message($"Road paths fully processed through ProcessPath");
         }
 
         public void UpdateSettlementsToProcess()
