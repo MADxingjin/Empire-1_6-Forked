@@ -505,4 +505,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_36</defName>
+		<label>Squad cooldown fixes</label>
+		<description>A number of fixes to resolve issues with squads cooling down.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Changes code to handle military cooldown only once per squad deployment</li>
+		<li>Handful of other fixes related to post-deployment cooldown</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -721,18 +721,14 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Makes the squad go into cooldown. Only works on a settlements main squad
+        /// Makes the squad go into cooldown. Only works on a settlement's main squad while deployed.
         /// </summary>
         /// <returns>True if successful, false otherwise</returns>
         public bool InitiateCooldownEvent()
         {
-            if (!isExtraSquad)
-            {
-                settlement.MilitaryComp?.CooldownMilitaryFinal();
-                return true;
-            }
-
-            return false;
+            if (isExtraSquad || !isDeployed) return false;
+            settlement?.MilitaryComp?.CooldownMilitaryFinal();
+            return true;
         }
     }
 }

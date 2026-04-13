@@ -19,12 +19,11 @@ namespace FactionColonies
         private List<MercenarySquadFC> squads = new List<MercenarySquadFC>();
         public string squadText;
 
-        private LordJob_DeployMilitary lordJob;
         public Dictionary<MercenarySquadFC, IntVec3> currentOrderPositionDic = new Dictionary<MercenarySquadFC, IntVec3>();
         public Dictionary<MercenarySquadFC, MilitaryOrder> squadMilitaryOrderDic = new Dictionary<MercenarySquadFC, MilitaryOrder>();
         private Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        public DeployedMilitaryCommandMenu(LordJob_DeployMilitary lordJob)
+        public DeployedMilitaryCommandMenu()
         {
             layer = WindowLayer.Super;
             closeOnClickedOutside = false;
@@ -38,7 +37,6 @@ namespace FactionColonies
             faction = FactionCache.FactionComp;
 
             selectedSquad = faction.militaryCustomizationUtil.DeployedSquads.Where(squad => squad.getSettlement != null).RandomElementWithFallback();
-            this.lordJob = lordJob;
         }
 
         public override Vector2 InitialSize => new Vector2(216f, 300f);
@@ -155,8 +153,8 @@ namespace FactionColonies
                 LogUtil.Error($"Error when destroying pawns in DespawnSquad: {e}");
             }
 
-            squad.isDeployed = false;
             squad.InitiateCooldownEvent();
+            squad.isDeployed = false;
             FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
         }
 
@@ -341,14 +339,6 @@ namespace FactionColonies
             Text.Anchor = prevAnchor;
             Text.WordWrap = prevWordWrap;
             GUI.color = prevColor;
-
-            if (Find.TickManager.TicksGame % 60 == 0)
-            {
-                if (lordJob.ReadyForCommands && lordJob.lord.ownedPawns.All(pawn => !pawn.Spawned))
-                {
-                    DespawnSquad(lordJob.squad);
-                }
-            }
         }
     }
 }
