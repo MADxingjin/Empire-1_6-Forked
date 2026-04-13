@@ -45,6 +45,9 @@ namespace FactionColonies
 
         public WorldSettlementDef settlementToCreate = null;
 
+        /// <summary>Set to true when ProcessEvents fires this event. Prevents accidental re-fires.</summary>
+        [Unsaved] public bool fired = false;
+
         public bool HasVariableDuration => timeMinTrigger > 0 && timeMaxTrigger > 0;
 
         public float Progress

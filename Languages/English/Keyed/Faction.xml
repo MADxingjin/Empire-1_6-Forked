@@ -150,5 +150,17 @@
 	<CouldNotFindMapOfCapital>Could not find map of capital</CouldNotFindMapOfCapital>
 	<FCCapitalAlreadyEstablished>Empire capital is already established at {0}. Disable the capital seat there first if you want to move it.</FCCapitalAlreadyEstablished>
 	<FCUnableToSetCapitalHere>Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.</FCUnableToSetCapitalHere>
+	
+	<FCCaravanTypes>Caravan Types</FCCaravanTypes>
+	<FCCaravanTypesDesc>Select which types of trade caravans your empire will send.</FCCaravanTypesDesc>
+	<FCCaravanNoneError>At least one caravan type must be enabled.</FCCaravanNoneError>
+	<FCCaravanResourceTooltip>Caravan specializing in {0} goods, drawn from empire-wide production.</FCCaravanResourceTooltip>
+	<FCCaravanResourceTechLocked>{0} caravans are not available at your current tech level.</FCCaravanResourceTechLocked>
+	<FCCaravanExotic>Exotic Goods</FCCaravanExotic>
+	<FCCaravanExoticTooltip>Rare and high-value trade goods: artifacts, implants, and exotic materials.</FCCaravanExoticTooltip>
+	<FCCaravanExoticLocked>Requires faction level 4 or the Mercantile policy.</FCCaravanExoticLocked>
+	<FCCaravanSlaver>Slave Trader</FCCaravanSlaver>
+	<FCCaravanSlaverTooltip>Deals in slaves and illicit goods.</FCCaravanSlaverTooltip>
+	<FCCaravanSlaverBlocked>Blocked by Pacifist or Egalitarian policy.</FCCaravanSlaverBlocked>
 
 </LanguageData>

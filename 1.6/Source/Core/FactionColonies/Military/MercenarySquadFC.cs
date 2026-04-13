@@ -299,7 +299,7 @@ namespace FactionColonies
 
             if (race == null || factionFc.xenotypeFilter.GetRaceWeight(raceChoice.race) <= 0)
             {
-                raceChoice = PColonyPawnKindDefOf.PColony_Fighter;
+                raceChoice = PawnKindTemplateUtil.GetFighterForRace(ThingDefOf.Human);
             }
 
             // Try to generate pawn with the requested kind
@@ -571,7 +571,7 @@ namespace FactionColonies
                         continue;
                     }
 
-                    if (mercenaries[count]?.pawn?.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
+                    if (mercenaries[count].pawn.kindDef != loadout.pawnKind || mercenaries[count].pawn.Dead)
                     {
                         Mercenary pawn = new Mercenary(true);
                         CreateNewPawn(ref pawn, loadout.pawnKind, loadout.xenotype, loadout.customXenotypeName);
@@ -649,7 +649,7 @@ namespace FactionColonies
             {
                 merc.pawn.apparel?.DestroyAll();
                 merc.pawn.equipment?.DestroyAllEquipment();
-                merc.pawn.inventory.innerContainer.ClearAndDestroyContents();
+                merc.pawn.inventory?.innerContainer?.ClearAndDestroyContents();
             }
             catch (Exception e)
             {

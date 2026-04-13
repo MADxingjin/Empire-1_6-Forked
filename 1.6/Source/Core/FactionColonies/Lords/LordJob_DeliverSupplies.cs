@@ -29,7 +29,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref defendPosition, "defendPosition", default, false);
         }
 
-        private bool CanNotReach() => !lord.ownedPawns.NullOrEmpty() && lord.ownedPawns.All(pawn => pawn.carryTracker.CarriedThing == null) && lord.CurLordToil is LordToil_DeliverSupplies toil && !toil.LeavingModeEngaged && lord.ownedPawns[0].CanReach(lord.ownedPawns[0].CurJob.targetA, PathEndMode.OnCell, PawnUtility.ResolveMaxDanger(lord.ownedPawns[0], Danger.Some), false, false, TraverseMode.ByPawn);
+        private bool CanNotReach() => !lord.ownedPawns.NullOrEmpty() && lord.ownedPawns.All(pawn => pawn.carryTracker.CarriedThing == null) && lord.CurLordToil is LordToil_DeliverSupplies toil && !toil.LeavingModeEngaged && lord.ownedPawns[0].CurJob != null && lord.ownedPawns[0].CanReach(lord.ownedPawns[0].CurJob.targetA, PathEndMode.OnCell, PawnUtility.ResolveMaxDanger(lord.ownedPawns[0], Danger.Some), false, false, TraverseMode.ByPawn);
 
         /// <summary>
         /// This <c>Transition</c> switches the delivery <c>Pawns</c> from delivery mode to fighting mode. It drops their items if they carry any and notifies the player of what's about to happen 
@@ -41,7 +41,7 @@ namespace FactionColonies
             triggers = new List<Trigger>(2)
             {
                 new Trigger_PawnHarmed(),
-                new Trigger_Custom((TriggerSignal s) => Map.dangerWatcher.DangerRating == StoryDanger.High)
+                new Trigger_Custom((TriggerSignal s) => Map?.dangerWatcher?.DangerRating == StoryDanger.High)
             },
             preActions = new List<TransitionAction>(2)
             {
@@ -61,12 +61,13 @@ namespace FactionColonies
             triggers = new List<Trigger>(2)
             {
                 new Trigger_PawnHarmed(),
-                new Trigger_Custom((TriggerSignal _) => Map.dangerWatcher.DangerRating == StoryDanger.High)
+                new Trigger_Custom((TriggerSignal _) => Map?.dangerWatcher?.DangerRating == StoryDanger.High)
             },
             preActions = new List<TransitionAction>
             {
                 new TransitionAction_Custom(delegate()
                 {
+                    if (lord.ownedPawns.NullOrEmpty()) return;
                     var traverseParms = DeliveryEvent.DeliveryTraverseParms;
                     traverseParms.pawn = lord.ownedPawns[0];
                     ((LordToil_DefendPoint)stateGraph.lordToils[1]).SetDefendPoint(defendPosition.IsValid ? defendPosition : (defendPosition = DeliveryEvent.GetDeliveryCell(traverseParms, lord.Map)));
@@ -101,7 +102,7 @@ namespace FactionColonies
             triggers = new List<Trigger>(2)
             {
                 new Trigger_PawnHarmed(),
-                new Trigger_Custom((TriggerSignal s) => Map.dangerWatcher.DangerRating == StoryDanger.High)
+                new Trigger_Custom((TriggerSignal s) => Map?.dangerWatcher?.DangerRating == StoryDanger.High)
             },
             preActions = new List<TransitionAction>(2)
             {

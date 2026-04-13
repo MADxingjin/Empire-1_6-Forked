@@ -252,8 +252,6 @@ namespace FactionColonies
         /// </summary>
         private bool destroyFlag;
 
-        public new WorldSettlementTraderTracker trader;
-
         public new string Name
         {
             get => name ?? (name = "");
@@ -261,32 +259,6 @@ namespace FactionColonies
         }
         public override string Label => Name;
 
-        public new TraderKindDef TraderKind
-        {
-            get
-            {
-                if (trader.settlement is null) trader.settlement = this;
-                return trader?.TraderKind;
-            }
-        }
-
-        public new IEnumerable<Thing> Goods => trader?.StockListForReading;
-
-        public new int RandomPriceFactorSeed => trader?.RandomPriceFactorSeed ?? 0;
-
-        public new string TraderName => trader?.TraderName;
-
-        public new bool CanTradeNow => trader != null && trader.CanTradeNow;
-
-        public new float TradePriceImprovementOffsetForPlayer => trader?.TradePriceImprovementOffsetForPlayer ?? 0.0f;
-
-        public new TradeCurrency TradeCurrency => TraderKind.tradeCurrency;
-
-        public new bool EverVisited => trader.EverVisited;
-
-        public new bool RestockedSinceLastVisit => trader.RestockedSinceLastVisit;
-
-        public new int NextRestockTick => trader.NextRestockTick;
         public WorldSettlementDef settlementDef => def as WorldSettlementDef;
 
         /// <summary>
@@ -385,7 +357,7 @@ namespace FactionColonies
 
         public override void PostMake()
         {
-            trader = new WorldSettlementTraderTracker(this);
+            trader = new SettlementTraderTracker_Empire(this);
 
             if (!(def is WorldSettlementDef))
             {
@@ -459,7 +431,6 @@ namespace FactionColonies
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look(ref trader, "trader", this);
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
@@ -505,7 +476,9 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if (trader != null && trader.settlement == null) trader.settlement = this;
+                // Safety net: if trader is null or wrong type (e.g., loading old save), recreate it
+                if (!(trader is SettlementTraderTracker_Empire))
+                    trader = new SettlementTraderTracker_Empire(this);
 
                 // Rebuild stat modifiers from buildings and settlement type before calculating stats.
                 // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
@@ -552,8 +525,7 @@ namespace FactionColonies
             }
             if (MilitaryComp?.isUnderAttack != true && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
             {
-                trader.settlement = trader.settlement ?? this;
-                var kindDef = trader.TraderKind;
+                var kindDef = TraderKind;
                 var action = (Command_Action)CaravanVisitUtility.TradeCommand(caravan, Faction, kindDef);
 
                 var bestNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, Faction, kindDef);
@@ -580,20 +552,6 @@ namespace FactionColonies
             if ((MilitaryComp is null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
                 foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
                     yield return option;
-        }
-
-        protected override void Tick()
-        {
-            base.Tick();
-            if (Find.TickManager.TicksGame % 250 == 0)
-            {
-                trader?.TraderTrackerTick();
-            }
-        }
-
-        public void PublicTick()
-        {
-            Tick();
         }
 
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
@@ -1799,7 +1757,7 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                if (resource.canTithe)
+                if (resource.canTithe && !resource.tithesPaused)
                 {
                     List<Thing> resTitheThings = resource.GenerateTithe(out int resExtraSilver);
 

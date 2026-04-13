@@ -13,7 +13,9 @@ namespace FactionColonies.util
     static class PawnKindTemplateUtil
     {
         private static Dictionary<RaceTechKey, List<PawnKindDef>> cloneCache = new Dictionary<RaceTechKey, List<PawnKindDef>>();
-        private static Dictionary<ThingDef, RaceGearData> raceGearCache = new Dictionary<ThingDef, RaceGearData>();
+
+        // Def-derived gear data per race, bucketed by tech level. Populated once per race, never cleared.
+        private static Dictionary<ThingDef, PerRaceGearIndex> raceGearIndex = new Dictionary<ThingDef, PerRaceGearIndex>();
 
         private struct RaceGearData
         {
@@ -21,6 +23,11 @@ namespace FactionColonies.util
             public List<string> weaponTags;
             public FloatRange apparelMoney;
             public FloatRange weaponMoney;
+        }
+
+        private struct PerRaceGearIndex
+        {
+            public Dictionary<TechLevel, RaceGearData> tiers;
         }
 
         private struct RaceTechKey : IEquatable<RaceTechKey>
@@ -105,7 +112,7 @@ namespace FactionColonies.util
 
                 if (race != ThingDefOf.Human)
                 {
-                    ApplyRaceGearOverrides(clone, race);
+                    ApplyRaceGearOverrides(clone, race, techLevel);
                 }
 
                 clones.Add(clone);
@@ -127,12 +134,25 @@ namespace FactionColonies.util
         }
 
         /// <summary>
+        /// Returns the Villager template clone for a given race at the current Empire tech level.
+        /// </summary>
+        public static PawnKindDef GetVillagerForRace(ThingDef race)
+        {
+            TechLevel techLevel = FactionCache.FactionComp != null ? FactionCache.FactionComp.techLevel : TechLevel.Industrial;
+            List<PawnKindDef> clones = GetOrCreateClonesForRace(race, techLevel);
+            // Villager is the last template in the array (index 5)
+            return clones.Count > 5 ? clones[5] : PColonyPawnKindDefOf.PColony_Villager;
+        }
+
+        /// <summary>
         /// Clears the clone cache. Must be called when race weights or tech level change.
         /// </summary>
         public static void InvalidateCache()
         {
             cloneCache.Clear();
-            raceGearCache.Clear();
+            // raceGearIndex is not cleared; it's derived from defs which don't change at runtime.
+            //   Which SHOULDN'T change, anyways. I know there's a debug action to hot-reload defs,
+            //   but if you use that, then the cache errors on you, buddy.
         }
 
         /// <summary>
@@ -211,13 +231,13 @@ namespace FactionColonies.util
         /// For non-Human HAR races, replaces the clone's apparel/weapon tags with tags harvested
         /// from the race's own PawnKindDefs, and floor-clamps budgets to ensure the race's gear is affordable.
         /// </summary>
-        private static void ApplyRaceGearOverrides(PawnKindDef clone, ThingDef race)
+        private static void ApplyRaceGearOverrides(PawnKindDef clone, ThingDef race, TechLevel techLevel)
         {
-            RaceGearData gearData = GetOrHarvestRaceGearData(race);
+            RaceGearData gearData = GetRaceGearData(race, techLevel);
 
             // Replace apparel tags with the race's own tags so PawnApparelGenerator can find matching apparel.
-            // If no tags were found, set to null so the generator skips tag filtering entirely
-            // and lets HAR's race restrictions handle it.
+            // If no tags were found even after fallback, set to null so the generator skips tag filtering
+            // entirely and lets HAR's race restrictions handle it.
             if (gearData.apparelTags != null && gearData.apparelTags.Count > 0)
             {
                 clone.apparelTags = new List<string>(gearData.apparelTags);
@@ -244,72 +264,186 @@ namespace FactionColonies.util
         }
 
         /// <summary>
-        /// Scans all PawnKindDefs for the given race and collects their apparel/weapon tags and budget ranges.
-        /// Results are cached per race.
+        /// Returns gear data for a race at a single tech tier matching <paramref name="techLevel"/>,
+        /// plus any factionless PKDs (Undefined bucket). Falls back to the closest available tier
+        /// if no exact match exists.
         /// </summary>
-        private static RaceGearData GetOrHarvestRaceGearData(ThingDef race)
+        private static RaceGearData GetRaceGearData(ThingDef race, TechLevel techLevel)
         {
-            if (raceGearCache.TryGetValue(race, out RaceGearData cached))
+            PerRaceGearIndex index = EnsureRaceGearIndex(race);
+            if (index.tiers.Count == 0)
+                return default;
+
+            // Pick a single tier: exact match, or closest available
+            TechLevel chosen = techLevel;
+            if (!index.tiers.ContainsKey(chosen) || chosen == TechLevel.Undefined)
             {
-                return cached;
+                chosen = GetClosestRaceTechLevel(index, techLevel);
             }
 
-            HashSet<string> apparelTags = new HashSet<string>();
-            HashSet<string> weaponTags = new HashSet<string>();
-            float apparelMoneyMinSum = 0f, apparelMoneyMaxSum = 0f;
-            float weaponMoneyMinSum = 0f, weaponMoneyMaxSum = 0f;
-            int apparelBudgetCount = 0;
-            int weaponBudgetCount = 0;
+            RaceGearData result = chosen != TechLevel.Undefined && index.tiers.TryGetValue(chosen, out RaceGearData tier)
+                ? tier
+                : default;
 
+            // Always fold in the Undefined bucket (factionless/generic PKDs)
+            if (index.tiers.TryGetValue(TechLevel.Undefined, out RaceGearData undefined))
+            {
+                result = MergeGearData(result, undefined);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Combines two <see cref="RaceGearData"/>: unions tags, averages budgets.
+        /// </summary>
+        private static RaceGearData MergeGearData(RaceGearData a, RaceGearData b)
+        {
+            List<string> apparelTags = null;
+            if (a.apparelTags != null || b.apparelTags != null)
+            {
+                HashSet<string> set = new HashSet<string>();
+                if (a.apparelTags != null) set.AddRange(a.apparelTags);
+                if (b.apparelTags != null) set.AddRange(b.apparelTags);
+                apparelTags = set.ToList();
+            }
+
+            List<string> weaponTags = null;
+            if (a.weaponTags != null || b.weaponTags != null)
+            {
+                HashSet<string> set = new HashSet<string>();
+                if (a.weaponTags != null) set.AddRange(a.weaponTags);
+                if (b.weaponTags != null) set.AddRange(b.weaponTags);
+                weaponTags = set.ToList();
+            }
+
+            int count = 0;
+            float amMin = 0f, amMax = 0f, wmMin = 0f, wmMax = 0f;
+            if (a.apparelMoney.max > 0 || a.weaponMoney.max > 0)
+            {
+                amMin += a.apparelMoney.min; amMax += a.apparelMoney.max;
+                wmMin += a.weaponMoney.min; wmMax += a.weaponMoney.max;
+                count++;
+            }
+            if (b.apparelMoney.max > 0 || b.weaponMoney.max > 0)
+            {
+                amMin += b.apparelMoney.min; amMax += b.apparelMoney.max;
+                wmMin += b.weaponMoney.min; wmMax += b.weaponMoney.max;
+                count++;
+            }
+
+            return new RaceGearData
+            {
+                apparelTags = apparelTags,
+                weaponTags = weaponTags,
+                apparelMoney = count > 0 ? new FloatRange(amMin / count, amMax / count) : new FloatRange(0, 0),
+                weaponMoney = count > 0 ? new FloatRange(wmMin / count, wmMax / count) : new FloatRange(0, 0)
+            };
+        }
+
+        /// <summary>
+        /// Returns the closest tech level to <paramref name="target"/> among the index's tiers.
+        /// Prefers the highest tier &lt;= target; if none exist, returns the lowest above target.
+        /// Skips the <see cref="TechLevel.Undefined"/> bucket.
+        /// </summary>
+        private static TechLevel GetClosestRaceTechLevel(PerRaceGearIndex index, TechLevel target)
+        {
+            TechLevel bestBelow = TechLevel.Undefined;
+            TechLevel bestAbove = TechLevel.Undefined;
+            foreach (TechLevel tier in index.tiers.Keys)
+            {
+                if (tier == TechLevel.Undefined) continue;
+                if (tier <= target)
+                {
+                    if (bestBelow == TechLevel.Undefined || tier > bestBelow)
+                        bestBelow = tier;
+                }
+                else
+                {
+                    if (bestAbove == TechLevel.Undefined || tier < bestAbove)
+                        bestAbove = tier;
+                }
+            }
+            return bestBelow != TechLevel.Undefined ? bestBelow : bestAbove;
+        }
+
+        /// <summary>
+        /// Ensures the gear index for <paramref name="race"/> is populated. Scans all PawnKindDefs
+        /// once per race and buckets gear data by <see cref="PawnKindDef.defaultFactionDef"/> tech level.
+        /// PKDs with no defaultFactionDef are bucketed under <see cref="TechLevel.Undefined"/>.
+        /// </summary>
+        private static PerRaceGearIndex EnsureRaceGearIndex(ThingDef race)
+        {
+            if (raceGearIndex.TryGetValue(race, out PerRaceGearIndex existing))
+                return existing;
+
+            // Group PKDs by their faction's tech level
+            Dictionary<TechLevel, List<PawnKindDef>> groups = new Dictionary<TechLevel, List<PawnKindDef>>();
             foreach (PawnKindDef def in DefDatabase<PawnKindDef>.AllDefsListForReading)
             {
                 if (def.race != race) continue;
-                // Skip Empire's own clones to avoid circular contamination
                 if (def.defName.StartsWith("PColony_")) continue;
 
-                if (def.apparelTags != null)
+                TechLevel tier = def.defaultFactionDef?.techLevel ?? TechLevel.Undefined;
+                if (!groups.TryGetValue(tier, out List<PawnKindDef> list))
                 {
-                    foreach (string tag in def.apparelTags)
-                    {
-                        apparelTags.Add(tag);
-                    }
+                    list = new List<PawnKindDef>();
+                    groups[tier] = list;
                 }
-                if (def.weaponTags != null)
-                {
-                    foreach (string tag in def.weaponTags)
-                    {
-                        weaponTags.Add(tag);
-                    }
-                }
-
-                if (def.apparelMoney.max > 0)
-                {
-                    apparelMoneyMinSum += def.apparelMoney.min;
-                    apparelMoneyMaxSum += def.apparelMoney.max;
-                    apparelBudgetCount++;
-                }
-                if (def.weaponMoney.max > 0)
-                {
-                    weaponMoneyMinSum += def.weaponMoney.min;
-                    weaponMoneyMaxSum += def.weaponMoney.max;
-                    weaponBudgetCount++;
-                }
+                list.Add(def);
             }
 
-            RaceGearData data = new RaceGearData
+            // Build per-tier RaceGearData
+            Dictionary<TechLevel, RaceGearData> tiers = new Dictionary<TechLevel, RaceGearData>();
+            foreach (var kvp in groups)
             {
-                apparelTags = apparelTags.Count > 0 ? apparelTags.ToList() : null,
-                weaponTags = weaponTags.Count > 0 ? weaponTags.ToList() : null,
-                apparelMoney = apparelBudgetCount > 0
-                    ? new FloatRange(apparelMoneyMinSum / apparelBudgetCount, apparelMoneyMaxSum / apparelBudgetCount)
-                    : new FloatRange(0, 0),
-                weaponMoney = weaponBudgetCount > 0
-                    ? new FloatRange(weaponMoneyMinSum / weaponBudgetCount, weaponMoneyMaxSum / weaponBudgetCount)
-                    : new FloatRange(0, 0)
-            };
+                HashSet<string> apparelTags = new HashSet<string>();
+                HashSet<string> weaponTags = new HashSet<string>();
+                float apparelMoneyMinSum = 0f, apparelMoneyMaxSum = 0f;
+                float weaponMoneyMinSum = 0f, weaponMoneyMaxSum = 0f;
+                int apparelBudgetCount = 0;
+                int weaponBudgetCount = 0;
 
-            raceGearCache[race] = data;
-            return data;
+                foreach (PawnKindDef def in kvp.Value)
+                {
+                    if (def.apparelTags != null)
+                    {
+                        apparelTags.AddRange(def.apparelTags);
+                    }
+                    if (def.weaponTags != null)
+                    {
+                        weaponTags.AddRange(def.weaponTags);
+                    }
+                    if (def.apparelMoney.max > 0)
+                    {
+                        apparelMoneyMinSum += def.apparelMoney.min;
+                        apparelMoneyMaxSum += def.apparelMoney.max;
+                        apparelBudgetCount++;
+                    }
+                    if (def.weaponMoney.max > 0)
+                    {
+                        weaponMoneyMinSum += def.weaponMoney.min;
+                        weaponMoneyMaxSum += def.weaponMoney.max;
+                        weaponBudgetCount++;
+                    }
+                }
+
+                tiers[kvp.Key] = new RaceGearData
+                {
+                    apparelTags = apparelTags.Count > 0 ? apparelTags.ToList() : null,
+                    weaponTags = weaponTags.Count > 0 ? weaponTags.ToList() : null,
+                    apparelMoney = apparelBudgetCount > 0
+                        ? new FloatRange(apparelMoneyMinSum / apparelBudgetCount, apparelMoneyMaxSum / apparelBudgetCount)
+                        : new FloatRange(0, 0),
+                    weaponMoney = weaponBudgetCount > 0
+                        ? new FloatRange(weaponMoneyMinSum / weaponBudgetCount, weaponMoneyMaxSum / weaponBudgetCount)
+                        : new FloatRange(0, 0)
+                };
+            }
+
+            PerRaceGearIndex index = new PerRaceGearIndex { tiers = tiers };
+            raceGearIndex[race] = index;
+            return index;
         }
 
         /// <summary>

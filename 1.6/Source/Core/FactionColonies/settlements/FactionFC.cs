@@ -181,6 +181,12 @@ namespace FactionColonies
 
         // ── Caravans ──
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
+        /// <summary>
+        /// Player-selected caravan types. Strings are logical identifiers:
+        /// resource defNames (e.g. "RTD_Food"), "Exotic", or "Slaver".
+        /// Resolved to actual TraderKindDefs in UpdateFactionDef().
+        /// </summary>
+        public List<string> enabledCaravanTypes = new List<string>();
 
         // ── Leveling ──
         public int factionLevel = 1;
@@ -203,6 +209,7 @@ namespace FactionColonies
 
         // ── Filters & Misc ──
         public XenotypeFilter xenotypeFilter;
+        public AnimalFilter animalFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
         public float tradedAmount = 0;
 
@@ -210,64 +217,11 @@ namespace FactionColonies
 
         #region Constructor & Lifecycle
 
-        private static bool harmonyPatched = false;
-
         public FactionFC(World world) : base(world)
         {
-            if (!harmonyPatched)
-            {
-                var harmony = new Harmony("com.Matathias.Empire");
-
-                if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
-                {
-                    FixLinuxHarmonyCrash(harmony);
-                }
-
-                harmony.PatchAll();
-                harmonyPatched = true;
-            }
-        }
-
-        // Fix a crash related to a harmony bug on Linux
-        // This gets all patches Empire makes, gets the ones that would crash on Linux, and fixes them
-        static void FixLinuxHarmonyCrash(Harmony harmony)
-        {
-            bool WouldCrash(MethodInfo method)
-            {
-                if (method is null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
-                {
-                    return false;
-                }
-
-                byte[] bytes = method.GetMethodBody()?.GetILAsByteArray();
-                if (bytes is null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            var methods = typeof(FactionFC).Assembly.GetTypes().Where(t0 => t0 != null && t0.IsClass && !typeof(Delegate).IsAssignableFrom(t0) && t0.GetCustomAttributes(typeof(HarmonyPatch)).Any()).SelectMany(t1 =>
-            {
-                Type declaringType = null;
-                string methodName = null;
-                foreach (HarmonyPatch attr in t1.GetCustomAttributes(typeof(HarmonyPatch), false))
-                {
-                    if (attr.info.declaringType != null) declaringType = attr.info.declaringType;
-                    if (attr.info.methodName != null) methodName = attr.info.methodName;
-                }
-
-                MethodInfo[] m = declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                if (m is null) return new List<MethodInfo>();
-
-                return m.Where(met => met.Name == methodName);
-            }).Where(WouldCrash);
-
-            foreach (MethodInfo i in methods)
-            {
-                // Patching methods without any Prefixes/Postfixes before actually patching them fixes it. Idk why
-                harmony.Patch(i);
-            }
+            // We used to do the harmony patching here, but I moved it to HarmonyPatcher.cs with a
+            // [StaticConstructoreOnStartup] tag. Honestly not sure why the harmony patch was run here.
+            // Leaving this comment mostly for posterity.
         }
 
         /// <summary>
@@ -327,6 +281,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
+            Scribe_Collections.Look(ref enabledCaravanTypes, "enabledCaravanTypes", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
             //New Production types
@@ -337,6 +292,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
+            Scribe_Deep.Look(ref animalFilter, "animalFilter");
 
             //Update
             Scribe_Values.Look(ref nextSettlementFCID, "nextSettlementFCID");
@@ -417,6 +373,24 @@ namespace FactionColonies
                 }
             }
 
+            // Initialize caravan types with defaults if empty (new game or old save)
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
+                InitEnabledCaravanTypes();
+            }
+
+            // Initialize animal filter
+            if (animalFilter is null)
+            {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
+                animalFilter = new AnimalFilter();
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    animalFilter.FinalizeInit();
+                }
+            }
+
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
@@ -424,7 +398,16 @@ namespace FactionColonies
             {
                 LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
-                xenotypeFilter.FinalizeInit(this);
+                // Do NOT call FinalizeInit here if the Scribe is still loading.
+                // CustomXenotypesForReading reads files from disk via InitLoadingMetaHeaderOnly,
+                // which calls Scribe.ForceStop() when mode != Inactive, which destroys the
+                // active save-load pipeline and nulls all cross-references.
+                // Man, who thought adding custom xenotype support would be so fraught with peril?
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    xenotypeFilter.FinalizeInit(this);
+                }
+                // Otherwise deferred to firstTick (see WorldComponentTick)
             }
 
             // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
@@ -471,6 +454,14 @@ namespace FactionColonies
 
         #endregion
 
+        public override void WorldComponentUpdate()
+        {
+            if (roadBuilder.shouldDrawPaths)
+            {
+                roadBuilder.DrawPaths();
+            }
+        }
+
         #region Tick Loop
 
         public override void WorldComponentTick()
@@ -479,6 +470,29 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
+                bool reinitXenoFilter = false;
+                if (animalFilter is null)
+                {
+                    animalFilter = new AnimalFilter();
+                }
+                if (!animalFilter.IsInitialized)
+                {
+                    animalFilter.FinalizeInit();
+                    reinitXenoFilter = true;
+                }
+                
+                // Finalize xenotypeFilter if it was deferred from FinalizeInit
+                // (happens when Empire is added to an existing save)
+                if (xenotypeFilter is null)
+                {
+                    LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
+                    xenotypeFilter = new XenotypeFilter(this);
+                }
+                if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
+                {
+                    xenotypeFilter.FinalizeInit(this);
+                }
+
                 // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
                 // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
                 // after World.FinalizeInit already registered us during world generation)
@@ -594,6 +608,9 @@ namespace FactionColonies
 
             if (autoResolveBills)
                 PaymentUtil.AutoresolveBills(Bills);
+
+            // Rebuild caravan trader kinds to reflect current worker assignments
+            faction.def.caravanTraderKinds = BuildCaravanTraderKinds(techLevel);
         }
 
         public void StatTick()
@@ -1717,6 +1734,8 @@ namespace FactionColonies
         {
             if (RandomEventsDisabledOrNoSettlements()) return;
 
+            randomEventLastAdded += 1f;
+
             if (CanMakeRandomEventNow())
             {
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.ReturnRandomEvent(), null);
@@ -1727,16 +1746,7 @@ namespace FactionColonies
 
                     Find.LetterStack.ReceiveLetter("FCRandomEventLetterLabel".Translate(), FCEventMaker.BuildEventLetterBody(tmpEvt), LetterDefOf.NeutralEvent);
                 }
-                else
-                {
-                    randomEventLastAdded += 1f;
-                }
             }
-            else
-            {
-                randomEventLastAdded += 1f;
-            }
-
         }
 
         private bool CanMakeRandomEventNow()
@@ -2088,13 +2098,11 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     break;
             }
-            def.caravanTraderKinds = replacingDef.caravanTraderKinds;
+            def.caravanTraderKinds = BuildCaravanTraderKinds(tech);
             if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
                 def.backstoryFilters = replacingDef.backstoryFilters;
             def.techLevel = tech;
             def.basicMemberKind = replacingDef.basicMemberKind;
-            def.visitorTraderKinds = replacingDef.visitorTraderKinds;
-            def.baseTraderKinds = replacingDef.baseTraderKinds;
             if (replacingDef.apparelStuffFilter != null)
                 def.apparelStuffFilter = replacingDef.apparelStuffFilter;
 
@@ -2108,6 +2116,80 @@ namespace FactionColonies
             UpdateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
 
             LogUtil.Message("FactionFC.UpdateFactionDef - Completed tech update");
+        }
+
+        private void InitEnabledCaravanTypes()
+        {
+            enabledCaravanTypes = new List<string>();
+            foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
+            {
+                if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
+                    enabledCaravanTypes.Add(rtd.defName);
+            }
+        }
+
+        /// <summary>
+        /// Builds the caravanTraderKinds list from <see cref="enabledCaravanTypes"/>.
+        /// Resource types resolve to Caravan_Empire_{Name} defs.
+        /// Exotic/Slaver resolve to tech-appropriate vanilla defs with policy/level gating.
+        /// </summary>
+        private List<TraderKindDef> BuildCaravanTraderKinds(TechLevel tech)
+        {
+            List<TraderKindDef> result = new List<TraderKindDef>();
+            bool isNeolithic = tech <= TechLevel.Medieval;
+
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("enabledCaravanTypes null or empty in BuildCaravanTraderKinds");
+                InitEnabledCaravanTypes();
+            }
+
+            foreach (string typeId in enabledCaravanTypes)
+            {
+                TraderKindDef resolved = null;
+
+                if (typeId == "Exotic")
+                {
+                    bool hasLevel = factionLevel >= 4;
+                    bool hasMercantile = HasPolicy(FCPolicyDefOf.mercantile);
+                    if (!hasLevel && !hasMercantile)
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_ShamanMerchant"
+                        : "Caravan_Outlander_Exotic";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else if (typeId == "Slaver")
+                {
+                    if (HasPolicy(FCPolicyDefOf.pacifist) || HasPolicy(FCPolicyDefOf.egalitarian))
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_Slaver"
+                        : "Caravan_Outlander_PirateMerchant";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else
+                {
+                    // Resource-based: RTD_Food -> Caravan_Empire_Food
+                    ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.GetNamedSilentFail(typeId);
+                    if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
+                        continue;
+
+                    // Skip if this resource has no production
+                    if ((ReturnResource(rtd)?.amount ?? 0) == 0)
+                        continue;
+
+                    string suffix = rtd.defName.Replace("RTD_", "");
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
+                }
+
+                if (resolved is object)
+                    result.Add(resolved);
+            }
+
+            return result;
         }
 
         public string ReturnNextTechToLevel()

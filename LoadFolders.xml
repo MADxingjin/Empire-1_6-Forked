@@ -11,5 +11,6 @@
         <li IfModActive="TSA.WorldDominationExperimental">Compat/1.6/WorldDominationExperimental</li>
         <li IfModActive="TSA.WorldDomination">Compat/1.6/WorldDomination</li>
         <li IfModActive="OskarPotocki.VanillaFactionsExpanded.Core">Compat/1.6/KCSG</li>
+        <li IfModActive="Mlie.PawnkindRaceDiversification">Compat/1.6/PawnkindRaceDiversification</li>
     </v1.6>
 </loadFolders>

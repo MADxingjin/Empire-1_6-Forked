@@ -10,7 +10,7 @@ namespace FactionColonies
     public class FactionCustomizeWindowFc : Window
     {
         private const float fullwidth = 500f;
-        private const float fullheight = 415f;
+        private const float fullheight = 503f;
         private const float margin = 8f;
         private const float smallMargin = 4f;
         private const float cardGap = 8f;
@@ -143,7 +143,15 @@ namespace FactionColonies
             }
             y += bottomRowHeight + cardGap;
 
-            // 5. Confirm Button
+            // 5. Animals & Caravan Types Row
+            float halfBottomWidth = (inRect.width - cardGap) / 2f;
+            Rect animalCard = new Rect(inRect.x, y, halfBottomWidth, bottomRowHeight);
+            Rect caravanCard = new Rect(inRect.x + halfBottomWidth + cardGap, y, halfBottomWidth, bottomRowHeight);
+            DrawAnimalsCard(animalCard);
+            DrawCaravanTypesCard(caravanCard);
+            y += bottomRowHeight + cardGap;
+
+            // 6. Confirm Button
             float confirmWidth = 200f;
             float confirmHeight = 30f;
             Rect confirmRect = new Rect((inRect.width - confirmWidth) / 2f, inRect.yMax - confirmHeight - margin, confirmWidth, confirmHeight);
@@ -353,6 +361,32 @@ namespace FactionColonies
             if (UIUtil.ButtonFlat(btnRect, "fcConfigure".Translate()))
             {
                 Find.WindowStack.Add(new FCCustomizeXenotypesWindow());
+            }
+        }
+
+        private void DrawAnimalsCard(Rect rect)
+        {
+            DrawCard(rect);
+            DrawCardLabel(rect, "AllowedAnimals".Translate());
+            float btnWidth = rect.width - cardPadding * 2;
+            float btnHeight = 28f;
+            Rect btnRect = new Rect(rect.x + cardPadding, rect.y + (rect.height - btnHeight) / 2f + 8f, btnWidth, btnHeight);
+            if (UIUtil.ButtonFlat(btnRect, "fcConfigure".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_AnimalFilter());
+            }
+        }
+
+        private void DrawCaravanTypesCard(Rect rect)
+        {
+            DrawCard(rect);
+            DrawCardLabel(rect, "FCCaravanTypes".Translate());
+            float btnWidth = rect.width - cardPadding * 2;
+            float btnHeight = 28f;
+            Rect btnRect = new Rect(rect.x + cardPadding, rect.y + (rect.height - btnHeight) / 2f + 8f, btnWidth, btnHeight);
+            if (UIUtil.ButtonFlat(btnRect, "fcConfigure".Translate()))
+            {
+                Find.WindowStack.Add(new FCWindow_CaravanTypePicker());
             }
         }
 

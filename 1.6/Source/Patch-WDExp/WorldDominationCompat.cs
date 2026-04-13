@@ -19,6 +19,7 @@ namespace FactionColonies.WDExp
     /// 4. Scales enemy force in Empire battles based on WD settlement strength
     /// 5. Syncs PColony diplomacy after WD allegiance changes
     /// 6. Excludes PColony from WD's leader/underdog/balance mechanics
+    /// 7. Prevents WD's CheckDefeated intercept from destroying Empire settlements
     /// </summary>
     [StaticConstructorOnStartup]
     public static class WorldDominationCompatInit
@@ -143,13 +144,16 @@ namespace FactionColonies.WDExp
             if (target == null) return;
 
             CompViralSpread comp = target.GetComponent<CompViralSpread>();
-            if (comp == null || comp.strength <= 0f) return;
+            if (comp == null) return;
 
-            double wdForce = comp.strength / SCALE_FACTOR;
+            float totalDefense = comp.GetTotalLocalDefensePower();
+            if (totalDefense <= 0f) return;
+
+            double wdForce = totalDefense / SCALE_FACTOR;
             force.militaryLevel = wdForce;
             force.forceRemaining = Math.Round(wdForce * force.militaryEfficiency);
 
-            LogUtil.Message("WD strength " + comp.strength.ToString("F0") + " (tier " + comp.tier + ") -> Empire defender force " + force.forceRemaining);
+            LogUtil.Message("WD defense power " + totalDefense.ToString("F0") + " (tier " + comp.tier + ") -> Empire defender force " + force.forceRemaining);
         }
     }
 
@@ -213,7 +217,30 @@ namespace FactionColonies.WDExp
             if (removed != null)
             {
                 __result.GlobalTotalStr -= removed.TotalStr;
+                for (int t = 1; t <= 4; t++)
+                {
+                    __result.GlobalTierStr[t] -= removed.strength[t];
+                }
             }
+        }
+    }
+
+    // ================================================================
+    // Patch 7: Prevent WD's CheckDefeated intercept from destroying
+    // Empire settlements. WD's Patch_InterceptDefeat runs at
+    // Priority.High and calls factionBase.Destroy() on defeated
+    // non-player settlements. PColony is not IsPlayer, so Empire
+    // settlements would be destroyed and replaced with ruins/outpost
+    // opportunities. This prefix-on-the-prefix skips WD's logic
+    // for WorldSettlementFC, letting Empire's own base patch handle it.
+    // ================================================================
+    [HarmonyPatch(typeof(Patch_InterceptDefeat), "Prefix")]
+    public static class Fix_WD_InterceptDefeat
+    {
+        [HarmonyPriority(Priority.First)]
+        private static bool Prefix(Settlement factionBase)
+        {
+            return !(factionBase is WorldSettlementFC);
         }
     }
 }

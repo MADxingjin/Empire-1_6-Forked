@@ -322,7 +322,7 @@ namespace FactionColonies
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
             if (!string.IsNullOrEmpty(buildingSearchTerm)
-                && building.label.IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
+                && (building.label ?? building.defName).IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
                 return false;
             return settlement.BuildingsComp?.FilterBuilding(currentFilter, building) ?? true;
         }

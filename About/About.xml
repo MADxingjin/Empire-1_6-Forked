@@ -7,8 +7,9 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>Matathias.Empire</packageId>
-	<modVersion>1.2.0</modVersion>
+	<modVersion>1.2.32</modVersion>
 	<incompatibleWith>
+		<li>Saakra.Empire</li>
 	</incompatibleWith>
 	<modDependencies>
 		<li>

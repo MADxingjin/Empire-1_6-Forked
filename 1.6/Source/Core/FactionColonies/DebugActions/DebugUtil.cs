@@ -677,6 +677,33 @@ namespace FactionColonies
             );
         }
 
+        [DebugAction("Empire", "Create 10 Random Settlements", allowedGameStates = AllowedGameStates.Playing)]
+        private static void CreateTenRandomSettlements()
+        {
+            FactionFC faction = FactionCache.FactionComp;
+            if (faction is null)
+            {
+                LogUtil.MessageForce("Debug - FactionFC WorldComponent is null, cannot create settlements.");
+                return;
+            }
+
+            WorldSettlementDef def = WorldSettlementDefOf.WorldSettlementDef_Surface;
+            int created = 0;
+            int maxAttempts = 500;
+
+            for (int attempts = 0; attempts < maxAttempts && created < 10; attempts++)
+            {
+                PlanetTile tile = TileFinder.RandomSettlementTileFor(Find.WorldGrid.Surface, FactionCache.PlayerColonyFaction);
+                if (tile == -1) continue;
+                if (!WorldTileChecker.IsValidTileForNewSettlement(tile, def)) continue;
+
+                ColonyUtil.CreatePlayerColonySettlement(tile, def);
+                created++;
+            }
+
+            LogUtil.MessageForce($"Debug - Created {created}/10 random settlements.");
+        }
+
         [DebugAction("Empire", "Remove Player Settlement", allowedGameStates = AllowedGameStates.Playing)]
         private static void RemovePlayerSettlement()
         {
@@ -1026,6 +1053,32 @@ namespace FactionColonies
             LogUtil.MessageForce($"Debug - Build Road Segment Now: {(built ? "segment built" : "no segment to build")}");
         }
 
+        [DebugAction("Empire", "Build 10 Road Segments", allowedGameStates = AllowedGameStates.Playing)]
+        private static void BuildTenRoadSegments()
+        {
+            var rb = FactionCache.FactionComp.roadBuilder;
+            if (rb.roadDef is null)
+            {
+                LogUtil.MessageForce("Debug - No road research completed yet");
+                return;
+            }
+            if (rb.roadQueue is null)
+            {
+                LogUtil.MessageForce("Debug - No road queue exists");
+                return;
+            }
+
+            int built = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                rb.roadQueue.nextRoadTick = Find.TickManager.TicksGame;
+                rb.roadQueue.ProcessOnePath();
+                if (!rb.roadQueue.BuildRoadSegments()) break;
+                built++;
+            }
+            LogUtil.MessageForce($"Debug - Built {built}/10 road segments.");
+        }
+
         // ============================
         // Policy Debug Actions
         // ============================
@@ -1294,6 +1347,21 @@ namespace FactionColonies
         {
             LogUtil.MessageForce($"Validating settlement caravan list...");
             FactionCache.FactionComp?.ValidateSettlementCaravansList();
+        }
+
+        [DebugAction("Empire", "Force Restock Settlement Trader", allowedGameStates = AllowedGameStates.Playing)]
+        private static void DebugForceRestockSettlementTrader()
+        {
+            List<DebugMenuOption> options = new List<DebugMenuOption>();
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+            {
+                options.Add(new DebugMenuOption(settlement.Name, DebugMenuOptionMode.Action, () =>
+                {
+                    settlement.trader?.TryDestroyStock();
+                    LogUtil.MessageForce($"Destroyed trader stock for {settlement.Name}. Will regenerate on next trade access.");
+                }));
+            }
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(options));
         }
     }
 }

@@ -12,6 +12,7 @@ namespace FactionColonies
     {
         static void Postfix(Map map, Faction faction, Pawn negotiator, ref DiaOption __result)
         {
+            if (faction?.def is null) return;
             if (faction.def.defName != "PColony") return;
             __result = new DiaOption("RequestMilitaryAid".Translate(25));
             __result.Disable("Disabled. Use the settlements military tab.");

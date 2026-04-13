@@ -449,13 +449,32 @@ namespace FactionColonies
         public static void ProcessEvents(in List<FCEvent> events)
         {
             FactionFC faction = FactionCache.FactionComp;
+            int currentTick = Find.TickManager.TicksGame;
+
+            // Phase 1: collect all due events and remove them from the source list
+            // This ensures processing callbacks (AddEvent, StartDefence, etc.) cannot
+            // interfere with the iteration or cause index-shift bugs.
+            List<FCEvent> due = null;
             for (int i = events.Count - 1; i >= 0; i--)
             {
-                if (events[i].timeTillTrigger > Find.TickManager.TicksGame) continue;
-
-                FCEvent evt = events[i];
+                if (events[i].timeTillTrigger > currentTick) continue;
+                if (due is null) due = new List<FCEvent>();
+                due.Add(events[i]);
                 faction.events.RemoveAt(i);
                 faction.eventsVersion++;
+            }
+            if (due is null) return;
+
+            // Phase 2: process collected events
+            foreach (var evt in due)
+            {
+                // Guard against accidental re-fires
+                if (evt.fired)
+                {
+                    LogUtil.Error($"ProcessEvents: event '{evt.def?.defName ?? "NULL"}' (loadID={evt.loadID}) already fired. Skipping re-fire.");
+                    continue;
+                }
+                evt.fired = true;
 
                 // Record cooldown for events that define one
                 if (evt.def != null && evt.def.cooldownTicks > 0)
@@ -589,7 +608,8 @@ namespace FactionColonies
                             }
                             else
                             {
-                                worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt));
+                                var evt1 = evt;
+                                worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt1));
                             }
                         }
                         else

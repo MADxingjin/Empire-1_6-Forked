@@ -128,6 +128,18 @@
 	<!-- If false, this settlement type will not appear in the settlement type picker. Default: true -->
 	<!-- Submods can XML-patch this to false to hide settlement types they replace. -->
 	<available>true</available>
+	<!-- List of TileMutatorDefs that allow founding on impassable mountain tiles. -->
+	<!-- If the tile is impassable and has at least one of these mutators, the restriction is bypassed. -->
+	<!-- Omit or leave empty to block impassable tiles (default behavior). -->
+	<!-- Submods can also override TileHasImpassableOverride() for custom conditional logic. -->
+	<!-- Example: allow settling impassable tiles that have caves or mineral deposits -->
+	<!--
+	<impassableAllowedMutators>
+		<li>Caves</li>
+		<li>MineralRich</li>
+	</impassableAllowedMutators>
+	-->
+
 	<!-- Multiplier applied to this settlement type's weight when the threat system selects raid targets. -->
 	<!-- Higher values make settlements of this type more likely to be attacked. Default: 1.0 -->
 	<raidTargetingWeight>1.0</raidTargetingWeight>

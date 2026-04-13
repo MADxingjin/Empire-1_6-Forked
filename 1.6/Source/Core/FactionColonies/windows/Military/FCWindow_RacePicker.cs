@@ -56,12 +56,12 @@ namespace FactionColonies
 
             foreach (PawnKindDef def in FactionCache.AllPawnKindDefs
                 .Where(d => d.IsHumanLikeRace()
-                    && !seenRaces.Contains(d.race.label)))
+                    && !seenRaces.Contains(d.race.label ?? d.race.defName)))
             {
                 if (def.race == ThingDefOf.Human && def.LabelCap != "Colonist") continue;
-                seenRaces.Add(def.race.label);
+                seenRaces.Add(def.race.label ?? def.race.defName);
                 double cost = Math.Floor(def.race.BaseMarketValue * FCSettings.militaryRaceCostMultiplier);
-                raceOptions.Add((def, def.race.label.CapitalizeFirst(), cost));
+                raceOptions.Add((def, (def.race.label ?? def.race.defName).CapitalizeFirst(), cost));
             }
 
             raceOptions.Sort((a, b) => string.Compare(a.label, b.label, StringComparison.OrdinalIgnoreCase));

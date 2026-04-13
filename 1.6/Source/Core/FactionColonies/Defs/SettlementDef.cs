@@ -90,6 +90,13 @@ namespace FactionColonies
         public bool canBeRaided = true;
 
         /// <summary>
+        /// List of TileMutatorDefs that allow this settlement type to be founded on impassable tiles.
+        /// If the tile has Hilliness.Impassable AND at least one of these mutators is present,
+        /// the impassable restriction is bypassed. Null/empty = impassable tiles always blocked (default).
+        /// </summary>
+        public List<TileMutatorDef> impassableAllowedMutators = new List<TileMutatorDef>();
+
+        /// <summary>
         /// If false, battles at this settlement type always auto-resolve, even if the player
         /// has selected Manual or Hybrid battle mode. Use for settlement types whose maps
         /// cannot be generated (e.g. orbital stations).

@@ -26,14 +26,14 @@ namespace FactionColonies.util
 
         public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
         {
-            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Fighter;
+            PawnKindDef kindDef = pawnKindDef ?? GetDefaultFighter();
 
             return HumanlikeRequest(kindDef, mustBeViolent: true, xenotypeDef: xenotypeDef);
         }
 
         public static PawnGenerationRequest WorkerOrMilitaryRequest(PawnKindDef pawnKindDef, CustomXenotype customXenotype)
         {
-            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Fighter;
+            PawnKindDef kindDef = pawnKindDef ?? GetDefaultFighter();
 
             return HumanlikeRequest(kindDef, mustBeViolent: true, customXenotype: customXenotype);
         }
@@ -56,15 +56,29 @@ namespace FactionColonies.util
 
         public static PawnGenerationRequest CivilianRequest(PawnKindDef pawnKindDef = null, XenotypeDef xenotypeDef = null)
         {
-            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Villager;
+            PawnKindDef kindDef = pawnKindDef ?? GetDefaultVillager();
 
             return HumanlikeRequest(kindDef, mustBeViolent: false, xenotypeDef: xenotypeDef);
         }
         public static PawnGenerationRequest CivilianRequest(PawnKindDef pawnKindDef, CustomXenotype customXenotype)
         {
-            PawnKindDef kindDef = pawnKindDef ?? PColonyPawnKindDefOf.PColony_Villager;
+            PawnKindDef kindDef = pawnKindDef ?? GetDefaultVillager();
 
             return HumanlikeRequest(kindDef, mustBeViolent: false, customXenotype: customXenotype);
+        }
+
+        private static PawnKindDef GetDefaultFighter()
+        {
+            XenotypeFilter filter = FactionCache.FactionComp?.xenotypeFilter;
+            ThingDef race = filter?.GetRandomRace() ?? ThingDefOf.Human;
+            return PawnKindTemplateUtil.GetFighterForRace(race);
+        }
+
+        private static PawnKindDef GetDefaultVillager()
+        {
+            XenotypeFilter filter = FactionCache.FactionComp?.xenotypeFilter;
+            ThingDef race = filter?.GetRandomRace() ?? ThingDefOf.Human;
+            return PawnKindTemplateUtil.GetVillagerForRace(race);
         }
 
         private static PawnGenerationRequest HumanlikeRequest(PawnKindDef pawnKindDef = null,
@@ -161,12 +175,12 @@ namespace FactionColonies.util
         }
 
         /// <summary>
-        /// Generate a simple delivery pawn using the Empire's fighter template.
+        /// Generate a simple delivery pawn using the Empire's fighter template (tech-scaled).
         /// </summary>
         public static PawnGenerationRequest SimpleDeliveryRequest()
         {
             return new PawnGenerationRequest(
-                kind: PColonyPawnKindDefOf.PColony_Fighter,
+                kind: GetDefaultFighter(),
                 faction: FactionCache.PlayerColonyFaction,
                 context: PawnGenerationContext.NonPlayer,
                 tile: -1,

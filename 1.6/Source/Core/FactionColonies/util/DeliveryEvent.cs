@@ -36,14 +36,14 @@ namespace FactionColonies.util
 
         public static void Action(FCEvent evt)
         {
-            Action(evt, FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
+            Action(evt, FactionCache.FactionComp?.settlements?.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false);
         }
 
         public static void Action(FCEvent evt, Letter let, Message msg = null, bool CanUseShuttle = false)
         {
             evt.let = let;
             evt.msg = msg;
-            Action(evt, CanUseShuttle || (FactionCache.FactionComp.settlements.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
+            Action(evt, CanUseShuttle || (FactionCache.FactionComp?.settlements?.FirstOrFallback(settlement => settlement.Tile == evt.source)?.BuildingsComp?.HasBuilding(BuildingFCDefOf.shuttlePort) ?? false));
         }
 
         private static void MakeDeliveryLetterAndMessage(FCEvent evt)
@@ -63,7 +63,8 @@ namespace FactionColonies.util
                     }
                     else
                     {
-                        Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(evt.def.label.ToLower()), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
+                        string eventLabel = evt.def?.label?.ToLower() ?? "delivery";
+                        Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(eventLabel), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
                     }
                 }
 
@@ -205,7 +206,8 @@ namespace FactionColonies.util
                     if (deliveryPawn == null)
                     {
                         LogUtil.Warning("Failed to generate human pawn, falling back to animals");
-                        var availableAnimals = FactionCache.AllCombatAnimalKindDefs
+                        var combatPool = FactionCache.FactionComp?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+                        var availableAnimals = combatPool
                             .OrderByDescending(def => def.combatPower)
                             .Take(5)
                             .ToList();
@@ -298,7 +300,8 @@ namespace FactionColonies.util
 
             // Add guard animals (like wolves) for protection - always add at least 2 as it's good protection! Keep your highmate-only faction safe!!
             // This protects deliveries by keeping it immersive, adhering to xenotype preferences. Bears and wargs are problematic. 
-            var guardAnimals = FactionCache.AllCombatAnimalKindDefs
+            var guardPool = FactionCache.FactionComp?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+            var guardAnimals = guardPool
                 .OrderByDescending(def => def.combatPower)
                 .Take(5); // Take more options to ensure we can get 2 guards
 
@@ -310,23 +313,28 @@ namespace FactionColonies.util
             }
 
             int guardsAdded = 0;
-            foreach (var guardAnimal in guardAnimals)
+            int loopCount = 0;
+            int loopGuard = 10;
+            while (guardsAdded < 2 && availableGuardAnimals.Any() && loopCount < loopGuard)
             {
+                PawnKindDef guardAnimal = availableGuardAnimals.RandomElement();
                 try
                 {
                     Pawn guard = PawnGenerator.GeneratePawn(FCPawnGenerator.AnimalRequest(guardAnimal));
-                    if (guard != null)
+                    if (guard is object)
                     {
                         securityGuards.Add(guard);
                         guardsAdded++;
                         LogUtil.Message($"Added guard animal: {guardAnimal.label} (Combat Power: {guardAnimal.combatPower:F0})");
-                        if (guardsAdded >= 2) break; // Always add at least 2 guards
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.Warning($"Failed to spawn security guard {guardAnimal.label}: {ex.Message}");
+                    LogUtil.Warning($"Failed to spawn security guard {guardAnimal.label}: {ex}");
+                    availableGuardAnimals.Remove(guardAnimal);
                 }
+
+                loopCount++;
             }
 
             // Combine all pawns

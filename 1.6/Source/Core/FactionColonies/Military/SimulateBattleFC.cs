@@ -77,6 +77,52 @@ namespace FactionColonies
         {
             return 1.0 + (efficiency - 1.0) * FCSettings.efficiencyDamping;
         }
+
+        /// <summary>
+        /// Calculates the probability that the defender wins using the binomial tail sum for a
+        /// Bernoulli race (attrition model). The attacker needs <c>defenderHP</c> round-wins to deplete
+        /// the defender; the defender needs <c>attackerHP</c> round-wins to deplete the attacker.
+        /// <c>P(attacker wins) = P(X &gt;= defenderHP)</c> where <c>X ~ Binomial(attackerHP+defenderHP-1, p)</c>.
+        /// Does not account for <see cref="BattleModifierRegistry"/> modifications.
+        /// </summary>
+        /// <returns>Defender win probability in [0, 1].</returns>
+        public static double CalculateDefenderWinChance(militaryForce attacker, militaryForce defender)
+        {
+            if (attacker.forceRemaining <= 0) return 1.0;
+            if (defender.forceRemaining <= 0) return 0.0;
+
+            int attackerHP = (int)Math.Max(1, Math.Round(attacker.forceRemaining));
+            int defenderHP = (int)Math.Max(1, Math.Round(defender.forceRemaining * FCSettings.defenderAdvantage));
+
+            double attackerEfficiency = DampenEfficiency(attacker.militaryEfficiency);
+            double defenderEfficiency = DampenEfficiency(defender.militaryEfficiency);
+
+            // P(attacker wins a single round) for Uniform(0, 20*attackerEfficiency) vs Uniform(0, 20*defenderEfficiency)
+            double p;
+            if (attackerEfficiency <= defenderEfficiency)
+                p = attackerEfficiency / (2.0 * defenderEfficiency);
+            else
+                p = 1.0 - defenderEfficiency / (2.0 * attackerEfficiency);
+
+            if (p <= 0.0) return 1.0;
+            if (p >= 1.0) return 0.0;
+
+            double q = 1.0 - p;
+            // n = the maximum possible number of rounds
+            int n = attackerHP + defenderHP - 1;
+
+            // Sum P(X >= defenderHP) where X ~ Binomial(n, p), iterating from k=n down to k=defenderHP.
+            // term(n) = p^n, then term(k) = term(k+1) * (k+1)/(n-k) * q/p
+            double term = Math.Pow(p, n);
+            double sum = term;
+            for (int k = n - 1; k >= defenderHP; k--)
+            {
+                term *= (k + 1.0) / (n - k) * (q / p);
+                sum += term;
+            }
+
+            return Math.Max(0.0, Math.Min(1.0, 1.0 - sum));
+        }
     }
 
 
@@ -200,12 +246,15 @@ namespace FactionColonies
 
         public static militaryForce CreateMilitaryForceFromEnemySettlement(Settlement settlement)
         {
-            double militaryLevel = 0;
-            double efficiency = 0;
+            double militaryLevel = 1;
+            double efficiency = 1;
 
-            GetMilitaryLevelAndEfficiencyFromTechLevel(settlement.Faction.def.techLevel, out militaryLevel, out efficiency);
+            if (settlement?.Faction?.def != null)
+            {
+                GetMilitaryLevelAndEfficiencyFromTechLevel(settlement.Faction.def.techLevel, out militaryLevel, out efficiency);
+            }
 
-            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, null, settlement.Faction);
+            militaryForce returnForce = new militaryForce(militaryLevel, efficiency, null, settlement?.Faction);
             return returnForce;
         }
 
@@ -316,9 +365,13 @@ namespace FactionColonies
 
                 FactionCache.FactionComp.AddEvent(tmp);
 
-                tmp.customDescription += "\n\n" + "settlementAttackEstimate".Translate(
+                double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
+                tmp.customDescription += "\n\n" + "battleForecast".Translate(
                     tmp.militaryForceAttacking.forceRemaining,
-                    tmp.militaryForceDefending.DefensivePower);
+                    tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
+                    tmp.militaryForceDefending.DefensivePower,
+                    tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
+                    (winChance * 100).ToString("F0"));
                 if (FCSettings.battleMode == BattleMode.Hybrid)
                     tmp.customDescription += "\n\n" + "settlementAttackHybridHint".Translate();
                 settlement.MilitaryComp.isUnderAttack = true;
@@ -395,9 +448,13 @@ namespace FactionColonies
             target.IsUnderAttack = true;
             factionfc.AddEvent(tmp);
 
-            tmp.customDescription += "\n\n" + "settlementAttackEstimate".Translate(
+            double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
+            tmp.customDescription += "\n\n" + "battleForecast".Translate(
                 tmp.militaryForceAttacking.forceRemaining,
-                tmp.militaryForceDefending.DefensivePower);
+                tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
+                tmp.militaryForceDefending.DefensivePower,
+                tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
+                (winChance * 100).ToString("F0"));
 
             Find.LetterStack.ReceiveLetter("settlementInDanger".Translate(), tmp.customDescription,
                 LetterDefOf.ThreatBig, new LookTargets(target.WorldObject));
