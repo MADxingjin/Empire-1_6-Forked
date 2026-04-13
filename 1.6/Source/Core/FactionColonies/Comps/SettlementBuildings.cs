@@ -600,6 +600,7 @@ namespace FactionColonies
         public override void CompTick()
         {
             base.CompTick();
+            if (settlementBuildingComps.NullOrEmpty()) return;
 
             foreach (SettlementBuildingComp comp in settlementBuildingComps)
             {

@@ -204,6 +204,7 @@ namespace FactionColonies
                         toTile = allTiles[j],
                         cost = cost
                     });
+                    yield return null; // Spread A* pathfinds across ticks
                 }
             }
 
@@ -284,7 +285,9 @@ namespace FactionColonies
 
             if (this.roadPathIterator.MoveNext())
             {
-                this.roadPaths.Add(this.roadPathIterator.Current);
+                FCRoadPath path = this.roadPathIterator.Current;
+                if (path is object)
+                    this.roadPaths.Add(path);
                 return true;
             }
             return false;
