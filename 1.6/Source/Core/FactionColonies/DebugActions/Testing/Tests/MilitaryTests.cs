@@ -8,7 +8,7 @@ namespace FactionColonies
 
         private static void AssertTechLevel(TechLevel techLevel, double expectedLevel, double expectedEfficiency)
         {
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(techLevel, out double level, out double efficiency);
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(techLevel, out double level, out double efficiency);
             TestAssert.AreEqual(expectedLevel, level, message: $"Military level for {techLevel}");
             TestAssert.AreEqual(expectedEfficiency, efficiency, message: $"Efficiency for {techLevel}");
         }

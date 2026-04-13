@@ -54,9 +54,9 @@ namespace FactionColonies
         }
         public Map Map => WorldSettlement.Map;
 
-        public militaryForce attackerForce;
+        public MilitaryForce attackerForce;
         public List<Pawn> attackers = new List<Pawn>();
-        public militaryForce defenderForce;
+        public MilitaryForce defenderForce;
         private FCEvent currentBattleEvent;
         public List<Pawn> defenders = new List<Pawn>();
         public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
@@ -229,10 +229,10 @@ namespace FactionColonies
         private void ChangeDefendingForceAction(FCEvent evt)
         {
             var faction = FactionCache.FactionComp;
-            militaryForce attackForce = evt.militaryForceAttacking;
+            MilitaryForce attackForce = evt.militaryForceAttacking;
 
             // "Reset to Home Settlement" option with win chance
-            militaryForce homeForce = militaryForce.CreateMilitaryForceFromSettlement(WorldSettlement);
+            MilitaryForce homeForce = MilitaryForce.CreateMilitaryForceFromSettlement(WorldSettlement);
             double homeWinChance = SimulateBattleFc.CalculateDefenderWinChance(attackForce, homeForce);
             var settlementList = new List<FloatMenuOption>
             {
@@ -251,8 +251,8 @@ namespace FactionColonies
                 if (foundSettlement.MilitaryComp?.IsMilitaryValid() != true) continue;
                 if (!DefenseValidatorRegistry.CanDefend(foundSettlement, WorldSettlement)) continue;
 
-                militaryForce tmpHome = militaryForce.CreateMilitaryForceFromSettlement(WorldSettlement, true);
-                militaryForce hypothetical = militaryForce.CreateMilitaryForceFromSettlement(foundSettlement, homeDefendingForce: tmpHome);
+                MilitaryForce tmpHome = MilitaryForce.CreateMilitaryForceFromSettlement(WorldSettlement, true);
+                MilitaryForce hypothetical = MilitaryForce.CreateMilitaryForceFromSettlement(foundSettlement, homeDefendingForce: tmpHome);
                 double wc = SimulateBattleFc.CalculateDefenderWinChance(attackForce, hypothetical);
                 string wcText = (wc * 100).ToString("F0");
 
@@ -276,7 +276,7 @@ namespace FactionColonies
                 if (distance > defender.Range) continue;
 
                 IAutoDefender d = defender;
-                militaryForce extForce = d.CreateDefendingForce();
+                MilitaryForce extForce = d.CreateDefendingForce();
                 double extWc = SimulateBattleFc.CalculateDefenderWinChance(attackForce, extForce);
                 settlementList.Add(new FloatMenuOption(
                     d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel
@@ -663,7 +663,7 @@ namespace FactionColonies
             return CellFinder.RandomCell(map);
         }
 
-        private void GenerateFriendlies(militaryForce force)
+        private void GenerateFriendlies(MilitaryForce force)
         {
             var points = Math.Max((float)(force.forceRemaining * 100), 50f);
             List<Pawn> friendlies = null;

@@ -8,7 +8,7 @@ namespace FactionColonies
         {
             private readonly double _boost;
             public BoostAttackerModifier(double boost) => _boost = boost;
-            public void ModifyForce(militaryForce force, bool isAttacker)
+            public void ModifyForce(MilitaryForce force, bool isAttacker)
             {
                 if (isAttacker) force.forceRemaining += _boost;
             }
@@ -40,9 +40,9 @@ namespace FactionColonies
             }
         }
 
-        private static militaryForce CreateForce(double level, double efficiency, double remaining)
+        private static MilitaryForce CreateForce(double level, double efficiency, double remaining)
         {
-            return new militaryForce
+            return new MilitaryForce
             {
                 militaryLevel = level,
                 militaryEfficiency = efficiency,

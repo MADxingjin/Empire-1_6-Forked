@@ -32,9 +32,9 @@ namespace FactionColonies
         public TaxDeliveryMode deliveryMode;
 
         //Military Force stuff
-        public militaryForce militaryForceAttacking;
+        public MilitaryForce militaryForceAttacking;
         public Faction militaryForceAttackingFaction;
-        public militaryForce militaryForceDefending;
+        public MilitaryForce militaryForceDefending;
         public Faction militaryForceDefendingFaction;
         public WorldObject settlementFCDefending;
         /// <summary>

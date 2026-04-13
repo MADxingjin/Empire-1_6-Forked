@@ -48,12 +48,12 @@ namespace FactionColonies
         private class TestBattleModifier : IBattleModifier
         {
             public double LevelBonus;
-            public void ModifyForce(militaryForce force, bool isAttacker) => force.militaryLevel += LevelBonus;
+            public void ModifyForce(MilitaryForce force, bool isAttacker) => force.militaryLevel += LevelBonus;
         }
 
         private class ThrowingBattleModifier : IBattleModifier
         {
-            public void ModifyForce(militaryForce force, bool isAttacker) => throw new InvalidOperationException("test");
+            public void ModifyForce(MilitaryForce force, bool isAttacker) => throw new InvalidOperationException("test");
         }
 
         private class TestPaymentModifier : ISilverPaymentModifier
@@ -305,7 +305,7 @@ namespace FactionColonies
             BattleModifierRegistry.Register(c);
             try
             {
-                var force = new militaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
+                var force = new MilitaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
                 BattleModifierRegistry.InvokeModifyForce(force, true);
                 TestAssert.AreEqual(7.0, force.militaryLevel, message: "Level should increase by 2");
             }
@@ -318,7 +318,7 @@ namespace FactionColonies
             var c = new TestBattleModifier { LevelBonus = 2.0 };
             BattleModifierRegistry.Register(c);
             BattleModifierRegistry.Unregister(c);
-            var force = new militaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
+            var force = new MilitaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
             BattleModifierRegistry.InvokeModifyForce(force, true);
             TestAssert.AreEqual(5.0, force.militaryLevel, message: "Level should be unchanged");
         }
@@ -331,7 +331,7 @@ namespace FactionColonies
             BattleModifierRegistry.Register(c);
             try
             {
-                var force = new militaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
+                var force = new MilitaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
                 BattleModifierRegistry.InvokeModifyForce(force, true);
                 TestAssert.AreEqual(7.0, force.militaryLevel, message: "Should only apply once");
             }
@@ -345,7 +345,7 @@ namespace FactionColonies
             BattleModifierRegistry.Register(bad);
             try
             {
-                var force = new militaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
+                var force = new MilitaryForce { militaryLevel = 5, militaryEfficiency = 1.0, forceRemaining = 5 };
                 TestAssert.DoesNotThrow(() => BattleModifierRegistry.InvokeModifyForce(force, true));
             }
             finally { BattleModifierRegistry.Unregister(bad); }

@@ -475,4 +475,20 @@
 		<li>Midnight</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_34</defName>
+		<label>Minor Fixes</label>
+		<description>A variety of code cleanup and typo-fixing.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+			<li>Fixes a couple building description typos</li>
+			<li>Fair bit of code cleanup</li>
+			<li>Bugfix: the shuttles building wouldn't refresh correctly</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

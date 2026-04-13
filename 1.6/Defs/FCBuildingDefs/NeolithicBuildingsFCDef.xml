@@ -245,7 +245,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>salvageGuild</defName> <!--Name of Def -->
 		<label>Salvage Guild</label> <!--Lable of Def -->
-		<desc>A guild of trained salage crews that searches the ruins of destroyed and abandoned settlements, recovering weapons and apparel while also potentially recovering research notes.</desc> <!-- Description of trait -->
+		<desc>A guild of trained salvage crews that searches the ruins of destroyed and abandoned settlements, recovering weapons and apparel while also potentially recovering research notes.</desc> <!-- Description of trait -->
 		<cost>500</cost>
 		<constructionDuration>40000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
@@ -266,8 +266,8 @@
 		<constructionDuration>35000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>
 			<li><stat>workerBaseMax</stat><value>-3</value></li>
-			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.2</value></li>
-			<li><stat>RTD_Medicine_ProductionAdditive</stat><value>0.2</value></li>
+			<li><stat>RTD_Food_ProductionAdditive</stat><value>0.25</value></li>
+			<li><stat>RTD_Medicine_ProductionAdditive</stat><value>0.25</value></li>
 		</statModifiers>
 		<applicableBiomes>
 		<li>Glowforest</li>
@@ -295,7 +295,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Neolithic">
 		<defName>woodcutter</defName> <!--Name of Def -->
 		<label>Woodcutter</label> <!--Lable of Def -->
-		<desc>A local woodcutter making use of stone tools to fell trees and process lumber</desc> <!-- Description of trait -->
+		<desc>A local woodcutter making use of stone tools to fell trees and process lumber.</desc> <!-- Description of trait -->
 		<cost>600</cost>
 		<constructionDuration>35000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>

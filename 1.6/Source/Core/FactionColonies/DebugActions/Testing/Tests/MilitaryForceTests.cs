@@ -14,7 +14,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void Constructor_ForceRemaining_EqualsRoundedLevelTimesEfficiency()
         {
-            var force = new militaryForce(7.0, 1.3, null, null);
+            var force = new MilitaryForce(7.0, 1.3, null, null);
             double expected = Math.Round(7.0 * 1.3); // 9.1 → 9
             TestAssert.AreEqual(expected, force.forceRemaining,
                 $"forceRemaining should be Round(level * efficiency) = {expected}");
@@ -23,7 +23,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void Constructor_FractionalResult_RoundsCorrectly()
         {
-            var force = new militaryForce(5.0, 1.5, null, null);
+            var force = new MilitaryForce(5.0, 1.5, null, null);
             double expected = Math.Round(5.0 * 1.5); // 7.5 → 8 (banker's rounding)
             TestAssert.AreEqual(expected, force.forceRemaining);
         }
@@ -31,7 +31,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void DefensivePower_AppliesDefenderAdvantage()
         {
-            var force = new militaryForce(10.0, 1.0, null, null);
+            var force = new MilitaryForce(10.0, 1.0, null, null);
             double expected = Math.Round(force.forceRemaining * FCSettings.defenderAdvantage);
             TestAssert.AreEqual(expected, force.DefensivePower,
                 $"DefensivePower should be Round(forceRemaining * {FCSettings.defenderAdvantage})");
@@ -44,7 +44,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void TechLevelMapping_Neolithic_Level2_Eff1()
         {
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 TechLevel.Neolithic, out double level, out double eff);
             TestAssert.AreEqual(2.0, level, message: "Neolithic level");
             TestAssert.AreEqual(0.9, eff, message: "Neolithic efficiency");
@@ -53,7 +53,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void TechLevelMapping_Spacer_Level6_Eff1Point3()
         {
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 TechLevel.Spacer, out double level, out double eff);
             TestAssert.AreEqual(6.0, level, message: "Spacer level");
             TestAssert.AreEqual(1.2, eff, message: "Spacer efficiency");
@@ -62,7 +62,7 @@ namespace FactionColonies
         [EmpireTest("MilitaryForce")]
         public static void TechLevelMapping_Archotech_HighestValues()
         {
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 TechLevel.Archotech, out double level, out double eff);
             TestAssert.AreEqual(9.0, level, message: "Archotech level");
             TestAssert.AreEqual(1.5, eff, message: "Archotech efficiency");
@@ -73,7 +73,7 @@ namespace FactionColonies
         {
             foreach (TechLevel tech in Enum.GetValues(typeof(TechLevel)))
             {
-                militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+                MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                     tech, out double level, out double eff);
                 TestAssert.GreaterThan(level, 0, $"TechLevel {tech}: level should be > 0");
                 TestAssert.GreaterThan(eff, 0, $"TechLevel {tech}: efficiency should be > 0");
@@ -97,7 +97,7 @@ namespace FactionColonies
             WorldSettlementFC settlement = GetSettlement();
             if (settlement == null) TestAssert.Skip("No settlement with MilitaryComp");
 
-            militaryForce force = militaryForce.CreateMilitaryForceFromSettlement(settlement);
+            MilitaryForce force = MilitaryForce.CreateMilitaryForceFromSettlement(settlement);
 
             TestAssert.IsFalse(double.IsNaN(force.forceRemaining), "forceRemaining should not be NaN");
             TestAssert.IsFalse(double.IsInfinity(force.forceRemaining), "forceRemaining should not be infinite");
@@ -112,8 +112,8 @@ namespace FactionColonies
             WorldSettlementFC settlement = GetSettlement();
             if (settlement == null) TestAssert.Skip("No settlement with MilitaryComp");
 
-            militaryForce attacking = militaryForce.CreateMilitaryForceFromSettlement(settlement, isAttacking: true);
-            militaryForce defending = militaryForce.CreateMilitaryForceFromSettlement(settlement, isAttacking: false);
+            MilitaryForce attacking = MilitaryForce.CreateMilitaryForceFromSettlement(settlement, isAttacking: true);
+            MilitaryForce defending = MilitaryForce.CreateMilitaryForceFromSettlement(settlement, isAttacking: false);
 
             // Both should be valid; they may differ if attack/defense stat bonuses differ
             TestAssert.IsFalse(double.IsNaN(attacking.forceRemaining), "Attacking force should not be NaN");
@@ -128,9 +128,9 @@ namespace FactionColonies
                     && s.Faction != FactionCache.PlayerColonyFaction);
             if (enemy == null) TestAssert.Skip("No enemy settlement on world map");
 
-            militaryForce force = militaryForce.CreateMilitaryForceFromEnemySettlement(enemy);
+            MilitaryForce force = MilitaryForce.CreateMilitaryForceFromEnemySettlement(enemy);
 
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 enemy.Faction.def.techLevel, out double expectedLevel, out double expectedEff);
 
             TestAssert.AreEqual(expectedLevel, force.militaryLevel,

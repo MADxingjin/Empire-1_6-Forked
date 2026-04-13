@@ -70,11 +70,11 @@ namespace FactionColonies.WDExp
             // Convert WD traveler strength to Empire military force
             double techLevel;
             double efficiency;
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 traveler.Faction.def.techLevel, out techLevel, out efficiency);
 
             double wdMilitaryLevel = traveler.travelerStrength / WDStrengthBattleModifier.SCALE_FACTOR;
-            militaryForce attackingForce = new militaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
+            MilitaryForce attackingForce = new MilitaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
 
             // Route through Empire's defense system (1-day warning + auto-battle/manual)
             MilitaryUtilFC.AttackPlayerSettlement(attackingForce, empireSettlement, traveler.Faction);
@@ -121,9 +121,9 @@ namespace FactionColonies.WDExp
     {
         public const double SCALE_FACTOR = 100.0;
 
-        private militaryForce lastAttacker;
+        private MilitaryForce lastAttacker;
 
-        public void ModifyForce(militaryForce force, bool isAttacker)
+        public void ModifyForce(MilitaryForce force, bool isAttacker)
         {
             if (isAttacker)
             {
@@ -132,7 +132,7 @@ namespace FactionColonies.WDExp
             }
 
             // Defender side — look up target settlement via the attacker's military comp
-            militaryForce attacker = lastAttacker;
+            MilitaryForce attacker = lastAttacker;
             lastAttacker = null;
 
             if (attacker == null || attacker.homeSettlement == null) return;

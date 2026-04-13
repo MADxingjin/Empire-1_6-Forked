@@ -666,13 +666,13 @@ namespace FactionColonies
                                     WorldSettlementFC target = raidableSettlements.RandomElementByWeight(
                                         s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
                                              * RaidWeightRegistry.GetCombinedWeight(s, enemy));
-                                    MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
+                                    MilitaryUtilFC.AttackPlayerSettlement(MilitaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
                                 }
                                 else if (validExternalTargets.Any())
                                 {
                                     IRaidTarget target = validExternalTargets.RandomElementByWeight(
                                         t => (float)GetMilitaryTargetWeight(t.MilitaryLevel));
-                                    MilitaryUtilFC.AttackRaidTarget(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
+                                    MilitaryUtilFC.AttackRaidTarget(MilitaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
                                 }
                             }
                         }

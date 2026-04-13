@@ -4,9 +4,9 @@ namespace FactionColonies
 {
     public static class BattleForecastTests
     {
-        private static militaryForce CreateForce(double level, double efficiency, double remaining)
+        private static MilitaryForce CreateForce(double level, double efficiency, double remaining)
         {
-            return new militaryForce
+            return new MilitaryForce
             {
                 militaryLevel = level,
                 militaryEfficiency = efficiency,
