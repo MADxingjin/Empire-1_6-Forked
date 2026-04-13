@@ -9,7 +9,7 @@ using Verse.AI.Group;
 
 namespace FactionColonies.util
 {
-    class DeliveryEvent
+    public static class DeliveryEvent
     {
         public static TraverseParms DeliveryTraverseParms => new TraverseParms()
         {
