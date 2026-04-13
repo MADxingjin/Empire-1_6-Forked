@@ -431,4 +431,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_31</defName>
+		<label>Animal Filter Defaults</label>
+		<description>Changes the animal filter to default to a handful of &quot;normal&quot; animals, so as to prevent exotic creatures (e.g. thrumbos, insectoids) from appearing without player opt-in.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Sets the default animal list to Husky, Timber Wolf, Arctic Wolf, Lynx, Cougar, Muffalo, Dromedary, Horse, Donkey, Elephant, and Yak</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -37,7 +37,8 @@
 	<AnimalSelection>Animal Selection</AnimalSelection>
 	<AnimalEnableAll>Enable All</AnimalEnableAll>
 	<AnimalDisableAll>Disable All</AnimalDisableAll>
-	<AnimalFilterNoneError>No animals are allowed! All animals will be re-enabled on close.</AnimalFilterNoneError>
+	<AnimalDefaults>Defaults</AnimalDefaults>
+	<AnimalFilterNoneError>No animals are allowed! Defaults will be restored on close.</AnimalFilterNoneError>
 	<AnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</AnimalFilterNoCombatWarning>
 	<AnimalFilterNoPackError>No pack animals are allowed! All pack animals will be re-enabled on close.</AnimalFilterNoPackError>
 	<AnimalTagCombat>Combat</AnimalTagCombat>

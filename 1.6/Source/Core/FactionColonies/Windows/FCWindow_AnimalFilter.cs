@@ -158,9 +158,11 @@ namespace FactionColonies
                 bottomY -= (errorBox.height + margin);
             }
 
-            // Enable All / Disable All buttons
-            Rect enableButton = new Rect(inRect.x, bottomY - bigRowHeight, inRect.width / 2f, bigRowHeight);
-            Rect disableButton = new Rect(enableButton.xMax, enableButton.y, enableButton.width, enableButton.height);
+            // Enable All / Disable All / Defaults buttons
+            float btnWidth = inRect.width / 3f;
+            Rect enableButton = new Rect(inRect.x, bottomY - bigRowHeight, btnWidth, bigRowHeight);
+            Rect disableButton = new Rect(enableButton.xMax, enableButton.y, btnWidth, bigRowHeight);
+            Rect defaultsButton = new Rect(disableButton.xMax, enableButton.y, btnWidth, bigRowHeight);
             if (Widgets.ButtonText(enableButton, "AnimalEnableAll".Translate()))
             {
                 filter.AllowAll();
@@ -168,6 +170,10 @@ namespace FactionColonies
             if (Widgets.ButtonText(disableButton, "AnimalDisableAll".Translate()))
             {
                 filter.DisallowAll();
+            }
+            if (Widgets.ButtonText(defaultsButton, "AnimalDefaults".Translate()))
+            {
+                filter.SetDefaults();
             }
             bottomY -= (enableButton.height + margin);
 

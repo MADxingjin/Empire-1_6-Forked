@@ -70,11 +70,30 @@ namespace FactionColonies
             InvalidateCache();
         }
 
+        public void SetDefaults()
+        {
+            allowedAnimals.Clear();
+            PawnKindDef[] defaults =
+            {
+                AnimalFilterDefOf.Husky, AnimalFilterDefOf.Wolf_Timber, AnimalFilterDefOf.Wolf_Arctic,
+                AnimalFilterDefOf.Lynx, AnimalFilterDefOf.Cougar,
+                AnimalFilterDefOf.Muffalo, AnimalFilterDefOf.Dromedary, AnimalFilterDefOf.Horse,
+                AnimalFilterDefOf.Donkey, AnimalFilterDefOf.Elephant, AnimalFilterDefOf.Yak
+            };
+            HashSet<PawnKindDef> valid = new HashSet<PawnKindDef>(FactionCache.AllAnimalKindDefs);
+            foreach (PawnKindDef def in defaults)
+            {
+                if (def is object && valid.Contains(def))
+                    allowedAnimals.Add(def);
+            }
+            InvalidateCache();
+        }
+
         public void FinalizeInit()
         {
             if (allowedAnimals.Count == 0)
             {
-                AllowAll();
+                SetDefaults();
             }
             if (AllowedPackAnimals.Count == 0)
             {
@@ -91,8 +110,8 @@ namespace FactionColonies
         {
             if (allowedAnimals.Count == 0)
             {
-                LogUtil.Warning("AnimalFilter has no allowed animals. Re-enabling all");
-                AllowAll();
+                LogUtil.Warning("AnimalFilter has no allowed animals. Restoring defaults");
+                SetDefaults();
                 return;
             }
 
