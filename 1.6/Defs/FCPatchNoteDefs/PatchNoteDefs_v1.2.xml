@@ -417,4 +417,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_29</defName>
+		<label>Threaded Roadbuilder</label>
+		<description>The MST computation for the road builder is now run on a background thread, preventing the game from hanging while the MST is rebuilt. Said computation only occurs when a new settlement is founded, or a new type of road is unlocked, so the use of this threading should be relatively infrequent.</description>
+		<releaseDate>2026-04-12</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Changes the MST computation to run on a background thread, with harmony patches on GetEmptyWorldPath and ReleaseToPool to lock sensitive parts of the pathfinder</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
