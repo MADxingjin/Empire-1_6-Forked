@@ -55,9 +55,9 @@ namespace FactionColonies
                     if (mod.stat.linkedResource != null)
                     {
                         if (mod.stat.aggregation == FCStatAggregation.Additive)
-                            desc += "RTDproductionAdditive".Translate(TextUtil.ColorizeAdditiveBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                            desc += "FCRTDproductionAdditive".Translate(TextUtil.ColorizeAdditiveBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
                         else
-                            desc += "RTDproductionMultiplier".Translate(TextUtil.ColorizeMultiplierBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
+                            desc += "FCRTDproductionMultiplier".Translate(TextUtil.ColorizeMultiplierBonus(mod.value), mod.stat.linkedResource.LabelCap) + "\n";
                     }
                     else
                     {

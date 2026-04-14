@@ -19,22 +19,22 @@ namespace FactionColonies
             {
                 if (CraftUtil.ThingIsStuffable(thingDef))
                 {
-                    return "TitheListRejectionStuffQuality".Translate(thingDef.LabelCap, TextUtil.GetQualityLabelCap(quality), stuffDef.LabelCap);
+                    return "FCTitheListRejectionStuffQuality".Translate(thingDef.LabelCap, TextUtil.GetQualityLabelCap(quality), stuffDef.LabelCap);
                 }
                 else
                 {
-                    return "TitheListRejectionQuality".Translate(thingDef.LabelCap, TextUtil.GetQualityLabelCap(quality));
+                    return "FCTitheListRejectionQuality".Translate(thingDef.LabelCap, TextUtil.GetQualityLabelCap(quality));
                 }
             }
             else
             {
                 if (CraftUtil.ThingIsStuffable(thingDef))
                 {
-                    return "TitheListRejectionStuff".Translate(thingDef.LabelCap, stuffDef.LabelCap);
+                    return "FCTitheListRejectionStuff".Translate(thingDef.LabelCap, stuffDef.LabelCap);
                 }
                 else
                 {
-                    return "TitheListRejection".Translate(thingDef.LabelCap);
+                    return "FCTitheListRejection".Translate(thingDef.LabelCap);
                 }
             }
         }

@@ -2,36 +2,36 @@
 <LanguageData>
 
   <!-- Строительство зданий -->
-  <ConstructBuilding>Построить здание</ConstructBuilding>
-  <Construct>Построить</Construct>
-  <Build>Возвести</Build>
-  <Built>Построено</Built>
-  <WillBeConstructedIn>будет построено в</WillBeConstructedIn>
-  <HasBeenConstructedAt>было построено в</HasBeenConstructedAt>
+  <FCConstructBuilding>Построить здание</FCConstructBuilding>
+  <FCConstruct>Построить</FCConstruct>
+  <FCBuild>Возвести</FCBuild>
+  <FCBuilt>Построено</FCBuilt>
+  <FCWillBeConstructedIn>будет построено в</FCWillBeConstructedIn>
+  <FCHasBeenConstructedAt>было построено в</FCHasBeenConstructedAt>
   <Empire_BuildingWindow_ConstructionDesc>В данный момент строится: {0}</Empire_BuildingWindow_ConstructionDesc>
-  <BuildTime>Время постройки: {0}</BuildTime>
+  <FCBuildTime>Время постройки: {0}</FCBuildTime>
 
   <!-- Ограничения на строительство -->
-  <BuildingSurfaceOnly>Это здание можно построить только в наземных поселениях</BuildingSurfaceOnly>
-  <BuildingOrbitalOnly>Это здание можно построить только на орбитальных платформах</BuildingOrbitalOnly>
-  <BuildingInvalidSettlement>{0} нельзя построить в {1}</BuildingInvalidSettlement>
-  <BuildingAlreadyType>Здание такого типа уже существует</BuildingAlreadyType>
-  <BuildingBeingBuiltAlreadyType>Здание такого типа уже строится</BuildingBeingBuiltAlreadyType>
-  <BuildingAlreadyConstructed>Там уже строится здание</BuildingAlreadyConstructed>
+  <FCBuildingSurfaceOnly>Это здание можно построить только в наземных поселениях</FCBuildingSurfaceOnly>
+  <FCBuildingOrbitalOnly>Это здание можно построить только на орбитальных платформах</FCBuildingOrbitalOnly>
+  <FCBuildingInvalidSettlement>{0} нельзя построить в {1}</FCBuildingInvalidSettlement>
+  <FCBuildingAlreadyType>Здание такого типа уже существует</FCBuildingAlreadyType>
+  <FCBuildingBeingBuiltAlreadyType>Здание такого типа уже строится</FCBuildingBeingBuiltAlreadyType>
+  <FCBuildingAlreadyConstructed>Там уже строится здание</FCBuildingAlreadyConstructed>
 
   <!-- Снос зданий -->
-  <Destroy>Уничтожить</Destroy>
+  <FCDestroy>Уничтожить</FCDestroy>
   <FCDemolish>Снести</FCDemolish>
   <FCDemolishConfirmation>Вы уверены, что хотите снести {0}? Это будет стоить {1} серебра.</FCDemolishConfirmation>
   <FCBuildingDemolished>{0} был снесен</FCBuildingDemolished>
   <FCChangeBuildingButton>Изменить здание</FCChangeBuildingButton>
 
   <!-- Фильтры зданий -->
-  <BuildingFilterAll>Все</BuildingFilterAll>
-  <BuildingFilterHappiness>Счастье</BuildingFilterHappiness>
-  <BuildingFilterBasetax>Базовый налог</BuildingFilterBasetax>
-  <BuildingFilterWorkers>Рабочие</BuildingFilterWorkers>
-  <BuildingFilterMilitary>Военные</BuildingFilterMilitary>
+  <FCBuildingFilterAll>Все</FCBuildingFilterAll>
+  <FCBuildingFilterHappiness>Счастье</FCBuildingFilterHappiness>
+  <FCBuildingFilterBasetax>Базовый налог</FCBuildingFilterBasetax>
+  <FCBuildingFilterWorkers>Рабочие</FCBuildingFilterWorkers>
+  <FCBuildingFilterMilitary>Военные</FCBuildingFilterMilitary>
 
   <!-- Местоположение столицы -->
   <FCCapitalEstablished>Столица империи основана в {0}! Это место будет использоваться как центр вашей империи.</FCCapitalEstablished>
@@ -50,9 +50,9 @@
   <Empire_BuildingWindow_Requires>Требуется: {0}</Empire_BuildingWindow_Requires>
   <Empire_BuildingWindow_CannotDemolishRequired>Невозможно снести: требуется для {0}</Empire_BuildingWindow_CannotDemolishRequired>
   <Empire_BuildingWindow_SlotUpgrades>Улучшения</Empire_BuildingWindow_SlotUpgrades>
-  <BuildingUpgrades>Улучшения зданий</BuildingUpgrades>
-  <!--[Core] <Buildings>Здания</Buildings>-->
-  <Facilities>Сооружения</Facilities>
+  <FCBuildingUpgrades>Улучшения зданий</FCBuildingUpgrades>
+  <!--[Core] <FCBuildings>Здания</FCBuildings>-->
+  <FCFacilities>Сооружения</FCFacilities>
   <FCSearchBuildings>Поиск зданий...</FCSearchBuildings>
 
   <!-- Заблокированные здания -->

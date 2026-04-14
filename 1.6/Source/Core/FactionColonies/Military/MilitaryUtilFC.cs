@@ -17,7 +17,7 @@ namespace FactionColonies
             tmp.timeTillTrigger = Find.TickManager.TicksGame + GenDate.TicksPerDay;
             tmp.location = settlement.Tile;
             tmp.hasDestination = true;
-            tmp.customDescription = "settlementAboutToBeAttacked".Translate(settlement.Name, enemyFaction.Name);
+            tmp.customDescription = "FCSettlementAboutToBeAttacked".Translate(settlement.Name, enemyFaction.Name);
             tmp.militaryForceDefending = MilitaryForce.CreateMilitaryForceFromSettlement(settlement);
             tmp.militaryForceDefendingFaction = FactionCache.PlayerColonyFaction;
             tmp.militaryForceAttacking = attackingForce;
@@ -56,7 +56,7 @@ namespace FactionColonies
                     tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                     tmp.externalDefenderSource = bestExternalDefender.WorldObject;
                     bestExternalDefender.OnDefenseStarted(settlement);
-                    tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
+                    tmp.customDescription += "\n\n" + "FCExternalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
                 }
             }
             else if (bestExternalDefender != null && bestExternalDefender.MilitaryLevel > settlement.settlementMilitaryLevel)
@@ -64,7 +64,7 @@ namespace FactionColonies
                 tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                 tmp.externalDefenderSource = bestExternalDefender.WorldObject;
                 bestExternalDefender.OnDefenseStarted(settlement);
-                tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
+                tmp.customDescription += "\n\n" + "FCExternalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
             }
 
             if (settlement.MilitaryComp != null)
@@ -75,17 +75,17 @@ namespace FactionColonies
                 FactionCache.FactionComp.AddEvent(tmp);
 
                 double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
-                tmp.customDescription += "\n\n" + "battleForecast".Translate(
+                tmp.customDescription += "\n\n" + "FCBattleForecast".Translate(
                     tmp.militaryForceAttacking.forceRemaining,
                     tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
                     tmp.militaryForceDefending.DefensivePower,
                     tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
                     (winChance * 100).ToString("F0"));
                 if (FCSettings.battleMode == BattleMode.Hybrid)
-                    tmp.customDescription += "\n\n" + "settlementAttackHybridHint".Translate();
+                    tmp.customDescription += "\n\n" + "FCSettlementAttackHybridHint".Translate();
                 settlement.MilitaryComp.isUnderAttack = true;
 
-                Find.LetterStack.ReceiveLetter("settlementInDanger".Translate(), tmp.customDescription,
+                Find.LetterStack.ReceiveLetter("FCSettlementInDanger".Translate(), tmp.customDescription,
                     LetterDefOf.ThreatBig, new LookTargets(Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(settlement.Tile)));
             }
             else
@@ -108,7 +108,7 @@ namespace FactionColonies
             tmp.timeTillTrigger = Find.TickManager.TicksGame + GenDate.TicksPerDay;
             tmp.location = target.Tile;
             tmp.hasDestination = true;
-            tmp.customDescription = "settlementAboutToBeAttacked".Translate(target.Name, enemyFaction.Name);
+            tmp.customDescription = "FCSettlementAboutToBeAttacked".Translate(target.Name, enemyFaction.Name);
 
             // Create a default defending force from the target's military level
             double defLevel = Math.Max(1, target.MilitaryLevel);
@@ -151,21 +151,21 @@ namespace FactionColonies
                 tmp.militaryForceDefending = bestExternalDefender.CreateDefendingForce();
                 tmp.externalDefenderSource = bestExternalDefender.WorldObject;
                 bestExternalDefender.OnDefenseStarted(target.WorldObject);
-                tmp.customDescription += "\n\n" + "externalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
+                tmp.customDescription += "\n\n" + "FCExternalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
             }
 
             target.IsUnderAttack = true;
             factionfc.AddEvent(tmp);
 
             double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
-            tmp.customDescription += "\n\n" + "battleForecast".Translate(
+            tmp.customDescription += "\n\n" + "FCBattleForecast".Translate(
                 tmp.militaryForceAttacking.forceRemaining,
                 tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
                 tmp.militaryForceDefending.DefensivePower,
                 tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
                 (winChance * 100).ToString("F0"));
 
-            Find.LetterStack.ReceiveLetter("settlementInDanger".Translate(), tmp.customDescription,
+            Find.LetterStack.ReceiveLetter("FCSettlementInDanger".Translate(), tmp.customDescription,
                 LetterDefOf.ThreatBig, new LookTargets(target.WorldObject));
         }
 
@@ -177,7 +177,7 @@ namespace FactionColonies
             if (evt.militaryForceDefending.homeSettlement != null
                 && settlementOfMilitaryForce == evt.militaryForceDefending.homeSettlement)
             {
-                Messages.Message("militaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCMilitaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
 
@@ -218,7 +218,7 @@ namespace FactionColonies
             if (settlementOfMilitaryForce == homeSettlement)
             {
                 //if home settlement is reseting to defense
-                Messages.Message("defendingMilitaryReset".Translate(), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCDefendingMilitaryReset".Translate(), MessageTypeDefOf.NeutralEvent);
             }
             else
             {
@@ -237,7 +237,7 @@ namespace FactionColonies
 
             if (evt.externalDefenderSource != null && evt.externalDefenderSource == defender.WorldObject)
             {
-                Messages.Message("militaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCMilitaryAlreadyDefendingSettlement".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
 
@@ -265,7 +265,7 @@ namespace FactionColonies
                 target.MilitaryComp.defenderForce = evt.militaryForceDefending;
             }
 
-            Messages.Message("externalDefenderAssigned".Translate(defender.WorldObject.LabelCap),
+            Messages.Message("FCExternalDefenderAssigned".Translate(defender.WorldObject.LabelCap),
                 MessageTypeDefOf.NeutralEvent);
         }
 

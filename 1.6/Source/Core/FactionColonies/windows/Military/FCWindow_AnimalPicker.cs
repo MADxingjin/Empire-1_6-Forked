@@ -116,7 +116,7 @@ namespace FactionColonies
 
             // Unequip (left)
             Rect unequipRect = new Rect(buttonBar.x, buttonBar.y, buttonWidth, buttonBar.height);
-            if (Widgets.ButtonText(unequipRect, "unitActionUnequipThing".Translate()))
+            if (Widgets.ButtonText(unequipRect, "FCUnitActionUnequipThing".Translate()))
             {
                 unit.animal = null;
                 unit.ChangeTick();

@@ -2,52 +2,50 @@
 <LanguageData>
 
 	<!-- Xenotype/Race Selection -->
-	<XenotypeSelection>Xenotype Selection</XenotypeSelection>
-	<RaceSelection>Race Selection</RaceSelection>
-	<XenotypeRaceSelection>Xenotype and Race Selection</XenotypeRaceSelection>
-	<AllowedRaces>Allowed Races</AllowedRaces>
-	<CannotHaveLessThanOneRace>Cannot have less than one race in your faction</CannotHaveLessThanOneRace>
-	<AllowedXenotypes>Allowed Xenotypes</AllowedXenotypes>
-	<CannotHaveLessThanOneXenotype>Cannot have less than one xenotype in your faction</CannotHaveLessThanOneXenotype>
-	<SecurityGuardsIncluded>Security guards will be provided for non-violent xenotypes</SecurityGuardsIncluded>
+	<FCXenotypeSelection>Xenotype Selection</FCXenotypeSelection>
+	<FCRaceSelection>Race Selection</FCRaceSelection>
+	<FCXenotypeRaceSelection>Xenotype and Race Selection</FCXenotypeRaceSelection>
+	<FCAllowedRaces>Allowed Races</FCAllowedRaces>
+	<FCCannotHaveLessThanOneRace>Cannot have less than one race in your faction</FCCannotHaveLessThanOneRace>
+	<FCAllowedXenotypes>Allowed Xenotypes</FCAllowedXenotypes>
+	<FCCannotHaveLessThanOneXenotype>Cannot have less than one xenotype in your faction</FCCannotHaveLessThanOneXenotype>
+	<FCSecurityGuardsIncluded>Security guards will be provided for non-violent xenotypes</FCSecurityGuardsIncluded>
 
 	<!-- Weight Errors -->
-	<XenotypeWeightError>All Xenotypes have 0 weight!</XenotypeWeightError>
-	<XenotypeWeightErrorDesc>If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight.</XenotypeWeightErrorDesc>
-	<RaceWeightError>All races have 0 weight!</RaceWeightError>
-	<RaceWeightErrorDesc>If you close this window while all races have 0 weight, then they will all be reset to 1 weight.</RaceWeightErrorDesc>
+	<FCXenotypeWeightError>All Xenotypes have 0 weight!</FCXenotypeWeightError>
+	<FCXenotypeWeightErrorDesc>If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight.</FCXenotypeWeightErrorDesc>
+	<FCRaceWeightError>All races have 0 weight!</FCRaceWeightError>
+	<FCRaceWeightErrorDesc>If you close this window while all races have 0 weight, then they will all be reset to 1 weight.</FCRaceWeightErrorDesc>
 
 	<!-- Enable/Disable Options -->
-	<XenoRaceEnableAll>Enable All</XenoRaceEnableAll>
-	<XenoDisableNonBaseliner>Disable Non-Baseliner</XenoDisableNonBaseliner>
-	<RaceDisableNonHuman>Disable Non-Human</RaceDisableNonHuman>
-	<Empire_XenotypeMenus_EnableAll>Enable All</Empire_XenotypeMenus_EnableAll>
-	<Empire_XenotypeMenus_DisableNonBaseliner>Disable Non-Baseliner</Empire_XenotypeMenus_DisableNonBaseliner>
+	<FCXenoRaceEnableAll>Enable All</FCXenoRaceEnableAll>
+	<FCXenoDisableNonBaseliner>Disable Non-Baseliner</FCXenoDisableNonBaseliner>
+	<FCRaceDisableNonHuman>Disable Non-Human</FCRaceDisableNonHuman>
 
 	<!-- Faction Tooltip -->
-	<EmpireMemberRaceChances>Member Race Chances</EmpireMemberRaceChances>
+	<FCEmpireMemberRaceChances>Member Race Chances</FCEmpireMemberRaceChances>
 
 	<!-- Warnings -->
-	<DisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</DisabledHumanWarning>
-	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>
-	<OnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</OnlyNonViolentXenoWarning>
+	<FCDisabledHumanWarning>The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options.</FCDisabledHumanWarning>
+	<FCXenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</FCXenoNonViolentIndicatorDesc>
+	<FCOnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</FCOnlyNonViolentXenoWarning>
 
 	<!-- Animal Filter -->
-	<AllowedAnimals>Allowed Animals</AllowedAnimals>
-	<AnimalSelection>Animal Selection</AnimalSelection>
-	<AnimalEnableAll>Enable All</AnimalEnableAll>
-	<AnimalDisableAll>Disable All</AnimalDisableAll>
-	<AnimalDefaults>Defaults</AnimalDefaults>
-	<AnimalFilterNoneError>No animals are allowed! Defaults will be restored on close.</AnimalFilterNoneError>
-	<AnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</AnimalFilterNoCombatWarning>
-	<AnimalFilterNoPackError>No pack animals are allowed! All pack animals will be re-enabled on close.</AnimalFilterNoPackError>
-	<AnimalTagCombat>Combat</AnimalTagCombat>
-	<AnimalTagPack>Pack</AnimalTagPack>
-	<AnimalNotCombatHeader>Not a combat animal:</AnimalNotCombatHeader>
-	<AnimalNotCombatTrainability>Trainability too low (needs Intermediate or higher)</AnimalNotCombatTrainability>
-	<AnimalNotCombatPowerLow>Combat power too low ({0}, needs 50 or more)</AnimalNotCombatPowerLow>
-	<AnimalFilterShowAll>All</AnimalFilterShowAll>
-	<AnimalFilterShowCombat>Combat</AnimalFilterShowCombat>
-	<AnimalFilterShowPack>Pack</AnimalFilterShowPack>
+	<FCAllowedAnimals>Allowed Animals</FCAllowedAnimals>
+	<FCAnimalSelection>Animal Selection</FCAnimalSelection>
+	<FCAnimalEnableAll>Enable All</FCAnimalEnableAll>
+	<FCAnimalDisableAll>Disable All</FCAnimalDisableAll>
+	<FCAnimalDefaults>Defaults</FCAnimalDefaults>
+	<FCAnimalFilterNoneError>No animals are allowed! Defaults will be restored on close.</FCAnimalFilterNoneError>
+	<FCAnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</FCAnimalFilterNoCombatWarning>
+	<FCAnimalFilterNoPackError>No pack animals are allowed! All pack animals will be re-enabled on close.</FCAnimalFilterNoPackError>
+	<FCAnimalTagCombat>Combat</FCAnimalTagCombat>
+	<FCAnimalTagPack>Pack</FCAnimalTagPack>
+	<FCAnimalNotCombatHeader>Not a combat animal:</FCAnimalNotCombatHeader>
+	<FCAnimalNotCombatTrainability>Trainability too low (needs Intermediate or higher)</FCAnimalNotCombatTrainability>
+	<FCAnimalNotCombatPowerLow>Combat power too low ({0}, needs 50 or more)</FCAnimalNotCombatPowerLow>
+	<FCAnimalFilterShowAll>All</FCAnimalFilterShowAll>
+	<FCAnimalFilterShowCombat>Combat</FCAnimalFilterShowCombat>
+	<FCAnimalFilterShowPack>Pack</FCAnimalFilterShowPack>
 
 </LanguageData>

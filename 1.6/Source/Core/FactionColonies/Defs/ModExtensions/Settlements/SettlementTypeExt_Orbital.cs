@@ -96,7 +96,7 @@ namespace FactionColonies
         {
             if (Find.WorldObjects.AnyWorldObjectAt(tile))
             {
-                reason?.Append("OrbitalTileOccupied".Translate());
+                reason?.Append("FCOrbitalTileOccupied".Translate());
                 return false;
             }
             return true;

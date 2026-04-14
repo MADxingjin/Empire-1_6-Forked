@@ -14,8 +14,8 @@ namespace FactionColonies
         #region Fields & Properties
 
         // ── Core Identity ──
-        public string name = "PlayerFaction".Translate();
-        public string title = "Bastion".Translate();
+        public string name = "FCPlayerFaction".Translate();
+        public string title = "FCBastion".Translate();
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
         public Color factionColorPrimary = Color.white;
@@ -1600,13 +1600,13 @@ namespace FactionColonies
                     ForEachBehavior(b => b.OnTaxCollected(this, settlement));
                 }
 
-                Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
+                Find.LetterStack.ReceiveLetter("FCTaxesBilledShort".Translate(), "FCTaxesBilledDesc".Translate(),
                     LetterDefOf.PositiveEvent);
                 DirtyFactionProfitCache();
             }
             else
             {
-                Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCNoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
             }
 
             // Deduct edict upkeep
@@ -1942,7 +1942,7 @@ namespace FactionColonies
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
 
-                Messages.Message("SetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCSetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap), MessageTypeDefOf.NeutralEvent);
             }
             else
             {
@@ -1982,7 +1982,7 @@ namespace FactionColonies
                 }
             }
 
-            LogUtil.Message("CouldNotFindMapOfCapital".Translate());
+            LogUtil.Message("FCCouldNotFindMapOfCapital".Translate());
             return null;
         }
 
@@ -2176,7 +2176,7 @@ namespace FactionColonies
             switch (techLevel)
             {
                 case TechLevel.Ultra:
-                    return "ReachedMaxLevel".Translate();
+                    return "FCReachedMaxLevel".Translate();
                 case TechLevel.Spacer:
                     return "FCShipBasics".Translate();
                 case TechLevel.Industrial:

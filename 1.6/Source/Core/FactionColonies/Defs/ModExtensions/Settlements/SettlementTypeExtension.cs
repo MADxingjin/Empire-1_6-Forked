@@ -101,7 +101,7 @@ namespace FactionColonies
             {
                 if (Find.WorldGrid.IsNeighborOrSame(settlement.Tile, tile))
                 {
-                    reason?.Append("FactionBaseAdjacent".Translate());
+                    reason?.Append("FCFactionBaseAdjacent".Translate());
                     return false;
                 }
             }
@@ -118,7 +118,7 @@ namespace FactionColonies
                 }
                 if (!foundAllowedBiome)
                 {
-                    reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                    reason?.Append("FCNotAllowedBiome".Translate(parentDef.LabelCap));
                     return false;
                 }
             }
@@ -128,7 +128,7 @@ namespace FactionColonies
                 {
                     if (parentDef.blockedBiomes.Contains(biome))
                     {
-                        reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                        reason?.Append("FCNotAllowedBiome".Translate(parentDef.LabelCap));
                         return false;
                     }
                 }
@@ -212,7 +212,7 @@ namespace FactionColonies
 
         public virtual string GetLocationText(WorldSettlementFC settlement)
         {
-            return "Located".Translate() + " " + settlement.Tile.Tile.hilliness.GetLabel() + " " + "LandOf".Translate() + " " + settlement.Tile.Tile.PrimaryBiome.LabelCap.ToLower();
+            return "FCLocated".Translate() + " " + settlement.Tile.Tile.hilliness.GetLabel() + " " + "FCLandOf".Translate() + " " + settlement.Tile.Tile.PrimaryBiome.LabelCap.ToLower();
         }
 
         public virtual TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)
@@ -337,18 +337,18 @@ namespace FactionColonies
         {
             if (parentDef.planetLayers.Count > 0 && !parentDef.planetLayers.Contains(tile.Layer.Def))
             {
-                reason?.Append("TileWrongPlanetLayer".Translate());
+                reason?.Append("FCTileWrongPlanetLayer".Translate());
                 return false;
             }
             else if (parentDef.planetLayers.Count == 0 && tile.Layer != Find.WorldGrid.Surface)
             {
-                reason?.Append("TileWrongPlanetLayer".Translate());
+                reason?.Append("FCTileWrongPlanetLayer".Translate());
                 return false;
             }
 
             if (tile.Tile?.hilliness == Hilliness.Impassable && !TileHasImpassableOverride(tile.Tile))
             {
-                reason?.Append("ImpassableMountains".Translate(parentDef.LabelCap));
+                reason?.Append("FCImpassableMountains".Translate(parentDef.LabelCap));
                 return false;
             }
 
@@ -365,7 +365,7 @@ namespace FactionColonies
                 }
                 if (!foundAllowedBiome)
                 {
-                    reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                    reason?.Append("FCNotAllowedBiome".Translate(parentDef.LabelCap));
                     return false;
                 }
             }
@@ -376,7 +376,7 @@ namespace FactionColonies
                 {
                     if (parentDef.blockedBiomes.Contains(biome))
                     {
-                        reason?.Append("NotAllowedBiome".Translate(parentDef.LabelCap));
+                        reason?.Append("FCNotAllowedBiome".Translate(parentDef.LabelCap));
                         return false;
                     }
                 }

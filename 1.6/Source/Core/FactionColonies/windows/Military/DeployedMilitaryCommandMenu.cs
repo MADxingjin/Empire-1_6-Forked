@@ -58,7 +58,7 @@ namespace FactionColonies
             {
                 if (squad.getSettlement != null)
                 {
-                    list.Add(new FloatMenuOption("selectedDeployedSquad".Translate(squad.getSettlement.Name, squad.outfit.name), () => selectedSquad = squad));
+                    list.Add(new FloatMenuOption("FCSelectedDeployedSquad".Translate(squad.getSettlement.Name, squad.outfit.name), () => selectedSquad = squad));
                 }
             }
             if (!list.Any())
@@ -66,7 +66,7 @@ namespace FactionColonies
                 //This should never happen
                 LogUtil.Error("No deployed squad, but window is still open? Closing..");
                 Close();
-                list.Add(new FloatMenuOption("noSquadsAvailable".Translate(), null));
+                list.Add(new FloatMenuOption("FCNoSquadsAvailable".Translate(), null));
             }
 
             Find.WindowStack.Add(new FloatMenu(list));
@@ -80,7 +80,7 @@ namespace FactionColonies
             if (selectedSquad != null)
             {
                 squadMilitaryOrderDic.SetOrAdd(selectedSquad, MilitaryOrder.Hunt);
-                Messages.Message("attackSuccess".Translate(selectedSquad.outfit.name), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCAttackSuccess".Translate(selectedSquad.outfit.name), MessageTypeDefOf.NeutralEvent);
             }
         }
 
@@ -93,13 +93,13 @@ namespace FactionColonies
             {
                 DebugTool tool;
                 IntVec3 Position;
-                tool = new DebugTool("selectMilitaryMovePosition".Translate(), delegate ()
+                tool = new DebugTool("FCSelectMilitaryMovePosition".Translate(), delegate ()
                 {
                     Position = UI.MouseCell();
 
                     squadMilitaryOrderDic.SetOrAdd(selectedSquad, MilitaryOrder.DefendPoint);
                     currentOrderPositionDic.SetOrAdd(selectedSquad, Position);
-                    Messages.Message("moveSuccess".Translate(selectedSquad.outfit.name), MessageTypeDefOf.NeutralEvent);
+                    Messages.Message("FCMoveSuccess".Translate(selectedSquad.outfit.name), MessageTypeDefOf.NeutralEvent);
 
                     DebugTools.curTool = null;
                 });
@@ -115,7 +115,7 @@ namespace FactionColonies
             if (selectedSquad != null)
             {
                 squadMilitaryOrderDic.SetOrAdd(selectedSquad, MilitaryOrder.RecoverWoundedAndLeave);
-                Messages.Message("commandLeave".Translate(selectedSquad.outfit.name, selectedSquad.dead), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCCommandLeave".Translate(selectedSquad.outfit.name, selectedSquad.dead), MessageTypeDefOf.NeutralEvent);
             }
         }
 
@@ -221,7 +221,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
 
             Rect selectSquadRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
-            squadText = "selectDeployedSquad".Translate();
+            squadText = "FCSelectDeployedSquad".Translate();
             if (Widgets.ButtonText(selectSquadRect, squadText))
             {
                 DoSelectSquadCommand();
@@ -305,21 +305,21 @@ namespace FactionColonies
                 Text.WordWrap = false;
 
                 Rect attackRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
-                if (DrawIconButton(attackRect, "commandAttack".Translate(), TexCommand.Attack, iconSize, iconMargin))
+                if (DrawIconButton(attackRect, "FCCommandAttack".Translate(), TexCommand.Attack, iconSize, iconMargin))
                 {
                     DoAttackCommand();
                 }
                 curY = attackRect.yMax + spacing;
 
                 Rect moveRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
-                if (DrawIconButton(moveRect, "commandMove".Translate(), TexCommand.Draft, iconSize, iconMargin))
+                if (DrawIconButton(moveRect, "FCCommandMove".Translate(), TexCommand.Draft, iconSize, iconMargin))
                 {
                     DoMoveCommand();
                 }
                 curY = moveRect.yMax + spacing;
 
                 Rect leaveRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
-                if (DrawIconButton(leaveRect, "commandLeave".Translate(), TexCommand.PauseCaravan, iconSize, iconMargin))
+                if (DrawIconButton(leaveRect, "FCCommandLeave".Translate(), TexCommand.PauseCaravan, iconSize, iconMargin))
                 {
                     DoLeaveCommand();
                 }
@@ -328,7 +328,7 @@ namespace FactionColonies
                 if (Prefs.DevMode)
                 {
                     Rect debugRect = new Rect(rect.x, curY, contentWidth, buttonHeight);
-                    if (UIUtil.ButtonFlat(debugRect, "debugRemoveAllCommand".Translate()))
+                    if (UIUtil.ButtonFlat(debugRect, "FCDebugRemoveAllCommand".Translate()))
                     {
                         DoDebugCommand();
                     }

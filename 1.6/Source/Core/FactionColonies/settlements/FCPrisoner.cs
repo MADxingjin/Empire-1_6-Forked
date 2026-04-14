@@ -80,7 +80,7 @@ namespace FactionColonies
             {
                 settlement.prisonerList.Remove(this);
                 settlement.DirtyStatsCache();
-                Find.LetterStack.ReceiveLetter("PrisonerHasDiedLetter".Translate(), "PrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.Name), LetterDefOf.NeutralEvent);
+                Find.LetterStack.ReceiveLetter("FCPrisonerHasDiedLetter".Translate(), "FCPrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.Name), LetterDefOf.NeutralEvent);
                 return true;
             }
             return false;

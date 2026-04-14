@@ -388,11 +388,11 @@ namespace FactionColonies
             {
                 if (ModsConfig.RoyaltyActive)
                 {
-                    return new FloatMenuOption("taxDeliveryModeShuttleDesc".Translate(), delegate () { forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle; });
+                    return new FloatMenuOption("FCTaxDeliveryModeShuttleDesc".Translate(), delegate () { forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle; });
                 }
                 else
                 {
-                    return new FloatMenuOption("taxDeliveryModeShuttleUnavailableDesc".Translate(), null);
+                    return new FloatMenuOption("FCTaxDeliveryModeShuttleUnavailableDesc".Translate(), null);
                 }
             }
         }
@@ -406,10 +406,10 @@ namespace FactionColonies
             {
                 return new List<FloatMenuOption>()
                 {
-                    new FloatMenuOption("taxDeliveryModeDefaultDesc".Translate(), delegate() {forcedTaxDeliveryMode = default;}),
-                    new FloatMenuOption("taxDeliveryModeTaxSpotDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
-                    new FloatMenuOption("taxDeliveryModeCaravanDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
-                    new FloatMenuOption("taxDeliveryModeDropPodDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
+                    new FloatMenuOption("FCTaxDeliveryModeDefaultDesc".Translate(), delegate() {forcedTaxDeliveryMode = default;}),
+                    new FloatMenuOption("FCTaxDeliveryModeTaxSpotDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
+                    new FloatMenuOption("FCTaxDeliveryModeCaravanDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
+                    new FloatMenuOption("FCTaxDeliveryModeDropPodDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
                     ShuttleOption
                 };
             }
@@ -539,9 +539,9 @@ namespace FactionColonies
 
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
-            ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref medievalTechOnly);
+            ls.CheckboxLabeled("FCMedievalTechOnly".Translate(), ref medievalTechOnly);
             ls.CheckboxLabeled("FCSettingShowSettleConfirm".Translate(), ref showSettleConfirm);
-            if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
+            if (ls.ButtonText("FCSelectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);

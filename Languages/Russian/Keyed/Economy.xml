@@ -2,50 +2,50 @@
 <LanguageData>
 
   <!-- Счета -->
-  <NotEnoughSilverForBill>У вас недостаточно серебра для оплаты просроченного счета от</NotEnoughSilverForBill>
-  <ConfiscatedTithes>Взамен они конфисковали вашу десятину</ConfiscatedTithes>
-  <OutstandingBills>Неоплаченные счета</OutstandingBills>
-  <DueDate>Срок оплаты</DueDate>
-  <Amount>Сумма</Amount>
-  <HasTithe>Есть десятина</HasTithe>
-  <PayReceiveSilver>Заплатить/Получить серебро</PayReceiveSilver>
-  <ResolveBill>Оплатить счет</ResolveBill>
-  <NotEnoughSilverOnMapToPayBill>На текущей карте недостаточно серебра для оплаты счета</NotEnoughSilverOnMapToPayBill>
-  <NumberTaxesHasBeenSolved>{0} счет(ов) были автоматически оплачены!</NumberTaxesHasBeenSolved>
-  <DueFC>К оплате</DueFC>
+  <FCNotEnoughSilverForBill>У вас недостаточно серебра для оплаты просроченного счета от</FCNotEnoughSilverForBill>
+  <FCConfiscatedTithes>Взамен они конфисковали вашу десятину</FCConfiscatedTithes>
+  <FCOutstandingBills>Неоплаченные счета</FCOutstandingBills>
+  <FCDueDate>Срок оплаты</FCDueDate>
+  <FCAmount>Сумма</FCAmount>
+  <FCHasTithe>Есть десятина</FCHasTithe>
+  <FCPayReceiveSilver>Заплатить/Получить серебро</FCPayReceiveSilver>
+  <FCResolveBill>Оплатить счет</FCResolveBill>
+  <FCNotEnoughSilverOnMapToPayBill>На текущей карте недостаточно серебра для оплаты счета</FCNotEnoughSilverOnMapToPayBill>
+  <FCNumberTaxesHasBeenSolved>{0} счет(ов) были автоматически оплачены!</FCNumberTaxesHasBeenSolved>
+  <FCDueFC>К оплате</FCDueFC>
   <FCNoPendingBills>Нет ожидающих счетов.</FCNoPendingBills>
   <FCPendingBillsCount>{0} ожидающих счет(ов)</FCPendingBillsCount>
   <FCTitheItemCount>{0} предмет(ов) десятины</FCTitheItemCount>
   <FCNoTithes>Нет десятины</FCNoTithes>
   <FCOverdue>Просрочено</FCOverdue>
-  <UnpaidTitheEffect>Нестабильность в поселении возросла на 10, а счастье уменьшилось!</UnpaidTitheEffect>
-  <LateBillAutoPaidLabel>Просроченные счета автоматически оплачены</LateBillAutoPaidLabel>
-  <LateBillAutoPaidDesc>{0} просроченный(е) счет(а) были автоматически оплачены из ваших запасов серебра.\n\nЗатронутые поселения:\n{1}\n\nВаша небрежность в оплате вызвала небольшое недовольство и нестабильность в затронутых поселениях.</LateBillAutoPaidDesc>
+  <FCUnpaidTitheEffect>Нестабильность в поселении возросла на 10, а счастье уменьшилось!</FCUnpaidTitheEffect>
+  <FCLateBillAutoPaidLabel>Просроченные счета автоматически оплачены</FCLateBillAutoPaidLabel>
+  <FCLateBillAutoPaidDesc>{0} просроченный(е) счет(а) были автоматически оплачены из ваших запасов серебра.\n\nЗатронутые поселения:\n{1}\n\nВаша небрежность в оплате вызвала небольшое недовольство и нестабильность в затронутых поселениях.</FCLateBillAutoPaidDesc>
 
   <!-- Налоги -->
-  <SettlementTax>Налог на поселение</SettlementTax>
-  <WeekOf>неделя</WeekOf>
-  <TaxesBilled>Налоги выставлены</TaxesBilled>
-  <TaxesBilledShort>Налоги выставлены</TaxesBilledShort>
-  <TaxesBilledDesc>Налоги с ваших поселений были выставлены.</TaxesBilledDesc>
-  <NoSettlementsToTax>Нет поселений для налогообложения</NoSettlementsToTax>
-  <TaxesFrom>Налоги от</TaxesFrom>
-  <HaveBeenDelivered>были доставлены</HaveBeenDelivered>
-  <TaxesHaveArrived>Налоги прибыли!</TaxesHaveArrived>
-  <TaxesFromSettlementAreBeingDelivered>Налоги из {0} направляются к вашему пункту сбора налогов!</TaxesFromSettlementAreBeingDelivered>
-  <TaxPercentage>Процент десятины</TaxPercentage>
-  <TaxDeliveryMap>Карта доставки налогов</TaxDeliveryMap>
+  <FCSettlementTax>Налог на поселение</FCSettlementTax>
+  <FCWeekOf>неделя</FCWeekOf>
+  <FCTaxesBilled>Налоги выставлены</FCTaxesBilled>
+  <FCTaxesBilledShort>Налоги выставлены</FCTaxesBilledShort>
+  <FCTaxesBilledDesc>Налоги с ваших поселений были выставлены.</FCTaxesBilledDesc>
+  <FCNoSettlementsToTax>Нет поселений для налогообложения</FCNoSettlementsToTax>
+  <FCTaxesFrom>Налоги от</FCTaxesFrom>
+  <FCHaveBeenDelivered>были доставлены</FCHaveBeenDelivered>
+  <FCTaxesHaveArrived>Налоги прибыли!</FCTaxesHaveArrived>
+  <FCTaxesFromSettlementAreBeingDelivered>Налоги из {0} направляются к вашему пункту сбора налогов!</FCTaxesFromSettlementAreBeingDelivered>
+  <FCTaxPercentage>Процент десятины</FCTaxPercentage>
+  <FCTaxDeliveryMap>Карта доставки налогов</FCTaxDeliveryMap>
 
-  <InnovativeMessage>Инновация {0} предоставила вам {1} очков исследований.</InnovativeMessage>
+  <FCInnovativeMessage>Инновация {0} предоставила вам {1} очков исследований.</FCInnovativeMessage>
 
   <!-- Налоговые отчеты -->
-  <TaxReports>Налоговые отчеты</TaxReports>
-  <FactionTaxReports>Налоговые отчеты фракции</FactionTaxReports>
-  <SettlementTaxCollection>Сбор налогов с поселений</SettlementTaxCollection>
-  <EstimatedProfit>Приблиз. прибыль</EstimatedProfit>
-  <EstimatedValue>Приблиз. стоимость</EstimatedValue>
-  <TimeTillTax>Время до налога</TimeTillTax>
-  <TotalFactionProduction>Общее производство ресурса по всей фракции</TotalFactionProduction>
+  <FCTaxReports>Налоговые отчеты</FCTaxReports>
+  <FCFactionTaxReports>Налоговые отчеты фракции</FCFactionTaxReports>
+  <FCSettlementTaxCollection>Сбор налогов с поселений</FCSettlementTaxCollection>
+  <FCEstimatedProfit>Приблиз. прибыль</FCEstimatedProfit>
+  <FCEstimatedValue>Приблиз. стоимость</FCEstimatedValue>
+  <FCTimeTillTax>Время до налога</FCTimeTillTax>
+  <FCTotalFactionProduction>Общее производство ресурса по всей фракции</FCTotalFactionProduction>
 
   <!-- Налоговая льгота -->
   <FCGiveTaxBreak>Предоставить налоговую льготу</FCGiveTaxBreak>
@@ -63,31 +63,31 @@
   <FCTaxNotifyNone>Нет (скрыть все)</FCTaxNotifyNone>
 
   <!-- Режимы доставки -->
-  <selectTaxDeliveryModeButton>Принудительный режим доставки налогов: </selectTaxDeliveryModeButton>
-  <taxDeliveryModeDefaultDesc>Нет. Доставка зависит от технологий и построек поселения</taxDeliveryModeDefaultDesc>
-  <taxDeliveryModeTaxSpotDesc>Место сбора. Доставка появляется на месте сбора налогов</taxDeliveryModeTaxSpotDesc>
-  <taxDeliveryModeCaravanDesc>Караван. Доставка всегда осуществляется караваном</taxDeliveryModeCaravanDesc>
-  <taxDeliveryModeDropPodDesc>Дроп-под. Доставка всегда прибывает в дроп-подах</taxDeliveryModeDropPodDesc>
-  <taxDeliveryModeShuttleDesc>Шаттл. Доставка всегда прибывает на шаттле</taxDeliveryModeShuttleDesc>
-  <taxDeliveryModeShuttleUnavailableDesc>Шаттл. Недоступно из-за отсутствия королевского титула</taxDeliveryModeShuttleUnavailableDesc>
+  <FCSelectTaxDeliveryModeButton>Принудительный режим доставки налогов: </FCSelectTaxDeliveryModeButton>
+  <FCTaxDeliveryModeDefaultDesc>Нет. Доставка зависит от технологий и построек поселения</FCTaxDeliveryModeDefaultDesc>
+  <FCTaxDeliveryModeTaxSpotDesc>Место сбора. Доставка появляется на месте сбора налогов</FCTaxDeliveryModeTaxSpotDesc>
+  <FCTaxDeliveryModeCaravanDesc>Караван. Доставка всегда осуществляется караваном</FCTaxDeliveryModeCaravanDesc>
+  <FCTaxDeliveryModeDropPodDesc>Дроп-под. Доставка всегда прибывает в дроп-подах</FCTaxDeliveryModeDropPodDesc>
+  <FCTaxDeliveryModeShuttleDesc>Шаттл. Доставка всегда прибывает на шаттле</FCTaxDeliveryModeShuttleDesc>
+  <FCTaxDeliveryModeShuttleUnavailableDesc>Шаттл. Недоступно из-за отсутствия королевского титула</FCTaxDeliveryModeShuttleUnavailableDesc>
 
   <!-- События доставки -->
-  <deliveryPawnsHiding>Доставляющие поселенцы бросают свои вещи и прячутся на вашем месте сбора налогов! Они вступят в бой, только если враг приблизится!</deliveryPawnsHiding>
-  <deliveryPawnsLeavingMap>Доставляющие поселенцы покидают карту.</deliveryPawnsLeavingMap>
-  <deliveryPawnsLeavingMapNoPath>Доставляющие поселенцы покидают карту, так как не могут добраться до места сбора налогов.</deliveryPawnsLeavingMapNoPath>
-  <deliveryPawnsLeavingMapWithDowned>Доставляющие поселенцы собирают раненых и покидают карту.</deliveryPawnsLeavingMapWithDowned>
-  <settlementDeliveringLoot>Ваше поселение доставляет вам следующую добычу: </settlementDeliveringLoot>
-  <deliveryHeldUpArriving>Доставка, которая была вынуждена ждать, прибыла!</deliveryHeldUpArriving>
+  <FCDeliveryPawnsHiding>Доставляющие поселенцы бросают свои вещи и прячутся на вашем месте сбора налогов! Они вступят в бой, только если враг приблизится!</FCDeliveryPawnsHiding>
+  <FCDeliveryPawnsLeavingMap>Доставляющие поселенцы покидают карту.</FCDeliveryPawnsLeavingMap>
+  <FCDeliveryPawnsLeavingMapNoPath>Доставляющие поселенцы покидают карту, так как не могут добраться до места сбора налогов.</FCDeliveryPawnsLeavingMapNoPath>
+  <FCDeliveryPawnsLeavingMapWithDowned>Доставляющие поселенцы собирают раненых и покидают карту.</FCDeliveryPawnsLeavingMapWithDowned>
+  <FCSettlementDeliveringLoot>Ваше поселение доставляет вам следующую добычу: </FCSettlementDeliveringLoot>
+  <FCDeliveryHeldUpArriving>Доставка, которая была вынуждена ждать, прибыла!</FCDeliveryHeldUpArriving>
 
   <!-- Десятина -->
-  <TitheList>Список десятины</TitheList>
-  <StackCount>Количество стаков</StackCount>
+  <FCTitheList>Список десятины</FCTitheList>
+  <FCStackCount>Количество стаков</FCStackCount>
   <FCTotalValue>Общая стоимость</FCTotalValue>
-  <IsTithe>Является десятиной</IsTithe>
-  <Tithe>Десятина</Tithe>
-  <Tithing>Сбор десятины</Tithing>
-  <TitheModifier>Модификатор десятины</TitheModifier>
-  <TitheSelection>Выбор предметов</TitheSelection>
+  <FCIsTithe>Является десятиной</FCIsTithe>
+  <FCTithe>Десятина</FCTithe>
+  <FCTithing>Сбор десятины</FCTithing>
+  <FCTitheModifier>Модификатор десятины</FCTitheModifier>
+  <FCTitheSelection>Выбор предметов</FCTitheSelection>
   <FCTitheEnableAll>Включить все</FCTitheEnableAll>
   <FCTitheDisableAll>Отключить все</FCTitheDisableAll>
   <FCTitheSingleOption>{0} - Стоимость - {1} | Разрешено: {2}</FCTitheSingleOption>
@@ -100,44 +100,44 @@
   <FCTitheShowFilter>Показать: {0}</FCTitheShowFilter>
 
   <!-- Случайная десятина -->
-  <RandomTithesEnabled>Случайная десятина</RandomTithesEnabled>
-  <RandomTitheSelectionHeader>Выбор случайных предметов десятины</RandomTitheSelectionHeader>
-  <RandomTitheBudget>Бюджет случайной десятины</RandomTitheBudget>
-  <TitheOverBudget>Если использованный бюджет десятины превышает доступный бюджет, то во время сбора налога все выбранные варианты десятины будут урезаны до тех пор, пока использованный бюджет не сравняется с доступным.</TitheOverBudget>
-  <RandomTithesDesc>Во время сбора налогов вы получите случайный выбор предметов общей стоимостью, равной или меньшей, чем Бюджет случайной десятины. Вы можете добавлять или удалять предметы из списка, чтобы контролировать, что будет выбрано.
+  <FCRandomTithesEnabled>Случайная десятина</FCRandomTithesEnabled>
+  <FCRandomTitheSelectionHeader>Выбор случайных предметов десятины</FCRandomTitheSelectionHeader>
+  <FCRandomTitheBudget>Бюджет случайной десятины</FCRandomTitheBudget>
+  <FCTitheOverBudget>Если использованный бюджет десятины превышает доступный бюджет, то во время сбора налога все выбранные варианты десятины будут урезаны до тех пор, пока использованный бюджет не сравняется с доступным.</FCTitheOverBudget>
+  <FCRandomTithesDesc>Во время сбора налогов вы получите случайный выбор предметов общей стоимостью, равной или меньшей, чем Бюджет случайной десятины. Вы можете добавлять или удалять предметы из списка, чтобы контролировать, что будет выбрано.
 
-Если самый дешевый предмет в списке имеет стоимость выше вашего Бюджета случайной десятины или если нет предметов для выбора, то бюджет переносится на следующий налоговый период.</RandomTithesDesc>
-  <RandomTitheAccrued>Накопленный бюджет: ${0}</RandomTitheAccrued>
-  <RandomTitheAccruedDesc>Сумма оставшегося Бюджета случайной десятины, которая была накоплена. Она будет добавлена к вашему Бюджету случайной десятины для определения общего бюджета случайной десятины во время сбора налогов.</RandomTitheAccruedDesc>
-  <DisburseAccruedRandomTithe>Выплатить накопленный бюджет</DisburseAccruedRandomTithe>
-  <DisburseAccruedRandomTitheDesc>Если отмечено, то накопленный бюджет будет выплачен в виде сырого серебра во время сбора налогов. Он не будет учитываться в Бюджете случайной десятины.</DisburseAccruedRandomTitheDesc>
-  <NoTitheLetterLabel>Нет десятины: {0}</NoTitheLetterLabel>
-  <NoTitheLetterDesc>У {0} есть Бюджет случайной десятины для ресурса {1}, но ни один предмет не был включен. Бюджет случайной десятины будет сохранен для будущего использования.
+Если самый дешевый предмет в списке имеет стоимость выше вашего Бюджета случайной десятины или если нет предметов для выбора, то бюджет переносится на следующий налоговый период.</FCRandomTithesDesc>
+  <FCRandomTitheAccrued>Накопленный бюджет: ${0}</FCRandomTitheAccrued>
+  <FCRandomTitheAccruedDesc>Сумма оставшегося Бюджета случайной десятины, которая была накоплена. Она будет добавлена к вашему Бюджету случайной десятины для определения общего бюджета случайной десятины во время сбора налогов.</FCRandomTitheAccruedDesc>
+  <FCDisburseAccruedRandomTithe>Выплатить накопленный бюджет</FCDisburseAccruedRandomTithe>
+  <FCDisburseAccruedRandomTitheDesc>Если отмечено, то накопленный бюджет будет выплачен в виде сырого серебра во время сбора налогов. Он не будет учитываться в Бюджете случайной десятины.</FCDisburseAccruedRandomTitheDesc>
+  <FCNoTitheLetterLabel>Нет десятины: {0}</FCNoTitheLetterLabel>
+  <FCNoTitheLetterDesc>У {0} есть Бюджет случайной десятины для ресурса {1}, но ни один предмет не был включен. Бюджет случайной десятины будет сохранен для будущего использования.
 
-Общий накопленный бюджет: {2}</NoTitheLetterDesc>
-  <NoTitheLetterDesc2>У {0} есть Бюджет случайной десятины для ресурса {1}, но бюджета недостаточно для выбора любого из включенных предметов. Бюджет случайной десятины будет сохранен для будущего использования.
+Общий накопленный бюджет: {2}</FCNoTitheLetterDesc>
+  <FCNoTitheLetterDesc2>У {0} есть Бюджет случайной десятины для ресурса {1}, но бюджета недостаточно для выбора любого из включенных предметов. Бюджет случайной десятины будет сохранен для будущего использования.
 
-Общий накопленный бюджет: {2}</NoTitheLetterDesc2>
-  <ExternalTitheBudget>Вливание в десятину</ExternalTitheBudget>
-  <TotalTitheBudget>Общий бюджет десятины</TotalTitheBudget>
-  <AvailableTitheBudget>Доступный бюджет</AvailableTitheBudget>
-  <UsedTitheBudget>Использованный бюджет</UsedTitheBudget>
-  <TitheXDesc>Удалить этот предмет из списка десятины.</TitheXDesc>
-  <TitheListRejection>{0} уже существует в списке выбора предметов.</TitheListRejection>
-  <TitheListRejectionQuality>{0} с качеством {1} уже существует в списке выбора предметов.</TitheListRejectionQuality>
-  <TitheListRejectionStuff>{0} из материала {1} уже существует в списке выбора предметов.</TitheListRejectionStuff>
-  <TitheListRejectionStuffQuality>{0} с качеством {1} из материала {2} уже существует в списке выбора предметов</TitheListRejectionStuffQuality>
-  <TitheBudgetNoWorkers>Назначьте рабочих на этот ресурс для создания бюджета десятины.</TitheBudgetNoWorkers>
-  <TitheBudgetInsufficient>Максимальный бюджет десятины недостаточно высок.</TitheBudgetInsufficient>
+Общий накопленный бюджет: {2}</FCNoTitheLetterDesc2>
+  <FCExternalTitheBudget>Вливание в десятину</FCExternalTitheBudget>
+  <FCTotalTitheBudget>Общий бюджет десятины</FCTotalTitheBudget>
+  <FCAvailableTitheBudget>Доступный бюджет</FCAvailableTitheBudget>
+  <FCUsedTitheBudget>Использованный бюджет</FCUsedTitheBudget>
+  <FCTitheXDesc>Удалить этот предмет из списка десятины.</FCTitheXDesc>
+  <FCTitheListRejection>{0} уже существует в списке выбора предметов.</FCTitheListRejection>
+  <FCTitheListRejectionQuality>{0} с качеством {1} уже существует в списке выбора предметов.</FCTitheListRejectionQuality>
+  <FCTitheListRejectionStuff>{0} из материала {1} уже существует в списке выбора предметов.</FCTitheListRejectionStuff>
+  <FCTitheListRejectionStuffQuality>{0} с качеством {1} из материала {2} уже существует в списке выбора предметов</FCTitheListRejectionStuffQuality>
+  <FCTitheBudgetNoWorkers>Назначьте рабочих на этот ресурс для создания бюджета десятины.</FCTitheBudgetNoWorkers>
+  <FCTitheBudgetInsufficient>Максимальный бюджет десятины недостаточно высок.</FCTitheBudgetInsufficient>
 
   <!-- Окно добавления предмета десятины -->
-  <AddTitheItemHeader>Добавить предмет десятины</AddTitheItemHeader>
-  <ItemSelection>Выбор предмета</ItemSelection>
-  <AddItem>Добавить предмет</AddItem>
-  <Stuff>Материал</Stuff>
-  <SelectStuff>Выбрать материал...</SelectStuff>
-  <MustSelectStuff>Необходимо выбрать тип материала</MustSelectStuff>
-  <ItemAlreadyInTitheList>Этот предмет уже есть в списке десятины</ItemAlreadyInTitheList>
+  <FCAddTitheItemHeader>Добавить предмет десятины</FCAddTitheItemHeader>
+  <FCItemSelection>Выбор предмета</FCItemSelection>
+  <FCAddItem>Добавить предмет</FCAddItem>
+  <FCStuff>Материал</FCStuff>
+  <FCSelectStuff>Выбрать материал...</FCSelectStuff>
+  <FCMustSelectStuff>Необходимо выбрать тип материала</FCMustSelectStuff>
+  <FCItemAlreadyInTitheList>Этот предмет уже есть в списке десятины</FCItemAlreadyInTitheList>
   <FCClearSelection>Очистить выбор</FCClearSelection>
   <FCTitheBudgetRemaining>Оставшийся бюджет: {0} / {1} всего</FCTitheBudgetRemaining>
   <FCTitheItems>Предметы</FCTitheItems>
@@ -152,68 +152,67 @@
   <FCTitheSortPriceHigh>Цена: Высокая</FCTitheSortPriceHigh>
 
   <!-- Производство -->
-  <BaseProductionStats>Базовая статистика производства</BaseProductionStats>
-  <Production>Производство</Production>
-  <ProductionEfficiency>Эффективность производства</ProductionEfficiency>
-  <SettlementProductionOf>Общее производство ресурса в поселении</SettlementProductionOf>
-  <TotalProduction>Общее производство</TotalProduction>
-  <PerWorkerProduction>Производство на рабочего</PerWorkerProduction>
-  <TotalProd>Общее производство</TotalProd>
+  <FCBaseProductionStats>Базовая статистика производства</FCBaseProductionStats>
+  <FCProduction>Производство</FCProduction>
+  <FCProductionEfficiency>Эффективность производства</FCProductionEfficiency>
+  <FCSettlementProductionOf>Общее производство ресурса в поселении</FCSettlementProductionOf>
+  <FCTotalProduction>Общее производство</FCTotalProduction>
+  <FCPerWorkerProduction>Производство на рабочего</FCPerWorkerProduction>
+  <FCTotalProd>Общее производство</FCTotalProd>
   <FCTotalProdTooltip>Текущая скорость: {0}\nСреднее за период: {1} ({2} из {3} дней в выборке)</FCTotalProdTooltip>
   <FCResourcePools>Пулы ресурсов</FCResourcePools>
 
   <!-- Типы ресурсов -->
-  <Food>Еда</Food>
-  <Weapons>Оружие</Weapons>
-  <Animals>Животные</Animals>
-  <Logging>Лесозаготовка</Logging>
-  <Mining>Добыча</Mining>
+  <FCFood>Еда</FCFood>
+  <FCWeapons>Оружие</FCWeapons>
+  <FCAnimals>Животные</FCAnimals>
+  <FCLogging>Лесозаготовка</FCLogging>
+  <FCMining>Добыча</FCMining>
 
   <!-- Рабочие -->
-  <Workers>Рабочие</Workers>
-  <FreeWorkers>Свободные рабочие</FreeWorkers>
-  <AssignedWorkers>Назначенные рабочие</AssignedWorkers>
-  <AssignedWorkersValue>{0}/{1}</AssignedWorkersValue>
-  <AssignedOvermaxWorkers>Сверхлимитные рабочие</AssignedOvermaxWorkers>
-  <AssignedOvermaxWorkersValue>{0}/{1}</AssignedOvermaxWorkersValue>
-  <AssignedOvermaxWorkersTooltip>Каждый дополнительный сверхлимитный рабочий увеличивает стоимость всех рабочих на 5.</AssignedOvermaxWorkersTooltip>
-  <CostPerWorker>Стоимость за рабочего</CostPerWorker>
+  <FCWorkers>Рабочие</FCWorkers>
+  <FCFreeWorkers>Свободные рабочие</FCFreeWorkers>
+  <FCAssignedWorkers>Назначенные рабочие</FCAssignedWorkers>
+  <FCAssignedWorkersValue>{0}/{1}</FCAssignedWorkersValue>
+  <FCAssignedOvermaxWorkers>Сверхлимитные рабочие</FCAssignedOvermaxWorkers>
+  <FCAssignedOvermaxWorkersValue>{0}/{1}</FCAssignedOvermaxWorkersValue>
+  <FCAssignedOvermaxWorkersTooltip>Каждый дополнительный сверхлимитный рабочий увеличивает стоимость всех рабочих на 5.</FCAssignedOvermaxWorkersTooltip>
+  <FCCostPerWorker>Стоимость за рабочего</FCCostPerWorker>
 
   <!-- Доход -->
-  <Silver>Серебро</Silver>
-  <CashSymbol>$</CashSymbol>
-  <InitialCost>Начальная стоимость</InitialCost>
-  <NotEnoughSilverToSettle>У вас недостаточно серебра на текущей карте для основания новой колонии</NotEnoughSilverToSettle>
-  <NotEnoughSilverConstructBuilding>У вас недостаточно серебра на текущей карте для строительства этого здания</NotEnoughSilverConstructBuilding>
+  <FCSilver>Серебро</FCSilver>
+  <FCCashSymbol>$</FCCashSymbol>
+  <FCInitialCost>Начальная стоимость</FCInitialCost>
+  <FCNotEnoughSilverToSettle>У вас недостаточно серебра на текущей карте для основания новой колонии</FCNotEnoughSilverToSettle>
+  <FCNotEnoughSilverConstructBuilding>У вас недостаточно серебра на текущей карте для строительства этого здания</FCNotEnoughSilverConstructBuilding>
   <FCNotEnoughSilverDemolish>У вас недостаточно серебра на текущей карте для оплаты сноса</FCNotEnoughSilverDemolish>
-  <NotEnoughMoneyToEnact>У вас недостаточно серебра на текущей карте для введения этой политики</NotEnoughMoneyToEnact>
-  <Profit>Прибыль</Profit>
-  <TaxBase>Налоговая база</TaxBase>
-  <Income>Доход</Income>
-  <Upkeep>Обслуживание</Upkeep>
+  <FCNotEnoughMoneyToEnact>У вас недостаточно серебра на текущей карте для введения этой политики</FCNotEnoughMoneyToEnact>
+  <FCProfit>Прибыль</FCProfit>
+  <FCTaxBase>Налоговая база</FCTaxBase>
+  <FCIncome>Доход</FCIncome>
   <FCUpkeep>Обслуживание</FCUpkeep>
-  <Raw>Валовой</Raw>
-  <RawIncomeDesc>Общий доход, который производит ресурс, до любых вычетов.</RawIncomeDesc>
-  <Net>Чистый</Net>
-  <NetIncomeDesc>Общий доход, который производит ресурс, после учета отчислений в запас и десятины.</NetIncomeDesc>
-  <NetIncomeBreakdownGross>Валовой доход: {0}</NetIncomeBreakdownGross>
-  <NetIncomeBreakdownStockpile>Отчисления в запас: -{0}</NetIncomeBreakdownStockpile>
-  <NetIncomeBreakdownTithes>Десятина: -{0}</NetIncomeBreakdownTithes>
-  <NetIncomeBreakdownTitheInjection>Компенсация вливания в десятину: +{0}</NetIncomeBreakdownTitheInjection>
-  <NetIncomeBreakdownNet>Чистый доход: {0}</NetIncomeBreakdownNet>
-  <NetIncomeBreakdownAvg>Средний чистый доход за период: {0} ({1} из {2} дней в выборке)</NetIncomeBreakdownAvg>
-  <itemcost>{0}{1}</itemcost>
+  <FCRaw>Валовой</FCRaw>
+  <FCRawIncomeDesc>Общий доход, который производит ресурс, до любых вычетов.</FCRawIncomeDesc>
+  <FCNet>Чистый</FCNet>
+  <FCNetIncomeDesc>Общий доход, который производит ресурс, после учета отчислений в запас и десятины.</FCNetIncomeDesc>
+  <FCNetIncomeBreakdownGross>Валовой доход: {0}</FCNetIncomeBreakdownGross>
+  <FCNetIncomeBreakdownStockpile>Отчисления в запас: -{0}</FCNetIncomeBreakdownStockpile>
+  <FCNetIncomeBreakdownTithes>Десятина: -{0}</FCNetIncomeBreakdownTithes>
+  <FCNetIncomeBreakdownTitheInjection>Компенсация вливания в десятину: +{0}</FCNetIncomeBreakdownTitheInjection>
+  <FCNetIncomeBreakdownNet>Чистый доход: {0}</FCNetIncomeBreakdownNet>
+  <FCNetIncomeBreakdownAvg>Средний чистый доход за период: {0} ({1} из {2} дней в выборке)</FCNetIncomeBreakdownAvg>
+  <FCItemcost>{0}{1}</FCItemcost>
 
   <!-- Выходная мощность -->
-  <SetAsEmpirePowerOutput>Установить как источник энергии империи</SetAsEmpirePowerOutput>
-  <SetAsOutput>Установить источник энергии</SetAsOutput>
-  <SetAsOutputSuccess>Трансформатор установлен как источник энергии для ваших поселений!</SetAsOutputSuccess>
+  <FCSetAsEmpirePowerOutput>Установить как источник энергии империи</FCSetAsEmpirePowerOutput>
+  <FCSetAsOutput>Установить источник энергии</FCSetAsOutput>
+  <FCSetAsOutputSuccess>Трансформатор установлен как источник энергии для ваших поселений!</FCSetAsOutputSuccess>
 
   <!-- Снижение стоимости поселения -->
   <FCActionSettlementFeeReduction>Стоимость вашего следующего поселения будет снижена наполовину из-за экспансионистской черты вашей фракции</FCActionSettlementFeeReduction>
 
   <!-- Полученные товары -->
-  <GoodsReceived>Полученные товары</GoodsReceived>
-  <GoodsReceivedFollowing>Вы получили следующие товары в результате события {0}:</GoodsReceivedFollowing>
+  <FCGoodsReceived>Полученные товары</FCGoodsReceived>
+  <FCGoodsReceivedFollowing>Вы получили следующие товары в результате события {0}:</FCGoodsReceivedFollowing>
 
 </LanguageData>

@@ -2,51 +2,51 @@
 <LanguageData>
 
 	<!-- Bills -->
-	<NotEnoughSilverForBill>You did not have enough silver to pay an outstanding bill from</NotEnoughSilverForBill>
-	<ConfiscatedTithes>They have confiscated your tithes in return</ConfiscatedTithes>
-	<OutstandingBills>Outstanding Bills</OutstandingBills>
-	<DueDate>Due Date</DueDate>
-	<Amount>Amount</Amount>
-	<HasTithe>Has Tithe</HasTithe>
-	<PayReceiveSilver>Pay/Receive Silver</PayReceiveSilver>
-	<ResolveBill>Resolve Bill</ResolveBill>
-	<NotEnoughSilverOnMapToPayBill>You do not have enough silver on the current map to pay the bill</NotEnoughSilverOnMapToPayBill>
-	<NumberTaxesHasBeenSolved>{0} bills have been auto-resolved!</NumberTaxesHasBeenSolved>
-	<BillResolved>Bill resolved.</BillResolved>
-	<DueFC>Due</DueFC>
+	<FCNotEnoughSilverForBill>You did not have enough silver to pay an outstanding bill from</FCNotEnoughSilverForBill>
+	<FCConfiscatedTithes>They have confiscated your tithes in return</FCConfiscatedTithes>
+	<FCOutstandingBills>Outstanding Bills</FCOutstandingBills>
+	<FCDueDate>Due Date</FCDueDate>
+	<FCAmount>Amount</FCAmount>
+	<FCHasTithe>Has Tithe</FCHasTithe>
+	<FCPayReceiveSilver>Pay/Receive Silver</FCPayReceiveSilver>
+	<FCResolveBill>Resolve Bill</FCResolveBill>
+	<FCNotEnoughSilverOnMapToPayBill>You do not have enough silver on the current map to pay the bill</FCNotEnoughSilverOnMapToPayBill>
+	<FCNumberTaxesHasBeenSolved>{0} bills have been auto-resolved!</FCNumberTaxesHasBeenSolved>
+	<FCBillResolved>Bill resolved.</FCBillResolved>
+	<FCDueFC>Due</FCDueFC>
 	<FCNoPendingBills>No pending bills.</FCNoPendingBills>
 	<FCPendingBillsCount>{0} pending bills</FCPendingBillsCount>
 	<FCTitheItemCount>{0} tithe items</FCTitheItemCount>
 	<FCNoTithes>No tithes</FCNoTithes>
 	<FCOverdue>Overdue</FCOverdue>
-	<UnpaidTitheEffect>Unrest has increased by 10 and happiness has decreased in the settlement! </UnpaidTitheEffect>
-	<LateBillAutoPaidLabel>Overdue Bills Auto-Paid</LateBillAutoPaidLabel>
-	<LateBillAutoPaidDesc>{0} overdue bill(s) have been auto-paid from your silver reserves.\n\nAffected settlements:\n{1}\n\nYour dereliction in payment has caused a small amount of unhappiness and unrest in the affected settlements.</LateBillAutoPaidDesc>
+	<FCUnpaidTitheEffect>Unrest has increased by 10 and happiness has decreased in the settlement! </FCUnpaidTitheEffect>
+	<FCLateBillAutoPaidLabel>Overdue Bills Auto-Paid</FCLateBillAutoPaidLabel>
+	<FCLateBillAutoPaidDesc>{0} overdue bill(s) have been auto-paid from your silver reserves.\n\nAffected settlements:\n{1}\n\nYour dereliction in payment has caused a small amount of unhappiness and unrest in the affected settlements.</FCLateBillAutoPaidDesc>
 
 	<!-- Taxes -->
-	<SettlementTax>Settlement Tax</SettlementTax>
-	<WeekOf>week of</WeekOf>
-	<TaxesBilled>Taxes have been billed</TaxesBilled>
-	<TaxesBilledShort>Taxes Billed</TaxesBilledShort>
-	<TaxesBilledDesc>Taxes from your settlements have been billed.</TaxesBilledDesc>
-	<NoSettlementsToTax>No settlements to tax</NoSettlementsToTax>
-	<TaxesFrom>Taxes from</TaxesFrom>
-	<HaveBeenDelivered>have been delivered</HaveBeenDelivered>
-	<TaxesHaveArrived>Taxes have arrived!</TaxesHaveArrived>
-	<TaxesFromSettlementAreBeingDelivered>Taxes from {0} are en-route to your tax collection point!</TaxesFromSettlementAreBeingDelivered>
-	<TaxPercentage>Tithe %</TaxPercentage>
-	<TaxDeliveryMap>Tax Delivery Map</TaxDeliveryMap>
+	<FCSettlementTax>Settlement Tax</FCSettlementTax>
+	<FCWeekOf>week of</FCWeekOf>
+	<FCTaxesBilled>Taxes have been billed</FCTaxesBilled>
+	<FCTaxesBilledShort>Taxes Billed</FCTaxesBilledShort>
+	<FCTaxesBilledDesc>Taxes from your settlements have been billed.</FCTaxesBilledDesc>
+	<FCNoSettlementsToTax>No settlements to tax</FCNoSettlementsToTax>
+	<FCTaxesFrom>Taxes from</FCTaxesFrom>
+	<FCHaveBeenDelivered>have been delivered</FCHaveBeenDelivered>
+	<FCTaxesHaveArrived>Taxes have arrived!</FCTaxesHaveArrived>
+	<FCTaxesFromSettlementAreBeingDelivered>Taxes from {0} are en-route to your tax collection point!</FCTaxesFromSettlementAreBeingDelivered>
+	<FCTaxPercentage>Tithe %</FCTaxPercentage>
+	<FCTaxDeliveryMap>Tax Delivery Map</FCTaxDeliveryMap>
 	
-	<InnovativeMessage>{0}'s innovation has provided you with {1} research points.</InnovativeMessage>
+	<FCInnovativeMessage>{0}'s innovation has provided you with {1} research points.</FCInnovativeMessage>
 
 	<!-- Tax Reports -->
-	<TaxReports>Tax Reports</TaxReports>
-	<FactionTaxReports>Faction Tax Reports</FactionTaxReports>
-	<SettlementTaxCollection>Settlements Tax Collection</SettlementTaxCollection>
-	<EstimatedProfit>Est. Profit</EstimatedProfit>
-	<EstimatedValue>Est Value</EstimatedValue>
-	<TimeTillTax>Time till tax</TimeTillTax>
-	<TotalFactionProduction>The total faction-wide production of the resource</TotalFactionProduction>
+	<FCTaxReports>Tax Reports</FCTaxReports>
+	<FCFactionTaxReports>Faction Tax Reports</FCFactionTaxReports>
+	<FCSettlementTaxCollection>Settlements Tax Collection</FCSettlementTaxCollection>
+	<FCEstimatedProfit>Est. Profit</FCEstimatedProfit>
+	<FCEstimatedValue>Est Value</FCEstimatedValue>
+	<FCTimeTillTax>Time till tax</FCTimeTillTax>
+	<FCTotalFactionProduction>The total faction-wide production of the resource</FCTotalFactionProduction>
 
 	<!-- Tax Break -->
 	<FCGiveTaxBreak>Issue Tax Break</FCGiveTaxBreak>
@@ -65,35 +65,35 @@
 	<FCTaxNotifyNone>None (hide all)</FCTaxNotifyNone>
 
 	<!-- Delivery Modes -->
-	<selectTaxDeliveryModeButton>Forced Tax Delivery Mode: </selectTaxDeliveryModeButton>
-	<taxDeliveryModeDefaultDesc>None. Delivery depends on technology and settlement buildings</taxDeliveryModeDefaultDesc>
-	<taxDeliveryModeTaxSpotDesc>TaxSpot. Delivery spawns on the tax spot</taxDeliveryModeTaxSpotDesc>
-	<taxDeliveryModeCaravanDesc>Caravan. Delivery is always brought by a caravan</taxDeliveryModeCaravanDesc>
-	<taxDeliveryModeDropPodDesc>DropPod. Delivery always arrives in drop pods</taxDeliveryModeDropPodDesc>
-	<taxDeliveryModeShuttleDesc>Shuttle. Delivery always arrives by shuttle</taxDeliveryModeShuttleDesc>
-	<taxDeliveryModeShuttleUnavailableDesc>Shuttle. Unavailable due to royality not being present</taxDeliveryModeShuttleUnavailableDesc>
+	<FCSelectTaxDeliveryModeButton>Forced Tax Delivery Mode: </FCSelectTaxDeliveryModeButton>
+	<FCTaxDeliveryModeDefaultDesc>None. Delivery depends on technology and settlement buildings</FCTaxDeliveryModeDefaultDesc>
+	<FCTaxDeliveryModeTaxSpotDesc>TaxSpot. Delivery spawns on the tax spot</FCTaxDeliveryModeTaxSpotDesc>
+	<FCTaxDeliveryModeCaravanDesc>Caravan. Delivery is always brought by a caravan</FCTaxDeliveryModeCaravanDesc>
+	<FCTaxDeliveryModeDropPodDesc>DropPod. Delivery always arrives in drop pods</FCTaxDeliveryModeDropPodDesc>
+	<FCTaxDeliveryModeShuttleDesc>Shuttle. Delivery always arrives by shuttle</FCTaxDeliveryModeShuttleDesc>
+	<FCTaxDeliveryModeShuttleUnavailableDesc>Shuttle. Unavailable due to royality not being present</FCTaxDeliveryModeShuttleUnavailableDesc>
 
 	<!-- Delivery Events -->
-	<deliveryPawnsHiding>The delivering pawns are dropping their items and hiding on your tax delivery spot! They will only engage if the enemy is close!</deliveryPawnsHiding>
-	<deliveryPawnsLeavingMap>The delivering pawns are leaving the map.</deliveryPawnsLeavingMap>
-	<deliveryPawnsLeavingMapNoPath>The delivering pawns are leaving the map, because they couldn't access the tax delivery spot.</deliveryPawnsLeavingMapNoPath>
-	<deliveryPawnsLeavingMapWithDowned>The delivering pawns are collecting downed members and leaving the map.</deliveryPawnsLeavingMapWithDowned>
-	<settlementDeliveringLoot>Your settlement is delivering the following loot to you: </settlementDeliveringLoot>
-	<deliveryHeldUpArriving>A delivery that was forced to wait has arrived!</deliveryHeldUpArriving>
+	<FCDeliveryPawnsHiding>The delivering pawns are dropping their items and hiding on your tax delivery spot! They will only engage if the enemy is close!</FCDeliveryPawnsHiding>
+	<FCDeliveryPawnsLeavingMap>The delivering pawns are leaving the map.</FCDeliveryPawnsLeavingMap>
+	<FCDeliveryPawnsLeavingMapNoPath>The delivering pawns are leaving the map, because they couldn't access the tax delivery spot.</FCDeliveryPawnsLeavingMapNoPath>
+	<FCDeliveryPawnsLeavingMapWithDowned>The delivering pawns are collecting downed members and leaving the map.</FCDeliveryPawnsLeavingMapWithDowned>
+	<FCSettlementDeliveringLoot>Your settlement is delivering the following loot to you: </FCSettlementDeliveringLoot>
+	<FCDeliveryHeldUpArriving>A delivery that was forced to wait has arrived!</FCDeliveryHeldUpArriving>
 
 	<!-- Tithes -->
-	<PauseTithes>Pause Tithes</PauseTithes>
-	<UnPauseTithes>Unpause Tithes</UnPauseTithes>
+	<FCPauseTithes>Pause Tithes</FCPauseTithes>
+	<FCUnPauseTithes>Unpause Tithes</FCUnPauseTithes>
 	<FCTithesPaused>Tithes Paused</FCTithesPaused>
-	<PauseTithesDesc>When enabled, no tithe items will be collected for this resource at tax time. Its production value will be converted to silver income instead. Your tithe settings are preserved and will resume when unpaused.</PauseTithesDesc>
-	<TitheList>Tithe List</TitheList>
-	<StackCount>Stack Count</StackCount>
+	<FCPauseTithesDesc>When enabled, no tithe items will be collected for this resource at tax time. Its production value will be converted to silver income instead. Your tithe settings are preserved and will resume when unpaused.</FCPauseTithesDesc>
+	<FCTitheList>Tithe List</FCTitheList>
+	<FCStackCount>Stack Count</FCStackCount>
 	<FCTotalValue>Total Value</FCTotalValue>
-	<IsTithe>Is Tithe</IsTithe>
-	<Tithe>Tithe</Tithe>
-	<Tithing>Tithing</Tithing>
-	<TitheModifier>Tithe Modifier</TitheModifier>
-	<TitheSelection>Item Selection</TitheSelection>
+	<FCIsTithe>Is Tithe</FCIsTithe>
+	<FCTithe>Tithe</FCTithe>
+	<FCTithing>Tithing</FCTithing>
+	<FCTitheModifier>Tithe Modifier</FCTitheModifier>
+	<FCTitheSelection>Item Selection</FCTitheSelection>
 	<FCTitheEnableAll>Enable All</FCTitheEnableAll>
 	<FCTitheDisableAll>Disable All</FCTitheDisableAll>
 	<FCTitheSingleOption>{0} - Cost - {1} | Allowed: {2}</FCTitheSingleOption>
@@ -106,46 +106,46 @@
 	<FCTitheShowFilter>Show: {0}</FCTitheShowFilter>
 
 	<!-- Random Tithes -->
-	<RandomTithesEnabled>Random Tithing</RandomTithesEnabled>
-	<RandomTitheSelectionHeader>Random Tithe Item Selection</RandomTitheSelectionHeader>
-	<RandomTitheBudget>Random Tithe Budget</RandomTitheBudget>
-	<AutoMaxRandomTithe>Max</AutoMaxRandomTithe>
-	<AutoMaxRandomTitheDesc>When enabled, the random tithe budget automatically fills the remaining income after manual tithes. Adding manual tithes will reduce the random budget accordingly.</AutoMaxRandomTitheDesc>
-	<TitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</TitheOverBudget>
-	<RandomTithesDesc>At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
+	<FCRandomTithesEnabled>Random Tithing</FCRandomTithesEnabled>
+	<FCRandomTitheSelectionHeader>Random Tithe Item Selection</FCRandomTitheSelectionHeader>
+	<FCRandomTitheBudget>Random Tithe Budget</FCRandomTitheBudget>
+	<FCAutoMaxRandomTithe>Max</FCAutoMaxRandomTithe>
+	<FCAutoMaxRandomTitheDesc>When enabled, the random tithe budget automatically fills the remaining income after manual tithes. Adding manual tithes will reduce the random budget accordingly.</FCAutoMaxRandomTitheDesc>
+	<FCTitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</FCTitheOverBudget>
+	<FCRandomTithesDesc>At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
 
-If the lowest value item in the list has a higher value than your Random Tithe Budget, or if there are no items to select from, then the budget is carried over to the next tax period.</RandomTithesDesc>
-	<RandomTitheAccrued>Accrued Budget: ${0}</RandomTitheAccrued>
-	<RandomTitheAccruedDesc>The amount of leftover Random Tithe Budget that has accrued. This will be added to your Random Tithe Budget to determine the total budget for Random Tithes at tax time.</RandomTitheAccruedDesc>
-	<DisburseAccruedRandomTithe>Disburse Accrued Budget</DisburseAccruedRandomTithe>
-	<DisburseAccruedRandomTitheDesc>If checked, then the Accrued Budget will be disbursed as raw silver come tax time. It will not count towards the Random Tithe Budget.</DisburseAccruedRandomTitheDesc>
-	<NoTitheLetterLabel>No Tithe: {0}</NoTitheLetterLabel>
-	<NoTitheLetterDesc>{0} has a Random Tithe Budget for resource {1}, but no items were enabled. The Random Tithe Budget will be stored for future use.
+If the lowest value item in the list has a higher value than your Random Tithe Budget, or if there are no items to select from, then the budget is carried over to the next tax period.</FCRandomTithesDesc>
+	<FCRandomTitheAccrued>Accrued Budget: ${0}</FCRandomTitheAccrued>
+	<FCRandomTitheAccruedDesc>The amount of leftover Random Tithe Budget that has accrued. This will be added to your Random Tithe Budget to determine the total budget for Random Tithes at tax time.</FCRandomTitheAccruedDesc>
+	<FCDisburseAccruedRandomTithe>Disburse Accrued Budget</FCDisburseAccruedRandomTithe>
+	<FCDisburseAccruedRandomTitheDesc>If checked, then the Accrued Budget will be disbursed as raw silver come tax time. It will not count towards the Random Tithe Budget.</FCDisburseAccruedRandomTitheDesc>
+	<FCNoTitheLetterLabel>No Tithe: {0}</FCNoTitheLetterLabel>
+	<FCNoTitheLetterDesc>{0} has a Random Tithe Budget for resource {1}, but no items were enabled. The Random Tithe Budget will be stored for future use.
 
-Total accrued budget: {2}</NoTitheLetterDesc>
-	<NoTitheLetterDesc2>{0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
+Total accrued budget: {2}</FCNoTitheLetterDesc>
+	<FCNoTitheLetterDesc2>{0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
 
-Total accrued budget: {2}</NoTitheLetterDesc2>
-	<ExternalTitheBudget>Tithe Injection</ExternalTitheBudget>
-	<TotalTitheBudget>Total Tithe Budget</TotalTitheBudget>
-	<AvailableTitheBudget>Available Budget</AvailableTitheBudget>
-	<UsedTitheBudget>Used Budget</UsedTitheBudget>
-	<TitheXDesc>Remove this item from the tithes list.</TitheXDesc>
-	<TitheListRejection>{0} already exists in the item selection list.</TitheListRejection>
-	<TitheListRejectionQuality>{0} with quality {1} already exists in the item selection list.</TitheListRejectionQuality>
-	<TitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</TitheListRejectionStuff>
-	<TitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</TitheListRejectionStuffQuality>
-	<TitheBudgetNoWorkers>Add workers to this resource to generate tithe budget.</TitheBudgetNoWorkers>
-	<TitheBudgetInsufficient>The max tithe budget isn't high enough.</TitheBudgetInsufficient>
+Total accrued budget: {2}</FCNoTitheLetterDesc2>
+	<FCExternalTitheBudget>Tithe Injection</FCExternalTitheBudget>
+	<FCTotalTitheBudget>Total Tithe Budget</FCTotalTitheBudget>
+	<FCAvailableTitheBudget>Available Budget</FCAvailableTitheBudget>
+	<FCUsedTitheBudget>Used Budget</FCUsedTitheBudget>
+	<FCTitheXDesc>Remove this item from the tithes list.</FCTitheXDesc>
+	<FCTitheListRejection>{0} already exists in the item selection list.</FCTitheListRejection>
+	<FCTitheListRejectionQuality>{0} with quality {1} already exists in the item selection list.</FCTitheListRejectionQuality>
+	<FCTitheListRejectionStuff>{0} with stuff {1} already exists in the item selection list.</FCTitheListRejectionStuff>
+	<FCTitheListRejectionStuffQuality>{0} with quality {1} and stuff {2} already exists in the item selection list</FCTitheListRejectionStuffQuality>
+	<FCTitheBudgetNoWorkers>Add workers to this resource to generate tithe budget.</FCTitheBudgetNoWorkers>
+	<FCTitheBudgetInsufficient>The max tithe budget isn't high enough.</FCTitheBudgetInsufficient>
 
 	<!-- Add Tithe Item Window -->
-	<AddTitheItemHeader>Add Tithe Item</AddTitheItemHeader>
-	<ItemSelection>Item Selection</ItemSelection>
-	<AddItem>Add Item</AddItem>
-	<Stuff>Stuff</Stuff>
-	<SelectStuff>Select stuff...</SelectStuff>
-	<MustSelectStuff>Must select a stuff type</MustSelectStuff>
-	<ItemAlreadyInTitheList>This item is already in the tithe list</ItemAlreadyInTitheList>
+	<FCAddTitheItemHeader>Add Tithe Item</FCAddTitheItemHeader>
+	<FCItemSelection>Item Selection</FCItemSelection>
+	<FCAddItem>Add Item</FCAddItem>
+	<FCStuff>Stuff</FCStuff>
+	<FCSelectStuff>Select stuff...</FCSelectStuff>
+	<FCMustSelectStuff>Must select a stuff type</FCMustSelectStuff>
+	<FCItemAlreadyInTitheList>This item is already in the tithe list</FCItemAlreadyInTitheList>
 	<FCClearSelection>Clear Selection</FCClearSelection>
 	<FCTitheBudgetRemaining>Remaining Budget: {0} / {1} total</FCTitheBudgetRemaining>
 	<FCTitheItems>Items</FCTitheItems>
@@ -160,70 +160,69 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<FCTitheSortPriceHigh>Price: High</FCTitheSortPriceHigh>
 
 	<!-- Production -->
-	<BaseProductionStats>Base Production Stats</BaseProductionStats>
-	<Production>Production</Production>
-	<ProductionEfficiency>Production Efficiency</ProductionEfficiency>
-	<SettlementProductionOf>The total settlement production of the resource</SettlementProductionOf>
-	<TotalProduction>Total Production</TotalProduction>
-	<PerWorkerProduction>Per-Worker Production</PerWorkerProduction>
-	<TotalProd>Total Production</TotalProd>
+	<FCBaseProductionStats>Base Production Stats</FCBaseProductionStats>
+	<FCProduction>Production</FCProduction>
+	<FCProductionEfficiency>Production Efficiency</FCProductionEfficiency>
+	<FCSettlementProductionOf>The total settlement production of the resource</FCSettlementProductionOf>
+	<FCTotalProduction>Total Production</FCTotalProduction>
+	<FCPerWorkerProduction>Per-Worker Production</FCPerWorkerProduction>
+	<FCTotalProd>Total Production</FCTotalProd>
 	<FCTotalProdTooltip>Current rate: {0}\nPeriod average: {1} ({2} of {3} days sampled)</FCTotalProdTooltip>
 	<FCResourcePools>Resource Pools</FCResourcePools>
 
 	<!-- Resource Types -->
-	<Food>Food</Food>
-	<Weapons>Weapons</Weapons>
-	<Animals>Animals</Animals>
-	<Logging>Logging</Logging>
-	<Mining>Mining</Mining>
+	<FCFood>Food</FCFood>
+	<FCWeapons>Weapons</FCWeapons>
+	<FCAnimals>Animals</FCAnimals>
+	<FCLogging>Logging</FCLogging>
+	<FCMining>Mining</FCMining>
 
 	<!-- Workers -->
-	<Workers>Workers</Workers>
-	<FreeWorkers>Free Workers</FreeWorkers>
-	<AssignedWorkers>Assigned Workers</AssignedWorkers>
-	<AssignedWorkersValue>{0}/{1}</AssignedWorkersValue>
-	<AssignedOvermaxWorkers>Assigned Overmax Workers</AssignedOvermaxWorkers>
-	<AssignedOvermaxWorkersValue>{0}/{1}</AssignedOvermaxWorkersValue>
-	<AssignedOvermaxWorkersTooltip>Each addtional overmax worker increases the cost of all workers by 5.</AssignedOvermaxWorkersTooltip>
-	<CostPerWorker>Cost Per Worker</CostPerWorker>
+	<FCWorkers>Workers</FCWorkers>
+	<FCFreeWorkers>Free Workers</FCFreeWorkers>
+	<FCAssignedWorkers>Assigned Workers</FCAssignedWorkers>
+	<FCAssignedWorkersValue>{0}/{1}</FCAssignedWorkersValue>
+	<FCAssignedOvermaxWorkers>Assigned Overmax Workers</FCAssignedOvermaxWorkers>
+	<FCAssignedOvermaxWorkersValue>{0}/{1}</FCAssignedOvermaxWorkersValue>
+	<FCAssignedOvermaxWorkersTooltip>Each addtional overmax worker increases the cost of all workers by 5.</FCAssignedOvermaxWorkersTooltip>
+	<FCCostPerWorker>Cost Per Worker</FCCostPerWorker>
 
 	<!-- Income -->
-	<Cost>Cost</Cost>
-	<Silver>Silver</Silver>
-	<CashSymbol>$</CashSymbol>
-	<InitialCost>Initial Cost</InitialCost>
-	<NotEnoughSilverToSettle>You do not have enough silver on the current map to found a new settlement</NotEnoughSilverToSettle>
-	<NotEnoughSilverConstructBuilding>You do not have enough silver on the current map to construct that building
-	</NotEnoughSilverConstructBuilding>
+	<FCCost>Cost</FCCost>
+	<FCSilver>Silver</FCSilver>
+	<FCCashSymbol>$</FCCashSymbol>
+	<FCInitialCost>Initial Cost</FCInitialCost>
+	<FCNotEnoughSilverToSettle>You do not have enough silver on the current map to found a new settlement</FCNotEnoughSilverToSettle>
+	<FCNotEnoughSilverConstructBuilding>You do not have enough silver on the current map to construct that building
+	</FCNotEnoughSilverConstructBuilding>
 	<FCNotEnoughSilverDemolish>You do not have enough silver on the current map to pay for the demolition</FCNotEnoughSilverDemolish>
-	<NotEnoughMoneyToEnact>You do not have enough silver on the current map to enact that policy</NotEnoughMoneyToEnact>
-	<Profit>Profit</Profit>
-	<TaxBase>Tax Base</TaxBase>
-	<Income>Income</Income>
-	<Upkeep>Upkeep</Upkeep>
+	<FCNotEnoughMoneyToEnact>You do not have enough silver on the current map to enact that policy</FCNotEnoughMoneyToEnact>
+	<FCProfit>Profit</FCProfit>
+	<FCTaxBase>Tax Base</FCTaxBase>
+	<FCIncome>Income</FCIncome>
 	<FCUpkeep>Upkeep</FCUpkeep>
-	<Raw>Raw</Raw>
-	<RawIncomeDesc>The total income a resource produces, before any deductions.</RawIncomeDesc>
-	<Net>Net</Net>
-	<NetIncomeDesc>The total income a resource produces, after accounting for stockpile diversions and tithes.</NetIncomeDesc>
-	<NetIncomeBreakdownGross>Gross income: {0}</NetIncomeBreakdownGross>
-	<NetIncomeBreakdownStockpile>Stockpile diversions: -{0}</NetIncomeBreakdownStockpile>
-	<NetIncomeBreakdownTithes>Tithes: -{0}</NetIncomeBreakdownTithes>
-	<NetIncomeBreakdownTitheInjection>Tithe injection offset: +{0}</NetIncomeBreakdownTitheInjection>
-	<NetIncomeBreakdownNet>Net income: {0}</NetIncomeBreakdownNet>
-	<NetIncomeBreakdownAvg>Period average net: {0} ({1} of {2} days sampled)</NetIncomeBreakdownAvg>
-	<itemcost>{0}{1}</itemcost>
+	<FCRaw>Raw</FCRaw>
+	<FCRawIncomeDesc>The total income a resource produces, before any deductions.</FCRawIncomeDesc>
+	<FCNet>Net</FCNet>
+	<FCNetIncomeDesc>The total income a resource produces, after accounting for stockpile diversions and tithes.</FCNetIncomeDesc>
+	<FCNetIncomeBreakdownGross>Gross income: {0}</FCNetIncomeBreakdownGross>
+	<FCNetIncomeBreakdownStockpile>Stockpile diversions: -{0}</FCNetIncomeBreakdownStockpile>
+	<FCNetIncomeBreakdownTithes>Tithes: -{0}</FCNetIncomeBreakdownTithes>
+	<FCNetIncomeBreakdownTitheInjection>Tithe injection offset: +{0}</FCNetIncomeBreakdownTitheInjection>
+	<FCNetIncomeBreakdownNet>Net income: {0}</FCNetIncomeBreakdownNet>
+	<FCNetIncomeBreakdownAvg>Period average net: {0} ({1} of {2} days sampled)</FCNetIncomeBreakdownAvg>
+	<FCItemcost>{0}{1}</FCItemcost>
 
 	<!-- Power Output -->
-	<SetAsEmpirePowerOutput>Set as Empire Power Output</SetAsEmpirePowerOutput>
-	<SetAsOutput>Set Power Output</SetAsOutput>
-	<SetAsOutputSuccess>The transformer has been set as the power output for your settlements!</SetAsOutputSuccess>
+	<FCSetAsEmpirePowerOutput>Set as Empire Power Output</FCSetAsEmpirePowerOutput>
+	<FCSetAsOutput>Set Power Output</FCSetAsOutput>
+	<FCSetAsOutputSuccess>The transformer has been set as the power output for your settlements!</FCSetAsOutputSuccess>
 
 	<!-- Settlement Fee Reduction -->
 	<FCActionSettlementFeeReduction>The cost of your next settlement will be reduced by half because of your faction's expansionist trait</FCActionSettlementFeeReduction>
 
 	<!-- Goods Received -->
-	<GoodsReceived>Goods Received</GoodsReceived>
-	<GoodsReceivedFollowing>You have received the following goods from the {0} event:</GoodsReceivedFollowing>
+	<FCGoodsReceived>Goods Received</FCGoodsReceived>
+	<FCGoodsReceivedFollowing>You have received the following goods from the {0} event:</FCGoodsReceivedFollowing>
 
 </LanguageData>

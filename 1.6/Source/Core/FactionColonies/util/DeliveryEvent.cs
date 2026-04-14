@@ -64,7 +64,7 @@ namespace FactionColonies.util
                     else
                     {
                         string eventLabel = evt.def?.label?.ToLower() ?? "delivery";
-                        Find.LetterStack.ReceiveLetter("GoodsReceivedFollowing".Translate(eventLabel), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
+                        Find.LetterStack.ReceiveLetter("FCGoodsReceivedFollowing".Translate(eventLabel), evt.goods.ToLetterString(), LetterDefOf.PositiveEvent, evt.goods);
                     }
                 }
 
@@ -74,7 +74,7 @@ namespace FactionColonies.util
                     Messages.Message(evt.msg);
                 }
 
-                if (evt.isDelayed) Messages.Message("deliveryHeldUpArriving".Translate(), evt.goods, MessageTypeDefOf.PositiveEvent);
+                if (evt.isDelayed) Messages.Message("FCDeliveryHeldUpArriving".Translate(), evt.goods, MessageTypeDefOf.PositiveEvent);
             }
             catch
             {
@@ -113,7 +113,7 @@ namespace FactionColonies.util
             {
                 if (!evt.isDelayed)
                 {
-                    Messages.Message(((string)"shuttleLandingBlockedWithItems".Translate(evt.goods.ToLetterString())).Replace("\n", " "), MessageTypeDefOf.RejectInput);
+                    Messages.Message(((string)"FCShuttleLandingBlockedWithItems".Translate(evt.goods.ToLetterString())).Replace("\n", " "), MessageTypeDefOf.RejectInput);
                     evt.isDelayed = true;
                 }
 
@@ -144,7 +144,7 @@ namespace FactionColonies.util
 
                 if (!evt.isDelayed)
                 {
-                    Messages.Message(((string)"caravanDangerTooHighWithItems".Translate(evt.goods.ToLetterString())).Replace("\n", " "), MessageTypeDefOf.RejectInput);
+                    Messages.Message(((string)"FCCaravanDangerTooHighWithItems".Translate(evt.goods.ToLetterString())).Replace("\n", " "), MessageTypeDefOf.RejectInput);
                     evt.isDelayed = true;
                 }
 
@@ -455,11 +455,11 @@ namespace FactionColonies.util
                 {
                     if (ModsConfig.RoyaltyActive)
                     {
-                        return "transportingInjuredShuttle".Translate();
+                        return "FCTransportingInjuredShuttle".Translate();
                     }
-                    return "transportingInjuredDropPod".Translate();
+                    return "FCTransportingInjuredDropPod".Translate();
                 }
-                return "transportingInjuredCaravan".Translate();
+                return "FCTransportingInjuredCaravan".Translate();
             }
         }
 
@@ -471,11 +471,11 @@ namespace FactionColonies.util
                 {
                     if (ModsConfig.RoyaltyActive)
                     {
-                        return "transportingInjuredShuttleLost".Translate();
+                        return "FCTransportingInjuredShuttleLost".Translate();
                     }
-                    return "transportingInjuredDropPodLost".Translate();
+                    return "FCTransportingInjuredDropPodLost".Translate();
                 }
-                return "transportingInjuredCaravanLost".Translate();
+                return "FCTransportingInjuredCaravanLost".Translate();
             }
         }
 

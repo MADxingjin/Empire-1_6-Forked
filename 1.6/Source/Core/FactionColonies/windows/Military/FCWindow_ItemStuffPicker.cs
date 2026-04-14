@@ -133,7 +133,7 @@ namespace FactionColonies
             Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
             Widgets.DrawHighlight(titleBox);
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Item".Translate());
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "FCItem".Translate());
             float sortBtnW = 120f;
             Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
             if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[itemSortIndex].Translate())))
@@ -252,7 +252,7 @@ namespace FactionColonies
             Rect titleBox = new Rect(panelRect.x, panelRect.y, panelRect.width, SearchBarHeight);
             Widgets.DrawHighlight(titleBox);
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "Stuff".Translate());
+            Widgets.Label(new Rect(titleBox.x + margin, titleBox.y, 60f, titleBox.height), "FCStuff".Translate());
             float sortBtnW = 120f;
             Rect sortBtn = new Rect(titleBox.xMax - margin - 75f - margin - sortBtnW, titleBox.y + 2, sortBtnW, titleBox.height - 4);
             if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[stuffSortIndex].Translate())))
@@ -367,7 +367,7 @@ namespace FactionColonies
             if (onUnequip != null)
             {
                 Rect unequipRect = new Rect(bar.x, bar.y, buttonWidth, bar.height);
-                if (Widgets.ButtonText(unequipRect, "unitActionUnequipThing".Translate()))
+                if (Widgets.ButtonText(unequipRect, "FCUnitActionUnequipThing".Translate()))
                 {
                     onUnequip();
                     Close();

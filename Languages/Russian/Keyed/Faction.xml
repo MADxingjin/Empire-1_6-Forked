@@ -20,53 +20,53 @@
   <fcColorPickerSaved>Сохраненные цвета</fcColorPickerSaved>
   <fcColorPickerSaveCurrent>Сохранить текущий</fcColorPickerSaveCurrent>
   <fcColorPickerRightClickRemove>ПКМ, чтобы удалить</fcColorPickerRightClickRemove>
-  <CustomizeFaction>Настроить фракцию</CustomizeFaction>
-  <FactionName>Название фракции</FactionName>
-  <FactionTitle>Титул фракции</FactionTitle>
-  <FactionIcon>Иконка фракции</FactionIcon>
-  <InvalidFaction>Эта фракция не может управлять империей самостоятельно!</InvalidFaction>
-  <PlayerFaction>Фракция игрока</PlayerFaction>
-  <Bastion>Оплот</Bastion>
+  <FCCustomizeFaction>Настроить фракцию</FCCustomizeFaction>
+  <FCFactionName>Название фракции</FCFactionName>
+  <FCFactionTitle>Титул фракции</FCFactionTitle>
+  <FCFactionIcon>Иконка фракции</FCFactionIcon>
+  <FCInvalidFaction>Эта фракция не может управлять империей самостоятельно!</FCInvalidFaction>
+  <FCPlayerFaction>Фракция игрока</FCPlayerFaction>
+  <FCBastion>Оплот</FCBastion>
   <FCFoundedOn>Основана {0}</FCFoundedOn>
 
   <!-- Статистика фракции -->
-  <FactionHappiness>Счастье фракции</FactionHappiness>
-  <FactionLoyalty>Лояльность фракции</FactionLoyalty>
-  <FactionUnrest>Нестабильность фракции</FactionUnrest>
-  <FactionProsperity>Процветание фракции</FactionProsperity>
-  <FactionHappinessDesc>Показатель общего счастья фракции. Высокое счастье означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</FactionHappinessDesc>
-  <FactionLoyaltyDesc>Показатель общей лояльности фракции. Лояльность поселения определяет, насколько охотно оно будет вас слушаться. Высокая лояльность снижает шанс отделения.</FactionLoyaltyDesc>
-  <FactionUnrestDesc>Показатель общей нестабильности фракции. Чем выше нестабильность, тем вероятнее возникновение опасных событий внутри вашей фракции. Если она станет слишком высокой, может вспыхнуть мятеж по всей фракции.</FactionUnrestDesc>
-  <FactionProsperityDesc>Показатель общего процветания фракции. Процветание города напрямую связано с производством ресурсов. 50% процветания = 50% производства. Если процветание повреждено, оно будет медленно восстанавливаться со временем.</FactionProsperityDesc>
+  <FCFactionHappiness>Счастье фракции</FCFactionHappiness>
+  <FCFactionLoyalty>Лояльность фракции</FCFactionLoyalty>
+  <FCFactionUnrest>Нестабильность фракции</FCFactionUnrest>
+  <FCFactionProsperity>Процветание фракции</FCFactionProsperity>
+  <FCFactionHappinessDesc>Показатель общего счастья фракции. Высокое счастье означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</FCFactionHappinessDesc>
+  <FCFactionLoyaltyDesc>Показатель общей лояльности фракции. Лояльность поселения определяет, насколько охотно оно будет вас слушаться. Высокая лояльность снижает шанс отделения.</FCFactionLoyaltyDesc>
+  <FCFactionUnrestDesc>Показатель общей нестабильности фракции. Чем выше нестабильность, тем вероятнее возникновение опасных событий внутри вашей фракции. Если она станет слишком высокой, может вспыхнуть мятеж по всей фракции.</FCFactionUnrestDesc>
+  <FCFactionProsperityDesc>Показатель общего процветания фракции. Процветание города напрямую связано с производством ресурсов. 50% процветания = 50% производства. Если процветание повреждено, оно будет медленно восстанавливаться со временем.</FCFactionProsperityDesc>
 
   <!-- Уровни фракции -->
   <FCLevel>Уровень фракции: {0}</FCLevel>
   <FCFactionLevelUp>Повышение уровня фракции</FCFactionLevelUp>
   <FCFactionLevelUpDesc>Ваша фракция {0} повысила уровень до {1}!</FCFactionLevelUpDesc>
-  <ReachedMaxLevel>достигнут максимальный уровень</ReachedMaxLevel>
+  <FCReachedMaxLevel>достигнут максимальный уровень</FCReachedMaxLevel>
 
   <!-- Политики -->
-  <Policies-Traits>Политики/Черты</Policies-Traits>
-  <FactionPoliciesAndTraits>Политики и черты фракции</FactionPoliciesAndTraits>
-  <TaxLaw>Налоговое право</TaxLaw>
-  <SocialPolicy>Социальная политика</SocialPolicy>
-  <MilitaryPolicy>Военная политика</MilitaryPolicy>
+  <FCPolicies-Traits>Политики/Черты</FCPolicies-Traits>
+  <FCFactionPoliciesAndTraits>Политики и черты фракции</FCFactionPoliciesAndTraits>
+  <FCTaxLaw>Налоговое право</FCTaxLaw>
+  <FCSocialPolicy>Социальная политика</FCSocialPolicy>
+  <FCMilitaryPolicy>Военная политика</FCMilitaryPolicy>
   <FCPolicySelection>Выбор политики</FCPolicySelection>
   <FCSelectPolicies>Выбрать политики</FCSelectPolicies>
-  <PolicyAlreadyEnacted>Эта политика уже введена</PolicyAlreadyEnacted>
-  <AlreadyPolicyTypeBeingEnacted>Политика такого типа уже вводится</AlreadyPolicyTypeBeingEnacted>
-  <AlreadyPolicyInSlot>В этом слоте уже вводится политика</AlreadyPolicyInSlot>
-  <Enact>Ввести</Enact>
-  <Enacted>Введена</Enacted>
-  <Repeal>Отменить</Repeal>
-  <WillBeEnactedIn>будет введена через</WillBeEnactedIn>
-  <EnactPolicy>Ввести политику</EnactPolicy>
-  <HasBeenEnactedAt>была введена в</HasBeenEnactedAt>
-  <EnactedInYourFaction>была введена в вашей фракции</EnactedInYourFaction>
+  <FCPolicyAlreadyEnacted>Эта политика уже введена</FCPolicyAlreadyEnacted>
+  <FCAlreadyPolicyTypeBeingEnacted>Политика такого типа уже вводится</FCAlreadyPolicyTypeBeingEnacted>
+  <FCAlreadyPolicyInSlot>В этом слоте уже вводится политика</FCAlreadyPolicyInSlot>
+  <FCEnact>Ввести</FCEnact>
+  <FCEnacted>Введена</FCEnacted>
+  <FCRepeal>Отменить</FCRepeal>
+  <FCWillBeEnactedIn>будет введена через</FCWillBeEnactedIn>
+  <FCEnactPolicy>Ввести политику</FCEnactPolicy>
+  <FCHasBeenEnactedAt>была введена в</FCHasBeenEnactedAt>
+  <FCEnactedInYourFaction>была введена в вашей фракции</FCEnactedInYourFaction>
 
   <!-- Черты -->
-  <FactionTraits>Черты фракции</FactionTraits>
-  <AddTrait>Добавить черту</AddTrait>
+  <FCFactionTraits>Черты фракции</FCFactionTraits>
+  <FCAddTrait>Добавить черту</FCAddTrait>
   <FCTraitSelection>Выбор черты</FCTraitSelection>
   <FCSelectTraits>Выбрать черты</FCSelectTraits>
   <FCTraitSlots>Слоты черт</FCTraitSlots>
@@ -120,17 +120,17 @@
   <FCPolicyRequires>Требуется: {0}</FCPolicyRequires>
 
   <!-- Исследования -->
-  <Researching>Исследование</Researching>
-  <ResearchExpended>{0} очков исследований было использовано для изучения {1}. У вас осталось {2} очков.</ResearchExpended>
-  <ResearchPointsExpended>Использовано очков исследований</ResearchPointsExpended>
-  <NoResearchExpended>Сегодня не было использовано исследований. У вас осталось {0} очков.</NoResearchExpended>
-  <PointsAddedToResearchPool>{0} очков добавлено в пул исследований!</PointsAddedToResearchPool>
-  <ResearchGeneratedWaste>Очки исследований, сгенерированные вашей фракцией, были потрачены впустую, так как у вас не выбрано исследование</ResearchGeneratedWaste>
-  <ActivateResearch>Активировать исследование</ActivateResearch>
+  <FCResearching>Исследование</FCResearching>
+  <FCResearchExpended>{0} очков исследований было использовано для изучения {1}. У вас осталось {2} очков.</FCResearchExpended>
+  <FCResearchPointsExpended>Использовано очков исследований</FCResearchPointsExpended>
+  <FCNoResearchExpended>Сегодня не было использовано исследований. У вас осталось {0} очков.</FCNoResearchExpended>
+  <FCPointsAddedToResearchPool>{0} очков добавлено в пул исследований!</FCPointsAddedToResearchPool>
+  <FCResearchGeneratedWaste>Очки исследований, сгенерированные вашей фракцией, были потрачены впустую, так как у вас не выбрано исследование</FCResearchGeneratedWaste>
+  <FCActivateResearch>Активировать исследование</FCActivateResearch>
   <FCSendResearchItems>Отправить предметы для исследований</FCSendResearchItems>
   <FCFactionResearch>Исследования фракции</FCFactionResearch>
-  <ResearchLevel>Проверить технологический уровень</ResearchLevel>
-  <CurrentResearchLevel>Ваш текущий технологический уровень - {0}. Чтобы достичь следующего уровня, вам нужно исследовать {1}</CurrentResearchLevel>
+  <FCResearchLevel>Проверить технологический уровень</FCResearchLevel>
+  <FCCurrentResearchLevel>Ваш текущий технологический уровень - {0}. Чтобы достичь следующего уровня, вам нужно исследовать {1}</FCCurrentResearchLevel>
   <FCShipBasics>Основы кораблестроения</FCShipBasics>
   <FCFabrication>Производство</FCFabrication>
   <FCElectricity>Электричество</FCElectricity>
@@ -141,12 +141,12 @@
   <FCRelationImprovedText>Ваше общение с {0} привело к улучшению отношений на {1}!</FCRelationImprovedText>
   <FCRelationNotImproved>Провал переговоров</FCRelationNotImproved>
   <FCFailedToImproveRelationship>Ваше общение с {0} не смогло улучшить отношения.</FCFailedToImproveRelationship>
-  <XDaysToSendDiplomat>{0} дней осталось до обновления возможности улучшать отношения</XDaysToSendDiplomat>
+  <FCXDaysToSendDiplomat>{0} дней осталось до обновления возможности улучшать отношения</FCXDaysToSendDiplomat>
   <FCIncreaseRelations>Попытаться улучшить отношения</FCIncreaseRelations>
   <FCCannotImproveRelationsWithType>Вы не можете улучшать отношения с фракциями этого типа</FCCannotImproveRelationsWithType>
 
   <!-- Столица -->
-  <CouldNotFindMapOfCapital>Не удалось найти карту столицы</CouldNotFindMapOfCapital>
+  <FCCouldNotFindMapOfCapital>Не удалось найти карту столицы</FCCouldNotFindMapOfCapital>
   <FCCapitalAlreadyEstablished>Столица империи уже установлена в {0}. Сначала отключите там место столицы, если хотите ее переместить.</FCCapitalAlreadyEstablished>
   <FCUnableToSetCapitalHere>Невозможно установить столицу фракции на этой карте. Пожалуйста, перейдите на карту столицы и используйте кнопку «Установить столицу» или постройте Место столицы.</FCUnableToSetCapitalHere>
 

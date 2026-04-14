@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><AttackSettlementfc>Attaquer la colonie</AttackSettlementfc>
+<LanguageData><FCAttackSettlement>Attaquer la colonie</FCAttackSettlement>
 	
-  <CaptureSettlementfc>Capturer la colonie</CaptureSettlementfc>
+  <FCCaptureSettlement>Capturer la colonie</FCCaptureSettlement>
 	
-  <CaptureSettlement>Capturer la colonie</CaptureSettlement>
+  <FCEnslavePopulation>Asservir la population</FCEnslavePopulation>
 	
-  <EnslavePopulation>Asservir la population</EnslavePopulation>
-	
-  <RaidSettlement>Piller la colonie</RaidSettlement>
+  <FCRaidSettlement>Piller la colonie</FCRaidSettlement>
 	
   <FCCaptureFloatMenuOption>Tenter de capturer avec les forces militaires de {0} (niveau {1}).</FCCaptureFloatMenuOption>
 	
@@ -17,34 +15,34 @@
 
 	
 	
-  <settlementAboutToBeAttacked>{0} va bientôt être attaquée par la faction {1}</settlementAboutToBeAttacked>
+  <FCSettlementAboutToBeAttacked>{0} va bientôt être attaquée par la faction {1}</FCSettlementAboutToBeAttacked>
 	
   <settlementAttackEstimate>Puissance ennemie estimée : {0}
 Puissance de défense actuelle : {1}</settlementAttackEstimate>
 	
-  <settlementInDanger>Colonie en danger</settlementInDanger>
+  <FCSettlementInDanger>Colonie en danger</FCSettlementInDanger>
 	
-  <settlementMilitaryForcesRaiding>Les forces militaires de {0} pillent {1}</settlementMilitaryForcesRaiding>
+  <FCSettlementMilitaryForcesRaiding>Les forces militaires de {0} pillent {1}</FCSettlementMilitaryForcesRaiding>
 	
-  <settlementMilitaryForcesEnslave>Les forces militaires de {0} tentent d'asservir la population de {1}</settlementMilitaryForcesEnslave>
+  <FCSettlementMilitaryForcesEnslave>Les forces militaires de {0} tentent d'asservir la population de {1}</FCSettlementMilitaryForcesEnslave>
 	
-  <settlementMilitaryForcesCapturing>Les forces militaires de {0} tentent de capturer {1}</settlementMilitaryForcesCapturing>
+  <FCSettlementMilitaryForcesCapturing>Les forces militaires de {0} tentent de capturer {1}</FCSettlementMilitaryForcesCapturing>
 	
-  <SettlementUnderAttack>Cette colonie est attaquée</SettlementUnderAttack>
+  <FCSettlementUnderAttack>Cette colonie est attaquée</FCSettlementUnderAttack>
 	
-  <SettlementNotBeingAttacked>Cette colonie n'est pas attaquée</SettlementNotBeingAttacked>
+  <FCSettlementNotBeingAttacked>Cette colonie n'est pas attaquée</FCSettlementNotBeingAttacked>
 	
-  <targetAlreadyBeingAttacked>La cible est déjà attaquée</targetAlreadyBeingAttacked>
+  <FCTargetAlreadyBeingAttacked>La cible est déjà attaquée</FCTargetAlreadyBeingAttacked>
 
 	
 	
-  <militarySent>Forces envoyées</militarySent>
+  <FCMilitarySent>Forces envoyées</FCMilitarySent>
 	
-  <militarySentToDefend>Les forces militaires de {0} ont été envoyées pour défendre {1}</militarySentToDefend>
+  <FCMilitarySentToDefend>Les forces militaires de {0} ont été envoyées pour défendre {1}</FCMilitarySentToDefend>
 	
-  <militaryAlreadyAssigned>La force militaire est déjà assignée.</militaryAlreadyAssigned>
+  <FCMilitaryAlreadyAssigned>La force militaire est déjà assignée.</FCMilitaryAlreadyAssigned>
 	
-  <ForeignMilitarySwitch>Les forces militaires de {0} ont été envoyées pour défendre {1}. Leur puissance effective est de {2}</ForeignMilitarySwitch>
+  <FCForeignMilitarySwitch>Les forces militaires de {0} ont été envoyées pour défendre {1}. Leur puissance effective est de {2}</FCForeignMilitarySwitch>
 	
   <FCMilitarySentCapture>Les forces militaires de {0} ont été envoyées pour capturer {1}</FCMilitarySentCapture>
 	
@@ -52,149 +50,149 @@ Puissance de défense actuelle : {1}</settlementAttackEstimate>
 	
   <FCMilitarySentEnslave>Les forces militaires de {0} ont été envoyées pour asservir la population de {1}</FCMilitarySentEnslave>
 	
-  <MilitaryForcesReorganizing>Les forces militaires de {0} se réorganisent après leur dernière mission.</MilitaryForcesReorganizing>
+  <FCMilitaryForcesReorganizing>Les forces militaires de {0} se réorganisent après leur dernière mission.</FCMilitaryForcesReorganizing>
 	
   <FCMilitaryCooldown>Les forces militaires de {0} sont de nouveau prêtes à être utilisées</FCMilitaryCooldown>
 	
-  <NoFactionForMilitary>Impossible de créer une force militaire sans faction !</NoFactionForMilitary>
+  <FCNoFactionForMilitary>Impossible de créer une force militaire sans faction !</FCNoFactionForMilitary>
 
 	
 	
-  <RaidLoot>Butin du raid</RaidLoot>
+  <FCRaidLoot>Butin du raid</FCRaidLoot>
 	
-  <RaidEnemySettlementSuccess>Le raid sur {0} s'est terminé avec succès</RaidEnemySettlementSuccess>
+  <FCRaidEnemySettlementSuccess>Le raid sur {0} s'est terminé avec succès</FCRaidEnemySettlementSuccess>
 	
-  <RaidFailure>Échec du raid</RaidFailure>
+  <FCRaidFailure>Échec du raid</FCRaidFailure>
 	
-  <RaidEnemySettlementFailure>Le raid sur {0} s'est soldé par un échec</RaidEnemySettlementFailure>
+  <FCRaidEnemySettlementFailure>Le raid sur {0} s'est soldé par un échec</FCRaidEnemySettlementFailure>
 	
-  <CaptureEnemySettlementSuccess>Les forces militaires de {0} ont capturé {1} avec succès. En raison du niveau technologique de la faction précédente, le niveau initial de la nouvelle colonie est {2}.</CaptureEnemySettlementSuccess>
+  <FCCaptureEnemySettlementSuccess>Les forces militaires de {0} ont capturé {1} avec succès. En raison du niveau technologique de la faction précédente, le niveau initial de la nouvelle colonie est {2}.</FCCaptureEnemySettlementSuccess>
 	
-  <CaptureEnemySettlementFailure>Les forces militaires de {0} n'ont pas réussi à capturer {1}</CaptureEnemySettlementFailure>
+  <FCCaptureEnemySettlementFailure>Les forces militaires de {0} n'ont pas réussi à capturer {1}</FCCaptureEnemySettlementFailure>
 	
-  <OverwhelmingVictory>Victoire écrasante</OverwhelmingVictory>
+  <FCOverwhelmingVictory>Victoire écrasante</FCOverwhelmingVictory>
 	
-  <OverwhelmingVictoryDesc>Grâce à la victoire écrasante de votre force militaire, elle reste disponible pour un nouveau déploiement.</OverwhelmingVictoryDesc>
+  <FCOverwhelmingVictoryDesc>Grâce à la victoire écrasante de votre force militaire, elle reste disponible pour un nouveau déploiement.</FCOverwhelmingVictoryDesc>
 
 	
 	
-  <DefenseSuccessful>Défense réussie</DefenseSuccessful>
+  <FCDefenseSuccessful>Défense réussie</FCDefenseSuccessful>
 	
-  <DefenseSuccessfulFull>La défense de {0} a réussi !</DefenseSuccessfulFull>
+  <FCDefenseSuccessfulFull>La défense de {0} a réussi !</FCDefenseSuccessfulFull>
 	
-  <DefenseFailure>Échec de la défense</DefenseFailure>
+  <FCDefenseFailure>Échec de la défense</FCDefenseFailure>
 	
-  <DefenseFailureFull>La défense de notre colonie, {0}, a été écrasée.</DefenseFailureFull>
+  <FCDefenseFailureFull>La défense de notre colonie, {0}, a été écrasée.</FCDefenseFailureFull>
 	
-  <ManualBattleStarted>Bataille pour {0}</ManualBattleStarted>
+  <FCManualBattleStarted>Bataille pour {0}</FCManualBattleStarted>
 	
-  <ManualBattleStartedDesc>{0} est attaquée par {1} ! Prenez le commandement des défenses de la colonie.</ManualBattleStartedDesc>
+  <FCManualBattleStartedDesc>{0} est attaquée par {1} ! Prenez le commandement des défenses de la colonie.</FCManualBattleStartedDesc>
 	
-  <DefendColony>Défendre</DefendColony>
+  <FCDefendColony>Défendre</FCDefendColony>
 	
-  <DefendColonyDesc>Défendre votre colonie manuellement</DefendColonyDesc>
+  <FCDefendColonyDesc>Défendre votre colonie manuellement</FCDefendColonyDesc>
 	
-  <DefendSettlement>Définir la force de défense</DefendSettlement>
+  <FCDefendSettlement>Définir la force de défense</FCDefendSettlement>
 	
-  <SettlementDefendingInformation>Défense de la colonie : {0} - Puissance {1}</SettlementDefendingInformation>
+  <FCSettlementDefendingInformation>Défense de la colonie : {0} - Puissance {1}</FCSettlementDefendingInformation>
 	
-  <ResetToHomeSettlement>Réinitialiser sur la défense de la colonie d'origine - Puissance {0}</ResetToHomeSettlement>
+  <FCResetToHomeSettlement>Réinitialiser sur la défense de la colonie d'origine - Puissance {0}</FCResetToHomeSettlement>
 	
-  <ChangeDefendingForce>Changer la force de défense</ChangeDefendingForce>
+  <FCChangeDefendingForce>Changer la force de défense</FCChangeDefendingForce>
 	
-  <militaryAlreadyDefendingSettlement>Cette force militaire défend déjà la cible</militaryAlreadyDefendingSettlement>
+  <FCMilitaryAlreadyDefendingSettlement>Cette force militaire défend déjà la cible</FCMilitaryAlreadyDefendingSettlement>
 	
-  <defendingMilitaryReset>La force militaire de défense a été rétablie comme force de défense de la colonie</defendingMilitaryReset>
+  <FCDefendingMilitaryReset>La force militaire de défense a été rétablie comme force de défense de la colonie</FCDefendingMilitaryReset>
 	
-  <externalDefenderAssigned>{0} défend désormais cette colonie.</externalDefenderAssigned>
+  <FCExternalDefenderAssigned>{0} défend désormais cette colonie.</FCExternalDefenderAssigned>
 	
-  <externalDefenderAutoAssigned>{0} a été automatiquement assignée à la défense.</externalDefenderAutoAssigned>
+  <FCExternalDefenderAutoAssigned>{0} a été automatiquement assignée à la défense.</FCExternalDefenderAutoAssigned>
 	
-  <ToggleAutoDefend>Défense automatique des colonies attaquées : {0}</ToggleAutoDefend>
+  <FCToggleAutoDefend>Défense automatique des colonies attaquées : {0}</FCToggleAutoDefend>
 	
-  <autoDefendWarning>Gardez à l'esprit que ce réglage n'est pas le même que celui de résolution automatique des combats dans le menu des paramètres !</autoDefendWarning>
+  <FCAutoDefendWarning>Gardez à l'esprit que ce réglage n'est pas le même que celui de résolution automatique des combats dans le menu des paramètres !</FCAutoDefendWarning>
 	
-  <autoBattleEnabledNoManualFight>Le mode résolution auto est activé. Passez en Manuel ou Hybride dans les paramètres pour combattre manuellement.</autoBattleEnabledNoManualFight>
+  <FCAutoBattleEnabledNoManualFight>Le mode résolution auto est activé. Passez en Manuel ou Hybride dans les paramètres pour combattre manuellement.</FCAutoBattleEnabledNoManualFight>
 	
-  <hybridBattleEnabledNoManualFight>Le mode de combat hybride est activé. Envoyez une caravane pour défendre cette colonie manuellement.</hybridBattleEnabledNoManualFight>
+  <FCHybridBattleEnabledNoManualFight>Le mode de combat hybride est activé. Envoyez une caravane pour défendre cette colonie manuellement.</FCHybridBattleEnabledNoManualFight>
 	
-  <settlementAttackHybridHint>Envoyez une caravane vers cette colonie avant l'attaque pour combattre manuellement.</settlementAttackHybridHint>
+  <FCSettlementAttackHybridHint>Envoyez une caravane vers cette colonie avant l'attaque pour combattre manuellement.</FCSettlementAttackHybridHint>
 
 	
 	
-  <DefenseFailurePenaltiesHeader>Pénalités subies :</DefenseFailurePenaltiesHeader>
+  <FCDefenseFailurePenaltiesHeader>Pénalités subies :</FCDefenseFailurePenaltiesHeader>
 	
-  <DefenseFailureProsperityLoss>Prospérité : -{0}</DefenseFailureProsperityLoss>
+  <FCDefenseFailureProsperityLoss>Prospérité : -{0}</FCDefenseFailureProsperityLoss>
 	
-  <DefenseFailureHappinessLoss>Bonheur : -{0}</DefenseFailureHappinessLoss>
+  <FCDefenseFailureHappinessLoss>Bonheur : -{0}</FCDefenseFailureHappinessLoss>
 	
-  <DefenseFailureLoyaltyLoss>Loyauté : -{0}</DefenseFailureLoyaltyLoss>
+  <FCDefenseFailureLoyaltyLoss>Loyauté : -{0}</FCDefenseFailureLoyaltyLoss>
 	
-  <DefenseFailureBuildingsProtected>Les bâtiments ont été protégés de la destruction par vos politiques.</DefenseFailureBuildingsProtected>
+  <FCDefenseFailureBuildingsProtected>Les bâtiments ont été protégés de la destruction par vos politiques.</FCDefenseFailureBuildingsProtected>
 	
-  <BuildingDestroyedInRaid>{0} a été détruit lors du raid.</BuildingDestroyedInRaid>
+  <FCBuildingDestroyedInRaid>{0} a été détruit lors du raid.</FCBuildingDestroyedInRaid>
 	
-  <SettlementDeleveledRaid>Le niveau de la colonie a diminué d'un point.</SettlementDeleveledRaid>
+  <FCSettlementDeleveledRaid>Le niveau de la colonie a diminué d'un point.</FCSettlementDeleveledRaid>
 	
-  <InjuredCaravanMembersReturning>{0} membre(s) blessé(s) de la caravane sont transportés vers la maison. Arrivée estimée : {1} jours.</InjuredCaravanMembersReturning>
+  <FCInjuredCaravanMembersReturning>{0} membre(s) blessé(s) de la caravane sont transportés vers la maison. Arrivée estimée : {1} jours.</FCInjuredCaravanMembersReturning>
 
 	
 	
-  <EndingAttack>Fin de l'attaque...</EndingAttack>
+  <FCEndingAttack>Fin de l'attaque...</FCEndingAttack>
 	
-  <ErrorEndingAttack>Erreur lors de la fin de l'attaque</ErrorEndingAttack>
+  <FCErrorEndingAttack>Erreur lors de la fin de l'attaque</FCErrorEndingAttack>
 	
-  <ErrorEndingAttackDescription>Un problème est survenu lors de la fin de l'attaque. Il est probable que la carte ne se soit pas supprimée correctement. Signalez-le si vos colons envoyés défendre ne reviennent pas, ou si votre force militaire ne sort jamais de sa recharge.</ErrorEndingAttackDescription>
+  <FCErrorEndingAttackDescription>Un problème est survenu lors de la fin de l'attaque. Il est probable que la carte ne se soit pas supprimée correctement. Signalez-le si vos colons envoyés défendre ne reviennent pas, ou si votre force militaire ne sort jamais de sa recharge.</FCErrorEndingAttackDescription>
 
 	
 	
-  <SendToSettlement>Envoyer vers la colonie</SendToSettlement>
+  <FCSendToSettlement>Envoyer vers la colonie</FCSendToSettlement>
 	
-  <NotEnoughSilverToDeploySquad>Vous n'avez pas assez d'argent pour redéployer cette escouade !</NotEnoughSilverToDeploySquad>
+  <FCNotEnoughSilverToDeploySquad>Vous n'avez pas assez d'argent pour redéployer cette escouade !</FCNotEnoughSilverToDeploySquad>
 	
-  <XDaysToRedeploy>Il reste {0} jours avant que la capacité à redéployer les escouades soit réinitialisée</XDaysToRedeploy>
+  <FCXDaysToRedeploy>Il reste {0} jours avant que la capacité à redéployer les escouades soit réinitialisée</FCXDaysToRedeploy>
 	
-  <dropPodDeploymentOption>Capsule de largage</dropPodDeploymentOption>
+  <FCDropPodDeploymentOption>Capsule de largage</FCDropPodDeploymentOption>
 	
-  <walkIntoMapDeploymentOption>Entrer sur la carte à pied</walkIntoMapDeploymentOption>
+  <FCWalkIntoMapDeploymentOption>Entrer sur la carte à pied</FCWalkIntoMapDeploymentOption>
 	
-  <dropPodDeploymentOptionUnavailableReasonMedieval>désactivé car « Technologie médiévale uniquement » est activé</dropPodDeploymentOptionUnavailableReasonMedieval>
+  <FCDropPodDeploymentOptionUnavailableReasonMedieval>désactivé car « Technologie médiévale uniquement » est activé</FCDropPodDeploymentOptionUnavailableReasonMedieval>
 	
-  <dropPodDeploymentOptionUnavailableReasonTech>indisponible sans la recherche {0}</dropPodDeploymentOptionUnavailableReasonTech>
+  <FCDropPodDeploymentOptionUnavailableReasonTech>indisponible sans la recherche {0}</FCDropPodDeploymentOptionUnavailableReasonTech>
 	
-  <errorDropPodResearchCouldNotBeFound>La recherche sur les capsules de largage est introuvable. Utilisez-vous une liste de mods qui la supprime ?</errorDropPodResearchCouldNotBeFound>
+  <FCErrorDropPodResearchCouldNotBeFound>La recherche sur les capsules de largage est introuvable. Utilisez-vous une liste de mods qui la supprime ?</FCErrorDropPodResearchCouldNotBeFound>
 	
   <FCMilitaryTriedDeployingToSettlementFC>Vous ne pouvez pas déployer votre armée vers une autre colonie !</FCMilitaryTriedDeployingToSettlementFC>
 	
   <FCMilitaryAction>Action militaire</FCMilitaryAction>
 	
-  <selectMilitaryMovePosition>Sélectionner la position de déplacement</selectMilitaryMovePosition>
+  <FCSelectMilitaryMovePosition>Sélectionner la position de déplacement</FCSelectMilitaryMovePosition>
 	
-  <selectDeploymentPosition>Sélectionner la position de déploiement</selectDeploymentPosition>
+  <FCSelectDeploymentPosition>Sélectionner la position de déploiement</FCSelectDeploymentPosition>
 	
-  <selectedPosOutOfBounds>La position sélectionnée est hors des limites de cette carte !</selectedPosOutOfBounds>
+  <FCSelectedPosOutOfBounds>La position sélectionnée est hors des limites de cette carte !</FCSelectedPosOutOfBounds>
 	
-  <selectedPosTooCloseToEdge>La position sélectionnée est trop proche du bord de la carte !</selectedPosTooCloseToEdge>
+  <FCSelectedPosTooCloseToEdge>La position sélectionnée est trop proche du bord de la carte !</FCSelectedPosTooCloseToEdge>
 	
-  <deploymentSuccessLabel>Forces déployées</deploymentSuccessLabel>
+  <FCDeploymentSuccessLabel>Forces déployées</FCDeploymentSuccessLabel>
 	
-  <deploymentSuccessDesc>Les forces militaires de {0} ont été déployées à {1}</deploymentSuccessDesc>
+  <FCDeploymentSuccessDesc>Les forces militaires de {0} ont été déployées à {1}</FCDeploymentSuccessDesc>
 	
-  <militaryPawnsLeavingTimeOut>Une escouade quitte la carte, car son temps de disponibilité est écoulé !</militaryPawnsLeavingTimeOut>
+  <FCMilitaryPawnsLeavingTimeOut>Une escouade quitte la carte, car son temps de disponibilité est écoulé !</FCMilitaryPawnsLeavingTimeOut>
 
 	
 	
-  <commandAttack>Attaquer</commandAttack>
+  <FCCommandAttack>Attaquer</FCCommandAttack>
 	
-  <attackSuccess>{0} chargent désormais l'ennemi.</attackSuccess>
+  <FCAttackSuccess>{0} chargent désormais l'ennemi.</FCAttackSuccess>
 	
-  <commandMove>Déplacer</commandMove>
+  <FCCommandMove>Déplacer</FCCommandMove>
 	
-  <moveSuccess>{0} se déplacent vers la position et se tiennent prêts.</moveSuccess>
+  <FCMoveSuccess>{0} se déplacent vers la position et se tiennent prêts.</FCMoveSuccess>
 	
-  <commandLeave>Quitter</commandLeave>
+  <FCCommandLeave>Quitter</FCCommandLeave>
 	
-  <leaveSuccess>{0} quittent désormais la carte. {1} morts.</leaveSuccess>
+  <FCLeaveSuccess>{0} quittent désormais la carte. {1} morts.</FCLeaveSuccess>
 
 	
 	
@@ -222,9 +220,9 @@ Puissance de défense actuelle : {1}</settlementAttackEstimate>
 
 	
 	
-  <Military>Militaire</Military>
+  <FCMilitary>Militaire</FCMilitary>
 	
-  <MilitaryLevel>Niveau militaire</MilitaryLevel>
+  <FCMilitaryLevel>Niveau militaire</FCMilitaryLevel>
 	
   <FCMilitaryTableMilitaryBudget>Budget militaire</FCMilitaryTableMilitaryBudget>
 	
@@ -234,21 +232,19 @@ Puissance de défense actuelle : {1}</settlementAttackEstimate>
 	
   <FCMilitaryTableFireSupport>Soutien de feu</FCMilitaryTableFireSupport>
 	
-  <NoValidMilitaries>Aucune force militaire valide à utiliser.</NoValidMilitaries>
+  <FCNoValidMilitaries>Aucune force militaire valide à utiliser.</FCNoValidMilitaries>
 	
   <FCAvailable>Disponible</FCAvailable>
 	
-  <ShortMilitary>Mil.</ShortMilitary>
+  <FCShortMilitary>Mil.</FCShortMilitary>
 	
   <FCPower>Puissance</FCPower>
 	
-  <MedievalTechOnly>Technologie médiévale uniquement</MedievalTechOnly>
-	
-  <FCMilitaryLevel>niveauMilitaire</FCMilitaryLevel>
-	
+  <FCMedievalTechOnly>Technologie médiévale uniquement</FCMedievalTechOnly>
+
   <FCUnsupportedMilJobError>La tâche choisie pour cette option de menu flottant n'a aucune clé de traduction enregistrée dans AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
 	
-  <debugRemoveAllCommand>[Debug] Tout supprimer</debugRemoveAllCommand>
+  <FCDebugRemoveAllCommand>[Debug] Tout supprimer</FCDebugRemoveAllCommand>
 
 	
 	

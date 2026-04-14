@@ -16,7 +16,7 @@ namespace FactionColonies
             double researchPoints = profit * Ext<FCPolicyBehaviorExt_Innovative>().profitToResearchRate;
             pool.pool += researchPoints;
 
-            Messages.Message("InnovativeMessage".Translate(settlement.Name, Math.Round(researchPoints)), MessageTypeDefOf.PositiveEvent);
+            Messages.Message("FCInnovativeMessage".Translate(settlement.Name, Math.Round(researchPoints)), MessageTypeDefOf.PositiveEvent);
         }
     }
 }

@@ -118,7 +118,7 @@ namespace FactionColonies
         protected override void OnDelete(string name)
         {
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "ConfirmDelete".Translate((NamedArgument)name), () =>
+                "FCConfirmDelete".Translate((NamedArgument)name), () =>
             {
                 FactionColoniesMilitary.RemoveSquad(name);
                 this.squads.RemoveAll(squads => squads.name == name);
@@ -183,7 +183,7 @@ namespace FactionColonies
         protected override void OnDelete(string name)
         {
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "ConfirmDelete".Translate((NamedArgument)name), () =>
+                "FCConfirmDelete".Translate((NamedArgument)name), () =>
             {
                 FactionColoniesMilitary.RemoveUnit(name);
                 this.units.RemoveAll(unit => unit.name == name);
@@ -246,7 +246,7 @@ namespace FactionColonies
         protected override void OnDelete(string name)
         {
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "ConfirmDelete".Translate((NamedArgument)name), () =>
+                "FCConfirmDelete".Translate((NamedArgument)name), () =>
             {
                 FactionColoniesMilitary.RemoveFireSupport(name);
                 this.fireSupports.RemoveAll(f => f.name == name);

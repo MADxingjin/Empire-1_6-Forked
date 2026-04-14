@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><NotEnoughSilverForBill>Vous n'aviez pas assez d'argent pour payer une facture impayée provenant de</NotEnoughSilverForBill>
+<LanguageData><FCNotEnoughSilverForBill>Vous n'aviez pas assez d'argent pour payer une facture impayée provenant de</FCNotEnoughSilverForBill>
 	
-  <ConfiscatedTithes>Ils ont confisqué vos dîmes en retour</ConfiscatedTithes>
+  <FCConfiscatedTithes>Ils ont confisqué vos dîmes en retour</FCConfiscatedTithes>
 	
-  <OutstandingBills>Factures en attente</OutstandingBills>
+  <FCOutstandingBills>Factures en attente</FCOutstandingBills>
 	
-  <DueDate>Date d'échéance</DueDate>
+  <FCDueDate>Date d'échéance</FCDueDate>
 	
-  <Amount>Montant</Amount>
+  <FCAmount>Montant</FCAmount>
 	
-  <HasTithe>A une dîme</HasTithe>
+  <FCHasTithe>A une dîme</FCHasTithe>
 	
-  <PayReceiveSilver>Payer/Recevoir de l'argent</PayReceiveSilver>
+  <FCPayReceiveSilver>Payer/Recevoir de l'argent</FCPayReceiveSilver>
 	
-  <ResolveBill>Régler la facture</ResolveBill>
+  <FCResolveBill>Régler la facture</FCResolveBill>
 	
-  <NotEnoughSilverOnMapToPayBill>Vous n'avez pas assez d'argent sur la carte actuelle pour payer la facture</NotEnoughSilverOnMapToPayBill>
+  <FCNotEnoughSilverOnMapToPayBill>Vous n'avez pas assez d'argent sur la carte actuelle pour payer la facture</FCNotEnoughSilverOnMapToPayBill>
 	
-  <NumberTaxesHasBeenSolved>{0} factures ont été réglées automatiquement !</NumberTaxesHasBeenSolved>
+  <FCNumberTaxesHasBeenSolved>{0} factures ont été réglées automatiquement !</FCNumberTaxesHasBeenSolved>
 	
-  <DueFC>Dû</DueFC>
+  <FCDueFC>Dû</FCDueFC>
 	
   <FCNoPendingBills>Aucune facture en attente.</FCNoPendingBills>
 	
@@ -31,49 +31,49 @@
 	
   <FCOverdue>En retard</FCOverdue>
 	
-  <UnpaidTitheEffect>L'agitation a augmenté de 10 et le bonheur a diminué dans la colonie !</UnpaidTitheEffect>
+  <FCUnpaidTitheEffect>L'agitation a augmenté de 10 et le bonheur a diminué dans la colonie !</FCUnpaidTitheEffect>
 
 	
 	
-  <SettlementTax>Taxe de colonie</SettlementTax>
+  <FCSettlementTax>Taxe de colonie</FCSettlementTax>
 	
-  <WeekOf>semaine du</WeekOf>
+  <FCWeekOf>semaine du</FCWeekOf>
 	
-  <TaxesBilled>Les taxes ont été facturées</TaxesBilled>
+  <FCTaxesBilled>Les taxes ont été facturées</FCTaxesBilled>
 	
-  <TaxesBilledShort>Taxes facturées</TaxesBilledShort>
+  <FCTaxesBilledShort>Taxes facturées</FCTaxesBilledShort>
 	
-  <TaxesBilledDesc>Les taxes de vos colonies ont été facturées.</TaxesBilledDesc>
+  <FCTaxesBilledDesc>Les taxes de vos colonies ont été facturées.</FCTaxesBilledDesc>
 	
-  <NoSettlementsToTax>Aucune colonie à taxer</NoSettlementsToTax>
+  <FCNoSettlementsToTax>Aucune colonie à taxer</FCNoSettlementsToTax>
 	
-  <TaxesFrom>Taxes de</TaxesFrom>
+  <FCTaxesFrom>Taxes de</FCTaxesFrom>
 	
-  <HaveBeenDelivered>ont été livrées</HaveBeenDelivered>
+  <FCHaveBeenDelivered>ont été livrées</FCHaveBeenDelivered>
 	
-  <TaxesHaveArrived>Les taxes sont arrivées !</TaxesHaveArrived>
+  <FCTaxesHaveArrived>Les taxes sont arrivées !</FCTaxesHaveArrived>
 	
-  <TaxesFromSettlementAreBeingDelivered>Les taxes de {0} sont en route vers votre point de collecte fiscale !</TaxesFromSettlementAreBeingDelivered>
+  <FCTaxesFromSettlementAreBeingDelivered>Les taxes de {0} sont en route vers votre point de collecte fiscale !</FCTaxesFromSettlementAreBeingDelivered>
 	
-  <TaxPercentage>% de dîme</TaxPercentage>
+  <FCTaxPercentage>% de dîme</FCTaxPercentage>
 	
-  <TaxDeliveryMap>Carte de livraison des taxes</TaxDeliveryMap>
+  <FCTaxDeliveryMap>Carte de livraison des taxes</FCTaxDeliveryMap>
 
 	
 	
-  <TaxReports>Rapports fiscaux</TaxReports>
+  <FCTaxReports>Rapports fiscaux</FCTaxReports>
 	
-  <FactionTaxReports>Rapports fiscaux de la faction</FactionTaxReports>
+  <FCFactionTaxReports>Rapports fiscaux de la faction</FCFactionTaxReports>
 	
-  <SettlementTaxCollection>Collecte fiscale des colonies</SettlementTaxCollection>
+  <FCSettlementTaxCollection>Collecte fiscale des colonies</FCSettlementTaxCollection>
 	
-  <EstimatedProfit>Profit estimé</EstimatedProfit>
+  <FCEstimatedProfit>Profit estimé</FCEstimatedProfit>
 	
-  <EstimatedValue>Valeur estimée</EstimatedValue>
+  <FCEstimatedValue>Valeur estimée</FCEstimatedValue>
 	
-  <TimeTillTax>Temps avant la taxe</TimeTillTax>
+  <FCTimeTillTax>Temps avant la taxe</FCTimeTillTax>
 	
-  <TotalFactionProduction>La production totale de cette ressource à l'échelle de la faction</TotalFactionProduction>
+  <FCTotalFactionProduction>La production totale de cette ressource à l'échelle de la faction</FCTotalFactionProduction>
 
 	
 	
@@ -103,51 +103,51 @@
 
 	
 	
-  <selectTaxDeliveryModeButton>Mode forcé de livraison des taxes :</selectTaxDeliveryModeButton>
+  <FCSelectTaxDeliveryModeButton>Mode forcé de livraison des taxes :</FCSelectTaxDeliveryModeButton>
 	
-  <taxDeliveryModeDefaultDesc>Aucune. La livraison dépend de la technologie et des bâtiments de la colonie</taxDeliveryModeDefaultDesc>
+  <FCTaxDeliveryModeDefaultDesc>Aucune. La livraison dépend de la technologie et des bâtiments de la colonie</FCTaxDeliveryModeDefaultDesc>
 	
-  <taxDeliveryModeTaxSpotDesc>Point de taxe. La livraison apparaît sur le point de taxe</taxDeliveryModeTaxSpotDesc>
+  <FCTaxDeliveryModeTaxSpotDesc>Point de taxe. La livraison apparaît sur le point de taxe</FCTaxDeliveryModeTaxSpotDesc>
 	
-  <taxDeliveryModeCaravanDesc>Caravane. La livraison est toujours apportée par une caravane</taxDeliveryModeCaravanDesc>
+  <FCTaxDeliveryModeCaravanDesc>Caravane. La livraison est toujours apportée par une caravane</FCTaxDeliveryModeCaravanDesc>
 	
-  <taxDeliveryModeDropPodDesc>Capsule de largage. La livraison arrive toujours en capsules</taxDeliveryModeDropPodDesc>
+  <FCTaxDeliveryModeDropPodDesc>Capsule de largage. La livraison arrive toujours en capsules</FCTaxDeliveryModeDropPodDesc>
 	
-  <taxDeliveryModeShuttleDesc>Navette. La livraison arrive toujours par navette</taxDeliveryModeShuttleDesc>
+  <FCTaxDeliveryModeShuttleDesc>Navette. La livraison arrive toujours par navette</FCTaxDeliveryModeShuttleDesc>
 	
-  <taxDeliveryModeShuttleUnavailableDesc>Navette. Indisponible car la royauté n’est pas présente</taxDeliveryModeShuttleUnavailableDesc>
+  <FCTaxDeliveryModeShuttleUnavailableDesc>Navette. Indisponible car la royauté n’est pas présente</FCTaxDeliveryModeShuttleUnavailableDesc>
 
 	
 	
-  <deliveryPawnsHiding>Les pions de livraison déposent leurs objets et se cachent sur votre point de livraison fiscale ! Ils n’engageront le combat que si l’ennemi s’approche !</deliveryPawnsHiding>
+  <FCDeliveryPawnsHiding>Les pions de livraison déposent leurs objets et se cachent sur votre point de livraison fiscale ! Ils n’engageront le combat que si l’ennemi s’approche !</FCDeliveryPawnsHiding>
 	
-  <deliveryPawnsLeavingMap>Les pions de livraison quittent la carte.</deliveryPawnsLeavingMap>
+  <FCDeliveryPawnsLeavingMap>Les pions de livraison quittent la carte.</FCDeliveryPawnsLeavingMap>
 	
-  <deliveryPawnsLeavingMapNoPath>Les pions de livraison quittent la carte, car ils ne pouvaient pas accéder au point de livraison fiscale.</deliveryPawnsLeavingMapNoPath>
+  <FCDeliveryPawnsLeavingMapNoPath>Les pions de livraison quittent la carte, car ils ne pouvaient pas accéder au point de livraison fiscale.</FCDeliveryPawnsLeavingMapNoPath>
 	
-  <deliveryPawnsLeavingMapWithDowned>Les pions de livraison récupèrent les membres à terre et quittent la carte.</deliveryPawnsLeavingMapWithDowned>
+  <FCDeliveryPawnsLeavingMapWithDowned>Les pions de livraison récupèrent les membres à terre et quittent la carte.</FCDeliveryPawnsLeavingMapWithDowned>
 	
-  <settlementDeliveringLoot>Votre colonie vous livre le butin suivant :</settlementDeliveringLoot>
+  <FCSettlementDeliveringLoot>Votre colonie vous livre le butin suivant :</FCSettlementDeliveringLoot>
 	
-  <deliveryHeldUpArriving>Une livraison retardée est arrivée !</deliveryHeldUpArriving>
+  <FCDeliveryHeldUpArriving>Une livraison retardée est arrivée !</FCDeliveryHeldUpArriving>
 
 	
 	
-  <TitheList>Liste des dîmes</TitheList>
+  <FCTitheList>Liste des dîmes</FCTitheList>
 	
-  <StackCount>Taille de pile</StackCount>
+  <FCStackCount>Taille de pile</FCStackCount>
 	
   <FCTotalValue>Valeur totale</FCTotalValue>
 	
-  <IsTithe>Est une dîme</IsTithe>
+  <FCIsTithe>Est une dîme</FCIsTithe>
 	
-  <Tithe>Dîme</Tithe>
+  <FCTithe>Dîme</FCTithe>
 	
-  <Tithing>Perception des dîmes</Tithing>
+  <FCTithing>Perception des dîmes</FCTithing>
 	
-  <TitheModifier>Modificateur de dîme</TitheModifier>
+  <FCTitheModifier>Modificateur de dîme</FCTitheModifier>
 	
-  <TitheSelection>Sélection d'objets</TitheSelection>
+  <FCTitheSelection>Sélection d'objets</FCTitheSelection>
 	
   <FCTitheEnableAll>Tout activer</FCTitheEnableAll>
 	
@@ -169,65 +169,65 @@
 
 	
 	
-  <RandomTithesEnabled>Dîme aléatoire</RandomTithesEnabled>
+  <FCRandomTithesEnabled>Dîme aléatoire</FCRandomTithesEnabled>
 	
-  <RandomTitheSelectionHeader>Sélection d'objets pour la dîme aléatoire</RandomTitheSelectionHeader>
+  <FCRandomTitheSelectionHeader>Sélection d'objets pour la dîme aléatoire</FCRandomTitheSelectionHeader>
 	
-  <RandomTitheBudget>Budget de dîme aléatoire</RandomTitheBudget>
+  <FCRandomTitheBudget>Budget de dîme aléatoire</FCRandomTitheBudget>
 	
-  <TitheOverBudget>Si le budget de dîme utilisé est supérieur au budget de dîme disponible, alors au moment de la taxe, toutes les options de dîme sélectionnées seront retirées jusqu'à ce que le budget utilisé corresponde au budget disponible.</TitheOverBudget>
+  <FCTitheOverBudget>Si le budget de dîme utilisé est supérieur au budget de dîme disponible, alors au moment de la taxe, toutes les options de dîme sélectionnées seront retirées jusqu'à ce que le budget utilisé corresponde au budget disponible.</FCTitheOverBudget>
 	
-  <RandomTithesDesc>Au moment de la taxe, vous recevrez une sélection aléatoire d'objets d'une valeur totale inférieure ou égale au budget de dîme aléatoire. Vous pouvez ajouter ou retirer des objets de la liste pour contrôler ce qui est ou non sélectionné. Si l'objet le moins cher de la liste a une valeur supérieure à votre budget de dîme aléatoire, ou s'il n'y a aucun objet à sélectionner, alors le budget est reporté à la période fiscale suivante.</RandomTithesDesc>
+  <FCRandomTithesDesc>Au moment de la taxe, vous recevrez une sélection aléatoire d'objets d'une valeur totale inférieure ou égale au budget de dîme aléatoire. Vous pouvez ajouter ou retirer des objets de la liste pour contrôler ce qui est ou non sélectionné. Si l'objet le moins cher de la liste a une valeur supérieure à votre budget de dîme aléatoire, ou s'il n'y a aucun objet à sélectionner, alors le budget est reporté à la période fiscale suivante.</FCRandomTithesDesc>
 	
-  <RandomTitheAccrued>Budget cumulé : ${0}</RandomTitheAccrued>
+  <FCRandomTitheAccrued>Budget cumulé : ${0}</FCRandomTitheAccrued>
 	
-  <RandomTitheAccruedDesc>Montant du budget de dîme aléatoire restant qui a été cumulé. Il sera ajouté à votre budget de dîme aléatoire pour déterminer le budget total des dîmes aléatoires au moment de la taxe.</RandomTitheAccruedDesc>
+  <FCRandomTitheAccruedDesc>Montant du budget de dîme aléatoire restant qui a été cumulé. Il sera ajouté à votre budget de dîme aléatoire pour déterminer le budget total des dîmes aléatoires au moment de la taxe.</FCRandomTitheAccruedDesc>
 	
-  <DisburseAccruedRandomTithe>Verser le budget cumulé</DisburseAccruedRandomTithe>
+  <FCDisburseAccruedRandomTithe>Verser le budget cumulé</FCDisburseAccruedRandomTithe>
 	
-  <DisburseAccruedRandomTitheDesc>Si cette option est cochée, le budget cumulé sera versé en argent brut au moment de la taxe. Il ne comptera pas dans le budget de dîme aléatoire.</DisburseAccruedRandomTitheDesc>
+  <FCDisburseAccruedRandomTitheDesc>Si cette option est cochée, le budget cumulé sera versé en argent brut au moment de la taxe. Il ne comptera pas dans le budget de dîme aléatoire.</FCDisburseAccruedRandomTitheDesc>
 	
-  <NoTitheLetterLabel>Pas de dîme : {0}</NoTitheLetterLabel>
+  <FCNoTitheLetterLabel>Pas de dîme : {0}</FCNoTitheLetterLabel>
 	
-  <NoTitheLetterDesc>{0} dispose d'un budget de dîme aléatoire pour la ressource {1}, mais aucun objet n'était activé. Le budget de dîme aléatoire sera conservé pour un usage futur. Budget cumulé total : {2}</NoTitheLetterDesc>
+  <FCNoTitheLetterDesc>{0} dispose d'un budget de dîme aléatoire pour la ressource {1}, mais aucun objet n'était activé. Le budget de dîme aléatoire sera conservé pour un usage futur. Budget cumulé total : {2}</FCNoTitheLetterDesc>
 	
-  <NoTitheLetterDesc2>{0} dispose d'un budget de dîme aléatoire pour la ressource {1}, mais n'avait pas assez de budget pour sélectionner l'un des objets activés. Le budget de dîme aléatoire sera conservé pour un usage futur. Budget cumulé total : {2}</NoTitheLetterDesc2>
+  <FCNoTitheLetterDesc2>{0} dispose d'un budget de dîme aléatoire pour la ressource {1}, mais n'avait pas assez de budget pour sélectionner l'un des objets activés. Le budget de dîme aléatoire sera conservé pour un usage futur. Budget cumulé total : {2}</FCNoTitheLetterDesc2>
 	
-  <TotalTitheBudget>Budget total de dîme</TotalTitheBudget>
+  <FCTotalTitheBudget>Budget total de dîme</FCTotalTitheBudget>
 	
-  <AvailableTitheBudget>Budget disponible</AvailableTitheBudget>
+  <FCAvailableTitheBudget>Budget disponible</FCAvailableTitheBudget>
 	
-  <UsedTitheBudget>Budget utilisé</UsedTitheBudget>
+  <FCUsedTitheBudget>Budget utilisé</FCUsedTitheBudget>
 	
-  <TitheXDesc>Retirer cet objet de la liste des dîmes.</TitheXDesc>
+  <FCTitheXDesc>Retirer cet objet de la liste des dîmes.</FCTitheXDesc>
 	
-  <TitheListRejection>{0} existe déjà dans la liste de sélection des objets.</TitheListRejection>
+  <FCTitheListRejection>{0} existe déjà dans la liste de sélection des objets.</FCTitheListRejection>
 	
-  <TitheListRejectionQuality>{0} avec la qualité {1} existe déjà dans la liste de sélection des objets.</TitheListRejectionQuality>
+  <FCTitheListRejectionQuality>{0} avec la qualité {1} existe déjà dans la liste de sélection des objets.</FCTitheListRejectionQuality>
 	
-  <TitheListRejectionStuff>{0} avec le matériau {1} existe déjà dans la liste de sélection des objets.</TitheListRejectionStuff>
+  <FCTitheListRejectionStuff>{0} avec le matériau {1} existe déjà dans la liste de sélection des objets.</FCTitheListRejectionStuff>
 	
-  <TitheListRejectionStuffQuality>{0} avec la qualité {1} et le matériau {2} existe déjà dans la liste de sélection des objets</TitheListRejectionStuffQuality>
+  <FCTitheListRejectionStuffQuality>{0} avec la qualité {1} et le matériau {2} existe déjà dans la liste de sélection des objets</FCTitheListRejectionStuffQuality>
 	
-  <TitheBudgetNoWorkers>Ajoutez des ouvriers à cette ressource pour générer un budget de dîme.</TitheBudgetNoWorkers>
+  <FCTitheBudgetNoWorkers>Ajoutez des ouvriers à cette ressource pour générer un budget de dîme.</FCTitheBudgetNoWorkers>
 	
-  <TitheBudgetInsufficient>Le budget maximal de dîme n'est pas assez élevé.</TitheBudgetInsufficient>
+  <FCTitheBudgetInsufficient>Le budget maximal de dîme n'est pas assez élevé.</FCTitheBudgetInsufficient>
 
 	
 	
-  <AddTitheItemHeader>Ajouter un objet de dîme</AddTitheItemHeader>
+  <FCAddTitheItemHeader>Ajouter un objet de dîme</FCAddTitheItemHeader>
 	
-  <ItemSelection>Sélection d'objets</ItemSelection>
+  <FCItemSelection>Sélection d'objets</FCItemSelection>
 	
-  <AddItem>Ajouter un objet</AddItem>
+  <FCAddItem>Ajouter un objet</FCAddItem>
 	
-  <Stuff>Matériau</Stuff>
+  <FCStuff>Matériau</FCStuff>
 	
-  <SelectStuff>Sélectionner un matériau...</SelectStuff>
+  <FCSelectStuff>Sélectionner un matériau...</FCSelectStuff>
 	
-  <MustSelectStuff>Vous devez sélectionner un type de matériau</MustSelectStuff>
+  <FCMustSelectStuff>Vous devez sélectionner un type de matériau</FCMustSelectStuff>
 	
-  <ItemAlreadyInTitheList>Cet objet est déjà dans la liste des dîmes</ItemAlreadyInTitheList>
+  <FCItemAlreadyInTitheList>Cet objet est déjà dans la liste des dîmes</FCItemAlreadyInTitheList>
 	
   <FCClearSelection>Effacer la sélection</FCClearSelection>
 	
@@ -255,19 +255,19 @@
 
 	
 	
-  <BaseProductionStats>Stats de production de base</BaseProductionStats>
+  <FCBaseProductionStats>Stats de production de base</FCBaseProductionStats>
 	
-  <Production>Production</Production>
+  <FCProduction>Production</FCProduction>
 	
-  <ProductionEfficiency>Efficacité de production</ProductionEfficiency>
+  <FCProductionEfficiency>Efficacité de production</FCProductionEfficiency>
 	
-  <SettlementProductionOf>La production totale de cette ressource par la colonie</SettlementProductionOf>
+  <FCSettlementProductionOf>La production totale de cette ressource par la colonie</FCSettlementProductionOf>
 	
-  <TotalProduction>Production totale</TotalProduction>
+  <FCTotalProduction>Production totale</FCTotalProduction>
 	
-  <PerWorkerProduction>Production par ouvrier</PerWorkerProduction>
+  <FCPerWorkerProduction>Production par ouvrier</FCPerWorkerProduction>
 	
-  <TotalProd>Production totale</TotalProd>
+  <FCTotalProd>Production totale</FCTotalProd>
 	
   <FCTotalProdTooltip>Taux actuel : {0}
 Moyenne de la période : {1} ({2} jours sur {3} échantillonnés)</FCTotalProdTooltip>
@@ -276,87 +276,86 @@ Moyenne de la période : {1} ({2} jours sur {3} échantillonnés)</FCTotalProdTo
 
 	
 	
-  <Food>Nourriture</Food>
+  <FCFood>Nourriture</FCFood>
 	
-  <Weapons>Armes</Weapons>
+  <FCWeapons>Armes</FCWeapons>
 	
-  <Animals>Animaux</Animals>
+  <FCAnimals>Animaux</FCAnimals>
 	
-  <Logging>Bois</Logging>
+  <FCLogging>Bois</FCLogging>
 	
-  <Mining>Mines</Mining>
+  <FCMining>Mines</FCMining>
 
 	
 	
-  <Workers>Ouvriers</Workers>
+  <FCWorkers>Ouvriers</FCWorkers>
 	
-  <FreeWorkers>Ouvriers libres</FreeWorkers>
+  <FCFreeWorkers>Ouvriers libres</FCFreeWorkers>
 	
-  <AssignedWorkers>Ouvriers assignés</AssignedWorkers>
+  <FCAssignedWorkers>Ouvriers assignés</FCAssignedWorkers>
 	
-  <AssignedWorkersValue>{0}/{1}</AssignedWorkersValue>
+  <FCAssignedWorkersValue>{0}/{1}</FCAssignedWorkersValue>
 	
-  <AssignedOvermaxWorkers>Ouvriers assignés au-delà du maximum</AssignedOvermaxWorkers>
+  <FCAssignedOvermaxWorkers>Ouvriers assignés au-delà du maximum</FCAssignedOvermaxWorkers>
 	
-  <AssignedOvermaxWorkersValue>{0}/{1}</AssignedOvermaxWorkersValue>
+  <FCAssignedOvermaxWorkersValue>{0}/{1}</FCAssignedOvermaxWorkersValue>
 	
-  <AssignedOvermaxWorkersTooltip>Chaque ouvrier supplémentaire au-delà du maximum augmente le coût de tous les ouvriers de 5.</AssignedOvermaxWorkersTooltip>
+  <FCAssignedOvermaxWorkersTooltip>Chaque ouvrier supplémentaire au-delà du maximum augmente le coût de tous les ouvriers de 5.</FCAssignedOvermaxWorkersTooltip>
 	
-  <CostPerWorker>Coût par ouvrier</CostPerWorker>
+  <FCCostPerWorker>Coût par ouvrier</FCCostPerWorker>
 
 	
 	
-  <Cost>Coût</Cost>
+  <FCCost>Coût</FCCost>
 	
-  <Silver>Argent</Silver>
+  <FCSilver>Argent</FCSilver>
 	
-  <CashSymbol>$</CashSymbol>
+  <FCCashSymbol>$</FCCashSymbol>
 	
-  <InitialCost>Coût initial</InitialCost>
+  <FCInitialCost>Coût initial</FCInitialCost>
 	
-  <NotEnoughSilverToSettle>Vous n'avez pas assez d'argent sur la carte actuelle pour fonder une nouvelle colonie</NotEnoughSilverToSettle>
+  <FCNotEnoughSilverToSettle>Vous n'avez pas assez d'argent sur la carte actuelle pour fonder une nouvelle colonie</FCNotEnoughSilverToSettle>
 	
-  <NotEnoughSilverConstructBuilding>Vous n'avez pas assez d'argent sur la carte actuelle pour construire ce bâtiment</NotEnoughSilverConstructBuilding>
+  <FCNotEnoughSilverConstructBuilding>Vous n'avez pas assez d'argent sur la carte actuelle pour construire ce bâtiment</FCNotEnoughSilverConstructBuilding>
 	
   <FCNotEnoughSilverDemolish>Vous n'avez pas assez d'argent sur la carte actuelle pour payer la démolition</FCNotEnoughSilverDemolish>
 	
-  <NotEnoughMoneyToEnact>Vous n'avez pas assez d'argent sur la carte actuelle pour promulguer cette politique</NotEnoughMoneyToEnact>
+  <FCNotEnoughMoneyToEnact>Vous n'avez pas assez d'argent sur la carte actuelle pour promulguer cette politique</FCNotEnoughMoneyToEnact>
 	
-  <Profit>Profit</Profit>
+  <FCProfit>Profit</FCProfit>
 	
-  <TaxBase>Base fiscale</TaxBase>
+  <FCTaxBase>Base fiscale</FCTaxBase>
 	
-  <Income>Revenu</Income>
+  <FCIncome>Revenu</FCIncome>
 	
-  <Upkeep>Entretien</Upkeep>
 	
   <FCUpkeep>Entretien</FCUpkeep>
 	
-  <Raw>Brut</Raw>
+  <FCRaw>Brut</FCRaw>
 	
-  <RawIncomeDesc>Le revenu total qu'une ressource produit, avant toute déduction.</RawIncomeDesc>
+  <FCRawIncomeDesc>Le revenu total qu'une ressource produit, avant toute déduction.</FCRawIncomeDesc>
 	
-  <Net>Net</Net>
+  <FCNet>Net</FCNet>
 	
-  <NetIncomeDesc>Le revenu total qu'une ressource produit après prise en compte des détournements de stock et des dîmes.</NetIncomeDesc>
+  <FCNetIncomeDesc>Le revenu total qu'une ressource produit après prise en compte des détournements de stock et des dîmes.</FCNetIncomeDesc>
 	
-  <NetIncomeBreakdownGross>Revenu brut : {0}</NetIncomeBreakdownGross>
+  <FCNetIncomeBreakdownGross>Revenu brut : {0}</FCNetIncomeBreakdownGross>
 	
-  <NetIncomeBreakdownStockpile>Détournements de stock : -{0}</NetIncomeBreakdownStockpile>
+  <FCNetIncomeBreakdownStockpile>Détournements de stock : -{0}</FCNetIncomeBreakdownStockpile>
 	
-  <NetIncomeBreakdownTithes>Dîmes : -{0}</NetIncomeBreakdownTithes>
+  <FCNetIncomeBreakdownTithes>Dîmes : -{0}</FCNetIncomeBreakdownTithes>
 	
-  <NetIncomeBreakdownNet>Revenu net : {0}</NetIncomeBreakdownNet>
+  <FCNetIncomeBreakdownNet>Revenu net : {0}</FCNetIncomeBreakdownNet>
 	
-  <itemcost>{0}{1}</itemcost>
+  <FCItemcost>{0}{1}</FCItemcost>
 
 	
 	
-  <SetAsEmpirePowerOutput>Définir comme sortie d'énergie de l'Empire</SetAsEmpirePowerOutput>
+  <FCSetAsEmpirePowerOutput>Définir comme sortie d'énergie de l'Empire</FCSetAsEmpirePowerOutput>
 	
-  <SetAsOutput>Définir la sortie d'énergie</SetAsOutput>
+  <FCSetAsOutput>Définir la sortie d'énergie</FCSetAsOutput>
 	
-  <SetAsOutputSuccess>Le transformateur a été défini comme sortie d'énergie pour vos colonies !</SetAsOutputSuccess>
+  <FCSetAsOutputSuccess>Le transformateur a été défini comme sortie d'énergie pour vos colonies !</FCSetAsOutputSuccess>
 
 	
 	
@@ -364,8 +363,8 @@ Moyenne de la période : {1} ({2} jours sur {3} échantillonnés)</FCTotalProdTo
 
 	
 	
-  <GoodsReceived>Biens reçus</GoodsReceived>
+  <FCGoodsReceived>Biens reçus</FCGoodsReceived>
 	
-  <GoodsReceivedFollowing>Vous avez reçu les biens suivants grâce à l'événement {0} :</GoodsReceivedFollowing>
+  <FCGoodsReceivedFollowing>Vous avez reçu les biens suivants grâce à l'événement {0} :</FCGoodsReceivedFollowing>
 
 </LanguageData>

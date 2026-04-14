@@ -215,7 +215,7 @@ namespace FactionColonies
 
             // View Info button
             Rect infoBtn = new Rect(rx, factionRect.yMax + 4f, rightColW, 22f);
-            if (UIUtil.ButtonFlat(infoBtn, "ViewInfo".Translate()))
+            if (UIUtil.ButtonFlat(infoBtn, "FCViewInfo".Translate()))
             {
                 Pawn pawn = prisoner.prisoner;
 
@@ -236,13 +236,13 @@ namespace FactionColonies
 
             // Actions button
             Rect actionsBtn = new Rect(rx, infoBtn.yMax + 2f, rightColW, 22f);
-            if (UIUtil.ButtonFlat(actionsBtn, "Actions".Translate()))
+            if (UIUtil.ButtonFlat(actionsBtn, "FCActions".Translate()))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
 
                 if (FactionCache.FactionComp.IsActionAllowed(FCActionType.SellPrisoner))
                 {
-                    list.Add(new FloatMenuOption("SellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "SellPawnInfo".Translate(), delegate
+                    list.Add(new FloatMenuOption("FCSellPawn".Translate() + " $" + prisoner.prisoner.MarketValue + " " + "FCSellPawnInfo".Translate(), delegate
                     {
                         settlement.AddOneTimeSilverIncome(prisoner.prisoner.MarketValue);
 
@@ -252,7 +252,7 @@ namespace FactionColonies
                     }));
                 }
 
-                list.Add(new FloatMenuOption("ReturnToPlayer".Translate(), delegate
+                list.Add(new FloatMenuOption("FCReturnToPlayer".Translate(), delegate
                 {
                     if (prisoner.healthTracker != null)
                     {
@@ -279,7 +279,7 @@ namespace FactionColonies
                         location = Find.AnyPlayerHomeMap.Tile,
                         source = settlement.Tile,
                         goods = new List<Thing> { prisoner.prisoner },
-                        customDescription = "aPrisonerIsBeingDeliveredToYou".Translate(),
+                        customDescription = "FCAPrisonerIsBeingDeliveredToYou".Translate(),
                         timeTillTrigger = Find.TickManager.TicksGame + TravelUtil.ReturnTicksToArrive(settlement.Tile, Find.AnyPlayerHomeMap.Tile)
                     });
 

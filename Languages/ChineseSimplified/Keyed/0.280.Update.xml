@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-<SetCapital>设为首都</SetCapital>
+<FCSetCapital>设为首都</FCSetCapital>
 
-<DeathOfFactionPawn>你的无能致使领地的居民死亡,领地的动荡程度大大的提高了.</DeathOfFactionPawn>
-<CaptureOfFactionPawn>一名居民被俘虏,领地的动荡程度大大的提高了.</CaptureOfFactionPawn>
+<FCDeathOfFactionPawn>你的无能致使领地的居民死亡,领地的动荡程度大大的提高了.</FCDeathOfFactionPawn>
+<FCCaptureOfFactionPawn>一名居民被俘虏,领地的动荡程度大大的提高了.</FCCaptureOfFactionPawn>
 
-<UnpaidTitheEffect>在这个领地叛乱度+10,幸福度有所下降.</UnpaidTitheEffect>
+<FCUnpaidTitheEffect>在这个领地叛乱度+10,幸福度有所下降.</FCUnpaidTitheEffect>
 
 </LanguageData>

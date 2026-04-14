@@ -126,7 +126,7 @@ namespace FactionColonies
 
             // Confirm button
             Text.Font = GameFont.Small;
-            if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
+            if (Widgets.ButtonText(buttonConfirm, "FCConfirmChanges".Translate()))
             {
                 if (!traitsChosen)
                 {

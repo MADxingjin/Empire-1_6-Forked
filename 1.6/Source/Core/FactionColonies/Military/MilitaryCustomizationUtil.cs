@@ -366,7 +366,7 @@ namespace FactionColonies
             {
                 MilSquadFC captured = squad;
                 options.Add(new FloatMenuOption(
-                    squad.name + " - " + "Cost".Translate() + ": " + squad.GetEquipmentTotalCost(),
+                    squad.name + " - " + "FCCost".Translate() + ": " + squad.GetEquipmentTotalCost(),
                     delegate { AttemptToAssignSquad(settlement, captured); }));
             }
 

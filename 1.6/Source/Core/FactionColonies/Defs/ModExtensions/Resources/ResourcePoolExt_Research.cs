@@ -21,7 +21,7 @@ namespace FactionColonies
         }
         public override void AddedToGlobalPool(double value)
         {
-            Messages.Message("PointsAddedToResearchPool".Translate(value), MessageTypeDefOf.PositiveEvent);
+            Messages.Message("FCPointsAddedToResearchPool".Translate(value), MessageTypeDefOf.PositiveEvent);
         }
 
         public override IEnumerable<FloatMenuOption> GetFactionMenuFloatMenuOptions(ResourcePool pool)
@@ -36,14 +36,14 @@ namespace FactionColonies
             }
             FactionFC faction = FactionCache.FactionComp;
 
-            yield return new FloatMenuOption("ActivateResearch".Translate(), delegate
+            yield return new FloatMenuOption("FCActivateResearch".Translate(), delegate
             {
                 DailyUpdate(pool);
             });
 
-            yield return new FloatMenuOption("ResearchLevel".Translate(), delegate
+            yield return new FloatMenuOption("FCResearchLevel".Translate(), delegate
             {
-                Messages.Message("CurrentResearchLevel".Translate(faction.techLevel.ToString(), faction.ReturnNextTechToLevel()), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCCurrentResearchLevel".Translate(faction.techLevel.ToString(), faction.ReturnNextTechToLevel()), MessageTypeDefOf.NeutralEvent);
             });
         }
         public override void DailyUpdate(ResourcePool pool)
@@ -52,7 +52,7 @@ namespace FactionColonies
             //Research adding
             if ((Find.ResearchManager.GetProject() == null) && researchPointPool != 0)
             {
-                Messages.Message("NoResearchExpended".Translate(Math.Round(researchPointPool)), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCNoResearchExpended".Translate(Math.Round(researchPointPool)), MessageTypeDefOf.NeutralEvent);
             }
             else if (researchPointPool != 0 && Find.ResearchManager.GetProject() != null)
             {
@@ -76,8 +76,8 @@ namespace FactionColonies
                 LogUtil.Message("Expended points: " + expendedPoints);
 
                 Find.LetterStack.ReceiveLetter(
-                    "ResearchPointsExpended".Translate(),
-                    "ResearchExpended".Translate(Math.Round(expendedPoints),
+                    "FCResearchPointsExpended".Translate(),
+                    "FCResearchExpended".Translate(Math.Round(expendedPoints),
                     Find.ResearchManager.GetProject().LabelCap,
                     Math.Round(researchPointPool)),
                     LetterDefOf.PositiveEvent);

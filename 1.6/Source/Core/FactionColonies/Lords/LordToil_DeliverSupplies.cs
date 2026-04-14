@@ -161,7 +161,7 @@ namespace FactionColonies
 
                 if (!sendMessage)
                 {
-                    Messages.Message("deliveryPawnsLeavingMap".Translate(), MessageTypeDefOf.NeutralEvent);
+                    Messages.Message("FCDeliveryPawnsLeavingMap".Translate(), MessageTypeDefOf.NeutralEvent);
                     sendMessage = true;
                 }
 

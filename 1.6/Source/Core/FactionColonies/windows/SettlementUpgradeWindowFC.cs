@@ -32,10 +32,10 @@ namespace FactionColonies
             draggable = true;
             doCloseX = true;
             preventCameraMotion = false;
-            header = "UpgradeSettlement".Translate();
+            header = "FCUpgradeSettlement".Translate();
             this.settlement = settlement;
             settlementUpgradeCost = settlement.GetUpgradeCost(Convert.ToInt32(FCSettings.settlementBaseUpgradeCost));
-            desc = settlement.Name + " " + "CanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "Silver".Translate().ToLower() + ". " + "UpgradeColonyDesc".Translate();
+            desc = settlement.Name + " " + "FCCanBeUpgraded".Translate() + " " + settlementUpgradeCost + " " + "FCSilver".Translate().ToLower() + ". " + "FCUpgradeColonyDesc".Translate();
             factionfc = FactionCache.FactionComp;
             maxSettlementLevel = FCSettings.settlementMaxLevel;
         }
@@ -47,10 +47,10 @@ namespace FactionColonies
         private Message UpgradeSettlement()
         {
             //failure reasons
-            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("ActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
-            if (settlement.isUpgrading) return new Message("AlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
-            if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
-            if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("NotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
+            if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("FCActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
+            if (settlement.isUpgrading) return new Message("FCAlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
+            if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("FCSettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
+            if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("FCNotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
             //on success
             PaymentUtil.PaySilver(settlementUpgradeCost, PaymentUtil.Reason_SettlementUpgrade, settlement);
@@ -61,11 +61,11 @@ namespace FactionColonies
                 location = settlement.Tile,
                 timeTillTrigger = Find.TickManager.TicksGame + settlement.GetUpgradeTime(factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier))
             };
-            tmp.customDescription = "UpgradeEventDesc".Translate(
+            tmp.customDescription = "FCUpgradeEventDesc".Translate(
                 settlement.Name,
                 settlement.settlementLevel,
                 settlement.settlementLevel + 1,
-                "UpgradeColonyDesc".Translate());
+                "FCUpgradeColonyDesc".Translate());
             tmp.hasCustomDescription = true;
 
             settlement.isUpgrading = true;
@@ -77,7 +77,7 @@ namespace FactionColonies
             //Close this window
             Find.WindowStack.TryRemove(this);
 
-            return new Message("StartUpgradeSettlement".Translate(), MessageTypeDefOf.NeutralEvent);
+            return new Message("FCStartUpgradeSettlement".Translate(), MessageTypeDefOf.NeutralEvent);
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -97,11 +97,11 @@ namespace FactionColonies
 
             if (settlement.CanUpgrade) //if settlement is not max level
             {
-                if (Widgets.ButtonText(new Rect(xoffset + ((335 - 150) / 2f), height + 10, 150, 40), "UpgradeSettlement".Translate() + ": " + settlementUpgradeCost)) Messages.Message(UpgradeSettlement());
+                if (Widgets.ButtonText(new Rect(xoffset + ((335 - 150) / 2f), height + 10, 150, 40), "FCUpgradeSettlement".Translate() + ": " + settlementUpgradeCost)) Messages.Message(UpgradeSettlement());
             }
             else //if settlement is max level
             {
-                desc = "CannotBeUpgradedPastMax".Translate() + ": " + maxSettlementLevel;
+                desc = "FCCannotBeUpgradedPastMax".Translate() + ": " + maxSettlementLevel;
             }
 
             Widgets.Label(new Rect(xoffset + 2, yoffset - yspacing + 2, length - 4, height - 4 + yspacing * 2), desc);

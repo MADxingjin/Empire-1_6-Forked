@@ -619,12 +619,12 @@ namespace FactionColonies
                 {
                     desc += settlement.GetStatDesc(FCStatDefOf.workerProductionMultiplier);
                 }
-                desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
+                desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "FCTaxBase".Translate();
 
                 if (settlement != null)
                 {
                     double prosperityMult = settlement.prosperity / 100.0;
-                    desc += "\n" + TextUtil.ColorizeMultiplierBonus(prosperityMult) + " - " + "Prosperity".Translate().CapitalizeFirst()
+                    desc += "\n" + TextUtil.ColorizeMultiplierBonus(prosperityMult) + " - " + "FCProsperity".Translate().CapitalizeFirst()
                         + " (" + (int)settlement.prosperity + "%)";
                 }
 
@@ -1088,7 +1088,7 @@ namespace FactionColonies
                 if (!randomTitheFilter.AllowedThingDefs.Any())
                 {
                     randomTitheStock = randomBudget;
-                    Find.LetterStack.ReceiveLetter("NoTitheLetterLabel".Translate(settlement.Name), "NoTitheLetterDesc".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
+                    Find.LetterStack.ReceiveLetter("FCNoTitheLetterLabel".Translate(settlement.Name), "FCNoTitheLetterDesc".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
                 }
                 else
                 {
@@ -1137,7 +1137,7 @@ namespace FactionColonies
                     else
                     {
                         randomTitheStock = randomBudget;
-                        Find.LetterStack.ReceiveLetter("NoTitheLetterLabel".Translate(settlement.Name), "NoTitheLetterDesc2".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
+                        Find.LetterStack.ReceiveLetter("FCNoTitheLetterLabel".Translate(settlement.Name), "FCNoTitheLetterDesc2".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
                     }
 
                 }

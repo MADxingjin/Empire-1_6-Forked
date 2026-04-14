@@ -2,10 +2,10 @@
 <LanguageData>
 
 	<!-- Event Window -->
-	<CurrentOngoingEvents>Current Ongoing Events</CurrentOngoingEvents>
-	<TimeRemaining>Time Remaining</TimeRemaining>
-	<NewLand>New Land</NewLand>
-	<EventAffectingSettlements>This event is affecting the following settlements:</EventAffectingSettlements>
+	<FCCurrentOngoingEvents>Current Ongoing Events</FCCurrentOngoingEvents>
+	<FCTimeRemaining>Time Remaining</FCTimeRemaining>
+	<FCNewLand>New Land</FCNewLand>
+	<FCEventAffectingSettlements>This event is affecting the following settlements:</FCEventAffectingSettlements>
 	<FCEvent>Event</FCEvent>
 	<FCNoActiveEvents>No active events.</FCNoActiveEvents>
 	<FCActiveEventsCount>{0} active events</FCActiveEventsCount>
@@ -28,44 +28,44 @@
 	<FCEffectPreviewDuration>({0} days)</FCEffectPreviewDuration>
 
 	<!-- Building Events -->
-	<BuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</BuildingEventDesc>
-	<BuildingEventCompletedMsg>{0} has been constructed at {1}!</BuildingEventCompletedMsg>
+	<FCBuildingEventDesc>{0} is under construction at {1}. Estimated completion: {2}.</FCBuildingEventDesc>
+	<FCBuildingEventCompletedMsg>{0} has been constructed at {1}!</FCBuildingEventCompletedMsg>
 
 	<!-- Pawn Events -->
-	<DeathOfFactionPawn>Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements.</DeathOfFactionPawn>
-	<CaptureOfFactionPawn>Capturing one of your settlement's pawns has caused great unrest in your subject settlements!</CaptureOfFactionPawn>
-	<PrisonerHasDiedLetter>Prisoner Has Died</PrisonerHasDiedLetter>
-	<PrisonerHasDied>{0} at {1} has died from overworking</PrisonerHasDied>
+	<FCDeathOfFactionPawn>Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements.</FCDeathOfFactionPawn>
+	<FCCaptureOfFactionPawn>Capturing one of your settlement's pawns has caused great unrest in your subject settlements!</FCCaptureOfFactionPawn>
+	<FCPrisonerHasDiedLetter>Prisoner Has Died</FCPrisonerHasDiedLetter>
+	<FCPrisonerHasDied>{0} at {1} has died from overworking</FCPrisonerHasDied>
 
 	<!-- Mercenary Events -->
 	<FCMercenaryJoined>Mercenary Joined</FCMercenaryJoined>
 	<FCMercenaryJoinedText>A mercenary, {0}, from your faction has joined your colony!</FCMercenaryJoinedText>
 
 	<!-- Shuttle/Transport Events -->
-	<transportingInjuredShuttle>A shuttle is transporting injured colonists back to you after a successful settlement defence</transportingInjuredShuttle>
-	<transportingInjuredDropPod>Drop pods are transporting injured colonists back to you after a successful settlement defence</transportingInjuredDropPod>
-	<transportingInjuredCaravan>A caravan is transporting injured colonists back to you after a successful settlement defence</transportingInjuredCaravan>
-	<transportingInjuredShuttleLost>A shuttle is transporting injured colonists back to you after a failed settlement defence</transportingInjuredShuttleLost>
-	<transportingInjuredDropPodLost>Drop pods are transporting injured colonists back to you after a failed settlement defence</transportingInjuredDropPodLost>
-	<transportingInjuredCaravanLost>A caravan is transporting injured colonists back to you after a failed settlement defence</transportingInjuredCaravanLost>
-	<shuttleLandingBlockedWithItems>A shuttle couldn't find a free landing spot and is waiting for one to be cleared. It contains: {0}.</shuttleLandingBlockedWithItems>
-	<shuttleLandingBlocked>A shuttle couldn't find a free landing spot and is waiting for one to be cleared.</shuttleLandingBlocked>
-	<caravanDangerTooHigh>A caravan is waiting with it's delivery until your map is clear of danger.</caravanDangerTooHigh>
-	<caravanDangerTooHighWithItems>A caravan is waiting with it's delivery until your map is clear of danger. They carry: {0}.</caravanDangerTooHighWithItems>
+	<FCTransportingInjuredShuttle>A shuttle is transporting injured colonists back to you after a successful settlement defence</FCTransportingInjuredShuttle>
+	<FCTransportingInjuredDropPod>Drop pods are transporting injured colonists back to you after a successful settlement defence</FCTransportingInjuredDropPod>
+	<FCTransportingInjuredCaravan>A caravan is transporting injured colonists back to you after a successful settlement defence</FCTransportingInjuredCaravan>
+	<FCTransportingInjuredShuttleLost>A shuttle is transporting injured colonists back to you after a failed settlement defence</FCTransportingInjuredShuttleLost>
+	<FCTransportingInjuredDropPodLost>Drop pods are transporting injured colonists back to you after a failed settlement defence</FCTransportingInjuredDropPodLost>
+	<FCTransportingInjuredCaravanLost>A caravan is transporting injured colonists back to you after a failed settlement defence</FCTransportingInjuredCaravanLost>
+	<FCShuttleLandingBlockedWithItems>A shuttle couldn't find a free landing spot and is waiting for one to be cleared. It contains: {0}.</FCShuttleLandingBlockedWithItems>
+	<FCShuttleLandingBlocked>A shuttle couldn't find a free landing spot and is waiting for one to be cleared.</FCShuttleLandingBlocked>
+	<FCCaravanDangerTooHigh>A caravan is waiting with it's delivery until your map is clear of danger.</FCCaravanDangerTooHigh>
+	<FCCaravanDangerTooHighWithItems>A caravan is waiting with it's delivery until your map is clear of danger. They carry: {0}.</FCCaravanDangerTooHighWithItems>
 
 	<!-- Shuttle Port -->
-	<shuttlePortCallShuttleLabel>Request a shuttle</shuttlePortCallShuttleLabel>
-	<shuttlePortCallShuttleDesc>Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1})</shuttlePortCallShuttleDesc>
-	<targetAnythingWithColonists>Target anything with free colonists to send the shuttle</targetAnythingWithColonists>
-	<requestShuttleToCaravan>Request a shuttle for this caravan</requestShuttleToCaravan>
-	<requestShuttleToColony>Request a shuttle for this settlement</requestShuttleToColony>
-	<requestShuttleToMap>Request a shuttle for this map</requestShuttleToMap>
-	<shuttlePortCallShuttleForCaravanLabel>Request a shuttle for a caravan</shuttlePortCallShuttleForCaravanLabel>
-	<targetAnyWorldObject>Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1})</targetAnyWorldObject>
-	<sendCaravanHere>Send the caravan here</sendCaravanHere>
-	<noCaravansToSendShuttleTo>There are no caravans to send a shuttle to!</noCaravansToSendShuttleTo>
-	<noShuttleUsesRemaining>No shuttle uses remaining in this tax period!</noShuttleUsesRemaining>
-	<notEnoughShuttleUsesRemaining>Not enough shuttle uses remaining in this tax period!</notEnoughShuttleUsesRemaining>
+	<FCShuttlePortCallShuttleLabel>Request a shuttle</FCShuttlePortCallShuttleLabel>
+	<FCShuttlePortCallShuttleDesc>Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1})</FCShuttlePortCallShuttleDesc>
+	<FCTargetAnythingWithColonists>Target anything with free colonists to send the shuttle</FCTargetAnythingWithColonists>
+	<FCRequestShuttleToCaravan>Request a shuttle for this caravan</FCRequestShuttleToCaravan>
+	<FCRequestShuttleToColony>Request a shuttle for this settlement</FCRequestShuttleToColony>
+	<FCRequestShuttleToMap>Request a shuttle for this map</FCRequestShuttleToMap>
+	<FCShuttlePortCallShuttleForCaravanLabel>Request a shuttle for a caravan</FCShuttlePortCallShuttleForCaravanLabel>
+	<FCTargetAnyWorldObject>Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1})</FCTargetAnyWorldObject>
+	<FCSendCaravanHere>Send the caravan here</FCSendCaravanHere>
+	<FCNoCaravansToSendShuttleTo>There are no caravans to send a shuttle to!</FCNoCaravansToSendShuttleTo>
+	<FCNoShuttleUsesRemaining>No shuttle uses remaining in this tax period!</FCNoShuttleUsesRemaining>
+	<FCNotEnoughShuttleUsesRemaining>Not enough shuttle uses remaining in this tax period!</FCNotEnoughShuttleUsesRemaining>
 	
 	<FCRandomEventLetterLabel>Random Event</FCRandomEventLetterLabel>
 

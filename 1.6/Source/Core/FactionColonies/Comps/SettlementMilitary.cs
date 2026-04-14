@@ -126,8 +126,8 @@ namespace FactionColonies
                 LongEventHandler.QueueLongEvent(EndAttack,
                     "EndingAttack", false, error =>
                     {
-                        DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
-                            "ErrorEndingAttackDescription".Translate());
+                        DelayedErrorWindowRequest.Add("FCErrorEndingAttack".Translate(),
+                            "FCErrorEndingAttackDescription".Translate());
                         LogUtil.Error(error.Message);
                     });
             }
@@ -135,7 +135,7 @@ namespace FactionColonies
 
         private static string FoundSettlementString(WorldSettlementFC settlement, string winChanceText = null)
         {
-            string s = settlement.Name + " " + "ShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel;
+            string s = settlement.Name + " " + "FCShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel;
             if (!winChanceText.NullOrEmpty())
                 s += " - Victory: " + winChanceText + "%";
             s += " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
@@ -170,8 +170,8 @@ namespace FactionColonies
         {
             Command_Action defendColony = new Command_Action
             {
-                defaultLabel = "DefendColony".Translate(),
-                defaultDesc = "DefendColonyDesc".Translate(),
+                defaultLabel = "FCDefendColony".Translate(),
+                defaultDesc = "FCDefendColonyDesc".Translate(),
                 icon = TexLoad.iconMilitary,
                 action = delegate
                 {
@@ -193,7 +193,7 @@ namespace FactionColonies
         {
             Command_Action changeDefender = new Command_Action
             {
-                defaultLabel = "DefendSettlement".Translate(),
+                defaultLabel = "FCDefendSettlement".Translate(),
                 defaultDesc = "",
                 icon = TexLoad.iconCustomize,
                 action = delegate
@@ -208,11 +208,11 @@ namespace FactionColonies
                     double winChance = SimulateBattleFc.CalculateDefenderWinChance(evt.militaryForceAttacking, evt.militaryForceDefending);
                     var list = new List<FloatMenuOption>()
                     {
-                        new FloatMenuOption("SettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
+                        new FloatMenuOption("FCSettlementDefendingInformation".Translate(evt.militaryForceDefending.homeSettlement.Name,
                                                                                        evt.militaryForceDefending.DefensivePower,
                                                                                        (winChance * 100).ToString("F0")),
                                             null, MenuOptionPriority.High),
-                        new FloatMenuOption("ChangeDefendingForce".Translate(), () => ChangeDefendingForceAction(evt))
+                        new FloatMenuOption("FCChangeDefendingForce".Translate(), () => ChangeDefendingForceAction(evt))
                     };
 
                     var floatMenu = new FloatMenu(list)
@@ -238,7 +238,7 @@ namespace FactionColonies
             {
                 new FloatMenuOption
                 (
-                    "ResetToHomeSettlement".Translate(settlementMilitaryLevel, (homeWinChance * 100).ToString("F0")),
+                    "FCResetToHomeSettlement".Translate(settlementMilitaryLevel, (homeWinChance * 100).ToString("F0")),
                     delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, WorldSettlement); },
                     MenuOptionPriority.High
                 )
@@ -279,14 +279,14 @@ namespace FactionColonies
                 MilitaryForce extForce = d.CreateDefendingForce();
                 double extWc = SimulateBattleFc.CalculateDefenderWinChance(attackForce, extForce);
                 settlementList.Add(new FloatMenuOption(
-                    d.WorldObject.LabelCap + " (" + "MilitaryLevel".Translate() + " " + d.MilitaryLevel
+                    d.WorldObject.LabelCap + " (" + "FCMilitaryLevel".Translate() + " " + d.MilitaryLevel
                         + " - Victory: " + (extWc * 100).ToString("F0") + "%)",
                     delegate { MilitaryUtilFC.ChangeDefendingToExternalForce(evt, d); }
                 ));
             }
 
             if (settlementList.Count == 0)
-                settlementList.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
+                settlementList.Add(new FloatMenuOption("FCNoValidMilitaries".Translate(), null));
 
             var floatMenu2 = new FloatMenu(settlementList)
             {
@@ -311,8 +311,8 @@ namespace FactionColonies
         {
             Command_Action defendColonyCaravan = new Command_Action
             {
-                defaultLabel = "DefendColony".Translate(),
-                defaultDesc = "DefendColonyDesc".Translate(),
+                defaultLabel = "FCDefendColony".Translate(),
+                defaultDesc = "FCDefendColonyDesc".Translate(),
                 icon = TexLoad.iconMilitary,
                 action = () =>
                 {
@@ -334,15 +334,15 @@ namespace FactionColonies
         {
             if (!WorldSettlement.settlementDef.supportsManualBattle)
             {
-                return new AcceptanceReport("settlementTypeNoManualBattle".Translate());
+                return new AcceptanceReport("FCSettlementTypeNoManualBattle".Translate());
             }
             if (FCSettings.battleMode == BattleMode.Auto)
             {
-                return new AcceptanceReport("autoBattleEnabledNoManualFight".Translate());
+                return new AcceptanceReport("FCAutoBattleEnabledNoManualFight".Translate());
             }
             if (FCSettings.battleMode == BattleMode.Hybrid && !IsPlayerCaravanOnTile())
             {
-                return new AcceptanceReport("hybridBattleEnabledNoManualFight".Translate());
+                return new AcceptanceReport("FCHybridBattleEnabledNoManualFight".Translate());
             }
             return AcceptanceReport.WasAccepted;
         }
@@ -498,7 +498,7 @@ namespace FactionColonies
                 {
                     DeliveryEvent.CreateDeliveryEvent(eventParams);
                     string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
-                    pendingDeliveryMessage = "InjuredCaravanMembersReturning".Translate(pawns.Count, travelDays);
+                    pendingDeliveryMessage = "FCInjuredCaravanMembersReturning".Translate(pawns.Count, travelDays);
                 }
             }
 
@@ -633,8 +633,8 @@ namespace FactionColonies
                     ? new GlobalTargetInfo(defenders[0])
                     : new GlobalTargetInfo(new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2), Map);
                 Find.LetterStack.ReceiveLetter(
-                    "ManualBattleStarted".Translate(WorldSettlement.Name),
-                    "ManualBattleStartedDesc".Translate(WorldSettlement.Name, enemyName),
+                    "FCManualBattleStarted".Translate(WorldSettlement.Name),
+                    "FCManualBattleStartedDesc".Translate(WorldSettlement.Name, enemyName),
                     LetterDefOf.ThreatBig,
                     new LookTargets(jumpTarget));
             }
@@ -925,7 +925,7 @@ namespace FactionColonies
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (won && remaining >= initialDefenderCount)
                 {
-                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
+                    Find.LetterStack.ReceiveLetter("FCOverwhelmingVictory".Translate(), "FCOverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     homeComp?.ReturnMilitary(true);
                 }
                 else
@@ -943,7 +943,7 @@ namespace FactionColonies
                 int battleDeaths = Math.Max(0, initialDefenderCount - remaining);
                 if (won && remaining >= initialDefenderCount)
                 {
-                    Find.LetterStack.ReceiveLetter("OverwhelmingVictory".Translate(), "OverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
+                    Find.LetterStack.ReceiveLetter("FCOverwhelmingVictory".Translate(), "FCOverwhelmingVictoryDesc".Translate(), LetterDefOf.PositiveEvent);
                     defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(true);
                 }
                 else
@@ -986,10 +986,10 @@ namespace FactionColonies
             WorldSettlement.happiness -= happinessLoss;
             WorldSettlement.loyalty -= loyaltyLoss;
 
-            string str = "DefenseFailureFull".Translate(WorldSettlement.Name);
+            string str = "FCDefenseFailureFull".Translate(WorldSettlement.Name);
 
             // Penalty summary
-            str += "\n\n" + "DefenseFailurePenaltiesHeader".Translate();
+            str += "\n\n" + "FCDefenseFailurePenaltiesHeader".Translate();
 
             int displayProsperity = (int)Math.Round(prosperityLoss);
             int displayHappiness = (int)Math.Round(happinessLoss);
@@ -997,15 +997,15 @@ namespace FactionColonies
 
             if (displayProsperity > 0)
             {
-                str += "\n  - " + "DefenseFailureProsperityLoss".Translate(displayProsperity);
+                str += "\n  - " + "FCDefenseFailureProsperityLoss".Translate(displayProsperity);
             }
             if (displayHappiness > 0)
             {
-                str += "\n  - " + "DefenseFailureHappinessLoss".Translate(displayHappiness);
+                str += "\n  - " + "FCDefenseFailureHappinessLoss".Translate(displayHappiness);
             }
             if (displayLoyalty > 0)
             {
-                str += "\n  - " + "DefenseFailureLoyaltyLoss".Translate(displayLoyalty);
+                str += "\n  - " + "FCDefenseFailureLoyaltyLoss".Translate(displayLoyalty);
             }
 
             if (canDestroyBuildings && WorldSettlement?.BuildingsComp != null)
@@ -1040,14 +1040,14 @@ namespace FactionColonies
 
                 foreach (int k in candidates)
                 {
-                    str += "\n  - " + "BuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.BuildingLabel(k));
+                    str += "\n  - " + "FCBuildingDestroyedInRaid".Translate(WorldSettlement.BuildingsComp.BuildingLabel(k));
                     WorldSettlement.DeconstructBuilding(k);
                 }
             }
 
             if (!canDestroyBuildings)
             {
-                str += "\n  - " + "DefenseFailureBuildingsProtected".Translate();
+                str += "\n  - " + "FCDefenseFailureBuildingsProtected".Translate();
             }
 
             // level remover checker — uses same destruction stat scaling
@@ -1056,7 +1056,7 @@ namespace FactionColonies
                 var num = new IntRange(0, 10).RandomInRange;
                 if (num >= deconstructChance)
                 {
-                    str += "\n  - " + "SettlementDeleveledRaid".Translate();
+                    str += "\n  - " + "FCSettlementDeleveledRaid".Translate();
                     WorldSettlement.DelevelSettlement();
                 }
             }
@@ -1065,7 +1065,7 @@ namespace FactionColonies
             {
                 str += "\n\n" + pendingDeliveryMessage;
             }
-            Find.LetterStack.ReceiveLetter("DefenseFailure".Translate(), str, LetterDefOf.Death,
+            Find.LetterStack.ReceiveLetter("FCDefenseFailure".Translate(), str, LetterDefOf.Death,
                 new LookTargets(WorldSettlement));
         }
 
@@ -1073,12 +1073,12 @@ namespace FactionColonies
         {
             faction.AddExperienceToFactionLevel(5f);
             faction.threatAdaptation.Notify_BattleWon();
-            string text = "DefenseSuccessfulFull".Translate(WorldSettlement.Name);
+            string text = "FCDefenseSuccessfulFull".Translate(WorldSettlement.Name);
             if (!string.IsNullOrEmpty(pendingDeliveryMessage))
             {
                 text += "\n\n" + pendingDeliveryMessage;
             }
-            Find.LetterStack.ReceiveLetter("DefenseSuccessful".Translate(),
+            Find.LetterStack.ReceiveLetter("FCDefenseSuccessful".Translate(),
                 text,
                 LetterDefOf.PositiveEvent, new LookTargets(WorldSettlement));
         }
@@ -1138,8 +1138,8 @@ namespace FactionColonies
             LongEventHandler.QueueLongEvent(EndAttack,
                 "EndingAttack", false, error =>
                 {
-                    DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
-                        "ErrorEndingAttackDescription".Translate());
+                    DelayedErrorWindowRequest.Add("FCErrorEndingAttack".Translate(),
+                        "FCErrorEndingAttackDescription".Translate());
                     LogUtil.Error(error.Message);
                 });
         }
@@ -1153,8 +1153,8 @@ namespace FactionColonies
             LongEventHandler.QueueLongEvent(EndAttack,
                 "EndingAttack", false, error =>
                 {
-                    DelayedErrorWindowRequest.Add("ErrorEndingAttack".Translate(),
-                        "ErrorEndingAttackDescription".Translate());
+                    DelayedErrorWindowRequest.Add("FCErrorEndingAttack".Translate(),
+                        "FCErrorEndingAttackDescription".Translate());
                     LogUtil.Error(error.Message);
                 });
         }
@@ -1313,7 +1313,7 @@ namespace FactionColonies
             tmp.hasCustomDescription = true;
             tmp.timeTillTrigger = Find.TickManager.TicksGame + cooldown;
             tmp.location = WorldSettlement.Tile;
-            tmp.customDescription = "MilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
+            tmp.customDescription = "FCMilitaryForcesReorganizing".Translate(WorldSettlement.Name); // + 
             FactionCache.FactionComp.AddEvent(tmp);
         }
 
@@ -1321,7 +1321,7 @@ namespace FactionColonies
         {
             if (militaryBusy && !silent)
             {
-                Messages.Message("militaryAlreadyAssigned".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCMilitaryAlreadyAssigned".Translate(), MessageTypeDefOf.RejectInput);
             }
 
             return militaryBusy;
@@ -1372,7 +1372,7 @@ namespace FactionColonies
         {
             if (FactionCache.FactionComp.militaryTargets.Contains(location))
             {
-                Messages.Message("targetAlreadyBeingAttacked".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCTargetAlreadyBeingAttacked".Translate(), MessageTypeDefOf.RejectInput);
                 return true;
             }
 
