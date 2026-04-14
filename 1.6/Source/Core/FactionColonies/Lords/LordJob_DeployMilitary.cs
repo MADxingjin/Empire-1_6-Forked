@@ -165,7 +165,7 @@ namespace FactionColonies
                         new TransitionAction_Custom(delegate()
                         {
                             deployedMilitaryCommandMenu.squadMilitaryOrderDic.SetOrAdd(squad, MilitaryOrder.RecoverWoundedAndLeave);
-                            Messages.Message("militaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
+                            Messages.Message("FCMilitaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
                         })
                     }
                 };

@@ -12,7 +12,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.enslaveEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesEnslave".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
+            evt.customDescription = "FCSettlementMilitaryForcesEnslave".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Settlement target = Find.WorldObjects.SettlementAt(location);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentEnslave".Translate(milComp.WorldSettlement.Name, target?.LabelCap ?? (TaggedString)""), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
@@ -43,19 +43,19 @@ namespace FactionColonies
                 for (int i = 0; i <= num; i++)
                 {
                     Pawn prisoner = PaymentUtil.GeneratePrisoner(milComp.militaryEnemy);
-                    text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name) + "\n";
+                    text += "FCPrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name) + "\n";
                     milComp.WorldSettlement.AddPrisoner(prisoner);
                 }
 
-                Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                    "RaidEnemySettlementSuccess".Translate(
+                Find.LetterStack.ReceiveLetter("FCRaidLoot".Translate(),
+                    "FCRaidEnemySettlementSuccess".Translate(
                         target.LabelCap) + "\n" + text,
                     LetterDefOf.PositiveEvent, new LookTargets(target));
             }
             else if (result.DefenderVictory)
             {
-                Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                    "RaidEnemySettlementFailure".Translate(
+                Find.LetterStack.ReceiveLetter("FCRaidFailure".Translate(),
+                    "FCRaidEnemySettlementFailure".Translate(
                         target.LabelCap), LetterDefOf.NegativeEvent,
                     new LookTargets(target));
             }

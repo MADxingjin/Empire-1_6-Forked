@@ -4,7 +4,7 @@
 	<MainButtonDef>
 		<defName>PColonyMainButton</defName>
 		<label>Settlements</label>
-		<description>Settle and manage your NPC Colonies</description>
+		<description>Found and manage your NPC settlements</description>
 		<tabWindowClass>FactionColonies.MainTabWindow_Colony</tabWindowClass>
 		<buttonVisible>true</buttonVisible>
 		<order>498</order>

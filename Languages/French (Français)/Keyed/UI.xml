@@ -1,95 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><Name>Nom</Name>
+<LanguageData><FCName>Nom</FCName>
 	
-  <None>Aucune</None>
+  <FCNone>Aucune</FCNone>
 	
-  <No>Non</No>
+  <FCNo>Non</FCNo>
 	
-  <Yes>Oui</Yes>
+  <FCYes>Oui</FCYes>
 	
-  <Set>Définir</Set>
+  <FCSet>Définir</FCSet>
 	
-  <Deploy>Déployer</Deploy>
+  <FCDeploy>Déployer</FCDeploy>
 	
-  <Reset>Réinitialiser</Reset>
+  <FCReset>Réinitialiser</FCReset>
 	
-  <Base>Base</Base>
+  <FCBase>Base</FCBase>
 	
-  <Modifier>Modificateur</Modifier>
+  <FCModifier>Modificateur</FCModifier>
 	
-  <Final>Final</Final>
+  <FCFinal>Final</FCFinal>
 	
-  <Effect>Effet</Effect>
+  <FCEffect>Effet</FCEffect>
 	
-  <Info>Infos</Info>
+  <FCInfo>Infos</FCInfo>
 	
-  <Total>total</Total>
+  <FCTotal>total</FCTotal>
 	
-  <Mult>Mult.</Mult>
+  <FCMult>Mult.</FCMult>
 	
-  <Date>Date</Date>
+  <FCDate>Date</FCDate>
 	
-  <Selected>Sélectionné</Selected>
+  <FCSelected>Sélectionné</FCSelected>
 	
-  <Select>Sélectionner</Select>
+  <FCSelect>Sélectionner</FCSelect>
 	
   <FCIsAllowed>Activé</FCIsAllowed>
 	
   <FCIsNotAllowed>Désactivé</FCIsNotAllowed>
 	
-  <PerWorker>Par ouvrier</PerWorker>
+  <FCPerWorker>Par ouvrier</FCPerWorker>
 	
-  <NumRatio>{0}/{1}</NumRatio>
+  <FCNumRatio>{0}/{1}</FCNumRatio>
 	
-  <aSettlement>une colonie</aSettlement>
+  <FCASettlement>une colonie</FCASettlement>
 	
-  <AddedInFuture>Cela sera étoffé à l’avenir</AddedInFuture>
+  <FCAddedInFuture>Cela sera étoffé à l’avenir</FCAddedInFuture>
 	
-  <Item>Objet</Item>
+  <FCItem>Objet</FCItem>
 
 	
 	
-  <Colonies>Colonies</Colonies>
+  <FCColonies>Colonies</FCColonies>
 	
-  <Bills>Ordres</Bills>
+  <FCBills>Ordres</FCBills>
 	
-  <Events>Événements</Events>
+  <FCEvents>Événements</FCEvents>
 	
-  <Settlement>Colonie</Settlement>
+  <FCSettlement>Colonie</FCSettlement>
 	
-  <Settlements>Colonies</Settlements>
+  <FCSettlements>Colonies</FCSettlements>
 	
-  <Overview>Aperçu</Overview>
 	
   <FCOverview>Aperçu</FCOverview>
 	
-  <TravelTime>Temps de trajet</TravelTime>
+  <FCTravelTime>Temps de trajet</FCTravelTime>
 	
-  <ConstructionTime>Temps de construction</ConstructionTime>
+  <FCConstructionTime>Temps de construction</FCConstructionTime>
 
 	
 	
-  <ButtonNotAvailable>Ce bouton n’est pas encore disponible</ButtonNotAvailable>
+  <FCButtonNotAvailable>Ce bouton n’est pas encore disponible</FCButtonNotAvailable>
 	
-  <ConfirmChanges>Confirmer les changements</ConfirmChanges>
+  <FCConfirmChanges>Confirmer les changements</FCConfirmChanges>
 	
   <FCConfirm>Confirmer</FCConfirm>
 	
   <FCConfirmDecision>Confirmer la décision</FCConfirmDecision>
 	
-  <View>Voir</View>
+  <FCView>Voir</FCView>
 	
-  <GoTo>Aller à</GoTo>
+  <FCGoTo>Aller à</FCGoTo>
 	
-  <Report>Rapport</Report>
+  <FCReport>Rapport</FCReport>
 	
-  <Reports>Rapports</Reports>
+  <FCReports>Rapports</FCReports>
 	
-  <Actions>Actions</Actions>
+  <FCActions>Actions</FCActions>
 	
-  <ViewInfo>Voir les infos</ViewInfo>
+  <FCViewInfo>Voir les infos</FCViewInfo>
 	
-  <SetMap>Définir la carte</SetMap>
+  <FCSetMap>Définir la carte</FCSetMap>
 	
   <FCActionAvailable>Action disponible</FCActionAvailable>
 
@@ -121,11 +120,11 @@
 	
   <FCBuildingLockedMax>Maximum bâtiment slots reached pour ce colonie type.</FCBuildingLockedMax>
 	
-  <Capital>Capitale</Capital>
+  <FCCapital>Capitale</FCCapital>
 
 	
 	
-  <FloatMenuSearchable>Tapez pour rechercher :</FloatMenuSearchable>
+  <FCFloatMenuSearchable>Tapez pour rechercher :</FCFloatMenuSearchable>
 	
   <FCSMFForceOpen>Forcer l’ouverture</FCSMFForceOpen>
 

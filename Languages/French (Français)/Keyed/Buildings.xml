@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><ConstructBuilding>Construire un bâtiment</ConstructBuilding>
+<LanguageData><FCConstructBuilding>Construire un bâtiment</FCConstructBuilding>
 	
-  <Construct>Construire</Construct>
+  <FCConstruct>Construire</FCConstruct>
 	
-  <Build>Construire</Build>
+  <FCBuild>Construire</FCBuild>
 	
-  <Built>Construit</Built>
+  <FCBuilt>Construit</FCBuilt>
 	
-  <WillBeConstructedIn>sera construit dans</WillBeConstructedIn>
+  <FCWillBeConstructedIn>sera construit dans</FCWillBeConstructedIn>
 	
-  <HasBeenConstructedAt>a été construit à</HasBeenConstructedAt>
+  <FCHasBeenConstructedAt>a été construit à</FCHasBeenConstructedAt>
 	
   <Empire_BuildingWindow_ConstructionDesc>Actuellement en construction : {0}</Empire_BuildingWindow_ConstructionDesc>
 	
-  <BuildTime>Temps de construction : {0}</BuildTime>
+  <FCBuildTime>Temps de construction : {0}</FCBuildTime>
 
 	
 	
-  <BuildingSurfaceOnly>Ce bâtiment ne peut être construit que dans les colonies de surface</BuildingSurfaceOnly>
+  <FCBuildingSurfaceOnly>Ce bâtiment ne peut être construit que dans les colonies de surface</FCBuildingSurfaceOnly>
 	
-  <BuildingOrbitalOnly>Ce bâtiment ne peut être construit que sur des plateformes orbitales</BuildingOrbitalOnly>
+  <FCBuildingOrbitalOnly>Ce bâtiment ne peut être construit que sur des plateformes orbitales</FCBuildingOrbitalOnly>
 	
-  <BuildingInvalidSettlement>{0} ne peut pas être construit dans une {1}</BuildingInvalidSettlement>
+  <FCBuildingInvalidSettlement>{0} ne peut pas être construit dans une {1}</FCBuildingInvalidSettlement>
 	
-  <BuildingAlreadyType>Il y a déjà un bâtiment de ce type</BuildingAlreadyType>
+  <FCBuildingAlreadyType>Il y a déjà un bâtiment de ce type</FCBuildingAlreadyType>
 	
-  <BuildingBeingBuiltAlreadyType>Un bâtiment de ce type est déjà en cours de construction</BuildingBeingBuiltAlreadyType>
+  <FCBuildingBeingBuiltAlreadyType>Un bâtiment de ce type est déjà en cours de construction</FCBuildingBeingBuiltAlreadyType>
 	
-  <BuildingAlreadyConstructed>Un bâtiment est déjà en cours de construction à cet emplacement</BuildingAlreadyConstructed>
+  <FCBuildingAlreadyConstructed>Un bâtiment est déjà en cours de construction à cet emplacement</FCBuildingAlreadyConstructed>
 
 	
 	
-  <Destroy>Détruire</Destroy>
+  <FCDestroy>Détruire</FCDestroy>
 	
   <FCDemolish>Démolir</FCDemolish>
 	
@@ -43,15 +43,15 @@
 
 	
 	
-  <BuildingFilterAll>Tout</BuildingFilterAll>
+  <FCBuildingFilterAll>Tout</FCBuildingFilterAll>
 	
-  <BuildingFilterHappiness>Bonheur</BuildingFilterHappiness>
+  <FCBuildingFilterHappiness>Bonheur</FCBuildingFilterHappiness>
 	
-  <BuildingFilterBasetax>Impôt</BuildingFilterBasetax>
+  <FCBuildingFilterBasetax>Impôt</FCBuildingFilterBasetax>
 	
-  <BuildingFilterWorkers>Ouvriers</BuildingFilterWorkers>
+  <FCBuildingFilterWorkers>Ouvriers</FCBuildingFilterWorkers>
 	
-  <BuildingFilterMilitary>Militaire</BuildingFilterMilitary>
+  <FCBuildingFilterMilitary>Militaire</FCBuildingFilterMilitary>
 
 	
 	
@@ -85,11 +85,11 @@
 	
   <Empire_BuildingWindow_SlotUpgrades>Améliorations</Empire_BuildingWindow_SlotUpgrades>
 	
-  <BuildingUpgrades>Améliorations de bâtiment</BuildingUpgrades>
+  <FCBuildingUpgrades>Améliorations de bâtiment</FCBuildingUpgrades>
 	
-  <Buildings>structures</Buildings>
+  <FCBuildings>structures</FCBuildings>
 	
-  <Facilities>Installations</Facilities>
+  <FCFacilities>Installations</FCFacilities>
 	
   <FCSearchBuildings>Rechercher...</FCSearchBuildings>
 

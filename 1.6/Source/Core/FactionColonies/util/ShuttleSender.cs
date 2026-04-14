@@ -114,25 +114,25 @@ namespace FactionColonies.util
         {
             if (!ChoseWorldTarget(target))
             {
-                return "targetAnythingWithColonists".Translate();
+                return "FCTargetAnythingWithColonists".Translate();
             }
 
             if (target.WorldObject is Caravan)
             {
-                return "requestShuttleToCaravan".Translate();
+                return "FCRequestShuttleToCaravan".Translate();
             }
 
             if (target.WorldObject is Settlement)
             {
-                return "requestShuttleToColony".Translate();
+                return "FCRequestShuttleToColony".Translate();
             }
 
             if (target.WorldObject is MapParent)
             {
-                return "requestShuttleToMap".Translate();
+                return "FCRequestShuttleToMap".Translate();
             }
 
-            return "targetAnythingWithColonists".Translate();
+            return "FCTargetAnythingWithColonists".Translate();
         }
 
         public void DrawWorldRadiusRing() => GenDraw.DrawWorldRadiusRing(Tile, ShuttleRange);

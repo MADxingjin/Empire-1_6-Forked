@@ -2,34 +2,32 @@
 <LanguageData>
 
   <!-- Выбор ксенотипа/расы -->
-  <XenotypeSelection>Выбор ксенотипа</XenotypeSelection>
-  <RaceSelection>Выбор расы</RaceSelection>
-  <XenotypeRaceSelection>Выбор ксенотипа и расы</XenotypeRaceSelection>
-  <AllowedRaces>Допустимые расы</AllowedRaces>
-  <CannotHaveLessThanOneRace>В вашей фракции не может быть меньше одной расы</CannotHaveLessThanOneRace>
-  <AllowedXenotypes>Допустимые ксенотипы</AllowedXenotypes>
-  <CannotHaveLessThanOneXenotype>В вашей фракции не может быть меньше одного ксенотипа</CannotHaveLessThanOneXenotype>
-  <SecurityGuardsIncluded>Для неагрессивных ксенотипов будут предоставлены охранники</SecurityGuardsIncluded>
+  <FCXenotypeSelection>Выбор ксенотипа</FCXenotypeSelection>
+  <FCRaceSelection>Выбор расы</FCRaceSelection>
+  <FCXenotypeRaceSelection>Выбор ксенотипа и расы</FCXenotypeRaceSelection>
+  <FCAllowedRaces>Допустимые расы</FCAllowedRaces>
+  <FCCannotHaveLessThanOneRace>В вашей фракции не может быть меньше одной расы</FCCannotHaveLessThanOneRace>
+  <FCAllowedXenotypes>Допустимые ксенотипы</FCAllowedXenotypes>
+  <FCCannotHaveLessThanOneXenotype>В вашей фракции не может быть меньше одного ксенотипа</FCCannotHaveLessThanOneXenotype>
+  <FCSecurityGuardsIncluded>Для неагрессивных ксенотипов будут предоставлены охранники</FCSecurityGuardsIncluded>
 
   <!-- Ошибки веса -->
-  <XenotypeWeightError>Все ксенотипы имеют вес 0!</XenotypeWeightError>
-  <XenotypeWeightErrorDesc>Если вы закроете это окно, пока все ксенотипы имеют вес 0, то все они будут сброшены к весу 1.</XenotypeWeightErrorDesc>
-  <RaceWeightError>Все расы имеют вес 0!</RaceWeightError>
-  <RaceWeightErrorDesc>Если вы закроете это окно, пока все расы имеют вес 0, то все они будут сброшены к весу 1.</RaceWeightErrorDesc>
+  <FCXenotypeWeightError>Все ксенотипы имеют вес 0!</FCXenotypeWeightError>
+  <FCXenotypeWeightErrorDesc>Если вы закроете это окно, пока все ксенотипы имеют вес 0, то все они будут сброшены к весу 1.</FCXenotypeWeightErrorDesc>
+  <FCRaceWeightError>Все расы имеют вес 0!</FCRaceWeightError>
+  <FCRaceWeightErrorDesc>Если вы закроете это окно, пока все расы имеют вес 0, то все они будут сброшены к весу 1.</FCRaceWeightErrorDesc>
 
   <!-- Опции включения/отключения -->
-  <XenoRaceEnableAll>Включить все</XenoRaceEnableAll>
-  <XenoDisableNonBaseliner>Отключить все, кроме базовых</XenoDisableNonBaseliner>
-  <RaceDisableNonHuman>Отключить не-людей</RaceDisableNonHuman>
-  <Empire_XenotypeMenus_EnableAll>Включить все</Empire_XenotypeMenus_EnableAll>
-  <Empire_XenotypeMenus_DisableNonBaseliner>Отключить все, кроме базовых</Empire_XenotypeMenus_DisableNonBaseliner>
+  <FCXenoRaceEnableAll>Включить все</FCXenoRaceEnableAll>
+  <FCXenoDisableNonBaseliner>Отключить все, кроме базовых</FCXenoDisableNonBaseliner>
+  <FCRaceDisableNonHuman>Отключить не-людей</FCRaceDisableNonHuman>
 
   <!-- Подсказка фракции -->
-  <EmpireMemberRaceChances>Шансы расы членов</EmpireMemberRaceChances>
+  <FCEmpireMemberRaceChances>Шансы расы членов</FCEmpireMemberRaceChances>
 
   <!-- Предупреждения -->
-  <DisabledHumanWarning>Раса «Человек» отключена, но может все еще появляться как запасной вариант, если выбранные вами расы не имеют подходящих вариантов типов персонажей.</DisabledHumanWarning>
-  <XenoNonViolentIndicatorDesc>Ксенотип считается неагрессивным.</XenoNonViolentIndicatorDesc>
-  <OnlyNonViolentXenoWarning>Выбраны только неагрессивные ксенотипы. Вы все равно увидите базовых людей, если потребуется агрессия.</OnlyNonViolentXenoWarning>
+  <FCDisabledHumanWarning>Раса «Человек» отключена, но может все еще появляться как запасной вариант, если выбранные вами расы не имеют подходящих вариантов типов персонажей.</FCDisabledHumanWarning>
+  <FCXenoNonViolentIndicatorDesc>Ксенотип считается неагрессивным.</FCXenoNonViolentIndicatorDesc>
+  <FCOnlyNonViolentXenoWarning>Выбраны только неагрессивные ксенотипы. Вы все равно увидите базовых людей, если потребуется агрессия.</FCOnlyNonViolentXenoWarning>
 
 </LanguageData>

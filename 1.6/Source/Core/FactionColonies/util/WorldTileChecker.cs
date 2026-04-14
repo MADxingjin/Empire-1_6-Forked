@@ -10,7 +10,7 @@ namespace FactionColonies.util
         {
             if (tile == -1)
             {
-                reason?.Append("selectedInvalidTile".Translate());
+                reason?.Append("FCSelectedInvalidTile".Translate());
                 return false;
             }
 
@@ -18,7 +18,7 @@ namespace FactionColonies.util
             {
                 if (tile.Layer != Find.WorldGrid.Surface)
                 {
-                    reason?.Append("InvalidPlanetLayer".Translate());
+                    reason?.Append("FCInvalidPlanetLayer".Translate());
                     return false;
                 }
             }
@@ -26,7 +26,7 @@ namespace FactionColonies.util
             {
                 if (!settlementdef.planetLayers.Contains(tile.Layer.Def))
                 {
-                    reason?.Append("InvalidPlanetLayer".Translate());
+                    reason?.Append("FCInvalidPlanetLayer".Translate());
                     return false;
                 }
             }

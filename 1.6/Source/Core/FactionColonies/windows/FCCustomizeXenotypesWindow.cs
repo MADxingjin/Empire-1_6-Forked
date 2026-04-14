@@ -89,11 +89,11 @@ namespace FactionColonies
             string titleText;
             if (allRaces.Count > 1)
             {
-                titleText = "XenotypeRaceSelection".Translate();
+                titleText = "FCXenotypeRaceSelection".Translate();
             }
             else
             {
-                titleText = "XenotypeSelection".Translate();
+                titleText = "FCXenotypeSelection".Translate();
             }
 
             Text.Font = GameFont.Medium;
@@ -133,27 +133,27 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(header);
-            Widgets.Label(headerText, "XenotypeSelection".Translate());
+            Widgets.Label(headerText, "FCXenotypeSelection".Translate());
 
             float bottomY = boundingBox.yMax;
             if (filter.XenoCompleteWeight == 0)
             {
                 Rect errorBox = new Rect(boundingBox.x, boundingBox.yMax - bigRowHeight, boundingBox.width, bigRowHeight);
                 Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y + smallMargin, errorBox.width - (smallMargin * 2), errorBox.height - smallMargin);
-                TaggedString errorText = "XenotypeWeightError".Translate();
+                TaggedString errorText = "FCXenotypeWeightError".Translate();
                 errorText = errorText.Colorize(Color.red);
 
                 Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(errorLabel, errorText);
-                TooltipHandler.TipRegion(errorBox, "XenotypeWeightErrorDesc".Translate());
+                TooltipHandler.TipRegion(errorBox, "FCXenotypeWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
             }
             if (filter.OnlyNonViolentXenos)
             {
-                string noticeText = "OnlyNonViolentXenoWarning".Translate();
+                string noticeText = "FCOnlyNonViolentXenoWarning".Translate();
                 float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
                 Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight, boundingBox.width, textHeight);
                 Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
@@ -168,7 +168,7 @@ namespace FactionColonies
             }
             if (FactionCache.NonViolentXenotypesExist)
             {
-                string noticeText = "* " + "XenoNonViolentIndicatorDesc".Translate();
+                string noticeText = "* " + "FCXenoNonViolentIndicatorDesc".Translate();
                 float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
                 Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight, boundingBox.width, textHeight);
                 Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
@@ -183,11 +183,11 @@ namespace FactionColonies
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
             Rect disableButton = new Rect(enableButton.xMax, enableButton.y, enableButton.width, enableButton.height);
-            if (Widgets.ButtonText(enableButton, "XenoRaceEnableAll".Translate()))
+            if (Widgets.ButtonText(enableButton, "FCXenoRaceEnableAll".Translate()))
             {
                 filter.ResetToAllXenotypes();
             }
-            if (Widgets.ButtonText(disableButton, "XenoDisableNonBaseliner".Translate()))
+            if (Widgets.ButtonText(disableButton, "FCXenoDisableNonBaseliner".Translate()))
             {
                 filter.ResetToBaselinerXenotypeOnly();
             }
@@ -291,21 +291,21 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.DrawHighlight(header);
-            Widgets.Label(headerText, "RaceSelection".Translate());
+            Widgets.Label(headerText, "FCRaceSelection".Translate());
 
             float bottomY = boundingBox.yMax;
             if (filter.RaceTotalWeight == 0)
             {
                 Rect errorBox = new Rect(boundingBox.x, boundingBox.yMax - bigRowHeight, boundingBox.width, bigRowHeight);
                 Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y, errorBox.width - (smallMargin * 2), errorBox.height);
-                TaggedString errorText = "RaceWeightError".Translate();
+                TaggedString errorText = "FCRaceWeightError".Translate();
                 errorText = errorText.Colorize(Color.red);
 
                 Widgets.DrawHighlight(errorBox);
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(errorLabel, errorText);
-                TooltipHandler.TipRegion(errorBox, "RaceWeightErrorDesc".Translate());
+                TooltipHandler.TipRegion(errorBox, "FCRaceWeightErrorDesc".Translate());
 
                 bottomY -= (errorBox.height + margin);
             }
@@ -314,7 +314,7 @@ namespace FactionColonies
             // The pawnkind construction is pretty iffy though, so I'm leaving this code here in case we want to re-enable it at some point
             /*else if (filter.GetRaceWeight(ThingDefOf.Human) == 0)
             {
-                string noticeText = "DisabledHumanWarning".Translate();
+                string noticeText = "FCDisabledHumanWarning".Translate();
                 float textHeight = Text.CalcHeight(noticeText, boundingBox.width - (smallMargin * 2));
                 Rect noticeBox = new Rect(boundingBox.x, bottomY - textHeight - (smallMargin * 2), boundingBox.width, textHeight + (smallMargin * 2));
                 Rect noticeLabel = new Rect(noticeBox.x + smallMargin, noticeBox.y, noticeBox.width - (smallMargin * 2), textHeight);
@@ -329,11 +329,11 @@ namespace FactionColonies
 
             Rect enableButton = new Rect(boundingBox.x, bottomY - bigRowHeight, boundingBox.width / 2, bigRowHeight);
             Rect disableButton = new Rect(enableButton.xMax, enableButton.y, enableButton.width, enableButton.height);
-            if (Widgets.ButtonText(enableButton, "XenoRaceEnableAll".Translate()))
+            if (Widgets.ButtonText(enableButton, "FCXenoRaceEnableAll".Translate()))
             {
                 filter.ResetToAllRaces();
             }
-            if (Widgets.ButtonText(disableButton, "RaceDisableNonHuman".Translate()))
+            if (Widgets.ButtonText(disableButton, "FCRaceDisableNonHuman".Translate()))
             {
                 filter.ResetToHumanRaceOnly();
             }

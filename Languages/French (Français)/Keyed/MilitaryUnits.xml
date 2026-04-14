@@ -21,31 +21,31 @@
 	
   <FCResetSquadRejected>Il n’y a aucun pion à réinitialiser. Assignez d’abord une escouade.</FCResetSquadRejected>
 	
-  <selectDeployedSquad>Sélectionner l’escouade déployée</selectDeployedSquad>
+  <FCSelectDeployedSquad>Sélectionner l’escouade déployée</FCSelectDeployedSquad>
 	
-  <selectedDeployedSquad>{1} de {0}</selectedDeployedSquad>
+  <FCSelectedDeployedSquad>{1} de {0}</FCSelectedDeployedSquad>
 	
-  <noSquadsAvailable>Aucune escouade disponible</noSquadsAvailable>
+  <FCNoSquadsAvailable>Aucune escouade disponible</FCNoSquadsAvailable>
 
 	
 	
-  <ExportUnit>Unité exportée</ExportUnit>
+  <FCExportUnit>Unité exportée</FCExportUnit>
 	
-  <ExportSquad>Escouade exportée</ExportSquad>
+  <FCExportSquad>Escouade exportée</FCExportSquad>
 	
-  <CantBeModified>{0} ne peut pas être modifié : {1}</CantBeModified>
+  <FCCantBeModified>{0} ne peut pas être modifié : {1}</FCCantBeModified>
 	
-  <ReasonDeployed>Une escouade qui le contient est déployée</ReasonDeployed>
+  <FCReasonDeployed>Une escouade qui le contient est déployée</FCReasonDeployed>
 	
-  <ReasonDefending>Une escouade qui le contient défend une colonie</ReasonDefending>
+  <FCReasonDefending>Une escouade qui le contient défend une colonie</FCReasonDefending>
 	
-  <ReasonDeployedSquad>L’escouade est actuellement déployée</ReasonDeployedSquad>
+  <FCReasonDeployedSquad>L’escouade est actuellement déployée</FCReasonDeployedSquad>
 	
-  <ReasonDefendingSquad>L’escouade défend actuellement une colonie</ReasonDefendingSquad>
+  <FCReasonDefendingSquad>L’escouade défend actuellement une colonie</FCReasonDefendingSquad>
 	
-  <importUnit>Importer une unité</importUnit>
+  <FCImportUnit>Importer une unité</FCImportUnit>
 	
-  <clearUnitSlot>Vider l’emplacement de l’unité</clearUnitSlot>
+  <FCClearUnitSlot>Vider l’emplacement de l’unité</FCClearUnitSlot>
 
 	
 	
@@ -75,25 +75,25 @@
 	
   <FCConfirmDeleteUnit>Êtes-vous sûr de vouloir supprimer « {0} » ?</FCConfirmDeleteUnit>
 	
-  <resetUnitToDefaultButton>Réinitialiser par défaut</resetUnitToDefaultButton>
+  <FCResetUnitToDefaultButton>Réinitialiser par défaut</FCResetUnitToDefaultButton>
 	
-  <deleteUnitButton>Supprimer l’unité</deleteUnitButton>
+  <FCDeleteUnitButton>Supprimer l’unité</FCDeleteUnitButton>
 	
-  <selectAUnitButton>Sélectionner une unité</selectAUnitButton>
+  <FCSelectAUnitButton>Sélectionner une unité</FCSelectAUnitButton>
 	
-  <rollANewUnitButton>Générer un nouveau pion</rollANewUnitButton>
+  <FCRollANewUnitButton>Générer un nouveau pion</FCRollANewUnitButton>
 	
-  <changeUnitRaceButton>Changer la race</changeUnitRaceButton>
+  <FCChangeUnitRaceButton>Changer la race</FCChangeUnitRaceButton>
 	
-  <changeUnitXenoButton>Changer le xénotype</changeUnitXenoButton>
+  <FCChangeUnitXenoButton>Changer le xénotype</FCChangeUnitXenoButton>
 	
-  <exportUnitButton>Exporter l’unité</exportUnitButton>
+  <FCExportUnitButton>Exporter l’unité</FCExportUnitButton>
 
 	
 	
-  <totalEquipmentCostLabel>Coût total de l’équipement :</totalEquipmentCostLabel>
+  <FCTotalEquipmentCostLabel>Coût total de l’équipement :</FCTotalEquipmentCostLabel>
 	
-  <unitActionUnequipThing>Retirer</unitActionUnequipThing>
+  <FCUnitActionUnequipThing>Retirer</FCUnitActionUnequipThing>
 	
   <fcPickWeapon>Sélectionner une arme</fcPickWeapon>
 	
@@ -111,15 +111,15 @@
 
 	
 	
-  <changeUnitRaceNoRaces>Aucune race disponible</changeUnitRaceNoRaces>
+  <FCChangeUnitRaceNoRaces>Aucune race disponible</FCChangeUnitRaceNoRaces>
 	
-  <changeUnitXenoNoXenos>Aucun xéno disponible</changeUnitXenoNoXenos>
+  <FCChangeUnitXenoNoXenos>Aucun xéno disponible</FCChangeUnitXenoNoXenos>
 	
-  <noPawnKindDefOfTypeOfRaceWarning>Impossible de trouver des PawnKindDefs{0} pour les niveaux technologiques : {1} avec la race {2}. L’Empire générera {2}{3} en utilisant le niveau technologique : {4}.</noPawnKindDefOfTypeOfRaceWarning>
+  <FCNoPawnKindDefOfTypeOfRaceWarning>Impossible de trouver des PawnKindDefs{0} pour les niveaux technologiques : {1} avec la race {2}. L’Empire générera {2}{3} en utilisant le niveau technologique : {4}.</FCNoPawnKindDefOfTypeOfRaceWarning>
 	
-  <noPawnKindDefOfTypeOfRaceError>Impossible de trouver des PawnKindDefs{0} pour n’importe quel niveau technologique avec la race {1}. Ils ne pourront pas être générés !</noPawnKindDefOfTypeOfRaceError>
+  <FCNoPawnKindDefOfTypeOfRaceError>Impossible de trouver des PawnKindDefs{0} pour n’importe quel niveau technologique avec la race {1}. Ils ne pourront pas être générés !</FCNoPawnKindDefOfTypeOfRaceError>
 	
-  <missingPawnKindDefsCriticalError>Les races sélectionnées n’ont pas les PawnKindDefs critiques requis ! Votre faction pourra générer des humains pour combler le manque.</missingPawnKindDefsCriticalError>
+  <FCMissingPawnKindDefsCriticalError>Les races sélectionnées n’ont pas les PawnKindDefs critiques requis ! Votre faction pourra générer des humains pour combler le manque.</FCMissingPawnKindDefsCriticalError>
 
 	
 	
@@ -137,9 +137,9 @@
 	
   <FCSquadUnitCount>Unités : {0} / 30</FCSquadUnitCount>
 	
-  <exportSquadButton>Exporter l’escouade</exportSquadButton>
+  <FCExportSquadButton>Exporter l’escouade</FCExportSquadButton>
 	
-  <DeleteSquadButton>Supprimer l’escouade</DeleteSquadButton>
+  <FCDeleteSquadButton>Supprimer l’escouade</FCDeleteSquadButton>
 	
   <FCTotalSquadEquipmentCost>Coût total de l’équipement de l’escouade : {0} / {1} (coût max)</FCTotalSquadEquipmentCost>
 	
@@ -173,7 +173,7 @@
 	
   <FCConfirmDeleteFireSupport>Êtes-vous sûr de vouloir supprimer « {0} » ?</FCConfirmDeleteFireSupport>
 	
-  <deleteFireSupportButton>Supprimer</deleteFireSupportButton>
+  <FCDeleteFireSupportButton>Supprimer</FCDeleteFireSupportButton>
 	
   <FCFireSupportCostLabel>Coût: {0}</FCFireSupportCostLabel>
 	
@@ -225,7 +225,7 @@
 
 	
 	
-  <PrisonersMenu>Prisonniers</PrisonersMenu>
+  <FCPrisonersMenu>Prisonniers</FCPrisonersMenu>
 	
   <FCWorkload>Charge de travail</FCWorkload>
 	
@@ -241,19 +241,19 @@
 	
   <FCLightExplanation>Ajoute +1 au plafond dur des ouvriers (ouvriers au-delà du maximum). Augmente la santé de 4.</FCLightExplanation>
 	
-  <SellPawn>Vendre le pion</SellPawn>
+  <FCSellPawn>Vendre le pion</FCSellPawn>
 	
-  <ReturnToPlayer>Renvoyer au joueur</ReturnToPlayer>
+  <FCReturnToPlayer>Renvoyer au joueur</FCReturnToPlayer>
 	
-  <SellPawnInfo>La valeur sera ajoutée à la prochaine facture de la colonie</SellPawnInfo>
+  <FCSellPawnInfo>La valeur sera ajoutée à la prochaine facture de la colonie</FCSellPawnInfo>
 	
-  <PrisonerCaptureInfo>Prisonnier : {0} a été réduit en esclavage et livré à {1}</PrisonerCaptureInfo>
+  <FCPrisonerCaptureInfo>Prisonnier : {0} a été réduit en esclavage et livré à {1}</FCPrisonerCaptureInfo>
 	
-  <cantSendWithDangerLevel>Vous ne pouvez pas envoyer un prisonnier à vos colonies lorsque la carte a un niveau de danger de {0} !</cantSendWithDangerLevel>
+  <FCCantSendWithDangerLevel>Vous ne pouvez pas envoyer un prisonnier à vos colonies lorsque la carte a un niveau de danger de {0} !</FCCantSendWithDangerLevel>
 	
-  <floatMenuOptionSendPrisonerToSettlement>{0} - Niveau de la colonie : {1}, Prisonniers : {2}</floatMenuOptionSendPrisonerToSettlement>
+  <FCFloatMenuOptionSendPrisonerToSettlement>{0} - Niveau de la colonie : {1}, Prisonniers : {2}</FCFloatMenuOptionSendPrisonerToSettlement>
 	
-  <aPrisonerIsBeingDeliveredToYou>Un prisonnier vous est livré</aPrisonerIsBeingDeliveredToYou>
+  <FCAPrisonerIsBeingDeliveredToYou>Un prisonnier vous est livré</FCAPrisonerIsBeingDeliveredToYou>
 
 	
 	

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-	<RTDproductionAdditive>{0} {1} production</RTDproductionAdditive>
-	<RTDproductionMultiplier>{0} {1} production</RTDproductionMultiplier>
-	<RTDproductionAdditiveFrom>{0} {1} production from {2}</RTDproductionAdditiveFrom>
-	<RTDproductionMultiplierFrom>{0} {1} production from {2}</RTDproductionMultiplierFrom>
+	<FCRTDproductionAdditive>{0} {1} production</FCRTDproductionAdditive>
+	<FCRTDproductionMultiplier>{0} {1} production</FCRTDproductionMultiplier>
 	
 	<FCTraitDesc_ResourceBonusLabel>Resource Bonuses</FCTraitDesc_ResourceBonusLabel>
 	

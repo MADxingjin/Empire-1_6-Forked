@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><CurrentOngoingEvents>Événements en cours</CurrentOngoingEvents>
+<LanguageData><FCCurrentOngoingEvents>Événements en cours</FCCurrentOngoingEvents>
 	
-  <TimeRemaining>Temps restant</TimeRemaining>
+  <FCTimeRemaining>Temps restant</FCTimeRemaining>
 	
-  <NewLand>Nouvelle terre</NewLand>
+  <FCNewLand>Nouvelle terre</FCNewLand>
 	
-  <EventAffectingSettlements>Cet événement affecte les colonies suivantes :</EventAffectingSettlements>
+  <FCEventAffectingSettlements>Cet événement affecte les colonies suivantes :</FCEventAffectingSettlements>
 	
   <FCNoActiveEvents>Aucun événement actif.</FCNoActiveEvents>
 	
@@ -35,19 +35,19 @@
 
 	
 	
-  <BuildingEventDesc>{0} est en cours de construction à {1}. Fin estimée : {2}.</BuildingEventDesc>
+  <FCBuildingEventDesc>{0} est en cours de construction à {1}. Fin estimée : {2}.</FCBuildingEventDesc>
 	
-  <BuildingEventCompletedMsg>{0} a été construit à {1} !</BuildingEventCompletedMsg>
+  <FCBuildingEventCompletedMsg>{0} a été construit à {1} !</FCBuildingEventCompletedMsg>
 
 	
 	
-  <DeathOfFactionPawn>Votre incompétence a conduit à la mort d’un pion issu de vos colonies ! Les troubles ont augmenté dans vos colonies sujettes.</DeathOfFactionPawn>
+  <FCDeathOfFactionPawn>Votre incompétence a conduit à la mort d’un pion issu de vos colonies ! Les troubles ont augmenté dans vos colonies sujettes.</FCDeathOfFactionPawn>
 	
-  <CaptureOfFactionPawn>La capture d’un pion issu de l’une de vos colonies a provoqué de graves troubles dans vos colonies sujettes !</CaptureOfFactionPawn>
+  <FCCaptureOfFactionPawn>La capture d’un pion issu de l’une de vos colonies a provoqué de graves troubles dans vos colonies sujettes !</FCCaptureOfFactionPawn>
 	
-  <PrisonerHasDiedLetter>Le prisonnier est mort</PrisonerHasDiedLetter>
+  <FCPrisonerHasDiedLetter>Le prisonnier est mort</FCPrisonerHasDiedLetter>
 	
-  <PrisonerHasDied>{0} à {1} est mort d’épuisement au travail</PrisonerHasDied>
+  <FCPrisonerHasDied>{0} à {1} est mort d’épuisement au travail</FCPrisonerHasDied>
 
 	
 	
@@ -57,52 +57,52 @@
 
 	
 	
-  <transportingInjuredShuttle>Une navette ramène vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredShuttle>
+  <FCTransportingInjuredShuttle>Une navette ramène vers vous des colons blessés après une défense réussie de la colonie</FCTransportingInjuredShuttle>
 	
-  <transportingInjuredDropPod>Des capsules de largage ramènent vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredDropPod>
+  <FCTransportingInjuredDropPod>Des capsules de largage ramènent vers vous des colons blessés après une défense réussie de la colonie</FCTransportingInjuredDropPod>
 	
-  <transportingInjuredCaravan>Une caravane ramène vers vous des colons blessés après une défense réussie de la colonie</transportingInjuredCaravan>
+  <FCTransportingInjuredCaravan>Une caravane ramène vers vous des colons blessés après une défense réussie de la colonie</FCTransportingInjuredCaravan>
 	
-  <transportingInjuredShuttleLost>Une navette ramène vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredShuttleLost>
+  <FCTransportingInjuredShuttleLost>Une navette ramène vers vous des colons blessés après une défense ratée de la colonie</FCTransportingInjuredShuttleLost>
 	
-  <transportingInjuredDropPodLost>Des capsules de largage ramènent vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredDropPodLost>
+  <FCTransportingInjuredDropPodLost>Des capsules de largage ramènent vers vous des colons blessés après une défense ratée de la colonie</FCTransportingInjuredDropPodLost>
 	
-  <transportingInjuredCaravanLost>Une caravane ramène vers vous des colons blessés après une défense ratée de la colonie</transportingInjuredCaravanLost>
+  <FCTransportingInjuredCaravanLost>Une caravane ramène vers vous des colons blessés après une défense ratée de la colonie</FCTransportingInjuredCaravanLost>
 	
-  <shuttleLandingBlockedWithItems>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère. Elle contient : {0}.</shuttleLandingBlockedWithItems>
+  <FCShuttleLandingBlockedWithItems>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère. Elle contient : {0}.</FCShuttleLandingBlockedWithItems>
 	
-  <shuttleLandingBlocked>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère.</shuttleLandingBlocked>
+  <FCShuttleLandingBlocked>Une navette n’a pas trouvé de zone d’atterrissage libre et attend qu’un emplacement se libère.</FCShuttleLandingBlocked>
 	
-  <caravanDangerTooHigh>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger.</caravanDangerTooHigh>
+  <FCCaravanDangerTooHigh>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger.</FCCaravanDangerTooHigh>
 	
-  <caravanDangerTooHighWithItems>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger. Elle transporte : {0}.</caravanDangerTooHighWithItems>
+  <FCCaravanDangerTooHighWithItems>Une caravane attend avec sa livraison jusqu’à ce que votre carte soit hors de danger. Elle transporte : {0}.</FCCaravanDangerTooHighWithItems>
 
 	
 	
-  <shuttlePortCallShuttleLabel>Demander une navette</shuttlePortCallShuttleLabel>
+  <FCShuttlePortCallShuttleLabel>Demander une navette</FCShuttlePortCallShuttleLabel>
 	
-  <shuttlePortCallShuttleDesc>Demandez à votre colonie de vous envoyer une navette capable de transporter une caravane :
- {0} utilisations restantes (coût : {1})</shuttlePortCallShuttleDesc>
+  <FCShuttlePortCallShuttleDesc>Demandez à votre colonie de vous envoyer une navette capable de transporter une caravane :
+ {0} utilisations restantes (coût : {1})</FCShuttlePortCallShuttleDesc>
 	
-  <targetAnythingWithColonists>Ciblez n’importe quoi avec des colons libres pour envoyer la navette</targetAnythingWithColonists>
+  <FCTargetAnythingWithColonists>Ciblez n’importe quoi avec des colons libres pour envoyer la navette</FCTargetAnythingWithColonists>
 	
-  <requestShuttleToCaravan>Demander une navette pour cette caravane</requestShuttleToCaravan>
+  <FCRequestShuttleToCaravan>Demander une navette pour cette caravane</FCRequestShuttleToCaravan>
 	
-  <requestShuttleToColony>Demander une navette pour cette colonie</requestShuttleToColony>
+  <FCRequestShuttleToColony>Demander une navette pour cette colonie</FCRequestShuttleToColony>
 	
-  <requestShuttleToMap>Demander une navette pour cette carte</requestShuttleToMap>
+  <FCRequestShuttleToMap>Demander une navette pour cette carte</FCRequestShuttleToMap>
 	
-  <shuttlePortCallShuttleForCaravanLabel>Demander une navette pour une caravane</shuttlePortCallShuttleForCaravanLabel>
+  <FCShuttlePortCallShuttleForCaravanLabel>Demander une navette pour une caravane</FCShuttlePortCallShuttleForCaravanLabel>
 	
-  <targetAnyWorldObject>Ciblez n’importe quel objet du monde vers lequel vous voulez envoyer la navette :
- {0} utilisations restantes (coût : {1})</targetAnyWorldObject>
+  <FCTargetAnyWorldObject>Ciblez n’importe quel objet du monde vers lequel vous voulez envoyer la navette :
+ {0} utilisations restantes (coût : {1})</FCTargetAnyWorldObject>
 	
-  <sendCaravanHere>Envoyer la caravane ici</sendCaravanHere>
+  <FCSendCaravanHere>Envoyer la caravane ici</FCSendCaravanHere>
 	
-  <noCaravansToSendShuttleTo>Il n’y a aucune caravane à laquelle envoyer une navette !</noCaravansToSendShuttleTo>
+  <FCNoCaravansToSendShuttleTo>Il n’y a aucune caravane à laquelle envoyer une navette !</FCNoCaravansToSendShuttleTo>
 	
-  <noShuttleUsesRemaining>Aucune utilisation de navette restante pour cette période fiscale !</noShuttleUsesRemaining>
+  <FCNoShuttleUsesRemaining>Aucune utilisation de navette restante pour cette période fiscale !</FCNoShuttleUsesRemaining>
 	
-  <notEnoughShuttleUsesRemaining>Nombre d’utilisations de navette insuffisant pour cette période fiscale !</notEnoughShuttleUsesRemaining>
+  <FCNotEnoughShuttleUsesRemaining>Nombre d’utilisations de navette insuffisant pour cette période fiscale !</FCNotEnoughShuttleUsesRemaining>
 
 </LanguageData>

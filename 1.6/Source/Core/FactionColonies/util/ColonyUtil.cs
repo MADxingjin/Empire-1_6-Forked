@@ -42,7 +42,7 @@ namespace FactionColonies.util
             LifecycleRegistry.InvokeOnSettlementCreated(settlement);
 
             Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
-                "SettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
+                "FCSettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
                 LetterDefOf.PositiveEvent);
 
             return settlement;
@@ -69,7 +69,7 @@ namespace FactionColonies.util
             faction.DirtyFactionProfitCache();
             faction.DirtyAveragesCache();
             faction.roadBuilder.FlagUpdateRoadQueues();
-            Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
+            Messages.Message("FCSettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
             Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>.GetNamed(settlement.def.defName), settlement.Tile));
 
@@ -182,7 +182,7 @@ namespace FactionColonies.util
             faction.def.techLevel = Faction.OfPlayer.def.techLevel;
             faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
             faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
-            faction.Name = "PlayerColony".Translate();
+            faction.Name = "FCPlayerColony".Translate();
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
 

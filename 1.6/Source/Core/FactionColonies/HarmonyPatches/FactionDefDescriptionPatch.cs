@@ -125,7 +125,7 @@ namespace FactionColonies
             if (FactionCache.HumanlikeRacesCount > 1 && filter.RaceTotalWeight > 0)
             {
                 sb.Append("\n\n");
-                sb.Append(("EmpireMemberRaceChances".Translate() + ":").AsTipTitle());
+                sb.Append(("FCEmpireMemberRaceChances".Translate() + ":").AsTipTitle());
                 sb.Append("\n");
 
                 List<KeyValuePair<string, float>> raceEntries = new List<KeyValuePair<string, float>>();

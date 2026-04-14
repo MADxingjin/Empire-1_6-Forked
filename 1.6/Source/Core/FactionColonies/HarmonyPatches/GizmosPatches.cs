@@ -136,18 +136,18 @@ namespace FactionColonies
         /// TODO: Replace this with needing to actually send the prisoner to the settlement via caravan or droppod? At the very least, the transfer shouldn't be instantaneous
         private static Command_Action SendPrisonerAction(Pawn prisoner) => new Command_Action
         {
-            defaultLabel = "SendToSettlement".Translate(),
+            defaultLabel = "FCSendToSettlement".Translate(),
             defaultDesc = "",
             icon = TexLoad.iconMilitary,
             action = delegate
             {
                 if (prisoner.Map.dangerWatcher.DangerRating != StoryDanger.None)
                 {
-                    Messages.Message("cantSendWithDangerLevel".Translate(prisoner.Map.dangerWatcher.DangerRating.ToString()), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCCantSendWithDangerLevel".Translate(prisoner.Map.dangerWatcher.DangerRating.ToString()), MessageTypeDefOf.RejectInput);
                     return;
                 }
 
-                List<FloatMenuOption> settlementList = FactionCache.FactionComp.settlements.Select(settlement => new FloatMenuOption("floatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
+                List<FloatMenuOption> settlementList = FactionCache.FactionComp.settlements.Select(settlement => new FloatMenuOption("FCFloatMenuOptionSendPrisonerToSettlement".Translate(settlement.Name, settlement.settlementLevel, settlement.prisonerList.Count()), delegate
                 {
                     //disappear prisoner
                     TravelUtil.SendPrisoner(prisoner, settlement);

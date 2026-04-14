@@ -39,11 +39,11 @@ namespace FactionColonies
                     action = delegate ()
                     {
                         FactionCache.FactionComp.powerOutput = this.parent;
-                        Messages.Message("SetAsOutputSuccess".Translate(), MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("FCSetAsOutputSuccess".Translate(), MessageTypeDefOf.NeutralEvent);
                     },
-                    defaultDesc = "SetAsEmpirePowerOutput".Translate(),
+                    defaultDesc = "FCSetAsEmpirePowerOutput".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/TryReconnect", true),
-                    defaultLabel = "SetAsOutput".Translate()
+                    defaultLabel = "FCSetAsOutput".Translate()
                 };
             }
         }

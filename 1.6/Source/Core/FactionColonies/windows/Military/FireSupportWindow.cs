@@ -169,7 +169,7 @@ namespace FactionColonies
                 util.fireSupportDefs.Add(newSupport);
             }
 
-            if (Widgets.ButtonText(importBtn, "importFireSupport".Translate()))
+            if (Widgets.ButtonText(importBtn, "FCImportFireSupport".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_ManageFireSupportExportsFC(
                     FactionColoniesMilitary.SavedFireSupports.ToList()));
@@ -177,7 +177,7 @@ namespace FactionColonies
 
             if (selectedSupport is object)
             {
-                if (Widgets.ButtonText(deleteBtn, "deleteFireSupportButton".Translate()))
+                if (Widgets.ButtonText(deleteBtn, "FCDeleteFireSupportButton".Translate()))
                 {
                     MilitaryFireSupport supportToDelete = selectedSupport;
                     Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
@@ -194,10 +194,10 @@ namespace FactionColonies
                         }));
                 }
 
-                if (Widgets.ButtonText(exportBtn, "exportFireSupportButton".Translate()))
+                if (Widgets.ButtonText(exportBtn, "FCExportFireSupportButton".Translate()))
                 {
                     FactionColoniesMilitary.SaveFireSupport(new SavedFireSupportFC(selectedSupport));
-                    Messages.Message("ExportFireSupport".Translate(), MessageTypeDefOf.TaskCompletion);
+                    Messages.Message("FCExportFireSupport".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
 

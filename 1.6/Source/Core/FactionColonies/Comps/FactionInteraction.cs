@@ -69,7 +69,7 @@ namespace FactionColonies
                 }
 
                 if (settlementList.Count == 0)
-                    settlementList.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
+                    settlementList.Add(new FloatMenuOption("FCNoValidMilitaries".Translate(), null));
 
                 Find.WindowStack.Add(new FloatMenu(settlementList));
             });
@@ -77,7 +77,7 @@ namespace FactionColonies
         private static Command_Action HostileAction(FactionFC factionFC, Faction faction, int tile) =>
             new Command_Action
             {
-                defaultLabel = "AttackSettlement".Translate(
+                defaultLabel = "FCAttackSettlement".Translate(
                     faction.HasName ? faction.Name : "FCUnsupportedSettlementFaction".Translate().ToString()),
                 defaultDesc = "",
                 icon = TexLoad.iconMilitary,
@@ -93,7 +93,7 @@ namespace FactionColonies
                     }
 
                     if (list.Count == 0)
-                        list.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
+                        list.Add(new FloatMenuOption("FCNoValidMilitaries".Translate(), null));
 
                     Find.WindowStack.Add(new FloatMenu(list));
                 }

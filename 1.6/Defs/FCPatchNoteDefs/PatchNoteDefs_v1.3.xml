@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_0</defName>
+		<label>Threaded Roadbuilder</label>
+		<description>Performance update: the calculation of the Minimum Spanning Tree for the road builder now uses threading!</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Use a background thread for computation of the road builder MST</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_1</defName>
+		<label>Coalescing Settlement Terminology</label>
+		<description>Replaces &quot;colony&quot; with &quot;settlement&quot; in the Empire UI when referring to Empire settlements.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates many UI strings to use &quot;settlement&quot; instead of &quot;colony&quot;</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_2</defName>
+		<label>Translation key update</label>
+		<description>Updates all of Empire&apos;s translation keys to use an &quot;FC&quot; prefix.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Updates translation keys that don&apos;t already have an &quot;FC&quot; prefix to have one. Touches many files.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

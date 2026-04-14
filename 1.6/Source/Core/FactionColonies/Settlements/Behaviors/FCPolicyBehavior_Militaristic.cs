@@ -69,7 +69,7 @@ namespace FactionColonies
         {
             if (!extraSquadCooldown.IsReady)
             {
-                Messages.Message("XDaysToRedeploy".Translate(
+                Messages.Message("FCXDaysToRedeploy".Translate(
                     Math.Round(extraSquadCooldown.DaysRemaining, 1)), MessageTypeDefOf.RejectInput);
                 yield break;
             }
@@ -85,7 +85,7 @@ namespace FactionColonies
                 {
                     List<FloatMenuOption> deploymentOptions = new List<FloatMenuOption>
                     {
-                        new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
+                        new FloatMenuOption("FCWalkIntoMapDeploymentOption".Translate(), delegate
                         {
                             MilitaryUtil.CallinExtraForces(settlement, false);
                             Find.WindowStack.currentlyDrawnWindow.Close();
@@ -95,7 +95,7 @@ namespace FactionColonies
                     if (!FCSettings.medievalTechOnly &&
                         (FactionCache.TechTransportPods?.IsFinished ?? false))
                     {
-                        deploymentOptions.Add(new FloatMenuOption("dropPodDeploymentOption".Translate(), delegate
+                        deploymentOptions.Add(new FloatMenuOption("FCDropPodDeploymentOption".Translate(), delegate
                         {
                             MilitaryUtil.CallinExtraForces(settlement, true);
                             Find.WindowStack.currentlyDrawnWindow.Close();
@@ -106,7 +106,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    Messages.Message("NotEnoughSilverToDeploySquad".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCNotEnoughSilverToDeploySquad".Translate(), MessageTypeDefOf.RejectInput);
                 }
             });
         }

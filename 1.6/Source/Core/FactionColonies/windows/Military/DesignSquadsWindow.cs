@@ -199,7 +199,7 @@ namespace FactionColonies
 
             if (selectedSquad != null)
             {
-                if (Widgets.ButtonText(deleteBtn, "DeleteSquadButton".Translate()))
+                if (Widgets.ButtonText(deleteBtn, "FCDeleteSquadButton".Translate()))
                 {
                     MilSquadFC squadToDelete = selectedSquad;
                     Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
@@ -216,10 +216,10 @@ namespace FactionColonies
                         }));
                 }
 
-                if (Widgets.ButtonText(exportBtn, "exportSquadButton".Translate()))
+                if (Widgets.ButtonText(exportBtn, "FCExportSquadButton".Translate()))
                 {
                     FactionColoniesMilitary.SaveSquad(new SavedSquadFC(selectedSquad));
-                    Messages.Message("ExportSquad".Translate(), MessageTypeDefOf.TaskCompletion);
+                    Messages.Message("FCExportSquad".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
 
@@ -275,7 +275,7 @@ namespace FactionColonies
                 Color colorBefore = GUI.color;
                 GUI.color = Color.yellow;
                 Rect viewOnlyRect = new Rect(rect.x, costRect.yMax + 2f, rect.width, 23f);
-                Widgets.Label(viewOnlyRect, "CantBeModified".Translate(selectedSquad.name, selectedSquadDeployReason));
+                Widgets.Label(viewOnlyRect, "FCCantBeModified".Translate(selectedSquad.name, selectedSquadDeployReason));
                 GUI.color = colorBefore;
             }
 
@@ -593,14 +593,14 @@ namespace FactionColonies
 
             if (settlementsWithSquad.Any(s => s.MilitaryComp.militarySquad.isDeployed))
             {
-                reason = "ReasonDeployedSquad".Translate();
+                reason = "FCReasonDeployedSquad".Translate();
                 return true;
             }
 
             if (settlementsWithSquad.Any(s => s.MilitaryComp.isUnderAttack
                 && settlementsWithSquad.Contains(s.MilitaryComp.defenderForce.homeSettlement)))
             {
-                reason = "ReasonDefendingSquad".Translate();
+                reason = "FCReasonDefendingSquad".Translate();
                 return true;
             }
 

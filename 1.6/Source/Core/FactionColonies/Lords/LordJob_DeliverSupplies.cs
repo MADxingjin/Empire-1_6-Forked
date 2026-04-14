@@ -46,7 +46,7 @@ namespace FactionColonies
             preActions = new List<TransitionAction>(2)
             {
                 new TransitionAction_Custom(() => lord.ownedPawns.ForEach(pawn => pawn.DropItem(pawn.Position, ThingPlaceMode.Direct, out _))),
-                new TransitionAction_Custom(() => Messages.Message("deliveryPawnsHiding".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
+                new TransitionAction_Custom(() => Messages.Message("FCDeliveryPawnsHiding".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
             }
         };
 
@@ -88,7 +88,7 @@ namespace FactionColonies
             },
             preActions = new List<TransitionAction>(1)
             {
-                new TransitionAction_Custom(() => Messages.Message(Map.HasDownedForFaction(lord.faction) ? "deliveryPawnsLeavingMapWithDowned".Translate() : "deliveryPawnsLeavingMap".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
+                new TransitionAction_Custom(() => Messages.Message(Map.HasDownedForFaction(lord.faction) ? "FCDeliveryPawnsLeavingMapWithDowned".Translate() : "FCDeliveryPawnsLeavingMap".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
             }
         };
 
@@ -107,7 +107,7 @@ namespace FactionColonies
             preActions = new List<TransitionAction>(2)
             {
                 new TransitionAction_Custom(() => lord.ownedPawns.ForEach(pawn => pawn.DropItem(pawn.Position, ThingPlaceMode.Direct, out _))),
-                new TransitionAction_Custom(() => Messages.Message("deliveryPawnsHiding".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
+                new TransitionAction_Custom(() => Messages.Message("FCDeliveryPawnsHiding".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent))
             }
         };
 
@@ -120,7 +120,7 @@ namespace FactionColonies
         private Transition CanNotDeliverToLeavingTransition(StateGraph stateGraph) => new Transition(stateGraph.lordToils[0], stateGraph.lordToils[2])
         {
             triggers = new List<Trigger>(1) { new Trigger_Custom((TriggerSignal _) => CanNotReach()) },
-            preActions = new List<TransitionAction>(1) { new TransitionAction_Custom(() => Messages.Message("deliveryPawnsLeavingMapNoPath".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent)) }
+            preActions = new List<TransitionAction>(1) { new TransitionAction_Custom(() => Messages.Message("FCDeliveryPawnsLeavingMapNoPath".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent)) }
         };
 
         public override StateGraph CreateGraph()

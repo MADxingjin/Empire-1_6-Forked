@@ -59,7 +59,7 @@ namespace FactionColonies
             squad.isDeployed = true;
             squad.orderLocation = dropPosition;
             squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
+            Find.LetterStack.ReceiveLetter("FCDeploymentSuccessLabel".Translate(), "FCDeploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
 
             settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
             LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, equippedPawns);
@@ -97,19 +97,19 @@ namespace FactionColonies
             squad.ResetNeeds();
 
             IntVec3 dropPosition;
-            DebugTool tool = new DebugTool("selectDeploymentPosition".Translate(), delegate
+            DebugTool tool = new DebugTool("FCSelectDeploymentPosition".Translate(), delegate
             {
                 dropPosition = UI.MouseCell();
                 Map curMap = Find.CurrentMap;
 
                 if (!dropPosition.InBounds(curMap))
                 {
-                    Messages.Message("selectedPosOutOfBounds".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCSelectedPosOutOfBounds".Translate(), MessageTypeDefOf.RejectInput);
                     return;
                 }
                 if (dropPosition.CloseToEdge(curMap, 10))
                 {
-                    Messages.Message("selectedPosTooCloseToEdge".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCSelectedPosTooCloseToEdge".Translate(), MessageTypeDefOf.RejectInput);
                     return;
                 }
 

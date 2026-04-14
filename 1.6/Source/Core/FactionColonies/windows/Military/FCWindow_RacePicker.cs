@@ -42,7 +42,7 @@ namespace FactionColonies
             // Title
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(0, 0, inRect.width, 35f), "changeUnitRaceButton".Translate());
+            Widgets.Label(new Rect(0, 0, inRect.width, 35f), "FCChangeUnitRaceButton".Translate());
 
             // Search bar
             Text.Font = GameFont.Small;
@@ -111,7 +111,7 @@ namespace FactionColonies
             {
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(scrollOutRect, "changeUnitRaceNoRaces".Translate());
+                Widgets.Label(scrollOutRect, "FCChangeUnitRaceNoRaces".Translate());
             }
 
             Widgets.EndScrollView();

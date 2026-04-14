@@ -60,7 +60,7 @@ namespace FactionColonies
 
             if (settlement != null)
             {
-                string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
+                string messageString = "FCNotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "FCConfiscatedTithes".Translate() + "." + " " + "FCUnpaidTitheEffect".Translate();
                 settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
                 settlement.GainHappiness(-10d);
             }

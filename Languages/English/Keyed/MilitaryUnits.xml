@@ -13,20 +13,20 @@
 	<FCNoSquadAvailable>No Available Squads</FCNoSquadAvailable>
 	<FCResetSquadPawns>Pawns have been regenerated for the squad</FCResetSquadPawns>
 	<FCResetSquadRejected>There are no pawns to reset. Assign a squad first.</FCResetSquadRejected>
-	<selectDeployedSquad>Select Deployed Squad</selectDeployedSquad>
-	<selectedDeployedSquad>{0}'s {1}</selectedDeployedSquad>
-	<noSquadsAvailable>No squads available</noSquadsAvailable>
+	<FCSelectDeployedSquad>Select Deployed Squad</FCSelectDeployedSquad>
+	<FCSelectedDeployedSquad>{0}'s {1}</FCSelectedDeployedSquad>
+	<FCNoSquadsAvailable>No squads available</FCNoSquadsAvailable>
 
 	<!-- Unit Customization -->
-	<ExportUnit>Exported Unit</ExportUnit>
-	<ExportSquad>Exported Squad</ExportSquad>
-	<CantBeModified>{0} can't be modified: {1}</CantBeModified>
-	<ReasonDeployed>A squad containing it is deployed</ReasonDeployed>
-	<ReasonDefending>A squad containing it is defending a settlement</ReasonDefending>
-	<ReasonDeployedSquad>The squad is currently deployed</ReasonDeployedSquad>
-	<ReasonDefendingSquad>The squad is currently defending a settlement</ReasonDefendingSquad>
-	<importUnit>Import Unit</importUnit>
-	<clearUnitSlot>Clear Unit Slot</clearUnitSlot>
+	<FCExportUnit>Exported Unit</FCExportUnit>
+	<FCExportSquad>Exported Squad</FCExportSquad>
+	<FCCantBeModified>{0} can't be modified: {1}</FCCantBeModified>
+	<FCReasonDeployed>A squad containing it is deployed</FCReasonDeployed>
+	<FCReasonDefending>A squad containing it is defending a settlement</FCReasonDefending>
+	<FCReasonDeployedSquad>The squad is currently deployed</FCReasonDeployedSquad>
+	<FCReasonDefendingSquad>The squad is currently defending a settlement</FCReasonDefendingSquad>
+	<FCImportUnit>Import Unit</FCImportUnit>
+	<FCClearUnitSlot>Clear Unit Slot</FCClearUnitSlot>
 	<FCDegraded>Degraded</FCDegraded>
 
 	<!-- Outfit Slots -->
@@ -44,13 +44,13 @@
 	<!-- Unit Buttons -->
 	<FCRenameUnit>Rename Unit</FCRenameUnit>
 	<FCConfirmDeleteUnit>Are you sure you want to delete "{0}"?</FCConfirmDeleteUnit>
-	<resetUnitToDefaultButton>Reset to default</resetUnitToDefaultButton>
-	<deleteUnitButton>Delete unit</deleteUnitButton>
-	<selectAUnitButton>Select a unit</selectAUnitButton>
-	<rollANewUnitButton>Roll a new pawn</rollANewUnitButton>
-	<changeUnitRaceButton>Change Race</changeUnitRaceButton>
-	<changeUnitXenoButton>Change Xenotype</changeUnitXenoButton>
-	<exportUnitButton>Export unit</exportUnitButton>
+	<FCResetUnitToDefaultButton>Reset to default</FCResetUnitToDefaultButton>
+	<FCDeleteUnitButton>Delete unit</FCDeleteUnitButton>
+	<FCSelectAUnitButton>Select a unit</FCSelectAUnitButton>
+	<FCRollANewUnitButton>Roll a new pawn</FCRollANewUnitButton>
+	<FCChangeUnitRaceButton>Change Race</FCChangeUnitRaceButton>
+	<FCChangeUnitXenoButton>Change Xenotype</FCChangeUnitXenoButton>
+	<FCExportUnitButton>Export unit</FCExportUnitButton>
 
 	<!-- Unit Equipment -->
 	<fcChooseApparelColor>Choose Apparel Color</fcChooseApparelColor>
@@ -59,8 +59,8 @@
 	<fcEquippedApparel>Equipped Apparel</fcEquippedApparel>
 	<fcAddApparel>+ Add</fcAddApparel>
 	<fcReplacesApparel>Replaces</fcReplacesApparel>
-	<totalEquipmentCostLabel>Total Equipment Cost: </totalEquipmentCostLabel>
-	<unitActionUnequipThing>Unequip</unitActionUnequipThing>
+	<FCTotalEquipmentCostLabel>Total Equipment Cost: </FCTotalEquipmentCostLabel>
+	<FCUnitActionUnequipThing>Unequip</FCUnitActionUnequipThing>
 	<fcPickWeapon>Select Weapon</fcPickWeapon>
 	<fcPickApparel>Select Apparel</fcPickApparel>
 	<fcPickAnimal>Select Animal</fcPickAnimal>
@@ -70,12 +70,12 @@
 	<fcPickerSelectStuff>Select a material for this item</fcPickerSelectStuff>
 
 	<!-- Unit Race/PawnKind Errors -->
-	<changeUnitRaceNoRaces>No available races</changeUnitRaceNoRaces>
+	<FCChangeUnitRaceNoRaces>No available races</FCChangeUnitRaceNoRaces>
 	<fcNoAnimalsAvailable>No available animals</fcNoAnimalsAvailable>
-	<changeUnitXenoNoXenos>No available Xeno</changeUnitXenoNoXenos>
-	<noPawnKindDefOfTypeOfRaceWarning>Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}.</noPawnKindDefOfTypeOfRaceWarning>
-	<noPawnKindDefOfTypeOfRaceError>Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated!</noPawnKindDefOfTypeOfRaceError>
-	<missingPawnKindDefsCriticalError>The races you selected are missing critical PawnKindDefs! Your faction may generate Humans to fill the gap.</missingPawnKindDefsCriticalError>
+	<FCChangeUnitXenoNoXenos>No available Xeno</FCChangeUnitXenoNoXenos>
+	<FCNoPawnKindDefOfTypeOfRaceWarning>Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}.</FCNoPawnKindDefOfTypeOfRaceWarning>
+	<FCNoPawnKindDefOfTypeOfRaceError>Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated!</FCNoPawnKindDefOfTypeOfRaceError>
+	<FCMissingPawnKindDefsCriticalError>The races you selected are missing critical PawnKindDefs! Your faction may generate Humans to fill the gap.</FCMissingPawnKindDefsCriticalError>
 
 	<!-- Squad Design -->
 	<FCCreateNewSquad>Create New Squad</FCCreateNewSquad>
@@ -85,8 +85,8 @@
 	<FCSquadFull>Squad is full (30/30 units)</FCSquadFull>
 	<FCAddUnit>Add Unit</FCAddUnit>
 	<FCSquadUnitCount>Units: {0} / 30</FCSquadUnitCount>
-	<exportSquadButton>Export squad</exportSquadButton>
-	<DeleteSquadButton>Delete squad</DeleteSquadButton>
+	<FCExportSquadButton>Export squad</FCExportSquadButton>
+	<FCDeleteSquadButton>Delete squad</FCDeleteSquadButton>
 	<FCTotalSquadEquipmentCost>Total Squad Equipment Cost: {0} / {1} (Max Cost)</FCTotalSquadEquipmentCost>
 	<FCTotalSquadEquipmentCostNoRef>Total Squad Equipment Cost: {0} / No Reference</FCTotalSquadEquipmentCostNoRef>
 	<FCDeleteSquad>Delete Squad</FCDeleteSquad>
@@ -107,16 +107,16 @@
 	<FCAddNewProjectile>Add new projectile</FCAddNewProjectile>
 	<FCRenameFireSupport>Rename Fire Support</FCRenameFireSupport>
 	<FCConfirmDeleteFireSupport>Are you sure you want to delete "{0}"?</FCConfirmDeleteFireSupport>
-	<deleteFireSupportButton>Delete</deleteFireSupportButton>
+	<FCDeleteFireSupportButton>Delete</FCDeleteFireSupportButton>
 	<FCFireSupportCostLabel>Cost: {0}</FCFireSupportCostLabel>
 	<FCFireSupportCostRefLabel>Cost: {0} / {1} (Max)</FCFireSupportCostRefLabel>
 	<FCFireSupportProjectileCount>Projectiles: {0}</FCFireSupportProjectileCount>
 	<FCFireSupportDuration>Duration: {0}s</FCFireSupportDuration>
 	<FCFireSupportAccuracyLabel>Accuracy (tile radius): {0}  ·  Cost modifier: +{1}%</FCFireSupportAccuracyLabel>
 	<FCSelectAFireSupport>Select a fire support</FCSelectAFireSupport>
-	<importFireSupport>Import</importFireSupport>
-	<exportFireSupportButton>Export</exportFireSupportButton>
-	<ExportFireSupport>Exported Fire Support</ExportFireSupport>
+	<FCImportFireSupport>Import</FCImportFireSupport>
+	<FCExportFireSupportButton>Export</FCExportFireSupportButton>
+	<FCExportFireSupport>Exported Fire Support</FCExportFireSupport>
 	<FCNoProjectilesFound>No available projectiles found</FCNoProjectilesFound>
 	<FCFireSupportOptions>Options</FCFireSupportOptions>
 	<FCInsertProjectileAbove>Insert Projectile Above Slot</FCInsertProjectileAbove>
@@ -140,7 +140,7 @@
 	<FCDeleted>Deleted {0}</FCDeleted>
 
 	<!-- Prisoners -->
-	<PrisonersMenu>Prisoners</PrisonersMenu>
+	<FCPrisonersMenu>Prisoners</FCPrisonersMenu>
 	<FCWorkload>workload</FCWorkload>
 	<FCHeavy>heavy</FCHeavy>
 	<FCMedium>medium</FCMedium>
@@ -148,13 +148,13 @@
 	<FCHeavyExplanation>Adds +2 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 20.</FCHeavyExplanation>
 	<FCMediumExplanation>Adds +1 to worker soft cap (Max Workers Before Scaling Costs). Reduces health by 10.</FCMediumExplanation>
 	<FCLightExplanation>Adds +1 to worker hard cap (Over-Max Workers). Increases health by 4</FCLightExplanation>
-	<SellPawn>Sell Pawn</SellPawn>
-	<ReturnToPlayer>Return To Player</ReturnToPlayer>
-	<SellPawnInfo>Value will be added to next bill from colony</SellPawnInfo>
-	<PrisonerCaptureInfo>Prisoner: {0} has been enslaved and delivered to {1}</PrisonerCaptureInfo>
-	<cantSendWithDangerLevel>You can't send a prisoner to your settlements when the map has a danger level of {0}!</cantSendWithDangerLevel>
-	<floatMenuOptionSendPrisonerToSettlement>{0} - Settlement Level: {1}, Prisoners: {2}</floatMenuOptionSendPrisonerToSettlement>
-	<aPrisonerIsBeingDeliveredToYou>A prisoner is being delivered to you</aPrisonerIsBeingDeliveredToYou>
+	<FCSellPawn>Sell Pawn</FCSellPawn>
+	<FCReturnToPlayer>Return To Player</FCReturnToPlayer>
+	<FCSellPawnInfo>Value will be added to next bill from the settlement</FCSellPawnInfo>
+	<FCPrisonerCaptureInfo>Prisoner: {0} has been enslaved and delivered to {1}</FCPrisonerCaptureInfo>
+	<FCCantSendWithDangerLevel>You can't send a prisoner to your settlements when the map has a danger level of {0}!</FCCantSendWithDangerLevel>
+	<FCFloatMenuOptionSendPrisonerToSettlement>{0} - Settlement Level: {1}, Prisoners: {2}</FCFloatMenuOptionSendPrisonerToSettlement>
+	<FCAPrisonerIsBeingDeliveredToYou>A prisoner is being delivered to you</FCAPrisonerIsBeingDeliveredToYou>
 	<FCNoPrisoners>No prisoners at this settlement.</FCNoPrisoners>
 	<FCPrisonerWindowTitle>Prisoners — {0}</FCPrisonerWindowTitle>
 

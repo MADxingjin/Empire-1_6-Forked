@@ -82,7 +82,7 @@ namespace FactionColonies
                     .Join(s => " " + s.Name, "\n");
                 if (!settlementString.NullOrEmpty())
                 {
-                    body += "\n\n" + "EventAffectingSettlements".Translate() + "\n" + settlementString;
+                    body += "\n\n" + "FCEventAffectingSettlements".Translate() + "\n" + settlementString;
                 }
             }
 
@@ -533,11 +533,11 @@ namespace FactionColonies
                                 break;
                             }
 
-                            string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
+                            string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
 
                             Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
 
-                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
                             break;
                         }
                         case "constructBuilding":
@@ -546,7 +546,7 @@ namespace FactionColonies
                             if (settlement != null)
                             {
                                 settlement.ConstructBuilding(evt.building, evt.buildingSlot);
-                                Messages.Message("BuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
+                                Messages.Message("FCBuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
                             }
                             else
                             {
@@ -560,8 +560,8 @@ namespace FactionColonies
                                 //if settlement is not null
                                 settlement = faction.ReturnSettlementByLocation(evt.location);
                                 settlement.UpgradeSettlement();
-                                Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
-                                    "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
+                                Find.LetterStack.ReceiveLetter("FCUpgradeSettlement".Translate(),
+                                    "FCUpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "FCUpgradeColonyDesc".Translate()),
                                     LetterDefOf.PositiveEvent);
                                 /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
                                      * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
@@ -624,13 +624,13 @@ namespace FactionColonies
                         {
                             List<Thing> list = PaymentUtil.GenerateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
 
-                            string str = "GoodsReceivedFollowing".Translate(evt.def.label);
+                            string str = "FCGoodsReceivedFollowing".Translate(evt.def.label);
 
                             str = list.Aggregate(str, (before, after) => before + "\n" + after.LabelCap);
 
                             evt.goods.AddRange(list);
 
-                            evt.let = LetterMaker.MakeLetter("GoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
+                            evt.let = LetterMaker.MakeLetter("FCGoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
                             if (list.Count > 0)
                             {
                                 if (!evt.source.IsValidTile())
@@ -918,7 +918,7 @@ namespace FactionColonies
             if (bill.settlement != null && faction.settlements.Contains(bill.settlement))
             {
                 tmp.source = bill.settlement.Tile; //source location
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.Name);
+                tmp.customDescription = "FCTaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.Name);
             }
             else
             {
@@ -926,7 +926,7 @@ namespace FactionColonies
                 // This represents taxes being collected locally at the capital
                 PlanetTile fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? PlanetTile.Invalid;
                 tmp.source = faction.capitalLocation != PlanetTile.Invalid ? faction.capitalLocation : fallbackTile;
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital".Translate());
+                tmp.customDescription = "FCTaxesFromSettlementAreBeingDelivered".Translate("FCCapital".Translate());
 
                 LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }

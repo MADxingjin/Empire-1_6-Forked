@@ -20,53 +20,53 @@
 	<fcColorPickerSaved>Saved Colors</fcColorPickerSaved>
 	<fcColorPickerSaveCurrent>Save Current</fcColorPickerSaveCurrent>
 	<fcColorPickerRightClickRemove>Right-click to remove</fcColorPickerRightClickRemove>
-	<CustomizeFaction>Customize Faction</CustomizeFaction>
-	<FactionName>Faction Name</FactionName>
-	<FactionTitle>Faction Title</FactionTitle>
-	<FactionIcon>Faction Icon</FactionIcon>
-	<InvalidFaction>That faction can't run an empire on its own!</InvalidFaction>
-	<PlayerFaction>Player Faction</PlayerFaction>
-	<Bastion>Bastion</Bastion>
+	<FCCustomizeFaction>Customize Faction</FCCustomizeFaction>
+	<FCFactionName>Faction Name</FCFactionName>
+	<FCFactionTitle>Faction Title</FCFactionTitle>
+	<FCFactionIcon>Faction Icon</FCFactionIcon>
+	<FCInvalidFaction>That faction can't run an empire on its own!</FCInvalidFaction>
+	<FCPlayerFaction>Player Faction</FCPlayerFaction>
+	<FCBastion>Bastion</FCBastion>
 	<FCFoundedOn>Founded on {0}</FCFoundedOn>
 
 	<!-- Faction Stats -->
-	<FactionHappiness>Faction Happiness</FactionHappiness>
-	<FactionLoyalty>Faction Loyalty</FactionLoyalty>
-	<FactionUnrest>Faction Unrest</FactionUnrest>
-	<FactionProsperity>Faction Prosperity</FactionProsperity>
-	<FactionHappinessDesc>The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor.</FactionHappinessDesc>
-	<FactionLoyaltyDesc>The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.</FactionLoyaltyDesc>
-	<FactionUnrestDesc>The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow.</FactionUnrestDesc>
-	<FactionProsperityDesc>The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time.</FactionProsperityDesc>
+	<FCFactionHappiness>Faction Happiness</FCFactionHappiness>
+	<FCFactionLoyalty>Faction Loyalty</FCFactionLoyalty>
+	<FCFactionUnrest>Faction Unrest</FCFactionUnrest>
+	<FCFactionProsperity>Faction Prosperity</FCFactionProsperity>
+	<FCFactionHappinessDesc>The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor.</FCFactionHappinessDesc>
+	<FCFactionLoyaltyDesc>The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.</FCFactionLoyaltyDesc>
+	<FCFactionUnrestDesc>The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow.</FCFactionUnrestDesc>
+	<FCFactionProsperityDesc>The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time.</FCFactionProsperityDesc>
 
 	<!-- Faction Levels -->
 	<FCLevel>Faction Level: {0}</FCLevel>
 	<FCFactionLevelUp>Faction Level Up</FCFactionLevelUp>
 	<FCFactionLevelUpDesc>Your faction {0} has leveled up to {1}!</FCFactionLevelUpDesc>
-	<ReachedMaxLevel>reached max level</ReachedMaxLevel>
+	<FCReachedMaxLevel>reached max level</FCReachedMaxLevel>
 
 	<!-- Policies -->
-	<Policies-Traits>Policies/Traits</Policies-Traits>
-	<FactionPoliciesAndTraits>Faction Policies and Traits</FactionPoliciesAndTraits>
-	<TaxLaw>Tax Law</TaxLaw>
-	<SocialPolicy>Social Policy</SocialPolicy>
-	<MilitaryPolicy>Military Policy</MilitaryPolicy>
+	<FCPolicies-Traits>Policies/Traits</FCPolicies-Traits>
+	<FCFactionPoliciesAndTraits>Faction Policies and Traits</FCFactionPoliciesAndTraits>
+	<FCTaxLaw>Tax Law</FCTaxLaw>
+	<FCSocialPolicy>Social Policy</FCSocialPolicy>
+	<FCMilitaryPolicy>Military Policy</FCMilitaryPolicy>
 	<FCPolicySelection>Policy Selection</FCPolicySelection>
 	<FCSelectPolicies>Select Policies</FCSelectPolicies>
-	<PolicyAlreadyEnacted>That policy has already been enacted</PolicyAlreadyEnacted>
-	<AlreadyPolicyTypeBeingEnacted>There is already a policy of that type being enacted</AlreadyPolicyTypeBeingEnacted>
-	<AlreadyPolicyInSlot>There is already a policy being enacted in that slot</AlreadyPolicyInSlot>
-	<Enact>Enact</Enact>
-	<Enacted>Enacted</Enacted>
-	<Repeal>Repeal</Repeal>
-	<WillBeEnactedIn>will be enacted in</WillBeEnactedIn>
-	<EnactPolicy>Enact Policy</EnactPolicy>
-	<HasBeenEnactedAt>has been enacted at</HasBeenEnactedAt>
-	<EnactedInYourFaction>has been enacted in your faction</EnactedInYourFaction>
+	<FCPolicyAlreadyEnacted>That policy has already been enacted</FCPolicyAlreadyEnacted>
+	<FCAlreadyPolicyTypeBeingEnacted>There is already a policy of that type being enacted</FCAlreadyPolicyTypeBeingEnacted>
+	<FCAlreadyPolicyInSlot>There is already a policy being enacted in that slot</FCAlreadyPolicyInSlot>
+	<FCEnact>Enact</FCEnact>
+	<FCEnacted>Enacted</FCEnacted>
+	<FCRepeal>Repeal</FCRepeal>
+	<FCWillBeEnactedIn>will be enacted in</FCWillBeEnactedIn>
+	<FCEnactPolicy>Enact Policy</FCEnactPolicy>
+	<FCHasBeenEnactedAt>has been enacted at</FCHasBeenEnactedAt>
+	<FCEnactedInYourFaction>has been enacted in your faction</FCEnactedInYourFaction>
 
 	<!-- Traits -->
-	<FactionTraits>Faction Traits</FactionTraits>
-	<AddTrait>Add Trait</AddTrait>
+	<FCFactionTraits>Faction Traits</FCFactionTraits>
+	<FCAddTrait>Add Trait</FCAddTrait>
 	<FCTraitSelection>Trait Selection</FCTraitSelection>
 	<FCSelectTraits>Select Traits</FCSelectTraits>
 	<FCTraitSlots>Trait Slots</FCTraitSlots>
@@ -120,18 +120,18 @@
 	<FCPolicyRequires>Requires: {0}</FCPolicyRequires>
 
 	<!-- Research -->
-	<Researching>Researching</Researching>
-	<ResearchExpended>{0} points of research have been used to research {1}. You have {2} points remaining.</ResearchExpended>
-	<ResearchPointsExpended>Research Expended</ResearchPointsExpended>
-	<NoResearchExpended>No research has been used today. You have {0} points remaining.</NoResearchExpended>
-	<PointsAddedToResearchPool>{0} points have been added to the research pool!</PointsAddedToResearchPool>
-	<ResearchGeneratedWaste>Research points generated by your faction has been wasted as you have no research selected
-	</ResearchGeneratedWaste>
-	<ActivateResearch>Activate Research</ActivateResearch>
+	<FCResearching>Researching</FCResearching>
+	<FCResearchExpended>{0} points of research have been used to research {1}. You have {2} points remaining.</FCResearchExpended>
+	<FCResearchPointsExpended>Research Expended</FCResearchPointsExpended>
+	<FCNoResearchExpended>No research has been used today. You have {0} points remaining.</FCNoResearchExpended>
+	<FCPointsAddedToResearchPool>{0} points have been added to the research pool!</FCPointsAddedToResearchPool>
+	<FCResearchGeneratedWaste>Research points generated by your faction has been wasted as you have no research selected
+	</FCResearchGeneratedWaste>
+	<FCActivateResearch>Activate Research</FCActivateResearch>
 	<FCSendResearchItems>Send Research Items</FCSendResearchItems>
 	<FCFactionResearch>Faction Research</FCFactionResearch>
-	<ResearchLevel>Check Tech Level</ResearchLevel>
-	<CurrentResearchLevel>Your current tech level is {0}. To reach the next tech level you must research {1}</CurrentResearchLevel>
+	<FCResearchLevel>Check Tech Level</FCResearchLevel>
+	<FCCurrentResearchLevel>Your current tech level is {0}. To reach the next tech level you must research {1}</FCCurrentResearchLevel>
 	<FCShipBasics>Ship Basics</FCShipBasics>
 	<FCFabrication>Fabrication</FCFabrication>
 	<FCElectricity>Electricity</FCElectricity>
@@ -142,12 +142,12 @@
 	<FCRelationImprovedText>Your communications with {0} has led to an improvement in relations of {1}!</FCRelationImprovedText>
 	<FCRelationNotImproved>Failed Relations</FCRelationNotImproved>
 	<FCFailedToImproveRelationship>Your communications with {0} have failed to improve relations.</FCFailedToImproveRelationship>
-	<XDaysToSendDiplomat>{0} days are left until the ability to improve relations is refreshed</XDaysToSendDiplomat>
+	<FCXDaysToSendDiplomat>{0} days are left until the ability to improve relations is refreshed</FCXDaysToSendDiplomat>
 	<FCIncreaseRelations>Attempt to Increase Relations</FCIncreaseRelations>
 	<FCCannotImproveRelationsWithType>You cannot improve relations with factions of that type</FCCannotImproveRelationsWithType>
 
 	<!-- Capital -->
-	<CouldNotFindMapOfCapital>Could not find map of capital</CouldNotFindMapOfCapital>
+	<FCCouldNotFindMapOfCapital>Could not find map of capital</FCCouldNotFindMapOfCapital>
 	<FCCapitalAlreadyEstablished>Empire capital is already established at {0}. Disable the capital seat there first if you want to move it.</FCCapitalAlreadyEstablished>
 	<FCUnableToSetCapitalHere>Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.</FCUnableToSetCapitalHere>
 	

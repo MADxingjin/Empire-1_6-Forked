@@ -13,7 +13,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.raidEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesRaiding".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
+            evt.customDescription = "FCSettlementMilitaryForcesRaiding".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Settlement target = Find.WorldObjects.SettlementAt(location);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentRaid".Translate(milComp.WorldSettlement.Name, target?.LabelCap ?? (TaggedString)""), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
@@ -69,19 +69,19 @@ namespace FactionColonies
 
                 List<Thing> loot = PaymentUtil.GenerateRaidLoot(lootLevel, tech);
 
-                string text = "settlementDeliveringLoot".Translate();
+                string text = "FCSettlementDeliveringLoot".Translate();
                 text = loot.Aggregate(text, (current, thing) => current + thing.LabelCap + " " + thing.stackCount + "x\n ");
 
                 int num = new IntRange(0, 10).RandomInRange;
                 if (num <= 4 && getSlaves)
                 {
                     Pawn prisoner = PaymentUtil.GeneratePrisoner(milComp.militaryEnemy);
-                    text += "PrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name);
+                    text += "FCPrisonerCaptureInfo".Translate(prisoner.Name.ToString(), milComp.WorldSettlement.Name);
                     milComp.WorldSettlement.AddPrisoner(prisoner);
                 }
 
-                Find.LetterStack.ReceiveLetter("RaidLoot".Translate(),
-                    "RaidEnemySettlementSuccess".Translate(
+                Find.LetterStack.ReceiveLetter("FCRaidLoot".Translate(),
+                    "FCRaidEnemySettlementSuccess".Translate(
                         target.LabelCap) + "\n" + text,
                     LetterDefOf.PositiveEvent, new LookTargets(target));
 
@@ -98,8 +98,8 @@ namespace FactionColonies
             }
             else
             {
-                Find.LetterStack.ReceiveLetter("RaidFailure".Translate(),
-                    "RaidEnemySettlementFailure".Translate(
+                Find.LetterStack.ReceiveLetter("FCRaidFailure".Translate(),
+                    "FCRaidEnemySettlementFailure".Translate(
                         target.LabelCap), LetterDefOf.NegativeEvent,
                     new LookTargets(target));
             }
