@@ -13,4 +13,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_1</defName>
+		<label>Coalescing Settlement Terminology</label>
+		<description>Replaces &quot;colony&quot; with &quot;settlement&quot; in the Empire UI when referring to Empire settlements.</description>
+		<releaseDate>2026-04-13</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates many UI strings to use &quot;settlement&quot; instead of &quot;colony&quot;</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

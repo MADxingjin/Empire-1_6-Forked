@@ -192,7 +192,7 @@ Total accrued budget: {2}</NoTitheLetterDesc2>
 	<Silver>Silver</Silver>
 	<CashSymbol>$</CashSymbol>
 	<InitialCost>Initial Cost</InitialCost>
-	<NotEnoughSilverToSettle>You do not have enough silver on the current map to settle a new colony</NotEnoughSilverToSettle>
+	<NotEnoughSilverToSettle>You do not have enough silver on the current map to found a new settlement</NotEnoughSilverToSettle>
 	<NotEnoughSilverConstructBuilding>You do not have enough silver on the current map to construct that building
 	</NotEnoughSilverConstructBuilding>
 	<FCNotEnoughSilverDemolish>You do not have enough silver on the current map to pay for the demolition</FCNotEnoughSilverDemolish>

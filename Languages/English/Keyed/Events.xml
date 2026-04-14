@@ -58,7 +58,7 @@
 	<shuttlePortCallShuttleDesc>Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1})</shuttlePortCallShuttleDesc>
 	<targetAnythingWithColonists>Target anything with free colonists to send the shuttle</targetAnythingWithColonists>
 	<requestShuttleToCaravan>Request a shuttle for this caravan</requestShuttleToCaravan>
-	<requestShuttleToColony>Request a shuttle for this colony</requestShuttleToColony>
+	<requestShuttleToColony>Request a shuttle for this settlement</requestShuttleToColony>
 	<requestShuttleToMap>Request a shuttle for this map</requestShuttleToMap>
 	<shuttlePortCallShuttleForCaravanLabel>Request a shuttle for a caravan</shuttlePortCallShuttleForCaravanLabel>
 	<targetAnyWorldObject>Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1})</targetAnyWorldObject>

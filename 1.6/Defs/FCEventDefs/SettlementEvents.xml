@@ -10,9 +10,9 @@
 
 	<FactionColonies.FCEventDef>
 		<defName>settleNewColony</defName>
-		<label>Settle Colony</label>
+		<label>Found Settlement</label>
 		<timeTillTrigger>0</timeTillTrigger>
-		<desc>A caravan is forming a new colony.</desc>
+		<desc>A caravan is forming a new settlement.</desc>
 		<category>EC_Settlement</category>
 	</FactionColonies.FCEventDef>
 

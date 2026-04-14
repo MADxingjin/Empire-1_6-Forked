@@ -2,9 +2,9 @@
 <LanguageData>
 
 	<!-- Settlement Creation -->
-	<SettleANewColony>Settle A New Colony</SettleANewColony>
-	<CreateNewColony>Create New Colony</CreateNewColony>
-	<SelectTile>Select a tile to create the colony</SelectTile>
+	<SettleANewColony>Found A New Settlement</SettleANewColony>
+	<CreateNewColony>Found New Settlement</CreateNewColony>
+	<SelectTile>Select a tile to found the settlement</SelectTile>
 	<selectedInvalidTile>You can't build a settlement here!</selectedInvalidTile>
 	<Settle>Settle</Settle>
 	<CaravanOnWay>A caravan is already on its way</CaravanOnWay>
@@ -35,7 +35,7 @@
 	<Upgrade>Upgrade</Upgrade>
 	<SettlementUpgradeInProgress>Upgrading...</SettlementUpgradeInProgress>
 	<CanBeUpgraded>can be upgraded for</CanBeUpgraded>
-	<UpgradeColonyDesc>Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1.</UpgradeColonyDesc>
+	<UpgradeColonyDesc>Upgrading this settlement will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this settlement will also increase by 1.</UpgradeColonyDesc>
 	<HasBeenUpgraded>has been upgraded to level</HasBeenUpgraded>
 	<UpgradeEventDesc>{0} is being upgraded from level {1} to level {2}.\n\n{3}</UpgradeEventDesc>
 	<UpgradeEventCompletedDesc>{0} has been upgraded to level {1}!\n\n{2}</UpgradeEventCompletedDesc>
@@ -52,7 +52,7 @@
 	<Located>Located in the</Located>
 	<LandOf>land of a</LandOf>
 	<openSettlementWindowDefaultLabel>See settlement information</openSettlementWindowDefaultLabel>
-	<openSettlementWindowDefaultDesc>Opens the settlements colony window</openSettlementWindowDefaultDesc>
+	<openSettlementWindowDefaultDesc>Opens the settlement window</openSettlementWindowDefaultDesc>
 	<FCBuildRoads>Build Roads</FCBuildRoads>
 
 	<!-- Settlement Stats -->
@@ -112,7 +112,7 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCNoSettlements>No settlements.</FCNoSettlements>
 	<FCSettlementCount>{0} settlements</FCSettlementCount>
 	<FCSortBy>Sort: {0}</FCSortBy>
-	<ColonyLevel>Colony Level</ColonyLevel>
+	<ColonyLevel>Settlement Level</ColonyLevel>
 	<Hamlet>hamlet</Hamlet>
 
 	<!-- Settlement Delete -->
@@ -130,7 +130,7 @@ The prosperity of a town directly correlates with the production of resources (e
 	<!-- Settlement Special Actions -->
 	<FCSpecialActions>Special Actions</FCSpecialActions>
 	<FCBuyLoyalty>Buy Loyalty</FCBuyLoyalty>
-	<SendSilverToColony>Send Silver to Colony</SendSilverToColony>
+	<SendSilverToColony>Send Silver to Settlement</SendSilverToColony>
 	<SendingXSilver>Sending {0} silver</SendingXSilver>
 	<SettlementGainsXLoyalty>Settlement will gain {0} loyalty</SettlementGainsXLoyalty>
 
@@ -155,15 +155,15 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCDescAridShrubland>While not a true desert, growing soil is at a premium thanks to the relentless heat. Most of the land is open, with secluded groves breaking the otherwise empty skyline.</FCDescAridShrubland>
 	<FCDescDesert>Arable soil is a rarity, as the majority of the land here is covered in sand, some too treacherous to build on. Still, life clings to existance here, and the sands harbour a vibrant array of life.</FCDescDesert>
 	<FCDescExtremeDesert>The sun has baked this land into a wasteland. There is almost no soil that can support proper vegetation, and that which there is, is poor in quality.</FCDescExtremeDesert>
-	<FCDescUnknown>Little is widely known about the surrounding land, but the colony manages to survive and prosper in their present conditions.</FCDescUnknown>
+	<FCDescUnknown>Little is widely known about the surrounding land, but the settlement manages to survive and prosper in their present conditions.</FCDescUnknown>
 	<FCDescOrbitalSpace>The vast emptiness of space stretches in all directions, broken only by the distant twinkle of stars and the occasional passing asteroid. Solar panels gleam in the eternal sunlight, while life support systems hum quietly in the artificial environment. The station floats in the void, a beacon of civilization in the cosmic wilderness.</FCDescOrbitalSpace>
 
 	<!-- Town Level Descriptions -->
 	<FCTownLevel1>The settlement itself is simply a small cluster of buildings grouped around a central structure.</FCTownLevel1>
 	<FCTownLevel2>The settlement is dominated by a few large structures, but it is still quite small. A number of sandbags and barricades ring the outside.</FCTownLevel2>
 	<FCTownLevel3>The settlement has a good number of structures — largely production oriented — as well as dedicated storehouses, and busy workers scurry between them. A modest wall protects the settlement.</FCTownLevel3>
-	<FCTownLevel4>The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack.</FCTownLevel4>
-	<FCTownLevel5>Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints.</FCTownLevel5>
+	<FCTownLevel4>The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the settlement from attack.</FCTownLevel4>
+	<FCTownLevel5>Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the settlement, with plentiful interior defenses in carefully planned chokepoints.</FCTownLevel5>
 
 	<!-- Orbital Town Level Descriptions -->
 	<FCTownLevel_Orbital_1>The station is little more than a pressurized habitat module with a handful of docking ports, its hull still gleaming from recent construction.</FCTownLevel_Orbital_1>

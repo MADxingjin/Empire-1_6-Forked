@@ -150,7 +150,7 @@
 	<FCLightExplanation>Adds +1 to worker hard cap (Over-Max Workers). Increases health by 4</FCLightExplanation>
 	<SellPawn>Sell Pawn</SellPawn>
 	<ReturnToPlayer>Return To Player</ReturnToPlayer>
-	<SellPawnInfo>Value will be added to next bill from colony</SellPawnInfo>
+	<SellPawnInfo>Value will be added to next bill from the settlement</SellPawnInfo>
 	<PrisonerCaptureInfo>Prisoner: {0} has been enslaved and delivered to {1}</PrisonerCaptureInfo>
 	<cantSendWithDangerLevel>You can't send a prisoner to your settlements when the map has a danger level of {0}!</cantSendWithDangerLevel>
 	<floatMenuOptionSendPrisonerToSettlement>{0} - Settlement Level: {1}, Prisoners: {2}</floatMenuOptionSendPrisonerToSettlement>

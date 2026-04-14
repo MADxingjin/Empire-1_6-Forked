@@ -7,7 +7,7 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>Matathias.Empire</packageId>
-	<modVersion>1.3.0</modVersion>
+	<modVersion>1.3.1</modVersion>
 	<incompatibleWith>
 		<li>Saakra.Empire</li>
 	</incompatibleWith>
@@ -29,9 +29,9 @@
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 	</loadAfter>
 
-	<description>Spread your rule across the Rimworld with self governing colonies that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies.
+	<description>Spread your rule across the Rimworld with self governing settlements that are loyal to you and you alone. Command them to fight in your name, and destroy your enemies.
 
-Events will periodically influence your colonies, or your faction as a whole. You must decide how best to respond to these situations.
+Events will periodically influence your settlements, or your faction as a whole. You must decide how best to respond to these situations.
 
 Your colonists will pay taxes, be it in silver, or goods. You can tell them where you want your taxes, and they will dutifully pay them. A fully customizable faction name and title allows you to put your own spin on your subjects. They can be feudal vassals, a megacorporation’s branch offices, or even a shining beacon of truth and liberty. It is all part of the greater story.
 	</description>
