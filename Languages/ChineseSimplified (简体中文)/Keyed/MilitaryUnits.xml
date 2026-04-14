@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
-	<!-- 编队 Management -->
-	<!-- EN: 已指派 编队 -->
+	<!-- Squad Management -->
+	<!-- EN: Assigned Squad -->
   <FCMilitaryTableSquad>已指派编队</FCMilitaryTableSquad>
-	<!-- EN: 设置 编队 -->
+	<!-- EN: Set Squad -->
   <FCMilitaryTableSetSquad>设置编队</FCMilitaryTableSetSquad>
-	<!-- EN: 部署 编队 -->
+	<!-- EN: Deploy Squad -->
   <FCMilitaryTableDeploySquad>部署编队</FCMilitaryTableDeploySquad>
-	<!-- EN: 重置 编队 -->
+	<!-- EN: Reset Squad -->
   <FCMilitaryTableResetSquad>重置编队</FCMilitaryTableResetSquad>
-	<!-- EN: 管理编队  -->
+	<!-- EN: Manage Squads -->
   <FCMilitaryTableButtonCreateSquad>创建编队</FCMilitaryTableButtonCreateSquad>
-	<!-- EN: 管理单位 Units -->
+	<!-- EN: Manage Units -->
   <FCMilitaryTableButtonCreateUnit>管理单位</FCMilitaryTableButtonCreateUnit>
-	<!-- EN: 管理火力支援 Fire Support -->
+	<!-- EN: Manage Fire Support -->
   <FCMilitaryTableButtonCreateFireSupport>管理火力支援</FCMilitaryTableButtonCreateFireSupport>
 	<!-- EN: Are you sure? Click to confirm -->
   <FCMilTableConfirm>你确定吗？</FCMilTableConfirm>
@@ -24,7 +24,7 @@
   <FCResetSquadPawns>已为该编队重新生成Pawn</FCResetSquadPawns>
 	<!-- EN: There are no pawns to reset. Assign a squad first. -->
   <FCResetSquadRejected>没有需要重置的Pawn，首先指定一个编队。</FCResetSquadRejected>
-	<!-- EN: Select Deployed 编队 -->
+	<!-- EN: Select Deployed Squad -->
   <selectDeployedSquad>选择已部署的编队</selectDeployedSquad>
 	<!-- EN: {0}'s {1} -->
   <selectedDeployedSquad>{0}的{1}</selectedDeployedSquad>
@@ -34,7 +34,7 @@
 	<!-- Unit Customization -->
 	<!-- EN: Exported Unit -->
   <ExportUnit>已导出单位</ExportUnit>
-	<!-- EN: Exported 编队 -->
+	<!-- EN: Exported Squad -->
   <ExportSquad>已导出编队</ExportSquad>
 	<!-- EN: {0} can't be modified: {1} -->
   <CantBeModified>不能修改{0}，原因是{1}</CantBeModified>
@@ -141,16 +141,16 @@
 	<!-- EN: The races you selected are missing critical PawnKindDefs! Your faction may generate Humans to fill the gap. -->
   <missingPawnKindDefsCriticalError>警告：你所选择的种族缺少所需的PawnKindDef。派系可能会回退到原版人类来填充。</missingPawnKindDefsCriticalError>
 
-	<!-- 编队 Design -->
-	<!-- EN:  新建编队 -->
+	<!-- Squad Design -->
+	<!-- EN: Create New Squad -->
   <FCCreateNewSquad>新建编队</FCCreateNewSquad>
-	<!-- EN: 导入编队 -->
+	<!-- EN: Import Squad -->
   <FCImportSquad>导入编队</FCImportSquad>
-	<!-- EN: 重命名编队 -->
+	<!-- EN: Rename Squad -->
   <FCRenameSquad>重命名编队</FCRenameSquad>
 	<!-- EN: Are you sure you want to delete "{0}"? -->
   <FCConfirmDeleteSquad>你确定要删除“{0}”吗？</FCConfirmDeleteSquad>
-	<!-- EN: 编队 is full (30/30 units) -->
+	<!-- EN: Squad is full (30/30 units) -->
   <FCSquadFull>编队已满（最多30个单位）</FCSquadFull>
 	<!-- EN: Add Unit -->
   <FCAddUnit>增加单位</FCAddUnit>
@@ -160,13 +160,13 @@
   <exportSquadButton>导出编队</exportSquadButton>
 	<!-- EN: Delete squad -->
   <DeleteSquadButton>删除编队</DeleteSquadButton>
-	<!-- EN: Total 编队 Equipment Cost: {0} / {1} (Max Cost) -->
+	<!-- EN: Total Squad Equipment Cost: {0} / {1} (Max Cost) -->
   <FCTotalSquadEquipmentCost>编队装备成本共计：{0}/最大{1}</FCTotalSquadEquipmentCost>
-	<!-- EN: Total 编队 Equipment Cost: {0} / No Reference -->
+	<!-- EN: Total Squad Equipment Cost: {0} / No Reference -->
   <FCTotalSquadEquipmentCostNoRef>编队装备成本合计：{0}/未设置参考</FCTotalSquadEquipmentCostNoRef>
-	<!-- EN: Delete 编队 -->
+	<!-- EN: Delete Squad -->
   <FCDeleteSquad>删除编队</FCDeleteSquad>
-	<!-- EN: Select A 编队 -->
+	<!-- EN: Select A Squad -->
   <FCSelectASquad>选择一个编队</FCSelectASquad>
 	<!-- EN:  - Military Level :  -->
   <FCMilitaryLevelLabel>——军事等级</FCMilitaryLevelLabel>

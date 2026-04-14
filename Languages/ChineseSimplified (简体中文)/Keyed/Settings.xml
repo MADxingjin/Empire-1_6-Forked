@@ -33,6 +33,8 @@
   <FCSettingDeadPawnsIncreaseMilCooldown>每个死亡成员增加军力冷却</FCSettingDeadPawnsIncreaseMilCooldown>
 	<!-- EN: Disable Forced Pausing During Events -->
   <FCSettingForcedPausing>停用事件发生时强制游戏暂停</FCSettingForcedPausing>
+	<!-- EN: Event option misclick protection: {0}s -->
+  <FCSettingEventOptionDelay>事件选项误点击保护：{0}秒</FCSettingEventOptionDelay>
 	<!-- EN: Battle Mode:  -->
   <FCSettingBattleMode>战斗模式</FCSettingBattleMode>
 	<!-- EN: Auto-Resolve -->
@@ -62,16 +64,7 @@ At 0, military efficiency affects only the effective level of both forces.
 At 1, military efficiency fully affects each round of auto combat. Military forces of lower level but higher efficiency can often beat forces of a higher level, but lower efficiency.
 
 Values in between dampen the effect of military efficiency on the auto combat. -->
-  <FCSettingEfficiencyDampingTooltip>控制战斗效能属性对自动结算的战斗结果的影响。
-
-此值为 0 时，战斗效能仅影响交战双方的军力等级。
-
-此值为 1 时，战斗效能将影响自动交战的每个回合。低级别高效能的队伍在此数值下常能击败高级别低效能的敌人。
-
-其余的中间值将从1到0平滑战斗效能对作战结果的影响。
-
-
-  </FCSettingEfficiencyDampingTooltip>
+  <FCSettingEfficiencyDampingTooltip>控制战斗效能属性对自动结算的战斗结果的影响。\n\n此值为 0 时，战斗效能仅影响交战双方的军力等级。\n\n此值为 1 时，战斗效能将影响自动交战的每个回合。低级别高效能的队伍在此数值下常能击败高级别低效能的敌人。\n\n其余的中间值将从1到0平滑战斗效能对作战结果的影响。\n\n\n  </FCSettingEfficiencyDampingTooltip>
 	<!-- EN: Mercenary Heal Rate -->
   <FCSettingMercHealRate>雇佣兵治愈速率</FCSettingMercHealRate>
 	<!-- EN: How fast undeployed mercenary pawns heal their injuries, in hit points per in-game hour. Only one injury heals at a time. -->

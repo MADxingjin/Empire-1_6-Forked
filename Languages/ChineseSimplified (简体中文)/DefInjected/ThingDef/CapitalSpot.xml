@@ -3,7 +3,7 @@
   
   <!-- EN: capital seat -->
   <CapitalSpot.label>首都符号</CapitalSpot.label>
-  <!-- EN: Designates the seat of your Empire's capital. This location serves as the central reference point for travel calculations, event targeting, and administrative functions. Can be moved with your gravship empire.-->
+  <!-- EN: Designates the seat of your Empire's capital. This location serves as the central reference point for travel calculations, event targeting, and administrative functions. Can be moved with your gravship empire. -->
   <CapitalSpot.description>象征性的符号点，将所在的地图设定为你派系的首都，进而更新旅途用时，事件目标，税收目的地和其他管理能力。可随奥德赛DLC提供的逆重飞船一起移动。</CapitalSpot.description>
   
 </LanguageData>

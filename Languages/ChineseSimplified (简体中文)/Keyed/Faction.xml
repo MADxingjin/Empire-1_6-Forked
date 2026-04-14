@@ -281,5 +281,28 @@
   <FCCapitalAlreadyEstablished>你已设置{0}为首都。迁都需要首先将首都符号关闭。</FCCapitalAlreadyEstablished>
 	<!-- EN: Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat. -->
   <FCUnableToSetCapitalHere>不能将该地图设置为首都。前往你当前活跃的首都地图并使用Empire菜单中设置首都功能，或在此处建筑一个首都符号。</FCUnableToSetCapitalHere>
+	
+	<!-- EN: Caravan Types -->
+  <FCCaravanTypes>商队类型</FCCaravanTypes>
+	<!-- EN: Select which types of trade caravans your empire will send. -->
+  <FCCaravanTypesDesc>选择你的派系将派出的商队类型</FCCaravanTypesDesc>
+	<!-- EN: At least one caravan type must be enabled. -->
+  <FCCaravanNoneError>至少选择一种！</FCCaravanNoneError>
+	<!-- EN: Caravan specializing in {0} goods, drawn from empire-wide production. -->
+  <FCCaravanResourceTooltip>专精于{0}类型货物的商队，由派系内所有可生产物资填充其库存。</FCCaravanResourceTooltip>
+	<!-- EN: {0} caravans are not available at your current tech level. -->
+  <FCCaravanResourceTechLocked>你当前的技术等级不支持组建{0}类型的商队</FCCaravanResourceTechLocked>
+	<!-- EN: Exotic Goods -->
+  <FCCaravanExotic>稀有品</FCCaravanExotic>
+	<!-- EN: Rare and high-value trade goods: artifacts, implants, and exotic materials. -->
+  <FCCaravanExoticTooltip>稀有和高价值的商品：古代物品，仿生体和植入物，和珍惜材料。</FCCaravanExoticTooltip>
+	<!-- EN: Requires faction level 4 or the Mercantile policy. -->
+  <FCCaravanExoticLocked>需要派系等级达到4或选择了“重商”特性</FCCaravanExoticLocked>
+	<!-- EN: Slave Trader -->
+  <FCCaravanSlaver>奴隶商人</FCCaravanSlaver>
+	<!-- EN: Deals in slaves and illicit goods. -->
+  <FCCaravanSlaverTooltip>交易奴隶和其他来路不正的商品。</FCCaravanSlaverTooltip>
+	<!-- EN: Blocked by Pacifist or Egalitarian policy. -->
+  <FCCaravanSlaverBlocked>因选择了“和平”或“平等”特性而被禁用。</FCCaravanSlaverBlocked>
 
 </LanguageData>

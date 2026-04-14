@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: animal trader -->
+  <Caravan_Empire_Animals.label>动物商人</Caravan_Empire_Animals.label>
+  
+  <!-- EN: clothier -->
+  <Caravan_Empire_Apparel.label>服装商人</Caravan_Empire_Apparel.label>
+  
+  <!-- EN: fuel trader -->
+  <Caravan_Empire_Chemfuel.label>燃料商人</Caravan_Empire_Chemfuel.label>
+  
+  <!-- EN: food trader -->
+  <Caravan_Empire_Food.label>食品商人</Caravan_Empire_Food.label>
+  
+  <!-- EN: gravtech trader -->
+  <Caravan_Empire_Gravtech.label>逆重科技商人</Caravan_Empire_Gravtech.label>
+  
+  <!-- EN: lumber trader -->
+  <Caravan_Empire_Logging.label>木材商人</Caravan_Empire_Logging.label>
+  
+  <!-- EN: medical supplier -->
+  <Caravan_Empire_Medicine.label>医疗物资商人</Caravan_Empire_Medicine.label>
+  
+  <!-- EN: ore trader -->
+  <Caravan_Empire_Mining.label>原矿商人</Caravan_Empire_Mining.label>
+  
+  <!-- EN: arms dealer -->
+  <Caravan_Empire_Weapons.label>武器商人</Caravan_Empire_Weapons.label>
+  
+</LanguageData>

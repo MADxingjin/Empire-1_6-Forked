@@ -1,145 +1,145 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-
-<!---->
-<battleHappinessLossMultiplier.label>战斗幸福度损失乘数</battleHappinessLossMultiplier.label>
-
-<!---->
-<battleLoyaltyLossMultiplier.label>战斗忠诚度损失乘数</battleLoyaltyLossMultiplier.label>
-
-<!---->
-<battleProsperityLossMultiplier.label>战斗繁荣度损失乘数</battleProsperityLossMultiplier.label>
-
-<!---->
-<buildingDestructionChance.label>建筑物被摧毁概率</buildingDestructionChance.label>
-
-<!---->
-<buildTimeMultiplier.label>建筑用时乘数</buildTimeMultiplier.label>
-
-<!---->
-<createSettlementBaseCost.label>创建领地成本基础</createSettlementBaseCost.label>
-
-<!---->
-<createSettlementMultiplier.label>创建领地成本乘数</createSettlementMultiplier.label>
-
-<!---->
-<deadPawnCooldownOffset.label>每个死亡成员导致额外冷却时间偏移</deadPawnCooldownOffset.label>
-
-<!---->
-<extraWorkersSoftcap.label>额外劳动力软上限</extraWorkersSoftcap.label>
-
-<!---->
-<happinessGainedBase.label>幸福度获得基础值</happinessGainedBase.label>
-
-<!---->
-<happinessGainedMultiplier.label>幸福度获得乘数</happinessGainedMultiplier.label>
-
-<!---->
-<happinessLostBase.label>幸福度损失基础值</happinessLostBase.label>
-
-<!---->
-<happinessLostMultiplier.label>幸福度损失乘数</happinessLostMultiplier.label>
-
-<!---->
-<lootMultiplier.label>掠获货值乘数</lootMultiplier.label>
-
-<!---->
-<loyaltyGainedBase.label>忠诚度获得基础值</loyaltyGainedBase.label>
-
-<!---->
-<loyaltyGainedMultiplier.label>忠诚度获得乘数</loyaltyGainedMultiplier.label>
-
-<!---->
-<loyaltyLostBase.label>忠诚度损失基础值</loyaltyLostBase.label>
-
-<!---->
-<loyaltyLostMultiplier.label>忠诚度损失乘数</loyaltyLostMultiplier.label>
-
-<!---->
-<mercHealRateMultiplier.label>雇佣兵恢复速率</mercHealRateMultiplier.label>
-
-<!---->
-<militaryBaseLevel.label>军事力量基础等级</militaryBaseLevel.label>
-
-<!---->
-<militaryCombatEfficiency.label>军事力量作战效益</militaryCombatEfficiency.label>
-
-<!---->
-<militaryCooldownOffset.label>军事力量冷却时间偏移</militaryCooldownOffset.label>
-
-<!--(进攻方)-->
-<militaryEfficiencyBonusAttacking.label>军事力量作战效益奖励(进攻方)</militaryEfficiencyBonusAttacking.label>
-
-<!--(防守方)-->
-<militaryEfficiencyBonusDefending.label>军事力量作战效益奖励(防守方)</militaryEfficiencyBonusDefending.label>
-
-<!--(进攻方)-->
-<militaryLevelBonusAttacking.label>军事力量等级奖励(进攻方)</militaryLevelBonusAttacking.label>
-
-<!--(防守方)-->
-<militaryLevelBonusDefending.label>军事力量等级奖励(防守方)</militaryLevelBonusDefending.label>
-
-<!---->
-<overMaxWorkersAdjustment.label>劳动力硬上限调整</overMaxWorkersAdjustment.label>
-
-<!---->
-<prosperityGainedBase.label>繁荣度获得基础值</prosperityGainedBase.label>
-
-<!---->
-<prosperityLostBase.label>繁荣度损失基础值</prosperityLostBase.label>
-
-<!---->
-<raidCooldownOffset.label>袭击冷却时间偏移</raidCooldownOffset.label>
-
-<!---->
-<researchContributionMultiplier.label>研究贡献乘数</researchContributionMultiplier.label>
-
-<!---->
-<settlementCostMultiplier.label>领地成本乘数</settlementCostMultiplier.label>
-
-<!---->
-<taxBasePercentage.label>税基百分比</taxBasePercentage.label>
-
-<!---->
-<taxBaseRandomModifier.label>税基随机偏移修改器</taxBaseRandomModifier.label>
-
-<!---->
-<taxBonusFlat.label>叠加额外税率</taxBonusFlat.label>
-
-<!---->
-<threatScalingBase.label>威胁规模基础值</threatScalingBase.label>
-
-<!---->
-<threatScalingMultiplier.label>威胁规模乘数</threatScalingMultiplier.label>
-
-<!---->
-<titheValueMultiplier.label>什一税值乘数</titheValueMultiplier.label>
-
-<!---->
-<unrestGainedBase.label>动乱值获得基础值</unrestGainedBase.label>
-
-<!---->
-<unrestGainedMultiplier.label>动乱值获得乘数</unrestGainedMultiplier.label>
-
-<!---->
-<unrestLostBase.label>动乱值损失基础值</unrestLostBase.label>
-
-<!---->
-<unrestLostMultiplier.label>动乱值下降乘数</unrestLostMultiplier.label>
-
-<!---->
-<workerBaseCost.label>劳动力基础成本</workerBaseCost.label>
-
-<!---->
-<workerBaseMax.label>劳动力基础上限</workerBaseMax.label>
-
-<!---->
-<workerBaseOverMax.label>劳动力基础硬上限</workerBaseOverMax.label>
-
-<!---->
-<workerProductionBase.label>劳动力产值基础</workerProductionBase.label>
-
-<!---->
-<workerProductionMultiplier.label>劳动力产值乘数</workerProductionMultiplier.label>
-
+  
+  <!-- EN: battle happiness loss multiplier -->
+  <battleHappinessLossMultiplier.label>战斗幸福度损失乘数</battleHappinessLossMultiplier.label>
+  
+  <!-- EN: battle loyalty loss multiplier -->
+  <battleLoyaltyLossMultiplier.label>战斗忠诚度损失乘数</battleLoyaltyLossMultiplier.label>
+  
+  <!-- EN: battle prosperity loss multiplier -->
+  <battleProsperityLossMultiplier.label>战斗繁荣度损失乘数</battleProsperityLossMultiplier.label>
+  
+  <!-- EN: building destruction chance -->
+  <buildingDestructionChance.label>建筑物被摧毁概率</buildingDestructionChance.label>
+  
+  <!-- EN: build time multiplier -->
+  <buildTimeMultiplier.label>建筑用时乘数</buildTimeMultiplier.label>
+  
+  <!-- EN: settlement creation base cost -->
+  <createSettlementBaseCost.label>创建领地成本基础</createSettlementBaseCost.label>
+  
+  <!-- EN: settlement creation cost multiplier -->
+  <createSettlementMultiplier.label>创建领地成本乘数</createSettlementMultiplier.label>
+  
+  <!-- EN: dead pawn cooldown offset -->
+  <deadPawnCooldownOffset.label>每个死亡成员导致额外冷却时间偏移</deadPawnCooldownOffset.label>
+  
+  <!-- EN: extra workers softcap -->
+  <extraWorkersSoftcap.label>额外劳动力软上限</extraWorkersSoftcap.label>
+  
+  <!-- EN: happiness gained base -->
+  <happinessGainedBase.label>幸福度获得基础值</happinessGainedBase.label>
+  
+  <!-- EN: happiness gained multiplier -->
+  <happinessGainedMultiplier.label>幸福度获得乘数</happinessGainedMultiplier.label>
+  
+  <!-- EN: happiness lost base -->
+  <happinessLostBase.label>幸福度损失基础值</happinessLostBase.label>
+  
+  <!-- EN: happiness lost multiplier -->
+  <happinessLostMultiplier.label>幸福度损失乘数</happinessLostMultiplier.label>
+  
+  <!-- EN: loot multiplier -->
+  <lootMultiplier.label>掠获货值乘数</lootMultiplier.label>
+  
+  <!-- EN: loyalty gained base -->
+  <loyaltyGainedBase.label>忠诚度获得基础值</loyaltyGainedBase.label>
+  
+  <!-- EN: loyalty gained multiplier -->
+  <loyaltyGainedMultiplier.label>忠诚度获得乘数</loyaltyGainedMultiplier.label>
+  
+  <!-- EN: loyalty lost base -->
+  <loyaltyLostBase.label>忠诚度损失基础值</loyaltyLostBase.label>
+  
+  <!-- EN: loyalty lost multiplier -->
+  <loyaltyLostMultiplier.label>忠诚度损失乘数</loyaltyLostMultiplier.label>
+  
+  <!-- EN: mercenary heal rate -->
+  <mercHealRateMultiplier.label>雇佣兵恢复速率</mercHealRateMultiplier.label>
+  
+  <!-- EN: military base level -->
+  <militaryBaseLevel.label>军事力量基础等级</militaryBaseLevel.label>
+  
+  <!-- EN: military combat efficiency -->
+  <militaryCombatEfficiency.label>军事力量作战效益</militaryCombatEfficiency.label>
+  
+  <!-- EN: military cooldown offset -->
+  <militaryCooldownOffset.label>军事力量冷却时间偏移</militaryCooldownOffset.label>
+  
+  <!-- EN: military efficiency bonus (attacking) -->
+  <militaryEfficiencyBonusAttacking.label>军事力量作战效益奖励(进攻方)</militaryEfficiencyBonusAttacking.label>
+  
+  <!-- EN: military efficiency bonus (defending) -->
+  <militaryEfficiencyBonusDefending.label>军事力量作战效益奖励(防守方)</militaryEfficiencyBonusDefending.label>
+  
+  <!-- EN: military level bonus (attacking) -->
+  <militaryLevelBonusAttacking.label>军事力量等级奖励(进攻方)</militaryLevelBonusAttacking.label>
+  
+  <!-- EN: military level bonus (defending) -->
+  <militaryLevelBonusDefending.label>军事力量等级奖励(防守方)</militaryLevelBonusDefending.label>
+  
+  <!-- EN: over-max workers adjustment -->
+  <overMaxWorkersAdjustment.label>劳动力硬上限调整</overMaxWorkersAdjustment.label>
+  
+  <!-- EN: prosperity gained base -->
+  <prosperityGainedBase.label>繁荣度获得基础值</prosperityGainedBase.label>
+  
+  <!-- EN: prosperity lost base -->
+  <prosperityLostBase.label>繁荣度损失基础值</prosperityLostBase.label>
+  
+  <!-- EN: raid cooldown offset -->
+  <raidCooldownOffset.label>袭击冷却时间偏移</raidCooldownOffset.label>
+  
+  <!-- EN: research contribution multiplier -->
+  <researchContributionMultiplier.label>研究贡献乘数</researchContributionMultiplier.label>
+  
+  <!-- EN: settlement cost multiplier -->
+  <settlementCostMultiplier.label>领地成本乘数</settlementCostMultiplier.label>
+  
+  <!-- EN: tax base percentage -->
+  <taxBasePercentage.label>税基百分比</taxBasePercentage.label>
+  
+  <!-- EN: tax base random modifier -->
+  <taxBaseRandomModifier.label>税基随机偏移修改器</taxBaseRandomModifier.label>
+  
+  <!-- EN: flat tax bonus -->
+  <taxBonusFlat.label>叠加额外税率</taxBonusFlat.label>
+  
+  <!-- EN: threat scaling base -->
+  <threatScalingBase.label>威胁规模基础值</threatScalingBase.label>
+  
+  <!-- EN: threat scaling multiplier -->
+  <threatScalingMultiplier.label>威胁规模乘数</threatScalingMultiplier.label>
+  
+  <!-- EN: tithe value multiplier -->
+  <titheValueMultiplier.label>什一税值乘数</titheValueMultiplier.label>
+  
+  <!-- EN: unrest gained base -->
+  <unrestGainedBase.label>动乱值获得基础值</unrestGainedBase.label>
+  
+  <!-- EN: unrest gained multiplier -->
+  <unrestGainedMultiplier.label>动乱值获得乘数</unrestGainedMultiplier.label>
+  
+  <!-- EN: unrest lost base -->
+  <unrestLostBase.label>动乱值损失基础值</unrestLostBase.label>
+  
+  <!-- EN: unrest lost multiplier -->
+  <unrestLostMultiplier.label>动乱值下降乘数</unrestLostMultiplier.label>
+  
+  <!-- EN: worker base cost -->
+  <workerBaseCost.label>劳动力基础成本</workerBaseCost.label>
+  
+  <!-- EN: worker base max -->
+  <workerBaseMax.label>劳动力基础上限</workerBaseMax.label>
+  
+  <!-- EN: worker base over max -->
+  <workerBaseOverMax.label>劳动力基础硬上限</workerBaseOverMax.label>
+  
+  <!-- EN: worker production base -->
+  <workerProductionBase.label>劳动力产值基础</workerProductionBase.label>
+  
+  <!-- EN: worker production multiplier -->
+  <workerProductionMultiplier.label>劳动力产值乘数</workerProductionMultiplier.label>
+  
 </LanguageData>

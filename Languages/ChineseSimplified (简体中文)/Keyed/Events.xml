@@ -99,7 +99,7 @@
 	<!-- EN: Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1}) -->
   <shuttlePortCallShuttleDesc>要求你的领地为你派遣穿梭机进行一次远行队航程。\n{0}次可用（成本：{1}）</shuttlePortCallShuttleDesc>
 	<!-- EN: Target anything with free colonists to send the shuttle -->
-  <targetAnythingWithColonists></targetAnythingWithColonists>
+  <targetAnythingWithColonists>选择任何带有你殖民者的物体来派出穿梭机</targetAnythingWithColonists>
 	<!-- EN: Request a shuttle for this caravan -->
   <requestShuttleToCaravan>为该远行队要求一个穿梭机</requestShuttleToCaravan>
 	<!-- EN: Request a shuttle for this colony -->
@@ -111,9 +111,9 @@
 	<!-- EN: Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1}) -->
   <targetAnyWorldObject>选定你要穿梭机飞往的世界目的地：\n{0}次可用（成本：{1}）</targetAnyWorldObject>
 	<!-- EN: Send the caravan here -->
-  <sendCaravanHere>将远行队送到</sendCaravanHere>
+  <sendCaravanHere>将远行队送到此处</sendCaravanHere>
 	<!-- EN: There are no caravans to send a shuttle to! -->
-  <noCaravansToSendShuttleTo>没有可要求穿梭机送达的远行队！</noCaravansToSendShuttleTo>
+  <noCaravansToSendShuttleTo>没有可指示穿梭机飞往的远行队！</noCaravansToSendShuttleTo>
 	<!-- EN: No shuttle uses remaining in this tax period! -->
   <noShuttleUsesRemaining>当前税期里不能再呼叫穿梭机</noShuttleUsesRemaining>
 	<!-- EN: Not enough shuttle uses remaining in this tax period! -->

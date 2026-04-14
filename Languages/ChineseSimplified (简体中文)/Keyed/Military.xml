@@ -20,10 +20,10 @@
   <FCEnslaveFloatMenuOption>尝试用领地{0}的军力（等级{1}）捕奴</FCEnslaveFloatMenuOption>
 
 	<!-- Attack Notifications -->
-	<!-- EN: {0} is about to be attacked by the {1} faction -->
+	<!-- EN: {0} is about to be attacked by the {1} faction. -->
   <settlementAboutToBeAttacked>{0}即将被来自{1}的敌人攻击</settlementAboutToBeAttacked>
-	<!-- EN: Estimated enemy power: {0}\nCurrent defense power: {1} -->
-  <settlementAttackEstimate>预计敌方战斗力：{0}\当前防守力量：{1}</settlementAttackEstimate>
+	<!-- EN: Battle Forecast:\nEnemy power: {0} (Efficiency: x{1})\nDefense power: {2} (Efficiency: x{3})\nEstimated chance of victory: {4}% -->
+  <battleForecast>战斗预测：\n敌军军力：{0}（战斗效率：乘以{1}）\n防守军力：{2}（战斗效率：乘以{3}）\n预计胜利概率：{4}%</battleForecast>
 	<!-- EN: Settlement In Danger -->
   <settlementInDanger>领地处于危机中</settlementInDanger>
 	<!-- EN: {0}'s military forces are raiding {1} -->
@@ -98,9 +98,9 @@
   <DefendColonyDesc>手动防御你的领地。</DefendColonyDesc>
 	<!-- EN: Set Defending Force -->
   <DefendSettlement>设置防御编队</DefendSettlement>
-	<!-- EN: Settlement Defending: {0}'s - Power {1} -->
+	<!-- EN: Settlement Defending: {0}'s - Power {1} - Victory: {2}% -->
   <SettlementDefendingInformation>防守领地{0} ——战斗力{1}</SettlementDefendingInformation>
-	<!-- EN: Reset to home settlement's defense - Power {0} -->
+	<!-- EN: Reset to home settlement's defense - Power {0} - Victory: {1}% -->
   <ResetToHomeSettlement>已重设到根据地防御 ——战斗力{0}</ResetToHomeSettlement>
 	<!-- EN: Change Defending Force -->
   <ChangeDefendingForce>变更防守编队</ChangeDefendingForce>
@@ -309,5 +309,8 @@
   <FCMilAutoDefendDisabled>此领地的军事等级太低，不支持自动防守。升级该领地以提升其军事等级</FCMilAutoDefendDisabled>
 	<!-- EN: Atk {0} / Def {1}  •  ${2} -->
   <FCMilBadge>进攻方 {0} /防守方 {1} * {2}白银</FCMilBadge>
+
+  <!-- UNUSED -->
+  <settlementAttackEstimate>预计敌方战斗力：{0}\当前防守力量：{1}</settlementAttackEstimate>
 
 </LanguageData>

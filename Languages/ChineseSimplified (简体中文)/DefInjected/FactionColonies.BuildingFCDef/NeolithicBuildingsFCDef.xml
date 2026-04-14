@@ -66,6 +66,16 @@
   <!-- EN: Ready to fight for their families, though not very effectively. -->
   <militia.desc>准备好保卫他们的家庭，虽然效率不尽人意。</militia.desc>
   
+  <!-- EN: Fungal Farms -->
+  <mushfarmer.label>真菌农场</mushfarmer.label>
+  <!-- EN: Farmlands adapted to the local ecosystem by growing fungi for food and medicine. -->
+  <mushfarmer.desc>依托于本地生态建立的真菌农场，选育并种植食品和药材用的真菌。</mushfarmer.desc>
+  
+  <!-- EN: Salvage Guild -->
+  <salvageGuild.label>拾荒公会</salvageGuild.label>
+  <!-- EN: A guild of trained salvage crews that searches the ruins of destroyed and abandoned settlements, recovering weapons and apparel while also potentially recovering research notes. -->
+  <salvageGuild.desc>一帮受训的拆解工人组成的公会，他们将外出，搜索并深入各种遗迹和被废弃的其他定居点来挖掘武器和服装，有时也能找到一些研究笔记。</salvageGuild.desc>
+  
   <!-- EN: Slave Market -->
   <slaveMarket.label>奴隶市场</slaveMarket.label>
   <!-- EN: Need some free labour? -->
@@ -75,5 +85,15 @@
   <stoneMason.label>切石工</stoneMason.label>
   <!-- EN: An artisan of stone by day - rules the world by night. -->
   <stoneMason.desc>白天用石头搞艺术，晚上用它们统治世界。</stoneMason.desc>
+  
+  <!-- EN: Woodcutter -->
+  <woodcutter.label>伐木工</woodcutter.label>
+  <!-- EN: A local woodcutter making use of stone tools to fell trees and process lumber. -->
+  <woodcutter.desc>本地的伐木工，用石器来砍树并切割木材。</woodcutter.desc>
+  
+  <!-- EN: Wood Gatherer -->
+  <woodgatherer.label>树枝收集者</woodgatherer.label>
+  <!-- EN: A gatherer and forager specialising in gathering loose wood in the form of fallen branches and driftwood. -->
+  <woodgatherer.desc>专门收集散落的树枝和浮木等松散木材的森林收集者。</woodgatherer.desc>
   
 </LanguageData>
