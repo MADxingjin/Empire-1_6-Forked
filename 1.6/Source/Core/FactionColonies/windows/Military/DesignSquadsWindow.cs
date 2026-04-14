@@ -118,7 +118,7 @@ namespace FactionColonies
             List<MilSquadFC> filteredSquads = string.IsNullOrEmpty(squadSearchTerm)
                 ? util.squads ?? new List<MilSquadFC>()
                 : (util.squads ?? new List<MilSquadFC>())
-                    .Where(s => s.name.IndexOf(squadSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(s => (s.name ?? "").IndexOf(squadSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
 
             float viewHeight = filteredSquads.Count * RowHeight;

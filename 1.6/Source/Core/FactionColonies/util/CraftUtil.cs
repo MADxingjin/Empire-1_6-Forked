@@ -106,7 +106,7 @@ namespace FactionColonies.util
         public static float ThingValue(ThingDef thing, ThingDef stuff, QualityCategory quality)
         {
             float value;
-            if (stuff != null && ThingHasQuality(thing))
+            if (ThingHasQuality(thing))
             {
                 value = StatDefOf.MarketValue.Worker.GetValue(StatRequest.For(thing, stuff, quality));
             }

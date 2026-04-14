@@ -62,6 +62,27 @@ namespace FactionColonies
                 $"{building.defName} should NOT be buildable for {excluded.defName} (not in allow list)");
         }
 
+        [EmpireTest("BuildingDef")]
+        public static void CanBeBuilt_SubtypeExclusive_ExcludesSiblings()
+        {
+            foreach (BuildingFCDef building in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+            {
+                if (building.settlementTypeAllowList == null || building.settlementTypeAllowList.Count == 0) continue;
+
+                foreach (WorldSettlementDef allowed in building.settlementTypeAllowList)
+                {
+                    if (allowed.baseSettlementType == null) continue;
+                    // allowed is a subtype — verify sibling subtypes are excluded
+                    foreach (WorldSettlementDef sibling in DefDatabase<WorldSettlementDef>.AllDefsListForReading)
+                    {
+                        if (sibling == allowed || sibling.baseSettlementType != allowed.baseSettlementType) continue;
+                        TestAssert.IsFalse(building.CanBeBuiltForSettlementType(sibling),
+                            $"{building.defName} allows {allowed.defName} but should NOT be buildable on sibling {sibling.defName}");
+                    }
+                }
+            }
+        }
+
         // ============================
         // Structural Integrity
         // ============================

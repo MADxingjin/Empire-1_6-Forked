@@ -15,7 +15,7 @@ namespace FactionColonies
         public static void ClearAll() => _modifiers.Clear();
         public static IReadOnlyList<IBattleModifier> Modifiers => _modifiers;
 
-        public static void InvokeModifyForce(militaryForce force, bool isAttacker)
+        public static void InvokeModifyForce(MilitaryForce force, bool isAttacker)
         {
             foreach (IBattleModifier modifier in _modifiers)
             {

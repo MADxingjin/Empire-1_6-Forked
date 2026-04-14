@@ -172,7 +172,7 @@ namespace FactionColonies
 
             List<ThingDef> filtered = string.IsNullOrEmpty(itemSearchTerm)
                 ? items
-                : items.Where(t => t.label.IndexOf(itemSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : items.Where(t => (t.label ?? t.defName).IndexOf(itemSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             filtered = ApplySort(filtered, itemSortIndex);
 
             float viewHeight = filtered.Count * RowHeight;
@@ -291,7 +291,7 @@ namespace FactionColonies
 
             List<ThingDef> filtered = string.IsNullOrEmpty(stuffSearchTerm)
                 ? currentStuffs
-                : currentStuffs.Where(s => s.label.IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : currentStuffs.Where(s => (s.label ?? s.defName).IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             filtered = ApplySort(filtered, stuffSortIndex, isStuffList: true);
 
             float viewHeight = filtered.Count * RowHeight;

@@ -111,7 +111,7 @@ namespace FactionColonies
             List<MilitaryFireSupport> filteredSupports = string.IsNullOrEmpty(supportSearchTerm)
                 ? util.fireSupportDefs ?? new List<MilitaryFireSupport>()
                 : (util.fireSupportDefs ?? new List<MilitaryFireSupport>())
-                    .Where(s => s.name.IndexOf(supportSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(s => (s.name ?? "").IndexOf(supportSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
 
             float viewHeight = filteredSupports.Count * RowHeight;

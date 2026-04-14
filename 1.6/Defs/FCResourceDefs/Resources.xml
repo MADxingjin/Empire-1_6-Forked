@@ -111,6 +111,14 @@
 				<li>Devilstrand</li>
 			</researchProjectDefs>
 		</li>
+		<li>
+			<thingDef>Synthread</thingDef>
+			<minTechLevel>Ultra</minTechLevel>
+		</li>
+		<li>
+			<thingDef>Hyperweave</thingDef>
+			<minTechLevel>Ultra</minTechLevel>
+		</li>
 	</thingAllowList>
 	<thingCategoryAllowList>
 		<li>

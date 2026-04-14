@@ -47,19 +47,13 @@ namespace FactionColonies
         }
         /// <summary>
         /// Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is a valid combat animal.
-		/// <para>Bears and wargs are problematic, so we exclude them.</para>
         /// </summary>
-        /// <param name="pawnKindDef"></param>
-        /// <returns></returns>
         public static bool IsCombatAnimal(this PawnKindDef pawnKindDef)
         {
-            return pawnKindDef.IsAnimalAndAllowed() && pawnKindDef.RaceProps.trainability != null &&
-                   pawnKindDef.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder &&
-                   pawnKindDef.race.race.predator &&
-                   pawnKindDef.combatPower > 50f && // Strong combat animals
-                   !pawnKindDef.label.ToLower().Contains("bear") && // Exclude bears
-                   !pawnKindDef.label.ToLower().Contains("warg");
-
+            return pawnKindDef.IsAnimalAndAllowed()
+                   && pawnKindDef.RaceProps.trainability is object
+                   && pawnKindDef.RaceProps.trainability.intelligenceOrder >= TrainabilityDefOf.Intermediate.intelligenceOrder
+                   && pawnKindDef.combatPower >= 50f;
         }
 
 

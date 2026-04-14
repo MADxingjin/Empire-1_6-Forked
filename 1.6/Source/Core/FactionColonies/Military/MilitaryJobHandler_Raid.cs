@@ -31,8 +31,8 @@ namespace FactionColonies
             }
 
             BattleResult result = SimulateBattleFc.FightBattle(
-                militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
-                militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
+                MilitaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
+                MilitaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
             if (result.AttackerVictory)
             {

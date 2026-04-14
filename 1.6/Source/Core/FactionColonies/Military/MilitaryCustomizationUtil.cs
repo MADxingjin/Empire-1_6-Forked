@@ -310,14 +310,14 @@ namespace FactionColonies
             {
                 foreach (var merc in squad.mercenaries)
                 {
-                    if (merc.pawn.Map != null && merc.pawn == unit)
+                    if (merc?.pawn?.Map != null && merc.pawn == unit)
                         return squad;
                 }
                 if (squad.animals != null)
                 {
                     foreach (var animal in squad.animals)
                     {
-                        if (animal.pawn.Map != null && animal.pawn == unit)
+                        if (animal?.pawn?.Map != null && animal.pawn == unit)
                             return squad;
                     }
                 }

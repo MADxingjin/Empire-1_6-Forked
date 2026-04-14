@@ -82,7 +82,7 @@ namespace FactionColonies
                 xenoOptions.Add(new XenoOption
                 {
                     def = def,
-                    label = def.label.CapitalizeFirst(),
+                    label = (def.label ?? def.defName).CapitalizeFirst(),
                     icon = def.Icon,
                     costFactor = factor
                 });
@@ -105,7 +105,7 @@ namespace FactionColonies
                         xenoOptions.Add(new XenoOption
                         {
                             custom = custom,
-                            label = custom.name.CapitalizeFirst() + " (" + "Custom".Translate() + ")",
+                            label = (custom.name ?? "???").CapitalizeFirst() + " (" + "Custom".Translate() + ")",
                             icon = custom.IconDef.Icon,
                             costFactor = factor
                         });

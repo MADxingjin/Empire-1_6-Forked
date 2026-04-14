@@ -83,9 +83,9 @@ namespace FactionColonies.WD
     {
         public const double SCALE_FACTOR = 100.0;
 
-        private militaryForce lastAttacker;
+        private MilitaryForce lastAttacker;
 
-        public void ModifyForce(militaryForce force, bool isAttacker)
+        public void ModifyForce(MilitaryForce force, bool isAttacker)
         {
             if (isAttacker)
             {
@@ -94,7 +94,7 @@ namespace FactionColonies.WD
             }
 
             // Defender side — look up target settlement via the attacker's military comp
-            militaryForce attacker = lastAttacker;
+            MilitaryForce attacker = lastAttacker;
             lastAttacker = null;
 
             if (attacker == null || attacker.homeSettlement == null) return;

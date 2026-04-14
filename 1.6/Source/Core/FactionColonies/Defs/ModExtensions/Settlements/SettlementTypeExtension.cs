@@ -43,6 +43,37 @@ namespace FactionColonies
             }
         }
         /// <summary>
+        /// Calls TileFinder.IsValidTileForNewSettlement() while temporarily masking the tile's
+        /// hilliness so the base game's impassable rejection is skipped.
+        /// </summary>
+        protected static bool CallTileFinderIgnoringImpassable(PlanetTile tile, StringBuilder reason)
+        {
+            Tile tileData = Find.WorldGrid[tile];
+            Hilliness original = tileData.hilliness;
+            tileData.hilliness = Hilliness.Mountainous;
+            bool result = TileFinder.IsValidTileForNewSettlement(tile, reason);
+            tileData.hilliness = original;
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if the tile has a mutator listed in
+        /// <see cref="WorldSettlementDef.impassableAllowedMutators"/>, allowing the impassable
+        /// restriction to be bypassed.
+        /// </summary>
+        protected virtual bool TileHasImpassableOverride(Tile tile)
+        {
+            if (parentDef.impassableAllowedMutators is null || parentDef.impassableAllowedMutators.Count == 0)
+                return false;
+            foreach (TileMutatorDef mutator in tile.Mutators)
+            {
+                if (parentDef.impassableAllowedMutators.Contains(mutator))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Determines if the given tile is a valid location for a new settlement of this type.
         /// </summary>
         /// <param name="tile">The PlanetTile to check.</param>
@@ -50,7 +81,20 @@ namespace FactionColonies
         /// <returns>TRUE if the given tile is valid for settlement. FALSE otherwise.</returns>
         public virtual bool TileIsValidForSettlement(PlanetTile tile, StringBuilder reason = null)
         {
-            if (!TileFinder.IsValidTileForNewSettlement(tile, reason)) return false;
+            // If the tile is impassable but has a qualifying mutator, bypass TileFinder
+            // (which unconditionally rejects impassable tiles) and use our own validation.
+            bool impassableOverride = tile.Tile is object
+                && tile.Tile.hilliness == Hilliness.Impassable
+                && TileHasImpassableOverride(tile.Tile);
+
+            if (impassableOverride)
+            {
+                if (!CallTileFinderIgnoringImpassable(tile, reason)) return false;
+            }
+            else
+            {
+                if (!TileFinder.IsValidTileForNewSettlement(tile, reason)) return false;
+            }
             if (tile.Tile is null) return false;
 
             foreach (WorldSettlementFC settlement in Find.WorldObjects.AllWorldObjects.Where(obj => obj.GetType() == typeof(WorldSettlementFC)))
@@ -60,14 +104,6 @@ namespace FactionColonies
                     reason?.Append("FactionBaseAdjacent".Translate());
                     return false;
                 }
-            }
-            /* The default settlement type can't be built on impassable mountains. If you want to change this, then you
-             * can define a new settlement type with its own SettlementTypeExtension, and then override this function
-             */
-            if (tile.Tile?.hilliness == Hilliness.Impassable)
-            {
-                reason?.Append("ImpassableMountains".Translate(parentDef.LabelCap));
-                return false;
             }
             if (parentDef.allowedBiomes?.Count > 0)
             {
@@ -310,7 +346,7 @@ namespace FactionColonies
                 return false;
             }
 
-            if (tile.Tile?.hilliness == Hilliness.Impassable)
+            if (tile.Tile?.hilliness == Hilliness.Impassable && !TileHasImpassableOverride(tile.Tile))
             {
                 reason?.Append("ImpassableMountains".Translate(parentDef.LabelCap));
                 return false;

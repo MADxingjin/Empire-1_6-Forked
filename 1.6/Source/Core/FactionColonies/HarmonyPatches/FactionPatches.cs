@@ -152,6 +152,48 @@ namespace FactionColonies
         }
     }
 
+    [HarmonyPatch(typeof(Faction), "Notify_BuildingTookDamage")]
+    class GoodwillPatchFunctionsBuildingTookDamage
+    {
+        static bool Prefix(ref Faction __instance, Building building, DamageInfo dinfo)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(Faction), "Notify_MemberStripped")]
+    class GoodwillPatchFunctionsMemberStripped
+    {
+        static bool Prefix(ref Faction __instance, Pawn member, Faction violator)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(Faction), "Notify_BuildingRemoved")]
+    class GoodwillPatchFunctionsBuildingRemoved
+    {
+        static bool Prefix(ref Faction __instance, Building building, Pawn deconstructor)
+        {
+            if (__instance == FactionCache.PlayerColonyFaction)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
     //Exclude Empire faction from quest faction selection
     [HarmonyPatch(typeof(QuestNode_GetFaction))]
     [HarmonyPatch("IsGoodFaction")]
@@ -213,6 +255,44 @@ namespace FactionColonies
                 RelationsUtilFC.TrySetRelationKind(pcFaction, thirdParty, playerKind, canSendLetter: false);
                 LogUtil.Message($"TryAffectGoodwillWith Postfix: Empire faction changing relationkind with {thirdParty.Name} to {playerKind}");
             }
+        }
+    }
+
+    //Mirror player hostility to PColony: if something is hostile to the player, PColony considers it hostile too.
+    //Covers the Thing-vs-Faction overload used by AttackTargetsCache.RegisterTarget to build the hostile target cache.
+    [HarmonyPatch(typeof(GenHostility))]
+    [HarmonyPatch("HostileTo", typeof(Thing), typeof(Faction))]
+    class PColonyMirrorHostileTo_ThingFaction
+    {
+        static void Postfix(Thing t, Faction fac, ref bool __result)
+        {
+            if (__result) return;
+            if (fac != FactionCache.PlayerColonyFaction) return;
+            __result = t.HostileTo(Faction.OfPlayer);
+        }
+    }
+
+    //Mirror player hostility to PColony: Thing-vs-Thing overload used by GetPotentialTargetsFor double-checks
+    //and direct pawn-to-pawn hostility queries.
+    [HarmonyPatch(typeof(GenHostility))]
+    [HarmonyPatch("HostileTo", typeof(Thing), typeof(Thing))]
+    class PColonyMirrorHostileTo_ThingThing
+    {
+        static void Postfix(Thing a, Thing b, ref bool __result)
+        {
+            if (__result) return;
+
+            Faction pcFaction = FactionCache.PlayerColonyFaction;
+            if (pcFaction is null) return;
+
+            Thing other;
+            if (a.Faction == pcFaction)
+                other = b;
+            else if (b.Faction == pcFaction)
+                other = a;
+            else return;
+
+            __result = other.HostileTo(Faction.OfPlayer);
         }
     }
 

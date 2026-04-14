@@ -82,7 +82,6 @@ namespace FactionColonies
         /// <param name="buildingSlot">Index into the settlement's buildings array, indicating where this building should be constructed.</param>
         public virtual void OnConstruct(int buildingSlot)
         {
-            LogUtil.Message("Start of SettlementBuildingComp.OnConstruct");
             buildingSlots.Add(buildingSlot);
         }
         /// <summary>
@@ -92,7 +91,6 @@ namespace FactionColonies
         /// <param name="buildingSlot">Index into the settlement's buildings array, indicating where this building is currently built.</param>
         public virtual void OnDeconstruct(int buildingSlot)
         {
-            LogUtil.Message("Start of SettlementBuildingComp.OnDeconstruct");
             buildingSlots.Remove(buildingSlot);
         }
 

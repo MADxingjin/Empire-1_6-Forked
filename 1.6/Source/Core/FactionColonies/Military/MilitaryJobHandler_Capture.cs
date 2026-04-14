@@ -29,8 +29,8 @@ namespace FactionColonies
             }
 
             BattleResult result = SimulateBattleFc.FightBattle(
-                militaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
-                militaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
+                MilitaryForce.CreateMilitaryForceFromSettlement(milComp.WorldSettlement, true),
+                MilitaryForce.CreateMilitaryForceFromFaction(milComp.militaryEnemy, false));
 
             if (result.AttackerVictory)
             {
@@ -60,12 +60,12 @@ namespace FactionColonies
                         break;
                 }
 
-                milComp.WorldSettlement.UpgradeSettlement(upgradeTimes);
+                worldsettlement.UpgradeSettlement(upgradeTimes);
 
-                milComp.WorldSettlement.loyalty = 15;
-                milComp.WorldSettlement.happiness = 25;
-                milComp.WorldSettlement.unrest = 20;
-                milComp.WorldSettlement.prosperity = 70;
+                worldsettlement.loyalty = 15;
+                worldsettlement.happiness = 25;
+                worldsettlement.unrest = 20;
+                worldsettlement.prosperity = 70;
 
                 bool defeated = !Find.WorldObjects.Settlements.Any(settlement => settlement.Faction != null
                     && settlement.Faction == tempFactionLink);
@@ -77,7 +77,7 @@ namespace FactionColonies
 
                 Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
                     "CaptureEnemySettlementSuccess".Translate(milComp.WorldSettlement.Name,
-                        worldsettlement.Name, milComp.WorldSettlement.settlementLevel),
+                        worldsettlement.Name, worldsettlement.settlementLevel),
                     LetterDefOf.PositiveEvent, new LookTargets(worldsettlement));
             }
             else if (result.DefenderVictory)

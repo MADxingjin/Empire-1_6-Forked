@@ -72,7 +72,7 @@ namespace FactionColonies
         {
             base.Tick();
 
-            if (lastShuttleUsesRefreshTick + shuttleRefreshInterval > Find.TickManager.TicksGame)
+            if (lastShuttleUsesRefreshTick + shuttleRefreshInterval <= Find.TickManager.TicksGame)
             {
                 RefreshTotalShuttleUses();
                 shuttleUsesRemaining = totalShuttleUses;

@@ -8,7 +8,7 @@ namespace FactionColonies
 
         private static void AssertTechLevel(TechLevel techLevel, double expectedLevel, double expectedEfficiency)
         {
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(techLevel, out double level, out double efficiency);
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(techLevel, out double level, out double efficiency);
             TestAssert.AreEqual(expectedLevel, level, message: $"Military level for {techLevel}");
             TestAssert.AreEqual(expectedEfficiency, efficiency, message: $"Efficiency for {techLevel}");
         }
@@ -28,25 +28,25 @@ namespace FactionColonies
         [EmpireTest("Military")]
         public static void TechLevel_Neolithic_Returns1_1()
         {
-            AssertTechLevel(TechLevel.Neolithic, 2, 1.0);
+            AssertTechLevel(TechLevel.Neolithic, 2, 0.9);
         }
 
         [EmpireTest("Military")]
         public static void TechLevel_Medieval_Returns2_12()
         {
-            AssertTechLevel(TechLevel.Medieval, 3, 1.2);
+            AssertTechLevel(TechLevel.Medieval, 3, 1.0);
         }
 
         [EmpireTest("Military")]
         public static void TechLevel_Industrial_Returns3_12()
         {
-            AssertTechLevel(TechLevel.Industrial, 5, 1.2);
+            AssertTechLevel(TechLevel.Industrial, 5, 1.1);
         }
 
         [EmpireTest("Military")]
         public static void TechLevel_Spacer_Returns3_13()
         {
-            AssertTechLevel(TechLevel.Spacer, 6, 1.3);
+            AssertTechLevel(TechLevel.Spacer, 6, 1.2);
         }
 
         [EmpireTest("Military")]

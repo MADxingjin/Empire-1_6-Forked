@@ -105,7 +105,7 @@
 		<constructionDuration>300000</constructionDuration>
 		<!-- Ticks it takes until construction is finished -->
 		<statModifiers>
-			<li><stat>RTD_Logging_ProductionMultiplier</stat><value>0.5</value></li>
+			<li><stat>RTD_Logging_ProductionAdditive</stat><value>0.5</value></li>
 		</statModifiers>
 		<upkeep>0</upkeep>
 		<!-- cost per week for the building -->

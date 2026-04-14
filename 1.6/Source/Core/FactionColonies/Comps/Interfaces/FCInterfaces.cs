@@ -152,7 +152,7 @@ namespace FactionColonies
         /// Called before the battle loop begins. Modify the force's militaryLevel, militaryEfficiency,
         /// or forceRemaining to affect the outcome.
         /// </summary>
-        void ModifyForce(militaryForce force, bool isAttacker);
+        void ModifyForce(MilitaryForce force, bool isAttacker);
     }
     /// <summary>
     /// Allows submods to veto or filter defense assignments. Called when a settlement
@@ -273,7 +273,7 @@ namespace FactionColonies
     }
     /// <summary>
     /// Allows external mods to register world objects as auto-defenders for Empire settlements
-    /// (and other <see cref="IRaidTarget"/>s). Defenders create a <see cref="militaryForce"/> and
+    /// (and other <see cref="IRaidTarget"/>s). Defenders create a <see cref="MilitaryForce"/> and
     /// are placed on cooldown after battle resolution.
     /// Register implementations via <see cref="AutoDefenderRegistry"/>.
     /// </summary>
@@ -285,7 +285,7 @@ namespace FactionColonies
         int Range { get; }
         /// <summary>True if the defender is available (enabled, not busy, not packing, etc.).</summary>
         bool CanAutoDefend { get; }
-        militaryForce CreateDefendingForce();
+        MilitaryForce CreateDefendingForce();
         void OnDefenseStarted(WorldObject target);
         void OnDefenseComplete(bool won, BattleResult result);
         /// <summary>Called when this defender is replaced by another force (not defeated).</summary>

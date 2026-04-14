@@ -33,7 +33,6 @@ namespace FactionColonies
             prisoner = pawn;
             this.settlement = settlement;
             unrest = 0;
-            healthTracker = new Pawn_HealthTracker(pawn);
             healthTracker = pawn.health;
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;

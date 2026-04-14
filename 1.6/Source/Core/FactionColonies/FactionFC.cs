@@ -1,11 +1,9 @@
 using FactionColonies.util;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Verse;
 
@@ -181,6 +179,12 @@ namespace FactionColonies
 
         // ── Caravans ──
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
+        /// <summary>
+        /// Player-selected caravan types. Strings are logical identifiers:
+        /// resource defNames (e.g. "RTD_Food"), "Exotic", or "Slaver".
+        /// Resolved to actual TraderKindDefs in UpdateFactionDef().
+        /// </summary>
+        public List<string> enabledCaravanTypes = new List<string>();
 
         // ── Leveling ──
         public int factionLevel = 1;
@@ -203,6 +207,7 @@ namespace FactionColonies
 
         // ── Filters & Misc ──
         public XenotypeFilter xenotypeFilter;
+        public AnimalFilter animalFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
         public float tradedAmount = 0;
 
@@ -210,64 +215,11 @@ namespace FactionColonies
 
         #region Constructor & Lifecycle
 
-        private static bool harmonyPatched = false;
-
         public FactionFC(World world) : base(world)
         {
-            if (!harmonyPatched)
-            {
-                var harmony = new Harmony("com.Matathias.Empire");
-
-                if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
-                {
-                    FixLinuxHarmonyCrash(harmony);
-                }
-
-                harmony.PatchAll();
-                harmonyPatched = true;
-            }
-        }
-
-        // Fix a crash related to a harmony bug on Linux
-        // This gets all patches Empire makes, gets the ones that would crash on Linux, and fixes them
-        static void FixLinuxHarmonyCrash(Harmony harmony)
-        {
-            bool WouldCrash(MethodInfo method)
-            {
-                if (method is null || !method.IsVirtual || method.IsAbstract || method.IsFinal)
-                {
-                    return false;
-                }
-
-                byte[] bytes = method.GetMethodBody()?.GetILAsByteArray();
-                if (bytes is null || bytes.Length == 0 || (bytes.Length == 1 && bytes.First() == 0x2A))
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            var methods = typeof(FactionFC).Assembly.GetTypes().Where(t0 => t0 != null && t0.IsClass && !typeof(Delegate).IsAssignableFrom(t0) && t0.GetCustomAttributes(typeof(HarmonyPatch)).Any()).SelectMany(t1 =>
-            {
-                Type declaringType = null;
-                string methodName = null;
-                foreach (HarmonyPatch attr in t1.GetCustomAttributes(typeof(HarmonyPatch), false))
-                {
-                    if (attr.info.declaringType != null) declaringType = attr.info.declaringType;
-                    if (attr.info.methodName != null) methodName = attr.info.methodName;
-                }
-
-                MethodInfo[] m = declaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                if (m is null) return new List<MethodInfo>();
-
-                return m.Where(met => met.Name == methodName);
-            }).Where(WouldCrash);
-
-            foreach (MethodInfo i in methods)
-            {
-                // Patching methods without any Prefixes/Postfixes before actually patching them fixes it. Idk why
-                harmony.Patch(i);
-            }
+            // We used to do the harmony patching here, but I moved it to HarmonyPatcher.cs with a
+            // [StaticConstructoreOnStartup] tag. Honestly not sure why the harmony patch was run here.
+            // Leaving this comment mostly for posterity.
         }
 
         /// <summary>
@@ -327,6 +279,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
+            Scribe_Collections.Look(ref enabledCaravanTypes, "enabledCaravanTypes", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
 
             //New Production types
@@ -337,6 +290,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref factionResources, "factionResources", LookMode.Deep);
 
             Scribe_Deep.Look(ref xenotypeFilter, "xenotypeFilter");
+            Scribe_Deep.Look(ref animalFilter, "animalFilter");
 
             //Update
             Scribe_Values.Look(ref nextSettlementFCID, "nextSettlementFCID");
@@ -417,6 +371,24 @@ namespace FactionColonies
                 }
             }
 
+            // Initialize caravan types with defaults if empty (new game or old save)
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
+                InitEnabledCaravanTypes();
+            }
+
+            // Initialize animal filter
+            if (animalFilter is null)
+            {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
+                animalFilter = new AnimalFilter();
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    animalFilter.FinalizeInit();
+                }
+            }
+
             // Initialize xenotype filter
             // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
             //   Only finalize it if it doesn't even exist
@@ -424,7 +396,16 @@ namespace FactionColonies
             {
                 LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
                 xenotypeFilter = new XenotypeFilter(this);
-                xenotypeFilter.FinalizeInit(this);
+                // Do NOT call FinalizeInit here if the Scribe is still loading.
+                // CustomXenotypesForReading reads files from disk via InitLoadingMetaHeaderOnly,
+                // which calls Scribe.ForceStop() when mode != Inactive, which destroys the
+                // active save-load pipeline and nulls all cross-references.
+                // Man, who thought adding custom xenotype support would be so fraught with peril?
+                if (Scribe.mode == LoadSaveMode.Inactive)
+                {
+                    xenotypeFilter.FinalizeInit(this);
+                }
+                // Otherwise deferred to firstTick (see WorldComponentTick)
             }
 
             // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
@@ -440,38 +421,107 @@ namespace FactionColonies
 
             LifecycleRegistry.Register(this);
 
-            if (fromLoad)
-            {
-                // Reapply active event stat modifiers to settlements.
-                // Events live on FactionFC, so they aren't available during individual settlement PostLoadInit.
-                foreach (FCEvent evt in events)
-                {
-                    if (evt?.def?.statModifiers is null) continue;
-                    string sourceId = "event_" + evt.def.defName;
-                    if (evt.settlementTraitLocations.Any())
-                    {
-                        foreach (WorldSettlementFC location in evt.settlementTraitLocations)
-                        {
-                            location?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                        }
-                    }
-                    else
-                    {
-                        foreach (WorldSettlementFC settlement in settlements)
-                        {
-                            settlement?.AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
-                        }
-                    }
-                }
-
-                // addStatModifiers already calls InvalidateStatCache -> DirtyStatsCache,
-                // so values will recompute lazily on next access
-            }
+            // Event stat modifier re-application is deferred to firstTick (see WorldComponentTick).
+            // FinalizeInit runs before Scribe.loader.FinalizeLoading,
+            // so cross-references (settlements, settlementTraitLocations) aren't resolved yet,
+            // and settlement PostLoadInit hasn't rebuilt base modifiers.
         }
 
         #endregion
 
+        public override void WorldComponentUpdate()
+        {
+            if (roadBuilder.shouldDrawPaths)
+            {
+                roadBuilder.DrawPaths();
+            }
+        }
+
         #region Tick Loop
+
+        private void FirstTick(Faction faction)
+        {
+            bool reinitXenoFilter = false;
+            if (animalFilter is null)
+            {
+                animalFilter = new AnimalFilter();
+            }
+            if (!animalFilter.IsInitialized)
+            {
+                animalFilter.FinalizeInit();
+                reinitXenoFilter = true;
+            }
+
+            // Finalize xenotypeFilter if it was deferred from FinalizeInit
+            // (happens when Empire is added to an existing save)
+            if (xenotypeFilter is null)
+            {
+                LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
+                xenotypeFilter = new XenotypeFilter(this);
+            }
+            if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
+            {
+                xenotypeFilter.FinalizeInit(this);
+            }
+
+            // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
+            // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
+            // after World.FinalizeInit already registered us during world generation)
+            LifecycleRegistry.Register(this);
+
+            roadBuilder.FirstTick();
+
+            if (!(faction is null))
+            {
+                _ = techLevel;
+                factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
+                    TexLoad.factionIcons.First());
+                UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
+                factionIconPath = factionIcon.name;
+
+                if (!name.NullOrEmpty() && faction.Name != name)
+                {
+                    faction.Name = name;
+                }
+
+                if (hasFactionColor)
+                    faction.color = factionColorPrimary;
+            }
+
+            militaryCustomizationUtil.CheckMilitaryUtilForErrors();
+
+            // Auto-open patch notes for each mod that has new entries exceeding the player's threshold
+            if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
+            {
+                HashSet<string> modIds = new HashSet<string>();
+                foreach (PatchNoteDef def in DefDatabase<PatchNoteDef>.AllDefsListForReading)
+                    modIds.Add(def.modId);
+
+                foreach (string modId in modIds)
+                {
+                    PatchNoteDef latest = PatchNoteDef.GetLatestForMod(modId);
+                    if (latest is null) continue;
+                    FCSettings.GetLastSeenVersion(modId, out int maj, out int min, out int pat);
+                    if (latest.IsNewerThan(maj, min, pat)
+                        && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
+                    {
+                        Find.WindowStack.Add(new PatchNotesDisplayWindow(modId));
+                    }
+                }
+            }
+
+            /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
+            Map playerHome = Find.AnyPlayerHomeMap;
+            if (playerHome is null)
+            {
+                LogUtil.Warning("Found NULL for player map on first tick. This probably shouldn't happen...");
+                startingLongLat = default(Vector2);
+            }
+            else
+            {
+                startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
+            }
+        }
 
         public override void WorldComponentTick()
         {
@@ -479,111 +529,54 @@ namespace FactionColonies
             Faction faction = FactionCache.PlayerColonyFaction;
             if (firstTick)
             {
-                // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
-                // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
-                // after World.FinalizeInit already registered us during world generation)
-                LifecycleRegistry.Register(this);
-
-                roadBuilder.FirstTick();
-
-                if (!(faction is null))
-                {
-                    _ = techLevel;
-                    factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
-                        TexLoad.factionIcons.First());
-                    UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
-                    factionIconPath = factionIcon.name;
-
-                    if (!name.NullOrEmpty() && faction.Name != name)
-                    {
-                        faction.Name = name;
-                    }
-
-                    if (hasFactionColor)
-                        faction.color = factionColorPrimary;
-                }
-
-                militaryCustomizationUtil.CheckMilitaryUtilForErrors();
-
-                // Auto-open patch notes for each mod that has new entries exceeding the player's threshold
-                if (FCSettings.patchNoteAutoOpenThreshold != PatchNoteType.Undefined)
-                {
-                    HashSet<string> modIds = new HashSet<string>();
-                    foreach (PatchNoteDef def in DefDatabase<PatchNoteDef>.AllDefsListForReading)
-                        modIds.Add(def.modId);
-
-                    foreach (string modId in modIds)
-                    {
-                        PatchNoteDef latest = PatchNoteDef.GetLatestForMod(modId);
-                        if (latest is null) continue;
-                        FCSettings.GetLastSeenVersion(modId, out int maj, out int min, out int pat);
-                        if (latest.IsNewerThan(maj, min, pat)
-                            && latest.GetPatchNoteType >= FCSettings.patchNoteAutoOpenThreshold)
-                        {
-                            Find.WindowStack.Add(new PatchNotesDisplayWindow(modId));
-                        }
-                    }
-                }
-
-                /* Get the longlat of the player's starting location. This will be used when calculating founding dates. */
-                Map playerHome = Find.AnyPlayerHomeMap;
-                if (playerHome is null)
-                {
-                    LogUtil.Warning("Found NULL for player map on first tick. This probably shouldn't happen...");
-                    startingLongLat = default(Vector2);
-                }
-                else
-                {
-                    startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
-                }
-
+                FirstTick(faction);
                 firstTick = false;
             }
-            ValidateTick(faction);
+            int ticksGame = Find.TickManager.TicksGame;
 
-            FCEventMaker.ProcessEvents(in events);
-            BillUtility.ProcessBills();
-
+            // The FireSupportTick governs when artillery shells enter the map, which requires tick precision.
+            // The function will early-return if there are no active fire supports, so the overhead in the no-active-support case is hopefully minimal
             FireSupportTick();
-
-            /* Check on the leader */
-            //This check used to exist in updateTechLevel(), but it doesn't really seem appropriate there. So, moved it here.
-            if (Find.TickManager.TicksGame % GenDate.TicksPerDay == 0)
+            if (faction is object)
             {
-                if (faction != null && (faction.leader is null || faction.leader.Dead))
-                {
-                    ColonyUtil.CreatePlayerFactionLeader(faction);
-                }
+                // TickActions dispatches the tick to interfaces and registries, so it has to run every tick.
+                TickActions();
             }
-            TaxTick(faction);
-            UITick(faction);
-            StatTick(faction);
-            MilitaryTick(faction);
-            if (Find.TickManager.TicksGame % MercenaryHealTickInterval == 0)
+
+            // Rare tick
+            if (ticksGame % 250 == 0)
+            {
+                FCEventMaker.ProcessEvents(in events);
+                BillUtility.ProcessBills();
+                if (pendingEdictActivations.Count > 0)
+                    CheckEdictActivations();
+                if (faction is object)
+                    roadBuilder.RoadTick();
+            }
+
+            // Hourly tick
+            if (ticksGame % MercenaryHealTickInterval == 0)
             {
                 militaryCustomizationUtil?.TickMercenaryHealing(MercenaryHealTickInterval);
             }
-            threatAdaptation.Tick();
-            if (pendingEdictActivations.Count > 0 && Find.TickManager.TicksGame % 250 == 0)
-                CheckEdictActivations();
-            if (!(faction is null))
-            {
-                roadBuilder.RoadTick();
-                TickActions();
-            }
-        }
-        /// <summary>
-        /// Handles daily validation checks.
-        /// </summary>
-        /// <param name="faction"></param>
-        public void ValidateTick(Faction faction)
-        {
-            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
-                return;
-            
-            ValidateSettlementCaravansList();
-        }
 
+            // Daily tick
+            if (ticksGame % GenDate.TicksPerDay == 0 && !(faction is null))
+            {
+                ValidateSettlementCaravansList();
+
+                if (faction.leader is null || faction.leader.Dead)
+                    ColonyUtil.CreatePlayerFactionLeader(faction);
+
+                // Just for future's sake; StatTick expects a non-null faction. If it's ever moved from this if-block, remember to keep the null check
+                StatTick();
+            }
+
+            // These checks have variable tick times, so they're in charge of their own tick guards
+            TaxTick(faction);
+            MilitaryTick(faction);
+            threatAdaptation.Tick();
+        }
         public void TaxTick(Faction faction)
         {
             if (faction is null || Find.TickManager.TicksGame < taxTimeDue)
@@ -594,13 +587,14 @@ namespace FactionColonies
 
             if (autoResolveBills)
                 PaymentUtil.AutoresolveBills(Bills);
+
+            // Rebuild caravan trader kinds to reflect current worker assignments
+            faction.def.caravanTraderKinds = BuildCaravanTraderKinds(techLevel);
         }
 
-        public void StatTick(Faction faction)
+        public void StatTick()
         {
-            if (faction is null || Find.TickManager.TicksGame % GenDate.TicksPerDay != 0)
-                return;
-
+            // Tick guard moved up into the world component tick
             UpdateSettlementStats();
             AccumulateDailyProduction();
             DirtyAveragesCache();
@@ -651,13 +645,13 @@ namespace FactionColonies
                                     WorldSettlementFC target = raidableSettlements.RandomElementByWeight(
                                         s => (float)GetMilitaryTargetWeight(s.settlementMilitaryLevel) * s.settlementDef.raidTargetingWeight
                                              * RaidWeightRegistry.GetCombinedWeight(s, enemy));
-                                    MilitaryUtilFC.AttackPlayerSettlement(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
+                                    MilitaryUtilFC.AttackPlayerSettlement(MilitaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
                                 }
                                 else if (validExternalTargets.Any())
                                 {
                                     IRaidTarget target = validExternalTargets.RandomElementByWeight(
                                         t => (float)GetMilitaryTargetWeight(t.MilitaryLevel));
-                                    MilitaryUtilFC.AttackRaidTarget(militaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
+                                    MilitaryUtilFC.AttackRaidTarget(MilitaryForce.CreateMilitaryForceFromFaction(enemy, true), target, enemy);
                                 }
                             }
                         }
@@ -686,34 +680,18 @@ namespace FactionColonies
             }
         }
 
-        public void UITick(Faction faction)
-        {
-            if (uiTimeUpdate <= 0) //update per time?
-            {
-                uiTimeUpdate = FCSettings.updateUiTimer;
-
-                if (faction != null)
-                {
-                    //already built in ui update -.-
-                    Find.WindowStack.WindowsUpdate();
-
-                    // Profit and averages are lazy-cached — no eager update needed
-                }
-            }
-            else
-            {
-                uiTimeUpdate -= 1;
-            }
-        }
-
         public void FireSupportTick()
         {
             if (militaryCustomizationUtil.fireSupport is null)
             {
                 militaryCustomizationUtil.fireSupport = new List<MilitaryFireSupport>();
             }
+            if (militaryCustomizationUtil.fireSupport.Count == 0)
+            {
+                return;
+            }
 
-            //Other functions
+            //Process ongoing fire supports
             militaryCustomizationUtil.fireSupport.RemoveAll(support => support.ShouldBeOver);
             militaryCustomizationUtil.fireSupport.ForEach(support => support.Process());
         }
@@ -1735,6 +1713,8 @@ namespace FactionColonies
         {
             if (RandomEventsDisabledOrNoSettlements()) return;
 
+            randomEventLastAdded += 1f;
+
             if (CanMakeRandomEventNow())
             {
                 FCEvent tmpEvt = FCEventMaker.MakeRandomEvent(FCEventMaker.ReturnRandomEvent(), null);
@@ -1745,16 +1725,7 @@ namespace FactionColonies
 
                     Find.LetterStack.ReceiveLetter("FCRandomEventLetterLabel".Translate(), FCEventMaker.BuildEventLetterBody(tmpEvt), LetterDefOf.NeutralEvent);
                 }
-                else
-                {
-                    randomEventLastAdded += 1f;
-                }
             }
-            else
-            {
-                randomEventLastAdded += 1f;
-            }
-
         }
 
         private bool CanMakeRandomEventNow()
@@ -2106,13 +2077,11 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     break;
             }
-            def.caravanTraderKinds = replacingDef.caravanTraderKinds;
+            def.caravanTraderKinds = BuildCaravanTraderKinds(tech);
             if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
                 def.backstoryFilters = replacingDef.backstoryFilters;
             def.techLevel = tech;
             def.basicMemberKind = replacingDef.basicMemberKind;
-            def.visitorTraderKinds = replacingDef.visitorTraderKinds;
-            def.baseTraderKinds = replacingDef.baseTraderKinds;
             if (replacingDef.apparelStuffFilter != null)
                 def.apparelStuffFilter = replacingDef.apparelStuffFilter;
 
@@ -2126,6 +2095,80 @@ namespace FactionColonies
             UpdateFactionIcon(ref faction, "FactionIcons/" + factionIconPath);
 
             LogUtil.Message("FactionFC.UpdateFactionDef - Completed tech update");
+        }
+
+        private void InitEnabledCaravanTypes()
+        {
+            enabledCaravanTypes = new List<string>();
+            foreach (ResourceTypeDef rtd in DefDatabase<ResourceTypeDef>.AllDefs)
+            {
+                if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
+                    enabledCaravanTypes.Add(rtd.defName);
+            }
+        }
+
+        /// <summary>
+        /// Builds the caravanTraderKinds list from <see cref="enabledCaravanTypes"/>.
+        /// Resource types resolve to Caravan_Empire_{Name} defs.
+        /// Exotic/Slaver resolve to tech-appropriate vanilla defs with policy/level gating.
+        /// </summary>
+        private List<TraderKindDef> BuildCaravanTraderKinds(TechLevel tech)
+        {
+            List<TraderKindDef> result = new List<TraderKindDef>();
+            bool isNeolithic = tech <= TechLevel.Medieval;
+
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("enabledCaravanTypes null or empty in BuildCaravanTraderKinds");
+                InitEnabledCaravanTypes();
+            }
+
+            foreach (string typeId in enabledCaravanTypes)
+            {
+                TraderKindDef resolved = null;
+
+                if (typeId == "Exotic")
+                {
+                    bool hasLevel = factionLevel >= 4;
+                    bool hasMercantile = HasPolicy(FCPolicyDefOf.mercantile);
+                    if (!hasLevel && !hasMercantile)
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_ShamanMerchant"
+                        : "Caravan_Outlander_Exotic";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else if (typeId == "Slaver")
+                {
+                    if (HasPolicy(FCPolicyDefOf.pacifist) || HasPolicy(FCPolicyDefOf.egalitarian))
+                        continue;
+
+                    string defName = isNeolithic
+                        ? "Caravan_Neolithic_Slaver"
+                        : "Caravan_Outlander_PirateMerchant";
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail(defName);
+                }
+                else
+                {
+                    // Resource-based: RTD_Food -> Caravan_Empire_Food
+                    ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.GetNamedSilentFail(typeId);
+                    if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
+                        continue;
+
+                    // Skip if this resource has no production
+                    if ((ReturnResource(rtd)?.amount ?? 0) == 0)
+                        continue;
+
+                    string suffix = rtd.defName.Replace("RTD_", "");
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
+                }
+
+                if (resolved is object)
+                    result.Add(resolved);
+            }
+
+            return result;
         }
 
         public string ReturnNextTechToLevel()

@@ -71,6 +71,8 @@ namespace FactionColonies
         private Vector2 scrollPosition;
         private float cachedHeaderHeight;
         private float cachedTotalOptionsHeight;
+        private float openedAtRealTime;
+        private bool OptionsEnabled => Time.realtimeSinceStartup - openedAtRealTime >= FCSettings.eventOptionDelaySeconds;
 
         public override Vector2 InitialSize
         {
@@ -198,6 +200,7 @@ namespace FactionColonies
         public override void PreOpen()
         {
             base.PreOpen();
+            openedAtRealTime = Time.realtimeSinceStartup;
             windowRect = new Rect(
                 (UI.screenWidth - WindowWidth) / 2f,
                 (UI.screenHeight - cachedWindowHeight) / 2f,
@@ -297,7 +300,7 @@ namespace FactionColonies
                 string handlerUnavailableReason = null;
                 bool handlerAvailable = optHandler == null ||
                     optHandler.IsOptionAvailable(opt, parentEvent, out handlerUnavailableReason);
-                bool available = affordable && meetsRequirements && handlerAvailable;
+                bool available = affordable && meetsRequirements && handlerAvailable && OptionsEnabled;
                 if (!handlerAvailable && requirementFailReason == null)
                     requirementFailReason = handlerUnavailableReason;
 
@@ -459,7 +462,7 @@ namespace FactionColonies
                 }
 
                 // Click handler
-                if (Widgets.ButtonInvisible(cardRect))
+                if (Widgets.ButtonInvisible(cardRect) && OptionsEnabled)
                 {
                     if (available)
                     {

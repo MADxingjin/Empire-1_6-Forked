@@ -218,7 +218,7 @@
 		</statModifiers>
 		<upkeep>600</upkeep>
 		<iconPath>GUI/Buildings/Orbital/tradeHub</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Logistics</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
@@ -236,7 +236,7 @@
 		</statModifiers>
 		<upkeep>400</upkeep>
 		<iconPath>GUI/Buildings/Orbital/spaceDistillery</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Logistics</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
@@ -258,7 +258,7 @@
 		</statModifiers>
 		<upkeep>600</upkeep>
 		<iconPath>GUI/Buildings/Orbital/orbitalShipyard</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Advanced</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
@@ -276,7 +276,7 @@
 		</statModifiers>
 		<upkeep>500</upkeep>
 		<iconPath>GUI/Buildings/Orbital/orbitalSurfaceClearing</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Advanced</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
@@ -298,7 +298,7 @@
 		</statModifiers>
 		<upkeep>700</upkeep>
 		<iconPath>GUI/Buildings/Orbital/orbitalAcademy</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Glitter</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>
@@ -317,7 +317,7 @@
 		</statModifiers>
 		<upkeep>800</upkeep>
 		<iconPath>GUI/Buildings/Orbital/navalAcademy</iconPath>
-		<settlementTypeAllowList>
+		<settlementTypeAllowList Inherit="False">
 			<li>WorldSettlementDef_Orbital_Glitter</li>
 		</settlementTypeAllowList>
 	</FactionColonies.BuildingFCDef>

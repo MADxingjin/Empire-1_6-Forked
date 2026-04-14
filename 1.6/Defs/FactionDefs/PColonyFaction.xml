@@ -15,5 +15,11 @@
 		<maxConfigurableAtWorldCreation>0</maxConfigurableAtWorldCreation>
 		<startingCountAtWorldCreation>0</startingCountAtWorldCreation>
 		<canGenerateQuestSites>false</canGenerateQuestSites>
+		<baseTraderKinds Inherit="False">
+			<li>Base_Empire_Standard</li>
+		</baseTraderKinds>
+		<visitorTraderKinds Inherit="False">
+			<li>Visitor_Outlander_Standard</li>
+		</visitorTraderKinds>
 	</FactionDef>
 </Defs>

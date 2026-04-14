@@ -1072,7 +1072,12 @@ namespace FactionColonies
                 Rect resolveRect = new Rect(contentX + contentW - resolveW, ry + 4f, resolveW, rowH - 8f);
                 if (Widgets.ButtonText(resolveRect, "ResolveBill".Translate()))
                 {
-                    if (!bill.AttemptResolve())
+                    if (bill.AttemptResolve())
+                    {
+                        Messages.Message("BillResolved".Translate(), MessageTypeDefOf.NeutralEvent);
+                        cachedSortedBills = null;
+                    }
+                    else
                     {
                         int needed = (int)(-1 * bill.taxes.silverAmount);
                         int available = PaymentUtil.GetSilver();

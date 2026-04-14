@@ -252,8 +252,6 @@ namespace FactionColonies
         /// </summary>
         private bool destroyFlag;
 
-        public new WorldSettlementTraderTracker trader;
-
         public new string Name
         {
             get => name ?? (name = "");
@@ -261,32 +259,6 @@ namespace FactionColonies
         }
         public override string Label => Name;
 
-        public new TraderKindDef TraderKind
-        {
-            get
-            {
-                if (trader.settlement is null) trader.settlement = this;
-                return trader?.TraderKind;
-            }
-        }
-
-        public new IEnumerable<Thing> Goods => trader?.StockListForReading;
-
-        public new int RandomPriceFactorSeed => trader?.RandomPriceFactorSeed ?? 0;
-
-        public new string TraderName => trader?.TraderName;
-
-        public new bool CanTradeNow => trader != null && trader.CanTradeNow;
-
-        public new float TradePriceImprovementOffsetForPlayer => trader?.TradePriceImprovementOffsetForPlayer ?? 0.0f;
-
-        public new TradeCurrency TradeCurrency => TraderKind.tradeCurrency;
-
-        public new bool EverVisited => trader.EverVisited;
-
-        public new bool RestockedSinceLastVisit => trader.RestockedSinceLastVisit;
-
-        public new int NextRestockTick => trader.NextRestockTick;
         public WorldSettlementDef settlementDef => def as WorldSettlementDef;
 
         /// <summary>
@@ -385,7 +357,7 @@ namespace FactionColonies
 
         public override void PostMake()
         {
-            trader = new WorldSettlementTraderTracker(this);
+            trader = new SettlementTraderTracker_Empire(this);
 
             if (!(def is WorldSettlementDef))
             {
@@ -459,7 +431,6 @@ namespace FactionColonies
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look(ref trader, "trader", this);
             Scribe_Values.Look(ref name, "name");
             Scribe_Values.Look(ref foundingTick, "foundingTick", defaultValue: 0);
             Scribe_Values.Look(ref nameShort, "nameShort", ShortName);
@@ -505,28 +476,67 @@ namespace FactionColonies
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if (trader != null && trader.settlement == null) trader.settlement = this;
+                PostLoadInit();
+            }
+        }
 
-                // Rebuild stat modifiers from buildings and settlement type before calculating stats.
-                // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
-                // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
-                ClearStatModifiers();
-                BuildingsComp?.ReapplyBuildingStatModifiers();
-                // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
-                AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
-                DirtyDescriptionCache();
+        /// <summary>
+        /// Handles all post-load initialization.
+        /// </summary>
+        private void PostLoadInit()
+        {
+            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+            {
+                LogUtil.Error($"Settlement {Name} attempted to call PostLoadInit during Scribe mode {Scribe.mode}. Bailing out.");
+                return;
+            }
+            
+            // Safety net: if trader is null or wrong type (e.g., loading old save), recreate it
+            if (!(trader is SettlementTraderTracker_Empire))
+                trader = new SettlementTraderTracker_Empire(this);
 
-                // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type).
-                // PostExposeData runs before this point, so comps that depend on production/stat values
-                // should defer that work to this callback.
-                LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on {AllComps.Count} comps...");
-                foreach (WorldObjectComp comp in AllComps)
+            // Rebuild stat modifiers from buildings and settlement type before calculating stats.
+            // statModifiers is intentionally not serialized; it's rebuilt from sources on load.
+            // base.ExposeData() already called comp PostExposeData, so buildings are loaded.
+            ClearStatModifiers();
+            BuildingsComp?.ReapplyBuildingStatModifiers();
+            // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
+            AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
+
+            // Re-apply active event stat modifiers that target this settlement.
+            // Cross-references are resolved before DoAllPostLoadInits, so
+            // FactionFC.events and each event's settlementTraitLocations are populated.
+            FactionFC factionComp = FactionCache.FactionComp;
+            if (factionComp != null)
+            {
+                foreach (FCEvent evt in factionComp.events)
                 {
-                    if (comp is ISettlementPostLoadInit postLoad)
+                    if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
+                    if (evt.settlementTraitLocations.Count == 0
+                        || evt.settlementTraitLocations.Contains(this))
                     {
-                        try { postLoad.PostSettlementLoadInit(this); }
-                        catch (Exception e) { LogUtil.Error($"ISettlementPostLoadInit {comp.GetType().Name} threw: {e}"); }
+                        string sourceId = "event_" + evt.def.defName;
+                        AddStatModifiers(evt.def.statModifiers, sourceId, evt.def.label);
                     }
+                }
+            }
+            else
+            {
+                LogUtil.Warning($"factionComp is null in PoastLoadInit phase for settlement {Name}");
+            }
+
+            DirtyDescriptionCache();
+
+            // Notify comps that settlement state is fully rebuilt (stat modifiers, buildings, type, events).
+            // PostExposeData runs before this point, so comps that depend on production/stat values
+            // should defer that work to this callback.
+            LogUtil.Message($"Finished PostLoadInit for settlement {Name}. Calling PostSettlementLoadInit on {AllComps.Count} comps...");
+            foreach (WorldObjectComp comp in AllComps)
+            {
+                if (comp is ISettlementPostLoadInit postLoad)
+                {
+                    try { postLoad.PostSettlementLoadInit(this); }
+                    catch (Exception e) { LogUtil.Error($"ISettlementPostLoadInit {comp.GetType().Name} threw: {e}"); }
                 }
             }
         }
@@ -552,8 +562,7 @@ namespace FactionColonies
             }
             if (MilitaryComp?.isUnderAttack != true && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
             {
-                trader.settlement = trader.settlement ?? this;
-                var kindDef = trader.TraderKind;
+                var kindDef = TraderKind;
                 var action = (Command_Action)CaravanVisitUtility.TradeCommand(caravan, Faction, kindDef);
 
                 var bestNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, Faction, kindDef);
@@ -580,17 +589,6 @@ namespace FactionColonies
             if ((MilitaryComp is null || !MilitaryComp.isUnderAttack) && FactionCache.FactionComp.IsActionAllowed(FCActionType.TradeWithSettlement))
                 foreach (var option in WorldSettlementTradeAction.GetFloatMenuOptions(caravan, this))
                     yield return option;
-        }
-
-        protected override void Tick()
-        {
-            base.Tick();
-            trader?.TraderTrackerTick();
-        }
-
-        public void PublicTick()
-        {
-            Tick();
         }
 
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
@@ -798,7 +796,7 @@ namespace FactionColonies
         public void DirtyStatsCache()
         {
             dirtyStatsCache = true;
-            dirtyProfitCache = true;
+            DirtyProfitCache();
         }
 
         /// <summary>
@@ -1796,7 +1794,7 @@ namespace FactionColonies
 
             foreach (ResourceFC resource in resources)
             {
-                if (resource.canTithe)
+                if (resource.canTithe && !resource.tithesPaused)
                 {
                     List<Thing> resTitheThings = resource.GenerateTithe(out int resExtraSilver);
 

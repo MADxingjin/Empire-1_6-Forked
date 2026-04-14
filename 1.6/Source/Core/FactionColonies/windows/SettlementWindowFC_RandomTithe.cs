@@ -167,7 +167,7 @@ namespace FactionColonies
             // Build filtered + sorted list
             List<ThingDef> thingsList = string.IsNullOrEmpty(thingSearchTerm)
                 ? allThings
-                : allThings.Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : allThings.Where(t => (t.label ?? t.defName).IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             thingsList = ApplySort(thingsList, sortIndex);
 

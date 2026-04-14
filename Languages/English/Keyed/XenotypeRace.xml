@@ -32,4 +32,22 @@
 	<XenoNonViolentIndicatorDesc>Xenotype is considered non-violent.</XenoNonViolentIndicatorDesc>
 	<OnlyNonViolentXenoWarning>Only non-violent xenotypes are selected. You will still see Baseliners if violence is required.</OnlyNonViolentXenoWarning>
 
+	<!-- Animal Filter -->
+	<AllowedAnimals>Allowed Animals</AllowedAnimals>
+	<AnimalSelection>Animal Selection</AnimalSelection>
+	<AnimalEnableAll>Enable All</AnimalEnableAll>
+	<AnimalDisableAll>Disable All</AnimalDisableAll>
+	<AnimalDefaults>Defaults</AnimalDefaults>
+	<AnimalFilterNoneError>No animals are allowed! Defaults will be restored on close.</AnimalFilterNoneError>
+	<AnimalFilterNoCombatWarning>No combat-capable animals are allowed. Delivery caravans will have no guard animals.</AnimalFilterNoCombatWarning>
+	<AnimalFilterNoPackError>No pack animals are allowed! All pack animals will be re-enabled on close.</AnimalFilterNoPackError>
+	<AnimalTagCombat>Combat</AnimalTagCombat>
+	<AnimalTagPack>Pack</AnimalTagPack>
+	<AnimalNotCombatHeader>Not a combat animal:</AnimalNotCombatHeader>
+	<AnimalNotCombatTrainability>Trainability too low (needs Intermediate or higher)</AnimalNotCombatTrainability>
+	<AnimalNotCombatPowerLow>Combat power too low ({0}, needs 50 or more)</AnimalNotCombatPowerLow>
+	<AnimalFilterShowAll>All</AnimalFilterShowAll>
+	<AnimalFilterShowCombat>Combat</AnimalFilterShowCombat>
+	<AnimalFilterShowPack>Pack</AnimalFilterShowPack>
+
 </LanguageData>

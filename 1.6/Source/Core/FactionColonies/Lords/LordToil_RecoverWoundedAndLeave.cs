@@ -41,7 +41,7 @@ namespace FactionColonies
             {
                 lord.ownedPawns[i].mindState.duty = new PawnDuty(DefDatabase<DutyDef>.GetNamed("FCTakeWoundedAndLeave")) { locomotion = Data.locomotion, canDig = Data.canDig };
 
-                if (Data.interruptCurrentJob && lord.ownedPawns[i].jobs.curJob != null) lord.ownedPawns[i].jobs.EndCurrentJob(JobCondition.InterruptForced);
+                if (Data.interruptCurrentJob && lord.ownedPawns[i].jobs?.curJob != null) lord.ownedPawns[i].jobs.EndCurrentJob(JobCondition.InterruptForced);
             }
         }
     }

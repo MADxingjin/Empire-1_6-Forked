@@ -116,7 +116,7 @@ namespace FactionColonies
 
             List<MilUnitFC> filteredUnits = string.IsNullOrEmpty(unitSearchTerm)
                 ? util.units
-                : util.units.Where(u => u.name.IndexOf(unitSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : util.units.Where(u => (u.name ?? "").IndexOf(unitSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             float viewHeight = filteredUnits.Count * RowHeight;
             Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,

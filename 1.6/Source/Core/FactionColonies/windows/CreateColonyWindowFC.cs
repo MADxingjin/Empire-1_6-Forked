@@ -74,6 +74,7 @@ namespace FactionColonies
             }
 
             faction.layersForTilePicker = currentSettlementType.planetLayers;
+            faction.roadBuilder.shouldDrawPaths = true;
 
             Find.TilePicker.StartTargeting_NewTemp(delegate (PlanetTile tile)
             {
@@ -97,8 +98,6 @@ namespace FactionColonies
                 Close();
                 return;
             }
-            faction.roadBuilder.DrawPaths();
-
             GetTileData();
 
             //grab before anchor/font
@@ -450,10 +449,11 @@ namespace FactionColonies
         public override void PreClose()
         {
             base.PreClose();
-            FactionFC faction = FactionCache.FactionComp;
-            if (faction != null)
+            FactionFC comp = FactionCache.FactionComp;
+            if (comp != null)
             {
-                faction.layersForTilePicker = null;
+                comp.layersForTilePicker = null;
+                comp.roadBuilder.shouldDrawPaths = false;
             }
             Find.TilePicker.StopTargeting();
         }

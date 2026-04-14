@@ -3,7 +3,7 @@
     <v1.6>
         <li>/</li>
         <li>1.6</li>
-		<li IfModActive="Ludeon.RimWorld.Odyssey">1.6/Odyssey</li>
+        <li IfModActive="Ludeon.RimWorld.Odyssey">1.6/Odyssey</li>
         <li IfModActive="erdelf.HumanoidAlienRaces">Compat/1.6/HumanoidAlienRaces</li>
         <li IfModActive="CETeam.CombatExtended">Compat/1.6/CombatExtended</li>
         <li IfModActive="Torann.RimWar">Compat/1.6/RimWar</li>
@@ -11,5 +11,6 @@
         <li IfModActive="TSA.WorldDominationExperimental">Compat/1.6/WorldDominationExperimental</li>
         <li IfModActive="TSA.WorldDomination">Compat/1.6/WorldDomination</li>
         <li IfModActive="OskarPotocki.VanillaFactionsExpanded.Core">Compat/1.6/KCSG</li>
+        <li IfModActive="Mlie.PawnkindRaceDiversification">Compat/1.6/PawnkindRaceDiversification</li>
     </v1.6>
 </loadFolders>

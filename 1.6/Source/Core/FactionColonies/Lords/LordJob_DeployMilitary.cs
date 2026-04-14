@@ -21,6 +21,7 @@ namespace FactionColonies
         private LordToil_DefendPoint lordToil_DefendPoint;
         private LordToil_HuntEnemies lordToil_HuntEnemies;
         private Map currentMap;
+        private bool finalized;
 
         /// <summary>
         /// Default constructor, meant to only be used when creating the job object during loading
@@ -42,7 +43,6 @@ namespace FactionColonies
         {
             this.currentOrderPosition = currentOrderPosition;
             this.squad = squad;
-            squad.lord = lord;
 
             whenToForceLeave = maxDeploymentTime + Find.TickManager.TicksGame;
             timeDeployed = Find.TickManager.TicksGame;
@@ -56,9 +56,14 @@ namespace FactionColonies
         /// </summary>
         private void Init()
         {
-            deployedMilitaryCommandMenu = new DeployedMilitaryCommandMenu(this);
+            deployedMilitaryCommandMenu = new DeployedMilitaryCommandMenu();
             if (!Find.WindowStack.IsOpen(typeof(DeployedMilitaryCommandMenu))) Find.WindowStack.Add(deployedMilitaryCommandMenu);
-            else deployedMilitaryCommandMenu = (DeployedMilitaryCommandMenu)Find.WindowStack.Windows.First(window => window.GetType() == typeof(DeployedMilitaryCommandMenu));
+            else
+            {
+                var existing = Find.WindowStack.Windows.FirstOrDefault(w => w is DeployedMilitaryCommandMenu);
+                if (existing is DeployedMilitaryCommandMenu menu)
+                    deployedMilitaryCommandMenu = menu;
+            }
 
             deployedMilitaryCommandMenu.squadMilitaryOrderDic.SetOrAdd(squad, currentOrder);
             deployedMilitaryCommandMenu.currentOrderPositionDic[squad] = currentOrderPosition;
@@ -73,6 +78,12 @@ namespace FactionColonies
             {
                 if (readyForCommands) return true;
 
+                if (Find.TickManager.TicksGame - timeDeployed > 300)
+                {
+                    readyForCommands = true;
+                    return true;
+                }
+
                 if (lord.ownedPawns.All(pawn => pawn.Spawned))
                 {
                     readyForCommands = true;
@@ -80,6 +91,31 @@ namespace FactionColonies
                 }
 
                 return false;
+            }
+        }
+
+        /// <summary>Hard grace period after <c>whenToForceLeave</c> (~4 in-game hours).
+        /// If pawns are still in the lord after this, force-finalize.</summary>
+        private const int PostLeaveGraceTicks = 10000;
+
+        public override void LordJobTick()
+        {
+            base.LordJobTick();
+            if (!finalized
+                && Find.TickManager.TicksGame > whenToForceLeave + PostLeaveGraceTicks
+                && lord.ownedPawns.Count > 0)
+            {
+                FinalizeDeployment();
+            }
+        }
+
+        public override void Notify_AddedToLord()
+        {
+            base.Notify_AddedToLord();
+            if (squad is object)
+            {
+                squad.lord = lord;
+                squad.hasLord = true;
             }
         }
 
@@ -92,6 +128,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref currentOrder, "currentOrder");
             Scribe_References.Look(ref squad, "squad");
             Scribe_References.Look(ref currentMap, "currentMap");
+            Scribe_Values.Look(ref finalized, "finalized");
 
             //PostLoadInit is the last loading pass
             if (Scribe.mode == LoadSaveMode.PostLoadInit) Init();
@@ -102,11 +139,11 @@ namespace FactionColonies
         /// </summary>
         private void UpdateOrderPosition()
         {
-            currentOrderPosition = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
+            if (!deployedMilitaryCommandMenu.currentOrderPositionDic.TryGetValue(squad, out IntVec3 newPos)) return;
+            currentOrderPosition = newPos;
 
-            lordToil_DefendPoint.SetDefendPoint(deployedMilitaryCommandMenu.currentOrderPositionDic[squad]);
-            lordToil_HuntEnemies = new LordToil_HuntEnemies(deployedMilitaryCommandMenu.currentOrderPositionDic[squad]);
-            //((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = deployedMilitaryCommandMenu.currentOrderPositionDic[squad];
+            lordToil_DefendPoint.SetDefendPoint(newPos);
+            ((LordToilData_HuntEnemies)lordToil_HuntEnemies.data).fallbackLocation = newPos;
 
             lord.CurLordToil.UpdateAllDuties();
         }
@@ -127,7 +164,7 @@ namespace FactionColonies
                     {
                         new TransitionAction_Custom(delegate()
                         {
-                            deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] = MilitaryOrder.RecoverWoundedAndLeave;
+                            deployedMilitaryCommandMenu.squadMilitaryOrderDic.SetOrAdd(squad, MilitaryOrder.RecoverWoundedAndLeave);
                             Messages.Message("militaryPawnsLeavingTimeOut".Translate(), lord.ownedPawns, MessageTypeDefOf.NeutralEvent);
                         })
                     }
@@ -154,7 +191,7 @@ namespace FactionColonies
                     {
                         triggers = new List<Trigger>(1)
                         {
-                            new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.squadMilitaryOrderDic[squad] == (MilitaryOrder)k + 1 && ReadyForCommands)
+                            new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.squadMilitaryOrderDic.TryGetValue(squad, out MilitaryOrder order) && order == (MilitaryOrder)k + 1 && ReadyForCommands)
                         },
                         preActions = new List<TransitionAction>(1)
                         {
@@ -177,7 +214,7 @@ namespace FactionColonies
             {
                 triggers = new List<Trigger>(1)
                 {
-                    new Trigger_Custom((TriggerSignal _) => currentOrderPosition != deployedMilitaryCommandMenu.currentOrderPositionDic[squad] && squad.isDeployed)
+                    new Trigger_Custom((TriggerSignal _) => deployedMilitaryCommandMenu.currentOrderPositionDic.TryGetValue(squad, out IntVec3 pos) && currentOrderPosition != pos && squad.isDeployed)
                 },
                 preActions = new List<TransitionAction>(1)
                 {
@@ -204,27 +241,50 @@ namespace FactionColonies
             return stateGraph;
         }
 
-        public override void Notify_LordDestroyed()
+        /// <summary>
+        /// Idempotent finalization: triggers cooldown, clears deployment state, and
+        /// despawns any orphaned squad pawns still on the map (e.g. downed mercs).
+        /// </summary>
+        private void FinalizeDeployment()
         {
-            if (squad != null && squad.isDeployed)
+            if (finalized) return;
+            finalized = true;
+
+            if (squad is object)
             {
                 squad.InitiateCooldownEvent();
                 squad.isDeployed = false;
                 FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
-            }
 
+                // Despawn orphaned downed/stuck mercs still on the map
+                if (currentMap is object)
+                {
+                    foreach (Mercenary merc in squad.mercenaries.Concat(squad.animals))
+                    {
+                        if (merc?.pawn is object && merc.pawn.Spawned && merc.pawn.Map == currentMap)
+                            merc.pawn.DeSpawn();
+                    }
+                }
+            }
+        }
+
+        public override void Notify_PawnLost(Pawn pawn, PawnLostCondition condition)
+        {
+            base.Notify_PawnLost(pawn, condition);
+            if (condition == PawnLostCondition.Killed && squad is object)
+                squad.dead++;
+        }
+
+        public override void Notify_LordDestroyed()
+        {
+            FinalizeDeployment();
             base.Notify_LordDestroyed();
         }
 
         public override void Cleanup()
         {
             base.Cleanup();
-            if (squad != null && squad.isDeployed)
-            {
-                squad.InitiateCooldownEvent();
-                squad.isDeployed = false;
-                FactionCache.FactionComp?.militaryCustomizationUtil?.RegisterSquadInjuries(squad);
-            }
+            FinalizeDeployment();
         }
     }
 }

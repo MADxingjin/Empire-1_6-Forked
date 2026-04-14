@@ -12,6 +12,7 @@
 	<ResolveBill>Resolve Bill</ResolveBill>
 	<NotEnoughSilverOnMapToPayBill>You do not have enough silver on the current map to pay the bill</NotEnoughSilverOnMapToPayBill>
 	<NumberTaxesHasBeenSolved>{0} bills have been auto-resolved!</NumberTaxesHasBeenSolved>
+	<BillResolved>Bill resolved.</BillResolved>
 	<DueFC>Due</DueFC>
 	<FCNoPendingBills>No pending bills.</FCNoPendingBills>
 	<FCPendingBillsCount>{0} pending bills</FCPendingBillsCount>
@@ -81,6 +82,10 @@
 	<deliveryHeldUpArriving>A delivery that was forced to wait has arrived!</deliveryHeldUpArriving>
 
 	<!-- Tithes -->
+	<PauseTithes>Pause Tithes</PauseTithes>
+	<UnPauseTithes>Unpause Tithes</UnPauseTithes>
+	<FCTithesPaused>Tithes Paused</FCTithesPaused>
+	<PauseTithesDesc>When enabled, no tithe items will be collected for this resource at tax time. Its production value will be converted to silver income instead. Your tithe settings are preserved and will resume when unpaused.</PauseTithesDesc>
 	<TitheList>Tithe List</TitheList>
 	<StackCount>Stack Count</StackCount>
 	<FCTotalValue>Total Value</FCTotalValue>
@@ -104,6 +109,8 @@
 	<RandomTithesEnabled>Random Tithing</RandomTithesEnabled>
 	<RandomTitheSelectionHeader>Random Tithe Item Selection</RandomTitheSelectionHeader>
 	<RandomTitheBudget>Random Tithe Budget</RandomTitheBudget>
+	<AutoMaxRandomTithe>Max</AutoMaxRandomTithe>
+	<AutoMaxRandomTitheDesc>When enabled, the random tithe budget automatically fills the remaining income after manual tithes. Adding manual tithes will reduce the random budget accordingly.</AutoMaxRandomTitheDesc>
 	<TitheOverBudget>If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget.</TitheOverBudget>
 	<RandomTithesDesc>At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
 

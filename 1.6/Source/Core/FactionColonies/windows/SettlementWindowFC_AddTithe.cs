@@ -107,7 +107,9 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
             double totalBudget = Math.Round(resource.GetTitheIncome(), 2);
-            double usedBudget = Math.Round(resource.titheTotalValue, 2);
+            double usedBudget = resource.autoMaxRandomTithe
+                ? Math.Round(resource.titheTotalValueNoRandom, 2)
+                : Math.Round(resource.titheTotalValue, 2);
             double remaining = Math.Round(totalBudget - usedBudget, 2);
             string remainingStr;
             if (remaining < 0)
@@ -295,7 +297,7 @@ namespace FactionColonies
 
             List<ThingDef> thingsList = string.IsNullOrEmpty(thingSearchTerm)
                 ? resource.GenerateThingDefList()
-                : resource.GenerateThingDefList().Where(t => t.label.IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : resource.GenerateThingDefList().Where(t => (t.label ?? t.defName).IndexOf(thingSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             // Apply sort
             thingsList = ApplySort(thingsList, itemSortIndex);
@@ -416,7 +418,7 @@ namespace FactionColonies
 
             List<ThingDef> stuffList = string.IsNullOrEmpty(stuffSearchTerm)
                 ? currentStuffs
-                : currentStuffs.Where(t => t.label.IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                : currentStuffs.Where(t => (t.label ?? t.defName).IndexOf(stuffSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             // Apply sort
             stuffList = ApplySort(stuffList, stuffSortIndex, isStuffList: true);

@@ -11,7 +11,8 @@ namespace FactionColonies.util
         private FactionDef faction;
         private FactionFC factionFc;
         private MilitaryCustomizationUtil militaryUtil;
-        private List<TraderKindDef> origBaseTraderKinds = new List<TraderKindDef>();
+        private bool _initialized = false;
+        public bool IsInitialized => _initialized;
 
 
         private Dictionary<XenotypeDef, SecurityGuardList> securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
@@ -100,10 +101,15 @@ namespace FactionColonies.util
             {
                 if (cachedGuardAnimals == null)
                 {
-                    cachedGuardAnimals = FactionCache.AllCombatAnimalKindDefs.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
+                    var combatPool = factionFc?.animalFilter?.AllowedCombatAnimals ?? FactionCache.AllCombatAnimalKindDefs;
+                    cachedGuardAnimals = combatPool.OrderByDescending(def => def.combatPower).Take(3).Distinct().ToList();
                 }
                 return cachedGuardAnimals;
             }
+        }
+        public void InvalidateGuardAnimalCache()
+        {
+            cachedGuardAnimals = null;
         }
         private bool checkedForNonViolent = false;
         private bool cachedHasOnlyNonViolent = false;
@@ -155,7 +161,6 @@ namespace FactionColonies.util
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
-            origBaseTraderKinds.AddRange(faction.baseTraderKinds);
         }
 
         public void FinalizeInit(FactionFC factionFc)
@@ -197,7 +202,7 @@ namespace FactionColonies.util
 
             RefreshPawnGroupMakers();
             PawnKindTemplateUtil.FixupPawnKindDefs(factionFc);
-            WorldSettlementTraderTracker.ReloadTraderKind();
+            _initialized = true;
         }
         /* Functions to interact with the xenotypeWeights and raceWeights dictionaries.
          * Due to caching tracking, we want to force other classes to go through our functions when interacting with the dictionary. */
@@ -921,12 +926,8 @@ namespace FactionColonies.util
                 LogUtil.Error("RefreshPawnGroupMakers: trader pawnGroupMaker has no traders after template population");
             if (!faction.pawnGroupMakers[3].options.Any())
                 LogUtil.Error("RefreshPawnGroupMakers: peaceful pawnGroupMaker has no options after template population");
-            if (WorldSettlementTraderTracker.BaseTraderKinds != null && !WorldSettlementTraderTracker.BaseTraderKinds.Any())
-            {
-                LogUtil.Warning("RefreshPawnGroupMakers: WorldSettlementTraderTracker found no valid baseTraderKinds. Attempting fallback");
-                faction.baseTraderKinds.AddRange(origBaseTraderKinds);
-                WorldSettlementTraderTracker.ReloadTraderKind();
-            }
+            if (faction.baseTraderKinds is null || !faction.baseTraderKinds.Any())
+                LogUtil.Error("RefreshPawnGroupMakers: faction has no baseTraderKinds after refresh");
         }
         private void SetPawnGroupMakers()
         {
@@ -1015,9 +1016,9 @@ namespace FactionColonies.util
                 }
             }
         }
-        private void RefreshPawnGroupMakers()
+        internal void RefreshPawnGroupMakers()
         {
-            if (faction == null || factionFc == null) return;
+            if (faction is null || factionFc is null) return;
             LogUtil.Message("Refreshing pawn group makers");
 
             PawnKindTemplateUtil.InvalidateCache();
@@ -1046,7 +1047,8 @@ namespace FactionColonies.util
             ValidatePawnGroupMakers();
 
             // Add pack animals for caravans
-            foreach (PawnKindDef animalKindDef in FactionCache.AllPackAnimalKinds)
+            var packPool = factionFc?.animalFilter?.AllowedPackAnimals ?? FactionCache.AllPackAnimalKinds;
+            foreach (PawnKindDef animalKindDef in packPool)
             {
                 faction.pawnGroupMakers[1].carriers.Add(new PawnGenOption { kind = animalKindDef, selectionWeight = 1 });
             }
@@ -1284,8 +1286,6 @@ namespace FactionColonies.util
 
             Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
             Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
-
-            Scribe_Collections.Look(ref origBaseTraderKinds, "origBaseTraderKinds", LookMode.Def);
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

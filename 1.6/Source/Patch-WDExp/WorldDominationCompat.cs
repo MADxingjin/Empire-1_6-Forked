@@ -19,6 +19,7 @@ namespace FactionColonies.WDExp
     /// 4. Scales enemy force in Empire battles based on WD settlement strength
     /// 5. Syncs PColony diplomacy after WD allegiance changes
     /// 6. Excludes PColony from WD's leader/underdog/balance mechanics
+    /// 7. Prevents WD's CheckDefeated intercept from destroying Empire settlements
     /// </summary>
     [StaticConstructorOnStartup]
     public static class WorldDominationCompatInit
@@ -69,11 +70,11 @@ namespace FactionColonies.WDExp
             // Convert WD traveler strength to Empire military force
             double techLevel;
             double efficiency;
-            militaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
+            MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(
                 traveler.Faction.def.techLevel, out techLevel, out efficiency);
 
             double wdMilitaryLevel = traveler.travelerStrength / WDStrengthBattleModifier.SCALE_FACTOR;
-            militaryForce attackingForce = new militaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
+            MilitaryForce attackingForce = new MilitaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
 
             // Route through Empire's defense system (1-day warning + auto-battle/manual)
             MilitaryUtilFC.AttackPlayerSettlement(attackingForce, empireSettlement, traveler.Faction);
@@ -120,9 +121,9 @@ namespace FactionColonies.WDExp
     {
         public const double SCALE_FACTOR = 100.0;
 
-        private militaryForce lastAttacker;
+        private MilitaryForce lastAttacker;
 
-        public void ModifyForce(militaryForce force, bool isAttacker)
+        public void ModifyForce(MilitaryForce force, bool isAttacker)
         {
             if (isAttacker)
             {
@@ -131,7 +132,7 @@ namespace FactionColonies.WDExp
             }
 
             // Defender side — look up target settlement via the attacker's military comp
-            militaryForce attacker = lastAttacker;
+            MilitaryForce attacker = lastAttacker;
             lastAttacker = null;
 
             if (attacker == null || attacker.homeSettlement == null) return;
@@ -143,13 +144,16 @@ namespace FactionColonies.WDExp
             if (target == null) return;
 
             CompViralSpread comp = target.GetComponent<CompViralSpread>();
-            if (comp == null || comp.strength <= 0f) return;
+            if (comp == null) return;
 
-            double wdForce = comp.strength / SCALE_FACTOR;
+            float totalDefense = comp.GetTotalLocalDefensePower();
+            if (totalDefense <= 0f) return;
+
+            double wdForce = totalDefense / SCALE_FACTOR;
             force.militaryLevel = wdForce;
             force.forceRemaining = Math.Round(wdForce * force.militaryEfficiency);
 
-            LogUtil.Message("WD strength " + comp.strength.ToString("F0") + " (tier " + comp.tier + ") -> Empire defender force " + force.forceRemaining);
+            LogUtil.Message("WD defense power " + totalDefense.ToString("F0") + " (tier " + comp.tier + ") -> Empire defender force " + force.forceRemaining);
         }
     }
 
@@ -213,7 +217,30 @@ namespace FactionColonies.WDExp
             if (removed != null)
             {
                 __result.GlobalTotalStr -= removed.TotalStr;
+                for (int t = 1; t <= 4; t++)
+                {
+                    __result.GlobalTierStr[t] -= removed.strength[t];
+                }
             }
+        }
+    }
+
+    // ================================================================
+    // Patch 7: Prevent WD's CheckDefeated intercept from destroying
+    // Empire settlements. WD's Patch_InterceptDefeat runs at
+    // Priority.High and calls factionBase.Destroy() on defeated
+    // non-player settlements. PColony is not IsPlayer, so Empire
+    // settlements would be destroyed and replaced with ruins/outpost
+    // opportunities. This prefix-on-the-prefix skips WD's logic
+    // for WorldSettlementFC, letting Empire's own base patch handle it.
+    // ================================================================
+    [HarmonyPatch(typeof(Patch_InterceptDefeat), "Prefix")]
+    public static class Fix_WD_InterceptDefeat
+    {
+        [HarmonyPriority(Priority.First)]
+        private static bool Prefix(Settlement factionBase)
+        {
+            return !(factionBase is WorldSettlementFC);
         }
     }
 }

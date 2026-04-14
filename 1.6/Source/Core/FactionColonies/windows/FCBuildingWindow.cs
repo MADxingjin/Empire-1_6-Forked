@@ -322,7 +322,7 @@ namespace FactionColonies
         private bool ShouldShowBuilding(BuildingFCDef building)
         {
             if (!string.IsNullOrEmpty(buildingSearchTerm)
-                && building.label.IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
+                && (building.label ?? building.defName).IndexOf(buildingSearchTerm, StringComparison.OrdinalIgnoreCase) < 0)
                 return false;
             return settlement.BuildingsComp?.FilterBuilding(currentFilter, building) ?? true;
         }
@@ -723,7 +723,7 @@ namespace FactionColonies
             Rect costRect = new Rect(statsX, curY, statsW, 22f);
             Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
 
-            int buildTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
+            int buildTime = (int)(selectedBuilding.constructionDuration * settlement.GetStatValue(FCStatDefOf.buildTimeMultiplier));
             Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
             Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
 
@@ -1334,7 +1334,7 @@ namespace FactionColonies
                 buildingSlot = buildingSlot
             };
 
-            int triggerTime = (int)(selectedBuilding.constructionDuration * factionfc.GetStatValue(FCStatDefOf.buildTimeMultiplier));
+            int triggerTime = (int)(selectedBuilding.constructionDuration * settlement.GetStatValue(FCStatDefOf.buildTimeMultiplier));
 
             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
             tmpEvt.customDescription = "BuildingEventDesc".Translate(

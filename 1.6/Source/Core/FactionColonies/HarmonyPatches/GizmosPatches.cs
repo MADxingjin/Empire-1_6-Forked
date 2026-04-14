@@ -171,109 +171,11 @@ namespace FactionColonies
                 return;
             }
 
+            if (FactionCache.FactionComp is null) return;
             if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.SendPrisoner)) return;
             if (!CanSendPrisoner(__instance)) return;
 
             __result = __result.Append(SendPrisonerAction(__instance));
-        }
-    }
-
-    [HarmonyPatch(typeof(WorldObject), "GetGizmos")]
-    class AddButtonsToNonEmpireObjects
-    {
-        /// <summary>
-        /// Checks if a <paramref name="settlement"/> has a currently usable military squad
-        /// </summary>
-        /// <param name="settlement"></param>
-        /// <returns>true if usable, false otherwise</returns>
-        private static bool SettlementHasUsableMilitary(WorldSettlementFC settlement) => settlement.MilitaryComp != null && settlement.MilitaryComp.IsMilitaryValid() && !settlement.MilitaryComp.militaryBusy;
-
-        /// <summary>
-        /// Takes a <paramref name="job"/> and generates a FloatMenuOption using the job def's label/desc keys.
-        /// </summary>
-        private static FloatMenuOption NewOption(FactionFC factionFC, Faction faction, int tile, MilitaryJobDef job) => new FloatMenuOption((job.floatMenuLabelKey ?? "FCUnsupportedMilJobError").Translate(), delegate
-        {
-            List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
-
-            foreach (WorldSettlementFC settlement in factionFC.settlements)
-            {
-                if (SettlementHasUsableMilitary(settlement))
-                {
-                    settlementList.Add(new FloatMenuOption((job.floatMenuDescKey ?? "FCUnsupportedMilJobError").Translate(settlement.Name, settlement.settlementMilitaryLevel), delegate
-                    {
-                        RelationsUtilFC.AttackFaction(faction);
-                        settlement.MilitaryComp?.SendMilitary(tile, job, 60000, faction);
-                    }));
-                }
-            }
-
-            if (settlementList.Count == 0) settlementList.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
-
-            Find.WindowStack.Add(new FloatMenu(settlementList));
-        });
-
-        /// <param name="factionFC"></param>
-        /// <param name="faction"></param>
-        /// <param name="tile"></param>
-        /// <returns>A <c>Command_Action</c> that creates a <c>FloatMenu</c> displaying hostile actions a player can take against a settlement</returns>
-        private static Command_Action HostileAction(FactionFC factionFC, Faction faction, int tile) => new Command_Action
-        {
-            defaultLabel = "AttackSettlement".Translate(faction.HasName ? faction.Name : "FCUnsupportedSettlementFaction".Translate().ToString()),
-            defaultDesc = "",
-            icon = TexLoad.iconMilitary,
-            action = delegate
-            {
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-
-                foreach (MilitaryJobDef job in FactionCache.HostileMilitaryJobs)
-                {
-                    if (!factionFC.IsMilitaryJobAllowed(job)) continue;
-                    if (job.Handler != null && !job.Handler.IsValidTarget(faction)) continue;
-                    list.Add(NewOption(factionFC, faction, tile, job));
-                }
-
-                if (list.Count == 0) list.Add(new FloatMenuOption("NoValidMilitaries".Translate(), null));
-                Find.WindowStack.Add(new FloatMenu(list));
-            }
-        };
-
-        /// <param name="factionFC"></param>
-        /// <param name="faction"></param>
-        /// <returns>A <c>Command_Action</c> that sends a diplomatic envoy if used</returns>
-        private static Command_Action PeacefulAction(FactionFC factionFC, Faction faction) => new Command_Action
-        {
-            defaultLabel = "FCIncreaseRelations".Translate(),
-            defaultDesc = "",
-            icon = TexLoad.iconProsperity,
-            action = delegate { factionFC.SendDiplomaticEnvoy(faction); }
-        };
-
-        /// <summary>
-        /// Checks if a worldObject is not part of the player or their empire faction
-        /// </summary>
-        /// <param name="worldObject"></param>
-        /// <returns>true if the faction linked isn't from the player or their empire faction, false otherwise</returns>
-        private static bool HasValidFaction(WorldObject worldObject) => worldObject.Faction != FactionCache.PlayerColonyFaction && worldObject.Faction != Find.FactionManager.OfPlayer;
-
-        /// <summary>
-        /// This Postfix adds Gizmos on settlements not owned by the player or their empire
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="__result"></param>
-        public static void Postfix(ref WorldObject __instance, ref IEnumerable<Gizmo> __result)
-        {
-            if (__instance.def.defName != "Settlement") return;
-            if (!HasValidFaction(__instance)) return;
-
-            int tile = __instance.Tile;
-            Faction faction = __instance.Faction;
-            FactionFC factionFC = FactionCache.FactionComp;
-
-            if (factionFC.IsActionAllowed(FCActionType.SendDiplomat))
-                __result = __result.AddItem(PeacefulAction(factionFC, faction));
-
-            if (factionFC.IsActionAllowed(FCActionType.DeployMilitary))
-                __result = __result.AddItem(HostileAction(factionFC, faction, tile));
         }
     }
 }

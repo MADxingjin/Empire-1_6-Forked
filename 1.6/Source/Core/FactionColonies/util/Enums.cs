@@ -1,4 +1,6 @@
-﻿namespace FactionColonies.util
+﻿using System.Collections.Generic;
+
+namespace FactionColonies.util
 {
     public enum MilitaryOrder
     {
@@ -56,7 +58,7 @@
     /// </summary>
     public static class FCActionTypeUtil
     {
-        private static readonly System.Collections.Generic.HashSet<FCActionType> requiresEnable = new System.Collections.Generic.HashSet<FCActionType>
+        private static readonly HashSet<FCActionType> requiresEnable = new HashSet<FCActionType>
         {
             FCActionType.SendDiplomat,
             FCActionType.DeployExtraSquad,
