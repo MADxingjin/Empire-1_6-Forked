@@ -53,23 +53,23 @@
 	<!-- EN: {0} is under construction at {1}. Estimated completion: {2}. -->
   <BuildingEventDesc>正在{1}建筑{0}，预计在{2}建成</BuildingEventDesc>
 	<!-- EN: {0} has been constructed at {1}! -->
-  <BuildingEventCompletedMsg>建筑{0}已在{1}完工！</BuildingEventCompletedMsg>
+  <BuildingEventCompletedMsg>建筑“{0}”已在领地{1}完工！</BuildingEventCompletedMsg>
 
 	<!-- Pawn Events -->
 	<!-- EN: Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements. -->
-  <DeathOfFactionPawn>你的无能致使领地的居民死亡,领地的不满度因此提升。</DeathOfFactionPawn>
+  <DeathOfFactionPawn>你的无能致使领地的居民死亡,领地的动乱度因此提升。</DeathOfFactionPawn>
 	<!-- EN: Capturing one of your settlement's pawns has caused great unrest in your subject settlements! -->
-  <CaptureOfFactionPawn>一名居民被俘虏,领地的动荡程度大大的提高了.</CaptureOfFactionPawn>
+  <CaptureOfFactionPawn>因你俘虏了你自己的领民，你下属领地的动乱度已大幅上涨！</CaptureOfFactionPawn>
 	<!-- EN: Prisoner Has Died -->
   <PrisonerHasDiedLetter>囚犯死亡</PrisonerHasDiedLetter>
 	<!-- EN: {0} at {1} has died from overworking -->
-  <PrisonerHasDied>在{1}的囚犯{0}因过劳而死</PrisonerHasDied>
+  <PrisonerHasDied>在领地{1}的囚犯“{0}”因过劳而死</PrisonerHasDied>
 
 	<!-- Mercenary Events -->
 	<!-- EN: Mercenary Joined -->
   <FCMercenaryJoined>雇佣兵加入</FCMercenaryJoined>
 	<!-- EN: A mercenary, {0}, from your faction has joined your colony! -->
-  <FCMercenaryJoinedText>来自你派系的一位雇佣兵，{0}，已加入你的殖民地！</FCMercenaryJoinedText>
+  <FCMercenaryJoinedText>来自你派系的雇佣兵“{0}”已加入你的殖民地！</FCMercenaryJoinedText>
 
 	<!-- Shuttle/Transport Events -->
 	<!-- EN: A shuttle is transporting injured colonists back to you after a successful settlement defence -->

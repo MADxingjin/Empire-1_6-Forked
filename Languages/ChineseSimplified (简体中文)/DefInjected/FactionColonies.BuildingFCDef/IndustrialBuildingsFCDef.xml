@@ -24,22 +24,22 @@
   <!-- EN: Battery Power Station -->
   <batteryPowerStation.label>电池储能站</batteryPowerStation.label>
   <!-- EN: A power station to store excess energy production. -->
-  <batteryPowerStation.desc>用来存储多余能源产出的站点</batteryPowerStation.desc>
+  <batteryPowerStation.desc>用来存储多余能源产出的站点。</batteryPowerStation.desc>
   
   <!-- EN: Clean Energy Lab -->
   <cleanEnergyLab.label>清洁能源实验室</cleanEnergyLab.label>
   <!-- EN: A research lab dedicated to researching and producing more efficient clean forms of energy. -->
-  <cleanEnergyLab.desc>专注于研发和生产清洁能源的实验室</cleanEnergyLab.desc>
+  <cleanEnergyLab.desc>专注于研发和生产清洁能源的实验室。</cleanEnergyLab.desc>
   
   <!-- EN: Firearms Factory -->
-  <firearmsFactory.label>枪械厂</firearmsFactory.label>
+  <firearmsFactory.label>枪械工厂</firearmsFactory.label>
   <!-- EN: A factory that produces mass quantities of firearms. -->
-  <firearmsFactory.desc>生产大量枪支的地方.+0.5基础武器产出.</firearmsFactory.desc>
+  <firearmsFactory.desc>生产大量枪支的地方。</firearmsFactory.desc>
   
   <!-- EN: Forced Work Camps -->
   <forcedWorkCamps.label>劳改营</forcedWorkCamps.label>
   <!-- EN: Put those prisoners to work and increase your production! -->
-  <forcedWorkCamps.desc>不能让这帮犯人闲着!+2工人软上限,+0.5叛乱度/日,-25%叛乱度降速/日.</forcedWorkCamps.desc>
+  <forcedWorkCamps.desc>不能让这帮犯人闲着!</forcedWorkCamps.desc>
   
   <!-- EN: Industrial Mining Equipment Depot -->
   <IMED.label>工业开矿装备维护地</IMED.label>
@@ -49,7 +49,7 @@
   <!-- EN: Indoor Hydroponics -->
   <indoorHydroponics.label>水培基地</indoorHydroponics.label>
   <!-- EN: Food is produced indoors, protecting it from the harshes from the world. -->
-  <indoorHydroponics.desc>在此生产食物能免遭外界恶劣环境的干扰.+0.5基础食物产出.</indoorHydroponics.desc>
+  <indoorHydroponics.desc>在此生产食物能免遭外界恶劣环境的干扰。</indoorHydroponics.desc>
   
   <!-- EN: In-House Merc Company -->
   <inhouseMercCompany.label>私人安保公司</inhouseMercCompany.label>

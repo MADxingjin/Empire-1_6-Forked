@@ -9,17 +9,17 @@
   <!-- EN: Fabrication Modules -->
   <fabricationModules.label>装配模块</fabricationModules.label>
   <!-- EN: Zero-G manufacturing bays that produce weapons and apparel with minimal waste. -->
-  <fabricationModules.desc>零重力装配区最大程度的减少了武器装备和服装的废料率</fabricationModules.desc>
+  <fabricationModules.desc>零重力装配区最大程度的减少了武器装备和服装的废料率。</fabricationModules.desc>
   
   <!-- EN: Habitat Rings -->
   <habitatRings.label>居住环</habitatRings.label>
   <!-- EN: Centrifugal gravity rings housing workers in comfortable simulated-gravity conditions. -->
-  <habitatRings.desc>离心人造重力环为劳动力提供了足够健康生活的温馨空间</habitatRings.desc>
+  <habitatRings.desc>离心人造重力环为劳动力提供了足够健康生活的温馨空间。</habitatRings.desc>
   
   <!-- EN: Naval Academy -->
   <navalAcademy.label>海军学院</navalAcademy.label>
   <!-- EN: Trains elite officers for fleet command. Significantly improves military readiness and reduces deployment cooldowns. -->
-  <navalAcademy.desc>此地为你派系的军事部队训练精锐军官。显著提升军队强度并缩短部署冷却。</navalAcademy.desc>
+  <navalAcademy.desc>此地为你派系的太空海军部队训练精锐军官。显著提升军队强度并缩短部署冷却。</navalAcademy.desc>
   
   <!-- EN: Orbital Academy -->
   <orbitalAcademy.label>轨道学院</orbitalAcademy.label>
@@ -29,7 +29,7 @@
   <!-- EN: Orbital Communications Array -->
   <orbitalCommsArray.label>轨道通讯阵列</orbitalCommsArray.label>
   <!-- EN: Long-range comms relay improving diplomatic coordination and suppressing dissent through propaganda. -->
-  <orbitalCommsArray.desc>长距通讯阵列能显著的改善外交行动效率并抑制传播的异见</orbitalCommsArray.desc>
+  <orbitalCommsArray.desc>长距通讯阵列能显著的改善外交行动效率并抑制异见传播。</orbitalCommsArray.desc>
   
   <!-- EN: Orbital Defense Array -->
   <orbitalDefenseArray.label>轨道防御阵列</orbitalDefenseArray.label>
@@ -39,7 +39,7 @@
   <!-- EN: Orbital Fuel Depot -->
   <orbitalFuelDepot.label>轨道燃料站</orbitalFuelDepot.label>
   <!-- EN: Stores and processes fuel for spacecraft. Essential for maintaining orbital operations and supporting space travel. -->
-  <orbitalFuelDepot.desc>处理并储存太空船使用的燃料。支援轨道开发和深空探索的必要环节。</orbitalFuelDepot.desc>
+  <orbitalFuelDepot.desc>处理并储存太空船使用的燃料。支援各种在轨行动和深空航程的必要环节。</orbitalFuelDepot.desc>
   
   <!-- EN: Orbital Hydroponics Bay -->
   <orbitalHydroponicsBay.label>轨道水培湾</orbitalHydroponicsBay.label>
@@ -64,7 +64,7 @@
   <!-- EN: Orbital Surface Operations -->
   <orbitalSurfaceOps.label>在轨地表行动规划部</orbitalSurfaceOps.label>
   <!-- EN: Coordinates surface resource extraction from orbit — managing livestock herds and mining operations remotely. -->
-  <orbitalSurfaceOps.desc>从轨道上俯瞰地表并规划各种资源采集行动，远程管理牧群和采掘队伍。</orbitalSurfaceOps.desc>
+  <orbitalSurfaceOps.desc>从轨道上俯瞰地表并规划各种资源采集行动，如远程管理放牧兽群和采掘队伍。</orbitalSurfaceOps.desc>
   
   <!-- EN: Orbital Trade Hub -->
   <orbitalTradeHub.label>在轨贸易站</orbitalTradeHub.label>
@@ -79,7 +79,7 @@
   <!-- EN: Point Defense Battery -->
   <pointDefenseBattery.label>点防御炮台组</pointDefenseBattery.label>
   <!-- EN: Close-range interceptor turrets protecting the station from incoming projectiles and boarding parties. -->
-  <pointDefenseBattery.desc>安装了近距离拦截炮塔用来从来袭的投射物和跳帮袭击者中保卫站点。</pointDefenseBattery.desc>
+  <pointDefenseBattery.desc>近距离拦截炮塔组用来从来袭的投射物和跳帮袭击者中保卫站点。</pointDefenseBattery.desc>
   
   <!-- EN: Solar Collection Array -->
   <solarCollectionArray.label>太阳能阵列</solarCollectionArray.label>

@@ -29,7 +29,7 @@
 	<!-- EN: This orbital tile is occupied. -->
   <OrbitalTileOccupied>此轨道位置已被占据。</OrbitalTileOccupied>
 	<!-- EN: Settlement Formed -->
-  <FCSettlementFormed>建成了领地。</FCSettlementFormed>
+  <FCSettlementFormed>建立了领地</FCSettlementFormed>
 	<!-- EN: The settlement -->
   <TheSettlement>领地</TheSettlement>
 	<!-- EN:  has been formed -->
@@ -45,7 +45,7 @@
 	<!-- EN: A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}. -->
   <SettleEventDesc>一支远行队将在{1}建立{0}，预计于{2}后到达。</SettleEventDesc>
 	<!-- EN: {0} has been established as a new {1} in the {2}. -->
-  <SettleEventCompletedDesc>已在{2}建立{1}类型的{0}</SettleEventCompletedDesc>
+  <SettleEventCompletedDesc>已在{2}建立类型为：{1}的领地{0}</SettleEventCompletedDesc>
 	<!-- EN: Player Colony -->
   <PlayerColony>玩家的领地</PlayerColony>
 	<!-- EN: Set Capital -->
@@ -199,7 +199,7 @@ The prosperity of a town directly correlates with the production of resources (e
 	<!-- EN: {0} settlements -->
   <FCSettlementCount>{0}个领地T</FCSettlementCount>
 	<!-- EN: Sort: {0} -->
-  <FCSortBy>排序：{0}</FCSortBy>
+  <FCSortBy>{0}</FCSortBy>
 	<!-- EN: Colony Level -->
   <ColonyLevel>领地级别</ColonyLevel>
 	<!-- EN: hamlet -->

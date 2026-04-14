@@ -9,12 +9,12 @@
   <!-- EN: Enacting a Policy -->
   <enactFactionPolicy.label>制定一个政策</enactFactionPolicy.label>
   <!-- EN: A faction-wide policy is being enacted. -->
-  <enactFactionPolicy.desc>一个正在制定中的政策将于近日在派系内发布。</enactFactionPolicy.desc>
+  <enactFactionPolicy.desc>一个正在制定中的政策将于近日在派系内颁布。</enactFactionPolicy.desc>
   
   <!-- EN: Enacting a Policy -->
   <enactSettlementPolicy.label>制定一个政策</enactSettlementPolicy.label>
   <!-- EN: A settlement-wide policy is being enacted. -->
-  <enactSettlementPolicy.desc>一个正在制定中的政策将于近日在领地内发布。</enactSettlementPolicy.desc>
+  <enactSettlementPolicy.desc>一个正在制定中的政策将于近日在领地内颁布。</enactSettlementPolicy.desc>
   
   <!-- EN: null -->
   <Null.label>DEV:NULL</Null.label>

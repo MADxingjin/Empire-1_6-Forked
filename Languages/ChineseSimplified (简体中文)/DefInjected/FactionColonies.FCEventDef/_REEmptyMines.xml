@@ -4,12 +4,12 @@
   <!-- EN: Empty Mines -->
   <emptyMines_0.label>无资源的矿井</emptyMines_0.label>
   <!-- EN: The affected region(s) have been stricken with barren mines. What should be done? -->
-  <emptyMines_0.desc>受影响的区域的矿井里空空如也。我们要怎么做？</emptyMines_0.desc>
+  <emptyMines_0.desc>受影响的区域中的矿井里空空如也。我们要怎么做？</emptyMines_0.desc>
   
   <!-- EN: Empty Mines -->
   <emptyMines_1-1.label>无资源的矿井</emptyMines_1-1.label>
   <!-- EN: The miners wait for new veins to surface. -->
-  <emptyMines_1-1.desc>让矿工等待新矿脉的出现</emptyMines_1-1.desc>
+  <emptyMines_1-1.desc>让矿工等待新矿脉的出现。</emptyMines_1-1.desc>
   
   <!-- EN: Empty Mines (Prospectors Failed) -->
   <emptyMines_1-2f.label>无资源的矿井（勘探失败）</emptyMines_1-2f.label>

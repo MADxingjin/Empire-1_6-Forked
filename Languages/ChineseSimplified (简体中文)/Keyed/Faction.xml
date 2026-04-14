@@ -27,7 +27,7 @@
 	<!-- EN: Click to select -->
   <fcClickToSelect>点击以选择</fcClickToSelect>
 	<!-- EN: Insignia -->
-  <fcInsignia>TODO</fcInsignia>
+  <fcInsignia>徽章</fcInsignia>
 	<!-- EN: Active Ideologies -->
   <fcColorPickerActiveIdeos>激活的文化模因</fcColorPickerActiveIdeos>
 	<!-- EN: Preset Colors -->
@@ -47,7 +47,7 @@
 	<!-- EN: Faction Icon -->
   <FactionIcon>派系图标</FactionIcon>
 	<!-- EN: That faction can't run an empire on its own! -->
-  <InvalidFaction>TODO</InvalidFaction>
+  <InvalidFaction>目标派系不能独立建立一个帝国！</InvalidFaction>
 	<!-- EN: Player Faction -->
   <PlayerFaction>玩家派系</PlayerFaction>
 	<!-- EN: Bastion -->
@@ -65,13 +65,13 @@
 	<!-- EN: Faction Prosperity -->
   <FactionProsperity>派系繁荣度</FactionProsperity>
 	<!-- EN: The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor. -->
-  <FactionHappinessDesc>衡量派系居民总体幸福感的标准.高幸福度对和解内部冲突极有帮助.</FactionHappinessDesc>
+  <FactionHappinessDesc>衡量派系居民总体幸福感的标准，高幸福度将在领地内部冲突上更倾向于你方获利。</FactionHappinessDesc>
 	<!-- EN: The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection. -->
-  <FactionLoyaltyDesc>衡量派系居民总体是否忠诚的标准.忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能. </FactionLoyaltyDesc>
+  <FactionLoyaltyDesc>衡量派系居民总体是否忠诚的标准，忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能。</FactionLoyaltyDesc>
 	<!-- EN: The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow. -->
-  <FactionUnrestDesc>衡量派系总体动荡程度的标准.动乱越严重,你的派系内部就越有可能发生危险事件.高叛乱度会增加内部冲突.</FactionUnrestDesc>
+  <FactionUnrestDesc>衡量派系总体动荡程度的标准，动乱值越高，你的派系内部就越有可能发生危险事件，且增加派系叛乱的几率。</FactionUnrestDesc>
 	<!-- EN: The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time. -->
-  <FactionProsperityDesc>衡量派系总体运行状况的标准.一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度受损,它将随着时间慢慢回复.</FactionProsperityDesc>
+  <FactionProsperityDesc>衡量派系总体运行状况的标准，一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度受损,它将随着时间慢慢回复。</FactionProsperityDesc>
 
 	<!-- Faction Levels -->
 	<!-- EN: Faction Level: {0} -->
@@ -79,7 +79,7 @@
 	<!-- EN: Faction Level Up -->
   <FCFactionLevelUp>派系已升级</FCFactionLevelUp>
 	<!-- EN: Your faction {0} has leveled up to {1}! -->
-  <FCFactionLevelUpDesc>你的派系 {0} 已升级到 {1}。</FCFactionLevelUpDesc>
+  <FCFactionLevelUpDesc>你的派系“{0}”已升级到{1}级！</FCFactionLevelUpDesc>
 	<!-- EN: reached max level -->
   <ReachedMaxLevel>已到达最大派系等级</ReachedMaxLevel>
 
@@ -133,83 +133,83 @@
 	<!-- EN: Available Traits -->
   <FCAvailableTraits>可选择的特性</FCAvailableTraits>
 	<!-- EN: {0} -->
-  <FCTraitSelectedPreview>TODO</FCTraitSelectedPreview>
+  <FCTraitSelectedPreview>{0}</FCTraitSelectedPreview>
 	<!-- EN: All available trait slots are filled! -->
-  <FCNoOpenTraitSlots>TODO</FCNoOpenTraitSlots>
+  <FCNoOpenTraitSlots>所有可用特性槽均已填满！</FCNoOpenTraitSlots>
 	<!-- EN: All trait slots have been assigned. -->
-  <FCAllTraitSlotsFilled>TODO</FCAllTraitSlotsFilled>
+  <FCAllTraitSlotsFilled>所有特性槽均已指派。</FCAllTraitSlotsFilled>
 	<!-- EN: Select {0} more trait(s) from the list above. -->
-  <FCSelectTraitsPrompt>TODO</FCSelectTraitsPrompt>
+  <FCSelectTraitsPrompt>再从上方列表中选择{0}个特性。</FCSelectTraitsPrompt>
 	<!-- EN: Press Confirm to assign the selected traits. This cannot be undone! -->
-  <FCTraitSelectionReady>TODO</FCTraitSelectionReady>
+  <FCTraitSelectionReady>按下确认将分配所选择的特性。这一操作不可逆！</FCTraitSelectionReady>
 	<!-- EN: Hover over a trait to see its details. -->
-  <FCHoverTraitForDetails>TODO</FCHoverTraitForDetails>
+  <FCHoverTraitForDetails>鼠标悬浮在特性上可以阅览详情。</FCHoverTraitForDetails>
 	<!-- EN: Selected ({0}/{1}) -->
-  <FCSelectedPolicies>TODO</FCSelectedPolicies>
+  <FCSelectedPolicies>选择了（{0}/{1}）</FCSelectedPolicies>
 	<!-- EN: Available Policies -->
-  <FCAvailablePolicies>TODO</FCAvailablePolicies>
+  <FCAvailablePolicies>可用的政策</FCAvailablePolicies>
 	<!-- EN: Conflicts with: {0} -->
-  <FCConflictsWith>TODO</FCConflictsWith>
+  <FCConflictsWith>与{0}冲突</FCConflictsWith>
 	<!-- EN: Traits -->
-  <FCTraits>TODO</FCTraits>
+  <FCTraits>特性</FCTraits>
 	<!-- EN: Select {0} policies to be added! But be warned, your choice is irreversible! -->
-  <FCSelectTraits0>TODO</FCSelectTraits0>
+  <FCSelectTraits0>选中了以下政策来添加：{0} \n此选择不可逆！</FCSelectTraits0>
 	<!-- EN: Remember, your choice is irreversible after you exit this window! -->
-  <FCSelectTraits2>TODO</FCSelectTraits2>
+  <FCSelectTraits2>记住，你关闭窗口后就不能再调整你的选择！</FCSelectTraits2>
 	<!-- EN: You cannot have conflicting faction traits! -->
-  <FCConflictingTraits>TODO</FCConflictingTraits>
+  <FCConflictingTraits>不能选择互斥的特性</FCConflictingTraits>
 	<!-- EN: You have to unselect one of your current traits to select another! -->
-  <FCUnselectTrait>TODO</FCUnselectTrait>
+  <FCUnselectTrait>首先取消选中一个当前已选中的特性，才能选择另一个新的！</FCUnselectTrait>
 	<!-- EN: You have already chosen your traits. You cannot edit them any longer! -->
-  <FCTraitsChosen>TODO</FCTraitsChosen>
+  <FCTraitsChosen>你已经选好了你的特性，你不能再编辑它们了！</FCTraitsChosen>
 	<!-- EN: Select a new trait -->
-  <FCSelectANewTrait>TODO</FCSelectANewTrait>
+  <FCSelectANewTrait>选择一个新特性</FCSelectANewTrait>
 	<!-- EN: Locked until level {0} -->
-  <FCTraitLockedUntilLevel>TODO</FCTraitLockedUntilLevel>
+  <FCTraitLockedUntilLevel>在等级达到{0}之前不可用</FCTraitLockedUntilLevel>
 	<!-- EN: Are you sure you wish to select {0}? You will not be able to reverse this decision -->
-  <FCConfirmTrait>TODO</FCConfirmTrait>
+  <FCConfirmTrait>你确定要选择{0}吗？此选择不可逆！</FCConfirmTrait>
 	<!-- EN: Your faction's starting traits are not selected. Go to the faction customization tab to select them! -->
-  <FCSelectYourTraits>TODO</FCSelectYourTraits>
+  <FCSelectYourTraits>你还没有选取你派系的初始特性！去Empire栏中的派系自定义选项卡来选择它们！</FCSelectYourTraits>
 
 	<!-- Edicts -->
 	<!-- EN: Edicts -->
-  <FCEdicts>TODO</FCEdicts>
+  <FCEdicts>法案</FCEdicts>
 	<!-- EN: Edict -->
-  <FCEdict>TODO</FCEdict>
+  <FCEdict>法案</FCEdict>
 	<!-- EN: Toggle faction-wide edicts. One edict per category may be active at a time. Active edicts have an ongoing silver cost. -->
-  <FCEdictsDesc>TODO</FCEdictsDesc>
+  <FCEdictsDesc>开关派系范围的法案。每种类别只能开启一个。开启的法案有白银维持费。</FCEdictsDesc>
 	<!-- EN: Upkeep: {0} silver/cycle -->
-  <FCEdictUpkeep>TODO</FCEdictUpkeep>
+  <FCEdictUpkeep>维持费：{0}白银每税期</FCEdictUpkeep>
 	<!-- EN: Cannot afford edict upkeep. All edicts have been revoked. -->
-  <FCEdictUpkeepUnpaid>TODO</FCEdictUpkeepUnpaid>
+  <FCEdictUpkeepUnpaid>无法承担法案维持费。已撤回所有法案。</FCEdictUpkeepUnpaid>
 	<!-- EN: Edict enacted: {0} -->
-  <FCEdictEnacted>TODO</FCEdictEnacted>
+  <FCEdictEnacted>法案已实施：{0}</FCEdictEnacted>
 	<!-- EN: Edict revoked: {0} -->
-  <FCEdictRevoked>TODO</FCEdictRevoked>
+  <FCEdictRevoked>法案已撤回：{0}</FCEdictRevoked>
 	<!-- EN: None -->
-  <FCEdictNone>TODO</FCEdictNone>
+  <FCEdictNone>无</FCEdictNone>
 	<!-- EN: Enacting... ({0} days remaining) -->
-  <FCEdictActivating>TODO</FCEdictActivating>
+  <FCEdictActivating>实施中··· （剩余{0}天）</FCEdictActivating>
 	<!-- EN: Total Edict Upkeep: {0} silver/cycle -->
-  <FCEdictTotalUpkeep>TODO</FCEdictTotalUpkeep>
+  <FCEdictTotalUpkeep>所有法案合计维持费：{0}白银每税期</FCEdictTotalUpkeep>
 	<!-- EN: This edict category is not yet unlocked. -->
-  <FCEdictCategoryLocked>TODO</FCEdictCategoryLocked>
+  <FCEdictCategoryLocked>尚未解锁此法案类别。</FCEdictCategoryLocked>
 	<!-- EN: Requires faction level {0}. -->
-  <FCEdictLevelRequired>TODO</FCEdictLevelRequired>
+  <FCEdictLevelRequired>需要派系等级{0}</FCEdictLevelRequired>
 	<!-- EN: Social -->
-  <FCEdictCategorySocial>TODO</FCEdictCategorySocial>
+  <FCEdictCategorySocial>社会</FCEdictCategorySocial>
 	<!-- EN: Tax -->
-  <FCEdictCategoryTax>TODO</FCEdictCategoryTax>
+  <FCEdictCategoryTax>税务</FCEdictCategoryTax>
 	<!-- EN: Military -->
-  <FCEdictCategoryMilitary>TODO</FCEdictCategoryMilitary>
+  <FCEdictCategoryMilitary>军事</FCEdictCategoryMilitary>
 	<!-- EN: Doctrine -->
-  <FCEdictCategoryDoctrine>TODO</FCEdictCategoryDoctrine>
+  <FCEdictCategoryDoctrine>战术</FCEdictCategoryDoctrine>
 	<!-- EN: Active -->
   <FCEdictActive>激活</FCEdictActive>
 	<!-- EN: Revoke -->
   <FCEdictRevoke>撤销</FCEdictRevoke>
 	<!-- EN: Locked until faction level {0} -->
-  <FCEdictLockedUntilLevel>TODO</FCEdictLockedUntilLevel>
+  <FCEdictLockedUntilLevel>在等级达到{0}之前不可用</FCEdictLockedUntilLevel>
 	<!-- EN: Replace {0} with {1}? The new edict will take {2} days to fully activate. -->
   <FCEdictSwapConfirmation>将{0}替换为{1}？新法令需要{2}天才能完全生效</FCEdictSwapConfirmation>
 	<!-- EN: Revoke the {0} edict? -->
@@ -229,13 +229,13 @@
 	<!-- EN: Researching -->
   <Researching>研究</Researching>
 	<!-- EN: {0} points of research have been used to research {1}. You have {2} points remaining. -->
-  <ResearchExpended>TODO</ResearchExpended>
+  <ResearchExpended>已将{0}点研究点投入到项目{1}上。你还有{2}点研究点未使用。</ResearchExpended>
 	<!-- EN: Research Expended -->
-  <ResearchPointsExpended>TODO</ResearchPointsExpended>
+  <ResearchPointsExpended>研究拓展</ResearchPointsExpended>
 	<!-- EN: No research has been used today. You have {0} points remaining. -->
-  <NoResearchExpended>TODO</NoResearchExpended>
+  <NoResearchExpended>今日未使用研究点。你还有{0}点研究点未使用。</NoResearchExpended>
 	<!-- EN: {0} points have been added to the research pool! -->
-  <PointsAddedToResearchPool>TODO</PointsAddedToResearchPool>
+  <PointsAddedToResearchPool>已向研究池内添加了{0}点！</PointsAddedToResearchPool>
 	<!-- EN: Research points generated by your faction has been wasted as you have no research selected
 	 -->
   <ResearchGeneratedWaste>你没有活跃的研究项目，派系产生的科研点数被浪费了。</ResearchGeneratedWaste>
@@ -244,13 +244,13 @@
 	<!-- EN: Send Research Items -->
   <FCSendResearchItems>送出研究物品</FCSendResearchItems>
 	<!-- EN: Faction Research -->
-  <FCFactionResearch>TODO</FCFactionResearch>
+  <FCFactionResearch>派系研究</FCFactionResearch>
 	<!-- EN: Check Tech Level -->
   <ResearchLevel>检查科技等级</ResearchLevel>
 	<!-- EN: Your current tech level is {0}. To reach the next tech level you must research {1} -->
-  <CurrentResearchLevel>TODO</CurrentResearchLevel>
+  <CurrentResearchLevel>你派系当前的技术等级是{0}。达到下一个技术等级需要你完成研究项目：{1}</CurrentResearchLevel>
 	<!-- EN: Ship Basics -->
-  <FCShipBasics>TODO</FCShipBasics>
+  <FCShipBasics>星际航行基础</FCShipBasics>
 	<!-- EN: Fabrication -->
   <FCFabrication>精密装配</FCFabrication>
 	<!-- EN: Electricity -->
@@ -260,19 +260,19 @@
 
 	<!-- Relations -->
 	<!-- EN: Relation Improved! -->
-  <FCRelationImproved>TODO</FCRelationImproved>
+  <FCRelationImproved>提升了与其他派系的好感</FCRelationImproved>
 	<!-- EN: Your communications with {0} has led to an improvement in relations of {1}! -->
-  <FCRelationImprovedText>TODO</FCRelationImprovedText>
+  <FCRelationImprovedText>你与{0}的外交团成功提升了{1}的好感！</FCRelationImprovedText>
 	<!-- EN: Failed Relations -->
-  <FCRelationNotImproved>TODO</FCRelationNotImproved>
+  <FCRelationNotImproved>未能提升好感</FCRelationNotImproved>
 	<!-- EN: Your communications with {0} have failed to improve relations. -->
-  <FCFailedToImproveRelationship>TODO</FCFailedToImproveRelationship>
+  <FCFailedToImproveRelationship>你送往{0}的外交团未能提升好感。</FCFailedToImproveRelationship>
 	<!-- EN: {0} days are left until the ability to improve relations is refreshed -->
-  <XDaysToSendDiplomat>TODO</XDaysToSendDiplomat>
+  <XDaysToSendDiplomat>还有{0}天才能送出下一支外交团来提升好感。</XDaysToSendDiplomat>
 	<!-- EN: Attempt to Increase Relations -->
-  <FCIncreaseRelations>TODO</FCIncreaseRelations>
+  <FCIncreaseRelations>尝试提升好感</FCIncreaseRelations>
 	<!-- EN: You cannot improve relations with factions of that type -->
-  <FCCannotImproveRelationsWithType>TODO</FCCannotImproveRelationsWithType>
+  <FCCannotImproveRelationsWithType>你不能和该类型的派系提升好感</FCCannotImproveRelationsWithType>
 
 	<!-- Capital -->
 	<!-- EN: Could not find map of capital -->

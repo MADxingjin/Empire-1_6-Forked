@@ -2,23 +2,23 @@
 <LanguageData>
   
   <!-- EN: Struck Rich Ore Vein -->
-  <struckRichOreVein_0.label>TODO</struckRichOreVein_0.label>
+  <struckRichOreVein_0.label>发现富矿脉</struckRichOreVein_0.label>
   <!-- EN: Some of your settlements have managed to strike veins of rich ore in their mines! How should they proceed? -->
-  <struckRichOreVein_0.desc>TODO</struckRichOreVein_0.desc>
+  <struckRichOreVein_0.desc>以下领地的矿井内发现了富矿脉！他们要如何继续？</struckRichOreVein_0.desc>
   
   <!-- EN: Rich Ore Vein -->
-  <struckRichOreVein_1-1.label>TODO</struckRichOreVein_1-1.label>
+  <struckRichOreVein_1-1.label>发现富矿脉</struckRichOreVein_1-1.label>
   <!-- EN: The miners extract ore at a steady pace. -->
-  <struckRichOreVein_1-1.desc>TODO</struckRichOreVein_1-1.desc>
+  <struckRichOreVein_1-1.desc>矿工以稳定的速度开采。</struckRichOreVein_1-1.desc>
   
   <!-- EN: Rich Ore Vein (Rush Extraction) -->
-  <struckRichOreVein_1-2.label>TODO</struckRichOreVein_1-2.label>
+  <struckRichOreVein_1-2.label>发现富矿脉</struckRichOreVein_1-2.label>
   <!-- EN: The miners are pushed hard to extract as much ore as possible, but the overwork takes its toll. -->
-  <struckRichOreVein_1-2.desc>TODO</struckRichOreVein_1-2.desc>
+  <struckRichOreVein_1-2.desc>矿工被指示加班加点来快速挖完这条矿脉，但增加的工作压力同样有代价。</struckRichOreVein_1-2.desc>
   
   <!-- EN: Rich Ore Vein (Rights Sold) -->
-  <struckRichOreVein_1-3.label>TODO</struckRichOreVein_1-3.label>
+  <struckRichOreVein_1-3.label>发现富矿脉</struckRichOreVein_1-3.label>
   <!-- EN: The mining rights are sold to outside interests for immediate profit. -->
-  <struckRichOreVein_1-3.desc>TODO</struckRichOreVein_1-3.desc>
+  <struckRichOreVein_1-3.desc>开采权被售卖给外来资本以期立即获利。</struckRichOreVein_1-3.desc>
   
 </LanguageData>

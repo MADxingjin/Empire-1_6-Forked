@@ -2,23 +2,23 @@
 <LanguageData>
   
   <!-- EN: Missed Supply Delivery -->
-  <missedSupplyDelivery_0.label>TODO</missedSupplyDelivery_0.label>
+  <missedSupplyDelivery_0.label>物资未能按时到达</missedSupplyDelivery_0.label>
   <!-- EN: The craftsmen in the affected region(s) are suffering from a lack of supplies. How should they adapt? -->
-  <missedSupplyDelivery_0.desc>TODO</missedSupplyDelivery_0.desc>
+  <missedSupplyDelivery_0.desc>以下受影响领地的工匠们因原材料缺失正受到困扰。指示他们应当如何应对吧。</missedSupplyDelivery_0.desc>
   
   <!-- EN: Missed Supply Delivery -->
-  <missedSupplyDelivery_1-1.label>TODO</missedSupplyDelivery_1-1.label>
+  <missedSupplyDelivery_1-1.label>物资未能按时到达</missedSupplyDelivery_1-1.label>
   <!-- EN: The craftsmen wait for the next delivery. -->
-  <missedSupplyDelivery_1-1.desc>TODO</missedSupplyDelivery_1-1.desc>
+  <missedSupplyDelivery_1-1.desc>工匠们等待下一批货物。</missedSupplyDelivery_1-1.desc>
   
   <!-- EN: Missed Supply Delivery (Local Sourcing) -->
-  <missedSupplyDelivery_1-2.label>TODO</missedSupplyDelivery_1-2.label>
+  <missedSupplyDelivery_1-2.label>物资未能按时到达（本地供应）</missedSupplyDelivery_1-2.label>
   <!-- EN: Trade connections help source replacement supplies locally. -->
-  <missedSupplyDelivery_1-2.desc>TODO</missedSupplyDelivery_1-2.desc>
+  <missedSupplyDelivery_1-2.desc>商贸关系帮助了供应物资的本地化。</missedSupplyDelivery_1-2.desc>
   
   <!-- EN: Missed Supply Delivery (Improvised) -->
-  <missedSupplyDelivery_1-3.label>TODO</missedSupplyDelivery_1-3.label>
+  <missedSupplyDelivery_1-3.label>物资未能按时到达（临场发挥）</missedSupplyDelivery_1-3.label>
   <!-- EN: The craftsmen improvise with local materials, focusing their limited supplies on apparel. -->
-  <missedSupplyDelivery_1-3.desc>TODO</missedSupplyDelivery_1-3.desc>
+  <missedSupplyDelivery_1-3.desc>工匠们用本地的材料临场发挥，将他们有限的材料优先投入到服装制作上。</missedSupplyDelivery_1-3.desc>
   
 </LanguageData>

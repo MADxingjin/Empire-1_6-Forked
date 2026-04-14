@@ -2,23 +2,23 @@
 <LanguageData>
   
   <!-- EN: Independence Petitions -->
-  <independencePetitions_0.label>TODO</independencePetitions_0.label>
+  <independencePetitions_0.label>独立请愿</independencePetitions_0.label>
   <!-- EN: Due to unrest in your faction, a growing number of your towns have the idea of independence growing. How will you address the dissent? -->
-  <independencePetitions_0.desc>TODO</independencePetitions_0.desc>
+  <independencePetitions_0.desc>你派系的动乱度已激起了许多领地内不断增加中的从你派系中独立出来的想法。你要如何处理这些异见？</independencePetitions_0.desc>
   
   <!-- EN: Independence Petitions -->
-  <independencePetitions_1-1.label>TODO</independencePetitions_1-1.label>
+  <independencePetitions_1-1.label>独立请愿</independencePetitions_1-1.label>
   <!-- EN: The petitions continue unopposed. The movement grows as more settlements consider independence. -->
-  <independencePetitions_1-1.desc>TODO</independencePetitions_1-1.desc>
+  <independencePetitions_1-1.desc>请愿活动在不受反对或/和镇压的情况下继续着。更多的领地和领民开始考虑这一举措。</independencePetitions_1-1.desc>
   
   <!-- EN: Independence Petitions (Grievances Addressed) -->
-  <independencePetitions_1-2.label>TODO</independencePetitions_1-2.label>
+  <independencePetitions_1-2.label>独立请愿（解决不满之处）</independencePetitions_1-2.label>
   <!-- EN: Aid is distributed to the discontented settlements. The gesture helps, but the underlying tensions remain. -->
-  <independencePetitions_1-2.desc>TODO</independencePetitions_1-2.desc>
+  <independencePetitions_1-2.desc>已向保有不满意见的领地提供了援助。这一举措有效，但局势依旧紧张。</independencePetitions_1-2.desc>
   
   <!-- EN: Independence Petitions (Suppressed) -->
-  <independencePetitions_1-3.label>TODO</independencePetitions_1-3.label>
+  <independencePetitions_1-3.label>独立请愿（镇压）</independencePetitions_1-3.label>
   <!-- EN: The independence movement is crushed by force. The dissidents are silenced, but the heavy-handed response breeds further resentment. -->
-  <independencePetitions_1-3.desc>TODO</independencePetitions_1-3.desc>
+  <independencePetitions_1-3.desc>独立运动被武力镇压了。异见者已被沉默，但如此狠重的回应进一步孕育了对当局的愤恨。</independencePetitions_1-3.desc>
   
 </LanguageData>

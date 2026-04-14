@@ -5,9 +5,9 @@
   <strangeDiscovery_0_1.label>你在干什么?继续给我挖!</strangeDiscovery_0_1.label>
   
   <!-- EN: Send in the military to escort the miners. -->
-  <strangeDiscovery_0_2.label>派军队去保护矿工.以免发生意外,但这会花费200白银</strangeDiscovery_0_2.label>
+  <strangeDiscovery_0_2.label>派军队去保护矿工，以免发生意外。</strangeDiscovery_0_2.label>
   
   <!-- EN: Avoid it! Continue mining elsewhere. -->
-  <strangeDiscovery_0_3.label>避开它!我们可以继续在别处采矿</strangeDiscovery_0_3.label>
+  <strangeDiscovery_0_3.label>避开它!我们可以继续在别处采矿。</strangeDiscovery_0_3.label>
   
 </LanguageData>

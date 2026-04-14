@@ -24,7 +24,7 @@
   <!-- EN: Clothing Printers -->
   <ClothingPrinters.label>衣物打印机</ClothingPrinters.label>
   <!-- EN: Remove the human element altogether! Dump raw materials in and watch as each article of clothing is printed as a single, seamless piece! -->
-  <ClothingPrinters.desc>完全无人工参与！仅需将材料倒进机器，然后就可以欣赏你所需的每件衣物被打印成完整无缝的整体！</ClothingPrinters.desc>
+  <ClothingPrinters.desc>完全无人工参与！仅需将材料倒进机器，然后就可以欣赏你所需的每件衣物被打印成完整无接缝的整体！</ClothingPrinters.desc>
   
   <!-- EN: Food Reconstruction -->
   <FoodReconstruction.label>食材重组</FoodReconstruction.label>

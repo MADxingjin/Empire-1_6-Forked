@@ -9,31 +9,31 @@
   <!-- EN: Drug Trade -->
   <drugTrade_1-1.label>毒品交易</drugTrade_1-1.label>
   <!-- EN: Investigating drug trade... -->
-  <drugTrade_1-1.desc>派人调查毒品交易.\n-10%税收</drugTrade_1-1.desc>
+  <drugTrade_1-1.desc>派人调查毒品交易</drugTrade_1-1.desc>
   
   <!-- EN: Drug Trade -->
   <drugTrade_1-2.label>毒品交易</drugTrade_1-2.label>
   <!-- EN: Your settlement may be hooked on drugs, but they seem content with their reality. You doubt you'll hear any complaints anytime soon. -->
-  <drugTrade_1-2.desc>领地中的人民沉溺于毒品的欢愉之中,至少他们似乎满足于当下现实.你自嘲道,自己近期内不会听到任何抱怨的声音了.\n-10% 税收,+25%满意度增速,-25% 叛乱值增速.</drugTrade_1-2.desc>
+  <drugTrade_1-2.desc>领地中的人民沉溺于毒品的欢愉之中,至少他们似乎满足于当下现实.你自嘲道,自己近期内不会听到任何抱怨的声音了。</drugTrade_1-2.desc>
   
   <!-- EN: Drug Trade -->
   <drugTrade_2-1.label>毒品交易</drugTrade_2-1.label>
   <!-- EN: The authorities have returned with good news! They have found the drug production. The sneaky lads almost got away, but no one can match the strength of your empire! However, they point out that a coin or two could be turned from taking over the production instead... -->
-  <drugTrade_2-1.desc>派人调查毒品交易.\n-10%税收</drugTrade_2-1.desc>
+  <drugTrade_2-1.desc>派人调查毒品交易。</drugTrade_2-1.desc>
   
   <!-- EN: Drug Trade -->
   <drugTrade_2-2.label>毒品交易</drugTrade_2-2.label>
   <!-- EN: The authorities you directed to find the source of the drug production has turned up nothing. Locals are unhappy with the upheaval. The investigators are going to have to lay back for a short while. -->
-  <drugTrade_2-2.desc>你派人去调查毒品生产的源头,结果一无所获.当地人还对您调查毒品的行为相当不满.这也使得调查人员不得不暂时停止调查.\n-10%税收</drugTrade_2-2.desc>
+  <drugTrade_2-2.desc>你派人去调查毒品生产的源头,结果一无所获。当地人还对您调查毒品的行为相当不满.这也使得调查人员不得不暂时停止调查。</drugTrade_2-2.desc>
   
   <!-- EN: Drug Trade -->
   <drugTrade_3-1.label>毒品交易</drugTrade_3-1.label>
   <!-- EN: The drug line has been incorporated into the settlement's official production. A random tithe of drugs will be delivered to you on a 5-day basis. -->
-  <drugTrade_3-1.desc>这条毒品生产线已被吸纳入您的领地之中,成为了当地的正式产业.每过一段时间,您都会收到来自于该领地的毒品进贡.\n-10%税收.</drugTrade_3-1.desc>
+  <drugTrade_3-1.desc>这条毒品生产线已被吸纳入您的领地之中,成为了当地的正式产业.每过约5天,您都会收到来自该领地缴纳的随机毒品什一税。</drugTrade_3-1.desc>
   
   <!-- EN: Drug Trade -->
   <drugTrade_4-1.label>毒品交易</drugTrade_4-1.label>
   <!-- EN: You have received a new tithe of drugs. Continue production or shut down the facility? -->
-  <drugTrade_4-1.desc>你收到了新进贡的毒品.是继续生产毒品,还是停止这罪恶的工业?</drugTrade_4-1.desc>
+  <drugTrade_4-1.desc>你收到了新进贡的毒品。是继续生产毒品,还是停止这罪恶的工业?</drugTrade_4-1.desc>
   
 </LanguageData>

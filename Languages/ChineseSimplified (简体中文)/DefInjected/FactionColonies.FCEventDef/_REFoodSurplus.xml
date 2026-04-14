@@ -2,23 +2,23 @@
 <LanguageData>
   
   <!-- EN: Food Surplus -->
-  <foodSurplus_0.label>TODO</foodSurplus_0.label>
+  <foodSurplus_0.label>食物盈余</foodSurplus_0.label>
   <!-- EN: Lucky harvests have led to a surplus of food in some settlements. What should be done with the excess? -->
-  <foodSurplus_0.desc>TODO</foodSurplus_0.desc>
+  <foodSurplus_0.desc>本次丰收有幸在我们的领地里留下了多余的食物。要如何处置它们？</foodSurplus_0.desc>
   
   <!-- EN: Food Surplus -->
-  <foodSurplus_1-1.label>TODO</foodSurplus_1-1.label>
+  <foodSurplus_1-1.label>食物盈余</foodSurplus_1-1.label>
   <!-- EN: The surplus is stored for continued production. -->
-  <foodSurplus_1-1.desc>TODO</foodSurplus_1-1.desc>
+  <foodSurplus_1-1.desc>盈余被储藏起来以期可持续发放。</foodSurplus_1-1.desc>
   
   <!-- EN: Food Surplus (Sold) -->
-  <foodSurplus_1-2.label>TODO</foodSurplus_1-2.label>
+  <foodSurplus_1-2.label>食物盈余（变卖）</foodSurplus_1-2.label>
   <!-- EN: The excess harvest is sold to passing traders. -->
-  <foodSurplus_1-2.desc>TODO</foodSurplus_1-2.desc>
+  <foodSurplus_1-2.desc>收获的盈余将卖给过路的商人。</foodSurplus_1-2.desc>
   
   <!-- EN: Food Surplus (Feast) -->
-  <foodSurplus_1-3.label>TODO</foodSurplus_1-3.label>
+  <foodSurplus_1-3.label>食物盈余（宴会）</foodSurplus_1-3.label>
   <!-- EN: A grand feast is held to celebrate the bounty! Citizens are happy and loyal. -->
-  <foodSurplus_1-3.desc>TODO</foodSurplus_1-3.desc>
+  <foodSurplus_1-3.desc>举行一场盛大的宴会来庆祝这次丰收！使你的领民变得开心和忠诚。</foodSurplus_1-3.desc>
   
 </LanguageData>

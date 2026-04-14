@@ -2,23 +2,23 @@
 <LanguageData>
   
   <!-- EN: Sparse Wildlife -->
-  <sparseWildlife_0.label>TODO</sparseWildlife_0.label>
+  <sparseWildlife_0.label>野生动物减少</sparseWildlife_0.label>
   <!-- EN: The wildlife in the affected region(s) have all but disappeared. How should your settlements adapt? -->
-  <sparseWildlife_0.desc>TODO</sparseWildlife_0.desc>
+  <sparseWildlife_0.desc>受影响的区域里野生动物都消失了，你需要决定你的领地如何面对。</sparseWildlife_0.desc>
   
   <!-- EN: Sparse Wildlife -->
-  <sparseWildlife_1-1.label>TODO</sparseWildlife_1-1.label>
+  <sparseWildlife_1-1.label>野生动物减少</sparseWildlife_1-1.label>
   <!-- EN: Your settlements make do without the wildlife. -->
-  <sparseWildlife_1-1.desc>TODO</sparseWildlife_1-1.desc>
+  <sparseWildlife_1-1.desc>你的领地们将在没有野生动物的情况下自力更生。</sparseWildlife_1-1.desc>
   
   <!-- EN: Sparse Wildlife (Extended Hunts) -->
-  <sparseWildlife_1-2.label>TODO</sparseWildlife_1-2.label>
+  <sparseWildlife_1-2.label>野生动物减少（加大狩猎范围）</sparseWildlife_1-2.label>
   <!-- EN: Hunting parties range further to compensate. -->
-  <sparseWildlife_1-2.desc>TODO</sparseWildlife_1-2.desc>
+  <sparseWildlife_1-2.desc>要求狩猎队伍加大活动范围来弥补。</sparseWildlife_1-2.desc>
   
   <!-- EN: Sparse Wildlife (Farming Shift) -->
-  <sparseWildlife_1-3.label>TODO</sparseWildlife_1-3.label>
+  <sparseWildlife_1-3.label>野生动物减少（转移工作重心至农业）</sparseWildlife_1-3.label>
   <!-- EN: Settlers shift their focus from hunting to farming. -->
-  <sparseWildlife_1-3.desc>TODO</sparseWildlife_1-3.desc>
+  <sparseWildlife_1-3.desc>领民们将工作重心从狩猎转移到农耕上。</sparseWildlife_1-3.desc>
   
 </LanguageData>

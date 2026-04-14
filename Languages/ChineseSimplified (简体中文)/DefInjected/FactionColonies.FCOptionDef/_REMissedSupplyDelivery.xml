@@ -2,12 +2,12 @@
 <LanguageData>
   
   <!-- EN: We'll wait for the next delivery. -->
-  <missedSupplyDelivery_0_1.label>TODO</missedSupplyDelivery_0_1.label>
+  <missedSupplyDelivery_0_1.label>我们会等下一批货。</missedSupplyDelivery_0_1.label>
   
   <!-- EN: Source replacement supplies from local traders. -->
-  <missedSupplyDelivery_0_2.label>TODO</missedSupplyDelivery_0_2.label>
+  <missedSupplyDelivery_0_2.label>从本地商人处寻求替代材料供应。</missedSupplyDelivery_0_2.label>
   
   <!-- EN: Have the craftsmen improvise with local materials. -->
-  <missedSupplyDelivery_0_3.label>TODO</missedSupplyDelivery_0_3.label>
+  <missedSupplyDelivery_0_3.label>让工匠们就地取材。</missedSupplyDelivery_0_3.label>
   
 </LanguageData>
