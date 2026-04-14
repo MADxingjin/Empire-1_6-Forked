@@ -16,7 +16,7 @@
     </FactionColonies.MilitaryJobDef>
 
     <FactionColonies.MilitaryJobDef>
-        <defName>FCDeploy</defName>
+        <defName>Deploy</defName>
         <label>deploy</label>
         <statusLabelKey>FCMilStatusDeployed</statusLabelKey>
         <occupiesTarget>false</occupiesTarget>
