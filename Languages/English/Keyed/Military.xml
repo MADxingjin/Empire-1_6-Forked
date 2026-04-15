@@ -139,7 +139,6 @@
 	<FCAvailable>Available</FCAvailable>
 	<FCShortMilitary>Mil</FCShortMilitary>
 	<FCPower>Power</FCPower>
-	<FCMedievalTechOnly>Medieval Tech Only</FCMedievalTechOnly>
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
 	<FCDebugRemoveAllCommand>[Debug] Remove all</FCDebugRemoveAllCommand>
 

@@ -42,11 +42,7 @@ namespace FactionColonies
         private static Dictionary<BuildingFCDef, List<BuildingFCDef>> _cachedRequiredByMap = null;
         private static List<FCEventCategoryDef> _cachedEventCategoryDefs = null;
         private static List<MilitaryJobDef> _cachedHostileMilitaryJobs = null;
-        // Empire refers to some ResearchProjectDefs before DefOfs are resolved. So instead of using DefOfs, we'll cache them here.
-        private static ResearchProjectDef _cachedTechLevelBarrierUltra = null;
-        private static ResearchProjectDef _cachedTechLevelBarrierSpacer = null;
-        private static ResearchProjectDef _cachedTechLevelBarrierIndustrial = null;
-        private static ResearchProjectDef _cachedTechLevelBarrierMedieval = null;
+        private static Dictionary<TechLevel, TechLevelBarrier> _cachedTechBarriers = null;
         private static ResearchProjectDef _cachedTransportPods = null;
 
         public static FactionFC FactionComp => _cachedFactionWorldComp ?? (_cachedFactionWorldComp = Find.World?.GetComponent<FactionFC>());
@@ -323,14 +319,32 @@ namespace FactionColonies
                                                                      (_cachedViolentCustomXenotypeList = CustomXenotypes.Where(x => !CustomXenotypeIsNonViolent(x)).ToList());
 
         /* Tech caching */
-        public static ResearchProjectDef TechLevelBarrierUltra => _cachedTechLevelBarrierUltra ??
-                                                                  (_cachedTechLevelBarrierUltra = DefDatabase<ResearchProjectDef>.GetNamed("ShipBasics", false));
-        public static ResearchProjectDef TechLevelBarrierSpacer => _cachedTechLevelBarrierSpacer ??
-                                                                   (_cachedTechLevelBarrierSpacer = DefDatabase<ResearchProjectDef>.GetNamed("Fabrication", false));
-        public static ResearchProjectDef TechLevelBarrierIndustrial => _cachedTechLevelBarrierIndustrial ??
-                                                                       (_cachedTechLevelBarrierIndustrial = DefDatabase<ResearchProjectDef>.GetNamed("Electricity", false));
-        public static ResearchProjectDef TechLevelBarrierMedieval => _cachedTechLevelBarrierMedieval ??
-                                                                     (_cachedTechLevelBarrierMedieval = DefDatabase<ResearchProjectDef>.GetNamed("Smithing", false));
+        public static Dictionary<TechLevel, TechLevelBarrier> TechBarriers
+        {
+            get
+            {
+                if (_cachedTechBarriers is null)
+                {
+                    _cachedTechBarriers = new Dictionary<TechLevel, TechLevelBarrier>();
+                    foreach (TechProgressionDef def in DefDatabase<TechProgressionDef>.AllDefsListForReading)
+                    {
+                        if (def.barriers is null) continue;
+                        foreach (TechLevelBarrier b in def.barriers)
+                        {
+                            // Last-writer-wins if multiple Defs declare the same level, so override Defs take priority.
+                            _cachedTechBarriers[b.techLevel] = b;
+                        }
+                    }
+                }
+                return _cachedTechBarriers;
+            }
+        }
+
+        public static TechLevelBarrier GetTechBarrier(TechLevel level)
+        {
+            return TechBarriers.TryGetValue(level, out TechLevelBarrier b) ? b : null;
+        }
+
         public static ResearchProjectDef TechTransportPods => _cachedTransportPods ??
                                                               (_cachedTransportPods = DefDatabase<ResearchProjectDef>.GetNamed("TransportPod", false));
 
@@ -510,10 +524,7 @@ namespace FactionColonies
             _cachedEventCategoryDefs = null;
             _cachedHostileMilitaryJobs = null;
 
-            _cachedTechLevelBarrierUltra = null;
-            _cachedTechLevelBarrierSpacer = null;
-            _cachedTechLevelBarrierIndustrial = null;
-            _cachedTechLevelBarrierMedieval = null;
+            _cachedTechBarriers = null;
             _cachedTransportPods = null;
 
             InvalidateCustomXenotypeCache();

@@ -58,6 +58,7 @@ namespace FactionColonies
         public const int DEFAULT_WORKER_COST = DEFAULT_WORKER_COST_ADVENTURESTORY;
         /* Defaults for Research settings */
         public const bool DEFAULT_MEDIEVAL_TECH_ONLY = false;
+        public const bool DEFAULT_MIRROR_PLAYER_TECH_LEVEL = false;
         /* Defaults for Settlement settings */
         public const bool DEFAULT_SHOW_SETTLE_CONFIRM = true;
         public const TaxDeliveryMode DEFAULT_TAX_DELIVERY_MODE = TaxDeliveryMode.None;
@@ -102,6 +103,7 @@ namespace FactionColonies
 
         public static bool showSettleConfirm = DEFAULT_SHOW_SETTLE_CONFIRM;
         public static bool medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+        public static bool mirrorPlayerTechLevel = DEFAULT_MIRROR_PLAYER_TECH_LEVEL;
         public static bool disableHostileMilitaryActions = DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS;
         public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
         public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
@@ -177,6 +179,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
             Scribe_Values.Look(ref showSettleConfirm, "showSettleConfirm", DEFAULT_SHOW_SETTLE_CONFIRM);
             Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
+            Scribe_Values.Look(ref mirrorPlayerTechLevel, "mirrorPlayerTechLevel", DEFAULT_MIRROR_PLAYER_TECH_LEVEL);
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
             Scribe_Values.Look(ref disableForcedPausingDuringEvents, "disableForcedPausingDuringEvents", DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS);
@@ -540,6 +543,12 @@ namespace FactionColonies
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
             ls.CheckboxLabeled("FCMedievalTechOnly".Translate(), ref medievalTechOnly);
+            bool prevMirrorPlayerTechLevel = mirrorPlayerTechLevel;
+            ls.CheckboxLabeled("FCMirrorPlayerTechLevel".Translate(), ref mirrorPlayerTechLevel, "FCMirrorPlayerTechLevelDesc".Translate());
+            if (prevMirrorPlayerTechLevel != mirrorPlayerTechLevel)
+            {
+                FactionCache.FactionComp?.DirtyTechLevelCache();
+            }
             ls.CheckboxLabeled("FCSettingShowSettleConfirm".Translate(), ref showSettleConfirm);
             if (ls.ButtonText("FCSelectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
@@ -576,6 +585,7 @@ namespace FactionColonies
                 productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
                 workerCost = DEFAULT_WORKER_COST;
                 medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+                mirrorPlayerTechLevel = DEFAULT_MIRROR_PLAYER_TECH_LEVEL;
                 settlementMaxLevel = DEFAULT_SETTLEMENT_MAX_LEVEL;
                 minDaysTillMilitaryAction = DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION;
                 maxDaysTillMilitaryAction = DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION;

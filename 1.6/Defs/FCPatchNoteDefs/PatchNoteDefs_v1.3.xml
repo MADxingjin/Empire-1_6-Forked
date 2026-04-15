@@ -57,4 +57,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_4</defName>
+		<label>Tech Progression Update</label>
+		<description>Updates Empire&apos;s tech progression to be def-defined. This makes it much easier for other mods to change the thresholds for advancing the Empire faction&apos;s tech level. There&apos;s also a new mod setting to ignore research entirely and pin the Empire faction&apos;s tech level to the player&apos;s (for use with mods like Tech Advancing).</description>
+		<releaseDate>2026-04-14</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>New mod setting to ignore research and pin the Empire faction&apos;s tech level to the player faction&apos;s</li>
+		<li>Change the tech level gates to be defined through XML</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -45,6 +45,10 @@ Values in between dampen the effect of military efficiency on the auto combat.</
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
 	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>
 
+	<FCMedievalTechOnly>Medieval Tech Only</FCMedievalTechOnly>
+	<FCMirrorPlayerTechLevel>Mirror player faction tech level</FCMirrorPlayerTechLevel>
+	<FCMirrorPlayerTechLevelDesc>When enabled, the Empire faction's tech level is pinned to the player faction's tech level. Research projects no longer advance the Empire's tech level.</FCMirrorPlayerTechLevelDesc>
+
 	<!-- Difficulty Settings -->
 	<FCSettingEmpireDifficulty>Empire Difficulty</FCSettingEmpireDifficulty>
 	<FCDifficultyPeaceful>Peaceful</FCDifficultyPeaceful>

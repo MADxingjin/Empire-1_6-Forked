@@ -188,19 +188,10 @@ namespace FactionColonies
 
         private static string GetResearchRequirementForTechLevel(TechLevel level)
         {
-            switch (level)
-            {
-                case TechLevel.Medieval:
-                    return FactionCache.TechLevelBarrierMedieval?.label ?? "Smithing";
-                case TechLevel.Industrial:
-                    return FactionCache.TechLevelBarrierIndustrial?.label ?? "Electricity";
-                case TechLevel.Spacer:
-                    return FactionCache.TechLevelBarrierSpacer?.label ?? "Fabrication";
-                case TechLevel.Ultra:
-                    return FactionCache.TechLevelBarrierUltra?.label ?? "Ship basics";
-                default:
-                    return level.ToStringHuman();
-            }
+            TechLevelBarrier barrier = FactionCache.GetTechBarrier(level);
+            string label = barrier?.DisplayLabel;
+            if (!label.NullOrEmpty()) return label;
+            return level.ToStringHuman();
         }
 
         #endregion

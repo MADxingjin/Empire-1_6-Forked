@@ -759,61 +759,64 @@ namespace FactionColonies
             dirtyTechLevelCache = true;
         }
 
+        private static readonly TechLevel[] TechLevelDescending =
+        {
+            TechLevel.Archotech,
+            TechLevel.Ultra,
+            TechLevel.Spacer,
+            TechLevel.Industrial,
+            TechLevel.Medieval,
+            TechLevel.Neolithic,
+        };
+
         private void RecomputeTechLevel()
         {
-            ResearchManager researchManager = Find.ResearchManager;
-            bool medievalOnly = FCSettings.medievalTechOnly;
             TechLevel curTechLevel = _techLevel;
+            bool medievalOnly = FCSettings.medievalTechOnly;
+            TechLevel newLevel;
+            TechLevel playerTech = FactionCache.PlayerFaction?.def?.techLevel ?? TechLevel.Neolithic;
 
-            if (!medievalOnly && FactionCache.TechLevelBarrierUltra != null &&
-                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) >= FactionCache.TechLevelBarrierUltra.baseCost &&
-                _techLevel < TechLevel.Ultra)
+            if (FCSettings.mirrorPlayerTechLevel)
             {
-                _techLevel = TechLevel.Ultra;
-                LogUtil.Message("updateTechLevel: Ultra");
-            }
-            else if (!medievalOnly && FactionCache.TechLevelBarrierSpacer != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) >= FactionCache.TechLevelBarrierSpacer.baseCost &&
-                     _techLevel < TechLevel.Spacer)
-            {
-                _techLevel = TechLevel.Spacer;
-                LogUtil.Message("updateTechLevel: Spacer");
-            }
-            else if (!medievalOnly && FactionCache.TechLevelBarrierIndustrial != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) >= FactionCache.TechLevelBarrierIndustrial.baseCost &&
-                     _techLevel < TechLevel.Industrial)
-            {
-                _techLevel = TechLevel.Industrial;
-                LogUtil.Message("updateTechLevel: Industrial");
-            }
-            else if (FactionCache.TechLevelBarrierMedieval != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) >= FactionCache.TechLevelBarrierMedieval.baseCost &&
-                     _techLevel < TechLevel.Medieval)
-            {
-                _techLevel = TechLevel.Medieval;
-                LogUtil.Message("updateTechLevel: Medieval");
+                // Mirror mode: pin Empire tech to the player faction's tech level.
+                if (playerTech < TechLevel.Neolithic) playerTech = TechLevel.Neolithic;
+                newLevel = playerTech;
+                LogUtil.Message("updateTechLevel: Mirroring player tech " + newLevel);
             }
             else
             {
-                if (_techLevel < TechLevel.Neolithic)
+                // Research-barrier cascade: the highest satisfied barrier wins.
+                ResearchManager researchManager = Find.ResearchManager;
+                newLevel = TechLevel.Undefined;
+                foreach (TechLevel tl in TechLevelDescending)
                 {
-                    LogUtil.Message("updateTechLevel: Neolithic");
-                    _techLevel = TechLevel.Neolithic;
+                    if (medievalOnly && tl > TechLevel.Medieval) continue;
+                    TechLevelBarrier barrier = FactionCache.GetTechBarrier(tl);
+                    if (barrier is null) continue;
+                    if (barrier.IsSatisfied(researchManager))
+                    {
+                        newLevel = tl;
+                        LogUtil.Message("updateTechLevel: " + tl);
+                        break;
+                    }
+                }
+                // Safety floor if no barriers matched at all.
+                if (newLevel == TechLevel.Undefined) newLevel = TechLevel.Neolithic;
+
+                // Floor: Empire tech level should never be below the player faction's tech level.
+                if (medievalOnly && playerTech > TechLevel.Medieval) playerTech = TechLevel.Medieval;
+                if (playerTech > TechLevel.Undefined && newLevel < playerTech)
+                {
+                    newLevel = playerTech;
+                    LogUtil.Message("updateTechLevel: Matched player faction tech level " + playerTech);
                 }
             }
 
-            // Floor: Empire tech level should never be below the player faction's tech level
-            TechLevel playerTech = FactionCache.PlayerFaction?.def?.techLevel ?? TechLevel.Undefined;
-            if (medievalOnly && playerTech > TechLevel.Medieval)
-            {
-                playerTech = TechLevel.Medieval;
-            }
+            // medievalTechOnly cap applies to both mirror and cascade paths.
+            if (medievalOnly && newLevel > TechLevel.Medieval) newLevel = TechLevel.Medieval;
 
-            if (playerTech > TechLevel.Undefined && _techLevel < playerTech)
-            {
-                _techLevel = playerTech;
-                LogUtil.Message("updateTechLevel: Matched player faction tech level " + playerTech);
-            }
+            // Never downgrade the faction's tech level.
+            if (newLevel > _techLevel) _techLevel = newLevel;
 
             if (_techLevel != curTechLevel)
             {
