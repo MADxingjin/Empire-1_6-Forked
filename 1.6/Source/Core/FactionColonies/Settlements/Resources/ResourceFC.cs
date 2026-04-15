@@ -488,14 +488,11 @@ namespace FactionColonies
             {
                 foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    string extId = $"{def.defName}_ext_{ext.extName}_{settlementId}";
-                    double addBonus = ext.GetAdditiveBonus(settlement.Tile, settlement);
-                    if (addBonus != 0)
-                        AddProductionAdditive(extId, addBonus, ext.extName);
-
-                    double multBonus = ext.GetMultiplierBonus(settlement.Tile, settlement);
-                    if (multBonus != 1)
-                        AddProductionMultiplier(extId, multBonus, ext.extDesc);
+                    ext.ContributeToBreakdown(
+                        settlement.Tile,
+                        settlement,
+                        (suffix, v, label) => AddProductionAdditive($"{def.defName}_ext_{suffix}_{settlementId}", v, label),
+                        (suffix, v, label) => AddProductionMultiplier($"{def.defName}_ext_{suffix}_{settlementId}", v, label));
                 }
             }
 

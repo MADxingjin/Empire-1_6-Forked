@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using RimWorld.Planet;
@@ -15,6 +16,7 @@ namespace FactionColonies
         AnimalDensity,
         PlantDensityFactor,
         FishPopulationFactor,
+        BiomePlantDensity,
         RiverDistance,
         RoadCount,
         HasAnyRiver,
@@ -25,6 +27,29 @@ namespace FactionColonies
         public TileField field;
         public SimpleCurve curve;
         public float defaultValue = 0f;
+        public string label;
+
+        public string Label => label.NullOrEmpty() ? DefaultLabel(field) : label;
+
+        private static string DefaultLabel(TileField f)
+        {
+            switch (f)
+            {
+                case TileField.Temperature:          return "Temperature";
+                case TileField.Rainfall:             return "Rainfall";
+                case TileField.Swampiness:           return "Swampiness";
+                case TileField.Elevation:            return "Elevation";
+                case TileField.Pollution:            return "Pollution";
+                case TileField.AnimalDensity:        return "Animal density";
+                case TileField.PlantDensityFactor:   return "Plant density";
+                case TileField.FishPopulationFactor: return "Fish population";
+                case TileField.BiomePlantDensity:    return "Biome plant density";
+                case TileField.RiverDistance:        return "River distance";
+                case TileField.RoadCount:            return "Road connectivity";
+                case TileField.HasAnyRiver:          return "River";
+                default:                             return f.ToString();
+            }
+        }
 
         public double Evaluate(PlanetTile tile)
         {
@@ -56,6 +81,8 @@ namespace FactionColonies
                     return t.PlantDensityFactor;
                 case TileField.FishPopulationFactor:
                     return t.FishPopulationFactor;
+                case TileField.BiomePlantDensity:
+                    return t.PrimaryBiome?.plantDensity ?? defaultValue;
                 case TileField.RiverDistance:
                 {
                     SurfaceTile st = t as SurfaceTile;
@@ -133,6 +160,32 @@ namespace FactionColonies
                 mult *= multipliers[i].Evaluate(tile);
             }
             return mult;
+        }
+
+        public override void ContributeToBreakdown(
+            PlanetTile tile,
+            WorldSettlementFC settlement,
+            Action<string, double, string> addAdditive,
+            Action<string, double, string> addMultiplier)
+        {
+            if (!AppliesToTile(tile)) return;
+
+            if (additives != null)
+            {
+                foreach (TileFieldCurve c in additives)
+                {
+                    double v = c.Evaluate(tile);
+                    if (v != 0) addAdditive($"tilefield_{c.field}", v, c.Label);
+                }
+            }
+            if (multipliers != null)
+            {
+                foreach (TileFieldCurve c in multipliers)
+                {
+                    double v = c.Evaluate(tile);
+                    if (v != 1) addMultiplier($"tilefield_{c.field}", v, c.Label);
+                }
+            }
         }
     }
 }
