@@ -233,7 +233,10 @@ namespace FactionColonies
                             MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
                             MilitaryForce attackingForce = new MilitaryForce(chosenLevel, efficiency, null, enemyFaction);
                             LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
-                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                            if (!MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction))
+                            {
+                                Messages.Message($"{settlement.Name} is already under attack — debug attack dropped.", MessageTypeDefOf.RejectInput);
+                            }
                         }));
                     }
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(levelList));
@@ -268,9 +271,13 @@ namespace FactionColonies
                             MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
                             MilitaryForce attackingForce = new MilitaryForce(chosenLevel, efficiency, null, enemyFaction);
                             LogUtil.MessageForce($"Debug - Instant Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
-                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                            if (!MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction))
+                            {
+                                Messages.Message($"{settlement.Name} is already under attack — debug attack dropped.", MessageTypeDefOf.RejectInput);
+                                return;
+                            }
 
-                            FCEvent attackEvt = FactionCache.FactionComp.events.LastOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+                            FCEvent attackEvt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
                             if (attackEvt != null)
                             {
                                 attackEvt.timeTillTrigger = Find.TickManager.TicksGame + 1;

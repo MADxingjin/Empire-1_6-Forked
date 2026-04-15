@@ -29,7 +29,7 @@ namespace FactionColonies
         }
     }
 
-    public class WorldObjectComp_SettlementMilitary : WorldObjectComp
+    public class WorldObjectComp_SettlementMilitary : WorldObjectComp, ISettlementPostLoadInit
     {
         private WorldSettlementFC cachedWorldSettlementParent = null;
         public WorldSettlementFC WorldSettlement
@@ -111,6 +111,19 @@ namespace FactionColonies
         public override void CompTick()
         {
             base.CompTick();
+
+            if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0)
+            {
+                FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(WorldSettlement.Tile);
+                if (evt is null)
+                {
+                    LogUtil.Warning($"Clearing orphaned isUnderAttack flag on {WorldSettlement.Name} " +
+                        $"(no matching settlementBeingAttacked event in queue).");
+                    ClearAttackState();
+                    return;
+                }
+            }
+
             if (!isUnderAttack || endingBattle) return;
             if (Find.TickManager.TicksGame % 250 != 0) return;
             if (Map == null) return;
@@ -907,6 +920,29 @@ namespace FactionColonies
             isUnderAttack = false;
             battleMapInitialized = false;
             LifecycleRegistry.InvokeOnBattleResolved(WorldSettlement, MilitaryJobDefOf.DefendFriendlySettlement, won, battleResult);
+        }
+
+        private void ClearAttackState()
+        {
+            isUnderAttack = false;
+            endingBattle = false;
+            battleMapInitialized = false;
+            attackers?.Clear();
+            defenders?.Clear();
+            supporting?.Clear();
+            defenderForce = null;
+            attackerForce = null;
+            currentBattleEvent = null;
+        }
+
+        public void PostSettlementLoadInit(WorldSettlementFC settlement)
+        {
+            if (!isUnderAttack) return;
+            if (MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile) is object) return;
+
+            LogUtil.Warning($"Repairing stuck isUnderAttack flag on {settlement.Name} during load " +
+                $"(no matching settlementBeingAttacked event).");
+            ClearAttackState();
         }
 
         private void CooldownMilitary(int remaining, bool won)

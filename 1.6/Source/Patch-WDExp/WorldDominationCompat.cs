@@ -77,11 +77,19 @@ namespace FactionColonies.WDExp
             MilitaryForce attackingForce = new MilitaryForce(wdMilitaryLevel, efficiency, null, traveler.Faction);
 
             // Route through Empire's defense system (1-day warning + auto-battle/manual)
-            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, empireSettlement, traveler.Faction);
+            bool queued = MilitaryUtilFC.AttackPlayerSettlement(attackingForce, empireSettlement, traveler.Faction);
 
-            LogUtil.Message("WD raid on Empire settlement " + empireSettlement.Name +
-                " intercepted (WD strength " + traveler.travelerStrength.ToString("F0") +
-                " -> Empire force " + attackingForce.forceRemaining + ")");
+            if (queued)
+            {
+                LogUtil.Message("WD raid on Empire settlement " + empireSettlement.Name +
+                    " intercepted (WD strength " + traveler.travelerStrength.ToString("F0") +
+                    " -> Empire force " + attackingForce.forceRemaining + ")");
+            }
+            else
+            {
+                LogUtil.Message("WD raid on Empire settlement " + empireSettlement.Name +
+                    " dropped (settlement already under attack).");
+            }
 
             return false;
         }

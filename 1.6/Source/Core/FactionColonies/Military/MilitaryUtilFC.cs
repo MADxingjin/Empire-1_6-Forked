@@ -8,8 +8,24 @@ namespace FactionColonies
 {
     public static class MilitaryUtilFC
     {
-        public static void AttackPlayerSettlement(MilitaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
+        public static bool AttackPlayerSettlement(MilitaryForce attackingForce, WorldSettlementFC settlement, Faction enemyFaction)
         {
+            if (settlement?.MilitaryComp is null)
+            {
+                LogUtil.Warning($"AttackPlayerSettlement rejected: {settlement?.Name ?? "null"} has no MilitaryComp. " +
+                    $"Attacker {enemyFaction?.Name ?? "null"} dropped.");
+                return false;
+            }
+
+            FCEvent existingEvent = ReturnMilitaryEventByLocation(settlement.Tile);
+            if (settlement.MilitaryComp.isUnderAttack || existingEvent is object)
+            {
+                LogUtil.Warning($"AttackPlayerSettlement rejected: {settlement.Name} is already under attack " +
+                    $"(isUnderAttack={settlement.MilitaryComp.isUnderAttack}, existingEvent={existingEvent is object}). " +
+                    $"Attacker {enemyFaction?.Name ?? "null"} dropped.");
+                return false;
+            }
+
             FactionFC factionfc = FactionCache.FactionComp;
 
             FCEvent tmp = FCEventMaker.MakeEvent(FCEventDefOf.settlementBeingAttacked);
@@ -67,31 +83,26 @@ namespace FactionColonies
                 tmp.customDescription += "\n\n" + "FCExternalDefenderAutoAssigned".Translate(bestExternalDefender.WorldObject.LabelCap);
             }
 
-            if (settlement.MilitaryComp != null)
-            {
-                settlement.MilitaryComp.defenderForce = tmp.militaryForceDefending;
-                settlement.MilitaryComp.attackerForce = tmp.militaryForceAttacking;
+            settlement.MilitaryComp.defenderForce = tmp.militaryForceDefending;
+            settlement.MilitaryComp.attackerForce = tmp.militaryForceAttacking;
 
-                FactionCache.FactionComp.AddEvent(tmp);
+            FactionCache.FactionComp.AddEvent(tmp);
 
-                double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
-                tmp.customDescription += "\n\n" + "FCBattleForecast".Translate(
-                    tmp.militaryForceAttacking.forceRemaining,
-                    tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
-                    tmp.militaryForceDefending.DefensivePower,
-                    tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
-                    (winChance * 100).ToString("F0"));
-                if (FCSettings.battleMode == BattleMode.Hybrid)
-                    tmp.customDescription += "\n\n" + "FCSettlementAttackHybridHint".Translate();
-                settlement.MilitaryComp.isUnderAttack = true;
+            double winChance = SimulateBattleFc.CalculateDefenderWinChance(tmp.militaryForceAttacking, tmp.militaryForceDefending);
+            tmp.customDescription += "\n\n" + "FCBattleForecast".Translate(
+                tmp.militaryForceAttacking.forceRemaining,
+                tmp.militaryForceAttacking.militaryEfficiency.ToString("0.##"),
+                tmp.militaryForceDefending.DefensivePower,
+                tmp.militaryForceDefending.militaryEfficiency.ToString("0.##"),
+                (winChance * 100).ToString("F0"));
+            if (FCSettings.battleMode == BattleMode.Hybrid)
+                tmp.customDescription += "\n\n" + "FCSettlementAttackHybridHint".Translate();
+            settlement.MilitaryComp.isUnderAttack = true;
 
-                Find.LetterStack.ReceiveLetter("FCSettlementInDanger".Translate(), tmp.customDescription,
-                    LetterDefOf.ThreatBig, new LookTargets(Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(settlement.Tile)));
-            }
-            else
-            {
-                LogUtil.Warning($"Attempted to attack settlement {settlement.Name} without a MilitaryComp");
-            }
+            Find.LetterStack.ReceiveLetter("FCSettlementInDanger".Translate(), tmp.customDescription,
+                LetterDefOf.ThreatBig, new LookTargets(Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(settlement.Tile)));
+
+            return true;
         }
 
         /// <summary>
