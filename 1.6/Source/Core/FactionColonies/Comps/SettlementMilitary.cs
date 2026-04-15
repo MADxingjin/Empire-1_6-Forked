@@ -112,8 +112,12 @@ namespace FactionColonies
         {
             base.CompTick();
 
-            if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0)
+            if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0
+                && Map is null && !attackers.Any() && !defenders.Any())
             {
+                // Events are removed from the queue before battle starts (see FCEventMaker.ProcessEvents),
+                // so an orphaned flag is only "stuck" if the battle also isn't in progress; i.e. no map loaded
+                // and no active combatants.
                 FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(WorldSettlement.Tile);
                 if (evt is null)
                 {
@@ -939,6 +943,9 @@ namespace FactionColonies
         {
             if (!isUnderAttack) return;
             if (MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile) is object) return;
+            // Save taken mid-battle: event was removed from the queue but combatants are still scribed.
+            // Leave the battle state alone. EndBattle will clear isUnderAttack naturally when it resolves.
+            if (attackers.Any() || defenders.Any()) return;
 
             LogUtil.Warning($"Repairing stuck isUnderAttack flag on {settlement.Name} during load " +
                 $"(no matching settlementBeingAttacked event).");
