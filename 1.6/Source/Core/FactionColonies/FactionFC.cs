@@ -1712,6 +1712,35 @@ namespace FactionColonies
             InvalidateFactionStatCache();
         }
 
+        // Removes a single event from the queue, marks it fired so stale references
+        // can't re-process it, and bumps eventsVersion. Idempotent — returns false if
+        // the event wasn't in the queue.
+        public bool RemoveEvent(FCEvent evt)
+        {
+            if (evt is null) return false;
+            if (!events.Remove(evt)) return false;
+            evt.fired = true;
+            eventsVersion++;
+            return true;
+        }
+
+        // Removes every event matching the predicate, marks each fired, and bumps
+        // eventsVersion once if any were removed. Returns removal count.
+        public int RemoveEventsWhere(Predicate<FCEvent> match)
+        {
+            if (match is null) return 0;
+            int removed = 0;
+            for (int i = events.Count - 1; i >= 0; i--)
+            {
+                if (!match(events[i])) continue;
+                events[i].fired = true;
+                events.RemoveAt(i);
+                removed++;
+            }
+            if (removed > 0) eventsVersion++;
+            return removed;
+        }
+
         private void MakeRandomEvent()
         {
             if (RandomEventsDisabledOrNoSettlements()) return;

@@ -454,6 +454,10 @@ namespace FactionColonies
             // Phase 1: collect all due events and remove them from the source list
             // This ensures processing callbacks (AddEvent, StartDefence, etc.) cannot
             // interfere with the iteration or cause index-shift bugs.
+            //
+            // Intentionally does NOT use FactionFC.RemoveEvent here: that helper sets
+            // evt.fired = true, which would cause phase 2's re-fire guard at line 472
+            // to skip every freshly collected event.
             List<FCEvent> due = null;
             for (int i = events.Count - 1; i >= 0; i--)
             {
@@ -608,8 +612,7 @@ namespace FactionColonies
                             }
                             else
                             {
-                                var evt1 = evt;
-                                worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt1));
+                                worldSettlement.MilitaryComp.StartDefence(evt, () => { });
                             }
                         }
                         else
@@ -822,90 +825,6 @@ namespace FactionColonies
             {
                 target.IsUnderAttack = false;
             }
-        }
-
-        private static void SetupAttack(WorldSettlementFC worldSettlement, FCEvent temp)
-        {
-            if (worldSettlement?.MilitaryComp is null)
-            {
-                LogUtil.Warning($"SetupAttack called on {worldSettlement?.Name} with no MilitaryComp. Aborting.");
-                return;
-            }
-
-            if (worldSettlement.Map is null)
-            {
-                LogUtil.Error($"SetupAttack: {worldSettlement.Name} has no map. Resetting battle state.");
-                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
-                return;
-            }
-
-            if (temp.militaryForceAttacking is null || temp.militaryForceAttackingFaction is null)
-            {
-                LogUtil.Error($"SetupAttack: Missing attacking force or faction for {worldSettlement.Name}. Resetting battle state.");
-                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
-                return;
-            }
-
-            IncidentParms parms = new IncidentParms
-            {
-                target = worldSettlement.Map,
-                faction = temp.militaryForceAttackingFaction,
-                generateFightersOnly = true,
-                raidStrategy = RaidStrategyDefOf.ImmediateAttack,
-                raidNeverFleeIndividual = true
-            };
-            parms.points = Math.Max(
-                IncidentWorker_Raid.AdjustedRaidPoints(
-                    (float)temp.militaryForceAttacking.forceRemaining * 175,
-                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                    parms.faction, PawnGroupKindDefOf.Combat,
-                    parms.target // new required parameter
-                ),
-                300f // Minimum floor — ensures at least 1 pawn for any faction
-            );
-            parms.raidArrivalMode = ResolveRaidArriveMode(parms) ?? PawnsArrivalModeDefOf.EdgeWalkIn;
-            parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
-
-            List<Pawn> attackers = PawnGroupMakerUtility.GeneratePawns(
-                IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
-                    PawnGroupKindDefOf.Combat, parms, true)).ToList();
-            if (!attackers.Any())
-            {
-                LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-                // Queue cleanup as a separate LongEvent so the map's deferred initialization
-                // (MapDrawer.RegenerateEverythingNow) completes before we try to dispose it.
-                // Calling EndAttack synchronously here would crash in MapDrawer.Dispose()
-                // because MapDrawer.sections hasn't been initialized yet.
-                LongEventHandler.QueueLongEvent(
-                    () => worldSettlement.MilitaryComp.EndAttack(),
-                    "EndingAttack", false, null);
-                return;
-            }
-
-            double attackerEfficiency = temp.militaryForceAttacking.militaryEfficiency;
-            foreach (Pawn attacker in attackers)
-            {
-                MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(attacker, attackerEfficiency);
-            }
-
-            parms.raidArrivalMode.Worker.Arrive(attackers, parms);
-
-            worldSettlement.MilitaryComp.attackers = attackers;
-            worldSettlement.MilitaryComp.attackerForce = temp.militaryForceAttacking;
-            worldSettlement.MilitaryComp.defenderForce = temp.militaryForceDefending;
-            LordMaker.MakeNewLord(
-                parms.faction, new LordJob_HuntColonists(worldSettlement, parms.raidArrivalMode != PawnsArrivalModeDefOf.CenterDrop),
-                worldSettlement.Map, attackers);
-        }
-
-        private static PawnsArrivalModeDef ResolveRaidArriveMode(IncidentParms parms)
-        {
-            return
-                parms.raidStrategy.arriveModes.Where(testing => testing.Worker.CanUseWith(parms))
-                    .TryRandomElementByWeight(
-                        x => x.Worker.GetSelectionWeight(parms), out PawnsArrivalModeDef output)
-                    ? output
-                    : PawnsArrivalModeDefOf.EdgeWalkIn;
         }
 
         public static void CreateTaxEvent(BillFC bill)

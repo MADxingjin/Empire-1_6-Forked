@@ -534,4 +534,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_38</defName>
+		<label>Manual Defense Fix</label>
+		<description>Fixes an issue where attempting to start a manual defense battle with a caravan or the gizmo would cause a map to generate without attackers, immediately close, and then a second map to generate *with* attackers.</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Hotfix</patchNoteType>
+		<patchNoteLines>
+		<li>Fixes up event handling to cleanup a bug with manual defense</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

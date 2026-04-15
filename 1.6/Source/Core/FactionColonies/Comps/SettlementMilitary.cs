@@ -557,6 +557,12 @@ namespace FactionColonies
         public void StartDefence(FCEvent evt, Action after)
         {
             currentBattleEvent = evt;
+
+            // Consume the event from the faction queue exactly once, regardless of entry point
+            // (manual Defend button, caravan defend, or timer-driven ProcessEvents). Prevents
+            // ProcessEvents from re-triggering a second defense after this one resolves.
+            FactionCache.FactionComp?.RemoveEvent(evt);
+
             bool shouldAutoResolve = false;
             if (FCSettings.battleMode == BattleMode.Auto || !WorldSettlement.settlementDef.supportsManualBattle)
             {
@@ -589,9 +595,89 @@ namespace FactionColonies
                                              WorldSettlement, WorldSettlement.MapGeneratorDef, WorldSettlement.ExtraGenStepDefs);
 
                 ZoomIntoTile(evt);
+                SetupAttack(evt);
                 after.Invoke();
             },
                 "GeneratingMap", false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap);
+        }
+
+        private void SetupAttack(FCEvent temp)
+        {
+            // ZoomIntoTile may have aborted via EndBattle (null event / null force); don't
+            // spawn attackers into a cleaned-up state.
+            if (!isUnderAttack) return;
+            // Idempotency guard: if StartDefence runs again on an already-active battle,
+            // don't spawn a second wave of attackers.
+            if (attackers.Any()) return;
+
+            if (Map is null)
+            {
+                LogUtil.Error($"SetupAttack: {WorldSettlement.Name} has no map. Resetting battle state.");
+                EndBattle(false, 0, null);
+                return;
+            }
+
+            if (temp.militaryForceAttacking is null || temp.militaryForceAttackingFaction is null)
+            {
+                LogUtil.Error($"SetupAttack: Missing attacking force or faction for {WorldSettlement.Name}. Resetting battle state.");
+                EndBattle(false, 0, null);
+                return;
+            }
+
+            IncidentParms parms = new IncidentParms
+            {
+                target = Map,
+                faction = temp.militaryForceAttackingFaction,
+                generateFightersOnly = true,
+                raidStrategy = RaidStrategyDefOf.ImmediateAttack,
+                raidNeverFleeIndividual = true
+            };
+            parms.points = Math.Max(
+                IncidentWorker_Raid.AdjustedRaidPoints(
+                    (float)temp.militaryForceAttacking.forceRemaining * 175,
+                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
+                    parms.faction, PawnGroupKindDefOf.Combat,
+                    parms.target),
+                300f);
+            parms.raidArrivalMode = ResolveRaidArriveMode(parms) ?? PawnsArrivalModeDefOf.EdgeWalkIn;
+            parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
+
+            List<Pawn> newAttackers = PawnGroupMakerUtility.GeneratePawns(
+                IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
+                    PawnGroupKindDefOf.Combat, parms, true)).ToList();
+            if (!newAttackers.Any())
+            {
+                LogUtil.Error("Got no pawns spawning raid from parms " + parms);
+                // Queue cleanup as a separate LongEvent so the map's deferred initialization
+                // (MapDrawer.RegenerateEverythingNow) completes before we try to dispose it.
+                LongEventHandler.QueueLongEvent(EndAttack, "EndingAttack", false, null);
+                return;
+            }
+
+            double attackerEfficiency = temp.militaryForceAttacking.militaryEfficiency;
+            foreach (Pawn attacker in newAttackers)
+            {
+                MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(attacker, attackerEfficiency);
+            }
+
+            parms.raidArrivalMode.Worker.Arrive(newAttackers, parms);
+
+            attackers = newAttackers;
+            attackerForce = temp.militaryForceAttacking;
+            defenderForce = temp.militaryForceDefending;
+            LordMaker.MakeNewLord(
+                parms.faction,
+                new LordJob_HuntColonists(WorldSettlement, parms.raidArrivalMode != PawnsArrivalModeDefOf.CenterDrop),
+                Map, newAttackers);
+        }
+
+        private static PawnsArrivalModeDef ResolveRaidArriveMode(IncidentParms parms)
+        {
+            return parms.raidStrategy.arriveModes
+                .Where(mode => mode.Worker.CanUseWith(parms))
+                .TryRandomElementByWeight(mode => mode.Worker.GetSelectionWeight(parms), out PawnsArrivalModeDef output)
+                ? output
+                : PawnsArrivalModeDefOf.EdgeWalkIn;
         }
 
         private void ZoomIntoTile(FCEvent evt)
@@ -615,7 +701,6 @@ namespace FactionColonies
                 }
 
                 battleMapInitialized = true;
-                evt.timeTillTrigger = Find.TickManager.TicksGame;
 
                 if (force.homeSettlement?.MilitaryComp != null)
                     force.homeSettlement.MilitaryComp.militaryBusy = true;
