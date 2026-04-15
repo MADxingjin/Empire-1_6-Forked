@@ -153,13 +153,13 @@ namespace FactionColonies.util
                 }
             }
 
+            bool anyRemoved = false;
             foreach (FCEvent evt in toRemove)
             {
-                faction.events.Remove(evt);
+                if (faction.RemoveEvent(evt)) anyRemoved = true;
             }
-            if (toRemove.Count > 0)
+            if (anyRemoved)
             {
-                faction.eventsVersion++;
                 faction.InvalidateFactionStatCache();
             }
         }

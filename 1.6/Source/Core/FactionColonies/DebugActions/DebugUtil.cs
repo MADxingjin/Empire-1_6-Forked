@@ -439,15 +439,8 @@ namespace FactionColonies
                 if (settlement.MilitaryComp is null || settlement.MilitaryComp.militaryJob != MilitaryJobDefOf.Cooldown)
                     continue;
 
-                for (int i = faction.events.Count - 1; i >= 0; i--)
-                {
-                    if (faction.events[i].def == FCEventDefOf.cooldownMilitary
-                        && faction.events[i].location == settlement.Tile)
-                    {
-                        faction.events.RemoveAt(i);
-                        faction.eventsVersion++;
-                    }
-                }
+                faction.RemoveEventsWhere(e =>
+                    e.def == FCEventDefOf.cooldownMilitary && e.location == settlement.Tile);
 
                 settlement.MilitaryComp.ReturnMilitary(false);
                 count++;
