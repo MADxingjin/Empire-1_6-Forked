@@ -17,10 +17,10 @@ namespace FactionColonies
         [DebugAction("Empire", "View Events and ticks till", allowedGameStates = AllowedGameStates.Playing)]
         private static void ViewEventsAndLog()
         {
-            FactionCache.FactionComp.events.ForEach(delegate (FCEvent e)
+            foreach (FCEvent e in FactionCache.FactionComp.Events)
             {
                 LogUtil.MessageForce(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
-            });
+            }
         }
 
         [DebugAction("Empire", "Increment Time 5 Days", allowedGameStates = AllowedGameStates.Playing)]
@@ -296,7 +296,7 @@ namespace FactionColonies
         private static void ForceAttackAndEventSameTick()
         {
             FactionFC faction = FactionCache.FactionComp;
-            FCEvent attackEvt = faction.events.FirstOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+            FCEvent attackEvt = faction.Events.FirstOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
             if (attackEvt == null)
             {
                 LogUtil.MessageForce("Debug - No pending settlementBeingAttacked event. Use 'Attack Player Settlement' first.");
@@ -320,7 +320,7 @@ namespace FactionColonies
         {
             FactionFC worldcomp = FactionCache.FactionComp;
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEvent evt in worldcomp.events)
+            foreach (FCEvent evt in worldcomp.Events)
             {
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
@@ -465,7 +465,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Clear All Events", allowedGameStates = AllowedGameStates.Playing)]
         private static void ClearAllEvents()
         {
-            FactionCache.FactionComp.events = new List<FCEvent>();
+            FactionCache.FactionComp?.eventManager?.Clear();
         }
 
         [DebugAction("Empire", "Clear All Bills", allowedGameStates = AllowedGameStates.Playing)]
@@ -1014,7 +1014,7 @@ namespace FactionColonies
         private static void ForceTriggerEvent()
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEvent evt in FactionCache.FactionComp.events)
+            foreach (FCEvent evt in FactionCache.FactionComp.Events)
             {
                 FCEvent localEvt = evt;
                 int ticksLeft = localEvt.timeTillTrigger - Find.TickManager.TicksGame;

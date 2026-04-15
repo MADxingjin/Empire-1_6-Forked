@@ -505,11 +505,13 @@ namespace FactionColonies
 
             // Re-apply active event stat modifiers that target this settlement.
             // Cross-references are resolved before DoAllPostLoadInits, so
-            // FactionFC.events and each event's settlementTraitLocations are populated.
+            // FactionFC.Events and each event's settlementTraitLocations are populated.
+            // (FactionFC migrates any legacy save events into eventManager during
+            // ResolvingCrossRefs, before this PostLoadInit runs. See FactionFC.ExposeData.)
             FactionFC factionComp = FactionCache.FactionComp;
             if (factionComp != null)
             {
-                foreach (FCEvent evt in factionComp.events)
+                foreach (FCEvent evt in factionComp.Events)
                 {
                     if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
                     if (evt.settlementTraitLocations.Count == 0

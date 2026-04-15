@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
@@ -287,7 +288,7 @@ namespace FactionColonies
 
         public static FCEvent ReturnMilitaryEventByLocation(PlanetTile location)
         {
-            return FactionCache.FactionComp.events.FirstOrDefault(evt => evt.def == FCEventDefOf.settlementBeingAttacked && evt.location == location);
+            return FactionCache.FactionComp.Events.FirstOrDefault(evt => evt.def == FCEventDefOf.settlementBeingAttacked && evt.location == location);
         }
     }
 }

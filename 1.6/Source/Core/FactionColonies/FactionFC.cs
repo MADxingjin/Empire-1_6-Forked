@@ -155,12 +155,18 @@ namespace FactionColonies
         };
 
         // ── Events & Bills ──
-        public List<FCEvent> events = new List<FCEvent>();
-        internal int eventsVersion = 0;
-        public int EventsVersion => eventsVersion;
+        // LEGACY: populated only when loading pre-manager saves. Migrated into
+        // eventManager during ExposeData(ResolvingCrossRefs) and then nulled out.
+        // DO NOT READ. Use the Events property instead.
+        private List<FCEvent> events = new List<FCEvent>();
+
+        public FCEventManager eventManager = new FCEventManager();
+
+        // The canonical read path for the event queue. Delegates to the manager.
+        public IReadOnlyList<FCEvent> Events => eventManager.Events;
+        public int EventsVersion => eventManager.Version;
+
         public float randomEventLastAdded = 0f;
-        public Dictionary<string, int> eventCooldowns = new Dictionary<string, int>();
-        public Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
         public List<BillFC> Bills = new List<BillFC>();
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
@@ -277,7 +283,27 @@ namespace FactionColonies
 
             Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
+
+            // Legacy field. Still scribed under its original "events" name so old saves
+            // load into it. The ResolvingCrossRefs block below moves its contents into
+            // eventManager and nulls it out.
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
+
+            // Manager owns events / cooldowns / fire counts going forward.
+            Scribe_Deep.Look(ref eventManager, "eventManager");
+            if (eventManager is null) eventManager = new FCEventManager();
+
+            // Migrate pre-manager saves: move legacy events list into the manager.
+            // Runs during ResolvingCrossRefs so it completes BEFORE any PostLoadInit
+            // consumer (e.g. WorldSettlementFC stat-modifier reapply) reads Events.
+            if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs
+                && events != null && events.Count > 0)
+            {
+                eventManager.SeedFromLegacy(events);
+                events = null;
+                LogUtil.MessageForce("FactionFC: migrated legacy events list into FCEventManager.");
+            }
+
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
             Scribe_Collections.Look(ref enabledCaravanTypes, "enabledCaravanTypes", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
@@ -347,10 +373,7 @@ namespace FactionColonies
 
             //Random Event
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
-            Scribe_Collections.Look(ref eventCooldowns, "eventCooldowns", LookMode.Value, LookMode.Value);
-            if (eventCooldowns == null) eventCooldowns = new Dictionary<string, int>();
-            Scribe_Collections.Look(ref eventFireCounts, "eventFireCounts", LookMode.Value, LookMode.Value);
-            if (eventFireCounts == null) eventFireCounts = new Dictionary<string, int>();
+            // eventCooldowns / eventFireCounts now live on eventManager (scribed above).
         }
 
         public override void FinalizeInit(bool fromLoad)
@@ -420,11 +443,6 @@ namespace FactionColonies
             EnsureResourcePools();
 
             LifecycleRegistry.Register(this);
-
-            // Event stat modifier re-application is deferred to firstTick (see WorldComponentTick).
-            // FinalizeInit runs before Scribe.loader.FinalizeLoading,
-            // so cross-references (settlements, settlementTraitLocations) aren't resolved yet,
-            // and settlement PostLoadInit hasn't rebuilt base modifiers.
         }
 
         #endregion
@@ -546,7 +564,7 @@ namespace FactionColonies
             // Rare tick
             if (ticksGame % 250 == 0)
             {
-                FCEventMaker.ProcessEvents(in events);
+                FCEventMaker.ProcessEvents();
                 BillUtility.ProcessBills();
                 if (pendingEdictActivations.Count > 0)
                     CheckEdictActivations();
@@ -958,7 +976,7 @@ namespace FactionColonies
                 if (edict?.def is null || !edict.IsFullyActive) continue;
                 value = AccumulateStatModifiersValue(value, stat, edict.def.statModifiers);
             }
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
@@ -1009,7 +1027,7 @@ namespace FactionColonies
                 if (edict?.def is null || !edict.IsFullyActive) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, edict.def.statModifiers, $"{edict.def.LabelCap} ({"FCEdict".Translate()})", hardinvert);
             }
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
@@ -1216,30 +1234,10 @@ namespace FactionColonies
             return edict.def == def;
         }
 
-        public void RecordEventCooldown(FCEventDef def)
-        {
-            eventCooldowns[def.defName] = Find.TickManager.TicksGame;
-        }
-
-        public bool IsEventOnCooldown(FCEventDef def)
-        {
-            if (def.cooldownTicks <= 0) return false;
-            if (!eventCooldowns.TryGetValue(def.defName, out int lastTick)) return false;
-            return Find.TickManager.TicksGame - lastTick < def.cooldownTicks;
-        }
-
-        public void RecordEventFired(FCEventDef def)
-        {
-            eventFireCounts.TryGetValue(def.defName, out int count);
-            eventFireCounts[def.defName] = count + 1;
-        }
-
-        public bool HasReachedMaxFireCount(FCEventDef def)
-        {
-            if (def.maxFireCount <= 0) return false;
-            if (!eventFireCounts.TryGetValue(def.defName, out int count)) return false;
-            return count >= def.maxFireCount;
-        }
+        public void RecordEventCooldown(FCEventDef def) => eventManager.RecordCooldown(def);
+        public bool IsEventOnCooldown(FCEventDef def) => eventManager.IsOnCooldown(def);
+        public void RecordEventFired(FCEventDef def) => eventManager.RecordFired(def);
+        public bool HasReachedMaxFireCount(FCEventDef def) => eventManager.HasReachedMaxFireCount(def);
 
         public void EnactEdict(FCPolicyDef def)
         {
@@ -1680,9 +1678,8 @@ namespace FactionColonies
                 fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
             }
 
-            //Add event to events
-            events.Add(fcevent);
-            eventsVersion++;
+            //Add event to the manager queue
+            eventManager.Enqueue(fcevent);
 
             LogUtil.Message($"AddEvent: adding new fcevent {fcevent.def.defName}");
 
@@ -1712,34 +1709,10 @@ namespace FactionColonies
             InvalidateFactionStatCache();
         }
 
-        // Removes a single event from the queue, marks it fired so stale references
-        // can't re-process it, and bumps eventsVersion. Idempotent — returns false if
-        // the event wasn't in the queue.
-        public bool RemoveEvent(FCEvent evt)
-        {
-            if (evt is null) return false;
-            if (!events.Remove(evt)) return false;
-            evt.fired = true;
-            eventsVersion++;
-            return true;
-        }
-
-        // Removes every event matching the predicate, marks each fired, and bumps
-        // eventsVersion once if any were removed. Returns removal count.
-        public int RemoveEventsWhere(Predicate<FCEvent> match)
-        {
-            if (match is null) return 0;
-            int removed = 0;
-            for (int i = events.Count - 1; i >= 0; i--)
-            {
-                if (!match(events[i])) continue;
-                events[i].fired = true;
-                events.RemoveAt(i);
-                removed++;
-            }
-            if (removed > 0) eventsVersion++;
-            return removed;
-        }
+        // Thin delegators to FCEventManager. Invariants (fired flag, version bump)
+        // are enforced by the manager; see FCEventManager.Remove / RemoveWhere.
+        public bool RemoveEvent(FCEvent evt) => eventManager.Remove(evt);
+        public int RemoveEventsWhere(Predicate<FCEvent> match) => eventManager.RemoveWhere(match);
 
         private void MakeRandomEvent()
         {
@@ -2301,7 +2274,7 @@ namespace FactionColonies
             List<PlanetTile> toAdd = new List<PlanetTile>();
             List<PlanetTile> toRemove = new List<PlanetTile>();
 
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt.def.defName == "settleNewColony")
                 {

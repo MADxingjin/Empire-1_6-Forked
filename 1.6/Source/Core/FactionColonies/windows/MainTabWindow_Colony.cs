@@ -1192,7 +1192,7 @@ namespace FactionColonies
 
         private void DrawEventsTab(Rect rect)
         {
-            List<FCEvent> events = faction.events;
+            IReadOnlyList<FCEvent> events = faction.Events;
             const float pad = 8f;
             const float rowH = 44f;
             const float accentW = 4f;

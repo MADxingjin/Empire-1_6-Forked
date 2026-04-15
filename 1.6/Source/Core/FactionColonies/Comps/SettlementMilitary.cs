@@ -1407,7 +1407,7 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
 
             // Prevent duplicate cooldown events for the same settlement
-            if (faction.events.Any(e => e.def == FCEventDefOf.cooldownMilitary && e.location == WorldSettlement.Tile))
+            if (faction.Events.Any(e => e.def == FCEventDefOf.cooldownMilitary && e.location == WorldSettlement.Tile))
             {
                 LogUtil.Warning($"CooldownMilitaryFinal: cooldownMilitary event already exists for {WorldSettlement.Name}. Skipping duplicate.");
                 return;

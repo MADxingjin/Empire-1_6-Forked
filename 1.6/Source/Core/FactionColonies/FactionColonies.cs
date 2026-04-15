@@ -267,10 +267,10 @@ namespace FactionColonies
             }
 
             // Re-apply active event stat modifiers to settlements
-            foreach (FCEvent evt in faction.events)
+            foreach (FCEvent evt in faction.Events)
             {
                 string sourceId = "event_" + evt.def.defName;
-                if (evt.settlementTraitLocations.Count() > 0)
+                if (evt.settlementTraitLocations.Any())
                 {
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {

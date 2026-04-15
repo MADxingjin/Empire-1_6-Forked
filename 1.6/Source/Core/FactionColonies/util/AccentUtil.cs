@@ -1,6 +1,7 @@
 using FactionColonies.util;
 using RimWorld.Planet;
 using System;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -98,7 +99,7 @@ namespace FactionColonies
             string label = "FCMilStatusCooldown".Translate();
             if (settlement == null) return label;
 
-            FCEvent cooldownEvent = FactionCache.FactionComp?.events?
+            FCEvent cooldownEvent = FactionCache.FactionComp?.Events?
                 .FirstOrDefault(e => e.def.defName == "cooldownMilitary" && e.location == settlement.Tile);
             if (cooldownEvent != null)
             {

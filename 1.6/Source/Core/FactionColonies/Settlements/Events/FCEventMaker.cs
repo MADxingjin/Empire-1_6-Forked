@@ -131,7 +131,7 @@ namespace FactionColonies
             // Incompatible/duplicate event check
             // Faction-wide events are blocked globally if already active.
             // Settlement-specific events are allowed through — MakeRandomEvent handles per-settlement filtering.
-            foreach (FCEvent evt in FactionCache.FactionComp.events)
+            foreach (FCEvent evt in FactionCache.FactionComp.Events)
             {
                 if (evt.def == null) continue;
                 if (cEvent == evt.def && noSettlementRequirement) return false;
@@ -263,7 +263,7 @@ namespace FactionColonies
                 {
                     // Deterministically target every qualifying settlement
                     HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
-                    foreach (FCEvent activeEvt in worldcomp.events)
+                    foreach (FCEvent activeEvt in worldcomp.Events)
                     {
                         if (activeEvt.def == null) continue;
                         bool isSameDef = activeEvt.def == def;
@@ -321,7 +321,7 @@ namespace FactionColonies
 
                     // Exclude settlements already affected by the same or an incompatible event
                     HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
-                    foreach (FCEvent activeEvt in worldcomp.events)
+                    foreach (FCEvent activeEvt in worldcomp.Events)
                     {
                         if (activeEvt.def == null) continue;
                         bool isSameDef = activeEvt.def == def;
@@ -446,27 +446,15 @@ namespace FactionColonies
             return candidates[candidates.Count - 1];
         }
 
-        public static void ProcessEvents(in List<FCEvent> events)
+        public static void ProcessEvents()
         {
             FactionFC faction = FactionCache.FactionComp;
             int currentTick = Find.TickManager.TicksGame;
 
-            // Phase 1: collect all due events and remove them from the source list
-            // This ensures processing callbacks (AddEvent, StartDefence, etc.) cannot
-            // interfere with the iteration or cause index-shift bugs.
-            //
-            // Intentionally does NOT use FactionFC.RemoveEvent here: that helper sets
-            // evt.fired = true, which would cause phase 2's re-fire guard at line 472
-            // to skip every freshly collected event.
-            List<FCEvent> due = null;
-            for (int i = events.Count - 1; i >= 0; i--)
-            {
-                if (events[i].timeTillTrigger > currentTick) continue;
-                if (due is null) due = new List<FCEvent>();
-                due.Add(events[i]);
-                faction.events.RemoveAt(i);
-                faction.eventsVersion++;
-            }
+            // Phase 1: atomically collect every due event and remove it from the queue.
+            // CollectDueEvents deliberately does NOT set evt.fired — phase 2 below still
+            // wants its own re-entrancy guard to gate per-event processing.
+            List<FCEvent> due = faction.eventManager.CollectDueEvents(currentTick);
             if (due is null) return;
 
             // Phase 2: process collected events

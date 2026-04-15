@@ -78,7 +78,7 @@ namespace FactionColonies.util
 
             HashSet<FCEvent> toRemove = new HashSet<FCEvent>();
 
-            foreach (FCEvent evt in faction.events)
+            foreach (FCEvent evt in faction.Events)
             {
                 //military event removal
                 if (evt.def == FCEventDefOf.captureEnemySettlement || evt.def == FCEventDefOf.raidEnemySettlement)
