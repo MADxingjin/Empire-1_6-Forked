@@ -163,8 +163,6 @@
 
 
 <!-- SettlementWindowFC -->
-<FCTownLog>Stadtbericht</FCTownLog>
-<FCUpgradeTown>Stadt verbessern</FCUpgradeTown>
 <FCGoToLocation>zum Ort springen</FCGoToLocation>
 <FCAssignedWorkers>Zugewiesene Arbeiter</FCAssignedWorkers>
 <FCIsTithe>ist Zehnt</FCIsTithe>

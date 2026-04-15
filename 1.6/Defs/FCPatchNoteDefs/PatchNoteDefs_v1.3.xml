@@ -86,4 +86,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_6</defName>
+		<label>Further &quot;Settlement&quot; Cleanup</label>
+		<description>Further UI cleanup to get &quot;settlement&quot; everywhere it should be</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>More UI updates to use &quot;settlement&quot;</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

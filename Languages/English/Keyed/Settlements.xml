@@ -24,7 +24,7 @@
 	<FCSettlementResources>Resources:</FCSettlementResources>
 	<FCSettleEventDesc>A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}.</FCSettleEventDesc>
 	<FCSettleEventCompletedDesc>{0} has been established as a new {1} in the {2}.</FCSettleEventCompletedDesc>
-	<FCPlayerColony>Player Colony</FCPlayerColony>
+	<FCPlayerColony>Player Empire</FCPlayerColony>
 	<FCSetCapital>Set Capital</FCSetCapital>
 	<FCSetAsFactionCapital>{0} has been set as the faction capital</FCSetAsFactionCapital>
 
@@ -42,12 +42,10 @@
 	<FCAlreadyMaxLevel>is already max level</FCAlreadyMaxLevel>
 	<FCNotEnoughSilverUpgrade>The current map does not have enough silver to pay for the settlement upgrade.</FCNotEnoughSilverUpgrade>
 	<FCCannotBeUpgradedPastMax>This settlement cannot be upgraded past max level</FCCannotBeUpgradedPastMax>
-	<FCUpgradeTown>Upgrade Town</FCUpgradeTown>
 	<FCUpgradeBadgeInProgress>Upgrading: {0} remaining</FCUpgradeBadgeInProgress>
 	<FCUpgradeBadgeAvailable>Click to upgrade (cost: {0} silver)</FCUpgradeBadgeAvailable>
 
 	<!-- Settlement Window -->
-	<FCTownLog>Town Log</FCTownLog>
 	<FCGoToLocation>Go To Location</FCGoToLocation>
 	<FCLocated>Located in the</FCLocated>
 	<FCLandOf>land of a</FCLandOf>
@@ -90,7 +88,7 @@ The higher unrest grows, the more likely dangerous events internal in your Settl
 	</FCSettlementUnrestDesc>
 	<FCSettlementProsperityDesc>The measure of the Settlement's overall prosperity.
 
-The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
+The prosperity of a settlement directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
 	</FCSettlementProsperityDesc>
 
 	<!-- Settlement Table -->
@@ -109,7 +107,7 @@ The prosperity of a town directly correlates with the production of resources (e
 	<FCSettlementCount>{0} settlements</FCSettlementCount>
 	<FCSortBy>Sort: {0}</FCSortBy>
 	<FCColonyLevel>Settlement Level</FCColonyLevel>
-	<FCHamlet>hamlet</FCHamlet>
+	<FCHamlet>settlement</FCHamlet>
 
 	<!-- Settlement Delete -->
 	<FCDeleteSettlement>Delete Settlement</FCDeleteSettlement>

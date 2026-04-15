@@ -100,7 +100,7 @@ namespace FactionColonies
 
         private readonly List<string> buttons = new List<string>(5)
         {
-            "FCUpgradeTown".Translate(),
+            "FCUpgradeSettlement".Translate(),
             "FCSpecialActions".Translate(),
             "FCPrisonersMenu".Translate(),
             "FCMilitary".Translate(),
@@ -1001,7 +1001,7 @@ namespace FactionColonies
                     if (prisonerCount > 0)
                         label = label + " (" + prisonerCount + ")";
                 }
-                if (label == "FCUpgradeTown".Translate() && settlement.isUpgrading)
+                if (label == "FCUpgradeSettlement".Translate() && settlement.isUpgrading)
                 {
                     label = "FCSettlementUpgradeInProgress".Translate();
                     GUI.color = Color.gray;
@@ -1010,9 +1010,9 @@ namespace FactionColonies
                 if (Widgets.ButtonText(buttonRect, label, active: enabled))
                 {
                     //If click a button button
-                    if (label == "FCUpgradeTown".Translate())
+                    if (label == "FCUpgradeSettlement".Translate())
                     {
-                        //if click upgrade town button
+                        //if click upgrade settlement button
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
 

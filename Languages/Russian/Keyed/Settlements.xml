@@ -42,12 +42,10 @@
   <FCAlreadyMaxLevel>уже максимального уровня</FCAlreadyMaxLevel>
   <FCNotEnoughSilverUpgrade>На текущей карте недостаточно серебра для оплаты улучшения поселения.</FCNotEnoughSilverUpgrade>
   <FCCannotBeUpgradedPastMax>Это поселение не может быть улучшено выше максимального уровня</FCCannotBeUpgradedPastMax>
-  <FCUpgradeTown>Улучшить город</FCUpgradeTown>
   <FCUpgradeBadgeInProgress>Улучшение: осталось {0}</FCUpgradeBadgeInProgress>
   <FCUpgradeBadgeAvailable>Нажмите для улучшения (стоимость: {0} серебра)</FCUpgradeBadgeAvailable>
 
   <!-- Окно поселения -->
-  <FCTownLog>Журнал города</FCTownLog>
   <FCGoToLocation>Перейти к месту</FCGoToLocation>
   <FCLocated>Расположен в</FCLocated>
   <FCLandOf>землях</FCLandOf>

@@ -163,8 +163,6 @@
 
 
 <!-- SettlementWindowFC -->
-<FCTownLog>城镇日志</FCTownLog>
-<FCUpgradeTown>升级城镇</FCUpgradeTown>
 <FCGoToLocation>定位</FCGoToLocation>
 <FCAssignedWorkers>指派工人</FCAssignedWorkers>
 <FCIsTithe>什一税</FCIsTithe>

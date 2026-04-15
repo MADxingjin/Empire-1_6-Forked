@@ -163,8 +163,6 @@
 
 
 <!-- SettlementWindowFC -->
-<FCTownLog>Registrul Orasului</FCTownLog>
-<FCUpgradeTown>Imbunatateste Orasul</FCUpgradeTown>
 <FCGoToLocation>Mergi la locatie</FCGoToLocation>
 <FCAssignedWorkers>Muncitori alocati</FCAssignedWorkers>
 <FCIsTithe>Este zeciuiala</FCIsTithe>

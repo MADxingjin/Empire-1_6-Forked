@@ -163,8 +163,6 @@
 
 
 <!-- SettlementWindowFC -->
-<FCTownLog>Registro de la ciudad</FCTownLog>
-<FCUpgradeTown>Mejorar ciudad</FCUpgradeTown>
 <FCGoToLocation>Ir a ubicacion</FCGoToLocation>
 <FCAssignedWorkers>Trabajadores asignados</FCAssignedWorkers>
 <FCIsTithe>Es el diezmo</FCIsTithe>
