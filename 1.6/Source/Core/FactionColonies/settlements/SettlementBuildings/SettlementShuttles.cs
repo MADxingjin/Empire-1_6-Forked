@@ -81,9 +81,13 @@ namespace FactionColonies
         }
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (Gizmo gizmo in base.GetGizmos())
+            IEnumerable<Gizmo> gizmos = base.GetGizmos();
+            if (gizmos != null)
             {
-                yield return gizmo;
+                foreach (Gizmo gizmo in gizmos)
+                {
+                    yield return gizmo;
+                }
             }
             yield return RequestShuttleAction(settlement);
             yield return RequestShuttleForCaravanAction(settlement);

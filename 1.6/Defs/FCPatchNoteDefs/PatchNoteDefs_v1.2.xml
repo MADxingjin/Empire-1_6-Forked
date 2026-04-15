@@ -520,4 +520,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_37</defName>
+		<label>Suttle Port Patch</label>
+		<description>Fixes a null-reference but with the shuttle port gizmo.</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Hotfix</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: settlement gizmos would stop working when a shuttle port is built due to an NRE in the shuttle&apos;s comp&apos;s GetGizmos function</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
