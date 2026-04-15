@@ -41,4 +41,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_3</defName>
+		<label>Expanded production bonuses</label>
+		<description>Expands the number of things that affect resource production. Now accounts for tile mutators, as well as a number of tile fields like rainfail, animal density, and pollution.</description>
+		<releaseDate>2026-04-14</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Buildings can now set tile mutator block/allowlists</li>
+		<li>New TileMutatorResourceExtension can be patched onto tile mutators to let them grant production bonuses/maluses</li>
+		<li>New ResourceProductionExtension_TileField allows various tile fields to affect resource production</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

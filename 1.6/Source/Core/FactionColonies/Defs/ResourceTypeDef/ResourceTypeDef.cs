@@ -261,6 +261,52 @@ namespace FactionColonies
             }
             return mult;
         }
+
+        /// <summary>
+        /// Sums additive bonuses contributed by TileMutatorResourceExtensions on every mutator
+        /// present on the given tile, filtered to this resource.
+        /// </summary>
+        public double GetMutatorAdditives(PlanetTile tile)
+        {
+            if (tile == PlanetTile.Invalid) return 0;
+            IList<TileMutatorDef> mutators = tile.Tile?.Mutators;
+            if (mutators.NullOrEmpty()) return 0;
+
+            double add = 0;
+            foreach (TileMutatorDef mut in mutators)
+            {
+                TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
+                if (ext?.bonuses is null) continue;
+                foreach (MutatorResourceBonus entry in ext.bonuses)
+                {
+                    if (entry.resource == this) add += entry.additive;
+                }
+            }
+            return add;
+        }
+
+        /// <summary>
+        /// Product of multiplier bonuses contributed by TileMutatorResourceExtensions on every
+        /// mutator present on the given tile, filtered to this resource.
+        /// </summary>
+        public double GetMutatorMultipliers(PlanetTile tile)
+        {
+            if (tile == PlanetTile.Invalid) return 1;
+            IList<TileMutatorDef> mutators = tile.Tile?.Mutators;
+            if (mutators.NullOrEmpty()) return 1;
+
+            double mult = 1;
+            foreach (TileMutatorDef mut in mutators)
+            {
+                TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
+                if (ext?.bonuses is null) continue;
+                foreach (MutatorResourceBonus entry in ext.bonuses)
+                {
+                    if (entry.resource == this) mult *= entry.multiplier;
+                }
+            }
+            return mult;
+        }
         public bool ResourceAllowedForBiome(BiomeResourceDef bdef)
         {
             if (biomeAllowList.Count > 0)

@@ -295,13 +295,13 @@ namespace FactionColonies
                     }
                     else
                     {
-                        double baseProduction = biomeRes.additive + settleRes.additive + titheType.GetExtensionAdditives(currentTileSelected);
-                        double baseMultiplier = Math.Round(biomeRes.multiplier * settleRes.multiplier * titheType.GetExtensionMultipliers(currentTileSelected), 2);
-                        double total = Math.Round(baseProduction * baseMultiplier, 2);
+                        double baseProduction = biomeRes.additive + settleRes.additive + titheType.GetExtensionAdditives(currentTileSelected) + titheType.GetMutatorAdditives(currentTileSelected);
+                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier * titheType.GetExtensionMultipliers(currentTileSelected) * titheType.GetMutatorMultipliers(currentTileSelected);
+                        double total = baseProduction * baseMultiplier;
 
-                        Widgets.Label(baseRect, (baseProduction).ToString());
-                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), (baseMultiplier).ToString());
-                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), (total).ToString());
+                        Widgets.Label(baseRect, Math.Round(baseProduction, 2).ToString());
+                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), Math.Round(baseMultiplier, 2).ToString());
+                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), Math.Round(total, 2).ToString());
                     }
                 }
                 /* Highlight the total value */

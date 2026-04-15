@@ -15,6 +15,7 @@
 	<FCBuildingSurfaceOnly>This building can only be constructed on surface settlements</FCBuildingSurfaceOnly>
 	<FCBuildingOrbitalOnly>This building can only be constructed on orbital platforms</FCBuildingOrbitalOnly>
 	<FCBuildingInvalidSettlement>{0} cannot be built in a {1}</FCBuildingInvalidSettlement>
+	<FCBuildingInvalidTileMutator>{0} cannot be built on this tile's terrain</FCBuildingInvalidTileMutator>
 	<FCBuildingAlreadyType>There is already a building of that type</FCBuildingAlreadyType>
 	<FCBuildingBeingBuiltAlreadyType>There is already a building of that type being built</FCBuildingBeingBuiltAlreadyType>
 	<FCBuildingAlreadyConstructed>There is already a building being constructed there</FCBuildingAlreadyConstructed>

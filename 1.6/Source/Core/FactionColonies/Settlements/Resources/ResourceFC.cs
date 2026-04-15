@@ -498,6 +498,27 @@ namespace FactionColonies
                         AddProductionMultiplier(extId, multBonus, ext.extDesc);
                 }
             }
+
+            // --- Tile mutator bonuses ---
+            IList<TileMutatorDef> tileMutators = settlement.Tile.Tile?.Mutators;
+            if (tileMutators != null && tileMutators.Count > 0)
+            {
+                foreach (TileMutatorDef mut in tileMutators)
+                {
+                    TileMutatorResourceExtension mutExt = mut?.GetModExtension<TileMutatorResourceExtension>();
+                    if (mutExt?.bonuses is null) continue;
+                    foreach (MutatorResourceBonus entry in mutExt.bonuses)
+                    {
+                        if (entry.resource != def) continue;
+                        string mutId = $"{def.defName}_mutator_{mut.defName}_{settlementId}";
+                        string mutLabel = entry.label.NullOrEmpty() ? mut.LabelCap.ToString() : entry.label;
+                        if (entry.additive != 0)
+                            AddProductionAdditive(mutId, entry.additive, mutLabel);
+                        if (entry.multiplier != 1)
+                            AddProductionMultiplier(mutId, entry.multiplier, mutLabel);
+                    }
+                }
+            }
         }
         public void AddProductionAdditive(string id, double value, string desc)
         {

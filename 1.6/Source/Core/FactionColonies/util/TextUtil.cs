@@ -32,7 +32,7 @@ namespace FactionColonies
             {
                 bonus *= -1;
             }
-            string baseBonus = bonus.ToString();
+            string baseBonus = Math.Round(bonus, 2).ToString();
             if (bonus > 0 && addPlusSign)
             {
                 baseBonus = "+" + baseBonus;
@@ -79,7 +79,7 @@ namespace FactionColonies
         /// <returns></returns>
         public static TaggedString ColorizeMultiplierBonus(double bonus, bool invert = false, bool addXsign = true)
         {
-            string baseBonus = bonus.ToString();
+            string baseBonus = Math.Round(bonus, 2).ToString();
             if (addXsign)
             {
                 baseBonus = "x" + baseBonus;

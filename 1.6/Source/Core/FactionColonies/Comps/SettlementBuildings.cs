@@ -331,6 +331,13 @@ namespace FactionColonies
                 Messages.Message("FCBuildingInvalidSettlement".Translate(building.LabelCap, WorldSettlement.settlementDef.LabelCap), MessageTypeDefOf.RejectInput);
             }
 
+            // Check tile mutator restrictions
+            if (!building.CanBeBuiltOnTile(WorldSettlement.Tile))
+            {
+                valid = false;
+                Messages.Message("FCBuildingInvalidTileMutator".Translate(building.LabelCap), MessageTypeDefOf.RejectInput);
+            }
+
             return valid;
         }
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
