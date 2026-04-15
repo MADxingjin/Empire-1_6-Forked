@@ -4,7 +4,11 @@ using Verse;
 
 namespace FactionColonies
 {
-    public class MutatorResourceBonus
+    /// <summary>
+    /// Shared row class used by both TileMutatorResourceExtension and
+    /// TileLandmarkResourceExtension. Represents a single per-resource bonus entry.
+    /// </summary>
+    public class TileResourceBonus
     {
         public ResourceTypeDef resource;
         public double additive = 0;
@@ -20,6 +24,6 @@ namespace FactionColonies
     /// </summary>
     public class TileMutatorResourceExtension : DefModExtension
     {
-        public List<MutatorResourceBonus> bonuses = new List<MutatorResourceBonus>();
+        public List<TileResourceBonus> bonuses = new List<TileResourceBonus>();
     }
 }

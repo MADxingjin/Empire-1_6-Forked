@@ -496,6 +496,23 @@ namespace FactionColonies
                 }
             }
 
+            // --- Tile landmark bonuses ---
+            Landmark landmark = settlement.Tile.Tile?.Landmark;
+            TileLandmarkResourceExtension lmExt = landmark?.def?.GetModExtension<TileLandmarkResourceExtension>();
+            if (lmExt?.bonuses != null)
+            {
+                foreach (TileResourceBonus entry in lmExt.bonuses)
+                {
+                    if (entry.resource != def) continue;
+                    string lmId = $"{def.defName}_landmark_{landmark.def.defName}_{settlementId}";
+                    string lmLabel = entry.label.NullOrEmpty() ? landmark.def.LabelCap.ToString() : entry.label;
+                    if (entry.additive != 0)
+                        AddProductionAdditive(lmId, entry.additive, lmLabel);
+                    if (entry.multiplier != 1)
+                        AddProductionMultiplier(lmId, entry.multiplier, lmLabel);
+                }
+            }
+
             // --- Tile mutator bonuses ---
             IList<TileMutatorDef> tileMutators = settlement.Tile.Tile?.Mutators;
             if (tileMutators != null && tileMutators.Count > 0)
@@ -504,7 +521,7 @@ namespace FactionColonies
                 {
                     TileMutatorResourceExtension mutExt = mut?.GetModExtension<TileMutatorResourceExtension>();
                     if (mutExt?.bonuses is null) continue;
-                    foreach (MutatorResourceBonus entry in mutExt.bonuses)
+                    foreach (TileResourceBonus entry in mutExt.bonuses)
                     {
                         if (entry.resource != def) continue;
                         string mutId = $"{def.defName}_mutator_{mut.defName}_{settlementId}";

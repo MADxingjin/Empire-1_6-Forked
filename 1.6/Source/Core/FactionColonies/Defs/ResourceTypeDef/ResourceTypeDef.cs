@@ -277,7 +277,7 @@ namespace FactionColonies
             {
                 TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
                 if (ext?.bonuses is null) continue;
-                foreach (MutatorResourceBonus entry in ext.bonuses)
+                foreach (TileResourceBonus entry in ext.bonuses)
                 {
                     if (entry.resource == this) add += entry.additive;
                 }
@@ -300,13 +300,56 @@ namespace FactionColonies
             {
                 TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
                 if (ext?.bonuses is null) continue;
-                foreach (MutatorResourceBonus entry in ext.bonuses)
+                foreach (TileResourceBonus entry in ext.bonuses)
                 {
                     if (entry.resource == this) mult *= entry.multiplier;
                 }
             }
             return mult;
         }
+
+        /// <summary>
+        /// Sums additive bonuses contributed by a TileLandmarkResourceExtension on the tile's
+        /// landmark (if any), filtered to this resource. Odyssey-gated via Tile.Landmark.
+        /// </summary>
+        public double GetLandmarkAdditives(PlanetTile tile)
+        {
+            if (tile == PlanetTile.Invalid) return 0;
+            Landmark landmark = tile.Tile?.Landmark;
+            if (landmark?.def is null) return 0;
+
+            TileLandmarkResourceExtension ext = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+            if (ext?.bonuses is null) return 0;
+
+            double add = 0;
+            foreach (TileResourceBonus entry in ext.bonuses)
+            {
+                if (entry.resource == this) add += entry.additive;
+            }
+            return add;
+        }
+
+        /// <summary>
+        /// Product of multiplier bonuses contributed by a TileLandmarkResourceExtension on the
+        /// tile's landmark (if any), filtered to this resource. Odyssey-gated via Tile.Landmark.
+        /// </summary>
+        public double GetLandmarkMultipliers(PlanetTile tile)
+        {
+            if (tile == PlanetTile.Invalid) return 1;
+            Landmark landmark = tile.Tile?.Landmark;
+            if (landmark?.def is null) return 1;
+
+            TileLandmarkResourceExtension ext = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+            if (ext?.bonuses is null) return 1;
+
+            double mult = 1;
+            foreach (TileResourceBonus entry in ext.bonuses)
+            {
+                if (entry.resource == this) mult *= entry.multiplier;
+            }
+            return mult;
+        }
+
         public bool ResourceAllowedForBiome(BiomeResourceDef bdef)
         {
             if (biomeAllowList.Count > 0)

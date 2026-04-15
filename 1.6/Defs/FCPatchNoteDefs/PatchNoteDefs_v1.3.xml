@@ -114,4 +114,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_8</defName>
+		<label>Tile landmark support</label>
+		<description>Expands the support for Tile Mutators to include Tile Landmarks.</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds new TileLandmarkResourceExtension that can be xml patched onto landmarks to make them grant special bonuses to Empire settlements.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
