@@ -340,6 +340,38 @@ namespace FactionColonies
 
             return valid;
         }
+        /// <summary>
+        /// Post-load recovery: scans all building slots for BuildingFCExtensions whose comps are missing
+        /// (e.g. erroneously destroyed by a prior save due to empty buildingSlots). Re-creates the comp
+        /// and populates its slot so downstream code (Tick, gizmos) works correctly.
+        /// </summary>
+        private void RecoverMissingBuildingComps()
+        {
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                BuildingFCDef def = GetBuildingInSlot(i);
+                if (def?.modExtensions is null) continue;
+
+                foreach (BuildingFCExtension ext in def.modExtensions.OfType<BuildingFCExtension>())
+                {
+                    if (ext.compClass is null) continue;
+
+                    SettlementBuildingComp comp = GetComponent(ext.compClass);
+                    if (comp is null)
+                    {
+                        LogUtil.Warning($"Recovering missing SettlementBuildingComp {ext.compClass.Name} for building {def.defName} in slot {i}");
+                        comp = MakeSettlementBuildingComp(ext.compClass, WorldSettlement);
+                        settlementBuildingComps.Add(comp);
+                    }
+
+                    if (!comp.buildingSlots.Contains(i))
+                    {
+                        comp.buildingSlots.Add(i);
+                    }
+                }
+            }
+        }
+
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
             AddBuildingStatModifiers(buildingSlot);
@@ -634,7 +666,17 @@ namespace FactionColonies
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                settlementBuildingComps?.RemoveAll(c => c == null);
+                if (settlementBuildingComps is null)
+                {
+                    settlementBuildingComps = new List<SettlementBuildingComp>();
+                }
+                settlementBuildingComps.RemoveAll(c => c == null);
+                foreach (SettlementBuildingComp comp in settlementBuildingComps)
+                {
+                    comp.RefreshBuildingSlotsWithErrorDetection();
+                }
+                settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
+                RecoverMissingBuildingComps();
                 ReinitBuildings();
             }
         }
