@@ -9,6 +9,24 @@ using Verse;
 
 namespace FactionColonies
 {
+    public enum SettlementStatType
+    {
+        MilitaryLevel,
+        Happiness,
+        Loyalty,
+        Unrest,
+        Prosperity
+    }
+
+    public enum SettlementButtonType
+    {
+        Upgrade,
+        SpecialActions,
+        Prisoners,
+        Military,
+        Delete
+    }
+
     public sealed class SettlementWindowFc : Window
     {
         public override Vector2 InitialSize
@@ -89,22 +107,21 @@ namespace FactionColonies
             "FCTithing".Translate()
         };
 
-        private readonly List<string> stats = new List<string>(5)
+        private static readonly SettlementStatType[] stats =
         {
-            "FCMilitaryLevel".Translate(),
-            "FCHappiness".Translate(),
-            "FCLoyality".Translate(),
-            "FCUnrest".Translate(),
-            "FCProsperity".Translate()
+            SettlementStatType.MilitaryLevel,
+            SettlementStatType.Happiness,
+            SettlementStatType.Loyalty,
+            SettlementStatType.Unrest,
+            SettlementStatType.Prosperity
         };
 
-        private readonly List<string> buttons = new List<string>(5)
+        private static readonly SettlementButtonType[] mainButtons =
         {
-            "FCUpgradeSettlement".Translate(),
-            "FCSpecialActions".Translate(),
-            "FCPrisonersMenu".Translate(),
-            "FCMilitary".Translate(),
-            "FCDeleteSettlement".Translate()
+            SettlementButtonType.Upgrade,
+            SettlementButtonType.SpecialActions,
+            SettlementButtonType.Prisoners,
+            SettlementButtonType.Military
         };
 
         private WorldSettlementFC settlement; //Don't expose
@@ -853,7 +870,7 @@ namespace FactionColonies
             float statGainBoxHeight = 30;
             float statGainBoxWidth = 35;
             float statSize = Math.Min(30f, statBoxHeight);
-            for (int i = 0; i < stats.Count; i++)
+            for (int i = 0; i < stats.Length; i++)
             {
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Text.Font = GameFont.Medium;
@@ -862,111 +879,103 @@ namespace FactionColonies
                 Rect buttonBox = new Rect(statBox.x + margin, statBox.y + margin, statSize + 4, statSize + 4);
                 Rect labelBox = new Rect(buttonBox.xMax, buttonBox.y, statBox.width - (buttonBox.width + margin * 2), buttonBox.height);
                 Rect statGainBox = new Rect(statBox.xMax - statGainBoxWidth - margin, statBox.y + (statBox.height - statGainBoxHeight) / 2, statGainBoxWidth, statGainBoxHeight);
-                //Rect statGainLabel = new Rect(statGainBox.x + smallMargin, statGainBox.y + smallMargin, statGainBoxWidth - (smallMargin * 2), statGainBoxHeight - (smallMargin * 2));
                 Rect mainToolTipBox = new Rect(statBox.x, statBox.y, statGainBox.x - statBox.x, statBox.height);
-                string tooltip = "";
-                if (stats[i] == "militaryLevel")
+                string tooltip;
+
+                switch (stats[i])
                 {
-                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconMilitary));
-                    Widgets.Label(labelBox, settlement.settlementMilitaryLevel.ToString());
-                    FactionFC fc = FactionCache.FactionComp;
-                    double baseLvl = settlement.settlementMilitaryLevel;
-                    double eff = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
-                    double atkLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
-                    double atkEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
-                    double defLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
-                    double defEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
-                    double defAdv = FCSettings.defenderAdvantage;
-                    double offPower = Math.Round((baseLvl + atkLvlBonus) * eff * atkEffBonus);
-                    double defPower = Math.Round((baseLvl + defLvlBonus) * eff * defEffBonus * defAdv);
-
-                    tooltip = "FCSettlementMilitaryLevel".Translate() + "\n-----\n"
-                        + "FCSettlementMilitaryLevelDesc".Translate() + "\n\n"
-                        + "Base level: " + baseLvl;
-                    if (Math.Abs(eff - 1.0) > 0.001)
-                        tooltip += "\nCombat efficiency: " + eff.ToString("0.0#") + "x";
-                    tooltip += "\n\nOffensive Power: " + offPower;
-                    if (Math.Abs(atkLvlBonus) > 0.001)
-                        tooltip += "\n  Level bonus: +" + atkLvlBonus.ToString("0.#");
-                    if (Math.Abs(atkEffBonus - 1.0) > 0.001)
-                        tooltip += "\n  Efficiency bonus: " + atkEffBonus.ToString("0.0#") + "x";
-                    tooltip += "\n\nDefensive Power: " + defPower;
-                    if (Math.Abs(defLvlBonus) > 0.001)
-                        tooltip += "\n  Level bonus: +" + defLvlBonus.ToString("0.#");
-                    if (Math.Abs(defEffBonus - 1.0) > 0.001)
-                        tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
-                    if (Math.Abs(defAdv - 1.0) > 0.001)
-                        tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
-                }
-
-                if (stats[i] == "happiness")
-                {
-                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconHappiness));
-                    Widgets.Label(labelBox, settlement.happiness + "%");
-                    tooltip = "FCSettlementHappiness".Translate() + "\n-----\n" + "FCSettlementHappinessDesc".Translate();
-
-                    Widgets.DrawHighlight(statGainBox);
-                    double happinessGain = Math.Round(settlement.GetTotalHappinessGain(), 1);
-                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(happinessGain);
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(statGainBox, statGain);
-                    TooltipHandler.TipRegion(statGainBox, settlement.GetHappinessDesc());
-                }
-
-                if (stats[i] == "loyalty")
-                {
-                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconLoyalty));
-                    Widgets.Label(labelBox, settlement.loyalty + "%");
-                    tooltip = "FCSettlementLoyalty".Translate() + "\n-----\n" + "FCSettlementLoyaltyDesc".Translate();
-
-                    Widgets.DrawHighlight(statGainBox);
-                    double loyaltyGain = Math.Round(settlement.GetTotalLoyaltyGain(), 1);
-                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(loyaltyGain);
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(statGainBox, statGain);
-                    TooltipHandler.TipRegion(statGainBox, settlement.GetLoyaltyDesc());
-                }
-
-                if (stats[i] == "unrest")
-                {
-                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconUnrest));
-                    Widgets.Label(labelBox, settlement.unrest + "%");
-                    tooltip = "FCSettlementUnrest".Translate() + "\n-----\n" + "FCSettlementUnrestDesc".Translate();
-
-                    Widgets.DrawHighlight(statGainBox);
-                    double unrestGain = Math.Round(settlement.GetTotalUnrestGain(), 1);
-                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(unrestGain, true);
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(statGainBox, statGain);
-                    TooltipHandler.TipRegion(statGainBox, settlement.GetUnrestDesc());
-                }
-
-                if (stats[i] == "prosperity")
-                {
-                    Widgets.Label(buttonBox, new GUIContent(TexLoad.iconProsperity));
-                    Widgets.Label(labelBox, settlement.prosperity + "%");
-                    tooltip = "FCSettlementProsperity".Translate() + "\n-----\n" + "FCSettlementProsperityDesc".Translate();
-
-                    Widgets.DrawHighlight(statGainBox);
-                    double prosperityGain = Math.Round(settlement.GetProsperityGain(), 1);
-                    TaggedString statGain = TextUtil.ColorizeAdditiveBonus(prosperityGain);
-
-                    Text.Anchor = TextAnchor.MiddleCenter;
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(statGainBox, statGain);
-                    TooltipHandler.TipRegion(statGainBox, settlement.GetProsperityDesc());
+                    case SettlementStatType.MilitaryLevel:
+                        tooltip = DrawStatMilitaryLevel(buttonBox, labelBox);
+                        break;
+                    case SettlementStatType.Happiness:
+                        tooltip = DrawStatWithGainBox(buttonBox, labelBox, statGainBox,
+                            TexLoad.iconHappiness, settlement.happiness + "%",
+                            "FCSettlementHappiness", "FCSettlementHappinessDesc",
+                            settlement.GetTotalHappinessGain(), settlement.GetHappinessDesc());
+                        break;
+                    case SettlementStatType.Loyalty:
+                        tooltip = DrawStatWithGainBox(buttonBox, labelBox, statGainBox,
+                            TexLoad.iconLoyalty, settlement.loyalty + "%",
+                            "FCSettlementLoyalty", "FCSettlementLoyaltyDesc",
+                            settlement.GetTotalLoyaltyGain(), settlement.GetLoyaltyDesc());
+                        break;
+                    case SettlementStatType.Unrest:
+                        tooltip = DrawStatWithGainBox(buttonBox, labelBox, statGainBox,
+                            TexLoad.iconUnrest, settlement.unrest + "%",
+                            "FCSettlementUnrest", "FCSettlementUnrestDesc",
+                            settlement.GetTotalUnrestGain(), settlement.GetUnrestDesc(), invertColor: true);
+                        break;
+                    case SettlementStatType.Prosperity:
+                        tooltip = DrawStatWithGainBox(buttonBox, labelBox, statGainBox,
+                            TexLoad.iconProsperity, settlement.prosperity + "%",
+                            "FCSettlementProsperity", "FCSettlementProsperityDesc",
+                            settlement.GetProsperityGain(), settlement.GetProsperityDesc());
+                        break;
+                    default:
+                        tooltip = "";
+                        break;
                 }
 
                 TooltipHandler.TipRegion(mainToolTipBox, tooltip);
             }
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Medium;
+        }
+
+        private string DrawStatMilitaryLevel(Rect buttonBox, Rect labelBox)
+        {
+            Widgets.Label(buttonBox, new GUIContent(TexLoad.iconMilitary));
+            Widgets.Label(labelBox, settlement.settlementMilitaryLevel.ToString());
+            FactionFC fc = FactionCache.FactionComp;
+            double baseLvl = settlement.settlementMilitaryLevel;
+            double eff = settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency);
+            double atkLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusAttacking);
+            double atkEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusAttacking);
+            double defLvlBonus = fc.GetStatValue(FCStatDefOf.militaryLevelBonusDefending);
+            double defEffBonus = fc.GetStatValue(FCStatDefOf.militaryEfficiencyBonusDefending);
+            double defAdv = FCSettings.defenderAdvantage;
+            double offPower = Math.Round((baseLvl + atkLvlBonus) * eff * atkEffBonus);
+            double defPower = Math.Round((baseLvl + defLvlBonus) * eff * defEffBonus * defAdv);
+
+            string tooltip = "FCSettlementMilitaryLevel".Translate() + "\n-----\n"
+                + "FCSettlementMilitaryLevelDesc".Translate() + "\n\n"
+                + "Base level: " + baseLvl;
+            if (Math.Abs(eff - 1.0) > 0.001)
+                tooltip += "\nCombat efficiency: " + eff.ToString("0.0#") + "x";
+            tooltip += "\n\nOffensive Power: " + offPower;
+            if (Math.Abs(atkLvlBonus) > 0.001)
+                tooltip += "\n  Level bonus: +" + atkLvlBonus.ToString("0.#");
+            if (Math.Abs(atkEffBonus - 1.0) > 0.001)
+                tooltip += "\n  Efficiency bonus: " + atkEffBonus.ToString("0.0#") + "x";
+            tooltip += "\n\nDefensive Power: " + defPower;
+            if (Math.Abs(defLvlBonus) > 0.001)
+                tooltip += "\n  Level bonus: +" + defLvlBonus.ToString("0.#");
+            if (Math.Abs(defEffBonus - 1.0) > 0.001)
+                tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
+            if (Math.Abs(defAdv - 1.0) > 0.001)
+                tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
+            return tooltip;
+        }
+
+        private string DrawStatWithGainBox(Rect buttonBox, Rect labelBox, Rect statGainBox,
+            Texture2D icon, string valueText,
+            string tooltipTitleKey, string tooltipDescKey,
+            double gainValue, string gainTooltip, bool invertColor = false)
+        {
+            Widgets.Label(buttonBox, new GUIContent(icon));
+            Widgets.Label(labelBox, valueText);
+            string tooltip = tooltipTitleKey.Translate() + "\n-----\n" + tooltipDescKey.Translate();
+
+            Widgets.DrawHighlight(statGainBox);
+            double rounded = Math.Round(gainValue, 1);
+            TaggedString statGain = TextUtil.ColorizeAdditiveBonus(rounded, invertColor);
+
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Font = GameFont.Small;
+            Widgets.Label(statGainBox, statGain);
+            TooltipHandler.TipRegion(statGainBox, gainTooltip);
+
+            return tooltip;
         }
 
         private void DrawDescription(Rect boundingBox)
@@ -989,163 +998,234 @@ namespace FactionColonies
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Tiny;
-            float size = (boundingBox.height - ((buttons.Count - 1) * margin)) / (buttons.Count);
-            for (int i = 0; i < buttons.Count; i++)
+
+            IReadOnlyList<ISettlementWindowButton> registered = SettlementButtonRegistry.Entries;
+            int visibleRegistered = 0;
+            foreach (var t in registered)
             {
-                Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * i), boundingBox.width, size);
-                string label = buttons[i];
-                bool enabled = true;
-                if (i == 2) // Prisoners button
+                if (t.IsVisible(settlement)) visibleRegistered++;
+            }
+            // 4 main built-ins + registered + 1 delete
+            int totalCount = mainButtons.Length + visibleRegistered + 1;
+            float size = (boundingBox.height - ((totalCount - 1) * margin)) / totalCount;
+            int drawn = 0;
+
+            // Main built-in buttons (Upgrade, SpecialActions, Prisoners, Military)
+            for (int i = 0; i < mainButtons.Length; i++)
+            {
+                DrawBuiltInButton(boundingBox, mainButtons[i], size, ref drawn);
+            }
+
+            // Registered submod buttons
+            for (int i = 0; i < registered.Count; i++)
+            {
+                ISettlementWindowButton button = registered[i];
+                if (!button.IsVisible(settlement)) continue;
+
+                Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * drawn), boundingBox.width, size);
+                drawn++;
+
+                bool enabled = button.IsEnabled(settlement);
+                if (!enabled) GUI.color = Color.gray;
+
+                if (Widgets.ButtonText(buttonRect, button.Label(settlement), active: enabled))
                 {
-                    int prisonerCount = settlement.prisonerList.Count;
-                    if (prisonerCount > 0)
-                        label = label + " (" + prisonerCount + ")";
+                    button.OnClick(settlement);
                 }
-                if (label == "FCUpgradeSettlement".Translate() && settlement.isUpgrading)
-                {
-                    label = "FCSettlementUpgradeInProgress".Translate();
-                    GUI.color = Color.gray;
-                    enabled = false;
-                }
-                if (Widgets.ButtonText(buttonRect, label, active: enabled))
-                {
-                    //If click a button button
-                    if (label == "FCUpgradeSettlement".Translate())
+
+                if (!enabled) GUI.color = Color.white;
+            }
+
+            // Delete button always last
+            DrawBuiltInButton(boundingBox, SettlementButtonType.Delete, size, ref drawn);
+        }
+
+        private void DrawBuiltInButton(Rect boundingBox, SettlementButtonType type, float size, ref int drawn)
+        {
+            Rect buttonRect = new Rect(boundingBox.x, boundingBox.y + ((size + margin) * drawn), boundingBox.width, size);
+            drawn++;
+
+            string label = GetButtonLabel(type);
+            bool enabled = true;
+
+            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            {
+                GUI.color = Color.gray;
+                enabled = false;
+            }
+
+            if (Widgets.ButtonText(buttonRect, label, active: enabled))
+            {
+                HandleBuiltInButtonClick(type);
+            }
+
+            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            {
+                GUI.color = Color.white;
+            }
+        }
+
+        private string GetButtonLabel(SettlementButtonType type)
+        {
+            switch (type)
+            {
+                case SettlementButtonType.Upgrade:
+                    return settlement.isUpgrading
+                        ? (string)"FCSettlementUpgradeInProgress".Translate()
+                        : (string)"FCUpgradeSettlement".Translate();
+                case SettlementButtonType.SpecialActions:
+                    return "FCSpecialActions".Translate();
+                case SettlementButtonType.Prisoners:
+                    string label = "FCPrisonersMenu".Translate();
+                    int count = settlement.prisonerList.Count;
+                    return count > 0 ? label + " (" + count + ")" : label;
+                case SettlementButtonType.Military:
+                    return "FCMilitary".Translate();
+                case SettlementButtonType.Delete:
+                    return "FCDeleteSettlement".Translate();
+                default:
+                    return "";
+            }
+        }
+
+        private void HandleBuiltInButtonClick(SettlementButtonType type)
+        {
+            switch (type)
+            {
+                case SettlementButtonType.Upgrade:
+                    if (!settlement.isUpgrading)
                     {
-                        //if click upgrade settlement button
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
+                    break;
+                case SettlementButtonType.Delete:
+                    Find.WindowStack.Add(new Dialog_Confirm("FCDeleteSettlementConfirm".Translate(settlement.Name), RemoveSettlement));
+                    break;
+                case SettlementButtonType.SpecialActions:
+                    HandleSpecialActionsClick();
+                    break;
+                case SettlementButtonType.Prisoners:
+                    Find.WindowStack.Add(new FCPrisonerMenu(settlement));
+                    break;
+                case SettlementButtonType.Military:
+                    HandleMilitaryClick();
+                    break;
+            }
+        }
 
-                    if (label == "FCDeleteSettlement".Translate())
-                    {
-                        Find.WindowStack.Add(new Dialog_Confirm("FCDeleteSettlementConfirm".Translate(settlement.Name), RemoveSettlement));
-                    }
+        private void HandleSpecialActionsClick()
+        {
+            List<FloatMenuOption> list = new List<FloatMenuOption>
+            {
+                new FloatMenuOption("FCGoToLocation".Translate(), delegate
+                {
+                    Find.WindowStack.TryRemove(this);
+                    settlement.GoTo();
+                })
+            };
 
-                    if (label == "FCSpecialActions".Translate())
+            factionfc.ForEachBehavior(b =>
+            {
+                var actions = b.GetSettlementActions(factionfc, settlement);
+                if (actions != null)
+                    list.AddRange(actions);
+            });
+
+            if (list.Count == 0)
+                list.Add(new FloatMenuOption("FCNoSpecialActions".Translate(), delegate { }));
+            Find.WindowStack.Add(new FloatMenu(list));
+        }
+
+        private void HandleMilitaryClick()
+        {
+            if (settlement.MilitaryComp is null) return;
+
+            List<FloatMenuOption> list = new List<FloatMenuOption>
+            {
+                new FloatMenuOption(
+                    "FCToggleAutoDefend".Translate(settlement.MilitaryComp.autoDefend.ToString()),
+                    delegate
                     {
-                        List<FloatMenuOption> list = new List<FloatMenuOption>
+                        settlement.MilitaryComp.autoDefend = !settlement.MilitaryComp.autoDefend;
+                    })
+            };
+
+            // Reset Pawns option — only if squad is assigned and not deployed
+            MercenarySquadFC mercSquad = settlement.MilitaryComp.militarySquad;
+            if (mercSquad != null && !mercSquad.isDeployed)
+            {
+                list.Add(new FloatMenuOption("fcResetSquadPawns".Translate(), delegate
+                {
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "fcResetSquadPawnsConfirm".Translate((NamedArgument)(mercSquad.outfit?.name ?? settlement.Name)),
+                        delegate
                         {
-                            //Add to all
-                            new FloatMenuOption("FCGoToLocation".Translate(), delegate
-                            {
-                                Find.WindowStack.TryRemove(this);
-                                settlement.GoTo();
-                            })
-                        };
+                            mercSquad.InitiateSquad();
+                            Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
+                        }));
+                }));
+            }
 
+            if (settlement.MilitaryComp.isUnderAttack)
+            {
+                FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
 
-                        factionfc.ForEachBehavior(b =>
-                        {
-                            var actions = b.GetSettlementActions(factionfc, settlement);
-                            if (actions != null)
-                                list.AddRange(actions);
-                        });
+                list.Add(new FloatMenuOption(
+                    "FCSettlementDefendingInformation".Translate(
+                        evt.militaryForceDefending.homeSettlement.Name,
+                        evt.militaryForceDefending.DefensivePower), null, MenuOptionPriority.High));
+                list.Add(new FloatMenuOption("FCChangeDefendingForce".Translate(), delegate
+                {
+                    List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
+                    WorldSettlementFC homeSettlement = settlement;
 
-                        if (list.Count == 0)
-                            list.Add(new FloatMenuOption("FCNoSpecialActions".Translate(), delegate { }));
-                        Find.WindowStack.Add(new FloatMenu(list));
-                    }
+                    double homePower = Math.Round(homeSettlement.settlementMilitaryLevel
+                        * homeSettlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
+                        * FCSettings.defenderAdvantage);
+                    settlementList.Add(new FloatMenuOption(
+                        "FCResetToHomeSettlement".Translate(homePower),
+                        delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, homeSettlement); },
+                        MenuOptionPriority.High));
 
-                    if (i == 2) // Prisoners button
+                    foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
                     {
-                        Find.WindowStack.Add(new FCPrisonerMenu(settlement));
-                    }
-
-                    if (label == "FCMilitary".Translate() && settlement.MilitaryComp != null)
-                    {
-                        List<FloatMenuOption> list = new List<FloatMenuOption>
+                        if (settlement.MilitaryComp.IsMilitaryValid() && settlement != homeSettlement)
                         {
-                            new FloatMenuOption(
-                                "FCToggleAutoDefend".Translate(settlement.MilitaryComp.autoDefend.ToString()),
-                                delegate
+                            double power = Math.Round(settlement.settlementMilitaryLevel
+                                * settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
+                                * FCSettings.defenderAdvantage);
+                            settlementList.Add(new FloatMenuOption(
+                                settlement.Name + " " + "FCPower".Translate() + " " +
+                                power + " - " + "FCAvailable".Translate() +
+                                ": " + (!settlement.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
                                 {
-                                    settlement.MilitaryComp.autoDefend = !settlement.MilitaryComp.autoDefend;
-                                })
-                        };
-
-                        // Reset Pawns option — only if squad is assigned and not deployed
-                        MercenarySquadFC mercSquad = settlement.MilitaryComp.militarySquad;
-                        if (mercSquad != null && !mercSquad.isDeployed)
-                        {
-                            list.Add(new FloatMenuOption("fcResetSquadPawns".Translate(), delegate
-                            {
-                                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                                    "fcResetSquadPawnsConfirm".Translate((NamedArgument)(mercSquad.outfit?.name ?? settlement.Name)),
-                                    delegate
+                                    if (settlement.MilitaryComp.IsMilitaryBusy())
                                     {
-                                        mercSquad.InitiateSquad();
-                                        Messages.Message("FCResetSquadPawns".Translate(), MessageTypeDefOf.NeutralEvent);
-                                    }));
-                            }));
-                        }
-
-                        if (settlement.MilitaryComp.isUnderAttack)
-                        {
-                            FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
-
-                            list.Add(new FloatMenuOption(
-                                "FCSettlementDefendingInformation".Translate(
-                                    evt.militaryForceDefending.homeSettlement.Name,
-                                    evt.militaryForceDefending.DefensivePower), null, MenuOptionPriority.High));
-                            list.Add(new FloatMenuOption("FCChangeDefendingForce".Translate(), delegate
-                            {
-                                List<FloatMenuOption> settlementList = new List<FloatMenuOption>();
-                                WorldSettlementFC homeSettlement = settlement;
-
-                                double homePower = Math.Round(homeSettlement.settlementMilitaryLevel
-                                    * homeSettlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
-                                    * FCSettings.defenderAdvantage);
-                                settlementList.Add(new FloatMenuOption(
-                                    "FCResetToHomeSettlement".Translate(homePower),
-                                    delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, homeSettlement); },
-                                    MenuOptionPriority.High));
-
-                                foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
-                                {
-                                    if (settlement.MilitaryComp.IsMilitaryValid() && settlement != homeSettlement)
+                                        //military is busy
+                                    }
+                                    else
                                     {
-                                        double power = Math.Round(settlement.settlementMilitaryLevel
-                                            * settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
-                                            * FCSettings.defenderAdvantage);
-                                        settlementList.Add(new FloatMenuOption(
-                                            settlement.Name + " " + "FCPower".Translate() + " " +
-                                            power + " - " + "FCAvailable".Translate() +
-                                            ": " + (!settlement.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
-                                            {
-                                                if (settlement.MilitaryComp.IsMilitaryBusy())
-                                                {
-                                                    //military is busy
-                                                }
-                                                else
-                                                {
-                                                    MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
-                                                }
-                                            }
-                                        ));
+                                        MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
                                     }
                                 }
-
-                                if (settlementList.Count == 0)
-                                {
-                                    settlementList.Add(new FloatMenuOption("FCNoValidMilitaries".Translate(), null));
-                                }
-
-                                Find.WindowStack.Add(new Searchable_FloatMenu(settlementList) { vanishIfMouseDistant = true });
-                            }));
-
-                            Find.WindowStack.Add(new FloatMenu(list));
-                        }
-                        else
-                        {
-                            list.Add(new FloatMenuOption("FCSettlementNotBeingAttacked".Translate(), null));
-                            Find.WindowStack.Add(new FloatMenu(list));
+                            ));
                         }
                     }
-                }
-                if (label == "FCSettlementUpgradeInProgress".Translate())
-                {
-                    GUI.color = Color.white;
-                }
+
+                    if (settlementList.Count == 0)
+                    {
+                        settlementList.Add(new FloatMenuOption("FCNoValidMilitaries".Translate(), null));
+                    }
+
+                    Find.WindowStack.Add(new Searchable_FloatMenu(settlementList) { vanishIfMouseDistant = true });
+                }));
+
+                Find.WindowStack.Add(new FloatMenu(list));
+            }
+            else
+            {
+                list.Add(new FloatMenuOption("FCSettlementNotBeingAttacked".Translate(), null));
+                Find.WindowStack.Add(new FloatMenu(list));
             }
         }
         private Vector2 scrollVectorBuildings = new Vector2();

@@ -198,4 +198,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_14</defName>
+		<label>Settlement Window Update</label>
+		<description>Fixes a couple issues with the settlement window, and adds the ability for submods to add their own buttons to the bottom left panel.</description>
+		<releaseDate>2026-04-16</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: after recent translation key changes, the military stat wouldn&apos;t render in the settlement window</li>
+		<li>Adds an ISettlementWindowButton interface that can dynamically add buttons to the button left panel of the settlement window</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
