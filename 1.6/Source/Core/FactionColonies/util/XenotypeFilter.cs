@@ -561,7 +561,13 @@ namespace FactionColonies.util
             /* If the race is NOT the default Human, then only accept the xenotype if it is associated with the given race */
             else
             {
-                return raceXenoAssociations.ContainsKey(inputRace) && raceXenoAssociations[inputRace].Contains(xenotype);
+                if (raceXenoAssociations.ContainsKey(inputRace))
+                {
+                    return raceXenoAssociations[inputRace].Contains(xenotype);
+                }
+                /* Race has no xenotype associations (common for HAR races that predate Biotech).
+                 * Only allow Baseliner as a safe default. */
+                return xenotype == XenotypeDefOf.Baseliner;
             }
         }
         public bool IsValidCustomXenotypeForRace(ThingDef race, string xenotype)
@@ -617,12 +623,13 @@ namespace FactionColonies.util
             {
                 return false;
             }
-            if (FactionCache.CustomXenotypesDecoder.TryGetValue(xenotypeName, out CustomXenotype xenotype))
+            if (!FactionCache.CustomXenotypesDecoder.TryGetValue(xenotypeName, out CustomXenotype xenotype))
             {
-                if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
-                {
-                    return false;
-                }
+                return false;
+            }
+            if (!CanGeneListDoRequiredWork(request.KindDef.requiredWorkTags, xenotype.genes))
+            {
+                return false;
             }
             return true;
         }

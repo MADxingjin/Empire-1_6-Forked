@@ -548,4 +548,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_2_39</defName>
+		<label>Xenotype Filter Fixes</label>
+		<description>Fixes a handful of issues with the xenotype filter and xenotype handling.</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: when there are no custom xenotypes saved at all, the custom xenotype caches aren&apos;t built, and can cause NREs</li>
+		<li>Bugfix: the check for if a xenotype is valid for a given pawn generation request was too permissive</li>
+		<li>When generating a faction leader for the Empire faction, use PawnKindDefOf.Villager as the ultimate fallback</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

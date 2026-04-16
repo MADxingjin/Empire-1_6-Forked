@@ -224,6 +224,11 @@ namespace FactionColonies.util
             {
                 LogUtil.Warning("TryGenerateNewLeader failed. Falling back to manual generation.");
                 PawnKindDef fallbackKind = faction.RandomPawnKind();
+                if (fallbackKind is null)
+                {
+                    fallbackKind = PawnKindDefOf.Villager;
+                    LogUtil.Warning("RandomPawnKind returned null. Using Villager as last-resort fallback.");
+                }
                 LogUtil.Message($"Fallback pawnkind: {fallbackKind?.defName ?? "null"}");
                 faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: fallbackKind,
                 faction: faction, context: PawnGenerationContext.NonPlayer,
