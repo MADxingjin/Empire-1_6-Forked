@@ -226,6 +226,7 @@ namespace FactionColonies
             Widgets.ButtonImage(iconRect, faction.factionIcon);
 
             float customizeBtnSize = 20f;
+            Rect codexBtn = new Rect(panel.xMax - customizeBtnSize * 2 - margin, panel.y + margin, customizeBtnSize, customizeBtnSize);
             Rect customizeBtn = new Rect(panel.xMax - customizeBtnSize, panel.y + margin, customizeBtnSize, customizeBtnSize);
             Rect labelBox = new Rect(iconRect.xMax + margin, panel.y, panel.width - iconSz - margin, 30f);
             Rect labelTextBox = new Rect(labelBox.x + margin, labelBox.y, labelBox.width - (margin * 2), labelBox.height);
@@ -244,6 +245,12 @@ namespace FactionColonies
             Widgets.Label(foundingBox, "FCFoundedOn".Translate(faction.GetFoundingDate()));
 
             Widgets.DrawLineHorizontal(labelBox.x, titleBox.yMax + margin, panel.xMax - labelBox.x - margin);
+
+            if (Widgets.ButtonImage(codexBtn, TexLoad.questionmark))
+            {
+                Find.WindowStack.Add(new CodexWindow());
+            }
+            TooltipHandler.TipRegion(codexBtn, "FCCodexTitle".Translate());
 
             if (Widgets.ButtonImage(customizeBtn, TexLoad.iconCustomize))
             {
@@ -297,28 +304,28 @@ namespace FactionColonies
                         icon = TexLoad.iconHappiness;
                         statVal = (float)faction.averageHappiness;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionHappiness".Translate() + "\n-----\n" + "FCFactionHappinessDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionHappinessTooltip(faction);
                         inverted = false;
                         break;
                     case "loyalty":
                         icon = TexLoad.iconLoyalty;
                         statVal = (float)faction.averageLoyalty;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionLoyalty".Translate() + "\n-----\n" + "FCFactionLoyaltyDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionLoyaltyTooltip(faction);
                         inverted = false;
                         break;
                     case "unrest":
                         icon = TexLoad.iconUnrest;
                         statVal = (float)faction.averageUnrest;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionUnrest".Translate() + "\n-----\n" + "FCFactionUnrestDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionUnrestTooltip(faction);
                         inverted = true;
                         break;
                     default: // prosperity
                         icon = TexLoad.iconProsperity;
                         statVal = (float)faction.averageProsperity;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionProsperity".Translate() + "\n-----\n" + "FCFactionProsperityDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionProsperityTooltip(faction);
                         inverted = false;
                         break;
                 }
@@ -508,11 +515,13 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
             Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
+            TooltipHandler.TipRegion(profitBox, util.CodexTooltips.GetProfitTooltip(faction));
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(taxBox, "FCTimeTillTax".Translate() + ": " + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString());
+            TooltipHandler.TipRegion(taxBox, util.CodexTooltips.GetTaxTimerTooltip());
             y += taxBox.height + margin;
 
             // Seperator

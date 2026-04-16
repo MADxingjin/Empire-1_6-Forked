@@ -198,4 +198,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_14</defName>
+		<label>Empire Codex</label>
+		<description>Adds a Codex system to implement an in-game source of information on the mod&apos;s systems, similar to the Civilopedia from the Civilization games. Mostly only adds the scaffolding for filling out with XML entries.</description>
+		<releaseDate>2026-04-16</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds scaffolding for an Empire Codex system</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

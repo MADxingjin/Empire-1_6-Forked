@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Codex Window Chrome -->
+	<FCCodexTitle>Empire Codex</FCCodexTitle>
+	<FCCodexSelectEntry>Select an entry from the left to view details.</FCCodexSelectEntry>
+	<FCCodexLiveData>Current Game Values</FCCodexLiveData>
+	<FCCodexSeeAlso>See Also:</FCCodexSeeAlso>
+	<FCCodexEnabled>Enabled</FCCodexEnabled>
+	<FCCodexDisabled>Disabled</FCCodexDisabled>
+
+	<!-- Threat Level Provider -->
+	<FCCodexETLNoSettlements>No settlements — ETL defaults to 1.0×.</FCCodexETLNoSettlements>
+	<FCCodexETLCurrent>Current Empire Threat Level: {0}×</FCCodexETLCurrent>
+	<FCCodexETLBreakdown>Component Breakdown:</FCCodexETLBreakdown>
+	<FCCodexETLAvgLevel>Avg Settlement Level: {0} → contribution: {1}</FCCodexETLAvgLevel>
+	<FCCodexETLMaxLevel>Max Settlement Level: {0} → contribution: {1}</FCCodexETLMaxLevel>
+	<FCCodexETLIncome>Faction Income: {0} silver</FCCodexETLIncome>
+	<FCCodexETLCount>Settlement Count: {0}</FCCodexETLCount>
+	<FCCodexETLHandicapCap>Current Handicap Cap: {0}×</FCCodexETLHandicapCap>
+	<FCCodexETLMaxSetting>Max Threat Multiplier (setting): {0}×</FCCodexETLMaxSetting>
+
+	<!-- Battle Simulation Provider -->
+	<FCCodexBattleParams>Current Battle Parameters</FCCodexBattleParams>
+	<FCCodexBattleDefAdv>Defender Advantage: {0}× ({1}% force bonus)</FCCodexBattleDefAdv>
+	<FCCodexBattleDamping>Efficiency Damping: {0}</FCCodexBattleDamping>
+	<FCCodexBattleDampExample>Example: raw efficiency {0}× → dampened to {1}×</FCCodexBattleDampExample>
+
+	<!-- Resource Production Provider -->
+	<FCCodexResNoSettlements>No settlements to show production data.</FCCodexResNoSettlements>
+	<FCCodexResNoWorkers>No workers assigned to any resource yet.</FCCodexResNoWorkers>
+	<FCCodexResExample>Example: {0} — {1}</FCCodexResExample>
+	<FCCodexResStage1>Stage 1 (Additives): {0} base</FCCodexResStage1>
+	<FCCodexResStage2>Stage 2 (Multipliers): ×{0} (includes prosperity {1}%)</FCCodexResStage2>
+	<FCCodexResStage3>Stage 3 (Workers): {0} workers → {1} total production</FCCodexResStage3>
+	<FCCodexResSilver>Silver conversion: {0} silver/unit → {1} silver value</FCCodexResSilver>
+
+	<!-- Prosperity Provider -->
+	<FCCodexProsNoSettlements>No settlements to show prosperity data.</FCCodexProsNoSettlements>
+	<FCCodexProsHeader>Per-Settlement Prosperity Breakdown</FCCodexProsHeader>
+	<FCCodexProsCurrent>Prosperity: {0}</FCCodexProsCurrent>
+	<FCCodexProsTarget>Target: {0}  ← ({1} + {2} + {3}) / 3</FCCodexProsTarget>
+	<FCCodexProsDrift>Daily drift: {0}</FCCodexProsDrift>
+	<FCCodexProsProdMult>Production multiplier: ×{0}</FCCodexProsProdMult>
+
+	<!-- Worker Overwork Provider -->
+	<FCCodexWorkerParams>Current Worker Parameters</FCCodexWorkerParams>
+	<FCCodexWorkerBaseCost>Base worker cost: {0} silver</FCCodexWorkerBaseCost>
+	<FCCodexWorkerFormula>Formula: cost × (1 + overwork/20) — each worker over the soft cap adds 5% to ALL workers</FCCodexWorkerFormula>
+	<FCCodexWorkerExample>Example: {0} workers over cap → +{1}% cost → {2} silver per worker</FCCodexWorkerExample>
+
+	<!-- Military Cooldown Provider -->
+	<FCCodexCooldownParams>Current Cooldown Parameters</FCCodexCooldownParams>
+	<FCCodexCooldownBase>Base cooldown: {0} days</FCCodexCooldownBase>
+	<FCCodexCooldownDeadPawn>Dead pawn penalty: {0}</FCCodexCooldownDeadPawn>
+	<FCCodexCooldownDeadPawnCalc>Each death adds ~{0} hours to cooldown</FCCodexCooldownDeadPawnCalc>
+	<FCCodexCooldownExample>Example: {0} deaths → +{1} hours → total ~{2} days</FCCodexCooldownExample>
+
+	<!-- Attack Frequency Provider -->
+	<FCCodexFreqParams>Current Attack Frequency Parameters</FCCodexFreqParams>
+	<FCCodexFreqRange>Base interval range: {0}–{1} days</FCCodexFreqRange>
+	<FCCodexFreqCount>Your settlement count: {0}</FCCodexFreqCount>
+	<FCCodexFreqCurve>Frequency curve (settlements → multiplier):</FCCodexFreqCurve>
+	<FCCodexFreqPoint>{0} settlements → {1}×</FCCodexFreqPoint>
+
+	<!-- Difficulty Settings Provider -->
+	<FCCodexDiffCurrent>Current difficulty: {0}</FCCodexDiffCurrent>
+	<FCCodexDiffHeader>Difficulty → Silver/Res | Tax Days | Tithe Mod | Worker Cost</FCCodexDiffHeader>
+	<FCCodexDiffRow>{0}: {1} | {2}d | {3} | {4}</FCCodexDiffRow>
+	<FCCodexDiffCustom>Your custom values: Silver/Res={0}, Tax Days={1}, Tithe Mod={2}, Worker Cost={3}</FCCodexDiffCustom>
+
+	<!-- Enhanced Tooltips -->
+	<FCCodexTipProsFormula>Production multiplier = prosperity / 100. At 50%, you produce half as much.</FCCodexTipProsFormula>
+	<FCCodexTipProsRange>Range across settlements: {0}% – {1}%</FCCodexTipProsRange>
+	<FCCodexTipSocialDrift>{0} drifts daily toward equilibrium. Policies, buildings, and events shift the drift rate. This stat feeds into the prosperity target.</FCCodexTipSocialDrift>
+	<FCCodexTipUnrestDrift>Unrest naturally decreases by 1/day. Policies, buildings, and events can increase or decrease this rate. Lower unrest raises the prosperity target.</FCCodexTipUnrestDrift>
+	<FCCodexTipProfitBreakdown>Income: {0} silver\nUpkeep: {1} silver\nProfit: {2} silver\n\nIncome is the total silver value of all settlement production. Upkeep includes worker costs, building maintenance, and military expenses.</FCCodexTipProfitBreakdown>
+	<FCCodexTipTaxTimer>Tax collection every {0} days (configurable in settings).\n</FCCodexTipTaxTimer>
+	<FCCodexTipTaxAveraging>Tax income uses the AVERAGE of daily production snapshots across the tax period — not a single snapshot at collection time. Building or losing things mid-period affects the average proportionally.</FCCodexTipTaxAveraging>
+	<FCCodexTipMilTargeting>Raid targeting weight: {0} (lower military = more likely targeted; scale: 1–10)</FCCodexTipMilTargeting>
+	<FCCodexTipMilETL>Current Empire Threat Level: {0}×</FCCodexTipMilETL>
+
+</LanguageData>

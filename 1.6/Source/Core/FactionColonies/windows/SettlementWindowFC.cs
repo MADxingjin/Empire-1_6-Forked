@@ -205,10 +205,17 @@ namespace FactionColonies
             /* Settlement name on top */
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleLeft;
-            Rect nameRect = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2 + 20), 30);
+            Rect nameRect = new Rect(boundingBox.x + margin, boundingBox.y + margin, boundingBox.width - (margin * 2 + 44), 30);
             Widgets.Label(nameRect, settlement.Name);
+            //Draw codex button
+            Rect codexBtnRect = new Rect(nameRect.xMax + margin, boundingBox.y + margin, 20, 20);
+            if (Widgets.ButtonImage(codexBtnRect, TexLoad.questionmark))
+            {
+                Find.WindowStack.Add(new CodexWindow());
+            }
+            TooltipHandler.TipRegion(codexBtnRect, "FCCodexTitle".Translate());
             //Draw name settings button
-            Rect configRect = new Rect(nameRect.xMax + margin, boundingBox.y + margin, 20, 20);
+            Rect configRect = new Rect(codexBtnRect.xMax + margin, boundingBox.y + margin, 20, 20);
             if (Widgets.ButtonImage(configRect, TexLoad.iconCustomize))
             {
                 //if click faction customize button
@@ -897,6 +904,7 @@ namespace FactionColonies
                         tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
                     if (Math.Abs(defAdv - 1.0) > 0.001)
                         tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
+                    tooltip += util.CodexTooltips.GetMilitaryTargetingInfo(settlement);
                 }
 
                 if (stats[i] == "happiness")
