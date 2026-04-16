@@ -194,9 +194,13 @@ namespace FactionColonies
             {
                 return;
             }
+            bool tileChanged = currentTileSelected != oldTileSelected;
             oldTileSelected = currentTileSelected;
             oldSettlementType = currentSettlementType;
             LogUtil.Message($"Called GetTileData on tile {selectedTile}. Valid: {selectedTile.Valid} layer: {selectedTile.Layer} tileid: {selectedTile.tileId}");
+
+            if (tileChanged)
+                FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected);
 
             if (currentSettlementType.biomeResourceOverride != null)
             {
@@ -267,10 +271,10 @@ namespace FactionColonies
                 {
                     ResourceTypeDef titheType = resTypes[i].resourceDef;
                     int baseHeight = 15;
-                    string label = resTypes[i].label;
-                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, label.CapitalizeFirst()))
+                    string resLabel = resTypes[i].label;
+                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, resLabel.CapitalizeFirst()))
                     {
-                        Find.WindowStack.Add(new DescWindowFc("FCSettlementProductionOf".Translate() + ": " + label, label.CapitalizeFirst()));
+                        Find.WindowStack.Add(new DescWindowFc("FCSettlementProductionOf".Translate() + ": " + resLabel, resLabel.CapitalizeFirst()));
                     }
                     /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
                      * it should accurately represent the resources that the settlement would produce */
@@ -295,19 +299,51 @@ namespace FactionColonies
                     }
                     else
                     {
-                        double baseProduction = biomeRes.additive + settleRes.additive
-                            + titheType.GetExtensionAdditives(currentTileSelected)
+                        double extensionAdd = titheType.GetExtensionAdditives(currentTileSelected);
+                        double extensionMult = titheType.GetExtensionMultipliers(currentTileSelected);
+
+                        double baseProduction = biomeRes.additive + settleRes.additive + extensionAdd
                             + titheType.GetMutatorAdditives(currentTileSelected)
                             + titheType.GetLandmarkAdditives(currentTileSelected);
-                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier
-                            * titheType.GetExtensionMultipliers(currentTileSelected)
+                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier * extensionMult
                             * titheType.GetMutatorMultipliers(currentTileSelected)
                             * titheType.GetLandmarkMultipliers(currentTileSelected);
                         double total = baseProduction * baseMultiplier;
 
+                        Rect multRect = baseRect.CopyAndShift(xMod, 0f);
                         Widgets.Label(baseRect, Math.Round(baseProduction, 2).ToString());
-                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), Math.Round(baseMultiplier, 2).ToString());
+                        Widgets.Label(multRect, Math.Round(baseMultiplier, 2).ToString());
                         Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), Math.Round(total, 2).ToString());
+
+                        // Breakdown tooltips mirroring SettlementWindowFC.cs.
+                        StringBuilder addSb = new StringBuilder();
+                        if (biomeRes.additive != 0)
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(biomeRes.additive)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
+                        if (settleRes.additive != 0)
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(settleRes.additive)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
+                        if (extensionAdd != 0)
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(extensionAdd)).Append(" - ").Append("FCResourceExtension".Translate()).Append('\n');
+                        titheType.ForEachMutatorAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachLandmarkAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
+
+                        StringBuilder multSb = new StringBuilder();
+                        if (biomeRes.multiplier != 1)
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(biomeRes.multiplier)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
+                        if (settleRes.multiplier != 1)
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(settleRes.multiplier)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
+                        if (extensionMult != 1)
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(extensionMult)).Append(" - ").Append("FCResourceExtension".Translate()).Append('\n');
+                        titheType.ForEachMutatorMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachLandmarkMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
+
+                        if (addSb.Length > 0)
+                            TooltipHandler.TipRegion(baseRect, addSb.ToString().TrimEnd());
+                        if (multSb.Length > 0)
+                            TooltipHandler.TipRegion(multRect, multSb.ToString().TrimEnd());
                     }
                 }
                 /* Highlight the total value */
@@ -462,6 +498,7 @@ namespace FactionColonies
                 comp.roadBuilder.shouldDrawPaths = false;
             }
             Find.TilePicker.StopTargeting();
+            FCWindow_CreateColonyStatModifiers.TryClose();
         }
 
         /// <summary>

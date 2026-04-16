@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -348,6 +349,99 @@ namespace FactionColonies
                 if (entry.resource == this) mult *= entry.multiplier;
             }
             return mult;
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> once per non-zero additive bonus contributed by any
+        /// TileMutatorResourceExtension on the tile, filtered to this resource. Label falls back to
+        /// the mutator's LabelCap if the entry doesn't supply one.
+        /// </summary>
+        public void ForEachMutatorAdditive(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || tile == PlanetTile.Invalid) return;
+            IList<TileMutatorDef> mutators = tile.Tile?.Mutators;
+            if (mutators.NullOrEmpty()) return;
+
+            foreach (TileMutatorDef mut in mutators)
+            {
+                TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
+                if (ext?.bonuses is null) continue;
+                foreach (TileResourceBonus entry in ext.bonuses)
+                {
+                    if (entry.resource != this) continue;
+                    if (entry.additive == 0) continue;
+                    string mlabel = entry.label.NullOrEmpty() ? mut.LabelCap.ToString() : entry.label;
+                    onEntry(mlabel, entry.additive);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> once per non-1 multiplier bonus contributed by any
+        /// TileMutatorResourceExtension on the tile, filtered to this resource.
+        /// </summary>
+        public void ForEachMutatorMultiplier(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || tile == PlanetTile.Invalid) return;
+            IList<TileMutatorDef> mutators = tile.Tile?.Mutators;
+            if (mutators.NullOrEmpty()) return;
+
+            foreach (TileMutatorDef mut in mutators)
+            {
+                TileMutatorResourceExtension ext = mut?.GetModExtension<TileMutatorResourceExtension>();
+                if (ext?.bonuses is null) continue;
+                foreach (TileResourceBonus entry in ext.bonuses)
+                {
+                    if (entry.resource != this) continue;
+                    if (entry.multiplier == 1) continue;
+                    string mlabel = entry.label.NullOrEmpty() ? mut.LabelCap.ToString() : entry.label;
+                    onEntry(mlabel, entry.multiplier);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> once per non-zero additive bonus contributed by the
+        /// tile's landmark's TileLandmarkResourceExtension, filtered to this resource.
+        /// </summary>
+        public void ForEachLandmarkAdditive(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || tile == PlanetTile.Invalid) return;
+            Landmark landmark = tile.Tile?.Landmark;
+            if (landmark?.def is null) return;
+
+            TileLandmarkResourceExtension ext = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+            if (ext?.bonuses is null) return;
+
+            foreach (TileResourceBonus entry in ext.bonuses)
+            {
+                if (entry.resource != this) continue;
+                if (entry.additive == 0) continue;
+                string llabel = entry.label.NullOrEmpty() ? landmark.def.LabelCap.ToString() : entry.label;
+                onEntry(llabel, entry.additive);
+            }
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> once per non-1 multiplier bonus contributed by the
+        /// tile's landmark's TileLandmarkResourceExtension, filtered to this resource.
+        /// </summary>
+        public void ForEachLandmarkMultiplier(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || tile == PlanetTile.Invalid) return;
+            Landmark landmark = tile.Tile?.Landmark;
+            if (landmark?.def is null) return;
+
+            TileLandmarkResourceExtension ext = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+            if (ext?.bonuses is null) return;
+
+            foreach (TileResourceBonus entry in ext.bonuses)
+            {
+                if (entry.resource != this) continue;
+                if (entry.multiplier == 1) continue;
+                string llabel = entry.label.NullOrEmpty() ? landmark.def.LabelCap.ToString() : entry.label;
+                onEntry(llabel, entry.multiplier);
+            }
         }
 
         public bool ResourceAllowedForBiome(BiomeResourceDef bdef)

@@ -12,6 +12,8 @@
 	<FCBase>Base</FCBase>
 	<FCModifier>Modifier</FCModifier>
 	<FCFinal>Final</FCFinal>
+	<FCResourceExtension>Resource extension</FCResourceExtension>
+	<FCCreateColonyTileModifiersTitle>Tile Modifiers</FCCreateColonyTileModifiersTitle>
 	<FCEffect>Effect</FCEffect>
 	<FCInfo>Info</FCInfo>
 	<FCTotal>Total</FCTotal>
