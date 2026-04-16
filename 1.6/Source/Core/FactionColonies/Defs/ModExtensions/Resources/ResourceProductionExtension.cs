@@ -21,9 +21,9 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Emits one or more labelled contributions to the production breakdown. The default
+        /// Emits one or more labeled contributions to the production breakdown. The default
         /// implementation funnels the aggregate GetAdditiveBonus / GetMultiplierBonus values
-        /// into a single row each, preserving legacy single-row extension behaviour. Subclasses
+        /// into a single row each, preserving legacy single-row extension behavior. Subclasses
         /// that compute their bonus from multiple sources (e.g. per-curve tile fields) should
         /// override this to emit a row per source so the breakdown UI can show per-factor detail.
         /// Callback parameters: (idSuffix, value, label).

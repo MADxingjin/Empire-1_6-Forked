@@ -22,7 +22,7 @@ namespace FactionColonies
 
         public override Vector2 InitialSize => new Vector2(WindowWidth, 320f);
 
-        public FCWindow_CreateColonyStatModifiers()
+        public FCWindow_CreateColonyStatModifiers(List<StatGroup> groups)
         {
             draggable = true;
             doCloseX = true;
@@ -30,6 +30,7 @@ namespace FactionColonies
             forcePause = false;
             closeOnAccept = false;
             closeOnCancel = false;
+            cachedGroups = groups;
         }
 
         protected override void SetInitialSizeAndPosition()
@@ -40,6 +41,24 @@ namespace FactionColonies
             {
                 windowRect.x = createWindow.windowRect.x - WindowWidth - 10f;
                 windowRect.y = createWindow.windowRect.y;
+                lastTile = createWindow.currentTileSelected;
+            }
+            if (cachedGroups != null && cachedGroups.Count > 0)
+            {
+                GameFont fontBefore = Text.Font;
+                Text.Font = GameFont.Small;
+                float usableWidth = WindowWidth - StandardMargin * 2;
+                float h = 30f + Padding;
+                foreach (StatGroup group in cachedGroups)
+                {
+                    h += Text.LineHeight + 12f;
+                    h += 2f;
+                    TaggedString desc = FCStatModifier.GetDescription(group.mods);
+                    h += Text.CalcHeight(desc, usableWidth);
+                    h += Padding;
+                }
+                windowRect.height = h + StandardMargin * 2;
+                Text.Font = fontBefore;
             }
         }
 
@@ -103,7 +122,7 @@ namespace FactionColonies
             if (groups.Count > 0)
             {
                 if (existing is null)
-                    Find.WindowStack.Add(new FCWindow_CreateColonyStatModifiers());
+                    Find.WindowStack.Add(new FCWindow_CreateColonyStatModifiers(groups));
             }
             else if (existing is object)
             {
@@ -175,7 +194,7 @@ namespace FactionColonies
             return result;
         }
 
-        private class StatGroup
+        public class StatGroup
         {
             public string sourceLabel;
             public List<FCStatModifier> mods;

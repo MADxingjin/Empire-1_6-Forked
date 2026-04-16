@@ -444,6 +444,36 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> for each non-zero additive bonus contributed by
+        /// ResourceProductionExtensions on this def, using per-source labels from ContributeToBreakdown.
+        /// </summary>
+        public void ForEachExtensionAdditive(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || modExtensions is null || modExtensions.Count <= 0) return;
+            foreach (ResourceProductionExtension ext in modExtensions.OfType<ResourceProductionExtension>())
+            {
+                ext.ContributeToBreakdown(tile, null,
+                    (suffix, value, alabel) => { if (value != 0) onEntry(alabel, value); },
+                    (suffix, value, alabel) => { });
+            }
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="onEntry"/> for each non-1 multiplier bonus contributed by
+        /// ResourceProductionExtensions on this def, using per-source labels from ContributeToBreakdown.
+        /// </summary>
+        public void ForEachExtensionMultiplier(PlanetTile tile, Action<string, double> onEntry)
+        {
+            if (onEntry is null || modExtensions is null || modExtensions.Count <= 0) return;
+            foreach (ResourceProductionExtension ext in modExtensions.OfType<ResourceProductionExtension>())
+            {
+                ext.ContributeToBreakdown(tile, null,
+                    (suffix, value, mlabel) => { },
+                    (suffix, value, mlabel) => { if (value != 1) onEntry(mlabel, value); });
+            }
+        }
+
         public bool ResourceAllowedForBiome(BiomeResourceDef bdef)
         {
             if (biomeAllowList.Count > 0)

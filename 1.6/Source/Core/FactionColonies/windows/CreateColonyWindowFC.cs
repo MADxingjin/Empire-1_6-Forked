@@ -194,13 +194,9 @@ namespace FactionColonies
             {
                 return;
             }
-            bool tileChanged = currentTileSelected != oldTileSelected;
             oldTileSelected = currentTileSelected;
             oldSettlementType = currentSettlementType;
             LogUtil.Message($"Called GetTileData on tile {selectedTile}. Valid: {selectedTile.Valid} layer: {selectedTile.Layer} tileid: {selectedTile.tileId}");
-
-            if (tileChanged)
-                FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected, currentBiomeSelected);
 
             if (currentSettlementType.biomeResourceOverride != null)
             {
@@ -222,6 +218,8 @@ namespace FactionColonies
                     currentBiomeSelected = BiomeResourceDefOf.defaultBiome;
                 }
             }
+
+            FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected, currentBiomeSelected);
 
             if (IsTileValidForSettlement())
             {
@@ -299,13 +297,12 @@ namespace FactionColonies
                     }
                     else
                     {
-                        double extensionAdd = titheType.GetExtensionAdditives(currentTileSelected);
-                        double extensionMult = titheType.GetExtensionMultipliers(currentTileSelected);
-
-                        double baseProduction = biomeRes.additive + settleRes.additive + extensionAdd
+                        double baseProduction = biomeRes.additive + settleRes.additive
+                            + titheType.GetExtensionAdditives(currentTileSelected)
                             + titheType.GetMutatorAdditives(currentTileSelected)
                             + titheType.GetLandmarkAdditives(currentTileSelected);
-                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier * extensionMult
+                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier
+                            * titheType.GetExtensionMultipliers(currentTileSelected)
                             * titheType.GetMutatorMultipliers(currentTileSelected)
                             * titheType.GetLandmarkMultipliers(currentTileSelected);
                         double total = baseProduction * baseMultiplier;
@@ -321,8 +318,8 @@ namespace FactionColonies
                             addSb.Append(TextUtil.ColorizeAdditiveBonus(biomeRes.additive)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
                         if (settleRes.additive != 0)
                             addSb.Append(TextUtil.ColorizeAdditiveBonus(settleRes.additive)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
-                        if (extensionAdd != 0)
-                            addSb.Append(TextUtil.ColorizeAdditiveBonus(extensionAdd)).Append(" - ").Append("FCResourceExtension".Translate()).Append('\n');
+                        titheType.ForEachExtensionAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
                         titheType.ForEachMutatorAdditive(currentTileSelected, (label, value) =>
                             addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
                         titheType.ForEachLandmarkAdditive(currentTileSelected, (label, value) =>
@@ -333,8 +330,8 @@ namespace FactionColonies
                             multSb.Append(TextUtil.ColorizeMultiplierBonus(biomeRes.multiplier)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
                         if (settleRes.multiplier != 1)
                             multSb.Append(TextUtil.ColorizeMultiplierBonus(settleRes.multiplier)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
-                        if (extensionMult != 1)
-                            multSb.Append(TextUtil.ColorizeMultiplierBonus(extensionMult)).Append(" - ").Append("FCResourceExtension".Translate()).Append('\n');
+                        titheType.ForEachExtensionMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
                         titheType.ForEachMutatorMultiplier(currentTileSelected, (label, value) =>
                             multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
                         titheType.ForEachLandmarkMultiplier(currentTileSelected, (label, value) =>
