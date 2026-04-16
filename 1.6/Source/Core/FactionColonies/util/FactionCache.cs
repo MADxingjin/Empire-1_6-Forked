@@ -180,14 +180,20 @@ namespace FactionColonies
             {
                 if (_cachedCustomXenotypeDecoder is null)
                 {
-                    if (!(CustomXenotypes is null || CustomXenotypes.Count == 0))
+                    Dictionary<string, CustomXenotype> decoder = new Dictionary<string, CustomXenotype>();
+                    List<CustomXenotype> xenos = CustomXenotypes;
+                    if (xenos != null)
                     {
-                        _cachedCustomXenotypeDecoder = new Dictionary<string, CustomXenotype>();
-                        foreach (CustomXenotype xenotype in CustomXenotypes)
+                        foreach (CustomXenotype xenotype in xenos)
                         {
-                            _cachedCustomXenotypeDecoder.Add(xenotype.name, xenotype);
+                            decoder[xenotype.name] = xenotype;
                         }
                     }
+                    // Only cache when Scribe is inactive (matches CustomXenotypes behavior).
+                    // During loading, disk xenotypes are unavailable so the decoder is incomplete.
+                    if (Scribe.mode == LoadSaveMode.Inactive)
+                        _cachedCustomXenotypeDecoder = decoder;
+                    return decoder;
                 }
                 return _cachedCustomXenotypeDecoder;
             }
