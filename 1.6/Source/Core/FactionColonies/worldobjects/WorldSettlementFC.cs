@@ -417,6 +417,32 @@ namespace FactionColonies
             // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
             AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
 
+            /* Bake tile mutator and landmark stat modifiers as permanent modifiers. */
+            Tile worldTile = tile.Tile;
+            if (worldTile != null)
+            {
+                IList<TileMutatorDef> mutators = worldTile.Mutators;
+                if (mutators != null)
+                {
+                    foreach (TileMutatorDef mut in mutators)
+                    {
+                        TileMutatorResourceExtension mutExt = mut?.GetModExtension<TileMutatorResourceExtension>();
+                        if (mutExt?.statModifiers == null || mutExt.statModifiers.Count == 0) continue;
+                        AddPermanentModifiers(mutExt.statModifiers, "tile_mutator_" + mut.defName, mut.LabelCap);
+                    }
+                }
+
+                Landmark landmark = worldTile.Landmark;
+                if (landmark?.def != null)
+                {
+                    TileLandmarkResourceExtension lmExt = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+                    if (lmExt?.statModifiers != null && lmExt.statModifiers.Count > 0)
+                    {
+                        AddPermanentModifiers(lmExt.statModifiers, "tile_landmark_" + landmark.def.defName, landmark.def.LabelCap);
+                    }
+                }
+            }
+
             foundingTick = Find.TickManager.TicksGame;
         }
         public string GetFoundingDate(bool full = true)
