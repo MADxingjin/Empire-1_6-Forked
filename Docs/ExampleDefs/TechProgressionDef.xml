@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- TechProgressionDef defines research gates that control faction tech level advancement. -->
+  <!-- Each barrier specifies a tech level and the research projects required to reach it. -->
+  <!-- The faction cannot advance past a barrier until its requirements are satisfied. -->
+  <!-- Only one TechProgressionDef is loaded at a time; submods can XML-patch the default -->
+  <!-- to add or modify barriers (e.g., gating Archotech behind a mod-specific research). -->
+  <FactionColonies.TechProgressionDef>
+    <defName>DefaultTechProgression</defName>
+    <barriers>
+      <!-- Each barrier is a TechLevelBarrier with three fields: -->
+      <!--   techLevel: The tech level this barrier gates. -->
+      <!--   researchProjects: The research projects that must be completed. -->
+      <!--   mode: TechBarrierMode — "All" or "Any". -->
+      <!--     All = every listed project must be finished. Empty list = satisfied (nothing required). -->
+      <!--     Any = at least one listed project must be finished. Empty list = unsatisfied (unreachable). -->
+
+      <li>
+        <techLevel>Neolithic</techLevel>
+        <!-- No projects required; Neolithic is the starting floor. -->
+        <!-- mode="All" with an empty list is satisfied — nothing is required. -->
+        <researchProjects />
+        <mode>All</mode>
+      </li>
+
+      <li>
+        <techLevel>Medieval</techLevel>
+        <!-- All listed projects must be finished to advance to Medieval. -->
+        <researchProjects>
+          <li>Smithing</li>
+        </researchProjects>
+        <mode>All</mode>
+      </li>
+
+      <li>
+        <techLevel>Industrial</techLevel>
+        <researchProjects>
+          <li>Electricity</li>
+        </researchProjects>
+        <mode>All</mode>
+      </li>
+
+      <li>
+        <techLevel>Spacer</techLevel>
+        <researchProjects>
+          <li>Fabrication</li>
+        </researchProjects>
+        <mode>All</mode>
+      </li>
+
+      <li>
+        <techLevel>Ultra</techLevel>
+        <researchProjects>
+          <li>ShipBasics</li>
+        </researchProjects>
+        <mode>All</mode>
+      </li>
+
+      <li>
+        <techLevel>Archotech</techLevel>
+        <!-- mode="Any" with an empty list is UNSATISFIED: no project can satisfy it, -->
+        <!-- making Archotech unreachable by default. Mods can PatchOperationAdd projects -->
+        <!-- here to gate Archotech behind mod-specific research. -->
+        <researchProjects />
+        <mode>Any</mode>
+      </li>
+    </barriers>
+  </FactionColonies.TechProgressionDef>
+
+</Defs>

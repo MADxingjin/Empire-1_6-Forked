@@ -9,10 +9,10 @@ Empire exposes a layered extensibility system designed for submods to add conten
 | Guide | What it covers                                                                                  |
 |-------|-------------------------------------------------------------------------------------------------|
 | [Getting Started](getting-started.md) | Empire-specific conventions, access points, registration patterns                               |
-| [XML Def Types](xml-defs.md) | All 11 custom def types — fields, defaults, cross-references                                    |
+| [XML Def Types](xml-defs.md) | All 12 custom def types — fields, defaults, cross-references                                    |
 | [Stat & Production System](stat-system.md) | FCStatDef, aggregation pipeline, resource production formula                                    |
 | [Interfaces & Registries](interfaces-and-registries.md) | 20 C# interfaces, 14 static registries — method signatures, invocation timing                   |
-| [DefModExtensions](def-mod-extensions.md) | 7 DefModExtension classes + 1 extension interface for events, buildings, resources, settlements |
+| [DefModExtensions](def-mod-extensions.md) | 10 DefModExtension classes + 1 extension interface for events, buildings, resources, settlements, policies, tile features |
 | [Abstract Base Classes](abstract-base-classes.md) | FCPolicyBehavior, SettlementBuildingComp, MilitaryJobHandler                                    |
 | [Settlement Comps](worldobject-comps.md) | WorldObjectComp pattern for per-settlement extensibility in Empire                              |
 | [Event System](event-system.md) | Event lifecycle, chains, options, handler extensions                                            |
@@ -53,3 +53,5 @@ Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
 | Contribute upkeep or income to a settlement | [Settlement Comps](worldobject-comps.md) (IProfitContributor) |
 | Run initialization after settlement loads | [Settlement Comps](worldobject-comps.md) (ISettlementPostLoadInit) |
 | Add custom sections to the building detail panel | [DefModExtensions](def-mod-extensions.md#ibuildingdetailsection) |
+| Add resource bonuses to tile mutators or landmarks | [DefModExtensions — TileMutatorResourceExtension](def-mod-extensions.md#tilemutatorresourceextension) |
+| Define tech level progression gates | [XML Def Types — TechProgressionDef](xml-defs.md#techprogressiondef) |

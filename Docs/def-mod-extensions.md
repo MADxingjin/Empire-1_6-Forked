@@ -1,6 +1,6 @@
 # DefModExtension Classes
 
-Empire provides 7 DefModExtension classes and 1 extension interface that attach custom behavior to specific def types. Add them via the standard `modExtensions` list on any def.
+Empire provides 10 DefModExtension classes and 1 extension interface that attach custom behavior to specific def types. Add them via the standard `modExtensions` list on any def.
 
 ```xml
 <modExtensions>
@@ -24,6 +24,16 @@ Empire provides 7 DefModExtension classes and 1 extension interface that attach 
 | `ResolveEvent` | `bool ResolveEvent(FCEvent evt, FactionFC faction)` | When the event triggers. Return `true` to skip built-in resolution logic (loot, stat cleanup, etc. still run). Return `false` for normal processing. |
 | `OnEventTriggered` | `void OnEventTriggered(FCEvent evt)` | After all standard processing (loot, stat cleanup, cascading events). Always called regardless of `ResolveEvent`'s return value. |
 | `ShouldCancelOnSettlementRemoval` | `bool ShouldCancelOnSettlementRemoval(FCEvent evt, WorldSettlementFC settlement)` | When a settlement is removed. Return `true` to cancel this event. Default: `false`. |
+
+### Option Display Hooks
+
+These methods let you dynamically modify how event options appear in the option window.
+
+| Virtual Method | Signature | Default Return | When Called |
+|----------------|-----------|----------------|------------|
+| `GetDynamicOptionLabel` | `string GetDynamicOptionLabel(FCOptionDef option, FCEvent parentEvent)` | `null` | In the event option window. Return a string to replace the option's XML label, or `null` to use the default. |
+| `GetDynamicOptionSuccessChance` | `float GetDynamicOptionSuccessChance(FCOptionDef option, FCEvent parentEvent)` | `-1f` | In the event option window. Return 0-100 to override `baseChanceOfSuccess`, or negative to use the default. |
+| `IsOptionAvailable` | `bool IsOptionAvailable(FCOptionDef option, FCEvent parentEvent, out string unavailableReason)` | `true` | After policy requirements are checked. Return `false` with a reason string to grey out the option. |
 
 See [Event System](event-system.md) for the full event lifecycle.
 
@@ -85,6 +95,7 @@ The comp is instantiated when the building is constructed and receives `Tick()`,
 |----------------|-----------|-------------|-------------|
 | `GetAdditiveBonus` | `double GetAdditiveBonus(PlanetTile tile, WorldSettlementFC settlement = null)` | `0` | Additive production bonus based on tile/settlement. |
 | `GetMultiplierBonus` | `double GetMultiplierBonus(PlanetTile tile, WorldSettlementFC settlement = null)` | `1` | Multiplicative bonus based on tile/settlement. |
+| `ContributeToBreakdown` | `void ContributeToBreakdown(PlanetTile tile, WorldSettlementFC settlement, Action<string,double,string> addAdditive, Action<string,double,string> addMultiplier)` | Emits single rows from `GetAdditiveBonus`/`GetMultiplierBonus` | Emits labelled rows to the production breakdown UI. Override to provide per-source detail instead of a single aggregate row. Callback params: `(idSuffix, value, label)`. |
 
 These values feed into the resource production formula's "dictionary" sources (the static/environmental layer). See [Stat System — Resource Production Formula](stat-system.md#resource-production-formula).
 
@@ -128,6 +139,47 @@ These values feed into the resource production formula's "dictionary" sources (t
 
 ---
 
+## TileMutatorResourceExtension
+
+**Attaches to**: Vanilla `TileMutatorDef` (via XML patch)
+**Purpose**: Declare per-resource production bonuses and FCStatDef modifiers for settlements founded on tiles carrying specific mutators.
+
+**Class**: `FactionColonies.TileMutatorResourceExtension` (extends `DefModExtension`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `bonuses` | `List<TileResourceBonus>` | Per-resource `{resource, additive, multiplier, label}` entries. Consumed by `ResourceTypeDef.GetMutatorAdditives` / `GetMutatorMultipliers`. |
+| `statModifiers` | `List<FCStatModifier>` | General stat modifiers (military, happiness, tax, etc.) applied to settlements on tiles with this mutator. |
+
+**TileResourceBonus fields:**
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `resource` | `ResourceTypeDef` | — | The resource to modify. |
+| `additive` | `double` | `0` | Additive production bonus. |
+| `multiplier` | `double` | `1` | Multiplicative production bonus. |
+| `label` | `string` | `null` | Optional display label for breakdown tooltips. |
+
+Applied via `PatchOperationAdd` on vanilla TileMutatorDefs. See `1.6/Patches/TileMutators.xml` for examples.
+
+---
+
+## TileLandmarkResourceExtension
+
+**Attaches to**: Vanilla `LandmarkDef` (via XML patch, Odyssey DLC only)
+**Purpose**: Same as TileMutatorResourceExtension but for Odyssey landmarks.
+
+**Class**: `FactionColonies.TileLandmarkResourceExtension` (extends `DefModExtension`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `bonuses` | `List<TileResourceBonus>` | Per-resource `{resource, additive, multiplier, label}` entries. Consumed by `ResourceTypeDef.GetLandmarkAdditives` / `GetLandmarkMultipliers`. |
+| `statModifiers` | `List<FCStatModifier>` | General stat modifiers applied to settlements on tiles with this landmark. |
+
+Uses the same `TileResourceBonus` helper class as TileMutatorResourceExtension. See `1.6/Patches/Landmarks.xml` for examples.
+
+---
+
 ## SettlementTypeExtension
 
 **Attaches to**: `WorldSettlementDef` (**required** — every WorldSettlementDef must have one)
@@ -155,6 +207,12 @@ The base class provides sensible defaults for surface settlements. Subclass it f
 | `PreTax` | `void PreTax(WorldSettlementFC settlement)` | Called before tax collection for this settlement. |
 | `PostTax` | `void PostTax(WorldSettlementFC settlement, ref int silverAmount, List<Thing> titheThings)` | Called after tax collection. Can modify `silverAmount` (ref) and `titheThings`. |
 
+### Raid Hooks
+
+| Virtual Method | Signature | Description |
+|----------------|-----------|-------------|
+| `CanBeRaidedByFaction` | `bool CanBeRaidedByFaction(Faction attackingFaction)` | Whether the given faction is eligible to raid settlements of this type. Called after enemy faction selection to filter the target pool. Default: `true`. |
+
 ### Validation
 
 | Virtual Method | Signature | Description |
@@ -173,11 +231,27 @@ The base class provides sensible defaults for surface settlements. Subclass it f
 | `GetTaxDeliveryMode` | `TaxDeliveryMode GetTaxDeliveryMode(bool canUseShuttle, PlanetTile sourceTile)` | How taxes are delivered (caravan, drop pod, shuttle). |
 | `GetSettlementLevelDesc` | `string GetSettlementLevelDesc(int level)` | Description text for a given level. |
 | `GetBuildingSlots` | `int GetBuildingSlots(int level, int maxCount)` | Number of building slots at a given level. |
+| `GetRequiredLevelForSlot` | `int GetRequiredLevelForSlot(int slotIndex, int maxCount)` | Minimum settlement level to unlock the given building slot index. Returns 0 if available at founding, -1 if never unlockable. |
 | `GetUpgradeCost` | `int GetUpgradeCost(int level, int baseCost)` | Silver cost to upgrade to a given level. |
 | `GetUpgradeTime` | `int GetUpgradeTime(int level, double buildTimeMult)` | Ticks to upgrade to a given level. |
 | `GetTileForSettlement` | `PlanetTile GetTileForSettlement(PlanetTile tile)` | Transform or replace the tile used for settlement. |
 
 **Base mod example**: `SettlementTypeExtension_Orbital` — custom naming with space-themed keywords, forced drop pod/shuttle delivery, orbital tile validation, custom creation cost/time.
+
+---
+
+## FCPolicyBehaviorExtension
+
+**Attaches to**: `FCPolicyDef`
+**Purpose**: Attach a runtime `FCPolicyBehavior` instance to a policy for procedural logic.
+
+**Class**: `FactionColonies.FCPolicyBehaviorExtension` (extends `DefModExtension`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `behaviorClass` | `Type` | The C# class to instantiate. Must extend [FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior). |
+
+Subclass this extension to add XML-configurable parameters that the behavior reads at runtime via `Ext<T>()`. See [Abstract Base Classes — FCPolicyBehavior](abstract-base-classes.md#fcpolicybehavior) for the full pattern, lifecycle hooks, and usage example.
 
 ---
 
