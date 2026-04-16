@@ -12,6 +12,7 @@ namespace FactionColonies
         public List<ResourceAvailability> resources = new List<ResourceAvailability>();
         public bool canSettle;
         public List<ResourceTypeDef> resourceBlockList = new List<ResourceTypeDef>();
+        public List<FCStatModifier> statModifiers = new List<FCStatModifier>();
 
         /// <summary>
         /// Translation key for the biome's settlement description (e.g. "FCDescBorealForest").

@@ -142,4 +142,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_10</defName>
+		<label>Biome Stat Modifiers</label>
+		<description>Allows biomes to set biome-specific stat modifiers, in addition to the resource bonuses.</description>
+		<releaseDate>2026-04-15</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds and wires up a FCStatModifier list to BiomeResourceDef, enabling biomes to add bonuses or maluses to non-resource stats</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

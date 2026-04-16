@@ -409,6 +409,12 @@ namespace FactionColonies
                 LogUtil.Message($"Founding settlement {Name} on biome {biomeDef.LabelCap}");
             }
 
+            // Bake biome stat modifiers as permanent modifiers
+            if (biomeDef.statModifiers != null && biomeDef.statModifiers.Count > 0)
+            {
+                AddPermanentModifiers(biomeDef.statModifiers, "biome_" + biomeDef.defName, biomeDef.LabelCap);
+            }
+
             BuildingsComp?.InitBuildings();
 
             PrepareResources(faction.techLevel);

@@ -56,7 +56,7 @@ namespace FactionColonies
             if (tile != lastTile)
             {
                 lastTile = tile;
-                cachedGroups = CollectGroups(tile);
+                cachedGroups = CollectGroups(tile, createWindow.currentBiomeSelected);
             }
             if (cachedGroups is null || cachedGroups.Count == 0)
             {
@@ -96,9 +96,9 @@ namespace FactionColonies
         /// non-resource stat modifiers to show. Called from the create-colony window whenever its
         /// selected tile changes.
         /// </summary>
-        public static void RefreshForTile(PlanetTile tile)
+        public static void RefreshForTile(PlanetTile tile, BiomeResourceDef biome = null)
         {
-            List<StatGroup> groups = CollectGroups(tile);
+            List<StatGroup> groups = CollectGroups(tile, biome);
             FCWindow_CreateColonyStatModifiers existing = Find.WindowStack.WindowOfType<FCWindow_CreateColonyStatModifiers>();
             if (groups.Count > 0)
             {
@@ -122,12 +122,20 @@ namespace FactionColonies
                 existing.Close();
         }
 
-        private static List<StatGroup> CollectGroups(PlanetTile tile)
+        private static List<StatGroup> CollectGroups(PlanetTile tile, BiomeResourceDef biome = null)
         {
             List<StatGroup> groups = new List<StatGroup>();
             if (tile == PlanetTile.Invalid) return groups;
             Tile worldTile = tile.Tile;
             if (worldTile is null) return groups;
+
+            // Biome stat modifiers
+            if (biome?.statModifiers != null)
+            {
+                List<FCStatModifier> filtered = FilterNonResourceLinked(biome.statModifiers);
+                if (filtered.Count > 0)
+                    groups.Add(new StatGroup { sourceLabel = biome.LabelCap, mods = filtered });
+            }
 
             IList<TileMutatorDef> mutators = worldTile.Mutators;
             if (mutators != null)

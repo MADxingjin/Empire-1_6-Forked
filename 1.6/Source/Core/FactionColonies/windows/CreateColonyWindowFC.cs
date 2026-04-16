@@ -200,7 +200,7 @@ namespace FactionColonies
             LogUtil.Message($"Called GetTileData on tile {selectedTile}. Valid: {selectedTile.Valid} layer: {selectedTile.Layer} tileid: {selectedTile.tileId}");
 
             if (tileChanged)
-                FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected);
+                FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected, currentBiomeSelected);
 
             if (currentSettlementType.biomeResourceOverride != null)
             {
