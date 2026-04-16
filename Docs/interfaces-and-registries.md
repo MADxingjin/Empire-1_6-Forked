@@ -342,6 +342,47 @@ public interface IAutoDefender
 
 ---
 
+### ISettlementWindowButton
+
+**Registry**: `SettlementButtonRegistry`
+**Purpose**: Add buttons to the settlement window's left panel.
+
+Buttons are drawn uniformly as text buttons between the built-in buttons (Upgrade, Special Actions, Prisoners, Military) and the Delete button. The window handles all rendering — implementations only provide label, click behavior, and visibility/enabled state.
+
+```csharp
+public interface ISettlementWindowButton
+{
+    string Label(WorldSettlementFC settlement);
+    void OnClick(WorldSettlementFC settlement);
+    bool IsEnabled(WorldSettlementFC settlement);
+    bool IsVisible(WorldSettlementFC settlement);
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `Label` | Translated button text. Called every frame, so dynamic labels (e.g., with counts) work. |
+| `OnClick` | Called when the button is clicked. Open windows, show float menus, etc. |
+| `IsEnabled` | Return `true` if clickable. Disabled buttons are drawn grayed out. |
+| `IsVisible` | Return `true` to show the button. Hidden buttons take no space. |
+
+**Usage example**:
+
+```csharp
+public class MySettlementButton : ISettlementWindowButton
+{
+    public string Label(WorldSettlementFC settlement) => "MyButtonLabel".Translate();
+    public void OnClick(WorldSettlementFC settlement) => Find.WindowStack.Add(new MyWindow(settlement));
+    public bool IsEnabled(WorldSettlementFC settlement) => true;
+    public bool IsVisible(WorldSettlementFC settlement) => settlement.HasMyComp();
+}
+
+// In your mod's initialization:
+SettlementButtonRegistry.Register(new MySettlementButton());
+```
+
+---
+
 ### IMilitaryTabEntry
 
 **Registry**: `MilitaryTabRegistry`
