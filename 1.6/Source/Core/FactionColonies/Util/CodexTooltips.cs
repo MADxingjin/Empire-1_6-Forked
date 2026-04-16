@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using RimWorld;
 
@@ -11,6 +12,19 @@ namespace FactionColonies.util
     /// </summary>
     public static class CodexTooltips
     {
+        /// <summary>
+        /// Draws a Codex "i" button at the given rect. On click, opens the CodexWindow.
+        /// Optionally pre-selects a specific <see cref="CodexEntryDef"/>.
+        /// </summary>
+        public static void DrawCodexButton(Rect rect, CodexEntryDef preselect = null)
+        {
+            if (Widgets.ButtonImage(rect, TexButton.Info))
+            {
+                Find.WindowStack.Add(preselect is object ? new CodexWindow(preselect) : new CodexWindow());
+            }
+            TooltipHandler.TipRegion(rect, "FCCodexTitle".Translate());
+        }
+
         /// <summary>
         /// Enhanced tooltip for the faction-level prosperity stat in the overview panel.
         /// Explains what prosperity does and shows the average with per-settlement breakdown hint.

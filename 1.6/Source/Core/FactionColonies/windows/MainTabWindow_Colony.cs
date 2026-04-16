@@ -246,11 +246,7 @@ namespace FactionColonies
 
             Widgets.DrawLineHorizontal(labelBox.x, titleBox.yMax + margin, panel.xMax - labelBox.x - margin);
 
-            if (Widgets.ButtonImage(codexBtn, TexLoad.questionmark))
-            {
-                Find.WindowStack.Add(new CodexWindow());
-            }
-            TooltipHandler.TipRegion(codexBtn, "FCCodexTitle".Translate());
+            CodexTooltips.DrawCodexButton(codexBtn);
 
             if (Widgets.ButtonImage(customizeBtn, TexLoad.iconCustomize))
             {
@@ -515,13 +511,13 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
             Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
-            TooltipHandler.TipRegion(profitBox, util.CodexTooltips.GetProfitTooltip(faction));
+            TooltipHandler.TipRegion(profitBox, CodexTooltips.GetProfitTooltip(faction));
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(taxBox, "FCTimeTillTax".Translate() + ": " + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString());
-            TooltipHandler.TipRegion(taxBox, util.CodexTooltips.GetTaxTimerTooltip());
+            TooltipHandler.TipRegion(taxBox, CodexTooltips.GetTaxTimerTooltip());
             y += taxBox.height + margin;
 
             // Seperator

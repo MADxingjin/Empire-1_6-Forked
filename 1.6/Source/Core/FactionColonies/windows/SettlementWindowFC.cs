@@ -226,11 +226,7 @@ namespace FactionColonies
             Widgets.Label(nameRect, settlement.Name);
             //Draw codex button
             Rect codexBtnRect = new Rect(nameRect.xMax + margin, boundingBox.y + margin, 20, 20);
-            if (Widgets.ButtonImage(codexBtnRect, TexLoad.questionmark))
-            {
-                Find.WindowStack.Add(new CodexWindow());
-            }
-            TooltipHandler.TipRegion(codexBtnRect, "FCCodexTitle".Translate());
+            CodexTooltips.DrawCodexButton(codexBtnRect);
             //Draw name settings button
             Rect configRect = new Rect(codexBtnRect.xMax + margin, boundingBox.y + margin, 20, 20);
             if (Widgets.ButtonImage(configRect, TexLoad.iconCustomize))
@@ -944,25 +940,25 @@ namespace FactionColonies
             double offPower = Math.Round((baseLvl + atkLvlBonus) * eff * atkEffBonus);
             double defPower = Math.Round((baseLvl + defLvlBonus) * eff * defEffBonus * defAdv);
 
-                string tooltip = "FCSettlementMilitaryLevel".Translate() + "\n-----\n"
-                    + "FCSettlementMilitaryLevelDesc".Translate() + "\n\n"
-                    + "Base level: " + baseLvl;
-                if (Math.Abs(eff - 1.0) > 0.001)
-                    tooltip += "\nCombat efficiency: " + eff.ToString("0.0#") + "x";
-                tooltip += "\n\nOffensive Power: " + offPower;
-                if (Math.Abs(atkLvlBonus) > 0.001)
-                    tooltip += "\n  Level bonus: +" + atkLvlBonus.ToString("0.#");
-                if (Math.Abs(atkEffBonus - 1.0) > 0.001)
-                    tooltip += "\n  Efficiency bonus: " + atkEffBonus.ToString("0.0#") + "x";
-                tooltip += "\n\nDefensive Power: " + defPower;
-                if (Math.Abs(defLvlBonus) > 0.001)
-                    tooltip += "\n  Level bonus: +" + defLvlBonus.ToString("0.#");
-                if (Math.Abs(defEffBonus - 1.0) > 0.001)
-                    tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
-                if (Math.Abs(defAdv - 1.0) > 0.001)
-                    tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
-                return tooltip + CodexTooltips.GetMilitaryTargetingInfo(settlement);
-            }
+            string tooltip = "FCSettlementMilitaryLevel".Translate() + "\n-----\n"
+                + "FCSettlementMilitaryLevelDesc".Translate() + "\n\n"
+                + "Base level: " + baseLvl;
+            if (Math.Abs(eff - 1.0) > 0.001)
+                tooltip += "\nCombat efficiency: " + eff.ToString("0.0#") + "x";
+            tooltip += "\n\nOffensive Power: " + offPower;
+            if (Math.Abs(atkLvlBonus) > 0.001)
+                tooltip += "\n  Level bonus: +" + atkLvlBonus.ToString("0.#");
+            if (Math.Abs(atkEffBonus - 1.0) > 0.001)
+                tooltip += "\n  Efficiency bonus: " + atkEffBonus.ToString("0.0#") + "x";
+            tooltip += "\n\nDefensive Power: " + defPower;
+            if (Math.Abs(defLvlBonus) > 0.001)
+                tooltip += "\n  Level bonus: +" + defLvlBonus.ToString("0.#");
+            if (Math.Abs(defEffBonus - 1.0) > 0.001)
+                tooltip += "\n  Efficiency bonus: " + defEffBonus.ToString("0.0#") + "x";
+            if (Math.Abs(defAdv - 1.0) > 0.001)
+                tooltip += "\n  Defender advantage: " + defAdv.ToString("0.0#") + "x";
+            return tooltip + CodexTooltips.GetMilitaryTargetingInfo(settlement);
+        }
 
         private string DrawStatWithGainBox(Rect buttonBox, Rect labelBox, Rect statGainBox,
             Texture2D icon, string valueText,
