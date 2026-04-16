@@ -84,8 +84,9 @@ namespace FactionColonies
                 if (Find.ColonistBar.GetColonistsInOrder().Count > 0)
                 {
                     Pawn pawn = Find.ColonistBar.GetColonistsInOrder()[0];
+                    TechLevel techLevel = pawn.Faction?.def?.techLevel ??  FactionCache.FactionComp?.techLevel ?? TechLevel.Industrial;
                     Find.ResearchManager.ResearchPerformed(
-                        (float)Math.Ceiling(((1 * Find.ResearchManager.GetProject().CostFactor(pawn.Faction.def.techLevel)) /
+                        (float)Math.Ceiling(((1 * Find.ResearchManager.GetProject().CostFactor(techLevel)) /
                             (0.00825 * Find.Storyteller.difficulty.researchSpeedFactor)) * expendedPoints),
                         pawn);
                 }

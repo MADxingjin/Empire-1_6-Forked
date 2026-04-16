@@ -347,6 +347,7 @@ namespace FactionColonies
             }
 
             if (settlementsContainingSquad.Any(s => s.MilitaryComp.isUnderAttack
+                && s.MilitaryComp.defenderForce?.homeSettlement is object
                 && settlementsContainingSquad.Contains(s.MilitaryComp.defenderForce.homeSettlement)))
             {
                 reason = "FCReasonDefending".Translate();

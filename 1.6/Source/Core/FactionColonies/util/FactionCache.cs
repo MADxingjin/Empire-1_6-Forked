@@ -50,13 +50,13 @@ namespace FactionColonies
         /// The NPC Empire faction that the player created and controls.
         /// </summary>
         public static Faction PlayerColonyFaction => _cachedColonyFaction ??
-                                                     (_cachedColonyFaction = Find.FactionManager.FirstFactionOfDef(EmpireFactionDef));
+                                                     (_cachedColonyFaction = Find.FactionManager?.FirstFactionOfDef(EmpireFactionDef));
         public static bool IsPlayerColonyFaction(Faction f) => !(PlayerColonyFaction is null) && f == PlayerColonyFaction;
         /// <summary>
         /// The player faction itself.
         /// </summary>
         public static Faction PlayerFaction => _cachedPlayerFaction ??
-                                               (_cachedPlayerFaction = Find.FactionManager.AllFactions.FirstOrDefault(faction => faction.IsPlayer));
+                                               (_cachedPlayerFaction = Find.FactionManager?.AllFactions?.FirstOrDefault(faction => faction.IsPlayer));
         public static List<PawnKindDef> AllPawnKindDefs
         {
             get

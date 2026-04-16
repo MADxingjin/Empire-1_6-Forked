@@ -810,7 +810,11 @@ namespace FactionColonies
 
                     friendlies = squad.AllEquippedMercenaryPawns.ToList();
 
-                    foreach (var animal in squad.animals) riders.Add(animal.handler.pawn, animal.pawn);
+                    foreach (var animal in squad.animals)
+                    {
+                        if (animal.handler?.pawn is object)
+                            riders.Add(animal.handler.pawn, animal.pawn);
+                    }
                 }
                 else
                 {

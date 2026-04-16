@@ -143,12 +143,15 @@ namespace FactionColonies
                     {
                         faction.factionCreated = true;
                         Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
-                        if (Find.CurrentMap.Parent != null &&
-                            Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile) != null)
+                        if (Find.CurrentMap.Parent != null)
                         {
-                            Messages.Message(
-                                "FCSetAsFactionCapital".Translate(Find.WorldObjects.SettlementAt(Find.CurrentMap.Parent.Tile).Name),
-                                MessageTypeDefOf.NeutralEvent);
+                            WorldSettlementFC wsfc = Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile);
+                            if (wsfc is object)
+                            {
+                                Messages.Message(
+                                    "FCSetAsFactionCapital".Translate(wsfc.Name),
+                                    MessageTypeDefOf.NeutralEvent);
+                            }
                         }
                     }
                     else

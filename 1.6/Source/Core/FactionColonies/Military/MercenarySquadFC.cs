@@ -95,12 +95,15 @@ namespace FactionColonies
                     return settlement;
                 }
 
-                foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+                FactionFC comp = FactionCache.FactionComp;
+                if (comp is null) return null;
+
+                foreach (WorldSettlementFC s in comp.settlements)
                 {
-                    if (settlement.MilitaryComp?.militarySquad != null && settlement.MilitaryComp?.militarySquad == this)
+                    if (s.MilitaryComp?.militarySquad != null && s.MilitaryComp?.militarySquad == this)
                     {
-                        this.settlement = settlement;
-                        return settlement;
+                        this.settlement = s;
+                        return s;
                     }
                 }
 

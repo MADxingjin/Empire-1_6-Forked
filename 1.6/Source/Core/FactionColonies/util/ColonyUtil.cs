@@ -83,7 +83,7 @@ namespace FactionColonies.util
                 //military event removal
                 if (evt.def == FCEventDefOf.captureEnemySettlement || evt.def == FCEventDefOf.raidEnemySettlement)
                 {
-                    if (evt.militaryForceAttacking.homeSettlement == settlement)
+                    if (evt.militaryForceAttacking?.homeSettlement == settlement)
                     {
                         toRemove.Add(evt);
                     }
@@ -91,7 +91,7 @@ namespace FactionColonies.util
 
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
-                    if (evt.militaryForceDefending.homeSettlement == settlement)
+                    if (evt.militaryForceDefending?.homeSettlement == settlement)
                     {
                         if (evt.settlementFCDefending == settlement)
                         {
@@ -113,7 +113,7 @@ namespace FactionColonies.util
                     else
                     {
                         //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.CooldownMilitaryFinal();
+                        evt.militaryForceDefending?.homeSettlement?.MilitaryComp?.CooldownMilitaryFinal();
 
                         toRemove.Add(evt);
                     }

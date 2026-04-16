@@ -36,7 +36,16 @@ namespace FactionColonies
             healthTracker = pawn.health;
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;
-            loadID = FactionCache.FactionComp.GetNextPrisonerID();
+            FactionFC comp = FactionCache.FactionComp;
+            if (comp is object)
+            {
+                loadID = comp.GetNextPrisonerID();
+            }
+            else
+            {
+                loadID = Rand.Int;
+                LogUtil.Error($"FCPrisoner: FactionComp is null during construction. Using fallback loadID {loadID}.");
+            }
             pawn.guest.SetGuestStatus(FactionCache.PlayerColonyFaction, GuestStatus.Prisoner);
         }
 

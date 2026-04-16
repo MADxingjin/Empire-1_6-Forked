@@ -37,23 +37,37 @@ namespace FactionColonies
         {
             get
             {
-                Map map;
-                if (taxMap is null)
-                {
-                    map = Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map;
-                    if (map is null)
-                    {
-                        //if no tax map or no capital map is valid
-                        map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
+                if (taxMap is object) return taxMap;
 
+                FactionFC comp = FactionCache.FactionComp;
+                Map map = null;
+                if (comp is object)
+                {
+                    map = Find.WorldObjects.SettlementAt(comp.capitalLocation)?.Map;
+                }
+
+                if (map is null)
+                {
+                    Map currentMap = Find.CurrentMap;
+                    if (currentMap is object && currentMap.IsPlayerHome)
+                    {
+                        map = currentMap;
+                    }
+                    else
+                    {
+                        map = Find.AnyPlayerHomeMap;
+                    }
+
+                    if (map is object)
+                    {
                         LogUtil.MessageForce(
                             "Unable to find a player-set tax map or a valid location for the capital. Please open the faction main menu tab and set the capital and tax map. Taxes were sent to the following random PlayerHomeMap " +
                             map.Parent.LabelCap);
                     }
-                }
-                else
-                {
-                    map = taxMap;
+                    else
+                    {
+                        LogUtil.Warning("TaxMap: No player home map found. Taxes cannot be delivered.");
+                    }
                 }
 
                 return map;
@@ -492,10 +506,17 @@ namespace FactionColonies
             if (!(faction is null))
             {
                 _ = techLevel;
-                factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
-                    TexLoad.factionIcons.First());
-                UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
-                factionIconPath = factionIcon.name;
+                if (TexLoad.factionIcons.Any())
+                {
+                    factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
+                        TexLoad.factionIcons[0]);
+                    UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
+                    factionIconPath = factionIcon.name;
+                }
+                else
+                {
+                    LogUtil.Error("No faction icons loaded. Cannot set faction icon.");
+                }
 
                 if (!name.NullOrEmpty() && faction.Name != name)
                 {

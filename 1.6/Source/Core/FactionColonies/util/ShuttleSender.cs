@@ -28,7 +28,11 @@ namespace FactionColonies.util
         protected virtual TransportShip SendWaitingShuttle(MapParent target)
         {
             Thing shuttle = ThingMaker.MakeThing(ThingDefOf.Shuttle);
-            shuttle.TryGetComp<CompShuttle>().permitShuttle = true;
+            CompShuttle compShuttle = shuttle.TryGetComp<CompShuttle>();
+            if (compShuttle is object)
+            {
+                compShuttle.permitShuttle = true;
+            }
             TransportShip transportShip = TransportShipMaker.MakeTransportShip(TransportShipDefOf.Ship_Shuttle, null, shuttle);
 
             IntVec3 landingCell = DropCellFinder.GetBestShuttleLandingSpot(target.Map, Faction.OfPlayer);

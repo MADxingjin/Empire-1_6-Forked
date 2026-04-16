@@ -47,7 +47,16 @@ namespace FactionColonies
 
         public void SetUniqueLoadID()
         {
-            loadID = FactionCache.FactionComp.GetNextBillID();
+            FactionFC comp = FactionCache.FactionComp;
+            if (comp is object)
+            {
+                loadID = comp.GetNextBillID();
+            }
+            else
+            {
+                loadID = Rand.Int;
+                LogUtil.Error($"BillFC.SetUniqueLoadID: FactionComp is null. Assigned fallback loadID {loadID}.");
+            }
         }
 
         public bool Resolve()

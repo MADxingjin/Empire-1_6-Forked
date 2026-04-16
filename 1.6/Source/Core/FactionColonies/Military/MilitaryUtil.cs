@@ -28,9 +28,16 @@ namespace FactionColonies
                 return;
             }
 
+            Map currentMap = Find.CurrentMap;
+            if (currentMap is null)
+            {
+                LogUtil.Warning("SpawnSquad: Find.CurrentMap is null. Cannot deploy squad.");
+                return;
+            }
+
             IncidentParms parms = new IncidentParms
             {
-                target = Find.CurrentMap,
+                target = currentMap,
                 faction = FactionCache.PlayerColonyFaction,
                 podOpenDelay = 140,
                 points = 999,
@@ -59,10 +66,10 @@ namespace FactionColonies
             squad.isDeployed = true;
             squad.orderLocation = dropPosition;
             squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("FCDeploymentSuccessLabel".Translate(), "FCDeploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
+            Find.LetterStack.ReceiveLetter("FCDeploymentSuccessLabel".Translate(), "FCDeploymentSuccessDesc".Translate(settlement.Name, currentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
 
-            settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
-            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, equippedPawns);
+            settlement.MilitaryComp.SendMilitary(currentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), currentMap, equippedPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {

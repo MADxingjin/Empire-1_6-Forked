@@ -156,4 +156,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_11</defName>
+		<label>Minor Fixes</label>
+		<description>Adds several more defensive null guards.</description>
+		<releaseDate>2026-04-16</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds numerous null guards. Some are unlikely to ever trigger, but better safe than sorry...</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
