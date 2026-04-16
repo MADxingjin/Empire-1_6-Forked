@@ -63,10 +63,10 @@ namespace FactionColonies
             if (!faction.settlements.Any()) return 1.0;
 
             double avgLevel = faction.settlements.Average(s => (double)s.settlementLevel);
-            double avgFactor = (avgLevel - 1.0) * 0.2; // lvl 1→0, lvl 5→0.8, lvl 10→1.8
+            double avgFactor = (avgLevel - 1.0) * 0.2; // lvl 1->0, lvl 5->0.8, lvl 10->1.8
 
             int maxLevel = faction.settlements.Max(s => s.settlementLevel);
-            double maxFactor = (maxLevel - 1.0) * 0.1; // lvl 1→0, lvl 5→0.4, lvl 10→0.9
+            double maxFactor = (maxLevel - 1.0) * 0.1; // lvl 1->0, lvl 5->0.4, lvl 10->0.9
 
             double incomeFactor = IncomeCurve.Evaluate((float)faction.income);
 

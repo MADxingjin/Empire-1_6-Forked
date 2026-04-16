@@ -170,4 +170,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_12</defName>
+		<label>Mercantile Diagnostics</label>
+		<description>Adds some additional diagnostics to mercantile caravan spawning.</description>
+		<releaseDate>2026-04-16</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds diagnostic logging to the failure paths of Mercantile caravan spawning</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

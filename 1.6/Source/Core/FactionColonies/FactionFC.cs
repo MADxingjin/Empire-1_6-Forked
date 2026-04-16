@@ -2194,6 +2194,9 @@ namespace FactionColonies
                     result.Add(resolved);
             }
 
+            if (result.Count == 0)
+                LogUtil.Warning($"BuildCaravanTraderKinds produced an empty list. enabledCaravanTypes: {enabledCaravanTypes?.Count ?? 0}, techLevel: {tech}");
+
             return result;
         }
 
