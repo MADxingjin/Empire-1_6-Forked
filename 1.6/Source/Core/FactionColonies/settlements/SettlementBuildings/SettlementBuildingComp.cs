@@ -18,7 +18,7 @@ namespace FactionColonies
         public virtual void ExposeData()
         {
             Scribe_References.Look(ref settlement, "settlement");
-            Scribe_Collections.Look(ref buildingSlots, "buildingSlots", LookMode.Deep);
+            Scribe_Collections.Look(ref buildingSlots, "buildingSlots", LookMode.Value);
         }
 
         /// <summary>
