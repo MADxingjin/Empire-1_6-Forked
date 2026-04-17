@@ -1435,6 +1435,7 @@ namespace FactionColonies
                 cooldown += deaths * deadMultiplier;
             }
             cooldown = Math.Max(cooldown, 0);
+            if (DebugSettings.godMode) cooldown = 1;
 
             militaryJob = MilitaryJobDefOf.Cooldown;
             militaryBusy = true;

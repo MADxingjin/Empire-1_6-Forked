@@ -164,7 +164,7 @@ namespace FactionColonies
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
                     if (settlement.MilitaryComp != null)
-                        settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;
+                        settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + (DebugSettings.godMode ? 1 : 60000);
                 }
                 else
                 {
