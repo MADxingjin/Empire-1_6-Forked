@@ -227,4 +227,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_16</defName>
+		<label>Vehicle Framework Compatibility</label>
+		<description>Adds compatibility with vehicle framework for sending vehicle caravans to manual battles.</description>
+		<releaseDate>2026-04-17</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a compatibility patch for Vehicle Framework to allow vehicle caravans to start manual battles.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
