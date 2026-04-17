@@ -79,8 +79,15 @@ namespace FactionColonies.CE
                 if (ceProps == null) return false;
 
                 // Match CE's TravelingShell pattern: off-map artillery arriving from altitude
-                float shotSpeed = 20f;
                 float shotHeight = 200f;
+
+                // Compute minimum speed so CE's ballistic discriminant is always >= 0.
+                // From TryFindShotAngle: discriminant = v^4 - g*(g*d^2 + 2*dh*v^2)
+                // Solving for v^2 >= g*(sqrt(h^2 + d^2) - h) ensures a valid trajectory.
+                float gravityPerWidth = ceProps.GravityPerWidth;
+                float range = source.DistanceTo(target);
+                float minSpeedSq = gravityPerWidth * (Mathf.Sqrt(shotHeight * shotHeight + range * range) - shotHeight);
+                float shotSpeed = Mathf.Max(20f, Mathf.Sqrt(minSpeedSq) * 1.1f);
 
                 Vector3 source3D = new Vector3(source.x, shotHeight, source.z);
                 Vector3 target3D = target.ToVector3Shifted();

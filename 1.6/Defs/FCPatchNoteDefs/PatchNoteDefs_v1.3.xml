@@ -241,4 +241,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_17</defName>
+		<label>Combat Extended compat fix</label>
+		<description>Fixes an issue with using CE mortars in fire support.</description>
+		<releaseDate>2026-04-17</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: using Empire&apos;s fire support feature with Combat Extended enabled can sometimes cause projectiles to go way off course</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

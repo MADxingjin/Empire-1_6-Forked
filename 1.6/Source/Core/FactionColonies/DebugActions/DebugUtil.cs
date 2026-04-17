@@ -1383,6 +1383,57 @@ namespace FactionColonies
             FactionCache.FactionComp?.ValidateSettlementCaravansList();
         }
 
+        [DebugAction("Empire", "Fire Support (Pick Source)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void FireSupportPickSource()
+        {
+            MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
+            if (util.fireSupportDefs == null || !util.fireSupportDefs.Any())
+            {
+                Messages.Message("No fire support definitions configured.", MessageTypeDefOf.RejectInput);
+                return;
+            }
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (MilitaryFireSupport support in util.fireSupportDefs)
+            {
+                if (support.projectiles == null || !support.projectiles.Any()) continue;
+                MilitaryFireSupport localSupport = support;
+                list.Add(new DebugMenuOption(
+                    $"{localSupport.name} ({localSupport.projectiles.Count} shells, acc {localSupport.accuracy})",
+                    DebugMenuOptionMode.Action, () =>
+                    {
+                        DebugTools.curTool = new DebugTool("Select target location", () =>
+                        {
+                            IntVec3 targetLocation = UI.MouseCell();
+                            DebugTools.curTool = new DebugTool("Select source (edge) location", () =>
+                            {
+                                IntVec3 sourceLocation = UI.MouseCell();
+                                Map map = Find.CurrentMap;
+
+                                List<ThingDef> projectiles = new List<ThingDef>();
+                                projectiles.AddRange(localSupport.projectiles);
+
+                                MilitaryFireSupport fireSupport = new MilitaryFireSupport(
+                                    "fireSupport", map, targetLocation,
+                                    projectiles.Count * 15, 600, localSupport.accuracy, projectiles);
+                                fireSupport.sourceLocation = sourceLocation;
+                                util.fireSupport.Add(fireSupport);
+
+                                float dist = sourceLocation.DistanceTo(targetLocation);
+                                LogUtil.MessageForce($"Debug - Fire Support '{localSupport.name}' " +
+                                    $"from ({sourceLocation.x},{sourceLocation.z}) " +
+                                    $"to ({targetLocation.x},{targetLocation.z}) " +
+                                    $"distance: {dist:F1} cells");
+
+                                DebugTools.curTool = null;
+                            });
+                        });
+                    }));
+            }
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
         [DebugAction("Empire", "Force Restock Settlement Trader", allowedGameStates = AllowedGameStates.Playing)]
         private static void DebugForceRestockSettlementTrader()
         {
