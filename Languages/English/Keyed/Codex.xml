@@ -82,13 +82,11 @@
 	<FCCodexSettlementStats>Key Stats</FCCodexSettlementStats>
 	<FCCodexSettlementWorkers>Workers: {0} base, +{1} per level</FCCodexSettlementWorkers>
 	<FCCodexSettlementMaxLevel>Max Level: {0}</FCCodexSettlementMaxLevel>
-	<FCCodexSettlementMaxBuildings>Building Slots: {0}</FCCodexSettlementMaxBuildings>
-	<FCCodexSettlementUnlockedBuildings>Buildings Unlocked: {0} base, +{1} per level</FCCodexSettlementUnlockedBuildings>
+	<FCCodexSettlementBuildingSlots>Building Slots: {0}</FCCodexSettlementBuildingSlots>
 	<FCCodexSettlementPlanetLayer>Planet Layer: {0}</FCCodexSettlementPlanetLayer>
 	<FCCodexSettlementManualBattle>Manual Battle: {0}</FCCodexSettlementManualBattle>
 	<FCCodexSettlementCanBeRaided>Can Be Raided: {0}</FCCodexSettlementCanBeRaided>
 	<FCCodexSettlementRaidWeight>Raid Targeting Weight: {0}</FCCodexSettlementRaidWeight>
-	<FCCodexSettlementCreationType>Creation Type: {0}</FCCodexSettlementCreationType>
 	<FCCodexSettlementResources>Available Resources</FCCodexSettlementResources>
 	<FCCodexSettlementStatModifiers>Stat Modifiers</FCCodexSettlementStatModifiers>
 	<FCCodexSettlementTechReqs>Tech Requirements</FCCodexSettlementTechReqs>
@@ -98,8 +96,6 @@
 	<FCCodexSettlementAllBiomes>All biomes</FCCodexSettlementAllBiomes>
 	<FCCodexSettlementBlockedBiomes>Blocked: {0}</FCCodexSettlementBlockedBiomes>
 	<FCCodexSettlementAllowedBiomes>Allowed only: {0}</FCCodexSettlementAllowedBiomes>
-	<FCCodexSettlementConstruction>Construction</FCCodexSettlementConstruction>
-	<FCCodexSettlementExpedition>Expedition</FCCodexSettlementExpedition>
 	<FCCodexYes>Yes</FCCodexYes>
 	<FCCodexNo>No</FCCodexNo>
 
@@ -117,10 +113,8 @@
 	<FCCodexBuildingRequired>Required Buildings</FCCodexBuildingRequired>
 	<FCCodexBuildingUpgrades>Upgrade Tree</FCCodexBuildingUpgrades>
 	<FCCodexBuildingRequiredBy>Required By</FCCodexBuildingRequiredBy>
-	<FCCodexBuildingSettlementRestrictions>Settlement Type Restrictions</FCCodexBuildingSettlementRestrictions>
-	<FCCodexBuildingAllowedSettlements>Allowed: {0}</FCCodexBuildingAllowedSettlements>
-	<FCCodexBuildingBlockedSettlements>Blocked: {0}</FCCodexBuildingBlockedSettlements>
-	<FCCodexBuildingAllSettlementTypes>All settlement types</FCCodexBuildingAllSettlementTypes>
+	<FCCodexBuildingTechGeneral>General</FCCodexBuildingTechGeneral>
+	<FCCodexBuildingCompatibleSettlements>Compatible Settlements</FCCodexBuildingCompatibleSettlements>
 	<FCCodexBuildingBiomeRestrictions>Terrain Restrictions</FCCodexBuildingBiomeRestrictions>
 	<FCCodexBuildingApplicableBiomes>Biomes: {0}</FCCodexBuildingApplicableBiomes>
 	<FCCodexBuildingHilliness>Hilliness: {0} to {1}</FCCodexBuildingHilliness>

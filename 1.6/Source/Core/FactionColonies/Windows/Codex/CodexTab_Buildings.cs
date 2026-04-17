@@ -13,8 +13,8 @@ namespace FactionColonies
     /// <summary>
     /// The "Buildings" tab in the Codex — a reference for all empire buildings.
     /// Left pane: search bar + buildings grouped by tech level.
-    /// Center pane: selected building detail (stats, modifiers, upgrades, restrictions).
-    /// No right pane.
+    /// Center pane: selected building detail (stats, modifiers, requirements).
+    /// Right pane: source mod banner, placement restrictions, upgrade tree.
     /// </summary>
     public class CodexTab_Buildings : ICodexTab
     {
@@ -31,14 +31,17 @@ namespace FactionColonies
         private const float IconSmall = 16f;
         private const float IndentWidth = 20f;
         private const float UpgradeRowHeight = 22f;
+        private const float BannerHeight = 70f;
 
         private static readonly Color DefaultAccent = new Color(0.83f, 0.68f, 0.21f);
         private static readonly Color GroupBgColor = new Color(0.2f, 0.2f, 0.2f, 0.6f);
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
+        private static readonly Color HighlightColor = new Color(0.4f, 0.6f, 0.9f);
 
         // ── Tech level colors ──
         private static readonly Dictionary<TechLevel, Color> TechColors = new Dictionary<TechLevel, Color>
         {
+            { TechLevel.Undefined, new Color(0.6f, 0.6f, 0.6f) },
             { TechLevel.Neolithic, new Color(0.6f, 0.5f, 0.3f) },
             { TechLevel.Medieval, new Color(0.5f, 0.5f, 0.6f) },
             { TechLevel.Industrial, new Color(0.4f, 0.6f, 0.4f) },
@@ -48,13 +51,18 @@ namespace FactionColonies
         };
 
         // ── Data model ──
+        private readonly CodexWindow parentWindow;
         private readonly List<TechGroup> allTechGroups;
         private BuildingFCDef selectedBuilding;
         private string searchTerm = "";
 
+        // ── Upgrade tree root reverse lookup ──
+        private readonly Dictionary<BuildingFCDef, BuildingFCDef> upgradeRootMap = new Dictionary<BuildingFCDef, BuildingFCDef>();
+
         // ── Scroll state ──
         private Vector2 leftScroll;
         private Vector2 centerScroll;
+        private Vector2 rightScroll;
 
         // ── Expand/collapse state ──
         private readonly HashSet<TechLevel> expandedGroups = new HashSet<TechLevel>();
@@ -62,9 +70,13 @@ namespace FactionColonies
         // ── Truncation cache ──
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        // ── Filtered building cache (avoids per-frame allocations) ──
+        // ── Filtered building cache ──
         private string lastAppliedSearch = "";
         private readonly Dictionary<TechLevel, List<BuildingFCDef>> filteredCache = new Dictionary<TechLevel, List<BuildingFCDef>>();
+
+        // ── Banner cache ──
+        private readonly Dictionary<string, Texture2D> bannerCache = new Dictionary<string, Texture2D>();
+        private readonly HashSet<string> bannerLookedUp = new HashSet<string>();
 
         private class TechGroup
         {
@@ -73,10 +85,11 @@ namespace FactionColonies
         }
 
         public string TabLabel => "FCCodexTabBuildings".Translate();
-        public bool HasRightPane => false;
+        public bool HasRightPane => true;
 
-        public CodexTab_Buildings()
+        public CodexTab_Buildings(CodexWindow window)
         {
+            parentWindow = window;
             allTechGroups = new List<TechGroup>();
 
             var grouped = DefDatabase<BuildingFCDef>.AllDefsListForReading
@@ -95,7 +108,13 @@ namespace FactionColonies
                 expandedGroups.Add(g.Key);
             }
 
-            // Select first building
+            // Build upgrade root reverse lookup
+            foreach (var kvp in FactionCache.UpgradeTrees)
+            {
+                foreach (BuildingUpgradeEntry entry in kvp.Value)
+                    upgradeRootMap[entry.def] = kvp.Key;
+            }
+
             if (allTechGroups.Count > 0 && allTechGroups[0].buildings.Count > 0)
                 selectedBuilding = allTechGroups[0].buildings[0];
         }
@@ -109,6 +128,13 @@ namespace FactionColonies
             if (TechColors.TryGetValue(level, out c))
                 return c;
             return DefaultAccent;
+        }
+
+        private static string GetTechLabel(TechLevel level)
+        {
+            if (level == TechLevel.Undefined)
+                return "FCCodexBuildingTechGeneral".Translate();
+            return level.ToStringHuman().CapitalizeFirst();
         }
 
         private bool MatchesSearch(BuildingFCDef building)
@@ -142,6 +168,35 @@ namespace FactionColonies
             return tg.buildings;
         }
 
+        /// <summary>
+        /// Gets the full upgrade tree for any building, whether it's a root, mid-node, or leaf.
+        /// Returns the root building and the tree entries.
+        /// </summary>
+        private bool TryGetFullUpgradeTree(BuildingFCDef building, out BuildingFCDef root, out List<BuildingUpgradeEntry> tree)
+        {
+            // Check if this building is itself a root
+            if (FactionCache.UpgradeTrees.TryGetValue(building, out tree))
+            {
+                root = building;
+                return true;
+            }
+
+            // Check if this building is somewhere in an upgrade tree
+            BuildingFCDef foundRoot;
+            if (upgradeRootMap.TryGetValue(building, out foundRoot))
+            {
+                if (FactionCache.UpgradeTrees.TryGetValue(foundRoot, out tree))
+                {
+                    root = foundRoot;
+                    return true;
+                }
+            }
+
+            root = null;
+            tree = null;
+            return false;
+        }
+
         // ══════════════════════════════════════════════════════════════
         // LEFT PANE
         // ══════════════════════════════════════════════════════════════
@@ -156,7 +211,7 @@ namespace FactionColonies
             if (searchTerm != prevSearch)
             {
                 truncateCache.Clear();
-                lastAppliedSearch = ""; // force rebuild
+                lastAppliedSearch = "";
             }
             RebuildFilteredCache();
             if (searchTerm.NullOrEmpty())
@@ -199,7 +254,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
                 GUI.color = techColor * new Color(1.3f, 1.3f, 1.3f, 1f);
                 Widgets.Label(new Rect(AccentBarWidth + Margin, curY, viewWidth - AccentBarWidth - Margin * 2 - 20f, GroupHeaderHeight),
-                    tg.techLevel.ToStringHuman().CapitalizeFirst());
+                    GetTechLabel(tg.techLevel));
 
                 Rect arrowRect = new Rect(groupRect.xMax - 20f - 2f, curY + (GroupHeaderHeight - 20f) * 0.5f, 20f, 20f);
                 GUI.color = Color.white;
@@ -232,7 +287,6 @@ namespace FactionColonies
 
                     float textX = entryRect.x + Margin;
 
-                    // Icon
                     if (building.Icon is object)
                     {
                         Rect iconRect = new Rect(entryRect.x + 4f, entryRect.y + (EntryRowHeight - IconSmall) * 0.5f, IconSmall, IconSmall);
@@ -255,6 +309,7 @@ namespace FactionColonies
                     {
                         selectedBuilding = building;
                         centerScroll = Vector2.zero;
+                        rightScroll = Vector2.zero;
                         SoundDefOf.Click.PlayOneShotOnCamera();
                     }
 
@@ -326,7 +381,6 @@ namespace FactionColonies
             ResetText();
             curY += 30f;
 
-            // Accent gradient line
             TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), accent);
             curY += 2f + Margin;
 
@@ -356,31 +410,80 @@ namespace FactionColonies
             if (selectedBuilding.requiredBuildings.Count > 0)
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingRequired".Translate(), accent, DrawRequiredBuildings);
 
-            // ── Upgrade Tree ──
-            List<BuildingUpgradeEntry> upgradeTree;
-            if (FactionCache.UpgradeTrees.TryGetValue(selectedBuilding, out upgradeTree) && upgradeTree.Count > 0)
-                curY = DrawSection(curY, contentWidth, "FCCodexBuildingUpgrades".Translate(), accent,
-                    (y, w) => DrawUpgradeTree(y, w, upgradeTree));
-
             // ── Required By ──
             List<BuildingFCDef> requiredBy;
             if (FactionCache.RequiredByBuildingMap.TryGetValue(selectedBuilding, out requiredBy) && requiredBy.Count > 0)
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingRequiredBy".Translate(), accent,
                     (y, w) => DrawBuildingList(y, w, requiredBy));
 
-            // ── Settlement Type Restrictions ──
-            if (selectedBuilding.settlementTypeAllowList.Count > 0 || selectedBuilding.settlementTypeBlockList.Count > 0)
-                curY = DrawSection(curY, contentWidth, "FCCodexBuildingSettlementRestrictions".Translate(), accent, DrawSettlementRestrictions);
-
-            // ── Biome/Hilliness Restrictions ──
-            if (HasTerrainRestrictions())
-                curY = DrawSection(curY, contentWidth, "FCCodexBuildingBiomeRestrictions".Translate(), accent, DrawTerrainRestrictions);
-
             Widgets.EndScrollView();
             ResetText();
         }
 
-        public void DrawRightPane(Rect rect) { }
+        // ══════════════════════════════════════════════════════════════
+        // RIGHT PANE
+        // ══════════════════════════════════════════════════════════════
+
+        public void DrawRightPane(Rect rect)
+        {
+            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
+            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
+            float contentHeight = CalculateRightPaneHeight(contentWidth);
+            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+
+            Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
+            float curY = 0f;
+
+            if (selectedBuilding is object)
+            {
+                Color accent = GetTechColor(selectedBuilding.techLevel);
+
+                // ── Banner ──
+                Texture2D banner = GetBanner(selectedBuilding);
+                if (banner is object)
+                {
+                    Rect bannerRect = new Rect(0f, curY, contentWidth, BannerHeight);
+                    GUI.DrawTexture(bannerRect, banner, ScaleMode.ScaleToFit);
+                    curY += BannerHeight + SmallMargin;
+                }
+
+                string modName = selectedBuilding.modContentPack?.ModMetaData?.Name ?? "";
+                if (!modName.NullOrEmpty())
+                {
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    GUI.color = Color.gray;
+                    Widgets.Label(new Rect(0f, curY, contentWidth, 20f), modName);
+                    ResetText();
+                    curY += 24f;
+                }
+
+                GUI.color = Color.gray;
+                Widgets.DrawLineHorizontal(Margin, curY, contentWidth - Margin * 2);
+                GUI.color = Color.white;
+                curY += Margin;
+
+                // ── Compatible Settlements ──
+                List<WorldSettlementDef> compatible = selectedBuilding.CompatibleSettlementTypes;
+                if (compatible.Count > 0)
+                    curY = DrawSection(curY, contentWidth, "FCCodexBuildingCompatibleSettlements".Translate(), accent,
+                        (y, w) => DrawCompatibleSettlements(y, w, compatible));
+
+                // ── Terrain Restrictions ──
+                if (HasTerrainRestrictions())
+                    curY = DrawSection(curY, contentWidth, "FCCodexBuildingBiomeRestrictions".Translate(), accent, DrawTerrainRestrictions);
+
+                // ── Upgrade Tree ──
+                BuildingFCDef root;
+                List<BuildingUpgradeEntry> tree;
+                if (TryGetFullUpgradeTree(selectedBuilding, out root, out tree))
+                    curY = DrawSection(curY, contentWidth, "FCCodexBuildingUpgrades".Translate(), accent,
+                        (y, w) => DrawFullUpgradeTree(y, w, root, tree));
+            }
+
+            Widgets.EndScrollView();
+            ResetText();
+        }
 
         // ══════════════════════════════════════════════════════════════
         // SECTION DRAWING HELPERS
@@ -392,7 +495,6 @@ namespace FactionColonies
         {
             float curY = startY;
 
-            // Header
             Rect headerRect = new Rect(0f, curY, width, SectionHeaderHeight);
             Widgets.DrawBoxSolid(headerRect, SectionBgColor);
             TexLoad.DrawHorizontalGradient(headerRect, accent * new Color(1f, 1f, 1f, 0.15f));
@@ -424,7 +526,8 @@ namespace FactionColonies
             else if (selectedBuilding.upkeep < 0)
                 curY = DrawStatLine(curY, x, textW, "FCCodexBuildingIncome".Translate(Math.Abs(selectedBuilding.upkeep).ToString()));
 
-            curY = DrawStatLine(curY, x, textW, "FCCodexBuildingTechLevel".Translate(selectedBuilding.techLevel.ToStringHuman()));
+            if (selectedBuilding.techLevel != TechLevel.Undefined)
+                curY = DrawStatLine(curY, x, textW, "FCCodexBuildingTechLevel".Translate(selectedBuilding.techLevel.ToStringHuman()));
 
             return curY;
         }
@@ -477,34 +580,16 @@ namespace FactionColonies
         private float DrawRequiredBuildings(float curY, float width)
         {
             float x = AccentBarWidth + Margin;
-
             foreach (BuildingFCDef req in selectedBuilding.requiredBuildings)
                 curY = DrawClickableBuilding(curY, x, width, req);
-
-            return curY;
-        }
-
-        private float DrawUpgradeTree(float curY, float width, List<BuildingUpgradeEntry> tree)
-        {
-            float baseX = AccentBarWidth + Margin;
-
-            foreach (BuildingUpgradeEntry entry in tree)
-            {
-                float indent = entry.depth * IndentWidth;
-                string prefix = entry.depth > 0 ? "\u2514 " : "";
-                curY = DrawClickableBuilding(curY, baseX + indent, width, entry.def, prefix);
-            }
-
             return curY;
         }
 
         private float DrawBuildingList(float curY, float width, List<BuildingFCDef> buildings)
         {
             float x = AccentBarWidth + Margin;
-
             foreach (BuildingFCDef building in buildings)
                 curY = DrawClickableBuilding(curY, x, width, building);
-
             return curY;
         }
 
@@ -523,7 +608,7 @@ namespace FactionColonies
             bool isHover = Mouse.IsOver(rowRect);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
-            GUI.color = isHover ? new Color(0.4f, 0.6f, 0.9f) : Color.white;
+            GUI.color = isHover ? HighlightColor : Color.white;
             Widgets.Label(new Rect(textX, curY, width - textX - Margin, UpgradeRowHeight), prefix + building.LabelCap);
             ResetText();
 
@@ -534,30 +619,104 @@ namespace FactionColonies
             {
                 selectedBuilding = building;
                 centerScroll = Vector2.zero;
+                rightScroll = Vector2.zero;
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
 
             return curY + UpgradeRowHeight;
         }
 
-        private float DrawSettlementRestrictions(float curY, float width)
+        private float DrawCompatibleSettlements(float curY, float width, List<WorldSettlementDef> settlements)
         {
             float x = AccentBarWidth + Margin;
-            float textW = width - x - Margin;
 
-            if (selectedBuilding.settlementTypeAllowList.Count > 0)
+            foreach (WorldSettlementDef def in settlements)
             {
-                string names = string.Join(", ", selectedBuilding.settlementTypeAllowList.Select(d => d.LabelCap.RawText).ToArray());
-                curY = DrawStatLine(curY, x, textW, "FCCodexBuildingAllowedSettlements".Translate(names));
-            }
+                Rect rowRect = new Rect(x, curY, width - x - Margin, UpgradeRowHeight);
+                bool isHover = Mouse.IsOver(rowRect);
 
-            if (selectedBuilding.settlementTypeBlockList.Count > 0)
-            {
-                string names = string.Join(", ", selectedBuilding.settlementTypeBlockList.Select(d => d.LabelCap.RawText).ToArray());
-                curY = DrawStatLine(curY, x, textW, "FCCodexBuildingBlockedSettlements".Translate(names));
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.color = isHover ? HighlightColor : Color.white;
+                Widgets.Label(new Rect(x, curY, width - x - Margin, UpgradeRowHeight), def.LabelCap);
+                ResetText();
+
+                if (isHover)
+                    Widgets.DrawHighlight(rowRect);
+
+                if (Widgets.ButtonInvisible(rowRect))
+                {
+                    parentWindow.SelectSettlement(def);
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                }
+
+                curY += UpgradeRowHeight;
             }
 
             return curY;
+        }
+
+        private float DrawFullUpgradeTree(float curY, float width, BuildingFCDef root, List<BuildingUpgradeEntry> tree)
+        {
+            float baseX = AccentBarWidth + Margin;
+
+            // Draw root first (not included in tree entries)
+            curY = DrawUpgradeTreeEntry(curY, baseX, width, root, 0);
+
+            // Draw all descendants
+            foreach (BuildingUpgradeEntry entry in tree)
+                curY = DrawUpgradeTreeEntry(curY, baseX, width, entry.def, entry.depth + 1);
+
+            return curY;
+        }
+
+        private float DrawUpgradeTreeEntry(float curY, float baseX, float width, BuildingFCDef building, int depth)
+        {
+            float indent = depth * IndentWidth;
+            float x = baseX + indent;
+            Rect rowRect = new Rect(x, curY, width - x - Margin, UpgradeRowHeight);
+            float textX = x;
+            bool isCurrent = building == selectedBuilding;
+
+            if (building.Icon is object)
+            {
+                Rect iconRect = new Rect(x, curY + (UpgradeRowHeight - IconSmall) * 0.5f, IconSmall, IconSmall);
+                GUI.DrawTexture(iconRect, building.Icon);
+                textX = iconRect.xMax + SmallMargin;
+            }
+
+            string prefix = depth > 0 ? "\u2514 " : "";
+            bool isHover = Mouse.IsOver(rowRect);
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+
+            if (isCurrent)
+                GUI.color = HighlightColor;
+            else if (isHover)
+                GUI.color = HighlightColor * new Color(1f, 1f, 1f, 0.7f);
+            else
+                GUI.color = Color.white;
+
+            Widgets.Label(new Rect(textX, curY, width - textX - Margin, UpgradeRowHeight), prefix + building.LabelCap);
+            ResetText();
+
+            // Highlight background for current building
+            if (isCurrent)
+                Widgets.DrawBoxSolid(new Rect(x, curY, 2f, UpgradeRowHeight), HighlightColor);
+
+            if (isHover)
+                Widgets.DrawHighlight(rowRect);
+
+            if (Widgets.ButtonInvisible(rowRect) && !isCurrent)
+            {
+                selectedBuilding = building;
+                centerScroll = Vector2.zero;
+                rightScroll = Vector2.zero;
+                SoundDefOf.Click.PlayOneShotOnCamera();
+            }
+
+            return curY + UpgradeRowHeight;
         }
 
         private bool HasTerrainRestrictions()
@@ -602,7 +761,31 @@ namespace FactionColonies
         }
 
         // ══════════════════════════════════════════════════════════════
-        // HEIGHT CALCULATION
+        // BANNER HELPER
+        // ══════════════════════════════════════════════════════════════
+
+        private Texture2D GetBanner(BuildingFCDef def)
+        {
+            string modId = def.modContentPack?.PackageId;
+            if (modId.NullOrEmpty()) return null;
+
+            if (bannerLookedUp.Contains(modId))
+            {
+                Texture2D cached;
+                bannerCache.TryGetValue(modId, out cached);
+                return cached;
+            }
+            bannerLookedUp.Add(modId);
+
+            PatchNoteDef patchNote = PatchNoteDef.GetLatestForMod(modId);
+            Texture2D banner = patchNote?.BannerImage;
+            if (banner is object)
+                bannerCache[modId] = banner;
+            return banner;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // HEIGHT CALCULATIONS
         // ══════════════════════════════════════════════════════════════
 
         private float CalculateCenterHeight(float width)
@@ -612,8 +795,9 @@ namespace FactionColonies
             float total = 30f + 2f + Margin; // title + accent line
 
             // Core stats section
-            int statLines = 3; // cost, duration, tech level
+            int statLines = 2; // cost, duration
             if (selectedBuilding.upkeep != 0) statLines++;
+            if (selectedBuilding.techLevel != TechLevel.Undefined) statLines++;
             total += SectionHeaderHeight + SmallMargin + statLines * StatRowHeight + Margin;
 
             // Description
@@ -647,35 +831,50 @@ namespace FactionColonies
             if (selectedBuilding.requiredBuildings.Count > 0)
                 total += SectionHeaderHeight + SmallMargin + selectedBuilding.requiredBuildings.Count * UpgradeRowHeight + Margin;
 
-            // Upgrade Tree
-            List<BuildingUpgradeEntry> upgradeTree;
-            if (FactionCache.UpgradeTrees.TryGetValue(selectedBuilding, out upgradeTree) && upgradeTree.Count > 0)
-                total += SectionHeaderHeight + SmallMargin + upgradeTree.Count * UpgradeRowHeight + Margin;
-
             // Required By
             List<BuildingFCDef> requiredBy;
             if (FactionCache.RequiredByBuildingMap.TryGetValue(selectedBuilding, out requiredBy) && requiredBy.Count > 0)
                 total += SectionHeaderHeight + SmallMargin + requiredBy.Count * UpgradeRowHeight + Margin;
 
-            // Settlement Type Restrictions
-            if (selectedBuilding.settlementTypeAllowList.Count > 0 || selectedBuilding.settlementTypeBlockList.Count > 0)
+            return total + 50f;
+        }
+
+        private float CalculateRightPaneHeight(float width)
+        {
+            float total = 0f;
+
+            if (selectedBuilding is object)
             {
-                int lines = 0;
-                if (selectedBuilding.settlementTypeAllowList.Count > 0) lines++;
-                if (selectedBuilding.settlementTypeBlockList.Count > 0) lines++;
-                total += SectionHeaderHeight + SmallMargin + lines * StatRowHeight + Margin;
+                // Banner + mod name
+                if (GetBanner(selectedBuilding) is object)
+                    total += BannerHeight + SmallMargin;
+                string modName = selectedBuilding.modContentPack?.ModMetaData?.Name ?? "";
+                if (!modName.NullOrEmpty())
+                    total += 24f;
+                total += Margin;
+
+                // Compatible settlements
+                List<WorldSettlementDef> compatible = selectedBuilding.CompatibleSettlementTypes;
+                if (compatible.Count > 0)
+                    total += SectionHeaderHeight + SmallMargin + compatible.Count * UpgradeRowHeight + Margin;
+
+                // Terrain restrictions
+                if (HasTerrainRestrictions())
+                {
+                    int lines = 0;
+                    if (selectedBuilding.applicableBiomes.Count > 0) lines++;
+                    if (selectedBuilding.minhilliness != Hilliness.Undefined || selectedBuilding.maxhilliness != Hilliness.Undefined) lines++;
+                    total += SectionHeaderHeight + SmallMargin + lines * StatRowHeight + Margin;
+                }
+
+                // Upgrade tree
+                BuildingFCDef root;
+                List<BuildingUpgradeEntry> tree;
+                if (TryGetFullUpgradeTree(selectedBuilding, out root, out tree))
+                    total += SectionHeaderHeight + SmallMargin + (1 + tree.Count) * UpgradeRowHeight + Margin; // +1 for root
             }
 
-            // Terrain Restrictions
-            if (HasTerrainRestrictions())
-            {
-                int lines = 0;
-                if (selectedBuilding.applicableBiomes.Count > 0) lines++;
-                if (selectedBuilding.minhilliness != Hilliness.Undefined || selectedBuilding.maxhilliness != Hilliness.Undefined) lines++;
-                total += SectionHeaderHeight + SmallMargin + lines * StatRowHeight + Margin;
-            }
-
-            return total + 50f; // padding
+            return total + 50f;
         }
 
         private void ResetText()

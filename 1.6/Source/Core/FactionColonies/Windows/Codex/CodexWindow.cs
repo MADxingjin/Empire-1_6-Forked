@@ -41,12 +41,31 @@ namespace FactionColonies
             tabs = new List<ICodexTab>
             {
                 new CodexTab_Info(),
-                new CodexTab_Settlements(),
-                new CodexTab_Buildings()
+                new CodexTab_Settlements(this),
+                new CodexTab_Buildings(this)
             };
             tabLabels = tabs.Select(t => t.TabLabel).ToList();
             activeTabIndex = 0;
             tabs[0].OnTabSelected();
+        }
+
+        /// <summary>
+        /// Switches to the Settlements tab and selects the given settlement type.
+        /// Used for cross-tab navigation from the Buildings tab.
+        /// </summary>
+        public void SelectSettlement(WorldSettlementDef def)
+        {
+            CodexTab_Settlements settTab = tabs.OfType<CodexTab_Settlements>().FirstOrDefault();
+            if (settTab is null) return;
+
+            int tabIndex = tabs.IndexOf(settTab);
+            if (tabIndex >= 0 && tabIndex != activeTabIndex)
+            {
+                tabs[activeTabIndex].OnTabDeselected();
+                activeTabIndex = tabIndex;
+                tabs[activeTabIndex].OnTabSelected();
+            }
+            settTab.SelectDef(def);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@ using FactionColonies.util;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -11,8 +12,8 @@ namespace FactionColonies
     /// <summary>
     /// The "Settlements" tab in the Codex — a reference for all settlement types.
     /// Left pane: flat list of available settlement types.
-    /// Center pane: selected settlement type detail (stats, resources, restrictions).
-    /// No right pane.
+    /// Center pane: selected settlement type detail (stats, modifiers, restrictions).
+    /// Right pane: source mod banner + available resources.
     /// </summary>
     public class CodexTab_Settlements : ICodexTab
     {
@@ -24,26 +25,34 @@ namespace FactionColonies
         private const float StatRowHeight = 22f;
         private const float ResourceRowHeight = 24f;
         private const float SmallMargin = 4f;
+        private const float BannerHeight = 70f;
 
         private static readonly Color DefaultAccent = new Color(0.83f, 0.68f, 0.21f);
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
 
         // ── Data ──
+        private readonly CodexWindow parentWindow;
         private readonly List<WorldSettlementDef> settlementDefs;
         private WorldSettlementDef selectedDef;
 
         // ── Scroll state ──
         private Vector2 leftScroll;
         private Vector2 centerScroll;
+        private Vector2 rightScroll;
 
         // ── Truncation cache ──
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        public string TabLabel => "FCCodexTabSettlements".Translate();
-        public bool HasRightPane => false;
+        // ── Banner cache ──
+        private readonly Dictionary<string, Texture2D> bannerCache = new Dictionary<string, Texture2D>();
+        private readonly HashSet<string> bannerLookedUp = new HashSet<string>();
 
-        public CodexTab_Settlements()
+        public string TabLabel => "FCCodexTabSettlements".Translate();
+        public bool HasRightPane => true;
+
+        public CodexTab_Settlements(CodexWindow window)
         {
+            parentWindow = window;
             settlementDefs = DefDatabase<WorldSettlementDef>.AllDefsListForReading
                 .Where(d => d.available)
                 .OrderBy(d => d.LabelCap.RawText)
@@ -51,6 +60,16 @@ namespace FactionColonies
 
             if (settlementDefs.Count > 0)
                 selectedDef = settlementDefs[0];
+        }
+
+        public void SelectDef(WorldSettlementDef def)
+        {
+            if (def is object && settlementDefs.Contains(def))
+            {
+                selectedDef = def;
+                centerScroll = Vector2.zero;
+                rightScroll = Vector2.zero;
+            }
         }
 
         public void OnTabSelected() { }
@@ -104,6 +123,7 @@ namespace FactionColonies
                 {
                     selectedDef = def;
                     centerScroll = Vector2.zero;
+                    rightScroll = Vector2.zero;
                     SoundDefOf.Click.PlayOneShotOnCamera();
                 }
 
@@ -163,10 +183,6 @@ namespace FactionColonies
             // ── Key Stats ──
             curY = DrawSection(curY, contentWidth, "FCCodexSettlementStats".Translate(), accent, DrawKeyStats);
 
-            // ── Available Resources ──
-            if (selectedDef.resources.Count > 0)
-                curY = DrawSection(curY, contentWidth, "FCCodexSettlementResources".Translate(), accent, DrawResources);
-
             // ── Stat Modifiers ──
             TaggedString statDesc = FCStatModifier.GetDescription(selectedDef.statModifiers);
             if (!statDesc.RawText.NullOrEmpty())
@@ -183,7 +199,59 @@ namespace FactionColonies
             ResetText();
         }
 
-        public void DrawRightPane(Rect rect) { }
+        // ══════════════════════════════════════════════════════════════
+        // RIGHT PANE
+        // ══════════════════════════════════════════════════════════════
+
+        public void DrawRightPane(Rect rect)
+        {
+            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
+            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
+            float contentHeight = CalculateRightPaneHeight(contentWidth);
+            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+
+            Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
+            float curY = 0f;
+
+            // ── Banner ──
+            if (selectedDef is object)
+            {
+                Texture2D banner = GetBanner(selectedDef);
+                if (banner is object)
+                {
+                    Rect bannerRect = new Rect(0f, curY, contentWidth, BannerHeight);
+                    GUI.DrawTexture(bannerRect, banner, ScaleMode.ScaleToFit);
+                    curY += BannerHeight + SmallMargin;
+                }
+
+                // Mod name
+                string modName = selectedDef.modContentPack?.ModMetaData?.Name ?? "";
+                if (!modName.NullOrEmpty())
+                {
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    GUI.color = Color.gray;
+                    Widgets.Label(new Rect(0f, curY, contentWidth, 20f), modName);
+                    ResetText();
+                    curY += 24f;
+                }
+
+                GUI.color = Color.gray;
+                Widgets.DrawLineHorizontal(Margin, curY, contentWidth - Margin * 2);
+                GUI.color = Color.white;
+                curY += Margin;
+            }
+
+            // ── Available Resources ──
+            if (selectedDef is object && selectedDef.resources.Count > 0)
+            {
+                Color accent = GetAccent(selectedDef);
+                curY = DrawSection(curY, contentWidth, "FCCodexSettlementResources".Translate(), accent, DrawResources);
+            }
+
+            Widgets.EndScrollView();
+            ResetText();
+        }
 
         // ══════════════════════════════════════════════════════════════
         // SECTION DRAWING HELPERS
@@ -195,7 +263,6 @@ namespace FactionColonies
         {
             float curY = startY;
 
-            // Header
             Rect headerRect = new Rect(0f, curY, width, SectionHeaderHeight);
             Widgets.DrawBoxSolid(headerRect, SectionBgColor);
             TexLoad.DrawHorizontalGradient(headerRect, accent * new Color(1f, 1f, 1f, 0.15f));
@@ -208,7 +275,6 @@ namespace FactionColonies
             ResetText();
             curY += SectionHeaderHeight + SmallMargin;
 
-            // Content
             curY = drawer(curY, width);
             curY += Margin;
 
@@ -226,11 +292,9 @@ namespace FactionColonies
             if (selectedDef.maxSettlementLevel < 99)
                 curY = DrawStatLine(curY, x, textW, "FCCodexSettlementMaxLevel".Translate(selectedDef.maxSettlementLevel.ToString()));
 
-            if (selectedDef.maxBuildingCount < 99)
-                curY = DrawStatLine(curY, x, textW, "FCCodexSettlementMaxBuildings".Translate(selectedDef.maxBuildingCount.ToString()));
-
-            curY = DrawStatLine(curY, x, textW, "FCCodexSettlementUnlockedBuildings".Translate(
-                selectedDef.baseUnlockedBuildings.ToString(), selectedDef.perLevelUnlockedBuildings.ToString("F1")));
+            // Building slots progression — query the extension at representative levels
+            string slotsProgression = BuildSlotsProgression(selectedDef);
+            curY = DrawStatLine(curY, x, textW, "FCCodexSettlementBuildingSlots".Translate(slotsProgression));
 
             if (selectedDef.planetLayers.Count > 0)
             {
@@ -251,12 +315,54 @@ namespace FactionColonies
                 curY = DrawStatLine(curY, x, textW, "FCCodexSettlementRaidWeight".Translate(
                     selectedDef.raidTargetingWeight.ToString("F1")));
 
-            string creationType = selectedDef.isConstructed
-                ? "FCCodexSettlementConstruction".Translate()
-                : "FCCodexSettlementExpedition".Translate();
-            curY = DrawStatLine(curY, x, textW, "FCCodexSettlementCreationType".Translate(creationType));
-
             return curY;
+        }
+
+        /// <summary>
+        /// Builds a compact building slot progression string by querying the settlement type extension
+        /// at representative levels and only showing levels where the slot count changes.
+        /// </summary>
+        private static string BuildSlotsProgression(WorldSettlementDef def)
+        {
+            SettlementTypeExtension ext = def.GetSettlementTypeExtension();
+            if (ext is null)
+                return def.baseUnlockedBuildings.ToString();
+
+            int maxLevel = def.maxSettlementLevel < 99 ? def.maxSettlementLevel : 20;
+            int maxCount = def.maxBuildingCount;
+
+            // Sample levels 0 through maxLevel
+            List<int> levels = new List<int>();
+            List<int> slots = new List<int>();
+            int lastSlots = -1;
+
+            for (int lvl = 0; lvl <= maxLevel; lvl++)
+            {
+                int s = ext.GetBuildingSlots(lvl, maxCount);
+                if (s != lastSlots)
+                {
+                    levels.Add(lvl);
+                    slots.Add(s);
+                    lastSlots = s;
+                    // If we've hit max, no need to continue
+                    if (s >= maxCount) break;
+                }
+            }
+
+            if (levels.Count <= 1)
+                return slots.Count > 0 ? slots[0].ToString() : "0";
+
+            // Format: "3 (lvl 1) → 5 (lvl 5) → 8 (lvl 10)"
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < levels.Count; i++)
+            {
+                if (i > 0) sb.Append(" \u2192 ");
+                sb.Append(slots[i]);
+                sb.Append(" (lvl ");
+                sb.Append(levels[i]);
+                sb.Append(")");
+            }
+            return sb.ToString();
         }
 
         private float DrawStatLine(float curY, float x, float width, string text)
@@ -351,7 +457,31 @@ namespace FactionColonies
         }
 
         // ══════════════════════════════════════════════════════════════
-        // HEIGHT CALCULATION
+        // BANNER HELPER
+        // ══════════════════════════════════════════════════════════════
+
+        private Texture2D GetBanner(WorldSettlementDef def)
+        {
+            string modId = def.modContentPack?.PackageId;
+            if (modId.NullOrEmpty()) return null;
+
+            if (bannerLookedUp.Contains(modId))
+            {
+                Texture2D cached;
+                bannerCache.TryGetValue(modId, out cached);
+                return cached;
+            }
+            bannerLookedUp.Add(modId);
+
+            PatchNoteDef patchNote = PatchNoteDef.GetLatestForMod(modId);
+            Texture2D banner = patchNote?.BannerImage;
+            if (banner is object)
+                bannerCache[modId] = banner;
+            return banner;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // HEIGHT CALCULATIONS
         // ══════════════════════════════════════════════════════════════
 
         private float CalculateCenterHeight(float width)
@@ -368,17 +498,11 @@ namespace FactionColonies
 
             // Key Stats section
             total += SectionHeaderHeight + SmallMargin;
-            int statLines = 4; // workers, unlocked buildings, manual battle, can be raided, creation type
-            statLines += 1; // creation type
+            int statLines = 4; // workers, building slots, manual battle, can be raided
             if (selectedDef.maxSettlementLevel < 99) statLines++;
-            if (selectedDef.maxBuildingCount < 99) statLines++;
             if (selectedDef.planetLayers.Count > 0) statLines++;
             if (selectedDef.raidTargetingWeight != 1.0f) statLines++;
             total += statLines * StatRowHeight + Margin;
-
-            // Resources section
-            if (selectedDef.resources.Count > 0)
-                total += SectionHeaderHeight + SmallMargin + selectedDef.resources.Count * ResourceRowHeight + Margin;
 
             // Stat Modifiers section
             TaggedString statDesc = FCStatModifier.GetDescription(selectedDef.statModifiers);
@@ -400,7 +524,28 @@ namespace FactionColonies
             // Biome Restrictions
             total += SectionHeaderHeight + SmallMargin + StatRowHeight + Margin;
 
-            return total + 50f; // padding
+            return total + 50f;
+        }
+
+        private float CalculateRightPaneHeight(float width)
+        {
+            float total = 0f;
+
+            if (selectedDef is object)
+            {
+                if (GetBanner(selectedDef) is object)
+                    total += BannerHeight + SmallMargin;
+                string modName = selectedDef.modContentPack?.ModMetaData?.Name ?? "";
+                if (!modName.NullOrEmpty())
+                    total += 24f;
+                total += Margin; // divider
+
+                // Resources
+                if (selectedDef.resources.Count > 0)
+                    total += SectionHeaderHeight + SmallMargin + selectedDef.resources.Count * ResourceRowHeight + Margin;
+            }
+
+            return total + 50f;
         }
 
         private void ResetText()
