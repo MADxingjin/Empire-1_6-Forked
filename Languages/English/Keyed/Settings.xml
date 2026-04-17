@@ -43,6 +43,7 @@ Values in between dampen the effect of military efficiency on the auto combat.</
 	<FCSettingShowSettleConfirm>Show confirmation when founding settlements</FCSettingShowSettleConfirm>
 	<FCSettingUseThreadedRoadComputation>Use threaded road computation</FCSettingUseThreadedRoadComputation>
 	<FCSettingUseThreadedRoadComputationDesc>Computes road paths on a background thread for better performance. Disable this if you experience issues with road building.</FCSettingUseThreadedRoadComputationDesc>
+	<FCSettingEdgesPerRoadTick>Edges per road tick</FCSettingEdgesPerRoadTick>
 	<FCSettingEnableDebugLogging>Enable Verbose Logging</FCSettingEnableDebugLogging>
 	<FCSettingResetButton>Reset Settings</FCSettingResetButton>
 	<FCOpenPatchNotes>Open Patch Notes Window</FCOpenPatchNotes>

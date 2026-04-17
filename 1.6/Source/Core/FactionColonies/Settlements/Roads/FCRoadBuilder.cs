@@ -96,6 +96,12 @@ namespace FactionColonies
                 roadQueue.shouldUpdateSettlementsToProcess = false;
             }
 
+            // Advance incremental MST computation (non-threaded only)
+            if (!FCSettings.useThreadedRoadComputation && FCSettings.edgesPerRoadTick > 0)
+            {
+                roadQueue.AdvanceMSTIncremental(FCSettings.edgesPerRoadTick);
+            }
+
             if (!pathsFullyProcessed)
             {
                 for (int i = 0; i < 5; i++)

@@ -24,6 +24,15 @@ namespace FactionColonies
         volatile int completedGeneration = -1;
         List<Edge> computedMSTEdges;
 
+        // Incremental MST computation state (not saved)
+        private List<int> incrementalTiles;
+        private PlanetLayer incrementalLayer;
+        private WorldPathing incrementalPathing;
+        private List<Edge> incrementalEdges;
+        private int incrementalI;
+        private int incrementalJ;
+        private int incrementalGeneration;
+
         public RoadDef RoadDef
         {
             get
@@ -246,14 +255,11 @@ namespace FactionColonies
         /// <summary>
         /// Runs on the main thread. Computes all pairwise A* pathfinding costs
         /// and builds the MST without threading. Used as a fallback when threaded
-        /// computation is disabled in settings.
+        /// computation is disabled in settings and edgesPerRoadTick is 0 (unlimited).
         /// </summary>
         void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer)
         {
             int n = allTiles.Count;
-            Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
-            for (int i = 0; i < n; i++)
-                tileToIndex[allTiles[i]] = i;
 
             List<Edge> edges = new List<Edge>(n * (n - 1) / 2);
             using (var pathing = new WorldPathing(layer))
@@ -277,6 +283,20 @@ namespace FactionColonies
                 }
             }
 
+            FinishMSTFromEdges(edges, allTiles, mstGeneration, "synchronously");
+        }
+
+        /// <summary>
+        /// Shared Kruskal phase: sorts edges, builds MST, publishes results.
+        /// Used by both synchronous and incremental paths.
+        /// </summary>
+        void FinishMSTFromEdges(List<Edge> edges, List<int> allTiles, int generation, string label)
+        {
+            int n = allTiles.Count;
+            Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++)
+                tileToIndex[allTiles[i]] = i;
+
             edges.Sort((a, b) => a.cost.CompareTo(b.cost));
             UnionFind uf = new UnionFind(n);
             List<Edge> mstEdges = new List<Edge>(n - 1);
@@ -298,8 +318,88 @@ namespace FactionColonies
             }
 
             computedMSTEdges = mstEdges;
-            completedGeneration = mstGeneration;
-            LogUtil.Message($"Road MST computed synchronously: {edges.Count} edges, {mstEdges.Count} MST edges");
+            completedGeneration = generation;
+            LogUtil.Message($"Road MST computed {label}: {edges.Count} edges, {mstEdges.Count} MST edges");
+        }
+
+        /// <summary>
+        /// Initializes incremental MST computation state. The actual edge computation
+        /// is spread across ticks via AdvanceMSTIncremental.
+        /// </summary>
+        void StartMSTIncremental(List<int> allTiles, PlanetLayer layer, int generation)
+        {
+            CleanupIncremental();
+
+            int n = allTiles.Count;
+            incrementalTiles = allTiles;
+            incrementalLayer = layer;
+            incrementalPathing = new WorldPathing(layer);
+            incrementalEdges = new List<Edge>(n * (n - 1) / 2);
+            incrementalI = 0;
+            incrementalJ = 1;
+            incrementalGeneration = generation;
+        }
+
+        /// <summary>
+        /// Advances incremental MST edge computation by up to edgesPerTick A* calls.
+        /// Returns true if still computing, false if done or nothing to do.
+        /// </summary>
+        public bool AdvanceMSTIncremental(int edgesPerTick)
+        {
+            if (incrementalTiles is null)
+                return false;
+
+            // Stale — a new generation was requested
+            if (incrementalGeneration != mstGeneration)
+            {
+                CleanupIncremental();
+                return false;
+            }
+
+            int n = incrementalTiles.Count;
+            int computed = 0;
+
+            while (incrementalI < n - 1 && computed < edgesPerTick)
+            {
+                var fromTile = new PlanetTile(incrementalTiles[incrementalI], incrementalLayer);
+                var toTile = new PlanetTile(incrementalTiles[incrementalJ], incrementalLayer);
+                WorldPath path = incrementalPathing.FindPath(fromTile, toTile, null);
+                float cost = path.Found ? path.TotalCost : float.MaxValue;
+                path.Dispose();
+                incrementalEdges.Add(new Edge
+                {
+                    fromTile = incrementalTiles[incrementalI],
+                    toTile = incrementalTiles[incrementalJ],
+                    cost = cost
+                });
+                computed++;
+
+                // Advance indices through upper triangle
+                incrementalJ++;
+                if (incrementalJ >= n)
+                {
+                    incrementalI++;
+                    incrementalJ = incrementalI + 1;
+                }
+            }
+
+            // All pairs exhausted — run Kruskal and publish
+            if (incrementalI >= n - 1)
+            {
+                FinishMSTFromEdges(incrementalEdges, incrementalTiles, incrementalGeneration, "incrementally");
+                CleanupIncremental();
+                return false;
+            }
+
+            return true;
+        }
+
+        void CleanupIncremental()
+        {
+            incrementalPathing?.Dispose();
+            incrementalPathing = null;
+            incrementalTiles = null;
+            incrementalEdges = null;
         }
 
         /// <summary>
@@ -377,6 +477,10 @@ namespace FactionColonies
                 Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation));
                 thread.IsBackground = true;
                 thread.Start();
+            }
+            else if (FCSettings.edgesPerRoadTick > 0)
+            {
+                StartMSTIncremental(allTiles, layer, generation);
             }
             else
             {

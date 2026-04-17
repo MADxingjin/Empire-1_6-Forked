@@ -213,4 +213,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_15</defName>
+		<label>Road Builder Update</label>
+		<description>Adds option to not use the threaded computations for the road builder, just in case some users run into problems with it.</description>
+		<releaseDate>2026-04-17</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds a version of the road builder network calculations that runs on the main thread instead of a background thread</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
