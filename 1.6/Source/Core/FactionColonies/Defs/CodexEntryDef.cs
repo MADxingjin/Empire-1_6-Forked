@@ -1,7 +1,6 @@
 using FactionColonies.util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -16,10 +15,10 @@ namespace FactionColonies
     public class CodexEntryDef : Def
     {
         /// <summary>
-        /// Category grouping within the Codex (e.g. "Economy", "Military", "Settlements").
-        /// Entries with the same category appear together in the left pane.
+        /// The category this entry belongs to. Determines grouping in the left pane,
+        /// accent color, mod association, and banner image.
         /// </summary>
-        public string category = "";
+        public CodexCategoryDef category;
 
         /// <summary>
         /// Sort order within the category. Lower values appear first.
@@ -31,14 +30,6 @@ namespace FactionColonies
         /// </summary>
         [NoTranslate]
         public string iconPath;
-
-        /// <summary>
-        /// The packageId of the mod that owns this entry (e.g. "empire.mod").
-        /// Used for top-level grouping in the Codex window so submod entries
-        /// are visually distinct from base mod entries.
-        /// </summary>
-        [NoTranslate]
-        public string modId = "";
 
         /// <summary>
         /// Optional list of defNames of related CodexEntryDefs, rendered as
@@ -62,29 +53,11 @@ namespace FactionColonies
         /// </summary>
         public Type dynamicProvider;
 
-        /// <summary>
-        /// Accent color for this entry's category. Used for left-border bars,
-        /// gradient tints on category headers, and the title accent line.
-        /// All entries in the same category should use the same color.
-        /// </summary>
-        public Color categoryColor = Color.gray;
-
-        /// <summary>
-        /// Optional banner texture path displayed at the top of the detail pane.
-        /// If empty, falls back to the source mod's patch notes banner via
-        /// <see cref="PatchNoteDef.GetLatestForMod"/>.
-        /// </summary>
-        [NoTranslate]
-        public string bannerPath;
-
         // ── Cached runtime data ──
 
         private Texture2D iconCached;
         private List<Texture2D> imagesCached;
         private ICodexDynamicProvider providerInstance;
-        private ModContentPack modContentPackCached;
-        private Texture2D bannerCached;
-        private bool bannerLookedUp;
 
         /// <summary>
         /// Returns the cached icon texture, or null if no iconPath is set.
@@ -138,63 +111,12 @@ namespace FactionColonies
             }
         }
 
-        /// <summary>
-        /// Returns the banner texture for the detail pane header. Checks <see cref="bannerPath"/>
-        /// first, then falls back to the source mod's latest <see cref="PatchNoteDef"/> banner.
-        /// </summary>
-        public Texture2D BannerImage
-        {
-            get
-            {
-                if (!bannerLookedUp)
-                {
-                    bannerLookedUp = true;
-                    if (!bannerPath.NullOrEmpty())
-                        bannerCached = ContentFinder<Texture2D>.Get(bannerPath, false);
-                    if (bannerCached is null && !modId.NullOrEmpty())
-                        bannerCached = PatchNoteDef.GetLatestForMod(modId)?.BannerImage;
-                }
-                return bannerCached;
-            }
-        }
-
-        /// <summary>
-        /// Returns the <see cref="ModContentPack"/> matching <see cref="modId"/>.
-        /// </summary>
-        public ModContentPack ModContentPack
-        {
-            get
-            {
-                if (modContentPackCached is null && !modId.NullOrEmpty())
-                {
-                    modContentPackCached = LoadedModManager.RunningModsListForReading
-                        .FirstOrFallback(p => PackMatchesModId(p));
-                }
-                return modContentPackCached;
-            }
-        }
-
-        /// <summary>
-        /// The display name of the owning mod, or the raw modId if not found.
-        /// </summary>
-        public string ModName => ModContentPack?.ModMetaData.Name ?? modId;
-
-        private bool PackMatchesModId(ModContentPack pack)
-        {
-            if (pack.ModMetaData.appendPackageIdSteamPostfix)
-                return pack.PackageId == modId + ModMetaData.SteamModPostfix;
-            return pack.PackageId == modId;
-        }
-
         public override void ClearCachedData()
         {
             base.ClearCachedData();
             iconCached = null;
             imagesCached = null;
             providerInstance = null;
-            modContentPackCached = null;
-            bannerCached = null;
-            bannerLookedUp = false;
         }
 
         public override IEnumerable<string> ConfigErrors()
@@ -202,10 +124,8 @@ namespace FactionColonies
             foreach (string error in base.ConfigErrors())
                 yield return error;
 
-            if (category.NullOrEmpty())
-                yield return "category is empty";
-            if (modId.NullOrEmpty())
-                yield return "modId is empty";
+            if (category is null)
+                yield return "category is null. Must reference a CodexCategoryDef";
             if (dynamicProvider is object && !typeof(ICodexDynamicProvider).IsAssignableFrom(dynamicProvider))
                 yield return $"dynamicProvider type '{dynamicProvider.FullName}' does not implement ICodexDynamicProvider";
 

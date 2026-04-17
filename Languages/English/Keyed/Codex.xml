@@ -3,6 +3,7 @@
 
 	<!-- Codex Window Chrome -->
 	<FCCodexTitle>Empire Codex</FCCodexTitle>
+	<FCCodexTabInfo>Info</FCCodexTabInfo>
 	<FCCodexSelectEntry>Select an entry from the left to view details.</FCCodexSelectEntry>
 	<FCCodexLiveData>Current Game Values</FCCodexLiveData>
 	<FCCodexSeeAlso>See Also:</FCCodexSeeAlso>

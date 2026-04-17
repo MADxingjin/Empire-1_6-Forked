@@ -1,0 +1,105 @@
+using FactionColonies.util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Verse;
+
+namespace FactionColonies
+{
+    /// <summary>
+    /// The Empire Codex window — a central reference hub with tabbed content.
+    /// The window manages tab selection and pane layout; each <see cref="ICodexTab"/>
+    /// determines what gets drawn in the left, center, and optional right panes.
+    /// </summary>
+    public class CodexWindow : Window
+    {
+        private const float LeftPaneWidth = 200f;
+        private const float RightPaneWidth = 220f;
+        private const float DividerWidth = 1f;
+        private const float margin = 8f;
+        private const float TabHeight = 22f;
+
+        public override Vector2 InitialSize => new Vector2(1050f, 650f);
+
+        private readonly List<ICodexTab> tabs;
+        private readonly List<string> tabLabels;
+        private int activeTabIndex;
+
+        public CodexWindow()
+        {
+            doCloseButton = false;
+            doCloseX = true;
+            forcePause = false;
+            absorbInputAroundWindow = false;
+            draggable = true;
+            resizeable = true;
+
+            tabs = new List<ICodexTab> { new CodexTab_Info() };
+            tabLabels = tabs.Select(t => t.TabLabel).ToList();
+            activeTabIndex = 0;
+            tabs[0].OnTabSelected();
+        }
+
+        /// <summary>
+        /// Opens the Codex and pre-selects a specific entry in the Info tab.
+        /// </summary>
+        public CodexWindow(CodexEntryDef preselect) : this()
+        {
+            if (preselect is object)
+            {
+                CodexTab_Info infoTab = tabs.OfType<CodexTab_Info>().FirstOrDefault();
+                if (infoTab is object)
+                    infoTab.SelectEntry(preselect);
+            }
+        }
+
+        public override void DoWindowContents(Rect inRect)
+        {
+            // ── Tab row ──
+            int newTab = UIUtil.DrawTabRow(inRect, tabLabels, activeTabIndex, out Rect contentRect, tabHeight: TabHeight);
+            if (newTab != activeTabIndex)
+            {
+                tabs[activeTabIndex].OnTabDeselected();
+                activeTabIndex = newTab;
+                tabs[activeTabIndex].OnTabSelected();
+            }
+
+            Rect bodyRect = contentRect.ContractedBy(margin);
+            ICodexTab activeTab = tabs[activeTabIndex];
+
+            // ── Calculate pane rects ──
+            float bodyX = bodyRect.x;
+            float bodyY = bodyRect.y;
+            float bodyW = bodyRect.width;
+            float bodyH = bodyRect.height;
+
+            Rect leftRect = new Rect(bodyX, bodyY, LeftPaneWidth, bodyH);
+            float divider1X = leftRect.xMax + margin * 0.5f;
+
+            float rightPaneW = activeTab.HasRightPane ? RightPaneWidth : 0f;
+            float centerW = bodyW - LeftPaneWidth - rightPaneW - (activeTab.HasRightPane ? margin * 2 + DividerWidth * 2 : margin + DividerWidth);
+            float centerX = leftRect.xMax + margin + DividerWidth;
+            Rect centerRect2 = new Rect(centerX, bodyY, centerW, bodyH);
+
+            // ── Draw dividers ──
+            GUI.color = Color.gray;
+            Widgets.DrawLineVertical(divider1X, bodyY, bodyH);
+
+            Rect rightRect = default(Rect);
+            if (activeTab.HasRightPane)
+            {
+                float divider2X = centerRect2.xMax + margin * 0.5f;
+                Widgets.DrawLineVertical(divider2X, bodyY, bodyH);
+                rightRect = new Rect(divider2X + margin * 0.5f + DividerWidth, bodyY, RightPaneWidth, bodyH);
+            }
+            GUI.color = Color.white;
+
+            // ── Draw panes ──
+            activeTab.DrawLeftPane(leftRect);
+            activeTab.DrawCenterPane(centerRect2);
+            if (activeTab.HasRightPane)
+                activeTab.DrawRightPane(rightRect);
+        }
+    }
+}

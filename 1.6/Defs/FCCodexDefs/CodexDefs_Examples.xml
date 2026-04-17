@@ -8,29 +8,27 @@
         defName      - unique identifier (used for seeAlso cross-references)
         label        - display title shown in the Codex
         description  - body text shown in the detail pane (supports \n for newlines)
-        category     - grouping name (entries with the same category appear together)
-        modId        - packageId of the mod that owns this entry (lowercase)
+        category     - reference to a CodexCategoryDef (e.g. CodexCat_Economy)
 
     Optional fields:
         displayOrder    - sort order within category (lower = first, default 0)
         iconPath        - texture path for an icon next to the title
-        categoryColor   - RGB accent color for this category, e.g. (0.8, 0.27, 0.27)
-                          Used for category header tint, accent bars, and title accent line
-        bannerPath      - texture path for a banner image at top of detail pane
-                          (if omitted, falls back to the source mod's patch notes banner)
         seeAlso         - list of defNames of related entries (rendered as clickable links)
         imagePaths      - list of texture paths for an image carousel
         dynamicProvider - fully qualified C# class name implementing ICodexDynamicProvider
-                          (appends live game-state data below the description)
+                          (appends live game-state data in the right pane)
 
-    To add entries from a submod, just create a new XML file with CodexEntryDefs
-    in your submod's Defs/ folder. Use your own modId. They appear automatically.
+    Category color, mod association, and banner are defined on the CodexCategoryDef,
+    not on individual entries. See CodexCategoryDefs.xml.
+
+    To add entries from a submod:
+    1. Define your own CodexCategoryDef(s) with your modId
+    2. Create CodexEntryDef entries referencing your categories
+    3. Drop both XML files in your submod's Defs/ folder — they appear automatically
 -->
 <Defs>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         CATEGORY: Economy
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- CATEGORY: Economy -->
 
     <FactionColonies.CodexEntryDef>
         <defName>Codex_Prosperity</defName>
@@ -45,10 +43,8 @@ Prosperity drifts daily toward a target calculated from your other social stats:
 The drift rate is 1 point per day (plus any stat modifiers from policies, buildings, or events). If your happiness and loyalty are high and unrest is low, prosperity will climb. If social stats deteriorate, prosperity follows.
 
 Losing a defensive battle costs 20 prosperity immediately, which can take many days to recover from.</description>
-        <category>Economy</category>
-        <categoryColor>(0.29, 0.64, 0.29)</categoryColor>
+        <category>CodexCat_Economy</category>
         <displayOrder>10</displayOrder>
-        <modId>matathias.empire</modId>
         <iconPath>GUI/Prosperity</iconPath>
         <dynamicProvider>FactionColonies.CodexProvider_Prosperity</dynamicProvider>
         <seeAlso>
@@ -56,9 +52,7 @@ Losing a defensive battle costs 20 prosperity immediately, which can take many d
         </seeAlso>
     </FactionColonies.CodexEntryDef>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         CATEGORY: Military
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- CATEGORY: Military -->
 
     <FactionColonies.CodexEntryDef>
         <defName>Codex_ThreatLevel</defName>
@@ -76,10 +70,8 @@ Each factor follows a non-linear curve; early growth raises threat slowly, but l
 During your first year, a handicap limits how fast threat can grow regardless of your empire's strength. After one year, the cap transitions smoothly to ETL-based scaling.
 
 The Max Threat Multiplier setting (default 3.0x) provides an absolute ceiling to ETL.</description>
-        <category>Military</category>
-        <categoryColor>(0.8, 0.27, 0.27)</categoryColor>
+        <category>CodexCat_Military</category>
         <displayOrder>10</displayOrder>
-        <modId>matathias.empire</modId>
         <iconPath>GUI/MilitaryLevel</iconPath>
         <dynamicProvider>FactionColonies.CodexProvider_ThreatLevel</dynamicProvider>
         <seeAlso>
