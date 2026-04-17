@@ -26,11 +26,11 @@ namespace FactionColonies
 
             if (current == EmpireDifficultyLevel.Custom)
             {
-                result += "\n" + "FCCodexDiffCustom".Translate(
-                    FCSettings.silverPerResource,
-                    FCSettings.timeBetweenTaxes / GenDate.TicksPerDay,
-                    FCSettings.productionTitheMod,
-                    FCSettings.workerCost);
+                result += "\n" + "FCCodexDiffCustomLabel".Translate() + "\n";
+                result += "FCCodexDiffCustomRow".Translate("Silver/Res", FCSettings.silverPerResource) + "\n";
+                result += "FCCodexDiffCustomRow".Translate("Tax Days", FCSettings.timeBetweenTaxes / GenDate.TicksPerDay) + "\n";
+                result += "FCCodexDiffCustomRow".Translate("Tithe Mod", FCSettings.productionTitheMod) + "\n";
+                result += "FCCodexDiffCustomRow".Translate("Worker Cost", FCSettings.workerCost);
             }
 
             return result;

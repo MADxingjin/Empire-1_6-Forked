@@ -28,8 +28,10 @@ namespace FactionColonies
 
             string result = "FCCodexETLCurrent".Translate(Math.Round(etl, 2)) + "\n\n";
             result += "FCCodexETLBreakdown".Translate() + "\n";
-            result += "  " + "FCCodexETLAvgLevel".Translate(Math.Round(avgLevel, 1), Math.Round(avgFactor * 0.35, 3)) + "\n";
-            result += "  " + "FCCodexETLMaxLevel".Translate(maxLevel, Math.Round(maxFactor * 0.15, 3)) + "\n";
+            result += "  " + "FCCodexETLAvgLevel".Translate(Math.Round(avgLevel, 1)) + "\n";
+            result += "    " + "FCCodexETLContrib".Translate(Math.Round(avgFactor * 0.35, 3)) + "\n";
+            result += "  " + "FCCodexETLMaxLevel".Translate(maxLevel) + "\n";
+            result += "    " + "FCCodexETLContrib".Translate(Math.Round(maxFactor * 0.15, 3)) + "\n";
             result += "  " + "FCCodexETLIncome".Translate(Math.Round(income, 0)) + "\n";
             result += "  " + "FCCodexETLCount".Translate(count) + "\n\n";
             result += "FCCodexETLHandicapCap".Translate(Math.Round(handicapCap, 2)) + "\n";

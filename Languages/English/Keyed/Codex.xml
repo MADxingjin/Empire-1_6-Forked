@@ -12,14 +12,15 @@
 
 	<!-- Threat Level Provider -->
 	<FCCodexETLNoSettlements>No settlements — ETL defaults to 1.0×.</FCCodexETLNoSettlements>
-	<FCCodexETLCurrent>Current Empire Threat Level: {0}×</FCCodexETLCurrent>
-	<FCCodexETLBreakdown>Component Breakdown:</FCCodexETLBreakdown>
-	<FCCodexETLAvgLevel>Avg Settlement Level: {0} → contribution: {1}</FCCodexETLAvgLevel>
-	<FCCodexETLMaxLevel>Max Settlement Level: {0} → contribution: {1}</FCCodexETLMaxLevel>
-	<FCCodexETLIncome>Faction Income: {0} silver</FCCodexETLIncome>
-	<FCCodexETLCount>Settlement Count: {0}</FCCodexETLCount>
-	<FCCodexETLHandicapCap>Current Handicap Cap: {0}×</FCCodexETLHandicapCap>
-	<FCCodexETLMaxSetting>Max Threat Multiplier (setting): {0}×</FCCodexETLMaxSetting>
+	<FCCodexETLCurrent>Current ETL: {0}×</FCCodexETLCurrent>
+	<FCCodexETLBreakdown>Components:</FCCodexETLBreakdown>
+	<FCCodexETLAvgLevel>Avg Level: {0}</FCCodexETLAvgLevel>
+	<FCCodexETLMaxLevel>Max Level: {0}</FCCodexETLMaxLevel>
+	<FCCodexETLContrib>+{0}</FCCodexETLContrib>
+	<FCCodexETLIncome>Income: {0} silver</FCCodexETLIncome>
+	<FCCodexETLCount>Settlements: {0}</FCCodexETLCount>
+	<FCCodexETLHandicapCap>Handicap Cap: {0}×</FCCodexETLHandicapCap>
+	<FCCodexETLMaxSetting>Max Setting: {0}×</FCCodexETLMaxSetting>
 
 	<!-- Battle Simulation Provider -->
 	<FCCodexBattleParams>Current Battle Parameters</FCCodexBattleParams>
@@ -38,16 +39,20 @@
 
 	<!-- Prosperity Provider -->
 	<FCCodexProsNoSettlements>No settlements to show prosperity data.</FCCodexProsNoSettlements>
-	<FCCodexProsHeader>Per-Settlement Prosperity Breakdown</FCCodexProsHeader>
+	<FCCodexProsHeader>Per-Settlement Breakdown</FCCodexProsHeader>
 	<FCCodexProsCurrent>Prosperity: {0}</FCCodexProsCurrent>
-	<FCCodexProsTarget>Target: {0}  ← ({1} + {2} + {3}) / 3</FCCodexProsTarget>
-	<FCCodexProsDrift>Daily drift: {0}</FCCodexProsDrift>
-	<FCCodexProsProdMult>Production multiplier: ×{0}</FCCodexProsProdMult>
+	<FCCodexProsTargetVal>Target: {0}</FCCodexProsTargetVal>
+	<FCCodexProsHappiness>Happiness: {0}</FCCodexProsHappiness>
+	<FCCodexProsLoyalty>Loyalty: {0}</FCCodexProsLoyalty>
+	<FCCodexProsStability>Stability: {0}</FCCodexProsStability>
+	<FCCodexProsDrift>Drift: {0}/day</FCCodexProsDrift>
+	<FCCodexProsProdMult>Production: ×{0}</FCCodexProsProdMult>
 
 	<!-- Worker Overwork Provider -->
 	<FCCodexWorkerParams>Current Worker Parameters</FCCodexWorkerParams>
 	<FCCodexWorkerBaseCost>Base worker cost: {0} silver</FCCodexWorkerBaseCost>
-	<FCCodexWorkerFormula>Formula: cost × (1 + overwork/20) — each worker over the soft cap adds 5% to ALL workers</FCCodexWorkerFormula>
+	<FCCodexWorkerFormula>Formula: cost × (1 + overwork/20)</FCCodexWorkerFormula>
+	<FCCodexWorkerFormulaDesc>Each worker over soft cap adds 5% cost</FCCodexWorkerFormulaDesc>
 	<FCCodexWorkerExample>Example: {0} workers over cap → +{1}% cost → {2} silver per worker</FCCodexWorkerExample>
 
 	<!-- Military Cooldown Provider -->
@@ -68,7 +73,8 @@
 	<FCCodexDiffCurrent>Current difficulty: {0}</FCCodexDiffCurrent>
 	<FCCodexDiffHeader>Difficulty → Silver/Res | Tax Days | Tithe Mod | Worker Cost</FCCodexDiffHeader>
 	<FCCodexDiffRow>{0}: {1} | {2}d | {3} | {4}</FCCodexDiffRow>
-	<FCCodexDiffCustom>Your custom values: Silver/Res={0}, Tax Days={1}, Tithe Mod={2}, Worker Cost={3}</FCCodexDiffCustom>
+	<FCCodexDiffCustomLabel>Your custom values:</FCCodexDiffCustomLabel>
+	<FCCodexDiffCustomRow>  {0}: {1}</FCCodexDiffCustomRow>
 
 	<!-- Enhanced Tooltips -->
 	<FCCodexTipProsFormula>Production multiplier = prosperity / 100. At 50%, you produce half as much.</FCCodexTipProsFormula>

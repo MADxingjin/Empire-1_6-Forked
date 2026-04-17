@@ -15,7 +15,8 @@ namespace FactionColonies
 
             string result = "FCCodexWorkerParams".Translate() + "\n\n";
             result += "FCCodexWorkerBaseCost".Translate(baseCost) + "\n";
-            result += "FCCodexWorkerFormula".Translate() + "\n\n";
+            result += "FCCodexWorkerFormula".Translate() + "\n";
+            result += "FCCodexWorkerFormulaDesc".Translate() + "\n\n";
 
             // Show example: 5 workers over soft cap
             int exampleOverwork = 5;

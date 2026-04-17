@@ -24,11 +24,10 @@ namespace FactionColonies
 
                 result += s.Name + ":\n";
                 result += "  " + "FCCodexProsCurrent".Translate(Math.Round(s.prosperity, 1)) + "\n";
-                result += "  " + "FCCodexProsTarget".Translate(
-                    Math.Round(target, 1),
-                    Math.Round(s.happiness, 1),
-                    Math.Round(s.loyalty, 1),
-                    Math.Round(100.0 - s.unrest, 1)) + "\n";
+                result += "  " + "FCCodexProsTargetVal".Translate(Math.Round(target, 1)) + "\n";
+                result += "    " + "FCCodexProsHappiness".Translate(Math.Round(s.happiness, 1)) + "\n";
+                result += "    " + "FCCodexProsLoyalty".Translate(Math.Round(s.loyalty, 1)) + "\n";
+                result += "    " + "FCCodexProsStability".Translate(Math.Round(100.0 - s.unrest, 1)) + "\n";
                 result += "  " + "FCCodexProsDrift".Translate(Math.Round(gain, 2)) + "\n";
                 result += "  " + "FCCodexProsProdMult".Translate(Math.Round(s.prosperity / 100.0, 2)) + "\n\n";
             }
