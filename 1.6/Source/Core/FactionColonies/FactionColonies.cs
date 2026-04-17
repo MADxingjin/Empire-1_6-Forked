@@ -387,6 +387,8 @@ namespace FactionColonies
         private float viewRectHeightEvents = -1f;
         private Vector2 scrollVectorMilitary = new Vector2();
         private float viewRectHeightMilitary = -1f;
+        private Vector2 scrollVectorRoadBuilder = new Vector2();
+        private float viewRectHeightRoadBuilder = -1f;
 
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive
@@ -449,6 +451,7 @@ namespace FactionColonies
             settingsTabs.Add(new TabRecord("FCSettingsTabGeneral".Translate(), delegate { settingsTab = 0; }, settingsTab == 0));
             settingsTabs.Add(new TabRecord("FCSettingsTabEvents".Translate(), delegate { settingsTab = 1; }, settingsTab == 1));
             settingsTabs.Add(new TabRecord("FCSettingsTabMilitary".Translate(), delegate { settingsTab = 2; }, settingsTab == 2));
+            settingsTabs.Add(new TabRecord("FCSettingsTabRoadBuilder".Translate(), delegate { settingsTab = 3; }, settingsTab == 3));
 
             Rect contentRect = new Rect(inRect.x, inRect.y + 40f, inRect.width, inRect.height - 40f);
             Widgets.DrawMenuSection(contentRect);
@@ -462,6 +465,7 @@ namespace FactionColonies
                 case 0: DoGeneralTab(innerRect); break;
                 case 1: DoEventsTab(innerRect); break;
                 case 2: DoMilitaryTab(innerRect); break;
+                case 3: DoRoadBuilderTab(innerRect); break;
             }
         }
 
@@ -559,14 +563,6 @@ namespace FactionColonies
             if (ls.ButtonText("FCSelectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
-            ls.CheckboxLabeled("FCSettingUseThreadedRoadComputation".Translate(), ref useThreadedRoadComputation, "FCSettingUseThreadedRoadComputationDesc".Translate());
-            if (!useThreadedRoadComputation)
-            {
-                string edgesLabel = edgesPerRoadTick <= 0
-                    ? $"{"FCSettingEdgesPerRoadTick".Translate()}: {"Unlimited".Translate()}"
-                    : $"{"FCSettingEdgesPerRoadTick".Translate()}: {edgesPerRoadTick}";
-                edgesPerRoadTick = (int)ls.SliderLabeled(edgesLabel, edgesPerRoadTick, 0, 50);
-            }
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
 
             if (ls.ButtonText("FCOpenPatchNotes".Translate())) DebugActionsMisc.PatchNotesDisplayWindow();
@@ -764,6 +760,40 @@ namespace FactionColonies
             mercenaryHealRatePerHour = ls.Slider(mercenaryHealRatePerHour, 0.1f, 100f);
 
             viewRectHeightMilitary = ls.CurHeight + 5f;
+            ls.End();
+
+            Widgets.EndScrollView();
+        }
+
+        private void DoRoadBuilderTab(Rect rect)
+        {
+            viewRectHeightRoadBuilder = viewRectHeightRoadBuilder == -1f ? float.MaxValue : viewRectHeightRoadBuilder;
+            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightRoadBuilder);
+            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
+
+            Widgets.BeginScrollView(rect, ref scrollVectorRoadBuilder, viewRect);
+            Listing_Standard ls = new Listing_Standard();
+            ls.Begin(listRect);
+
+            // Description box
+            Rect descRect = ls.GetRect(Text.CalcHeight("FCSettingRoadBuilderDesc".Translate(), listRect.width - 16f) + 16f);
+            Widgets.DrawBoxSolid(descRect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
+            Widgets.DrawBox(descRect);
+            Text.Font = GameFont.Small;
+            Widgets.Label(descRect.ContractedBy(8f), "FCSettingRoadBuilderDesc".Translate());
+
+            ls.Gap(12f);
+
+            ls.CheckboxLabeled("FCSettingUseThreadedRoadComputation".Translate(), ref useThreadedRoadComputation, "FCSettingUseThreadedRoadComputationDesc".Translate());
+            if (!useThreadedRoadComputation)
+            {
+                string edgesLabel = edgesPerRoadTick <= 0
+                    ? $"{"FCSettingEdgesPerRoadTick".Translate()}: {"Unlimited".Translate()}"
+                    : $"{"FCSettingEdgesPerRoadTick".Translate()}: {edgesPerRoadTick}";
+                edgesPerRoadTick = (int)ls.SliderLabeled(edgesLabel, edgesPerRoadTick, 0, 50);
+            }
+
+            viewRectHeightRoadBuilder = ls.CurHeight + 5f;
             ls.End();
 
             Widgets.EndScrollView();

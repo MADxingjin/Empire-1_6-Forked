@@ -15,6 +15,16 @@
 	<FCSettingsTabGeneral>General</FCSettingsTabGeneral>
 	<FCSettingsTabEvents>Events</FCSettingsTabEvents>
 	<FCSettingsTabMilitary>Military</FCSettingsTabMilitary>
+	<FCSettingsTabRoadBuilder>Road Builder</FCSettingsTabRoadBuilder>
+	<FCSettingRoadBuilderDesc>The Road Builder automatically connects your Empire settlements with roads using a Minimum Spanning Tree algorithm, which is recalculated on the following events:
+ - each time a settlement is founded or lost
+ - when you research a new level of roads
+		
+This requires computing pathfinding costs between all pairs of settlements, which can be expensive with many settlements, or with very sparse settlements.
+
+By default, this computation runs on a background thread to avoid freezing the game. If you experience issues with threading, you can disable it and optionally spread the computation across multiple ticks instead.
+		
+Spreading out the computation will reduce the impact on performance, but no roads will build until the MST is fully constructed. So the more you throttle the algorithm, the longer it will take for your roads to start building.</FCSettingRoadBuilderDesc>
 	<FCSettingEnableAllEvents>Enable All Events</FCSettingEnableAllEvents>
 	<FCSettingDeadPawnsIncreaseMilCooldown>Dead Pawns Increase Military Cooldown</FCSettingDeadPawnsIncreaseMilCooldown>
 	<FCSettingForcedPausing>Disable Forced Pausing During Events</FCSettingForcedPausing>
