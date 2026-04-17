@@ -62,12 +62,29 @@ namespace FactionColonies
         /// </summary>
         public Type dynamicProvider;
 
+        /// <summary>
+        /// Accent color for this entry's category. Used for left-border bars,
+        /// gradient tints on category headers, and the title accent line.
+        /// All entries in the same category should use the same color.
+        /// </summary>
+        public Color categoryColor = Color.gray;
+
+        /// <summary>
+        /// Optional banner texture path displayed at the top of the detail pane.
+        /// If empty, falls back to the source mod's patch notes banner via
+        /// <see cref="PatchNoteDef.GetLatestForMod"/>.
+        /// </summary>
+        [NoTranslate]
+        public string bannerPath;
+
         // ── Cached runtime data ──
 
         private Texture2D iconCached;
         private List<Texture2D> imagesCached;
         private ICodexDynamicProvider providerInstance;
         private ModContentPack modContentPackCached;
+        private Texture2D bannerCached;
+        private bool bannerLookedUp;
 
         /// <summary>
         /// Returns the cached icon texture, or null if no iconPath is set.
@@ -122,6 +139,26 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Returns the banner texture for the detail pane header. Checks <see cref="bannerPath"/>
+        /// first, then falls back to the source mod's latest <see cref="PatchNoteDef"/> banner.
+        /// </summary>
+        public Texture2D BannerImage
+        {
+            get
+            {
+                if (!bannerLookedUp)
+                {
+                    bannerLookedUp = true;
+                    if (!bannerPath.NullOrEmpty())
+                        bannerCached = ContentFinder<Texture2D>.Get(bannerPath, false);
+                    if (bannerCached is null && !modId.NullOrEmpty())
+                        bannerCached = PatchNoteDef.GetLatestForMod(modId)?.BannerImage;
+                }
+                return bannerCached;
+            }
+        }
+
+        /// <summary>
         /// Returns the <see cref="ModContentPack"/> matching <see cref="modId"/>.
         /// </summary>
         public ModContentPack ModContentPack
@@ -156,6 +193,8 @@ namespace FactionColonies
             imagesCached = null;
             providerInstance = null;
             modContentPackCached = null;
+            bannerCached = null;
+            bannerLookedUp = false;
         }
 
         public override IEnumerable<string> ConfigErrors()

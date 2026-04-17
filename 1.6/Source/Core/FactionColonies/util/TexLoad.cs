@@ -17,6 +17,7 @@ namespace FactionColonies
                 LogUtil.Error("No faction icons found, will probably result in Empire not working properly.");
             }
             checkerboard = CreateCheckerboard();
+            gradientHorizontal = CreateHorizontalGradient();
         }
 
         public static readonly Texture2D iconTest100 = ContentFinder<Texture2D>.Get("GUI/100x");
@@ -69,6 +70,37 @@ namespace FactionColonies
 
         public static List<Texture2D> factionIcons = new List<Texture2D>();
         public static readonly Texture2D checkerboard;
+        public static readonly Texture2D gradientHorizontal;
+
+        private static Texture2D CreateHorizontalGradient()
+        {
+            int width = 256;
+            Texture2D tex = new Texture2D(width, 1, TextureFormat.ARGB32, false);
+            tex.name = "GradientHorizontalTex";
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < width; x++)
+            {
+                float alpha = 1f - (float)x / (width - 1);
+                tex.SetPixel(x, 0, new Color(1f, 1f, 1f, alpha));
+            }
+
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// Draws a horizontal gradient that fades from <paramref name="color"/> to transparent (left to right).
+        /// Uses the cached gradient texture tinted via GUI.color.
+        /// </summary>
+        public static void DrawHorizontalGradient(Rect rect, Color color)
+        {
+            Color prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(rect, gradientHorizontal, ScaleMode.StretchToFill, true);
+            GUI.color = prev;
+        }
 
         private static Texture2D CreateCheckerboard()
         {

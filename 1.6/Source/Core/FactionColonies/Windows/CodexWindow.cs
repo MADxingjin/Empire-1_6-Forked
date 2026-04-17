@@ -28,6 +28,10 @@ namespace FactionColonies
         private const float ImageNavButtonSize = 28f;
         private const float SeeAlsoButtonHeight = 24f;
         private const float IconSize = 20f;
+        private const float BannerHeight = 70f;
+        private const float TitleIconSize = 28f;
+        private const float DynamicHeaderHeight = 26f;
+        private const float AccentBarWidth = 3f;
 
         private static readonly Color GroupBgColor = new Color(0.2f, 0.2f, 0.2f, 0.6f);
         private static readonly Color CategoryBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
@@ -52,6 +56,10 @@ namespace FactionColonies
         // ── Expand/collapse state ──
         private readonly HashSet<string> expandedMods = new HashSet<string>();
         private readonly HashSet<string> expandedCategories = new HashSet<string>();
+        private bool dynamicSectionExpanded = true;
+
+        // ── Truncation cache ──
+        private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
         private class ModGroup
         {
@@ -230,14 +238,17 @@ namespace FactionColonies
                     string catKey = CatKey(mg.modId, cg.category);
                     bool catExpanded = expandedCategories.Contains(catKey);
 
-                    // Category header (indented)
+                    // Category header (indented) with accent color
                     Rect catRect = new Rect(10f, curY, viewRect.width - 10f, CategoryHeaderHeight);
+                    Color catColor = cg.entries.Count > 0 ? cg.entries[0].categoryColor : Color.gray;
                     Widgets.DrawBoxSolid(catRect, CategoryBgColor);
+                    TexLoad.DrawHorizontalGradient(catRect, catColor * new Color(1f, 1f, 1f, 0.2f));
+                    Widgets.DrawBoxSolid(new Rect(catRect.x, catRect.y, 3f, catRect.height), catColor);
 
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    GUI.color = new Color(0.85f, 0.85f, 0.7f);
-                    Widgets.Label(new Rect(catRect.x + margin, catRect.y, catRect.width - margin * 2 - IconSize, catRect.height), cg.category);
+                    GUI.color = catColor * new Color(1.3f, 1.3f, 1.3f, 1f);
+                    Widgets.Label(new Rect(catRect.x + margin + 3f, catRect.y, catRect.width - margin * 2 - IconSize - 3f, catRect.height), cg.category);
 
                     Rect catArrow = new Rect(catRect.xMax - IconSize - 2f, catRect.y + (CategoryHeaderHeight - IconSize) * 0.5f, IconSize, IconSize);
                     GUI.color = Color.white;
@@ -259,14 +270,20 @@ namespace FactionColonies
                     foreach (CodexEntryDef entry in cg.entries)
                     {
                         Rect entryRect = new Rect(20f, curY, viewRect.width - 20f, EntryRowHeight);
+                        bool isSelected = selectedEntry == entry;
 
-                        // Selection highlight
-                        if (selectedEntry == entry)
+                        // Selection highlight + accent bar
+                        if (isSelected)
+                        {
                             Widgets.DrawBoxSolid(entryRect, SelectedEntryColor);
+                            Widgets.DrawBoxSolid(new Rect(entryRect.x, entryRect.y, 2f, entryRect.height), catColor);
+                        }
                         else if (Mouse.IsOver(entryRect))
+                        {
                             Widgets.DrawBoxSolid(entryRect, HoverColor);
+                        }
 
-                        // Icon + label
+                        // Icon + label with truncation
                         float textX = entryRect.x + margin;
                         if (entry.Icon is object)
                         {
@@ -277,8 +294,13 @@ namespace FactionColonies
 
                         Text.Font = GameFont.Small;
                         Text.Anchor = TextAnchor.MiddleLeft;
-                        GUI.color = selectedEntry == entry ? Color.white : new Color(0.9f, 0.9f, 0.9f);
-                        Widgets.Label(new Rect(textX, entryRect.y, entryRect.xMax - textX - 4f, entryRect.height), entry.LabelCap);
+                        GUI.color = isSelected ? Color.white : new Color(0.9f, 0.9f, 0.9f);
+                        float labelWidth = entryRect.xMax - textX - 4f;
+                        string fullLabel = entry.LabelCap;
+                        string truncated = fullLabel.Truncate(labelWidth, truncateCache);
+                        Widgets.Label(new Rect(textX, entryRect.y, labelWidth, entryRect.height), truncated);
+                        if (truncated != fullLabel)
+                            TooltipHandler.TipRegion(entryRect, fullLabel);
                         ResetText();
 
                         if (Widgets.ButtonInvisible(entryRect))
@@ -327,39 +349,60 @@ namespace FactionColonies
                 return;
             }
 
-            // Calculate content height first, then scroll
             float contentWidth = rect.width - 16f;
             float contentHeight = CalculateRightPaneHeight(contentWidth);
             Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            Color catColor = selectedEntry.categoryColor;
 
             Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
             float curY = 0f;
 
-            // Title
+            // ── Banner ──
+            Texture2D banner = selectedEntry.BannerImage;
+            if (banner is object)
+            {
+                Rect bannerRect = new Rect(0f, curY, contentWidth, BannerHeight);
+                GUI.DrawTexture(bannerRect, banner, ScaleMode.ScaleToFit);
+                curY += BannerHeight + margin;
+            }
+
+            // ── Title with icon ──
+            float titleTextX = 0f;
+            if (selectedEntry.Icon is object)
+            {
+                // Icon with category-tinted background
+                Rect iconBgRect = new Rect(0f, curY, TitleIconSize, TitleIconSize);
+                Widgets.DrawBoxSolid(iconBgRect, catColor * new Color(1f, 1f, 1f, 0.25f));
+                Color prevColor = GUI.color;
+                GUI.color = catColor * new Color(1f, 1f, 1f, 0.6f);
+                Widgets.DrawBox(iconBgRect);
+                GUI.color = prevColor;
+                Rect iconInner = iconBgRect.ContractedBy(3f);
+                GUI.DrawTexture(iconInner, selectedEntry.Icon);
+                titleTextX = TitleIconSize + margin;
+            }
+
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
-            Rect titleRect = new Rect(0f, curY, contentWidth, 30f);
-            Widgets.Label(titleRect, selectedEntry.LabelCap);
+            Widgets.Label(new Rect(titleTextX, curY, contentWidth - titleTextX, 26f), selectedEntry.LabelCap);
             ResetText();
-            curY += 32f;
 
-            // Category + Mod badge
+            // Meta text (category + mod name)
             Text.Font = GameFont.Tiny;
             GUI.color = Color.gray;
             Text.Anchor = TextAnchor.UpperLeft;
             string meta = selectedEntry.category + "  \u2022  " + selectedEntry.ModName;
-            Widgets.Label(new Rect(0f, curY, contentWidth, 20f), meta);
+            float metaY = curY + (selectedEntry.Icon is object ? 22f : 28f);
+            Widgets.Label(new Rect(titleTextX, metaY, contentWidth - titleTextX, 16f), meta);
             ResetText();
-            curY += 22f;
+            curY = metaY + 18f;
 
-            // Divider
-            GUI.color = Color.gray;
-            Widgets.DrawLineHorizontal(0f, curY, contentWidth);
-            GUI.color = Color.white;
-            curY += margin;
+            // ── Gradient accent line ──
+            TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), catColor);
+            curY += 2f + margin;
 
-            // Image carousel (above description)
+            // ── Image carousel ──
             List<Texture2D> images = selectedEntry.Images;
             if (images.Count > 0)
             {
@@ -367,7 +410,7 @@ namespace FactionColonies
                 curY += margin;
             }
 
-            // Description (body text from Def.description)
+            // ── Description ──
             if (!selectedEntry.description.NullOrEmpty())
             {
                 Text.Font = GameFont.Small;
@@ -377,7 +420,7 @@ namespace FactionColonies
                 ResetText();
             }
 
-            // Dynamic content
+            // ── Collapsible dynamic content ──
             ICodexDynamicProvider provider = selectedEntry.DynamicProvider;
             if (provider is object)
             {
@@ -396,27 +439,53 @@ namespace FactionColonies
 
                     if (!dynamic.NullOrEmpty())
                     {
-                        // Section header
-                        Text.Font = GameFont.Small;
-                        GUI.color = new Color(0.7f, 0.9f, 0.7f);
-                        Widgets.Label(new Rect(0f, curY, contentWidth, 20f), "FCCodexLiveData".Translate());
-                        ResetText();
-                        curY += 22f;
+                        Color dynColor = new Color(0.5f, 0.93f, 0.5f);
 
-                        // Measure height, draw background, then draw text
+                        // Header bar (clickable)
+                        Rect headerRect = new Rect(0f, curY, contentWidth, DynamicHeaderHeight);
+                        Widgets.DrawBoxSolid(headerRect, new Color(0.17f, 0.17f, 0.17f, 1f));
+                        TexLoad.DrawHorizontalGradient(headerRect, dynColor * new Color(1f, 1f, 1f, 0.15f));
+                        Widgets.DrawBoxSolid(new Rect(0f, curY, AccentBarWidth, DynamicHeaderHeight), dynColor);
+
                         Text.Font = GameFont.Small;
-                        float dynHeight = Text.CalcHeight(dynamic, contentWidth);
-                        Rect bgRect = new Rect(-4f, curY - 2f, contentWidth + 8f, dynHeight + 4f);
-                        Widgets.DrawBoxSolid(bgRect, DynamicContentBg);
-                        Rect dynRect = new Rect(0f, curY, contentWidth, dynHeight);
-                        Widgets.Label(dynRect, dynamic);
+                        Text.Anchor = TextAnchor.MiddleLeft;
+                        GUI.color = dynColor;
+                        string arrow = dynamicSectionExpanded ? "\u25BC " : "\u25B6 ";
+                        Widgets.Label(new Rect(AccentBarWidth + margin, curY, contentWidth - AccentBarWidth - margin, DynamicHeaderHeight),
+                            arrow + "FCCodexLiveData".Translate());
                         ResetText();
-                        curY += dynHeight + margin;
+
+                        if (Widgets.ButtonInvisible(headerRect))
+                        {
+                            dynamicSectionExpanded = !dynamicSectionExpanded;
+                            (dynamicSectionExpanded ? SoundDefOf.TabOpen : SoundDefOf.TabClose).PlayOneShotOnCamera();
+                        }
+                        curY += DynamicHeaderHeight;
+
+                        // Body (only if expanded)
+                        if (dynamicSectionExpanded)
+                        {
+                            Text.Font = GameFont.Small;
+                            float dynHeight = Text.CalcHeight(dynamic, contentWidth - AccentBarWidth - margin * 2);
+                            float bodyHeight = dynHeight + margin;
+                            Rect bodyRect = new Rect(0f, curY, contentWidth, bodyHeight);
+                            Widgets.DrawBoxSolid(bodyRect, DynamicContentBg);
+                            Widgets.DrawBoxSolid(new Rect(0f, curY, AccentBarWidth, bodyHeight), dynColor * new Color(1f, 1f, 1f, 0.3f));
+                            Widgets.Label(new Rect(AccentBarWidth + margin, curY + margin * 0.5f, contentWidth - AccentBarWidth - margin * 2, dynHeight), dynamic);
+                            ResetText();
+                            curY += bodyHeight;
+                        }
+
+                        // Bottom border
+                        GUI.color = new Color(0.3f, 0.3f, 0.3f);
+                        Widgets.DrawLineHorizontal(0f, curY, contentWidth);
+                        GUI.color = Color.white;
+                        curY += margin;
                     }
                 }
             }
 
-            // See Also links
+            // ── See Also links ──
             if (!selectedEntry.seeAlso.NullOrEmpty())
             {
                 curY += margin;
@@ -431,11 +500,15 @@ namespace FactionColonies
                     CodexEntryDef linked = DefDatabase<CodexEntryDef>.GetNamedSilentFail(refName);
                     if (linked is null) continue;
 
-                    Rect linkRect = new Rect(margin, curY, contentWidth - margin, SeeAlsoButtonHeight);
+                    Rect linkRect = new Rect(0f, curY, contentWidth, SeeAlsoButtonHeight);
+                    Widgets.DrawBoxSolid(linkRect, new Color(0.39f, 0.67f, 1f, 0.06f));
+                    Widgets.DrawBoxSolid(new Rect(0f, curY, AccentBarWidth, SeeAlsoButtonHeight), SeeAlsoColor);
+
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleLeft;
                     GUI.color = SeeAlsoColor;
-                    Widgets.Label(linkRect, "\u2192 " + linked.LabelCap);
+                    Widgets.Label(new Rect(AccentBarWidth + margin, curY, contentWidth - AccentBarWidth - margin, SeeAlsoButtonHeight),
+                        "\u2192 " + linked.LabelCap);
 
                     if (Mouse.IsOver(linkRect))
                         Widgets.DrawHighlight(linkRect);
@@ -447,7 +520,7 @@ namespace FactionColonies
                     }
 
                     ResetText();
-                    curY += SeeAlsoButtonHeight;
+                    curY += SeeAlsoButtonHeight + 2f;
                 }
             }
 
@@ -522,7 +595,14 @@ namespace FactionColonies
         {
             if (selectedEntry is null) return 0f;
 
-            float total = 32f + 22f + margin; // title + meta + divider
+            float total = 0f;
+
+            // Banner
+            if (selectedEntry.BannerImage is object)
+                total += BannerHeight + margin;
+
+            // Title + meta + accent line
+            total += 28f + 18f + 2f + margin;
 
             // Images
             List<Texture2D> images = selectedEntry.Images;
@@ -542,16 +622,19 @@ namespace FactionColonies
                 total += Text.CalcHeight(selectedEntry.description, width) + margin;
             }
 
-            // Dynamic content (estimate — recalculated at render)
+            // Dynamic content (header always, body only if expanded)
             if (selectedEntry.DynamicProvider is object)
             {
-                total += 22f + 200f + margin; // header + estimated body
+                total += DynamicHeaderHeight; // header
+                if (dynamicSectionExpanded)
+                    total += 200f; // estimated body
+                total += margin;
             }
 
             // See Also
             if (!selectedEntry.seeAlso.NullOrEmpty())
             {
-                total += margin + 22f + selectedEntry.seeAlso.Count * SeeAlsoButtonHeight;
+                total += margin + 22f + selectedEntry.seeAlso.Count * (SeeAlsoButtonHeight + 2f);
             }
 
             return total + 50f; // padding

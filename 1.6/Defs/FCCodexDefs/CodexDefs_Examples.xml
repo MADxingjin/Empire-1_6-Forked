@@ -14,6 +14,10 @@
     Optional fields:
         displayOrder    - sort order within category (lower = first, default 0)
         iconPath        - texture path for an icon next to the title
+        categoryColor   - RGB accent color for this category, e.g. (0.8, 0.27, 0.27)
+                          Used for category header tint, accent bars, and title accent line
+        bannerPath      - texture path for a banner image at top of detail pane
+                          (if omitted, falls back to the source mod's patch notes banner)
         seeAlso         - list of defNames of related entries (rendered as clickable links)
         imagePaths      - list of texture paths for an image carousel
         dynamicProvider - fully qualified C# class name implementing ICodexDynamicProvider
@@ -42,6 +46,7 @@ The drift rate is 1 point per day (plus any stat modifiers from policies, buildi
 
 Losing a defensive battle costs 20 prosperity immediately, which can take many days to recover from.</description>
         <category>Economy</category>
+        <categoryColor>(0.29, 0.64, 0.29)</categoryColor>
         <displayOrder>10</displayOrder>
         <modId>matathias.empire</modId>
         <iconPath>GUI/Prosperity</iconPath>
@@ -72,6 +77,7 @@ During your first year, a handicap limits how fast threat can grow regardless of
 
 The Max Threat Multiplier setting (default 3.0x) provides an absolute ceiling to ETL.</description>
         <category>Military</category>
+        <categoryColor>(0.8, 0.27, 0.27)</categoryColor>
         <displayOrder>10</displayOrder>
         <modId>matathias.empire</modId>
         <iconPath>GUI/MilitaryLevel</iconPath>
