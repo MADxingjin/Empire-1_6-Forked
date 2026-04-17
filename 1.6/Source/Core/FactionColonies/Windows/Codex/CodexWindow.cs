@@ -38,7 +38,12 @@ namespace FactionColonies
             draggable = true;
             resizeable = true;
 
-            tabs = new List<ICodexTab> { new CodexTab_Info() };
+            tabs = new List<ICodexTab>
+            {
+                new CodexTab_Info(),
+                new CodexTab_Settlements(),
+                new CodexTab_Buildings()
+            };
             tabLabels = tabs.Select(t => t.TabLabel).ToList();
             activeTabIndex = 0;
             tabs[0].OnTabSelected();
