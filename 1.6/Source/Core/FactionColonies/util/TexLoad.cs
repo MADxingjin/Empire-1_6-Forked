@@ -38,6 +38,7 @@ namespace FactionColonies
         public static readonly Texture2D iconUpgrade = ContentFinder<Texture2D>.Get("UI/Buttons/ReorderUp");
 
         public static readonly Texture2D iconTrade = ContentFinder<Texture2D>.Get("UI/Commands/Trade");
+        public static readonly Texture2D codexLogo = ContentFinder<Texture2D>.Get("UI/Icons/EmpireLogo");
 
 
         //Trait Icons

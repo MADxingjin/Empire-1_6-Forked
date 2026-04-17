@@ -14,13 +14,16 @@ namespace FactionColonies
     /// </summary>
     public class CodexWindow : Window
     {
-        private const float LeftPaneWidth = 200f;
-        private const float RightPaneWidth = 220f;
+        private const float LeftPaneWidth = 240f;
+        private const float RightPaneWidth = 260f;
         private const float DividerWidth = 1f;
         private const float margin = 8f;
+        private const float TitleHeight = 30f;
         private const float TabHeight = 22f;
 
-        public override Vector2 InitialSize => new Vector2(1050f, 650f);
+        private static readonly Color TitleGold = new Color(0.83f, 0.68f, 0.21f);
+
+        public override Vector2 InitialSize => new Vector2(1100f, 650f);
 
         private readonly List<ICodexTab> tabs;
         private readonly List<string> tabLabels;
@@ -56,8 +59,31 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-            // ── Tab row ──
-            int newTab = UIUtil.DrawTabRow(inRect, tabLabels, activeTabIndex, out Rect contentRect, tabHeight: TabHeight);
+            // ── Title header with gold gradient + logo ──
+            Rect titleRect = new Rect(inRect.x, inRect.y, inRect.width, TitleHeight);
+            TexLoad.DrawHorizontalGradient(titleRect, TitleGold * new Color(1f, 1f, 1f, 0.15f));
+
+            // Logo
+            float logoSize = 24f;
+            Rect logoRect = new Rect(titleRect.x + margin, titleRect.y + (TitleHeight - logoSize) * 0.5f, logoSize, logoSize);
+            GUI.DrawTexture(logoRect, TexLoad.codexLogo, ScaleMode.ScaleToFit);
+
+            // Title text
+            float labelX = logoRect.xMax + 4f;
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            GUI.color = Color.white;
+            Widgets.Label(new Rect(labelX, titleRect.y, titleRect.xMax - labelX - margin, titleRect.height), "FCCodexTitle".Translate());
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+
+            // Gold accent line under header
+            TexLoad.DrawHorizontalGradient(new Rect(titleRect.x, titleRect.yMax, titleRect.width, 2f), TitleGold);
+
+            // ── Tab row (below title) ──
+            // Subtract 2 from the width so the right-side border line doesn't get cut off
+            Rect tabArea = new Rect(inRect.x, inRect.y + TitleHeight + margin + 2f, inRect.width - 2f, inRect.height - TitleHeight - margin - 2f);
+            int newTab = UIUtil.DrawTabRow(tabArea, tabLabels, activeTabIndex, out Rect contentRect, tabHeight: TabHeight);
             if (newTab != activeTabIndex)
             {
                 tabs[activeTabIndex].OnTabDeselected();
@@ -91,7 +117,9 @@ namespace FactionColonies
             {
                 float divider2X = centerRect2.xMax + margin * 0.5f;
                 Widgets.DrawLineVertical(divider2X, bodyY, bodyH);
-                rightRect = new Rect(divider2X + margin * 0.5f + DividerWidth, bodyY, RightPaneWidth, bodyH);
+                float rightX = divider2X + margin * 0.5f + DividerWidth;
+                float rightW = bodyRect.xMax - rightX;
+                rightRect = new Rect(rightX, bodyY, rightW, bodyH);
             }
             GUI.color = Color.white;
 

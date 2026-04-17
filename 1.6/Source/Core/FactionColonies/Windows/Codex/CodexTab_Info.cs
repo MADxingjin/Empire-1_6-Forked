@@ -292,7 +292,8 @@ namespace FactionColonies
                 return;
             }
 
-            float contentWidth = rect.width - 16f;
+            float estHeight = CalculateCenterPaneHeight(rect.width - 16f);
+            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
             float contentHeight = CalculateCenterPaneHeight(contentWidth);
             Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
             Color catColor = selectedEntry.category.color;
@@ -474,7 +475,8 @@ namespace FactionColonies
 
         public void DrawRightPane(Rect rect)
         {
-            float contentWidth = rect.width - 16f;
+            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
+            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
             float contentHeight = CalculateRightPaneHeight(contentWidth);
             Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
