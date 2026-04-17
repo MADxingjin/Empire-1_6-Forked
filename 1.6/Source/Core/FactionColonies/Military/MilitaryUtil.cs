@@ -149,9 +149,10 @@ namespace FactionColonies
             tool = new DebugTool("FCFireSupportSelectPosition".Translate(), delegate
             {
                 float cost = support.ReturnTotalCost();
-                if (PaymentUtil.GetSilver() > cost)
+                if (DebugSettings.godMode || PaymentUtil.GetSilver() > cost)
                 {
-                    PaymentUtil.PaySilver((int)Math.Round(cost), PaymentUtil.Reason_FireSupport, settlement);
+                    if (!DebugSettings.godMode)
+                        PaymentUtil.PaySilver((int)Math.Round(cost), PaymentUtil.Reason_FireSupport, settlement);
                     DropPosition = UI.MouseCell();
                     IntVec3 spawnCenter = DropPosition;
                     Map map = Find.CurrentMap;
