@@ -72,6 +72,7 @@ namespace FactionColonies
         public const bool DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS = true;
         public const float DEFAULT_EVENT_OPTION_DELAY_SECONDS = 1.0f;
         public const bool DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN = true;
+        public const bool DEFAULT_USE_THREADED_ROAD_COMPUTATION = true;
         public const BattleMode DEFAULT_BATTLE_MODE = BattleMode.Auto;
         public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
         public const int DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION = 10;
@@ -109,6 +110,7 @@ namespace FactionColonies
         public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
         public static float eventOptionDelaySeconds = DEFAULT_EVENT_OPTION_DELAY_SECONDS;
         public static bool deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+        public static bool useThreadedRoadComputation = DEFAULT_USE_THREADED_ROAD_COMPUTATION;
         public static BattleMode battleMode = DEFAULT_BATTLE_MODE;
         public static TaxDeliveryMode forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
         public static TaxNotificationMode taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
@@ -187,6 +189,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
             Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);
             Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown", DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN);
+            Scribe_Values.Look(ref useThreadedRoadComputation, "useThreadedRoadComputation", DEFAULT_USE_THREADED_ROAD_COMPUTATION);
             Scribe_Values.Look(ref battleMode, "battleMode", DEFAULT_BATTLE_MODE);
             Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction", DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
@@ -553,6 +556,7 @@ namespace FactionColonies
             if (ls.ButtonText("FCSelectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
+            ls.CheckboxLabeled("FCSettingUseThreadedRoadComputation".Translate(), ref useThreadedRoadComputation, "FCSettingUseThreadedRoadComputationDesc".Translate());
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
 
             if (ls.ButtonText("FCOpenPatchNotes".Translate())) DebugActionsMisc.PatchNotesDisplayWindow();
@@ -593,6 +597,7 @@ namespace FactionColonies
                 maxDaysTillRandomEvent = DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT;
                 disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
                 deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+                useThreadedRoadComputation = DEFAULT_USE_THREADED_ROAD_COMPUTATION;
                 battleMode = DEFAULT_BATTLE_MODE;
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using RimWorld;
@@ -244,6 +244,65 @@ namespace FactionColonies
         }
 
         /// <summary>
+        /// Runs on the main thread. Computes all pairwise A* pathfinding costs
+        /// and builds the MST without threading. Used as a fallback when threaded
+        /// computation is disabled in settings.
+        /// </summary>
+        void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer)
+        {
+            int n = allTiles.Count;
+            Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
+            for (int i = 0; i < n; i++)
+                tileToIndex[allTiles[i]] = i;
+
+            List<Edge> edges = new List<Edge>(n * (n - 1) / 2);
+            using (var pathing = new WorldPathing(layer))
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = i + 1; j < n; j++)
+                    {
+                        var fromTile = new PlanetTile(allTiles[i], layer);
+                        var toTile = new PlanetTile(allTiles[j], layer);
+                        WorldPath path = pathing.FindPath(fromTile, toTile, null);
+                        float cost = path.Found ? path.TotalCost : float.MaxValue;
+                        path.Dispose();
+                        edges.Add(new Edge
+                        {
+                            fromTile = allTiles[i],
+                            toTile = allTiles[j],
+                            cost = cost
+                        });
+                    }
+                }
+            }
+
+            edges.Sort((a, b) => a.cost.CompareTo(b.cost));
+            UnionFind uf = new UnionFind(n);
+            List<Edge> mstEdges = new List<Edge>(n - 1);
+
+            foreach (Edge edge in edges)
+            {
+                if (edge.cost >= float.MaxValue)
+                    break;
+
+                int idxA = tileToIndex[edge.fromTile];
+                int idxB = tileToIndex[edge.toTile];
+
+                if (uf.TryMerge(idxA, idxB))
+                {
+                    mstEdges.Add(edge);
+                    if (mstEdges.Count == n - 1)
+                        break;
+                }
+            }
+
+            computedMSTEdges = mstEdges;
+            completedGeneration = mstGeneration;
+            LogUtil.Message($"Road MST computed synchronously: {edges.Count} edges, {mstEdges.Count} MST edges");
+        }
+
+        /// <summary>
         /// Yields FCRoadPath objects from pre-computed MST edges (Phase 4 only).
         /// Called on the main thread after ComputeMSTBackground completes.
         /// </summary>
@@ -309,14 +368,20 @@ namespace FactionColonies
             if (allTiles.Count < 2)
                 return;
 
-            // Spawn background thread for MST computation
             var layer = Find.WorldGrid.PlanetLayers[0];
             int generation = ++mstGeneration;
             roadPathIterator = null;
 
-            Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation));
-            thread.IsBackground = true;
-            thread.Start();
+            if (FCSettings.useThreadedRoadComputation)
+            {
+                Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation));
+                thread.IsBackground = true;
+                thread.Start();
+            }
+            else
+            {
+                ComputeMSTSynchronous(allTiles, layer);
+            }
         }
 
         /// <summary>
