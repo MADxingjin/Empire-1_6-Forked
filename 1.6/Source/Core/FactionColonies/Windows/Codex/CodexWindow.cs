@@ -61,7 +61,7 @@ namespace FactionColonies
         {
             // ── Title header with gold gradient + logo ──
             Rect titleRect = new Rect(inRect.x, inRect.y, inRect.width, TitleHeight);
-            TexLoad.DrawHorizontalGradient(titleRect, TitleGold * new Color(1f, 1f, 1f, 0.15f));
+            TexLoad.DrawHorizontalGradient(titleRect, TitleGold * new Color(1f, 1f, 1f, 0.5f));
 
             // Logo
             float logoSize = 24f;
