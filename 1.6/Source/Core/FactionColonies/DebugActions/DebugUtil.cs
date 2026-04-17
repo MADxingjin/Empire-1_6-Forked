@@ -564,6 +564,40 @@ namespace FactionColonies
         // Settlement Debug Actions
         // ============================
 
+        [DebugAction("Empire", "Instant Build Building", allowedGameStates = AllowedGameStates.Playing)]
+        private static void InstantBuildBuilding()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                var comp = settlement.BuildingsComp;
+                int slotCount = comp.NumBuildingSlots;
+                List<DebugMenuOption> slots = new List<DebugMenuOption>();
+                for (int i = 0; i < slotCount; i++)
+                {
+                    int localSlot = i;
+                    BuildingFCDef current = comp.Buildings[i].def;
+                    string slotLabel = $"Slot {i}: {current.label ?? current.defName}";
+                    slots.Add(new DebugMenuOption(slotLabel, DebugMenuOptionMode.Action, () =>
+                    {
+                        List<DebugMenuOption> buildingOptions = new List<DebugMenuOption>();
+                        foreach (BuildingFCDef bDef in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+                        {
+                            if (bDef == BuildingFCDefOf.Empty || bDef == BuildingFCDefOf.Construction) continue;
+                            BuildingFCDef localDef = bDef;
+                            buildingOptions.Add(new DebugMenuOption(localDef.label ?? localDef.defName, DebugMenuOptionMode.Action, () =>
+                            {
+                                comp.ConstructBuilding(localDef, localSlot);
+                                LogUtil.MessageForce($"Debug - Instant built {localDef.defName} in slot {localSlot} at {settlement.Name}");
+                                Messages.Message($"Debug: Built {localDef.label ?? localDef.defName} in {settlement.Name}", MessageTypeDefOf.PositiveEvent, false);
+                            }));
+                        }
+                        Find.WindowStack.Add(new Dialog_DebugOptionListLister(buildingOptions));
+                    }));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(slots));
+            });
+        }
+
         [DebugAction("Empire", "Log Settlement Stats", allowedGameStates = AllowedGameStates.Playing)]
         private static void LogSettlementStats()
         {
