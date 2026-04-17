@@ -50,7 +50,7 @@ namespace FactionColonies.util
         public static string GetFactionHappinessTooltip(FactionFC faction)
         {
             string tip = "FCFactionHappiness".Translate() + "\n-----\n" + "FCFactionHappinessDesc".Translate();
-            tip += "\n\n" + "FCCodexTipSocialDrift".Translate("FCHappiness".Translate());
+            tip += "\n\n" + "FCCodexTipSocialDrift".Translate("FCHappiness".Translate().CapitalizeFirst());
             return tip;
         }
 
@@ -60,7 +60,7 @@ namespace FactionColonies.util
         public static string GetFactionLoyaltyTooltip(FactionFC faction)
         {
             string tip = "FCFactionLoyalty".Translate() + "\n-----\n" + "FCFactionLoyaltyDesc".Translate();
-            tip += "\n\n" + "FCCodexTipSocialDrift".Translate("FCLoyality".Translate());
+            tip += "\n\n" + "FCCodexTipSocialDrift".Translate("FCLoyality".Translate().CapitalizeFirst());
             return tip;
         }
 

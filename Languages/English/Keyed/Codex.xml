@@ -71,13 +71,13 @@
 
 	<!-- Enhanced Tooltips -->
 	<FCCodexTipProsFormula>Production multiplier = prosperity / 100. At 50%, you produce half as much.</FCCodexTipProsFormula>
-	<FCCodexTipProsRange>Range across settlements: {0}% – {1}%</FCCodexTipProsRange>
-	<FCCodexTipSocialDrift>{0} drifts daily toward equilibrium. Policies, buildings, and events shift the drift rate. This stat feeds into the prosperity target.</FCCodexTipSocialDrift>
-	<FCCodexTipUnrestDrift>Unrest naturally decreases by 1/day. Policies, buildings, and events can increase or decrease this rate. Lower unrest raises the prosperity target.</FCCodexTipUnrestDrift>
+	<FCCodexTipProsRange>Range across settlements: {0}% - {1}%</FCCodexTipProsRange>
+	<FCCodexTipSocialDrift>{0} naturally increases by 1/day, unless there is a negative modifier. Policies, buildings, and events can incresae or decrease this rate. This stat feeds into the prosperity target.</FCCodexTipSocialDrift>
+	<FCCodexTipUnrestDrift>Unrest naturally decreases by 1/day, unless there is a penalty modifier. Policies, buildings, and events can increase or decrease this rate. Lower unrest raises the prosperity target.</FCCodexTipUnrestDrift>
 	<FCCodexTipProfitBreakdown>Income: {0} silver\nUpkeep: {1} silver\nProfit: {2} silver\n\nIncome is the total silver value of all settlement production. Upkeep includes worker costs, building maintenance, and military expenses.</FCCodexTipProfitBreakdown>
 	<FCCodexTipTaxTimer>Tax collection every {0} days (configurable in settings).\n</FCCodexTipTaxTimer>
-	<FCCodexTipTaxAveraging>Tax income uses the AVERAGE of daily production snapshots across the tax period — not a single snapshot at collection time. Building or losing things mid-period affects the average proportionally.</FCCodexTipTaxAveraging>
-	<FCCodexTipMilTargeting>Raid targeting weight: {0} (lower military = more likely targeted; scale: 1–10)</FCCodexTipMilTargeting>
-	<FCCodexTipMilETL>Current Empire Threat Level: {0}×</FCCodexTipMilETL>
+	<FCCodexTipTaxAveraging>Tax income uses the AVERAGE of daily production snapshots across the tax period, not a single snapshot at collection time. Building or losing things mid-period affects the average proportionally.</FCCodexTipTaxAveraging>
+	<FCCodexTipMilTargeting>Raid targeting weight: {0}\n(lower military level = more likely targeted; scale: 1-10)</FCCodexTipMilTargeting>
+	<FCCodexTipMilETL>Current Empire Threat Level: {0}x</FCCodexTipMilETL>
 
 </LanguageData>
