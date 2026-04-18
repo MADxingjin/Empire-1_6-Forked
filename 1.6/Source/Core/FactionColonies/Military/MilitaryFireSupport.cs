@@ -166,7 +166,11 @@ namespace FactionColonies
         private void LaunchVanillaProjectile(ThingDef ammoDef, IntVec3 spawnCenter)
         {
             ThingDef def = ammoDef.projectileWhenLoaded;
-            if (def == null) return;
+            if (def is null)
+            {
+                LogUtil.Warning($"Fire support ammo {ammoDef.defName} has no projectileWhenLoaded defined");
+                return;
+            }
             LocalTargetInfo info = new LocalTargetInfo(spawnCenter);
             Projectile projectile = (Projectile)GenSpawn.Spawn(def, sourceLocation, map);
             projectile.Launch(null, info, info, ProjectileHitFlags.All);

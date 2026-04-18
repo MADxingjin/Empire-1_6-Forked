@@ -1650,15 +1650,10 @@ namespace FactionColonies
         {
             if (index >= resources.Count || index < 0)
             {
+                LogUtil.Warning($"GetResourceByIndex called with out-of-bounds index {index} for settlement {Name} (count: {resources.Count})");
                 return null;
             }
-            for (int i = 0; i < resources.Count; i++)
-            {
-                if (i == index)
-                    return resources[i];
-            }
-            LogUtil.Error($"Reached end of WorldSettmentFC.GetResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
-            return null;
+            return resources[index];
         }
         public List<ResourceFC> GetTitheableResources()
         {

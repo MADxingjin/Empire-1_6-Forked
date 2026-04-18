@@ -76,9 +76,9 @@ namespace FactionColonies.util
 
                 if (evt.isDelayed) Messages.Message("FCDeliveryHeldUpArriving".Translate(), evt.goods, MessageTypeDefOf.PositiveEvent);
             }
-            catch
+            catch (Exception ex)
             {
-                LogUtil.ErrorOnce("MakeDeliveryLetterAndMessage failed to attach targets to the message", 908347458);
+                LogUtil.ErrorOnce("MakeDeliveryLetterAndMessage failed to attach targets to the message: " + ex, 908347458);
             }
         }
 

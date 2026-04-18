@@ -84,9 +84,9 @@ namespace FactionColonies.util
             {
                 source = CompLaunchable.GetOptionsForTile(target.Tile, pods, launchAction).ToList();
             }
-            catch
+            catch (Exception ex)
             {
-                //There is a bug in base game RimWorld where a shuttle containing Animals and Humans crashes the UI here
+                LogUtil.Warning("Shuttle launch options failed, retrying without animals: " + ex);
                 foreach (IThingHolder thingHolder in pods)
                 {
                     thingHolder.GetDirectlyHeldThings().RemoveAll(thing => thing.def.race?.Animal ?? false);
