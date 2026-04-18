@@ -28,7 +28,7 @@ namespace FactionColonies
             thumbStyle.normal.background = TexLoad.scrollThumb;
             thumbStyle.hover.background = TexLoad.scrollThumbHover;
             thumbStyle.active.background = TexLoad.scrollThumbActive;
-            thumbStyle.fixedWidth = ScrollbarWidth - 4f;
+            thumbStyle.fixedWidth = ScrollbarWidth;
         }
 
         /// <summary>

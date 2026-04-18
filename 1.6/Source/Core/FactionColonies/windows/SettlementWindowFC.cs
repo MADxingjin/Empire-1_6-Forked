@@ -56,7 +56,7 @@ namespace FactionColonies
 
         private const int buildingSpacingFromSide = margin; //15; // (494 - (spacing + boxSide) * elementsPerRow) / 2;
 
-        private const int scrollSpacing = 16;
+        private const int scrollSpacing = (int)ScrollUtil.ScrollbarWidth + 1;
 
         // UI State
         private int overviewTab = 0;
@@ -1230,9 +1230,11 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;
 
+            float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
+            Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
+
             // For a row of n buildings, there will only be n-1 spaces between them. So to offset the denominator, we add one buildingSpacing to the numerator.
             int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2) + buildingSpacing) / (buildingBoxSide + buildingSpacing));
-            float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
             float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);
 
             int row;
@@ -1243,8 +1245,6 @@ namespace FactionColonies
 
             Rect nBox;
             Rect nBuilding;
-
-            Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
 
             Rect viewRect = ScrollUtil.BeginScrollView(buildingBox, ref scrollVectorBuildings, totalHeight);
 
@@ -1259,11 +1259,11 @@ namespace FactionColonies
                 column = i % elementsPerRow;
 
                 nBox = new Rect(
-                    new Vector2(box.x + buildingBox.x + ((box.width + buildingSpacing) * column),
+                    new Vector2(box.x + ((box.width + buildingSpacing) * column),
                                 box.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     box.size);
                 nBuilding = new Rect(
-                    new Vector2(buildingIcon.x + buildingBox.x + ((box.width + buildingSpacing) * column),
+                    new Vector2(buildingIcon.x + ((box.width + buildingSpacing) * column),
                                 buildingIcon.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     buildingIcon.size);
 

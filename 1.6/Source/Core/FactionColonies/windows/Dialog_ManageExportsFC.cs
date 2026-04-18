@@ -40,7 +40,7 @@ namespace FactionColonies
         {
             Rect rect = inRect;
             Rect view = ScrollUtil.BeginScrollView(rect, ref scrollPos, this.GetAll().Count() * (ElementHeight + ElementPadding));
-            DrawElements(rect);
+            DrawElements(view);
             ScrollUtil.EndScrollView();
         }
 
