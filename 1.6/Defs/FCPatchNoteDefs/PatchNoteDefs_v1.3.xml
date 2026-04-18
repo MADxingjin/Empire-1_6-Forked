@@ -255,4 +255,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_18</defName>
+		<label>RimWar Compat Update</label>
+		<description>Augments the RimWar compatibility patch to turn RimWar attacks on Empire settlements into Empire military events.</description>
+		<releaseDate>2026-04-17</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Augments the RimWar compat patch so that RimWar attacks on Empire settlements generate a military event that is resolved through Empire&apos;s own system</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
