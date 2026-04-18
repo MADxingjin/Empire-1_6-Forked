@@ -298,4 +298,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_21</defName>
+		<label>Minor Fixes</label>
+		<description>Cleans up some code, and minor performance changes.</description>
+		<releaseDate>2026-04-18</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Some minor performance-minded changes to WorldObjectComp_SettlementMilitary.CompTick</li>
+		<li>Cleans up the road builder code</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

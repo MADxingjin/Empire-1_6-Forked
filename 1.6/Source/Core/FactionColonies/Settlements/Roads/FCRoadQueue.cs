@@ -16,8 +16,8 @@ namespace FactionColonies
 
         public bool shouldUpdateSettlementsToProcess = true;
 
-        public List<PlanetTile> settlementsFromTiles = new List<PlanetTile>();
-        public List<PlanetTile> settlementsToTiles = new List<PlanetTile>();
+        public int lastFromTileCount;
+        public int lastToTileCount;
         IEnumerator<FCRoadPath> roadPathIterator;
 
         // Background MST computation state
@@ -45,6 +45,8 @@ namespace FactionColonies
         private Dictionary<long, float> pendingNewEdges;
         private string pendingLogMessage;
         private HashSet<long> currentCandidateEdges;
+
+        public bool IsMSTReady => completedGeneration == mstGeneration;
 
         public RoadDef RoadDef
         {
@@ -193,7 +195,6 @@ namespace FactionColonies
         {
             Scribe_Values.Look(ref nextRoadTick, "nextRoadTick");
             Scribe_Values.Look(ref daysBetweenTicks, "daysBetweenTicks");
-            Scribe_Defs.Look(ref roadDef, "roadDef");
             Scribe_Collections.Look(ref roadPaths, "roadPaths", LookMode.Deep);
             if (roadPaths == null)
                 roadPaths = new List<FCRoadPath>();
@@ -214,12 +215,6 @@ namespace FactionColonies
         {
             this.roadDef = roadDef;
             this.daysBetweenTicks = daysBetweenTicks;
-            this.nextRoadTick = this.nextRoadTick == 0 ? Find.TickManager.TicksGame : this.nextRoadTick;
-        }
-
-        public void AddPath(FCRoadPath path)
-        {
-            this.roadPaths.Add(path);
         }
 
         /// <summary>
@@ -248,13 +243,10 @@ namespace FactionColonies
                 Find.World.renderer.SetDirty<WorldDrawLayer_Roads>(mainPlanetLayer);
                 Find.World.renderer.SetDirty<WorldDrawLayer_Paths>(mainPlanetLayer);
 
-                // Send blue notification when roads are built
                 string roadTypeName = this.roadDef?.LabelCap ?? "Road";
-                Find.LetterStack.ReceiveLetter(
-                    "Roads Built",
-                    $"Your Empire settlements have constructed new {roadTypeName} segments connecting your territories.",
-                    LetterDefOf.PositiveEvent
-                );
+                Messages.Message(
+                    "FCRoadSegmentsBuilt".Translate(roadTypeName),
+                    MessageTypeDefOf.PositiveEvent);
             }
             return built;
         }
@@ -291,11 +283,6 @@ namespace FactionColonies
         {
             try
             {
-                int n = allTiles.Count;
-                Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
-                for (int i = 0; i < n; i++)
-                    tileToIndex[allTiles[i]] = i;
-
                 // Compute only the missing edges
                 Dictionary<long, float> newEdges = new Dictionary<long, float>(edgesToCompute.Count);
                 using (var pathing = new WorldPathing(layer))
@@ -333,26 +320,7 @@ namespace FactionColonies
                     edges.Add(new Edge { fromTile = lo, toTile = hi, cost = kvp.Value });
                 }
 
-                // Kruskal's MST
-                edges.Sort((a, b) => a.cost.CompareTo(b.cost));
-                UnionFind uf = new UnionFind(n);
-                List<Edge> mstEdges = new List<Edge>(n - 1);
-
-                foreach (Edge edge in edges)
-                {
-                    if (edge.cost >= float.MaxValue)
-                        break;
-
-                    int idxA = tileToIndex[edge.fromTile];
-                    int idxB = tileToIndex[edge.toTile];
-
-                    if (uf.TryMerge(idxA, idxB))
-                    {
-                        mstEdges.Add(edge);
-                        if (mstEdges.Count == n - 1)
-                            break;
-                    }
-                }
+                List<Edge> mstEdges = RunKruskal(edges, allTiles);
 
                 // Publish results only if still the current generation
                 if (generation == mstGeneration)
@@ -397,10 +365,10 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Shared Kruskal phase: sorts edges, builds MST, publishes results.
-        /// Used by both synchronous and incremental paths.
+        /// Core Kruskal's algorithm: sorts edges by cost and builds the MST
+        /// using union-find. Returns the MST edge list.
         /// </summary>
-        void FinishMSTFromEdges(List<Edge> edges, List<int> allTiles, int generation, string label)
+        static List<Edge> RunKruskal(List<Edge> edges, List<int> allTiles)
         {
             int n = allTiles.Count;
             Dictionary<int, int> tileToIndex = new Dictionary<int, int>(n);
@@ -427,6 +395,16 @@ namespace FactionColonies
                 }
             }
 
+            return mstEdges;
+        }
+
+        /// <summary>
+        /// Shared finish phase: runs Kruskal, publishes results, logs.
+        /// Used by both synchronous and incremental paths.
+        /// </summary>
+        void FinishMSTFromEdges(List<Edge> edges, List<int> allTiles, int generation, string label)
+        {
+            List<Edge> mstEdges = RunKruskal(edges, allTiles);
             computedMSTEdges = mstEdges;
             completedGeneration = generation;
             LogUtil.Message($"Road MST computed {label}: {edges.Count} edges, {mstEdges.Count} MST edges");
@@ -530,23 +508,32 @@ namespace FactionColonies
 
         public void UpdateSettlementsToProcess()
         {
-            settlementsFromTiles.Clear();
-            settlementsToTiles.Clear();
-
             FactionFC fC = FactionCache.FactionComp;
+
+            // Collect empire settlement tiles
+            HashSet<int> allTileSet = new HashSet<int>();
+            int fromCount = 0;
             foreach (WorldSettlementFC settlement in fC.settlements)
             {
                 if (!settlement.Tile.Layer.IsRootSurface)
                     continue;
-                settlementsFromTiles.Add(settlement.Tile);
+                allTileSet.Add(settlement.Tile.tileId);
+                fromCount++;
             }
+
+            // Collect valid road target tiles (pass empire tiles for O(1) lookup)
+            int toCount = 0;
             foreach (Settlement settlement in Find.World.worldObjects.Settlements)
             {
-                if (FCRoadBuilder.IsValidRoadTarget(settlement))
+                if (FCRoadBuilder.IsValidRoadTarget(settlement, allTileSet))
                 {
-                    settlementsToTiles.Add(settlement.Tile);
+                    allTileSet.Add(settlement.Tile.tileId);
+                    toCount++;
                 }
             }
+
+            lastFromTileCount = fromCount;
+            lastToTileCount = toCount;
 
             // Phase 0: Purge incomplete paths and completed paths with inferior
             // road types so the MST can re-optimize the network when settlements
@@ -554,19 +541,13 @@ namespace FactionColonies
             roadPaths.RemoveAll(p => !p.IsCompleted ||
                 FCRoadPath.IsNewRoadBetter(p.builtRoadDef, this.roadDef));
 
-            // Collect all unique tile IDs
-            HashSet<int> allTileSet = new HashSet<int>();
-            foreach (PlanetTile tile in settlementsFromTiles)
-                allTileSet.Add(tile.tileId);
-            foreach (PlanetTile tile in settlementsToTiles)
-                allTileSet.Add(tile.tileId);
-
             List<int> allTiles = new List<int>(allTileSet);
             if (allTiles.Count < 2)
                 return;
 
             var layer = Find.WorldGrid.PlanetLayers[0];
             int generation = ++mstGeneration;
+            roadPathIterator?.Dispose();
             roadPathIterator = null;
 
             // --- Cache invalidation ---

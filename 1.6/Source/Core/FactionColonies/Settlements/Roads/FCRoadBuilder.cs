@@ -2,6 +2,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using System.Collections.Generic;
 
 namespace FactionColonies
 {
@@ -42,6 +43,9 @@ namespace FactionColonies
             CheckForTechChanges();
             CreateRoadQueue(false);
             FlagUpdateRoadQueues();
+
+            if (roadQueue.nextRoadTick == 0)
+                roadQueue.nextRoadTick = Find.TickManager.TicksGame;
 
             if (daysBetweenTicks == 0)
             {
@@ -102,7 +106,7 @@ namespace FactionColonies
                 roadQueue.AdvanceMSTIncremental(FCSettings.edgesPerRoadTick);
             }
 
-            if (!pathsFullyProcessed)
+            if (!pathsFullyProcessed && roadQueue.IsMSTReady)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -114,11 +118,14 @@ namespace FactionColonies
                 }
             }
 
-            bool segmentBuilt = roadQueue.BuildRoadSegments();
+            roadQueue.BuildRoadSegments();
         }
 
-        // Returns whether or not a settlement would be built to.
-        public static bool IsValidRoadTarget(Settlement settlement)
+        /// <summary>
+        /// Checks if a settlement is a valid road target. When empireTileIds is
+        /// provided, uses O(1) lookup instead of iterating all empire settlements.
+        /// </summary>
+        public static bool IsValidRoadTarget(Settlement settlement, HashSet<int> empireTileIds = null)
         {
             if (!settlement.Tile.Layer.IsRootSurface)
                 return false;
@@ -129,6 +136,9 @@ namespace FactionColonies
             if (settlement.Faction != null)
                 if (settlement.Faction.IsPlayer || (fC.IsActionAllowed(FCActionType.BuildRoadsToAllies) && settlement.Faction.PlayerRelationKind == FactionRelationKind.Ally))
                     return true;
+
+            if (empireTileIds is object)
+                return empireTileIds.Contains(settlement.Tile.tileId);
 
             foreach (WorldSettlementFC settlementFC in fC.settlements)
             {
@@ -177,8 +187,11 @@ namespace FactionColonies
                 LogUtil.Message($"Road type changed from {this.roadDef?.defName ?? "null"} to {def?.defName ?? "null"}");
                 this.roadDef = def;
 
-                roadQueue.RoadDef = def;
-                FlagUpdateRoadQueues();
+                if (roadQueue is object)
+                {
+                    roadQueue.RoadDef = def;
+                    FlagUpdateRoadQueues();
+                }
             }
         }
 

@@ -22,15 +22,6 @@ namespace FactionColonies
         /// </summary>
         public FCRoadPath() { }
 
-        public FCRoadPath(Settlement from, Settlement to)
-        {
-            if (from.Tile == to.Tile)
-            {
-                LogUtil.Error("Attempted to create road path to the same tile");
-            }
-            this.SetupPath(from.Tile, to.Tile);
-        }
-
         public FCRoadPath(int from, int to)
         {
             if (from == to)

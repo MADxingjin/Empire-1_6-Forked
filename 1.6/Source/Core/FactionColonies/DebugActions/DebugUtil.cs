@@ -1369,7 +1369,7 @@ namespace FactionColonies
             if (rb.roadQueue != null)
             {
                 var rq = rb.roadQueue;
-                LogUtil.MessageForce($"Road Queue: NextTick:{rq.nextRoadTick - Find.TickManager.TicksGame} ticks | FromTiles:{rq.settlementsFromTiles.Count} ToTiles:{rq.settlementsToTiles.Count} Paths:{rq.roadPaths.Count} NeedsUpdate:{rq.shouldUpdateSettlementsToProcess}");
+                LogUtil.MessageForce($"Road Queue: NextTick:{rq.nextRoadTick - Find.TickManager.TicksGame} ticks | FromTiles:{rq.lastFromTileCount} ToTiles:{rq.lastToTileCount} Paths:{rq.roadPaths.Count} NeedsUpdate:{rq.shouldUpdateSettlementsToProcess}");
             }
             else
             {
