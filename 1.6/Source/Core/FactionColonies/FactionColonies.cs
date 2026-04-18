@@ -793,6 +793,13 @@ namespace FactionColonies
                 edgesPerRoadTick = (int)ls.SliderLabeled(edgesLabel, edgesPerRoadTick, 0, 50);
             }
 
+            ls.Gap(12f);
+            FCRoadQueue queue = FactionCache.FactionComp?.roadBuilder?.roadQueue;
+            if (queue is object && ls.ButtonText("FCSettingFlushRoadCache".Translate()))
+            {
+                queue.FlushCache();
+            }
+
             viewRectHeightRoadBuilder = ls.CurHeight + 5f;
             ls.End();
 

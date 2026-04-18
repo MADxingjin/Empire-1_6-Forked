@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using RimWorld;
 using RimWorld.Planet;
@@ -28,10 +29,22 @@ namespace FactionColonies
         private List<int> incrementalTiles;
         private PlanetLayer incrementalLayer;
         private WorldPathing incrementalPathing;
-        private List<Edge> incrementalEdges;
-        private int incrementalI;
-        private int incrementalJ;
+        private int incrementalEdgeIndex;
+        private List<long> incrementalEdgeKeys;
         private int incrementalGeneration;
+
+        // KNN filtering constant
+        private const int KNearestNeighbors = 8;
+
+        // Edge cost cache (saved)
+        private Dictionary<long, float> edgeCostCache = new Dictionary<long, float>();
+        private HashSet<int> previousTileSet = new HashSet<int>();
+        private RoadDef cachedRoadDef;
+
+        // Background thread result handoff (not saved)
+        private Dictionary<long, float> pendingNewEdges;
+        private string pendingLogMessage;
+        private HashSet<long> currentCandidateEdges;
 
         public RoadDef RoadDef
         {
@@ -94,6 +107,88 @@ namespace FactionColonies
             public float cost;
         }
 
+        private static long EdgeKey(int tileA, int tileB)
+        {
+            int lo = tileA < tileB ? tileA : tileB;
+            int hi = tileA < tileB ? tileB : tileA;
+            return ((long)lo << 32) | (long)(uint)hi;
+        }
+
+        private static void UnpackEdgeKey(long key, out int lo, out int hi)
+        {
+            lo = (int)(key >> 32);
+            hi = (int)(key & 0xFFFFFFFFL);
+        }
+
+        /// <summary>
+        /// For each tile, selects up to k nearest neighbors by approximate tile distance.
+        /// Returns a HashSet of canonical edge keys (deduplicates symmetric pairs).
+        /// O(n²) in distance computations but ApproxDistanceInTiles is trivial vector math.
+        /// </summary>
+        private static HashSet<long> SelectKNNCandidateEdges(List<int> allTiles, PlanetLayer layer)
+        {
+            int n = allTiles.Count;
+            int k = Math.Min(KNearestNeighbors, n - 1);
+            HashSet<long> candidateKeys = new HashSet<long>();
+            List<KeyValuePair<int, float>> distances = new List<KeyValuePair<int, float>>(n);
+
+            for (int i = 0; i < n; i++)
+            {
+                distances.Clear();
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == j) continue;
+                    float dist = layer.ApproxDistanceInTiles(allTiles[i], allTiles[j]);
+                    distances.Add(new KeyValuePair<int, float>(j, dist));
+                }
+                distances.Sort((a, b) => a.Value.CompareTo(b.Value));
+
+                int count = Math.Min(k, distances.Count);
+                for (int d = 0; d < count; d++)
+                {
+                    candidateKeys.Add(EdgeKey(allTiles[i], allTiles[distances[d].Key]));
+                }
+            }
+
+            return candidateKeys;
+        }
+
+        private void InvalidateCacheForTiles(HashSet<int> removedTiles)
+        {
+            List<long> toRemove = new List<long>();
+            foreach (long key in edgeCostCache.Keys)
+            {
+                UnpackEdgeKey(key, out int lo, out int hi);
+                if (removedTiles.Contains(lo) || removedTiles.Contains(hi))
+                    toRemove.Add(key);
+            }
+            foreach (long key in toRemove)
+                edgeCostCache.Remove(key);
+        }
+
+        private List<Edge> BuildEdgeListFromCache(HashSet<long> candidateEdges)
+        {
+            List<Edge> edges = new List<Edge>(candidateEdges.Count);
+            foreach (long key in candidateEdges)
+            {
+                float cost;
+                if (!edgeCostCache.TryGetValue(key, out cost))
+                    continue;
+                UnpackEdgeKey(key, out int lo, out int hi);
+                edges.Add(new Edge { fromTile = lo, toTile = hi, cost = cost });
+            }
+            return edges;
+        }
+
+        public void FlushCache()
+        {
+            edgeCostCache.Clear();
+            previousTileSet.Clear();
+            cachedRoadDef = null;
+            shouldUpdateSettlementsToProcess = true;
+            LogUtil.Message("Road path cache flushed");
+        }
+
         public void ExposeData()
         {
             Scribe_Values.Look(ref nextRoadTick, "nextRoadTick");
@@ -102,6 +197,17 @@ namespace FactionColonies
             Scribe_Collections.Look(ref roadPaths, "roadPaths", LookMode.Deep);
             if (roadPaths == null)
                 roadPaths = new List<FCRoadPath>();
+
+            // Edge cost cache persistence
+            Scribe_Collections.Look(ref edgeCostCache, "edgeCostCache", LookMode.Value, LookMode.Value);
+            if (edgeCostCache is null)
+                edgeCostCache = new Dictionary<long, float>();
+
+            Scribe_Collections.Look(ref previousTileSet, "previousTilesList", LookMode.Value);
+            if (previousTileSet is null)
+                previousTileSet = new HashSet<int>();
+
+            Scribe_Defs.Look(ref cachedRoadDef, "cachedRoadDef");
         }
 
         public FCRoadQueue(RoadDef roadDef, int daysBetweenTicks)
@@ -162,9 +268,9 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Runs on a background thread. Computes all pairwise A* pathfinding costs
-        /// and builds the MST using Kruskal's algorithm. Results are stored for the
-        /// main thread to pick up via ProcessPath.
+        /// Runs on a background thread. Computes only the uncached edges, merges
+        /// with the cache snapshot, and builds the MST using Kruskal's algorithm.
+        /// Results are stored for the main thread to pick up via ProcessOnePath.
         ///
         /// Thread-safety notes:
         /// - WorldPathing.FindPath reads Find.World/WorldGrid/WorldReachability and
@@ -176,8 +282,12 @@ namespace FactionColonies
         ///   WorldPathPoolPatches.cs (Monitor lock around Get/Release). The pool's
         ///   internal leak detection may fire an ErrorOnce log due to the background
         ///   thread's borrowed paths inflating the count — this is harmless.
+        /// - edgeCostCache is NOT accessed from this thread. The thread receives a
+        ///   snapshot copy and stores new edges in pendingNewEdges for the main
+        ///   thread to merge.
         /// </summary>
-        void ComputeMSTBackground(List<int> allTiles, PlanetLayer layer, int generation)
+        void ComputeMSTBackground(List<int> allTiles, PlanetLayer layer, int generation,
+            HashSet<long> edgesToCompute, Dictionary<long, float> cacheSnapshot)
         {
             try
             {
@@ -186,36 +296,42 @@ namespace FactionColonies
                 for (int i = 0; i < n; i++)
                     tileToIndex[allTiles[i]] = i;
 
-                // Single WorldPathing instance reused for all pairs
-                List<Edge> edges = new List<Edge>(n * (n - 1) / 2);
+                // Compute only the missing edges
+                Dictionary<long, float> newEdges = new Dictionary<long, float>(edgesToCompute.Count);
                 using (var pathing = new WorldPathing(layer))
                 {
-                    for (int i = 0; i < n; i++)
+                    foreach (long key in edgesToCompute)
                     {
-                        for (int j = i + 1; j < n; j++)
-                        {
-                            // Bail early if superseded or the game is being torn down
-                            if (generation != mstGeneration || Current.Game is null)
-                                return;
+                        // Bail early if superseded or the game is being torn down
+                        if (generation != mstGeneration || Current.Game is null)
+                            return;
 
-                            var fromTile = new PlanetTile(allTiles[i], layer);
-                            var toTile = new PlanetTile(allTiles[j], layer);
-                            WorldPath path = pathing.FindPath(fromTile, toTile, null);
-                            float cost = path.Found ? path.TotalCost : float.MaxValue;
-                            path.Dispose();
-                            edges.Add(new Edge
-                            {
-                                fromTile = allTiles[i],
-                                toTile = allTiles[j],
-                                cost = cost
-                            });
-                        }
+                        UnpackEdgeKey(key, out int lo, out int hi);
+                        var fromTile = new PlanetTile(lo, layer);
+                        var toTile = new PlanetTile(hi, layer);
+                        WorldPath path = pathing.FindPath(fromTile, toTile, null);
+                        float cost = path.Found ? path.TotalCost : float.MaxValue;
+                        path.Dispose();
+                        newEdges[key] = cost;
                     }
                 }
 
                 // Bail if superseded or game torn down
                 if (generation != mstGeneration || Current.Game is null)
                     return;
+
+                // Merge cached + newly computed edges for Kruskal
+                List<Edge> edges = new List<Edge>(cacheSnapshot.Count + newEdges.Count);
+                foreach (var kvp in cacheSnapshot)
+                {
+                    UnpackEdgeKey(kvp.Key, out int lo, out int hi);
+                    edges.Add(new Edge { fromTile = lo, toTile = hi, cost = kvp.Value });
+                }
+                foreach (var kvp in newEdges)
+                {
+                    UnpackEdgeKey(kvp.Key, out int lo, out int hi);
+                    edges.Add(new Edge { fromTile = lo, toTile = hi, cost = kvp.Value });
+                }
 
                 // Kruskal's MST
                 edges.Sort((a, b) => a.cost.CompareTo(b.cost));
@@ -241,48 +357,42 @@ namespace FactionColonies
                 // Publish results only if still the current generation
                 if (generation == mstGeneration)
                 {
+                    pendingNewEdges = newEdges;
+                    pendingLogMessage = $"Road MST computed on background thread: {edges.Count} edges ({newEdges.Count} new, {cacheSnapshot.Count} cached), {mstEdges.Count} MST edges";
                     computedMSTEdges = mstEdges;
                     completedGeneration = generation;
-                    LogUtil.Message($"Road MST computed on background thread: {edges.Count} edges, {mstEdges.Count} MST edges");
                 }
             }
             catch (Exception e)
             {
-                LogUtil.Error($"Road MST background computation failed: {e}");
+                pendingLogMessage = $"Road MST background computation failed: {e}";
+                computedMSTEdges = new List<Edge>();
+                completedGeneration = generation;
             }
         }
 
         /// <summary>
-        /// Runs on the main thread. Computes all pairwise A* pathfinding costs
-        /// and builds the MST without threading. Used as a fallback when threaded
-        /// computation is disabled in settings and edgesPerRoadTick is 0 (unlimited).
+        /// Runs on the main thread. Computes only the uncached edges and builds
+        /// the MST. Used as a fallback when threaded computation is disabled
+        /// in settings and edgesPerRoadTick is 0 (unlimited).
         /// </summary>
-        void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer)
+        void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer, HashSet<long> edgesToCompute)
         {
-            int n = allTiles.Count;
-
-            List<Edge> edges = new List<Edge>(n * (n - 1) / 2);
             using (var pathing = new WorldPathing(layer))
             {
-                for (int i = 0; i < n; i++)
+                foreach (long key in edgesToCompute)
                 {
-                    for (int j = i + 1; j < n; j++)
-                    {
-                        var fromTile = new PlanetTile(allTiles[i], layer);
-                        var toTile = new PlanetTile(allTiles[j], layer);
-                        WorldPath path = pathing.FindPath(fromTile, toTile, null);
-                        float cost = path.Found ? path.TotalCost : float.MaxValue;
-                        path.Dispose();
-                        edges.Add(new Edge
-                        {
-                            fromTile = allTiles[i],
-                            toTile = allTiles[j],
-                            cost = cost
-                        });
-                    }
+                    UnpackEdgeKey(key, out int lo, out int hi);
+                    var fromTile = new PlanetTile(lo, layer);
+                    var toTile = new PlanetTile(hi, layer);
+                    WorldPath path = pathing.FindPath(fromTile, toTile, null);
+                    float cost = path.Found ? path.TotalCost : float.MaxValue;
+                    path.Dispose();
+                    edgeCostCache[key] = cost;
                 }
             }
 
+            List<Edge> edges = BuildEdgeListFromCache(currentCandidateEdges);
             FinishMSTFromEdges(edges, allTiles, mstGeneration, "synchronously");
         }
 
@@ -326,17 +436,15 @@ namespace FactionColonies
         /// Initializes incremental MST computation state. The actual edge computation
         /// is spread across ticks via AdvanceMSTIncremental.
         /// </summary>
-        void StartMSTIncremental(List<int> allTiles, PlanetLayer layer, int generation)
+        void StartMSTIncremental(List<int> allTiles, PlanetLayer layer, int generation, HashSet<long> edgesToCompute)
         {
             CleanupIncremental();
 
-            int n = allTiles.Count;
             incrementalTiles = allTiles;
             incrementalLayer = layer;
             incrementalPathing = new WorldPathing(layer);
-            incrementalEdges = new List<Edge>(n * (n - 1) / 2);
-            incrementalI = 0;
-            incrementalJ = 1;
+            incrementalEdgeKeys = new List<long>(edgesToCompute);
+            incrementalEdgeIndex = 0;
             incrementalGeneration = generation;
         }
 
@@ -346,7 +454,7 @@ namespace FactionColonies
         /// </summary>
         public bool AdvanceMSTIncremental(int edgesPerTick)
         {
-            if (incrementalTiles is null)
+            if (incrementalEdgeKeys is null)
                 return false;
 
             // Stale — a new generation was requested
@@ -356,37 +464,26 @@ namespace FactionColonies
                 return false;
             }
 
-            int n = incrementalTiles.Count;
             int computed = 0;
-
-            while (incrementalI < n - 1 && computed < edgesPerTick)
+            while (incrementalEdgeIndex < incrementalEdgeKeys.Count && computed < edgesPerTick)
             {
-                var fromTile = new PlanetTile(incrementalTiles[incrementalI], incrementalLayer);
-                var toTile = new PlanetTile(incrementalTiles[incrementalJ], incrementalLayer);
+                long key = incrementalEdgeKeys[incrementalEdgeIndex];
+                UnpackEdgeKey(key, out int lo, out int hi);
+                var fromTile = new PlanetTile(lo, incrementalLayer);
+                var toTile = new PlanetTile(hi, incrementalLayer);
                 WorldPath path = incrementalPathing.FindPath(fromTile, toTile, null);
                 float cost = path.Found ? path.TotalCost : float.MaxValue;
                 path.Dispose();
-                incrementalEdges.Add(new Edge
-                {
-                    fromTile = incrementalTiles[incrementalI],
-                    toTile = incrementalTiles[incrementalJ],
-                    cost = cost
-                });
+                edgeCostCache[key] = cost;
                 computed++;
-
-                // Advance indices through upper triangle
-                incrementalJ++;
-                if (incrementalJ >= n)
-                {
-                    incrementalI++;
-                    incrementalJ = incrementalI + 1;
-                }
+                incrementalEdgeIndex++;
             }
 
-            // All pairs exhausted — run Kruskal and publish
-            if (incrementalI >= n - 1)
+            // All edges computed — build from cache and run Kruskal
+            if (incrementalEdgeIndex >= incrementalEdgeKeys.Count)
             {
-                FinishMSTFromEdges(incrementalEdges, incrementalTiles, incrementalGeneration, "incrementally");
+                List<Edge> edges = BuildEdgeListFromCache(currentCandidateEdges);
+                FinishMSTFromEdges(edges, incrementalTiles, incrementalGeneration, "incrementally");
                 CleanupIncremental();
                 return false;
             }
@@ -399,7 +496,7 @@ namespace FactionColonies
             incrementalPathing?.Dispose();
             incrementalPathing = null;
             incrementalTiles = null;
-            incrementalEdges = null;
+            incrementalEdgeKeys = null;
         }
 
         /// <summary>
@@ -472,19 +569,65 @@ namespace FactionColonies
             int generation = ++mstGeneration;
             roadPathIterator = null;
 
+            // --- Cache invalidation ---
+            if (roadDef != cachedRoadDef)
+            {
+                LogUtil.Message("Road cache fully invalidated (road tech changed)");
+                edgeCostCache.Clear();
+                cachedRoadDef = roadDef;
+            }
+            else
+            {
+                // Partial invalidation: remove edges touching removed tiles
+                HashSet<int> removedTiles = new HashSet<int>(previousTileSet);
+                removedTiles.ExceptWith(allTileSet);
+                if (removedTiles.Count > 0)
+                {
+                    InvalidateCacheForTiles(removedTiles);
+                    LogUtil.Message($"Road cache: invalidated edges for {removedTiles.Count} removed tile(s)");
+                }
+            }
+            previousTileSet = new HashSet<int>(allTileSet);
+
+            // --- KNN candidate selection ---
+            currentCandidateEdges = SelectKNNCandidateEdges(allTiles, layer);
+
+            // Filter to uncached edges
+            HashSet<long> edgesToCompute = new HashSet<long>(currentCandidateEdges);
+            edgesToCompute.ExceptWith(edgeCostCache.Keys);
+
+            // Short-circuit: all candidates are cached, just run Kruskal
+            if (edgesToCompute.Count == 0)
+            {
+                List<Edge> edges = BuildEdgeListFromCache(currentCandidateEdges);
+                FinishMSTFromEdges(edges, allTiles, generation, $"from cache ({edgeCostCache.Count} cached entries)");
+                return;
+            }
+
+            LogUtil.Message($"Road MST: {currentCandidateEdges.Count} candidate edges, {edgesToCompute.Count} to compute, {currentCandidateEdges.Count - edgesToCompute.Count} cached");
+
             if (FCSettings.useThreadedRoadComputation)
             {
-                Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation));
+                // Snapshot relevant cache entries for the background thread
+                Dictionary<long, float> cacheSnapshot = new Dictionary<long, float>();
+                foreach (long key in currentCandidateEdges)
+                {
+                    float cost;
+                    if (edgeCostCache.TryGetValue(key, out cost))
+                        cacheSnapshot[key] = cost;
+                }
+                HashSet<long> edgesToComputeCopy = new HashSet<long>(edgesToCompute);
+                Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation, edgesToComputeCopy, cacheSnapshot));
                 thread.IsBackground = true;
                 thread.Start();
             }
             else if (FCSettings.edgesPerRoadTick > 0)
             {
-                StartMSTIncremental(allTiles, layer, generation);
+                StartMSTIncremental(allTiles, layer, generation, edgesToCompute);
             }
             else
             {
-                ComputeMSTSynchronous(allTiles, layer);
+                ComputeMSTSynchronous(allTiles, layer, edgesToCompute);
             }
         }
 
@@ -496,6 +639,20 @@ namespace FactionColonies
             // MST still computing on background thread
             if (completedGeneration != mstGeneration)
                 return true;
+
+            // Background thread just completed — merge new edges into the live cache
+            if (pendingNewEdges is object)
+            {
+                foreach (var kvp in pendingNewEdges)
+                    edgeCostCache[kvp.Key] = kvp.Value;
+                pendingNewEdges = null;
+
+                if (pendingLogMessage is object)
+                {
+                    LogUtil.Message(pendingLogMessage);
+                    pendingLogMessage = null;
+                }
+            }
 
             // MST just completed — create iterator
             if (this.roadPathIterator is null)

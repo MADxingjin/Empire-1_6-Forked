@@ -283,4 +283,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_20</defName>
+		<label>Road Builder Updates! ...Again!</label>
+		<description>Updates the road network calculations to cache old results, and to also only consider each settlements&apos; 8 closest neighbors.</description>
+		<releaseDate>2026-04-18</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Road MST computation: cache edge pathfinding results</li>
+		<li>Road MST computation: only calculate pathfinding costs for a settlement&apos;s 8 closest neighbors, instead of *all* settlements</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
