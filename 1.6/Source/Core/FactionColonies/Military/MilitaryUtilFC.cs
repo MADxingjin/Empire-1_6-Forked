@@ -288,7 +288,7 @@ namespace FactionColonies
 
         public static FCEvent ReturnMilitaryEventByLocation(PlanetTile location)
         {
-            return FactionCache.FactionComp.Events.FirstOrDefault(evt => evt.def == FCEventDefOf.settlementBeingAttacked && evt.location == location);
+            return FactionCache.FactionComp.FindEventByDefAndLocation(FCEventDefOf.settlementBeingAttacked, location);
         }
     }
 }

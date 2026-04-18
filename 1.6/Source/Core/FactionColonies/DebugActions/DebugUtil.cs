@@ -296,7 +296,8 @@ namespace FactionColonies
         private static void ForceAttackAndEventSameTick()
         {
             FactionFC faction = FactionCache.FactionComp;
-            FCEvent attackEvt = faction.Events.FirstOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+            IReadOnlyList<FCEvent> attackEvents = faction.GetEventsByDef(FCEventDefOf.settlementBeingAttacked);
+            FCEvent attackEvt = attackEvents.Count > 0 ? attackEvents[0] : null;
             if (attackEvt == null)
             {
                 LogUtil.MessageForce("Debug - No pending settlementBeingAttacked event. Use 'Attack Player Settlement' first.");

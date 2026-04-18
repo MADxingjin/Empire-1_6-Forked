@@ -99,8 +99,7 @@ namespace FactionColonies
             string label = "FCMilStatusCooldown".Translate();
             if (settlement == null) return label;
 
-            FCEvent cooldownEvent = FactionCache.FactionComp?.Events?
-                .FirstOrDefault(e => e.def.defName == "cooldownMilitary" && e.location == settlement.Tile);
+            FCEvent cooldownEvent = FactionCache.FactionComp?.FindEventByDefAndLocation(FCEventDefOf.cooldownMilitary, settlement.Tile);
             if (cooldownEvent != null)
             {
                 int ticksLeft = Math.Max(0, cooldownEvent.timeTillTrigger - Find.TickManager.TicksGame);

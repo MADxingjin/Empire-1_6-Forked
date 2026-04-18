@@ -111,9 +111,11 @@ namespace FactionColonies
         public override void CompTick()
         {
             base.CompTick();
+            if (!isUnderAttack) return;
+            if (endingBattle) return;
 
             if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0
-                && Map is null && !attackers.Any() && !defenders.Any())
+                && Map is null && attackers.Count == 0 && defenders.Count == 0)
             {
                 // Events are removed from the queue before battle starts (see FCEventMaker.ProcessEvents),
                 // so an orphaned flag is only "stuck" if the battle also isn't in progress; i.e. no map loaded
@@ -128,7 +130,6 @@ namespace FactionColonies
                 }
             }
 
-            if (!isUnderAttack || endingBattle) return;
             if (Find.TickManager.TicksGame % 250 != 0) return;
             if (Map == null) return;
 
@@ -136,7 +137,7 @@ namespace FactionColonies
             attackers.RemoveAll(p => p == null || p.Destroyed);
             defenders.RemoveAll(p => p == null || p.Destroyed);
 
-            if (!attackers.Any() || !defenders.Any())
+            if (attackers.Count == 0 || defenders.Count == 0)
             {
                 LogUtil.Warning($"Stuck battle detected at {WorldSettlement.Name}, forcing resolution.");
                 endingBattle = true;
@@ -1426,7 +1427,7 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
 
             // Prevent duplicate cooldown events for the same settlement
-            if (faction.Events.Any(e => e.def == FCEventDefOf.cooldownMilitary && e.location == WorldSettlement.Tile))
+            if (faction.HasEventWithDefAndLocation(FCEventDefOf.cooldownMilitary, WorldSettlement.Tile))
             {
                 LogUtil.Warning($"CooldownMilitaryFinal: cooldownMilitary event already exists for {WorldSettlement.Name}. Skipping duplicate.");
                 return;

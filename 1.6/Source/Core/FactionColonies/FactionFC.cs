@@ -1735,6 +1735,11 @@ namespace FactionColonies
         public bool RemoveEvent(FCEvent evt) => eventManager.Remove(evt);
         public int RemoveEventsWhere(Predicate<FCEvent> match) => eventManager.RemoveWhere(match);
 
+        // Indexed event queries — O(1) via FCEventManager's internal indexes.
+        public IReadOnlyList<FCEvent> GetEventsByDef(FCEventDef def) => eventManager.GetByDef(def);
+        public FCEvent FindEventByDefAndLocation(FCEventDef def, int tile) => eventManager.FindFirstByDefAndLocation(def, tile);
+        public bool HasEventWithDefAndLocation(FCEventDef def, int tile) => eventManager.AnyWithDefAndLocation(def, tile);
+
         private void MakeRandomEvent()
         {
             if (RandomEventsDisabledOrNoSettlements()) return;
