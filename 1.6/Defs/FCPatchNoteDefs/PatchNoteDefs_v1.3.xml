@@ -269,4 +269,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_19</defName>
+		<label>Vehicle Framework Compat Fix</label>
+		<description>Fix up the VF compat patch.</description>
+		<releaseDate>2026-04-17</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Fixes up the Vehicle Framework compat patch</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

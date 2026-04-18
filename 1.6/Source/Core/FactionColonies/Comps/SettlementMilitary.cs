@@ -389,6 +389,18 @@ namespace FactionColonies
 
         public void AddToDefenceFromList(List<Pawn> pawns, int destinationTile)
         {
+            AddToDefenceFromList(pawns, destinationTile, assignToLord: true);
+        }
+
+        /// <summary>
+        /// Registers pawns with the defense system (CaravanSupporting, defenders list).
+        /// When <paramref name="assignToLord"/> is false, pawns are tracked for post-battle
+        /// caravan reformation but not added to the battle lord. This is needed for entities
+        /// like Vehicle Framework vehicles that have their own job systems and conflict with
+        /// lord duty assignments.
+        /// </summary>
+        public void AddToDefenceFromList(List<Pawn> pawns, int destinationTile, bool assignToLord)
+        {
             if (pawns.NullOrEmpty())
             {
                 LogUtil.Error("Tried to add an empty list of pawns to an FCEvent");
@@ -398,13 +410,16 @@ namespace FactionColonies
             StartDefence(
                 MilitaryUtilFC.ReturnMilitaryEventByLocation(destinationTile), () =>
                 {
-                    foreach (var pawn in pawns)
+                    if (assignToLord)
                     {
-                        if (defenders.Contains(pawn)) continue;
-                        if (defenders.Any())
-                            defenders[0].GetLord()?.AddPawn(pawn);
-                        else
-                            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(WorldSettlement), WorldSettlement.Map, pawns);
+                        foreach (var pawn in pawns)
+                        {
+                            if (defenders.Contains(pawn)) continue;
+                            if (defenders.Any())
+                                defenders[0].GetLord()?.AddPawn(pawn);
+                            else
+                                LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(WorldSettlement), WorldSettlement.Map, pawns);
+                        }
                     }
 
                     var caravanSupporting = new CaravanSupporting

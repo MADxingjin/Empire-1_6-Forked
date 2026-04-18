@@ -41,33 +41,37 @@ namespace FactionColonies.VF
             WorldObjectComp_SettlementMilitary comp,
             VehicleCaravan vehicleCaravan)
         {
-            // Snapshot vehicles and dismounted pawns before destroying the caravan.
+            // Snapshot vehicles and dismounted pawns from the caravan.
             List<VehiclePawn> vehicles = vehicleCaravan.VehiclesListForReading.ListFullCopy();
             List<Pawn> dismounted = vehicleCaravan.DismountedPawnsListForReading.ListFullCopy();
 
-            // Build the combined pawn list: vehicles + dismounted + all passengers aboard.
-            // Passengers are included so they end up in CaravanSupporting for post-battle
-            // caravan reformation even if the player disembarks them during the fight.
-            var allPawns = new List<Pawn>();
+            // Build two pawn lists: one with lord assignment (dismounted + passengers),
+            // one without (vehicles). VehiclePawns are excluded from the lord because
+            // VF's vehicle job system conflicts with lord duty assignments
+            // (LordJob_ColonistsIdle), causing infinite job loops.
+            var lordPawns = new List<Pawn>();
+            var vehiclePawns = new List<Pawn>();
             foreach (VehiclePawn vehicle in vehicles)
             {
-                allPawns.Add(vehicle);
-                allPawns.AddRange(vehicle.AllPawnsAboard);
+                vehiclePawns.Add(vehicle);
+                lordPawns.AddRange(vehicle.AllPawnsAboard);
             }
-            allPawns.AddRange(dismounted);
+            lordPawns.AddRange(dismounted);
 
-            // Register with the defense system (lord, CaravanSupporting, defenders list).
-            // The lord setup callback runs in a deferred LongEventHandler queue, so by
-            // the time it fires the pawns are already spawned on the map.
-            comp.AddToDefenceFromList(allPawns, vehicleCaravan.Tile);
+            // Register non-vehicle pawns with the defense system (lord + CaravanSupporting
+            // + defenders). The lord setup callback runs in a deferred LongEventHandler
+            // queue, so by the time it fires the pawns are already spawned on the map.
+            comp.AddToDefenceFromList(lordPawns, vehicleCaravan.Tile);
 
-            if (!vehicleCaravan.Destroyed)
-                vehicleCaravan.Destroy();
+            // Track vehicles in CaravanSupporting + defenders, but skip the lord.
+            comp.AddToDefenceFromList(vehiclePawns, vehicleCaravan.Tile, assignToLord: false);
 
             Map map = comp.Map;
             IntVec3 enterCell = WorldObjectComp_SettlementMilitary.FindNearEdgeCell(map);
 
-            // Spawn vehicles with passengers still aboard.
+            // Spawn vehicles BEFORE destroying the caravan. VehicleCaravan.Destroy()
+            // explicitly calls vehicle.Destroy() on every VehiclePawn still inside,
+            // so we must get them out first. Spawning removes them from caravan.pawns.
             foreach (VehiclePawn vehicle in vehicles)
             {
                 IntVec3 loc = CellFinder.RandomSpawnCellForPawnNear(enterCell, map);
@@ -79,6 +83,16 @@ namespace FactionColonies.VF
             {
                 IntVec3 loc = CellFinder.RandomSpawnCellForPawnNear(enterCell, map);
                 GenSpawn.Spawn(pawn, loc, map, Rot4.Random);
+            }
+
+            // Destroy the caravan last. By now caravan.pawns should be empty, so
+            // VehicleCaravan.Destroy()'s cleanup loop has nothing to destroy.
+            if (!vehicleCaravan.Destroyed)
+            {
+                if (vehicleCaravan.PawnsListForReading.Count > 0)
+                    LogUtil.Error("VF compat: VehicleCaravan still has " + vehicleCaravan.PawnsListForReading.Count
+                                  + " pawns after spawning. Destroying anyway — some pawns may be lost.");
+                vehicleCaravan.Destroy();
             }
         }
     }
