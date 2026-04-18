@@ -176,14 +176,12 @@ namespace FactionColonies
             filtered = ApplySort(filtered, itemSortIndex);
 
             float viewHeight = filtered.Count * RowHeight;
-            float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            float scrollMargin = viewHeight > scrollOutRect.height ? ScrollUtil.ScrollbarWidth : 0f;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheBasePrice".Translate());
             Text.Font = GameFont.Small;
-            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
-
-            Widgets.BeginScrollView(scrollOutRect, ref itemScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref itemScrollPos, viewHeight);
 
             for (int i = 0; i < filtered.Count; i++)
             {
@@ -241,7 +239,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DrawStuffPanel(Rect panelRect)
@@ -295,14 +293,12 @@ namespace FactionColonies
             filtered = ApplySort(filtered, stuffSortIndex, isStuffList: true);
 
             float viewHeight = filtered.Count * RowHeight;
-            float scrollMargin = viewHeight > scrollOutRect.height ? 16f : 0f;
+            float scrollMargin = viewHeight > scrollOutRect.height ? ScrollUtil.ScrollbarWidth : 0f;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(new Rect(titleBox.xMax - margin - 65f - scrollMargin, titleBox.y, 60f, titleBox.height), "FCTitheMaterialPrice".Translate());
             Text.Font = GameFont.Small;
-            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, Mathf.Max(viewHeight, scrollOutRect.height));
-
-            Widgets.BeginScrollView(scrollOutRect, ref stuffScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref stuffScrollPos, viewHeight);
 
             for (int i = 0; i < filtered.Count; i++)
             {
@@ -340,7 +336,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DrawSummary(Rect rect)

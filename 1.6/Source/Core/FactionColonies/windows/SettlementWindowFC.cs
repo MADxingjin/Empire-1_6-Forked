@@ -574,18 +574,8 @@ namespace FactionColonies
             Rect drawBox = new Rect(boundingBox.x + margin, header.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - header.yMax - margin);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = titheItems.Count * rowHeight;
-            float width;
-            if (listHeight > selectedListBox.height)
-            {
-                width = selectedListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = selectedListBox.width;
-            }
-            Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
             Widgets.DrawMenuSection(selectedListBox);
-            Widgets.BeginScrollView(selectedListBox, ref titheScrollBar, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref titheScrollBar, listHeight);
             for (int i = 0; i < titheItems.Count; i++)
             {
                 ThingQualityTuple thingTuple = titheItems[i];
@@ -726,7 +716,7 @@ namespace FactionColonies
                 titheBuffers[i] = buf;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private Vector2 randomTitheScrollBar = new Vector2();
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
@@ -789,19 +779,9 @@ namespace FactionColonies
                 Rect drawBox = new Rect(boundingBox.x + margin, budgetBox.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - budgetBox.yMax - margin);
                 Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
                 float listHeight = selectedThings.Count * rowHeight;
-                float width;
-                if (listHeight > selectedListBox.height)
-                {
-                    width = selectedListBox.width - scrollSpacing;
-                }
-                else
-                {
-                    width = selectedListBox.width;
-                }
-                Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
 
                 Widgets.DrawMenuSection(selectedListBox);
-                Widgets.BeginScrollView(selectedListBox, ref randomTitheScrollBar, innerScrollBox);
+                Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref randomTitheScrollBar, listHeight);
 
                 for (int i = 0; i < selectedThings.Count; i++)
                 {
@@ -829,7 +809,7 @@ namespace FactionColonies
                     Widgets.InfoCardButton(info, iThing);
                 }
 
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
         }
         private void DrawTitheFooterBox(Rect boundingBox, ResourceFC res)
@@ -1241,7 +1221,6 @@ namespace FactionColonies
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 12) ? scrollSpacing : 0;
 
             Rect labelHighlight = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
             Rect labelTextBox = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin * 2), labelHighlight.height - (smallMargin * 2));
@@ -1267,9 +1246,7 @@ namespace FactionColonies
 
             Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
 
-            Rect viewRect = new Rect(buildingBox.x, labelHighlight.yMax + margin, boundingBox.width - scrollMargin, totalHeight);
-
-            Widgets.BeginScrollView(buildingBox, ref scrollVectorBuildings, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(buildingBox, ref scrollVectorBuildings, totalHeight);
 
 
             int i = 0;
@@ -1318,7 +1295,7 @@ namespace FactionColonies
 
                 i++;
             }
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private Vector2 scrollVectorConstruction = new Vector2();
         private void DrawConstructionBox(Rect boundingBox, int numConstruction, List<BuildingFC> construction)
@@ -1339,11 +1316,8 @@ namespace FactionColonies
                 /* Scroll view time, baby */
                 float listHeight = boundingBox.height - (conHeader.height + margin);
                 float totalHeight = (constructionListItemHeight * numConstruction) + (margin * (numConstruction - 1));
-                float scrollBarMargin = (totalHeight < listHeight) ? 0 : scrollSpacing;
                 Rect listBox = new Rect(boundingBox.x, conHeader.yMax + margin, boundingBox.width, listHeight);
-                Rect viewRect = new Rect(listBox.x, listBox.y, listBox.width - scrollBarMargin, totalHeight);
-
-                Widgets.BeginScrollView(listBox, ref scrollVectorConstruction, viewRect);
+                Rect viewRect = ScrollUtil.BeginScrollView(listBox, ref scrollVectorConstruction, totalHeight);
 
                 float initialY = viewRect.y;
                 Text.Anchor = TextAnchor.MiddleLeft;
@@ -1376,7 +1350,7 @@ namespace FactionColonies
                     TooltipHandler.TipRegion(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
         }
         private void DrawConstructionInfoBox(Rect boundingBox, Texture2D icon, string label, string time, float progress)

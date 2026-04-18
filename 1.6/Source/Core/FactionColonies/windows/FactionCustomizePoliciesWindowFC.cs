@@ -241,12 +241,10 @@ namespace FactionColonies
 
             if (textHeight > descRect.height)
             {
-                float scrollWidth = descRect.width - 16f;
-                textHeight = Text.CalcHeight(desc, scrollWidth);
-                Rect scrollContent = new Rect(descRect.x, descRect.y, scrollWidth, textHeight);
-                Widgets.BeginScrollView(descRect, ref cardScrollPositions[slotIndex], scrollContent);
+                textHeight = Text.CalcHeight(desc, descRect.width - 16f);
+                Rect scrollContent = ScrollUtil.BeginScrollView(descRect, ref cardScrollPositions[slotIndex], textHeight);
                 Widgets.Label(scrollContent, desc);
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
             else
             {
@@ -280,10 +278,8 @@ namespace FactionColonies
             float contentHeight = allCorePolicies.Count * (policyRowHeight + smallMargin);
 
             Rect viewRect = new Rect(inRect.x, listY, inRect.width, listHeight);
-            Rect scrollRect = new Rect(inRect.x, listY, inRect.width - (contentHeight > listHeight ? 16f : 0f),
-                Mathf.Max(contentHeight, listHeight));
 
-            Widgets.BeginScrollView(viewRect, ref availableListScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref availableListScroll, Mathf.Max(contentHeight, listHeight));
 
             for (int i = 0; i < allCorePolicies.Count; i++)
             {
@@ -317,7 +313,7 @@ namespace FactionColonies
                     hoveredPolicy = policy;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         /// <summary>

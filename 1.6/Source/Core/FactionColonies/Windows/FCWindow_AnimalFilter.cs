@@ -185,10 +185,8 @@ namespace FactionColonies
 
             Rect innerRect = new Rect(scrollOutRect.x + 2, scrollOutRect.y + 2, scrollOutRect.width - 4, scrollOutRect.height - 4);
             float viewHeight = filteredAnimals.Count * RowHeight;
-            float contentWidth = viewHeight > innerRect.height ? innerRect.width - 16f : innerRect.width;
-            Rect scrollViewRect = new Rect(innerRect.x, innerRect.y, contentWidth, Math.Max(viewHeight, innerRect.height));
 
-            Widgets.BeginScrollView(innerRect, ref scrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(innerRect, ref scrollPos, Math.Max(viewHeight, innerRect.height));
 
             Text.Font = GameFont.Small;
             for (int i = 0; i < filteredAnimals.Count; i++)
@@ -274,7 +272,7 @@ namespace FactionColonies
                 Widgets.Label(innerRect, "fcNoAnimalsAvailable".Translate());
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

@@ -39,12 +39,9 @@ namespace FactionColonies
         public override void DoWindowContents(Rect inRect)
         {
             Rect rect = inRect;
-            Rect view = inRect.AtZero();
-            view.height = this.GetAll().Count() * (ElementHeight + ElementPadding);
-
-            Widgets.BeginScrollView(rect, ref scrollPos, view);
+            Rect view = ScrollUtil.BeginScrollView(rect, ref scrollPos, this.GetAll().Count() * (ElementHeight + ElementPadding));
             DrawElements(rect);
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         protected virtual void DrawElements(Rect inRect)

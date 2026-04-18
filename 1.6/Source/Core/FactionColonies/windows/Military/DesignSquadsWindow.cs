@@ -122,11 +122,7 @@ namespace FactionColonies
                     .ToList();
 
             float viewHeight = filteredSquads.Count * RowHeight;
-            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
-                rect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(listOutRect, ref squadListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref squadListScrollPos, viewHeight);
 
             for (int i = 0; i < filteredSquads.Count; i++)
             {
@@ -159,7 +155,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // CRUD buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
@@ -295,11 +291,7 @@ namespace FactionColonies
             var groups = BuildUnitGroups(selectedSquad);
 
             float viewHeight = groups.Count * UnitRowHeight;
-            Rect scrollViewRect = new Rect(rect.x, rect.y,
-                rect.width - (viewHeight > rect.height ? 16f : 0f),
-                Mathf.Max(viewHeight, rect.height));
-
-            Widgets.BeginScrollView(rect, ref unitListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(rect, ref unitListScrollPos, viewHeight);
 
             for (int i = 0; i < groups.Count; i++)
             {
@@ -308,7 +300,7 @@ namespace FactionColonies
                 DrawUnitRow(row, groups[i].unit, groups[i].count, i);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
