@@ -105,9 +105,13 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Filters out dangerous, worthless, or non-tradeable items via
+        /// <see cref="EmpireTradeFilterUtil.ShouldHandleThingDef"/>.
+        /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
-            return true;
+            return EmpireTradeFilterUtil.ShouldHandleThingDef(thingDef);
         }
 
         public override IEnumerable<string> ConfigErrors(TraderKindDef parentDef)

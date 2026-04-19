@@ -121,14 +121,12 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Returns true for all ThingDefs. The settlement is willing to trade in anything;
-        /// the sell-side is constrained by what stock was actually generated.
-        /// <para>This cannot use per-settlement data because this StockGenerator instance is a
-        /// singleton on the TraderKindDef, shared across all settlements.</para>
+        /// Filters out dangerous, worthless, or non-tradeable items via
+        /// <see cref="EmpireTradeFilterUtil.ShouldHandleThingDef"/>.
         /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
-            return true;
+            return EmpireTradeFilterUtil.ShouldHandleThingDef(thingDef);
         }
 
         private static bool IsActiveResource(ResourceFC res)

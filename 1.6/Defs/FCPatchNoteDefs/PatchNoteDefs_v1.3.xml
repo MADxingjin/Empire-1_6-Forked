@@ -313,4 +313,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_22</defName>
+		<label>Trader Update</label>
+		<description>Updates the resource traders so that they don&apos;t offer to buy literally everything, including toxic wastepacks.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates the trader types added by Empire Refactored to not buy literally everything</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
