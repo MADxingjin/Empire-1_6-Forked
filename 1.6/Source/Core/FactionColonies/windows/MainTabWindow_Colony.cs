@@ -838,7 +838,7 @@ namespace FactionColonies
                 // Bottom-right: Upgrade badge
                 float upgradeBadgeW = 105f;
                 float upgradeBadgeX = contentX + contentW - statsW;
-                if (s.isUpgrading)
+                if (s.IsUpgrading)
                 {
                     // "Upgrading..." label
                     fontBefore = Text.Font;
@@ -854,15 +854,15 @@ namespace FactionColonies
                     Text.Anchor = anchorBefore;
 
                     // Progress bar
-                    float progress = (float)(Find.TickManager.TicksGame - s.startUpgradeTick)
-                                   / (float)(s.finishUpgradeTick - s.startUpgradeTick);
+                    float progress = (float)(Find.TickManager.TicksGame - s.StartUpgradeTick)
+                                   / (float)(s.FinishUpgradeTick - s.StartUpgradeTick);
                     progress = Mathf.Clamp01(progress);
                     float barW = 30f;
                     float barH = 10f;
                     Rect barRect = new Rect(upgradeBadgeX + labelW + 2f, botY + (lineH - barH) / 2f, barW, barH);
                     UIUtil.DrawProgressBarColors(barRect, progress, new Color(0.15f, 0.15f, 0.15f), new Color(0.3f, 0.75f, 1f));
 
-                    int ticksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    int ticksLeft = Math.Max(0, s.FinishUpgradeTick - Find.TickManager.TicksGame);
                     TooltipHandler.TipRegion(new Rect(upgradeBadgeX, botY, upgradeBadgeW, lineH),
                         "FCUpgradeBadgeInProgress".Translate(ticksLeft.ToStringTicksToPeriod()));
                 }
@@ -901,9 +901,9 @@ namespace FactionColonies
                     + "FCSettlementTableUnrest".Translate() + ": " + (int)s.Unrest + "\n"
                     + "FCSettlementTableProsperity".Translate() + ": " + (int)s.Prosperity + "\n"
                     + "FCSettlementTableFounding".Translate() + ": " + s.GetFoundingDate(false);
-                if (s.isUpgrading)
+                if (s.IsUpgrading)
                 {
-                    int ttTicksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    int ttTicksLeft = Math.Max(0, s.FinishUpgradeTick - Find.TickManager.TicksGame);
                     tooltip += "\n" + "FCUpgradeBadgeInProgress".Translate(ttTicksLeft.ToStringTicksToPeriod());
                 }
                 TooltipHandler.TipRegion(rowRect, tooltip);

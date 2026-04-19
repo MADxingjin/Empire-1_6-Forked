@@ -195,7 +195,11 @@ namespace FactionColonies
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
         public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
-        public List<int> militaryTargets = new List<int>();
+        private List<int> militaryTargets = new List<int>();
+        public IReadOnlyList<int> MilitaryTargets => militaryTargets;
+        public void AddMilitaryTarget(int tile) { militaryTargets.Add(tile); }
+        public void RemoveMilitaryTarget(int tile) { militaryTargets.Remove(tile); }
+        public bool HasMilitaryTarget(int tile) => militaryTargets.Contains(tile);
 
         // ── Caravans ──
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to

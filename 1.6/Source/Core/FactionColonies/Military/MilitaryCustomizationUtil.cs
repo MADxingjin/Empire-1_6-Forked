@@ -103,14 +103,14 @@ namespace FactionColonies
         {
             foreach (MilSquadFC squad in squads)
             {
-                if (squad?.units is null) continue;
+                if (squad?.Units is null) continue;
 
                 bool changed = false;
-                for (int count = 0; count < MilSquadFC.MaxSquadSize && count < squad.units.Count; count++)
+                for (int count = 0; count < MilSquadFC.MaxSquadSize && count < squad.Units.Count; count++)
                 {
-                    if (squad.units[count] != null &&
-                        (units.Contains(squad.units[count]) || squad.units[count] == blankUnit)) continue;
-                    squad.units[count] = blankUnit;
+                    if (squad.Units[count] != null &&
+                        (units.Contains(squad.Units[count]) || squad.Units[count] == blankUnit)) continue;
+                    squad.SetUnit(count, blankUnit);
                     changed = true;
                 }
 

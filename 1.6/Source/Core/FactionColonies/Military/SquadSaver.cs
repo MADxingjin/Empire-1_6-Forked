@@ -385,10 +385,10 @@ namespace FactionColonies
             name = squad.name;
 
             // Dont store blank units
-            var squadTemplates = squad.units.Distinct().Where(u => !u.isBlank).ToList();
+            var squadTemplates = squad.Units.Distinct().Where(u => !u.isBlank).ToList();
 
             unitTemplates = squadTemplates.Select(unit => new SavedUnitFC(unit)).ToList();
-            units = squad.units.Select(unit => squadTemplates.IndexOf(unit)).ToList();
+            units = squad.Units.Select(unit => squadTemplates.IndexOf(unit)).ToList();
         }
 
         public MilSquadFC CreateMilSquad()
@@ -403,9 +403,9 @@ namespace FactionColonies
             foreach (int i in units)
             {
                 if (i == -1)
-                    squad.units.Add(fc.militaryCustomizationUtil.blankUnit);
+                    squad.AddUnit(fc.militaryCustomizationUtil.blankUnit);
                 else
-                    squad.units.Add(milUnits[i]);
+                    squad.AddUnit(milUnits[i]);
             }
 
             return squad;
@@ -414,7 +414,7 @@ namespace FactionColonies
         {
             FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = this.CreateMilSquad();
-            foreach (MilUnitFC unit in squad.units.Distinct().Where(unit => !unit.isBlank))
+            foreach (MilUnitFC unit in squad.Units.Distinct().Where(unit => !unit.isBlank))
             {
                 fc.militaryCustomizationUtil.units.Add(unit);
             }
