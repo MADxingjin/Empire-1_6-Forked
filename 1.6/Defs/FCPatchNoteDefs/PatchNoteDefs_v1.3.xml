@@ -341,4 +341,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_24</defName>
+		<label>Event Processing Fixes</label>
+		<description>Hardens the code against crashing events that wipe out the event log.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Catch errors from erroring events instead of letting them wipe out the event log</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

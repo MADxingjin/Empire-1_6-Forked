@@ -460,6 +460,8 @@ namespace FactionColonies
             // Phase 2: process collected events
             foreach (var evt in due)
             {
+                try
+                {
                 // Guard against accidental re-fires
                 if (evt.fired)
                 {
@@ -743,6 +745,12 @@ namespace FactionColonies
                 }
 
                 evt.RunAction();
+                }
+                catch (Exception ex)
+                {
+                    LogUtil.Error($"ProcessEvents: exception processing event '{evt.def?.defName ?? "NULL"}' " +
+                        $"(loadID={evt.loadID}): {ex}");
+                }
             }
         }
 

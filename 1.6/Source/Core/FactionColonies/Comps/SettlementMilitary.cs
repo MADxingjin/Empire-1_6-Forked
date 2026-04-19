@@ -177,10 +177,8 @@ namespace FactionColonies
                 {
                     yield return ChangeDefenderAction(evt);
                 }
-                else
-                {
-                    LogUtil.Warning($"Settlment {WorldSettlement.Name} is under attack, but found no valid associated event");
-                }
+                // No else-branch log here; CompTick's orphan cleanup (line ~126) already logs
+                // and repairs the stuck flag. Logging here just spams every frame.
             }
         }
 
