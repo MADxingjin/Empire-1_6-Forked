@@ -117,6 +117,27 @@ namespace FactionColonies
         /// </summary>
         public int uiPriority = 10000;
 
+        /// <summary>
+        /// Cached trade filter used by <see cref="AllowsForTrade"/>. Built lazily on first access
+        /// with max tech level so buy-side is not restricted by the empire's current tech.
+        /// </summary>
+        private ThingFilter _tradeFilter;
+
+        /// <summary>
+        /// Returns true if this resource type's allow/block lists include the given ThingDef.
+        /// Used for buy-side trade filtering — ignores tech level gates so traders will accept
+        /// items they can't yet produce.
+        /// </summary>
+        public bool AllowsForTrade(ThingDef thingDef)
+        {
+            if (_tradeFilter is null)
+            {
+                _tradeFilter = new ThingFilter();
+                FilterResource(_tradeFilter, TechLevel.Archotech);
+            }
+            return _tradeFilter.Allows(thingDef);
+        }
+
         private Texture2D iconLoaded;
 
         public Texture2D Icon
