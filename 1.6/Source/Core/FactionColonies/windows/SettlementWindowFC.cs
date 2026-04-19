@@ -1170,10 +1170,12 @@ namespace FactionColonies
             {
                 FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
 
+                double winChance = SimulateBattleFc.CalculateDefenderWinChance(evt.militaryForceAttacking, evt.militaryForceDefending);
                 list.Add(new FloatMenuOption(
                     "FCSettlementDefendingInformation".Translate(
                         evt.militaryForceDefending.homeSettlement.Name,
-                        evt.militaryForceDefending.DefensivePower), null, MenuOptionPriority.High));
+                        evt.militaryForceDefending.DefensivePower,
+                        (winChance * 100).ToString("F0")), null, MenuOptionPriority.High));
                 list.Add(new FloatMenuOption("FCChangeDefendingForce".Translate(), delegate
                 {
                     List<FloatMenuOption> settlementList = new List<FloatMenuOption>();

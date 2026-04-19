@@ -327,4 +327,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_23</defName>
+		<label>Minor Fix</label>
+		<description>Fixes a minor bug in the UI for selecting alternate squads to defend an under-attack settlement.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: when a settlement is under attack, trying to assign a defensive squad through the settlement window can produce an error due to a translation string not receiving all three of its required arguments</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
