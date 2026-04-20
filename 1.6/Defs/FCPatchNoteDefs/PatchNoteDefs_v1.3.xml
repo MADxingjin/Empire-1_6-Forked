@@ -383,4 +383,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_27</defName>
+		<label>More Vanilla Biomes support</label>
+		<description>Adds support for More Vanilla Biomes.</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds support for More Vanilla Biomes.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Pecha</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
