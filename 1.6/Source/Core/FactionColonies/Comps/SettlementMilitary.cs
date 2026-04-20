@@ -75,6 +75,7 @@ namespace FactionColonies
 
         private bool endingBattle = false;
         private bool battleMapInitialized = false;
+        private bool shuttleLandingPending = false;
         private int initialDefenderCount;
         private string pendingDeliveryMessage;
 
@@ -138,20 +139,26 @@ namespace FactionColonies
             defenders.RemoveAll(p => p == null || p.Destroyed);
 
             // Detect untracked player pawns on the battle map (e.g. shuttle-delivered pawns
-            // that spawned via the Unload job after the ArrivePatch fired)
+            // that spawned via the Unload job after the ArrivePatch fired).
+            // Also assigns lordless defenders to the battle lord (e.g. pawns that just
+            // unloaded from a shuttle after being registered with assignToLord: false).
             var map = Map;
+            Lord battleLord = null;
             foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
             {
                 if (pawn.Dead || pawn.Downed) continue;
-                if (defenders.Contains(pawn)) continue;
-                LogUtil.Warning($"Registering untracked player pawn {pawn.LabelShort} with defense at {WorldSettlement.Name}");
-                defenders.Add(pawn);
-                initialDefenderCount++;
-                if (defenders.Count > 1)
+                if (!defenders.Contains(pawn))
                 {
-                    Lord defenderLord = defenders[0].GetLord();
-                    if (defenderLord != null && !defenderLord.ownedPawns.Contains(pawn))
-                        defenderLord.AddPawn(pawn);
+                    LogUtil.Warning($"Registering untracked player pawn {pawn.LabelShort} with defense at {WorldSettlement.Name}");
+                    defenders.Add(pawn);
+                    initialDefenderCount++;
+                }
+                if (pawn.GetLord() is null)
+                {
+                    if (battleLord is null)
+                        battleLord = defenders.FirstOrDefault(d => d.GetLord() != null)?.GetLord();
+                    if (battleLord != null && !battleLord.ownedPawns.Contains(pawn))
+                        battleLord.AddPawn(pawn);
                 }
             }
 
@@ -388,18 +395,90 @@ namespace FactionColonies
                 c.Faction == Faction.OfPlayer);
         }
 
-        //TOOD: All following methods were yoinked from WorldSettlementFC. parameters and variables need to be adjusted accordingly
         public void CaravanDefend(Caravan caravan)
         {
             var pawns = caravan.pawns.InnerListForReading.ListFullCopy();
-            AddToDefenceFromList(pawns, caravan.Tile);
 
+            // Check for shuttle in caravan (Odyssey DLC passenger shuttle)
+            var shuttle = caravan.Shuttle;
+            if (shuttle != null && Map != null)
+            {
+                ShuttleCaravanDefend(caravan, pawns, shuttle);
+                return;
+            }
+
+            // Standard flow — spawn pawns at map edge
+            RegisterPawnsAsDefenders(pawns, assignToLord: true);
             if (!caravan.Destroyed) caravan.Destroy();
+            SpawnPawnsAtEdge(pawns);
+        }
+
+        private void ShuttleCaravanDefend(Caravan caravan, List<Pawn> pawns, Building_PassengerShuttle shuttle)
+        {
+            // Extract shuttle from pawn inventory before destroying caravan
+            Pawn owner = CaravanInventoryUtility.GetOwnerOf(caravan, shuttle);
+            owner?.inventory.innerContainer.Remove(shuttle);
+
+            // Register pawns as defenders (for win/loss counting) but don't assign to a lord
+            // since they're still inside the shuttle and not spawned on the map yet.
+            RegisterPawnsAsDefenders(pawns, assignToLord: false);
+            if (!caravan.Destroyed) caravan.Destroy();
+
+            // Build TransportShip with pawns loaded inside
+            CompShuttle compShuttle = shuttle.TryGetComp<CompShuttle>();
+            TransportShipDef shipDef = compShuttle?.Props?.shipDef ?? TransportShipDefOf.Ship_Shuttle;
+            TransportShip transportShip = TransportShipMaker.MakeTransportShip(shipDef, pawns, shuttle);
+
+            // Prevent DeleteMap from removing the map while shuttle is in flight
+            shuttleLandingPending = true;
+
+            // Let player choose landing cell for the shuttle
+            var map = Map;
+            var settlement = WorldSettlement;
+            var shuttleDef = shuttle.def;
+            var targetParams = new TargetingParameters
+            {
+                canTargetLocations = true,
+                canTargetSelf = false,
+                canTargetPawns = false,
+                canTargetFires = false,
+                canTargetBuildings = false,
+                canTargetItems = false
+            };
+
+            bool landed = false;
+            Find.Targeter.BeginTargeting(targetParams,
+                delegate(LocalTargetInfo target)
+                {
+                    landed = true;
+                    shuttleLandingPending = false;
+                    transportShip.ArriveAt(target.Cell, settlement);
+                    transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
+                },
+                null,
+                delegate(LocalTargetInfo target)
+                {
+                    return RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(target, map, shuttleDef);
+                },
+                null,
+                delegate
+                {
+                    if (landed) return;
+                    shuttleLandingPending = false;
+                    // Player cancelled targeting — auto-land at best spot
+                    if (!Find.Maps.Contains(map)) return;
+                    IntVec3 fallback = DropCellFinder.GetBestShuttleLandingSpot(map, Faction.OfPlayer);
+                    transportShip.ArriveAt(fallback, settlement);
+                    transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
+                });
+        }
+
+        private void SpawnPawnsAtEdge(List<Pawn> pawns)
+        {
             var enterCell = FindNearEdgeCell(Map);
             foreach (var pawn in pawns)
             {
-                var loc =
-                    CellFinder.RandomSpawnCellForPawnNear(enterCell, Map);
+                var loc = CellFinder.RandomSpawnCellForPawnNear(enterCell, Map);
                 GenSpawn.Spawn(pawn, loc, Map, Rot4.Random);
             }
         }
@@ -508,7 +587,7 @@ namespace FactionColonies
                 if (!pawn.Downed) anyMobile = true;
             }
 
-            if (anyMobile)
+            if (anyMobile || shuttleLandingPending)
             {
                 // Mobile player pawns (or shuttles) exist — keep the map alive.
                 // ShouldRemoveMapNow checks AnyPawnBlockingMapRemoval and will
@@ -1055,6 +1134,7 @@ namespace FactionColonies
             isUnderAttack = false;
             endingBattle = false;
             battleMapInitialized = false;
+            shuttleLandingPending = false;
             attackers?.Clear();
             defenders?.Clear();
             draftedNPCs?.Clear();
