@@ -13,4 +13,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_1</defName>
+		<label>Minor Fixes</label>
+		<description>Backend code updates to clean things up a bit.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Cleans up some code to more properly encapsulate many fields</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
