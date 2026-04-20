@@ -423,28 +423,57 @@ namespace FactionColonies
                 return;
             }
 
+            // If battle is already in progress (map loaded), register directly.
+            // Avoids a redundant StartDefence call that would fail to find the event
+            // (already consumed) and queue a second LongEvent causing cascade errors.
+            if (isUnderAttack && Map != null)
+            {
+                RegisterPawnsAsDefenders(pawns, assignToLord);
+                return;
+            }
+
             StartDefence(
                 MilitaryUtilFC.ReturnMilitaryEventByLocation(destinationTile), () =>
                 {
-                    if (assignToLord)
-                    {
-                        foreach (var pawn in pawns)
-                        {
-                            if (defenders.Contains(pawn)) continue;
-                            if (defenders.Any())
-                                defenders[0].GetLord()?.AddPawn(pawn);
-                            else
-                                LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_ColonistsIdle(WorldSettlement), WorldSettlement.Map, pawns);
-                        }
-                    }
-
-                    foreach (var pawn in pawns)
-                        if (!defenders.Contains(pawn))
-                        {
-                            defenders.Add(pawn);
-                            initialDefenderCount++;
-                        }
+                    RegisterPawnsAsDefenders(pawns, assignToLord);
                 });
+        }
+
+        private void RegisterPawnsAsDefenders(List<Pawn> pawns, bool assignToLord)
+        {
+            if (assignToLord)
+            {
+                Lord existingLord = defenders.Any() ? defenders[0].GetLord() : null;
+                if (existingLord != null)
+                {
+                    foreach (var pawn in pawns)
+                    {
+                        if (!defenders.Contains(pawn) && !existingLord.ownedPawns.Contains(pawn))
+                            existingLord.AddPawn(pawn);
+                    }
+                }
+                else if (Map != null)
+                {
+                    var lordless = new List<Pawn>();
+                    foreach (var pawn in pawns)
+                    {
+                        if (!defenders.Contains(pawn) && pawn.GetLord() is null)
+                            lordless.Add(pawn);
+                    }
+                    if (lordless.Any())
+                        LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction,
+                            new LordJob_ColonistsIdle(WorldSettlement), Map, lordless);
+                }
+            }
+
+            foreach (var pawn in pawns)
+            {
+                if (!defenders.Contains(pawn))
+                {
+                    defenders.Add(pawn);
+                    initialDefenderCount++;
+                }
+            }
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
