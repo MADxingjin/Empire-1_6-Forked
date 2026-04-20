@@ -40,7 +40,7 @@ namespace FactionColonies
          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
         public int settlementLevel = 1;
 
-        public bool CanUpgrade => !isUpgrading
+        public bool CanUpgrade => !IsUpgrading
             && settlementLevel < FCSettings.settlementMaxLevel
             && settlementLevel < settlementDef.maxSettlementLevel;
 
@@ -75,10 +75,44 @@ namespace FactionColonies
         public double workerCost { get { if (dirtyProfitCache) RecomputeProfit(); return _workerCost; } }
         public double workerTotalUpkeep { get { if (dirtyProfitCache) RecomputeProfit(); return _workerTotalUpkeep; } }
         /* Social Stats */
-        public double unrest;
-        public double loyalty = 100;
-        public double happiness = 100;
+        private double _unrest;
+        private double _loyalty = 100;
+        private double _happiness = 100;
         private double _prosperity = 100;
+
+        public double unrest
+        {
+            get => _unrest;
+            set
+            {
+                double clamped = Math.Round(Math.Clamp(value, 0, 100), 1);
+                if (_unrest == clamped) return;
+                _unrest = clamped;
+                FactionCache.FactionComp?.DirtyAveragesCache();
+            }
+        }
+        public double loyalty
+        {
+            get => _loyalty;
+            set
+            {
+                double clamped = Math.Round(Math.Clamp(value, 0, 100), 1);
+                if (_loyalty == clamped) return;
+                _loyalty = clamped;
+                FactionCache.FactionComp?.DirtyAveragesCache();
+            }
+        }
+        public double happiness
+        {
+            get => _happiness;
+            set
+            {
+                double clamped = Math.Round(Math.Clamp(value, 0, 100), 1);
+                if (_happiness == clamped) return;
+                _happiness = clamped;
+                FactionCache.FactionComp?.DirtyAveragesCache();
+            }
+        }
         public double prosperity
         {
             get => _prosperity;
@@ -122,9 +156,27 @@ namespace FactionColonies
         public string biome;
         public BiomeResourceDef biomeDef;
 
-        public bool isUpgrading = false;
-        public int startUpgradeTick = -1;
-        public int finishUpgradeTick = -1;
+        private bool _isUpgrading;
+        private int _startUpgradeTick = -1;
+        private int _finishUpgradeTick = -1;
+
+        public bool IsUpgrading => _isUpgrading;
+        public int StartUpgradeTick => _startUpgradeTick;
+        public int FinishUpgradeTick => _finishUpgradeTick;
+
+        public void StartUpgrade(int finishTick)
+        {
+            _isUpgrading = true;
+            _startUpgradeTick = Find.TickManager.TicksGame;
+            _finishUpgradeTick = finishTick;
+        }
+
+        public void ClearUpgrade()
+        {
+            _isUpgrading = false;
+            _startUpgradeTick = -1;
+            _finishUpgradeTick = -1;
+        }
 
         //ui only — lazy-cached via dirtyProfitCache
         private double _totalUpkeep;
@@ -473,9 +525,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref _workersMax, "workersMax");
             Scribe_Values.Look(ref _workersUltraMax, "workersUltraMax");
             Scribe_Values.Look(ref settlementLevel, "settlementLevel");
-            Scribe_Values.Look(ref unrest, "unrest");
-            Scribe_Values.Look(ref loyalty, "loyalty");
-            Scribe_Values.Look(ref happiness, "happiness");
+            Scribe_Values.Look(ref _unrest, "unrest");
+            Scribe_Values.Look(ref _loyalty, "loyalty");
+            Scribe_Values.Look(ref _happiness, "happiness");
             Scribe_Values.Look(ref _prosperity, "prosperity");
             Scribe_Values.Look(ref _workerCost, "workerCost");
             Scribe_Values.Look(ref _workerTotalUpkeep, "workerTotalUpkeep");
@@ -496,9 +548,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref biome, "biome");
             Scribe_Defs.Look(ref biomeDef, "biomedef");
 
-            Scribe_Values.Look(ref isUpgrading, "isupgrading", defaultValue: false);
-            Scribe_Values.Look(ref startUpgradeTick, "startupgradetick", -1);
-            Scribe_Values.Look(ref finishUpgradeTick, "finishupgradetick", -1);
+            Scribe_Values.Look(ref _isUpgrading, "isupgrading", defaultValue: false);
+            Scribe_Values.Look(ref _startUpgradeTick, "startupgradetick", -1);
+            Scribe_Values.Look(ref _finishUpgradeTick, "finishupgradetick", -1);
 
             //Prisoners
             Scribe_Collections.Look(ref prisonerList, "prisonerList", LookMode.Deep);
@@ -805,18 +857,15 @@ namespace FactionColonies
         {
             Messages.Message(message);
             unrest += amount * GetStatValue(FCStatDefOf.unrestGainedMultiplier);
-            FactionCache.FactionComp?.DirtyAveragesCache();
         }
         public void GainUnrest(double amount)
         {
             unrest += amount * GetStatValue(FCStatDefOf.unrestGainedMultiplier);
-            FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
         public void GainHappiness(double amount)
         {
             happiness += amount * GetStatValue(FCStatDefOf.happinessGainedMultiplier);
-            FactionCache.FactionComp?.DirtyAveragesCache();
         }
 
         /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

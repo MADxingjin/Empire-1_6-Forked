@@ -563,9 +563,7 @@ namespace FactionColonies
                                     LetterDefOf.PositiveEvent);
                                 /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
                                      * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
-                                settlement.isUpgrading = false;
-                                settlement.startUpgradeTick = -1;
-                                settlement.finishUpgradeTick = -1;
+                                settlement.ClearUpgrade();
                             }
 
                             break;

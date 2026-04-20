@@ -1360,7 +1360,7 @@ namespace FactionColonies
             militaryLocation = location;
 
             if (enemy != null) militaryEnemy = enemy;
-            if (job.occupiesTarget) FactionCache.FactionComp.militaryTargets.Add(location);
+            if (job.occupiesTarget) FactionCache.FactionComp.AddMilitaryTarget(location);
 
             job.Handler?.OnDeployed(this, location, timeToFinish, enemy);
 
@@ -1381,9 +1381,9 @@ namespace FactionColonies
             }
 
             FactionFC faction = FactionCache.FactionComp;
-            if (faction.militaryTargets.Contains(militaryLocation))
+            if (faction.HasMilitaryTarget(militaryLocation))
             {
-                faction.militaryTargets.Remove(militaryLocation);
+                faction.RemoveMilitaryTarget(militaryLocation);
             }
 
             BattleResult result = null;
@@ -1517,7 +1517,7 @@ namespace FactionColonies
 
         public bool IsTargetOccupied(int location)
         {
-            if (FactionCache.FactionComp.militaryTargets.Contains(location))
+            if (FactionCache.FactionComp.HasMilitaryTarget(location))
             {
                 Messages.Message("FCTargetAlreadyBeingAttacked".Translate(), MessageTypeDefOf.RejectInput);
                 return true;

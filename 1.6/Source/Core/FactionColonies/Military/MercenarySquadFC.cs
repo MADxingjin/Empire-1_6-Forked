@@ -144,7 +144,7 @@ namespace FactionColonies
                 for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
-                    CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype, outfit.units[k].customXenotypeName);
+                    CreateNewPawn(ref pawn, outfit.Units[k].pawnKind, outfit.Units[k].xenotype, outfit.Units[k].customXenotypeName);
                     // Only add if pawn was successfully created
                     if (pawn?.pawn != null)
                     {
@@ -152,7 +152,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 for unit {outfit.units[k]?.name ?? "unknown"}.");
+                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 for unit {outfit.Units[k]?.name ?? "unknown"}.");
                     }
                 }
             }
@@ -540,7 +540,7 @@ namespace FactionColonies
             UsedApparelList = new List<Apparel>();
             animals = new List<Mercenary>();
             GeneList = new List<Gene>();
-            foreach (MilUnitFC loadout in outfit.units)
+            foreach (MilUnitFC loadout in outfit.Units)
             {
                 try
                 {

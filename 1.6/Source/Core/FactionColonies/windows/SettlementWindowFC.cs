@@ -299,7 +299,7 @@ namespace FactionColonies
                 return;
             }
 
-            int numUnderConstruction = settlement.BuildingsComp.GetUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
+            int numUnderConstruction = settlement.BuildingsComp.GetUnderConstructionBuildings().Count + (settlement.IsUpgrading ? 1 : 0);
             DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.GetUnderConstructionBuildings());
             DrawFacilities(rightBox);
         }
@@ -1048,7 +1048,7 @@ namespace FactionColonies
             string label = GetButtonLabel(type);
             bool enabled = true;
 
-            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            if (type == SettlementButtonType.Upgrade && settlement.IsUpgrading)
             {
                 GUI.color = Color.gray;
                 enabled = false;
@@ -1059,7 +1059,7 @@ namespace FactionColonies
                 HandleBuiltInButtonClick(type);
             }
 
-            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            if (type == SettlementButtonType.Upgrade && settlement.IsUpgrading)
             {
                 GUI.color = Color.white;
             }
@@ -1070,7 +1070,7 @@ namespace FactionColonies
             switch (type)
             {
                 case SettlementButtonType.Upgrade:
-                    return settlement.isUpgrading
+                    return settlement.IsUpgrading
                         ? (string)"FCSettlementUpgradeInProgress".Translate()
                         : (string)"FCUpgradeSettlement".Translate();
                 case SettlementButtonType.SpecialActions:
@@ -1093,7 +1093,7 @@ namespace FactionColonies
             switch (type)
             {
                 case SettlementButtonType.Upgrade:
-                    if (!settlement.isUpgrading)
+                    if (!settlement.IsUpgrading)
                     {
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
@@ -1350,15 +1350,15 @@ namespace FactionColonies
                 float initialY = viewRect.y;
                 Text.Anchor = TextAnchor.MiddleLeft;
 
-                if (settlement.isUpgrading)
+                if (settlement.IsUpgrading)
                 {
-                    float progress = (float)(Find.TickManager.TicksGame - settlement.startUpgradeTick) / (float)(settlement.finishUpgradeTick - settlement.startUpgradeTick);
+                    float progress = (float)(Find.TickManager.TicksGame - settlement.StartUpgradeTick) / (float)(settlement.FinishUpgradeTick - settlement.StartUpgradeTick);
                     Rect upgradeRect = new Rect(viewRect.x + margin,
                                                 viewRect.y,
                                                 viewRect.width - (margin * 2),
                                                 constructionListItemHeight);
                     DrawConstructionInfoBox(upgradeRect, null, "FCSettlementupgrading".Translate(),
-                                            "FCCompletiontimer".Translate((settlement.finishUpgradeTick - Find.TickManager.TicksGame).ToTimeString()),
+                                            "FCCompletiontimer".Translate((settlement.FinishUpgradeTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
                     initialY = upgradeRect.yMax + margin;

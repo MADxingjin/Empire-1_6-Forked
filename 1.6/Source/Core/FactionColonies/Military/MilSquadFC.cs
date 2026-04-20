@@ -12,7 +12,8 @@ namespace FactionColonies
 
         public int loadID = -1;
         public string name;
-        public List<MilUnitFC> units = new List<MilUnitFC>();
+        private List<MilUnitFC> units = new List<MilUnitFC>();
+        public IReadOnlyList<MilUnitFC> Units => units;
         public double equipmentTotalCost;
         public int tickChanged;
 
@@ -98,6 +99,20 @@ namespace FactionColonies
             tickChanged = Find.TickManager.TicksGame;
             costDirty = true;
         }
+
+        public void SetUnit(int index, MilUnitFC unit)
+        {
+            units[index] = unit;
+            ChangeTick();
+        }
+
+        public void AddUnit(MilUnitFC unit)
+        {
+            units.Add(unit);
+            ChangeTick();
+        }
+
+        public int FindUnitIndex(Predicate<MilUnitFC> predicate) => units.FindIndex(predicate);
 
         public int getLatestChanged
         {

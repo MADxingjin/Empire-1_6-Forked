@@ -330,7 +330,7 @@ namespace FactionColonies
             reason = "";
             FactionFC factionFC = FactionCache.FactionComp;
             List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
-                ?.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
+                ?.Where(squad => squad?.Units != null && squad.Units.Contains(unit)).ToList();
 
             if (squadsContainingUnit == null || squadsContainingUnit.Count == 0) return false;
 

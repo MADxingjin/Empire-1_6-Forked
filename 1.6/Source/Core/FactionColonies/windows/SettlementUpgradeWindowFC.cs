@@ -48,7 +48,7 @@ namespace FactionColonies
         {
             //failure reasons
             if (!FactionCache.FactionComp.IsActionAllowed(FCActionType.UpgradeSettlement)) return new Message("FCActionNotAllowed".Translate(), MessageTypeDefOf.RejectInput);
-            if (settlement.isUpgrading) return new Message("FCAlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
+            if (settlement.IsUpgrading) return new Message("FCAlreadyUpgradeSettlement".Translate(), MessageTypeDefOf.RejectInput);
             if (settlement.MilitaryComp?.isUnderAttack == true) return new Message("FCSettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
             if (PaymentUtil.GetSilver() < settlementUpgradeCost) return new Message("FCNotEnoughSilverUpgrade".Translate(), MessageTypeDefOf.RejectInput);
 
@@ -68,9 +68,7 @@ namespace FactionColonies
                 "FCUpgradeColonyDesc".Translate());
             tmp.hasCustomDescription = true;
 
-            settlement.isUpgrading = true;
-            settlement.startUpgradeTick = Find.TickManager.TicksGame;
-            settlement.finishUpgradeTick = tmp.timeTillTrigger;
+            settlement.StartUpgrade(tmp.timeTillTrigger);
 
             FactionCache.FactionComp.AddEvent(tmp);
 
