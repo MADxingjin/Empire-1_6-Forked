@@ -1191,6 +1191,10 @@ namespace FactionColonies
             {
                 str += "\n\n" + pendingDeliveryMessage;
             }
+            if (Map != null)
+            {
+                str += "\n\n" + "FCDefenseBattleOverLeaveMap".Translate();
+            }
             Find.LetterStack.ReceiveLetter("FCDefenseFailure".Translate(), str, LetterDefOf.Death,
                 new LookTargets(WorldSettlement));
         }
@@ -1203,6 +1207,10 @@ namespace FactionColonies
             if (!string.IsNullOrEmpty(pendingDeliveryMessage))
             {
                 text += "\n\n" + pendingDeliveryMessage;
+            }
+            if (Map != null)
+            {
+                text += "\n\n" + "FCDefenseBattleOverLeaveMap".Translate();
             }
             Find.LetterStack.ReceiveLetter("FCDefenseSuccessful".Translate(),
                 text,
