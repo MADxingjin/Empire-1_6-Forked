@@ -479,7 +479,6 @@ namespace FactionColonies
             bool anyMobile = false;
             foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
             {
-                if (pawn.Dead) continue;
                 playerPawns.Add(pawn);
                 if (!pawn.Downed) anyMobile = true;
             }
@@ -1253,7 +1252,6 @@ namespace FactionColonies
             DeleteMap(won);
             EndBattle(won, remaining);
 
-            draftedNPCs.Clear();
             defenders.Clear();
             defenderForce = null;
             attackers.Clear();

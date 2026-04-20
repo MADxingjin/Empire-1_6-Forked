@@ -628,11 +628,13 @@ namespace FactionColonies
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
             removeWorldObject = false;
+            var map = Map;
+            if (map is null) return false;
             if (MilitaryComp?.isUnderAttack == true) return false;
             if (MilitaryComp is object && (MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any())) return false;
             // Vanilla checks: wait for player pawns to leave and incoming transporters to arrive
-            if (Map.mapPawns.AnyPawnBlockingMapRemoval) return false;
-            if (TransporterUtility.IncomingTransporterPreventingMapRemoval(Map)) return false;
+            if (map.mapPawns.AnyPawnBlockingMapRemoval) return false;
+            if (TransporterUtility.IncomingTransporterPreventingMapRemoval(map)) return false;
             return true;
         }
 
@@ -640,10 +642,11 @@ namespace FactionColonies
         {
             // Clean up Empire faction pawns to prevent ghost colonists in the world pawn pool.
             // By this point all player pawns have left (ShouldRemoveMapNow confirmed no blockers).
+            var map = Map;
             Faction empireFaction = FactionCache.PlayerColonyFaction;
-            if (empireFaction is object)
+            if (empireFaction is object && map is object)
             {
-                foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned.ToList())
+                foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned.ToList())
                 {
                     if (pawn.Faction != empireFaction) continue;
                     pawn.DeSpawn();

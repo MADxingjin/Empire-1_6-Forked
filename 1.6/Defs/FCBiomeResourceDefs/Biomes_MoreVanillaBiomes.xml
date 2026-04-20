@@ -259,7 +259,6 @@
 				<additive>0.5</additive>
 			</li>
 		</resources>
-		</resources>
 	</FactionColonies.BiomeResourceDef>
 
 	<FactionColonies.BiomeResourceDef MayRequire="zylle.morevanillabiomes">
