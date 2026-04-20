@@ -390,10 +390,21 @@ namespace FactionColonies
             // eventCooldowns / eventFireCounts now live on eventManager (scribed above).
         }
 
+        private void ScrubNullSettlements(string caller = "")
+        {
+            int removed = settlements.RemoveAll(s => s is null);
+            if (removed > 0)
+                LogUtil.Warning($"{caller}: Removed {removed} null settlement reference(s) from save data.");
+        }
+
         public override void FinalizeInit(bool fromLoad)
         {
             base.FinalizeInit(fromLoad);
             LogUtil.MessageForce($"Finalizing init of FactionFC. fromload: {fromLoad}");
+
+            // Scrub null entries that can arise when LookMode.Reference fails to resolve
+            // (e.g., another mod destroyed a settlement or it failed to deserialize).
+            ScrubNullSettlements("FinalizeInit");
 
             // Apply saved tech level to FactionDef early — must happen before anything
             // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
@@ -775,6 +786,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     avgHappiness += settlement.happiness;
                     avgLoyalty += settlement.loyalty;
                     avgUnrest += settlement.unrest;
@@ -895,6 +907,7 @@ namespace FactionColonies
                 grandThingList = new List<ThingDef>();
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     grandThingList.AddRange(settlement.GetGrandThingList());
                 }
                 grandThingList = grandThingList.Distinct().ToList();
@@ -1067,6 +1080,7 @@ namespace FactionColonies
         public void InvalidateFactionStatCache()
         {
             cachedFactionStatValues.Clear();
+            ScrubNullSettlements("InvalidateFactionStatCache");
             foreach (WorldSettlementFC s in settlements)
             {
                 s.InvalidateDescCache();
@@ -1081,6 +1095,7 @@ namespace FactionColonies
         /// </summary>
         public void InvalidateAllSettlementStatCaches()
         {
+            ScrubNullSettlements("InvalidateAllSettlementStatCaches");
             foreach (WorldSettlementFC s in settlements)
                 s.InvalidateStatCache();
         }

@@ -412,4 +412,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_29</defName>
+		<label>Load Fixes</label>
+		<description>Adds protections against null WorldSettlementFCs.</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds protections against null WorldSettlementFCs in the FactionFc.settlements list</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
