@@ -369,4 +369,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_26</defName>
+		<label>Roads Update</label>
+		<description>Add stone roads to Empire&apos;s road progression (dirt -&gt; stone -&gt; asphalt -&gt; asphalt highway).</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds stone roads to Empire&apos;s road progression.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
