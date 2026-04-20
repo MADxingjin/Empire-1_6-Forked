@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_0</defName>
+		<label>Tax Event Extensibility</label>
+		<description>Adds machinery to let submods intercept and redirect tax events.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds ITaxDeliveryInterceptor interface to let submods redirect tax events, or intercept them at time of delivery</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

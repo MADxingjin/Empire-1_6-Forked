@@ -1699,6 +1699,13 @@ namespace FactionColonies
                 fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
             }
 
+            // Tax delivery interception: let registered interceptors redirect taxColony events
+            if (fcevent.def == FCEventDefOf.taxColony && fcevent.source != PlanetTile.Invalid)
+            {
+                WorldSettlementFC sourceSettlement = ReturnSettlementByLocation(fcevent.source);
+                TaxDeliveryRegistry.InvokeOnTaxEventCreated(new TaxDeliveryContext(fcevent, sourceSettlement));
+            }
+
             //Add event to the manager queue
             eventManager.Enqueue(fcevent);
 

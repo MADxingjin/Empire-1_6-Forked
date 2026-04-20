@@ -521,17 +521,21 @@ namespace FactionColonies
                         case "taxColony":
                         {
                             settlement = faction.ReturnSettlementByLocation(evt.source);
-                            if (settlement == null)
+                            if (settlement is null)
                             {
                                 LogUtil.Warning($"taxColony event references missing settlement at tile {evt.source}. Skipping delivery.");
                                 break;
                             }
 
-                            string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
-
-                            Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
-
-                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            // Let registered interceptors try to handle delivery first
+                            TaxDeliveryContext deliveryCtx = new TaxDeliveryContext(evt, settlement);
+                            if (!TaxDeliveryRegistry.InvokeTryDeliverGoods(deliveryCtx))
+                            {
+                                // No interceptor handled it — default delivery
+                                string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
+                                Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
+                                PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            }
                             break;
                         }
                         case "constructBuilding":
