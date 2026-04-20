@@ -553,15 +553,10 @@ namespace FactionColonies
                             {
                                 //if settlement is not null
                                 settlement = faction.ReturnSettlementByLocation(evt.location);
-                                settlement.UpgradeSettlement();
+                                settlement.UpgradeSettlement(setFlags: true);
                                 Find.LetterStack.ReceiveLetter("FCUpgradeSettlement".Translate(),
                                     "FCUpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "FCUpgradeColonyDesc".Translate()),
                                     LetterDefOf.PositiveEvent);
-                                /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
-                                     * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
-                                settlement.isUpgrading = false;
-                                settlement.startUpgradeTick = -1;
-                                settlement.finishUpgradeTick = -1;
                             }
 
                             break;
@@ -750,7 +745,38 @@ namespace FactionColonies
                 {
                     LogUtil.Error($"ProcessEvents: exception processing event '{evt.def?.defName ?? "NULL"}' " +
                         $"(loadID={evt.loadID}): {ex}");
+                    TryRecoverFailedEvent(evt, faction);
                 }
+            }
+        }
+
+        private static void TryRecoverFailedEvent(FCEvent evt, FactionFC faction)
+        {
+            if (evt?.def is null) return;
+            try
+            {
+                if (evt.def == FCEventDefOf.constructBuilding)
+                {
+                    WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.source);
+                    if (settlement is object && evt.building is object && evt.buildingSlot >= 0)
+                    {
+                        settlement.ConstructBuilding(evt.building, evt.buildingSlot);
+                        LogUtil.Warning($"Recovered orphaned construction: {evt.building.defName} at {settlement.Name} slot {evt.buildingSlot}");
+                    }
+                }
+                else if (evt.def == FCEventDefOf.upgradeSettlement)
+                {
+                    WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.location);
+                    if (settlement is object)
+                    {
+                        settlement.UpgradeSettlement(setFlags: true);
+                        LogUtil.Warning($"Recovered orphaned upgrade at {settlement.Name}");
+                    }
+                }
+            }
+            catch (Exception recoveryEx)
+            {
+                LogUtil.Error($"ProcessEvents: recovery also failed for '{evt.def.defName}': {recoveryEx}");
             }
         }
 

@@ -603,6 +603,7 @@ namespace FactionColonies
             if (ticksGame % GenDate.TicksPerDay == 0 && !(faction is null))
             {
                 ValidateSettlementCaravansList();
+                RecoverOrphanedConstructions(ticksGame);
 
                 if (faction.leader is null || faction.leader.Dead)
                     ColonyUtil.CreatePlayerFactionLeader(faction);
@@ -2347,6 +2348,63 @@ namespace FactionColonies
             }
 
             return foundInvalidCaravan;
+        }
+
+        private void RecoverOrphanedConstructions(int currentTick)
+        {
+            const int gracePeriod = 500;
+            IReadOnlyList<FCEvent> constructEvents = eventManager.GetByDef(FCEventDefOf.constructBuilding);
+            IReadOnlyList<FCEvent> upgradeEvents = eventManager.GetByDef(FCEventDefOf.upgradeSettlement);
+
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                // Check for orphaned construction slots
+                if (settlement.BuildingsComp is object)
+                {
+                    List<BuildingFC> buildings = settlement.BuildingsComp.Buildings;
+                    for (int slot = 0; slot < buildings.Count; slot++)
+                    {
+                        BuildingFC building = buildings[slot];
+                        if (building.def != BuildingFCDefOf.Construction) continue;
+                        if (building.completionTick + gracePeriod >= currentTick) continue;
+
+                        bool hasMatchingEvent = constructEvents.Any(evt => evt.source == settlement.Tile && evt.buildingSlot == slot);
+
+                        if (!hasMatchingEvent)
+                        {
+                            try
+                            {
+                                settlement.ConstructBuilding(building.underConstructionDef, slot);
+                                LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned construction " +
+                                    $"'{building.underConstructionDef?.defName ?? "NULL"}' in slot {slot} at {settlement.Name}");
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.Error($"RecoverOrphanedConstructions: failed to recover slot {slot} at {settlement.Name}: {ex}");
+                            }
+                        }
+                    }
+                }
+
+                // Check for orphaned upgrade state
+                if (settlement.isUpgrading && settlement.finishUpgradeTick + gracePeriod < currentTick)
+                {
+                    bool hasMatchingEvent = upgradeEvents.Any(t => t.location == settlement.Tile);
+
+                    if (!hasMatchingEvent)
+                    {
+                        try
+                        {
+                            settlement.UpgradeSettlement(setFlags: true);
+                            LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned upgrade at {settlement.Name}");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Error($"RecoverOrphanedConstructions: failed to recover upgrade at {settlement.Name}: {ex}");
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

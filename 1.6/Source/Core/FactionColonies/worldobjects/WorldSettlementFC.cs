@@ -664,7 +664,7 @@ namespace FactionColonies
             DirtyStatsCache();
         }
 
-        public void UpgradeSettlement(int times = 1)
+        public void UpgradeSettlement(int times = 1, bool setFlags = false)
         {
             int oldLevel = settlementLevel;
             settlementLevel += times;
@@ -678,6 +678,13 @@ namespace FactionColonies
             DirtyDescriptionCache();
             settlementDef.GetSettlementTypeExtension()?.OnUpgrade(this, oldLevel, settlementLevel);
             LifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
+
+            if (setFlags)
+            {
+                isUpgrading = false;
+                startUpgradeTick = -1;
+                finishUpgradeTick = -1;
+            }
         }
 
         public void DelevelSettlement(int times = -1)

@@ -397,4 +397,19 @@
 		<li>Pecha</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_28</defName>
+		<label>Various Fixes</label>
+		<description>Fixes a handful of issues with the new delayed-end manual defense + some event resolution fixes.</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: events sometimes won&apos;t resolve for unknown reasons, and remain in the queue with negative timers</li>
+		<li>Fixing various issues with new delayed-end manual defense</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
