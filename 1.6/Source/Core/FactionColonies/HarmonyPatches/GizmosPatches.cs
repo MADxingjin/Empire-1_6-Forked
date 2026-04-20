@@ -28,9 +28,11 @@ namespace FactionColonies
 
             Faction playerColonyFaction = FactionCache.PlayerColonyFaction;
 
-            if (__instance.Faction == playerColonyFaction)
+            // Only allow drafting Empire defenders during an active battle
+            if (__instance.Faction == playerColonyFaction && settlementFc.MilitaryComp?.isUnderAttack == true)
             {
                 Pawn pawn = __instance;
+                var milComp = settlementFc.MilitaryComp;
 
                 Command_Toggle draftColonists = new Command_Toggle
                 {
@@ -43,6 +45,9 @@ namespace FactionColonies
                         // SetFaction → AddAndRemoveDynamicComponents creates pawn.drafter for OfPlayer pawns
                         if (pawn.drafter != null)
                             pawn.drafter.Drafted = true;
+                        // Track drafted NPC for faction restoration after battle
+                        if (milComp != null && !milComp.draftedNPCs.Contains(pawn))
+                            milComp.draftedNPCs.Add(pawn);
                     },
                     defaultDesc = "CommandToggleDraftDesc".Translate(),
                     icon = TexCommand.Draft,
@@ -61,54 +66,43 @@ namespace FactionColonies
                 return;
             }
 
-            if (__instance.Faction == Faction.OfPlayer && __instance.Drafted && settlementFc.MilitaryComp != null)
+            // Undraft toggle for drafted Empire NPCs (only during active battle)
+            if (__instance.Faction == Faction.OfPlayer && __instance.Drafted
+                && settlementFc.MilitaryComp?.isUnderAttack == true
+                && settlementFc.MilitaryComp.draftedNPCs.Contains(__instance))
             {
-                // Check if pawn is in a supporting caravan (avoid LINQ closure allocations)
                 Pawn found = __instance;
-                bool isSupporting = false;
-                foreach (var caravan in settlementFc.MilitaryComp.supporting)
+                var milComp = settlementFc.MilitaryComp;
+
+                List<Gizmo> output = __result.ToList();
+                foreach (Gizmo gizmo in output)
                 {
-                    if (caravan.pawns.Contains(found))
+                    Command_Toggle action = gizmo as Command_Toggle;
+                    if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
                     {
-                        isSupporting = true;
+                        action.toggleAction = () =>
+                        {
+                            found.SetFaction(FactionCache.PlayerColonyFaction);
+                            milComp.draftedNPCs.Remove(found);
+                            // Re-add to defenders list and defense lord after undrafting
+                            if (milComp.defenders.Any())
+                            {
+                                if (!milComp.defenders.Contains(found))
+                                    milComp.defenders.Add(found);
+
+                                var defenderLord = milComp.defenders[0].GetLord();
+                                if (defenderLord != null && !defenderLord.ownedPawns.Contains(found))
+                                {
+                                    defenderLord.AddPawn(found);
+                                    defenderLord.CurLordToil.UpdateAllDuties();
+                                }
+                            }
+                        };
                         break;
                     }
                 }
 
-                if (!isSupporting)
-                {
-                    // Only convert to list when we actually need to modify existing gizmos
-                    List<Gizmo> output = __result.ToList();
-
-                    foreach (Gizmo gizmo in output)
-                    {
-                        Command_Toggle action = gizmo as Command_Toggle;
-                        if (action != null && action.hotKey == KeyBindingDefOf.Command_ColonistDraft)
-                        {
-                            action.toggleAction = () =>
-                            {
-                                found.SetFaction(FactionCache.PlayerColonyFaction);
-                                // Re-add to defenders list and defense lord after undrafting
-                                var milComp = settlementFc.MilitaryComp;
-                                if (milComp != null && milComp.defenders.Any())
-                                {
-                                    if (!milComp.defenders.Contains(found))
-                                        milComp.defenders.Add(found);
-
-                                    var defenderLord = milComp.defenders[0].GetLord();
-                                    if (defenderLord != null && !defenderLord.ownedPawns.Contains(found))
-                                    {
-                                        defenderLord.AddPawn(found);
-                                        defenderLord.CurLordToil.UpdateAllDuties();
-                                    }
-                                }
-                            };
-                            break;
-                        }
-                    }
-
-                    __result = output;
-                }
+                __result = output;
             }
         }
     }

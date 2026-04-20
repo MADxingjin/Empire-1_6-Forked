@@ -355,4 +355,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_25</defName>
+		<label>Manual Battle Update</label>
+		<description>Updates manual battles to only end once the player has removed their own pawns from the map, similar to how the vanilla game handles map removal.</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Instead of instantly removing a manual battle map when the battle ends, let the player move their own pawns off of the map</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -629,7 +629,30 @@ namespace FactionColonies
         {
             removeWorldObject = false;
             if (MilitaryComp?.isUnderAttack == true) return false;
-            return MilitaryComp is null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
+            if (MilitaryComp is object && (MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any())) return false;
+            // Vanilla checks: wait for player pawns to leave and incoming transporters to arrive
+            if (Map.mapPawns.AnyPawnBlockingMapRemoval) return false;
+            if (TransporterUtility.IncomingTransporterPreventingMapRemoval(Map)) return false;
+            return true;
+        }
+
+        public override void Notify_MyMapAboutToBeRemoved()
+        {
+            // Clean up Empire faction pawns to prevent ghost colonists in the world pawn pool.
+            // By this point all player pawns have left (ShouldRemoveMapNow confirmed no blockers).
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            if (empireFaction is object)
+            {
+                foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    if (pawn.Faction != empireFaction) continue;
+                    pawn.DeSpawn();
+                    // Squad mercenaries persist between battles; only destroy generated defenders
+                    if (!pawn.IsMercenary() && !pawn.Destroyed)
+                        pawn.Destroy();
+                }
+            }
+            base.Notify_MyMapAboutToBeRemoved();
         }
 
         public void AddPrisoner(Pawn prisoner)

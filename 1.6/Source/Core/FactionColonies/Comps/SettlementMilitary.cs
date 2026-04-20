@@ -59,7 +59,7 @@ namespace FactionColonies
         public MilitaryForce defenderForce;
         private FCEvent currentBattleEvent;
         public List<Pawn> defenders = new List<Pawn>();
-        public List<CaravanSupporting> supporting = new List<CaravanSupporting>();
+        public List<Pawn> draftedNPCs = new List<Pawn>();
         //TODO all code referencing isUnderAttack needs to point to this comp
         //     also need to make it so that WorldSettlementFC's without a defense comp don't get targeted
         //     for attacks
@@ -83,7 +83,7 @@ namespace FactionColonies
             base.PostExposeData();
             Scribe_Collections.Look(ref attackers, "attackers", LookMode.Reference);
             Scribe_Collections.Look(ref defenders, "defenders", LookMode.Reference);
-            Scribe_Collections.Look(ref supporting, "supporting", LookMode.Deep);
+            Scribe_Collections.Look(ref draftedNPCs, "draftedNPCs", LookMode.Reference);
             Scribe_Deep.Look(ref defenderForce, "defenderForce");
             Scribe_Deep.Look(ref attackerForce, "attackerForce");
             Scribe_Values.Look(ref isUnderAttack, "isUnderAttack");
@@ -105,7 +105,7 @@ namespace FactionColonies
 
             attackers = new List<Pawn>();
             defenders = new List<Pawn>();
-            supporting = new List<CaravanSupporting>();
+            draftedNPCs = new List<Pawn>();
         }
 
         public override void CompTick()
@@ -136,6 +136,24 @@ namespace FactionColonies
             // Clean stale references (null from failed save/load resolution)
             attackers.RemoveAll(p => p == null || p.Destroyed);
             defenders.RemoveAll(p => p == null || p.Destroyed);
+
+            // Detect untracked player pawns on the battle map (e.g. shuttle-delivered pawns
+            // that spawned via the Unload job after the ArrivePatch fired)
+            var map = Map;
+            foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
+            {
+                if (pawn.Dead || pawn.Downed) continue;
+                if (defenders.Contains(pawn)) continue;
+                LogUtil.Warning($"Registering untracked player pawn {pawn.LabelShort} with defense at {WorldSettlement.Name}");
+                defenders.Add(pawn);
+                if (defenders.Count > 1)
+                {
+                    Lord defenderLord = defenders[0].GetLord();
+                    if (defenderLord != null && !defenderLord.ownedPawns.Contains(pawn))
+                        defenderLord.AddPawn(pawn);
+                }
+                initialDefenderCount = defenders.Count;
+            }
 
             if (attackers.Count == 0 || defenders.Count == 0)
             {
@@ -392,11 +410,10 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Registers pawns with the defense system (CaravanSupporting, defenders list).
-        /// When <paramref name="assignToLord"/> is false, pawns are tracked for post-battle
-        /// caravan reformation but not added to the battle lord. This is needed for entities
-        /// like Vehicle Framework vehicles that have their own job systems and conflict with
-        /// lord duty assignments.
+        /// Registers pawns with the defense system (defenders list + battle lord).
+        /// When <paramref name="assignToLord"/> is false, pawns are added to defenders
+        /// but not to the battle lord. This is needed for entities like Vehicle Framework
+        /// vehicles that have their own job systems and conflict with lord duty assignments.
         /// </summary>
         public void AddToDefenceFromList(List<Pawn> pawns, int destinationTile, bool assignToLord)
         {
@@ -421,14 +438,9 @@ namespace FactionColonies
                         }
                     }
 
-                    var caravanSupporting = new CaravanSupporting
-                    {
-                        pawns = pawns
-                    };
-
-                    supporting.Add(caravanSupporting);
-
-                    defenders.AddRange(caravanSupporting.pawns);
+                    foreach (var pawn in pawns)
+                        if (!defenders.Contains(pawn))
+                            defenders.Add(pawn);
                     initialDefenderCount = defenders.Count;
                 });
         }
@@ -443,69 +455,64 @@ namespace FactionColonies
         private void DeleteMap(bool won = true)
         {
             var map = Map;
-            if (map == null) return;
+            if (map is null) return;
 
-            // Snapshot supporting (player) pawns before caravan formation modifies the lists.
-            // Used to distinguish player pawns from Empire defenders during cleanup.
-            var supportingPawns = new HashSet<Pawn>();
-            foreach (var cs in supporting)
-                foreach (var p in cs.pawns)
-                    if (p != null) supportingPawns.Add(p);
-
-            var lords = map.lordManager.lords.ListFullCopy();
-            foreach (var lord in lords)
-            {
+            // Remove battle lords. Battle is over, pawns revert to normal behavior
+            foreach (var lord in map.lordManager.lords.ListFullCopy())
                 map.lordManager.RemoveLord(lord);
-            }
 
-            // Restore faction on any drafted defenders before despawn/caravan formation.
-            // Drafting sets defenders to Faction.OfPlayer (GizmosPatches), which makes them
-            // count as free colonists. Restore to Empire faction to prevent ghost colonists
-            // in the world pawn pool after map removal.
+            // Restore faction on Empire defenders the player drafted during battle.
+            // After this, any remaining Faction.OfPlayer pawns are real player colonists.
             Faction empireFaction = FactionCache.PlayerColonyFaction;
-            foreach (Pawn defender in defenders)
+            foreach (Pawn npc in draftedNPCs)
             {
-                if (defender is null || defender.Dead || defender.Destroyed) continue;
-                if (supportingPawns.Contains(defender)) continue;
-                if (defender.Faction == Faction.OfPlayer)
-                    defender.SetFaction(empireFaction);
+                if (npc is null || npc.Dead || npc.Destroyed) continue;
+                if (npc.Faction == Faction.OfPlayer)
+                    npc.SetFaction(empireFaction);
+            }
+            draftedNPCs.Clear();
+
+            // Check for player pawns on the map (spawned as Faction.OfPlayer free colonists)
+            List<Pawn> playerPawns = new List<Pawn>();
+            bool anyMobile = false;
+            foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
+            {
+                if (pawn.Dead) continue;
+                playerPawns.Add(pawn);
+                if (!pawn.Downed) anyMobile = true;
             }
 
-            CameraJumper.TryJump(WorldSettlement.Tile);
-            //Prevent player from zooming back into the settlement
-            Current.Game.CurrentMap = Find.AnyPlayerHomeMap;
-
-            //Ignore any empty caravans
-            var AllDowned = supporting.All(supporting_l => supporting_l.pawns.All(pawn => pawn.Downed || pawn.Dead));
-            foreach (var caravanSupporting in supporting.Where(supporting_l => supporting_l.pawns.Any(pawn => pawn.Spawned && !pawn.Downed && !pawn.Dead)).ToList())
+            if (anyMobile)
             {
-                CaravanFormingUtility.FormAndCreateCaravan(caravanSupporting.pawns.Where(pawn => pawn.Spawned), Faction.OfPlayer, WorldSettlement.Tile, WorldSettlement.Tile, -1);
+                // Mobile player pawns (or shuttles) exist — keep the map alive.
+                // ShouldRemoveMapNow checks AnyPawnBlockingMapRemoval and will
+                // auto-remove the map once all player pawns/shuttles have left.
+                // Notify_MyMapAboutToBeRemoved handles Empire pawn cleanup at that point.
+                return;
             }
 
-            if (AllDowned)
+            if (playerPawns.Count > 0)
             {
-                var pawns = new HashSet<Thing>();
-                foreach (var caravanSupporting in supporting)
-                    foreach (var pawn in caravanSupporting.pawns)
-                        if (!pawn.Dead)
-                        {
-                            if (pawn.Spawned) pawn.DeSpawn();
-                            pawns.Add(pawn);
-                        }
+                // All player pawns are downed — deliver them home via event, then remove map
+                var deliveryPawns = new HashSet<Thing>();
+                foreach (Pawn pawn in playerPawns)
+                {
+                    if (pawn.Spawned) pawn.DeSpawn();
+                    deliveryPawns.Add(pawn);
+                }
 
-                foreach (Pawn pawn in pawns)
+                foreach (Pawn pawn in deliveryPawns)
                     if (!pawn.Dead)
                     {
-                        var num2 = 0;
+                        int iterations = 0;
                         while (pawn.health.HasHediffsNeedingTend())
                         {
-                            num2++;
-                            if (num2 > 10000)
+                            iterations++;
+                            if (iterations > 10000)
                             {
-                                LogUtil.Error("WorldSettlementFC.deleteMap: Too many iterations.");
+                                LogUtil.Error("SettlementMilitary.DeleteMap: Too many tend iterations.");
                                 break;
                             }
-
                             TendUtility.DoTend(null, pawn, null);
                         }
                     }
@@ -516,56 +523,27 @@ namespace FactionColonies
                 int travelTicks = TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile);
                 if (!won) travelTicks += GenDate.TicksPerDay;
 
-                var eventParams = new FCEvent
+                if (deliveryPawns.Any())
                 {
-                    location = Find.AnyPlayerHomeMap.Tile,
-                    source = WorldSettlement.Tile,
-                    goods = pawns.ToList(),
-                    customDescription = eventText,
-                    timeTillTrigger = Find.TickManager.TicksGame + travelTicks
-                };
-
-                if (pawns.Any())
-                {
+                    var eventParams = new FCEvent
+                    {
+                        location = Find.AnyPlayerHomeMap.Tile,
+                        source = WorldSettlement.Tile,
+                        goods = deliveryPawns.ToList(),
+                        customDescription = eventText,
+                        timeTillTrigger = Find.TickManager.TicksGame + travelTicks
+                    };
                     DeliveryEvent.CreateDeliveryEvent(eventParams);
                     string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
-                    pendingDeliveryMessage = "FCInjuredCaravanMembersReturning".Translate(pawns.Count, travelDays);
+                    pendingDeliveryMessage = "FCInjuredCaravanMembersReturning".Translate(deliveryPawns.Count, travelDays);
                 }
             }
 
-            if (map.mapPawns?.AllPawnsSpawned != null)
-            {
-                //Despawn removes them from AllPawnsSpawned, so we copy it
-                foreach (var pawn in map.mapPawns.AllPawnsSpawned.ToList())
-                {
-                    pawn.DeSpawn();
-                }
-            }
-
+            // No player pawns (or all downed and delivered) — immediate map removal.
+            // Notify_MyMapAboutToBeRemoved handles Empire pawn cleanup.
+            CameraJumper.TryJump(WorldSettlement.Tile);
+            Current.Game.CurrentMap = Find.AnyPlayerHomeMap;
             Current.Game.DeinitAndRemoveMap(map, false);
-
-            // Clean up non-supporting defenders: remove from stray caravans and destroy
-            // generated (non-squad) pawns to prevent ghost colonists in the world pawn pool.
-            foreach (Pawn defender in defenders)
-            {
-                if (defender is null || defender.Destroyed) continue;
-                if (supportingPawns.Contains(defender)) continue;
-
-                // Remove from any caravan they may have ended up in
-                foreach (var caravan in Find.WorldObjects.Caravans.ToList())
-                {
-                    if (caravan.PawnsListForReading.Contains(defender))
-                    {
-                        caravan.RemovePawn(defender);
-                        if (!caravan.Destroyed && !caravan.PawnsListForReading.Any())
-                            caravan.Destroy();
-                    }
-                }
-
-                // Only destroy generated (non-squad) pawns — squad mercs persist between battles
-                if (!defender.IsMercenary() && !defender.Destroyed)
-                    defender.Destroy();
-            }
         }
 
         public void StartDefence(FCEvent evt, Action after)
@@ -1036,7 +1014,7 @@ namespace FactionColonies
             battleMapInitialized = false;
             attackers?.Clear();
             defenders?.Clear();
-            supporting?.Clear();
+            draftedNPCs?.Clear();
             defenderForce = null;
             attackerForce = null;
             currentBattleEvent = null;
@@ -1265,7 +1243,7 @@ namespace FactionColonies
             DeleteMap(won);
             EndBattle(won, remaining);
 
-            supporting.Clear();
+            draftedNPCs.Clear();
             defenders.Clear();
             defenderForce = null;
             attackers.Clear();
@@ -1307,46 +1285,17 @@ namespace FactionColonies
 
         public override void PostCaravanFormed(Caravan caravan)
         {
-            var foundCaravan = new List<CaravanSupporting>();
-            foreach (var found in caravan.pawns)
+            foreach (var pawn in caravan.pawns)
             {
-                var lord = found.GetLord();
+                var lord = pawn.GetLord();
                 if (lord != null)
-                {
-                    lord.Notify_PawnLost(found, PawnLostCondition.LeftVoluntarily);
-                }
-
-                // Also remove directly from defenders (lord notification may not fire for despawned pawns)
-                defenders.Remove(found);
-
-                foreach (var caravanSupporting in
-                    supporting.Where(caravanSupporting => caravanSupporting.pawns.Contains(found)))
-                {
-                    foundCaravan.Add(caravanSupporting);
-                    caravanSupporting.pawns.Remove(found);
-                    break;
-                }
+                    lord.Notify_PawnLost(pawn, PawnLostCondition.LeftVoluntarily);
+                defenders.Remove(pawn);
             }
 
-            foreach (var caravanSupporting in foundCaravan.Where(caravanSupporting =>
-                    caravanSupporting.pawns.Find(pawn => !pawn.Downed &&
-                                                         !pawn.Dead && !pawn.AnimalOrWildMan()) == null))
-            {
-                //Prevent removing while creating end battle caravans
-                if (isUnderAttack)
-                    supporting.Remove(caravanSupporting);
-            }
-            /*It appears vanilla handles this automatically
-                foreach (Pawn animal in caravanSupporting.supporting.FindAll(pawn => pawn.AnimalOrWildMan()))
-                {
-                    animal.holdingOwner = null;
-                    animal.DeSpawn();
-                    Find.WorldPawns.PassToWorld(animal);
-                    caravan.pawns.TryAdd(animal);
-                }*/
-
-            //Appears to not happen sometimes, no clue why
-            foreach (var pawn in caravan.pawns) Map.reservationManager.ReleaseAllClaimedBy(pawn);
+            if (Map is object)
+                foreach (var pawn in caravan.pawns)
+                    Map.reservationManager.ReleaseAllClaimedBy(pawn);
 
             base.PostCaravanFormed(caravan);
         }
