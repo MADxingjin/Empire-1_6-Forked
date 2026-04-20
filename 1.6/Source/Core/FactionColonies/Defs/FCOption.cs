@@ -279,12 +279,8 @@ namespace FactionColonies
 
             float scrollOuterHeight = inRect.yMax - curY;
             Rect scrollOuterRect = new Rect(inRect.x, curY, contentWidth, scrollOuterHeight);
-            float scrollInnerWidth = cachedTotalOptionsHeight > scrollOuterHeight
-                ? contentWidth - 16f
-                : contentWidth;
-            Rect scrollInnerRect = new Rect(0f, 0f, scrollInnerWidth, cachedTotalOptionsHeight);
 
-            Widgets.BeginScrollView(scrollOuterRect, ref scrollPosition, scrollInnerRect);
+            Rect scrollInnerRect = ScrollUtil.BeginScrollView(scrollOuterRect, ref scrollPosition, cachedTotalOptionsHeight);
 
             float optY = 0f;
 
@@ -484,7 +480,7 @@ namespace FactionColonies
                 optY += cardH;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

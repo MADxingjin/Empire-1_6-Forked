@@ -244,12 +244,7 @@ namespace FactionColonies
             if (!columnScrollPositions.TryGetValue(category, out scrollPos))
                 scrollPos = Vector2.zero;
 
-            Rect listViewRect = new Rect(listOuterRect.x, listOuterRect.y, listOuterRect.width, totalContentHeight);
-            bool needsScroll = totalContentHeight > listHeight;
-            if (needsScroll)
-                listViewRect.width -= 16f; // Account for scrollbar width
-
-            Widgets.BeginScrollView(listOuterRect, ref scrollPos, listViewRect);
+            Rect listViewRect = ScrollUtil.BeginScrollView(listOuterRect, ref scrollPos, totalContentHeight);
             columnScrollPositions[category] = scrollPos;
 
             // Recalculate text width if scrollbar narrowed the view
@@ -264,7 +259,7 @@ namespace FactionColonies
                 rowY = rowRect.yMax + 2f;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Anchor = TextAnchor.UpperLeft;
         }

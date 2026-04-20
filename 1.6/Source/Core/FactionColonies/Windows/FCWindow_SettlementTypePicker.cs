@@ -54,8 +54,7 @@ namespace FactionColonies
                 totalHeight += GetRowHeight(def, contentWidth) + SeparatorHeight;
             }
 
-            Rect scrollViewRect = new Rect(0, 0, contentWidth, Mathf.Max(totalHeight, listHeight));
-            Widgets.BeginScrollView(scrollOutRect, ref scrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref scrollPos, Mathf.Max(totalHeight, listHeight));
 
             float curY = 0f;
             for (int i = 0; i < allTypes.Count; i++)
@@ -82,7 +81,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

@@ -83,9 +83,7 @@ namespace FactionColonies
                 // Prisoner list
                 Text.Anchor = TextAnchor.MiddleLeft;
                 var outRect = new Rect(0, contentY, inRect.width, contentHeight);
-                float scrollMargin = prisoners.Count * optionHeight > contentHeight ? 16f : 0f;
-                var viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, prisoners.Count * optionHeight);
-                Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+                var viewRect = ScrollUtil.BeginScrollView(outRect, ref scrollPosition, prisoners.Count * optionHeight);
                 var ls = new Listing_Standard();
                 ls.Begin(viewRect);
                 int i = 0;
@@ -95,7 +93,7 @@ namespace FactionColonies
                     i++;
                 }
                 ls.End();
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
 
             Text.Font = fontBefore;
