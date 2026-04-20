@@ -146,13 +146,13 @@ namespace FactionColonies
                 if (defenders.Contains(pawn)) continue;
                 LogUtil.Warning($"Registering untracked player pawn {pawn.LabelShort} with defense at {WorldSettlement.Name}");
                 defenders.Add(pawn);
+                initialDefenderCount++;
                 if (defenders.Count > 1)
                 {
                     Lord defenderLord = defenders[0].GetLord();
                     if (defenderLord != null && !defenderLord.ownedPawns.Contains(pawn))
                         defenderLord.AddPawn(pawn);
                 }
-                initialDefenderCount = defenders.Count;
             }
 
             if (attackers.Count == 0 || defenders.Count == 0)
@@ -440,8 +440,10 @@ namespace FactionColonies
 
                     foreach (var pawn in pawns)
                         if (!defenders.Contains(pawn))
+                        {
                             defenders.Add(pawn);
-                    initialDefenderCount = defenders.Count;
+                            initialDefenderCount++;
+                        }
                 });
         }
 
@@ -494,14 +496,10 @@ namespace FactionColonies
             if (playerPawns.Count > 0)
             {
                 // All player pawns are downed — deliver them home via event, then remove map
-                var deliveryPawns = new HashSet<Thing>();
                 foreach (Pawn pawn in playerPawns)
-                {
                     if (pawn.Spawned) pawn.DeSpawn();
-                    deliveryPawns.Add(pawn);
-                }
 
-                foreach (Pawn pawn in deliveryPawns)
+                foreach (Pawn pawn in playerPawns)
                     if (!pawn.Dead)
                     {
                         int iterations = 0;
@@ -523,20 +521,20 @@ namespace FactionColonies
                 int travelTicks = TravelUtil.ReturnTicksToArrive(WorldSettlement.Tile, Find.AnyPlayerHomeMap.Tile);
                 if (!won) travelTicks += GenDate.TicksPerDay;
 
-                if (deliveryPawns.Any())
+                var goods = new List<Thing>(playerPawns.Count);
+                foreach (Pawn pawn in playerPawns) goods.Add(pawn);
+
+                var eventParams = new FCEvent
                 {
-                    var eventParams = new FCEvent
-                    {
-                        location = Find.AnyPlayerHomeMap.Tile,
-                        source = WorldSettlement.Tile,
-                        goods = deliveryPawns.ToList(),
-                        customDescription = eventText,
-                        timeTillTrigger = Find.TickManager.TicksGame + travelTicks
-                    };
-                    DeliveryEvent.CreateDeliveryEvent(eventParams);
-                    string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
-                    pendingDeliveryMessage = "FCInjuredCaravanMembersReturning".Translate(deliveryPawns.Count, travelDays);
-                }
+                    location = Find.AnyPlayerHomeMap.Tile,
+                    source = WorldSettlement.Tile,
+                    goods = goods,
+                    customDescription = eventText,
+                    timeTillTrigger = Find.TickManager.TicksGame + travelTicks
+                };
+                DeliveryEvent.CreateDeliveryEvent(eventParams);
+                string travelDays = ((float)travelTicks / GenDate.TicksPerDay).ToString("0.#");
+                pendingDeliveryMessage = "FCInjuredCaravanMembersReturning".Translate(playerPawns.Count, travelDays);
             }
 
             // No player pawns (or all downed and delivered) — immediate map removal.
@@ -564,6 +562,10 @@ namespace FactionColonies
             {
                 shouldAutoResolve = !battleMapInitialized && !IsPlayerCaravanOnTile();
             }
+
+            // Map still loaded from previous battle (player hasn't left yet) — auto-resolve
+            if (Map != null && !isUnderAttack)
+                shouldAutoResolve = true;
 
             if (shouldAutoResolve)
             {
