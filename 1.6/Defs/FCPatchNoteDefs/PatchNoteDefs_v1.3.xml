@@ -426,4 +426,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_30</defName>
+		<label>Manual Defense Shuttle Fixes</label>
+		<description>Various fixes to ensure that shuttles work properly with manual defense.</description>
+		<releaseDate>2026-04-20</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Various fixes to ensure that shuttles work properly with manual defense</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

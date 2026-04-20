@@ -444,8 +444,13 @@ namespace FactionColonies
             var map = Map;
             var settlement = WorldSettlement;
             var shuttleDef = shuttle.def;
+            Rot4 shuttleRotation = shuttleDef.defaultPlacingRot;
             pendingTargetingAction = () =>
             {
+                // Force camera to the battle map so the player sees where to land
+                Current.Game.CurrentMap = map;
+                CameraJumper.TryJump(new IntVec3(map.Size.x / 2, 0, map.Size.z / 2), map);
+
                 var targetParams = new TargetingParameters
                 {
                     canTargetLocations = true,
@@ -462,13 +467,17 @@ namespace FactionColonies
                     {
                         landed = true;
                         shuttleLandingPending = false;
+                        shuttle.Rotation = shuttleRotation;
                         transportShip.ArriveAt(target.Cell, settlement);
                         transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
                     },
-                    null,
                     delegate(LocalTargetInfo target)
                     {
-                        return RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(target, map, shuttleDef);
+                        RoyalTitlePermitWorker_CallShuttle.DrawShuttleGhost(target, map, shuttleDef, shuttleRotation);
+                    },
+                    delegate(LocalTargetInfo target)
+                    {
+                        return RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(target, map, shuttleDef, shuttleRotation);
                     },
                     null,
                     delegate
@@ -480,6 +489,15 @@ namespace FactionColonies
                         IntVec3 fallback = DropCellFinder.GetBestShuttleLandingSpot(map, Faction.OfPlayer);
                         transportShip.ArriveAt(fallback, settlement);
                         transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
+                    },
+                    null, true, null,
+                    delegate(LocalTargetInfo target)
+                    {
+                        if (!shuttleDef.rotatable) return;
+                        if (KeyBindingDefOf.Designator_RotateRight.KeyDownEvent)
+                            shuttleRotation = shuttleRotation.Rotated(RotationDirection.Clockwise);
+                        if (KeyBindingDefOf.Designator_RotateLeft.KeyDownEvent)
+                            shuttleRotation = shuttleRotation.Rotated(RotationDirection.Counterclockwise);
                     });
             };
         }
