@@ -76,6 +76,7 @@ namespace FactionColonies
         private bool endingBattle = false;
         private bool battleMapInitialized = false;
         private bool shuttleLandingPending = false;
+        private Action pendingTargetingAction;
         private int initialDefenderCount;
         private string pendingDeliveryMessage;
 
@@ -114,6 +115,13 @@ namespace FactionColonies
             base.CompTick();
             if (!isUnderAttack) return;
             if (endingBattle) return;
+
+            if (pendingTargetingAction != null)
+            {
+                var action = pendingTargetingAction;
+                pendingTargetingAction = null;
+                action();
+            }
 
             if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0
                 && Map is null && attackers.Count == 0 && defenders.Count == 0)
@@ -432,45 +440,48 @@ namespace FactionColonies
             // Prevent DeleteMap from removing the map while shuttle is in flight
             shuttleLandingPending = true;
 
-            // Let player choose landing cell for the shuttle
+            // Defer targeting to the next CompTick — UI can't render during LongEvents.
             var map = Map;
             var settlement = WorldSettlement;
             var shuttleDef = shuttle.def;
-            var targetParams = new TargetingParameters
+            pendingTargetingAction = () =>
             {
-                canTargetLocations = true,
-                canTargetSelf = false,
-                canTargetPawns = false,
-                canTargetFires = false,
-                canTargetBuildings = false,
-                canTargetItems = false
-            };
+                var targetParams = new TargetingParameters
+                {
+                    canTargetLocations = true,
+                    canTargetSelf = false,
+                    canTargetPawns = false,
+                    canTargetFires = false,
+                    canTargetBuildings = false,
+                    canTargetItems = false
+                };
 
-            bool landed = false;
-            Find.Targeter.BeginTargeting(targetParams,
-                delegate(LocalTargetInfo target)
-                {
-                    landed = true;
-                    shuttleLandingPending = false;
-                    transportShip.ArriveAt(target.Cell, settlement);
-                    transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
-                },
-                null,
-                delegate(LocalTargetInfo target)
-                {
-                    return RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(target, map, shuttleDef);
-                },
-                null,
-                delegate
-                {
-                    if (landed) return;
-                    shuttleLandingPending = false;
-                    // Player cancelled targeting — auto-land at best spot
-                    if (!Find.Maps.Contains(map)) return;
-                    IntVec3 fallback = DropCellFinder.GetBestShuttleLandingSpot(map, Faction.OfPlayer);
-                    transportShip.ArriveAt(fallback, settlement);
-                    transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
-                });
+                bool landed = false;
+                Find.Targeter.BeginTargeting(targetParams,
+                    delegate(LocalTargetInfo target)
+                    {
+                        landed = true;
+                        shuttleLandingPending = false;
+                        transportShip.ArriveAt(target.Cell, settlement);
+                        transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
+                    },
+                    null,
+                    delegate(LocalTargetInfo target)
+                    {
+                        return RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(target, map, shuttleDef);
+                    },
+                    null,
+                    delegate
+                    {
+                        if (landed) return;
+                        shuttleLandingPending = false;
+                        // Player cancelled targeting — auto-land at best spot
+                        if (!Find.Maps.Contains(map)) return;
+                        IntVec3 fallback = DropCellFinder.GetBestShuttleLandingSpot(map, Faction.OfPlayer);
+                        transportShip.ArriveAt(fallback, settlement);
+                        transportShip.AddJobs(ShipJobDefOf.Unload, ShipJobDefOf.WaitForever);
+                    });
+            };
         }
 
         private void SpawnPawnsAtEdge(List<Pawn> pawns)
@@ -603,6 +614,13 @@ namespace FactionColonies
                 foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
                     if (pawn.Faction == empireFaction && !pawn.Dead && !pawn.Downed)
                         empireDefenders.Add(pawn);
+
+                // Stop stale jobs that survived lord cleanup (e.g. Goto with exitMapOnArrival).
+                // Lord.Cleanup only interrupts jobs where EndPawnJobOnCleanup returns true;
+                // the rest keep executing and can walk pawns off the map.
+                foreach (Pawn pawn in empireDefenders)
+                    pawn.jobs.StopAll();
+
                 if (empireDefenders.Any())
                     LordMaker.MakeNewLord(empireFaction, new LordJob_ColonistsIdle(WorldSettlement), map, empireDefenders);
 
@@ -1386,7 +1404,7 @@ namespace FactionColonies
         public void RemoveAttacker(Pawn downed)
         {
             attackers.Remove(downed);
-            if (attackers.Any() || endingBattle) return;
+            if (attackers.Any() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;
             LongEventHandler.QueueLongEvent(EndAttack,
@@ -1401,7 +1419,7 @@ namespace FactionColonies
         public void RemoveDefender(Pawn defender)
         {
             defenders.Remove(defender);
-            if (defenders.Any() || endingBattle) return;
+            if (defenders.Any() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;
             LongEventHandler.QueueLongEvent(EndAttack,
