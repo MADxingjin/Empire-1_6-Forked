@@ -27,4 +27,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_2</defName>
+		<label>New Scrollbars</label>
+		<description>Updates all scrollbars in Empire windows to use flat rectangles instead of the default rounded shape, to be more in line with Empire&apos;s general UI design.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds new ScrollUtil class to handle the new scrollbars</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
