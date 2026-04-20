@@ -459,10 +459,6 @@ namespace FactionColonies
             var map = Map;
             if (map is null) return;
 
-            // Remove battle lords. Battle is over, pawns revert to normal behavior
-            foreach (var lord in map.lordManager.lords.ListFullCopy())
-                map.lordManager.RemoveLord(lord);
-
             // Restore faction on Empire defenders the player drafted during battle.
             // After this, any remaining Faction.OfPlayer pawns are real player colonists.
             Faction empireFaction = FactionCache.PlayerColonyFaction;
@@ -489,8 +485,25 @@ namespace FactionColonies
                 // ShouldRemoveMapNow checks AnyPawnBlockingMapRemoval and will
                 // auto-remove the map once all player pawns/shuttles have left.
                 // Notify_MyMapAboutToBeRemoved handles Empire pawn cleanup at that point.
+
+                // Remove battle lords, then re-assign Empire defenders to an idle lord
+                // so they hold position instead of wandering to the map edge.
+                foreach (var lord in map.lordManager.lords.ListFullCopy())
+                    map.lordManager.RemoveLord(lord);
+
+                List<Pawn> empireDefenders = new List<Pawn>();
+                foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
+                    if (pawn.Faction == empireFaction && !pawn.Dead && !pawn.Downed)
+                        empireDefenders.Add(pawn);
+                if (empireDefenders.Any())
+                    LordMaker.MakeNewLord(empireFaction, new LordJob_ColonistsIdle(WorldSettlement), map, empireDefenders);
+
                 return;
             }
+
+            // Immediate path — remove all lords before cleanup
+            foreach (var lord in map.lordManager.lords.ListFullCopy())
+                map.lordManager.RemoveLord(lord);
 
             if (playerPawns.Count > 0)
             {
