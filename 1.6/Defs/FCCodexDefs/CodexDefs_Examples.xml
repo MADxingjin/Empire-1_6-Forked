@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Empire Codex Entry Definitions
+
+    Each CodexEntryDef defines one entry in the in-game Empire Codex.
+
+    Required fields:
+        defName      - unique identifier (used for seeAlso cross-references)
+        label        - display title shown in the Codex
+        description  - body text shown in the detail pane (supports \n for newlines)
+        category     - reference to a CodexCategoryDef (e.g. CodexCat_Economy)
+
+    Optional fields:
+        displayOrder    - sort order within category (lower = first, default 0)
+        iconPath        - texture path for an icon next to the title
+        seeAlso         - list of defNames of related entries (rendered as clickable links)
+        imagePaths      - list of texture paths for an image carousel
+        dynamicProvider - fully qualified C# class name implementing ICodexDynamicProvider
+                          (appends live game-state data in the right pane)
+
+    Category color, mod association, and banner are defined on the CodexCategoryDef,
+    not on individual entries. See CodexCategoryDefs.xml.
+
+    To add entries from a submod:
+    1. Define your own CodexCategoryDef(s) with your modId
+    2. Create CodexEntryDef entries referencing your categories
+    3. Drop both XML files in your submod's Defs/ folder — they appear automatically
+-->
+<Defs>
+
+    <!-- CATEGORY: Economy -->
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_Prosperity</defName>
+        <label>Prosperity</label>
+        <description>Prosperity is a 0–100 stat on each settlement that directly multiplies all resource production.
+
+At 50 prosperity, your settlement produces half as much as at 100. At 1, production is nearly zero.
+
+Prosperity drifts daily toward a target calculated from your other social stats:
+  Target = (Happiness + Loyalty + (100 − Unrest)) / 3
+
+The drift rate is 1 point per day (plus any stat modifiers from policies, buildings, or events). If your happiness and loyalty are high and unrest is low, prosperity will climb. If social stats deteriorate, prosperity follows.
+
+Losing a defensive battle costs 20 prosperity immediately, which can take many days to recover from.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>10</displayOrder>
+        <iconPath>GUI/Prosperity</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_Prosperity</dynamicProvider>
+        <seeAlso>
+            <li>Codex_ThreatLevel</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <!-- CATEGORY: Military -->
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_ThreatLevel</defName>
+        <label>Empire Threat Level (ETL)</label>
+        <description>The Empire Threat Level (ETL) is a hidden multiplier (1.0x to 3.0x by default) that scales how dangerous enemy attacks are against your settlements.
+
+It is a weighted composite of four factors:
+ - Average settlement level (35% weight)
+ - Highest settlement level (15% weight)
+ - Faction income (30% weight)
+ - Settlement count (20% weight)
+
+Each factor follows a non-linear curve; early growth raises threat slowly, but large empires with high income hit the cap fast. Having one high-level settlement raises threat less than having many mid-level ones.
+
+During your first year, a handicap limits how fast threat can grow regardless of your empire's strength. After one year, the cap transitions smoothly to ETL-based scaling.
+
+The Max Threat Multiplier setting (default 3.0x) provides an absolute ceiling to ETL.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>10</displayOrder>
+        <iconPath>GUI/MilitaryLevel</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_ThreatLevel</dynamicProvider>
+        <seeAlso>
+            <li>Codex_Prosperity</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+</Defs>

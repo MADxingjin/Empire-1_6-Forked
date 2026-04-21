@@ -527,6 +527,7 @@ namespace FactionColonies
             _cachedUpgradeTrees = null;
             _cachedUpgradeDescendants = null;
             _cachedRequiredByMap = null;
+            BuildingFCDef.ClearCompatibleSettlementCache();
             _cachedEventCategoryDefs = null;
             _cachedHostileMilitaryJobs = null;
 
