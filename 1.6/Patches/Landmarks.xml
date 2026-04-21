@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Per-landmark resource bonuses. Attaches TileLandmarkResourceExtension to Odyssey
-     LandmarkDefs so settlements founded on those tiles get per-resource modifiers.
-     Only targets landmarks where mutator-layer patches are awkward: differently-named
-     required mutators (Ruins/FrozenRuins), multi-required composites (AncientQuarry,
-     Harbor), and themed composite families (vents, abandoned colonies, ancient structures).
-     The 31 simple 1:1 landmarks (Oasis, Wetland, Valley, Cliffs, etc.) keep using
-     TileMutators.xml. Scanned by ResourceTypeDef.GetLandmarkAdditives/GetLandmarkMultipliers;
-     applied both to the Create Colony production preview and to runtime settlement resources. -->
+     LandmarkDefs so settlements founded on those tiles get per-resource modifiers. -->
 <Patch>
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="Ruins"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="Ruins"]</xpath>
       <value>
@@ -30,7 +23,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="FrozenRuins"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="FrozenRuins"]</xpath>
       <value>
@@ -49,7 +41,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientQuarry"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientQuarry"]</xpath>
       <value>
@@ -68,7 +59,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="Harbor"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="Harbor"]</xpath>
       <value>
@@ -88,7 +78,6 @@
   <!-- Ancient vents (BaseAncientVent family) -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientSmokeVent"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientSmokeVent"]</xpath>
       <value>
@@ -106,7 +95,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientToxVent"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientToxVent"]</xpath>
       <value>
@@ -126,7 +114,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientHeatVent"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientHeatVent"]</xpath>
       <value>
@@ -145,7 +132,6 @@
   <!-- Abandoned colonies (AbandonedColonyLandmarkBase family) -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AbandonedColonyTribal"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AbandonedColonyTribal"]</xpath>
       <value>
@@ -163,7 +149,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AbandonedColonyOutlander"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AbandonedColonyOutlander"]</xpath>
       <value>
@@ -183,7 +168,6 @@
   <!-- Ancient structures (AncientStructureBase family) -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientLaunchSite"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientLaunchSite"]</xpath>
       <value>
@@ -201,7 +185,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientGarrison"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientGarrison"]</xpath>
       <value>
@@ -219,7 +202,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientWarehouse"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientWarehouse"]</xpath>
       <value>
@@ -237,7 +219,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientChemfuelRefinery"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientChemfuelRefinery"]</xpath>
       <value>
@@ -255,7 +236,6 @@
 
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/LandmarkDef[defName="AncientInfestedSettlement"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/LandmarkDef[defName="AncientInfestedSettlement"]</xpath>
       <value>
