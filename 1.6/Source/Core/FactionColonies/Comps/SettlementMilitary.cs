@@ -76,7 +76,6 @@ namespace FactionColonies
         private bool endingBattle = false;
         private bool battleMapInitialized = false;
         private bool shuttleLandingPending = false;
-        private Action pendingTargetingAction;
         private int initialDefenderCount;
         private string pendingDeliveryMessage;
 
@@ -115,13 +114,6 @@ namespace FactionColonies
             base.CompTick();
             if (!isUnderAttack) return;
             if (endingBattle) return;
-
-            if (pendingTargetingAction != null)
-            {
-                var action = pendingTargetingAction;
-                pendingTargetingAction = null;
-                action();
-            }
 
             if (isUnderAttack && !endingBattle && Find.TickManager.TicksGame % 2500 == 0
                 && Map is null && attackers.Count == 0 && defenders.Count == 0)
@@ -403,6 +395,16 @@ namespace FactionColonies
                 c.Faction == Faction.OfPlayer);
         }
 
+        private bool AnyOtherSettlementMapOpen()
+        {
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp?.settlements ?? Enumerable.Empty<WorldSettlementFC>())
+            {
+                if (settlement == WorldSettlement) continue;
+                if (settlement.Map != null) return true;
+            }
+            return false;
+        }
+
         public void CaravanDefend(Caravan caravan)
         {
             var pawns = caravan.pawns.InnerListForReading.ListFullCopy();
@@ -445,7 +447,7 @@ namespace FactionColonies
             var settlement = WorldSettlement;
             var shuttleDef = shuttle.def;
             Rot4 shuttleRotation = shuttleDef.defaultPlacingRot;
-            pendingTargetingAction = () =>
+            LongEventHandler.ExecuteWhenFinished(() =>
             {
                 // Force camera to the battle map so the player sees where to land
                 Current.Game.CurrentMap = map;
@@ -499,7 +501,7 @@ namespace FactionColonies
                         if (KeyBindingDefOf.Designator_RotateLeft.KeyDownEvent)
                             shuttleRotation = shuttleRotation.Rotated(RotationDirection.Counterclockwise);
                     });
-            };
+            });
         }
 
         private void SpawnPawnsAtEdge(List<Pawn> pawns)
@@ -719,8 +721,12 @@ namespace FactionColonies
                 shouldAutoResolve = !battleMapInitialized && !IsPlayerCaravanOnTile();
             }
 
-            // Map still loaded from previous battle (player hasn't left yet) — auto-resolve
+            // Map still loaded from previous battle (player hasn't left yet) — auto-resolve.
+            // Also auto-resolve if ANY other Empire settlement has a battle map open,
+            // to prevent multiple simultaneous battle maps.
             if (Map != null && !isUnderAttack)
+                shouldAutoResolve = true;
+            if (!shouldAutoResolve && AnyOtherSettlementMapOpen())
                 shouldAutoResolve = true;
 
             if (shouldAutoResolve)
