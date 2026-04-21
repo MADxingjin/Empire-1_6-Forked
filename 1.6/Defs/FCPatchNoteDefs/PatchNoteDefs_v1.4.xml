@@ -41,4 +41,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_3</defName>
+		<label>Empire Codex</label>
+		<description>Adds the framework for the Empire Codex, meant to be an in-game resource similar to Civilization&apos;s Civilopedia.</description>
+		<releaseDate>2026-04-21</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds framework for the Empire Codex</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
