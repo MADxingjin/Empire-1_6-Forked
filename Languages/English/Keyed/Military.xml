@@ -51,6 +51,8 @@
 	<FCDefenseBattleOverLeaveMap>The battle is over. Gather your forces and leave the settlement when ready.</FCDefenseBattleOverLeaveMap>
 	<FCManualBattleStarted>Battle for {0}</FCManualBattleStarted>
 	<FCManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</FCManualBattleStartedDesc>
+	<FCNewWaveArrived>New Wave at {0}</FCNewWaveArrived>
+	<FCNewWaveArrivedDesc>A new wave of attackers from {1} has arrived at {0}! Reinforcements may be on the way.</FCNewWaveArrivedDesc>
 	<FCDefendColony>Defend</FCDefendColony>
 	<FCDefendColonyDesc>Defend your Settlement manually</FCDefendColonyDesc>
 	<FCDefendSettlement>Set Defending Force</FCDefendSettlement>

@@ -39,6 +39,9 @@ Spreading out the computation will reduce the impact on performance, but no road
 	<FCSettingMinMaxMilitaryAction>Min/Max Days Until Military Action (ex. Settlements being attacked)</FCSettingMinMaxMilitaryAction>
 	<FCSettingMaxThreatScaling>Maximum Threat Scaling</FCSettingMaxThreatScaling>
 	<FCSettingDefenderAdvantage>Defender Advantage</FCSettingDefenderAdvantage>
+	<FCSettingMaxConcurrentBattleMaps>Max Concurrent Battle Maps</FCSettingMaxConcurrentBattleMaps>
+	<FCSettingMaxConcurrentBattleMapsTip>Maximum number of manual defense battle maps that can be open simultaneously across all settlements. Set to 0 for unlimited. Additional battles beyond this limit will auto-resolve.</FCSettingMaxConcurrentBattleMapsTip>
+	<FCUnlimited>Unlimited</FCUnlimited>
 	<FCSettingEfficiencyDamping>Efficiency Combat Influence (0 = HP only, 1 = full roll effect)</FCSettingEfficiencyDamping>
 	<FCSettingEfficiencyDampingTooltip>Controls how much the military efficiency stat affects auto-resolve battle outcomes.
 

@@ -86,6 +86,10 @@ namespace FactionColonies
 
         public IEnumerable<Mercenary> DeployedMercenaryAnimals =>
             animals.Where(merc => merc?.pawn?.Map != null);
+
+        /// <summary>True if any mercenary pawn is currently spawned on a map.</summary>
+        public bool IsPhysicallyDeployed() => mercenaries.Any(m => m?.pawn?.Map != null);
+
         public WorldSettlementFC getSettlement
         {
             get

@@ -1765,6 +1765,7 @@ namespace FactionColonies
         // Indexed event queries — O(1) via FCEventManager's internal indexes.
         public IReadOnlyList<FCEvent> GetEventsByDef(FCEventDef def) => eventManager.GetByDef(def);
         public FCEvent FindEventByDefAndLocation(FCEventDef def, int tile) => eventManager.FindFirstByDefAndLocation(def, tile);
+        public IReadOnlyList<FCEvent> FindAllEventsByDefAndLocation(FCEventDef def, int tile) => eventManager.GetByDefAndLocation(def, tile);
         public bool HasEventWithDefAndLocation(FCEventDef def, int tile) => eventManager.AnyWithDefAndLocation(def, tile);
 
         private void MakeRandomEvent()

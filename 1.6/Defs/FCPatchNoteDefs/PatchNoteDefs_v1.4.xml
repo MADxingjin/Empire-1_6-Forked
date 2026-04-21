@@ -55,4 +55,20 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_4</defName>
+		<label>Manual Military Updates</label>
+		<description>Updates military raids to enable additional military functionality.</description>
+		<releaseDate>2026-04-21</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Allows multiple raids to hit the same settlement at once</li>
+		<li>Allows multiple settlements to be raided at once</li>
+		<li>Adds backend infrastructure for a submod to implement manual battles for offensive raids</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -144,6 +144,9 @@ namespace FactionColonies
         public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
         public static float efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
 
+        /// <summary>Max simultaneous manual battle maps across all settlements. 0 = unlimited.</summary>
+        public static int maxConcurrentBattleMaps = 0;
+
         public static int maxPolicyCount = 2;
 
         /* Flag for debug/verbose logging. */
@@ -205,6 +208,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
             Scribe_Values.Look(ref efficiencyDamping, "efficiencyDamping", DEFAULT_EFFICIENCY_DAMPING);
+            Scribe_Values.Look(ref maxConcurrentBattleMaps, "maxConcurrentBattleMaps", 0);
             Scribe_Values.Look(ref mercenaryHealRatePerHour, "mercenaryHealRatePerHour", 1f);
             Scribe_Collections.Look(ref lastSeenVersions, "lastSeenVersions", LookMode.Value, LookMode.Value);
             if (lastSeenVersions is null) lastSeenVersions = new Dictionary<string, string>();
@@ -602,6 +606,7 @@ namespace FactionColonies
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
                 efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
+                maxConcurrentBattleMaps = 0;
                 mercenaryHealRatePerHour = 1f;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
@@ -737,6 +742,10 @@ namespace FactionColonies
 
             ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
             defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
+
+            string concurrentLabel = maxConcurrentBattleMaps == 0 ? (string)"FCUnlimited".Translate() : maxConcurrentBattleMaps.ToString();
+            ls.Label("FCSettingMaxConcurrentBattleMaps".Translate() + ": " + concurrentLabel, -1f, "FCSettingMaxConcurrentBattleMapsTip".Translate());
+            maxConcurrentBattleMaps = (int)ls.Slider(maxConcurrentBattleMaps, 0f, 5f);
 
             ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"), -1f, "FCSettingEfficiencyDampingTooltip".Translate());
             efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
