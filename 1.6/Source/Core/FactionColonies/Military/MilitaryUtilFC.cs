@@ -19,7 +19,7 @@ namespace FactionColonies
             }
 
             FCEvent existingEvent = ReturnMilitaryEventByLocation(settlement.Tile);
-            if (settlement.MilitaryComp.isUnderAttack || existingEvent is object)
+            if (settlement.MilitaryComp.isUnderAttack || existingEvent is object || settlement.HasMap)
             {
                 LogUtil.Warning($"AttackPlayerSettlement rejected: {settlement.Name} is already under attack " +
                     $"(isUnderAttack={settlement.MilitaryComp.isUnderAttack}, existingEvent={existingEvent is object}). " +

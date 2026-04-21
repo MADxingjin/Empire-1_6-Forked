@@ -58,12 +58,12 @@ namespace FactionColonies.VF
             }
             lordPawns.AddRange(dismounted);
 
-            // Register non-vehicle pawns with the defense system (lord + CaravanSupporting
-            // + defenders). The lord setup callback runs in a deferred LongEventHandler
-            // queue, so by the time it fires the pawns are already spawned on the map.
+            // Register non-vehicle pawns with the defense system (lord + defenders).
+            // The lord setup callback runs in a deferred LongEventHandler queue,
+            // so by the time it fires the pawns are already spawned on the map.
             comp.AddToDefenceFromList(lordPawns, vehicleCaravan.Tile);
 
-            // Track vehicles in CaravanSupporting + defenders, but skip the lord.
+            // Track vehicles in defenders, but skip the lord.
             comp.AddToDefenceFromList(vehiclePawns, vehicleCaravan.Tile, assignToLord: false);
 
             Map map = comp.Map;

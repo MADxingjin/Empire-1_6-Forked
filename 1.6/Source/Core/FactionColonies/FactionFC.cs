@@ -394,10 +394,21 @@ namespace FactionColonies
             // eventCooldowns / eventFireCounts now live on eventManager (scribed above).
         }
 
+        private void ScrubNullSettlements(string caller = "")
+        {
+            int removed = settlements.RemoveAll(s => s is null);
+            if (removed > 0)
+                LogUtil.Warning($"{caller}: Removed {removed} null settlement reference(s) from save data.");
+        }
+
         public override void FinalizeInit(bool fromLoad)
         {
             base.FinalizeInit(fromLoad);
             LogUtil.MessageForce($"Finalizing init of FactionFC. fromload: {fromLoad}");
+
+            // Scrub null entries that can arise when LookMode.Reference fails to resolve
+            // (e.g., another mod destroyed a settlement or it failed to deserialize).
+            ScrubNullSettlements("FinalizeInit");
 
             // Apply saved tech level to FactionDef early — must happen before anything
             // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
@@ -607,6 +618,7 @@ namespace FactionColonies
             if (ticksGame % GenDate.TicksPerDay == 0 && !(faction is null))
             {
                 ValidateSettlementCaravansList();
+                RecoverOrphanedConstructions(ticksGame);
 
                 if (faction.leader is null || faction.leader.Dead)
                     ColonyUtil.CreatePlayerFactionLeader(faction);
@@ -778,6 +790,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     avgHappiness += settlement.happiness;
                     avgLoyalty += settlement.loyalty;
                     avgUnrest += settlement.unrest;
@@ -898,6 +911,7 @@ namespace FactionColonies
                 grandThingList = new List<ThingDef>();
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     grandThingList.AddRange(settlement.GetGrandThingList());
                 }
                 grandThingList = grandThingList.Distinct().ToList();
@@ -1070,6 +1084,7 @@ namespace FactionColonies
         public void InvalidateFactionStatCache()
         {
             cachedFactionStatValues.Clear();
+            ScrubNullSettlements("InvalidateFactionStatCache");
             foreach (WorldSettlementFC s in settlements)
             {
                 s.InvalidateDescCache();
@@ -1084,6 +1099,7 @@ namespace FactionColonies
         /// </summary>
         public void InvalidateAllSettlementStatCaches()
         {
+            ScrubNullSettlements("InvalidateAllSettlementStatCaches");
             foreach (WorldSettlementFC s in settlements)
                 s.InvalidateStatCache();
         }
@@ -2358,6 +2374,63 @@ namespace FactionColonies
             }
 
             return foundInvalidCaravan;
+        }
+
+        private void RecoverOrphanedConstructions(int currentTick)
+        {
+            const int gracePeriod = 500;
+            IReadOnlyList<FCEvent> constructEvents = eventManager.GetByDef(FCEventDefOf.constructBuilding);
+            IReadOnlyList<FCEvent> upgradeEvents = eventManager.GetByDef(FCEventDefOf.upgradeSettlement);
+
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                // Check for orphaned construction slots
+                if (settlement.BuildingsComp is object)
+                {
+                    List<BuildingFC> buildings = settlement.BuildingsComp.Buildings;
+                    for (int slot = 0; slot < buildings.Count; slot++)
+                    {
+                        BuildingFC building = buildings[slot];
+                        if (building.def != BuildingFCDefOf.Construction) continue;
+                        if (building.completionTick + gracePeriod >= currentTick) continue;
+
+                        bool hasMatchingEvent = constructEvents.Any(evt => evt.source == settlement.Tile && evt.buildingSlot == slot);
+
+                        if (!hasMatchingEvent)
+                        {
+                            try
+                            {
+                                settlement.ConstructBuilding(building.underConstructionDef, slot);
+                                LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned construction " +
+                                    $"'{building.underConstructionDef?.defName ?? "NULL"}' in slot {slot} at {settlement.Name}");
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.Error($"RecoverOrphanedConstructions: failed to recover slot {slot} at {settlement.Name}: {ex}");
+                            }
+                        }
+                    }
+                }
+
+                // Check for orphaned upgrade state
+                if (settlement.IsUpgrading && settlement.FinishUpgradeTick + gracePeriod < currentTick)
+                {
+                    bool hasMatchingEvent = upgradeEvents.Any(t => t.location == settlement.Tile);
+
+                    if (!hasMatchingEvent)
+                    {
+                        try
+                        {
+                            settlement.UpgradeSettlement(setFlags: true);
+                            LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned upgrade at {settlement.Name}");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Error($"RecoverOrphanedConstructions: failed to recover upgrade at {settlement.Name}: {ex}");
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

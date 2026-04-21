@@ -1,5 +1,6 @@
 using FactionColonies.util;
 using HarmonyLib;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -16,11 +17,9 @@ namespace FactionColonies
             var military = settlement.MilitaryComp;
             if (military == null || !military.isUnderAttack) return true;
 
-            // Allow supporting caravan pawns (player's own colonists) to exit
-            foreach (var cs in military.supporting)
-            {
-                if (cs.pawns.Contains(pawn)) return true;
-            }
+            // Allow player's own colonists to exit (they're volunteers, not Empire defenders)
+            if (pawn.Faction == Faction.OfPlayer && !military.draftedNPCs.Contains(pawn))
+                return true;
 
             // Block defenders from exiting
             if (military.defenders.Contains(pawn)) return false;

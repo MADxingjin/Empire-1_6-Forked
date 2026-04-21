@@ -1346,7 +1346,7 @@ namespace FactionColonies
                                                 viewRect.width - (margin * 2),
                                                 constructionListItemHeight);
                     DrawConstructionInfoBox(upgradeRect, construction[i].underConstructionDef.Icon, construction[i].underConstructionDef.LabelCap,
-                                            "FCCompletiontimer".Translate((construction[i].completionTick - Find.TickManager.TicksGame).ToTimeString()),
+                                            "FCCompletiontimer".Translate(Math.Max(construction[i].completionTick - Find.TickManager.TicksGame, 0).ToTimeString()),
                                             progress);
 
                     TooltipHandler.TipRegion(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);

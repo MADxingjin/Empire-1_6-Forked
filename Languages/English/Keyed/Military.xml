@@ -48,6 +48,7 @@
 	<FCDefenseSuccessfulFull>The defense of {0} was successful!</FCDefenseSuccessfulFull>
 	<FCDefenseFailure>Defense Failure</FCDefenseFailure>
 	<FCDefenseFailureFull>The defense of our settlement, {0}, has been crushed.</FCDefenseFailureFull>
+	<FCDefenseBattleOverLeaveMap>The battle is over. Gather your forces and leave the settlement when ready.</FCDefenseBattleOverLeaveMap>
 	<FCManualBattleStarted>Battle for {0}</FCManualBattleStarted>
 	<FCManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</FCManualBattleStartedDesc>
 	<FCDefendColony>Defend</FCDefendColony>

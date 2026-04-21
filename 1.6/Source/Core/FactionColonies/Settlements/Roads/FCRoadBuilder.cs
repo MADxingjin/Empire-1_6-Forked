@@ -176,6 +176,10 @@ namespace FactionColonies
             {
                 def = RoadDefOf.AncientAsphaltRoad;
             }
+            else if (DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingStone", false).IsFinished)
+            {
+                def = DefDatabase<RoadDef>.GetNamed("StoneRoad", false);
+            }
             else if (DefDatabase<ResearchProjectDef>.GetNamed("FCRoadBuildingDirt", false).IsFinished)
             {
                 // Use DirtPath (priority 10) to match existing world-generated dirt paths

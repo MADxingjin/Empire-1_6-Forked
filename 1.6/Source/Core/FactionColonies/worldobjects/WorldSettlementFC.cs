@@ -680,8 +680,34 @@ namespace FactionColonies
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
             removeWorldObject = false;
+            var map = Map;
+            if (map is null) return false;
             if (MilitaryComp?.isUnderAttack == true) return false;
-            return MilitaryComp is null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
+            if (MilitaryComp is object && (MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any())) return false;
+            // Vanilla checks: wait for player pawns to leave and incoming transporters to arrive
+            if (map.mapPawns.AnyPawnBlockingMapRemoval) return false;
+            if (TransporterUtility.IncomingTransporterPreventingMapRemoval(map)) return false;
+            return true;
+        }
+
+        public override void Notify_MyMapAboutToBeRemoved()
+        {
+            // Clean up Empire faction pawns to prevent ghost colonists in the world pawn pool.
+            // By this point all player pawns have left (ShouldRemoveMapNow confirmed no blockers).
+            var map = Map;
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            if (empireFaction is object && map is object)
+            {
+                foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    if (pawn.Faction != empireFaction) continue;
+                    pawn.DeSpawn();
+                    // Squad mercenaries persist between battles; only destroy generated defenders
+                    if (!pawn.IsMercenary() && !pawn.Destroyed)
+                        pawn.Destroy();
+                }
+            }
+            base.Notify_MyMapAboutToBeRemoved();
         }
 
         public void AddPrisoner(Pawn prisoner)
@@ -690,7 +716,7 @@ namespace FactionColonies
             DirtyStatsCache();
         }
 
-        public void UpgradeSettlement(int times = 1)
+        public void UpgradeSettlement(int times = 1, bool setFlags = false)
         {
             int oldLevel = settlementLevel;
             settlementLevel += times;
@@ -704,6 +730,11 @@ namespace FactionColonies
             DirtyDescriptionCache();
             settlementDef.GetSettlementTypeExtension()?.OnUpgrade(this, oldLevel, settlementLevel);
             LifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
+
+            if (setFlags)
+            {
+                ClearUpgrade();
+            }
         }
 
         public void DelevelSettlement(int times = -1)
