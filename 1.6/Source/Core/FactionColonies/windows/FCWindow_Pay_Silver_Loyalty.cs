@@ -23,8 +23,6 @@
         public override void UseValue(float value)
         {
             settlement.loyalty += ReturnValue(selectedSilver);
-            if (settlement.loyalty > 100)
-                settlement.loyalty = 100;
         }
 
 

@@ -195,7 +195,11 @@ namespace FactionColonies
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
         public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
-        public List<int> militaryTargets = new List<int>();
+        private List<int> militaryTargets = new List<int>();
+        public IReadOnlyList<int> MilitaryTargets => militaryTargets;
+        public void AddMilitaryTarget(int tile) { militaryTargets.Add(tile); }
+        public void RemoveMilitaryTarget(int tile) { militaryTargets.Remove(tile); }
+        public bool HasMilitaryTarget(int tile) => militaryTargets.Contains(tile);
 
         // ── Caravans ──
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
@@ -1715,6 +1719,13 @@ namespace FactionColonies
                 fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
             }
 
+            // Tax delivery interception: let registered interceptors redirect taxColony events
+            if (fcevent.def == FCEventDefOf.taxColony && fcevent.source != PlanetTile.Invalid)
+            {
+                WorldSettlementFC sourceSettlement = ReturnSettlementByLocation(fcevent.source);
+                TaxDeliveryRegistry.InvokeOnTaxEventCreated(new TaxDeliveryContext(fcevent, sourceSettlement));
+            }
+
             //Add event to the manager queue
             eventManager.Enqueue(fcevent);
 
@@ -2402,7 +2413,7 @@ namespace FactionColonies
                 }
 
                 // Check for orphaned upgrade state
-                if (settlement.isUpgrading && settlement.finishUpgradeTick + gracePeriod < currentTick)
+                if (settlement.IsUpgrading && settlement.FinishUpgradeTick + gracePeriod < currentTick)
                 {
                     bool hasMatchingEvent = upgradeEvents.Any(t => t.location == settlement.Tile);
 

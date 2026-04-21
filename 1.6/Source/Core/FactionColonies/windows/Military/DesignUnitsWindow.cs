@@ -119,11 +119,7 @@ namespace FactionColonies
                 : util.units.Where(u => (u.name ?? "").IndexOf(unitSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             float viewHeight = filteredUnits.Count * RowHeight;
-            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
-                rect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(listOutRect, ref unitListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref unitListScrollPos, viewHeight);
 
             for (int i = 0; i < filteredUnits.Count; i++)
             {
@@ -159,7 +155,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // Action buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
@@ -330,7 +326,7 @@ namespace FactionColonies
             reason = "";
             FactionFC factionFC = FactionCache.FactionComp;
             List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
-                ?.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
+                ?.Where(squad => squad?.Units != null && squad.Units.Contains(unit)).ToList();
 
             if (squadsContainingUnit == null || squadsContainingUnit.Count == 0) return false;
 
@@ -562,11 +558,7 @@ namespace FactionColonies
                 .ToList();
 
             float viewHeight = sortedApparel.Count * apparelRowHeight;
-            Rect scrollViewRect = new Rect(0f, 0f,
-                listOutRect.width - (viewHeight > listOutRect.height ? 16f : 0f),
-                Mathf.Max(viewHeight, listOutRect.height));
-
-            Widgets.BeginScrollView(listOutRect, ref apparelListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref apparelListScrollPos, viewHeight);
 
             for (int i = 0; i < sortedApparel.Count; i++)
             {
@@ -638,7 +630,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

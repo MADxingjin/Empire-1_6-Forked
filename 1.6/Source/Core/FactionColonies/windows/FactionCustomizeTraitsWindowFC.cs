@@ -202,10 +202,8 @@ namespace FactionColonies
             float contentHeight = available.Count * (traitRowHeight + smallMargin);
 
             Rect viewRect = new Rect(inRect.x, listY, inRect.width, listHeight);
-            Rect scrollRect = new Rect(inRect.x, listY, inRect.width - (contentHeight > listHeight ? 16f : 0f),
-                                       Mathf.Max(contentHeight, listHeight));
 
-            Widgets.BeginScrollView(viewRect, ref traitListScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref traitListScroll, Mathf.Max(contentHeight, listHeight));
 
             for (int i = 0; i < available.Count; i++)
             {
@@ -229,7 +227,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void HandleTraitSelection(FCPolicyDef trait)
@@ -290,11 +288,10 @@ namespace FactionColonies
             if (textHeight > descRect.height)
             {
                 textHeight = Text.CalcHeight(desc.StripTags(), descRect.width - 16f);
-                Rect scrollContent = new Rect(descRect.x, descRect.y, descRect.width - 16f, textHeight);
                 Vector2 scrollBar = traitScrollBars.Count > 0 ? traitScrollBars[0] : new Vector2();
-                Widgets.BeginScrollView(descRect, ref scrollBar, scrollContent);
+                Rect scrollContent = ScrollUtil.BeginScrollView(descRect, ref scrollBar, textHeight);
                 Widgets.Label(scrollContent, desc);
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
                 if (traitScrollBars.Count > 0) traitScrollBars[0] = scrollBar;
             }
             else

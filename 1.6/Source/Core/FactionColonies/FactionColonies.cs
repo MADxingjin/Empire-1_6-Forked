@@ -382,13 +382,9 @@ namespace FactionColonies
         string settlementMaxLevel_buffer;
 
         private Vector2 scrollVectorGeneral = new Vector2();
-        private float viewRectHeightGeneral = -1f;
         private Vector2 scrollVectorEvents = new Vector2();
-        private float viewRectHeightEvents = -1f;
         private Vector2 scrollVectorMilitary = new Vector2();
-        private float viewRectHeightMilitary = -1f;
         private Vector2 scrollVectorRoadBuilder = new Vector2();
-        private float viewRectHeightRoadBuilder = -1f;
 
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive
@@ -480,11 +476,8 @@ namespace FactionColonies
             minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
             minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
 
-            viewRectHeightGeneral = viewRectHeightGeneral == -1f ? float.MaxValue : viewRectHeightGeneral;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightGeneral);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorGeneral, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorGeneral, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -619,19 +612,15 @@ namespace FactionColonies
                 ApplyDifficultyPreset(difficultyLevel);
             }
 
-            viewRectHeightGeneral = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoEventsTab(Rect rect)
         {
-            viewRectHeightEvents = viewRectHeightEvents == -1f ? float.MaxValue : viewRectHeightEvents;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightEvents);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorEvents, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorEvents, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -718,21 +707,17 @@ namespace FactionColonies
                 }
             }
 
-            viewRectHeightEvents = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoMilitaryTab(Rect rect)
         {
             minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
 
-            viewRectHeightMilitary = viewRectHeightMilitary == -1f ? float.MaxValue : viewRectHeightMilitary;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightMilitary);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorMilitary, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorMilitary, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -759,19 +744,15 @@ namespace FactionColonies
             ls.Label("FCSettingMercHealRate".Translate() + ": " + mercenaryHealRatePerHour.ToString("0.0") + " HP/hr", -1f, "FCSettingMercHealRateTip".Translate());
             mercenaryHealRatePerHour = ls.Slider(mercenaryHealRatePerHour, 0.1f, 100f);
 
-            viewRectHeightMilitary = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoRoadBuilderTab(Rect rect)
         {
-            viewRectHeightRoadBuilder = viewRectHeightRoadBuilder == -1f ? float.MaxValue : viewRectHeightRoadBuilder;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightRoadBuilder);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorRoadBuilder, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorRoadBuilder, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -800,10 +781,9 @@ namespace FactionColonies
                 queue.FlushCache();
             }
 
-            viewRectHeightRoadBuilder = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
     }
 

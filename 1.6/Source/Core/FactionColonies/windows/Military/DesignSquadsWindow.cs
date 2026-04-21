@@ -122,11 +122,7 @@ namespace FactionColonies
                     .ToList();
 
             float viewHeight = filteredSquads.Count * RowHeight;
-            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
-                rect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(listOutRect, ref squadListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref squadListScrollPos, viewHeight);
 
             for (int i = 0; i < filteredSquads.Count; i++)
             {
@@ -159,7 +155,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // CRUD buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
@@ -295,11 +291,7 @@ namespace FactionColonies
             var groups = BuildUnitGroups(selectedSquad);
 
             float viewHeight = groups.Count * UnitRowHeight;
-            Rect scrollViewRect = new Rect(rect.x, rect.y,
-                rect.width - (viewHeight > rect.height ? 16f : 0f),
-                Mathf.Max(viewHeight, rect.height));
-
-            Widgets.BeginScrollView(rect, ref unitListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(rect, ref unitListScrollPos, viewHeight);
 
             for (int i = 0; i < groups.Count; i++)
             {
@@ -308,7 +300,7 @@ namespace FactionColonies
                 DrawUnitRow(row, groups[i].unit, groups[i].count, i);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;
@@ -495,7 +487,7 @@ namespace FactionColonies
             GUI.color = colorBefore;
 
             // Unit count label
-            int totalUnits = selectedSquad.units.Count(u => !u.isBlank);
+            int totalUnits = selectedSquad.Units.Count(u => !u.isBlank);
             Text.Anchor = TextAnchor.MiddleRight;
             Rect countLabel = new Rect(resetBtn.xMax + margin, rect.y, btnW, ButtonHeight);
             Widgets.Label(countLabel, "FCSquadUnitCount".Translate(totalUnits));
@@ -514,7 +506,7 @@ namespace FactionColonies
 
         private List<UnitGroup> BuildUnitGroups(MilSquadFC squad)
         {
-            return squad.units
+            return squad.Units
                 .Where(u => !u.isBlank)
                 .GroupBy(u => u)
                 .Select(g => new UnitGroup { unit = g.Key, count = g.Count() })
@@ -525,36 +517,32 @@ namespace FactionColonies
 
         private void AddUnitToSquad(MilUnitFC unit)
         {
-            int blankIndex = selectedSquad.units.FindIndex(u => u.isBlank);
+            int blankIndex = selectedSquad.FindUnitIndex(u => u.isBlank);
             if (blankIndex == -1)
             {
                 Messages.Message("FCSquadFull".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
-            selectedSquad.units[blankIndex] = unit;
-            selectedSquad.UpdateEquipmentTotalCost();
-            selectedSquad.ChangeTick();
+            selectedSquad.SetUnit(blankIndex, unit);
         }
 
         private void IncrementUnit(MilUnitFC unit)
         {
-            int blankIndex = selectedSquad.units.FindIndex(u => u.isBlank);
+            int blankIndex = selectedSquad.FindUnitIndex(u => u.isBlank);
             if (blankIndex == -1)
             {
                 Messages.Message("FCSquadFull".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
-            selectedSquad.units[blankIndex] = unit;
-            selectedSquad.UpdateEquipmentTotalCost();
-            selectedSquad.ChangeTick();
+            selectedSquad.SetUnit(blankIndex, unit);
         }
 
         private void DecrementUnit(MilUnitFC unit)
         {
             int lastIndex = -1;
-            for (int i = selectedSquad.units.Count - 1; i >= 0; i--)
+            for (int i = selectedSquad.Units.Count - 1; i >= 0; i--)
             {
-                if (ReferenceEquals(selectedSquad.units[i], unit))
+                if (ReferenceEquals(selectedSquad.Units[i], unit))
                 {
                     lastIndex = i;
                     break;
@@ -562,22 +550,18 @@ namespace FactionColonies
             }
             if (lastIndex == -1) return;
 
-            selectedSquad.units[lastIndex] = util.blankUnit;
-            selectedSquad.UpdateEquipmentTotalCost();
-            selectedSquad.ChangeTick();
+            selectedSquad.SetUnit(lastIndex, util.blankUnit);
         }
 
         private void RemoveAllOfUnit(MilUnitFC unit)
         {
-            for (int i = 0; i < selectedSquad.units.Count; i++)
+            for (int i = 0; i < selectedSquad.Units.Count; i++)
             {
-                if (ReferenceEquals(selectedSquad.units[i], unit))
+                if (ReferenceEquals(selectedSquad.Units[i], unit))
                 {
-                    selectedSquad.units[i] = util.blankUnit;
+                    selectedSquad.SetUnit(i, util.blankUnit);
                 }
             }
-            selectedSquad.UpdateEquipmentTotalCost();
-            selectedSquad.ChangeTick();
         }
 
         // --- Deployment Check ---

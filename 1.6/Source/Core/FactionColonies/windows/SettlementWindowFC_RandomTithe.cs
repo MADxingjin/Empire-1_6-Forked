@@ -181,11 +181,9 @@ namespace FactionColonies
             Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = thingsList.Count * rowHeight;
-            float width = listHeight > outerListBox.height ? outerListBox.width - scrollSpacing : outerListBox.width;
-            Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
-            Widgets.BeginScrollView(outerListBox, ref scrollBar, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(outerListBox, ref scrollBar, listHeight);
 
             for (int i = 0; i < thingsList.Count; i++)
             {
@@ -219,7 +217,7 @@ namespace FactionColonies
                 Widgets.InfoCardButton(info, iThing);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

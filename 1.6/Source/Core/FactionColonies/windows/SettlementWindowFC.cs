@@ -56,7 +56,7 @@ namespace FactionColonies
 
         private const int buildingSpacingFromSide = margin; //15; // (494 - (spacing + boxSide) * elementsPerRow) / 2;
 
-        private const int scrollSpacing = 16;
+        private const int scrollSpacing = (int)ScrollUtil.ScrollbarWidth + 1;
 
         // UI State
         private int overviewTab = 0;
@@ -299,7 +299,7 @@ namespace FactionColonies
                 return;
             }
 
-            int numUnderConstruction = settlement.BuildingsComp.GetUnderConstructionBuildings().Count + (settlement.isUpgrading ? 1 : 0);
+            int numUnderConstruction = settlement.BuildingsComp.GetUnderConstructionBuildings().Count + (settlement.IsUpgrading ? 1 : 0);
             DrawConstructionBox(leftBox, numUnderConstruction, settlement.BuildingsComp.GetUnderConstructionBuildings());
             DrawFacilities(rightBox);
         }
@@ -574,18 +574,8 @@ namespace FactionColonies
             Rect drawBox = new Rect(boundingBox.x + margin, header.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - header.yMax - margin);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = titheItems.Count * rowHeight;
-            float width;
-            if (listHeight > selectedListBox.height)
-            {
-                width = selectedListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = selectedListBox.width;
-            }
-            Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
             Widgets.DrawMenuSection(selectedListBox);
-            Widgets.BeginScrollView(selectedListBox, ref titheScrollBar, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref titheScrollBar, listHeight);
             for (int i = 0; i < titheItems.Count; i++)
             {
                 ThingQualityTuple thingTuple = titheItems[i];
@@ -726,7 +716,7 @@ namespace FactionColonies
                 titheBuffers[i] = buf;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private Vector2 randomTitheScrollBar = new Vector2();
         private void DrawTitheRandomBox(Rect boundingBox, ResourceFC res)
@@ -789,19 +779,9 @@ namespace FactionColonies
                 Rect drawBox = new Rect(boundingBox.x + margin, budgetBox.yMax, boundingBox.width - (margin * 2), boundingBox.yMax - budgetBox.yMax - margin);
                 Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
                 float listHeight = selectedThings.Count * rowHeight;
-                float width;
-                if (listHeight > selectedListBox.height)
-                {
-                    width = selectedListBox.width - scrollSpacing;
-                }
-                else
-                {
-                    width = selectedListBox.width;
-                }
-                Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, listHeight);
 
                 Widgets.DrawMenuSection(selectedListBox);
-                Widgets.BeginScrollView(selectedListBox, ref randomTitheScrollBar, innerScrollBox);
+                Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref randomTitheScrollBar, listHeight);
 
                 for (int i = 0; i < selectedThings.Count; i++)
                 {
@@ -829,7 +809,7 @@ namespace FactionColonies
                     Widgets.InfoCardButton(info, iThing);
                 }
 
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
         }
         private void DrawTitheFooterBox(Rect boundingBox, ResourceFC res)
@@ -1048,7 +1028,7 @@ namespace FactionColonies
             string label = GetButtonLabel(type);
             bool enabled = true;
 
-            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            if (type == SettlementButtonType.Upgrade && settlement.IsUpgrading)
             {
                 GUI.color = Color.gray;
                 enabled = false;
@@ -1059,7 +1039,7 @@ namespace FactionColonies
                 HandleBuiltInButtonClick(type);
             }
 
-            if (type == SettlementButtonType.Upgrade && settlement.isUpgrading)
+            if (type == SettlementButtonType.Upgrade && settlement.IsUpgrading)
             {
                 GUI.color = Color.white;
             }
@@ -1070,7 +1050,7 @@ namespace FactionColonies
             switch (type)
             {
                 case SettlementButtonType.Upgrade:
-                    return settlement.isUpgrading
+                    return settlement.IsUpgrading
                         ? (string)"FCSettlementUpgradeInProgress".Translate()
                         : (string)"FCUpgradeSettlement".Translate();
                 case SettlementButtonType.SpecialActions:
@@ -1093,7 +1073,7 @@ namespace FactionColonies
             switch (type)
             {
                 case SettlementButtonType.Upgrade:
-                    if (!settlement.isUpgrading)
+                    if (!settlement.IsUpgrading)
                     {
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(settlement));
                     }
@@ -1243,7 +1223,6 @@ namespace FactionColonies
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            float scrollMargin = ((settlement.BuildingsComp?.Buildings.Count ?? 0) > 12) ? scrollSpacing : 0;
 
             Rect labelHighlight = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30);
             Rect labelTextBox = new Rect(labelHighlight.x + smallMargin, labelHighlight.y + smallMargin, labelHighlight.width - (smallMargin * 2), labelHighlight.height - (smallMargin * 2));
@@ -1253,9 +1232,11 @@ namespace FactionColonies
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;
 
+            float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
+            Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
+
             // For a row of n buildings, there will only be n-1 spaces between them. So to offset the denominator, we add one buildingSpacing to the numerator.
             int elementsPerRow = (int)((boundingBox.width - (buildingSpacingFromSide * 2) + buildingSpacing) / (buildingBoxSide + buildingSpacing));
-            float buildingBoxHeight = boundingBox.height - (labelHighlight.height + margin);
             float totalHeight = Mathf.Ceil(((float)settlement.BuildingsComp.Buildings.Count / (float)elementsPerRow)) * (buildingBoxSide + buildingSpacing);
 
             int row;
@@ -1267,11 +1248,7 @@ namespace FactionColonies
             Rect nBox;
             Rect nBuilding;
 
-            Rect buildingBox = new Rect(boundingBox.x, labelHighlight.yMax + margin, boundingBox.width, buildingBoxHeight);
-
-            Rect viewRect = new Rect(buildingBox.x, labelHighlight.yMax + margin, boundingBox.width - scrollMargin, totalHeight);
-
-            Widgets.BeginScrollView(buildingBox, ref scrollVectorBuildings, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(buildingBox, ref scrollVectorBuildings, totalHeight);
 
 
             int i = 0;
@@ -1284,11 +1261,11 @@ namespace FactionColonies
                 column = i % elementsPerRow;
 
                 nBox = new Rect(
-                    new Vector2(box.x + buildingBox.x + ((box.width + buildingSpacing) * column),
+                    new Vector2(box.x + ((box.width + buildingSpacing) * column),
                                 box.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     box.size);
                 nBuilding = new Rect(
-                    new Vector2(buildingIcon.x + buildingBox.x + ((box.width + buildingSpacing) * column),
+                    new Vector2(buildingIcon.x + ((box.width + buildingSpacing) * column),
                                 buildingIcon.y + viewRect.y + ((box.height + buildingSpacing) * row)),
                     buildingIcon.size);
 
@@ -1320,7 +1297,7 @@ namespace FactionColonies
 
                 i++;
             }
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private Vector2 scrollVectorConstruction = new Vector2();
         private void DrawConstructionBox(Rect boundingBox, int numConstruction, List<BuildingFC> construction)
@@ -1341,24 +1318,21 @@ namespace FactionColonies
                 /* Scroll view time, baby */
                 float listHeight = boundingBox.height - (conHeader.height + margin);
                 float totalHeight = (constructionListItemHeight * numConstruction) + (margin * (numConstruction - 1));
-                float scrollBarMargin = (totalHeight < listHeight) ? 0 : scrollSpacing;
                 Rect listBox = new Rect(boundingBox.x, conHeader.yMax + margin, boundingBox.width, listHeight);
-                Rect viewRect = new Rect(listBox.x, listBox.y, listBox.width - scrollBarMargin, totalHeight);
-
-                Widgets.BeginScrollView(listBox, ref scrollVectorConstruction, viewRect);
+                Rect viewRect = ScrollUtil.BeginScrollView(listBox, ref scrollVectorConstruction, totalHeight);
 
                 float initialY = viewRect.y;
                 Text.Anchor = TextAnchor.MiddleLeft;
 
-                if (settlement.isUpgrading)
+                if (settlement.IsUpgrading)
                 {
-                    float progress = (float)(Find.TickManager.TicksGame - settlement.startUpgradeTick) / (float)(settlement.finishUpgradeTick - settlement.startUpgradeTick);
+                    float progress = (float)(Find.TickManager.TicksGame - settlement.StartUpgradeTick) / (float)(settlement.FinishUpgradeTick - settlement.StartUpgradeTick);
                     Rect upgradeRect = new Rect(viewRect.x + margin,
                                                 viewRect.y,
                                                 viewRect.width - (margin * 2),
                                                 constructionListItemHeight);
                     DrawConstructionInfoBox(upgradeRect, null, "FCSettlementupgrading".Translate(),
-                                            "FCCompletiontimer".Translate(Math.Max(settlement.finishUpgradeTick - Find.TickManager.TicksGame, 0).ToTimeString()),
+                                            "FCCompletiontimer".Translate((settlement.FinishUpgradeTick - Find.TickManager.TicksGame).ToTimeString()),
                                             progress);
 
                     initialY = upgradeRect.yMax + margin;
@@ -1378,7 +1352,7 @@ namespace FactionColonies
                     TooltipHandler.TipRegion(upgradeRect, settlement.BuildingsComp?.GetBuildingDescFull(construction[i].underConstructionDef) ?? TaggedString.Empty);
                 }
 
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
         }
         private void DrawConstructionInfoBox(Rect boundingBox, Texture2D icon, string label, string time, float progress)

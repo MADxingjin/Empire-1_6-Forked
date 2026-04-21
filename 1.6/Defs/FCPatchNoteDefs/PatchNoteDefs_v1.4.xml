@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_0</defName>
+		<label>Tax Event Extensibility</label>
+		<description>Adds machinery to let submods intercept and redirect tax events.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds ITaxDeliveryInterceptor interface to let submods redirect tax events, or intercept them at time of delivery</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_1</defName>
+		<label>Minor Fixes</label>
+		<description>Backend code updates to clean things up a bit.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Cleans up some code to more properly encapsulate many fields</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_2</defName>
+		<label>New Scrollbars</label>
+		<description>Updates all scrollbars in Empire windows to use flat rectangles instead of the default rounded shape, to be more in line with Empire&apos;s general UI design.</description>
+		<releaseDate>2026-04-19</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds new ScrollUtil class to handle the new scrollbars</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+</Defs>

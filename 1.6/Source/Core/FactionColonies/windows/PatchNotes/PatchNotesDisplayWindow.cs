@@ -253,11 +253,9 @@ namespace FactionColonies
 
         private void DrawPatchNotes(Rect panelRect)
         {
-            float scrollContentWidth = panelRect.width - 17f;
-            Rect scrollViewRect = new Rect(0f, 0f, scrollContentWidth, scrollViewHeight);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(panelRect, ref patchNoteScrollPos, scrollViewHeight);
 
-            Widgets.BeginScrollView(panelRect, ref patchNoteScrollPos, scrollViewRect);
-
+            float scrollContentWidth = scrollViewRect.width;
             float curY = 0f;
 
             for (int gi = 0; gi < groups.Count; gi++)
@@ -369,7 +367,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DrawGroupHeader(Rect rect, PatchNoteGroup group, bool expanded)

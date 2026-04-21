@@ -446,10 +446,8 @@ namespace FactionColonies
 
             float scrollTop = (lockedBuildingList.Count > 0 ? ToggleArea.yMax : SearchBarArea.yMax) + margin;
             Rect outRect = new Rect(panel.x, scrollTop, panel.width, panel.yMax - scrollTop);
-            float scrollMargin = fullScrollHeight > outRect.height ? 16f : 0f;
-            Rect viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, fullScrollHeight);
 
-            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(outRect, ref scrollPosition, fullScrollHeight);
             var ls = new Listing_Standard();
             ls.Begin(viewRect);
 
@@ -459,7 +457,7 @@ namespace FactionColonies
             }
 
             ls.End();
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         /// <summary>
@@ -678,15 +676,13 @@ namespace FactionColonies
             }
 
             // Calculate total content height for scrolling
-            float contentHeight = CalculateDetailContentHeight(rect.width - 16f);
+            float contentHeight = CalculateDetailContentHeight(rect.width - ScrollUtil.ScrollbarWidth);
 
             // Reserve space for the button at the bottom (outside scroll)
             Rect buttonArea = new Rect(rect.x, rect.yMax - actionButtonHeight - margin, rect.width, actionButtonHeight + margin);
             Rect scrollOutRect = new Rect(rect.x, rect.y, rect.width, rect.height - buttonArea.height);
-            float scrollMargin = contentHeight > scrollOutRect.height ? 16f : 0f;
-            Rect scrollViewRect = new Rect(scrollOutRect.x, scrollOutRect.y, scrollOutRect.width - scrollMargin, contentHeight);
 
-            Widgets.BeginScrollView(scrollOutRect, ref rightPanelScroll, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref rightPanelScroll, contentHeight);
 
             float curY = scrollViewRect.y;
             float w = scrollViewRect.width;
@@ -801,7 +797,7 @@ namespace FactionColonies
             // C6: Required By
             curY = DrawRequiredBy(scrollViewRect.x, curY, w);
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // C7: Build/Destroy button
             DrawBuildButton(buttonArea);

@@ -197,18 +197,8 @@ namespace FactionColonies
             float totalHeight = rowHeight * (allXenotypes.Count + allCustomXenotypes.Count);
             Rect drawBox = new Rect(boundingBox.x, header.yMax + margin, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
-            float width;
-            if (totalHeight > renderHeight)
-            {
-                width = selectedListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = selectedListBox.width;
-            }
-            Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, totalHeight);
             Widgets.DrawMenuSection(selectedListBox);
-            Widgets.BeginScrollView(selectedListBox, ref xenoScrollBar, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref xenoScrollBar, totalHeight);
 
             Text.Anchor = TextAnchor.MiddleCenter;
             for (int i = 0; i < allXenotypes.Count + allCustomXenotypes.Count; i++)
@@ -282,7 +272,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private void DoRaceSelection(Rect boundingBox)
         {
@@ -343,18 +333,8 @@ namespace FactionColonies
             float totalHeight = rowHeight * (allRaces.Count);
             Rect drawBox = new Rect(boundingBox.x, header.yMax + margin, boundingBox.width, renderHeight);
             Rect selectedListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
-            float width;
-            if (totalHeight > renderHeight)
-            {
-                width = selectedListBox.width - scrollSpacing;
-            }
-            else
-            {
-                width = selectedListBox.width;
-            }
-            Rect innerScrollBox = new Rect(selectedListBox.x, selectedListBox.y, width, totalHeight);
             Widgets.DrawMenuSection(selectedListBox);
-            Widgets.BeginScrollView(selectedListBox, ref raceScrollBar, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(selectedListBox, ref raceScrollBar, totalHeight);
 
             Text.Anchor = TextAnchor.MiddleCenter;
             for (int i = 0; i < allRaces.Count; i++)
@@ -391,7 +371,7 @@ namespace FactionColonies
             }
 
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoWeightField(Rect boundingBox, ref float value, ref string buffer, float min = 0, float max = float.MaxValue)

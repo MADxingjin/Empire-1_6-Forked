@@ -62,10 +62,7 @@ namespace FactionColonies
             Widgets.DrawMenuSection(scrollOutRect);
 
             float viewHeight = animals.Count * RowHeight;
-            Rect scrollViewRect = new Rect(0, 0, scrollOutRect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(scrollOutRect, ref scrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref scrollPos, viewHeight);
 
             for (int i = 0; i < animals.Count; i++)
             {
@@ -108,7 +105,7 @@ namespace FactionColonies
                 Widgets.Label(scrollOutRect, "fcNoAnimalsAvailable".Translate());
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // Bottom buttons
             float buttonWidth = 120f;
