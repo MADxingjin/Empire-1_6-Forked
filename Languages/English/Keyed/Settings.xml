@@ -20,7 +20,7 @@
  - each time a settlement is founded or lost
  - when you research a new level of roads
 		
-This requires computing pathfinding costs between all pairs of settlements, which can be expensive with many settlements, or with very sparse settlements.
+This requires computing pathfinding costs between many pairs of settlements, which can be expensive with many settlements, or with very sparse settlements.
 
 By default, this computation runs on a background thread to avoid freezing the game. If you experience issues with threading, you can disable it and optionally spread the computation across multiple ticks instead.
 		
