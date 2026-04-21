@@ -152,9 +152,7 @@ namespace FactionColonies
         public void DrawLeftPane(Rect rect)
         {
             float totalHeight = CalculateLeftPaneHeight();
-            Rect viewRect = new Rect(0f, 0f, rect.width - (totalHeight > rect.height ? 16f : 0f), totalHeight);
-
-            Widgets.BeginScrollView(rect, ref leftScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref leftScroll, totalHeight);
             float curY = 0f;
 
             foreach (ModGroup mg in modGroups)
@@ -255,7 +253,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -292,13 +290,11 @@ namespace FactionColonies
                 return;
             }
 
-            float estHeight = CalculateCenterPaneHeight(rect.width - 16f);
-            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
-            float contentHeight = CalculateCenterPaneHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateCenterPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
             Color catColor = selectedEntry.category.color;
 
-            Widgets.BeginScrollView(rect, ref centerScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref centerScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             // ── Title with icon ──
@@ -391,7 +387,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -475,12 +471,10 @@ namespace FactionColonies
 
         public void DrawRightPane(Rect rect)
         {
-            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
-            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
-            float contentHeight = CalculateRightPaneHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
 
-            Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref rightScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             // ── Banner ──
@@ -572,7 +566,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 

@@ -1563,13 +1563,11 @@ namespace FactionColonies
             float rowHeight = 25f;
             List<ResourceFC> availableResources = settlement.Resources;
             float totalHeight = (availableResources.Count * rowHeight) + (availableResources.Count * margin);
-            Rect viewRect = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, totalHeight);
-            Widgets.BeginScrollView(boundingBox, ref scrollVectorResources, viewRect, false);
-            // Get the appropriate resource types based on settlement type
+            Rect viewRect = ScrollUtil.BeginScrollView(boundingBox, ref scrollVectorResources, totalHeight);
 
-            Rect totalProdCol = new Rect(viewRect.x + (5f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
-            Rect incomeRawCol = new Rect(viewRect.x + (6f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
-            Rect incomeNetCol = new Rect(viewRect.x + (7f * (colWidth + margin)), viewRect.y, colWidth, viewRect.height - (margin / 2f));
+            Rect totalProdCol = new Rect(5f * (colWidth + margin), 0f, colWidth, viewRect.height - (margin / 2f));
+            Rect incomeRawCol = new Rect(6f * (colWidth + margin), 0f, colWidth, viewRect.height - (margin / 2f));
+            Rect incomeNetCol = new Rect(7f * (colWidth + margin), 0f, colWidth, viewRect.height - (margin / 2f));
             UIUtil.DrawColoredHighlight(totalProdCol, highlightColor);
             UIUtil.DrawColoredHighlight(incomeRawCol, highlightColor);
             Widgets.DrawMenuSection(incomeNetCol);
@@ -1580,19 +1578,19 @@ namespace FactionColonies
                 ResourceFC resource = availableResources[i];
                 if (resource == null) continue;
 
-                float rectY = viewRect.y + (i * (rowHeight + margin));
+                float rectY = i * (rowHeight + margin);
                 /* Alternating highlights, to make rows easier to read/track */
                 if (i % 2 == 0)
                 {
-                    Rect rowHighlight = new Rect(viewRect.x, rectY - (margin / 2f), viewRect.width, rowHeight + margin);
+                    Rect rowHighlight = new Rect(0f, rectY - (margin / 2f), viewRect.width, rowHeight + margin);
                     UIUtil.DrawColoredHighlight(rowHighlight, highlightColor);
                 }
 
                 // Resource color accent
-                Widgets.DrawBoxSolid(new Rect(viewRect.x, rectY, 3f, rowHeight), resource.def.color);
+                Widgets.DrawBoxSolid(new Rect(0f, rectY, 3f, rowHeight), resource.def.color);
 
                 float resourceImgSize = Math.Min(colWidth, rowHeight);
-                float resourceImxgX = viewRect.x + ((colWidth - resourceImgSize) / 2f);
+                float resourceImxgX = (colWidth - resourceImgSize) / 2f;
                 Rect resourceImgRect = new Rect(resourceImxgX, rectY, resourceImgSize, resourceImgSize);
                 Widgets.ButtonImage(resourceImgRect, resource.def.Icon);
                 TooltipHandler.TipRegion(resourceImgRect, resource.def.LabelCap);
@@ -1600,7 +1598,7 @@ namespace FactionColonies
                 //Production Efficiency
                 float arrowButtonHeight = Math.Min(rowHeight, 20f);
                 float arrowButtonY = rectY + ((rowHeight - arrowButtonHeight) / 2f);
-                Rect workersDecArrow = new Rect(viewRect.x + colWidth + margin, arrowButtonY, colWidth / 3f, arrowButtonHeight);
+                Rect workersDecArrow = new Rect(colWidth + margin, arrowButtonY, colWidth / 3f, arrowButtonHeight);
                 Rect workersNum = new Rect(workersDecArrow.xMax, rectY, workersDecArrow.width, rowHeight);
                 Rect workersIncArrow = new Rect(workersNum.xMax, arrowButtonY, workersDecArrow.width, arrowButtonHeight);
                 Widgets.Label(workersNum, resource.assignedWorkers.ToString());
@@ -1665,7 +1663,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(incomeNetBox, sb.ToString());
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         /// <summary>

@@ -87,15 +87,12 @@ namespace FactionColonies
         public void DrawLeftPane(Rect rect)
         {
             float totalHeight = settlementDefs.Count * EntryRowHeight;
-            float viewWidth = rect.width - (totalHeight > rect.height ? 16f : 0f);
-            Rect viewRect = new Rect(0f, 0f, viewWidth, totalHeight);
-
-            Widgets.BeginScrollView(rect, ref leftScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref leftScroll, totalHeight);
             float curY = 0f;
 
             foreach (WorldSettlementDef def in settlementDefs)
             {
-                Rect entryRect = new Rect(0f, curY, viewWidth, EntryRowHeight);
+                Rect entryRect = new Rect(0f, curY, viewRect.width, EntryRowHeight);
                 bool isSelected = selectedDef == def;
                 Color accent = GetAccent(def);
 
@@ -130,7 +127,7 @@ namespace FactionColonies
                 curY += EntryRowHeight;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -150,12 +147,11 @@ namespace FactionColonies
                 return;
             }
 
-            float contentWidth = rect.width - 16f;
-            float contentHeight = CalculateCenterHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateCenterHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
             Color accent = GetAccent(selectedDef);
 
-            Widgets.BeginScrollView(rect, ref centerScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref centerScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             // ── Title ──
@@ -195,7 +191,7 @@ namespace FactionColonies
             // ── Biome Restrictions ──
             curY = DrawSection(curY, contentWidth, "FCCodexSettlementBiomes".Translate(), accent, DrawBiomeRestrictions);
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -205,12 +201,10 @@ namespace FactionColonies
 
         public void DrawRightPane(Rect rect)
         {
-            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
-            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
-            float contentHeight = CalculateRightPaneHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
 
-            Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref rightScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             // ── Banner ──
@@ -249,7 +243,7 @@ namespace FactionColonies
                 curY = DrawSection(curY, contentWidth, "FCCodexSettlementResources".Translate(), accent, DrawResources);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 

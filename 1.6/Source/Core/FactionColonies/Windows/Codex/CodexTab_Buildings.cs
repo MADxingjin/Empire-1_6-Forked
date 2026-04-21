@@ -230,10 +230,7 @@ namespace FactionColonies
             float listTop = searchRect.yMax + SmallMargin;
             Rect listRect = new Rect(rect.x, listTop, rect.width, rect.yMax - listTop);
             float totalHeight = CalculateLeftPaneHeight(listRect.width);
-            float viewWidth = listRect.width - (totalHeight > listRect.height ? 16f : 0f);
-            Rect viewRect = new Rect(0f, 0f, viewWidth, totalHeight);
-
-            Widgets.BeginScrollView(listRect, ref leftScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(listRect, ref leftScroll, totalHeight);
             float curY = 0f;
 
             foreach (TechGroup tg in allTechGroups)
@@ -245,7 +242,7 @@ namespace FactionColonies
                 Color techColor = GetTechColor(tg.techLevel);
 
                 // Group header
-                Rect groupRect = new Rect(0f, curY, viewWidth, GroupHeaderHeight);
+                Rect groupRect = new Rect(0f, curY, viewRect.width, GroupHeaderHeight);
                 Widgets.DrawBoxSolid(groupRect, GroupBgColor);
                 TexLoad.DrawHorizontalGradient(groupRect, techColor * new Color(1f, 1f, 1f, 0.2f));
                 Widgets.DrawBoxSolid(new Rect(0f, curY, AccentBarWidth, GroupHeaderHeight), techColor);
@@ -253,7 +250,7 @@ namespace FactionColonies
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 GUI.color = techColor * new Color(1.3f, 1.3f, 1.3f, 1f);
-                Widgets.Label(new Rect(AccentBarWidth + Margin, curY, viewWidth - AccentBarWidth - Margin * 2 - 20f, GroupHeaderHeight),
+                Widgets.Label(new Rect(AccentBarWidth + Margin, curY, viewRect.width - AccentBarWidth - Margin * 2 - 20f, GroupHeaderHeight),
                     GetTechLabel(tg.techLevel));
 
                 Rect arrowRect = new Rect(groupRect.xMax - 20f - 2f, curY + (GroupHeaderHeight - 20f) * 0.5f, 20f, 20f);
@@ -274,7 +271,7 @@ namespace FactionColonies
                 // Building entries
                 foreach (BuildingFCDef building in visible)
                 {
-                    Rect entryRect = new Rect(10f, curY, viewWidth - 10f, EntryRowHeight);
+                    Rect entryRect = new Rect(10f, curY, viewRect.width - 10f, EntryRowHeight);
                     bool isSelected = selectedBuilding == building;
 
                     if (isSelected)
@@ -317,7 +314,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -352,12 +349,11 @@ namespace FactionColonies
                 return;
             }
 
-            float contentWidth = rect.width - 16f;
-            float contentHeight = CalculateCenterHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateCenterHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
             Color accent = GetTechColor(selectedBuilding.techLevel);
 
-            Widgets.BeginScrollView(rect, ref centerScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref centerScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             // ── Title with icon ──
@@ -416,7 +412,7 @@ namespace FactionColonies
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingRequiredBy".Translate(), accent,
                     (y, w) => DrawBuildingList(y, w, requiredBy));
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
@@ -426,12 +422,10 @@ namespace FactionColonies
 
         public void DrawRightPane(Rect rect)
         {
-            float estHeight = CalculateRightPaneHeight(rect.width - 16f);
-            float contentWidth = rect.width - (estHeight > rect.height ? 16f : 0f);
-            float contentHeight = CalculateRightPaneHeight(contentWidth);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, contentHeight);
+            float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
 
-            Widgets.BeginScrollView(rect, ref rightScroll, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref rightScroll, contentHeight);
+            float contentWidth = viewRect.width;
             float curY = 0f;
 
             if (selectedBuilding is object)
@@ -481,7 +475,7 @@ namespace FactionColonies
                         (y, w) => DrawFullUpgradeTree(y, w, root, tree));
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
             ResetText();
         }
 
