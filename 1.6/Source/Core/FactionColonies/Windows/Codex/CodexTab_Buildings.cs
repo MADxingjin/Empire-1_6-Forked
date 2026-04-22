@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -18,7 +18,7 @@ namespace FactionColonies
     /// </summary>
     public class CodexTab_Buildings : ICodexTab
     {
-        // ── Layout constants ──
+        /* Layout constants */
         private const float EntryRowHeight = 24f;
         private const float GroupHeaderHeight = 28f;
         private const float AccentBarWidth = 3f;
@@ -38,7 +38,7 @@ namespace FactionColonies
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
         private static readonly Color HighlightColor = new Color(0.4f, 0.6f, 0.9f);
 
-        // ── Tech level colors ──
+        /* Tech level colors */
         private static readonly Dictionary<TechLevel, Color> TechColors = new Dictionary<TechLevel, Color>
         {
             { TechLevel.Undefined, new Color(0.6f, 0.6f, 0.6f) },
@@ -50,31 +50,31 @@ namespace FactionColonies
             { TechLevel.Archotech, new Color(0.8f, 0.7f, 0.3f) },
         };
 
-        // ── Data model ──
+        /* Data model */
         private readonly CodexWindow parentWindow;
         private readonly List<TechGroup> allTechGroups;
         private BuildingFCDef selectedBuilding;
         private string searchTerm = "";
 
-        // ── Upgrade tree root reverse lookup ──
+        /* Upgrade tree root reverse lookup */
         private readonly Dictionary<BuildingFCDef, BuildingFCDef> upgradeRootMap = new Dictionary<BuildingFCDef, BuildingFCDef>();
 
-        // ── Scroll state ──
+        /* Scroll state */
         private Vector2 leftScroll;
         private Vector2 centerScroll;
         private Vector2 rightScroll;
 
-        // ── Expand/collapse state ──
+        /* Expand/collapse state */
         private readonly HashSet<TechLevel> expandedGroups = new HashSet<TechLevel>();
 
-        // ── Truncation cache ──
+        /* Truncation cache */
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        // ── Filtered building cache ──
+        /* Filtered building cache */
         private string lastAppliedSearch = "";
         private readonly Dictionary<TechLevel, List<BuildingFCDef>> filteredCache = new Dictionary<TechLevel, List<BuildingFCDef>>();
 
-        // ── Banner cache ──
+        /* Banner cache */
         private readonly Dictionary<string, Texture2D> bannerCache = new Dictionary<string, Texture2D>();
         private readonly HashSet<string> bannerLookedUp = new HashSet<string>();
 
@@ -197,10 +197,9 @@ namespace FactionColonies
             return false;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // LEFT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  LEFT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawLeftPane(Rect rect)
         {
             // Search bar at top
@@ -333,10 +332,9 @@ namespace FactionColonies
             return total;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // CENTER PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  CENTER PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawCenterPane(Rect rect)
         {
             if (selectedBuilding is null)
@@ -356,7 +354,7 @@ namespace FactionColonies
             float contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Title with icon ──
+            /* Title with icon */
             float titleTextX = 0f;
             if (selectedBuilding.Icon is object)
             {
@@ -380,10 +378,10 @@ namespace FactionColonies
             TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), accent);
             curY += 2f + Margin;
 
-            // ── Core Stats ──
+            /* Core Stats */
             curY = DrawSection(curY, contentWidth, "FCCodexBuildingStats".Translate(), accent, DrawCoreStats);
 
-            // ── Description ──
+            /* Description */
             if (!selectedBuilding.desc.NullOrEmpty())
             {
                 Text.Font = GameFont.Small;
@@ -393,20 +391,20 @@ namespace FactionColonies
                 ResetText();
             }
 
-            // ── Stat Modifiers ──
+            /* Stat Modifiers */
             TaggedString attrDesc = selectedBuilding.AttributeDesc;
             if (!attrDesc.RawText.NullOrEmpty())
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingModifiers".Translate(), accent,
                     (y, w) => DrawTextBlock(y, w, attrDesc));
 
-            // ── Extension Sections ──
+            /* Extension Sections */
             curY = DrawExtensionSections(curY, contentWidth, accent);
 
-            // ── Required Buildings ──
+            /* Required Buildings */
             if (selectedBuilding.requiredBuildings.Count > 0)
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingRequired".Translate(), accent, DrawRequiredBuildings);
 
-            // ── Required By ──
+            /* Required By */
             List<BuildingFCDef> requiredBy;
             if (FactionCache.RequiredByBuildingMap.TryGetValue(selectedBuilding, out requiredBy) && requiredBy.Count > 0)
                 curY = DrawSection(curY, contentWidth, "FCCodexBuildingRequiredBy".Translate(), accent,
@@ -416,10 +414,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // RIGHT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  RIGHT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawRightPane(Rect rect)
         {
             float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
@@ -432,7 +429,7 @@ namespace FactionColonies
             {
                 Color accent = GetTechColor(selectedBuilding.techLevel);
 
-                // ── Banner ──
+                /* Banner */
                 Texture2D banner = GetBanner(selectedBuilding);
                 if (banner is object)
                 {
@@ -457,17 +454,17 @@ namespace FactionColonies
                 GUI.color = Color.white;
                 curY += Margin;
 
-                // ── Compatible Settlements ──
+                /* Compatible Settlements */
                 List<WorldSettlementDef> compatible = selectedBuilding.CompatibleSettlementTypes;
                 if (compatible.Count > 0)
                     curY = DrawSection(curY, contentWidth, "FCCodexBuildingCompatibleSettlements".Translate(), accent,
                         (y, w) => DrawCompatibleSettlements(y, w, compatible));
 
-                // ── Terrain Restrictions ──
+                /* Terrain Restrictions */
                 if (HasTerrainRestrictions())
                     curY = DrawSection(curY, contentWidth, "FCCodexBuildingBiomeRestrictions".Translate(), accent, DrawTerrainRestrictions);
 
-                // ── Upgrade Tree ──
+                /* Upgrade Tree */
                 BuildingFCDef root;
                 List<BuildingUpgradeEntry> tree;
                 if (TryGetFullUpgradeTree(selectedBuilding, out root, out tree))
@@ -479,10 +476,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // SECTION DRAWING HELPERS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  SECTION DRAWING HELPERS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private delegate float SectionDrawer(float curY, float width);
 
         private float DrawSection(float startY, float width, string header, Color accent, SectionDrawer drawer)
@@ -776,10 +772,9 @@ namespace FactionColonies
             return count;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // BANNER HELPER
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  BANNER HELPER
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private Texture2D GetBanner(BuildingFCDef def)
         {
             string modId = def.modContentPack?.PackageId;
@@ -800,10 +795,9 @@ namespace FactionColonies
             return banner;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // HEIGHT CALCULATIONS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  HEIGHT CALCULATIONS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private float CalculateCenterHeight(float width)
         {
             if (selectedBuilding is null) return 0f;

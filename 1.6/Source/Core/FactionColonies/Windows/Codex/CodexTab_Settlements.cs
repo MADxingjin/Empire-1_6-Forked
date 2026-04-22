@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace FactionColonies
     /// </summary>
     public class CodexTab_Settlements : ICodexTab
     {
-        // ── Layout constants ──
+        /* Layout constants */
         private const float EntryRowHeight = 28f;
         private const float GroupHeaderHeight = 28f;
         private const float AccentBarWidth = 3f;
@@ -32,12 +32,12 @@ namespace FactionColonies
         private static readonly Color GroupBgColor = new Color(0.2f, 0.2f, 0.2f, 0.6f);
         private static readonly Color GroupAccentColor = new Color(0.7f, 0.7f, 0.7f);
 
-        // ── Data ──
+        /* Data */
         private readonly CodexWindow parentWindow;
         private readonly List<LayerGroup> layerGroups;
         private WorldSettlementDef selectedDef;
 
-        // ── Expand/collapse state ──
+        /* Expand/collapse state */
         private readonly HashSet<string> expandedGroups = new HashSet<string>();
 
         private class LayerGroup
@@ -47,15 +47,15 @@ namespace FactionColonies
             public List<WorldSettlementDef> settlements;
         }
 
-        // ── Scroll state ──
+        /* Scroll state */
         private Vector2 leftScroll;
         private Vector2 centerScroll;
         private Vector2 rightScroll;
 
-        // ── Truncation cache ──
+        /* Truncation cache */
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        // ── Banner cache ──
+        /* Banner cache */
         private readonly Dictionary<string, Texture2D> bannerCache = new Dictionary<string, Texture2D>();
         private readonly HashSet<string> bannerLookedUp = new HashSet<string>();
 
@@ -147,10 +147,9 @@ namespace FactionColonies
             return def.accentColor ?? DefaultAccent;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // LEFT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  LEFT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawLeftPane(Rect rect)
         {
             float totalHeight = CalculateLeftPaneHeight();
@@ -246,10 +245,9 @@ namespace FactionColonies
             return total;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // CENTER PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  CENTER PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawCenterPane(Rect rect)
         {
             if (selectedDef is null)
@@ -269,7 +267,7 @@ namespace FactionColonies
             float contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Title ──
+            /* Title */
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
@@ -281,7 +279,7 @@ namespace FactionColonies
             TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), accent);
             curY += 2f + Margin;
 
-            // ── Description ──
+            /* Description */
             if (!selectedDef.description.NullOrEmpty())
             {
                 Text.Font = GameFont.Small;
@@ -291,29 +289,28 @@ namespace FactionColonies
                 ResetText();
             }
 
-            // ── Key Stats ──
+            /* Key Stats */
             curY = DrawSection(curY, contentWidth, "FCCodexSettlementStats".Translate(), accent, DrawKeyStats);
 
-            // ── Stat Modifiers ──
+            /* Stat Modifiers */
             TaggedString statDesc = FCStatModifier.GetDescription(selectedDef.statModifiers);
             if (!statDesc.RawText.NullOrEmpty())
                 curY = DrawSection(curY, contentWidth, "FCCodexSettlementStatModifiers".Translate(), accent, (y, w) => DrawStatModifiers(y, w, statDesc));
 
-            // ── Tech Requirements ──
+            /* Tech Requirements */
             if (selectedDef.techLevel != TechLevel.Undefined || selectedDef.researchProjects.Count > 0)
                 curY = DrawSection(curY, contentWidth, "FCCodexSettlementTechReqs".Translate(), accent, DrawTechRequirements);
 
-            // ── Biome Restrictions ──
+            /* Biome Restrictions */
             curY = DrawSection(curY, contentWidth, "FCCodexSettlementBiomes".Translate(), accent, DrawBiomeRestrictions);
 
             ScrollUtil.EndScrollView();
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // RIGHT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  RIGHT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawRightPane(Rect rect)
         {
             float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
@@ -322,7 +319,7 @@ namespace FactionColonies
             float contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Banner ──
+            /* Banner */
             if (selectedDef is object)
             {
                 Texture2D banner = GetBanner(selectedDef);
@@ -351,7 +348,7 @@ namespace FactionColonies
                 curY += Margin;
             }
 
-            // ── Available Resources ──
+            /* Available Resources */
             if (selectedDef is object && selectedDef.resources.Count > 0)
             {
                 Color accent = GetAccent(selectedDef);
@@ -362,10 +359,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // SECTION DRAWING HELPERS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  SECTION DRAWING HELPERS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private delegate float SectionDrawer(float curY, float width);
 
         private float DrawSection(float startY, float width, string header, Color accent, SectionDrawer drawer)
@@ -567,10 +563,9 @@ namespace FactionColonies
             return curY;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // BANNER HELPER
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  BANNER HELPER
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private Texture2D GetBanner(WorldSettlementDef def)
         {
             string modId = def.modContentPack?.PackageId;
@@ -591,10 +586,9 @@ namespace FactionColonies
             return banner;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // HEIGHT CALCULATIONS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  HEIGHT CALCULATIONS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private float CalculateCenterHeight(float width)
         {
             if (selectedDef is null) return 0f;

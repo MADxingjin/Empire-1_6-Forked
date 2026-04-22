@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Linq;
 using Verse;
@@ -11,7 +11,7 @@ namespace FactionColonies
     /// </summary>
     public static class ThreatScalingUtil
     {
-        // ── Income curve: maps faction income to a 0–0.9 factor ──
+        /* Income curve: maps faction income to a 0–0.9 factor */
         private static readonly SimpleCurve IncomeCurve = new SimpleCurve
         {
             new CurvePoint(0f, 0f),
@@ -22,7 +22,7 @@ namespace FactionColonies
             new CurvePoint(20000f, 0.9f)
         };
 
-        // ── Count curve: maps settlement count to a 0–0.6 factor ──
+        /* Count curve: maps settlement count to a 0–0.6 factor */
         private static readonly SimpleCurve CountCurve = new SimpleCurve
         {
             new CurvePoint(1f, 0f),
@@ -32,7 +32,7 @@ namespace FactionColonies
             new CurvePoint(15f, 0.6f)
         };
 
-        // ── Time curve: maps seasons elapsed to a handicap cap ──
+        /* Time curve: maps seasons elapsed to a handicap cap */
         private static readonly SimpleCurve TimeCurve = new SimpleCurve
         {
             new CurvePoint(0f, 2f),
@@ -42,7 +42,7 @@ namespace FactionColonies
             new CurvePoint(8f, 15f)
         };
 
-        // ── Frequency curve: maps settlement count to a frequency multiplier ──
+        /* Frequency curve: maps settlement count to a frequency multiplier */
         private static readonly SimpleCurve FrequencyCurve = new SimpleCurve
         {
             new CurvePoint(1f, 1.0f),

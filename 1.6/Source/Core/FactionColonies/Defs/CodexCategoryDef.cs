@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -35,8 +35,7 @@ namespace FactionColonies
         [NoTranslate]
         public string bannerPath;
 
-        // ── Cached runtime data ──
-
+        /* Cached runtime data */
         private Texture2D bannerCached;
         private bool bannerLookedUp;
         private ModContentPack modContentPackCached;

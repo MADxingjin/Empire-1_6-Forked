@@ -311,8 +311,7 @@ namespace FactionColonies
             return SettlementFormulas.CalculateUpgradeTime(level, buildTimeMult);
         }
 
-        // ── Type Transition ────────────────────────────────────────
-
+        /* Type Transition */
         /// <summary>
         /// Called on the OLD type's extension before the def swap happens.
         /// </summary>
@@ -385,8 +384,7 @@ namespace FactionColonies
             return true;
         }
 
-        // ── Destruction ───────────────────────────────────────────
-
+        /* Destruction */
         /// <summary>
         /// Called before a settlement is removed from the world.
         /// </summary>

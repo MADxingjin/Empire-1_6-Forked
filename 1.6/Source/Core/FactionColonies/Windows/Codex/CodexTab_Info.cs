@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace FactionColonies
     /// </summary>
     public class CodexTab_Info : ICodexTab
     {
-        // ── Layout constants ──
+        /* Layout constants */
         private const float GroupHeaderHeight = 30f;
         private const float CategoryHeaderHeight = 26f;
         private const float EntryRowHeight = 24f;
@@ -36,24 +36,24 @@ namespace FactionColonies
         private static readonly Color DynamicContentBg = new Color(0.12f, 0.18f, 0.12f, 0.3f);
         private static readonly Color SeeAlsoColor = new Color(0.4f, 0.6f, 0.9f);
 
-        // ── Data model ──
+        /* Data model */
         private readonly List<ModGroup> modGroups;
         private CodexEntryDef selectedEntry;
 
-        // ── Scroll state ──
+        /* Scroll state */
         private Vector2 leftScroll;
         private Vector2 centerScroll;
         private Vector2 rightScroll;
 
-        // ── Image carousel ──
+        /* Image carousel */
         private int currentImageIndex;
 
-        // ── Expand/collapse state ──
+        /* Expand/collapse state */
         private readonly HashSet<string> expandedMods = new HashSet<string>();
         private readonly HashSet<string> expandedCategories = new HashSet<string>();
         private bool dynamicSectionExpanded = true;
 
-        // ── Truncation cache ──
+        /* Truncation cache */
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
         private class ModGroup
@@ -145,10 +145,9 @@ namespace FactionColonies
             return result;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // LEFT PANE: mod groups → categories → entries
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  LEFT PANE: mod groups → categories → entries
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawLeftPane(Rect rect)
         {
             float totalHeight = CalculateLeftPaneHeight();
@@ -274,10 +273,9 @@ namespace FactionColonies
             return total;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // CENTER PANE: entry detail (title, description, see-also)
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  CENTER PANE: entry detail (title, description, see-also)
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawCenterPane(Rect rect)
         {
             if (selectedEntry is null)
@@ -297,7 +295,7 @@ namespace FactionColonies
             float contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Title with icon ──
+            /* Title with icon */
             float titleTextX = 0f;
             if (selectedEntry.Icon is object)
             {
@@ -326,11 +324,11 @@ namespace FactionColonies
             ResetText();
             curY = metaY + 22f;
 
-            // ── Gradient accent line ──
+            /* Gradient accent line */
             TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), catColor);
             curY += 2f + Margin;
 
-            // ── Image carousel ──
+            /* Image carousel */
             List<Texture2D> images = selectedEntry.Images;
             if (images.Count > 0)
             {
@@ -338,7 +336,7 @@ namespace FactionColonies
                 curY += Margin;
             }
 
-            // ── Description ──
+            /* Description */
             if (!selectedEntry.description.NullOrEmpty())
             {
                 Text.Font = GameFont.Small;
@@ -348,7 +346,7 @@ namespace FactionColonies
                 ResetText();
             }
 
-            // ── See Also links ──
+            /* See Also links */
             if (!selectedEntry.seeAlso.NullOrEmpty())
             {
                 curY += Margin;
@@ -465,10 +463,9 @@ namespace FactionColonies
             return total + 50f;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // RIGHT PANE: mod banner + dynamic content
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  RIGHT PANE: mod banner + dynamic content
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawRightPane(Rect rect)
         {
             float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
@@ -477,7 +474,7 @@ namespace FactionColonies
             float contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Banner ──
+            /* Banner */
             if (selectedEntry is object && selectedEntry.category is object)
             {
                 Texture2D banner = selectedEntry.category.BannerImage;
@@ -502,7 +499,7 @@ namespace FactionColonies
                 curY += Margin;
             }
 
-            // ── Dynamic content ──
+            /* Dynamic content */
             if (selectedEntry is object)
             {
                 ICodexDynamicProvider provider = selectedEntry.DynamicProvider;

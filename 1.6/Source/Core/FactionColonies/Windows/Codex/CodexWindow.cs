@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +103,7 @@ namespace FactionColonies
 
         public override void DoWindowContents(Rect inRect)
         {
-            // ── Title header with gold gradient + logo ──
+            /* Title header with gold gradient + logo */
             Rect titleRect = new Rect(inRect.x, inRect.y, inRect.width, TitleHeight);
             TexLoad.DrawHorizontalGradient(titleRect, TitleGold * new Color(1f, 1f, 1f, 0.5f));
 
@@ -124,7 +124,7 @@ namespace FactionColonies
             // Gold accent line under header
             TexLoad.DrawHorizontalGradient(new Rect(titleRect.x, titleRect.yMax, titleRect.width, 2f), TitleGold);
 
-            // ── Tab row (below title) ──
+            /* Tab row (below title) */
             // Subtract 2 from the width so the right-side border line doesn't get cut off
             Rect tabArea = new Rect(inRect.x, inRect.y + TitleHeight + margin + 2f, inRect.width - 2f, inRect.height - TitleHeight - margin - 2f);
             int newTab = UIUtil.DrawTabRow(tabArea, tabLabels, activeTabIndex, out Rect contentRect, tabHeight: TabHeight);
@@ -138,7 +138,7 @@ namespace FactionColonies
             Rect bodyRect = contentRect.ContractedBy(margin);
             ICodexTab activeTab = tabs[activeTabIndex];
 
-            // ── Calculate pane rects ──
+            /* Calculate pane rects */
             float bodyX = bodyRect.x;
             float bodyY = bodyRect.y;
             float bodyW = bodyRect.width;
@@ -152,7 +152,7 @@ namespace FactionColonies
             float centerX = leftRect.xMax + margin + DividerWidth;
             Rect centerRect2 = new Rect(centerX, bodyY, centerW, bodyH);
 
-            // ── Draw dividers ──
+            /* Draw dividers */
             GUI.color = Color.gray;
             Widgets.DrawLineVertical(divider1X, bodyY, bodyH);
 
@@ -167,7 +167,7 @@ namespace FactionColonies
             }
             GUI.color = Color.white;
 
-            // ── Draw panes ──
+            /* Draw panes */
             activeTab.DrawLeftPane(leftRect);
             activeTab.DrawCenterPane(centerRect2);
             if (activeTab.HasRightPane)

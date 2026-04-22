@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using Verse;
 
 namespace FactionColonies
@@ -43,8 +43,7 @@ namespace FactionColonies
             return false;
         }
 
-        // ── Option Display Hooks ────────────────────────────────────────
-
+        /* Option Display Hooks */
         /// <summary>
         /// Called to get dynamic label text for an option in this event's option window.
         /// Return null to use the default label from XML.

@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace FactionColonies
 {
     public class CodexTab_Resources : ICodexTab
     {
-        // ── Layout constants ──
+        /* Layout constants */
         private const float EntryRowHeight = 28f;
         private const float AccentBarWidth = 3f;
         private const float margin = 8f;
@@ -27,33 +27,33 @@ namespace FactionColonies
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
         private static readonly Color HighlightColor = new Color(0.4f, 0.6f, 0.9f);
 
-        // ── Data ──
+        /* Data */
         private readonly CodexWindow parentWindow;
         private readonly List<ResourceTypeDef> resourceDefs;
         private ResourceTypeDef selectedResource;
 
-        // ── Scroll state ──
+        /* Scroll state */
         private Vector2 leftScroll;
         private Vector2 centerScroll;
         private Vector2 rightScroll;
 
-        // ── Truncation cache ──
+        /* Truncation cache */
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
 
-        // ── Banner cache ──
+        /* Banner cache */
         private readonly Dictionary<string, Texture2D> bannerCache = new Dictionary<string, Texture2D>();
         private readonly HashSet<string> bannerLookedUp = new HashSet<string>();
 
-        // ── Tithe item cache (built once per resource, lazy) ──
+        /* Tithe item cache (built once per resource, lazy) */
         private readonly Dictionary<ResourceTypeDef, List<TitheItemEntry>> titheItemCache
             = new Dictionary<ResourceTypeDef, List<TitheItemEntry>>();
 
-        // ── Collapsible sections ──
+        /* Collapsible sections */
         private bool keyInfoExpanded = true;
         private bool biomeProductionExpanded = true;
         private bool titheItemsExpanded = true;
 
-        // ── Tithe search ──
+        /* Tithe search */
         private string titheSearchTerm = "";
 
         private class TitheItemEntry
@@ -97,10 +97,9 @@ namespace FactionColonies
             return def.color;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // LEFT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  LEFT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawLeftPane(Rect rect)
         {
             float totalHeight = resourceDefs.Count * EntryRowHeight;
@@ -157,10 +156,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // CENTER PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  CENTER PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawCenterPane(Rect rect)
         {
             if (selectedResource is null)
@@ -181,7 +179,7 @@ namespace FactionColonies
             contentWidth = viewRect.width;
             float curY = 0f;
 
-            // ── Title with icon ──
+            /* Title with icon */
             float titleTextX = 0f;
             if (selectedResource.Icon is object)
             {
@@ -206,7 +204,7 @@ namespace FactionColonies
             TexLoad.DrawHorizontalGradient(new Rect(0f, curY, contentWidth, 2f), accent);
             curY += 2f + margin;
 
-            // ── Description ──
+            /* Description */
             if (!selectedResource.description.NullOrEmpty())
             {
                 Text.Font = GameFont.Small;
@@ -216,15 +214,15 @@ namespace FactionColonies
                 ResetText();
             }
 
-            // ── Key Info ──
+            /* Key Info */
             curY = DrawCollapsibleSection(curY, contentWidth, "FCCodexResourceKeyInfo".Translate(), accent,
                 ref keyInfoExpanded, DrawKeyInfo);
 
-            // ── Biome Production ──
+            /* Biome Production */
             curY = DrawCollapsibleSection(curY, contentWidth, "FCCodexResourceBiomeProduction".Translate(), accent,
                 ref biomeProductionExpanded, DrawBiomeProduction);
 
-            // ── Tithe Items ──
+            /* Tithe Items */
             if (selectedResource.CanTithe)
             {
                 List<TitheItemEntry> items = GetTitheItems(selectedResource);
@@ -237,10 +235,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // RIGHT PANE
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  RIGHT PANE
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         public void DrawRightPane(Rect rect)
         {
             float contentHeight = CalculateRightPaneHeight(rect.width - ScrollUtil.ScrollbarWidth - 1f);
@@ -253,7 +250,7 @@ namespace FactionColonies
             {
                 Color accent = GetAccent(selectedResource);
 
-                // ── Banner ──
+                /* Banner */
                 Texture2D banner = GetBanner(selectedResource);
                 if (banner is object)
                 {
@@ -278,7 +275,7 @@ namespace FactionColonies
                 GUI.color = Color.white;
                 curY += margin;
 
-                // ── Compatible Settlements ──
+                /* Compatible Settlements */
                 List<WorldSettlementDef> compatible = GetCompatibleSettlements(selectedResource);
                 if (compatible.Count > 0)
                     curY = DrawSection(curY, contentWidth, "FCCodexResourceCompatibleSettlements".Translate(), accent,
@@ -289,10 +286,9 @@ namespace FactionColonies
             ResetText();
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // SECTION DRAWING HELPERS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  SECTION DRAWING HELPERS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private delegate float SectionDrawer(float curY, float width);
 
         private float DrawSection(float startY, float width, string header, Color accent, SectionDrawer drawer)
@@ -364,10 +360,9 @@ namespace FactionColonies
             return curY + StatRowHeight;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // KEY INFO
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  KEY INFO
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private float DrawKeyInfo(float curY, float width)
         {
             float x = AccentBarWidth + margin;
@@ -407,10 +402,9 @@ namespace FactionColonies
             return lines;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // BIOME PRODUCTION
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  BIOME PRODUCTION
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private float DrawBiomeProduction(float curY, float width)
         {
             float x = AccentBarWidth + margin;
@@ -471,10 +465,9 @@ namespace FactionColonies
             return count;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // TITHE ITEMS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  TITHE ITEMS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private List<TitheItemEntry> GetTitheItems(ResourceTypeDef def)
         {
             List<TitheItemEntry> cached;
@@ -647,10 +640,9 @@ namespace FactionColonies
             return count;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // COMPATIBLE SETTLEMENTS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  COMPATIBLE SETTLEMENTS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private List<WorldSettlementDef> GetCompatibleSettlements(ResourceTypeDef resource)
         {
             List<WorldSettlementDef> result = new List<WorldSettlementDef>();
@@ -710,10 +702,9 @@ namespace FactionColonies
             return curY;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // BANNER HELPER
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  BANNER HELPER
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private Texture2D GetBanner(ResourceTypeDef def)
         {
             string modId = def.modContentPack?.PackageId;
@@ -734,10 +725,9 @@ namespace FactionColonies
             return banner;
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // HEIGHT CALCULATIONS
-        // ══════════════════════════════════════════════════════════════
-
+        /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+         *  HEIGHT CALCULATIONS
+         *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
         private float CalculateCenterHeight(float width)
         {
             if (selectedResource is null) return 0f;

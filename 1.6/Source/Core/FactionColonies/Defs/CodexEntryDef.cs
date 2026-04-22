@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,8 +53,7 @@ namespace FactionColonies
         /// </summary>
         public Type dynamicProvider;
 
-        // ── Cached runtime data ──
-
+        /* Cached runtime data */
         private Texture2D iconCached;
         private List<Texture2D> imagesCached;
         private ICodexDynamicProvider providerInstance;

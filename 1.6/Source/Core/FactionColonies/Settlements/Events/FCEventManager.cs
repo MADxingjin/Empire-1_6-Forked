@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimWorld.Planet;
 using Verse;
@@ -25,7 +25,7 @@ namespace FactionColonies
         private Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
         private int version;
 
-        // ── Indexes (not serialized — rebuilt on load) ──
+        /* Indexes (not serialized — rebuilt on load) */
         private Dictionary<FCEventDef, List<FCEvent>> defIndex = new Dictionary<FCEventDef, List<FCEvent>>();
         private Dictionary<DefTileKey, List<FCEvent>> defLocationIndex = new Dictionary<DefTileKey, List<FCEvent>>();
 
@@ -35,8 +35,7 @@ namespace FactionColonies
         public int Version => version;
         public int Count => events.Count;
 
-        // ── Index maintenance ──
-
+        /* Index maintenance */
         private void IndexAdd(FCEvent evt)
         {
             if (evt?.def is null) return;
@@ -88,8 +87,7 @@ namespace FactionColonies
                 IndexAdd(evt);
         }
 
-        // ── Indexed query methods ──
-
+        /* Indexed query methods */
         /// <summary>All events with the given def. Returns empty list if none.</summary>
         public IReadOnlyList<FCEvent> GetByDef(FCEventDef def)
         {
@@ -128,8 +126,7 @@ namespace FactionColonies
             return defLocationIndex.TryGetValue(key, out List<FCEvent> list) && list.Count > 0;
         }
 
-        // ── Mutation methods ──
-
+        /* Mutation methods */
         // Raw append. Does NOT apply stat modifiers or invalidate caches;
         // FactionFC.AddEvent is responsible for cascading side effects.
         public void Enqueue(FCEvent evt)

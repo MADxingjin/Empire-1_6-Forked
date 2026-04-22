@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -13,7 +13,7 @@ namespace FactionColonies
     {
         #region Fields & Properties
 
-        // ── Core Identity ──
+        /* Core Identity */
         public string name = "FCPlayerFaction".Translate();
         public string title = "FCBastion".Translate();
         public Texture2D factionIcon = TexLoad.factionIcons[0];
@@ -28,7 +28,7 @@ namespace FactionColonies
         private Vector2 startingLongLat = new Vector2();
         public Vector2 StartingLongLat => startingLongLat;
 
-        // ── Capital & Maps ──
+        /* Capital & Maps */
         public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         private Map taxMap;
@@ -74,13 +74,13 @@ namespace FactionColonies
             }
         }
 
-        // ── Settlements ──
+        /* Settlements */
         /// <summary>
         /// Used by other mods to find our settlements. Move, rename, or otherwise modify at your own peril
         /// </summary>
         public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
 
-        // ── Timing & Scheduling ──
+        /* Timing & Scheduling */
         public int taxTimeDue = Find.TickManager.TicksGame;
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
@@ -88,7 +88,7 @@ namespace FactionColonies
         public const int MercenaryHealTickInterval = GenDate.TicksPerHour;
         private bool firstTick = true;
 
-        // ── Lazy-Cached Averages ──
+        /* Lazy-Cached Averages */
         /* Faction averages — lazy-cached via dirtyAveragesCache */
         private double _averageHappiness = 100;
         private double _averageLoyalty = 100;
@@ -100,7 +100,7 @@ namespace FactionColonies
         public double averageUnrest { get { if (dirtyAveragesCache) RecomputeAverages(); return _averageUnrest; } }
         public double averageProsperity { get { if (dirtyAveragesCache) RecomputeAverages(); return _averageProsperity; } }
 
-        // ── Lazy-Cached Profit ──
+        /* Lazy-Cached Profit */
         /* Faction profit — lazy-cached via dirtyFactionProfitCache */
         private double _income;
         private double _upkeep;
@@ -110,7 +110,7 @@ namespace FactionColonies
         public double upkeep { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _upkeep; } }
         public double profit { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _profit; } }
 
-        // ── Lazy-Cached Tech Level ──
+        /* Lazy-Cached Tech Level */
         /* Tech level — lazy-cached via dirtyTechLevelCache */
         private TechLevel _techLevel = TechLevel.Undefined;
         private bool dirtyTechLevelCache = true;
@@ -123,11 +123,11 @@ namespace FactionColonies
             }
         }
 
-        // ── Lazy-Cached Grand Thing List ──
+        /* Lazy-Cached Grand Thing List */
         private bool DirtyGrandThingListFlag = true;
         private List<ThingDef> grandThingList = null;
 
-        // ── Stat & Behavior Caches ──
+        /* Stat & Behavior Caches */
         private Dictionary<FCStatDef, double> cachedFactionStatValues = new Dictionary<FCStatDef, double>();
         private List<FCPolicyBehavior> _cachedBehaviors = null;
         public List<FCPolicyBehavior> cachedBehaviors
@@ -144,7 +144,7 @@ namespace FactionColonies
         private HashSet<MilitaryJobDef> _cachedBlockedJobs;
         private HashSet<MilitaryJobDef> _cachedEnabledJobs;
 
-        // ── Policies & Traits ──
+        /* Policies & Traits */
         public List<FCPolicy> policies = new List<FCPolicy>();
         public List<FCPolicy> factionTraits = new List<FCPolicy>
         {
@@ -155,7 +155,7 @@ namespace FactionColonies
             new FCPolicy(FCPolicyDefOf.empty)
         };
 
-        // ── Edicts (toggleable faction-level policies) ──
+        /* Edicts (toggleable faction-level policies) */
         public Dictionary<FCPolicyCategory, FCPolicy> edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
         private HashSet<FCPolicyCategory> pendingEdictActivations = new HashSet<FCPolicyCategory>();
 
@@ -168,7 +168,7 @@ namespace FactionColonies
             { FCPolicyCategory.Military, 4 }
         };
 
-        // ── Events & Bills ──
+        /* Events & Bills */
         // LEGACY: populated only when loading pre-manager saves. Migrated into
         // eventManager during ExposeData(ResolvingCrossRefs) and then nulled out.
         // DO NOT READ. Use the Events property instead.
@@ -185,13 +185,13 @@ namespace FactionColonies
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
 
-        // ── Resources ──
+        /* Resources */
         public List<ResourcePool> resourcePools = new List<ResourcePool>();
         public ThingWithComps powerOutput;
         public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
         public List<ResourceDisplay> FactionResources => factionResources;
 
-        // ── Military & Roads ──
+        /* Military & Roads */
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
         public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
@@ -201,7 +201,7 @@ namespace FactionColonies
         public void RemoveMilitaryTarget(int tile) { militaryTargets.Remove(tile); }
         public bool HasMilitaryTarget(int tile) => militaryTargets.Contains(tile);
 
-        // ── Caravans ──
+        /* Caravans */
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
         /// <summary>
         /// Player-selected caravan types. Strings are logical identifiers:
@@ -210,12 +210,12 @@ namespace FactionColonies
         /// </summary>
         public List<string> enabledCaravanTypes = new List<string>();
 
-        // ── Leveling ──
+        /* Leveling */
         public int factionLevel = 1;
         public float factionXPCurrent = 0;
         public float factionXPGoal = 100;
 
-        // ── ID Counters ──
+        /* ID Counters */
         private int nextUnitId;
         private int nextSquadId;
         public int NextUnitID => ++nextUnitId;
@@ -229,7 +229,7 @@ namespace FactionColonies
         public int nextPrisonerID = 1;
         public int nextMilitaryFireSupportID = 1;
 
-        // ── Filters & Misc ──
+        /* Filters & Misc */
         public XenotypeFilter xenotypeFilter;
         public AnimalFilter animalFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
