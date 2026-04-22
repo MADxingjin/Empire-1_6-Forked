@@ -64,8 +64,8 @@ namespace FactionColonies
             {
                 if (waveAttackers is null) waveAttackers = new List<Pawn>();
                 if (waveDefenders is null) waveDefenders = new List<Pawn>();
-                waveAttackers.RemoveAll(p => p is null);
-                waveDefenders.RemoveAll(p => p is null);
+                waveAttackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+                waveDefenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
             }
         }
     }

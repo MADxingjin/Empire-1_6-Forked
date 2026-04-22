@@ -1300,6 +1300,22 @@ namespace FactionColonies
 
             defenders = spawnedFriendlies;
             initialDefenderCount = defenders.Count;
+
+            // Track external defender pawns on the arriving wave so EndAttack can return them
+            // via IAutoDefender.ReturnDefendingPawns.
+            if (force.homeSettlement == null && battleEvent?.externalDefenderSource != null)
+            {
+                DefenseWave wave = activeWaves.FirstOrDefault(w => w.sourceEvent == battleEvent);
+                if (wave is null)
+                {
+                    wave = activeWaves.FirstOrDefault();
+                    if (wave is object)
+                        LogUtil.Warning($"GenerateFriendlies: no wave matched battleEvent for external defender at {WorldSettlement.Name}; falling back to first active wave.");
+                    else
+                        LogUtil.Error($"GenerateFriendlies: no active waves to track external defender pawns at {WorldSettlement.Name}; outpost will lose its pawns at battle end.");
+                }
+                wave?.waveDefenders.AddRange(spawnedFriendlies);
+            }
         }
 
         private void RecruitMapInhabitants()
