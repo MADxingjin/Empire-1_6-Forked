@@ -59,8 +59,8 @@ namespace FactionColonies
         private class TitheItemEntry
         {
             public ThingDef thingDef;
-            public TechLevel techLevel;
-            public string researchLabel; // null if no restriction
+            public TechLevel minTechLevel;       // from restriction, not thing.techLevel
+            public List<string> researchLabels;  // all required research names
         }
 
         public string TabLabel => "FCCodexTabResources".Translate();
@@ -382,9 +382,6 @@ namespace FactionColonies
             curY = DrawStatLine(curY, x, textW, "FCCodexResourceTitheable".Translate(
                 selectedResource.CanTithe ? yesStr : noStr));
 
-            curY = DrawStatLine(curY, x, textW, "FCCodexResourceDefaultResource".Translate(
-                selectedResource.isDefaultResource ? yesStr : noStr));
-
             if (selectedResource.minTechLevel != TechLevel.Undefined)
                 curY = DrawStatLine(curY, x, textW, "FCCodexResourceMinTechLevel".Translate(
                     selectedResource.minTechLevel.ToStringHuman()));
@@ -402,7 +399,7 @@ namespace FactionColonies
 
         private int CountKeyInfoLines()
         {
-            int lines = 2; // titheable, default resource
+            int lines = 1; // titheable
             if (selectedResource.isPoolResource) lines++;
             if (selectedResource.minTechLevel != TechLevel.Undefined) lines++;
             if (selectedResource.maxTechLevel != TechLevel.Undefined) lines++;
@@ -478,9 +475,10 @@ namespace FactionColonies
 
             if (!def.CanTithe) { titheItemCache[def] = cached; return cached; }
 
-            // Build a filter at Archotech level to show everything possible
+            // Build an unrestricted filter that ignores research/tech checks
             ThingFilter filter = new ThingFilter();
-            def.FilterResource(filter, TechLevel.Archotech, null);
+            Dictionary<ThingDef, TitheRestrictionInfo> restrictions;
+            def.FilterResourceForCodex(filter, out restrictions);
 
             ThingSetMakerParams param = new ThingSetMakerParams();
             param.filter = filter;
@@ -494,22 +492,38 @@ namespace FactionColonies
             {
                 TitheItemEntry entry = new TitheItemEntry();
                 entry.thingDef = thing;
-                entry.techLevel = thing.techLevel;
 
-                // Check for research prerequisites
-                if (thing.recipeMaker?.researchPrerequisite is object && !thing.recipeMaker.researchPrerequisite.IsFinished)
-                    entry.researchLabel = thing.recipeMaker.researchPrerequisite.LabelCap;
-                else if (thing.recipeMaker?.researchPrerequisites is object)
+                // Use restriction info from the ResourceTypeDef's allow lists
+                TitheRestrictionInfo info;
+                if (restrictions.TryGetValue(thing, out info))
                 {
-                    foreach (ResearchProjectDef rp in thing.recipeMaker.researchPrerequisites)
+                    entry.minTechLevel = info.minTechLevel;
+                    if (info.researchProjects is object && info.researchProjects.Count > 0)
                     {
-                        if (!rp.IsFinished)
-                        {
-                            entry.researchLabel = rp.LabelCap;
-                            break;
-                        }
+                        entry.researchLabels = new List<string>();
+                        foreach (ResearchProjectDef rp in info.researchProjects)
+                            entry.researchLabels.Add(rp.LabelCap);
                     }
                 }
+
+                // Also check recipe-level research prerequisites (not from our restriction, but from the ThingDef itself)
+                if ((entry.researchLabels is null || entry.researchLabels.Count == 0) && thing.recipeMaker is object)
+                {
+                    List<string> recipeResearch = new List<string>();
+                    if (thing.recipeMaker.researchPrerequisite is object)
+                        recipeResearch.Add(thing.recipeMaker.researchPrerequisite.LabelCap);
+                    if (thing.recipeMaker.researchPrerequisites is object)
+                    {
+                        foreach (ResearchProjectDef rp in thing.recipeMaker.researchPrerequisites)
+                            recipeResearch.Add(rp.LabelCap);
+                    }
+                    if (recipeResearch.Count > 0)
+                        entry.researchLabels = recipeResearch;
+                }
+
+                // Fall back to thing's own tech level if no restriction-level tech
+                if (entry.minTechLevel == TechLevel.Undefined && thing.techLevel != TechLevel.Undefined)
+                    entry.minTechLevel = thing.techLevel;
 
                 cached.Add(entry);
             }
@@ -517,7 +531,7 @@ namespace FactionColonies
             // Sort by tech level, then alphabetically
             cached.Sort((a, b) =>
             {
-                int cmp = ((int)a.techLevel).CompareTo((int)b.techLevel);
+                int cmp = ((int)a.minTechLevel).CompareTo((int)b.minTechLevel);
                 if (cmp != 0) return cmp;
                 return string.Compare(a.thingDef.LabelCap.RawText, b.thingDef.LabelCap.RawText, StringComparison.OrdinalIgnoreCase);
             });
@@ -565,9 +579,15 @@ namespace FactionColonies
             }
 
             // Draw items
+            float infoButtonSize = 18f;
             foreach (TitheItemEntry entry in filtered)
             {
                 float rowX = x;
+
+                // Info card button
+                Rect infoBtnRect = new Rect(rowX, curY + (StatRowHeight - infoButtonSize) * 0.5f, infoButtonSize, infoButtonSize);
+                Widgets.InfoCardButton(infoBtnRect, entry.thingDef);
+                rowX = infoBtnRect.xMax + SmallMargin;
 
                 // Icon
                 Texture2D icon = entry.thingDef.uiIcon;
@@ -580,29 +600,23 @@ namespace FactionColonies
                     rowX = iconRect.xMax + SmallMargin;
                 }
 
-                // Label
+                // Label with inline tech level and research requirements
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 GUI.color = Color.white;
                 string label = entry.thingDef.LabelCap;
 
-                // Tech level suffix
-                if (entry.techLevel != TechLevel.Undefined)
-                    label += " <color=#888888>(" + entry.techLevel.ToStringHuman() + ")</color>";
+                if (entry.minTechLevel != TechLevel.Undefined)
+                    label += $" ({entry.minTechLevel.ToStringHuman()})".Colorize(Color.gray);
+
+                if (entry.researchLabels is object && entry.researchLabels.Count > 0)
+                {
+                    string allResearch = string.Join(", ", entry.researchLabels.ToArray());
+                    label += $" {"FCCodexResourceRequiresResearch".Translate(allResearch)}".Colorize(Color.gray);
+                }
 
                 Widgets.Label(new Rect(rowX, curY, width - rowX - margin, StatRowHeight), label);
                 ResetText();
-
-                // Research requirement on next line or as tooltip
-                if (entry.researchLabel is object)
-                {
-                    Text.Font = GameFont.Small;
-                    Text.Anchor = TextAnchor.MiddleLeft;
-                    GUI.color = new Color(0.8f, 0.6f, 0.3f);
-                    string reqText = "  " + "FCCodexResourceRequiresResearch".Translate(entry.researchLabel);
-                    TooltipHandler.TipRegion(new Rect(x, curY, width - x - margin, StatRowHeight), reqText);
-                    ResetText();
-                }
 
                 curY += StatRowHeight;
             }

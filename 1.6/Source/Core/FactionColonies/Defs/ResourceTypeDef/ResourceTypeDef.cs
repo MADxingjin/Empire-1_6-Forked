@@ -551,6 +551,62 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Populates a ThingFilter with all items this resource can produce, ignoring research completion
+        /// state and tech level checks. Used by the Codex to show a complete reference list.
+        /// Also populates a restrictions dictionary with per-item tech/research requirements for display.
+        /// </summary>
+        public void FilterResourceForCodex(ThingFilter filter, out Dictionary<ThingDef, TitheRestrictionInfo> restrictions)
+        {
+            restrictions = new Dictionary<ThingDef, TitheRestrictionInfo>();
+
+            // Category allow lists — allow everything, record category-level restrictions
+            foreach (ResourceThingCategoryDefRestriction catRestriction in thingCategoryAllowList)
+            {
+                filter.SetAllow(catRestriction.thingCategoryDef, true);
+
+                // Record per-item restriction info from the category
+                if (catRestriction.hasDefinedTechLevel || catRestriction.hasResearchDefs)
+                {
+                    foreach (ThingDef thing in catRestriction.thingCategoryDef.DescendantThingDefs)
+                    {
+                        TitheRestrictionInfo info = new TitheRestrictionInfo();
+                        info.minTechLevel = catRestriction.minTechLevel;
+                        info.researchProjects = catRestriction.researchProjectDefs;
+                        restrictions[thing] = info;
+                    }
+                }
+            }
+
+            // Stuff category allow lists
+            foreach (StuffCategoryDef stuffCat in stuffCategoryAllowList)
+                filter.SetAllow(stuffCat, true);
+
+            // Category block lists
+            foreach (ThingCategoryDef catBlock in thingCategoryBlockList)
+                filter.SetAllow(catBlock, false);
+            foreach (StuffCategoryDef stuffBlock in stuffCategoryBlockList)
+                filter.SetAllow(stuffBlock, false);
+
+            // Thing allow lists — override category restrictions with thing-specific ones
+            foreach (ResourceThingDefRestriction thingRestriction in thingAllowList)
+            {
+                filter.SetAllow(thingRestriction.thingDef, true);
+
+                TitheRestrictionInfo info = new TitheRestrictionInfo();
+                info.minTechLevel = thingRestriction.minTechLevel;
+                info.researchProjects = thingRestriction.researchProjectDefs;
+                restrictions[thingRestriction.thingDef] = info;
+            }
+
+            // Thing block lists
+            foreach (ThingDef thingBlock in thingBlockList)
+            {
+                filter.SetAllow(thingBlock, false);
+                restrictions.Remove(thingBlock);
+            }
+        }
+
         public int CompareForUI(ResourceTypeDef compareDef)
         {
             return this.uiPriority - compareDef.uiPriority;
@@ -705,6 +761,15 @@ namespace FactionColonies
                 yield return "productionMultiplierStat must have Multiplicative aggregation for ResourceTypeDef " + this.defName;
             }
         }
+    }
+
+    /// <summary>
+    /// Per-item tech/research restriction info for Codex display.
+    /// </summary>
+    public struct TitheRestrictionInfo
+    {
+        public TechLevel minTechLevel;
+        public List<ResearchProjectDef> researchProjects;
     }
 
     [DefOf]
