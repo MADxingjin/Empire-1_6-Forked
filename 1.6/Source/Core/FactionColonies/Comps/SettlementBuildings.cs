@@ -263,30 +263,30 @@ namespace FactionColonies
             if (HasBuildingOrUpgrade(building))
             {
                 valid = false;
-                Messages.Message("BuildingAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
+                Messages.Message("FCBuildingAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
             }
 
             if (PaymentUtil.GetSilver() < building.cost) //check if the player has enough money
             {
                 valid = false;
-                Messages.Message("NotEnoughSilverConstructBuilding".Translate() + "!", MessageTypeDefOf.RejectInput);
+                Messages.Message("FCNotEnoughSilverConstructBuilding".Translate() + "!", MessageTypeDefOf.RejectInput);
             }
 
             //TODO: rework construction. This info should really be held in this comp here, rather than in the events queue.
             //      maybe there can still be a "constructing building" event that refers to the SettlementBuilding comp, but
             //      the comp should be the source of truth, not the event
-            foreach (FCEvent event1 in FactionCache.FactionComp.events) //check if construction would match any already-occuring events
+            foreach (FCEvent event1 in FactionCache.FactionComp.Events) //check if construction would match any already-occuring events
             {
                 if (WorldSettlement.MilitaryComp?.isUnderAttack == true)
                 {
                     valid = false;
-                    Messages.Message("SettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCSettlementUnderAttack".Translate(), MessageTypeDefOf.RejectInput);
                 }
                 if (event1.source == WorldSettlement.Tile && event1.def.defName == "constructBuilding" &&
                     FactionCache.SatisfiesRequirementFor(event1.building, building))
                 {
                     valid = false;
-                    Messages.Message("BuildingBeingBuiltAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCBuildingBeingBuiltAlreadyType".Translate() + "!", MessageTypeDefOf.RejectInput);
                     break;
                 }
 
@@ -295,7 +295,7 @@ namespace FactionColonies
                 ) //check if there is already a building being constructed in that slot
                 {
                     valid = false;
-                    Messages.Message("BuildingAlreadyConstructed".Translate() + "!", MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCBuildingAlreadyConstructed".Translate() + "!", MessageTypeDefOf.RejectInput);
                     break;
                 }
             }
@@ -303,13 +303,13 @@ namespace FactionColonies
             if (building.minhilliness != Hilliness.Undefined && building.minhilliness > WorldSettlement.Tile.Tile.hilliness)
             {
                 valid = false;
-                Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCBuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
             }
 
             if (building.maxhilliness != Hilliness.Undefined && building.maxhilliness < WorldSettlement.Tile.Tile.hilliness)
             {
                 valid = false;
-                Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCBuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
             }
 
             if (building.applicableBiomes.Count > 0)
@@ -320,7 +320,7 @@ namespace FactionColonies
                 if (match == false)
                 {
                     valid = false;
-                    Messages.Message("BuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCBuildingInvalidEnvironment".Translate(), MessageTypeDefOf.RejectInput);
                 }
             }
 
@@ -328,11 +328,50 @@ namespace FactionColonies
             if (!building.CanBeBuiltForSettlementType(WorldSettlement.settlementDef))
             {
                 valid = false;
-                Messages.Message("BuildingInvalidSettlement".Translate(building.LabelCap, WorldSettlement.settlementDef.LabelCap), MessageTypeDefOf.RejectInput);
+                Messages.Message("FCBuildingInvalidSettlement".Translate(building.LabelCap, WorldSettlement.settlementDef.LabelCap), MessageTypeDefOf.RejectInput);
+            }
+
+            // Check tile mutator restrictions
+            if (!building.CanBeBuiltOnTile(WorldSettlement.Tile))
+            {
+                valid = false;
+                Messages.Message("FCBuildingInvalidTileMutator".Translate(building.LabelCap), MessageTypeDefOf.RejectInput);
             }
 
             return valid;
         }
+        /// <summary>
+        /// Post-load recovery: scans all building slots for BuildingFCExtensions whose comps are missing
+        /// (e.g. erroneously destroyed by a prior save due to empty buildingSlots). Re-creates the comp
+        /// and populates its slot so downstream code (Tick, gizmos) works correctly.
+        /// </summary>
+        private void RecoverMissingBuildingComps()
+        {
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                BuildingFCDef def = GetBuildingInSlot(i);
+                if (def?.modExtensions is null) continue;
+
+                foreach (BuildingFCExtension ext in def.modExtensions.OfType<BuildingFCExtension>())
+                {
+                    if (ext.compClass is null) continue;
+
+                    SettlementBuildingComp comp = GetComponent(ext.compClass);
+                    if (comp is null)
+                    {
+                        LogUtil.Warning($"Recovering missing SettlementBuildingComp {ext.compClass.Name} for building {def.defName} in slot {i}");
+                        comp = MakeSettlementBuildingComp(ext.compClass, WorldSettlement);
+                        settlementBuildingComps.Add(comp);
+                    }
+
+                    if (!comp.buildingSlots.Contains(i))
+                    {
+                        comp.buildingSlots.Add(i);
+                    }
+                }
+            }
+        }
+
         public void HandleOnConstructionComps(BuildingFCDef building, int buildingSlot)
         {
             AddBuildingStatModifiers(buildingSlot);
@@ -528,27 +567,27 @@ namespace FactionColonies
         {
             filters = new List<BuildingFilter>();
 
-            filters.Add(new BuildingFilter("BuildingFilterAll".Translate(), null, _ => true));
+            filters.Add(new BuildingFilter("FCBuildingFilterAll".Translate(), null, _ => true));
 
-            filters.Add(new BuildingFilter("BuildingFilterHappiness".Translate(), TexLoad.iconHappiness, b =>
+            filters.Add(new BuildingFilter("FCBuildingFilterHappiness".Translate(), TexLoad.iconHappiness, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
                     (m.stat == FCStatDefOf.happinessLostBase || m.stat == FCStatDefOf.happinessGainedBase ||
                      m.stat == FCStatDefOf.happinessLostMultiplier || m.stat == FCStatDefOf.happinessGainedMultiplier)
                     && m.IsBeneficial())));
 
-            filters.Add(new BuildingFilter("BuildingFilterBasetax".Translate(), TexLoad.iconProsperity, b =>
+            filters.Add(new BuildingFilter("FCBuildingFilterBasetax".Translate(), TexLoad.iconProsperity, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
                     (m.stat == FCStatDefOf.taxBasePercentage || m.stat == FCStatDefOf.taxBaseRandomModifier)
                     && m.IsBeneficial())));
 
-            filters.Add(new BuildingFilter("BuildingFilterWorkers".Translate(), null, b =>
+            filters.Add(new BuildingFilter("FCBuildingFilterWorkers".Translate(), null, b =>
                 b.statModifiers != null && b.statModifiers.Any(m =>
                     (m.stat == FCStatDefOf.workerBaseMax || m.stat == FCStatDefOf.workerBaseOverMax || m.stat == FCStatDefOf.workerBaseCost)
                     && m.IsBeneficial())));
 
             if (WorldSettlement.MilitaryComp != null)
             {
-                filters.Add(new BuildingFilter("BuildingFilterMilitary".Translate(), TexLoad.iconMilitary, b =>
+                filters.Add(new BuildingFilter("FCBuildingFilterMilitary".Translate(), TexLoad.iconMilitary, b =>
                     b.statModifiers != null && b.statModifiers.Any(m =>
                         (m.stat == FCStatDefOf.militaryBaseLevel || m.stat == FCStatDefOf.militaryCombatEfficiency)
                         && m.IsBeneficial())));
@@ -627,7 +666,17 @@ namespace FactionColonies
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                settlementBuildingComps?.RemoveAll(c => c == null);
+                if (settlementBuildingComps is null)
+                {
+                    settlementBuildingComps = new List<SettlementBuildingComp>();
+                }
+                settlementBuildingComps.RemoveAll(c => c == null);
+                foreach (SettlementBuildingComp comp in settlementBuildingComps)
+                {
+                    comp.RefreshBuildingSlotsWithErrorDetection();
+                }
+                settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
+                RecoverMissingBuildingComps();
                 ReinitBuildings();
             }
         }

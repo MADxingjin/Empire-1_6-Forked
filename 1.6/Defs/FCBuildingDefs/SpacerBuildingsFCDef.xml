@@ -137,7 +137,7 @@
 		<!--Name of Def -->
 		<label>Worker Bots</label>
 		<!--Lable of Def -->
-		<desc>Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere.</desc>
+		<desc>Put robots to work doing the more mundane tasks around the settlement so the people can be put to work elsewhere.</desc>
 		<!-- Description of trait -->
 		<cost>4000</cost>
 		<constructionDuration>300000</constructionDuration>

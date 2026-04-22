@@ -184,7 +184,7 @@ namespace FactionColonies
                 util.units.Add(newUnit);
             }
 
-            if (Widgets.ButtonText(importBtn, "importUnit".Translate()))
+            if (Widgets.ButtonText(importBtn, "FCImportUnit".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_ManageUnitExportsFC(
                     FactionColoniesMilitary.SavedUnits.ToList()));
@@ -192,7 +192,7 @@ namespace FactionColonies
 
             if (selectedUnit != null)
             {
-                if (Widgets.ButtonText(deleteBtn, "deleteUnitButton".Translate()))
+                if (Widgets.ButtonText(deleteBtn, "FCDeleteUnitButton".Translate()))
                 {
                     MilUnitFC unitToDelete = selectedUnit;
                     Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
@@ -204,15 +204,15 @@ namespace FactionColonies
                             if (selectedUnit == unitToDelete)
                             {
                                 selectedUnit = null;
-                                selectedText = "selectAUnitButton".Translate();
+                                selectedText = "FCSelectAUnitButton".Translate();
                             }
                         }));
                 }
 
-                if (Widgets.ButtonText(exportBtn, "exportUnitButton".Translate()))
+                if (Widgets.ButtonText(exportBtn, "FCExportUnitButton".Translate()))
                 {
                     FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
-                    Messages.Message("ExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
+                    Messages.Message("FCExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
 
@@ -263,14 +263,14 @@ namespace FactionColonies
             // Equipment cost
             float totalCost = (float)selectedUnit.getTotalCost;
             Rect costRect = new Rect(rect.x, infoRect.yMax + margin, rect.width, 20f);
-            Widgets.Label(costRect, "totalEquipmentCostLabel".Translate() + totalCost.ToString("F0"));
+            Widgets.Label(costRect, "FCTotalEquipmentCostLabel".Translate() + totalCost.ToString("F0"));
 
             if (isSelectedUnitDeployed)
             {
                 Color colorBefore = GUI.color;
                 GUI.color = Color.yellow;
                 Rect viewOnlyRect = new Rect(rect.x, costRect.yMax + 2f, rect.width, 23f);
-                Widgets.Label(viewOnlyRect, "CantBeModified".Translate(selectedUnit.name, selectedUnitDeployReason));
+                Widgets.Label(viewOnlyRect, "FCCantBeModified".Translate(selectedUnit.name, selectedUnitDeployReason));
                 GUI.color = colorBefore;
             }
 
@@ -296,25 +296,25 @@ namespace FactionColonies
 
             float raceButtonWidth = ModsConfig.BiotechActive ? btnW : (2 * btnW) + gap;
 
-            if (Widgets.ButtonText(new Rect(rect.x, rect.y, raceButtonWidth, btnH), "changeUnitRaceButton".Translate(), true, true))
+            if (Widgets.ButtonText(new Rect(rect.x, rect.y, raceButtonWidth, btnH), "FCChangeUnitRaceButton".Translate(), true, true))
             {
                 Find.WindowStack.Add(new FCWindow_RacePicker(selectedUnit, faction));
             }
 
             if (ModsConfig.BiotechActive &&
-                Widgets.ButtonText(new Rect(rect.x + btnW + gap, rect.y, btnW, btnH), "changeUnitXenoButton".Translate(), true, true))
+                Widgets.ButtonText(new Rect(rect.x + btnW + gap, rect.y, btnW, btnH), "FCChangeUnitXenoButton".Translate(), true, true))
             {
                 Find.WindowStack.Add(new FCWindow_XenoPicker(selectedUnit));
             }
 
             float y2 = rect.y + btnH + gap;
 
-            if (Widgets.ButtonText(new Rect(rect.x, y2, btnW, btnH), "rollANewUnitButton".Translate(), true, true))
+            if (Widgets.ButtonText(new Rect(rect.x, y2, btnW, btnH), "FCRollANewUnitButton".Translate(), true, true))
             {
                 selectedUnit.RerollPreviewPawn();
             }
 
-            if (Widgets.ButtonText(new Rect(rect.x + btnW + gap, y2, btnW, btnH), "resetUnitToDefaultButton".Translate(), true, true))
+            if (Widgets.ButtonText(new Rect(rect.x + btnW + gap, y2, btnW, btnH), "FCResetUnitToDefaultButton".Translate(), true, true))
             {
                 selectedUnit.ClearAllEquipment();
             }
@@ -342,14 +342,15 @@ namespace FactionColonies
 
             if (settlementsContainingSquad.Any(s => s.MilitaryComp.militarySquad.isDeployed))
             {
-                reason = "ReasonDeployed".Translate();
+                reason = "FCReasonDeployed".Translate();
                 return true;
             }
 
             if (settlementsContainingSquad.Any(s => s.MilitaryComp.isUnderAttack
+                && s.MilitaryComp.defenderForce?.homeSettlement is object
                 && settlementsContainingSquad.Contains(s.MilitaryComp.defenderForce.homeSettlement)))
             {
-                reason = "ReasonDefending".Translate();
+                reason = "FCReasonDefending".Translate();
                 return true;
             }
 

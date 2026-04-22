@@ -81,9 +81,13 @@ namespace FactionColonies
         }
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (Gizmo gizmo in base.GetGizmos())
+            IEnumerable<Gizmo> gizmos = base.GetGizmos();
+            if (gizmos != null)
             {
-                yield return gizmo;
+                foreach (Gizmo gizmo in gizmos)
+                {
+                    yield return gizmo;
+                }
             }
             yield return RequestShuttleAction(settlement);
             yield return RequestShuttleForCaravanAction(settlement);
@@ -93,8 +97,8 @@ namespace FactionColonies
         {
             Command_Action requestShuttle = new Command_Action
             {
-                defaultLabel = "shuttlePortCallShuttleLabel".Translate(),
-                defaultDesc = "shuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
+                defaultLabel = "FCShuttlePortCallShuttleLabel".Translate(),
+                defaultDesc = "FCShuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/CallShuttle"),
                 action = delegate
                 {
@@ -107,7 +111,7 @@ namespace FactionColonies
             };
             if (shuttleUsesRemaining < ShuttleSender.cost)
             {
-                requestShuttle.Disable("notEnoughShuttleUsesRemaining".Translate());
+                requestShuttle.Disable("FCNotEnoughShuttleUsesRemaining".Translate());
             }
 
             return requestShuttle;
@@ -117,8 +121,8 @@ namespace FactionColonies
         {
             Command_Action requestShuttleForCaravan = new Command_Action
             {
-                defaultLabel = "shuttlePortCallShuttleForCaravanLabel".Translate(),
-                defaultDesc = "shuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
+                defaultLabel = "FCShuttlePortCallShuttleForCaravanLabel".Translate(),
+                defaultDesc = "FCShuttlePortCallShuttleDesc".Translate(shuttleUsesRemaining, ShuttleSender.cost),
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/CallShuttle"),
 
                 action = delegate
@@ -140,14 +144,14 @@ namespace FactionColonies
                                 Gen.YieldSingle(caravan), sender.Launch));
                     })));
 
-                    if (options.Count == 0) options.Add(new FloatMenuOption("noCaravansToSendShuttleTo".Translate(), null));
+                    if (options.Count == 0) options.Add(new FloatMenuOption("FCNoCaravansToSendShuttleTo".Translate(), null));
 
                     Find.WindowStack.Add(new FloatMenu(options));
                 }
             };
             if (shuttleUsesRemaining < ShuttleSender.cost)
             {
-                requestShuttleForCaravan.Disable("noShuttleUsesRemaining".Translate());
+                requestShuttleForCaravan.Disable("FCNoShuttleUsesRemaining".Translate());
             }
 
             return requestShuttleForCaravan;

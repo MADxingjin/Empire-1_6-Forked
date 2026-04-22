@@ -42,8 +42,8 @@ namespace FactionColonies
         {
             Command_Action openWindow = new Command_Action
             {
-                defaultLabel = "openSettlementWindowDefaultLabel".Translate(),
-                defaultDesc = "openSettlementWindowDefaultDesc".Translate(),
+                defaultLabel = "FCOpenSettlementWindowDefaultLabel".Translate(),
+                defaultDesc = "FCOpenSettlementWindowDefaultDesc".Translate(),
                 icon = ContentFinder<Texture2D>.Get("UI/Icons/QuestionMark"),
                 action = delegate
                 {

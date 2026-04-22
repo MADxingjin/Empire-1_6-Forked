@@ -103,7 +103,7 @@ namespace FactionColonies
             // Enable All / Disable All buttons
             Rect enableButton = new Rect(inRect.x, bottomY - bigRowHeight, inRect.width / 2f, bigRowHeight);
             Rect disableButton = new Rect(enableButton.xMax, enableButton.y, enableButton.width, enableButton.height);
-            if (Widgets.ButtonText(enableButton, "AnimalEnableAll".Translate()))
+            if (Widgets.ButtonText(enableButton, "FCAnimalEnableAll".Translate()))
             {
                 foreach (CaravanTypeEntry entry in entries)
                 {
@@ -111,7 +111,7 @@ namespace FactionColonies
                         entry.enabled = true;
                 }
             }
-            if (Widgets.ButtonText(disableButton, "AnimalDisableAll".Translate()))
+            if (Widgets.ButtonText(disableButton, "FCAnimalDisableAll".Translate()))
             {
                 foreach (CaravanTypeEntry entry in entries)
                     entry.enabled = false;

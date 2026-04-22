@@ -36,7 +36,16 @@ namespace FactionColonies
             healthTracker = pawn.health;
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;
-            loadID = FactionCache.FactionComp.GetNextPrisonerID();
+            FactionFC comp = FactionCache.FactionComp;
+            if (comp is object)
+            {
+                loadID = comp.GetNextPrisonerID();
+            }
+            else
+            {
+                loadID = Rand.Int;
+                LogUtil.Error($"FCPrisoner: FactionComp is null during construction. Using fallback loadID {loadID}.");
+            }
             pawn.guest.SetGuestStatus(FactionCache.PlayerColonyFaction, GuestStatus.Prisoner);
         }
 
@@ -80,7 +89,7 @@ namespace FactionColonies
             {
                 settlement.prisonerList.Remove(this);
                 settlement.DirtyStatsCache();
-                Find.LetterStack.ReceiveLetter("PrisonerHasDiedLetter".Translate(), "PrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.Name), LetterDefOf.NeutralEvent);
+                Find.LetterStack.ReceiveLetter("FCPrisonerHasDiedLetter".Translate(), "FCPrisonerHasDied".Translate(prisoner.Name.ToString(), settlement.Name), LetterDefOf.NeutralEvent);
                 return true;
             }
             return false;

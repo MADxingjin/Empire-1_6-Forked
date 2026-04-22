@@ -86,12 +86,12 @@ namespace FactionColonies
                 {
                     if (dinfo.Value.Category == DamageInfo.SourceCategory.Collapse)
                     {
-                        faction.GainUnrestForReason(new Message("DeathOfFactionPawn".Translate(), MessageTypeDefOf.PawnDeath), 5d);
+                        faction.GainUnrestForReason(new Message("FCDeathOfFactionPawn".Translate(), MessageTypeDefOf.PawnDeath), 5d);
                         faction.GainHappiness(-5d);
                     }
                     else if (dinfo.Value.Instigator?.Faction == Find.FactionManager.OfPlayer)
                     {
-                        faction.GainUnrestForReason(new Message("DeathOfFactionPawn".Translate(), MessageTypeDefOf.PawnDeath), 5d);
+                        faction.GainUnrestForReason(new Message("FCDeathOfFactionPawn".Translate(), MessageTypeDefOf.PawnDeath), 5d);
                         faction.GainHappiness(-5d);
                     }
                 }
@@ -128,7 +128,7 @@ namespace FactionColonies
             if (__instance == FactionCache.PlayerColonyFaction && violator == Faction.OfPlayer && !member.IsSlaveOfColony)
             {
                 FactionFC faction = FactionCache.FactionComp;
-                faction.GainUnrestForReason(new Message("CaptureOfFactionPawn".Translate(), MessageTypeDefOf.NegativeEvent), 15d);
+                faction.GainUnrestForReason(new Message("FCCaptureOfFactionPawn".Translate(), MessageTypeDefOf.NegativeEvent), 15d);
                 faction.GainHappiness(-10d);
 
                 return false;

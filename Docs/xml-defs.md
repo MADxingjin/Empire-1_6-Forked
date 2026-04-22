@@ -1,6 +1,6 @@
 # XML Def Types Reference
 
-Empire defines 11 custom def types. All support `modExtensions` for attaching [DefModExtensions](def-mod-extensions.md). Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
+Empire defines 12 custom def types. All support `modExtensions` for attaching [DefModExtensions](def-mod-extensions.md). Annotated XML examples for every def type are in [ExampleDefs/](ExampleDefs/).
 
 ---
 
@@ -91,11 +91,15 @@ Defines a settlement type (e.g., Surface, Orbital). Controls resource availabili
 | `baseUnlockedBuildings` | `int` | `3` | Building slots available at settlement level 0. |
 | `perLevelUnlockedBuildings` | `float` | `0.5` | Additional building slots per level (floored). Formula: `min(base + floor(perLevel x level), maxBuildingCount)`. |
 | `titleKey` | `string` | `null` | Key for settlement-type-specific town titles. Falls back to default titles. |
+| `descriptionKey` | `string` | `null` | Key for settlement-type-specific town level descriptions. Tries `FCTownLevel_{descriptionKey}_{compressedLevel}` first, falls back to generic key. |
 | `isConstructed` | `bool` | `false` | If true, creation timer labeled "Construction Time" instead of "Travel Time". |
 | `accentColor` | `Color?` | `null` | UI accent color for this settlement type. |
 | `available` | `bool` | `true` | If false, this settlement type is hidden from the creation UI. Use to define abstract or internally-managed settlement types. |
 | `baseSettlementType` | `WorldSettlementDef` | `null` | Parent settlement type for inheritance-aware building allow/block list checks. When set, a building's allow/block list will match this def and all ancestors in the chain. |
 | `raidTargetingWeight` | `float` | `1.0` | Multiplier applied to this settlement type's weight when the threat system selects raid targets. Higher = more likely to be raided. |
+| `canBeRaided` | `bool` | `true` | If false, this settlement type is completely excluded from enemy raid targeting. |
+| `impassableAllowedMutators` | `List<TileMutatorDef>` | `[]` | TileMutatorDefs that bypass the impassable-tile restriction when present on the tile. Allows founding on impassable mountain tiles with specific mutators. |
+| `supportsManualBattle` | `bool` | `true` | If false, battles at this settlement type always auto-resolve regardless of player battle mode setting. Use for settlement types whose maps cannot be generated. |
 
 **Required modExtension**: [SettlementTypeExtension](def-mod-extensions.md#settlementtypeextension).
 
@@ -367,3 +371,25 @@ Controls how random reward items are generated for events. Referenced by `FCEven
 | `techLevel` | `TechLevel` | `Undefined` | Tech level override. |
 
 See [ExampleDefs/ResourceEventRewardDef.xml](ExampleDefs/ResourceEventRewardDef.xml).
+
+---
+
+### TechProgressionDef
+
+**Class**: `FactionColonies.TechProgressionDef` (extends `Def`)
+
+Defines tech level barriers (research gates) that control faction tech level advancement. Each barrier specifies a tech level and the research projects required to reach it. The faction cannot advance past a barrier until its requirements are met.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `barriers` | `List<TechLevelBarrier>` | `[]` | Ordered list of tech level gates. |
+
+**TechLevelBarrier fields:**
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `techLevel` | `TechLevel` | `Undefined` | The tech level this barrier gates. |
+| `researchProjects` | `List<ResearchProjectDef>` | `[]` | Research projects required to pass this barrier. |
+| `mode` | `TechBarrierMode` | `All` | `All` = every listed project must be finished (empty list = satisfied). `Any` = at least one must be finished (empty list = unsatisfied/unreachable). |
+
+See [ExampleDefs/TechProgressionDef.xml](ExampleDefs/TechProgressionDef.xml).

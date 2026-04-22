@@ -21,7 +21,7 @@ namespace FactionColonies
         private string name;
         private string nameShort;
         private string nameOriginal;
-        public string title = "Hamlet".Translate();
+        public string title = "FCHamlet".Translate();
         private string _description = "FCGenericError".Translate();
         private bool dirtyDescriptionCache = true;
         public string description
@@ -409,6 +409,12 @@ namespace FactionColonies
                 LogUtil.Message($"Founding settlement {Name} on biome {biomeDef.LabelCap}");
             }
 
+            // Bake biome stat modifiers as permanent modifiers
+            if (biomeDef.statModifiers != null && biomeDef.statModifiers.Count > 0)
+            {
+                AddPermanentModifiers(biomeDef.statModifiers, "biome_" + biomeDef.defName, biomeDef.LabelCap);
+            }
+
             BuildingsComp?.InitBuildings();
 
             PrepareResources(faction.techLevel);
@@ -416,6 +422,32 @@ namespace FactionColonies
             /* If the settlement type has inherent stat modifiers, add them here. */
             // AddStatModifiers calls InvalidateStatCache -> DirtyStatsCache, so values recompute on first access
             AddStatModifiers(settlementDef.statModifiers, "settlementType", settlementDef.label);
+
+            /* Bake tile mutator and landmark stat modifiers as permanent modifiers. */
+            Tile worldTile = tile.Tile;
+            if (worldTile != null)
+            {
+                IList<TileMutatorDef> mutators = worldTile.Mutators;
+                if (mutators != null)
+                {
+                    foreach (TileMutatorDef mut in mutators)
+                    {
+                        TileMutatorResourceExtension mutExt = mut?.GetModExtension<TileMutatorResourceExtension>();
+                        if (mutExt?.statModifiers == null || mutExt.statModifiers.Count == 0) continue;
+                        AddPermanentModifiers(mutExt.statModifiers, "tile_mutator_" + mut.defName, mut.LabelCap);
+                    }
+                }
+
+                Landmark landmark = worldTile.Landmark;
+                if (landmark?.def != null)
+                {
+                    TileLandmarkResourceExtension lmExt = landmark.def.GetModExtension<TileLandmarkResourceExtension>();
+                    if (lmExt?.statModifiers != null && lmExt.statModifiers.Count > 0)
+                    {
+                        AddPermanentModifiers(lmExt.statModifiers, "tile_landmark_" + landmark.def.defName, landmark.def.LabelCap);
+                    }
+                }
+            }
 
             foundingTick = Find.TickManager.TicksGame;
         }
@@ -505,11 +537,13 @@ namespace FactionColonies
 
             // Re-apply active event stat modifiers that target this settlement.
             // Cross-references are resolved before DoAllPostLoadInits, so
-            // FactionFC.events and each event's settlementTraitLocations are populated.
+            // FactionFC.Events and each event's settlementTraitLocations are populated.
+            // (FactionFC migrates any legacy save events into eventManager during
+            // ResolvingCrossRefs, before this PostLoadInit runs. See FactionFC.ExposeData.)
             FactionFC factionComp = FactionCache.FactionComp;
             if (factionComp != null)
             {
-                foreach (FCEvent evt in factionComp.events)
+                foreach (FCEvent evt in factionComp.Events)
                 {
                     if (evt?.def?.statModifiers is null || evt.def.statModifiers.Count == 0) continue;
                     if (evt.settlementTraitLocations.Count == 0
@@ -594,8 +628,34 @@ namespace FactionColonies
         public override bool ShouldRemoveMapNow(out bool removeWorldObject)
         {
             removeWorldObject = false;
+            var map = Map;
+            if (map is null) return false;
             if (MilitaryComp?.isUnderAttack == true) return false;
-            return MilitaryComp is null || !(MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any());
+            if (MilitaryComp is object && (MilitaryComp.defenders.Any() || MilitaryComp.attackers.Any())) return false;
+            // Vanilla checks: wait for player pawns to leave and incoming transporters to arrive
+            if (map.mapPawns.AnyPawnBlockingMapRemoval) return false;
+            if (TransporterUtility.IncomingTransporterPreventingMapRemoval(map)) return false;
+            return true;
+        }
+
+        public override void Notify_MyMapAboutToBeRemoved()
+        {
+            // Clean up Empire faction pawns to prevent ghost colonists in the world pawn pool.
+            // By this point all player pawns have left (ShouldRemoveMapNow confirmed no blockers).
+            var map = Map;
+            Faction empireFaction = FactionCache.PlayerColonyFaction;
+            if (empireFaction is object && map is object)
+            {
+                foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    if (pawn.Faction != empireFaction) continue;
+                    pawn.DeSpawn();
+                    // Squad mercenaries persist between battles; only destroy generated defenders
+                    if (!pawn.IsMercenary() && !pawn.Destroyed)
+                        pawn.Destroy();
+                }
+            }
+            base.Notify_MyMapAboutToBeRemoved();
         }
 
         public void AddPrisoner(Pawn prisoner)
@@ -604,7 +664,7 @@ namespace FactionColonies
             DirtyStatsCache();
         }
 
-        public void UpgradeSettlement(int times = 1)
+        public void UpgradeSettlement(int times = 1, bool setFlags = false)
         {
             int oldLevel = settlementLevel;
             settlementLevel += times;
@@ -618,6 +678,13 @@ namespace FactionColonies
             DirtyDescriptionCache();
             settlementDef.GetSettlementTypeExtension()?.OnUpgrade(this, oldLevel, settlementLevel);
             LifecycleRegistry.InvokeOnSettlementUpgraded(this, oldLevel, settlementLevel);
+
+            if (setFlags)
+            {
+                isUpgrading = false;
+                startUpgradeTick = -1;
+                finishUpgradeTick = -1;
+            }
         }
 
         public void DelevelSettlement(int times = -1)
@@ -664,7 +731,7 @@ namespace FactionColonies
                     BuildingFCDef bDef = BuildingsComp.Buildings[i].def;
                     if (bDef != BuildingFCDefOf.Empty && !bDef.CanBeBuiltForSettlementType(newDef))
                     {
-                        Messages.Message("BuildingRemovedByTypeTransition".Translate(bDef.LabelCap, Name), MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("FCBuildingRemovedByTypeTransition".Translate(bDef.LabelCap, Name), MessageTypeDefOf.NeutralEvent);
                         BuildingsComp.DeconstructBuilding(i);
                     }
                 }
@@ -853,7 +920,7 @@ namespace FactionColonies
             _workerTotalUpkeep = SettlementFormulas.CalculateWorkerUpkeep(_workers, _workersMax, GetBaseWorkerCost());
             if (_workerTotalUpkeep > 0)
             {
-                _upkeepExp += $"+{Math.Round(_workerTotalUpkeep, 2)} - {"Workers".Translate()}\n";
+                _upkeepExp += $"+{Math.Round(_workerTotalUpkeep, 2)} - {"FCWorkers".Translate()}\n";
             }
 
             upkeep += _workerTotalUpkeep;
@@ -862,12 +929,12 @@ namespace FactionColonies
             if (buildingsUpkeep > 0)
             {
                 upkeep += buildingsUpkeep;
-                _upkeepExp += $"+{Math.Round(buildingsUpkeep, 2)} - {"Buildings".Translate()}\n";
+                _upkeepExp += $"+{Math.Round(buildingsUpkeep, 2)} - {"FCBuildings".Translate()}\n";
             }
             else if (buildingsUpkeep < 0)
             {
                 income += Math.Abs(buildingsUpkeep);
-                _incomeExp += $"+{Math.Round(Math.Abs(buildingsUpkeep), 2)} - {"Buildings".Translate()}\n";
+                _incomeExp += $"+{Math.Round(Math.Abs(buildingsUpkeep), 2)} - {"FCBuildings".Translate()}\n";
             }
 
             foreach (ResourceFC resource in resources)
@@ -875,12 +942,12 @@ namespace FactionColonies
                 if (resource.actualIncome > 0)
                 {
                     income += resource.actualIncome;
-                    _incomeExp += $"+{Math.Round(resource.actualIncome, 2)} - {resource.label} {"Income".Translate()}\n";
+                    _incomeExp += $"+{Math.Round(resource.actualIncome, 2)} - {resource.label} {"FCIncome".Translate()}\n";
                 }
                 else if (resource.actualIncome < 0)
                 {
                     upkeep += (-1) * resource.actualIncome;
-                    _upkeepExp += $"+{Math.Round(-1 * resource.actualIncome, 2)} - {resource.label} {"Tithing".Translate()}\n";
+                    _upkeepExp += $"+{Math.Round(-1 * resource.actualIncome, 2)} - {resource.label} {"FCTithing".Translate()}\n";
                 }
             }
 
@@ -953,14 +1020,14 @@ namespace FactionColonies
             string desc = "";
 
             if (happinessGain >= 0)
-                desc = "SettlementStatGain".Translate(Math.Abs(happinessGain), "Happiness".Translate());
+                desc = "FCSettlementStatGain".Translate(Math.Abs(happinessGain), "FCHappiness".Translate());
             else
-                desc = "SettlementStatLoss".Translate(Math.Abs(happinessGain), "Happiness".Translate());
+                desc = "FCSettlementStatLoss".Translate(Math.Abs(happinessGain), "FCHappiness".Translate());
 
             desc += "\n\n";
             string gain = "";
             if (FCSettings.happinessBaseGain != 0)
-                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseGain) + " - " + "FCBaseGain".Translate() + "\n";
 
             gain += GetStatDesc(FCStatDefOf.happinessGainedBase);
             gain += GetStatDesc(FCStatDefOf.happinessGainedMultiplier);
@@ -968,7 +1035,7 @@ namespace FactionColonies
                 desc += gain + "\n";
 
             if (FCSettings.happinessBaseLost != 0)
-                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.happinessBaseLost, hardinvert: true) + " - " + "FCBaseLoss".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.happinessLostBase, hardinvert: true);
             desc += GetStatDesc(FCStatDefOf.happinessLostMultiplier);
@@ -999,14 +1066,14 @@ namespace FactionColonies
             double loyaltyGain = Math.Round(GetTotalLoyaltyGain(), 2);
             string desc = "";
             if (loyaltyGain >= 0)
-                desc = "SettlementStatGain".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
+                desc = "FCSettlementStatGain".Translate(Math.Abs(loyaltyGain), "FCLoyality".Translate());
             else
-                desc = "SettlementStatLoss".Translate(Math.Abs(loyaltyGain), "Loyalty".Translate());
+                desc = "FCSettlementStatLoss".Translate(Math.Abs(loyaltyGain), "FCLoyality".Translate());
 
             desc += "\n\n";
             string gain = "";
             if (FCSettings.loyaltyBaseGain != 0)
-                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseGain) + " - " + "FCBaseGain".Translate() + "\n";
 
             gain += GetStatDesc(FCStatDefOf.loyaltyGainedBase);
             gain += GetStatDesc(FCStatDefOf.loyaltyGainedMultiplier);
@@ -1014,7 +1081,7 @@ namespace FactionColonies
                 desc += gain + "\n";
 
             if (FCSettings.loyaltyBaseLost != 0)
-                desc += "\n" + TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += "\n" + TextUtil.ColorizeAdditiveBonus(FCSettings.loyaltyBaseLost, hardinvert: true) + " - " + "FCBaseLoss".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.loyaltyLostBase, hardinvert: true);
             desc += GetStatDesc(FCStatDefOf.loyaltyLostMultiplier);
@@ -1048,15 +1115,15 @@ namespace FactionColonies
             double prosperityGain = Math.Round(GetProsperityGain(), 2);
             string desc = "";
             if (prosperityGain >= 0)
-                desc = "SettlementStatGain".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "Prosperity".Translate());
+                desc = "FCSettlementStatGain".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "FCProsperity".Translate());
             else
-                desc = "SettlementStatLoss".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "Prosperity".Translate());
+                desc = "FCSettlementStatLoss".Translate(Math.Abs(Math.Round(prosperityGain, 1)), "FCProsperity".Translate());
 
             desc += "\n\n";
 
             double target = Math.Round(GetProsperityTarget(), 1);
-            desc += "ProsperityTarget".Translate(target) + "\n";
-            desc += "ProsperityTargetBreakdown".Translate(
+            desc += "FCProsperityTarget".Translate(target) + "\n";
+            desc += "FCProsperityTargetBreakdown".Translate(
                 Math.Round(happiness, 1),
                 Math.Round(loyalty, 1),
                 Math.Round(100.0 - unrest, 1)) + "\n\n";
@@ -1064,7 +1131,7 @@ namespace FactionColonies
             double distance = Math.Abs(prosperity - GetProsperityTarget());
             double driftMagnitude = Math.Min(FCSettings.prosperityDriftRate, distance);
             double drift = prosperity < GetProsperityTarget() ? driftMagnitude : (prosperity > GetProsperityTarget() ? -driftMagnitude : 0);
-            desc += TextUtil.ColorizeAdditiveBonus(Math.Round(drift, 1)) + " - " + "ProsperityDrift".Translate() + "\n";
+            desc += TextUtil.ColorizeAdditiveBonus(Math.Round(drift, 1)) + " - " + "FCProsperityDrift".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.prosperityGainedBase);
             desc += GetStatDesc(FCStatDefOf.prosperityLostBase, hardinvert: true);
@@ -1094,14 +1161,14 @@ namespace FactionColonies
             double unrestGain = Math.Round(GetTotalUnrestGain(), 2);
             string desc = "";
             if (unrestGain >= 0)
-                desc = "SettlementStatGain".Translate(Math.Abs(unrestGain), "Unrest".Translate());
+                desc = "FCSettlementStatGain".Translate(Math.Abs(unrestGain), "FCUnrest".Translate());
             else
-                desc = "SettlementStatLoss".Translate(Math.Abs(unrestGain), "Unrest".Translate());
+                desc = "FCSettlementStatLoss".Translate(Math.Abs(unrestGain), "FCUnrest".Translate());
 
             desc += "\n\n";
             string gain = "";
             if (FCSettings.unrestBaseGain != 0)
-                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "BaseGain".Translate() + "\n";
+                gain += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseGain, invert: true) + " - " + "FCBaseGain".Translate() + "\n";
 
             gain += GetStatDesc(FCStatDefOf.unrestGainedBase);
             gain += GetStatDesc(FCStatDefOf.unrestGainedMultiplier);
@@ -1109,7 +1176,7 @@ namespace FactionColonies
                 desc += gain + "\n";
 
             if (FCSettings.unrestBaseLost != 0)
-                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "BaseLoss".Translate() + "\n";
+                desc += TextUtil.ColorizeAdditiveBonus(FCSettings.unrestBaseLost, invert: true, hardinvert: true) + " - " + "FCBaseLoss".Translate() + "\n";
 
             desc += GetStatDesc(FCStatDefOf.unrestLostBase, hardinvert: true);
             desc += GetStatDesc(FCStatDefOf.unrestLostMultiplier);
@@ -1128,7 +1195,7 @@ namespace FactionColonies
         public string GetTaxBaseDesc()
         {
             double taxBonus = GetSettlementTaxBonus();
-            string desc = "TaxBase".Translate() + ": " + (taxBonus * 100d).ToString() + "%";
+            string desc = "FCTaxBase".Translate() + ": " + (taxBonus * 100d).ToString() + "%";
             desc += "\n\n";
 
             // taxBasePercentage: buildings, events, settlement type, plus faction-level policies
@@ -1616,15 +1683,10 @@ namespace FactionColonies
         {
             if (index >= resources.Count || index < 0)
             {
+                LogUtil.Warning($"GetResourceByIndex called with out-of-bounds index {index} for settlement {Name} (count: {resources.Count})");
                 return null;
             }
-            for (int i = 0; i < resources.Count; i++)
-            {
-                if (i == index)
-                    return resources[i];
-            }
-            LogUtil.Error($"Reached end of WorldSettmentFC.GetResourceByIndex for settlement {Name} and resource index {index}. This should never happen.");
-            return null;
+            return resources[index];
         }
         public List<ResourceFC> GetTitheableResources()
         {

@@ -28,9 +28,16 @@ namespace FactionColonies
                 return;
             }
 
+            Map currentMap = Find.CurrentMap;
+            if (currentMap is null)
+            {
+                LogUtil.Warning("SpawnSquad: Find.CurrentMap is null. Cannot deploy squad.");
+                return;
+            }
+
             IncidentParms parms = new IncidentParms
             {
-                target = Find.CurrentMap,
+                target = currentMap,
                 faction = FactionCache.PlayerColonyFaction,
                 podOpenDelay = 140,
                 points = 999,
@@ -59,10 +66,10 @@ namespace FactionColonies
             squad.isDeployed = true;
             squad.orderLocation = dropPosition;
             squad.timeDeployed = Find.TickManager.TicksGame;
-            Find.LetterStack.ReceiveLetter("deploymentSuccessLabel".Translate(), "deploymentSuccessDesc".Translate(settlement.Name, Find.CurrentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
+            Find.LetterStack.ReceiveLetter("FCDeploymentSuccessLabel".Translate(), "FCDeploymentSuccessDesc".Translate(settlement.Name, currentMap.Parent.LabelCap), LetterDefOf.NeutralEvent, new LookTargets(equippedPawns));
 
-            settlement.MilitaryComp.SendMilitary(Find.CurrentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
-            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), Find.CurrentMap, equippedPawns);
+            settlement.MilitaryComp.SendMilitary(currentMap.Index, MilitaryJobDefOf.Deploy, 1, null);
+            LordMaker.MakeNewLord(FactionCache.PlayerColonyFaction, new LordJob_DeployMilitary(dropPosition, squad), currentMap, equippedPawns);
 
             if (settlement.MilitaryComp.militarySquad != squad)
             {
@@ -97,19 +104,19 @@ namespace FactionColonies
             squad.ResetNeeds();
 
             IntVec3 dropPosition;
-            DebugTool tool = new DebugTool("selectDeploymentPosition".Translate(), delegate
+            DebugTool tool = new DebugTool("FCSelectDeploymentPosition".Translate(), delegate
             {
                 dropPosition = UI.MouseCell();
                 Map curMap = Find.CurrentMap;
 
                 if (!dropPosition.InBounds(curMap))
                 {
-                    Messages.Message("selectedPosOutOfBounds".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCSelectedPosOutOfBounds".Translate(), MessageTypeDefOf.RejectInput);
                     return;
                 }
                 if (dropPosition.CloseToEdge(curMap, 10))
                 {
-                    Messages.Message("selectedPosTooCloseToEdge".Translate(), MessageTypeDefOf.RejectInput);
+                    Messages.Message("FCSelectedPosTooCloseToEdge".Translate(), MessageTypeDefOf.RejectInput);
                     return;
                 }
 
@@ -142,9 +149,10 @@ namespace FactionColonies
             tool = new DebugTool("FCFireSupportSelectPosition".Translate(), delegate
             {
                 float cost = support.ReturnTotalCost();
-                if (PaymentUtil.GetSilver() > cost)
+                if (DebugSettings.godMode || PaymentUtil.GetSilver() > cost)
                 {
-                    PaymentUtil.PaySilver((int)Math.Round(cost), PaymentUtil.Reason_FireSupport, settlement);
+                    if (!DebugSettings.godMode)
+                        PaymentUtil.PaySilver((int)Math.Round(cost), PaymentUtil.Reason_FireSupport, settlement);
                     DropPosition = UI.MouseCell();
                     IntVec3 spawnCenter = DropPosition;
                     Map map = Find.CurrentMap;
@@ -157,7 +165,7 @@ namespace FactionColonies
 
                     Messages.Message("FCFireSupportNameWillBeFiredOnPosition".Translate(support.name), MessageTypeDefOf.ThreatSmall);
                     if (settlement.MilitaryComp != null)
-                        settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + 60000;
+                        settlement.MilitaryComp.artilleryTimer = Find.TickManager.TicksGame + (DebugSettings.godMode ? 1 : 60000);
                 }
                 else
                 {

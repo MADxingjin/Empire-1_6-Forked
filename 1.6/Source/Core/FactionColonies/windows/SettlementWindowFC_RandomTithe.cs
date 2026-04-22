@@ -54,7 +54,7 @@ namespace FactionColonies
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 35f);
-            Widgets.Label(header, "RandomTitheSelectionHeader".Translate());
+            Widgets.Label(header, "FCRandomTitheSelectionHeader".Translate());
             Widgets.DrawLineHorizontal(header.x, header.yMax, header.width);
 
             Text.Font = GameFont.Small;
@@ -125,7 +125,7 @@ namespace FactionColonies
             Widgets.DrawHighlight(headerRow);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(headerRow.x + margin, headerRow.y, 60f, headerRow.height), "Item".Translate());
+            Widgets.Label(new Rect(headerRow.x + margin, headerRow.y, 60f, headerRow.height), "FCItem".Translate());
             float sortBtnW = 120f;
             Rect sortBtn = new Rect(headerRow.xMax - margin - 65f - margin - 65f - margin - sortBtnW, headerRow.y + 2, sortBtnW, headerRow.height - 4);
             if (Widgets.ButtonText(sortBtn, "FCSortBy".Translate(sortLabelKeys[sortIndex].Translate())))
@@ -146,7 +146,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(new Rect(headerRow.xMax - margin - 65f - margin - 75f, headerRow.y, 60f, headerRow.height), "FCTitheBasePrice".Translate());
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(headerRow.xMax - margin - 75f, headerRow.y, 65f, headerRow.height), "IsTithe".Translate());
+            Widgets.Label(new Rect(headerRow.xMax - margin - 75f, headerRow.y, 65f, headerRow.height), "FCIsTithe".Translate());
             Text.Font = GameFont.Small;
             curY = headerRow.yMax;
 

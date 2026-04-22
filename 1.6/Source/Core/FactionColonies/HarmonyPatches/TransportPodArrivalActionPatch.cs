@@ -1,47 +1,49 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using Verse;
 
 namespace FactionColonies
 {
-    [HarmonyPatch]
-    public class WorldSettlementTransportersDefendAction : TransportersArrivalAction_LandInSpecificCell
+    [HarmonyPatch(typeof(TransportersArrivalAction_LandInSpecificCell))]
+    [HarmonyPatch("Arrived")]
+    class WorldSettlementTransportersArrivePatch
     {
-        private readonly IntVec3 cell;
-        private readonly MapParent mapParent;
-        private readonly bool landInShuttle;
+        [ThreadStatic]
+        private static List<Pawn> pendingPawns;
 
-        public WorldSettlementTransportersDefendAction(WorldSettlementFC mapParent, IntVec3 cell, bool landInShuttle)
+        private static void Prefix(TransportersArrivalAction_LandInSpecificCell __instance,
+            List<ActiveTransporterInfo> transporters)
         {
-            this.mapParent = mapParent;
-            this.cell = cell;
-            this.landInShuttle = landInShuttle;
+            pendingPawns = null;
+            if (!(Traverse.Create(__instance).Field("mapParent").GetValue() is WorldSettlementFC))
+                return;
+
+            List<Pawn> pawns = new List<Pawn>();
+            foreach (ActiveTransporterInfo info in transporters)
+            {
+                foreach (Thing thing in info.innerContainer)
+                {
+                    if (thing is Pawn pawn)
+                        pawns.Add(pawn);
+                }
+            }
+            if (pawns.Count > 0)
+                pendingPawns = pawns;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(TransportersArrivalAction_LandInSpecificCell), "Arrived")]
-        private static void ArrivePatch(TransportersArrivalAction_LandInSpecificCell __instance, List<ActiveTransporterInfo> transporters, PlanetTile tile)
+        private static void Postfix(TransportersArrivalAction_LandInSpecificCell __instance,
+            PlanetTile tile)
         {
+            List<Pawn> pawns = pendingPawns;
+            pendingPawns = null;
+            if (pawns is null || pawns.Count == 0) return;
+
             if (Traverse.Create(__instance).Field("mapParent").GetValue() is WorldSettlementFC settlement)
             {
-                List<Pawn> pawns = new List<Pawn>();
-                bool hasAnyPawns = false;
-
-                foreach (ActiveTransporterInfo activeTransporterInfo in transporters)
-                {
-                    foreach (Thing thing in activeTransporterInfo.innerContainer)
-                    {
-                        if (thing is Pawn pawn)
-                        {
-                            hasAnyPawns = true;
-                            pawns.Add(pawn);
-                        }
-                    }
-                }
-
-                if (hasAnyPawns) settlement.MilitaryComp?.AddToDefenceFromList(pawns, tile);
+                settlement.MilitaryComp?.AddToDefenceFromList(pawns, tile);
             }
         }
     }

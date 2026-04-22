@@ -43,15 +43,15 @@ namespace FactionColonies
                 return bReqCount.CompareTo(aReqCount);
             });
 
-            string msg = "ScorchedEarthCollateralHeader".Translate(settlement.Name);
+            string msg = "FCScorchedEarthCollateralHeader".Translate(settlement.Name);
             foreach (int k in damaged)
             {
-                msg += "\n  - " + "BuildingDestroyedInRaid".Translate(settlement.BuildingsComp.BuildingLabel(k));
+                msg += "\n  - " + "FCBuildingDestroyedInRaid".Translate(settlement.BuildingsComp.BuildingLabel(k));
                 settlement.DeconstructBuilding(k);
             }
 
             Find.LetterStack.ReceiveLetter(
-                "ScorchedEarthCollateralTitle".Translate(),
+                "FCScorchedEarthCollateralTitle".Translate(),
                 msg,
                 LetterDefOf.NegativeEvent,
                 new LookTargets(settlement));

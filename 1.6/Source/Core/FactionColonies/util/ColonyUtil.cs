@@ -42,7 +42,7 @@ namespace FactionColonies.util
             LifecycleRegistry.InvokeOnSettlementCreated(settlement);
 
             Find.LetterStack.ReceiveLetter("FCSettlementFormed".Translate(),
-                "SettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
+                "FCSettleEventCompletedDesc".Translate(settlement.Name, settlementType.LabelCap, tile.Tile.PrimaryBiome.LabelCap),
                 LetterDefOf.PositiveEvent);
 
             return settlement;
@@ -69,7 +69,7 @@ namespace FactionColonies.util
             faction.DirtyFactionProfitCache();
             faction.DirtyAveragesCache();
             faction.roadBuilder.FlagUpdateRoadQueues();
-            Messages.Message("SettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
+            Messages.Message("FCSettlementRemoved".Translate(settlement.Name), MessageTypeDefOf.NegativeEvent);
 
             Find.WorldObjects.Remove(Find.World.worldObjects.WorldObjectOfDefAt(DefDatabase<WorldObjectDef>.GetNamed(settlement.def.defName), settlement.Tile));
 
@@ -78,12 +78,12 @@ namespace FactionColonies.util
 
             HashSet<FCEvent> toRemove = new HashSet<FCEvent>();
 
-            foreach (FCEvent evt in faction.events)
+            foreach (FCEvent evt in faction.Events)
             {
                 //military event removal
                 if (evt.def == FCEventDefOf.captureEnemySettlement || evt.def == FCEventDefOf.raidEnemySettlement)
                 {
-                    if (evt.militaryForceAttacking.homeSettlement == settlement)
+                    if (evt.militaryForceAttacking?.homeSettlement == settlement)
                     {
                         toRemove.Add(evt);
                     }
@@ -91,7 +91,7 @@ namespace FactionColonies.util
 
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
-                    if (evt.militaryForceDefending.homeSettlement == settlement)
+                    if (evt.militaryForceDefending?.homeSettlement == settlement)
                     {
                         if (evt.settlementFCDefending == settlement)
                         {
@@ -113,7 +113,7 @@ namespace FactionColonies.util
                     else
                     {
                         //if force belongs to other settlement
-                        evt.militaryForceDefending.homeSettlement.MilitaryComp?.CooldownMilitaryFinal();
+                        evt.militaryForceDefending?.homeSettlement?.MilitaryComp?.CooldownMilitaryFinal();
 
                         toRemove.Add(evt);
                     }
@@ -153,13 +153,13 @@ namespace FactionColonies.util
                 }
             }
 
+            bool anyRemoved = false;
             foreach (FCEvent evt in toRemove)
             {
-                faction.events.Remove(evt);
+                if (faction.RemoveEvent(evt)) anyRemoved = true;
             }
-            if (toRemove.Count > 0)
+            if (anyRemoved)
             {
-                faction.eventsVersion++;
                 faction.InvalidateFactionStatCache();
             }
         }
@@ -182,7 +182,7 @@ namespace FactionColonies.util
             faction.def.techLevel = Faction.OfPlayer.def.techLevel;
             faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
             faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
-            faction.Name = "PlayerColony".Translate();
+            faction.Name = "FCPlayerColony".Translate();
             faction.def.classicIdeo = Faction.OfPlayer.def.classicIdeo;
             faction.ideos = Faction.OfPlayer.ideos;
 
@@ -224,6 +224,11 @@ namespace FactionColonies.util
             {
                 LogUtil.Warning("TryGenerateNewLeader failed. Falling back to manual generation.");
                 PawnKindDef fallbackKind = faction.RandomPawnKind();
+                if (fallbackKind is null)
+                {
+                    fallbackKind = PawnKindDefOf.Villager;
+                    LogUtil.Warning("RandomPawnKind returned null. Using Villager as last-resort fallback.");
+                }
                 LogUtil.Message($"Fallback pawnkind: {fallbackKind?.defName ?? "null"}");
                 faction.leader = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind: fallbackKind,
                 faction: faction, context: PawnGenerationContext.NonPlayer,

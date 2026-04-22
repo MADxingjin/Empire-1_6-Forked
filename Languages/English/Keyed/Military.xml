@@ -2,118 +2,118 @@
 <LanguageData>
 
 	<!-- Attack/Raid/Capture Actions -->
-	<AttackSettlementfc>Attack Settlement</AttackSettlementfc>
-	<CaptureSettlementfc>Capture Settlement</CaptureSettlementfc>
-	<CaptureSettlement>Capture Settlement</CaptureSettlement>
-	<EnslavePopulation>Enslave Population</EnslavePopulation>
-	<RaidSettlement>Raid Settlement</RaidSettlement>
+	<FCAttackSettlement>Attack Settlement</FCAttackSettlement>
+	<FCCaptureSettlement>Capture Settlement</FCCaptureSettlement>
+	<FCEnslavePopulation>Enslave Population</FCEnslavePopulation>
+	<FCRaidSettlement>Raid Settlement</FCRaidSettlement>
 	<FCCaptureFloatMenuOption>Try to capture using {0}'s military (Level {1}).</FCCaptureFloatMenuOption>
 	<FCRaidFloatMenuOption>Try to raid using {0}'s military (Level {1}).</FCRaidFloatMenuOption>
 	<FCEnslaveFloatMenuOption>Try to enslave using {0}'s military (Level {1}).</FCEnslaveFloatMenuOption>
 
 	<!-- Attack Notifications -->
-	<settlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction.</settlementAboutToBeAttacked>
-	<battleForecast>Battle Forecast:\nEnemy power: {0} (Efficiency: x{1})\nDefense power: {2} (Efficiency: x{3})\nEstimated chance of victory: {4}%</battleForecast>
-	<settlementInDanger>Settlement In Danger</settlementInDanger>
-	<settlementMilitaryForcesRaiding>{0}'s military forces are raiding {1}</settlementMilitaryForcesRaiding>
-	<settlementMilitaryForcesEnslave>{0}'s military forces are attempting to enslave the population of {1}</settlementMilitaryForcesEnslave>
-	<settlementMilitaryForcesCapturing>{0}'s military forces are attempting to capture {1}</settlementMilitaryForcesCapturing>
-	<SettlementUnderAttack>That settlement is under attack</SettlementUnderAttack>
-	<SettlementNotBeingAttacked>Settlement is not under attack</SettlementNotBeingAttacked>
-	<targetAlreadyBeingAttacked>The target is already being attacked</targetAlreadyBeingAttacked>
+	<FCSettlementAboutToBeAttacked>{0} is about to be attacked by the {1} faction.</FCSettlementAboutToBeAttacked>
+	<FCBattleForecast>Battle Forecast:\nEnemy power: {0} (Efficiency: x{1})\nDefense power: {2} (Efficiency: x{3})\nEstimated chance of victory: {4}%</FCBattleForecast>
+	<FCSettlementInDanger>Settlement In Danger</FCSettlementInDanger>
+	<FCSettlementMilitaryForcesRaiding>{0}'s military forces are raiding {1}</FCSettlementMilitaryForcesRaiding>
+	<FCSettlementMilitaryForcesEnslave>{0}'s military forces are attempting to enslave the population of {1}</FCSettlementMilitaryForcesEnslave>
+	<FCSettlementMilitaryForcesCapturing>{0}'s military forces are attempting to capture {1}</FCSettlementMilitaryForcesCapturing>
+	<FCSettlementUnderAttack>That settlement is under attack</FCSettlementUnderAttack>
+	<FCSettlementNotBeingAttacked>Settlement is not under attack</FCSettlementNotBeingAttacked>
+	<FCTargetAlreadyBeingAttacked>The target is already being attacked</FCTargetAlreadyBeingAttacked>
 
 	<!-- Military Sent Notifications -->
-	<militarySent>Military Sent</militarySent>
-	<militarySentToDefend>The military forces of {0} have been sent to defend {1}</militarySentToDefend>
-	<militaryAlreadyAssigned>The military force is already assigned.</militaryAlreadyAssigned>
-	<ForeignMilitarySwitch>The military forces of {0} have been sent to defend {1}. They have an effective force of {2}</ForeignMilitarySwitch>
+	<FCMilitarySent>Military Sent</FCMilitarySent>
+	<FCMilitarySentToDefend>The military forces of {0} have been sent to defend {1}</FCMilitarySentToDefend>
+	<FCMilitaryAlreadyAssigned>The military force is already assigned.</FCMilitaryAlreadyAssigned>
+	<FCForeignMilitarySwitch>The military forces of {0} have been sent to defend {1}. They have an effective force of {2}</FCForeignMilitarySwitch>
 	<FCMilitarySentCapture>The military forces of {0} have been sent to capture {1}</FCMilitarySentCapture>
 	<FCMilitarySentRaid>The military forces of {0} have been sent to raid {1}</FCMilitarySentRaid>
 	<FCMilitarySentEnslave>The military forces of {0} have been sent to enslave the population of {1}</FCMilitarySentEnslave>
-	<MilitaryForcesReorganizing>{0}'s military forces are re-organizing after their last mission.</MilitaryForcesReorganizing>
+	<FCMilitaryForcesReorganizing>{0}'s military forces are re-organizing after their last mission.</FCMilitaryForcesReorganizing>
 	<FCMilitaryCooldown>The military forces of {0} are ready to be used again</FCMilitaryCooldown>
-	<NoFactionForMilitary>You cannot make a military without a faction!</NoFactionForMilitary>
+	<FCNoFactionForMilitary>You cannot make a military without a faction!</FCNoFactionForMilitary>
 
 	<!-- Raid/Capture Results -->
-	<RaidLoot>Raid Loot</RaidLoot>
-	<RaidEnemySettlementSuccess>The raid on {0} has been completed successfully</RaidEnemySettlementSuccess>
-	<RaidFailure>Raid Failure</RaidFailure>
-	<RaidEnemySettlementFailure>The raid on {0} has resulted in failure</RaidEnemySettlementFailure>
-	<CaptureEnemySettlementSuccess>{0}'s military forces have successfully captured {1}. Due to the previous faction's tech level, the starting settlement level of the new settlement is {2}.</CaptureEnemySettlementSuccess>
-	<CaptureEnemySettlementFailure>{0}'s military forces has failed to capture {1}</CaptureEnemySettlementFailure>
-	<OverwhelmingVictory>Overwhelming Victory</OverwhelmingVictory>
-	<OverwhelmingVictoryDesc>Due to your military force's overwhelming victory, the military force is still available for deployment.</OverwhelmingVictoryDesc>
+	<FCRaidLoot>Raid Loot</FCRaidLoot>
+	<FCRaidEnemySettlementSuccess>The raid on {0} has been completed successfully</FCRaidEnemySettlementSuccess>
+	<FCRaidFailure>Raid Failure</FCRaidFailure>
+	<FCRaidEnemySettlementFailure>The raid on {0} has resulted in failure</FCRaidEnemySettlementFailure>
+	<FCCaptureEnemySettlementSuccess>{0}'s military forces have successfully captured {1}. Due to the previous faction's tech level, the starting settlement level of the new settlement is {2}.</FCCaptureEnemySettlementSuccess>
+	<FCCaptureEnemySettlementFailure>{0}'s military forces has failed to capture {1}</FCCaptureEnemySettlementFailure>
+	<FCOverwhelmingVictory>Overwhelming Victory</FCOverwhelmingVictory>
+	<FCOverwhelmingVictoryDesc>Due to your military force's overwhelming victory, the military force is still available for deployment.</FCOverwhelmingVictoryDesc>
 
 	<!-- Defense -->
-	<DefenseSuccessful>Defense Successful</DefenseSuccessful>
-	<DefenseSuccessfulFull>The defense of {0} was successful!</DefenseSuccessfulFull>
-	<DefenseFailure>Defense Failure</DefenseFailure>
-	<DefenseFailureFull>The defense of our settlement, {0}, has been crushed.</DefenseFailureFull>
-	<ManualBattleStarted>Battle for {0}</ManualBattleStarted>
-	<ManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</ManualBattleStartedDesc>
-	<DefendColony>Defend</DefendColony>
-	<DefendColonyDesc>Defend your Settlement manually</DefendColonyDesc>
-	<DefendSettlement>Set Defending Force</DefendSettlement>
-	<SettlementDefendingInformation>Settlement Defending: {0}'s - Power {1} - Victory: {2}%</SettlementDefendingInformation>
-	<ResetToHomeSettlement>Reset to home settlement's defense - Power {0} - Victory: {1}%</ResetToHomeSettlement>
-	<ChangeDefendingForce>Change Defending Force</ChangeDefendingForce>
-	<militaryAlreadyDefendingSettlement>That military force is already defending the target</militaryAlreadyDefendingSettlement>
-	<defendingMilitaryReset>The defending military has been reset as the defense force for the settlement</defendingMilitaryReset>
-	<externalDefenderAssigned>{0} is now defending this settlement.</externalDefenderAssigned>
-	<externalDefenderAutoAssigned>{0} has been automatically assigned to defend.</externalDefenderAutoAssigned>
-	<ToggleAutoDefend>Automatically defending attacked settlements: {0}</ToggleAutoDefend>
-	<autoDefendWarning>Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu!</autoDefendWarning>
-	<autoBattleEnabledNoManualFight>Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually.</autoBattleEnabledNoManualFight>
-	<hybridBattleEnabledNoManualFight>Hybrid battle mode is enabled. Send a caravan to manually defend this settlement.</hybridBattleEnabledNoManualFight>
-	<settlementTypeNoManualBattle>This settlement type does not support manual battles. All battles here are auto-resolved.</settlementTypeNoManualBattle>
-	<settlementAttackHybridHint>Send a caravan to this settlement before the attack to fight manually.</settlementAttackHybridHint>
+	<FCDefenseSuccessful>Defense Successful</FCDefenseSuccessful>
+	<FCDefenseSuccessfulFull>The defense of {0} was successful!</FCDefenseSuccessfulFull>
+	<FCDefenseFailure>Defense Failure</FCDefenseFailure>
+	<FCDefenseFailureFull>The defense of our settlement, {0}, has been crushed.</FCDefenseFailureFull>
+	<FCDefenseBattleOverLeaveMap>The battle is over. Gather your forces and leave the settlement when ready.</FCDefenseBattleOverLeaveMap>
+	<FCManualBattleStarted>Battle for {0}</FCManualBattleStarted>
+	<FCManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</FCManualBattleStartedDesc>
+	<FCDefendColony>Defend</FCDefendColony>
+	<FCDefendColonyDesc>Defend your Settlement manually</FCDefendColonyDesc>
+	<FCDefendSettlement>Set Defending Force</FCDefendSettlement>
+	<FCSettlementDefendingInformation>Settlement Defending: {0}'s - Power {1} - Victory: {2}%</FCSettlementDefendingInformation>
+	<FCResetToHomeSettlement>Reset to home settlement's defense - Power {0} - Victory: {1}%</FCResetToHomeSettlement>
+	<FCChangeDefendingForce>Change Defending Force</FCChangeDefendingForce>
+	<FCMilitaryAlreadyDefendingSettlement>That military force is already defending the target</FCMilitaryAlreadyDefendingSettlement>
+	<FCDefendingMilitaryReset>The defending military has been reset as the defense force for the settlement</FCDefendingMilitaryReset>
+	<FCExternalDefenderAssigned>{0} is now defending this settlement.</FCExternalDefenderAssigned>
+	<FCExternalDefenderAutoAssigned>{0} has been automatically assigned to defend.</FCExternalDefenderAutoAssigned>
+	<FCToggleAutoDefend>Automatically defending attacked settlements: {0}</FCToggleAutoDefend>
+	<FCAutoDefendWarning>Keep in mind that this setting is not the same as the automatic battle resolve setting found in the settings menu!</FCAutoDefendWarning>
+	<FCAutoBattleEnabledNoManualFight>Auto-Resolve mode is enabled. Switch to Manual or Hybrid in settings to fight battles manually.</FCAutoBattleEnabledNoManualFight>
+	<FCHybridBattleEnabledNoManualFight>Hybrid battle mode is enabled. Send a caravan to manually defend this settlement.</FCHybridBattleEnabledNoManualFight>
+	<FCSettlementTypeNoManualBattle>This settlement type does not support manual battles. All battles here are auto-resolved.</FCSettlementTypeNoManualBattle>
+	<FCSettlementAttackHybridHint>Send a caravan to this settlement before the attack to fight manually.</FCSettlementAttackHybridHint>
 
 	<!-- Raid Damage -->
-	<DefenseFailurePenaltiesHeader>Penalties suffered:</DefenseFailurePenaltiesHeader>
-	<DefenseFailureProsperityLoss>Prosperity: -{0}</DefenseFailureProsperityLoss>
-	<DefenseFailureHappinessLoss>Happiness: -{0}</DefenseFailureHappinessLoss>
-	<DefenseFailureLoyaltyLoss>Loyalty: -{0}</DefenseFailureLoyaltyLoss>
-	<DefenseFailureBuildingsProtected>Buildings were protected from destruction by your policies.</DefenseFailureBuildingsProtected>
-	<BuildingDestroyedInRaid>{0} has been destroyed in the raid.</BuildingDestroyedInRaid>
-	<SettlementDeleveledRaid>The settlement level has decreased by one.</SettlementDeleveledRaid>
-	<ScorchedEarthCollateralTitle>Collateral Damage</ScorchedEarthCollateralTitle>
-	<ScorchedEarthCollateralHeader>The defense of {0} was successful, but the Scorched Earth doctrine caused collateral damage:</ScorchedEarthCollateralHeader>
-	<InjuredCaravanMembersReturning>{0} injured caravan member(s) are being transported home. Estimated arrival: {1} days.</InjuredCaravanMembersReturning>
+	<FCDefenseFailurePenaltiesHeader>Penalties suffered:</FCDefenseFailurePenaltiesHeader>
+	<FCDefenseFailureProsperityLoss>Prosperity: -{0}</FCDefenseFailureProsperityLoss>
+	<FCDefenseFailureHappinessLoss>Happiness: -{0}</FCDefenseFailureHappinessLoss>
+	<FCDefenseFailureLoyaltyLoss>Loyalty: -{0}</FCDefenseFailureLoyaltyLoss>
+	<FCDefenseFailureBuildingsProtected>Buildings were protected from destruction by your policies.</FCDefenseFailureBuildingsProtected>
+	<FCBuildingDestroyedInRaid>{0} has been destroyed in the raid.</FCBuildingDestroyedInRaid>
+	<FCSettlementDeleveledRaid>The settlement level has decreased by one.</FCSettlementDeleveledRaid>
+	<FCScorchedEarthCollateralTitle>Collateral Damage</FCScorchedEarthCollateralTitle>
+	<FCScorchedEarthCollateralHeader>The defense of {0} was successful, but the Scorched Earth doctrine caused collateral damage:</FCScorchedEarthCollateralHeader>
+	<FCInjuredCaravanMembersReturning>{0} injured caravan member(s) are being transported home. Estimated arrival: {1} days.</FCInjuredCaravanMembersReturning>
 
 	<!-- Battle Ending -->
-	<EndingAttack>Ending attack...</EndingAttack>
-	<ErrorEndingAttack>Error ending attack</ErrorEndingAttack>
-	<ErrorEndingAttackDescription>There was a problem ending the attack. Most likely, the map didn't delete correctly.
+	<FCEndingAttack>Ending attack...</FCEndingAttack>
+	<FCErrorEndingAttack>Error ending attack</FCErrorEndingAttack>
+	<FCErrorEndingAttackDescription>There was a problem ending the attack. Most likely, the map didn't delete correctly.
 		Please report this if you don't get your colonists sent to defend back, or your military never comes off
 		cooldown.
-	</ErrorEndingAttackDescription>
+	</FCErrorEndingAttackDescription>
 
 	<!-- Deployment -->
-	<SendToSettlement>Send To Settlement</SendToSettlement>
-	<NotEnoughSilverToDeploySquad>You do not have enough silver to re-deploy that squad!</NotEnoughSilverToDeploySquad>
-	<XDaysToRedeploy>{0} days are left until the ability to re-deploy squads is refreshed</XDaysToRedeploy>
-	<dropPodDeploymentOption>Drop-Pod</dropPodDeploymentOption>
-	<walkIntoMapDeploymentOption>Walk into Map</walkIntoMapDeploymentOption>
-	<dropPodDeploymentOptionUnavailableReasonMedieval> disabled because "Medieval Tech Only" is enabled</dropPodDeploymentOptionUnavailableReasonMedieval>
-	<dropPodDeploymentOptionUnavailableReasonTech> unavailable without the {0} research</dropPodDeploymentOptionUnavailableReasonTech>
-	<errorDropPodResearchCouldNotBeFound>The drop pod research could not be found! Are you running a mod list that removes it?</errorDropPodResearchCouldNotBeFound>
+	<FCSendToSettlement>Send To Settlement</FCSendToSettlement>
+	<FCNotEnoughSilverToDeploySquad>You do not have enough silver to re-deploy that squad!</FCNotEnoughSilverToDeploySquad>
+	<FCXDaysToRedeploy>{0} days are left until the ability to re-deploy squads is refreshed</FCXDaysToRedeploy>
+	<FCDropPodDeploymentOption>Drop-Pod</FCDropPodDeploymentOption>
+	<FCWalkIntoMapDeploymentOption>Walk into Map</FCWalkIntoMapDeploymentOption>
+	<FCDropPodDeploymentOptionUnavailableReasonMedieval> disabled because "Medieval Tech Only" is enabled</FCDropPodDeploymentOptionUnavailableReasonMedieval>
+	<FCDropPodDeploymentOptionUnavailableReasonTech> unavailable without the {0} research</FCDropPodDeploymentOptionUnavailableReasonTech>
+	<FCErrorDropPodResearchCouldNotBeFound>The drop pod research could not be found! Are you running a mod list that removes it?</FCErrorDropPodResearchCouldNotBeFound>
 	<FCMilitaryTriedDeployingToSettlementFC>You cannot deploy your military to another settlement!</FCMilitaryTriedDeployingToSettlementFC>
 	<FCMilitaryAction>Military Action</FCMilitaryAction>
-	<selectMilitaryMovePosition>Select Move Position</selectMilitaryMovePosition>
-	<selectDeploymentPosition>Select Deployment Position</selectDeploymentPosition>
-	<selectedPosOutOfBounds>The position you selected is out of bounds for this map!</selectedPosOutOfBounds>
-	<selectedPosTooCloseToEdge>The position you selected is to close to the map edge!</selectedPosTooCloseToEdge>
-	<deploymentSuccessLabel>Military deployed</deploymentSuccessLabel>
-	<deploymentSuccessDesc>The military forces of {0} have been deployed to {1}</deploymentSuccessDesc>
-	<militaryPawnsLeavingTimeOut>A squad is leaving, because it's available time ran out!</militaryPawnsLeavingTimeOut>
+	<FCSelectMilitaryMovePosition>Select Move Position</FCSelectMilitaryMovePosition>
+	<FCSelectDeploymentPosition>Select Deployment Position</FCSelectDeploymentPosition>
+	<FCSelectedPosOutOfBounds>The position you selected is out of bounds for this map!</FCSelectedPosOutOfBounds>
+	<FCSelectedPosTooCloseToEdge>The position you selected is to close to the map edge!</FCSelectedPosTooCloseToEdge>
+	<FCDeploymentSuccessLabel>Military deployed</FCDeploymentSuccessLabel>
+	<FCDeploymentSuccessDesc>The military forces of {0} have been deployed to {1}</FCDeploymentSuccessDesc>
+	<FCMilitaryPawnsLeavingTimeOut>A squad is leaving, because it's available time ran out!</FCMilitaryPawnsLeavingTimeOut>
 
 	<!-- Battle Commands -->
-	<commandAttack>Attack</commandAttack>
-	<attackSuccess>{0} are now charging the enemy.</attackSuccess>
-	<commandMove>Move</commandMove>
-	<moveSuccess>{0} are moving to the position and standing by.</moveSuccess>
-	<commandLeave>Leave</commandLeave>
-	<leaveSuccess>{0} are now leaving the map. {1} dead.</leaveSuccess>
+	<FCCommandAttack>Attack</FCCommandAttack>
+	<FCAttackSuccess>{0} are now charging the enemy.</FCAttackSuccess>
+	<FCCommandMove>Move</FCCommandMove>
+	<FCMoveSuccess>{0} are moving to the position and standing by.</FCMoveSuccess>
+	<FCCommandLeave>Leave</FCCommandLeave>
+	<FCLeaveSuccess>{0} are now leaving the map. {1} dead.</FCLeaveSuccess>
 
 	<!-- Fire Support -->
 	<FCFireSupportSelectPosition>Select Artillery Position</FCFireSupportSelectPosition>
@@ -130,20 +130,18 @@
 	<FCAssaultBeginning>The assault is beginning!</FCAssaultBeginning>
 
 	<!-- Military Table -->
-	<Military>Military</Military>
-	<MilitaryLevel>Mil Level</MilitaryLevel>
+	<FCMilitary>Military</FCMilitary>
+	<FCMilitaryLevel>Mil Level</FCMilitaryLevel>
 	<FCMilitaryTableMilitaryBudget>Military Budget</FCMilitaryTableMilitaryBudget>
 	<FCMilitaryTableAvailable>Military Available?</FCMilitaryTableAvailable>
 	<FCMilitaryTableUnderAttack>Under Attack</FCMilitaryTableUnderAttack>
 	<FCMilitaryTableFireSupport>Fire Support</FCMilitaryTableFireSupport>
-	<NoValidMilitaries>No valid militaries to use.</NoValidMilitaries>
+	<FCNoValidMilitaries>No valid militaries to use.</FCNoValidMilitaries>
 	<FCAvailable>Available</FCAvailable>
-	<ShortMilitary>Mil</ShortMilitary>
+	<FCShortMilitary>Mil</FCShortMilitary>
 	<FCPower>Power</FCPower>
-	<MedievalTechOnly>Medieval Tech Only</MedievalTechOnly>
-	<FCMilitaryLevel>militaryLevel</FCMilitaryLevel>
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
-	<debugRemoveAllCommand>[Debug] Remove all</debugRemoveAllCommand>
+	<FCDebugRemoveAllCommand>[Debug] Remove all</FCDebugRemoveAllCommand>
 
 	<!-- Military Card UI -->
 	<FCMilSquadPrefix>Squad</FCMilSquadPrefix>

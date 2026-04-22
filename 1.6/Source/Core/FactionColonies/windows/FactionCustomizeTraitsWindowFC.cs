@@ -102,7 +102,7 @@ namespace FactionColonies
             Widgets.Label(alertRect, alertText);
 
             Text.Font = GameFont.Small;
-            if (Widgets.ButtonText(buttonConfirm, "ConfirmChanges".Translate()))
+            if (Widgets.ButtonText(buttonConfirm, "FCConfirmChanges".Translate()))
             {
                 if (selectedTraits.Count > 0)
                 {

@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><CustomizeFaction>Personnaliser la faction</CustomizeFaction>
+<LanguageData><FCCustomizeFaction>Personnaliser la faction</FCCustomizeFaction>
 	
-  <FactionName>Nom de la faction</FactionName>
+  <FCFactionName>Nom de la faction</FCFactionName>
 	
-  <FactionTitle>Titre de la faction</FactionTitle>
+  <FCFactionTitle>Titre de la faction</FCFactionTitle>
 	
-  <FactionIcon>Icône de la faction</FactionIcon>
+  <FCFactionIcon>Icône de la faction</FCFactionIcon>
 	
-  <InvalidFaction>Cette faction ne peut pas faire tourner un empire à elle seule !</InvalidFaction>
+  <FCInvalidFaction>Cette faction ne peut pas faire tourner un empire à elle seule !</FCInvalidFaction>
 	
-  <PlayerFaction>Faction du joueur</PlayerFaction>
+  <FCPlayerFaction>Faction du joueur</FCPlayerFaction>
 	
-  <Bastion>Bastion</Bastion>
+  <FCBastion>Bastion</FCBastion>
 	
   <FCFoundedOn>Fondée le {0}</FCFoundedOn>
 
 	
 	
-  <FactionHappiness>Bonheur de la faction</FactionHappiness>
+  <FCFactionHappiness>Bonheur de la faction</FCFactionHappiness>
 	
-  <FactionLoyalty>Loyauté de la faction</FactionLoyalty>
+  <FCFactionLoyalty>Loyauté de la faction</FCFactionLoyalty>
 	
-  <FactionUnrest>Agitation de la faction</FactionUnrest>
+  <FCFactionUnrest>Agitation de la faction</FCFactionUnrest>
 	
-  <FactionProsperity>Prospérité de la faction</FactionProsperity>
+  <FCFactionProsperity>Prospérité de la faction</FCFactionProsperity>
 	
-  <FactionHappinessDesc>Mesure du bonheur global de la faction. Un bonheur élevé signifie que tout conflit interne au sein d'une colonie tournera fortement en votre faveur.</FactionHappinessDesc>
+  <FCFactionHappinessDesc>Mesure du bonheur global de la faction. Un bonheur élevé signifie que tout conflit interne au sein d'une colonie tournera fortement en votre faveur.</FCFactionHappinessDesc>
 	
-  <FactionLoyaltyDesc>Mesure de la loyauté globale de la faction. La loyauté d'une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit le risque de défection.</FactionLoyaltyDesc>
+  <FCFactionLoyaltyDesc>Mesure de la loyauté globale de la faction. La loyauté d'une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit le risque de défection.</FCFactionLoyaltyDesc>
 	
-  <FactionUnrestDesc>Mesure de l'agitation globale de la faction. Plus elle augmente, plus des événements internes dangereux ont de chances d'éclater. Si elle monte trop haut, une révolte à l'échelle de la faction peut survenir.</FactionUnrestDesc>
+  <FCFactionUnrestDesc>Mesure de l'agitation globale de la faction. Plus elle augmente, plus des événements internes dangereux ont de chances d'éclater. Si elle monte trop haut, une révolte à l'échelle de la faction peut survenir.</FCFactionUnrestDesc>
 	
-  <FactionProsperityDesc>Mesure de la prospérité globale de la faction. La prospérité d'une ville est directement liée à la production de ressources. 50 % de prospérité = 50 % de production. Si la prospérité est endommagée, elle remontera lentement avec le temps.</FactionProsperityDesc>
+  <FCFactionProsperityDesc>Mesure de la prospérité globale de la faction. La prospérité d'une ville est directement liée à la production de ressources. 50 % de prospérité = 50 % de production. Si la prospérité est endommagée, elle remontera lentement avec le temps.</FCFactionProsperityDesc>
 
 	
 	
@@ -41,49 +41,49 @@
 	
   <FCFactionLevelUpDesc>Votre faction {0} est passée au niveau {1} !</FCFactionLevelUpDesc>
 	
-  <ReachedMaxLevel>niveau maximum atteint</ReachedMaxLevel>
+  <FCReachedMaxLevel>niveau maximum atteint</FCReachedMaxLevel>
 
 	
 	
-  <Policies-Traits>Politiques/Traits</Policies-Traits>
+  <FCPolicies-Traits>Politiques/Traits</FCPolicies-Traits>
 	
-  <FactionPoliciesAndTraits>Politiques et traits de faction</FactionPoliciesAndTraits>
+  <FCFactionPoliciesAndTraits>Politiques et traits de faction</FCFactionPoliciesAndTraits>
 	
-  <TaxLaw>Politique fiscale</TaxLaw>
+  <FCTaxLaw>Politique fiscale</FCTaxLaw>
 	
-  <SocialPolicy>Politique sociale</SocialPolicy>
+  <FCSocialPolicy>Politique sociale</FCSocialPolicy>
 	
-  <MilitaryPolicy>Politique militaire</MilitaryPolicy>
+  <FCMilitaryPolicy>Politique militaire</FCMilitaryPolicy>
 	
   <FCPolicySelection>Sélection de politique</FCPolicySelection>
 	
   <FCSelectPolicies>Sélectionner les politiques</FCSelectPolicies>
 	
-  <PolicyAlreadyEnacted>Cette politique est déjà en vigueur</PolicyAlreadyEnacted>
+  <FCPolicyAlreadyEnacted>Cette politique est déjà en vigueur</FCPolicyAlreadyEnacted>
 	
-  <AlreadyPolicyTypeBeingEnacted>Une politique de ce type est déjà en cours d'adoption</AlreadyPolicyTypeBeingEnacted>
+  <FCAlreadyPolicyTypeBeingEnacted>Une politique de ce type est déjà en cours d'adoption</FCAlreadyPolicyTypeBeingEnacted>
 	
-  <AlreadyPolicyInSlot>Une politique est déjà en cours d'adoption dans cet emplacement</AlreadyPolicyInSlot>
+  <FCAlreadyPolicyInSlot>Une politique est déjà en cours d'adoption dans cet emplacement</FCAlreadyPolicyInSlot>
 	
-  <Enact>Promulguer</Enact>
+  <FCEnact>Promulguer</FCEnact>
 	
-  <Enacted>Promulguée</Enacted>
+  <FCEnacted>Promulguée</FCEnacted>
 	
-  <Repeal>Abroger</Repeal>
+  <FCRepeal>Abroger</FCRepeal>
 	
-  <WillBeEnactedIn>sera promulguée dans</WillBeEnactedIn>
+  <FCWillBeEnactedIn>sera promulguée dans</FCWillBeEnactedIn>
 	
-  <EnactPolicy>Promulguer la politique</EnactPolicy>
+  <FCEnactPolicy>Promulguer la politique</FCEnactPolicy>
 	
-  <HasBeenEnactedAt>a été promulguée à</HasBeenEnactedAt>
+  <FCHasBeenEnactedAt>a été promulguée à</FCHasBeenEnactedAt>
 	
-  <EnactedInYourFaction>a été promulguée dans votre faction</EnactedInYourFaction>
+  <FCEnactedInYourFaction>a été promulguée dans votre faction</FCEnactedInYourFaction>
 
 	
 	
-  <FactionTraits>Traits de faction</FactionTraits>
+  <FCFactionTraits>Traits de faction</FCFactionTraits>
 	
-  <AddTrait>Ajouter un trait</AddTrait>
+  <FCAddTrait>Ajouter un trait</FCAddTrait>
 	
   <FCTraitSelection>Sélection de trait</FCTraitSelection>
 	
@@ -173,27 +173,27 @@
 
 	
 	
-  <Researching>Recherche en cours</Researching>
+  <FCResearching>Recherche en cours</FCResearching>
 	
-  <ResearchExpended>{0} points de recherche ont été utilisés pour rechercher {1}. Il vous reste {2} points.</ResearchExpended>
+  <FCResearchExpended>{0} points de recherche ont été utilisés pour rechercher {1}. Il vous reste {2} points.</FCResearchExpended>
 	
-  <ResearchPointsExpended>Recherche dépensée</ResearchPointsExpended>
+  <FCResearchPointsExpended>Recherche dépensée</FCResearchPointsExpended>
 	
-  <NoResearchExpended>Aucun point de recherche n'a été utilisé aujourd'hui. Il vous reste {0} points.</NoResearchExpended>
+  <FCNoResearchExpended>Aucun point de recherche n'a été utilisé aujourd'hui. Il vous reste {0} points.</FCNoResearchExpended>
 	
-  <PointsAddedToResearchPool>{0} points ont été ajoutés au pool de recherche !</PointsAddedToResearchPool>
+  <FCPointsAddedToResearchPool>{0} points ont été ajoutés au pool de recherche !</FCPointsAddedToResearchPool>
 	
-  <ResearchGeneratedWaste>Les points de recherche générés par votre faction ont été perdus, car aucune recherche n'est sélectionnée</ResearchGeneratedWaste>
+  <FCResearchGeneratedWaste>Les points de recherche générés par votre faction ont été perdus, car aucune recherche n'est sélectionnée</FCResearchGeneratedWaste>
 	
-  <ActivateResearch>Activer la recherche</ActivateResearch>
+  <FCActivateResearch>Activer la recherche</FCActivateResearch>
 	
   <FCSendResearchItems>Envoyer des objets de recherche</FCSendResearchItems>
 	
   <FCFactionResearch>Recherche de faction</FCFactionResearch>
 	
-  <ResearchLevel>Vérifier le niveau technologique</ResearchLevel>
+  <FCResearchLevel>Vérifier le niveau technologique</FCResearchLevel>
 	
-  <CurrentResearchLevel>Votre niveau technologique actuel est {0}. Pour atteindre le niveau suivant, vous devez rechercher {1}</CurrentResearchLevel>
+  <FCCurrentResearchLevel>Votre niveau technologique actuel est {0}. Pour atteindre le niveau suivant, vous devez rechercher {1}</FCCurrentResearchLevel>
 	
   <FCShipBasics>Bases du vaisseau</FCShipBasics>
 	
@@ -213,7 +213,7 @@
 	
   <FCFailedToImproveRelationship>Vos communications avec {0} n'ont pas permis d'améliorer les relations.</FCFailedToImproveRelationship>
 	
-  <XDaysToSendDiplomat>Il reste {0} jours avant que la capacité d'améliorer les relations soit réinitialisée</XDaysToSendDiplomat>
+  <FCXDaysToSendDiplomat>Il reste {0} jours avant que la capacité d'améliorer les relations soit réinitialisée</FCXDaysToSendDiplomat>
 	
   <FCIncreaseRelations>Tenter d'améliorer les relations</FCIncreaseRelations>
 	
@@ -221,7 +221,7 @@
 
 	
 	
-  <CouldNotFindMapOfCapital>Impossible de trouver la carte de la capitale</CouldNotFindMapOfCapital>
+  <FCCouldNotFindMapOfCapital>Impossible de trouver la carte de la capitale</FCCouldNotFindMapOfCapital>
 	
   <FCCapitalAlreadyEstablished>La capitale de l'Empire est déjà établie à {0}. Désactivez d'abord le siège de capitale là-bas si vous voulez la déplacer.</FCCapitalAlreadyEstablished>
 	

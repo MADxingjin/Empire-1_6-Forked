@@ -54,7 +54,7 @@
 	<FactionColonies.BuildingFCDef ParentName="BuildingFCDef_Surface_Industrial">
 		<defName>inhouseMercCompany</defName> <!--Name of Def -->
 		<label>In-House Merc Company</label> <!--Lable of Def -->
-		<desc>Barracks for an in-house mercenary company. They will provide security for the colony.</desc> <!-- Description of trait -->
+		<desc>Barracks for an in-house mercenary company. They will provide security for the settlement.</desc> <!-- Description of trait -->
 		<cost>1000</cost>
 		<constructionDuration>120000</constructionDuration> <!-- Ticks it takes until construction is finished -->
 		<statModifiers>

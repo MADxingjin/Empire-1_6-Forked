@@ -2,99 +2,93 @@
 <LanguageData>
 
   <!-- Создание поселения -->
-  <SettleANewColony>Основать новую колонию</SettleANewColony>
-  <CreateNewColony>Создать новую колонию</CreateNewColony>
-  <SelectTile>Выберите тайл для создания колонии</SelectTile>
-  <selectedInvalidTile>Вы не можете построить здесь поселение!</selectedInvalidTile>
-  <Settle>Основать</Settle>
-  <CaravanOnWay>Караван уже в пути</CaravanOnWay>
-  <CaravanSentToLocation>Караван был отправлен к месту! Они прибудут через</CaravanSentToLocation>
-  <ConstructionToLocation>Строительные бригады были отправлены к месту! Их работа завершится через</ConstructionToLocation>
-  <ColonyConstruction>Строительство {0}</ColonyConstruction>
-  <ImpassableMountains>Вы не можете основать {0} на непроходимых горах.</ImpassableMountains>
-  <NotAllowedBiome>Вы не можете основать {0} в этом биоме.</NotAllowedBiome>
-  <InvalidPlanetLayer>Неверный слой планеты.</InvalidPlanetLayer>
-  <OrbitalTileOccupied>Этот орбитальный тайл занят.</OrbitalTileOccupied>
+  <FCSettleANewColony>Основать новую колонию</FCSettleANewColony>
+  <FCCreateNewColony>Создать новую колонию</FCCreateNewColony>
+  <FCSelectTile>Выберите тайл для создания колонии</FCSelectTile>
+  <FCSelectedInvalidTile>Вы не можете построить здесь поселение!</FCSelectedInvalidTile>
+  <FCSettle>Основать</FCSettle>
+  <FCCaravanOnWay>Караван уже в пути</FCCaravanOnWay>
+  <FCCaravanSentToLocation>Караван был отправлен к месту! Они прибудут через</FCCaravanSentToLocation>
+  <FCConstructionToLocation>Строительные бригады были отправлены к месту! Их работа завершится через</FCConstructionToLocation>
+  <FCColonyConstruction>Строительство {0}</FCColonyConstruction>
+  <FCImpassableMountains>Вы не можете основать {0} на непроходимых горах.</FCImpassableMountains>
+  <FCNotAllowedBiome>Вы не можете основать {0} в этом биоме.</FCNotAllowedBiome>
+  <FCInvalidPlanetLayer>Неверный слой планеты.</FCInvalidPlanetLayer>
+  <FCOrbitalTileOccupied>Этот орбитальный тайл занят.</FCOrbitalTileOccupied>
   <FCSettlementFormed>Поселение основано</FCSettlementFormed>
-  <TheSettlement>Поселение</TheSettlement>
-  <HasBeenFormed> было основано</HasBeenFormed>
+  <FCTheSettlement>Поселение</FCTheSettlement>
+  <FCHasBeenFormed> было основано</FCHasBeenFormed>
   <FCPickSettlementType>Выберите тип поселения</FCPickSettlementType>
   <FCRequiresResearch>Требуется исследование: {0}</FCRequiresResearch>
   <FCRequiresTechLevel>Требуется технологический уровень: {0}</FCRequiresTechLevel>
   <FCSettlementResources>Ресурсы:</FCSettlementResources>
-  <SettleEventDesc>Караван направляется для основания нового {0} в {1}. Предполагаемое прибытие: {2}.</SettleEventDesc>
-  <SettleEventCompletedDesc>{0} был основан как новый {1} в {2}.</SettleEventCompletedDesc>
-  <PlayerColony>Колония игрока</PlayerColony>
-  <SetCapital>Установить столицу</SetCapital>
-  <SetAsFactionCapital>{0} был установлен как столица фракции</SetAsFactionCapital>
+  <FCSettleEventDesc>Караван направляется для основания нового {0} в {1}. Предполагаемое прибытие: {2}.</FCSettleEventDesc>
+  <FCSettleEventCompletedDesc>{0} был основан как новый {1} в {2}.</FCSettleEventCompletedDesc>
+  <FCPlayerColony>Колония игрока</FCPlayerColony>
+  <FCSetCapital>Установить столицу</FCSetCapital>
+  <FCSetAsFactionCapital>{0} был установлен как столица фракции</FCSetAsFactionCapital>
 
   <!-- Улучшение поселения -->
-  <AlreadyUpgradeSettlement>Это поселение уже улучшается!</AlreadyUpgradeSettlement>
-  <StartUpgradeSettlement>Поселение теперь улучшается...</StartUpgradeSettlement>
-  <UpgradeSettlement>Улучшить поселение</UpgradeSettlement>
-  <Upgrade>Улучшить</Upgrade>
-  <SettlementUpgradeInProgress>Улучшение...</SettlementUpgradeInProgress>
-  <CanBeUpgraded>можно улучшить за</CanBeUpgraded>
-  <UpgradeColonyDesc>Улучшение этой колонии увеличит максимальное количество рабочих до начала роста стоимости на 3 рабочих. Военный уровень этой колонии также увеличится на 1.</UpgradeColonyDesc>
-  <HasBeenUpgraded>было улучшено до уровня</HasBeenUpgraded>
-  <UpgradeEventDesc>{0} улучшается с уровня {1} до уровня {2}.\n\n{3}</UpgradeEventDesc>
-  <UpgradeEventCompletedDesc>{0} был улучшен до уровня {1}!\n\n{2}</UpgradeEventCompletedDesc>
-  <AlreadyMaxLevel>уже максимального уровня</AlreadyMaxLevel>
-  <NotEnoughSilverUpgrade>На текущей карте недостаточно серебра для оплаты улучшения поселения.</NotEnoughSilverUpgrade>
-  <CannotBeUpgradedPastMax>Это поселение не может быть улучшено выше максимального уровня</CannotBeUpgradedPastMax>
-  <UpgradeTown>Улучшить город</UpgradeTown>
+  <FCAlreadyUpgradeSettlement>Это поселение уже улучшается!</FCAlreadyUpgradeSettlement>
+  <FCStartUpgradeSettlement>Поселение теперь улучшается...</FCStartUpgradeSettlement>
+  <FCUpgradeSettlement>Улучшить поселение</FCUpgradeSettlement>
+  <FCUpgrade>Улучшить</FCUpgrade>
+  <FCSettlementUpgradeInProgress>Улучшение...</FCSettlementUpgradeInProgress>
+  <FCCanBeUpgraded>можно улучшить за</FCCanBeUpgraded>
+  <FCUpgradeColonyDesc>Улучшение этой колонии увеличит максимальное количество рабочих до начала роста стоимости на 3 рабочих. Военный уровень этой колонии также увеличится на 1.</FCUpgradeColonyDesc>
+  <FCHasBeenUpgraded>было улучшено до уровня</FCHasBeenUpgraded>
+  <FCUpgradeEventDesc>{0} улучшается с уровня {1} до уровня {2}.\n\n{3}</FCUpgradeEventDesc>
+  <FCUpgradeEventCompletedDesc>{0} был улучшен до уровня {1}!\n\n{2}</FCUpgradeEventCompletedDesc>
+  <FCAlreadyMaxLevel>уже максимального уровня</FCAlreadyMaxLevel>
+  <FCNotEnoughSilverUpgrade>На текущей карте недостаточно серебра для оплаты улучшения поселения.</FCNotEnoughSilverUpgrade>
+  <FCCannotBeUpgradedPastMax>Это поселение не может быть улучшено выше максимального уровня</FCCannotBeUpgradedPastMax>
   <FCUpgradeBadgeInProgress>Улучшение: осталось {0}</FCUpgradeBadgeInProgress>
   <FCUpgradeBadgeAvailable>Нажмите для улучшения (стоимость: {0} серебра)</FCUpgradeBadgeAvailable>
 
   <!-- Окно поселения -->
-  <TownLog>Журнал города</TownLog>
-  <GoToLocation>Перейти к месту</GoToLocation>
-  <Located>Расположен в</Located>
-  <LandOf>землях</LandOf>
-  <openSettlementWindowDefaultLabel>Просмотреть информацию о поселении</openSettlementWindowDefaultLabel>
-  <openSettlementWindowDefaultDesc>Открывает окно колонии поселения</openSettlementWindowDefaultDesc>
+  <FCGoToLocation>Перейти к месту</FCGoToLocation>
+  <FCLocated>Расположен в</FCLocated>
+  <FCLandOf>землях</FCLandOf>
+  <FCOpenSettlementWindowDefaultLabel>Просмотреть информацию о поселении</FCOpenSettlementWindowDefaultLabel>
+  <FCOpenSettlementWindowDefaultDesc>Открывает окно колонии поселения</FCOpenSettlementWindowDefaultDesc>
   <FCBuildRoads>Строить дороги</FCBuildRoads>
 
   <!-- Статистика поселения -->
-  <SettlementMilitaryLevel>Военный уровень поселения</SettlementMilitaryLevel>
-  <SettlementHappiness>Счастье поселения</SettlementHappiness>
-  <SettlementLoyalty>Лояльность поселения</SettlementLoyalty>
-  <SettlementUnrest>Нестабильность поселения</SettlementUnrest>
-  <SettlementProsperity>Процветание поселения</SettlementProsperity>
+  <FCSettlementMilitaryLevel>Военный уровень поселения</FCSettlementMilitaryLevel>
+  <FCSettlementHappiness>Счастье поселения</FCSettlementHappiness>
+  <FCSettlementLoyalty>Лояльность поселения</FCSettlementLoyalty>
+  <FCSettlementUnrest>Нестабильность поселения</FCSettlementUnrest>
+  <FCSettlementProsperity>Процветание поселения</FCSettlementProsperity>
   <FCHappiness>счастье</FCHappiness>
   <FCLoyality>лояльность</FCLoyality>
   <FCUnrest>нестабильность</FCUnrest>
   <FCProsperity>процветание</FCProsperity>
-  <Happiness>счастье</Happiness>
-  <Loyalty>лояльность</Loyalty>
-  <Unrest>нестабильность</Unrest>
-  <Prosperity>процветание</Prosperity>
-  <BaseRecovery>Базовая скорость восстановления</BaseRecovery>
-  <ProsperityTarget>Цель: {0}%</ProsperityTarget>
-  <ProsperityDrift>Дрейф к цели</ProsperityDrift>
-  <ProsperityTargetBreakdown>Счастье ({0}) + Лояльность ({1}) + Стабильность ({2}) / 3</ProsperityTargetBreakdown>
-  <BaseGain>Базовый прирост</BaseGain>
-  <BaseLoss>Базовые потери</BaseLoss>
-  <SettlementStatGain>Прирост {1} на {0} в день</SettlementStatGain>
-  <SettlementStatLoss>Потеря {1} на {0} в день</SettlementStatLoss>
+  <FCBaseRecovery>Базовая скорость восстановления</FCBaseRecovery>
+  <FCProsperityTarget>Цель: {0}%</FCProsperityTarget>
+  <FCProsperityDrift>Дрейф к цели</FCProsperityDrift>
+  <FCProsperityTargetBreakdown>Счастье ({0}) + Лояльность ({1}) + Стабильность ({2}) / 3</FCProsperityTargetBreakdown>
+  <FCBaseGain>Базовый прирост</FCBaseGain>
+  <FCBaseLoss>Базовые потери</FCBaseLoss>
+  <FCSettlementStatGain>Прирост {1} на {0} в день</FCSettlementStatGain>
+  <FCSettlementStatLoss>Потеря {1} на {0} в день</FCSettlementStatLoss>
 
   <!-- Описания статистики поселения -->
-  <SettlementMilitaryLevelDesc>Военный уровень напрямую влияет на способность поселения защищать себя и атаковать внешние угрозы.</SettlementMilitaryLevelDesc>
-  <SettlementHappinessDesc>Показатель общего счастья поселения.
+  <FCSettlementMilitaryLevelDesc>Военный уровень напрямую влияет на способность поселения защищать себя и атаковать внешние угрозы.</FCSettlementMilitaryLevelDesc>
+  <FCSettlementHappinessDesc>Показатель общего счастья поселения.
 
-Высокий уровень счастья означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</SettlementHappinessDesc>
-  <SettlementLoyaltyDesc>Показатель общей лояльности поселения.
+Высокий уровень счастья означает, что любой внутренний конфликт в поселении, скорее всего, склонится в вашу пользу.</FCSettlementHappinessDesc>
+  <FCSettlementLoyaltyDesc>Показатель общей лояльности поселения.
 
-Лояльность поселения определяет, насколько охотно поселение будет вас слушаться. Высокая лояльность снижает шанс отделения.</SettlementLoyaltyDesc>
-  <SettlementUnrestDesc>Показатель общей нестабильности поселения.
+Лояльность поселения определяет, насколько охотно поселение будет вас слушаться. Высокая лояльность снижает шанс отделения.</FCSettlementLoyaltyDesc>
+  <FCSettlementUnrestDesc>Показатель общей нестабильности поселения.
 
-Чем выше нестабильность, тем вероятнее возникновение опасных внутренних событий в вашем поселении. Если она станет слишком высокой, может вспыхнуть мятеж.</SettlementUnrestDesc>
-  <SettlementProsperityDesc>Показатель общего процветания поселения.
+Чем выше нестабильность, тем вероятнее возникновение опасных внутренних событий в вашем поселении. Если она станет слишком высокой, может вспыхнуть мятеж.</FCSettlementUnrestDesc>
+  <FCSettlementProsperityDesc>Показатель общего процветания поселения.
 
-Процветание города напрямую связано с производством ресурсов (например, 50% процветания = 50% производства). Процветание дрейфует к цели, определяемой счастьем, лояльностью и нестабильностью поселения.</SettlementProsperityDesc>
+Процветание города напрямую связано с производством ресурсов (например, 50% процветания = 50% производства). Процветание дрейфует к цели, определяемой счастьем, лояльностью и нестабильностью поселения.</FCSettlementProsperityDesc>
 
   <!-- Таблица поселений -->
-  <SettlementManager>Управление поселениями</SettlementManager>
+  <FCSettlementManager>Управление поселениями</FCSettlementManager>
   <FCSettlementTableName>Название</FCSettlementTableName>
   <FCSettlementTableLevel>Уровень</FCSettlementTableLevel>
   <FCSettlementTableMilLevel>Военный уровень</FCSettlementTableMilLevel>
@@ -108,14 +102,14 @@
   <FCNoSettlements>Нет поселений.</FCNoSettlements>
   <FCSettlementCount>{0} поселений</FCSettlementCount>
   <FCSortBy>Сортировка: {0}</FCSortBy>
-  <ColonyLevel>Уровень колонии</ColonyLevel>
-  <Hamlet>деревушка</Hamlet>
+  <FCColonyLevel>Уровень колонии</FCColonyLevel>
+  <FCHamlet>деревушка</FCHamlet>
 
   <!-- Удаление поселения -->
-  <DeleteSettlement>Удалить поселение</DeleteSettlement>
-  <DeleteSettlementConfirm>Удалить поселение {0}?</DeleteSettlementConfirm>
-  <AreYouSureRemove>Вы уверены?</AreYouSureRemove>
-  <SettlementRemoved>Поселение {0} было удалено.</SettlementRemoved>
+  <FCDeleteSettlement>Удалить поселение</FCDeleteSettlement>
+  <FCDeleteSettlementConfirm>Удалить поселение {0}?</FCDeleteSettlementConfirm>
+  <FCAreYouSureRemove>Вы уверены?</FCAreYouSureRemove>
+  <FCSettlementRemoved>Поселение {0} было удалено.</FCSettlementRemoved>
 
   <!-- Настройка поселения -->
   <FCCustomizeSettlement>Настроить поселение</FCCustomizeSettlement>
@@ -126,17 +120,17 @@
   <!-- Особые действия поселения -->
   <FCSpecialActions>Особые действия</FCSpecialActions>
   <FCBuyLoyalty>Купить лояльность</FCBuyLoyalty>
-  <SendSilverToColony>Отправить серебро в колонию</SendSilverToColony>
-  <SendingXSilver>Отправка {0} серебра</SendingXSilver>
-  <SettlementGainsXLoyalty>Поселение получит {0} лояльности</SettlementGainsXLoyalty>
+  <FCSendSilverToColony>Отправить серебро в колонию</FCSendSilverToColony>
+  <FCSendingXSilver>Отправка {0} серебра</FCSendingXSilver>
+  <FCSettlementGainsXLoyalty>Поселение получит {0} лояльности</FCSettlementGainsXLoyalty>
 
   <!-- Статус строительства -->
-  <numUnderConstruction>Активных строек: {0}</numUnderConstruction>
-  <ActiveConstruction>Активные стройки</ActiveConstruction>
-  <closeConstructionBox>Закрыть список строек</closeConstructionBox>
-  <openConstructionBox>Открыть список строек</openConstructionBox>
-  <settlementupgrading>Улучшение поселения</settlementupgrading>
-  <completiontimer>Завершится через: {0}</completiontimer>
+  <FCNumUnderConstruction>Активных строек: {0}</FCNumUnderConstruction>
+  <FCActiveConstruction>Активные стройки</FCActiveConstruction>
+  <FCCloseConstructionBox>Закрыть список строек</FCCloseConstructionBox>
+  <FCOpenConstructionBox>Открыть список строек</FCOpenConstructionBox>
+  <FCSettlementupgrading>Улучшение поселения</FCSettlementupgrading>
+  <FCCompletiontimer>Завершится через: {0}</FCCompletiontimer>
 
   <!-- Описания биомов -->
   <FCDescSeaIce>Бескрайние ледяные просторы, не нарушаемые ничем, кроме мелкой и редкой дикой природы. Никакая еда не растет, кроме как в отапливаемых помещениях. Здесь выживают только самые стойкие формы жизни.</FCDescSeaIce>
@@ -183,6 +177,6 @@
   <FCOrbitalKeyword10>Астральная платформа</FCOrbitalKeyword10>
 
   <!-- Ограничения по окружению для зданий -->
-  <BuildingInvalidEnvironment>Это здание не может быть построено в биоме этого поселения!</BuildingInvalidEnvironment>
+  <FCBuildingInvalidEnvironment>Это здание не может быть построено в биоме этого поселения!</FCBuildingInvalidEnvironment>
 
 </LanguageData>

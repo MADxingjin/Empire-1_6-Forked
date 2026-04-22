@@ -47,7 +47,16 @@ namespace FactionColonies
 
         public void SetUniqueLoadID()
         {
-            loadID = FactionCache.FactionComp.GetNextBillID();
+            FactionFC comp = FactionCache.FactionComp;
+            if (comp is object)
+            {
+                loadID = comp.GetNextBillID();
+            }
+            else
+            {
+                loadID = Rand.Int;
+                LogUtil.Error($"BillFC.SetUniqueLoadID: FactionComp is null. Assigned fallback loadID {loadID}.");
+            }
         }
 
         public bool Resolve()
@@ -60,7 +69,7 @@ namespace FactionColonies
 
             if (settlement != null)
             {
-                string messageString = "NotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "ConfiscatedTithes".Translate() + "." + " " + "UnpaidTitheEffect".Translate();
+                string messageString = "FCNotEnoughSilverForBill".Translate() + " " + settlement.Name + ". " + "FCConfiscatedTithes".Translate() + "." + " " + "FCUnpaidTitheEffect".Translate();
                 settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
                 settlement.GainHappiness(-10d);
             }

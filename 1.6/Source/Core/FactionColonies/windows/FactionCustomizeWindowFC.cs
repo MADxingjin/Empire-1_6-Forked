@@ -55,7 +55,7 @@ namespace FactionColonies
 
         private void ApplyChanges()
         {
-            if (tempName.NullOrEmpty()) tempName = "PlayerFaction".Translate();
+            if (tempName.NullOrEmpty()) tempName = "FCPlayerFaction".Translate();
 
             faction.title = tempTitle;
             faction.name = tempName;
@@ -106,7 +106,7 @@ namespace FactionColonies
             // 1. Header
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(inRect.x, y, inRect.width, 36f), "CustomizeFaction".Translate());
+            Widgets.Label(new Rect(inRect.x, y, inRect.width, 36f), "FCCustomizeFaction".Translate());
             y += 36f + smallMargin;
             Widgets.DrawLineHorizontal(inRect.x, y, inRect.width);
             y += margin;
@@ -156,7 +156,7 @@ namespace FactionColonies
             float confirmHeight = 30f;
             Rect confirmRect = new Rect((inRect.width - confirmWidth) / 2f, inRect.yMax - confirmHeight - margin, confirmWidth, confirmHeight);
             Text.Font = GameFont.Small;
-            if (Widgets.ButtonText(confirmRect, "ConfirmChanges".Translate()))
+            if (Widgets.ButtonText(confirmRect, "FCConfirmChanges".Translate()))
             {
                 ApplyChanges();
                 Find.WindowStack.TryRemove(this);
@@ -169,7 +169,7 @@ namespace FactionColonies
         private void DrawNameCard(Rect rect)
         {
             DrawCard(rect);
-            DrawCardLabel(rect, "FactionName".Translate());
+            DrawCardLabel(rect, "FCFactionName".Translate());
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect fieldRect = new Rect(rect.x + cardPadding, rect.y + cardPadding + 18f, rect.width - cardPadding * 2, 28f);
@@ -179,7 +179,7 @@ namespace FactionColonies
         private void DrawTitleCard(Rect rect)
         {
             DrawCard(rect);
-            DrawCardLabel(rect, "FactionTitle".Translate());
+            DrawCardLabel(rect, "FCFactionTitle".Translate());
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect fieldRect = new Rect(rect.x + cardPadding, rect.y + cardPadding + 18f, rect.width - cardPadding * 2, 28f);
@@ -354,7 +354,7 @@ namespace FactionColonies
         private void DrawXenotypesCard(Rect rect)
         {
             DrawCard(rect);
-            DrawCardLabel(rect, "AllowedXenotypes".Translate());
+            DrawCardLabel(rect, "FCAllowedXenotypes".Translate());
             float btnWidth = rect.width - cardPadding * 2;
             float btnHeight = 28f;
             Rect btnRect = new Rect(rect.x + cardPadding, rect.y + (rect.height - btnHeight) / 2f + 8f, btnWidth, btnHeight);
@@ -367,7 +367,7 @@ namespace FactionColonies
         private void DrawAnimalsCard(Rect rect)
         {
             DrawCard(rect);
-            DrawCardLabel(rect, "AllowedAnimals".Translate());
+            DrawCardLabel(rect, "FCAllowedAnimals".Translate());
             float btnWidth = rect.width - cardPadding * 2;
             float btnHeight = 28f;
             Rect btnRect = new Rect(rect.x + cardPadding, rect.y + (rect.height - btnHeight) / 2f + 8f, btnWidth, btnHeight);

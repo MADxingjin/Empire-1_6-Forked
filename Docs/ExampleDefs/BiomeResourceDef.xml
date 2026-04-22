@@ -36,6 +36,16 @@
 	<resourceBlockList>
 		<li>RTD_Example_Blocked</li>
 	</resourceBlockList>
+	<!-- Stat Modifiers -->
+	<!-- Permanent stat modifiers applied to any settlement founded in this biome. -->
+	<!-- Applied during settlement initialization with source ID "biome_<defName>". -->
+	<!-- See FCStatDef.xml for details on FCStatModifier. -->
+	<statModifiers>
+		<li>
+			<stat>happiness</stat>
+			<value>5</value>
+		</li>
+	</statModifiers>
   </FactionColonies.BiomeResourceDef>
 
 </Defs>

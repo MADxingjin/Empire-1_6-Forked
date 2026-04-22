@@ -33,7 +33,7 @@ namespace FactionColonies
                 if (faction.factionTraits[i]?.behavior != null)
                 {
                     try { faction.factionTraits[i].behavior.OnRemoved(faction); }
-                    catch (Exception) { }
+                    catch (Exception ex) { LogUtil.Warning($"OnRemoved threw during test cleanup: {ex}"); }
                 }
             }
             faction.factionTraits.Clear();
@@ -62,7 +62,7 @@ namespace FactionColonies
             if (faction.factionTraits[slot]?.behavior != null)
             {
                 try { faction.factionTraits[slot].behavior.OnRemoved(faction); }
-                catch (Exception) { }
+                catch (Exception ex) { LogUtil.Warning($"OnRemoved threw during test cleanup: {ex}"); }
             }
             var trait = new FCPolicy(def);
             faction.factionTraits[slot] = trait;
@@ -81,7 +81,7 @@ namespace FactionColonies
                 if (faction.factionTraits[i]?.behavior != null)
                 {
                     try { faction.factionTraits[i].behavior.OnRemoved(faction); }
-                    catch (Exception) { }
+                    catch (Exception ex) { LogUtil.Warning($"OnRemoved threw during test cleanup: {ex}"); }
                 }
                 faction.factionTraits[i] = new FCPolicy(FCPolicyDefOf.empty);
             }

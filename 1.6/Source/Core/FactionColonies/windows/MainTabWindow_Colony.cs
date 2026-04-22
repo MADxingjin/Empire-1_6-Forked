@@ -17,15 +17,15 @@ namespace FactionColonies
         private const float bigMargin = 8f;
 
         // ===== TAB STATE =====
-        private string curTab = "Overview".Translate();
+        private string curTab = "FCOverview".Translate();
         private List<TabRecord> tabs = new List<TabRecord>();
 
         private List<string> overviewTabs = new List<string>
         {
-            "Overview".Translate(),
-            "Bills".Translate(),
-            "Events".Translate(),
-            "Military".Translate(),
+            "FCOverview".Translate(),
+            "FCBills".Translate(),
+            "FCEvents".Translate(),
+            "FCMilitary".Translate(),
             "FCEdicts".Translate()
         };
         private Dictionary<string, Action<Rect>> overviewFuncs = new Dictionary<string, Action<Rect>>();
@@ -143,12 +143,15 @@ namespace FactionColonies
                     {
                         faction.factionCreated = true;
                         Find.WindowStack.Add(new FactionCustomizeWindowFc(faction));
-                        if (Find.CurrentMap.Parent != null &&
-                            Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile) != null)
+                        if (Find.CurrentMap.Parent != null)
                         {
-                            Messages.Message(
-                                "SetAsFactionCapital".Translate(Find.WorldObjects.SettlementAt(Find.CurrentMap.Parent.Tile).Name),
-                                MessageTypeDefOf.NeutralEvent);
+                            WorldSettlementFC wsfc = Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(Find.CurrentMap.Parent.Tile);
+                            if (wsfc is object)
+                            {
+                                Messages.Message(
+                                    "FCSetAsFactionCapital".Translate(wsfc.Name),
+                                    MessageTypeDefOf.NeutralEvent);
+                            }
                         }
                     }
                     else
@@ -294,28 +297,28 @@ namespace FactionColonies
                         icon = TexLoad.iconHappiness;
                         statVal = (float)faction.averageHappiness;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FactionHappiness".Translate() + "\n-----\n" + "FactionHappinessDesc".Translate();
+                        tooltip = "FCFactionHappiness".Translate() + "\n-----\n" + "FCFactionHappinessDesc".Translate();
                         inverted = false;
                         break;
                     case "loyalty":
                         icon = TexLoad.iconLoyalty;
                         statVal = (float)faction.averageLoyalty;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FactionLoyalty".Translate() + "\n-----\n" + "FactionLoyaltyDesc".Translate();
+                        tooltip = "FCFactionLoyalty".Translate() + "\n-----\n" + "FCFactionLoyaltyDesc".Translate();
                         inverted = false;
                         break;
                     case "unrest":
                         icon = TexLoad.iconUnrest;
                         statVal = (float)faction.averageUnrest;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FactionUnrest".Translate() + "\n-----\n" + "FactionUnrestDesc".Translate();
+                        tooltip = "FCFactionUnrest".Translate() + "\n-----\n" + "FCFactionUnrestDesc".Translate();
                         inverted = true;
                         break;
                     default: // prosperity
                         icon = TexLoad.iconProsperity;
                         statVal = (float)faction.averageProsperity;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FactionProsperity".Translate() + "\n-----\n" + "FactionProsperityDesc".Translate();
+                        tooltip = "FCFactionProsperity".Translate() + "\n-----\n" + "FCFactionProsperityDesc".Translate();
                         inverted = false;
                         break;
                 }
@@ -477,11 +480,11 @@ namespace FactionColonies
             }
 
             Rect newColonyButton = new Rect(x, y, calcButtonWidth * 2, height);
-            if (Widgets.ButtonText(newColonyButton, "CreateNewColony".Translate()))
+            if (Widgets.ButtonText(newColonyButton, "FCCreateNewColony".Translate()))
             {
                 Find.WindowStack.Add(new CreateColonyWindowFc());
                 Find.World.renderer.wantedMode = WorldRenderMode.Planet;
-                Messages.Message("SelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
+                Messages.Message("FCSelectTile".Translate(), MessageTypeDefOf.NegativeEvent);
                 Find.WindowStack.TryRemove(this);
             }
         }
@@ -501,7 +504,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.DrawHighlight(profitBox);
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(profitLabel, "EstimatedProfit".Translate() + ": ");
+            Widgets.Label(profitLabel, "FCEstimatedProfit".Translate() + ": ");
             Text.Anchor = TextAnchor.MiddleLeft;
             Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
             Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
@@ -509,7 +512,7 @@ namespace FactionColonies
 
             Rect taxBox = new Rect(x, y, width, 22f);
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(taxBox, "TimeTillTax".Translate() + ": " + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString());
+            Widgets.Label(taxBox, "FCTimeTillTax".Translate() + ": " + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString());
             y += taxBox.height + margin;
 
             // Seperator
@@ -571,7 +574,7 @@ namespace FactionColonies
                         changedGui = true;
                     }
                     Text.Font = GameFont.Tiny;
-                    if (Widgets.ButtonText(actions, "Actions".Translate(), active: !changedGui))
+                    if (Widgets.ButtonText(actions, "FCActions".Translate(), active: !changedGui))
                     {
                         List<FloatMenuOption> list = new List<FloatMenuOption>();
                         foreach (FloatMenuOption option in options)
@@ -600,7 +603,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Rect prodHeaderBox = new Rect(x, y, width, 22f);
             Widgets.DrawHighlight(prodHeaderBox);
-            Widgets.Label(prodHeaderBox, "TotalProduction".Translate());
+            Widgets.Label(prodHeaderBox, "FCTotalProduction".Translate());
             y += prodHeaderBox.height + margin;
 
             float rowHeight = 22f;
@@ -845,7 +848,7 @@ namespace FactionColonies
                     origColor = GUI.color;
                     GUI.color = Color.gray;
                     float labelW = 67f;
-                    Widgets.Label(new Rect(upgradeBadgeX, botY, labelW, lineH), "SettlementUpgradeInProgress".Translate());
+                    Widgets.Label(new Rect(upgradeBadgeX, botY, labelW, lineH), "FCSettlementUpgradeInProgress".Translate());
                     GUI.color = origColor;
                     Text.Font = fontBefore;
                     Text.Anchor = anchorBefore;
@@ -868,7 +871,7 @@ namespace FactionColonies
                     fontBefore = Text.Font;
                     Text.Font = GameFont.Tiny;
                     Rect btnRect = new Rect(upgradeBadgeX, botY + 2f, upgradeBadgeW, lineH - 4f);
-                    if (UIUtil.ButtonFlat(btnRect, "Upgrade".Translate(), AccentUtil.Income, highlighted: i % 2 != 0))
+                    if (UIUtil.ButtonFlat(btnRect, "FCUpgrade".Translate(), AccentUtil.Income, highlighted: i % 2 != 0))
                         Find.WindowStack.Add(new SettlementUpgradeWindowFc(s));
                     Text.Font = fontBefore;
 
@@ -949,7 +952,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color origColor = GUI.color;
             GUI.color = Color.gray;
-            string taxCountdown = "TimeTillTax".Translate() + ": "
+            string taxCountdown = "FCTimeTillTax".Translate() + ": "
                 + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString();
             Widgets.Label(new Rect(innerX, rect.y + pad, innerW * 0.6f, summaryH),
                 "FCPendingBillsCount".Translate(bills.Count) + "    |    " + taxCountdown);
@@ -1056,7 +1059,7 @@ namespace FactionColonies
                 // Top-right: Silver amount (colored) + Resolve button
                 float silverW = 140f;
                 float silverX = contentX + contentW - resolveW - silverW - 6f;
-                string silverStr = bill.taxes.silverAmount.ToString("F0") + " " + "Silver".Translate();
+                string silverStr = bill.taxes.silverAmount.ToString("F0") + " " + "FCSilver".Translate();
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Small;
@@ -1070,11 +1073,11 @@ namespace FactionColonies
 
                 // Resolve button (right side, full row height)
                 Rect resolveRect = new Rect(contentX + contentW - resolveW, ry + 4f, resolveW, rowH - 8f);
-                if (Widgets.ButtonText(resolveRect, "ResolveBill".Translate()))
+                if (Widgets.ButtonText(resolveRect, "FCResolveBill".Translate()))
                 {
                     if (bill.AttemptResolve())
                     {
-                        Messages.Message("BillResolved".Translate(), MessageTypeDefOf.NeutralEvent);
+                        Messages.Message("FCBillResolved".Translate(), MessageTypeDefOf.NeutralEvent);
                         cachedSortedBills = null;
                     }
                     else
@@ -1082,7 +1085,7 @@ namespace FactionColonies
                         int needed = (int)(-1 * bill.taxes.silverAmount);
                         int available = PaymentUtil.GetSilver();
                         Messages.Message(
-                            $"{"NotEnoughSilverOnMapToPayBill".Translate()} ({available} / {needed} {"Silver".Translate()})",
+                            $"{"FCNotEnoughSilverOnMapToPayBill".Translate()} ({available} / {needed} {"FCSilver".Translate()})",
                             MessageTypeDefOf.RejectInput);
                     }
                     break;
@@ -1117,9 +1120,9 @@ namespace FactionColonies
 
                 // Tooltip
                 string tooltip = settleName + "\n\n"
-                    + "Silver".Translate() + ": " + bill.taxes.silverAmount.ToString("F0") + "\n"
+                    + "FCSilver".Translate() + ": " + bill.taxes.silverAmount.ToString("F0") + "\n"
                     + titheSummary + "\n"
-                    + "DueFC".Translate() + ": " + dueStr;
+                    + "FCDueFC".Translate() + ": " + dueStr;
                 TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
@@ -1192,7 +1195,7 @@ namespace FactionColonies
 
         private void DrawEventsTab(Rect rect)
         {
-            List<FCEvent> events = faction.events;
+            IReadOnlyList<FCEvent> events = faction.Events;
             const float pad = 8f;
             const float rowH = 44f;
             const float accentW = 4f;
@@ -1467,7 +1470,7 @@ namespace FactionColonies
                     }
                 }
                 if (list.Count == 0)
-                    list.Add(new FloatMenuOption("None".Translate(), null));
+                    list.Add(new FloatMenuOption("FCNone".Translate(), null));
 
                 if (list.Count == 1 && list[0].action != null)
                     list[0].action();
@@ -1692,7 +1695,7 @@ namespace FactionColonies
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                string squadName = milComp.militarySquad?.outfit?.name ?? "None".Translate();
+                string squadName = milComp.militarySquad?.outfit?.name ?? "FCNone".Translate();
                 string squadLabel = "FCMilSquadPrefix".Translate() + ": " + squadName;
                 float infoAreaW = contentW - totalBtnW - 4f;
                 Widgets.Label(new Rect(contentX, botY, infoAreaW, lineH), squadLabel);
@@ -1736,7 +1739,7 @@ namespace FactionColonies
                 bool noOutfit = milComp.militarySquad?.outfit?.name is null;
                 bool deployDisabled = noOutfit || milComp.militaryBusy;
                 Rect deployRect = new Rect(bx, btnY, btnW, btnH);
-                if (UIUtil.ButtonFlat(deployRect, "Deploy".Translate(), disabled: deployDisabled, highlighted: isHighlighted))
+                if (UIUtil.ButtonFlat(deployRect, "FCDeploy".Translate(), disabled: deployDisabled, highlighted: isHighlighted))
                 {
                     HandleDeployClick(settlement, milComp);
                 }
@@ -1771,8 +1774,8 @@ namespace FactionColonies
                     + "FCSettlementTableMilLevel".Translate() + ": " + settlement.settlementMilitaryLevel + "\n"
                     + "FCMilitaryTableMilitaryBudget".Translate() + ": $" + budget + "\n"
                     + "FCMilitaryTableSquad".Translate() + ": " + squadName + "\n"
-                    + "FCMilitaryTableAvailable".Translate() + ": " + (milComp.IsMilitaryBusySilent() ? "No".Translate() : "Yes".Translate()) + "\n"
-                    + "FCMilitaryTableUnderAttack".Translate() + ": " + (milComp.isUnderAttack ? "Yes".Translate() : "No".Translate());
+                    + "FCMilitaryTableAvailable".Translate() + ": " + (milComp.IsMilitaryBusySilent() ? "FCNo".Translate() : "FCYes".Translate()) + "\n"
+                    + "FCMilitaryTableUnderAttack".Translate() + ": " + (milComp.isUnderAttack ? "FCYes".Translate() : "FCNo".Translate());
                 float btnStartX = contentX + contentW - totalBtnW;
                 TooltipHandler.TipRegion(new Rect(0f, ry, btnStartX, rowH), tooltip);
                 TooltipHandler.TipRegion(new Rect(btnStartX, ry, rowW - btnStartX, lineH), tooltip);
@@ -1875,7 +1878,7 @@ namespace FactionColonies
                 // Tooltip
                 string entryTooltip = entry.Name + "\n\n"
                     + "FCSettlementTableMilLevel".Translate() + ": " + entry.MilitaryLevel + "\n"
-                    + "FCMilitaryTableUnderAttack".Translate() + ": " + (entry.IsUnderAttack ? "Yes".Translate() : "No".Translate());
+                    + "FCMilitaryTableUnderAttack".Translate() + ": " + (entry.IsUnderAttack ? "FCYes".Translate() : "FCNo".Translate());
                 TooltipHandler.TipRegion(new Rect(0f, ry, contentX + contentW - btnW, rowH), entryTooltip);
             }
 
@@ -1964,7 +1967,7 @@ namespace FactionColonies
 
         private List<FloatMenuOption> DeploymentOptions(WorldSettlementFC settlement) => new List<FloatMenuOption>
         {
-            new FloatMenuOption("walkIntoMapDeploymentOption".Translate(), delegate
+            new FloatMenuOption("FCWalkIntoMapDeploymentOption".Translate(), delegate
             {
                 MilitaryUtil.CallinAlliedForces(settlement, false);
             }),
@@ -1976,16 +1979,16 @@ namespace FactionColonies
             bool medievalOnly = FCSettings.medievalTechOnly;
             if (!medievalOnly && (FactionCache.TechTransportPods?.IsFinished ?? false))
             {
-                return new FloatMenuOption("dropPodDeploymentOption".Translate(),
+                return new FloatMenuOption("FCDropPodDeploymentOption".Translate(),
                     delegate { MilitaryUtil.CallinAlliedForces(settlement, true); });
             }
 
             return new FloatMenuOption(
-                "dropPodDeploymentOption".Translate() + (medievalOnly
-                    ? "dropPodDeploymentOptionUnavailableReasonMedieval".Translate()
-                    : "dropPodDeploymentOptionUnavailableReasonTech".Translate(
+                "FCDropPodDeploymentOption".Translate() + (medievalOnly
+                    ? "FCDropPodDeploymentOptionUnavailableReasonMedieval".Translate()
+                    : "FCDropPodDeploymentOptionUnavailableReasonTech".Translate(
                         FactionCache.TechTransportPods?.label ??
-                        "errorDropPodResearchCouldNotBeFound".Translate())), null);
+                        "FCErrorDropPodResearchCouldNotBeFound".Translate())), null);
         }
 
         private void OpenMilitaryWindow(MilitaryWindow content, string title)

@@ -31,10 +31,10 @@ namespace FactionColonies
                     {
                         if (settlement != null)
                         {
-                            string messageString = "NotEnoughSilverForBill".Translate() + " "
+                            string messageString = "FCNotEnoughSilverForBill".Translate() + " "
                                 + settlement.Name + ". "
-                                + "ConfiscatedTithes".Translate() + "."
-                                + " " + "UnpaidTitheEffect".Translate();
+                                + "FCConfiscatedTithes".Translate() + "."
+                                + " " + "FCUnpaidTitheEffect".Translate();
                             settlement.GainUnrestWithReason(new Message(messageString, MessageTypeDefOf.NegativeEvent), 10d);
                             settlement.GainHappiness(-10d);
                         }
@@ -57,8 +57,8 @@ namespace FactionColonies
 
                 string settlementList = string.Join("\n", latePaidSettlements.Select(s => "  - " + s.Name));
                 Find.LetterStack.ReceiveLetter(
-                    "LateBillAutoPaidLabel".Translate(),
-                    "LateBillAutoPaidDesc".Translate(latePaidSettlements.Count, settlementList),
+                    "FCLateBillAutoPaidLabel".Translate(),
+                    "FCLateBillAutoPaidDesc".Translate(latePaidSettlements.Count, settlementList),
                     LetterDefOf.NegativeEvent);
             }
         }

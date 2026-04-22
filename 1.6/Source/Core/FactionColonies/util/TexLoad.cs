@@ -17,6 +17,8 @@ namespace FactionColonies
                 LogUtil.Error("No faction icons found, will probably result in Empire not working properly.");
             }
             checkerboard = CreateCheckerboard();
+            gradientHorizontal = CreateHorizontalGradient();
+            gradientVertical = CreateVerticalGradient();
         }
 
         public static readonly Texture2D iconTest100 = ContentFinder<Texture2D>.Get("GUI/100x");
@@ -69,6 +71,168 @@ namespace FactionColonies
 
         public static List<Texture2D> factionIcons = new List<Texture2D>();
         public static readonly Texture2D checkerboard;
+        public static readonly Texture2D gradientHorizontal;
+        public static readonly Texture2D gradientVertical;
+
+        private static Texture2D CreateHorizontalGradient()
+        {
+            const int width = 256;
+            Texture2D tex = new Texture2D(width, 1, TextureFormat.ARGB32, false);
+            tex.name = "GradientHorizontalTex";
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < width; x++)
+            {
+                float alpha = 1f - (float)x / (width - 1);
+                tex.SetPixel(x, 0, new Color(1f, 1f, 1f, alpha));
+            }
+
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// Draws a horizontal gradient that fades from <paramref name="color"/> to transparent (left to right).
+        /// Uses the cached gradient texture tinted via GUI.color.
+        /// </summary>
+        public static void DrawHorizontalGradient(Rect rect, Color color)
+        {
+            Color prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(rect, gradientHorizontal, ScaleMode.StretchToFill, true);
+            GUI.color = prev;
+        }
+
+        private static Texture2D CreateVerticalGradient()
+        {
+            const int height = 256;
+            Texture2D tex = new Texture2D(1, height, TextureFormat.ARGB32, false);
+            tex.name = "GradientVerticalTex";
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+
+            for (int y = 0; y < height; y++)
+            {
+                float alpha = (float)y / (height - 1);
+                tex.SetPixel(0, y, new Color(1f, 1f, 1f, alpha));
+            }
+
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// Draws a vertical gradient that fades from <paramref name="color"/> to transparent (top to bottom).
+        /// Uses the cached gradient texture tinted via GUI.color.
+        /// </summary>
+        public static void DrawVerticalGradient(Rect rect, Color color)
+        {
+            Color prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(rect, gradientVertical, ScaleMode.StretchToFill, true);
+            GUI.color = prev;
+        }
+
+        /// <summary>
+        /// Draws a horizontal gradient that fades in from transparent, peaks in the middle, and fades back out.
+        /// </summary>
+        public static void DrawHorizontalPeakGradient(Rect rect, Color color)
+        {
+            DrawHorizontalPeakGradient(rect, color, 0.5f, 0.5f);
+        }
+
+        /// <summary>
+        /// Draws a horizontal gradient with three segments: fade-in, constant alpha, and fade-out.
+        /// <paramref name="fadeInFraction"/> and <paramref name="fadeOutFraction"/> are 0..1 fractions of the rect width.
+        /// The remainder is filled at constant alpha.
+        /// </summary>
+        public static void DrawHorizontalPeakGradient(Rect rect, Color color, float fadeInFraction, float fadeOutFraction)
+        {
+            float total = fadeInFraction + fadeOutFraction;
+            if (total > 1f)
+            {
+                fadeInFraction /= total;
+                fadeOutFraction /= total;
+            }
+
+            Color prev = GUI.color;
+            GUI.color = color;
+
+            float fadeInWidth = rect.width * fadeInFraction;
+            float fadeOutWidth = rect.width * fadeOutFraction;
+            float constantWidth = rect.width - fadeInWidth - fadeOutWidth;
+
+            if (fadeInFraction > 0f)
+            {
+                Rect fadeInRect = new Rect(rect.x, rect.y, fadeInWidth, rect.height);
+                GUI.DrawTextureWithTexCoords(fadeInRect, gradientHorizontal, new Rect(1, 0, -1, 1));
+            }
+
+            if (constantWidth > 0f)
+            {
+                Rect constantRect = new Rect(rect.x + fadeInWidth, rect.y, constantWidth, rect.height);
+                GUI.DrawTexture(constantRect, BaseContent.WhiteTex, ScaleMode.StretchToFill, true);
+            }
+
+            if (fadeOutFraction > 0f)
+            {
+                Rect fadeOutRect = new Rect(rect.x + fadeInWidth + constantWidth, rect.y, fadeOutWidth, rect.height);
+                GUI.DrawTexture(fadeOutRect, gradientHorizontal, ScaleMode.StretchToFill, true);
+            }
+
+            GUI.color = prev;
+        }
+
+        /// <summary>
+        /// Draws a vertical gradient that fades in from transparent, peaks in the middle, and fades back out.
+        /// </summary>
+        public static void DrawVerticalPeakGradient(Rect rect, Color color)
+        {
+            DrawVerticalPeakGradient(rect, color, 0.5f, 0.5f);
+        }
+
+        /// <summary>
+        /// Draws a vertical gradient with three segments: fade-in, constant alpha, and fade-out.
+        /// <paramref name="fadeInFraction"/> and <paramref name="fadeOutFraction"/> are 0..1 fractions of the rect height.
+        /// The remainder is filled at constant alpha.
+        /// </summary>
+        public static void DrawVerticalPeakGradient(Rect rect, Color color, float fadeInFraction, float fadeOutFraction)
+        {
+            float total = fadeInFraction + fadeOutFraction;
+            if (total > 1f)
+            {
+                fadeInFraction /= total;
+                fadeOutFraction /= total;
+            }
+
+            Color prev = GUI.color;
+            GUI.color = color;
+
+            float fadeInHeight = rect.height * fadeInFraction;
+            float fadeOutHeight = rect.height * fadeOutFraction;
+            float constantHeight = rect.height - fadeInHeight - fadeOutHeight;
+
+            if (fadeInFraction > 0f)
+            {
+                Rect fadeInRect = new Rect(rect.x, rect.y, rect.width, fadeInHeight);
+                GUI.DrawTextureWithTexCoords(fadeInRect, gradientVertical, new Rect(0, 1, 1, -1));
+            }
+
+            if (constantHeight > 0f)
+            {
+                Rect constantRect = new Rect(rect.x, rect.y + fadeInHeight, rect.width, constantHeight);
+                GUI.DrawTexture(constantRect, BaseContent.WhiteTex, ScaleMode.StretchToFill, true);
+            }
+
+            if (fadeOutFraction > 0f)
+            {
+                Rect fadeOutRect = new Rect(rect.x, rect.y + fadeInHeight + constantHeight, rect.width, fadeOutHeight);
+                GUI.DrawTexture(fadeOutRect, gradientVertical, ScaleMode.StretchToFill, true);
+            }
+
+            GUI.color = prev;
+        }
 
         private static Texture2D CreateCheckerboard()
         {

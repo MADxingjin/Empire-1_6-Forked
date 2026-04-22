@@ -103,7 +103,7 @@ namespace FactionColonies
             {
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(scrollOutRect, "selectAUnitButton".Translate());
+                Widgets.Label(scrollOutRect, "FCSelectAUnitButton".Translate());
             }
 
             Widgets.EndScrollView();

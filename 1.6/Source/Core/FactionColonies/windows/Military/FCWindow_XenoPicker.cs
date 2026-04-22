@@ -60,7 +60,7 @@ namespace FactionColonies
             // Title
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(new Rect(0, 0, inRect.width, 35f), "changeUnitXenoButton".Translate());
+            Widgets.Label(new Rect(0, 0, inRect.width, 35f), "FCChangeUnitXenoButton".Translate());
 
             // Search bar
             Text.Font = GameFont.Small;
@@ -153,7 +153,7 @@ namespace FactionColonies
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Rect labelRect = new Rect(iconRect.xMax + 5f, row.y, row.width - IconSize - 10f, RowHeight);
-                string costText = opt.costFactor != 1f ? " (x" + opt.costFactor.ToString("F2") + $" {"Cost".Translate()})" : "";
+                string costText = opt.costFactor != 1f ? " (x" + opt.costFactor.ToString("F2") + $" {"FCCost".Translate()})" : "";
                 Widgets.Label(labelRect, opt.label + costText);
 
                 if (Widgets.ButtonInvisible(row))
@@ -175,7 +175,7 @@ namespace FactionColonies
             {
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(scrollOutRect, "changeUnitXenoNoXenos".Translate());
+                Widgets.Label(scrollOutRect, "FCChangeUnitXenoNoXenos".Translate());
             }
 
             Widgets.EndScrollView();

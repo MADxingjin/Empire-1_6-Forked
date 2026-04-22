@@ -82,7 +82,7 @@ namespace FactionColonies
                     .Join(s => " " + s.Name, "\n");
                 if (!settlementString.NullOrEmpty())
                 {
-                    body += "\n\n" + "EventAffectingSettlements".Translate() + "\n" + settlementString;
+                    body += "\n\n" + "FCEventAffectingSettlements".Translate() + "\n" + settlementString;
                 }
             }
 
@@ -131,7 +131,7 @@ namespace FactionColonies
             // Incompatible/duplicate event check
             // Faction-wide events are blocked globally if already active.
             // Settlement-specific events are allowed through — MakeRandomEvent handles per-settlement filtering.
-            foreach (FCEvent evt in FactionCache.FactionComp.events)
+            foreach (FCEvent evt in FactionCache.FactionComp.Events)
             {
                 if (evt.def == null) continue;
                 if (cEvent == evt.def && noSettlementRequirement) return false;
@@ -263,7 +263,7 @@ namespace FactionColonies
                 {
                     // Deterministically target every qualifying settlement
                     HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
-                    foreach (FCEvent activeEvt in worldcomp.events)
+                    foreach (FCEvent activeEvt in worldcomp.Events)
                     {
                         if (activeEvt.def == null) continue;
                         bool isSameDef = activeEvt.def == def;
@@ -321,7 +321,7 @@ namespace FactionColonies
 
                     // Exclude settlements already affected by the same or an incompatible event
                     HashSet<WorldSettlementFC> excludedSettlements = new HashSet<WorldSettlementFC>();
-                    foreach (FCEvent activeEvt in worldcomp.events)
+                    foreach (FCEvent activeEvt in worldcomp.Events)
                     {
                         if (activeEvt.def == null) continue;
                         bool isSameDef = activeEvt.def == def;
@@ -446,28 +446,22 @@ namespace FactionColonies
             return candidates[candidates.Count - 1];
         }
 
-        public static void ProcessEvents(in List<FCEvent> events)
+        public static void ProcessEvents()
         {
             FactionFC faction = FactionCache.FactionComp;
             int currentTick = Find.TickManager.TicksGame;
 
-            // Phase 1: collect all due events and remove them from the source list
-            // This ensures processing callbacks (AddEvent, StartDefence, etc.) cannot
-            // interfere with the iteration or cause index-shift bugs.
-            List<FCEvent> due = null;
-            for (int i = events.Count - 1; i >= 0; i--)
-            {
-                if (events[i].timeTillTrigger > currentTick) continue;
-                if (due is null) due = new List<FCEvent>();
-                due.Add(events[i]);
-                faction.events.RemoveAt(i);
-                faction.eventsVersion++;
-            }
+            // Phase 1: atomically collect every due event and remove it from the queue.
+            // CollectDueEvents deliberately does NOT set evt.fired — phase 2 below still
+            // wants its own re-entrancy guard to gate per-event processing.
+            List<FCEvent> due = faction.eventManager.CollectDueEvents(currentTick);
             if (due is null) return;
 
             // Phase 2: process collected events
             foreach (var evt in due)
             {
+                try
+                {
                 // Guard against accidental re-fires
                 if (evt.fired)
                 {
@@ -533,11 +527,11 @@ namespace FactionColonies
                                 break;
                             }
 
-                            string str = "TaxesFrom".Translate() + " " + settlement.Name + " " + "HaveBeenDelivered".Translate() + "!";
+                            string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
 
                             Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
 
-                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("TaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
                             break;
                         }
                         case "constructBuilding":
@@ -546,7 +540,7 @@ namespace FactionColonies
                             if (settlement != null)
                             {
                                 settlement.ConstructBuilding(evt.building, evt.buildingSlot);
-                                Messages.Message("BuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
+                                Messages.Message("FCBuildingEventCompletedMsg".Translate(evt.building.LabelCap, settlement.Name), MessageTypeDefOf.PositiveEvent);
                             }
                             else
                             {
@@ -559,15 +553,10 @@ namespace FactionColonies
                             {
                                 //if settlement is not null
                                 settlement = faction.ReturnSettlementByLocation(evt.location);
-                                settlement.UpgradeSettlement();
-                                Find.LetterStack.ReceiveLetter("UpgradeSettlement".Translate(),
-                                    "UpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "UpgradeColonyDesc".Translate()),
+                                settlement.UpgradeSettlement(setFlags: true);
+                                Find.LetterStack.ReceiveLetter("FCUpgradeSettlement".Translate(),
+                                    "FCUpgradeEventCompletedDesc".Translate(settlement.Name, settlement.settlementLevel, "FCUpgradeColonyDesc".Translate()),
                                     LetterDefOf.PositiveEvent);
-                                /* We set these values here, instead of in UpgradeSettlement(), because sometimes UpgradeSettlement is called to handle changing a settlement's level outside of the
-                                     * "upgrade settlement" event. We only want to reset these values as a result of resolving the event, so, we handle that here. */
-                                settlement.isUpgrading = false;
-                                settlement.startUpgradeTick = -1;
-                                settlement.finishUpgradeTick = -1;
                             }
 
                             break;
@@ -608,8 +597,7 @@ namespace FactionColonies
                             }
                             else
                             {
-                                var evt1 = evt;
-                                worldSettlement.MilitaryComp.StartDefence(evt, () => SetupAttack(worldSettlement, evt1));
+                                worldSettlement.MilitaryComp.StartDefence(evt, () => { });
                             }
                         }
                         else
@@ -624,13 +612,13 @@ namespace FactionColonies
                         {
                             List<Thing> list = PaymentUtil.GenerateRewardThings(evt.def.randomThingValue, evt.def.randomThingRewardDef);
 
-                            string str = "GoodsReceivedFollowing".Translate(evt.def.label);
+                            string str = "FCGoodsReceivedFollowing".Translate(evt.def.label);
 
                             str = list.Aggregate(str, (before, after) => before + "\n" + after.LabelCap);
 
                             evt.goods.AddRange(list);
 
-                            evt.let = LetterMaker.MakeLetter("GoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
+                            evt.let = LetterMaker.MakeLetter("FCGoodsReceived".Translate(), str, LetterDefOf.PositiveEvent);
                             if (list.Count > 0)
                             {
                                 if (!evt.source.IsValidTile())
@@ -752,6 +740,43 @@ namespace FactionColonies
                 }
 
                 evt.RunAction();
+                }
+                catch (Exception ex)
+                {
+                    LogUtil.Error($"ProcessEvents: exception processing event '{evt.def?.defName ?? "NULL"}' " +
+                        $"(loadID={evt.loadID}): {ex}");
+                    TryRecoverFailedEvent(evt, faction);
+                }
+            }
+        }
+
+        private static void TryRecoverFailedEvent(FCEvent evt, FactionFC faction)
+        {
+            if (evt?.def is null) return;
+            try
+            {
+                if (evt.def == FCEventDefOf.constructBuilding)
+                {
+                    WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.source);
+                    if (settlement is object && evt.building is object && evt.buildingSlot >= 0)
+                    {
+                        settlement.ConstructBuilding(evt.building, evt.buildingSlot);
+                        LogUtil.Warning($"Recovered orphaned construction: {evt.building.defName} at {settlement.Name} slot {evt.buildingSlot}");
+                    }
+                }
+                else if (evt.def == FCEventDefOf.upgradeSettlement)
+                {
+                    WorldSettlementFC settlement = faction.ReturnSettlementByLocation(evt.location);
+                    if (settlement is object)
+                    {
+                        settlement.UpgradeSettlement(setFlags: true);
+                        LogUtil.Warning($"Recovered orphaned upgrade at {settlement.Name}");
+                    }
+                }
+            }
+            catch (Exception recoveryEx)
+            {
+                LogUtil.Error($"ProcessEvents: recovery also failed for '{evt.def.defName}': {recoveryEx}");
             }
         }
 
@@ -824,90 +849,6 @@ namespace FactionColonies
             }
         }
 
-        private static void SetupAttack(WorldSettlementFC worldSettlement, FCEvent temp)
-        {
-            if (worldSettlement?.MilitaryComp is null)
-            {
-                LogUtil.Warning($"SetupAttack called on {worldSettlement?.Name} with no MilitaryComp. Aborting.");
-                return;
-            }
-
-            if (worldSettlement.Map is null)
-            {
-                LogUtil.Error($"SetupAttack: {worldSettlement.Name} has no map. Resetting battle state.");
-                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
-                return;
-            }
-
-            if (temp.militaryForceAttacking is null || temp.militaryForceAttackingFaction is null)
-            {
-                LogUtil.Error($"SetupAttack: Missing attacking force or faction for {worldSettlement.Name}. Resetting battle state.");
-                worldSettlement.MilitaryComp.EndBattle(false, 0, null);
-                return;
-            }
-
-            IncidentParms parms = new IncidentParms
-            {
-                target = worldSettlement.Map,
-                faction = temp.militaryForceAttackingFaction,
-                generateFightersOnly = true,
-                raidStrategy = RaidStrategyDefOf.ImmediateAttack,
-                raidNeverFleeIndividual = true
-            };
-            parms.points = Math.Max(
-                IncidentWorker_Raid.AdjustedRaidPoints(
-                    (float)temp.militaryForceAttacking.forceRemaining * 175,
-                    PawnsArrivalModeDefOf.EdgeWalkIn, parms.raidStrategy,
-                    parms.faction, PawnGroupKindDefOf.Combat,
-                    parms.target // new required parameter
-                ),
-                300f // Minimum floor — ensures at least 1 pawn for any faction
-            );
-            parms.raidArrivalMode = ResolveRaidArriveMode(parms) ?? PawnsArrivalModeDefOf.EdgeWalkIn;
-            parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
-
-            List<Pawn> attackers = PawnGroupMakerUtility.GeneratePawns(
-                IncidentParmsUtility.GetDefaultPawnGroupMakerParms(
-                    PawnGroupKindDefOf.Combat, parms, true)).ToList();
-            if (!attackers.Any())
-            {
-                LogUtil.Error("Got no pawns spawning raid from parms " + parms);
-                // Queue cleanup as a separate LongEvent so the map's deferred initialization
-                // (MapDrawer.RegenerateEverythingNow) completes before we try to dispose it.
-                // Calling EndAttack synchronously here would crash in MapDrawer.Dispose()
-                // because MapDrawer.sections hasn't been initialized yet.
-                LongEventHandler.QueueLongEvent(
-                    () => worldSettlement.MilitaryComp.EndAttack(),
-                    "EndingAttack", false, null);
-                return;
-            }
-
-            double attackerEfficiency = temp.militaryForceAttacking.militaryEfficiency;
-            foreach (Pawn attacker in attackers)
-            {
-                MilitaryEfficiencyUtil.ApplyCombatEfficiencyHediff(attacker, attackerEfficiency);
-            }
-
-            parms.raidArrivalMode.Worker.Arrive(attackers, parms);
-
-            worldSettlement.MilitaryComp.attackers = attackers;
-            worldSettlement.MilitaryComp.attackerForce = temp.militaryForceAttacking;
-            worldSettlement.MilitaryComp.defenderForce = temp.militaryForceDefending;
-            LordMaker.MakeNewLord(
-                parms.faction, new LordJob_HuntColonists(worldSettlement, parms.raidArrivalMode != PawnsArrivalModeDefOf.CenterDrop),
-                worldSettlement.Map, attackers);
-        }
-
-        private static PawnsArrivalModeDef ResolveRaidArriveMode(IncidentParms parms)
-        {
-            return
-                parms.raidStrategy.arriveModes.Where(testing => testing.Worker.CanUseWith(parms))
-                    .TryRandomElementByWeight(
-                        x => x.Worker.GetSelectionWeight(parms), out PawnsArrivalModeDef output)
-                    ? output
-                    : PawnsArrivalModeDefOf.EdgeWalkIn;
-        }
-
         public static void CreateTaxEvent(BillFC bill)
         {
             FactionFC faction = FactionCache.FactionComp;
@@ -918,7 +859,7 @@ namespace FactionColonies
             if (bill.settlement != null && faction.settlements.Contains(bill.settlement))
             {
                 tmp.source = bill.settlement.Tile; //source location
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.Name);
+                tmp.customDescription = "FCTaxesFromSettlementAreBeingDelivered".Translate(bill.settlement.Name);
             }
             else
             {
@@ -926,7 +867,7 @@ namespace FactionColonies
                 // This represents taxes being collected locally at the capital
                 PlanetTile fallbackTile = Find.AnyPlayerHomeMap?.Tile ?? PlanetTile.Invalid;
                 tmp.source = faction.capitalLocation != PlanetTile.Invalid ? faction.capitalLocation : fallbackTile;
-                tmp.customDescription = "TaxesFromSettlementAreBeingDelivered".Translate("Capital".Translate());
+                tmp.customDescription = "FCTaxesFromSettlementAreBeingDelivered".Translate("FCCapital".Translate());
 
                 LogUtil.Message($"Tax Event Debug: faction.capitalLocation={faction.capitalLocation}, fallbackTile={fallbackTile}, tmp.source={tmp.source}");
             }

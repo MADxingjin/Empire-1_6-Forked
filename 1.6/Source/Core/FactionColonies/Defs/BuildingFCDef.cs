@@ -32,6 +32,8 @@ namespace FactionColonies
         public List<WorldSettlementDef> settlementTypeAllowList = new List<WorldSettlementDef>();
         public Hilliness minhilliness = Hilliness.Undefined;
         public Hilliness maxhilliness = Hilliness.Undefined;
+        public List<TileMutatorDef> tileMutatorAllowList = new List<TileMutatorDef>();
+        public List<TileMutatorDef> tileMutatorBlockList = new List<TileMutatorDef>();
         /// <summary>
         /// Determines if the building can be built directly from the building window, into an empty building slot.
         /// </summary>
@@ -78,6 +80,37 @@ namespace FactionColonies
                 }
                 return iconLoaded;
             }
+        }
+
+        public bool CanBeBuiltOnTile(PlanetTile tile)
+        {
+            bool hasAllow = !tileMutatorAllowList.NullOrEmpty();
+            bool hasBlock = !tileMutatorBlockList.NullOrEmpty();
+            if (!hasAllow && !hasBlock) return true;
+
+            IList<TileMutatorDef> mutators = tile.Tile?.Mutators;
+
+            if (hasBlock && mutators != null)
+            {
+                foreach (TileMutatorDef m in mutators)
+                {
+                    if (m is null) continue;
+                    if (tileMutatorBlockList.Contains(m)) return false;
+                }
+            }
+
+            if (hasAllow)
+            {
+                if (mutators.NullOrEmpty()) return false;
+                foreach (TileMutatorDef m in mutators)
+                {
+                    if (m is null) continue;
+                    if (tileMutatorAllowList.Contains(m)) return true;
+                }
+                return false;
+            }
+
+            return true;
         }
 
         public bool CanBeBuiltForSettlementType(WorldSettlementDef settlement)

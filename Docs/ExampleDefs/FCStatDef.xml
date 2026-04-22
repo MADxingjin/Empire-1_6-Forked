@@ -32,9 +32,9 @@
   </FactionColonies.FCStatDef>
 
 
-  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
   <!-- FCStatModifier — not a Def, but a helper class used in many defs' statModifiers lists. -->
-  <!-- It appears on: BuildingFCDef, FCEventDef, FCPolicyDef, and WorldSettlementDef. -->
+  <!-- It appears on: BuildingFCDef, FCEventDef, FCPolicyDef, WorldSettlementDef, -->
+  <!-- BiomeResourceDef, TileMutatorResourceExtension, and TileLandmarkResourceExtension. -->
   <!-- Each entry is a {stat, value} pair that modifies the referenced FCStatDef. -->
   <!--
   Example usage inside another def's <statModifiers> list:

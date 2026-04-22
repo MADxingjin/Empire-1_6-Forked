@@ -188,19 +188,10 @@ namespace FactionColonies
 
         private static string GetResearchRequirementForTechLevel(TechLevel level)
         {
-            switch (level)
-            {
-                case TechLevel.Medieval:
-                    return FactionCache.TechLevelBarrierMedieval?.label ?? "Smithing";
-                case TechLevel.Industrial:
-                    return FactionCache.TechLevelBarrierIndustrial?.label ?? "Electricity";
-                case TechLevel.Spacer:
-                    return FactionCache.TechLevelBarrierSpacer?.label ?? "Fabrication";
-                case TechLevel.Ultra:
-                    return FactionCache.TechLevelBarrierUltra?.label ?? "Ship basics";
-                default:
-                    return level.ToStringHuman();
-            }
+            TechLevelBarrier barrier = FactionCache.GetTechBarrier(level);
+            string label = barrier?.DisplayLabel;
+            if (!label.NullOrEmpty()) return label;
+            return level.ToStringHuman();
         }
 
         #endregion
@@ -485,7 +476,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.Label(nameText, building.LabelCap);
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(nameText, "Cost".Translate() + ": " + building.cost);
+            Widgets.Label(nameText, "FCCost".Translate() + ": " + building.cost);
 
             // Icon below the name row
             float contentY = nameRect.yMax + smallMargin;
@@ -721,11 +712,11 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
 
             Rect costRect = new Rect(statsX, curY, statsW, 22f);
-            Widgets.Label(costRect, "Cost".Translate() + ": " + selectedBuilding.cost);
+            Widgets.Label(costRect, "FCCost".Translate() + ": " + selectedBuilding.cost);
 
             int buildTime = (int)(selectedBuilding.constructionDuration * settlement.GetStatValue(FCStatDefOf.buildTimeMultiplier));
             Rect timeRect = new Rect(statsX, costRect.yMax + smallMargin, statsW, 22f);
-            Widgets.Label(timeRect, "BuildTime".Translate(buildTime.ToTimeString()));
+            Widgets.Label(timeRect, "FCBuildTime".Translate(buildTime.ToTimeString()));
 
             float statsBottom = timeRect.yMax;
 
@@ -1282,7 +1273,7 @@ namespace FactionColonies
 
             if (isSameBuilding)
             {
-                if (Widgets.ButtonText(buttonRect, "Destroy".Translate()))
+                if (Widgets.ButtonText(buttonRect, "FCDestroy".Translate()))
                 {
                     ExecuteDestroy();
                 }
@@ -1303,10 +1294,10 @@ namespace FactionColonies
                 if (!canBuild)
                 {
                     GUI.color = new Color(1f, 1f, 1f, 0.4f);
-                    Widgets.ButtonText(buttonRect, "Build".Translate());
+                    Widgets.ButtonText(buttonRect, "FCBuild".Translate());
                     GUI.color = Color.white;
                 }
-                else if (Widgets.ButtonText(buttonRect, "Build".Translate()))
+                else if (Widgets.ButtonText(buttonRect, "FCBuild".Translate()))
                 {
                     ExecuteBuild();
                 }
@@ -1337,7 +1328,7 @@ namespace FactionColonies
             int triggerTime = (int)(selectedBuilding.constructionDuration * settlement.GetStatValue(FCStatDefOf.buildTimeMultiplier));
 
             tmpEvt.timeTillTrigger = Find.TickManager.TicksGame + triggerTime;
-            tmpEvt.customDescription = "BuildingEventDesc".Translate(
+            tmpEvt.customDescription = "FCBuildingEventDesc".Translate(
                 selectedBuilding.LabelCap,
                 settlement.Name,
                 (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
@@ -1345,7 +1336,7 @@ namespace FactionColonies
             FactionCache.FactionComp.AddEvent(tmpEvt);
 
             PaymentUtil.PaySilver(Convert.ToInt32(selectedBuilding.cost), PaymentUtil.Reason_BuildingConstruction, settlement);
-            Messages.Message(selectedBuilding.label + " " + "WillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
+            Messages.Message(selectedBuilding.label + " " + "FCWillBeConstructedIn".Translate() + " " + (tmpEvt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString(), MessageTypeDefOf.PositiveEvent);
             settlement.BuildingsComp.StartConstruction(selectedBuilding, buildingSlot, tmpEvt.timeTillTrigger);
             Find.WindowStack.TryRemove(this);
         }

@@ -61,7 +61,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Small;
 
-            Widgets.Label(label_Title, "SendSilverToColony".Translate());
+            Widgets.Label(label_Title, "FCSendSilverToColony".Translate());
             Widgets.Label(label_Upper, TranslatorFormattedStringExtensions.Translate("SendingXSilver", selectedSilver));
 
 

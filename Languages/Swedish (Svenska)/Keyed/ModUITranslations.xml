@@ -2,67 +2,67 @@
 
 <LanguageData>
 
-<TheSettlement>Bosättningen</TheSettlement>
+<FCTheSettlement>Bosättningen</FCTheSettlement>
 
-<HasBeenFormed>Har skapats</HasBeenFormed>
+<FCHasBeenFormed>Har skapats</FCHasBeenFormed>
 
-<PlayerColony>Spelar klonin</PlayerColony>
+<FCPlayerColony>Spelar klonin</FCPlayerColony>
 
 <!-- billFC Class -->
  
 
-<NotEnoughSilverForBill>Du hade inte tillräckligt med silver för att betala skatten</NotEnoughSilverForBill>
+<FCNotEnoughSilverForBill>Du hade inte tillräckligt med silver för att betala skatten</FCNotEnoughSilverForBill>
 
-<ConfiscatedTithes>De har beslagtagit dina skatter på grund av det</ConfiscatedTithes>
+<FCConfiscatedTithes>De har beslagtagit dina skatter på grund av det</FCConfiscatedTithes>
 
 <!-- billWindowFC -->
 
 
-<OutstandingBills>Obetalda skatter</OutstandingBills>
+<FCOutstandingBills>Obetalda skatter</FCOutstandingBills>
 
-<Name>Name</Name>
+<FCName>Name</FCName>
 
 <!--<Source>Source</Source>-->
 
 
-<DueDate>Sista datumet</DueDate>
+<FCDueDate>Sista datumet</FCDueDate>
 
-<Amount>Amount</Amount>
+<FCAmount>Amount</FCAmount>
 
-<HasTithe>Har beskattning</HasTithe>
+<FCHasTithe>Har beskattning</FCHasTithe>
 
-<PayReceiveSilver>Betala/få silver</PayReceiveSilver>
+<FCPayReceiveSilver>Betala/få silver</FCPayReceiveSilver>
 
-<ResolveBill>Betala skatten</ResolveBill>
+<FCResolveBill>Betala skatten</FCResolveBill>
 
-<NotEnoughSilverOnMapToPayBill>Du har inte tillräckligt med silver för att betala skatterna</NotEnoughSilverOnMapToPayBill>
+<FCNotEnoughSilverOnMapToPayBill>Du har inte tillräckligt med silver för att betala skatterna</FCNotEnoughSilverOnMapToPayBill>
 
 <!-- createColonyWindowFC -->
 
 
-<SettleANewColony>Skapa en ny koloni</SettleANewColony>
+<FCSettleANewColony>Skapa en ny koloni</FCSettleANewColony>
 
-<TravelTime>Tid att färdas</TravelTime>
+<FCTravelTime>Tid att färdas</FCTravelTime>
 
-<InitialCost>Initial kostnad</InitialCost>
+<FCInitialCost>Initial kostnad</FCInitialCost>
 
-<Silver>Silver</Silver>
+<FCSilver>Silver</FCSilver>
 
-<BaseProductionStats>Bas produktions status</BaseProductionStats>
+<FCBaseProductionStats>Bas produktions status</FCBaseProductionStats>
 
-<Base>Bas</Base>
+<FCBase>Bas</FCBase>
 
-<Modifier>Modifiering</Modifier>
+<FCModifier>Modifiering</FCModifier>
 
-<Final>Sista</Final>
+<FCFinal>Sista</FCFinal>
 
-<Settle>Skapa</Settle>
+<FCSettle>Skapa</FCSettle>
 
-<CaravanOnWay>En karvan är redan på väg</CaravanOnWay>
+<FCCaravanOnWay>En karvan är redan på väg</FCCaravanOnWay>
 
-<CaravanSentToLocation>En karvan har skickats till destinationen! De kommer att anlända i</CaravanSentToLocation>
+<FCCaravanSentToLocation>En karvan har skickats till destinationen! De kommer att anlända i</FCCaravanSentToLocation>
 
-<NotEnoughSilverToSettle>Du har inte tillräckligt med silver på den nuvarande kartan för att skapa en ny koloni</NotEnoughSilverToSettle>
+<FCNotEnoughSilverToSettle>Du har inte tillräckligt med silver på den nuvarande kartan för att skapa en ny koloni</FCNotEnoughSilverToSettle>
 
 <!-- descWindowFC -->
 
@@ -73,197 +73,195 @@
 <!-- eventWindowFC -->
 
 
-<CurrentOngoingEvents>Pågående event</CurrentOngoingEvents>
+<FCCurrentOngoingEvents>Pågående event</FCCurrentOngoingEvents>
 
 <!--<Location>Plats</Location>-->
 
 
-<TimeRemaining>Tid som återstår</TimeRemaining>
+<FCTimeRemaining>Tid som återstår</FCTimeRemaining>
 
-<NewLand>Nytt land</NewLand>
+<FCNewLand>Nytt land</FCNewLand>
 
 <!--factionCustomizeWindowFC -->
 
 
-<CustomizeFaction>Göra om en faktion</CustomizeFaction>
+<FCCustomizeFaction>Göra om en faktion</FCCustomizeFaction>
 
-<FactionName>Namn på faktion</FactionName>
+<FCFactionName>Namn på faktion</FCFactionName>
 
-<FactionTitle>Faktionens titel</FactionTitle>
+<FCFactionTitle>Faktionens titel</FCFactionTitle>
 
-<FactionIcon>Faktionens ikon</FactionIcon>
+<FCFactionIcon>Faktionens ikon</FCFactionIcon>
 
-<ButtonNotAvailable>Den här knappen är inte tillgänglig än</ButtonNotAvailable>
+<FCButtonNotAvailable>Den här knappen är inte tillgänglig än</FCButtonNotAvailable>
 
-<ConfirmChanges>Bekräfta ändringar</ConfirmChanges>
+<FCConfirmChanges>Bekräfta ändringar</FCConfirmChanges>
 
 <!-- FactionFC -->
 
 
-<PlayerFaction>Spelares ikon</PlayerFaction>
+<FCPlayerFaction>Spelares ikon</FCPlayerFaction>
 
-<Bastion>Bastionen av hopp</Bastion>
+<FCBastion>Bastionen av hopp</FCBastion>
 
-<Food>Mat</Food>
+<FCFood>Mat</FCFood>
 
-<Weapons>Vapen</Weapons>
+<FCWeapons>Vapen</FCWeapons>
 
 <!--<Apparel>Kläder</Apparel>-->
 
 
-<Animals>Djur</Animals>
+<FCAnimals>Djur</FCAnimals>
 
-<Logging>Plankor</Logging>
+<FCLogging>Plankor</FCLogging>
 
-<Mining>Gruvarbete</Mining>
+<FCMining>Gruvarbete</FCMining>
 
-<Researching>Forskning</Researching>
+<FCResearching>Forskning</FCResearching>
 
-<PolicyAlreadyEnacted>Den där policyn är redan i drift</PolicyAlreadyEnacted>
+<FCPolicyAlreadyEnacted>Den där policyn är redan i drift</FCPolicyAlreadyEnacted>
 
-<NotEnoughMoneyToEnact>Du har inte tillräckligt med silver på denna karta för att verkligställa dena policy</NotEnoughMoneyToEnact>
+<FCNotEnoughMoneyToEnact>Du har inte tillräckligt med silver på denna karta för att verkligställa dena policy</FCNotEnoughMoneyToEnact>
 
-<AlreadyPolicyTypeBeingEnacted>Det finns redan en liknande policy som är igång</AlreadyPolicyTypeBeingEnacted>
+<FCAlreadyPolicyTypeBeingEnacted>Det finns redan en liknande policy som är igång</FCAlreadyPolicyTypeBeingEnacted>
 
-<AlreadyPolicyInSlot>Det finns redan en policy ingång på den platsen</AlreadyPolicyInSlot>
+<FCAlreadyPolicyInSlot>Det finns redan en policy ingång på den platsen</FCAlreadyPolicyInSlot>
 
-<SettlementTax>Bosättnings skatt</SettlementTax>
+<FCSettlementTax>Bosättnings skatt</FCSettlementTax>
 
-<WeekOf>Ledig vecka</WeekOf>
+<FCWeekOf>Ledig vecka</FCWeekOf>
 
-<TaxesBilled>Skatter har blivit betalade</TaxesBilled>
+<FCTaxesBilled>Skatter har blivit betalade</FCTaxesBilled>
 
-<NoSettlementsToTax>Inga bosättningar att beskatta</NoSettlementsToTax>
+<FCNoSettlementsToTax>Inga bosättningar att beskatta</FCNoSettlementsToTax>
 
-<CouldNotFindMapOfCapital>Kunde inte hitta kartan med huvudstaden</CouldNotFindMapOfCapital>
+<FCCouldNotFindMapOfCapital>Kunde inte hitta kartan med huvudstaden</FCCouldNotFindMapOfCapital>
 
-<ResearchGeneratedWaste>Forsknings poäng genererade av din faktion har gått till spilo eftersom att du inte forskar något</ResearchGeneratedWaste>
+<FCResearchGeneratedWaste>Forsknings poäng genererade av din faktion har gått till spilo eftersom att du inte forskar något</FCResearchGeneratedWaste>
 
 <!-- FCevent -->
 
 
-<TaxesFrom>Skatter från</TaxesFrom>
+<FCTaxesFrom>Skatter från</FCTaxesFrom>
 
-<HaveBeenDelivered>Har blivit ut skickad</HaveBeenDelivered>
+<FCHaveBeenDelivered>Har blivit ut skickad</FCHaveBeenDelivered>
 
-<HasBeenConstructedAt>Hat blivit konstruerad vid</HasBeenConstructedAt>
+<FCHasBeenConstructedAt>Hat blivit konstruerad vid</FCHasBeenConstructedAt>
 
-<HasBeenEnactedAt>Har blivit uppfört</HasBeenEnactedAt>
+<FCHasBeenEnactedAt>Har blivit uppfört</FCHasBeenEnactedAt>
 
-<EnactedInYourFaction>Har blivit uppfört i din faktion</EnactedInYourFaction>
+<FCEnactedInYourFaction>Har blivit uppfört i din faktion</FCEnactedInYourFaction>
 
 <!-- listBuildingFC -->
 
 
-<ConstructBuilding>Konstruera en byggnad</ConstructBuilding>
+<FCConstructBuilding>Konstruera en byggnad</FCConstructBuilding>
 
-<Cost>Kostnad</Cost>
+<FCCost>Kostnad</FCCost>
 
-<Effect>Effektivitet</Effect>
+<FCEffect>Effektivitet</FCEffect>
 
-<Construct>Konstruera</Construct>
+<FCConstruct>Konstruera</FCConstruct>
 
-<Info>Information</Info>
+<FCInfo>Information</FCInfo>
 
-<Built>Byggt</Built>
+<FCBuilt>Byggt</FCBuilt>
 
-<Destroy>Förstöra</Destroy>
+<FCDestroy>Förstöra</FCDestroy>
 
-<Build>Bygga</Build>
+<FCBuild>Bygga</FCBuild>
 
-<WillBeConstructedIn>Kommer att konstrueras om</WillBeConstructedIn>
+<FCWillBeConstructedIn>Kommer att konstrueras om</FCWillBeConstructedIn>
 
 <!-- listFactionPolicyFC -->
 
 
-<Enact>Uppföra</Enact>
+<FCEnact>Uppföra</FCEnact>
 
-<Enacted>Uppfört</Enacted>
+<FCEnacted>Uppfört</FCEnacted>
 
-<Repeal>Upphävt</Repeal>
+<FCRepeal>Upphävt</FCRepeal>
 
-<WillBeEnactedIn>Kommer att uppföras om</WillBeEnactedIn>
+<FCWillBeEnactedIn>Kommer att uppföras om</FCWillBeEnactedIn>
 
 <!-- listSettlementPolicyFC -->
 
 
-<EnactPolicy>Uppförar policy</EnactPolicy>
+<FCEnactPolicy>Uppförar policy</FCEnactPolicy>
 
 <!-- listThingFC -->
 
 
-<TitheList>Beskattnings lista</TitheList>
+<FCTitheList>Beskattnings lista</FCTitheList>
 
-<StackCount>Antallet högar</StackCount>
+<FCStackCount>Antallet högar</FCStackCount>
 
 <!--<MarketValue>Marknads värde</MarketValue>-->
 
 
 <TotalValue>Totallt värde</TotalValue>
 
-<CashSymbol>$</CashSymbol>
+<FCCashSymbol>$</FCCashSymbol>
 
 <!-- MainTabWindow_Colony -->
 
 
-<SettlementManager>Bosättnings hanteraren</SettlementManager>
+<FCSettlementManager>Bosättnings hanteraren</FCSettlementManager>
 
-<CreateNewColony>Skapa ny koloni</CreateNewColony>
+<FCCreateNewColony>Skapa ny koloni</FCCreateNewColony>
 
-<SelectTile>Välj en titel för att skapa en ny koloni</SelectTile>
+<FCSelectTile>Välj en titel för att skapa en ny koloni</FCSelectTile>
 
-<SetAsFactionCapital>{0} Har valts som huvudstad i faktionen</SetAsFactionCapital>
+<FCSetAsFactionCapital>{0} Har valts som huvudstad i faktionen</FCSetAsFactionCapital>
 
 <!--<Faction>Faktionen</Faction>-->
 
 
-<Colonies>Kolonier</Colonies>
+<FCColonies>Kolonier</FCColonies>
 
-<Bills>Skatter</Bills>
+<FCBills>Skatter</FCBills>
 
-<Events>Händelse</Events>
+<FCEvents>Händelse</FCEvents>
 
-<Settlement>Bosättning</Settlement>
+<FCSettlement>Bosättning</FCSettlement>
 
-<Settlements>Bosättningar</Settlements>
+<FCSettlements>Bosättningar</FCSettlements>
 
-<ColonyLevel>Koloni nivå</ColonyLevel>
+<FCColonyLevel>Koloni nivå</FCColonyLevel>
 
-<MilitaryLevel>Bruk nivå</MilitaryLevel>
+<FCMilitaryLevel>Bruk nivå</FCMilitaryLevel>
 
-<Unrest>Oroligheter</Unrest>
 
-<Profit>Vinst</Profit>
+<FCProfit>Vinst</FCProfit>
 
-<Loyalty>Lojalitet</Loyalty>
 
-<TotalProduction>Total produktion</TotalProduction>
+<FCTotalProduction>Total produktion</FCTotalProduction>
 
-<FactionHappiness>Faktions glädje</FactionHappiness>
+<FCFactionHappiness>Faktions glädje</FCFactionHappiness>
 
-<FactionLoyalty>Faktiona lojalitet</FactionLoyalty>
+<FCFactionLoyalty>Faktiona lojalitet</FCFactionLoyalty>
 
-<FactionUnrest>Faktiona oroligheter</FactionUnrest>
+<FCFactionUnrest>Faktiona oroligheter</FCFactionUnrest>
 
-<FactionProsperity>Faktions Framgång</FactionProsperity>
+<FCFactionProsperity>Faktions Framgång</FCFactionProsperity>
 
-<FactionHappinessDesc>Mätningen av faktionens övergripande glädje. En stark glädje betyder att om en konflikt bryter ut i bosättningen så kommer många av invånarna att vara på din sida.</FactionHappinessDesc>
+<FCFactionHappinessDesc>Mätningen av faktionens övergripande glädje. En stark glädje betyder att om en konflikt bryter ut i bosättningen så kommer många av invånarna att vara på din sida.</FCFactionHappinessDesc>
 
-<FactionLoyaltyDesc>Mätningen av faktionens övergripande lojalitet. Lojaliteten av en bosättning påverkar hur mycket bosättningen kommer att lyssna på dig. En hög lojalitet kommer att led till en minskad chans att avgå. </FactionLoyaltyDesc>
+<FCFactionLoyaltyDesc>Mätningen av faktionens övergripande lojalitet. Lojaliteten av en bosättning påverkar hur mycket bosättningen kommer att lyssna på dig. En hög lojalitet kommer att led till en minskad chans att avgå. </FCFactionLoyaltyDesc>
 
-<FactionUnrestDesc>Mätningen av faktionens övergripande orolighet. Ju större oroligheter blir, dessto större chans är det för att farliga händelser sker. Om det blir för högt, ju större är chansen att en revolution i hela faktionen sker.</FactionUnrestDesc>
+<FCFactionUnrestDesc>Mätningen av faktionens övergripande orolighet. Ju större oroligheter blir, dessto större chans är det för att farliga händelser sker. Om det blir för högt, ju större är chansen att en revolution i hela faktionen sker.</FCFactionUnrestDesc>
 
-<FactionProsperityDesc>Mätningen av faktionens övergripande framgång. Framgången av en bosättning påverkar prduktionen av resurser i bosättningen. 50% Framgång = 50% Produktion. Ifall framgången minskar så kommer den att sakta återhämta med tiden.</FactionProsperityDesc>
+<FCFactionProsperityDesc>Mätningen av faktionens övergripande framgång. Framgången av en bosättning påverkar prduktionen av resurser i bosättningen. 50% Framgång = 50% Produktion. Ifall framgången minskar så kommer den att sakta återhämta med tiden.</FCFactionProsperityDesc>
 
-<Policies-Traits>Policys/karaktärsdrag</Policies-Traits>
+<FCPolicies-Traits>Policys/karaktärsdrag</FCPolicies-Traits>
 
-<TaxReports>Beskattnings rapport</TaxReports>
+<FCTaxReports>Beskattnings rapport</FCTaxReports>
 
-<TotalFactionProduction>Den trotala produktionen av resurser i hela faktionen</TotalFactionProduction>
+<FCTotalFactionProduction>Den trotala produktionen av resurser i hela faktionen</FCTotalFactionProduction>
 
-<EstimatedProfit>Estimerad. Vinst</EstimatedProfit>
+<FCEstimatedProfit>Estimerad. Vinst</FCEstimatedProfit>
 
-<TimeTillTax>Tid kvar tills beskattning</TimeTillTax>
+<FCTimeTillTax>Tid kvar tills beskattning</FCTimeTillTax>
 
 <!-- settlementCustomizationWindowFC -->
 
@@ -275,147 +273,142 @@
 <!-- SettlementFC -->
 
 
-<Hamlet>Liten by</Hamlet>
+<FCHamlet>Liten by</FCHamlet>
 
-<BuildingAlreadyType>Det finns redan en byggnad av den typen</BuildingAlreadyType>
+<FCBuildingAlreadyType>Det finns redan en byggnad av den typen</FCBuildingAlreadyType>
 
-<NotEnoughSilverConstructBuilding>Du har inte tillräckligt med silver i den nuvarande kartan för att bygga denna byggnad</NotEnoughSilverConstructBuilding>
+<FCNotEnoughSilverConstructBuilding>Du har inte tillräckligt med silver i den nuvarande kartan för att bygga denna byggnad</FCNotEnoughSilverConstructBuilding>
 
-<BuildingBeingBuiltAlreadyType>Det finns redan en sådan byggnad som byggs</BuildingBeingBuiltAlreadyType>
+<FCBuildingBeingBuiltAlreadyType>Det finns redan en sådan byggnad som byggs</FCBuildingBeingBuiltAlreadyType>
 
-<BuildingAlreadyConstructed>Det finns redan en byggnad som byggs här</BuildingAlreadyConstructed>
+<FCBuildingAlreadyConstructed>Det finns redan en byggnad som byggs här</FCBuildingAlreadyConstructed>
 
 <!-- SettlementUpgradeWindowFC -->
 
 
-<UpgradeSettlement>Upggradera bosättning</UpgradeSettlement>
+<FCUpgradeSettlement>Upggradera bosättning</FCUpgradeSettlement>
 
-<CanBeUpgraded>Kan bli uppgraderad för</CanBeUpgraded>
+<FCCanBeUpgraded>Kan bli uppgraderad för</FCCanBeUpgraded>
 
-<UpgradeColonyDesc>Uppgradera denna koloni kommer att öka max arbetare innan kostnaden av arbetare börjar öka av 3 arbetare. Militär nivån av denna koloni kommer också att öka med 1.</UpgradeColonyDesc>
+<FCUpgradeColonyDesc>Uppgradera denna koloni kommer att öka max arbetare innan kostnaden av arbetare börjar öka av 3 arbetare. Militär nivån av denna koloni kommer också att öka med 1.</FCUpgradeColonyDesc>
 
-<HasBeenUpgraded>Har blivit uppgraderad till nivå</HasBeenUpgraded>
+<FCHasBeenUpgraded>Har blivit uppgraderad till nivå</FCHasBeenUpgraded>
 
-<AlreadyMaxLevel>Är redan högsta nivå</AlreadyMaxLevel>
+<FCAlreadyMaxLevel>Är redan högsta nivå</FCAlreadyMaxLevel>
 
-<NotEnoughSilverUpgrade>Den nuvarande kartan har inte tillräckligt med silver för att betala för bosättnings uppgraderingen.</NotEnoughSilverUpgrade>
+<FCNotEnoughSilverUpgrade>Den nuvarande kartan har inte tillräckligt med silver för att betala för bosättnings uppgraderingen.</FCNotEnoughSilverUpgrade>
 
-<CannotBeUpgradedPastMax>Den här byggnaden kan inte uppgraderas över max nivå</CannotBeUpgradedPastMax>
+<FCCannotBeUpgradedPastMax>Den här byggnaden kan inte uppgraderas över max nivå</FCCannotBeUpgradedPastMax>
 
 <!-- SettlementWindowFC -->
 
 
-<TownLog>Stads logga</TownLog>
+<FCGoToLocation>Gå till platsen</FCGoToLocation>
 
-<UpgradeTown>Uppgraderar stad</UpgradeTown>
+<FCAssignedWorkers>Tilldelade arbetare</FCAssignedWorkers>
 
-<GoToLocation>Gå till platsen</GoToLocation>
+<FCIsTithe>Är beskattad</FCIsTithe>
 
-<AssignedWorkers>Tilldelade arbetare</AssignedWorkers>
+<FCProductionEfficiency>Produktions effektivitet</FCProductionEfficiency>
 
-<IsTithe>Är beskattad</IsTithe>
+<FCSettlementProductionOf>Den totala produktionen av resurser i bosättningen</FCSettlementProductionOf>
 
-<ProductionEfficiency>Produktions effektivitet</ProductionEfficiency>
+<FCWorkers>Arbetare</FCWorkers>
 
-<SettlementProductionOf>Den totala produktionen av resurser i bosättningen</SettlementProductionOf>
+<FCLocated>Placerad i</FCLocated>
 
-<Workers>Arbetare</Workers>
+<FCLandOf>Land av en/ett</FCLandOf>
 
-<Located>Placerad i</Located>
+<FCSettlementMilitaryLevel>Bosättningens militär nivå</FCSettlementMilitaryLevel>
 
-<LandOf>Land av en/ett</LandOf>
+<FCSettlementHappiness>Bosättningens glädje</FCSettlementHappiness>
 
-<SettlementMilitaryLevel>Bosättningens militär nivå</SettlementMilitaryLevel>
+<FCSettlementLoyalty>Bosättningens lojalitet</FCSettlementLoyalty>
 
-<SettlementHappiness>Bosättningens glädje</SettlementHappiness>
+<FCSettlementUnrest>Bosättningens oroligheter</FCSettlementUnrest>
 
-<SettlementLoyalty>Bosättningens lojalitet</SettlementLoyalty>
+<FCSettlementProsperity>Bosättningens framgång</FCSettlementProsperity>
 
-<SettlementUnrest>Bosättningens oroligheter</SettlementUnrest>
+<FCSettlementMilitaryLevelDesc>Mätningen av bosättningens militär nivå. Militär nivån i en bosättning förändrar direkt en bosättnings förmåga att försvara sig själv men också att kunna attackera utländska hot</FCSettlementMilitaryLevelDesc>
 
-<SettlementProsperity>Bosättningens framgång</SettlementProsperity>
+<FCSettlementHappinessDesc>Mätningen av bosättningens övergripande glädje. En stor mängd glädje i en bosättning gör att invånare i bosättningen kommer att vara på din sida i en konflikt.</FCSettlementHappinessDesc>
 
-<SettlementMilitaryLevelDesc>Mätningen av bosättningens militär nivå. Militär nivån i en bosättning förändrar direkt en bosättnings förmåga att försvara sig själv men också att kunna attackera utländska hot</SettlementMilitaryLevelDesc>
+<FCSettlementLoyaltyDesc>Mätningen av bosättningens övergripande lojalitet. Lojaliteten av en bosättning påverkar hur mycket bosättningen kommer att lyssna på dig. En hög lojalitet kommer att led till en minskad chans att avgå. </FCSettlementLoyaltyDesc>
 
-<SettlementHappinessDesc>Mätningen av bosättningens övergripande glädje. En stor mängd glädje i en bosättning gör att invånare i bosättningen kommer att vara på din sida i en konflikt.</SettlementHappinessDesc>
+<FCSettlementUnrestDesc>Mätningen av bosättningens övergripande orolighet. Ju större oroligheter blir, dessto större chans är det för att farliga händelser sker. Om det blir för högt, ju större är chansen att en revolution i hela faktionen sker.</FCSettlementUnrestDesc>
 
-<SettlementLoyaltyDesc>Mätningen av bosättningens övergripande lojalitet. Lojaliteten av en bosättning påverkar hur mycket bosättningen kommer att lyssna på dig. En hög lojalitet kommer att led till en minskad chans att avgå. </SettlementLoyaltyDesc>
+<FCSettlementProsperityDesc>Mätningen av bosättnigens övergripande framgång. Framgången av en bosättning påverkar prduktionen av resurser i bosättningen. 50% Framgång = 50% Produktion. Ifall framgången minskar så kommer den att sakta återhämta med tiden.</FCSettlementProsperityDesc>
 
-<SettlementUnrestDesc>Mätningen av bosättningens övergripande orolighet. Ju större oroligheter blir, dessto större chans är det för att farliga händelser sker. Om det blir för högt, ju större är chansen att en revolution i hela faktionen sker.</SettlementUnrestDesc>
+<FCBuildingUpgrades>Byggnads uppgraderingar</FCBuildingUpgrades>
 
-<SettlementProsperityDesc>Mätningen av bosättnigens övergripande framgång. Framgången av en bosättning påverkar prduktionen av resurser i bosättningen. 50% Framgång = 50% Produktion. Ifall framgången minskar så kommer den att sakta återhämta med tiden.</SettlementProsperityDesc>
+<FCAddedInFuture>Detta kommer att läggas till i framtiden</FCAddedInFuture>
 
-<BuildingUpgrades>Byggnads uppgraderingar</BuildingUpgrades>
+<FCProduction>Produktion</FCProduction>
 
-<AddedInFuture>Detta kommer att läggas till i framtiden</AddedInFuture>
+<FCTaxBase>Bas beskattning</FCTaxBase>
 
-<Production>Produktion</Production>
+<FCTotal>Totalla</FCTotal>
 
-<TaxBase>Bas beskattning</TaxBase>
+<FCIncome>Inkomst</FCIncome>
 
-<Total>Totalla</Total>
 
-<Income>Inkomst</Income>
-
-<Upkeep>Skötsel</Upkeep>
-
-<CostPerWorker>Kostnaden per arbetare</CostPerWorker>
+<FCCostPerWorker>Kostnaden per arbetare</FCCostPerWorker>
 
 <!-- taxReportFactionWindowFC -->
 
 
-<FactionTaxReports>Faktionens beskattnings rapport</FactionTaxReports>
+<FCFactionTaxReports>Faktionens beskattnings rapport</FCFactionTaxReports>
 
-<Date>Datum</Date>
+<FCDate>Datum</FCDate>
 
-<Tithe>Beskattning</Tithe>
+<FCTithe>Beskattning</FCTithe>
 
 <!--<Value>Värde</Value>-->
 
 
-<View>Sikt</View>
+<FCView>Sikt</FCView>
 
 <!-- taxReportSettlementWindowFC -->
 
 
-<!--<TaxReports>Beskattnings rapport</TaxReports>-->
+<!--<FCTaxReports>Beskattnings rapport</FCTaxReports>-->
 
 
 <!-- taxWindowFC -->
 
 
-<SettlementTaxCollection>Bosättningens beskattnings kollektion</SettlementTaxCollection>
+<FCSettlementTaxCollection>Bosättningens beskattnings kollektion</FCSettlementTaxCollection>
 
-<Report>Rapport</Report>
+<FCReport>Rapport</FCReport>
 
-<Reports>Rapporter</Reports>
+<FCReports>Rapporter</FCReports>
 
-<GoTo>Gå till</GoTo>
+<FCGoTo>Gå till</FCGoTo>
 
-<EstimatedValue>Estimerat värde</EstimatedValue>
+<FCEstimatedValue>Estimerat värde</FCEstimatedValue>
 
 <!-- settlementWindowFC -->
 
 
-<DeleteSettlement>Förstör bosättning</DeleteSettlement>
+<FCDeleteSettlement>Förstör bosättning</FCDeleteSettlement>
 
-<AreYouSureRemove>Är du säker?</AreYouSureRemove>
+<FCAreYouSureRemove>Är du säker?</FCAreYouSureRemove>
 
-<SettlementRemoved>Bosättningens {0} Har förstörts.</SettlementRemoved>
+<FCSettlementRemoved>Bosättningens {0} Har förstörts.</FCSettlementRemoved>
 
 <!-- traitWindowFC -->
 
 
-<FactionPoliciesAndTraits>Faktionens policys och karaktärsdrag</FactionPoliciesAndTraits>
+<FCFactionPoliciesAndTraits>Faktionens policys och karaktärsdrag</FCFactionPoliciesAndTraits>
 
-<TaxLaw>Beskattnings lagar</TaxLaw>
+<FCTaxLaw>Beskattnings lagar</FCTaxLaw>
 
-<SocialPolicy>Social policy</SocialPolicy>
+<FCSocialPolicy>Social policy</FCSocialPolicy>
 
-<MilitaryPolicy>Militär policy</MilitaryPolicy>
+<FCMilitaryPolicy>Militär policy</FCMilitaryPolicy>
 
-<FactionTraits>Faktions karaktärsdrag</FactionTraits>
+<FCFactionTraits>Faktions karaktärsdrag</FCFactionTraits>
 
-<AddTrait>Lägg till karaktärsdrag</AddTrait>
+<FCAddTrait>Lägg till karaktärsdrag</FCAddTrait>
 
 </LanguageData>

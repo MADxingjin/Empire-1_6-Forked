@@ -1,145 +1,143 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-<TheSettlement>Asezamantul</TheSettlement>
-<HasBeenFormed> a fost formata</HasBeenFormed>
-<PlayerColony>Colonia Jucatorului</PlayerColony>
+<FCTheSettlement>Asezamantul</FCTheSettlement>
+<FCHasBeenFormed> a fost formata</FCHasBeenFormed>
+<FCPlayerColony>Colonia Jucatorului</FCPlayerColony>
 
 
 <!-- billFC Class -->
-<NotEnoughSilverForBill>Nu aveai suficient argint pentru a plati o factura restantă de la</NotEnoughSilverForBill>
-<ConfiscatedTithes>Ti-au confiscat zeciuielile in schimb</ConfiscatedTithes>
+<FCNotEnoughSilverForBill>Nu aveai suficient argint pentru a plati o factura restantă de la</FCNotEnoughSilverForBill>
+<FCConfiscatedTithes>Ti-au confiscat zeciuielile in schimb</FCConfiscatedTithes>
 
 <!-- billWindowFC -->
-<OutstandingBills>Factura Restanta</OutstandingBills>
-<Name>Nume</Name>
+<FCOutstandingBills>Factura Restanta</FCOutstandingBills>
+<FCName>Nume</FCName>
 <!--<Source>Source</Source>-->
-<DueDate>Data Scadenta</DueDate>
-<Amount>Cantitate</Amount>
-<HasTithe>Are zeciuiala</HasTithe>
-<PayReceiveSilver>Plateste/Primeste Argint</PayReceiveSilver>
-<ResolveBill>Rezolva Factura</ResolveBill>
-<NotEnoughSilverOnMapToPayBill>Nu ai suficient argint pe harta pentru a plati factura</NotEnoughSilverOnMapToPayBill>
+<FCDueDate>Data Scadenta</FCDueDate>
+<FCAmount>Cantitate</FCAmount>
+<FCHasTithe>Are zeciuiala</FCHasTithe>
+<FCPayReceiveSilver>Plateste/Primeste Argint</FCPayReceiveSilver>
+<FCResolveBill>Rezolva Factura</FCResolveBill>
+<FCNotEnoughSilverOnMapToPayBill>Nu ai suficient argint pe harta pentru a plati factura</FCNotEnoughSilverOnMapToPayBill>
 
 
 
 <!-- createColonyWindowFC -->
-<SettleANewColony>Aseaza o noua colonie</SettleANewColony>
-<TravelTime>Trece Timpul</TravelTime>
-<InitialCost>Cost Initial</InitialCost>
-<Silver>Argint</Silver>
-<BaseProductionStats>Statistici ale Productiei de baza</BaseProductionStats>
-<Base>Baza</Base>
-<Modifier>Modificatori</Modifier>
-<Final>Final</Final>
-<Settle>Aseaza</Settle>
-<CaravanOnWay>O caravana este deja pe drum</CaravanOnWay>
-<CaravanSentToLocation>O caravana a fost trimisa spre locatie! O sa ajunga in</CaravanSentToLocation>
-<NotEnoughSilverToSettle>Nu ai destrul argint pe harta pentru a aseza o noua colonie</NotEnoughSilverToSettle>
+<FCSettleANewColony>Aseaza o noua colonie</FCSettleANewColony>
+<FCTravelTime>Trece Timpul</FCTravelTime>
+<FCInitialCost>Cost Initial</FCInitialCost>
+<FCSilver>Argint</FCSilver>
+<FCBaseProductionStats>Statistici ale Productiei de baza</FCBaseProductionStats>
+<FCBase>Baza</FCBase>
+<FCModifier>Modificatori</FCModifier>
+<FCFinal>Final</FCFinal>
+<FCSettle>Aseaza</FCSettle>
+<FCCaravanOnWay>O caravana este deja pe drum</FCCaravanOnWay>
+<FCCaravanSentToLocation>O caravana a fost trimisa spre locatie! O sa ajunga in</FCCaravanSentToLocation>
+<FCNotEnoughSilverToSettle>Nu ai destrul argint pe harta pentru a aseza o noua colonie</FCNotEnoughSilverToSettle>
 
 <!-- descWindowFC -->
 <!--<Description>Description</Description>-->
 
 <!-- eventWindowFC -->
-<CurrentOngoingEvents>Evenimente Curente</CurrentOngoingEvents>
+<FCCurrentOngoingEvents>Evenimente Curente</FCCurrentOngoingEvents>
 <!--<Location>Location</Location>-->
-<TimeRemaining>Timp Ramas</TimeRemaining>
-<NewLand>Pamant Nou</NewLand>
+<FCTimeRemaining>Timp Ramas</FCTimeRemaining>
+<FCNewLand>Pamant Nou</FCNewLand>
 
 <!--factionCustomizeWindowFC -->
-<CustomizeFaction>Costumizeaza Factiunea</CustomizeFaction>
-<FactionName>Numele Factiunii</FactionName>
-<FactionTitle>Titlul Factiunii</FactionTitle>
-<FactionIcon>Iconita Factiunii</FactionIcon>
-<ButtonNotAvailable>Acest buton nu este valabil inca</ButtonNotAvailable>
-<ConfirmChanges>Confirma schimbarile</ConfirmChanges>
+<FCCustomizeFaction>Costumizeaza Factiunea</FCCustomizeFaction>
+<FCFactionName>Numele Factiunii</FCFactionName>
+<FCFactionTitle>Titlul Factiunii</FCFactionTitle>
+<FCFactionIcon>Iconita Factiunii</FCFactionIcon>
+<FCButtonNotAvailable>Acest buton nu este valabil inca</FCButtonNotAvailable>
+<FCConfirmChanges>Confirma schimbarile</FCConfirmChanges>
 
 <!-- FactionFC -->
-<PlayerFaction>Factiunea Jucatorului</PlayerFaction>
-<Bastion>Bastionul Sperantei</Bastion>
-<Food>Mancare</Food>
-<Weapons>Arme</Weapons>
+<FCPlayerFaction>Factiunea Jucatorului</FCPlayerFaction>
+<FCBastion>Bastionul Sperantei</FCBastion>
+<FCFood>Mancare</FCFood>
+<FCWeapons>Arme</FCWeapons>
 <!--<Apparel>Apparel</Apparel>-->
-<Animals>Animale</Animals>
-<Logging>Exploatare Forestiera</Logging>
-<Mining>Minerit</Mining>
-<Researching>Cercetare</Researching>
-<PolicyAlreadyEnacted>Acea reforma este deja in efect</PolicyAlreadyEnacted>
-<NotEnoughMoneyToEnact>Nu ai destrul argint pe harta pentru a efecta reforma</NotEnoughMoneyToEnact>
-<AlreadyPolicyTypeBeingEnacted>Exista deja o reforma de acest tip in efect</AlreadyPolicyTypeBeingEnacted>
-<AlreadyPolicyInSlot>Exista o reforma deja in acel slot</AlreadyPolicyInSlot>
-<SettlementTax>Taxa de Asezamant</SettlementTax>
-<WeekOf>saptamana din</WeekOf>
-<TaxesBilled>Taxele au fost facturate</TaxesBilled>
-<NoSettlementsToTax>Nici o asezare poate fi taxata</NoSettlementsToTax>
-<CouldNotFindMapOfCapital>Nu s-a putut gasi harta capitalei</CouldNotFindMapOfCapital>
-<ResearchGeneratedWaste>Punctele de cercetare ale factiunii au fost irosite deoarece nici un avans tehnologic nu este selectat</ResearchGeneratedWaste>
+<FCAnimals>Animale</FCAnimals>
+<FCLogging>Exploatare Forestiera</FCLogging>
+<FCMining>Minerit</FCMining>
+<FCResearching>Cercetare</FCResearching>
+<FCPolicyAlreadyEnacted>Acea reforma este deja in efect</FCPolicyAlreadyEnacted>
+<FCNotEnoughMoneyToEnact>Nu ai destrul argint pe harta pentru a efecta reforma</FCNotEnoughMoneyToEnact>
+<FCAlreadyPolicyTypeBeingEnacted>Exista deja o reforma de acest tip in efect</FCAlreadyPolicyTypeBeingEnacted>
+<FCAlreadyPolicyInSlot>Exista o reforma deja in acel slot</FCAlreadyPolicyInSlot>
+<FCSettlementTax>Taxa de Asezamant</FCSettlementTax>
+<FCWeekOf>saptamana din</FCWeekOf>
+<FCTaxesBilled>Taxele au fost facturate</FCTaxesBilled>
+<FCNoSettlementsToTax>Nici o asezare poate fi taxata</FCNoSettlementsToTax>
+<FCCouldNotFindMapOfCapital>Nu s-a putut gasi harta capitalei</FCCouldNotFindMapOfCapital>
+<FCResearchGeneratedWaste>Punctele de cercetare ale factiunii au fost irosite deoarece nici un avans tehnologic nu este selectat</FCResearchGeneratedWaste>
 
 <!-- FCevent -->
-<TaxesFrom>Taxe de la</TaxesFrom>
-<HaveBeenDelivered>au fost livrate</HaveBeenDelivered>
-<HasBeenConstructedAt>a fost construit</HasBeenConstructedAt>
-<HasBeenEnactedAt>a fost efectuat la</HasBeenEnactedAt>
-<EnactedInYourFaction>a fost efectat in factiunea ta</EnactedInYourFaction>
+<FCTaxesFrom>Taxe de la</FCTaxesFrom>
+<FCHaveBeenDelivered>au fost livrate</FCHaveBeenDelivered>
+<FCHasBeenConstructedAt>a fost construit</FCHasBeenConstructedAt>
+<FCHasBeenEnactedAt>a fost efectuat la</FCHasBeenEnactedAt>
+<FCEnactedInYourFaction>a fost efectat in factiunea ta</FCEnactedInYourFaction>
 
 <!-- listBuildingFC -->
-<ConstructBuilding>Constuieste Cladire</ConstructBuilding>
-<Cost>Cost</Cost>
-<Effect>Efect</Effect>
-<Construct>Construieste</Construct>
-<Info>Info</Info>
-<Built>Construit</Built>
-<Destroy>Distruge</Destroy>
-<Build>Construieste</Build>
-<WillBeConstructedIn>va fi construit in</WillBeConstructedIn>
+<FCConstructBuilding>Constuieste Cladire</FCConstructBuilding>
+<FCCost>Cost</FCCost>
+<FCEffect>Efect</FCEffect>
+<FCConstruct>Construieste</FCConstruct>
+<FCInfo>Info</FCInfo>
+<FCBuilt>Construit</FCBuilt>
+<FCDestroy>Distruge</FCDestroy>
+<FCBuild>Construieste</FCBuild>
+<FCWillBeConstructedIn>va fi construit in</FCWillBeConstructedIn>
 
 <!-- listFactionPolicyFC -->
-<Enact>Efectueaza</Enact>
-<Enacted>Efectuat</Enacted>
-<Repeal>Anuleaza</Repeal>
-<WillBeEnactedIn>va fi efectuata in</WillBeEnactedIn>
+<FCEnact>Efectueaza</FCEnact>
+<FCEnacted>Efectuat</FCEnacted>
+<FCRepeal>Anuleaza</FCRepeal>
+<FCWillBeEnactedIn>va fi efectuata in</FCWillBeEnactedIn>
 
 <!-- listSettlementPolicyFC -->
-<EnactPolicy>Efectueaza reforma</EnactPolicy>
+<FCEnactPolicy>Efectueaza reforma</FCEnactPolicy>
 
 <!-- listThingFC -->
-<TitheList>Lista Zeciuială</TitheList>
-<StackCount>Numar Gramada</StackCount>
+<FCTitheList>Lista Zeciuială</FCTitheList>
+<FCStackCount>Numar Gramada</FCStackCount>
 <!--<MarketValue>Market Value</MarketValue>-->
 <TotalValue>Valoare Toatala</TotalValue>
-<CashSymbol>$</CashSymbol>
+<FCCashSymbol>$</FCCashSymbol>
 
 <!-- MainTabWindow_Colony -->
-<SettlementManager>Manager Colonie</SettlementManager>
-<CreateNewColony>Creaza o Noua Colonie</CreateNewColony>
-<SelectTile>Selecteaza o sectiune pentru a crea o noua colonie</SelectTile>
-<SetAsFactionCapital>{0} a fost setat ca si capitala factiunii</SetAsFactionCapital>
+<FCSettlementManager>Manager Colonie</FCSettlementManager>
+<FCCreateNewColony>Creaza o Noua Colonie</FCCreateNewColony>
+<FCSelectTile>Selecteaza o sectiune pentru a crea o noua colonie</FCSelectTile>
+<FCSetAsFactionCapital>{0} a fost setat ca si capitala factiunii</FCSetAsFactionCapital>
 <!--<Faction>Faction</Faction>-->
-<Colonies>Colonii</Colonies>
-<Bills>Facturi</Bills>
-<Events>Evenimente</Events>
-<Settlement>Asezare</Settlement>
-<Settlements>Asezari</Settlements>
-<ColonyLevel>Nivel Colonie</ColonyLevel>
-<MilitaryLevel>Nivel Militar</MilitaryLevel>
-<Unrest>Neliniste</Unrest>
-<Profit>Profit</Profit>
-<Loyalty>Loialitate</Loyalty>
-<TotalProduction>Productie totala</TotalProduction>
-<FactionHappiness>Fericirea Factiunii</FactionHappiness>
-<FactionLoyalty>Loialitatea Factiunii</FactionLoyalty>
-<FactionUnrest>Nelinistea Factiunii</FactionUnrest>
-<FactionProsperity>Prosperitatea Factiunii</FactionProsperity>
+<FCColonies>Colonii</FCColonies>
+<FCBills>Facturi</FCBills>
+<FCEvents>Evenimente</FCEvents>
+<FCSettlement>Asezare</FCSettlement>
+<FCSettlements>Asezari</FCSettlements>
+<FCColonyLevel>Nivel Colonie</FCColonyLevel>
+<FCMilitaryLevel>Nivel Militar</FCMilitaryLevel>
+<FCProfit>Profit</FCProfit>
+<FCTotalProduction>Productie totala</FCTotalProduction>
+<FCFactionHappiness>Fericirea Factiunii</FCFactionHappiness>
+<FCFactionLoyalty>Loialitatea Factiunii</FCFactionLoyalty>
+<FCFactionUnrest>Nelinistea Factiunii</FCFactionUnrest>
+<FCFactionProsperity>Prosperitatea Factiunii</FCFactionProsperity>
 
-<FactionHappinessDesc>Măsura fericirii generale a facțiunii. O fericire ridicată înseamnă că orice conflict intern în cadrul coloniei se va susține puternic în favoarea ta.</FactionHappinessDesc>
-<FactionLoyaltyDesc>Măsura loialității generale a facțiunii. Loialitatea unei colonii determină cât de dispusă este colonia de a te asculta. O loialitate ridicată va reduce șansa dezertarii. </FactionLoyaltyDesc>
-<FactionUnrestDesc>Măsura tulburărilor generale ale facțiunii. Cu cât crește tulburarea mai mare, cu atât evenimentele periculoase interioare din facțiunea ta vor scânteia. Lasă-l să crească prea mult și poate să duca la o revoltă la nivelul întregii facțiuni.</FactionUnrestDesc>
-<FactionProsperityDesc>Măsura prosperității generale a facțiunii. Prosperitatea unei colonii se corelează direct cu producția de resurse. 50% prosperitate = 50% producție. Dacă prosperitatea este deteriorată, se va acumula încet în timp</FactionProsperityDesc>
-<Policies-Traits>Reforme/Trasaturi</Policies-Traits>
-<TaxReports>Raportul Taxelor</TaxReports>
-<TotalFactionProduction>Producția totală a întregii facțiuni a resurselor</TotalFactionProduction>
-<EstimatedProfit>Profit Estimat</EstimatedProfit>
-<TimeTillTax>Timp pana la taxa</TimeTillTax>
+<FCFactionHappinessDesc>Măsura fericirii generale a facțiunii. O fericire ridicată înseamnă că orice conflict intern în cadrul coloniei se va susține puternic în favoarea ta.</FCFactionHappinessDesc>
+<FCFactionLoyaltyDesc>Măsura loialității generale a facțiunii. Loialitatea unei colonii determină cât de dispusă este colonia de a te asculta. O loialitate ridicată va reduce șansa dezertarii. </FCFactionLoyaltyDesc>
+<FCFactionUnrestDesc>Măsura tulburărilor generale ale facțiunii. Cu cât crește tulburarea mai mare, cu atât evenimentele periculoase interioare din facțiunea ta vor scânteia. Lasă-l să crească prea mult și poate să duca la o revoltă la nivelul întregii facțiuni.</FCFactionUnrestDesc>
+<FCFactionProsperityDesc>Măsura prosperității generale a facțiunii. Prosperitatea unei colonii se corelează direct cu producția de resurse. 50% prosperitate = 50% producție. Dacă prosperitatea este deteriorată, se va acumula încet în timp</FCFactionProsperityDesc>
+<FCPolicies-Traits>Reforme/Trasaturi</FCPolicies-Traits>
+<FCTaxReports>Raportul Taxelor</FCTaxReports>
+<FCTotalFactionProduction>Producția totală a întregii facțiuni a resurselor</FCTotalFactionProduction>
+<FCEstimatedProfit>Profit Estimat</FCEstimatedProfit>
+<FCTimeTillTax>Timp pana la taxa</FCTimeTillTax>
 
 <!-- settlementCustomizationWindowFC -->
 <CustomizeSettlement>Costumizeaza Asezamantul</CustomizeSettlement>
@@ -147,88 +145,85 @@
 
 
 <!-- SettlementFC -->
-<Hamlet>sat</Hamlet>
-<BuildingAlreadyType>Exista deja o cladire de tipul acesta</BuildingAlreadyType>
-<NotEnoughSilverConstructBuilding>Nu aveți suficient argint pe harta pentru a construi clădirea respectivă</NotEnoughSilverConstructBuilding>
-<BuildingBeingBuiltAlreadyType>Exista deja o cladire de tipul acesta in constructie</BuildingBeingBuiltAlreadyType>
-<BuildingAlreadyConstructed>Exista deja o cladire in constructie</BuildingAlreadyConstructed>
+<FCHamlet>sat</FCHamlet>
+<FCBuildingAlreadyType>Exista deja o cladire de tipul acesta</FCBuildingAlreadyType>
+<FCNotEnoughSilverConstructBuilding>Nu aveți suficient argint pe harta pentru a construi clădirea respectivă</FCNotEnoughSilverConstructBuilding>
+<FCBuildingBeingBuiltAlreadyType>Exista deja o cladire de tipul acesta in constructie</FCBuildingBeingBuiltAlreadyType>
+<FCBuildingAlreadyConstructed>Exista deja o cladire in constructie</FCBuildingAlreadyConstructed>
 
 
 <!-- SettlementUpgradeWindowFC -->
-<UpgradeSettlement>Imbunatateste Asezamantul</UpgradeSettlement>
-<CanBeUpgraded>poate fi imbunatatit pentru</CanBeUpgraded>
-<UpgradeColonyDesc>Imbunatatirea acestei colonii creste numaraul maxim de muncitori pana ce costul muncitorilor incepe sa creasca la 3 muncitori.Nivelul militar creste de asemenea cu +1.</UpgradeColonyDesc>
-<HasBeenUpgraded>a fost imbunatatita la nivel</HasBeenUpgraded>
-<AlreadyMaxLevel>este deja la nivelul maxim</AlreadyMaxLevel>
-<NotEnoughSilverUpgrade>Harta actuala nu are suficient argint pentru a plati imbunatatirea asezamantului.</NotEnoughSilverUpgrade>
-<CannotBeUpgradedPastMax>Acest asezamant nu poate fi imbunatatit peste nivelul maxim</CannotBeUpgradedPastMax>
+<FCUpgradeSettlement>Imbunatateste Asezamantul</FCUpgradeSettlement>
+<FCCanBeUpgraded>poate fi imbunatatit pentru</FCCanBeUpgraded>
+<FCUpgradeColonyDesc>Imbunatatirea acestei colonii creste numaraul maxim de muncitori pana ce costul muncitorilor incepe sa creasca la 3 muncitori.Nivelul militar creste de asemenea cu +1.</FCUpgradeColonyDesc>
+<FCHasBeenUpgraded>a fost imbunatatita la nivel</FCHasBeenUpgraded>
+<FCAlreadyMaxLevel>este deja la nivelul maxim</FCAlreadyMaxLevel>
+<FCNotEnoughSilverUpgrade>Harta actuala nu are suficient argint pentru a plati imbunatatirea asezamantului.</FCNotEnoughSilverUpgrade>
+<FCCannotBeUpgradedPastMax>Acest asezamant nu poate fi imbunatatit peste nivelul maxim</FCCannotBeUpgradedPastMax>
 
 
 <!-- SettlementWindowFC -->
-<TownLog>Registrul Orasului</TownLog>
-<UpgradeTown>Imbunatateste Orasul</UpgradeTown>
-<GoToLocation>Mergi la locatie</GoToLocation>
-<AssignedWorkers>Muncitori alocati</AssignedWorkers>
-<IsTithe>Este zeciuiala</IsTithe>
-<ProductionEfficiency>Eficienta Productiei</ProductionEfficiency>
-<SettlementProductionOf>Productia totala de resurse ale asezarilor</SettlementProductionOf>
-<Workers>Muncitori</Workers>
-<Located>Localizat in</Located>
-<LandOf>Terenul Unui</LandOf>
+<FCGoToLocation>Mergi la locatie</FCGoToLocation>
+<FCAssignedWorkers>Muncitori alocati</FCAssignedWorkers>
+<FCIsTithe>Este zeciuiala</FCIsTithe>
+<FCProductionEfficiency>Eficienta Productiei</FCProductionEfficiency>
+<FCSettlementProductionOf>Productia totala de resurse ale asezarilor</FCSettlementProductionOf>
+<FCWorkers>Muncitori</FCWorkers>
+<FCLocated>Localizat in</FCLocated>
+<FCLandOf>Terenul Unui</FCLandOf>
 
-<SettlementMilitaryLevel>Nivel militar al coloniei</SettlementMilitaryLevel>
-<SettlementHappiness>Fericirea Coloniei</SettlementHappiness>
-<SettlementLoyalty>Loialitatea Coloniei</SettlementLoyalty>
-<SettlementUnrest>Nelinistea Coloniei</SettlementUnrest>
-<SettlementProsperity>Prosperitatea Coloniei</SettlementProsperity>
+<FCSettlementMilitaryLevel>Nivel militar al coloniei</FCSettlementMilitaryLevel>
+<FCSettlementHappiness>Fericirea Coloniei</FCSettlementHappiness>
+<FCSettlementLoyalty>Loialitatea Coloniei</FCSettlementLoyalty>
+<FCSettlementUnrest>Nelinistea Coloniei</FCSettlementUnrest>
+<FCSettlementProsperity>Prosperitatea Coloniei</FCSettlementProsperity>
 
-<SettlementMilitaryLevelDesc>Măsura nivelului militar al asezamantului. Nivelul militar al unui oraș afectează în mod direct capacitatea orașului de a se apăra, precum și de a ataca amenințările externe</SettlementMilitaryLevelDesc>
-<SettlementHappinessDesc>Măsura fericirii generale a asezamantului. O fericire ridicată înseamnă că orice conflict intern în cadrul asezarii se va susține puternic în favoarea ta.</SettlementHappinessDesc>
-<SettlementLoyaltyDesc>Măsura loialității generale a asezamantului. Loialitatea unei colonii determină cât de dispusă este colonia de a te asculta. O loialitate ridicată va reduce șansa dezertarii.</SettlementLoyaltyDesc>
-<SettlementUnrestDesc>Măsura tulburărilor generale ale asezamantului. Cu cât crește tulburarea mai mare, cu atât evenimentele periculoase interioare din asezamantul tau vor scânteia. Lasă-l să crească prea mult și poate să duca la o revoltă la nivelul asezamantului.</SettlementUnrestDesc>
-<SettlementProsperityDesc>Măsura prosperității generale a asezamantului. Prosperitatea unei colonii se corelează direct cu producția de resurse. 50% prosperitate = 50% producție. Dacă prosperitatea este deteriorată, se va acumula încet în timp.</SettlementProsperityDesc>
-<BuildingUpgrades>Imbunatatirile Cladirii</BuildingUpgrades>
-<AddedInFuture>Va fi adaugata in viitor</AddedInFuture>
-<Production>Productie</Production>
-<TaxBase>Baza Taxei</TaxBase>
-<Total>Total</Total>
-<Income>Venit</Income>
-<Upkeep>Intretinere</Upkeep>
-<CostPerWorker>Cost Per Muncitor</CostPerWorker>
+<FCSettlementMilitaryLevelDesc>Măsura nivelului militar al asezamantului. Nivelul militar al unui oraș afectează în mod direct capacitatea orașului de a se apăra, precum și de a ataca amenințările externe</FCSettlementMilitaryLevelDesc>
+<FCSettlementHappinessDesc>Măsura fericirii generale a asezamantului. O fericire ridicată înseamnă că orice conflict intern în cadrul asezarii se va susține puternic în favoarea ta.</FCSettlementHappinessDesc>
+<FCSettlementLoyaltyDesc>Măsura loialității generale a asezamantului. Loialitatea unei colonii determină cât de dispusă este colonia de a te asculta. O loialitate ridicată va reduce șansa dezertarii.</FCSettlementLoyaltyDesc>
+<FCSettlementUnrestDesc>Măsura tulburărilor generale ale asezamantului. Cu cât crește tulburarea mai mare, cu atât evenimentele periculoase interioare din asezamantul tau vor scânteia. Lasă-l să crească prea mult și poate să duca la o revoltă la nivelul asezamantului.</FCSettlementUnrestDesc>
+<FCSettlementProsperityDesc>Măsura prosperității generale a asezamantului. Prosperitatea unei colonii se corelează direct cu producția de resurse. 50% prosperitate = 50% producție. Dacă prosperitatea este deteriorată, se va acumula încet în timp.</FCSettlementProsperityDesc>
+<FCBuildingUpgrades>Imbunatatirile Cladirii</FCBuildingUpgrades>
+<FCAddedInFuture>Va fi adaugata in viitor</FCAddedInFuture>
+<FCProduction>Productie</FCProduction>
+<FCTaxBase>Baza Taxei</FCTaxBase>
+<FCTotal>Total</FCTotal>
+<FCIncome>Venit</FCIncome>
+<FCCostPerWorker>Cost Per Muncitor</FCCostPerWorker>
 
 <!-- taxReportFactionWindowFC -->
-<FactionTaxReports>Raportul taxelor ale Factiunii</FactionTaxReports>
-<Date>Data</Date>
-<Tithe>Zeciuiala</Tithe>
+<FCFactionTaxReports>Raportul taxelor ale Factiunii</FCFactionTaxReports>
+<FCDate>Data</FCDate>
+<FCTithe>Zeciuiala</FCTithe>
 <!--<Value>Value</Value>-->
-<View>Vezi</View>
+<FCView>Vezi</FCView>
 
 
 <!-- taxReportSettlementWindowFC -->
-<!--<TaxReports>Tax Reports</TaxReports>-->
+<!--<FCTaxReports>Tax Reports</FCTaxReports>-->
 
 <!-- taxWindowFC -->
-<SettlementTaxCollection>Taxa Colectata de la Asezari</SettlementTaxCollection>
-<Report>Raport</Report>
-<Reports>Raporturi</Reports>
-<GoTo>Mergi La</GoTo>
-<EstimatedValue>Valoare Estimativa</EstimatedValue>
+<FCSettlementTaxCollection>Taxa Colectata de la Asezari</FCSettlementTaxCollection>
+<FCReport>Raport</FCReport>
+<FCReports>Raporturi</FCReports>
+<FCGoTo>Mergi La</FCGoTo>
+<FCEstimatedValue>Valoare Estimativa</FCEstimatedValue>
 
 <!-- texLoad -->
 <!-- traitUtilFC -->
 
 <!-- settlementWindowFC -->
-<DeleteSettlement>Sterge Asezare</DeleteSettlement>
-<AreYouSureRemove>Esti sigur?</AreYouSureRemove>
-<SettlementRemoved>Asezamantul {0} a fost distrus.</SettlementRemoved>
+<FCDeleteSettlement>Sterge Asezare</FCDeleteSettlement>
+<FCAreYouSureRemove>Esti sigur?</FCAreYouSureRemove>
+<FCSettlementRemoved>Asezamantul {0} a fost distrus.</FCSettlementRemoved>
 
 
 <!-- traitWindowFC -->
-<FactionPoliciesAndTraits>Reforme si Trasaturi ale Factiunii</FactionPoliciesAndTraits>
-<TaxLaw>Legea Taxelor</TaxLaw>
-<SocialPolicy>Reforme Sociale</SocialPolicy>
-<MilitaryPolicy>Reforme Militare</MilitaryPolicy>
-<FactionTraits>Trasaturi ale Factiunii</FactionTraits>
-<AddTrait>Adauga Trasatura</AddTrait>
+<FCFactionPoliciesAndTraits>Reforme si Trasaturi ale Factiunii</FCFactionPoliciesAndTraits>
+<FCTaxLaw>Legea Taxelor</FCTaxLaw>
+<FCSocialPolicy>Reforme Sociale</FCSocialPolicy>
+<FCMilitaryPolicy>Reforme Militare</FCMilitaryPolicy>
+<FCFactionTraits>Trasaturi ale Factiunii</FCFactionTraits>
+<FCAddTrait>Adauga Trasatura</FCAddTrait>
 
 </LanguageData>

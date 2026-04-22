@@ -29,7 +29,7 @@
         <handlerClass>FactionColonies.MilitaryJobHandler_Raid</handlerClass>
         <statusLabelKey>FCMilStatusRaiding</statusLabelKey>
         <cooldownStatDef>raidCooldownOffset</cooldownStatDef>
-        <floatMenuLabelKey>RaidSettlement</floatMenuLabelKey>
+        <floatMenuLabelKey>FCRaidSettlement</floatMenuLabelKey>
         <floatMenuDescKey>FCRaidFloatMenuOption</floatMenuDescKey>
     </FactionColonies.MilitaryJobDef>
 
@@ -39,7 +39,7 @@
         <handlerClass>FactionColonies.MilitaryJobHandler_Enslave</handlerClass>
         <statusLabelKey>FCMilStatusEnslaving</statusLabelKey>
         <cooldownStatDef>raidCooldownOffset</cooldownStatDef>
-        <floatMenuLabelKey>EnslavePopulation</floatMenuLabelKey>
+        <floatMenuLabelKey>FCEnslavePopulation</floatMenuLabelKey>
         <floatMenuDescKey>FCEnslaveFloatMenuOption</floatMenuDescKey>
         <defaultEnabled>false</defaultEnabled>
     </FactionColonies.MilitaryJobDef>
@@ -49,7 +49,7 @@
         <label>capture enemy settlement</label>
         <handlerClass>FactionColonies.MilitaryJobHandler_Capture</handlerClass>
         <statusLabelKey>FCMilStatusCapturing</statusLabelKey>
-        <floatMenuLabelKey>CaptureSettlement</floatMenuLabelKey>
+        <floatMenuLabelKey>FCCaptureSettlement</floatMenuLabelKey>
         <floatMenuDescKey>FCCaptureFloatMenuOption</floatMenuDescKey>
     </FactionColonies.MilitaryJobDef>
 

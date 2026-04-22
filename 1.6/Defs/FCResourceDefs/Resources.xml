@@ -48,6 +48,73 @@
 				</li>
 			</resourceHilliness>
 		</li>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>BiomePlantDensity</field>
+					<defaultValue>0.5</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 0.4)</li>
+							<li>(0.2, 0.8)</li>
+							<li>(0.4, 1.1)</li>
+							<li>(0.7, 0.95)</li>
+							<li>(1.0, 0.85)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>Temperature</field>
+					<defaultValue>20</defaultValue>
+					<curve>
+						<points>
+							<li>(-20, 0.4)</li>
+							<li>(0, 0.75)</li>
+							<li>(15, 1.0)</li>
+							<li>(25, 1.1)</li>
+							<li>(35, 0.85)</li>
+							<li>(45, 0.6)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>Rainfall</field>
+					<defaultValue>800</defaultValue>
+					<curve>
+						<points>
+							<li>(0, 0.7)</li>
+							<li>(400, 0.9)</li>
+							<li>(1000, 1.0)</li>
+							<li>(2500, 1.05)</li>
+							<li>(5000, 0.95)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>Pollution</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 1.0)</li>
+							<li>(0.5, 0.75)</li>
+							<li>(1.0, 0.0)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>HasAnyRiver</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0, 1.0)</li>
+							<li>(1, 1.1)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
 
@@ -175,9 +242,28 @@
 				<li>AnimalGenetic</li>
 			</blacklistedTradeTags>
 		</li>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>AnimalDensity</field>
+					<defaultValue>3.0</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 0.5)</li>
+							<li>(1.0, 0.8)</li>
+							<li>(3.0, 1.0)</li>
+							<li>(4.0, 1.1)</li>
+							<li>(7.0, 1.3)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Logging</defName>
 	<label>logging</label>
@@ -202,8 +288,51 @@
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>5</titheMaxCountScaler>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>BiomePlantDensity</field>
+					<defaultValue>0.5</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 0.2)</li>
+							<li>(0.2, 0.5)</li>
+							<li>(0.5, 0.85)</li>
+							<li>(0.65, 1.0)</li>
+							<li>(1.0, 1.2)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>Swampiness</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 1.0)</li>
+							<li>(0.5, 0.9)</li>
+							<li>(1.0, 0.75)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>Pollution</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 1.0)</li>
+							<li>(0.5, 0.9)</li>
+							<li>(1.0, 0.7)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
+	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Mining</defName>
 	<label>mining</label>
@@ -255,9 +384,26 @@
 				</li>
 			</resourceHilliness>
 		</li>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>Swampiness</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 1.0)</li>
+							<li>(0.5, 0.9)</li>
+							<li>(1.0, 0.8)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Medicine</defName>
 	<label>medicine</label>
@@ -306,6 +452,37 @@
 	<titheMinCount>1</titheMinCount>
 	<titheMaxCountBase>0</titheMaxCountBase>
 	<titheMaxCountScaler>2</titheMaxCountScaler>
+	<modExtensions>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>BiomePlantDensity</field>
+					<defaultValue>0.5</defaultValue>
+					<curve>
+						<points>
+							<li>(0.0, 0.5)</li>
+							<li>(0.2, 0.75)</li>
+							<li>(0.5, 0.9)</li>
+							<li>(0.7, 1.0)</li>
+							<li>(1.0, 1.1)</li>
+						</points>
+					</curve>
+				</li>
+				<li>
+					<field>HasAnyRiver</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0, 1.0)</li>
+							<li>(1, 1.1)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
+	</modExtensions>
   </FactionColonies.ResourceTypeDef>
 
   <FactionColonies.ResourceTypeDef>
@@ -332,9 +509,27 @@
 				</li>
 			</resourceHilliness>
 		</li>
+		<li Class="FactionColonies.ResourceProductionExtension_TileField">
+			<extName>TileField</extName>
+			<extDesc>Tile environment</extDesc>
+			<multipliers>
+				<li>
+					<field>RoadCount</field>
+					<defaultValue>0</defaultValue>
+					<curve>
+						<points>
+							<li>(0, 1.0)</li>
+							<li>(1, 1.05)</li>
+							<li>(2, 1.1)</li>
+							<li>(3, 1.12)</li>
+						</points>
+					</curve>
+				</li>
+			</multipliers>
+		</li>
 	</modExtensions>
   </FactionColonies.ResourceTypeDef>
-  
+
   <FactionColonies.ResourceTypeDef>
 	<defName>RTD_Power</defName>
 	<label>power</label>

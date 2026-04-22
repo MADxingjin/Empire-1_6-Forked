@@ -11,7 +11,7 @@ namespace FactionColonies
         {
             FactionFC factionfc = FactionCache.FactionComp;
             FCEvent evt = FCEventMaker.MakeEvent(FCEventDefOf.captureEnemySettlement);
-            evt.customDescription = "settlementMilitaryForcesCapturing".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
+            evt.customDescription = "FCSettlementMilitaryForcesCapturing".Translate(milComp.WorldSettlement.Name, milComp.ReturnMilitaryTarget().Label);
             Settlement target = Find.WorldObjects.SettlementAt(location);
             Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCMilitarySentCapture".Translate(milComp.WorldSettlement.Name, target?.LabelCap ?? (TaggedString)""), LetterDefOf.NeutralEvent);
             evt.DefineEvent(factionfc, milComp.WorldSettlement.Tile, timeToFinish);
@@ -75,15 +75,15 @@ namespace FactionColonies
                     tempFactionLink.defeated = true;
                 }
 
-                Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                    "CaptureEnemySettlementSuccess".Translate(milComp.WorldSettlement.Name,
+                Find.LetterStack.ReceiveLetter("FCCaptureSettlement".Translate(),
+                    "FCCaptureEnemySettlementSuccess".Translate(milComp.WorldSettlement.Name,
                         worldsettlement.Name, worldsettlement.settlementLevel),
                     LetterDefOf.PositiveEvent, new LookTargets(worldsettlement));
             }
             else if (result.DefenderVictory)
             {
-                Find.LetterStack.ReceiveLetter("CaptureSettlement".Translate(),
-                    "CaptureEnemySettlementFailure".Translate(milComp.WorldSettlement.Name,
+                Find.LetterStack.ReceiveLetter("FCCaptureSettlement".Translate(),
+                    "FCCaptureEnemySettlementFailure".Translate(milComp.WorldSettlement.Name,
                         target.Name), LetterDefOf.NegativeEvent,
                     new LookTargets(target));
             }

@@ -28,7 +28,11 @@ namespace FactionColonies.util
         protected virtual TransportShip SendWaitingShuttle(MapParent target)
         {
             Thing shuttle = ThingMaker.MakeThing(ThingDefOf.Shuttle);
-            shuttle.TryGetComp<CompShuttle>().permitShuttle = true;
+            CompShuttle compShuttle = shuttle.TryGetComp<CompShuttle>();
+            if (compShuttle is object)
+            {
+                compShuttle.permitShuttle = true;
+            }
             TransportShip transportShip = TransportShipMaker.MakeTransportShip(TransportShipDefOf.Ship_Shuttle, null, shuttle);
 
             IntVec3 landingCell = DropCellFinder.GetBestShuttleLandingSpot(target.Map, Faction.OfPlayer);
@@ -80,9 +84,9 @@ namespace FactionColonies.util
             {
                 source = CompLaunchable.GetOptionsForTile(target.Tile, pods, launchAction).ToList();
             }
-            catch
+            catch (Exception ex)
             {
-                //There is a bug in base game RimWorld where a shuttle containing Animals and Humans crashes the UI here
+                LogUtil.Warning("Shuttle launch options failed, retrying without animals: " + ex);
                 foreach (IThingHolder thingHolder in pods)
                 {
                     thingHolder.GetDirectlyHeldThings().RemoveAll(thing => thing.def.race?.Animal ?? false);
@@ -114,25 +118,25 @@ namespace FactionColonies.util
         {
             if (!ChoseWorldTarget(target))
             {
-                return "targetAnythingWithColonists".Translate();
+                return "FCTargetAnythingWithColonists".Translate();
             }
 
             if (target.WorldObject is Caravan)
             {
-                return "requestShuttleToCaravan".Translate();
+                return "FCRequestShuttleToCaravan".Translate();
             }
 
             if (target.WorldObject is Settlement)
             {
-                return "requestShuttleToColony".Translate();
+                return "FCRequestShuttleToColony".Translate();
             }
 
             if (target.WorldObject is MapParent)
             {
-                return "requestShuttleToMap".Translate();
+                return "FCRequestShuttleToMap".Translate();
             }
 
-            return "targetAnythingWithColonists".Translate();
+            return "FCTargetAnythingWithColonists".Translate();
         }
 
         public void DrawWorldRadiusRing() => GenDraw.DrawWorldRadiusRing(Tile, ShuttleRange);

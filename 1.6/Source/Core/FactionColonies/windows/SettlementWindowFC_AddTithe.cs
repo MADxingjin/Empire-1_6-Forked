@@ -80,7 +80,7 @@ namespace FactionColonies
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 35f);
-            Widgets.Label(header, "AddTitheItemHeader".Translate());
+            Widgets.Label(header, "FCAddTitheItemHeader".Translate());
             Widgets.DrawLineHorizontal(header.x, header.yMax, header.width);
 
             Text.Font = GameFont.Small;
@@ -207,7 +207,7 @@ namespace FactionColonies
                 if (thingIsStuffable && selectedStuff == null)
                 {
                     canConfirm = false;
-                    confirmTooltip = "MustSelectStuff".Translate();
+                    confirmTooltip = "FCMustSelectStuff".Translate();
                 }
 
                 ThingQualityTuple tuple = new ThingQualityTuple
@@ -219,7 +219,7 @@ namespace FactionColonies
                 if (canConfirm && resource.HasTitheListKey(tuple))
                 {
                     canConfirm = false;
-                    confirmTooltip = "ItemAlreadyInTitheList".Translate();
+                    confirmTooltip = "FCItemAlreadyInTitheList".Translate();
                 }
 
                 if (!canConfirm)

@@ -105,9 +105,17 @@ namespace FactionColonies
             }
         }
 
+        /// <summary>
+        /// Accepts items matching this caravan's resource type or common essentials (food,
+        /// medicine, non-armor apparel). Rejects dangerous/worthless items via the shared blocklist.
+        /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
-            return true;
+            if (EmpireTradeFilterUtil.ShouldReject(thingDef))
+                return false;
+
+            return EmpireTradeFilterUtil.IsCommonEssential(thingDef)
+                || (resourceDef is object && resourceDef.AllowsForTrade(thingDef));
         }
 
         public override IEnumerable<string> ConfigErrors(TraderKindDef parentDef)

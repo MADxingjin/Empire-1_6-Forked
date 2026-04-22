@@ -143,6 +143,11 @@
 	<!-- Multiplier applied to this settlement type's weight when the threat system selects raid targets. -->
 	<!-- Higher values make settlements of this type more likely to be attacked. Default: 1.0 -->
 	<raidTargetingWeight>1.0</raidTargetingWeight>
+	<!-- If false, this settlement type is completely excluded from enemy raid targeting. Default: true -->
+	<canBeRaided>true</canBeRaided>
+	<!-- If false, battles at this settlement always auto-resolve regardless of player battle mode. Default: true -->
+	<!-- Use for settlement types whose maps cannot be generated (e.g. orbital stations). -->
+	<supportsManualBattle>true</supportsManualBattle>
 
 	<!-- ── Required Mod Extension ── -->
 	<!-- Every WorldSettlementDef MUST include a SettlementTypeExtension (or a subclass). -->

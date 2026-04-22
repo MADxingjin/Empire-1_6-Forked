@@ -78,7 +78,7 @@ namespace FactionColonies
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect header = new Rect(inRect.x, inRect.y, inRect.width, 35f);
-            Widgets.Label(header, "AnimalSelection".Translate());
+            Widgets.Label(header, "FCAnimalSelection".Translate());
             Widgets.DrawLineHorizontal(header.x, header.yMax, header.width);
 
             // Sub-header: faction name
@@ -107,16 +107,16 @@ namespace FactionColonies
             Rect packBtn = new Rect(combatBtn.xMax + margin, filterRowY, filterBtnWidth, filterBtnHeight);
 
             Text.Font = GameFont.Small;
-            DrawFilterButton(allBtn, "AnimalFilterShowAll".Translate(), 0);
-            DrawFilterButton(combatBtn, "AnimalFilterShowCombat".Translate(), 1);
-            DrawFilterButton(packBtn, "AnimalFilterShowPack".Translate(), 2);
+            DrawFilterButton(allBtn, "FCAnimalFilterShowAll".Translate(), 0);
+            DrawFilterButton(combatBtn, "FCAnimalFilterShowCombat".Translate(), 1);
+            DrawFilterButton(packBtn, "FCAnimalFilterShowPack".Translate(), 2);
 
             float bottomY = inRect.yMax - CloseButSize.y - margin;
 
             // Warnings and errors at bottom (drawn bottom-up)
             if (filter.AllowedCount == 0)
             {
-                string errorText = "AnimalFilterNoneError".Translate();
+                string errorText = "FCAnimalFilterNoneError".Translate();
                 float textHeight = Text.CalcHeight(errorText, inRect.width - (smallMargin * 2));
                 Rect errorBox = new Rect(inRect.x, bottomY - textHeight - (smallMargin * 2), inRect.width, textHeight + (smallMargin * 2));
                 Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y + smallMargin, errorBox.width - (smallMargin * 2), textHeight);
@@ -131,7 +131,7 @@ namespace FactionColonies
             bool noCombat = filter.AllowedCombatAnimals.Count == 0 && filter.AllowedCount > 0;
             if (noCombat)
             {
-                string warnText = "AnimalFilterNoCombatWarning".Translate();
+                string warnText = "FCAnimalFilterNoCombatWarning".Translate();
                 float textHeight = Text.CalcHeight(warnText, inRect.width - (smallMargin * 2));
                 Rect warnBox = new Rect(inRect.x, bottomY - textHeight - (smallMargin * 2), inRect.width, textHeight + (smallMargin * 2));
                 Rect warnLabel = new Rect(warnBox.x + smallMargin, warnBox.y + smallMargin, warnBox.width - (smallMargin * 2), textHeight);
@@ -146,7 +146,7 @@ namespace FactionColonies
             bool noPack = filter.AllowedPackAnimals.Count == 0 && filter.AllowedCount > 0;
             if (noPack)
             {
-                string errorText = "AnimalFilterNoPackError".Translate();
+                string errorText = "FCAnimalFilterNoPackError".Translate();
                 float textHeight = Text.CalcHeight(errorText, inRect.width - (smallMargin * 2));
                 Rect errorBox = new Rect(inRect.x, bottomY - textHeight - (smallMargin * 2), inRect.width, textHeight + (smallMargin * 2));
                 Rect errorLabel = new Rect(errorBox.x + smallMargin, errorBox.y + smallMargin, errorBox.width - (smallMargin * 2), textHeight);
@@ -163,15 +163,15 @@ namespace FactionColonies
             Rect enableButton = new Rect(inRect.x, bottomY - bigRowHeight, btnWidth, bigRowHeight);
             Rect disableButton = new Rect(enableButton.xMax, enableButton.y, btnWidth, bigRowHeight);
             Rect defaultsButton = new Rect(disableButton.xMax, enableButton.y, btnWidth, bigRowHeight);
-            if (Widgets.ButtonText(enableButton, "AnimalEnableAll".Translate()))
+            if (Widgets.ButtonText(enableButton, "FCAnimalEnableAll".Translate()))
             {
                 filter.AllowAll();
             }
-            if (Widgets.ButtonText(disableButton, "AnimalDisableAll".Translate()))
+            if (Widgets.ButtonText(disableButton, "FCAnimalDisableAll".Translate()))
             {
                 filter.DisallowAll();
             }
-            if (Widgets.ButtonText(defaultsButton, "AnimalDefaults".Translate()))
+            if (Widgets.ButtonText(defaultsButton, "FCAnimalDefaults".Translate()))
             {
                 filter.SetDefaults();
             }
@@ -225,25 +225,25 @@ namespace FactionColonies
 
                 if (isPack)
                 {
-                    float tagW = Text.CalcSize("AnimalTagPack".Translate()).x + 8f;
+                    float tagW = Text.CalcSize("FCAnimalTagPack".Translate()).x + 8f;
                     tagX -= tagW;
                     Rect tagRect = new Rect(tagX, row.y + 4f, tagW, RowHeight - 8f);
                     Widgets.DrawBoxSolid(tagRect, new Color(0.2f, 0.4f, 0.55f, 0.6f));
                     Text.Font = GameFont.Tiny;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(tagRect, "AnimalTagPack".Translate());
+                    Widgets.Label(tagRect, "FCAnimalTagPack".Translate());
                     tagX -= 3f;
                 }
 
                 if (isCombat)
                 {
-                    float tagW = Text.CalcSize("AnimalTagCombat".Translate()).x + 8f;
+                    float tagW = Text.CalcSize("FCAnimalTagCombat".Translate()).x + 8f;
                     tagX -= tagW;
                     Rect tagRect = new Rect(tagX, row.y + 4f, tagW, RowHeight - 8f);
                     Widgets.DrawBoxSolid(tagRect, new Color(0.55f, 0.2f, 0.2f, 0.6f));
                     Text.Font = GameFont.Tiny;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(tagRect, "AnimalTagCombat".Translate());
+                    Widgets.Label(tagRect, "FCAnimalTagCombat".Translate());
                     tagX -= 3f;
                 }
 
@@ -261,7 +261,7 @@ namespace FactionColonies
                     string reasons = GetNonCombatReasons(animal);
                     if (!string.IsNullOrEmpty(reasons))
                     {
-                        tooltip += "\n\n" + "AnimalNotCombatHeader".Translate() + "\n" + reasons;
+                        tooltip += "\n\n" + "FCAnimalNotCombatHeader".Translate() + "\n" + reasons;
                     }
                 }
                 TooltipHandler.TipRegion(row, tooltip);
@@ -287,12 +287,12 @@ namespace FactionColonies
             if (animal.RaceProps.trainability is null
                 || animal.RaceProps.trainability.intelligenceOrder < TrainabilityDefOf.Intermediate.intelligenceOrder)
             {
-                reasons.Add("- " + "AnimalNotCombatTrainability".Translate());
+                reasons.Add("- " + "FCAnimalNotCombatTrainability".Translate());
             }
 
             if (animal.combatPower < 50f)
             {
-                reasons.Add("- " + "AnimalNotCombatPowerLow".Translate(animal.combatPower.ToString("F0")));
+                reasons.Add("- " + "FCAnimalNotCombatPowerLow".Translate(animal.combatPower.ToString("F0")));
             }
 
             return string.Join("\n", reasons);

@@ -110,7 +110,7 @@ namespace FactionColonies
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             Rect newColonyHeader = new Rect(0, 0, 260, newColonyHeader_height);
-            Widgets.Label(newColonyHeader, "SettleANewColony".Translate());
+            Widgets.Label(newColonyHeader, "FCSettleANewColony".Translate());
 
             //hori line
             Widgets.DrawLineHorizontal(0, newColonyHeader_height, 300);
@@ -120,8 +120,8 @@ namespace FactionColonies
             Rect upperBox = new Rect(5, newColonyHeader.yMax + verticalMargins, 258, upperBox_height);
             Widgets.DrawMenuSection(upperBox); //height was originally 220
 
-            DrawLabelBox(new Rect(10, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "ConstructionTime".Translate() : "TravelTime".Translate()), timeToTravel.ToTimeString());
-            DrawLabelBox(new Rect(153, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), "InitialCost".Translate(), settlementCreationCost + " " + "Silver".Translate());
+            DrawLabelBox(new Rect(10, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), (currentSettlementType.isConstructed ? "FCConstructionTime".Translate() : "FCTravelTime".Translate()), timeToTravel.ToTimeString());
+            DrawLabelBox(new Rect(153, newColonyHeader.yMax + verticalMargins, 100, costConstructionBox_height), "FCInitialCost".Translate(), settlementCreationCost + " " + "FCSilver".Translate());
 
             // Additional founding costs from registered validators
             float additionalCostHeight = 0f;
@@ -147,7 +147,7 @@ namespace FactionColonies
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
             Rect productionLabelBox = new Rect(0, upperBox.yMax + verticalMargins + additionalCostHeight, 268, productionLabel_height); //0, 270, 268, 40
-            Widgets.Label(productionLabelBox, "BaseProductionStats".Translate());
+            Widgets.Label(productionLabelBox, "FCBaseProductionStats".Translate());
 
 
             //Lower menu
@@ -219,6 +219,8 @@ namespace FactionColonies
                 }
             }
 
+            FCWindow_CreateColonyStatModifiers.RefreshForTile(currentTileSelected, currentBiomeSelected);
+
             if (IsTileValidForSettlement())
             {
                 currentTileSelected = currentSettlementType.GetTileForSettlement(currentTileSelected);
@@ -253,9 +255,9 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
 
             //Production headers
-            Widgets.Label(new Rect(40, prodBox.y, 60, productionHeaders_height), "Base".Translate()); // 40, 190, 60, 25
-            Widgets.Label(new Rect(110, prodBox.y, 60, productionHeaders_height), "Modifier".Translate());
-            Widgets.Label(new Rect(180, prodBox.y, 60, productionHeaders_height), "Final".Translate());
+            Widgets.Label(new Rect(40, prodBox.y, 60, productionHeaders_height), "FCBase".Translate()); // 40, 190, 60, 25
+            Widgets.Label(new Rect(110, prodBox.y, 60, productionHeaders_height), "FCModifier".Translate());
+            Widgets.Label(new Rect(180, prodBox.y, 60, productionHeaders_height), "FCFinal".Translate());
 
             if (currentTileSelected != PlanetTile.Invalid)
             {
@@ -267,10 +269,10 @@ namespace FactionColonies
                 {
                     ResourceTypeDef titheType = resTypes[i].resourceDef;
                     int baseHeight = 15;
-                    string label = resTypes[i].label;
-                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, label.CapitalizeFirst()))
+                    string resLabel = resTypes[i].label;
+                    if (Widgets.ButtonImage(new Rect(20, startHeight + i * (5 + baseHeight), baseHeight, baseHeight), resTypes[i].Icon, true, resLabel.CapitalizeFirst()))
                     {
-                        Find.WindowStack.Add(new DescWindowFc("SettlementProductionOf".Translate() + ": " + label, label.CapitalizeFirst()));
+                        Find.WindowStack.Add(new DescWindowFc("FCSettlementProductionOf".Translate() + ": " + resLabel, resLabel.CapitalizeFirst()));
                     }
                     /* currentBiomeSelected already accounted for the settlement type's biome resource override. So if we grab resources from it now,
                      * it should accurately represent the resources that the settlement would produce */
@@ -295,13 +297,50 @@ namespace FactionColonies
                     }
                     else
                     {
-                        double baseProduction = biomeRes.additive + settleRes.additive + titheType.GetExtensionAdditives(currentTileSelected);
-                        double baseMultiplier = Math.Round(biomeRes.multiplier * settleRes.multiplier * titheType.GetExtensionMultipliers(currentTileSelected), 2);
-                        double total = Math.Round(baseProduction * baseMultiplier, 2);
+                        double baseProduction = biomeRes.additive + settleRes.additive
+                            + titheType.GetExtensionAdditives(currentTileSelected)
+                            + titheType.GetMutatorAdditives(currentTileSelected)
+                            + titheType.GetLandmarkAdditives(currentTileSelected);
+                        double baseMultiplier = biomeRes.multiplier * settleRes.multiplier
+                            * titheType.GetExtensionMultipliers(currentTileSelected)
+                            * titheType.GetMutatorMultipliers(currentTileSelected)
+                            * titheType.GetLandmarkMultipliers(currentTileSelected);
+                        double total = baseProduction * baseMultiplier;
 
-                        Widgets.Label(baseRect, (baseProduction).ToString());
-                        Widgets.Label(baseRect.CopyAndShift(xMod, 0f), (baseMultiplier).ToString());
-                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), (total).ToString());
+                        Rect multRect = baseRect.CopyAndShift(xMod, 0f);
+                        Widgets.Label(baseRect, Math.Round(baseProduction, 2).ToString());
+                        Widgets.Label(multRect, Math.Round(baseMultiplier, 2).ToString());
+                        Widgets.Label(baseRect.CopyAndShift(xMod * 2f, 0f), Math.Round(total, 2).ToString());
+
+                        // Breakdown tooltips mirroring SettlementWindowFC.cs.
+                        StringBuilder addSb = new StringBuilder();
+                        if (biomeRes.additive != 0)
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(biomeRes.additive)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
+                        if (settleRes.additive != 0)
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(settleRes.additive)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
+                        titheType.ForEachExtensionAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachMutatorAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachLandmarkAdditive(currentTileSelected, (label, value) =>
+                            addSb.Append(TextUtil.ColorizeAdditiveBonus(value)).Append(" - ").Append(label).Append('\n'));
+
+                        StringBuilder multSb = new StringBuilder();
+                        if (biomeRes.multiplier != 1)
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(biomeRes.multiplier)).Append(" - ").Append(currentBiomeSelected.LabelCap).Append('\n');
+                        if (settleRes.multiplier != 1)
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(settleRes.multiplier)).Append(" - ").Append(currentSettlementType.LabelCap).Append('\n');
+                        titheType.ForEachExtensionMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachMutatorMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
+                        titheType.ForEachLandmarkMultiplier(currentTileSelected, (label, value) =>
+                            multSb.Append(TextUtil.ColorizeMultiplierBonus(value)).Append(" - ").Append(label).Append('\n'));
+
+                        if (addSb.Length > 0)
+                            TooltipHandler.TipRegion(baseRect, addSb.ToString().TrimEnd());
+                        if (multSb.Length > 0)
+                            TooltipHandler.TipRegion(multRect, multSb.ToString().TrimEnd());
                     }
                 }
                 /* Highlight the total value */
@@ -331,7 +370,7 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleCenter;
             int buttonLength = 200;
             Rect button = new Rect((InitialSize.x - 32 - buttonLength) / 2f, curHeight + verticalMargins, buttonLength, button_height);
-            if (Widgets.ButtonText(button, "Settle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
+            if (Widgets.ButtonText(button, "FCSettle".Translate() + ": (" + settlementCreationCost + ")")) //add inital cost
             {
                 if (!CanCreateSettlementHere()) return button.yMax;
 
@@ -370,11 +409,11 @@ namespace FactionColonies
             evt.settlementToCreate = currentSettlementType;
             if (currentSettlementType.isConstructed)
             {
-                evt.customDescription = "ColonyConstruction".Translate(currentSettlementType.LabelCap);
+                evt.customDescription = "FCColonyConstruction".Translate(currentSettlementType.LabelCap);
             }
             else
             {
-                evt.customDescription = "SettleEventDesc".Translate(
+                evt.customDescription = "FCSettleEventDesc".Translate(
                     currentSettlementType.LabelCap,
                     currentTileSelected.Tile.PrimaryBiome.LabelCap,
                     (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString());
@@ -383,7 +422,7 @@ namespace FactionColonies
             faction.AddEvent(evt);
 
             faction.settlementCaravansList.Add(evt.location);
-            Messages.Message((currentSettlementType.isConstructed ? "ConstructionToLocation".Translate() : "CaravanSentToLocation".Translate()) + " " +
+            Messages.Message((currentSettlementType.isConstructed ? "FCConstructionToLocation".Translate() : "FCCaravanSentToLocation".Translate()) + " " +
                              (evt.timeTillTrigger - Find.TickManager.TicksGame).ToTimeString() + "!", MessageTypeDefOf.PositiveEvent);
 
             DoPostEventCreationTraitThings();
@@ -430,7 +469,7 @@ namespace FactionColonies
         {
             if (PaymentUtil.GetSilver() >= settlementCreationCost) return true;
 
-            reason?.Append("NotEnoughSilverToSettle".Translate() + "!");
+            reason?.Append("FCNotEnoughSilverToSettle".Translate() + "!");
             return false;
         }
 
@@ -456,6 +495,7 @@ namespace FactionColonies
                 comp.roadBuilder.shouldDrawPaths = false;
             }
             Find.TilePicker.StopTargeting();
+            FCWindow_CreateColonyStatModifiers.TryClose();
         }
 
         /// <summary>

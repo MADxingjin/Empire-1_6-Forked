@@ -179,9 +179,9 @@ namespace FactionColonies
                 if (Find.IdeoManager != null)
                     ideos = Find.IdeoManager.IdeosListForReading;
             }
-            catch
+            catch (Exception ex)
             {
-                // IdeoManager not available
+                LogUtil.Warning("IdeoManager not available for color picker: " + ex);
             }
 
             if (ideos == null || ideos.Count == 0)

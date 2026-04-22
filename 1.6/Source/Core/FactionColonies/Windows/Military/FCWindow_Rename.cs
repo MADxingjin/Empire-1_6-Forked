@@ -63,7 +63,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    Messages.Message("NameIsInvalid".Translate(), MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("FCNameIsInvalid".Translate(), MessageTypeDefOf.RejectInput, false);
                 }
             }
 

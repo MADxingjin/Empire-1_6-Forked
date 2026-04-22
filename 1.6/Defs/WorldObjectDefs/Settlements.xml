@@ -32,7 +32,7 @@
   <!-- Orbital Settlements -->
   <FactionColonies.WorldSettlementDef Name="WorldSettlementDef_Orbital" ParentName="WorldSettlementDefBase" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital</defName>
-    <label>basic orbital colony</label>
+    <label>basic orbital station</label>
     <description>A general-purpose orbital station. Produces all standard resources plus chemfuel and gravtech. Only raidable by spacer-tech factions. Battles auto-resolve only.</description>
 	<titleKey>Orbital</titleKey>
 	<descriptionKey>Orbital</descriptionKey>
@@ -68,7 +68,7 @@
   
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Logistics</defName>
-    <label>logistics orbital colony</label>
+    <label>logistics orbital station</label>
     <description>A trade-focused orbital station. Unlocks exclusive buildings that increase tax rate and tithe value.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
@@ -78,7 +78,7 @@
 
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Advanced</defName>
-    <label>advanced orbital colony</label>
+    <label>advanced orbital station</label>
     <description>An industrial orbital station. Unlocks exclusive buildings that reduce construction time and boost animal and mining production.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>
@@ -88,7 +88,7 @@
 
   <FactionColonies.WorldSettlementDef ParentName="WorldSettlementDef_Orbital" MayRequire="Ludeon.RimWorld.Odyssey">
     <defName>WorldSettlementDef_Orbital_Glitter</defName>
-    <label>glitterworld orbital colony</label>
+    <label>glitterworld orbital station</label>
     <description>A high-tech orbital station. Unlocks exclusive buildings that enhance research output and military effectiveness.</description>
 	<baseSettlementType>WorldSettlementDef_Orbital</baseSettlementType>
 	<researchProjects>

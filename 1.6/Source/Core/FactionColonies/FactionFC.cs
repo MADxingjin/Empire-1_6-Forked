@@ -14,8 +14,8 @@ namespace FactionColonies
         #region Fields & Properties
 
         // ── Core Identity ──
-        public string name = "PlayerFaction".Translate();
-        public string title = "Bastion".Translate();
+        public string name = "FCPlayerFaction".Translate();
+        public string title = "FCBastion".Translate();
         public Texture2D factionIcon = TexLoad.factionIcons[0];
         public string factionIconPath = TexLoad.factionIcons[0].name;
         public Color factionColorPrimary = Color.white;
@@ -37,23 +37,37 @@ namespace FactionColonies
         {
             get
             {
-                Map map;
-                if (taxMap is null)
-                {
-                    map = Find.WorldObjects.SettlementAt(FactionCache.FactionComp.capitalLocation)?.Map;
-                    if (map is null)
-                    {
-                        //if no tax map or no capital map is valid
-                        map = Find.CurrentMap.IsPlayerHome ? Find.CurrentMap : Find.AnyPlayerHomeMap;
+                if (taxMap is object) return taxMap;
 
+                FactionFC comp = FactionCache.FactionComp;
+                Map map = null;
+                if (comp is object)
+                {
+                    map = Find.WorldObjects.SettlementAt(comp.capitalLocation)?.Map;
+                }
+
+                if (map is null)
+                {
+                    Map currentMap = Find.CurrentMap;
+                    if (currentMap is object && currentMap.IsPlayerHome)
+                    {
+                        map = currentMap;
+                    }
+                    else
+                    {
+                        map = Find.AnyPlayerHomeMap;
+                    }
+
+                    if (map is object)
+                    {
                         LogUtil.MessageForce(
                             "Unable to find a player-set tax map or a valid location for the capital. Please open the faction main menu tab and set the capital and tax map. Taxes were sent to the following random PlayerHomeMap " +
                             map.Parent.LabelCap);
                     }
-                }
-                else
-                {
-                    map = taxMap;
+                    else
+                    {
+                        LogUtil.Warning("TaxMap: No player home map found. Taxes cannot be delivered.");
+                    }
                 }
 
                 return map;
@@ -155,12 +169,18 @@ namespace FactionColonies
         };
 
         // ── Events & Bills ──
-        public List<FCEvent> events = new List<FCEvent>();
-        internal int eventsVersion = 0;
-        public int EventsVersion => eventsVersion;
+        // LEGACY: populated only when loading pre-manager saves. Migrated into
+        // eventManager during ExposeData(ResolvingCrossRefs) and then nulled out.
+        // DO NOT READ. Use the Events property instead.
+        private List<FCEvent> events = new List<FCEvent>();
+
+        public FCEventManager eventManager = new FCEventManager();
+
+        // The canonical read path for the event queue. Delegates to the manager.
+        public IReadOnlyList<FCEvent> Events => eventManager.Events;
+        public int EventsVersion => eventManager.Version;
+
         public float randomEventLastAdded = 0f;
-        public Dictionary<string, int> eventCooldowns = new Dictionary<string, int>();
-        public Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
         public List<BillFC> Bills = new List<BillFC>();
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
@@ -277,7 +297,27 @@ namespace FactionColonies
 
             Scribe_Collections.Look(ref settlements, "settlements", LookMode.Reference);
             Scribe_Collections.Look(ref policies, "factionPolicies", LookMode.Deep);
+
+            // Legacy field. Still scribed under its original "events" name so old saves
+            // load into it. The ResolvingCrossRefs block below moves its contents into
+            // eventManager and nulls it out.
             Scribe_Collections.Look(ref events, "events", LookMode.Deep);
+
+            // Manager owns events / cooldowns / fire counts going forward.
+            Scribe_Deep.Look(ref eventManager, "eventManager");
+            if (eventManager is null) eventManager = new FCEventManager();
+
+            // Migrate pre-manager saves: move legacy events list into the manager.
+            // Runs during ResolvingCrossRefs so it completes BEFORE any PostLoadInit
+            // consumer (e.g. WorldSettlementFC stat-modifier reapply) reads Events.
+            if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs
+                && events != null && events.Count > 0)
+            {
+                eventManager.SeedFromLegacy(events);
+                events = null;
+                LogUtil.MessageForce("FactionFC: migrated legacy events list into FCEventManager.");
+            }
+
             Scribe_Collections.Look(ref settlementCaravansList, "settlementCaravansList", LookMode.Value);
             Scribe_Collections.Look(ref enabledCaravanTypes, "enabledCaravanTypes", LookMode.Value);
             Scribe_Collections.Look(ref militaryTargets, "militaryTargets", LookMode.Value);
@@ -347,16 +387,24 @@ namespace FactionColonies
 
             //Random Event
             Scribe_Values.Look(ref randomEventLastAdded, "randomEventLastAddedTick");
-            Scribe_Collections.Look(ref eventCooldowns, "eventCooldowns", LookMode.Value, LookMode.Value);
-            if (eventCooldowns == null) eventCooldowns = new Dictionary<string, int>();
-            Scribe_Collections.Look(ref eventFireCounts, "eventFireCounts", LookMode.Value, LookMode.Value);
-            if (eventFireCounts == null) eventFireCounts = new Dictionary<string, int>();
+            // eventCooldowns / eventFireCounts now live on eventManager (scribed above).
+        }
+
+        private void ScrubNullSettlements(string caller = "")
+        {
+            int removed = settlements.RemoveAll(s => s is null);
+            if (removed > 0)
+                LogUtil.Warning($"{caller}: Removed {removed} null settlement reference(s) from save data.");
         }
 
         public override void FinalizeInit(bool fromLoad)
         {
             base.FinalizeInit(fromLoad);
             LogUtil.MessageForce($"Finalizing init of FactionFC. fromload: {fromLoad}");
+
+            // Scrub null entries that can arise when LookMode.Reference fails to resolve
+            // (e.g., another mod destroyed a settlement or it failed to deserialize).
+            ScrubNullSettlements("FinalizeInit");
 
             // Apply saved tech level to FactionDef early — must happen before anything
             // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
@@ -420,11 +468,6 @@ namespace FactionColonies
             EnsureResourcePools();
 
             LifecycleRegistry.Register(this);
-
-            // Event stat modifier re-application is deferred to firstTick (see WorldComponentTick).
-            // FinalizeInit runs before Scribe.loader.FinalizeLoading,
-            // so cross-references (settlements, settlementTraitLocations) aren't resolved yet,
-            // and settlement PostLoadInit hasn't rebuilt base modifiers.
         }
 
         #endregion
@@ -474,10 +517,17 @@ namespace FactionColonies
             if (!(faction is null))
             {
                 _ = techLevel;
-                factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
-                    TexLoad.factionIcons.First());
-                UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
-                factionIconPath = factionIcon.name;
+                if (TexLoad.factionIcons.Any())
+                {
+                    factionIcon = TexLoad.factionIcons.FirstOrFallback(obj => obj.name == factionIconPath,
+                        TexLoad.factionIcons[0]);
+                    UpdateFactionIcon(ref faction, "FactionIcons/" + factionIcon.name);
+                    factionIconPath = factionIcon.name;
+                }
+                else
+                {
+                    LogUtil.Error("No faction icons loaded. Cannot set faction icon.");
+                }
 
                 if (!name.NullOrEmpty() && faction.Name != name)
                 {
@@ -546,7 +596,7 @@ namespace FactionColonies
             // Rare tick
             if (ticksGame % 250 == 0)
             {
-                FCEventMaker.ProcessEvents(in events);
+                FCEventMaker.ProcessEvents();
                 BillUtility.ProcessBills();
                 if (pendingEdictActivations.Count > 0)
                     CheckEdictActivations();
@@ -564,6 +614,7 @@ namespace FactionColonies
             if (ticksGame % GenDate.TicksPerDay == 0 && !(faction is null))
             {
                 ValidateSettlementCaravansList();
+                RecoverOrphanedConstructions(ticksGame);
 
                 if (faction.leader is null || faction.leader.Dead)
                     ColonyUtil.CreatePlayerFactionLeader(faction);
@@ -735,6 +786,7 @@ namespace FactionColonies
             {
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     avgHappiness += settlement.happiness;
                     avgLoyalty += settlement.loyalty;
                     avgUnrest += settlement.unrest;
@@ -759,61 +811,64 @@ namespace FactionColonies
             dirtyTechLevelCache = true;
         }
 
+        private static readonly TechLevel[] TechLevelDescending =
+        {
+            TechLevel.Archotech,
+            TechLevel.Ultra,
+            TechLevel.Spacer,
+            TechLevel.Industrial,
+            TechLevel.Medieval,
+            TechLevel.Neolithic,
+        };
+
         private void RecomputeTechLevel()
         {
-            ResearchManager researchManager = Find.ResearchManager;
-            bool medievalOnly = FCSettings.medievalTechOnly;
             TechLevel curTechLevel = _techLevel;
+            bool medievalOnly = FCSettings.medievalTechOnly;
+            TechLevel newLevel;
+            TechLevel playerTech = FactionCache.PlayerFaction?.def?.techLevel ?? TechLevel.Neolithic;
 
-            if (!medievalOnly && FactionCache.TechLevelBarrierUltra != null &&
-                researchManager.GetProgress(FactionCache.TechLevelBarrierUltra) >= FactionCache.TechLevelBarrierUltra.baseCost &&
-                _techLevel < TechLevel.Ultra)
+            if (FCSettings.mirrorPlayerTechLevel)
             {
-                _techLevel = TechLevel.Ultra;
-                LogUtil.Message("updateTechLevel: Ultra");
-            }
-            else if (!medievalOnly && FactionCache.TechLevelBarrierSpacer != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierSpacer) >= FactionCache.TechLevelBarrierSpacer.baseCost &&
-                     _techLevel < TechLevel.Spacer)
-            {
-                _techLevel = TechLevel.Spacer;
-                LogUtil.Message("updateTechLevel: Spacer");
-            }
-            else if (!medievalOnly && FactionCache.TechLevelBarrierIndustrial != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierIndustrial) >= FactionCache.TechLevelBarrierIndustrial.baseCost &&
-                     _techLevel < TechLevel.Industrial)
-            {
-                _techLevel = TechLevel.Industrial;
-                LogUtil.Message("updateTechLevel: Industrial");
-            }
-            else if (FactionCache.TechLevelBarrierMedieval != null &&
-                     researchManager.GetProgress(FactionCache.TechLevelBarrierMedieval) >= FactionCache.TechLevelBarrierMedieval.baseCost &&
-                     _techLevel < TechLevel.Medieval)
-            {
-                _techLevel = TechLevel.Medieval;
-                LogUtil.Message("updateTechLevel: Medieval");
+                // Mirror mode: pin Empire tech to the player faction's tech level.
+                if (playerTech < TechLevel.Neolithic) playerTech = TechLevel.Neolithic;
+                newLevel = playerTech;
+                LogUtil.Message("updateTechLevel: Mirroring player tech " + newLevel);
             }
             else
             {
-                if (_techLevel < TechLevel.Neolithic)
+                // Research-barrier cascade: the highest satisfied barrier wins.
+                ResearchManager researchManager = Find.ResearchManager;
+                newLevel = TechLevel.Undefined;
+                foreach (TechLevel tl in TechLevelDescending)
                 {
-                    LogUtil.Message("updateTechLevel: Neolithic");
-                    _techLevel = TechLevel.Neolithic;
+                    if (medievalOnly && tl > TechLevel.Medieval) continue;
+                    TechLevelBarrier barrier = FactionCache.GetTechBarrier(tl);
+                    if (barrier is null) continue;
+                    if (barrier.IsSatisfied(researchManager))
+                    {
+                        newLevel = tl;
+                        LogUtil.Message("updateTechLevel: " + tl);
+                        break;
+                    }
+                }
+                // Safety floor if no barriers matched at all.
+                if (newLevel == TechLevel.Undefined) newLevel = TechLevel.Neolithic;
+
+                // Floor: Empire tech level should never be below the player faction's tech level.
+                if (medievalOnly && playerTech > TechLevel.Medieval) playerTech = TechLevel.Medieval;
+                if (playerTech > TechLevel.Undefined && newLevel < playerTech)
+                {
+                    newLevel = playerTech;
+                    LogUtil.Message("updateTechLevel: Matched player faction tech level " + playerTech);
                 }
             }
 
-            // Floor: Empire tech level should never be below the player faction's tech level
-            TechLevel playerTech = FactionCache.PlayerFaction?.def?.techLevel ?? TechLevel.Undefined;
-            if (medievalOnly && playerTech > TechLevel.Medieval)
-            {
-                playerTech = TechLevel.Medieval;
-            }
+            // medievalTechOnly cap applies to both mirror and cascade paths.
+            if (medievalOnly && newLevel > TechLevel.Medieval) newLevel = TechLevel.Medieval;
 
-            if (playerTech > TechLevel.Undefined && _techLevel < playerTech)
-            {
-                _techLevel = playerTech;
-                LogUtil.Message("updateTechLevel: Matched player faction tech level " + playerTech);
-            }
+            // Never downgrade the faction's tech level.
+            if (newLevel > _techLevel) _techLevel = newLevel;
 
             if (_techLevel != curTechLevel)
             {
@@ -852,6 +907,7 @@ namespace FactionColonies
                 grandThingList = new List<ThingDef>();
                 foreach (WorldSettlementFC settlement in settlements)
                 {
+                    if (settlement is null) continue;
                     grandThingList.AddRange(settlement.GetGrandThingList());
                 }
                 grandThingList = grandThingList.Distinct().ToList();
@@ -955,7 +1011,7 @@ namespace FactionColonies
                 if (edict?.def is null || !edict.IsFullyActive) continue;
                 value = AccumulateStatModifiersValue(value, stat, edict.def.statModifiers);
             }
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
@@ -1006,7 +1062,7 @@ namespace FactionColonies
                 if (edict?.def is null || !edict.IsFullyActive) continue;
                 desc = AccumulateStatModifiersDesc(desc, stat, edict.def.statModifiers, $"{edict.def.LabelCap} ({"FCEdict".Translate()})", hardinvert);
             }
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt?.def is null) continue;
                 if (evt.settlementTraitLocations.Count > 0) continue;
@@ -1024,6 +1080,7 @@ namespace FactionColonies
         public void InvalidateFactionStatCache()
         {
             cachedFactionStatValues.Clear();
+            ScrubNullSettlements("InvalidateFactionStatCache");
             foreach (WorldSettlementFC s in settlements)
             {
                 s.InvalidateDescCache();
@@ -1038,6 +1095,7 @@ namespace FactionColonies
         /// </summary>
         public void InvalidateAllSettlementStatCaches()
         {
+            ScrubNullSettlements("InvalidateAllSettlementStatCaches");
             foreach (WorldSettlementFC s in settlements)
                 s.InvalidateStatCache();
         }
@@ -1213,30 +1271,10 @@ namespace FactionColonies
             return edict.def == def;
         }
 
-        public void RecordEventCooldown(FCEventDef def)
-        {
-            eventCooldowns[def.defName] = Find.TickManager.TicksGame;
-        }
-
-        public bool IsEventOnCooldown(FCEventDef def)
-        {
-            if (def.cooldownTicks <= 0) return false;
-            if (!eventCooldowns.TryGetValue(def.defName, out int lastTick)) return false;
-            return Find.TickManager.TicksGame - lastTick < def.cooldownTicks;
-        }
-
-        public void RecordEventFired(FCEventDef def)
-        {
-            eventFireCounts.TryGetValue(def.defName, out int count);
-            eventFireCounts[def.defName] = count + 1;
-        }
-
-        public bool HasReachedMaxFireCount(FCEventDef def)
-        {
-            if (def.maxFireCount <= 0) return false;
-            if (!eventFireCounts.TryGetValue(def.defName, out int count)) return false;
-            return count >= def.maxFireCount;
-        }
+        public void RecordEventCooldown(FCEventDef def) => eventManager.RecordCooldown(def);
+        public bool IsEventOnCooldown(FCEventDef def) => eventManager.IsOnCooldown(def);
+        public void RecordEventFired(FCEventDef def) => eventManager.RecordFired(def);
+        public bool HasReachedMaxFireCount(FCEventDef def) => eventManager.HasReachedMaxFireCount(def);
 
         public void EnactEdict(FCPolicyDef def)
         {
@@ -1600,13 +1638,13 @@ namespace FactionColonies
                     ForEachBehavior(b => b.OnTaxCollected(this, settlement));
                 }
 
-                Find.LetterStack.ReceiveLetter("TaxesBilledShort".Translate(), "TaxesBilledDesc".Translate(),
+                Find.LetterStack.ReceiveLetter("FCTaxesBilledShort".Translate(), "FCTaxesBilledDesc".Translate(),
                     LetterDefOf.PositiveEvent);
                 DirtyFactionProfitCache();
             }
             else
             {
-                Messages.Message("NoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCNoSettlementsToTax".Translate(), MessageTypeDefOf.NeutralEvent);
             }
 
             // Deduct edict upkeep
@@ -1677,9 +1715,8 @@ namespace FactionColonies
                 fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
             }
 
-            //Add event to events
-            events.Add(fcevent);
-            eventsVersion++;
+            //Add event to the manager queue
+            eventManager.Enqueue(fcevent);
 
             LogUtil.Message($"AddEvent: adding new fcevent {fcevent.def.defName}");
 
@@ -1708,6 +1745,16 @@ namespace FactionColonies
 
             InvalidateFactionStatCache();
         }
+
+        // Thin delegators to FCEventManager. Invariants (fired flag, version bump)
+        // are enforced by the manager; see FCEventManager.Remove / RemoveWhere.
+        public bool RemoveEvent(FCEvent evt) => eventManager.Remove(evt);
+        public int RemoveEventsWhere(Predicate<FCEvent> match) => eventManager.RemoveWhere(match);
+
+        // Indexed event queries — O(1) via FCEventManager's internal indexes.
+        public IReadOnlyList<FCEvent> GetEventsByDef(FCEventDef def) => eventManager.GetByDef(def);
+        public FCEvent FindEventByDefAndLocation(FCEventDef def, int tile) => eventManager.FindFirstByDefAndLocation(def, tile);
+        public bool HasEventWithDefAndLocation(FCEventDef def, int tile) => eventManager.AnyWithDefAndLocation(def, tile);
 
         private void MakeRandomEvent()
         {
@@ -1942,7 +1989,7 @@ namespace FactionColonies
             {
                 capitalLocation = Find.CurrentMap.Parent.Tile;
 
-                Messages.Message("SetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("FCSetAsFactionCapital".Translate(Find.CurrentMap.Parent.LabelCap), MessageTypeDefOf.NeutralEvent);
             }
             else
             {
@@ -1982,7 +2029,7 @@ namespace FactionColonies
                 }
             }
 
-            LogUtil.Message("CouldNotFindMapOfCapital".Translate());
+            LogUtil.Message("FCCouldNotFindMapOfCapital".Translate());
             return null;
         }
 
@@ -2168,6 +2215,9 @@ namespace FactionColonies
                     result.Add(resolved);
             }
 
+            if (result.Count == 0)
+                LogUtil.Warning($"BuildCaravanTraderKinds produced an empty list. enabledCaravanTypes: {enabledCaravanTypes?.Count ?? 0}, techLevel: {tech}");
+
             return result;
         }
 
@@ -2176,7 +2226,7 @@ namespace FactionColonies
             switch (techLevel)
             {
                 case TechLevel.Ultra:
-                    return "ReachedMaxLevel".Translate();
+                    return "FCReachedMaxLevel".Translate();
                 case TechLevel.Spacer:
                     return "FCShipBasics".Translate();
                 case TechLevel.Industrial:
@@ -2269,7 +2319,7 @@ namespace FactionColonies
             List<PlanetTile> toAdd = new List<PlanetTile>();
             List<PlanetTile> toRemove = new List<PlanetTile>();
 
-            foreach (FCEvent evt in events)
+            foreach (FCEvent evt in Events)
             {
                 if (evt.def.defName == "settleNewColony")
                 {
@@ -2313,6 +2363,63 @@ namespace FactionColonies
             }
 
             return foundInvalidCaravan;
+        }
+
+        private void RecoverOrphanedConstructions(int currentTick)
+        {
+            const int gracePeriod = 500;
+            IReadOnlyList<FCEvent> constructEvents = eventManager.GetByDef(FCEventDefOf.constructBuilding);
+            IReadOnlyList<FCEvent> upgradeEvents = eventManager.GetByDef(FCEventDefOf.upgradeSettlement);
+
+            foreach (WorldSettlementFC settlement in settlements)
+            {
+                // Check for orphaned construction slots
+                if (settlement.BuildingsComp is object)
+                {
+                    List<BuildingFC> buildings = settlement.BuildingsComp.Buildings;
+                    for (int slot = 0; slot < buildings.Count; slot++)
+                    {
+                        BuildingFC building = buildings[slot];
+                        if (building.def != BuildingFCDefOf.Construction) continue;
+                        if (building.completionTick + gracePeriod >= currentTick) continue;
+
+                        bool hasMatchingEvent = constructEvents.Any(evt => evt.source == settlement.Tile && evt.buildingSlot == slot);
+
+                        if (!hasMatchingEvent)
+                        {
+                            try
+                            {
+                                settlement.ConstructBuilding(building.underConstructionDef, slot);
+                                LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned construction " +
+                                    $"'{building.underConstructionDef?.defName ?? "NULL"}' in slot {slot} at {settlement.Name}");
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.Error($"RecoverOrphanedConstructions: failed to recover slot {slot} at {settlement.Name}: {ex}");
+                            }
+                        }
+                    }
+                }
+
+                // Check for orphaned upgrade state
+                if (settlement.isUpgrading && settlement.finishUpgradeTick + gracePeriod < currentTick)
+                {
+                    bool hasMatchingEvent = upgradeEvents.Any(t => t.location == settlement.Tile);
+
+                    if (!hasMatchingEvent)
+                    {
+                        try
+                        {
+                            settlement.UpgradeSettlement(setFlags: true);
+                            LogUtil.Warning($"RecoverOrphanedConstructions: auto-completed orphaned upgrade at {settlement.Name}");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Error($"RecoverOrphanedConstructions: failed to recover upgrade at {settlement.Name}: {ex}");
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

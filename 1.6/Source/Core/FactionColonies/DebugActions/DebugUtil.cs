@@ -17,10 +17,10 @@ namespace FactionColonies
         [DebugAction("Empire", "View Events and ticks till", allowedGameStates = AllowedGameStates.Playing)]
         private static void ViewEventsAndLog()
         {
-            FactionCache.FactionComp.events.ForEach(delegate (FCEvent e)
+            foreach (FCEvent e in FactionCache.FactionComp.Events)
             {
                 LogUtil.MessageForce(e.def.defName + " with cooldown: " + (e.timeTillTrigger - Find.TickManager.TicksGame));
-            });
+            }
         }
 
         [DebugAction("Empire", "Increment Time 5 Days", allowedGameStates = AllowedGameStates.Playing)]
@@ -192,7 +192,7 @@ namespace FactionColonies
 
                         string settlementString = evt.settlementTraitLocations.Join((settlement) => $" {settlement.Name}", "\n");
                         if (!settlementString.NullOrEmpty())
-                            Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"EventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
+                            Find.LetterStack.ReceiveLetter("Random Event", $"{evt.def.desc}\n{"FCEventAffectingSettlements".Translate()}\n{settlementString}", LetterDefOf.NeutralEvent);
                         else
                             Find.LetterStack.ReceiveLetter("Random Event", evt.def.desc, LetterDefOf.NeutralEvent);
                     }
@@ -233,7 +233,10 @@ namespace FactionColonies
                             MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
                             MilitaryForce attackingForce = new MilitaryForce(chosenLevel, efficiency, null, enemyFaction);
                             LogUtil.MessageForce($"Debug - Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
-                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                            if (!MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction))
+                            {
+                                Messages.Message($"{settlement.Name} is already under attack — debug attack dropped.", MessageTypeDefOf.RejectInput);
+                            }
                         }));
                     }
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(levelList));
@@ -268,9 +271,13 @@ namespace FactionColonies
                             MilitaryForce.GetMilitaryLevelAndEfficiencyFromTechLevel(enemyFaction.def.techLevel, out double _, out double efficiency);
                             MilitaryForce attackingForce = new MilitaryForce(chosenLevel, efficiency, null, enemyFaction);
                             LogUtil.MessageForce($"Debug - Instant Attack Player Settlement - {settlement.Name} (level {chosenLevel}, efficiency {efficiency})");
-                            MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction);
+                            if (!MilitaryUtilFC.AttackPlayerSettlement(attackingForce, settlement, enemyFaction))
+                            {
+                                Messages.Message($"{settlement.Name} is already under attack — debug attack dropped.", MessageTypeDefOf.RejectInput);
+                                return;
+                            }
 
-                            FCEvent attackEvt = FactionCache.FactionComp.events.LastOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+                            FCEvent attackEvt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
                             if (attackEvt != null)
                             {
                                 attackEvt.timeTillTrigger = Find.TickManager.TicksGame + 1;
@@ -289,7 +296,8 @@ namespace FactionColonies
         private static void ForceAttackAndEventSameTick()
         {
             FactionFC faction = FactionCache.FactionComp;
-            FCEvent attackEvt = faction.events.FirstOrDefault(e => e.def == FCEventDefOf.settlementBeingAttacked);
+            IReadOnlyList<FCEvent> attackEvents = faction.GetEventsByDef(FCEventDefOf.settlementBeingAttacked);
+            FCEvent attackEvt = attackEvents.Count > 0 ? attackEvents[0] : null;
             if (attackEvt == null)
             {
                 LogUtil.MessageForce("Debug - No pending settlementBeingAttacked event. Use 'Attack Player Settlement' first.");
@@ -313,7 +321,7 @@ namespace FactionColonies
         {
             FactionFC worldcomp = FactionCache.FactionComp;
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEvent evt in worldcomp.events)
+            foreach (FCEvent evt in worldcomp.Events)
             {
                 if (evt.def == FCEventDefOf.settlementBeingAttacked)
                 {
@@ -439,15 +447,8 @@ namespace FactionColonies
                 if (settlement.MilitaryComp is null || settlement.MilitaryComp.militaryJob != MilitaryJobDefOf.Cooldown)
                     continue;
 
-                for (int i = faction.events.Count - 1; i >= 0; i--)
-                {
-                    if (faction.events[i].def == FCEventDefOf.cooldownMilitary
-                        && faction.events[i].location == settlement.Tile)
-                    {
-                        faction.events.RemoveAt(i);
-                        faction.eventsVersion++;
-                    }
-                }
+                faction.RemoveEventsWhere(e =>
+                    e.def == FCEventDefOf.cooldownMilitary && e.location == settlement.Tile);
 
                 settlement.MilitaryComp.ReturnMilitary(false);
                 count++;
@@ -465,7 +466,7 @@ namespace FactionColonies
         [DebugAction("Empire", "Clear All Events", allowedGameStates = AllowedGameStates.Playing)]
         private static void ClearAllEvents()
         {
-            FactionCache.FactionComp.events = new List<FCEvent>();
+            FactionCache.FactionComp?.eventManager?.Clear();
         }
 
         [DebugAction("Empire", "Clear All Bills", allowedGameStates = AllowedGameStates.Playing)]
@@ -563,6 +564,40 @@ namespace FactionColonies
         // ============================
         // Settlement Debug Actions
         // ============================
+
+        [DebugAction("Empire", "Instant Build Building", allowedGameStates = AllowedGameStates.Playing)]
+        private static void InstantBuildBuilding()
+        {
+            WithSettlementChoice(settlement =>
+            {
+                var comp = settlement.BuildingsComp;
+                int slotCount = comp.NumBuildingSlots;
+                List<DebugMenuOption> slots = new List<DebugMenuOption>();
+                for (int i = 0; i < slotCount; i++)
+                {
+                    int localSlot = i;
+                    BuildingFCDef current = comp.Buildings[i].def;
+                    string slotLabel = $"Slot {i}: {current.label ?? current.defName}";
+                    slots.Add(new DebugMenuOption(slotLabel, DebugMenuOptionMode.Action, () =>
+                    {
+                        List<DebugMenuOption> buildingOptions = new List<DebugMenuOption>();
+                        foreach (BuildingFCDef bDef in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+                        {
+                            if (bDef == BuildingFCDefOf.Empty || bDef == BuildingFCDefOf.Construction) continue;
+                            BuildingFCDef localDef = bDef;
+                            buildingOptions.Add(new DebugMenuOption(localDef.label ?? localDef.defName, DebugMenuOptionMode.Action, () =>
+                            {
+                                comp.ConstructBuilding(localDef, localSlot);
+                                LogUtil.MessageForce($"Debug - Instant built {localDef.defName} in slot {localSlot} at {settlement.Name}");
+                                Messages.Message($"Debug: Built {localDef.label ?? localDef.defName} in {settlement.Name}", MessageTypeDefOf.PositiveEvent, false);
+                            }));
+                        }
+                        Find.WindowStack.Add(new Dialog_DebugOptionListLister(buildingOptions));
+                    }));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(slots));
+            });
+        }
 
         [DebugAction("Empire", "Log Settlement Stats", allowedGameStates = AllowedGameStates.Playing)]
         private static void LogSettlementStats()
@@ -1014,7 +1049,7 @@ namespace FactionColonies
         private static void ForceTriggerEvent()
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (FCEvent evt in FactionCache.FactionComp.events)
+            foreach (FCEvent evt in FactionCache.FactionComp.Events)
             {
                 FCEvent localEvt = evt;
                 int ticksLeft = localEvt.timeTillTrigger - Find.TickManager.TicksGame;
@@ -1334,7 +1369,7 @@ namespace FactionColonies
             if (rb.roadQueue != null)
             {
                 var rq = rb.roadQueue;
-                LogUtil.MessageForce($"Road Queue: NextTick:{rq.nextRoadTick - Find.TickManager.TicksGame} ticks | FromTiles:{rq.settlementsFromTiles.Count} ToTiles:{rq.settlementsToTiles.Count} Paths:{rq.roadPaths.Count} NeedsUpdate:{rq.shouldUpdateSettlementsToProcess}");
+                LogUtil.MessageForce($"Road Queue: NextTick:{rq.nextRoadTick - Find.TickManager.TicksGame} ticks | FromTiles:{rq.lastFromTileCount} ToTiles:{rq.lastToTileCount} Paths:{rq.roadPaths.Count} NeedsUpdate:{rq.shouldUpdateSettlementsToProcess}");
             }
             else
             {
@@ -1347,6 +1382,57 @@ namespace FactionColonies
         {
             LogUtil.MessageForce($"Validating settlement caravan list...");
             FactionCache.FactionComp?.ValidateSettlementCaravansList();
+        }
+
+        [DebugAction("Empire", "Fire Support (Pick Source)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void FireSupportPickSource()
+        {
+            MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
+            if (util.fireSupportDefs == null || !util.fireSupportDefs.Any())
+            {
+                Messages.Message("No fire support definitions configured.", MessageTypeDefOf.RejectInput);
+                return;
+            }
+
+            List<DebugMenuOption> list = new List<DebugMenuOption>();
+            foreach (MilitaryFireSupport support in util.fireSupportDefs)
+            {
+                if (support.projectiles == null || !support.projectiles.Any()) continue;
+                MilitaryFireSupport localSupport = support;
+                list.Add(new DebugMenuOption(
+                    $"{localSupport.name} ({localSupport.projectiles.Count} shells, acc {localSupport.accuracy})",
+                    DebugMenuOptionMode.Action, () =>
+                    {
+                        DebugTools.curTool = new DebugTool("Select target location", () =>
+                        {
+                            IntVec3 targetLocation = UI.MouseCell();
+                            DebugTools.curTool = new DebugTool("Select source (edge) location", () =>
+                            {
+                                IntVec3 sourceLocation = UI.MouseCell();
+                                Map map = Find.CurrentMap;
+
+                                List<ThingDef> projectiles = new List<ThingDef>();
+                                projectiles.AddRange(localSupport.projectiles);
+
+                                MilitaryFireSupport fireSupport = new MilitaryFireSupport(
+                                    "fireSupport", map, targetLocation,
+                                    projectiles.Count * 15, 600, localSupport.accuracy, projectiles);
+                                fireSupport.sourceLocation = sourceLocation;
+                                util.fireSupport.Add(fireSupport);
+
+                                float dist = sourceLocation.DistanceTo(targetLocation);
+                                LogUtil.MessageForce($"Debug - Fire Support '{localSupport.name}' " +
+                                    $"from ({sourceLocation.x},{sourceLocation.z}) " +
+                                    $"to ({targetLocation.x},{targetLocation.z}) " +
+                                    $"distance: {dist:F1} cells");
+
+                                DebugTools.curTool = null;
+                            });
+                        });
+                    }));
+            }
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
         [DebugAction("Empire", "Force Restock Settlement Trader", allowedGameStates = AllowedGameStates.Playing)]

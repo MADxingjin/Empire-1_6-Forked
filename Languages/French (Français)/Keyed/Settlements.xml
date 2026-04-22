@@ -1,105 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><SettleANewColony>Fonder une nouvelle colonie</SettleANewColony>
+<LanguageData><FCSettleANewColony>Fonder une nouvelle colonie</FCSettleANewColony>
 	
-  <CreateNewColony>Créer une nouvelle colonie</CreateNewColony>
+  <FCCreateNewColony>Créer une nouvelle colonie</FCCreateNewColony>
 	
-  <SelectTile>Sélectionnez une case pour créer la colonie</SelectTile>
+  <FCSelectTile>Sélectionnez une case pour créer la colonie</FCSelectTile>
 	
-  <selectedInvalidTile>Vous ne pouvez pas construire de colonie ici !</selectedInvalidTile>
+  <FCSelectedInvalidTile>Vous ne pouvez pas construire de colonie ici !</FCSelectedInvalidTile>
 	
-  <Settle>Fonder</Settle>
+  <FCSettle>Fonder</FCSettle>
 	
-  <CaravanOnWay>Une caravane est déjà en route</CaravanOnWay>
+  <FCCaravanOnWay>Une caravane est déjà en route</FCCaravanOnWay>
 	
-  <CaravanSentToLocation>Une caravane a été envoyée sur place ! Elle arrivera dans</CaravanSentToLocation>
+  <FCCaravanSentToLocation>Une caravane a été envoyée sur place ! Elle arrivera dans</FCCaravanSentToLocation>
 	
-  <ConstructionToLocation>Des équipes de construction ont été envoyées sur place ! Leur travail sera terminé dans</ConstructionToLocation>
+  <FCConstructionToLocation>Des équipes de construction ont été envoyées sur place ! Leur travail sera terminé dans</FCConstructionToLocation>
 	
-  <ColonyConstruction>Construction de {0}</ColonyConstruction>
+  <FCColonyConstruction>Construction de {0}</FCColonyConstruction>
 	
-  <ImpassableMountains>Vous ne pouvez pas fonder de {0} sur des montagnes infranchissables.</ImpassableMountains>
+  <FCImpassableMountains>Vous ne pouvez pas fonder de {0} sur des montagnes infranchissables.</FCImpassableMountains>
 	
-  <NotAllowedBiome>Vous ne pouvez pas fonder de {0} dans ce biome.</NotAllowedBiome>
+  <FCNotAllowedBiome>Vous ne pouvez pas fonder de {0} dans ce biome.</FCNotAllowedBiome>
 	
-  <InvalidPlanetLayer>Couche planétaire invalide.</InvalidPlanetLayer>
+  <FCInvalidPlanetLayer>Couche planétaire invalide.</FCInvalidPlanetLayer>
 	
-  <OrbitalTileOccupied>Cette case orbitale est occupée.</OrbitalTileOccupied>
+  <FCOrbitalTileOccupied>Cette case orbitale est occupée.</FCOrbitalTileOccupied>
 	
   <FCSettlementFormed>Colonie fondée</FCSettlementFormed>
 	
-  <TheSettlement>La colonie</TheSettlement>
+  <FCTheSettlement>La colonie</FCTheSettlement>
 	
-  <HasBeenFormed>a été fondée</HasBeenFormed>
+  <FCHasBeenFormed>a été fondée</FCHasBeenFormed>
 	
-  <SettleEventDesc>Une caravane voyage pour établir une nouvelle {0} dans le {1}. Arrivée estimée : {2}.</SettleEventDesc>
+  <FCSettleEventDesc>Une caravane voyage pour établir une nouvelle {0} dans le {1}. Arrivée estimée : {2}.</FCSettleEventDesc>
 	
-  <SettleEventCompletedDesc>{0} a été établie comme nouvelle {1} dans le {2}.</SettleEventCompletedDesc>
+  <FCSettleEventCompletedDesc>{0} a été établie comme nouvelle {1} dans le {2}.</FCSettleEventCompletedDesc>
 	
-  <PlayerColony>Colonie du joueur</PlayerColony>
+  <FCPlayerColony>Colonie du joueur</FCPlayerColony>
 	
-  <SetCapital>Définir comme capitale</SetCapital>
+  <FCSetCapital>Définir comme capitale</FCSetCapital>
 	
-  <SetAsFactionCapital>{0} a été définie comme capitale de la faction</SetAsFactionCapital>
+  <FCSetAsFactionCapital>{0} a été définie comme capitale de la faction</FCSetAsFactionCapital>
 
 	
 	
-  <AlreadyUpgradeSettlement>Cette colonie est déjà en cours d’amélioration !</AlreadyUpgradeSettlement>
+  <FCAlreadyUpgradeSettlement>Cette colonie est déjà en cours d’amélioration !</FCAlreadyUpgradeSettlement>
 	
-  <StartUpgradeSettlement>La colonie est maintenant en cours d’amélioration…</StartUpgradeSettlement>
+  <FCStartUpgradeSettlement>La colonie est maintenant en cours d’amélioration…</FCStartUpgradeSettlement>
 	
-  <UpgradeSettlement>Améliorer la colonie</UpgradeSettlement>
+  <FCUpgradeSettlement>Améliorer la colonie</FCUpgradeSettlement>
 	
-  <SettlementUpgradeInProgress>Amélioration…</SettlementUpgradeInProgress>
+  <FCSettlementUpgradeInProgress>Amélioration…</FCSettlementUpgradeInProgress>
 	
-  <CanBeUpgraded>peut être améliorée pour</CanBeUpgraded>
+  <FCCanBeUpgraded>peut être améliorée pour</FCCanBeUpgraded>
 	
-  <UpgradeColonyDesc>Améliorer cette colonie augmentera de 3 le nombre maximal d’ouvriers avant que leur coût ne commence à augmenter. Le niveau militaire de cette colonie augmentera également de 1.</UpgradeColonyDesc>
+  <FCUpgradeColonyDesc>Améliorer cette colonie augmentera de 3 le nombre maximal d’ouvriers avant que leur coût ne commence à augmenter. Le niveau militaire de cette colonie augmentera également de 1.</FCUpgradeColonyDesc>
 	
-  <HasBeenUpgraded>a été améliorée au niveau</HasBeenUpgraded>
+  <FCHasBeenUpgraded>a été améliorée au niveau</FCHasBeenUpgraded>
 	
-  <UpgradeEventDesc>{0} est en cours d’amélioration du niveau {1} au niveau {2}.
+  <FCUpgradeEventDesc>{0} est en cours d’amélioration du niveau {1} au niveau {2}.
 
-{3}</UpgradeEventDesc>
+{3}</FCUpgradeEventDesc>
 	
-  <UpgradeEventCompletedDesc>{0} a été améliorée au niveau {1} !
+  <FCUpgradeEventCompletedDesc>{0} a été améliorée au niveau {1} !
 
-{2}</UpgradeEventCompletedDesc>
+{2}</FCUpgradeEventCompletedDesc>
 	
-  <AlreadyMaxLevel>est déjà au niveau maximum</AlreadyMaxLevel>
+  <FCAlreadyMaxLevel>est déjà au niveau maximum</FCAlreadyMaxLevel>
 	
-  <NotEnoughSilverUpgrade>La carte actuelle n’a pas assez d’argent pour payer l’amélioration de la colonie.</NotEnoughSilverUpgrade>
+  <FCNotEnoughSilverUpgrade>La carte actuelle n’a pas assez d’argent pour payer l’amélioration de la colonie.</FCNotEnoughSilverUpgrade>
 	
-  <CannotBeUpgradedPastMax>Cette colonie ne peut pas être améliorée au-delà du niveau maximum</CannotBeUpgradedPastMax>
+  <FCCannotBeUpgradedPastMax>Cette colonie ne peut pas être améliorée au-delà du niveau maximum</FCCannotBeUpgradedPastMax>
 	
-  <UpgradeTown>Améliorer la ville</UpgradeTown>
-
+  <FCGoToLocation>Aller à l’emplacement</FCGoToLocation>
 	
+  <FCLocated>Située dans le</FCLocated>
 	
-  <TownLog>Journal de la ville</TownLog>
+  <FCLandOf>territoire d’un</FCLandOf>
 	
-  <GoToLocation>Aller à l’emplacement</GoToLocation>
+  <FCOpenSettlementWindowDefaultLabel>Voir les informations de la colonie</FCOpenSettlementWindowDefaultLabel>
 	
-  <Located>Située dans le</Located>
-	
-  <LandOf>territoire d’un</LandOf>
-	
-  <openSettlementWindowDefaultLabel>Voir les informations de la colonie</openSettlementWindowDefaultLabel>
-	
-  <openSettlementWindowDefaultDesc>Ouvre la fenêtre de colonie des colonies</openSettlementWindowDefaultDesc>
+  <FCOpenSettlementWindowDefaultDesc>Ouvre la fenêtre de colonie des colonies</FCOpenSettlementWindowDefaultDesc>
 	
   <FCBuildRoads>Construire des routes</FCBuildRoads>
 
 	
 	
-  <SettlementMilitaryLevel>Niveau militaire de la colonie</SettlementMilitaryLevel>
+  <FCSettlementMilitaryLevel>Niveau militaire de la colonie</FCSettlementMilitaryLevel>
 	
-  <SettlementHappiness>Bonheur de la colonie</SettlementHappiness>
+  <FCSettlementHappiness>Bonheur de la colonie</FCSettlementHappiness>
 	
-  <SettlementLoyalty>Loyauté de la colonie</SettlementLoyalty>
+  <FCSettlementLoyalty>Loyauté de la colonie</FCSettlementLoyalty>
 	
-  <SettlementUnrest>Troubles de la colonie</SettlementUnrest>
+  <FCSettlementUnrest>Troubles de la colonie</FCSettlementUnrest>
 	
-  <SettlementProsperity>Prospérité de la colonie</SettlementProsperity>
+  <FCSettlementProsperity>Prospérité de la colonie</FCSettlementProsperity>
 	
   <FCHappiness>bonheur</FCHappiness>
 	
@@ -109,47 +103,43 @@
 	
   <FCProsperity>prospérité</FCProsperity>
 	
-  <Happiness>bonheur</Happiness>
 	
-  <Loyalty>loyauté</Loyalty>
 	
-  <Unrest>troubles</Unrest>
 	
-  <Prosperity>prospérité</Prosperity>
 	
-  <BaseRecovery>Récupération de base</BaseRecovery>
+  <FCBaseRecovery>Récupération de base</FCBaseRecovery>
 	
-  <BaseGain>Gain de base</BaseGain>
+  <FCBaseGain>Gain de base</FCBaseGain>
 	
-  <BaseLoss>Perte de base</BaseLoss>
+  <FCBaseLoss>Perte de base</FCBaseLoss>
 	
-  <SettlementStatGain>Gain de {0} {1} par jour</SettlementStatGain>
+  <FCSettlementStatGain>Gain de {0} {1} par jour</FCSettlementStatGain>
 	
-  <SettlementStatLoss>Perte de {0} {1} par jour</SettlementStatLoss>
+  <FCSettlementStatLoss>Perte de {0} {1} par jour</FCSettlementStatLoss>
 
 	
 	
-  <SettlementMilitaryLevelDesc>Le niveau militaire affecte directement la capacité de la colonie à se défendre et à attaquer les menaces extérieures.</SettlementMilitaryLevelDesc>
+  <FCSettlementMilitaryLevelDesc>Le niveau militaire affecte directement la capacité de la colonie à se défendre et à attaquer les menaces extérieures.</FCSettlementMilitaryLevelDesc>
 	
-  <SettlementHappinessDesc>Mesure du bonheur global de la colonie.
+  <FCSettlementHappinessDesc>Mesure du bonheur global de la colonie.
 
-Un bonheur élevé signifie que tout conflit interne au sein de la colonie tournera fortement en votre faveur.</SettlementHappinessDesc>
+Un bonheur élevé signifie que tout conflit interne au sein de la colonie tournera fortement en votre faveur.</FCSettlementHappinessDesc>
 	
-  <SettlementLoyaltyDesc>Mesure de la loyauté globale de la colonie.
+  <FCSettlementLoyaltyDesc>Mesure de la loyauté globale de la colonie.
 
-La loyauté d’une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit les risques de défection.</SettlementLoyaltyDesc>
+La loyauté d’une colonie détermine à quel point elle est disposée à vous écouter. Une loyauté élevée réduit les risques de défection.</FCSettlementLoyaltyDesc>
 	
-  <SettlementUnrestDesc>Mesure des troubles globaux de la colonie.
+  <FCSettlementUnrestDesc>Mesure des troubles globaux de la colonie.
 
-Plus les troubles augmentent, plus les événements internes dangereux dans votre colonie ont de chances d’éclater. Laissez-les monter trop haut, et une révolte générale de la colonie peut survenir.</SettlementUnrestDesc>
+Plus les troubles augmentent, plus les événements internes dangereux dans votre colonie ont de chances d’éclater. Laissez-les monter trop haut, et une révolte générale de la colonie peut survenir.</FCSettlementUnrestDesc>
 	
-  <SettlementProsperityDesc>Mesure de la prospérité globale de la colonie.
+  <FCSettlementProsperityDesc>Mesure de la prospérité globale de la colonie.
 
-La prospérité d’une ville est directement corrélée à la production de ressources (par ex. 50 % de prospérité = 50 % de production). Si la prospérité est endommagée, elle remontera lentement avec le temps.</SettlementProsperityDesc>
+La prospérité d’une ville est directement corrélée à la production de ressources (par ex. 50 % de prospérité = 50 % de production). Si la prospérité est endommagée, elle remontera lentement avec le temps.</FCSettlementProsperityDesc>
 
 	
 	
-  <SettlementManager>Gestionnaire de colonie</SettlementManager>
+  <FCSettlementManager>Gestionnaire de colonie</FCSettlementManager>
 	
   <FCSettlementTableName>Nom</FCSettlementTableName>
 	
@@ -177,19 +167,19 @@ La prospérité d’une ville est directement corrélée à la production de res
 	
   <FCSortBy>Tri : {0}</FCSortBy>
 	
-  <ColonyLevel>Niveau de colonie</ColonyLevel>
+  <FCColonyLevel>Niveau de colonie</FCColonyLevel>
 	
-  <Hamlet>hameau</Hamlet>
+  <FCHamlet>hameau</FCHamlet>
 
 	
 	
-  <DeleteSettlement>Supprimer la colonie</DeleteSettlement>
+  <FCDeleteSettlement>Supprimer la colonie</FCDeleteSettlement>
 	
-  <DeleteSettlementConfirm>Supprimer la colonie {0} ?</DeleteSettlementConfirm>
+  <FCDeleteSettlementConfirm>Supprimer la colonie {0} ?</FCDeleteSettlementConfirm>
 	
-  <AreYouSureRemove>Êtes-vous sûr ?</AreYouSureRemove>
+  <FCAreYouSureRemove>Êtes-vous sûr ?</FCAreYouSureRemove>
 	
-  <SettlementRemoved>La colonie {0} a été supprimée.</SettlementRemoved>
+  <FCSettlementRemoved>La colonie {0} a été supprimée.</FCSettlementRemoved>
 
 	
 	
@@ -207,25 +197,25 @@ La prospérité d’une ville est directement corrélée à la production de res
 	
   <FCBuyLoyalty>Acheter de la loyauté</FCBuyLoyalty>
 	
-  <SendSilverToColony>Envoyer de l’argent à la colonie</SendSilverToColony>
+  <FCSendSilverToColony>Envoyer de l’argent à la colonie</FCSendSilverToColony>
 	
-  <SendingXSilver>Envoi de {0} argent</SendingXSilver>
+  <FCSendingXSilver>Envoi de {0} argent</FCSendingXSilver>
 	
-  <SettlementGainsXLoyalty>La colonie gagnera {0} loyauté</SettlementGainsXLoyalty>
+  <FCSettlementGainsXLoyalty>La colonie gagnera {0} loyauté</FCSettlementGainsXLoyalty>
 
 	
 	
-  <numUnderConstruction>Construction active : {0}</numUnderConstruction>
+  <FCNumUnderConstruction>Construction active : {0}</FCNumUnderConstruction>
 	
-  <ActiveConstruction>Construction active</ActiveConstruction>
+  <FCActiveConstruction>Construction active</FCActiveConstruction>
 	
-  <closeConstructionBox>Fermer la liste des constructions</closeConstructionBox>
+  <FCCloseConstructionBox>Fermer la liste des constructions</FCCloseConstructionBox>
 	
-  <openConstructionBox>Ouvrir la liste des constructions</openConstructionBox>
+  <FCOpenConstructionBox>Ouvrir la liste des constructions</FCOpenConstructionBox>
 	
-  <settlementupgrading>Amélioration de la colonie</settlementupgrading>
+  <FCSettlementupgrading>Amélioration de la colonie</FCSettlementupgrading>
 	
-  <completiontimer>Se termine dans : {0}</completiontimer>
+  <FCCompletiontimer>Se termine dans : {0}</FCCompletiontimer>
 
 	
 	
@@ -309,6 +299,6 @@ La prospérité d’une ville est directement corrélée à la production de res
 
 	
 	
-  <BuildingInvalidEnvironment>Ce bâtiment ne peut pas être construit sur le biome de cette colonie !</BuildingInvalidEnvironment>
+  <FCBuildingInvalidEnvironment>Ce bâtiment ne peut pas être construit sur le biome de cette colonie !</FCBuildingInvalidEnvironment>
 
 </LanguageData>

@@ -488,14 +488,49 @@ namespace FactionColonies
             {
                 foreach (ResourceProductionExtension ext in def.modExtensions.OfType<ResourceProductionExtension>())
                 {
-                    string extId = $"{def.defName}_ext_{ext.extName}_{settlementId}";
-                    double addBonus = ext.GetAdditiveBonus(settlement.Tile, settlement);
-                    if (addBonus != 0)
-                        AddProductionAdditive(extId, addBonus, ext.extName);
+                    ext.ContributeToBreakdown(
+                        settlement.Tile,
+                        settlement,
+                        (suffix, v, label) => AddProductionAdditive($"{def.defName}_ext_{suffix}_{settlementId}", v, label),
+                        (suffix, v, label) => AddProductionMultiplier($"{def.defName}_ext_{suffix}_{settlementId}", v, label));
+                }
+            }
 
-                    double multBonus = ext.GetMultiplierBonus(settlement.Tile, settlement);
-                    if (multBonus != 1)
-                        AddProductionMultiplier(extId, multBonus, ext.extDesc);
+            // --- Tile landmark bonuses ---
+            Landmark landmark = settlement.Tile.Tile?.Landmark;
+            TileLandmarkResourceExtension lmExt = landmark?.def?.GetModExtension<TileLandmarkResourceExtension>();
+            if (lmExt?.bonuses != null)
+            {
+                foreach (TileResourceBonus entry in lmExt.bonuses)
+                {
+                    if (entry.resource != def) continue;
+                    string lmId = $"{def.defName}_landmark_{landmark.def.defName}_{settlementId}";
+                    string lmLabel = entry.label.NullOrEmpty() ? landmark.def.LabelCap.ToString() : entry.label;
+                    if (entry.additive != 0)
+                        AddProductionAdditive(lmId, entry.additive, lmLabel);
+                    if (entry.multiplier != 1)
+                        AddProductionMultiplier(lmId, entry.multiplier, lmLabel);
+                }
+            }
+
+            // --- Tile mutator bonuses ---
+            IList<TileMutatorDef> tileMutators = settlement.Tile.Tile?.Mutators;
+            if (tileMutators != null && tileMutators.Count > 0)
+            {
+                foreach (TileMutatorDef mut in tileMutators)
+                {
+                    TileMutatorResourceExtension mutExt = mut?.GetModExtension<TileMutatorResourceExtension>();
+                    if (mutExt?.bonuses is null) continue;
+                    foreach (TileResourceBonus entry in mutExt.bonuses)
+                    {
+                        if (entry.resource != def) continue;
+                        string mutId = $"{def.defName}_mutator_{mut.defName}_{settlementId}";
+                        string mutLabel = entry.label.NullOrEmpty() ? mut.LabelCap.ToString() : entry.label;
+                        if (entry.additive != 0)
+                            AddProductionAdditive(mutId, entry.additive, mutLabel);
+                        if (entry.multiplier != 1)
+                            AddProductionMultiplier(mutId, entry.multiplier, mutLabel);
+                    }
                 }
             }
         }
@@ -619,12 +654,12 @@ namespace FactionColonies
                 {
                     desc += settlement.GetStatDesc(FCStatDefOf.workerProductionMultiplier);
                 }
-                desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "TaxBase".Translate();
+                desc += TextUtil.ColorizeMultiplierBonus(settlement?.GetSettlementTaxBonus() ?? 1) + " - " + "FCTaxBase".Translate();
 
                 if (settlement != null)
                 {
                     double prosperityMult = settlement.prosperity / 100.0;
-                    desc += "\n" + TextUtil.ColorizeMultiplierBonus(prosperityMult) + " - " + "Prosperity".Translate().CapitalizeFirst()
+                    desc += "\n" + TextUtil.ColorizeMultiplierBonus(prosperityMult) + " - " + "FCProsperity".Translate().CapitalizeFirst()
                         + " (" + (int)settlement.prosperity + "%)";
                 }
 
@@ -1088,7 +1123,7 @@ namespace FactionColonies
                 if (!randomTitheFilter.AllowedThingDefs.Any())
                 {
                     randomTitheStock = randomBudget;
-                    Find.LetterStack.ReceiveLetter("NoTitheLetterLabel".Translate(settlement.Name), "NoTitheLetterDesc".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
+                    Find.LetterStack.ReceiveLetter("FCNoTitheLetterLabel".Translate(settlement.Name), "FCNoTitheLetterDesc".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
                 }
                 else
                 {
@@ -1137,7 +1172,7 @@ namespace FactionColonies
                     else
                     {
                         randomTitheStock = randomBudget;
-                        Find.LetterStack.ReceiveLetter("NoTitheLetterLabel".Translate(settlement.Name), "NoTitheLetterDesc2".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
+                        Find.LetterStack.ReceiveLetter("FCNoTitheLetterLabel".Translate(settlement.Name), "FCNoTitheLetterDesc2".Translate(settlement.Name, label, randomTitheStock), LetterDefOf.NeutralEvent);
                     }
 
                 }

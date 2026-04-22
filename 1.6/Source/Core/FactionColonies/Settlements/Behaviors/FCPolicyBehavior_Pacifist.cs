@@ -20,7 +20,7 @@ namespace FactionColonies
             if (!diplomatCooldown.IsReady)
             {
                 Messages.Message(
-                    "XDaysToSendDiplomat".Translate(Math.Round(diplomatCooldown.DaysRemaining, 1)),
+                    "FCXDaysToSendDiplomat".Translate(Math.Round(diplomatCooldown.DaysRemaining, 1)),
                     MessageTypeDefOf.RejectInput);
                 return false;
             }

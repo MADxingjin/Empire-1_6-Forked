@@ -58,6 +58,7 @@ namespace FactionColonies
         public const int DEFAULT_WORKER_COST = DEFAULT_WORKER_COST_ADVENTURESTORY;
         /* Defaults for Research settings */
         public const bool DEFAULT_MEDIEVAL_TECH_ONLY = false;
+        public const bool DEFAULT_MIRROR_PLAYER_TECH_LEVEL = false;
         /* Defaults for Settlement settings */
         public const bool DEFAULT_SHOW_SETTLE_CONFIRM = true;
         public const TaxDeliveryMode DEFAULT_TAX_DELIVERY_MODE = TaxDeliveryMode.None;
@@ -71,6 +72,8 @@ namespace FactionColonies
         public const bool DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS = true;
         public const float DEFAULT_EVENT_OPTION_DELAY_SECONDS = 1.0f;
         public const bool DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN = true;
+        public const bool DEFAULT_USE_THREADED_ROAD_COMPUTATION = true;
+        public const int DEFAULT_EDGES_PER_ROAD_TICK = 5;
         public const BattleMode DEFAULT_BATTLE_MODE = BattleMode.Auto;
         public const int DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION = 4;
         public const int DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION = 10;
@@ -102,11 +105,14 @@ namespace FactionColonies
 
         public static bool showSettleConfirm = DEFAULT_SHOW_SETTLE_CONFIRM;
         public static bool medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+        public static bool mirrorPlayerTechLevel = DEFAULT_MIRROR_PLAYER_TECH_LEVEL;
         public static bool disableHostileMilitaryActions = DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS;
         public static bool disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
         public static bool disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
         public static float eventOptionDelaySeconds = DEFAULT_EVENT_OPTION_DELAY_SECONDS;
         public static bool deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+        public static bool useThreadedRoadComputation = DEFAULT_USE_THREADED_ROAD_COMPUTATION;
+        public static int edgesPerRoadTick = DEFAULT_EDGES_PER_ROAD_TICK;
         public static BattleMode battleMode = DEFAULT_BATTLE_MODE;
         public static TaxDeliveryMode forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
         public static TaxNotificationMode taxNotificationMode = DEFAULT_TAX_NOTIFICATION_MODE;
@@ -177,6 +183,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
             Scribe_Values.Look(ref showSettleConfirm, "showSettleConfirm", DEFAULT_SHOW_SETTLE_CONFIRM);
             Scribe_Values.Look(ref medievalTechOnly, "medievalTechOnly", DEFAULT_MEDIEVAL_TECH_ONLY);
+            Scribe_Values.Look(ref mirrorPlayerTechLevel, "mirrorPlayerTechLevel", DEFAULT_MIRROR_PLAYER_TECH_LEVEL);
             Scribe_Values.Look(ref disableHostileMilitaryActions, "disableHostileMilitaryActions", DEFAULT_DISABLE_HOSTILE_MILITARY_ACTIONS);
             Scribe_Values.Look(ref disableRandomEvents, "disableRandomEvents", DEFAULT_DISABLE_RANDOM_EVENTS);
             Scribe_Values.Look(ref disableForcedPausingDuringEvents, "disableForcedPausingDuringEvents", DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS);
@@ -184,6 +191,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref forcedTaxDeliveryMode, "forcedTaxDeliveryMode", DEFAULT_TAX_DELIVERY_MODE);
             Scribe_Values.Look(ref taxNotificationMode, "taxNotificationMode", DEFAULT_TAX_NOTIFICATION_MODE);
             Scribe_Values.Look(ref deadPawnsIncreaseMilitaryCooldown, "deadPawnsIncreaseMilitaryCooldown", DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN);
+            Scribe_Values.Look(ref useThreadedRoadComputation, "useThreadedRoadComputation", DEFAULT_USE_THREADED_ROAD_COMPUTATION);
+            Scribe_Values.Look(ref edgesPerRoadTick, "edgesPerRoadTick", DEFAULT_EDGES_PER_ROAD_TICK);
             Scribe_Values.Look(ref battleMode, "battleMode", DEFAULT_BATTLE_MODE);
             Scribe_Values.Look(ref minDaysTillMilitaryAction, "minDaysTillMilitaryAction", DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION);
             Scribe_Values.Look(ref maxDaysTillMilitaryAction, "maxDaysTillMilitaryAction", DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION);
@@ -264,10 +273,10 @@ namespace FactionColonies
             }
 
             // Re-apply active event stat modifiers to settlements
-            foreach (FCEvent evt in faction.events)
+            foreach (FCEvent evt in faction.Events)
             {
                 string sourceId = "event_" + evt.def.defName;
-                if (evt.settlementTraitLocations.Count() > 0)
+                if (evt.settlementTraitLocations.Any())
                 {
                     foreach (WorldSettlementFC location in evt.settlementTraitLocations)
                     {
@@ -378,6 +387,8 @@ namespace FactionColonies
         private float viewRectHeightEvents = -1f;
         private Vector2 scrollVectorMilitary = new Vector2();
         private float viewRectHeightMilitary = -1f;
+        private Vector2 scrollVectorRoadBuilder = new Vector2();
+        private float viewRectHeightRoadBuilder = -1f;
 
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive
@@ -388,11 +399,11 @@ namespace FactionColonies
             {
                 if (ModsConfig.RoyaltyActive)
                 {
-                    return new FloatMenuOption("taxDeliveryModeShuttleDesc".Translate(), delegate () { forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle; });
+                    return new FloatMenuOption("FCTaxDeliveryModeShuttleDesc".Translate(), delegate () { forcedTaxDeliveryMode = TaxDeliveryMode.Shuttle; });
                 }
                 else
                 {
-                    return new FloatMenuOption("taxDeliveryModeShuttleUnavailableDesc".Translate(), null);
+                    return new FloatMenuOption("FCTaxDeliveryModeShuttleUnavailableDesc".Translate(), null);
                 }
             }
         }
@@ -406,10 +417,10 @@ namespace FactionColonies
             {
                 return new List<FloatMenuOption>()
                 {
-                    new FloatMenuOption("taxDeliveryModeDefaultDesc".Translate(), delegate() {forcedTaxDeliveryMode = default;}),
-                    new FloatMenuOption("taxDeliveryModeTaxSpotDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
-                    new FloatMenuOption("taxDeliveryModeCaravanDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
-                    new FloatMenuOption("taxDeliveryModeDropPodDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
+                    new FloatMenuOption("FCTaxDeliveryModeDefaultDesc".Translate(), delegate() {forcedTaxDeliveryMode = default;}),
+                    new FloatMenuOption("FCTaxDeliveryModeTaxSpotDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.TaxSpot;}),
+                    new FloatMenuOption("FCTaxDeliveryModeCaravanDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.Caravan;}),
+                    new FloatMenuOption("FCTaxDeliveryModeDropPodDesc".Translate(), delegate() {forcedTaxDeliveryMode = TaxDeliveryMode.DropPod;}),
                     ShuttleOption
                 };
             }
@@ -440,6 +451,7 @@ namespace FactionColonies
             settingsTabs.Add(new TabRecord("FCSettingsTabGeneral".Translate(), delegate { settingsTab = 0; }, settingsTab == 0));
             settingsTabs.Add(new TabRecord("FCSettingsTabEvents".Translate(), delegate { settingsTab = 1; }, settingsTab == 1));
             settingsTabs.Add(new TabRecord("FCSettingsTabMilitary".Translate(), delegate { settingsTab = 2; }, settingsTab == 2));
+            settingsTabs.Add(new TabRecord("FCSettingsTabRoadBuilder".Translate(), delegate { settingsTab = 3; }, settingsTab == 3));
 
             Rect contentRect = new Rect(inRect.x, inRect.y + 40f, inRect.width, inRect.height - 40f);
             Widgets.DrawMenuSection(contentRect);
@@ -453,6 +465,7 @@ namespace FactionColonies
                 case 0: DoGeneralTab(innerRect); break;
                 case 1: DoEventsTab(innerRect); break;
                 case 2: DoMilitaryTab(innerRect); break;
+                case 3: DoRoadBuilderTab(innerRect); break;
             }
         }
 
@@ -539,9 +552,15 @@ namespace FactionColonies
 
             ls.Label("FCSettingMaxSettlementLevel".Translate());
             ls.IntEntry(ref settlementMaxLevel, ref settlementMaxLevel_buffer);
-            ls.CheckboxLabeled("MedievalTechOnly".Translate(), ref medievalTechOnly);
+            ls.CheckboxLabeled("FCMedievalTechOnly".Translate(), ref medievalTechOnly);
+            bool prevMirrorPlayerTechLevel = mirrorPlayerTechLevel;
+            ls.CheckboxLabeled("FCMirrorPlayerTechLevel".Translate(), ref mirrorPlayerTechLevel, "FCMirrorPlayerTechLevelDesc".Translate());
+            if (prevMirrorPlayerTechLevel != mirrorPlayerTechLevel)
+            {
+                FactionCache.FactionComp?.DirtyTechLevelCache();
+            }
             ls.CheckboxLabeled("FCSettingShowSettleConfirm".Translate(), ref showSettleConfirm);
-            if (ls.ButtonText("selectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
+            if (ls.ButtonText("FCSelectTaxDeliveryModeButton".Translate() + forcedTaxDeliveryMode)) Find.WindowStack.Add(new FloatMenu(ForcedTaxDeliveryOptions));
             if (ls.ButtonText("FCTaxNotificationModeButton".Translate() + taxNotificationMode)) Find.WindowStack.Add(new FloatMenu(TaxNotificationOptions));
 
             ls.CheckboxLabeled("FCSettingEnableDebugLogging".Translate(), ref printDebug);
@@ -576,6 +595,7 @@ namespace FactionColonies
                 productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
                 workerCost = DEFAULT_WORKER_COST;
                 medievalTechOnly = DEFAULT_MEDIEVAL_TECH_ONLY;
+                mirrorPlayerTechLevel = DEFAULT_MIRROR_PLAYER_TECH_LEVEL;
                 settlementMaxLevel = DEFAULT_SETTLEMENT_MAX_LEVEL;
                 minDaysTillMilitaryAction = DEFAULT_MIN_DAYS_TIL_MILITARY_ACTION;
                 maxDaysTillMilitaryAction = DEFAULT_MAX_DAYS_TIL_MILITARY_ACTION;
@@ -583,6 +603,8 @@ namespace FactionColonies
                 maxDaysTillRandomEvent = DEFAULT_MAX_DAYS_TIL_RANDOM_EVENT;
                 disableRandomEvents = DEFAULT_DISABLE_RANDOM_EVENTS;
                 deadPawnsIncreaseMilitaryCooldown = DEFAULT_DEAD_PAWNS_INCREASE_MILITARY_COOLDOWN;
+                useThreadedRoadComputation = DEFAULT_USE_THREADED_ROAD_COMPUTATION;
+                edgesPerRoadTick = DEFAULT_EDGES_PER_ROAD_TICK;
                 battleMode = DEFAULT_BATTLE_MODE;
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
@@ -738,6 +760,47 @@ namespace FactionColonies
             mercenaryHealRatePerHour = ls.Slider(mercenaryHealRatePerHour, 0.1f, 100f);
 
             viewRectHeightMilitary = ls.CurHeight + 5f;
+            ls.End();
+
+            Widgets.EndScrollView();
+        }
+
+        private void DoRoadBuilderTab(Rect rect)
+        {
+            viewRectHeightRoadBuilder = viewRectHeightRoadBuilder == -1f ? float.MaxValue : viewRectHeightRoadBuilder;
+            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightRoadBuilder);
+            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
+
+            Widgets.BeginScrollView(rect, ref scrollVectorRoadBuilder, viewRect);
+            Listing_Standard ls = new Listing_Standard();
+            ls.Begin(listRect);
+
+            // Description box
+            Rect descRect = ls.GetRect(Text.CalcHeight("FCSettingRoadBuilderDesc".Translate(), listRect.width - 16f) + 16f);
+            Widgets.DrawBoxSolid(descRect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
+            Widgets.DrawBox(descRect);
+            Text.Font = GameFont.Small;
+            Widgets.Label(descRect.ContractedBy(8f), "FCSettingRoadBuilderDesc".Translate());
+
+            ls.Gap(12f);
+
+            ls.CheckboxLabeled("FCSettingUseThreadedRoadComputation".Translate(), ref useThreadedRoadComputation, "FCSettingUseThreadedRoadComputationDesc".Translate());
+            if (!useThreadedRoadComputation)
+            {
+                string edgesLabel = edgesPerRoadTick <= 0
+                    ? $"{"FCSettingEdgesPerRoadTick".Translate()}: {"Unlimited".Translate()}"
+                    : $"{"FCSettingEdgesPerRoadTick".Translate()}: {edgesPerRoadTick}";
+                edgesPerRoadTick = (int)ls.SliderLabeled(edgesLabel, edgesPerRoadTick, 0, 50);
+            }
+
+            ls.Gap(12f);
+            FCRoadQueue queue = FactionCache.FactionComp?.roadBuilder?.roadQueue;
+            if (queue is object && ls.ButtonText("FCSettingFlushRoadCache".Translate()))
+            {
+                queue.FlushCache();
+            }
+
+            viewRectHeightRoadBuilder = ls.CurHeight + 5f;
             ls.End();
 
             Widgets.EndScrollView();

@@ -2,56 +2,56 @@
 <LanguageData>
 
 	<!-- Generic Labels -->
-	<Name>Name</Name>
-	<None>None</None>
-	<No>No</No>
-	<Yes>Yes</Yes>
-	<Set>Set</Set>
-	<Deploy>Deploy</Deploy>
-	<Reset>Reset</Reset>
-	<Base>Base</Base>
-	<Modifier>Modifier</Modifier>
-	<Final>Final</Final>
-	<Effect>Effect</Effect>
-	<Info>Info</Info>
-	<Total>Total</Total>
-	<Mult>Mult</Mult>
-	<Date>Date</Date>
-	<Selected>Selected</Selected>
-	<Select>Select</Select>
+	<FCName>Name</FCName>
+	<FCNone>None</FCNone>
+	<FCNo>No</FCNo>
+	<FCYes>Yes</FCYes>
+	<FCSet>Set</FCSet>
+	<FCDeploy>Deploy</FCDeploy>
+	<FCReset>Reset</FCReset>
+	<FCBase>Base</FCBase>
+	<FCModifier>Modifier</FCModifier>
+	<FCFinal>Final</FCFinal>
+	<FCCreateColonyTileModifiersTitle>Tile Modifiers</FCCreateColonyTileModifiersTitle>
+	<FCEffect>Effect</FCEffect>
+	<FCInfo>Info</FCInfo>
+	<FCTotal>Total</FCTotal>
+	<FCMult>Mult</FCMult>
+	<FCDate>Date</FCDate>
+	<FCSelected>Selected</FCSelected>
+	<FCSelect>Select</FCSelect>
 	<FCIsAllowed>Enabled</FCIsAllowed>
 	<FCIsNotAllowed>Disabled</FCIsNotAllowed>
-	<PerWorker>Per-Worker</PerWorker>
-	<NumRatio>{0}/{1}</NumRatio>
-	<aSettlement> a settlement </aSettlement>
-	<AddedInFuture>This will be added to in the future</AddedInFuture>
-	<Item>Item</Item>
+	<FCPerWorker>Per-Worker</FCPerWorker>
+	<FCNumRatio>{0}/{1}</FCNumRatio>
+	<FCASettlement> a settlement </FCASettlement>
+	<FCAddedInFuture>This will be added to in the future</FCAddedInFuture>
+	<FCItem>Item</FCItem>
 
 	<!-- Tab Labels -->
-	<Colonies>Colonies</Colonies>
-	<Bills>Bills</Bills>
-	<Events>Events</Events>
-	<Settlement>Settlement</Settlement>
-	<Settlements>Settlements</Settlements>
-	<Overview>Overview</Overview>
+	<FCColonies>Settlements</FCColonies>
+	<FCBills>Bills</FCBills>
+	<FCEvents>Events</FCEvents>
+	<FCSettlement>Settlement</FCSettlement>
+	<FCSettlements>Settlements</FCSettlements>
 	<FCOverview>Overview</FCOverview>
-	<TravelTime>Travel Time</TravelTime>
-	<ConstructionTime>Construction Time</ConstructionTime>
+	<FCTravelTime>Travel Time</FCTravelTime>
+	<FCConstructionTime>Construction Time</FCConstructionTime>
 
 	<!-- Buttons -->
-	<ButtonNotAvailable>This button is not available yet</ButtonNotAvailable>
-	<ConfirmChanges>Confirm Changes</ConfirmChanges>
+	<FCButtonNotAvailable>This button is not available yet</FCButtonNotAvailable>
+	<FCConfirmChanges>Confirm Changes</FCConfirmChanges>
 	<FCConfirm>Confirm</FCConfirm>
 	<FCConfirmDecision>Confirm Decision</FCConfirmDecision>
 	<FCConfirmSettle>Found a {0} for {1} silver?</FCConfirmSettle>
 	<FCConfirmDontShowAgain>Don't show this again</FCConfirmDontShowAgain>
-	<View>View</View>
-	<GoTo>Go To</GoTo>
-	<Report>Report</Report>
-	<Reports>Reports</Reports>
-	<Actions>Actions</Actions>
-	<ViewInfo>View Info</ViewInfo>
-	<SetMap>Set Map</SetMap>
+	<FCView>View</FCView>
+	<FCGoTo>Go To</FCGoTo>
+	<FCReport>Report</FCReport>
+	<FCReports>Reports</FCReports>
+	<FCActions>Actions</FCActions>
+	<FCViewInfo>View Info</FCViewInfo>
+	<FCSetMap>Set Map</FCSetMap>
 	<FCActionAvailable>Action Available</FCActionAvailable>
 
 	<!-- Generic Actions -->
@@ -68,13 +68,16 @@
 	<FCBuildingLocked>That Building is locked</FCBuildingLocked>
 	<FCBuildingLockedLevel>Unlocks at settlement level {0}.</FCBuildingLockedLevel>
 	<FCBuildingLockedMax>Maximum building slots reached for this settlement type.</FCBuildingLockedMax>
-	<Capital>Capital</Capital>
+	<FCCapital>Capital</FCCapital>
 
 	<!-- Float Menu -->
-	<FloatMenuSearchable>Type to search:</FloatMenuSearchable>
+	<FCFloatMenuSearchable>Type to search:</FCFloatMenuSearchable>
 	<FCSMFForceOpen>Force Open</FCSMFForceOpen>
 
 	<!-- Errors -->
+	<FCActionNotAllowed>Action not allowed</FCActionNotAllowed>
+	<FCConfirmDelete>Are you sure you want to delete "{0}"?</FCConfirmDelete>
+	<FCNameIsInvalid>That name is invalid</FCNameIsInvalid>
 	<FCGenericError>If you can read this, something went wrong.</FCGenericError>
 	<FCNotEnoughSilverOption>You do not have enough silver on the map to pay for that option</FCNotEnoughSilverOption>
 	<FCOptionRequiresPolicy>Requires: {0}</FCOptionRequiresPolicy>

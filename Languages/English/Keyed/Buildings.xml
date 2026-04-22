@@ -2,36 +2,37 @@
 <LanguageData>
 
 	<!-- Building Construction -->
-	<ConstructBuilding>Construct Building</ConstructBuilding>
-	<Construct>Construct</Construct>
-	<Build>Build</Build>
-	<Built>Built</Built>
-	<WillBeConstructedIn>will be constructed in</WillBeConstructedIn>
-	<HasBeenConstructedAt>has been constructed at</HasBeenConstructedAt>
+	<FCConstructBuilding>Construct Building</FCConstructBuilding>
+	<FCConstruct>Construct</FCConstruct>
+	<FCBuild>Build</FCBuild>
+	<FCBuilt>Built</FCBuilt>
+	<FCWillBeConstructedIn>will be constructed in</FCWillBeConstructedIn>
+	<FCHasBeenConstructedAt>has been constructed at</FCHasBeenConstructedAt>
 	<Empire_BuildingWindow_ConstructionDesc>Currently under construction: {0}</Empire_BuildingWindow_ConstructionDesc>
-	<BuildTime>Build Time: {0}</BuildTime>
+	<FCBuildTime>Build Time: {0}</FCBuildTime>
 
 	<!-- Building Restrictions -->
-	<BuildingSurfaceOnly>This building can only be constructed on surface settlements</BuildingSurfaceOnly>
-	<BuildingOrbitalOnly>This building can only be constructed on orbital platforms</BuildingOrbitalOnly>
-	<BuildingInvalidSettlement>{0} cannot be built in a {1}</BuildingInvalidSettlement>
-	<BuildingAlreadyType>There is already a building of that type</BuildingAlreadyType>
-	<BuildingBeingBuiltAlreadyType>There is already a building of that type being built</BuildingBeingBuiltAlreadyType>
-	<BuildingAlreadyConstructed>There is already a building being constructed there</BuildingAlreadyConstructed>
+	<FCBuildingSurfaceOnly>This building can only be constructed on surface settlements</FCBuildingSurfaceOnly>
+	<FCBuildingOrbitalOnly>This building can only be constructed on orbital platforms</FCBuildingOrbitalOnly>
+	<FCBuildingInvalidSettlement>{0} cannot be built in a {1}</FCBuildingInvalidSettlement>
+	<FCBuildingInvalidTileMutator>{0} cannot be built on this tile's terrain</FCBuildingInvalidTileMutator>
+	<FCBuildingAlreadyType>There is already a building of that type</FCBuildingAlreadyType>
+	<FCBuildingBeingBuiltAlreadyType>There is already a building of that type being built</FCBuildingBeingBuiltAlreadyType>
+	<FCBuildingAlreadyConstructed>There is already a building being constructed there</FCBuildingAlreadyConstructed>
 
 	<!-- Building Demolition -->
-	<Destroy>Destroy</Destroy>
+	<FCDestroy>Destroy</FCDestroy>
 	<FCDemolish>Demolish</FCDemolish>
 	<FCDemolishConfirmation>Are you sure you want to demolish {0}? This will cost {1} silver.</FCDemolishConfirmation>
 	<FCBuildingDemolished>{0} has been demolished</FCBuildingDemolished>
 	<FCChangeBuildingButton>Change Building</FCChangeBuildingButton>
 
 	<!-- Building Filters -->
-	<BuildingFilterAll>All</BuildingFilterAll>
-	<BuildingFilterHappiness>Happiness</BuildingFilterHappiness>
-	<BuildingFilterBasetax>Base Tax</BuildingFilterBasetax>
-	<BuildingFilterWorkers>Workers</BuildingFilterWorkers>
-	<BuildingFilterMilitary>Military</BuildingFilterMilitary>
+	<FCBuildingFilterAll>All</FCBuildingFilterAll>
+	<FCBuildingFilterHappiness>Happiness</FCBuildingFilterHappiness>
+	<FCBuildingFilterBasetax>Base Tax</FCBuildingFilterBasetax>
+	<FCBuildingFilterWorkers>Workers</FCBuildingFilterWorkers>
+	<FCBuildingFilterMilitary>Military</FCBuildingFilterMilitary>
 
 	<!-- Capital Seat -->
 	<FCCapitalEstablished>Empire capital established at {0}! This location will be used as the center of your empire.</FCCapitalEstablished>
@@ -50,9 +51,9 @@
 	<Empire_BuildingWindow_Requires>Requires: {0}</Empire_BuildingWindow_Requires>
 	<Empire_BuildingWindow_CannotDemolishRequired>Cannot demolish: required by {0}</Empire_BuildingWindow_CannotDemolishRequired>
 	<Empire_BuildingWindow_SlotUpgrades>Upgrades</Empire_BuildingWindow_SlotUpgrades>
-	<BuildingUpgrades>Building Upgrades</BuildingUpgrades>
-	<Buildings>Buildings</Buildings>
-	<Facilities>Facilities</Facilities>
+	<FCBuildingUpgrades>Building Upgrades</FCBuildingUpgrades>
+	<FCBuildings>Buildings</FCBuildings>
+	<FCFacilities>Facilities</FCFacilities>
 	<FCSearchBuildings>Search buildings...</FCSearchBuildings>
 
 	<!-- Locked Buildings -->

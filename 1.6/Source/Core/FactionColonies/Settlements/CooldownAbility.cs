@@ -21,7 +21,7 @@ namespace FactionColonies
 
         [Unsaved] private bool wasReady = true;
 
-        public bool IsReady => tickLastUsed < 0 || (tickLastUsed + cooldownTicks) <= Find.TickManager.TicksGame;
+        public bool IsReady => DebugSettings.godMode || tickLastUsed < 0 || (tickLastUsed + cooldownTicks) <= Find.TickManager.TicksGame;
 
         public float DaysRemaining => IsReady
             ? 0f

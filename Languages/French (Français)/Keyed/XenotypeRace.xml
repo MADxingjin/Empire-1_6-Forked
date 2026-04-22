@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LanguageData><XenotypeSelection>Sélection du xénotype</XenotypeSelection>
+<LanguageData><FCXenotypeSelection>Sélection du xénotype</FCXenotypeSelection>
 	
-  <RaceSelection>Sélection de la race</RaceSelection>
+  <FCRaceSelection>Sélection de la race</FCRaceSelection>
 	
-  <XenotypeRaceSelection>Sélection du xénotype et de la race</XenotypeRaceSelection>
+  <FCXenotypeRaceSelection>Sélection du xénotype et de la race</FCXenotypeRaceSelection>
 	
-  <AllowedRaces>Races autorisées</AllowedRaces>
+  <FCAllowedRaces>Races autorisées</FCAllowedRaces>
 	
-  <CannotHaveLessThanOneRace>Impossible d’avoir moins d’une race dans votre faction</CannotHaveLessThanOneRace>
+  <FCCannotHaveLessThanOneRace>Impossible d’avoir moins d’une race dans votre faction</FCCannotHaveLessThanOneRace>
 	
-  <AllowedXenotypes>Xénotypes autorisés</AllowedXenotypes>
+  <FCAllowedXenotypes>Xénotypes autorisés</FCAllowedXenotypes>
 	
-  <CannotHaveLessThanOneXenotype>Impossible d’avoir moins d’un xénotype dans votre faction</CannotHaveLessThanOneXenotype>
+  <FCCannotHaveLessThanOneXenotype>Impossible d’avoir moins d’un xénotype dans votre faction</FCCannotHaveLessThanOneXenotype>
 	
-  <SecurityGuardsIncluded>Des agents de sécurité seront fournis pour les xénotypes non violents</SecurityGuardsIncluded>
+  <FCSecurityGuardsIncluded>Des agents de sécurité seront fournis pour les xénotypes non violents</FCSecurityGuardsIncluded>
 
 	
 	
-  <XenotypeWeightError>Tous les xénotypes ont un poids de 0 !</XenotypeWeightError>
+  <FCXenotypeWeightError>Tous les xénotypes ont un poids de 0 !</FCXenotypeWeightError>
 	
-  <XenotypeWeightErrorDesc>Si vous fermez cette fenêtre alors que tous les xénotypes ont un poids de 0, ils seront tous réinitialisés à un poids de 1.</XenotypeWeightErrorDesc>
+  <FCXenotypeWeightErrorDesc>Si vous fermez cette fenêtre alors que tous les xénotypes ont un poids de 0, ils seront tous réinitialisés à un poids de 1.</FCXenotypeWeightErrorDesc>
 	
-  <RaceWeightError>Toutes les races ont un poids de 0 !</RaceWeightError>
+  <FCRaceWeightError>Toutes les races ont un poids de 0 !</FCRaceWeightError>
 	
-  <RaceWeightErrorDesc>Si vous fermez cette fenêtre alors que toutes les races ont un poids de 0, elles seront toutes réinitialisées à un poids de 1.</RaceWeightErrorDesc>
+  <FCRaceWeightErrorDesc>Si vous fermez cette fenêtre alors que toutes les races ont un poids de 0, elles seront toutes réinitialisées à un poids de 1.</FCRaceWeightErrorDesc>
 
 	
 	
-  <XenoRaceEnableAll>Tout activer</XenoRaceEnableAll>
+  <FCXenoRaceEnableAll>Tout activer</FCXenoRaceEnableAll>
 	
-  <XenoDisableNonBaseliner>Désactiver les non-Baseliners</XenoDisableNonBaseliner>
+  <FCXenoDisableNonBaseliner>Désactiver les non-Baseliners</FCXenoDisableNonBaseliner>
 	
-  <RaceDisableNonHuman>Désactiver les non-humains</RaceDisableNonHuman>
+  <FCRaceDisableNonHuman>Désactiver les non-humains</FCRaceDisableNonHuman>
 	
-  <Empire_XenotypeMenus_EnableAll>Tout activer</Empire_XenotypeMenus_EnableAll>
 	
-  <Empire_XenotypeMenus_DisableNonBaseliner>Désactiver les non-Baseliners</Empire_XenotypeMenus_DisableNonBaseliner>
 
 	
 	
-  <EmpireMemberRaceChances>Probabilités des races des membres</EmpireMemberRaceChances>
+  <FCEmpireMemberRaceChances>Probabilités des races des membres</FCEmpireMemberRaceChances>
 
 	
 	
-  <DisabledHumanWarning>La race humaine est désactivée, mais peut encore apparaître comme solution de secours si les races sélectionnées ne disposent pas d’options de type de pion valides.</DisabledHumanWarning>
+  <FCDisabledHumanWarning>La race humaine est désactivée, mais peut encore apparaître comme solution de secours si les races sélectionnées ne disposent pas d’options de type de pion valides.</FCDisabledHumanWarning>
 	
-  <XenoNonViolentIndicatorDesc>Ce xénotype est considéré comme non violent.</XenoNonViolentIndicatorDesc>
+  <FCXenoNonViolentIndicatorDesc>Ce xénotype est considéré comme non violent.</FCXenoNonViolentIndicatorDesc>
 	
-  <OnlyNonViolentXenoWarning>Seuls des xénotypes non violents sont sélectionnés. Vous verrez quand même des Baseliners si la violence est requise.</OnlyNonViolentXenoWarning>
+  <FCOnlyNonViolentXenoWarning>Seuls des xénotypes non violents sont sélectionnés. Vous verrez quand même des Baseliners si la violence est requise.</FCOnlyNonViolentXenoWarning>
 
 </LanguageData>
