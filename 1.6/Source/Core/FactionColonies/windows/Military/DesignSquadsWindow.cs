@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace FactionColonies
 {
     public class DesignSquadsWindow : MilitaryWindow
     {
+        public override MilitaryWindowSlot Slot => MilitaryWindowSlot.Squads;
+
         private WorldSettlementFC settlementPointReference;
         private readonly MilitaryCustomizationUtil util;
         private MilSquadFC selectedSquad;
@@ -421,7 +424,7 @@ namespace FactionColonies
             currentWindow?.Close();
 
             FactionFC fc = FactionCache.FactionComp;
-            DesignUnitsWindow duw = new DesignUnitsWindow(fc.militaryCustomizationUtil, fc);
+            MilitaryWindow duw = MilitaryWindowRegistry.CreateUnits(fc.militaryCustomizationUtil, fc);
             FCWindow_Military newWindow = new FCWindow_Military(
                 duw, "FCMilitaryTableButtonCreateUnit".Translate());
             Find.WindowStack.Add(newWindow);

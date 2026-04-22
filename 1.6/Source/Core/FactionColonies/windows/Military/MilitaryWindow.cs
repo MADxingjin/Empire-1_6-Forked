@@ -1,4 +1,5 @@
 ﻿using System;
+using FactionColonies.util;
 using UnityEngine;
 using Verse;
 
@@ -8,6 +9,8 @@ namespace FactionColonies
     {
         public string selectedText;
         public float scroll;
+
+        public abstract MilitaryWindowSlot Slot { get; }
 
         public abstract void DrawTab(Rect rect);
 

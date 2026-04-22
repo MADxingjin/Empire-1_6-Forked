@@ -99,4 +99,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_7</defName>
+		<label>Backend UI Update</label>
+		<description>Some extensibility changes for the manage units/squads/fire support windows to make it easier for submods to interject their own windows.</description>
+		<releaseDate>2026-04-21</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Adds MilitaryWindowRegistry to make it easier for submods to intercept the existing Manage Units/Squads/Fire Support windows and draw their own</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

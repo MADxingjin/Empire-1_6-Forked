@@ -107,4 +107,11 @@ namespace FactionColonies.util
         Social = 5,
         Doctrine = 6
     }
+
+    public enum MilitaryWindowSlot
+    {
+        Units,
+        Squads,
+        FireSupport
+    }
 }

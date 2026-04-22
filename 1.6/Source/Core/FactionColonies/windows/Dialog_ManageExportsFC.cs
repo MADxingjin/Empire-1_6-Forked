@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,7 +131,7 @@ namespace FactionColonies
 
             FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
                 window => window is FCWindow_Military fcw &&
-                          fcw.GetMilitaryWindow() is DesignSquadsWindow);
+                          fcw.GetMilitaryWindow().Slot == MilitaryWindowSlot.Squads);
 
             if (milWindow != null)
             {
@@ -138,7 +139,7 @@ namespace FactionColonies
             }
             else
             {
-                DesignSquadsWindow dsw = new DesignSquadsWindow(fc.militaryCustomizationUtil);
+                MilitaryWindow dsw = MilitaryWindowRegistry.CreateSquads(fc.militaryCustomizationUtil, fc);
                 FCWindow_Military newWindow = new FCWindow_Military(dsw, "Create Squads");
                 Find.WindowStack.Add(newWindow);
                 newWindow.SetActive(squad);
@@ -195,7 +196,7 @@ namespace FactionColonies
 
             FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
                 window => window is FCWindow_Military fcw &&
-                          fcw.GetMilitaryWindow() is DesignUnitsWindow);
+                          fcw.GetMilitaryWindow().Slot == MilitaryWindowSlot.Units);
 
             if (milWindow != null)
             {
@@ -203,7 +204,7 @@ namespace FactionColonies
             }
             else
             {
-                DesignUnitsWindow duw = new DesignUnitsWindow(fc.militaryCustomizationUtil, fc);
+                MilitaryWindow duw = MilitaryWindowRegistry.CreateUnits(fc.militaryCustomizationUtil, fc);
                 FCWindow_Military newWindow = new FCWindow_Military(duw, "Create Units");
                 Find.WindowStack.Add(newWindow);
                 newWindow.SetActive(unit);
@@ -257,7 +258,7 @@ namespace FactionColonies
 
             FCWindow_Military milWindow = (FCWindow_Military)Find.WindowStack.Windows.FirstOrDefault(
                 window => window is FCWindow_Military fcw &&
-                          fcw.GetMilitaryWindow() is FireSupportWindow);
+                          fcw.GetMilitaryWindow().Slot == MilitaryWindowSlot.FireSupport);
 
             if (milWindow is object)
             {
@@ -265,8 +266,8 @@ namespace FactionColonies
             }
             else
             {
-                MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
-                FireSupportWindow fsw = new FireSupportWindow(util);
+                FactionFC fc = FactionCache.FactionComp;
+                MilitaryWindow fsw = MilitaryWindowRegistry.CreateFireSupport(fc.militaryCustomizationUtil, fc);
                 FCWindow_Military newWindow = new FCWindow_Military(fsw, "FCMilitaryTableButtonCreateFireSupport".Translate());
                 Find.WindowStack.Add(newWindow);
                 newWindow.SetActive(fs);

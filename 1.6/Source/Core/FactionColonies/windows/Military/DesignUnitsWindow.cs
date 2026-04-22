@@ -10,6 +10,8 @@ namespace FactionColonies
 {
     public class DesignUnitsWindow : MilitaryWindow
     {
+        public override MilitaryWindowSlot Slot => MilitaryWindowSlot.Units;
+
         private readonly MilitaryCustomizationUtil util;
         private readonly FactionFC faction;
         private MilUnitFC selectedUnit;

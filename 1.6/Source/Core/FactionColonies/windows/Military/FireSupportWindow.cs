@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace FactionColonies
 {
     public class FireSupportWindow : MilitaryWindow
     {
+        public override MilitaryWindowSlot Slot => MilitaryWindowSlot.FireSupport;
+
         private WorldSettlementFC settlementPointReference;
         private MilitaryFireSupport selectedSupport;
         private readonly MilitaryCustomizationUtil util;

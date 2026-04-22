@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using UnityEngine;
 using Verse;
 
@@ -60,25 +61,25 @@ namespace FactionColonies
             float btnY = 5f + (35f - btnH) / 2f;
 
             string label1, label2, title1, title2;
-            System.Type target1, target2;
+            MilitaryWindowSlot target1, target2;
 
-            if (militaryWindow is DesignUnitsWindow)
+            if (militaryWindow.Slot == MilitaryWindowSlot.Units)
             {
                 label1 = "FCNavSquads".Translate();
                 label2 = "FCNavFireSupport".Translate();
                 title1 = "FCMilitaryTableButtonCreateSquad".Translate();
                 title2 = "FCMilitaryTableButtonCreateFireSupport".Translate();
-                target1 = typeof(DesignSquadsWindow);
-                target2 = typeof(FireSupportWindow);
+                target1 = MilitaryWindowSlot.Squads;
+                target2 = MilitaryWindowSlot.FireSupport;
             }
-            else if (militaryWindow is DesignSquadsWindow)
+            else if (militaryWindow.Slot == MilitaryWindowSlot.Squads)
             {
                 label1 = "FCNavUnits".Translate();
                 label2 = "FCNavFireSupport".Translate();
                 title1 = "FCMilitaryTableButtonCreateUnit".Translate();
                 title2 = "FCMilitaryTableButtonCreateFireSupport".Translate();
-                target1 = typeof(DesignUnitsWindow);
-                target2 = typeof(FireSupportWindow);
+                target1 = MilitaryWindowSlot.Units;
+                target2 = MilitaryWindowSlot.FireSupport;
             }
             else
             {
@@ -86,8 +87,8 @@ namespace FactionColonies
                 label2 = "FCNavSquads".Translate();
                 title1 = "FCMilitaryTableButtonCreateUnit".Translate();
                 title2 = "FCMilitaryTableButtonCreateSquad".Translate();
-                target1 = typeof(DesignUnitsWindow);
-                target2 = typeof(DesignSquadsWindow);
+                target1 = MilitaryWindowSlot.Units;
+                target2 = MilitaryWindowSlot.Squads;
             }
 
             float x2 = inRect.width - gap - btnW;
@@ -106,14 +107,10 @@ namespace FactionColonies
             Text.Anchor = anchorBefore;
         }
 
-        private MilitaryWindow CreateWindow(System.Type windowType)
+        private MilitaryWindow CreateWindow(MilitaryWindowSlot slot)
         {
-            MilitaryCustomizationUtil util = FactionCache.FactionComp.militaryCustomizationUtil;
-            if (windowType == typeof(DesignUnitsWindow))
-                return new DesignUnitsWindow(util, FactionCache.FactionComp);
-            if (windowType == typeof(DesignSquadsWindow))
-                return new DesignSquadsWindow(util);
-            return new FireSupportWindow(util);
+            FactionFC fc = FactionCache.FactionComp;
+            return MilitaryWindowRegistry.Create(slot, fc.militaryCustomizationUtil, fc);
         }
 
         private void NavigateTo(MilitaryWindow target, string newTitle)

@@ -1525,15 +1525,15 @@ namespace FactionColonies
             if (faction.settlements?.Count > 0)
             {
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
-                    OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateUnits(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
                 bx += buttonWidth;
 
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
-                    OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateSquads(militaryUtil, faction), "FCMilitaryTableButtonCreateSquad".Translate());
                 bx += buttonWidth;
 
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
-                    OpenMilitaryWindow(new FireSupportWindow(militaryUtil), "FCMilitaryTableButtonCreateFireSupport".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateFireSupport(militaryUtil, faction), "FCMilitaryTableButtonCreateFireSupport".Translate());
             }
 
             y += buttonHeight + margin * 2;
