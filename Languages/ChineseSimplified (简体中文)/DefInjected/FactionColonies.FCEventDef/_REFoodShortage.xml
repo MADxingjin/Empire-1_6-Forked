@@ -4,12 +4,12 @@
   <!-- EN: Widespread Food Shortage -->
   <foodShortage_0.label>大规模食物短缺</foodShortage_0.label>
   <!-- EN: There's a widespread food shortage in the affected regions. Your settlements need guidance on how to handle this crisis. -->
-  <foodShortage_0.desc>受影响的区域当前出现了大规模食物短缺。你的领地正等待你的指示。</foodShortage_0.desc>
+  <foodShortage_0.desc>受影响的区域当前出现了大规模食物短缺。您的领地正等待你的指示。</foodShortage_0.desc>
   
   <!-- EN: Food Shortage -->
   <foodShortage_1-1.label>食物短缺</foodShortage_1-1.label>
   <!-- EN: Your settlements endure the food shortage. -->
-  <foodShortage_1-1.desc>你的领地将忍受食物短缺。</foodShortage_1-1.desc>
+  <foodShortage_1-1.desc>您的领地将忍受食物短缺。</foodShortage_1-1.desc>
   
   <!-- EN: Food Shortage (Imports) -->
   <foodShortage_1-2.label>食物短缺（进口）</foodShortage_1-2.label>

@@ -36,7 +36,7 @@
 	<!-- EN: Event option misclick protection: {0}s -->
   <FCSettingEventOptionDelay>事件选项误点击保护：{0}秒</FCSettingEventOptionDelay>
 	<!-- EN: Battle Mode:  -->
-  <FCSettingBattleMode>战斗模式</FCSettingBattleMode>
+  <FCSettingBattleMode>战斗模式：</FCSettingBattleMode>
 	<!-- EN: Auto-Resolve -->
   <FCBattleModeAuto>自动结算</FCBattleModeAuto>
 	<!-- EN: All battles resolve automatically. -->
@@ -96,7 +96,7 @@ Values in between dampen the effect of military efficiency on the auto combat. -
 	<!-- EN: Losing Is Fun -->
   <FCDifficultyLosingIsFun>失败即乐趣</FCDifficultyLosingIsFun>
 	<!-- EN: Custom -->
-  <FCDifficultyCustom>自动逸</FCDifficultyCustom>
+  <FCDifficultyCustom>自定义</FCDifficultyCustom>
 	<!-- EN: For players who want a relaxed empire management experience with generous resource gains and frequent tax collection. -->
   <FCDifficultyPeacefulDesc>适合想要轻松体验帝国管理的玩家，资源获取更丰厚，税期更短。</FCDifficultyPeacefulDesc>
 	<!-- EN: Easy difficulty with good resource gains and moderate tax frequency. -->

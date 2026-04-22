@@ -2,7 +2,7 @@
 <LanguageData>
   
   <!-- EN: Delivery -->
-  <deliveryArrival.label>Empire：物资送达</deliveryArrival.label>
+  <deliveryArrival.label>物资送达</deliveryArrival.label>
   <!-- EN: A transport ship carrying items or pawns is traveling to your map -->
   <deliveryArrival.desc>一艘运输船正带着物资（和人员）抵达你的地图</deliveryArrival.desc>
   

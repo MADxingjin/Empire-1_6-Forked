@@ -19,6 +19,6 @@
   <!-- EN: Expanded Forestry (Construction Stockpile) -->
   <expandedForestry_1-3.label>林业产能扩大（用作建材）</expandedForestry_1-3.label>
   <!-- EN: Lumber is stockpiled for construction projects, and construction speeds up. -->
-  <expandedForestry_1-3.desc>多余木材已被整堆整理用于建筑工程，提高建筑建造速度。</expandedForestry_1-3.desc>
+  <expandedForestry_1-3.desc>多余木材已被贮存到建筑工程材料区，提高建筑建造速度。</expandedForestry_1-3.desc>
   
 </LanguageData>

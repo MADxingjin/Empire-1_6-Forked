@@ -8,7 +8,7 @@
   <!-- EN: prime councilor -->
   <PColony.leaderTitle>首相</PColony.leaderTitle>
   <!-- EN: {0} from {1} are attacking your {2}. -->
-  <PColony.messageDefendersAttacking>来自{1}的{0}正在进攻你的{2}</PColony.messageDefendersAttacking>
+  <PColony.messageDefendersAttacking>来自{1}的{0}正在进攻你的{2}。</PColony.messageDefendersAttacking>
   <!-- EN: outlander -->
   <PColony.pawnSingular>外来者</PColony.pawnSingular>
   <!-- EN: outlanders -->

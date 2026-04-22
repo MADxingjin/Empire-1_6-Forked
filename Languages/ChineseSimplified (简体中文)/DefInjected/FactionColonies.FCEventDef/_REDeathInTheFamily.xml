@@ -4,7 +4,7 @@
   <!-- EN: Death In The Family -->
   <deathInTheFamily_0.label>家族成员之死</deathInTheFamily_0.label>
   <!-- EN: A figure of high-importance and connection to your capital in a settlement has been assassinated. Some people on the streets are spreading that it was you who caused their death. How will you respond? -->
-  <deathInTheFamily_0.desc>你治下某个领地中一位同你首都有着深切联系的关键人物最近被刺杀了。街头上有人正传播消息，称是你策划了该人的死亡。你要如何回应？</deathInTheFamily_0.desc>
+  <deathInTheFamily_0.desc>你治下某个领地中一位同你首都有着深切联系的关键人物最近被刺杀了。街头上有人正传播消息，宣称正是你策划了此人的死亡。你要如何回应？</deathInTheFamily_0.desc>
   
   <!-- EN: Death In The Family -->
   <deathInTheFamily_1-1.label>家族成员之死</deathInTheFamily_1-1.label>
@@ -19,11 +19,11 @@
   <!-- EN: Death In The Family (Investigation Failed) -->
   <deathInTheFamily_1-3f.label>家族成员之死（调查真凶失败）</deathInTheFamily_1-3f.label>
   <!-- EN: The investigation turns up nothing and only fuels the rumors that you were behind the assassination. The people grow restless. -->
-  <deathInTheFamily_1-3f.desc>对刺客的调查以失败告终。调查行为反而助长了你就是刺杀的来源的小道消息。人们开始变得不满。</deathInTheFamily_1-3f.desc>
+  <deathInTheFamily_1-3f.desc>对刺客的调查以失败告终。未成功的调查行为反而助长了你就是刺杀的主谋的小道消息。人们开始变得不满。</deathInTheFamily_1-3f.desc>
   
   <!-- EN: Death In The Family (Justice Found) -->
   <deathInTheFamily_1-3s.label>家族成员之死（抓获真凶）</deathInTheFamily_1-3s.label>
   <!-- EN: The investigation uncovers the assassin and brings them to justice. The people still grieve, but finding the killer eases the pain. -->
-  <deathInTheFamily_1-3s.desc>对刺客的调查成功的抓获了真凶并诉诸法办。人们仍然悲伤，但随着杀手被找到，不会那么悲伤。</deathInTheFamily_1-3s.desc>
+  <deathInTheFamily_1-3s.desc>对刺客的调查成功抓获了真凶并诉诸法办。人们仍然因死者而悲伤，但抓获真凶可以减轻这份伤痛。</deathInTheFamily_1-3s.desc>
   
 </LanguageData>

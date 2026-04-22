@@ -53,13 +53,13 @@
   <FCTraitDesc_loyaltyGainedMultiplier>{0}忠诚度获取乘数</FCTraitDesc_loyaltyGainedMultiplier>
 	
 	<!-- EN: {0} Base Unrest Lost -->
-  <FCTraitDesc_unrestLostBase>{0}动乱度损失基值</FCTraitDesc_unrestLostBase>
+  <FCTraitDesc_unrestLostBase>{0}动乱度下降基值</FCTraitDesc_unrestLostBase>
 	<!-- EN: {0} Base Unrest Gained -->
-  <FCTraitDesc_unrestGainedBase>{0}动乱度损失基值</FCTraitDesc_unrestGainedBase>
+  <FCTraitDesc_unrestGainedBase>{0}动乱度上升基值</FCTraitDesc_unrestGainedBase>
 	<!-- EN: {0} Unrest Lost -->
-  <FCTraitDesc_unrestLostMultiplier>{0}动乱度损失基值</FCTraitDesc_unrestLostMultiplier>
+  <FCTraitDesc_unrestLostMultiplier>{0}动乱度下降乘数</FCTraitDesc_unrestLostMultiplier>
 	<!-- EN: {0} Unrest Gained -->
-  <FCTraitDesc_unrestGainedMultiplier>{0}动乱度损失基值</FCTraitDesc_unrestGainedMultiplier>
+  <FCTraitDesc_unrestGainedMultiplier>{0}动乱度上升乘数</FCTraitDesc_unrestGainedMultiplier>
 	
 	<!-- EN: {0} Base Settlement Cost -->
   <FCTraitDesc_createSettlementBaseCost>{0}领地设立成本基值</FCTraitDesc_createSettlementBaseCost>

@@ -41,7 +41,7 @@
   <!-- EN: - Failing to protect your settlements against a raid causes loyalty to drop significantly -->
   <feudal.negativeEffects.0>未能在袭击中保护你的领地将显著惩罚忠诚度。</feudal.negativeEffects.0>
   <!-- EN: - Once per season, can request for a mercenary from your faction to join your colony -->
-  <feudal.positiveEffects.0>每季度可以要求一个来自你派系的雇佣兵加入你的主控殖民地</feudal.positiveEffects.0>
+  <feudal.positiveEffects.0>每季度可以要求一位来自你派系的雇佣兵加入由你控制的殖民地</feudal.positiveEffects.0>
   <!-- EN: - All tithes received have their value increased by 20% -->
   <feudal.positiveEffects.1>所有什一税值增加20%</feudal.positiveEffects.1>
   
@@ -63,9 +63,9 @@
   <!-- EN: Militaristic -->
   <militaristic.label>军事</militaristic.label>
   <!-- EN: A militaristic society, one who seeks glory in blood and death for their cause. -->
-  <militaristic.desc>军事社会在鲜血中追求荣誉，以死亡和牺牲达成其目的</militaristic.desc>
+  <militaristic.desc>军事社会在鲜血中追求荣誉，以死亡和牺牲达成其目的。</militaristic.desc>
   <!-- EN: - +20% combat modifier when using your faction's military forces -->
-  <militaristic.positiveEffects.0>使用派系军事力量时+20%强度</militaristic.positiveEffects.0>
+  <militaristic.positiveEffects.0>使用派系军事力量时+20%战斗强度</militaristic.positiveEffects.0>
   <!-- EN: - Once per five days, you can deploy a second squad from a single settlement by paying 20% of the squad's cost in Silver -->
   <militaristic.positiveEffects.1>每五天一次，可以从单一领地部署一支额外队伍，但需要以现银支付队伍的20%成本。</militaristic.positiveEffects.1>
   <!-- EN: - When creating a new settlement, it will start with a Barracks -->
@@ -98,7 +98,7 @@
   <!-- EN: Technocratic -->
   <technocratic.label>技官</technocratic.label>
   <!-- EN: A technocratic society is one that seeks the furthering of knowledge and continuous improvement. -->
-  <technocratic.desc>技官社会致力于推动知识的边界和持续的技术改进</technocratic.desc>
+  <technocratic.desc>技官社会致力于推动知识的边界和持续的技术改进。</technocratic.desc>
   <!-- EN: - All research produced by your settlements is doubled -->
   <technocratic.positiveEffects.0>领地产出的所有研究加倍。</technocratic.positiveEffects.0>
   <!-- EN: - Can send items that you have not completed the research for or are above your tech level to your settlements to be reverse-engineered, giving you their value in research points -->

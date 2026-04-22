@@ -7,9 +7,9 @@
   <aFactionDisarmed.desc>派系内仅有极小甚至可忽略的武装力量。</aFactionDisarmed.desc>
   
   <!-- EN: Heavy Conscription -->
-  <heavyConscription.label>征召兵</heavyConscription.label>
+  <heavyConscription.label>大量征召</heavyConscription.label>
   <!-- EN: A large number of the populace is conscripted into the settlement's military forces. -->
-  <heavyConscription.desc>领地内的许多人被征召到军事力量中。</heavyConscription.desc>
+  <heavyConscription.desc>领地内人口中的许多人被征召到军事力量中。</heavyConscription.desc>
   
   <!-- EN: Slave Army -->
   <slaveArmy.label>奴隶军队</slaveArmy.label>

@@ -27,7 +27,7 @@
   <settleNewColony.desc>一队殖民者正在被派往新的领地。</settleNewColony.desc>
   
   <!-- EN: Settlement Taxes En-Route -->
-  <taxColony.label>税金队伍出发</taxColony.label>
+  <taxColony.label>税务运输队出发</taxColony.label>
   <!-- EN: A caravan is delivering taxes. -->
   <taxColony.desc>运送税金的队伍已经上路了.</taxColony.desc>
   

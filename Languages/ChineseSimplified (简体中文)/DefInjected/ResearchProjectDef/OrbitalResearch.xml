@@ -9,12 +9,12 @@
   <!-- EN: Glitterworld Orbital Settlements -->
   <GlitterworldOrbitalSettlements.label>闪耀世界轨道殖民地</GlitterworldOrbitalSettlements.label>
   <!-- EN: A vision of orbital living inspired by glitterworld engineering. -->
-  <GlitterworldOrbitalSettlements.description>闪耀世界工程学提供了同级别的轨道居住地生活标准的一瞥。</GlitterworldOrbitalSettlements.description>
+  <GlitterworldOrbitalSettlements.description>效仿闪耀世界的工程学技术，提供在轨生活的一瞥。</GlitterworldOrbitalSettlements.description>
   
   <!-- EN: Basic Orbital Settlements -->
   <OrbitalConstruction.label>基础轨道聚落</OrbitalConstruction.label>
   <!-- EN: Learn the basics of constructing habitable structures in the void of space. Unlocks basic space station construction capabilities. -->
-  <OrbitalConstruction.description>习得在太空的虚无中建造可居住的平台结构的方法。此研究解锁在太空中建造轨道居住地的能力。</OrbitalConstruction.description>
+  <OrbitalConstruction.description>习得在太空的虚无中建造可居住的平台结构的方法。解锁在奥德赛DLC的行星轨道层级上建造基础太空站的能力。</OrbitalConstruction.description>
   
   <!-- EN: Orbital Logistics -->
   <OrbitalLogistics.label>轨道物流学</OrbitalLogistics.label>

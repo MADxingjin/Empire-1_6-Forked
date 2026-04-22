@@ -45,7 +45,7 @@
 	<!-- EN: A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}. -->
   <SettleEventDesc>一支远行队将在{1}建立{0}，预计于{2}后到达。</SettleEventDesc>
 	<!-- EN: {0} has been established as a new {1} in the {2}. -->
-  <SettleEventCompletedDesc>已在{2}建立类型为：{1}的领地{0}</SettleEventCompletedDesc>
+  <SettleEventCompletedDesc>领地“{0}”已在{2}建立，其类型为“{1}”。</SettleEventCompletedDesc>
 	<!-- EN: Player Colony -->
   <PlayerColony>玩家的领地</PlayerColony>
 	<!-- EN: Set Capital -->
@@ -71,7 +71,7 @@
 	<!-- EN: has been upgraded to level -->
   <HasBeenUpgraded>已升级</HasBeenUpgraded>
 	<!-- EN: {0} is being upgraded from level {1} to level {2}.\n\n{3} -->
-  <UpgradeEventDesc>已将{0}从等级{1}升级到等级{2}。 \n\n{3}</UpgradeEventDesc>
+  <UpgradeEventDesc>将{0}从等级{1}升级到等级{2}。\n\n{3}</UpgradeEventDesc>
 	<!-- EN: {0} has been upgraded to level {1}!\n\n{2} -->
   <UpgradeEventCompletedDesc>已将{0}升级到{1}！\n\n{2}</UpgradeEventCompletedDesc>
 	<!-- EN: is already max level -->
@@ -299,11 +299,11 @@ The prosperity of a town directly correlates with the production of resources (e
 	<!-- EN: A cluster of interconnected modules forms the station core, with basic airlocks and cargo bays serving a small but growing crew. -->
   <FCTownLevel_Orbital_2>由太空站核心与数个互相链接的模块构成的集群，加上基础的气闸和货物港来维持一支小但增长迅猛的队伍。</FCTownLevel_Orbital_2>
 	<!-- EN: The station has expanded into a respectable orbital platform, with dedicated production modules, rotating crew quarters, and an array of solar collectors stretching outward. -->
-  <FCTownLevel_Orbital_3>该站点已扩张到足够被称为轨道平台的大小，生产模块被专门布局，自旋式重力船员生活区，和伸展而出的太阳能板。</FCTownLevel_Orbital_3>
+  <FCTownLevel_Orbital_3>该站点已扩张到足够被称为轨道平台的大小，有着被专门布局的生产模块，依靠自旋提供重力的成员生活区，和伸展而出的太阳能板阵列。</FCTownLevel_Orbital_3>
 	<!-- EN: A substantial orbital installation bristles with sensor arrays and docking spires. Multiple pressurized decks house specialized facilities, and point-defense turrets sweep the surrounding void. -->
   <FCTownLevel_Orbital_4>这个轨道设施的外侧太空港塔尖和传感器阵列如同毛发一样繁多。许多个加压层内部署有专门的生产设施，点防御炮塔阵列持续的扫描着外围。</FCTownLevel_Orbital_4>
 	<!-- EN: The station dominates the local orbital space; a sprawling complex of interconnected rings and spars, humming with industry. Layered shielding and weapons platforms ensure nothing approaches unchallenged. -->
-  <FCTownLevel_Orbital_5>该空间站主宰这片空域。由多层互联的环和突起组建的迷宫里工业设施嗡鸣着。数层叠加的护盾和武器平台确保所有访客都被质询意图。</FCTownLevel_Orbital_5>
+  <FCTownLevel_Orbital_5>该空间站主宰这片空域。各种工业设施在多层互联的环和突起组建的迷宫里嗡鸣着。数层叠加的护盾和武器平台确保所有飞过的物体都能被拦下。</FCTownLevel_Orbital_5>
 
 	<!-- Orbital Settlement Locations -->
 	<!-- EN: Orbiting in deep space -->

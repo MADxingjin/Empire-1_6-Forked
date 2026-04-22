@@ -19,11 +19,11 @@
   <!-- EN: Armorer Inspiration (Masterwork) -->
   <armorerInspiration_1-2s.label>锻甲工匠的灵感（杰作）</armorerInspiration_1-2s.label>
   <!-- EN: The armorer's inspiration has produced a true masterwork! The result exceeds all expectations. -->
-  <armorerInspiration_1-2s.desc>锻甲工匠的灵感化作了一套杰作！成品超出了所有人的预期。</armorerInspiration_1-2s.desc>
+  <armorerInspiration_1-2s.desc>锻甲工匠的灵感化作了一套杰作！成品的质量超过了所有的预测。</armorerInspiration_1-2s.desc>
   
   <!-- EN: Armorer Inspiration (Workshop Materials) -->
   <armorerInspiration_1-3.label>锻甲工匠的灵感（工坊材料优先供应）</armorerInspiration_1-3.label>
   <!-- EN: The armorer works with materials diverted from your settlement's production lines. The diversion slows apparel output, but the armorer's work proceeds well. -->
-  <armorerInspiration_1-3.desc>锻甲工匠正优先使用从领地内生产的材料。这减缓了领地内服装的产出。</armorerInspiration_1-3.desc>
+  <armorerInspiration_1-3.desc>锻甲工匠正优先使用从领地内生产的材料。这减缓了领地内服装的产出。但能够让锻甲工匠稳定推进工作。</armorerInspiration_1-3.desc>
   
 </LanguageData>

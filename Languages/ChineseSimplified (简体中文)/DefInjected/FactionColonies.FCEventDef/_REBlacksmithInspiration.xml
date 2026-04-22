@@ -24,6 +24,6 @@
   <!-- EN: Blacksmith Inspiration (Workshop Materials) -->
   <blacksmithInspiration_1-3.label>武器工匠的灵感（工坊材料优先供应）</blacksmithInspiration_1-3.label>
   <!-- EN: The blacksmith works with materials diverted from your settlement's production lines. The diversion slows weapons output, but the blacksmith's work proceeds well. -->
-  <blacksmithInspiration_1-3.desc>武器工匠正优先使用从领地内生产的材料。这减缓了领地内武器的产出。</blacksmithInspiration_1-3.desc>
+  <blacksmithInspiration_1-3.desc>武器工匠正优先使用从领地内生产的材料。这减缓了领地内武器的产出。但能够让武器工匠稳定推进工作。</blacksmithInspiration_1-3.desc>
   
 </LanguageData>

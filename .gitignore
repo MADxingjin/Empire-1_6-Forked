@@ -363,3 +363,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Generated dds and zstd from textures for quick mod loading by RimSort or Mod "Image Opt"
+*.dds
+*.zstd

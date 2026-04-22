@@ -17,7 +17,7 @@
   <buildTimeMultiplier.label>建筑用时乘数</buildTimeMultiplier.label>
   
   <!-- EN: settlement creation base cost -->
-  <createSettlementBaseCost.label>创建领地成本基础</createSettlementBaseCost.label>
+  <createSettlementBaseCost.label>创建领地成本基础值</createSettlementBaseCost.label>
   
   <!-- EN: settlement creation cost multiplier -->
   <createSettlementMultiplier.label>创建领地成本乘数</createSettlementMultiplier.label>

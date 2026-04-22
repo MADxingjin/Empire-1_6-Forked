@@ -17,7 +17,7 @@
 	<!-- EN: Pay/Receive Silver -->
   <PayReceiveSilver>支付/收取白银</PayReceiveSilver>
 	<!-- EN: Resolve Bill -->
-  <ResolveBill>免税</ResolveBill>
+  <ResolveBill>结算此账单</ResolveBill>
 	<!-- EN: You do not have enough silver on the current map to pay the bill -->
   <NotEnoughSilverOnMapToPayBill>你在当前地图上没有足够的白银来支付账单</NotEnoughSilverOnMapToPayBill>
 	<!-- EN: {0} bills have been auto-resolved! -->
@@ -37,11 +37,11 @@
 	<!-- EN: Overdue -->
   <FCOverdue>超期</FCOverdue>
 	<!-- EN: Unrest has increased by 10 and happiness has decreased in the settlement!  -->
-  <UnpaidTitheEffect>在这个领地叛乱度+10,幸福度有所下降.</UnpaidTitheEffect>
+  <UnpaidTitheEffect>在这个领地动乱度+10,幸福度有所下降.</UnpaidTitheEffect>
 	<!-- EN: Overdue Bills Auto-Paid -->
   <LateBillAutoPaidLabel>自动付清过期账单</LateBillAutoPaidLabel>
 	<!-- EN: {0} overdue bill(s) have been auto-paid from your silver reserves.\n\nAffected settlements:\n{1}\n\nYour dereliction in payment has caused a small amount of unhappiness and unrest in the affected settlements. -->
-  <LateBillAutoPaidDesc>已从你的白银储备自动付清{0}个超期账单。\n\n这影响了以下领地：\n{1}\n\n 你的延期付清导致了这些领地出现小的不满和幸福度下降。</LateBillAutoPaidDesc>
+  <LateBillAutoPaidDesc>已从你的白银储备自动付清{0}个超期账单。\n\n这影响了以下领地：\n{1}\n\n 你的延期付清导致了这些领地出现小的不满，且幸福度下降。</LateBillAutoPaidDesc>
 
 	<!-- Taxes -->
 	<!-- EN: Settlement Tax -->
@@ -143,7 +143,7 @@
 	<!-- EN: Your settlement is delivering the following loot to you:  -->
   <settlementDeliveringLoot>你的领地正在运送以下物资：</settlementDeliveringLoot>
 	<!-- EN: A delivery that was forced to wait has arrived! -->
-  <deliveryHeldUpArriving>一批强制延后的货物已到达！</deliveryHeldUpArriving>
+  <deliveryHeldUpArriving>一批被迫延后的货物已到达！</deliveryHeldUpArriving>
 
 	<!-- Tithes -->
 	<!-- EN: Pause Tithes -->

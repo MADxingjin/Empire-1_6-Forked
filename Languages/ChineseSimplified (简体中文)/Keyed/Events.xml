@@ -51,9 +51,9 @@
 
 	<!-- Building Events -->
 	<!-- EN: {0} is under construction at {1}. Estimated completion: {2}. -->
-  <BuildingEventDesc>正在{1}建筑{0}，预计在{2}建成</BuildingEventDesc>
+  <BuildingEventDesc>正在“{1}”修建“{0}”，预计在{2}建成。</BuildingEventDesc>
 	<!-- EN: {0} has been constructed at {1}! -->
-  <BuildingEventCompletedMsg>建筑“{0}”已在领地{1}完工！</BuildingEventCompletedMsg>
+  <BuildingEventCompletedMsg>建筑“{0}”已在领地“{1}”完工！</BuildingEventCompletedMsg>
 
 	<!-- Pawn Events -->
 	<!-- EN: Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements. -->
