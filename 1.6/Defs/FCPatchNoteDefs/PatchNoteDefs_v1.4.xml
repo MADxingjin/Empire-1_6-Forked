@@ -85,4 +85,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_6</defName>
+		<label>UI Update</label>
+		<description>Minor backend change to how bonuses are colorized, which should hopefully produce more consistent bonus coloration throughout the UI.</description>
+		<releaseDate>2026-04-21</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Change TextUtil.ColorizeAdditiveBonus and ColorizeMultiplierBonus to return strings instead of TaggedStrings</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
