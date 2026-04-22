@@ -71,8 +71,9 @@ namespace FactionColonies
                 {
                     lord.AddPawn(pawn);
                     readded.Add(pawn);
+                    return;
                 }
-                return;
+                // Already despawned (e.g. joined an existing caravan): fall through to RemoveDefender.
             }
             if (pawn.IsMercenary() && pawn.Faction != FactionCache.PlayerColonyFaction) pawn.SetFaction(FactionCache.PlayerColonyFaction);
 
