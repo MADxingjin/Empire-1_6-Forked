@@ -178,9 +178,10 @@ namespace FactionColonies
             if (Find.TickManager.TicksGame % 250 != 0) return;
             if (Map == null) return;
 
-            // Clean stale references (null from failed save/load resolution)
-            attackers.RemoveAll(p => p == null || p.Destroyed);
-            defenders.RemoveAll(p => p == null || p.Destroyed);
+            // Clean stale references: null (save/load), destroyed, or despawned-alive
+            // (e.g. pawn joined an existing caravan without PostCaravanFormed firing).
+            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+            defenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
 
             // Detect untracked player pawns on the battle map (e.g. shuttle-delivered pawns
             // that spawned via the Unload job after the ArrivePatch fired).
@@ -1663,6 +1664,7 @@ namespace FactionColonies
         public void RemoveAttacker(Pawn downed)
         {
             attackers.Remove(downed);
+            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
 
             // Remove from the specific wave's attacker list; mark wave resolved if empty
             foreach (DefenseWave wave in activeWaves)
@@ -1674,6 +1676,7 @@ namespace FactionColonies
                 }
             }
 
+            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
             if (attackers.Any() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;
@@ -1689,6 +1692,7 @@ namespace FactionColonies
         public void RemoveDefender(Pawn defender)
         {
             defenders.Remove(defender);
+            defenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
             if (defenders.Any() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;

@@ -454,4 +454,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_32</defName>
+		<label>Manual Battle Fix</label>
+		<description>Fixes an issue where manual defense battles might not end after sending a supporting caravan and then withdrawing.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: sending a caravan to help with a manual defense battle and then pulling the pawns out could get the battle stuck</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
