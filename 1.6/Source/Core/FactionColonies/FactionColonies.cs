@@ -92,7 +92,7 @@ namespace FactionColonies
         public static double silverToCreateSettlement = DEFAULT_SETTLEMENT_FOUNDING_COST;
 
         private static int timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
-        public static int timeBetweenTaxes => timeBetweenTaxes_days * GenDate.TicksPerDay;
+        public static int timeBetweenTaxes => Math.Max(1, timeBetweenTaxes_days) * GenDate.TicksPerDay;
 
 
         public static int productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
@@ -178,6 +178,18 @@ namespace FactionColonies
             base.ExposeData();
             Scribe_Values.Look(ref silverPerResource, "silverPerResource", DEFAULT_SILVER_PER_RESOURCE);
             Scribe_Values.Look(ref timeBetweenTaxes_days, "timeBetweenTaxes_days", DEFAULT_TAX_INTERVAL_DAYS);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (timeBetweenTaxes_days < 1)
+                {
+                    LogUtil.Warning($"Loaded suspicious timeBetweenTaxes_days={timeBetweenTaxes_days} from settings; resetting to DEFAULT_TAX_INTERVAL_DAYS ({DEFAULT_TAX_INTERVAL_DAYS}).");
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
+                }
+                else
+                {
+                    LogUtil.Message($"Loaded timeBetweenTaxes_days={timeBetweenTaxes_days} from settings.");
+                }
+            }
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod", DEFAULT_PRODUCTION_TITHE_MOD);
             Scribe_Values.Look(ref workerCost, "workerCost", DEFAULT_WORKER_COST);
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
@@ -348,6 +360,7 @@ namespace FactionColonies
                     // Don't change anything for custom
                     break;
             }
+            LogUtil.Message($"ApplyDifficultyPreset({difficulty}): timeBetweenTaxes_days={timeBetweenTaxes_days}");
         }
 
         public static int DaysBetweenTaxesByDifficulty(EmpireDifficultyLevel difficulty)
@@ -380,6 +393,8 @@ namespace FactionColonies
         string productionTitheMod_buffer;
         string workerCost_buffer;
         string settlementMaxLevel_buffer;
+
+        private static int timeBetweenTaxes_lastSeen = DEFAULT_TAX_INTERVAL_DAYS;
 
         private Vector2 scrollVectorGeneral = new Vector2();
         private float viewRectHeightGeneral = -1f;
@@ -473,6 +488,7 @@ namespace FactionColonies
         {
             silverPerResource_buffer = silverPerResource.ToString();
             timeBetweenTaxes_buffer = timeBetweenTaxes_days.ToString();
+            timeBetweenTaxes_lastSeen = timeBetweenTaxes_days;
             productionTitheMod_buffer = productionTitheMod.ToString();
             workerCost_buffer = workerCost.ToString();
             settlementMaxLevel_buffer = settlementMaxLevel.ToString();
@@ -536,6 +552,16 @@ namespace FactionColonies
                 ls.IntEntry(ref silverPerResource, ref silverPerResource_buffer);
                 ls.Label("FCSettingDaysBetweenTax".Translate());
                 ls.IntEntry(ref timeBetweenTaxes_days, ref timeBetweenTaxes_buffer);
+                if (timeBetweenTaxes_days < 1)
+                {
+                    timeBetweenTaxes_days = 1;
+                    timeBetweenTaxes_buffer = "1";
+                }
+                if (timeBetweenTaxes_days != timeBetweenTaxes_lastSeen)
+                {
+                    LogUtil.Message($"Settings UI: timeBetweenTaxes_days {timeBetweenTaxes_lastSeen} -> {timeBetweenTaxes_days}");
+                    timeBetweenTaxes_lastSeen = timeBetweenTaxes_days;
+                }
                 ls.Label("FCSettingProductionTitheMod".Translate());
                 ls.IntEntry(ref productionTitheMod, ref productionTitheMod_buffer);
                 ls.Label("FCSettingWorkerCost".Translate());
@@ -617,6 +643,7 @@ namespace FactionColonies
                 patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
                 disabledEventDefs.Clear();
                 ApplyDifficultyPreset(difficultyLevel);
+                LogUtil.Message($"Settings reset: timeBetweenTaxes_days={timeBetweenTaxes_days}");
             }
 
             viewRectHeightGeneral = ls.CurHeight + 5f;
