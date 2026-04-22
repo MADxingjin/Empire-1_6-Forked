@@ -113,4 +113,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_8</defName>
+		<label>Tax Fixes</label>
+		<description>Add guards against the time between taxes being 0.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Prevent the user from setting the time between taxes to 0. If it somehow becomes 0 anyways, log a warning and set it to 1.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
