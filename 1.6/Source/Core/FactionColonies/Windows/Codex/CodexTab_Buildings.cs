@@ -724,17 +724,25 @@ namespace FactionColonies
         {
             float x = AccentBarWidth + Margin;
             float textW = width - x - Margin;
+            float bulletX = x + Margin;
+            float bulletW = textW - Margin;
 
-            if (selectedBuilding.applicableBiomes.Count > 0)
+            if (selectedBuilding.applicableBiomes.Count > 0 && CountResolvableBiomes() > 0)
             {
-                List<string> biomeLabels = new List<string>();
+                curY = DrawStatLine(curY, x, textW, "FCCodexBuildingApplicableBiomes".Translate());
+
                 foreach (string biomeName in selectedBuilding.applicableBiomes)
                 {
                     BiomeDef biome = DefDatabase<BiomeDef>.GetNamedSilentFail(biomeName);
-                    biomeLabels.Add(biome is object ? biome.LabelCap.RawText : biomeName);
+                    if (biome is null) continue;
+
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    GUI.color = Color.white;
+                    Widgets.Label(new Rect(bulletX, curY, bulletW, StatRowHeight), "\u2022 " + biome.LabelCap);
+                    ResetText();
+                    curY += StatRowHeight;
                 }
-                string biomes = string.Join(", ", biomeLabels.ToArray());
-                curY = DrawStatLine(curY, x, textW, "FCCodexBuildingApplicableBiomes".Translate(biomes));
             }
 
             if (selectedBuilding.minhilliness != Hilliness.Undefined && selectedBuilding.maxhilliness != Hilliness.Undefined)
@@ -752,6 +760,20 @@ namespace FactionColonies
             }
 
             return curY;
+        }
+
+        /// <summary>
+        /// Counts the number of applicable biomes that have valid BiomeDefs (mod loaded).
+        /// </summary>
+        private int CountResolvableBiomes()
+        {
+            int count = 0;
+            foreach (string biomeName in selectedBuilding.applicableBiomes)
+            {
+                if (DefDatabase<BiomeDef>.GetNamedSilentFail(biomeName) is object)
+                    count++;
+            }
+            return count;
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -856,8 +878,11 @@ namespace FactionColonies
                 if (HasTerrainRestrictions())
                 {
                     int lines = 0;
-                    if (selectedBuilding.applicableBiomes.Count > 0) lines++;
-                    if (selectedBuilding.minhilliness != Hilliness.Undefined || selectedBuilding.maxhilliness != Hilliness.Undefined) lines++;
+                    int resolvableBiomes = CountResolvableBiomes();
+                    if (selectedBuilding.applicableBiomes.Count > 0 && resolvableBiomes > 0)
+                        lines += 1 + resolvableBiomes; // "Biomes:" label + one line per resolvable biome
+                    if (selectedBuilding.minhilliness != Hilliness.Undefined || selectedBuilding.maxhilliness != Hilliness.Undefined)
+                        lines++;
                     total += SectionHeaderHeight + SmallMargin + lines * StatRowHeight + Margin;
                 }
 

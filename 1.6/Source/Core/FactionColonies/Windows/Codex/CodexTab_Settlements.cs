@@ -2,7 +2,6 @@ using FactionColonies.util;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -19,6 +18,7 @@ namespace FactionColonies
     {
         // ── Layout constants ──
         private const float EntryRowHeight = 28f;
+        private const float GroupHeaderHeight = 28f;
         private const float AccentBarWidth = 3f;
         private const float Margin = 8f;
         private const float SectionHeaderHeight = 22f;
@@ -29,11 +29,23 @@ namespace FactionColonies
 
         private static readonly Color DefaultAccent = new Color(0.83f, 0.68f, 0.21f);
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
+        private static readonly Color GroupBgColor = new Color(0.2f, 0.2f, 0.2f, 0.6f);
+        private static readonly Color GroupAccentColor = new Color(0.7f, 0.7f, 0.7f);
 
         // ── Data ──
         private readonly CodexWindow parentWindow;
-        private readonly List<WorldSettlementDef> settlementDefs;
+        private readonly List<LayerGroup> layerGroups;
         private WorldSettlementDef selectedDef;
+
+        // ── Expand/collapse state ──
+        private readonly HashSet<string> expandedGroups = new HashSet<string>();
+
+        private class LayerGroup
+        {
+            public string key;
+            public string label;
+            public List<WorldSettlementDef> settlements;
+        }
 
         // ── Scroll state ──
         private Vector2 leftScroll;
@@ -53,22 +65,77 @@ namespace FactionColonies
         public CodexTab_Settlements(CodexWindow window)
         {
             parentWindow = window;
-            settlementDefs = DefDatabase<WorldSettlementDef>.AllDefsListForReading
+
+            List<WorldSettlementDef> allDefs = DefDatabase<WorldSettlementDef>.AllDefsListForReading
                 .Where(d => d.available)
-                .OrderBy(d => d.LabelCap.RawText)
                 .ToList();
 
-            if (settlementDefs.Count > 0)
-                selectedDef = settlementDefs[0];
+            // Group by planet layer. Settlements with empty planetLayers default to Surface.
+            Dictionary<string, LayerGroup> groupMap = new Dictionary<string, LayerGroup>();
+            PlanetLayerDef surfaceDef = PlanetLayerDefOf.Surface;
+            string surfaceKey = surfaceDef?.defName ?? "Surface";
+
+            foreach (WorldSettlementDef def in allDefs)
+            {
+                List<PlanetLayerDef> layers = def.planetLayers;
+                if (layers is null || layers.Count == 0)
+                    layers = new List<PlanetLayerDef> { surfaceDef };
+
+                foreach (PlanetLayerDef layer in layers)
+                {
+                    if (layer is null) continue;
+                    string key = layer.defName;
+                    LayerGroup group;
+                    if (!groupMap.TryGetValue(key, out group))
+                    {
+                        group = new LayerGroup
+                        {
+                            key = key,
+                            label = layer.LabelCap,
+                            settlements = new List<WorldSettlementDef>()
+                        };
+                        groupMap[key] = group;
+                    }
+                    group.settlements.Add(def);
+                }
+            }
+
+            // Sort: Surface first, then alphabetically by label
+            layerGroups = new List<LayerGroup>();
+            LayerGroup surfaceGroup;
+            if (groupMap.TryGetValue(surfaceKey, out surfaceGroup))
+            {
+                surfaceGroup.settlements = surfaceGroup.settlements.OrderBy(d => d.LabelCap.RawText).ToList();
+                layerGroups.Add(surfaceGroup);
+                groupMap.Remove(surfaceKey);
+            }
+            foreach (LayerGroup g in groupMap.Values.OrderBy(g => g.label))
+            {
+                g.settlements = g.settlements.OrderBy(d => d.LabelCap.RawText).ToList();
+                layerGroups.Add(g);
+            }
+
+            // Expand all groups by default
+            foreach (LayerGroup g in layerGroups)
+                expandedGroups.Add(g.key);
+
+            // Select first available
+            if (layerGroups.Count > 0 && layerGroups[0].settlements.Count > 0)
+                selectedDef = layerGroups[0].settlements[0];
         }
 
         public void SelectDef(WorldSettlementDef def)
         {
-            if (def is object && settlementDefs.Contains(def))
+            if (def is null) return;
+            foreach (LayerGroup g in layerGroups)
             {
-                selectedDef = def;
-                centerScroll = Vector2.zero;
-                rightScroll = Vector2.zero;
+                if (g.settlements.Contains(def))
+                {
+                    selectedDef = def;
+                    centerScroll = Vector2.zero;
+                    rightScroll = Vector2.zero;
+                    return;
+                }
             }
         }
 
@@ -86,49 +153,97 @@ namespace FactionColonies
 
         public void DrawLeftPane(Rect rect)
         {
-            float totalHeight = settlementDefs.Count * EntryRowHeight;
+            float totalHeight = CalculateLeftPaneHeight();
             Rect viewRect = ScrollUtil.BeginScrollView(rect, ref leftScroll, totalHeight);
             float curY = 0f;
 
-            foreach (WorldSettlementDef def in settlementDefs)
+            foreach (LayerGroup group in layerGroups)
             {
-                Rect entryRect = new Rect(0f, curY, viewRect.width, EntryRowHeight);
-                bool isSelected = selectedDef == def;
-                Color accent = GetAccent(def);
+                if (group.settlements.Count == 0) continue;
 
-                if (isSelected)
-                    Widgets.DrawBoxSolid(entryRect, accent * new Color(1f, 1f, 1f, 0.35f));
-                else if (Mouse.IsOver(entryRect))
-                    Widgets.DrawBoxSolid(entryRect, accent * new Color(1f, 1f, 1f, 0.15f));
+                bool isExpanded = expandedGroups.Contains(group.key);
 
-                Color barColor = isSelected ? accent : accent * new Color(1f, 1f, 1f, 0.4f);
-                Widgets.DrawBoxSolid(new Rect(entryRect.x, entryRect.y, AccentBarWidth, entryRect.height), barColor);
+                // Group header
+                Rect groupRect = new Rect(0f, curY, viewRect.width, GroupHeaderHeight);
+                Widgets.DrawBoxSolid(groupRect, GroupBgColor);
+                TexLoad.DrawHorizontalGradient(groupRect, GroupAccentColor * new Color(1f, 1f, 1f, 0.2f));
+                Widgets.DrawBoxSolid(new Rect(0f, curY, AccentBarWidth, GroupHeaderHeight), GroupAccentColor);
 
-                float textX = entryRect.x + AccentBarWidth + Margin;
-                float labelWidth = entryRect.xMax - textX - SmallMargin;
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                GUI.color = isSelected ? Color.white : new Color(0.9f, 0.9f, 0.9f);
-                string fullLabel = def.LabelCap;
-                string truncated = fullLabel.Truncate(labelWidth, truncateCache);
-                Widgets.Label(new Rect(textX, entryRect.y, labelWidth, entryRect.height), truncated);
-                if (truncated != fullLabel)
-                    TooltipHandler.TipRegion(entryRect, fullLabel);
+                GUI.color = GroupAccentColor * new Color(1.3f, 1.3f, 1.3f, 1f);
+                Widgets.Label(new Rect(AccentBarWidth + Margin, curY, viewRect.width - AccentBarWidth - Margin * 2 - 20f, GroupHeaderHeight),
+                    group.label);
+
+                Rect arrowRect = new Rect(groupRect.xMax - 20f - 2f, curY + (GroupHeaderHeight - 20f) * 0.5f, 20f, 20f);
+                GUI.color = Color.white;
+                Widgets.DrawTextureFitted(arrowRect, isExpanded ? TexButton.Collapse : TexButton.Reveal, 1f);
                 ResetText();
 
-                if (Widgets.ButtonInvisible(entryRect))
+                if (Widgets.ButtonInvisible(groupRect))
                 {
-                    selectedDef = def;
-                    centerScroll = Vector2.zero;
-                    rightScroll = Vector2.zero;
-                    SoundDefOf.Click.PlayOneShotOnCamera();
+                    if (isExpanded) expandedGroups.Remove(group.key);
+                    else expandedGroups.Add(group.key);
+                    (isExpanded ? SoundDefOf.TabClose : SoundDefOf.TabOpen).PlayOneShotOnCamera();
                 }
 
-                curY += EntryRowHeight;
+                curY += GroupHeaderHeight + 2f;
+                if (!isExpanded) continue;
+
+                // Settlement entries
+                foreach (WorldSettlementDef def in group.settlements)
+                {
+                    Rect entryRect = new Rect(10f, curY, viewRect.width - 10f, EntryRowHeight);
+                    bool isSelected = selectedDef == def;
+                    Color accent = GetAccent(def);
+
+                    if (isSelected)
+                        Widgets.DrawBoxSolid(entryRect, accent * new Color(1f, 1f, 1f, 0.35f));
+                    else if (Mouse.IsOver(entryRect))
+                        Widgets.DrawBoxSolid(entryRect, accent * new Color(1f, 1f, 1f, 0.15f));
+
+                    Color barColor = isSelected ? accent : accent * new Color(1f, 1f, 1f, 0.4f);
+                    Widgets.DrawBoxSolid(new Rect(entryRect.x, entryRect.y, 2f, entryRect.height), barColor);
+
+                    float textX = entryRect.x + Margin;
+                    float labelWidth = entryRect.xMax - textX - SmallMargin;
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    GUI.color = isSelected ? Color.white : new Color(0.9f, 0.9f, 0.9f);
+                    string fullLabel = def.LabelCap;
+                    string truncated = fullLabel.Truncate(labelWidth, truncateCache);
+                    Widgets.Label(new Rect(textX, entryRect.y, labelWidth, entryRect.height), truncated);
+                    if (truncated != fullLabel)
+                        TooltipHandler.TipRegion(entryRect, fullLabel);
+                    ResetText();
+
+                    if (Widgets.ButtonInvisible(entryRect))
+                    {
+                        selectedDef = def;
+                        centerScroll = Vector2.zero;
+                        rightScroll = Vector2.zero;
+                        SoundDefOf.Click.PlayOneShotOnCamera();
+                    }
+
+                    curY += EntryRowHeight;
+                }
             }
 
             ScrollUtil.EndScrollView();
             ResetText();
+        }
+
+        private float CalculateLeftPaneHeight()
+        {
+            float total = 0f;
+            foreach (LayerGroup group in layerGroups)
+            {
+                if (group.settlements.Count == 0) continue;
+                total += GroupHeaderHeight + 2f;
+                if (expandedGroups.Contains(group.key))
+                    total += group.settlements.Count * EntryRowHeight;
+            }
+            return total;
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -279,16 +394,33 @@ namespace FactionColonies
         {
             float x = AccentBarWidth + Margin;
             float textW = width - x - Margin;
-
+            
             curY = DrawStatLine(curY, x, textW, "FCCodexSettlementWorkers".Translate(
                 selectedDef.workersMaxBase.ToString(), selectedDef.workersMaxMult.ToString()));
 
             if (selectedDef.maxSettlementLevel < 99)
                 curY = DrawStatLine(curY, x, textW, "FCCodexSettlementMaxLevel".Translate(selectedDef.maxSettlementLevel.ToString()));
 
-            // Building slots progression — query the extension at representative levels
-            string slotsProgression = BuildSlotsProgression(selectedDef);
-            curY = DrawStatLine(curY, x, textW, "FCCodexSettlementBuildingSlots".Translate(slotsProgression));
+            // Building slots + workers progression table (3 columns, 75% width, centered)
+            List<int> slotsLevels = new List<int>();
+            List<int> slotsCounts = new List<int>();
+            BuildSlotsProgression(selectedDef, slotsLevels, slotsCounts);
+
+            List<string> workerCounts = slotsLevels
+                .Select(lvl => (selectedDef.workersMaxBase + selectedDef.workersMaxMult * lvl).ToString())
+                .ToList();
+
+            float tableW = textW * 0.75f;
+            float tableX = x + (textW - tableW) * 0.5f;
+            Rect tableRect = new Rect(tableX, curY, tableW, 0f);
+            curY += UIUtil.DrawTable(tableRect,
+                "FCCodexSettlementBuildingSlotsLevel".Translate(),
+                slotsLevels.Select(l => l.ToString()).ToList(),
+                "FCCodexSettlementBuildingSlotsCount".Translate(),
+                slotsCounts.Select(s => s.ToString()).ToList(),
+                "FCCodexSettlementBuildingSlotsWorkers".Translate(),
+                workerCounts);
+            curY += SmallMargin;
 
             if (selectedDef.planetLayers.Count > 0)
             {
@@ -313,21 +445,21 @@ namespace FactionColonies
         }
 
         /// <summary>
-        /// Builds a compact building slot progression string by querying the settlement type extension
-        /// at representative levels and only showing levels where the slot count changes.
+        /// Populates parallel lists of levels and slot counts by querying the settlement type extension
+        /// at representative levels and only recording levels where the slot count changes.
         /// </summary>
-        private static string BuildSlotsProgression(WorldSettlementDef def)
+        private static void BuildSlotsProgression(WorldSettlementDef def, List<int> outLevels, List<int> outSlots)
         {
             SettlementTypeExtension ext = def.GetSettlementTypeExtension();
             if (ext is null)
-                return def.baseUnlockedBuildings.ToString();
+            {
+                outLevels.Add(0);
+                outSlots.Add(def.baseUnlockedBuildings);
+                return;
+            }
 
             int maxLevel = def.maxSettlementLevel < 99 ? def.maxSettlementLevel : 20;
             int maxCount = def.maxBuildingCount;
-
-            // Sample levels 0 through maxLevel
-            List<int> levels = new List<int>();
-            List<int> slots = new List<int>();
             int lastSlots = -1;
 
             for (int lvl = 0; lvl <= maxLevel; lvl++)
@@ -335,29 +467,14 @@ namespace FactionColonies
                 int s = ext.GetBuildingSlots(lvl, maxCount);
                 if (s != lastSlots)
                 {
-                    levels.Add(lvl);
-                    slots.Add(s);
+                    outLevels.Add(lvl);
+                    outSlots.Add(s);
                     lastSlots = s;
-                    // If we've hit max, no need to continue
                     if (s >= maxCount) break;
                 }
             }
-
-            if (levels.Count <= 1)
-                return slots.Count > 0 ? slots[0].ToString() : "0";
-
-            // Format: "3 (lvl 1) → 5 (lvl 5) → 8 (lvl 10)"
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < levels.Count; i++)
-            {
-                if (i > 0) sb.Append(" \u2192 ");
-                sb.Append(slots[i]);
-                sb.Append(" (lvl ");
-                sb.Append(levels[i]);
-                sb.Append(")");
-            }
-            return sb.ToString();
         }
+
 
         private float DrawStatLine(float curY, float x, float width, string text)
         {
@@ -492,11 +609,19 @@ namespace FactionColonies
 
             // Key Stats section
             total += SectionHeaderHeight + SmallMargin;
-            int statLines = 4; // workers, building slots, manual battle, can be raided
+            int statLines = 3; // workers, manual battle, can be raided
             if (selectedDef.maxSettlementLevel < 99) statLines++;
             if (selectedDef.planetLayers.Count > 0) statLines++;
             if (selectedDef.raidTargetingWeight != 1.0f) statLines++;
-            total += statLines * StatRowHeight + Margin;
+            total += statLines * StatRowHeight;
+
+            // Building slots table
+            List<int> slotsLevels = new List<int>();
+            List<int> slotsCounts = new List<int>();
+            BuildSlotsProgression(selectedDef, slotsLevels, slotsCounts);
+            total += UIUtil.TableHeight(slotsLevels.Count) + SmallMargin;
+
+            total += Margin;
 
             // Stat Modifiers section
             TaggedString statDesc = FCStatModifier.GetDescription(selectedDef.statModifiers);

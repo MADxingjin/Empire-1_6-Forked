@@ -82,7 +82,10 @@
 	<FCCodexSettlementStats>Key Stats</FCCodexSettlementStats>
 	<FCCodexSettlementWorkers>Workers: {0} base, +{1} per level</FCCodexSettlementWorkers>
 	<FCCodexSettlementMaxLevel>Max Level: {0}</FCCodexSettlementMaxLevel>
-	<FCCodexSettlementBuildingSlots>Building Slots: {0}</FCCodexSettlementBuildingSlots>
+	<FCCodexSettlementBuildingSlots>Building Slots</FCCodexSettlementBuildingSlots>
+	<FCCodexSettlementBuildingSlotsLevel>Level</FCCodexSettlementBuildingSlotsLevel>
+	<FCCodexSettlementBuildingSlotsCount>Building Slots</FCCodexSettlementBuildingSlotsCount>
+	<FCCodexSettlementBuildingSlotsWorkers>Workers</FCCodexSettlementBuildingSlotsWorkers>
 	<FCCodexSettlementPlanetLayer>Planet Layer: {0}</FCCodexSettlementPlanetLayer>
 	<FCCodexSettlementManualBattle>Manual Battle: {0}</FCCodexSettlementManualBattle>
 	<FCCodexSettlementCanBeRaided>Can Be Raided: {0}</FCCodexSettlementCanBeRaided>
@@ -116,7 +119,7 @@
 	<FCCodexBuildingTechGeneral>General</FCCodexBuildingTechGeneral>
 	<FCCodexBuildingCompatibleSettlements>Compatible Settlements</FCCodexBuildingCompatibleSettlements>
 	<FCCodexBuildingBiomeRestrictions>Terrain Restrictions</FCCodexBuildingBiomeRestrictions>
-	<FCCodexBuildingApplicableBiomes>Biomes: {0}</FCCodexBuildingApplicableBiomes>
+	<FCCodexBuildingApplicableBiomes>Biomes:</FCCodexBuildingApplicableBiomes>
 	<FCCodexBuildingHilliness>Hilliness: {0} to {1}</FCCodexBuildingHilliness>
 	<FCCodexBuildingMaxHilliness>Max Hilliness: {0}</FCCodexBuildingMaxHilliness>
 	<FCCodexBuildingMinHilliness>Min Hilliness: {0}</FCCodexBuildingMinHilliness>
