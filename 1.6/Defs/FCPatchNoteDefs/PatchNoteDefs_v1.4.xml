@@ -141,4 +141,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_10</defName>
+		<label>Military Extensibility Changes</label>
+		<description>A few changes to make military units and squads more extensible.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Alters MilUnitFC, MilSquadFC, and MercenarySquadFC to be subclassable</li>
+		<li>Alters unit and squad saving to account for subclassing</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

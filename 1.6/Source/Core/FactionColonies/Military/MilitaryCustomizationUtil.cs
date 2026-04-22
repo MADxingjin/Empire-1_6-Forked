@@ -81,7 +81,7 @@ namespace FactionColonies
         public void CheckMilitaryUtilForErrors()
         {
             if (blankUnit is null)
-                blankUnit = new MilUnitFC(true);
+                blankUnit = MilTemplateFactory.CreateUnit(true);
             if (squads is null) return;
 
             try { ValidateTemplateUnits(); }
@@ -418,7 +418,7 @@ namespace FactionColonies
                 LogUtil.Warning($"Attempted to create a mercenary squad for settlement {settlement.Name} with NULL MilitaryComp. Skipping");
                 return null;
             }
-            MercenarySquadFC squad = new MercenarySquadFC();
+            MercenarySquadFC squad = MilTemplateFactory.CreateMercSquad();
             squad.InitiateSquad();
             mercenarySquads.Add(squad);
             if (!isExtra)

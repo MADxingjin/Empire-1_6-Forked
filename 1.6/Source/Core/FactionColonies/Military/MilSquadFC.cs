@@ -40,7 +40,7 @@ namespace FactionColonies
             }
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_Values.Look(ref name, "name");
@@ -71,7 +71,7 @@ namespace FactionColonies
             return equipmentTotalCost;
         }
 
-        public int UpdateEquipmentTotalCost()
+        public virtual int UpdateEquipmentTotalCost()
         {
             double totalCost = 0;
             foreach (MilUnitFC unit in units)
@@ -137,6 +137,22 @@ namespace FactionColonies
         public string GetUniqueLoadID()
         {
             return $"MilSquadFC_{loadID}";
+        }
+
+        // --- Subclass Hooks ---
+
+        /* Returns validation errors that should block mustering or flag issues in the UI.
+           Base implementation is a no-op; subclasses add their own rules. */
+        public virtual List<string> GetValidationErrors() => new List<string>();
+
+        /* Creates the appropriate SavedSquadFC (or subclass) snapshot of this squad.
+           Subclasses override to return their own SavedSquadFC subtype carrying their extra fields. */
+        public virtual SavedSquadFC ToSavedSquad() => new SavedSquadFC(this);
+
+        /* Called after base fields have been copied into a new instance during import.
+           Subclasses override to pull their extra fields out of the SavedSquadFC subclass. */
+        public virtual void LoadFromSaved(SavedSquadFC saved)
+        {
         }
 
     }

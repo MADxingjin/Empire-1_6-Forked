@@ -136,7 +136,7 @@ namespace FactionColonies
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID");
             Scribe_Values.Look(ref name, "name");
@@ -220,7 +220,7 @@ namespace FactionColonies
             RefreshPreviewEquipment();
         }
 
-        private void RefreshPreviewEquipment()
+        protected virtual void RefreshPreviewEquipment()
         {
             if (previewPawn == null) return;
 
@@ -308,7 +308,7 @@ namespace FactionColonies
             MilSquadFC.UpdateEquipmentTotalCostOfSquadsContaining(this);
         }
 
-        public void ClearAllEquipment()
+        public virtual void ClearAllEquipment()
         {
             weapons.Clear();
             apparel.Clear();
@@ -382,7 +382,7 @@ namespace FactionColonies
 
         // --- Cost ---
 
-        private bool costDirty = true;
+        protected bool costDirty = true;
 
         public double getTotalCost
         {
@@ -397,7 +397,7 @@ namespace FactionColonies
             }
         }
 
-        public void UpdateEquipmentTotalCost()
+        public virtual void UpdateEquipmentTotalCost()
         {
             if (isBlank)
             {
@@ -433,6 +433,18 @@ namespace FactionColonies
                 totalCost += Math.Floor(animal.race.BaseMarketValue * FCSettings.militaryAnimalCostMultiplier);
 
             equipmentTotalCost = Math.Ceiling(totalCost);
+        }
+
+        // --- Subclass-Aware Export/Import ---
+
+        /* Creates the appropriate SavedUnitFC (or subclass) snapshot of this unit.
+           Subclasses override to return their own SavedUnitFC subtype carrying their extra fields. */
+        public virtual SavedUnitFC ToSavedUnit() => new SavedUnitFC(this);
+
+        /* Called after base fields have been copied into a new instance during import.
+           Subclasses override to pull their extra fields out of the SavedUnitFC subclass. */
+        public virtual void LoadFromSaved(SavedUnitFC saved)
+        {
         }
 
         // --- Unit Management ---

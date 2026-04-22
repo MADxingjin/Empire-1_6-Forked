@@ -33,7 +33,7 @@ namespace FactionColonies
         public XenotypeDef xenotype1;
         public List<Gene> GeneList;
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_Values.Look(ref name, "name");
@@ -535,7 +535,7 @@ namespace FactionColonies
             }
         }
 
-        public void OutfitSquad(MilSquadFC outfit)
+        public virtual void OutfitSquad(MilSquadFC outfit)
         {
             FactionFC faction = FactionCache.FactionComp;
             int count = 0;
@@ -648,7 +648,7 @@ namespace FactionColonies
         }
 
 
-        public void StripPawn(Mercenary merc)
+        public virtual void StripPawn(Mercenary merc)
         {
             if (merc?.pawn == null) return;
 
@@ -665,7 +665,7 @@ namespace FactionColonies
             CombatExtendedUtil.UpdateInventory(merc.pawn);
         }
 
-        public void EquipPawn(Mercenary merc, MilUnitFC loadout)
+        public virtual void EquipPawn(Mercenary merc, MilUnitFC loadout)
         {
             if (merc?.pawn == null || loadout == null) return;
 
@@ -677,7 +677,7 @@ namespace FactionColonies
                     Thing thing = apparelDef.CreateThing();
                     if (thing is Apparel ap)
                     {
-                        Color resolved = factionComp != null ? factionComp.ResolveApparelColor(apparelDef) : Color.white;
+                        Color resolved = factionComp?.ResolveApparelColor(apparelDef) ?? Color.white;
                         thing.SetColor(resolved, reportFailure: false);
                         merc.pawn.apparel.Wear(ap);
                     }

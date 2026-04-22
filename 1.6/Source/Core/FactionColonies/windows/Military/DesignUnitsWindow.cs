@@ -173,10 +173,8 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(createBtn, "FCCreateNewUnit".Translate()))
             {
-                MilUnitFC newUnit = new MilUnitFC(false)
-                {
-                    name = $"New Unit {util.units.Count + 1}"
-                };
+                MilUnitFC newUnit = MilTemplateFactory.CreateUnit(false);
+                newUnit.name = $"New Unit {util.units.Count + 1}";
                 selectedText = newUnit.name;
                 selectedUnit = newUnit;
                 util.units.Add(newUnit);
@@ -209,7 +207,7 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(exportBtn, "FCExportUnitButton".Translate()))
                 {
-                    FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
+                    FactionColoniesMilitary.SaveUnit(selectedUnit.ToSavedUnit());
                     Messages.Message("FCExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }

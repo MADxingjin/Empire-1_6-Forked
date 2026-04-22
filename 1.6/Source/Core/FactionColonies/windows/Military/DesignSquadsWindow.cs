@@ -36,9 +36,9 @@ namespace FactionColonies
             this.util = util;
             selectedText = "FCSelectASquad".Translate();
 
-            if (util.blankUnit == null)
+            if (util.blankUnit is null)
             {
-                util.blankUnit = new MilUnitFC(true);
+                util.blankUnit = MilTemplateFactory.CreateUnit(true);
             }
 
             util.CheckMilitaryUtilForErrors();
@@ -175,15 +175,13 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(createBtn, "FCCreateNewSquad".Translate()))
             {
-                if (util.squads == null)
+                if (util.squads is null)
                 {
                     util.ResetSquads();
                 }
 
-                MilSquadFC newSquad = new MilSquadFC(true)
-                {
-                    name = $"New Squad {(util.squads.Count + 1).ToString()}"
-                };
+                MilSquadFC newSquad = MilTemplateFactory.CreateSquad(true);
+                newSquad.name = $"New Squad {(util.squads.Count + 1).ToString()}";
                 selectedText = newSquad.name;
                 selectedSquad = newSquad;
                 selectedSquad.NewSquad();
@@ -217,7 +215,7 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(exportBtn, "FCExportSquadButton".Translate()))
                 {
-                    FactionColoniesMilitary.SaveSquad(new SavedSquadFC(selectedSquad));
+                    FactionColoniesMilitary.SaveSquad(selectedSquad.ToSavedSquad());
                     Messages.Message("FCExportSquad".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
