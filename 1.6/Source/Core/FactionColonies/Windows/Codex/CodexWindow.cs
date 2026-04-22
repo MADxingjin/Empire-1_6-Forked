@@ -42,6 +42,7 @@ namespace FactionColonies
             {
                 new CodexTab_Info(),
                 new CodexTab_Settlements(this),
+                new CodexTab_Resources(this),
                 new CodexTab_Buildings(this)
             };
             tabLabels = tabs.Select(t => t.TabLabel).ToList();
@@ -66,6 +67,25 @@ namespace FactionColonies
                 tabs[activeTabIndex].OnTabSelected();
             }
             settTab.SelectDef(def);
+        }
+
+        /// <summary>
+        /// Switches to the Resources tab and selects the given resource type.
+        /// Used for cross-tab navigation.
+        /// </summary>
+        public void SelectResource(ResourceTypeDef def)
+        {
+            CodexTab_Resources resTab = tabs.OfType<CodexTab_Resources>().FirstOrDefault();
+            if (resTab is null) return;
+
+            int tabIndex = tabs.IndexOf(resTab);
+            if (tabIndex >= 0 && tabIndex != activeTabIndex)
+            {
+                tabs[activeTabIndex].OnTabDeselected();
+                activeTabIndex = tabIndex;
+                tabs[activeTabIndex].OnTabSelected();
+            }
+            resTab.SelectDef(def);
         }
 
         /// <summary>

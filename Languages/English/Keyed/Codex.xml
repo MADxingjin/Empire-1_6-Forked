@@ -102,6 +102,26 @@
 	<FCCodexYes>Yes</FCCodexYes>
 	<FCCodexNo>No</FCCodexNo>
 
+	<!-- Resources Tab -->
+	<FCCodexTabResources>Resources</FCCodexTabResources>
+	<FCCodexSelectResource>Select a resource from the left to view details.</FCCodexSelectResource>
+	<FCCodexResourceKeyInfo>Key Info</FCCodexResourceKeyInfo>
+	<FCCodexResourcePoolResource>Pool Resource</FCCodexResourcePoolResource>
+	<FCCodexResourceTitheable>Titheable: {0}</FCCodexResourceTitheable>
+	<FCCodexResourceDefaultResource>Default Resource: {0}</FCCodexResourceDefaultResource>
+	<FCCodexResourceMinTechLevel>Min Tech Level: {0}</FCCodexResourceMinTechLevel>
+	<FCCodexResourceMaxTechLevel>Max Tech Level: {0}</FCCodexResourceMaxTechLevel>
+	<FCCodexResourceDefenseWeight>Defense Weight: {0}</FCCodexResourceDefenseWeight>
+	<FCCodexResourceBiomeProduction>Biome Production</FCCodexResourceBiomeProduction>
+	<FCCodexResourceBiomeName>Biome</FCCodexResourceBiomeName>
+	<FCCodexResourceBiomeAdditive>Additive</FCCodexResourceBiomeAdditive>
+	<FCCodexResourceBiomeMultiplier>Multiplier</FCCodexResourceBiomeMultiplier>
+	<FCCodexResourceBiomeTotal>Total</FCCodexResourceBiomeTotal>
+	<FCCodexResourceTitheItems>Tithe Items ({0})</FCCodexResourceTitheItems>
+	<FCCodexResourceSearchTithe>Search tithe items...</FCCodexResourceSearchTithe>
+	<FCCodexResourceCompatibleSettlements>Compatible Settlements</FCCodexResourceCompatibleSettlements>
+	<FCCodexResourceRequiresResearch>Requires: {0}</FCCodexResourceRequiresResearch>
+
 	<!-- Buildings Tab -->
 	<FCCodexTabBuildings>Buildings</FCCodexTabBuildings>
 	<FCCodexSelectBuilding>Select a building from the left to view details.</FCCodexSelectBuilding>
