@@ -127,4 +127,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_9</defName>
+		<label>Codex Update</label>
+		<description>Adds a few more entries to the Empire Codex.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Adds Codex entries for Resource Production, Production Snapshots, Resource Tithing, Worker Overmax, Difficulty Settings, Attack Frequency, Battle Simulation, Battle Simulation Modifiers, and Military Cooldown</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
