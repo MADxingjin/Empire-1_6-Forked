@@ -429,11 +429,21 @@ namespace FactionColonies
 
                 double additive = double.IsNaN(ra.additive) ? 0 : ra.additive;
                 double multiplier = ra.multiplier;
+                double total = additive * multiplier;
 
-                biomeNames.Add(biomeDef.LabelCap);
-                additives.Add(additive.ToString("F2"));
-                multipliers.Add(multiplier.ToString("F2"));
-                totals.Add((additive * multiplier).ToString("F2"));
+                string additiveS = TextUtil.ColorizeBonus(Math.Round(additive, 2), 1.0);
+                string multiplierS = TextUtil.ColorizeBonus(Math.Round(multiplier, 2), 1.0);
+                string finalS = TextUtil.ColorizeBonus(Math.Round(total, 2), 1.0);
+                string biomeS = biomeDef.LabelCap;
+                if (total > 1)
+                    biomeS = biomeS.Colorize(Color.green);
+                else if (total < 1)
+                    biomeS = biomeS.Colorize(Color.red);
+
+                biomeNames.Add(biomeS);
+                additives.Add(additiveS);
+                multipliers.Add(multiplierS);
+                totals.Add(finalS);
             }
 
             if (biomeNames.Count > 0)

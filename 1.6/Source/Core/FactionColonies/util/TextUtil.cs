@@ -95,6 +95,21 @@ namespace FactionColonies
             }
         }
 
+        public static string ColorizeBonus(double bonus, double compare, bool invert = false)
+        {
+            string result = Math.Round(bonus, 2).ToString();
+            if ((!invert && bonus > compare) || (invert && bonus < compare))
+            {
+                return result.Colorize(Color.green);
+            }
+            if ((!invert && bonus < compare) || (invert && bonus > compare))
+            {
+                return result.Colorize(Color.red);
+            }
+
+            return result;
+        }
+
         public static string GetTownTitle(WorldSettlementFC settlement)
         {
             int level = settlement.settlementLevel <= 3 ? 1
