@@ -82,6 +82,7 @@ namespace FactionColonies
 
         /* Timing & Scheduling */
         public int taxTimeDue = Find.TickManager.TicksGame;
+        public int lastTaxTickTime = -1;
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
         public int militaryTimeDue;
@@ -211,6 +212,7 @@ namespace FactionColonies
         public List<string> enabledCaravanTypes = new List<string>();
 
         /* Leveling */
+        public const int MaxFactionLevel = 5;
         public int factionLevel = 1;
         public float factionXPCurrent = 0;
         public float factionXPGoal = 100;
@@ -289,6 +291,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref _profit, "profit");
 
             Scribe_Values.Look(ref taxTimeDue, "taxTimeDue");
+            Scribe_Values.Look(ref lastTaxTickTime, "lastTaxTickTime", -1);
             Scribe_Values.Look(ref timeStart, "timeStart", -1);
             Scribe_Values.Look(ref uiTimeUpdate, "uiTimeUpdate");
             Scribe_Values.Look(ref militaryTimeDue, "militaryTimeDue", -1);
@@ -636,6 +639,16 @@ namespace FactionColonies
         {
             if (faction is null || Find.TickManager.TicksGame < taxTimeDue)
                 return;
+
+            int now = Find.TickManager.TicksGame;
+            int minInterval = Math.Max(GenDate.TicksPerDay, FCSettings.timeBetweenTaxes / 2);
+            if (lastTaxTickTime > 0 && now - lastTaxTickTime < minInterval)
+            {
+                LogUtil.Error($"TaxTick guard: AddTax would fire {now - lastTaxTickTime} ticks after last call (min {minInterval}). settlements={settlements.Count}, taxTimeDue={taxTimeDue}, timeBetweenTaxes={FCSettings.timeBetweenTaxes}. Skipping and rescheduling.");
+                taxTimeDue = now + FCSettings.timeBetweenTaxes;
+                return;
+            }
+            lastTaxTickTime = now;
 
             AddTax();
             taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
@@ -1604,13 +1617,9 @@ namespace FactionColonies
 
         #region Tax & Billing
 
-        public void SetStartTime()
-        {
-            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
-        }
-
         public void AddTax()
         {
+            LogUtil.Message($"AddTax at tick {Find.TickManager.TicksGame}: settlements={settlements.Count}, timeBetweenTaxes={FCSettings.timeBetweenTaxes}");
             TaxTickRegistry.InvokePreTaxResolution(this);
             foreach (ResourcePool pool in resourcePools)
             {
@@ -1967,17 +1976,29 @@ namespace FactionColonies
 
         public bool AddExperienceToFactionLevel(float xp)
         {
+            if (factionLevel >= MaxFactionLevel)
+            {
+                factionXPCurrent = factionXPGoal;
+                return false;
+            }
+
             bool leveled = false;
             factionXPCurrent += xp;
 
-            while (factionXPCurrent >= factionXPGoal)
+            while (factionXPCurrent >= factionXPGoal && factionLevel < MaxFactionLevel)
             {
                 factionXPCurrent -= factionXPGoal;
                 factionLevel += 1;
+                LogUtil.Message($"Faction leveled up to {factionLevel} at tick {Find.TickManager.TicksGame} (gained {xp} XP)");
                 Find.LetterStack.ReceiveLetter("FCFactionLevelUp".Translate(),
                     "FCFactionLevelUpDesc".Translate(name, factionLevel), LetterDefOf.PositiveEvent);
                 leveled = true;
                 factionXPGoal = UpdateFactionLevelGoalXP(factionLevel);
+            }
+
+            if (factionLevel >= MaxFactionLevel)
+            {
+                factionXPCurrent = factionXPGoal;
             }
 
             return leveled;
