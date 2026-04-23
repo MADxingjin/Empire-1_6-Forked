@@ -12,9 +12,9 @@ namespace FactionColonies
     {
         public override MilitaryWindowSlot Slot => MilitaryWindowSlot.Units;
 
-        private readonly MilitaryCustomizationUtil util;
-        private readonly FactionFC faction;
-        private MilUnitFC selectedUnit;
+        protected readonly MilitaryCustomizationUtil util;
+        protected readonly FactionFC faction;
+        protected MilUnitFC selectedUnit;
 
         private Vector2 unitListScrollPos;
         private string unitSearchTerm = "";

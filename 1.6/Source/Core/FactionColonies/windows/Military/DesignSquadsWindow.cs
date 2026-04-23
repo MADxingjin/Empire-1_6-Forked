@@ -13,8 +13,8 @@ namespace FactionColonies
         public override MilitaryWindowSlot Slot => MilitaryWindowSlot.Squads;
 
         private WorldSettlementFC settlementPointReference;
-        private readonly MilitaryCustomizationUtil util;
-        private MilSquadFC selectedSquad;
+        protected readonly MilitaryCustomizationUtil util;
+        protected MilSquadFC selectedSquad;
 
         private Vector2 squadListScrollPos;
         private string squadSearchTerm = "";
