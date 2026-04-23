@@ -142,7 +142,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref initialDefenderCount, "initialDefenderCount");
             Scribe_Values.Look(ref battleMapInitialized, "battleMapInitialized");
 
-            // Backward compat: migrate old singleton attackerForce/defenderForce into activeWaves
+            /* Backward compat: migrate old singleton attackerForce/defenderForce into activeWaves.
+             * Permanent — can't be removed without a breaking save version bump, since old saves
+             * in circulation would lose mid-combat state on upgrade. */
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 MilitaryForce legacyAttackerForce = null;
@@ -163,12 +165,17 @@ namespace FactionColonies
             }
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                if (activeWaves is null) activeWaves = new List<DefenseWave>();
-                if (attackers is null) attackers = new List<Pawn>();
-                if (defenders is null) defenders = new List<Pawn>();
-                if (draftedNPCs is null) draftedNPCs = new List<Pawn>();
-            }
+                EnsureCollectionsNonNull();
+        }
+
+        /* LookMode.Reference collections silently drop unresolved entries and may leave
+         * the list null if the XML element was absent (e.g. pre-field saves). */
+        private void EnsureCollectionsNonNull()
+        {
+            if (activeWaves is null) activeWaves = new List<DefenseWave>();
+            if (attackers is null) attackers = new List<Pawn>();
+            if (defenders is null) defenders = new List<Pawn>();
+            if (draftedNPCs is null) draftedNPCs = new List<Pawn>();
         }
 
         public override void Initialize(WorldObjectCompProperties props_l)

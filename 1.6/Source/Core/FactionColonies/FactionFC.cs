@@ -379,15 +379,7 @@ namespace FactionColonies
 
             Scribe_Collections.Look(ref edicts, "edicts", LookMode.Value, LookMode.Deep);
             if (edicts == null) edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                pendingEdictActivations.Clear();
-                foreach (var kvp in edicts)
-                {
-                    if (kvp.Value != null && !kvp.Value.IsFullyActive)
-                        pendingEdictActivations.Add(kvp.Key);
-                }
-            }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) PostLoadInit();
 
             //Research Trading
             Scribe_Values.Look(ref tradedAmount, "tradedAmount");
@@ -409,61 +401,32 @@ namespace FactionColonies
             base.FinalizeInit(fromLoad);
             LogUtil.MessageForce($"Finalizing init of FactionFC. fromload: {fromLoad}");
 
-            // Scrub null entries that can arise when LookMode.Reference fails to resolve
-            // (e.g., another mod destroyed a settlement or it failed to deserialize).
-            ScrubNullSettlements("FinalizeInit");
+            /* Shared init. Runs on both new-game and load paths; all idempotent. */
+            RebuildFactionResources();
+            EnsureCaravanTypesPopulated();
+            EnsureResourcePools();
+            LifecycleRegistry.Register(this);
 
-            // Apply saved tech level to FactionDef early — must happen before anything
-            // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
-            // of going through RecomputeTechLevel, which has side effects (xenotypeFilter
-            // FinalizeInit) that depend on deferred initialization.
-            if (fromLoad && _techLevel > TechLevel.Undefined)
+            if (fromLoad)
             {
-                Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
-                if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
-                {
-                    UpdateFactionDef(_techLevel, ref playerColonyfaction);
-                }
+                /* Load path. Scribe.mode == LoadingVars here; cross-refs NOT resolved,
+                 * maps NOT loaded. Filter finalize is deferred to firstTick because
+                 * xenotypeFilter.FinalizeInit reaches into CustomXenotypesForReading,
+                 * which calls Scribe.ForceStop if Scribe is still active. And if the
+                 * Scribe is ForceStopped during load, then everything breaks.
+                 * And I do mean everything. The game straight-up crashes. */
+                ApplySavedTechLevelToFactionDef();
             }
-
-            // Initialize caravan types with defaults if empty (new game or old save)
-            if (enabledCaravanTypes.NullOrEmpty())
+            else
             {
-                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
-                InitEnabledCaravanTypes();
+                /* New-world path. Scribe is Inactive, disk I/O is legal. */
+                EnsureFiltersInitialized();
             }
+        }
 
-            // Initialize animal filter
-            if (animalFilter is null)
-            {
-                LogUtil.Warning("Null animalFilter detected - Creating new one");
-                animalFilter = new AnimalFilter();
-                if (Scribe.mode == LoadSaveMode.Inactive)
-                {
-                    animalFilter.FinalizeInit();
-                }
-            }
-
-            // Initialize xenotype filter
-            // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
-            //   Only finalize it if it doesn't even exist
-            if (xenotypeFilter is null)
-            {
-                LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
-                xenotypeFilter = new XenotypeFilter(this);
-                // Do NOT call FinalizeInit here if the Scribe is still loading.
-                // CustomXenotypesForReading reads files from disk via InitLoadingMetaHeaderOnly,
-                // which calls Scribe.ForceStop() when mode != Inactive, which destroys the
-                // active save-load pipeline and nulls all cross-references.
-                // Man, who thought adding custom xenotype support would be so fraught with peril?
-                if (Scribe.mode == LoadSaveMode.Inactive)
-                {
-                    xenotypeFilter.FinalizeInit(this);
-                }
-                // Otherwise deferred to firstTick (see WorldComponentTick)
-            }
-
-            // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
+        /* Rebuilt on each game init from DefDatabase, ensures defs stay in sync across load. */
+        private void RebuildFactionResources()
+        {
             factionResources.Clear();
             foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
             {
@@ -471,10 +434,94 @@ namespace FactionColonies
                 LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
             factionResources.Sort(ResourceDisplay.SortForUI);
+        }
 
-            EnsureResourcePools();
+        private void EnsureCaravanTypesPopulated()
+        {
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
+                InitEnabledCaravanTypes();
+            }
+        }
 
-            LifecycleRegistry.Register(this);
+        /* Apply saved tech level to FactionDef early — must happen before anything
+         * reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
+         * of going through RecomputeTechLevel, which has side effects (xenotypeFilter
+         * FinalizeInit) that depend on deferred initialization. */
+        private void ApplySavedTechLevelToFactionDef()
+        {
+            if (_techLevel <= TechLevel.Undefined) return;
+            Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
+            if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
+            {
+                UpdateFactionDef(_techLevel, ref playerColonyfaction);
+            }
+        }
+
+        /* Ensures both filters exist and are initialized. Idempotent (safe to call
+         * multiple times). Called from FinalizeInit on the new-world path and from
+         * FirstTick on the load path.
+         *
+         * MUST be called with Scribe.mode == Inactive. xenotypeFilter.FinalizeInit
+         * reads custom xenotypes from disk via InitLoadingMetaHeaderOnly, which calls
+         * Scribe.ForceStop() when Scribe is active, destroying the active save-load
+         * pipeline and nulling all cross-references.
+         * In other words, the game crashes and burns. */
+        private void EnsureFiltersInitialized()
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive)
+            {
+                LogUtil.Error($"EnsureFiltersInitialized called with Scribe.mode={Scribe.mode}. Skipping to avoid Scribe.ForceStop trap.");
+                return;
+            }
+
+            bool animalWasInitialized = false;
+            if (animalFilter is null)
+            {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
+                animalFilter = new AnimalFilter();
+            }
+            if (!animalFilter.IsInitialized)
+            {
+                animalFilter.FinalizeInit();
+                animalWasInitialized = true;
+            }
+
+            if (xenotypeFilter is null)
+            {
+                LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
+                xenotypeFilter = new XenotypeFilter(this);
+            }
+            /* Force xenotype re-finalize if animal filter was just initialized; xeno
+             * filter depends on animal filter state during its own finalization. */
+            if (!xenotypeFilter.IsInitialized || animalWasInitialized)
+            {
+                xenotypeFilter.FinalizeInit(this);
+            }
+        }
+
+        /* Cross-ref-dependent post-load work. Invoked from ExposeData's PostLoadInit
+         * branch — by this point settlements/edicts/events cross-refs are all resolved. */
+        private void PostLoadInit()
+        {
+            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+            {
+                LogUtil.Error($"FactionFC.PostLoadInit called during Scribe mode {Scribe.mode}");
+                return;
+            }
+            ScrubNullSettlements("FactionFC.PostLoadInit");
+            RebuildPendingEdictActivations();
+        }
+
+        private void RebuildPendingEdictActivations()
+        {
+            pendingEdictActivations.Clear();
+            foreach (var kvp in edicts)
+            {
+                if (kvp.Value != null && !kvp.Value.IsFullyActive)
+                    pendingEdictActivations.Add(kvp.Key);
+            }
         }
 
         #endregion
@@ -491,32 +538,14 @@ namespace FactionColonies
 
         private void FirstTick(Faction faction)
         {
-            bool reinitXenoFilter = false;
-            if (animalFilter is null)
-            {
-                animalFilter = new AnimalFilter();
-            }
-            if (!animalFilter.IsInitialized)
-            {
-                animalFilter.FinalizeInit();
-                reinitXenoFilter = true;
-            }
+            /* Scribe.mode is Inactive by firstTick — filter FinalizeInit is safe.
+             * On the load path, this is where deferred filter init actually happens.
+             * On the new-world path, FinalizeInit already initialized them; this is a no-op. */
+            EnsureFiltersInitialized();
 
-            // Finalize xenotypeFilter if it was deferred from FinalizeInit
-            // (happens when Empire is added to an existing save)
-            if (xenotypeFilter is null)
-            {
-                LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
-                xenotypeFilter = new XenotypeFilter(this);
-            }
-            if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
-            {
-                xenotypeFilter.FinalizeInit(this);
-            }
-
-            // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
-            // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
-            // after World.FinalizeInit already registered us during world generation)
+            /* Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
+             * (happens during Game.InitNewGame; ClearCaches postfix clears the registry
+             * after World.FinalizeInit already registered us during world generation). */
             LifecycleRegistry.Register(this);
 
             roadBuilder.FirstTick();

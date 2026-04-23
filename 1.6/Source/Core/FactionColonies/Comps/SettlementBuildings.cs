@@ -650,35 +650,47 @@ namespace FactionColonies
         public override void PostExposeData()
         {
             base.PostExposeData();
+
+            /* Before saving: prune orphaned comps so we don't write garbage. */
             if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                /* Look through the comps and see if any of them need destroying.
-                 * They *should* be destroyed when the associated building is deconstructed. But just in case one gets orphaned somehow,
-                 *   we'll destroy it here. Don't want any memory leaks, after all. */
-                foreach (SettlementBuildingComp comp in settlementBuildingComps)
-                {
-                    comp.RefreshBuildingSlotsWithErrorDetection();
-                }
-                settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
-                ReinitBuildings();
-            }
+                PrepareCompsForSave();
+
             Scribe_Collections.Look(ref buildings, "buildings", LookMode.Deep);
             Scribe_Collections.Look(ref settlementBuildingComps, "settlementBuildingComps", LookMode.Deep);
+
+            /* After load: validate comps and recover any missing ones. Stays in
+             * PostExposeData (not ISettlementPostLoadInit) because WorldSettlementFC.PostLoadInit
+             * calls BuildingsComp.ReapplyBuildingStatModifiers — the comp list must be
+             * validated before that runs. PostExposeData is called as part of base.ExposeData()
+             * inside WorldSettlementFC.ExposeData, which runs before WorldSettlementFC.PostLoadInit. */
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
+                RecoverCompsOnLoad();
+        }
+
+        /* Orphan cleanup before save. Comps *should* be destroyed when their building is
+         * deconstructed, but defensively drop any dead ones so they aren't persisted. */
+        private void PrepareCompsForSave()
+        {
+            foreach (SettlementBuildingComp comp in settlementBuildingComps)
             {
-                if (settlementBuildingComps is null)
-                {
-                    settlementBuildingComps = new List<SettlementBuildingComp>();
-                }
-                settlementBuildingComps.RemoveAll(c => c == null);
-                foreach (SettlementBuildingComp comp in settlementBuildingComps)
-                {
-                    comp.RefreshBuildingSlotsWithErrorDetection();
-                }
-                settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
-                RecoverMissingBuildingComps();
-                ReinitBuildings();
+                comp.RefreshBuildingSlotsWithErrorDetection();
             }
+            settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
+            ReinitBuildings();
+        }
+
+        private void RecoverCompsOnLoad()
+        {
+            if (settlementBuildingComps is null)
+                settlementBuildingComps = new List<SettlementBuildingComp>();
+            settlementBuildingComps.RemoveAll(c => c == null);
+            foreach (SettlementBuildingComp comp in settlementBuildingComps)
+            {
+                comp.RefreshBuildingSlotsWithErrorDetection();
+            }
+            settlementBuildingComps.RemoveAll(comp => comp.CanDestroy);
+            RecoverMissingBuildingComps();
+            ReinitBuildings();
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
