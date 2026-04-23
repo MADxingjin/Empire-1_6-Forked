@@ -31,6 +31,7 @@ namespace FactionColonies
         private static readonly Color SectionBgColor = new Color(0.15f, 0.15f, 0.15f, 0.4f);
         private static readonly Color GroupBgColor = new Color(0.2f, 0.2f, 0.2f, 0.6f);
         private static readonly Color GroupAccentColor = new Color(0.7f, 0.7f, 0.7f);
+        private static readonly Color HighlightColor = new Color(0.4f, 0.6f, 0.9f);
 
         /* Data */
         private readonly CodexWindow parentWindow;
@@ -490,12 +491,15 @@ namespace FactionColonies
             {
                 if (ra.resourceDef is null) continue;
 
+                Rect rowRect = new Rect(x, curY, width - x - Margin, ResourceRowHeight);
+                bool isHover = Mouse.IsOver(rowRect);
+
                 Rect iconRect = new Rect(x, curY + (ResourceRowHeight - 20f) * 0.5f, 20f, 20f);
                 GUI.DrawTexture(iconRect, ra.resourceDef.Icon);
 
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                GUI.color = Color.white;
+                GUI.color = isHover ? HighlightColor : Color.white;
 
                 string label = ra.resourceDef.LabelCap;
                 if (ra.additive != 0 && !double.IsNaN(ra.additive))
@@ -503,8 +507,17 @@ namespace FactionColonies
                 if (ra.multiplier != 1)
                     label += " (\u00d7" + ra.multiplier.ToString("F1") + ")";
 
-                Widgets.Label(new Rect(iconRect.xMax + SmallMargin, curY, width - iconRect.xMax - SmallMargin - Margin, ResourceRowHeight), label);
+                Widgets.Label(new Rect(iconRect.xMax + SmallMargin, curY, rowRect.xMax - iconRect.xMax - SmallMargin, ResourceRowHeight), label);
                 ResetText();
+
+                if (isHover)
+                    Widgets.DrawHighlight(rowRect);
+
+                if (Widgets.ButtonInvisible(rowRect))
+                {
+                    parentWindow.SelectResource(ra.resourceDef);
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                }
 
                 curY += ResourceRowHeight;
             }

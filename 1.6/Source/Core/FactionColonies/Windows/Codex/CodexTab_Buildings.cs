@@ -69,6 +69,7 @@ namespace FactionColonies
 
         /* Truncation cache */
         private readonly Dictionary<string, string> truncateCache = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> truncateCacheRight = new Dictionary<string, string>();
 
         /* Filtered building cache */
         private string lastAppliedSearch = "";
@@ -108,11 +109,25 @@ namespace FactionColonies
                 expandedGroups.Add(g.Key);
             }
 
-            // Build upgrade root reverse lookup
-            foreach (var kvp in FactionCache.UpgradeTrees)
+            // Build direct-parent map (child -> its immediate parent in the upgrade tree)
+            Dictionary<BuildingFCDef, BuildingFCDef> directParent = new Dictionary<BuildingFCDef, BuildingFCDef>();
+            foreach (BuildingFCDef b in DefDatabase<BuildingFCDef>.AllDefsListForReading)
             {
-                foreach (BuildingUpgradeEntry entry in kvp.Value)
-                    upgradeRootMap[entry.def] = kvp.Key;
+                if (b.upgrades is null) continue;
+                foreach (BuildingFCDef child in b.upgrades)
+                    directParent[child] = b;
+            }
+
+            // Walk up from each child to the TRUE root so the right-pane upgrade tree
+            // always renders from the family root, regardless of which node is selected.
+            foreach (BuildingFCDef child in directParent.Keys)
+            {
+                BuildingFCDef current = child;
+                BuildingFCDef parent;
+                int safety = 100;
+                while (directParent.TryGetValue(current, out parent) && safety-- > 0)
+                    current = parent;
+                upgradeRootMap[child] = current;
             }
 
             if (allTechGroups.Count > 0 && allTechGroups[0].buildings.Count > 0)
@@ -174,22 +189,16 @@ namespace FactionColonies
         /// </summary>
         private bool TryGetFullUpgradeTree(BuildingFCDef building, out BuildingFCDef root, out List<BuildingUpgradeEntry> tree)
         {
-            // Check if this building is itself a root
-            if (FactionCache.UpgradeTrees.TryGetValue(building, out tree))
-            {
-                root = building;
-                return true;
-            }
+            // upgradeRootMap points to the TRUE root for any descendant; buildings absent from it
+            // are either roots themselves or standalone (no upgrade family).
+            BuildingFCDef actualRoot;
+            if (!upgradeRootMap.TryGetValue(building, out actualRoot))
+                actualRoot = building;
 
-            // Check if this building is somewhere in an upgrade tree
-            BuildingFCDef foundRoot;
-            if (upgradeRootMap.TryGetValue(building, out foundRoot))
+            if (FactionCache.UpgradeTrees.TryGetValue(actualRoot, out tree))
             {
-                if (FactionCache.UpgradeTrees.TryGetValue(foundRoot, out tree))
-                {
-                    root = foundRoot;
-                    return true;
-                }
+                root = actualRoot;
+                return true;
             }
 
             root = null;
@@ -688,7 +697,12 @@ namespace FactionColonies
             else
                 GUI.color = Color.white;
 
-            Widgets.Label(new Rect(textX, curY, width - textX - Margin, UpgradeRowHeight), prefix + building.LabelCap);
+            float labelWidth = width - textX - Margin;
+            string fullLabel = prefix + building.LabelCap;
+            string truncated = fullLabel.Truncate(labelWidth, truncateCacheRight);
+            Widgets.Label(new Rect(textX, curY, labelWidth, UpgradeRowHeight), truncated);
+            if (truncated != fullLabel)
+                TooltipHandler.TipRegion(rowRect, building.LabelCap);
             ResetText();
 
             // Highlight background for current building

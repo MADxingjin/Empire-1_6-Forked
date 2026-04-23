@@ -79,17 +79,17 @@
 	<FCNoOpenTraitSlots>All available trait slots are filled!</FCNoOpenTraitSlots>
 	<FCAllTraitSlotsFilled>All trait slots have been assigned.</FCAllTraitSlotsFilled>
 	<FCSelectTraitsPrompt>Select {0} more trait(s) from the list above.</FCSelectTraitsPrompt>
-	<FCTraitSelectionReady>Press Confirm to assign the selected traits. This cannot be undone!</FCTraitSelectionReady>
+	<FCTraitSelectionReady>Press Confirm to assign the selected traits. Once confirmed, changing your policies will cost silver.</FCTraitSelectionReady>
 	<FCHoverTraitForDetails>Hover over a trait to see its details.</FCHoverTraitForDetails>
 	<FCSelectedPolicies>Selected ({0}/{1})</FCSelectedPolicies>
 	<FCAvailablePolicies>Available Policies</FCAvailablePolicies>
 	<FCConflictsWith>Conflicts with: {0}</FCConflictsWith>
 	<FCTraits>Traits</FCTraits>
-	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
-	<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>
+	<FCSelectTraits0>Select {0} policies to be added! Once confirmed, changing your policies will cost silver.</FCSelectTraits0>
+	<FCSelectTraits2>Once confirmed, changing your policies will cost silver.</FCSelectTraits2>
 	<FCConflictingTraits>You cannot have conflicting faction traits!</FCConflictingTraits>
 	<FCUnselectTrait>You have to unselect one of your current traits to select another!</FCUnselectTrait>
-	<FCTraitsChosen>You have already chosen your traits. You cannot edit them any longer!</FCTraitsChosen>
+	<FCTraitsChosen>To change your policies, pay silver to clear them (top right button).</FCTraitsChosen>
 	<FCSelectANewTrait>Select a new trait</FCSelectANewTrait>
 	<FCTraitLockedUntilLevel>Locked until level {0}</FCTraitLockedUntilLevel>
 	<FCConfirmTrait>Are you sure you wish to select {0}? You will not be able to reverse this decision</FCConfirmTrait>

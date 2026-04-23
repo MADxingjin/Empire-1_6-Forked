@@ -20,7 +20,6 @@
 			<li>- All military buildings cost 50 less upkeep</li>
 		</positiveEffects>
 		<negativeEffects>
-			<li>- Militarization slows civil growth (-0.5 happiness gained per day)</li>
 		</negativeEffects>
 		<modExtensions>
 			<li Class="FactionColonies.FCPolicyBehaviorExt_Militaristic">
@@ -201,7 +200,7 @@
 			<li>- Settlements that you construct start at level 2</li>
 		</positiveEffects>
 		<negativeEffects>
-			<li>- New settlements start at 75% prosperity and take time to fully develop</li>
+			<li>- New settlements start at 75% prosperity</li>
 			<li>- Your empire's rapid growth draws stronger raids (+10% threat scaling)</li>
 		</negativeEffects>
 		<modExtensions>

@@ -85,8 +85,7 @@ Each day, a snapshot is taken of each settlement's production allocations. At ta
             
 This means that anything that changes a resource's production - events, changed worker assignments, new buildings, etc. - will change the actual value that you receive at tax time.
             
-You can see the running average by mousing over a resource's raw income value in the settlement window.
-        </description>
+You can see the running average by mousing over a resource's raw income value in the settlement window.</description>
         <category>CodexCat_Economy</category>
         <displayOrder>21</displayOrder>
         <iconPath>GUI/ProductionFood</iconPath>
@@ -103,8 +102,7 @@ Tithes allow you to divert resource production towards producing actual goods. T
             
 The list of available items will depend on your tech level and unlocked research. For items that support it, you can choose the "stuff" that they're made out of, or their quality - with a respective increase on the item's price.
             
-You can also choose to enable Random Tithes. If enabled, you will be sent a random assortment of items, selected from the random tithes list and with a total value equal to or less than your allowed Random Tithe Budget. If the budget isn't high enough to support any single item, then it rolls over to the next tax period.
-        </description>
+You can also choose to enable Random Tithes. If enabled, you will be sent a random assortment of items, selected from the random tithes list and with a total value equal to or less than your allowed Random Tithe Budget. If the budget isn't high enough to support any single item, then it rolls over to the next tax period.</description>
         <category>CodexCat_Economy</category>
         <displayOrder>22</displayOrder>
         <iconPath>GUI/ProductionFood</iconPath>
@@ -120,8 +118,7 @@ You can also choose to enable Random Tithes. If enabled, you will be sent a rand
 
 The penalty compounds: the total cost of all workers is multiplied by 1 + (workers over cap) / 20. Five workers over the cap is a 25% surcharge on the whole settlement's worker bill; ten over is 50%; twenty over is 100%.
             
-At default difficulty settings where workers cost 100 silver each, assigning 5 overmax workers will cause ALL workers to cost 125 silver.
-        </description>
+At default difficulty settings where workers cost 100 silver each, assigning 5 overmax workers will cause ALL workers to cost 125 silver.</description>
         <category>CodexCat_Economy</category>
         <displayOrder>30</displayOrder>
         <dynamicProvider>FactionColonies.CodexProvider_WorkerOverwork</dynamicProvider>
@@ -213,8 +210,7 @@ But there's a catch: each d20 roll is multiplied by that force's Military Effici
             
 In this way, military efficiency can have a substantial impact on auto-resolve battles. Don't neglect it! And mind that technologically advanced factions have higher military efficiency - Spacer-tech factions have an efficiency of 1.2, Ultra-tech has 1.3, and Archotech has 1.5!
             
-The effect of Military Efficiency can be dampened through the Efficiency Damping mod setting. More on that in the Battle Simulation Modifiers entry.
-        </description>
+The effect of Military Efficiency can be dampened through the Efficiency Damping mod setting. More on that in the Battle Simulation Modifiers entry.</description>
         <category>CodexCat_Military</category>
         <displayOrder>30</displayOrder>
         <dynamicProvider>FactionColonies.CodexProvider_BattleSimulation</dynamicProvider>
@@ -250,8 +246,7 @@ Set damping high to preserve the raw outcomes (sharp wins and sharp losses); set
         <label>Military Cooldown</label>
         <description>After any military operation - offensive, defensive, or aborted - your army enters a cooldown during which it cannot be deployed again.
 
-The base cooldown is 3 days. If the "dead pawns increase military cooldown" setting is enabled (it is by default), each pawn lost during the operation adds 4 hours of additional cooldown on top of the base.
-        </description>
+The base cooldown is 3 days. If the "dead pawns increase military cooldown" setting is enabled (it is by default), each pawn lost during the operation adds 4 hours of additional cooldown on top of the base.</description>
         <category>CodexCat_Military</category>
         <displayOrder>40</displayOrder>
         <dynamicProvider>FactionColonies.CodexProvider_MilitaryCooldown</dynamicProvider>
