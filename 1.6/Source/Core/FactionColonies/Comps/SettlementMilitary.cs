@@ -95,6 +95,34 @@ namespace FactionColonies
         private int initialDefenderCount;
         private string pendingDeliveryMessage;
 
+        /* Pod-bound pawns during Skyfaller descent are !Spawned but ParentHolder != null.
+         * A pure !Spawned check treats them as lost and triggers false victory. */
+        private static bool IsPawnTrulyGone(Pawn p)
+        {
+            if (p is null) return true;
+            if (p.Destroyed) return true;
+            if (p.Spawned) return false;
+            if (p.ParentHolder is object) return false;
+            return true;
+        }
+
+        private bool HasPendingPodAttackers()
+        {
+            foreach (DefenseWave wave in activeWaves)
+            {
+                if (wave is null || wave.resolved) continue;
+                List<Pawn> list = wave.waveAttackers;
+                if (list is null) continue;
+                foreach (Pawn p in list)
+                {
+                    if (p is null || p.Destroyed || p.Dead) continue;
+                    if (!p.Spawned && p.ParentHolder is object) return true;
+                }
+            }
+
+            return false;
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -178,10 +206,12 @@ namespace FactionColonies
             if (Find.TickManager.TicksGame % 250 != 0) return;
             if (Map == null) return;
 
-            // Clean stale references: null (save/load), destroyed, or despawned-alive
+            // Clean stale references: null (save/load), destroyed, or despawned-without-holder
             // (e.g. pawn joined an existing caravan without PostCaravanFormed firing).
-            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
-            defenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+            // Pod-bound pawns in a descending Skyfaller are !Spawned but ParentHolder != null;
+            //   they stay tracked until the pod opens.
+            attackers.RemoveAll(IsPawnTrulyGone);
+            defenders.RemoveAll(IsPawnTrulyGone);
 
             // Detect untracked player pawns on the battle map (e.g. shuttle-delivered pawns
             // that spawned via the Unload job after the ArrivePatch fired).
@@ -207,7 +237,9 @@ namespace FactionColonies
                 }
             }
 
-            if (attackers.Count == 0 || defenders.Count == 0)
+            // Don't declare stuck if attackers are still inbound in drop pods.
+            bool attackersGone = attackers.Count == 0 && !HasPendingPodAttackers();
+            if (attackersGone || defenders.Count == 0)
             {
                 LogUtil.Warning($"Stuck battle detected at {WorldSettlement.Name}, forcing resolution.");
                 endingBattle = true;
@@ -1680,7 +1712,7 @@ namespace FactionColonies
         public void RemoveAttacker(Pawn downed)
         {
             attackers.Remove(downed);
-            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+            attackers.RemoveAll(IsPawnTrulyGone);
 
             // Remove from the specific wave's attacker list; mark wave resolved if empty
             foreach (DefenseWave wave in activeWaves)
@@ -1692,8 +1724,9 @@ namespace FactionColonies
                 }
             }
 
-            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
-            if (attackers.Any() || endingBattle || !isUnderAttack) return;
+            attackers.RemoveAll(IsPawnTrulyGone);
+            // Guard: don't declare victory while any wave still has pod-bound attackers inbound.
+            if (attackers.Any() || HasPendingPodAttackers() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;
             LongEventHandler.QueueLongEvent(EndAttack,
@@ -1708,7 +1741,7 @@ namespace FactionColonies
         public void RemoveDefender(Pawn defender)
         {
             defenders.Remove(defender);
-            defenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+            defenders.RemoveAll(IsPawnTrulyGone);
             if (defenders.Any() || endingBattle || !isUnderAttack) return;
 
             endingBattle = true;

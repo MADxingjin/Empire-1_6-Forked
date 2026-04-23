@@ -64,8 +64,10 @@ namespace FactionColonies
             {
                 if (waveAttackers is null) waveAttackers = new List<Pawn>();
                 if (waveDefenders is null) waveDefenders = new List<Pawn>();
-                waveAttackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
-                waveDefenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+                // Keep pod-bound pawns (not Spawned but held inside a Skyfaller) — they'll
+                // spawn when the pod opens. Only prune null / destroyed / orphaned-despawned.
+                waveAttackers.RemoveAll(p => p is null || p.Destroyed || (!p.Spawned && p.ParentHolder is null));
+                waveDefenders.RemoveAll(p => p is null || p.Destroyed || (!p.Spawned && p.ParentHolder is null));
             }
         }
     }
