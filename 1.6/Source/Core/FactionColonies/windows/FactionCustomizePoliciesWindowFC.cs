@@ -86,6 +86,28 @@ namespace FactionColonies
 
             Text.Font = GameFont.Small;
 
+            // Clear Policies button (top-right, only when policies are locked-in)
+            if (traitsChosen)
+            {
+                int clearCost = PolicyRepickCost.Compute(faction);
+                bool canAfford = PaymentUtil.GetSilver() >= clearCost;
+                Rect clearBtn = new Rect(inRect.xMax - 240, 5, 230, 30);
+
+                Color savedColor = GUI.color;
+                if (!canAfford) GUI.color = new Color(1f, 1f, 1f, 0.5f);
+
+                Text.Anchor = TextAnchor.MiddleCenter;
+                if (Widgets.ButtonText(clearBtn, "FCClearPolicies".Translate(clearCost)) && canAfford)
+                {
+                    Find.WindowStack.Add(new FCWindow_Confirm(
+                        "FCClearPoliciesConfirm".Translate(clearCost),
+                        () => DoClearPolicies(clearCost)));
+                }
+
+                GUI.color = savedColor;
+                TooltipHandler.TipRegion(clearBtn, "FCClearPoliciesTooltip".Translate());
+            }
+
             // Confirm button
             Rect buttonConfirm = new Rect((inRect.xMax - 200) / 2f, inRect.yMax - 50, 200, 30);
 
@@ -360,6 +382,20 @@ namespace FactionColonies
         {
             for (int i = 0; i < cardScrollPositions.Length; i++)
                 cardScrollPositions[i] = Vector2.zero;
+        }
+
+        private void DoClearPolicies(int cost)
+        {
+            if (!PaymentUtil.PaySilver(cost, PaymentUtil.Reason_PolicyRepick))
+            {
+                Messages.Message("FCClearPoliciesInsufficientSilver".Translate(cost), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            faction.RemoveAllPolicies(faction.policies);
+            faction.RebuildBehaviorCache();
+            selectedPolicies.Clear();
+            traitsChosen = false;
+            ResetCardScrollPositions();
         }
 
         string returnPolicyDesc(FCPolicyDef def)

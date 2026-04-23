@@ -156,4 +156,25 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_11</defName>
+		<label>Policy Update</label>
+		<description>The first real balance pass. This mod updates many of the policies to (hopefully) smooth out the power level. Along with the shake-up comes a new feature: the ability to clear your chosen policies and select new ones, albeit for a cost.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Minor</patchNoteType>
+		<patchNoteLines>
+		<li>Militaristic policy nerfed: 1.2 military efficiency -&gt; 1.1, extra squad cost 20% -&gt; 40%, military building upkeep reduction 100 -&gt; 50, and the policy now carries an inherent -0.5 happiness per day. People generally don&apos;t like living in militaristic regimes, after all</li>
+		<li>Pacifist policy buff/nerfed: no longer immune to soldier deaths (no idea why that was even a thing); in exchange, the diplomatic envoy is slightly more likely to succeed, and the relation improvement range has been changed from 5-15 to 8-20</li>
+		<li>Egalitarian changed: removed happiness-based tax bonus as well as starting happiness penalty. Added 10% worker production bonus, 1 additional worker per level, -3 overmax workers, worker base cost increased by 10</li>
+		<li>Expansionist changed: no more free starting settlement, no more 50% discount once per year. Instead, all settlements are 25% cheaper, but start at 75% prosperity. Threat scaling increased by 10% as well</li>
+		<li>Technocratic nerfed: now carries a -10% penalty to base tax percentage</li>
+		<li>Slaver nerfed: -0.5 happiness and +0.5 unrest per day. You don&apos;t get to rely on slave labor for free, bucko (and the +2 workers per settlement level *is* quite strong)</li>
+		<li>Scorched Earth Doctrine buffed: building destruction chance 2x -&gt; 1.25x, defending bonus 1.3x -&gt; 1.5x, prosperity loss on victory 1.5x -&gt; 1.2x</li>
+		<li>Added option to clear policy choices after they&apos;ve already been chosen, for a cost that scales based on Empire size and prosperity</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

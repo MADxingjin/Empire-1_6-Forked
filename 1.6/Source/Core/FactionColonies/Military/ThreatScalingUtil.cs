@@ -61,7 +61,22 @@ namespace FactionColonies
         public static double ComputeEmpireThreatLevel(FactionFC faction)
         {
             if (!faction.settlements.Any()) return 1.0;
+            return Math.Max(1.0, Math.Min(FCSettings.maxThreatMultiplier, ComputeRawEmpireScale(faction)));
+        }
 
+        /// <summary>
+        /// Same composite formula as <see cref="ComputeEmpireThreatLevel"/>, but without the
+        /// settings cap. Floored at 1.0. Used for cost scaling that should keep growing past
+        /// the threat cap (e.g., policy re-pick cost).
+        /// </summary>
+        public static double ComputeEmpireScaleUncapped(FactionFC faction)
+        {
+            if (!faction.settlements.Any()) return 1.0;
+            return Math.Max(1.0, ComputeRawEmpireScale(faction));
+        }
+
+        private static double ComputeRawEmpireScale(FactionFC faction)
+        {
             double avgLevel = faction.settlements.Average(s => (double)s.settlementLevel);
             double avgFactor = (avgLevel - 1.0) * 0.2; // lvl 1->0, lvl 5->0.8, lvl 10->1.8
 
@@ -83,9 +98,7 @@ namespace FactionColonies
             double registryBase = ThreatScalingRegistry.InvokeGetAdditiveContributions(faction);
             double registryMult = ThreatScalingRegistry.InvokeGetMultiplierContributions(faction);
 
-            double result = (1.0 + rawScore + statBase + registryBase) * statMult * registryMult;
-
-            return Math.Max(1.0, Math.Min(FCSettings.maxThreatMultiplier, result));
+            return (1.0 + rawScore + statBase + registryBase) * statMult * registryMult;
         }
 
         /// <summary>

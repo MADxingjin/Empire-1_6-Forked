@@ -1257,10 +1257,6 @@ namespace FactionColonies
             {
                 LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): mercenaryCooldown Ready={feu.DebugCooldownReady()} Days={feu.DebugCooldownDays():F1}");
             }
-            else if (p.behavior is FCPolicyBehavior_Expansionist exp)
-            {
-                LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): feeReduction Ready={exp.DebugCooldownReady()} Days={exp.DebugCooldownDays():F1}");
-            }
             else if (p.behavior is FCPolicyBehavior_Egalitarian egal)
             {
                 LogUtil.MessageForce($"[{prefix}] {p.def.defName} ({behaviorType}): taxBreaks={egal.DebugTaxBreakCount()} active={egal.DebugActiveTaxBreakCount()}");
@@ -1289,7 +1285,6 @@ namespace FactionColonies
                 if (b is FCPolicyBehavior_Militaristic mil) { mil.DebugResetCooldown(); count++; }
                 else if (b is FCPolicyBehavior_Pacifist pac) { pac.DebugResetCooldown(); count++; }
                 else if (b is FCPolicyBehavior_Feudal feu) { feu.DebugResetCooldown(); count++; }
-                else if (b is FCPolicyBehavior_Expansionist exp) { exp.DebugResetCooldown(); count++; }
                 else if (b is FCPolicyBehavior_Mercantile merc) { merc.DebugResetNextCaravan(); count++; }
             }
             LogUtil.MessageForce($"Debug - Reset {count} policy cooldowns to ready");

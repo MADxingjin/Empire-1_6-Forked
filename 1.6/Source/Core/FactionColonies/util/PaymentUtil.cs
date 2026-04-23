@@ -17,6 +17,7 @@ namespace FactionColonies
         public const string Reason_EventOption = "event_option";
         public const string Reason_TaxPayment = "tax_payment";
         public const string Reason_SilverPayment = "silver_payment";
+        public const string Reason_PolicyRepick = "policy_repick";
 
         public static (List<BillFC>, List<BillFC>) returnBillTypes(List<BillFC> bills)
         {

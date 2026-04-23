@@ -39,14 +39,14 @@
 		<modExtensions>
 			<li Class="FactionColonies.FCPolicyBehaviorExt_ScorchedEarth">
 				<behaviorClass>FactionColonies.FCPolicyBehavior_ScorchedEarth</behaviorClass>
-				<damageRollMax>10</damageRollMax>
-				<damageThreshold>9</damageThreshold>
+				<damageRollMax>12</damageRollMax>
+				<damageThreshold>11</damageThreshold>
 			</li>
 		</modExtensions>
 		<statModifiers>
-			<li><stat>buildingDestructionChance</stat><value>2.0</value></li>
-			<li><stat>militaryEfficiencyBonusDefending</stat><value>1.3</value></li>
-			<li><stat>battleProsperityLossMultiplier</stat><value>1.5</value></li>
+			<li><stat>buildingDestructionChance</stat><value>1.25</value></li>
+			<li><stat>militaryEfficiencyBonusDefending</stat><value>1.5</value></li>
+			<li><stat>battleProsperityLossMultiplier</stat><value>1.2</value></li>
 		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 

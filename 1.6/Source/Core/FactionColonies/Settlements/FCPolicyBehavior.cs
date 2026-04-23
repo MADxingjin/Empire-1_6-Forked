@@ -60,9 +60,8 @@ namespace FactionColonies
         /* Conditional Stat Modifier */
         /// <summary>
         /// Runtime-dependent stat modifier. Only override this for values that
-        /// genuinely depend on game state at query time (e.g., Egalitarian happiness-based
-        /// tax bonus, Expansionist first-settlement-free). For static modifiers, use
-        /// FCPolicyDef.statModifiers XML instead.
+        /// genuinely depend on game state at query time (e.g., Egalitarian's active
+        /// tax-break penalty). For static modifiers, use FCPolicyDef.statModifiers XML instead.
         ///<para>Aggregation contract:</para>
         /// <list type="bullet">
         ///   <item>For Additive stats (IdentityValue=0): add/subtract from currentValue</item>

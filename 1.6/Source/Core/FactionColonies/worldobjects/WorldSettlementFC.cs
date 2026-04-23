@@ -1256,7 +1256,7 @@ namespace FactionColonies
             if (!factionMods.NullOrEmpty())
                 desc += factionMods;
 
-            // Behavior contributions for taxBonusFlat (e.g., Egalitarian happiness bonus)
+            // Behavior contributions for taxBonusFlat (e.g., Egalitarian tax-break penalty)
             faction.ForEachBehavior(b =>
             {
                 string behaviorDesc = b.GetStatDescription(FCStatDefOf.taxBonusFlat, this);
@@ -1652,7 +1652,7 @@ namespace FactionColonies
                 FactionFC faction = FactionCache.FactionComp;
                 desc += faction.GetFactionStatDesc(stat, hardinvert);
 
-                // Behavior runtime contributions (e.g., Egalitarian happiness bonus, Expansionist discount)
+                // Behavior runtime contributions (e.g., Egalitarian tax-break modifiers)
                 faction.ForEachBehavior(b =>
                 {
                     string behaviorDesc = b.GetStatDescription(stat, this);

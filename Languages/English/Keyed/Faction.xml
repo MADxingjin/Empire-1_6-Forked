@@ -53,6 +53,10 @@
 	<FCMilitaryPolicy>Military Policy</FCMilitaryPolicy>
 	<FCPolicySelection>Policy Selection</FCPolicySelection>
 	<FCSelectPolicies>Select Policies</FCSelectPolicies>
+	<FCClearPolicies>Clear Policies ({0} silver)</FCClearPolicies>
+	<FCClearPoliciesTooltip>Wipe your current core policies and choose new ones. The cost scales with your empire's size and prosperity.</FCClearPoliciesTooltip>
+	<FCClearPoliciesConfirm>Spend {0} silver to clear your current core policies and choose new ones?</FCClearPoliciesConfirm>
+	<FCClearPoliciesInsufficientSilver>Insufficient silver to clear policies (need {0}).</FCClearPoliciesInsufficientSilver>
 	<FCPolicyAlreadyEnacted>That policy has already been enacted</FCPolicyAlreadyEnacted>
 	<FCAlreadyPolicyTypeBeingEnacted>There is already a policy of that type being enacted</FCAlreadyPolicyTypeBeingEnacted>
 	<FCAlreadyPolicyInSlot>There is already a policy being enacted in that slot</FCAlreadyPolicyInSlot>

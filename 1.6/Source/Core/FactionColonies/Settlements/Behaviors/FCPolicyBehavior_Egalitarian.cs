@@ -10,34 +10,19 @@ namespace FactionColonies
     {
         private Dictionary<int, TaxBreakData> taxBreaks = new Dictionary<int, TaxBreakData>();
 
-        public override void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement)
-        {
-            settlement.happiness = Ext<FCPolicyBehaviorExt_Egalitarian>().startingHappiness;
-        }
-
         public override double ModifyStat(FCStatDef stat, double currentValue, WorldSettlementFC settlement)
         {
             if (settlement == null) return currentValue;
+            if (!IsOnTaxBreak(settlement.Tile)) return currentValue;
 
             var ext = Ext<FCPolicyBehaviorExt_Egalitarian>();
-            bool onTaxBreak = IsOnTaxBreak(settlement.Tile);
 
-            // Happiness-based tax bonus
             if (stat == FCStatDefOf.taxBonusFlat)
-            {
-                double bonus = Math.Floor(settlement.happiness / ext.happinessDivisor);
-                if (onTaxBreak) bonus -= ext.taxBreakPenalty;
-                return currentValue + bonus;
-            }
-
-            // Tax break bonuses
-            if (onTaxBreak)
-            {
-                if (stat == FCStatDefOf.happinessGainedBase)
-                    return currentValue + ext.taxBreakHappinessBonus;
-                if (stat == FCStatDefOf.prosperityGainedBase)
-                    return currentValue + ext.taxBreakProsperityBonus;
-            }
+                return currentValue - ext.taxBreakPenalty;
+            if (stat == FCStatDefOf.happinessGainedBase)
+                return currentValue + ext.taxBreakHappinessBonus;
+            if (stat == FCStatDefOf.prosperityGainedBase)
+                return currentValue + ext.taxBreakProsperityBonus;
 
             return currentValue;
         }
@@ -45,22 +30,17 @@ namespace FactionColonies
         public override string GetStatDescription(FCStatDef stat, WorldSettlementFC settlement)
         {
             if (settlement == null) return null;
+            if (!IsOnTaxBreak(settlement.Tile)) return null;
+
             var ext = Ext<FCPolicyBehaviorExt_Egalitarian>();
-            bool onTaxBreak = IsOnTaxBreak(settlement.Tile);
 
             if (stat == FCStatDefOf.taxBonusFlat)
-            {
-                double bonus = Math.Floor(settlement.happiness / ext.happinessDivisor);
-                if (onTaxBreak) bonus -= ext.taxBreakPenalty;
-                return TextUtil.ColorizeAdditiveBonus(bonus) + " - " + policy.def.LabelCap + "\n";
-            }
-            if (onTaxBreak)
-            {
-                if (stat == FCStatDefOf.happinessGainedBase)
-                    return TextUtil.ColorizeAdditiveBonus(ext.taxBreakHappinessBonus) + " - " + policy.def.LabelCap + "\n";
-                if (stat == FCStatDefOf.prosperityGainedBase)
-                    return TextUtil.ColorizeAdditiveBonus(ext.taxBreakProsperityBonus) + " - " + policy.def.LabelCap + "\n";
-            }
+                return TextUtil.ColorizeAdditiveBonus(-ext.taxBreakPenalty) + " - " + policy.def.LabelCap + "\n";
+            if (stat == FCStatDefOf.happinessGainedBase)
+                return TextUtil.ColorizeAdditiveBonus(ext.taxBreakHappinessBonus) + " - " + policy.def.LabelCap + "\n";
+            if (stat == FCStatDefOf.prosperityGainedBase)
+                return TextUtil.ColorizeAdditiveBonus(ext.taxBreakProsperityBonus) + " - " + policy.def.LabelCap + "\n";
+
             return null;
         }
 

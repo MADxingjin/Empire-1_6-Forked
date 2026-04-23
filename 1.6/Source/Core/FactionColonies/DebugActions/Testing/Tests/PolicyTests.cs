@@ -216,34 +216,6 @@ namespace FactionColonies
             }
         }
 
-        [EmpireTest("Policy")]
-        public static void StatAggregation_BehaviorModifyStat_AppliedAfterStatic()
-        {
-            var faction = GetFaction();
-            if (faction == null || faction.settlements.Count == 0)
-                TestAssert.Skip("No faction/settlements");
-
-            var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
-            try
-            {
-                PolicyTestHelper.ClearAll(faction);
-                PolicyTestHelper.EnactPolicy(faction, FCPolicyDefOf.egalitarian);
-
-                WorldSettlementFC settlement = faction.settlements.First();
-                // Egalitarian adds happiness/10 to taxBonusFlat via ModifyStat
-                double expected = Math.Floor(settlement.happiness / 10);
-                double baseValue = faction.GetFactionStatValue(FCStatDefOf.taxBonusFlat);
-                double fullValue = faction.GetStatValue(FCStatDefOf.taxBonusFlat, settlement);
-                // The behavior adds on top of the base faction stat + settlement stat
-                TestAssert.IsTrue(fullValue >= baseValue + expected - 1,
-                    $"Egalitarian ModifyStat should add ~{expected} to taxBonusFlat (got base={baseValue}, full={fullValue})");
-            }
-            finally
-            {
-                PolicyTestHelper.RestorePolicies(faction, snapshot);
-            }
-        }
-
         // ============================
         // Behavior Lifecycle Tests
         // ============================
@@ -382,7 +354,7 @@ namespace FactionColonies
         // ============================
 
         [EmpireTest("Policy")]
-        public static void Egalitarian_HappinessTaxBonus_ScalesWithHappiness()
+        public static void Egalitarian_WorkerProductionMultiplier_10Pct()
         {
             var faction = GetFaction();
             if (faction == null || faction.settlements.Count == 0)
@@ -395,21 +367,9 @@ namespace FactionColonies
                 PolicyTestHelper.EnactPolicy(faction, FCPolicyDefOf.egalitarian);
 
                 WorldSettlementFC settlement = faction.settlements.First();
-                double happiness = settlement.happiness;
-                double expectedBonus = Math.Floor(happiness / 10);
-
-                // Get the stat value — it includes behavior ModifyStat
-                double fullValue = faction.GetStatValue(FCStatDefOf.taxBonusFlat, settlement);
-
-                // The settlement's own base stat value
-                double settlementBase = settlement.GetSettlementStatValue(FCStatDefOf.taxBonusFlat);
-                double factionBase = faction.GetFactionStatValue(FCStatDefOf.taxBonusFlat);
-
-                // fullValue should be base + expectedBonus
-                double baseNoPolicy = settlementBase + factionBase;
-                double diff = fullValue - baseNoPolicy;
-                TestAssert.AreEqual(expectedBonus, diff, 1.0,
-                    $"Egalitarian tax bonus should be ~floor(happiness={happiness}/10)={expectedBonus}, got diff={diff}");
+                double mult = faction.GetStatValue(FCStatDefOf.workerProductionMultiplier, settlement);
+                TestAssert.AreEqual(1.1, mult, 0.01,
+                    $"Egalitarian should boost worker production by 10% (got {mult})");
             }
             finally
             {
@@ -418,14 +378,10 @@ namespace FactionColonies
         }
 
         [EmpireTest("Policy")]
-        public static void Expansionist_FirstSettlement_Free()
+        public static void Expansionist_SettlementCost_Discount()
         {
             var faction = GetFaction();
             if (faction == null) TestAssert.Skip("No faction");
-
-            // This test only works when there are no settlements and no caravans
-            if (faction.settlements.Any() || faction.settlementCaravansList.Any())
-                TestAssert.Skip("Cannot test first-settlement-free with existing settlements");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -434,8 +390,8 @@ namespace FactionColonies
                 PolicyTestHelper.EnactPolicy(faction, FCPolicyDefOf.expansionist);
 
                 double costMult = faction.GetStatValue(FCStatDefOf.settlementCostMultiplier);
-                TestAssert.AreEqual(0.0, costMult, 0.001,
-                    "Expansionist should make first settlement free (cost multiplier = 0)");
+                TestAssert.AreEqual(0.75, costMult, 0.01,
+                    $"Expansionist should give a permanent 25% discount (got {costMult})");
             }
             finally
             {
@@ -444,12 +400,10 @@ namespace FactionColonies
         }
 
         [EmpireTest("Policy")]
-        public static void Expansionist_FeeReduction_50Pct()
+        public static void Expansionist_ThreatScaling_Increased()
         {
             var faction = GetFaction();
             if (faction == null) TestAssert.Skip("No faction");
-            if (!faction.settlements.Any())
-                TestAssert.Skip("Need existing settlements for this test");
 
             var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
             try
@@ -457,43 +411,9 @@ namespace FactionColonies
                 PolicyTestHelper.ClearAll(faction);
                 PolicyTestHelper.EnactPolicy(faction, FCPolicyDefOf.expansionist);
 
-                // With existing settlements and cooldown ready, should be 50% of default (1.0)
-                double costMult = faction.GetStatValue(FCStatDefOf.settlementCostMultiplier);
-                // Default is 1.0 (multiplicative), expansionist halves it
-                TestAssert.AreEqual(0.5, costMult, 0.01,
-                    $"Expansionist should give 50% discount (got {costMult})");
-            }
-            finally
-            {
-                PolicyTestHelper.RestorePolicies(faction, snapshot);
-            }
-        }
-
-        [EmpireTest("Policy")]
-        public static void Expansionist_FeeReduction_UsesOnPay()
-        {
-            var faction = GetFaction();
-            if (faction == null) TestAssert.Skip("No faction");
-            if (!faction.settlements.Any())
-                TestAssert.Skip("Need existing settlements for this test");
-
-            var snapshot = PolicyTestHelper.SnapshotPolicies(faction);
-            try
-            {
-                PolicyTestHelper.ClearAll(faction);
-                var policy = PolicyTestHelper.EnactPolicy(faction, FCPolicyDefOf.expansionist);
-
-                // Cooldown should start ready
-                var behavior = policy.behavior as FCPolicyBehavior_Expansionist;
-                TestAssert.IsNotNull(behavior, "Expansionist should have a behavior");
-
-                // Trigger the cost paid hook
-                behavior.OnSettlementCostPaid(faction);
-
-                // After payment, cost multiplier should no longer give 50% discount
-                double costMult = faction.GetStatValue(FCStatDefOf.settlementCostMultiplier);
-                TestAssert.AreEqual(1.0, costMult, 0.01,
-                    $"After fee reduction used, cost multiplier should be 1.0 (got {costMult})");
+                double threat = faction.GetStatValue(FCStatDefOf.threatScalingMultiplier);
+                TestAssert.AreEqual(1.1, threat, 0.01,
+                    $"Expansionist should add +10% threat scaling (got {threat})");
             }
             finally
             {
@@ -527,8 +447,8 @@ namespace FactionColonies
 
                 double baseUpkeep = 200;
                 double modified = behavior.ModifyBuildingUpkeep(milBuilding, baseUpkeep, faction.settlements.First());
-                TestAssert.AreEqual(Math.Max(baseUpkeep - 100, 0), modified, 0.001,
-                    $"Military building upkeep should be discounted by 100 (from {baseUpkeep} to {modified})");
+                TestAssert.AreEqual(Math.Max(baseUpkeep - 50, 0), modified, 0.001,
+                    $"Military building upkeep should be discounted by 50 (from {baseUpkeep} to {modified})");
 
                 // Non-military building should not be discounted
                 BuildingFCDef civBuilding = DefDatabase<BuildingFCDef>.AllDefsListForReading

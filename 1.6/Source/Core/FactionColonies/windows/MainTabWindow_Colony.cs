@@ -350,7 +350,10 @@ namespace FactionColonies
                 for (int i = 0; i < faction.policies.Count; i++)
                 {
                     Rect policyBox = new Rect(leftX + (i * (policySize + margin)), y, policySize, policySize);
-                    Widgets.ButtonImage(policyBox, faction.policies[i].def.IconLight);
+                    if (Widgets.ButtonImage(policyBox, faction.policies[i].def.IconLight))
+                    {
+                        Find.WindowStack.Add(new FactionCustomizePoliciesWindowFC(faction));
+                    }
                     TooltipHandler.TipRegion(policyBox, faction.policies[i].def.PolicyText());
                 }
             }
