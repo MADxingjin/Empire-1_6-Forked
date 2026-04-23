@@ -81,7 +81,7 @@ namespace FactionColonies
         //     for attacks
         public bool isUnderAttack;
         public bool militaryBusy;
-        public int militaryLocation = -1;
+        public PlanetTile militaryLocation = PlanetTile.Invalid;
         public MilitaryJobDef militaryJob;
         public Faction militaryEnemy;
         public MercenarySquadFC militarySquad;
@@ -132,7 +132,7 @@ namespace FactionColonies
             Scribe_Collections.Look(ref activeWaves, "activeWaves", LookMode.Deep);
             Scribe_Values.Look(ref isUnderAttack, "isUnderAttack");
             Scribe_Values.Look(ref militaryBusy, "militaryBusy");
-            Scribe_Values.Look(ref militaryLocation, "militaryLocation");
+            Scribe_Values.Look(ref militaryLocation, "militaryLocation", PlanetTile.Invalid);
             Scribe_Defs.Look(ref militaryJob, "militaryJob");
             Scribe_References.Look(ref militaryEnemy, "militaryEnemy");
             Scribe_References.Look(ref militarySquad, "militarySquad");
@@ -1796,7 +1796,7 @@ namespace FactionColonies
 
         public Settlement ReturnMilitaryTarget()
         {
-            return militaryLocation == -1 ? null : Find.WorldObjects.SettlementAt(militaryLocation);
+            return !militaryLocation.Valid ? null : Find.WorldObjects.SettlementAt(militaryLocation);
         }
 
         public void ProcessMilitaryEvent()
@@ -1837,7 +1837,7 @@ namespace FactionColonies
 
             militaryBusy = false;
             militaryJob = MilitaryJobDefOf.Undefined;
-            militaryLocation = -1;
+            militaryLocation = PlanetTile.Invalid;
             militaryEnemy = null;
 
             LifecycleRegistry.InvokeOnSquadRecalled(WorldSettlement);
@@ -1947,7 +1947,7 @@ namespace FactionColonies
             return settlementMilitaryLevel > 0;
         }
 
-        public bool IsTargetOccupied(int location)
+        public bool IsTargetOccupied(PlanetTile location)
         {
             if (FactionCache.FactionComp.HasMilitaryTarget(location))
             {

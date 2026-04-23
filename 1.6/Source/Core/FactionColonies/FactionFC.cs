@@ -196,11 +196,11 @@ namespace FactionColonies
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
         public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
-        private List<int> militaryTargets = new List<int>();
-        public IReadOnlyList<int> MilitaryTargets => militaryTargets;
-        public void AddMilitaryTarget(int tile) { militaryTargets.Add(tile); }
-        public void RemoveMilitaryTarget(int tile) { militaryTargets.Remove(tile); }
-        public bool HasMilitaryTarget(int tile) => militaryTargets.Contains(tile);
+        private List<PlanetTile> militaryTargets = new List<PlanetTile>();
+        public IReadOnlyList<PlanetTile> MilitaryTargets => militaryTargets;
+        public void AddMilitaryTarget(PlanetTile tile) { militaryTargets.Add(tile); }
+        public void RemoveMilitaryTarget(PlanetTile tile) { militaryTargets.Remove(tile); }
+        public bool HasMilitaryTarget(PlanetTile tile) => militaryTargets.Contains(tile);
 
         /* Caravans */
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
@@ -1802,9 +1802,9 @@ namespace FactionColonies
 
         // Indexed event queries — O(1) via FCEventManager's internal indexes.
         public IReadOnlyList<FCEvent> GetEventsByDef(FCEventDef def) => eventManager.GetByDef(def);
-        public FCEvent FindEventByDefAndLocation(FCEventDef def, int tile) => eventManager.FindFirstByDefAndLocation(def, tile);
-        public IReadOnlyList<FCEvent> FindAllEventsByDefAndLocation(FCEventDef def, int tile) => eventManager.GetByDefAndLocation(def, tile);
-        public bool HasEventWithDefAndLocation(FCEventDef def, int tile) => eventManager.AnyWithDefAndLocation(def, tile);
+        public FCEvent FindEventByDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.FindFirstByDefAndLocation(def, tile);
+        public IReadOnlyList<FCEvent> FindAllEventsByDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.GetByDefAndLocation(def, tile);
+        public bool HasEventWithDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.AnyWithDefAndLocation(def, tile);
 
         private void MakeRandomEvent()
         {
