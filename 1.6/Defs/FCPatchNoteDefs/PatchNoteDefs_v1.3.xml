@@ -482,4 +482,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_34</defName>
+		<label>Settlement Battle State Bug</label>
+		<description>Bug: when saving+loading while a settlement is under attack (but before a defense has started), load order issues could cause the settlement to clear its own &quot;isUnderAttack&quot; flag, leading to bad state.</description>
+		<releaseDate>2026-04-23</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: settlements can lose their &quot;isUnderAttack&quot; state on save+load due to object loading order</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
