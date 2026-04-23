@@ -468,4 +468,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_33</defName>
+		<label>Manual Defense Skyfaller Fix</label>
+		<description>Fixes a bug with skyfallers (transport pods, shuttles) in manual defense battles.</description>
+		<releaseDate>2026-04-23</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: if attackers arrive to manual defense with transport pods, the battle may end prematurely</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

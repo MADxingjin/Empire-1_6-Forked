@@ -79,6 +79,30 @@ namespace FactionColonies
         private int initialDefenderCount;
         private string pendingDeliveryMessage;
 
+        /* Pod-bound pawns during Skyfaller descent are !Spawned but ParentHolder != null.
+         * A pure !Spawned check treats them as lost and triggers false victory. */
+        private static bool IsPawnTrulyGone(Pawn p)
+        {
+            if (p is null) return true;
+            if (p.Destroyed) return true;
+            if (p.Spawned) return false;
+            if (p.ParentHolder is object) return false;
+            return true;
+        }
+
+        private bool HasPendingPodAttackers()
+        {
+            List<Pawn> list = attackers;
+            if (list is null) return false;
+            foreach (Pawn p in list)
+            {
+                if (p is null || p.Destroyed || p.Dead) continue;
+                if (!p.Spawned && p.ParentHolder is object) return true;
+            }
+
+            return false;
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -136,8 +160,10 @@ namespace FactionColonies
 
             // Clean stale references: null (save/load), destroyed, or despawned-alive
             // (e.g. pawn joined an existing caravan without PostCaravanFormed firing).
-            attackers.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
-            defenders.RemoveAll(p => p == null || p.Destroyed || !p.Spawned);
+            // Pod-bound pawns in a descending Skyfaller are !Spawned but ParentHolder != null;
+            //   they stay tracked until the pod opens.
+            attackers.RemoveAll(IsPawnTrulyGone);
+            defenders.RemoveAll(IsPawnTrulyGone);
 
             // Detect untracked player pawns on the battle map (e.g. shuttle-delivered pawns
             // that spawned via the Unload job after the ArrivePatch fired).
