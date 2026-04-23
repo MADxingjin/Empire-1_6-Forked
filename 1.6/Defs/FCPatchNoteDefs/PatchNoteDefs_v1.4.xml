@@ -160,7 +160,7 @@
 	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
 		<defName>1_4_11</defName>
 		<label>Policy Update</label>
-		<description>The first real balance pass. This mod updates many of the policies to (hopefully) smooth out the power level. Along with the shake-up comes a new feature: the ability to clear your chosen policies and select new ones, albeit for a cost.</description>
+		<description>The first real balance pass. This patch updates many of the policies to (hopefully) smooth out the power level. Along with the shake-up comes a new feature: the ability to clear your chosen policies and select new ones, albeit for a cost.</description>
 		<releaseDate>2026-04-22</releaseDate>
 		<patchNoteType>Minor</patchNoteType>
 		<patchNoteLines>
