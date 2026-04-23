@@ -242,8 +242,11 @@ namespace FactionColonies
             Scribe_Collections.Look(ref eventFireCounts, "eventFireCounts", LookMode.Value, LookMode.Value);
             if (eventFireCounts is null) eventFireCounts = new Dictionary<string, int>();
 
-            // Indexes are transient — rebuild from deserialized event list
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            // Indexes are transient — rebuild as soon as the events list is populated.
+            // Must run in LoadingVars (not PostLoadInit): WorldSettlementFC.PostLoadInit
+            // fires ISettlementPostLoadInit callbacks that query the index, and the
+            // PostLoadIniter HashSet can schedule WorldSettlementFC before FCEventManager.
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
                 IndexRebuild();
         }
     }
