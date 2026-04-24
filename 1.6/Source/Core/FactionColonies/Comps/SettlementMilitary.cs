@@ -260,12 +260,15 @@ namespace FactionColonies
             }
         }
 
-        private static string FoundSettlementString(WorldSettlementFC settlement, string winChanceText = null)
+        private static string FoundSettlementString(WorldSettlementFC settlement, string winChanceText = null, bool isCurrentDefender = false)
         {
             string s = settlement.Name + " " + "FCShortMilitary".Translate() + " " + settlement.settlementMilitaryLevel;
             if (!winChanceText.NullOrEmpty())
                 s += " - Victory: " + winChanceText + "%";
-            s += " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
+            if (isCurrentDefender)
+                s += " - [" + "FCCurrentDefender".Translate() + "]";
+            else
+                s += " - " + "FCAvailable".Translate() + ": " + (settlement.MilitaryComp?.IsMilitaryBusySilent() != true).ToString();
             return s;
         }
 
@@ -354,6 +357,7 @@ namespace FactionColonies
         {
             var faction = FactionCache.FactionComp;
             MilitaryForce attackForce = evt.militaryForceAttacking;
+            WorldSettlementFC currentDefender = evt.militaryForceDefending?.homeSettlement;
 
             // "Reset to Home Settlement" option with win chance
             MilitaryForce homeForce = MilitaryForce.CreateMilitaryForceFromSettlement(WorldSettlement);
@@ -382,7 +386,7 @@ namespace FactionColonies
 
                 WorldSettlementFC s = foundSettlement;
                 settlementList.Add(new FloatMenuOption(
-                    FoundSettlementString(s, wcText),
+                    FoundSettlementString(s, wcText, s == currentDefender),
                     delegate
                     {
                         if (s.MilitaryComp?.IsMilitaryBusy() != true)

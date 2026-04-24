@@ -244,7 +244,7 @@ namespace FactionColonies
             {
                 //if settlement is foreign
                 settlementOfMilitaryForce.MilitaryComp?.SendMilitary(evt.settlementFCDefending.Tile, MilitaryJobDefOf.DefendFriendlySettlement, -1, evt.militaryForceAttackingFaction);
-                Find.LetterStack.ReceiveLetter("Military Action", "ForeignMilitarySwitch"
+                Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCForeignMilitarySwitch"
                     .Translate(settlementOfMilitaryForce.Name,
                         factionfc.ReturnSettlementByLocation(evt.location).Name,
                         evt.militaryForceDefending.militaryLevel), LetterDefOf.NeutralEvent);
