@@ -23,6 +23,7 @@
 
 	<!-- Military Sent Notifications -->
 	<FCMilitarySent>Military Sent</FCMilitarySent>
+	<FCMilitaryAction>Military Action</FCMilitaryAction>
 	<FCMilitarySentToDefend>The military forces of {0} have been sent to defend {1}</FCMilitarySentToDefend>
 	<FCMilitaryAlreadyAssigned>The military force is already assigned.</FCMilitaryAlreadyAssigned>
 	<FCForeignMilitarySwitch>The military forces of {0} have been sent to defend {1}. They have an effective force of {2}</FCForeignMilitarySwitch>
@@ -138,6 +139,7 @@
 	<FCMilitaryTableFireSupport>Fire Support</FCMilitaryTableFireSupport>
 	<FCNoValidMilitaries>No valid militaries to use.</FCNoValidMilitaries>
 	<FCAvailable>Available</FCAvailable>
+	<FCCurrentDefender>Current Defender</FCCurrentDefender>
 	<FCShortMilitary>Mil</FCShortMilitary>
 	<FCPower>Power</FCPower>
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>
