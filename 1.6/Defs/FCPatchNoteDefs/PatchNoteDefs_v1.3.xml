@@ -511,4 +511,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_36</defName>
+		<label>Animal Check Fix</label>
+		<description>Fixes a bug where a pawnKindDef with a null race or race.race could break one of Empire&apos;s checks for animals. I don&apos;t *think* either of these fields are meant to be null, but Rimworld seemingly allows it, so, *shrug*. We at least log the pawnkinddef in question so we know which one needs fixing.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add null guards in IsAnimalAndAllowed</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
