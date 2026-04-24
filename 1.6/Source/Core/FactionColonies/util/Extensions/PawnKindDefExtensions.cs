@@ -36,6 +36,12 @@ namespace FactionColonies
         /// </summary>
         public static bool IsAnimalAndAllowed(this PawnKindDef pawnKindDef)
         {
+            if (pawnKindDef.race?.race is null)
+            {
+                LogUtil.Warning($"IsAnimalAndAllowed: detected null race or race.race for pawnKindDef {pawnKindDef.LabelCap}");
+                return false;
+            }
+            
             var config = AnimalFilterConfig;
             return pawnKindDef.race.race.Animal
                 && pawnKindDef.RaceProps.IsFlesh
