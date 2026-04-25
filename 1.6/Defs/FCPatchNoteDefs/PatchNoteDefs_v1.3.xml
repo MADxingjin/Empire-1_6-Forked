@@ -539,4 +539,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_38</defName>
+		<label>Caravan Update</label>
+		<description>Adds the ability to reform caravans after a manual defense battle.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: after winning (or losing) a manual defense battle, the typical &quot;Reform Caravan&quot; gizmo would not appear</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
