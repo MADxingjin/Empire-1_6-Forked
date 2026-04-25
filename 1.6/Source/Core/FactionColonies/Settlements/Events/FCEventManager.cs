@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FactionColonies.util;
 using RimWorld.Planet;
 using Verse;
 
@@ -142,7 +143,7 @@ namespace FactionColonies
             if (evt is null) return false;
             if (!events.Remove(evt)) return false;
             IndexRemove(evt);
-            evt.fired = true;
+            evt.phase = FCEventPhase.Completed;
             version++;
             return true;
         }
@@ -155,7 +156,7 @@ namespace FactionColonies
             {
                 if (!match(events[i])) continue;
                 IndexRemove(events[i]);
-                events[i].fired = true;
+                events[i].phase = FCEventPhase.Completed;
                 events.RemoveAt(i);
                 removed++;
             }
@@ -171,22 +172,20 @@ namespace FactionColonies
             version++;
         }
 
-        // Atomically collects every event whose timeTillTrigger has passed,
-        // removes them from the queue, and returns them as a new list.
-        // Does NOT set 'fired'; FCEventMaker.ProcessEvents still wants its
-        // per-event re-entrancy guard to gate processing.
+        // Collects every Queued event whose timeTillTrigger has passed, returning them as a new list.
+        // Events stay in the queue; ProcessEvents transitions phase Queued -> Fired (tentative)
+        // -> Completed (default at end of body) inside its per-event re-entrancy guard, and a sweep
+        // after the loop removes Completed events. Skips events already in Fired or Completed phase.
         public List<FCEvent> CollectDueEvents(int currentTick)
         {
             List<FCEvent> due = null;
             for (int i = events.Count - 1; i >= 0; i--)
             {
+                if (!events[i].IsQueued) continue;
                 if (events[i].timeTillTrigger > currentTick) continue;
                 if (due is null) due = new List<FCEvent>();
                 due.Add(events[i]);
-                IndexRemove(events[i]);
-                events.RemoveAt(i);
             }
-            if (due != null) version++;
             return due;
         }
 

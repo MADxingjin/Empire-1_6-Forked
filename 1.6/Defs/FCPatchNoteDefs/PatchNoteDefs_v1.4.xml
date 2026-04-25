@@ -219,4 +219,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_15</defName>
+		<label>Event Backend Update</label>
+		<description>A backend code update for event handling.</description>
+		<releaseDate>2026-04-25</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates events to have one of four phases, indicating at what stage of processing they&apos;re in. Makes event tracking more clear</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

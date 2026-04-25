@@ -45,8 +45,18 @@ namespace FactionColonies
 
         public WorldSettlementDef settlementToCreate = null;
 
-        /// <summary>Set to true when ProcessEvents fires this event. Prevents accidental re-fires.</summary>
-        [Unsaved] public bool fired = false;
+        /// <summary>Lifecycle phase.
+        /// <para> - Queued: in queue, awaiting timer.</para>
+        /// <para> - Fired: tentative, mid-processing only. Should never persist past a single ProcessEvents pass.</para>
+        /// <para> - Resolving: handler-driven persistence. Set explicitly to keep the event alive past its fire.</para>
+        /// <para> - Completed: done, awaiting sweep from the queue.</para>
+        /// Default is Queued.</summary>
+        public FCEventPhase phase = FCEventPhase.Queued;
+
+        public bool IsQueued => phase == FCEventPhase.Queued;
+        public bool IsFired => phase == FCEventPhase.Fired;
+        public bool IsResolving => phase == FCEventPhase.Resolving;
+        public bool IsCompleted => phase == FCEventPhase.Completed;
 
         public bool HasVariableDuration => timeMinTrigger > 0 && timeMaxTrigger > 0;
 
@@ -115,6 +125,7 @@ namespace FactionColonies
             Scribe_Deep.Look(ref let, "let");
             Scribe_Values.Look(ref isDelayed, "isDelayed", false);
             Scribe_Values.Look(ref deliveryMode, "deliveryMode");
+            Scribe_Values.Look(ref phase, "phase", FCEventPhase.Queued);
 
             //Military stuff
             Scribe_Deep.Look(ref militaryForceAttacking, "militaryForceAttacking");
@@ -132,6 +143,12 @@ namespace FactionColonies
             return "FCEvent_" + loadID;
         }
 
+        /// <summary>
+        /// Runs the event's mod-extension handler. Called by ProcessEvents after re-entrancy
+        /// guards. Handlers that want the event to persist past this fire (e.g. ongoing battle,
+        /// multi-step delivery) set <c>phase = FCEventPhase.Resolving</c> during their run;
+        /// otherwise the event auto-transitions to Completed after ProcessEvents finishes.
+        /// </summary>
         public void RunAction()
         {
             try
