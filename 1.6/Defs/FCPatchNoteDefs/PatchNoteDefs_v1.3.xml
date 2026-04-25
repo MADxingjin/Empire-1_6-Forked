@@ -553,4 +553,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_39</defName>
+		<label>Caravan Gizmo Update 2</label>
+		<description>Rimworld logic says that a battle is over as soon as hostiles start to flee; this is when the Reform Caravan gizmo appears. Empire, however, does not consider a battle to be over until all hostiles have died or fled the map. This creates an awkward interim period where the gizmo appears, but isn&apos;t fully usable. This update resolves that by disabling the gizmo until Empire says the battle is over.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: the Reform Caravan gizmo can appear before Empire says the battle is actually over</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
