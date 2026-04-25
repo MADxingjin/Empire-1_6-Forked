@@ -42,7 +42,7 @@ namespace FactionColonies
                 FactionFC faction = FactionCache.FactionComp;
                 if (faction is object && __result == true && faction.tradedAmount != 0)
                 {
-                    Find.LetterStack.ReceiveLetter("FCFactionResearch".Translate(), TranslatorFormattedStringExtensions.Translate("PointsAddedToResearchPool", faction.tradedAmount), LetterDefOf.PositiveEvent);
+                    Find.LetterStack.ReceiveLetter("FCFactionResearch".Translate(), "FCPointsAddedToResearchPool".Translate(faction.tradedAmount), LetterDefOf.PositiveEvent);
                     faction.tradedAmount = 0;
                 }
             }
