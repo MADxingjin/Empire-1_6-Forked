@@ -15,7 +15,11 @@ namespace FactionColonies
         public Pawn pawn;
         public bool deployable = false;
         public int loadID;
-        private bool isOnMap = false;
+        // True when the pawn has another deep owner at save time (Map.mapPawns or
+        // WorldPawns). Falls back to Scribe_References to avoid duplicate-id load
+        // errors. Scribed under the legacy "isOnMap" key for back-compat with
+        // older saves; defaults to false so old saves keep using Scribe_Deep.
+        private bool isExternallyOwned = false;
 
         /// <summary>
         /// Extensible data dictionary for submods. Keyed by submod namespace to avoid collisions.
@@ -37,17 +41,20 @@ namespace FactionColonies
         {
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                isOnMap = pawn?.Map != null;
+                isExternallyOwned = pawn is object &&
+                    (pawn.Map is object
+                     || pawn.SpawnedOrAnyParentSpawned
+                     || (Find.WorldPawns is object && Find.WorldPawns.Contains(pawn)));
             }
 
-            Scribe_Values.Look(ref isOnMap, "isOnMap", false);
+            Scribe_Values.Look(ref isExternallyOwned, "isOnMap", false);
             Scribe_References.Look(ref loadout, "loadout");
             Scribe_References.Look(ref squad, "squad");
             Scribe_References.Look(ref settlement, "settlement");
             Scribe_References.Look(ref handler, "handler");
             Scribe_References.Look(ref animal, "animal");
 
-            if (isOnMap)
+            if (isExternallyOwned)
             {
                 Scribe_References.Look(ref pawn, "pawn");
             }
