@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System;
+using System.Linq;
 using Verse;
 
 
@@ -21,7 +22,11 @@ namespace FactionColonies
         public bool isReturning;
         public int loadID;
         public FCWorkLoad workload;
-        public Pawn_HealthTracker healthTracker;
+
+        // Save-time flag: true when the pawn has another deep owner (Map.mapPawns,
+        // WorldPawns.pawnsAlive). Used to fall back to Scribe_References and avoid
+        // the "Id already used" duplicate-registration cascade on load.
+        private bool isExternallyOwned;
 
 
         public FCPrisoner()
@@ -33,7 +38,6 @@ namespace FactionColonies
             prisoner = pawn;
             this.settlement = settlement;
             unrest = 0;
-            healthTracker = pawn.health;
             health = (float)Math.Round(prisoner.health.summaryHealth.SummaryHealthPercent * 100);
             isReturning = false;
             FactionFC comp = FactionCache.FactionComp;
@@ -52,14 +56,57 @@ namespace FactionColonies
 
         public void ExposeData()
         {
-            Scribe_Deep.Look(ref prisoner, "prisoner");
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                isExternallyOwned = prisoner is object &&
+                    (prisoner.Map is object
+                     || prisoner.SpawnedOrAnyParentSpawned
+                     || (Find.WorldPawns is object && Find.WorldPawns.Contains(prisoner)));
+            }
+
+            Scribe_Values.Look(ref isExternallyOwned, "isExternallyOwned", false);
+
+            if (isExternallyOwned)
+            {
+                Scribe_References.Look(ref prisoner, "prisoner");
+            }
+            else
+            {
+                Scribe_Deep.Look(ref prisoner, "prisoner");
+            }
+
             Scribe_References.Look(ref settlement, "settlement");
             Scribe_Values.Look(ref unrest, "unrest");
             Scribe_Values.Look(ref health, "healthy");
             Scribe_Values.Look(ref isReturning, "isReturning");
             Scribe_Values.Look(ref loadID, "loadID");
             Scribe_Values.Look(ref workload, "workload");
-            Scribe_Deep.Look(ref healthTracker, "healthTracker", new object[] { prisoner });
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                // Migration: legacy saves always Scribe_Deep'd the prisoner even when
+                // WorldPawns also held it. The duplicate-id registration failure left
+                // FCPrisoner.prisoner as an orphan dupe (different reference, same
+                // thingIDNumber as the WorldPawns instance). Re-bind to the canonical
+                // instance and pull it out so we own it cleanly going forward.
+                if (!isExternallyOwned && prisoner is object && Find.WorldPawns is object)
+                {
+                    if (Find.WorldPawns.Contains(prisoner))
+                    {
+                        Find.WorldPawns.RemovePawn(prisoner);
+                    }
+                    else
+                    {
+                        Pawn registered = Find.WorldPawns.AllPawnsAliveOrDead
+                            .FirstOrDefault(p => p != null && p.thingIDNumber == prisoner.thingIDNumber);
+                        if (registered is object && !ReferenceEquals(registered, prisoner))
+                        {
+                            prisoner = registered;
+                            Find.WorldPawns.RemovePawn(prisoner);
+                        }
+                    }
+                }
+            }
         }
 
 

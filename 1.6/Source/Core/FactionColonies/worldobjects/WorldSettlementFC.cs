@@ -660,6 +660,14 @@ namespace FactionColonies
 
         public void AddPrisoner(Pawn prisoner)
         {
+            // FCPrisoner is the canonical deep owner of the held pawn. If WorldPawns
+            // already has it (e.g., redressed by PawnGenerator, passed via LeaveMap,
+            // dropped from a caravan), pull it out so save doesn't double-scribe.
+            // The conditional Scribe in FCPrisoner.ExposeData defends on-map cases.
+            if (prisoner is object && Find.WorldPawns is object && Find.WorldPawns.Contains(prisoner))
+            {
+                Find.WorldPawns.RemovePawn(prisoner);
+            }
             prisonerList.Add(new FCPrisoner(prisoner, this));
             DirtyStatsCache();
         }
