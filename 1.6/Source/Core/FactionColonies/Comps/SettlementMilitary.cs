@@ -1513,7 +1513,7 @@ namespace FactionColonies
         public bool IsStaleDeploy()
         {
             // Tile-less deploy: SendMilitary sets job + location together, so this is broken state.
-            if (militaryLocation == -1) return true;
+            if (militaryLocation == PlanetTile.Invalid) return true;
             
             // Active warning event for the target; defense is actually in progress.
             if (MilitaryUtilFC.ReturnMilitaryEventByLocation(militaryLocation) is object) return false;
