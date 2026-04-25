@@ -1300,25 +1300,24 @@ namespace FactionColonies
                 IntVec3 loc;
                 if (friendly.AnimalOrWildMan())
                 {
+                    Pawn rider = null;
                     if (riders.Count > 0)
                     {
                         var pair = riders.FirstOrDefault(p => p.Value.thingIDNumber == friendly.thingIDNumber);
-                        if (pair.Key == null)
-                        {
-                            var isAnimal = friendly.RaceProps.Animal ? "animal" : "human";
-                            LogUtil.Error("No rider pair found for " + isAnimal + ": " + friendly.thingIDNumber + ", and riders dictionary is not empty!");
-                            continue;
-                        }
-                        var owner = pair.Key;
-                        CellFinder.TryFindRandomCellInsideWith(new CellRect((int)owner.DrawPos.x - 5,
-                                (int)owner.DrawPos.z - 5, 10, 10),
+                        rider = pair.Key;
+                    }
+
+                    if (rider is object)
+                    {
+                        CellFinder.TryFindRandomCellInsideWith(new CellRect((int)rider.DrawPos.x - 5,
+                                (int)rider.DrawPos.z - 5, 10, 10),
                             testing => testing.Standable(Map) && Map.reachability.CanReachMapEdge(testing,
                                 TraverseParms.For(TraverseMode.PassDoors)), out loc);
                     }
                     else
                     {
-                        LogUtil.Error("Rider Dictionary is empty but animal was still generated?");
-                        continue;
+                        LogUtil.Warning($"Defender animal {friendly.LabelShort} ({friendly.thingIDNumber}) has no rider pair; placing as a standalone defender.");
+                        tryFindLoc(out loc, friendly);
                     }
                 }
                 else

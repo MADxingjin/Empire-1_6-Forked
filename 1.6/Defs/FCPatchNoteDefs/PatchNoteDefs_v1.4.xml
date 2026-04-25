@@ -205,4 +205,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_14</defName>
+		<label>Defense Update</label>
+		<description>Currently, when setting up a manual defense battle, if an animal would spawn without a rider, then the mod logs an error and skips the animal. This update changes that; we now only log a warning, and then try to spawn the animal anyways.</description>
+		<releaseDate>2026-04-25</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Always spawn animals without riders in manual defense battles</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
