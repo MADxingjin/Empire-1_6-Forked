@@ -1464,6 +1464,14 @@ namespace FactionColonies
 
         private void ClearAttackState()
         {
+            // Notify foreign defender so they don't keep a stale
+            // militaryJob = DefendFriendlySettlement / militaryLocation pointed here.
+            if (defenderForce?.homeSettlement is object
+                && defenderForce.homeSettlement != WorldSettlement)
+            {
+                defenderForce.homeSettlement.MilitaryComp?.ReturnMilitary(false);
+            }
+
             isUnderAttack = false;
             endingBattle = false;
             battleMapInitialized = false;
@@ -1478,15 +1486,44 @@ namespace FactionColonies
 
         public void PostSettlementLoadInit(WorldSettlementFC settlement)
         {
-            if (!isUnderAttack) return;
-            if (MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile) is object) return;
-            // Save taken mid-battle: event was removed from the queue but combatants are still scribed.
-            // Leave the battle state alone. EndBattle will clear isUnderAttack naturally when it resolves.
-            if (attackers.Any() || defenders.Any()) return;
+            if (isUnderAttack
+                && MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile) is null
+                && !attackers.Any() && !defenders.Any())
+            {
+                // Save taken mid-battle: event was removed from the queue but combatants are still
+                // scribed. Leave the battle state alone (EndBattle will clear naturally on resolve).
+                LogUtil.Warning($"Repairing stuck isUnderAttack flag on {settlement.Name} during load " +
+                    $"(no matching settlementBeingAttacked event).");
+                ClearAttackState();
+            }
 
-            LogUtil.Warning($"Repairing stuck isUnderAttack flag on {settlement.Name} during load " +
-                $"(no matching settlementBeingAttacked event).");
-            ClearAttackState();
+            // Orphan-DefendFriendlySettlement repair: catches deploys whose target was cleaned up
+            // without notifying us (any code path that bypasses ClearAttackState's notify hook).
+            if (militaryBusy
+                && militaryJob == MilitaryJobDefOf.DefendFriendlySettlement
+                && IsStaleDeploy())
+            {
+                LogUtil.Warning($"Clearing orphaned DefendFriendlySettlement on {settlement.Name} during load.");
+                ReturnMilitary(false);
+            }
+        }
+
+        // Shared by load-time and debug-force paths. Caller has already verified
+        // militaryJob == DefendFriendlySettlement.
+        public bool IsStaleDeploy()
+        {
+            // Tile-less deploy: SendMilitary sets job + location together, so this is broken state.
+            if (militaryLocation == -1) return true;
+            
+            // Active warning event for the target; defense is actually in progress.
+            if (MilitaryUtilFC.ReturnMilitaryEventByLocation(militaryLocation) is object) return false;
+            
+            // Target world object is gone (settlement destroyed, outpost despawned, etc.): stale.
+            var targetComp = Find.WorldObjects.WorldObjectAt<WorldSettlementFC>(militaryLocation)?.MilitaryComp;
+            if (targetComp is null) return true;
+            
+            // Target exists, no event, not under attack: stale.
+            return !targetComp.isUnderAttack;
         }
 
         private void CooldownMilitary(int remaining, bool won)
