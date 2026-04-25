@@ -567,4 +567,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_40</defName>
+		<label>Stuck Defense Fix</label>
+		<description>Adds load-time and debug-action-triggered checks to clear settlements that are erroneously stuck in the &quot;Defending [settlement name]&quot; state. I&apos;m not completely sure what the root cause of the bug is, but this should at least clear up the resulting corrupted state.</description>
+		<releaseDate>2026-04-25</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: settlements sometimes get stuck in a &quot;Defending [settlement name]&quot; state</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

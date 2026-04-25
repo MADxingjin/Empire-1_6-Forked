@@ -967,6 +967,25 @@ namespace FactionColonies
             });
         }
 
+        [DebugAction("Empire", "Clear Orphaned Deployments", allowedGameStates = AllowedGameStates.Playing)]
+        private static void ForceCheckOrphanedDeploys()
+        {
+            int cleared = 0;
+            foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+            {
+                var comp = settlement.MilitaryComp;
+                if (comp is null) continue;
+                if (!comp.militaryBusy || comp.militaryJob != MilitaryJobDefOf.DefendFriendlySettlement) continue;
+                if (comp.IsStaleDeploy())
+                {
+                    comp.ReturnMilitary(false);
+                    cleared++;
+                    LogUtil.MessageForce($"  Cleared stale DefendFriendlySettlement on {settlement.Name}");
+                }
+            }
+            LogUtil.MessageForce($"Clear Orphaned Deployments: cleared {cleared}.");
+        }
+
         [DebugAction("Empire", "Run Military Error Check", allowedGameStates = AllowedGameStates.Playing)]
         private static void RunMilitaryErrorCheck()
         {

@@ -1171,6 +1171,9 @@ namespace FactionColonies
                 FCEvent evt = MilitaryUtilFC.ReturnMilitaryEventByLocation(settlement.Tile);
 
                 double winChance = SimulateBattleFc.CalculateDefenderWinChance(evt.militaryForceAttacking, evt.militaryForceDefending);
+                // "Reset to Home Settlement" option with win chance
+                MilitaryForce homeForce = MilitaryForce.CreateMilitaryForceFromSettlement(settlement);
+                double homeWinChance = SimulateBattleFc.CalculateDefenderWinChance(evt.militaryForceAttacking, homeForce);
                 list.Add(new FloatMenuOption(
                     "FCSettlementDefendingInformation".Translate(
                         evt.militaryForceDefending.homeSettlement.Name,
@@ -1185,29 +1188,29 @@ namespace FactionColonies
                         * homeSettlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
                         * FCSettings.defenderAdvantage);
                     settlementList.Add(new FloatMenuOption(
-                        "FCResetToHomeSettlement".Translate(homePower),
+                        "FCResetToHomeSettlement".Translate(homePower, (homeWinChance * 100).ToString("F0")),
                         delegate { MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, homeSettlement); },
                         MenuOptionPriority.High));
 
-                    foreach (WorldSettlementFC settlement in FactionCache.FactionComp.settlements)
+                    foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
                     {
-                        if (settlement.MilitaryComp.IsMilitaryValid() && settlement != homeSettlement)
+                        if (s.MilitaryComp.IsMilitaryValid() && s != homeSettlement)
                         {
-                            double power = Math.Round(settlement.settlementMilitaryLevel
-                                * settlement.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
+                            double power = Math.Round(s.settlementMilitaryLevel
+                                * s.GetStatValue(FCStatDefOf.militaryCombatEfficiency)
                                 * FCSettings.defenderAdvantage);
                             settlementList.Add(new FloatMenuOption(
-                                settlement.Name + " " + "FCPower".Translate() + " " +
+                                s.Name + " " + "FCPower".Translate() + " " +
                                 power + " - " + "FCAvailable".Translate() +
-                                ": " + (!settlement.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
+                                ": " + (!s.MilitaryComp.IsMilitaryBusySilent()).ToString(), delegate
                                 {
-                                    if (settlement.MilitaryComp.IsMilitaryBusy())
+                                    if (s.MilitaryComp.IsMilitaryBusy())
                                     {
                                         //military is busy
                                     }
                                     else
                                     {
-                                        MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, settlement);
+                                        MilitaryUtilFC.ChangeDefendingMilitaryForce(evt, s);
                                     }
                                 }
                             ));
