@@ -60,9 +60,7 @@ namespace FactionColonies
                             data.startTick = Find.TickManager.TicksGame;
                             data.enabled = true;
                             settlement.InvalidateStatCache();
-                            Messages.Message(
-                                TranslatorFormattedStringExtensions.Translate("FCGivingTaxBreak", settlement.Name),
-                                MessageTypeDefOf.NeutralEvent);
+                            Messages.Message("FCGivingTaxBreak".Translate(settlement.Name), MessageTypeDefOf.NeutralEvent);
                         }));
                 }
                 else

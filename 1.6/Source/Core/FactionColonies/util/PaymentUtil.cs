@@ -130,8 +130,7 @@ namespace FactionColonies
                 resolvedBills++;
             }
 
-            Messages.Message(TranslatorFormattedStringExtensions.Translate("NumberTaxesHasBeenSolved", resolvedBills),
-                MessageTypeDefOf.NeutralEvent);
+            Messages.Message("FCNumberTaxesHasBeenSolved".Translate(resolvedBills), MessageTypeDefOf.NeutralEvent);
         }
 
         public static void PlaceThing(Thing thing)

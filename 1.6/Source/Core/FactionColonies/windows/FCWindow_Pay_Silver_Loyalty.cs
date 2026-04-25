@@ -11,7 +11,7 @@
             this.silverCount = PaymentUtil.GetSilver();
             this.settlement = settlement;
             this.selectedSilver = 0;
-            this.stringEffect = "SettlementGainsXLoyalty";
+            this.stringEffect = "FCSettlementGainsXLoyalty";
         }
 
 
