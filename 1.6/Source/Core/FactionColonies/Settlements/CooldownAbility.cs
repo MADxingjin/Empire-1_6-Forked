@@ -5,7 +5,7 @@ namespace FactionColonies
 {
     /// <summary>
     /// Reusable cooldown tracker for policy abilities (Militaristic extra squad,
-    /// Pacifist diplomat, Feudal mercenary request, Expansionist fee reduction, etc.).
+    /// Pacifist diplomat, Feudal mercenary request, etc.).
     /// Serializes its state via IExposable for save/load.
     /// </summary>
     public class CooldownAbility : IExposable

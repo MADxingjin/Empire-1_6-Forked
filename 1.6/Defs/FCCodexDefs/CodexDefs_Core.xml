@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Empire Codex Entry Definitions (Core)
+
+    The canonical Empire Codex entries. Each CodexEntryDef defines one entry
+    in the in-game Empire Codex.
+
+    Required fields:
+        defName      - unique identifier (used for seeAlso cross-references)
+        label        - display title shown in the Codex
+        description  - body text shown in the detail pane (supports \n for newlines)
+        category     - reference to a CodexCategoryDef (e.g. CodexCat_Economy)
+
+    Optional fields:
+        displayOrder    - sort order within category (lower = first, default 0)
+        iconPath        - texture path for an icon next to the title
+        seeAlso         - list of defNames of related entries (rendered as clickable links)
+        imagePaths      - list of texture paths for an image carousel
+        dynamicProvider - fully qualified C# class name implementing ICodexDynamicProvider
+                          (appends live game-state data in the right pane)
+
+    Category color, mod association, and banner are defined on the CodexCategoryDef,
+    not on individual entries. See CodexCategoryDefs.xml.
+
+    To add entries from a submod:
+    1. Define your own CodexCategoryDef(s) with your modId
+    2. Create CodexEntryDef entries referencing your categories
+    3. Drop both XML files in your submod's Defs/ folder
+-->
+<Defs>
+
+    <!-- CATEGORY: Economy -->
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_Prosperity</defName>
+        <label>Prosperity</label>
+        <description>Prosperity is a 0–100 stat on each settlement that directly multiplies all resource production.
+
+At 50 prosperity, your settlement produces half as much as at 100. At 1, production is nearly zero.
+
+Prosperity drifts daily toward a target calculated from your other social stats:
+  Target = (Happiness + Loyalty + (100 − Unrest)) / 3
+
+The drift rate is 1 point per day (plus any stat modifiers from policies, buildings, or events). If your happiness and loyalty are high and unrest is low, prosperity will climb. If social stats deteriorate, prosperity follows.
+
+Losing a defensive battle costs 20 prosperity immediately, which can take many days to recover from.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>10</displayOrder>
+        <iconPath>GUI/Prosperity</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_Prosperity</dynamicProvider>
+        <seeAlso>
+            <li>Codex_ResourceProduction</li>
+            <li>Codex_ThreatLevel</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_ResourceProduction</defName>
+        <label>Resource Production</label>
+        <description>Every settlement turns assigned workers into resources through a three-stage cascade. Knowing where each stage's bonuses come from is the difference between a settlement that breaks even and one that funds the rest of your empire.
+
+Stage 1: Base. Each resource starts with a per-settlement base value driven mostly by the biome and adjusted by tile mutators or landmarks. Buildings, policies, and events can add flat amounts here through additive resource-production stats.
+
+Stage 2: Multiplier. Buildings, policies, governors, events, and faction-wide stat modifiers stack into a single multiplier on the base.
+
+Stage 3: Workers and prosperity. The base × multiplier is then scaled linearly by assigned workers, and finally multiplied by prosperity / 100. A settlement at 50 prosperity produces half of what its workers and buildings would otherwise yield, no matter how good the rest of the chain looks.
+
+At tax time, the produced resources are converted to silver at the configured silver-per-resource ratio, then the production tithe modifier is applied to determine what actually reaches your stockpile.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>20</displayOrder>
+        <iconPath>GUI/ProductionFood</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_ResourceProduction</dynamicProvider>
+        <seeAlso>
+            <li>Codex_Prosperity</li>
+            <li>Codex_WorkerOverwork</li>
+            <li>Codex_ResourceProduction_Snapshot</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_ResourceProduction_Snapshot</defName>
+        <label>Production Snapshots</label>
+        <description>The basics of resource production are outlined in the Resource Production entry, and explain how the raw income value for each resource is calculated. However, at tax time, you may receive a different value from what the raw income, or even the gross income claims. This is due to Production Snapshotting.
+            
+Each day, a snapshot is taken of each settlement's production allocations. At tax time, you actually receive the average of these daily snapshots over the tax period.
+            
+This means that anything that changes a resource's production - events, changed worker assignments, new buildings, etc. - will change the actual value that you receive at tax time.
+            
+You can see the running average by mousing over a resource's raw income value in the settlement window.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>21</displayOrder>
+        <iconPath>GUI/ProductionFood</iconPath>
+        <seeAlso>
+            <li>Codex_ResourceProduction</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_ResourceProduction_Tithing</defName>
+        <label>Resource Tithing</label>
+        <description>By default, resource production is turned into silver, which is then shipped to you. But there is another way to direct a resource's production: through tithes.
+            
+Tithes allow you to divert resource production towards producing actual goods. The resource's gross income is reduced, and in exchange, you can choose a list of items for the settlement to send you at tax time.
+            
+The list of available items will depend on your tech level and unlocked research. For items that support it, you can choose the "stuff" that they're made out of, or their quality - with a respective increase on the item's price.
+            
+You can also choose to enable Random Tithes. If enabled, you will be sent a random assortment of items, selected from the random tithes list and with a total value equal to or less than your allowed Random Tithe Budget. If the budget isn't high enough to support any single item, then it rolls over to the next tax period.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>22</displayOrder>
+        <iconPath>GUI/ProductionFood</iconPath>
+        <seeAlso>
+            <li>Codex_ResourceProduction</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_WorkerOverwork</defName>
+        <label>Worker Overwork</label>
+        <description>Each assigned worker costs a flat amount of silver per tax cycle (set by the Worker Cost difficulty parameter). Up to a settlement's soft cap, workers cost their base rate. Past the cap, costs rise.
+
+The penalty compounds: the total cost of all workers is multiplied by 1 + (workers over cap) / 20. Five workers over the cap is a 25% surcharge on the whole settlement's worker bill; ten over is 50%; twenty over is 100%.
+            
+At default difficulty settings where workers cost 100 silver each, assigning 5 overmax workers will cause ALL workers to cost 125 silver.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>30</displayOrder>
+        <dynamicProvider>FactionColonies.CodexProvider_WorkerOverwork</dynamicProvider>
+        <seeAlso>
+            <li>Codex_ResourceProduction</li>
+            <li>Codex_DifficultySettings</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_DifficultySettings</defName>
+        <label>Difficulty Settings</label>
+        <description>The Empire difficulty preset is independent of RimWorld's storyteller difficulty. It controls four economic parameters that together set how forgiving the early game is and how lucrative a mature empire becomes.
+
+ - Silver per Resource: the silver value of one unit of produced resource at tax time.
+ - Days between Tax Cycles: how often production is collected and converted to silver.
+ - Production Tithe: a per-worker budget bonus that only counts towards tithing.
+ - Worker Cost: the per-worker silver charge applied each cycle.
+
+Lower presets (Peaceful, Community Builder) pay you more per resource, take a smaller cut, and charge less per worker. Higher presets (Blood and Dust, Losing is Fun) invert all four: lower silver per resource, larger cut taken, more expensive workers, and the gap between paydays is widened.
+
+Choose Custom to set each parameter independently. Useful when you want, for example, vanilla payouts but a faster tax cadence, or harsh worker costs without lowering production value.</description>
+        <category>CodexCat_Economy</category>
+        <displayOrder>40</displayOrder>
+        <iconPath>GUI/customizebutton</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_DifficultySettings</dynamicProvider>
+        <seeAlso>
+            <li>Codex_WorkerOverwork</li>
+            <li>Codex_ThreatLevel</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <!-- CATEGORY: Military -->
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_ThreatLevel</defName>
+        <label>Empire Threat Level (ETL)</label>
+        <description>The Empire Threat Level (ETL) is a hidden multiplier (1.0x to 3.0x by default) that scales how dangerous enemy attacks are against your settlements.
+
+It is weighted by four factors:
+ - Average settlement level (35% weight)
+ - Highest settlement level (15% weight)
+ - Faction income (30% weight)
+ - Settlement count (20% weight)
+
+Each factor follows a non-linear curve; early growth raises threat slowly, but large empires with high income hit the cap fast. Having one high-level settlement raises threat less than having many mid-level ones.
+
+During your first year, a handicap limits how fast threat can grow regardless of your empire's strength. After one year, the cap transitions smoothly to ETL-based scaling.
+
+The Max Threat Multiplier setting (default 3.0x) provides an absolute ceiling to ETL.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>10</displayOrder>
+        <iconPath>GUI/MilitaryLevel</iconPath>
+        <dynamicProvider>FactionColonies.CodexProvider_ThreatLevel</dynamicProvider>
+        <seeAlso>
+            <li>Codex_Prosperity</li>
+            <li>Codex_AttackFrequency</li>
+            <li>Codex_BattleSimulation</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_AttackFrequency</defName>
+        <label>Attack Frequency</label>
+        <description>Empire Threat Level governs how dangerous each attack is. Attack Frequency governs how often they come.
+
+Attack frequency is driven by your settlement count: roughly 1.0x at one settlement, 1.4x at five, 1.8x at ten, and 2.0x at fifteen or more. It is capped only by the "min/max days till military action" setting; attacks will never occur more frequently than the minimum value.
+
+In practical terms, a sprawling fifteen-settlement empire faces attacks roughly twice as often as a single-settlement empire, even if both have identical Empire Threat Level.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>20</displayOrder>
+        <dynamicProvider>FactionColonies.CodexProvider_AttackFrequency</dynamicProvider>
+        <seeAlso>
+            <li>Codex_ThreatLevel</li>
+            <li>Codex_BattleSimulation</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_BattleSimulation_AutoBattles</defName>
+        <label>Battle Simulation</label>
+        <description>Both auto-defend battles and offensive raids involving Empire settlements are resolved by simulation.
+            
+An auto-resolve battle begins by assigning both the attacker and the defender an HP value, derived from their base Military Level and any modifiers (such as Military Efficiency or Defender Advantage).
+            
+The simulation then consists of a number of rounds. Each round, the attacker and defender roll a d20; the side with the lowest value loses one HP, with the defender winning ties. This repeats until one side reaches 0 HP.
+            
+But there's a catch: each d20 roll is multiplied by that force's Military Efficiency. For a force with an efficiency of 1.2, a d20 roll of 10 becomes 12; meanwhile, for a force with an efficiency of 0.8, a d20 roll of 10 becomes 8.
+            
+In this way, military efficiency can have a substantial impact on auto-resolve battles. Don't neglect it! And mind that technologically advanced factions have higher military efficiency - Spacer-tech factions have an efficiency of 1.2, Ultra-tech has 1.3, and Archotech has 1.5!
+            
+The effect of Military Efficiency can be dampened through the Efficiency Damping mod setting. More on that in the Battle Simulation Modifiers entry.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>30</displayOrder>
+        <dynamicProvider>FactionColonies.CodexProvider_BattleSimulation</dynamicProvider>
+        <seeAlso>
+            <li>Codex_BattleSimulation</li>
+            <li>Codex_ThreatLevel</li>
+            <li>Codex_MilitaryCooldown</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_BattleSimulation</defName>
+        <label>Battle Simulation Modifiers</label>
+        <description>Both auto-defend battles and offensive raids involving Empire settlements are resolved by simulation. Two settings control how that simulation behaves.
+
+Defender Advantage is a flat multiplier on the defender's effective combat power. The default reflects the natural edge that comes from prepared positions; raising it makes garrisons more durable, lowering it makes attackers more deadly.
+
+Efficiency Damping compresses extreme efficiency ratios toward 1.0, so neither side runs away with the fight on a single lucky composition. The formula is straightforward: final = 1 + (raw − 1) × damping. A raw efficiency of 2.0 with the default damping of 0.5 becomes 1.5, and a raw of 0.3 with the same damping becomes 0.65.
+
+Set damping high to preserve the raw outcomes (sharp wins and sharp losses); set it low to flatten the curve (no battle is ever a runaway). Defender Advantage and Damping interact, so tune both together rather than in isolation.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>31</displayOrder>
+        <dynamicProvider>FactionColonies.CodexProvider_BattleSimulation</dynamicProvider>
+        <seeAlso>
+            <li>Codex_BattleSimulation_AutoBattles</li>
+            <li>Codex_ThreatLevel</li>
+            <li>Codex_MilitaryCooldown</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+    <FactionColonies.CodexEntryDef>
+        <defName>Codex_MilitaryCooldown</defName>
+        <label>Military Cooldown</label>
+        <description>After any military operation - offensive, defensive, or aborted - your army enters a cooldown during which it cannot be deployed again.
+
+The base cooldown is 3 days. If the "dead pawns increase military cooldown" setting is enabled (it is by default), each pawn lost during the operation adds 4 hours of additional cooldown on top of the base.</description>
+        <category>CodexCat_Military</category>
+        <displayOrder>40</displayOrder>
+        <dynamicProvider>FactionColonies.CodexProvider_MilitaryCooldown</dynamicProvider>
+        <seeAlso>
+            <li>Codex_BattleSimulation</li>
+            <li>Codex_AttackFrequency</li>
+        </seeAlso>
+    </FactionColonies.CodexEntryDef>
+
+</Defs>

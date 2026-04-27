@@ -8,6 +8,13 @@ using Verse;
 
 namespace FactionColonies
 {
+    /* Surface-only invariant: the road system operates exclusively on the
+       root surface layer — see UpdateSettlementsToProcess, which filters
+       orbital settlements out before enqueueing. That guarantee is the
+       reason this class and its helpers (FCRoadPath, FCRoadBuilder) can
+       safely store tiles as bare ints without risking layer aliasing.
+       Revisit (migrate the int collections to PlanetTile) if orbital
+       settlements ever need to participate in road building. */
     public class FCRoadQueue : IExposable
     {
         public int nextRoadTick;
@@ -30,21 +37,22 @@ namespace FactionColonies
         private PlanetLayer incrementalLayer;
         private WorldPathing incrementalPathing;
         private int incrementalEdgeIndex;
-        private List<long> incrementalEdgeKeys;
+        private List<TileEdgeKey> incrementalEdgeKeys;
         private int incrementalGeneration;
 
         // KNN filtering constant
         private const int KNearestNeighbors = 8;
 
-        // Edge cost cache (saved)
-        private Dictionary<long, float> edgeCostCache = new Dictionary<long, float>();
+        // Edge cost cache (saved). Wire format on disk is Dictionary<long, float>
+        // for save-compat with older versions; conversion happens in ExposeData.
+        private Dictionary<TileEdgeKey, float> edgeCostCache = new Dictionary<TileEdgeKey, float>();
         private HashSet<int> previousTileSet = new HashSet<int>();
         private RoadDef cachedRoadDef;
 
         // Background thread result handoff (not saved)
-        private Dictionary<long, float> pendingNewEdges;
+        private Dictionary<TileEdgeKey, float> pendingNewEdges;
         private string pendingLogMessage;
-        private HashSet<long> currentCandidateEdges;
+        private HashSet<TileEdgeKey> currentCandidateEdges;
 
         public bool IsMSTReady => completedGeneration == mstGeneration;
 
@@ -109,29 +117,16 @@ namespace FactionColonies
             public float cost;
         }
 
-        private static long EdgeKey(int tileA, int tileB)
-        {
-            int lo = tileA < tileB ? tileA : tileB;
-            int hi = tileA < tileB ? tileB : tileA;
-            return ((long)lo << 32) | (long)(uint)hi;
-        }
-
-        private static void UnpackEdgeKey(long key, out int lo, out int hi)
-        {
-            lo = (int)(key >> 32);
-            hi = (int)(key & 0xFFFFFFFFL);
-        }
-
         /// <summary>
         /// For each tile, selects up to k nearest neighbors by approximate tile distance.
         /// Returns a HashSet of canonical edge keys (deduplicates symmetric pairs).
         /// O(n²) in distance computations but ApproxDistanceInTiles is trivial vector math.
         /// </summary>
-        private static HashSet<long> SelectKNNCandidateEdges(List<int> allTiles, PlanetLayer layer)
+        private static HashSet<TileEdgeKey> SelectKNNCandidateEdges(List<int> allTiles, PlanetLayer layer)
         {
             int n = allTiles.Count;
             int k = Math.Min(KNearestNeighbors, n - 1);
-            HashSet<long> candidateKeys = new HashSet<long>();
+            HashSet<TileEdgeKey> candidateKeys = new HashSet<TileEdgeKey>();
             List<KeyValuePair<int, float>> distances = new List<KeyValuePair<int, float>>(n);
 
             for (int i = 0; i < n; i++)
@@ -148,7 +143,7 @@ namespace FactionColonies
                 int count = Math.Min(k, distances.Count);
                 for (int d = 0; d < count; d++)
                 {
-                    candidateKeys.Add(EdgeKey(allTiles[i], allTiles[distances[d].Key]));
+                    candidateKeys.Add(new TileEdgeKey(allTiles[i], allTiles[distances[d].Key]));
                 }
             }
 
@@ -157,27 +152,25 @@ namespace FactionColonies
 
         private void InvalidateCacheForTiles(HashSet<int> removedTiles)
         {
-            List<long> toRemove = new List<long>();
-            foreach (long key in edgeCostCache.Keys)
+            List<TileEdgeKey> toRemove = new List<TileEdgeKey>();
+            foreach (TileEdgeKey key in edgeCostCache.Keys)
             {
-                UnpackEdgeKey(key, out int lo, out int hi);
-                if (removedTiles.Contains(lo) || removedTiles.Contains(hi))
+                if (removedTiles.Contains(key.lo) || removedTiles.Contains(key.hi))
                     toRemove.Add(key);
             }
-            foreach (long key in toRemove)
+            foreach (TileEdgeKey key in toRemove)
                 edgeCostCache.Remove(key);
         }
 
-        private List<Edge> BuildEdgeListFromCache(HashSet<long> candidateEdges)
+        private List<Edge> BuildEdgeListFromCache(HashSet<TileEdgeKey> candidateEdges)
         {
             List<Edge> edges = new List<Edge>(candidateEdges.Count);
-            foreach (long key in candidateEdges)
+            foreach (TileEdgeKey key in candidateEdges)
             {
                 float cost;
                 if (!edgeCostCache.TryGetValue(key, out cost))
                     continue;
-                UnpackEdgeKey(key, out int lo, out int hi);
-                edges.Add(new Edge { fromTile = lo, toTile = hi, cost = cost });
+                edges.Add(new Edge { fromTile = key.lo, toTile = key.hi, cost = cost });
             }
             return edges;
         }
@@ -199,10 +192,19 @@ namespace FactionColonies
             if (roadPaths == null)
                 roadPaths = new List<FCRoadPath>();
 
-            // Edge cost cache persistence
-            Scribe_Collections.Look(ref edgeCostCache, "edgeCostCache", LookMode.Value, LookMode.Value);
-            if (edgeCostCache is null)
-                edgeCostCache = new Dictionary<long, float>();
+            // Edge cost cache persistence. Wire format remains Dictionary<long, float>
+            // so saves from the pre-TileEdgeKey version still load. The struct provides
+            // Pack/Unpack helpers for the round-trip.
+            Dictionary<long, float> packedEdgeCache = null;
+            if (Scribe.mode == LoadSaveMode.Saving)
+                packedEdgeCache = edgeCostCache.ToDictionary(kvp => kvp.Key.Pack(), kvp => kvp.Value);
+            Scribe_Collections.Look(ref packedEdgeCache, "edgeCostCache", LookMode.Value, LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                edgeCostCache = packedEdgeCache is null
+                    ? new Dictionary<TileEdgeKey, float>()
+                    : packedEdgeCache.ToDictionary(kvp => TileEdgeKey.Unpack(kvp.Key), kvp => kvp.Value);
+            }
 
             Scribe_Collections.Look(ref previousTileSet, "previousTilesList", LookMode.Value);
             if (previousTileSet is null)
@@ -279,23 +281,22 @@ namespace FactionColonies
         ///   thread to merge.
         /// </summary>
         void ComputeMSTBackground(List<int> allTiles, PlanetLayer layer, int generation,
-            HashSet<long> edgesToCompute, Dictionary<long, float> cacheSnapshot)
+            HashSet<TileEdgeKey> edgesToCompute, Dictionary<TileEdgeKey, float> cacheSnapshot)
         {
             try
             {
                 // Compute only the missing edges
-                Dictionary<long, float> newEdges = new Dictionary<long, float>(edgesToCompute.Count);
+                Dictionary<TileEdgeKey, float> newEdges = new Dictionary<TileEdgeKey, float>(edgesToCompute.Count);
                 using (var pathing = new WorldPathing(layer))
                 {
-                    foreach (long key in edgesToCompute)
+                    foreach (TileEdgeKey key in edgesToCompute)
                     {
                         // Bail early if superseded or the game is being torn down
                         if (generation != mstGeneration || Current.Game is null)
                             return;
 
-                        UnpackEdgeKey(key, out int lo, out int hi);
-                        var fromTile = new PlanetTile(lo, layer);
-                        var toTile = new PlanetTile(hi, layer);
+                        var fromTile = new PlanetTile(key.lo, layer);
+                        var toTile = new PlanetTile(key.hi, layer);
                         WorldPath path = pathing.FindPath(fromTile, toTile, null);
                         float cost = path.Found ? path.TotalCost : float.MaxValue;
                         path.Dispose();
@@ -311,13 +312,11 @@ namespace FactionColonies
                 List<Edge> edges = new List<Edge>(cacheSnapshot.Count + newEdges.Count);
                 foreach (var kvp in cacheSnapshot)
                 {
-                    UnpackEdgeKey(kvp.Key, out int lo, out int hi);
-                    edges.Add(new Edge { fromTile = lo, toTile = hi, cost = kvp.Value });
+                    edges.Add(new Edge { fromTile = kvp.Key.lo, toTile = kvp.Key.hi, cost = kvp.Value });
                 }
                 foreach (var kvp in newEdges)
                 {
-                    UnpackEdgeKey(kvp.Key, out int lo, out int hi);
-                    edges.Add(new Edge { fromTile = lo, toTile = hi, cost = kvp.Value });
+                    edges.Add(new Edge { fromTile = kvp.Key.lo, toTile = kvp.Key.hi, cost = kvp.Value });
                 }
 
                 List<Edge> mstEdges = RunKruskal(edges, allTiles);
@@ -344,15 +343,14 @@ namespace FactionColonies
         /// the MST. Used as a fallback when threaded computation is disabled
         /// in settings and edgesPerRoadTick is 0 (unlimited).
         /// </summary>
-        void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer, HashSet<long> edgesToCompute)
+        void ComputeMSTSynchronous(List<int> allTiles, PlanetLayer layer, HashSet<TileEdgeKey> edgesToCompute)
         {
             using (var pathing = new WorldPathing(layer))
             {
-                foreach (long key in edgesToCompute)
+                foreach (TileEdgeKey key in edgesToCompute)
                 {
-                    UnpackEdgeKey(key, out int lo, out int hi);
-                    var fromTile = new PlanetTile(lo, layer);
-                    var toTile = new PlanetTile(hi, layer);
+                    var fromTile = new PlanetTile(key.lo, layer);
+                    var toTile = new PlanetTile(key.hi, layer);
                     WorldPath path = pathing.FindPath(fromTile, toTile, null);
                     float cost = path.Found ? path.TotalCost : float.MaxValue;
                     path.Dispose();
@@ -414,14 +412,14 @@ namespace FactionColonies
         /// Initializes incremental MST computation state. The actual edge computation
         /// is spread across ticks via AdvanceMSTIncremental.
         /// </summary>
-        void StartMSTIncremental(List<int> allTiles, PlanetLayer layer, int generation, HashSet<long> edgesToCompute)
+        void StartMSTIncremental(List<int> allTiles, PlanetLayer layer, int generation, HashSet<TileEdgeKey> edgesToCompute)
         {
             CleanupIncremental();
 
             incrementalTiles = allTiles;
             incrementalLayer = layer;
             incrementalPathing = new WorldPathing(layer);
-            incrementalEdgeKeys = new List<long>(edgesToCompute);
+            incrementalEdgeKeys = new List<TileEdgeKey>(edgesToCompute);
             incrementalEdgeIndex = 0;
             incrementalGeneration = generation;
         }
@@ -445,10 +443,9 @@ namespace FactionColonies
             int computed = 0;
             while (incrementalEdgeIndex < incrementalEdgeKeys.Count && computed < edgesPerTick)
             {
-                long key = incrementalEdgeKeys[incrementalEdgeIndex];
-                UnpackEdgeKey(key, out int lo, out int hi);
-                var fromTile = new PlanetTile(lo, incrementalLayer);
-                var toTile = new PlanetTile(hi, incrementalLayer);
+                TileEdgeKey key = incrementalEdgeKeys[incrementalEdgeIndex];
+                var fromTile = new PlanetTile(key.lo, incrementalLayer);
+                var toTile = new PlanetTile(key.hi, incrementalLayer);
                 WorldPath path = incrementalPathing.FindPath(fromTile, toTile, null);
                 float cost = path.Found ? path.TotalCost : float.MaxValue;
                 path.Dispose();
@@ -574,7 +571,7 @@ namespace FactionColonies
             currentCandidateEdges = SelectKNNCandidateEdges(allTiles, layer);
 
             // Filter to uncached edges
-            HashSet<long> edgesToCompute = new HashSet<long>(currentCandidateEdges);
+            HashSet<TileEdgeKey> edgesToCompute = new HashSet<TileEdgeKey>(currentCandidateEdges);
             edgesToCompute.ExceptWith(edgeCostCache.Keys);
 
             // Short-circuit: all candidates are cached, just run Kruskal
@@ -590,14 +587,14 @@ namespace FactionColonies
             if (FCSettings.useThreadedRoadComputation)
             {
                 // Snapshot relevant cache entries for the background thread
-                Dictionary<long, float> cacheSnapshot = new Dictionary<long, float>();
-                foreach (long key in currentCandidateEdges)
+                Dictionary<TileEdgeKey, float> cacheSnapshot = new Dictionary<TileEdgeKey, float>();
+                foreach (TileEdgeKey key in currentCandidateEdges)
                 {
                     float cost;
                     if (edgeCostCache.TryGetValue(key, out cost))
                         cacheSnapshot[key] = cost;
                 }
-                HashSet<long> edgesToComputeCopy = new HashSet<long>(edgesToCompute);
+                HashSet<TileEdgeKey> edgesToComputeCopy = new HashSet<TileEdgeKey>(edgesToCompute);
                 Thread thread = new Thread(() => ComputeMSTBackground(allTiles, layer, generation, edgesToComputeCopy, cacheSnapshot));
                 thread.IsBackground = true;
                 thread.Start();

@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using Verse;
@@ -37,8 +37,7 @@ namespace FactionColonies
         /// </summary>
         public virtual void PostInitialize() { }
 
-        // ── Lifecycle ────────────────────────────────────────────────
-
+        /* Lifecycle */
         /// <summary>Called when this policy is enacted on the faction.</summary>
         public virtual void OnEnacted(FactionFC faction) { }
 
@@ -48,8 +47,7 @@ namespace FactionColonies
         /// <summary>Called every game tick while this policy is active.</summary>
         public virtual void Tick(FactionFC faction) { }
 
-        // ── Settlement Events ────────────────────────────────────────
-
+        /* Settlement Events */
         /// <summary>Called when a new settlement is created while this policy is active.</summary>
         public virtual void OnSettlementCreated(FactionFC faction, WorldSettlementFC settlement) { }
 
@@ -59,13 +57,11 @@ namespace FactionColonies
         /// <summary>Called after the player pays for a new settlement.</summary>
         public virtual void OnSettlementCostPaid(FactionFC faction) { }
 
-        // ── Conditional Stat Modifier ────────────────────────────────
-
+        /* Conditional Stat Modifier */
         /// <summary>
         /// Runtime-dependent stat modifier. Only override this for values that
-        /// genuinely depend on game state at query time (e.g., Egalitarian happiness-based
-        /// tax bonus, Expansionist first-settlement-free). For static modifiers, use
-        /// FCPolicyDef.statModifiers XML instead.
+        /// genuinely depend on game state at query time (e.g., Egalitarian's active
+        /// tax-break penalty). For static modifiers, use FCPolicyDef.statModifiers XML instead.
         ///<para>Aggregation contract:</para>
         /// <list type="bullet">
         ///   <item>For Additive stats (IdentityValue=0): add/subtract from currentValue</item>
@@ -82,8 +78,7 @@ namespace FactionColonies
         /// </summary>
         public virtual string GetStatDescription(FCStatDef stat, WorldSettlementFC settlement) => null;
 
-        // ── Building ────────────────────────────────────────────────
-
+        /* Building */
         /// <summary>
         /// Called when calculating a building's upkeep. Behaviors can modify the upkeep
         /// based on the building's properties (e.g., discount military buildings).
@@ -91,8 +86,7 @@ namespace FactionColonies
         public virtual double ModifyBuildingUpkeep(BuildingFCDef building, double currentUpkeep, WorldSettlementFC settlement)
             => currentUpkeep;
 
-        // ── Military Events ──────────────────────────────────────────
-
+        /* Military Events */
         /// <summary>Called after a squad is deployed from a settlement.</summary>
         public virtual void OnSquadDeployed(FactionFC faction, WorldSettlementFC settlement, bool isExtraSquad) { }
 
@@ -102,49 +96,41 @@ namespace FactionColonies
         /// <summary>Called after a battle has been resolved, before the squad enters cooldown.</summary>
         public virtual void OnBattleResolved(FactionFC faction, WorldSettlementFC settlement, MilitaryJobDef job, bool victory, BattleResult result) { }
 
-        // ── Building Events ────────────────────────────────────────
-
+        /* Building Events */
         /// <summary>Called after a building has been fully constructed in a settlement.</summary>
         public virtual void OnBuildingConstructed(FactionFC faction, WorldSettlementFC settlement, BuildingFCDef building, int slot) { }
 
         /// <summary>Called before a building is deconstructed from a settlement.</summary>
         public virtual void OnBuildingDeconstructed(FactionFC faction, WorldSettlementFC settlement, BuildingFCDef building, int slot) { }
 
-        // ── Settlement Upgrade ─────────────────────────────────────
-
+        /* Settlement Upgrade */
         /// <summary>Called after a settlement has been upgraded (or deleveled).</summary>
         public virtual void OnSettlementUpgraded(FactionFC faction, WorldSettlementFC settlement, int newLevel) { }
 
-        // ── Settlement Type Change ────────────────────────────────
-
+        /* Settlement Type Change */
         /// <summary>Called after a settlement has transitioned to a new WorldSettlementDef.</summary>
         public virtual void OnSettlementTypeChanged(FactionFC faction, WorldSettlementFC settlement, WorldSettlementDef oldDef, WorldSettlementDef newDef) { }
 
-        // ── Research ───────────────────────────────────────────────
-
+        /* Research */
         /// <summary>Called after a research project has been completed.</summary>
         public virtual void OnResearchCompleted(FactionFC faction, ResearchProjectDef project) { }
 
-        // ── Tax Events ───────────────────────────────────────────────
-
+        /* Tax Events */
         /// <summary>Called when taxes are collected from a settlement.</summary>
         public virtual void OnTaxCollected(FactionFC faction, WorldSettlementFC settlement) { }
 
-        // ── Random Events ───────────────────────────────────────────
-
+        /* Random Events */
         /// <summary>
         /// Called when a random event is selected. Return true to re-roll the event selection.
         /// Only one re-roll occurs per event trigger regardless of how many behaviors request it.
         /// </summary>
         public virtual bool ShouldRerollEvent(FCEventDef eventDef) => false;
 
-        // ── Diplomacy ────────────────────────────────────────────────
-
+        /* Diplomacy */
         /// <summary>Handle sending a diplomatic envoy to a target faction. Return true if handled.</summary>
         public virtual bool HandleDiplomaticEnvoy(FactionFC faction, Faction targetFaction) => false;
 
-        // ── UI ───────────────────────────────────────────────────────
-
+        /* UI */
         /// <summary>Return labeled action buttons to render in the main tab button bar. Null means no buttons.</summary>
         public virtual IEnumerable<(TaggedString label, Action onClick)> GetMainTabActionButtons(FactionFC faction) => null;
 
@@ -157,8 +143,7 @@ namespace FactionColonies
         /// <summary>Return additional description lines to append to the policy's tooltip.</summary>
         public virtual TaggedString GetDescription() => TaggedString.Empty;
 
-        // ── Serialization ────────────────────────────────────────────
-
+        /* Serialization */
         public virtual void ExposeData() { }
     }
 }

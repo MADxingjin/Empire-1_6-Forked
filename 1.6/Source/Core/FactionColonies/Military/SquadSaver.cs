@@ -99,8 +99,8 @@ namespace FactionColonies
             {
                 try
                 {
-                    SavedSquadFC squad = new SavedSquadFC();
                     Scribe.loader.InitLoading(path);
+                    SavedSquadFC squad = ResolveSavedType<SavedSquadFC>();
                     squad.ExposeData();
                     savedSquads.Add(squad);
                 }
@@ -118,8 +118,8 @@ namespace FactionColonies
             {
                 try
                 {
-                    SavedUnitFC unit = new SavedUnitFC();
                     Scribe.loader.InitLoading(path);
+                    SavedUnitFC unit = ResolveSavedType<SavedUnitFC>();
                     unit.ExposeData();
                     savedUnits.Add(unit);
                 }
@@ -151,6 +151,22 @@ namespace FactionColonies
                     Scribe.loader.FinalizeLoading();
                 }
             }
+        }
+
+        /* Peek at the active Scribe XML for a "savedType" discriminator and instantiate
+           the matching subclass. Falls back to the base type if absent or unknown (missing mod). */
+        private static T ResolveSavedType<T>() where T : class, new()
+        {
+            string savedType = null;
+            Scribe_Values.Look(ref savedType, "savedType");
+            if (string.IsNullOrEmpty(savedType)) return new T();
+            Type type = GenTypes.GetTypeInAnyAssembly(savedType);
+            if (type == null || !typeof(T).IsAssignableFrom(type))
+            {
+                LogUtil.Warning($"Unknown saved type '{savedType}' (mod unloaded?); loading as base {typeof(T).Name}");
+                return new T();
+            }
+            return (T)Activator.CreateInstance(type);
         }
 
         public static string GetUnitPath(string name) => Path.Combine(EmpireMilitaryUnitFolder, $"{name}.xml");
@@ -288,18 +304,17 @@ namespace FactionColonies
                     + $"using {resolvedKind.defName}");
             }
 
-            MilUnitFC unit = new MilUnitFC(false)
-            {
-                name = name,
-                animal = animal,
-                pawnKind = resolvedKind,
-                xenotype = xenotype,
-                customXenotypeName = customXenotypeName,
-                preferredAmmo = preferredAmmo,
-                weapons = weapons?.Where(w => w.thing != null).ToList() ?? new List<SavedThing>(),
-                apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>()
-            };
+            MilUnitFC unit = MilTemplateFactory.CreateUnit(false);
+            unit.name = name;
+            unit.animal = animal;
+            unit.pawnKind = resolvedKind;
+            unit.xenotype = xenotype;
+            unit.customXenotypeName = customXenotypeName;
+            unit.preferredAmmo = preferredAmmo;
+            unit.weapons = weapons?.Where(w => w.thing != null).ToList() ?? new List<SavedThing>();
+            unit.apparel = apparel?.Where(a => a.thing != null).ToList() ?? new List<SavedThing>();
 
+            unit.LoadFromSaved(this);
             unit.ChangeTick();
             unit.UpdateEquipmentTotalCost();
 
@@ -314,11 +329,16 @@ namespace FactionColonies
             return unit;
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             // Capture XML parent before any collection loading can shift the cursor.
             XmlNode xmlParent = (Scribe.mode == LoadSaveMode.LoadingVars)
                 ? Scribe.loader.curXmlParent : null;
+
+            /* Polymorphic type discriminator — saved as concrete type, ignored on load
+               (ResolveSavedType handles type selection before ExposeData runs). */
+            string savedType = GetType().FullName;
+            Scribe_Values.Look(ref savedType, "savedType");
 
             Scribe_Values.Look(ref name, "name");
             Scribe_Defs.Look(ref animal, "animal");
@@ -385,15 +405,15 @@ namespace FactionColonies
             name = squad.name;
 
             // Dont store blank units
-            var squadTemplates = squad.units.Distinct().Where(u => !u.isBlank).ToList();
+            var squadTemplates = squad.Units.Distinct().Where(u => !u.isBlank).ToList();
 
-            unitTemplates = squadTemplates.Select(unit => new SavedUnitFC(unit)).ToList();
-            units = squad.units.Select(unit => squadTemplates.IndexOf(unit)).ToList();
+            unitTemplates = squadTemplates.Select(unit => unit.ToSavedUnit()).ToList();
+            units = squad.Units.Select(unit => squadTemplates.IndexOf(unit)).ToList();
         }
 
         public MilSquadFC CreateMilSquad()
         {
-            MilSquadFC squad = new MilSquadFC(true);
+            MilSquadFC squad = MilTemplateFactory.CreateSquad(true);
             squad.name = name;
 
             FactionFC fc = FactionCache.FactionComp;
@@ -403,18 +423,19 @@ namespace FactionColonies
             foreach (int i in units)
             {
                 if (i == -1)
-                    squad.units.Add(fc.militaryCustomizationUtil.blankUnit);
+                    squad.AddUnit(fc.militaryCustomizationUtil.blankUnit);
                 else
-                    squad.units.Add(milUnits[i]);
+                    squad.AddUnit(milUnits[i]);
             }
 
+            squad.LoadFromSaved(this);
             return squad;
         }
         public MilSquadFC Import()
         {
             FactionFC fc = FactionCache.FactionComp;
             MilSquadFC squad = this.CreateMilSquad();
-            foreach (MilUnitFC unit in squad.units.Distinct().Where(unit => !unit.isBlank))
+            foreach (MilUnitFC unit in squad.Units.Distinct().Where(unit => !unit.isBlank))
             {
                 fc.militaryCustomizationUtil.units.Add(unit);
             }
@@ -422,8 +443,13 @@ namespace FactionColonies
             return squad;
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
+            /* Polymorphic type discriminator — saved as concrete type, ignored on load
+               (ResolveSavedType handles type selection before ExposeData runs). */
+            string savedType = GetType().FullName;
+            Scribe_Values.Look(ref savedType, "savedType");
+
             Scribe_Values.Look(ref name, "name");
             Scribe_Collections.Look(ref unitTemplates, "unitTemplates", LookMode.Deep);
             Scribe_Collections.Look(ref units, "units", LookMode.Value);

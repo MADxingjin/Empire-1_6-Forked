@@ -6,7 +6,6 @@
   <!-- Oasis: strong food bonus, minor medicine (herbal) bonus -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/TileMutatorDef[defName="Oasis"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/TileMutatorDef[defName="Oasis"]</xpath>
       <value>
@@ -31,7 +30,6 @@
   <!-- Wetland: food penalty, logging penalty, medicine (herbal) bonus -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/TileMutatorDef[defName="Wetland"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/TileMutatorDef[defName="Wetland"]</xpath>
       <value>
@@ -60,7 +58,6 @@
   <!-- Valley: broad production bonus from sheltered terrain -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/TileMutatorDef[defName="Valley"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/TileMutatorDef[defName="Valley"]</xpath>
       <value>
@@ -89,7 +86,6 @@
   <!-- ToxicLake: severe food and medicine penalty -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/TileMutatorDef[defName="ToxicLake"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/TileMutatorDef[defName="ToxicLake"]</xpath>
       <value>
@@ -118,7 +114,6 @@
   <!-- Cliffs: mining bonus, food penalty -->
   <Operation Class="PatchOperationConditional" MayRequire="Ludeon.RimWorld.Odyssey">
     <xpath>Defs/TileMutatorDef[defName="Cliffs"]</xpath>
-    <nomatch Class="PatchOperationSequence"><operations/></nomatch>
     <match Class="PatchOperationAdd">
       <xpath>Defs/TileMutatorDef[defName="Cliffs"]</xpath>
       <value>

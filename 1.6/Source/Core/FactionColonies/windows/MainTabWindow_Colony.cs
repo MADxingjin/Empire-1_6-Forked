@@ -226,6 +226,7 @@ namespace FactionColonies
             Widgets.ButtonImage(iconRect, faction.factionIcon);
 
             float customizeBtnSize = 20f;
+            Rect codexBtn = new Rect(panel.xMax - customizeBtnSize * 2 - margin, panel.y + margin, customizeBtnSize, customizeBtnSize);
             Rect customizeBtn = new Rect(panel.xMax - customizeBtnSize, panel.y + margin, customizeBtnSize, customizeBtnSize);
             Rect labelBox = new Rect(iconRect.xMax + margin, panel.y, panel.width - iconSz - margin, 30f);
             Rect labelTextBox = new Rect(labelBox.x + margin, labelBox.y, labelBox.width - (margin * 2), labelBox.height);
@@ -244,6 +245,8 @@ namespace FactionColonies
             Widgets.Label(foundingBox, "FCFoundedOn".Translate(faction.GetFoundingDate()));
 
             Widgets.DrawLineHorizontal(labelBox.x, titleBox.yMax + margin, panel.xMax - labelBox.x - margin);
+
+            CodexTooltips.DrawCodexButton(codexBtn);
 
             if (Widgets.ButtonImage(customizeBtn, TexLoad.iconCustomize))
             {
@@ -297,28 +300,28 @@ namespace FactionColonies
                         icon = TexLoad.iconHappiness;
                         statVal = (float)faction.averageHappiness;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionHappiness".Translate() + "\n-----\n" + "FCFactionHappinessDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionHappinessTooltip(faction);
                         inverted = false;
                         break;
                     case "loyalty":
                         icon = TexLoad.iconLoyalty;
                         statVal = (float)faction.averageLoyalty;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionLoyalty".Translate() + "\n-----\n" + "FCFactionLoyaltyDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionLoyaltyTooltip(faction);
                         inverted = false;
                         break;
                     case "unrest":
                         icon = TexLoad.iconUnrest;
                         statVal = (float)faction.averageUnrest;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionUnrest".Translate() + "\n-----\n" + "FCFactionUnrestDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionUnrestTooltip(faction);
                         inverted = true;
                         break;
                     default: // prosperity
                         icon = TexLoad.iconProsperity;
                         statVal = (float)faction.averageProsperity;
                         value = Convert.ToInt32(statVal) + "%";
-                        tooltip = "FCFactionProsperity".Translate() + "\n-----\n" + "FCFactionProsperityDesc".Translate();
+                        tooltip = util.CodexTooltips.GetFactionProsperityTooltip(faction);
                         inverted = false;
                         break;
                 }
@@ -347,7 +350,10 @@ namespace FactionColonies
                 for (int i = 0; i < faction.policies.Count; i++)
                 {
                     Rect policyBox = new Rect(leftX + (i * (policySize + margin)), y, policySize, policySize);
-                    Widgets.ButtonImage(policyBox, faction.policies[i].def.IconLight);
+                    if (Widgets.ButtonImage(policyBox, faction.policies[i].def.IconLight))
+                    {
+                        Find.WindowStack.Add(new FactionCustomizePoliciesWindowFC(faction));
+                    }
                     TooltipHandler.TipRegion(policyBox, faction.policies[i].def.PolicyText());
                 }
             }
@@ -508,11 +514,13 @@ namespace FactionColonies
             Text.Anchor = TextAnchor.MiddleLeft;
             Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
             Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
+            TooltipHandler.TipRegion(profitBox, CodexTooltips.GetProfitTooltip(faction));
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(taxBox, "FCTimeTillTax".Translate() + ": " + Math.Max(0, faction.taxTimeDue - Find.TickManager.TicksGame).ToTimeString());
+            TooltipHandler.TipRegion(taxBox, CodexTooltips.GetTaxTimerTooltip());
             y += taxBox.height + margin;
 
             // Seperator
@@ -539,9 +547,8 @@ namespace FactionColonies
                 {
                     //scrollbox time, baby
                     // By default, Empire only has two resource pools (research, power). But now that we can add ~more~, I'm including this code to allow the UI to gracefully handle more pools
-                    Rect scrollList = new Rect(x, y, width, totalHeight);
-                    Widgets.BeginScrollView(poolListBox, ref poolScrollbar, scrollList);
-                    rowWidth -= 16f; //width of the scrollbar
+                    Rect scrollList = ScrollUtil.BeginScrollView(poolListBox, ref poolScrollbar, totalHeight);
+                    rowWidth = scrollList.width;
                 }
 
                 // draw the pools
@@ -589,7 +596,7 @@ namespace FactionColonies
 
                 if (totalHeight > sectionHeight)
                 {
-                    Widgets.EndScrollView();
+                    ScrollUtil.EndScrollView();
                 }
                 y += sectionHeight + margin;
 
@@ -619,9 +626,8 @@ namespace FactionColonies
             bool needsScroll = totalHeight2 > sectionHeight2;
             if (needsScroll)
             {
-                Rect scrollContent = new Rect(x, y, width-16f, totalHeight2);
-                Widgets.BeginScrollView(sectionBox, ref productionScroll, scrollContent);
-                rowWidth2 -= 16f;
+                Rect scrollContent = ScrollUtil.BeginScrollView(sectionBox, ref productionScroll, totalHeight2);
+                rowWidth2 = scrollContent.width;
             }
 
             int ri = 0;
@@ -655,7 +661,7 @@ namespace FactionColonies
 
             if (needsScroll)
             {
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
         }
 
@@ -750,9 +756,7 @@ namespace FactionColonies
             float viewH = tableRect.yMax - listY - pad;
             Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = faction.settlements.Count * (rowH + rowGap);
-            Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
-
-            Widgets.BeginScrollView(viewRect, ref settlementScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref settlementScroll, contentH);
 
             for (int i = 0; i < faction.settlements.Count; i++)
             {
@@ -838,7 +842,7 @@ namespace FactionColonies
                 // Bottom-right: Upgrade badge
                 float upgradeBadgeW = 105f;
                 float upgradeBadgeX = contentX + contentW - statsW;
-                if (s.isUpgrading)
+                if (s.IsUpgrading)
                 {
                     // "Upgrading..." label
                     fontBefore = Text.Font;
@@ -854,15 +858,15 @@ namespace FactionColonies
                     Text.Anchor = anchorBefore;
 
                     // Progress bar
-                    float progress = (float)(Find.TickManager.TicksGame - s.startUpgradeTick)
-                                   / (float)(s.finishUpgradeTick - s.startUpgradeTick);
+                    float progress = (float)(Find.TickManager.TicksGame - s.StartUpgradeTick)
+                                   / (float)(s.FinishUpgradeTick - s.StartUpgradeTick);
                     progress = Mathf.Clamp01(progress);
                     float barW = 30f;
                     float barH = 10f;
                     Rect barRect = new Rect(upgradeBadgeX + labelW + 2f, botY + (lineH - barH) / 2f, barW, barH);
                     UIUtil.DrawProgressBarColors(barRect, progress, new Color(0.15f, 0.15f, 0.15f), new Color(0.3f, 0.75f, 1f));
 
-                    int ticksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    int ticksLeft = Math.Max(0, s.FinishUpgradeTick - Find.TickManager.TicksGame);
                     TooltipHandler.TipRegion(new Rect(upgradeBadgeX, botY, upgradeBadgeW, lineH),
                         "FCUpgradeBadgeInProgress".Translate(ticksLeft.ToStringTicksToPeriod()));
                 }
@@ -901,15 +905,15 @@ namespace FactionColonies
                     + "FCSettlementTableUnrest".Translate() + ": " + (int)s.Unrest + "\n"
                     + "FCSettlementTableProsperity".Translate() + ": " + (int)s.Prosperity + "\n"
                     + "FCSettlementTableFounding".Translate() + ": " + s.GetFoundingDate(false);
-                if (s.isUpgrading)
+                if (s.IsUpgrading)
                 {
-                    int ttTicksLeft = Math.Max(0, s.finishUpgradeTick - Find.TickManager.TicksGame);
+                    int ttTicksLeft = Math.Max(0, s.FinishUpgradeTick - Find.TickManager.TicksGame);
                     tooltip += "\n" + "FCUpgradeBadgeInProgress".Translate(ttTicksLeft.ToStringTicksToPeriod());
                 }
                 TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
 
@@ -1006,9 +1010,7 @@ namespace FactionColonies
             float viewH = rect.yMax - listY - pad;
             Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = bills.Count * (rowH + rowGap);
-            Rect scrollRect = new Rect(0f, 0f, viewRect.width - 16f, Mathf.Max(contentH, viewH));
-
-            Widgets.BeginScrollView(viewRect, ref billsScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref billsScroll, contentH);
 
             if (cachedSortedBills == null || cachedBillsCount != bills.Count)
             {
@@ -1126,7 +1128,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private static Color GetBillAccentColor(BillFC bill)
@@ -1269,8 +1271,6 @@ namespace FactionColonies
             float viewH = rect.yMax - listY - pad;
             Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = sorted.Count * (rowH + rowGap);
-            float scrollMargin = contentH > viewH ? 16f : 0f;
-            Rect scrollRect = new Rect(0f, 0f, viewRect.width - scrollMargin, Mathf.Max(contentH, viewH));
 
             // Filtered empty state
             if (sorted.Count == 0)
@@ -1289,7 +1289,7 @@ namespace FactionColonies
                 return;
             }
 
-            Widgets.BeginScrollView(viewRect, ref eventsScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref eventsScroll, contentH);
 
             for (int i = 0; i < sorted.Count; i++)
             {
@@ -1403,7 +1403,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(rowRect, tooltip);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
 
@@ -1528,15 +1528,15 @@ namespace FactionColonies
             if (faction.settlements?.Count > 0)
             {
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateUnit".Translate()))
-                    OpenMilitaryWindow(new DesignUnitsWindow(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateUnits(militaryUtil, faction), "FCMilitaryTableButtonCreateUnit".Translate());
                 bx += buttonWidth;
 
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateSquad".Translate()))
-                    OpenMilitaryWindow(new DesignSquadsWindow(militaryUtil), "FCMilitaryTableButtonCreateSquad".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateSquads(militaryUtil, faction), "FCMilitaryTableButtonCreateSquad".Translate());
                 bx += buttonWidth;
 
                 if (Widgets.ButtonTextSubtle(new Rect(bx, y + margin, buttonWidth, buttonHeight), "FCMilitaryTableButtonCreateFireSupport".Translate()))
-                    OpenMilitaryWindow(new FireSupportWindow(militaryUtil), "FCMilitaryTableButtonCreateFireSupport".Translate());
+                    OpenMilitaryWindow(MilitaryWindowRegistry.CreateFireSupport(militaryUtil, faction), "FCMilitaryTableButtonCreateFireSupport".Translate());
             }
 
             y += buttonHeight + margin * 2;
@@ -1601,9 +1601,7 @@ namespace FactionColonies
             float viewH = tableRect.yMax - listY - pad;
             Rect viewRect = new Rect(innerX, listY, innerW, viewH);
             float contentH = totalMilitaryCount * (rowH + rowGap);
-            Rect scrollRect = new Rect(0f, 0f, viewRect.width - (contentH > viewH ? 16f : 0f), Mathf.Max(contentH, viewH));
-
-            Widgets.BeginScrollView(viewRect, ref militaryScroll, scrollRect);
+            Rect scrollRect = ScrollUtil.BeginScrollView(viewRect, ref militaryScroll, contentH);
 
             for (int i = 0; i < settlements.Count; i++)
             {
@@ -1882,7 +1880,7 @@ namespace FactionColonies
                 TooltipHandler.TipRegion(new Rect(0f, ry, contentX + contentW - btnW, rowH), entryTooltip);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void HandleDeployClick(WorldSettlementFC settlement, WorldObjectComp_SettlementMilitary milComp)

@@ -147,6 +147,35 @@ namespace FactionColonies
             return meetsRequirement && MeetsResourceRequirement(settlement);
         }
 
+        private List<WorldSettlementDef> cachedCompatibleSettlements;
+
+        /// <summary>
+        /// All available settlement types this building can be built in, accounting for
+        /// allow/block list inheritance and resource requirements. Cached on first access.
+        /// </summary>
+        public List<WorldSettlementDef> CompatibleSettlementTypes
+        {
+            get
+            {
+                if (cachedCompatibleSettlements is null)
+                {
+                    cachedCompatibleSettlements = new List<WorldSettlementDef>();
+                    foreach (WorldSettlementDef def in DefDatabase<WorldSettlementDef>.AllDefsListForReading)
+                    {
+                        if (def.available && CanBeBuiltForSettlementType(def))
+                            cachedCompatibleSettlements.Add(def);
+                    }
+                }
+                return cachedCompatibleSettlements;
+            }
+        }
+
+        public static void ClearCompatibleSettlementCache()
+        {
+            foreach (BuildingFCDef def in DefDatabase<BuildingFCDef>.AllDefsListForReading)
+                def.cachedCompatibleSettlements = null;
+        }
+
         private static Dictionary<BuildingFCDef, Dictionary<WorldSettlementDef, bool>> resourceMatchCache;
 
         /// <summary>

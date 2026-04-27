@@ -440,4 +440,160 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_31</defName>
+		<label>Minor fixes</label>
+		<description>Cleans up a couple things that I should&apos;ve caught before the 1.3.30 release...</description>
+		<releaseDate>2026-04-21</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Update the research tree so that the road and orbital techs aren&apos;t awkwardly clashing</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_32</defName>
+		<label>Manual Battle Fix</label>
+		<description>Fixes an issue where manual defense battles might not end after sending a supporting caravan and then withdrawing.</description>
+		<releaseDate>2026-04-22</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: sending a caravan to help with a manual defense battle and then pulling the pawns out could get the battle stuck</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_33</defName>
+		<label>Manual Defense Skyfaller Fix</label>
+		<description>Fixes a bug with skyfallers (transport pods, shuttles) in manual defense battles.</description>
+		<releaseDate>2026-04-23</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: if attackers arrive to manual defense with transport pods, the battle may end prematurely</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_34</defName>
+		<label>Settlement Battle State Bug</label>
+		<description>Bug: when saving+loading while a settlement is under attack (but before a defense has started), load order issues could cause the settlement to clear its own &quot;isUnderAttack&quot; flag, leading to bad state.</description>
+		<releaseDate>2026-04-23</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: settlements can lose their &quot;isUnderAttack&quot; state on save+load due to object loading order</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_35</defName>
+		<label>Defense UI Update</label>
+		<description>Fixes a couple of UI bugs with auto-defense. No mechanical issues; only the UI had a problem.</description>
+		<releaseDate>2026-04-23</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: the translation key for the letter that reports an auto-defender was missed in the recent translation key update</li>
+		<li>Change: the currently-defending settlement is marked as such when choosing defenders through the world map gizmo</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_36</defName>
+		<label>Animal Check Fix</label>
+		<description>Fixes a bug where a pawnKindDef with a null race or race.race could break one of Empire&apos;s checks for animals. I don&apos;t *think* either of these fields are meant to be null, but Rimworld seemingly allows it, so, *shrug*. We at least log the pawnkinddef in question so we know which one needs fixing.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add null guards in IsAnimalAndAllowed</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_37</defName>
+		<label>Prisoner Saving Fix</label>
+		<description>Pawns held as prisoner by Empire settlements can be double-deep scribed under some circumstances, resulting in errors on loading a save.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: Empire prisoner pawns are sometimes Scribe_Deep twice, resulting in a litany of errors on loading the save</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_38</defName>
+		<label>Caravan Update</label>
+		<description>Adds the ability to reform caravans after a manual defense battle.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: after winning (or losing) a manual defense battle, the typical &quot;Reform Caravan&quot; gizmo would not appear</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_39</defName>
+		<label>Caravan Gizmo Update 2</label>
+		<description>Rimworld logic says that a battle is over as soon as hostiles start to flee; this is when the Reform Caravan gizmo appears. Empire, however, does not consider a battle to be over until all hostiles have died or fled the map. This creates an awkward interim period where the gizmo appears, but isn&apos;t fully usable. This update resolves that by disabling the gizmo until Empire says the battle is over.</description>
+		<releaseDate>2026-04-24</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: the Reform Caravan gizmo can appear before Empire says the battle is actually over</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_40</defName>
+		<label>Stuck Defense Fix</label>
+		<description>Adds load-time and debug-action-triggered checks to clear settlements that are erroneously stuck in the &quot;Defending [settlement name]&quot; state. I&apos;m not completely sure what the root cause of the bug is, but this should at least clear up the resulting corrupted state.</description>
+		<releaseDate>2026-04-25</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: settlements sometimes get stuck in a &quot;Defending [settlement name]&quot; state</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_41</defName>
+		<label>Minor Fixes</label>
+		<description>A couple of minor fixes.</description>
+		<releaseDate>2026-04-25</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: a malformed pawnKindDef could cause errors when determining which pawnkinds can be pack animals</li>
+		<li>Bugfix: some translation keys were missed in the update from a week or so ago</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

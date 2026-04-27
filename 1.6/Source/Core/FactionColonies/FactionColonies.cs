@@ -92,7 +92,7 @@ namespace FactionColonies
         public static double silverToCreateSettlement = DEFAULT_SETTLEMENT_FOUNDING_COST;
 
         private static int timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
-        public static int timeBetweenTaxes => timeBetweenTaxes_days * GenDate.TicksPerDay;
+        public static int timeBetweenTaxes => Math.Max(1, timeBetweenTaxes_days) * GenDate.TicksPerDay;
 
 
         public static int productionTitheMod = DEFAULT_PRODUCTION_TITHE_MOD;
@@ -144,6 +144,9 @@ namespace FactionColonies
         public static float defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
         public static float efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
 
+        /// <summary>Max simultaneous manual battle maps across all settlements. 0 = unlimited.</summary>
+        public static int maxConcurrentBattleMaps = 0;
+
         public static int maxPolicyCount = 2;
 
         /* Flag for debug/verbose logging. */
@@ -178,6 +181,18 @@ namespace FactionColonies
             base.ExposeData();
             Scribe_Values.Look(ref silverPerResource, "silverPerResource", DEFAULT_SILVER_PER_RESOURCE);
             Scribe_Values.Look(ref timeBetweenTaxes_days, "timeBetweenTaxes_days", DEFAULT_TAX_INTERVAL_DAYS);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (timeBetweenTaxes_days < 1)
+                {
+                    LogUtil.Warning($"Loaded suspicious timeBetweenTaxes_days={timeBetweenTaxes_days} from settings; resetting to DEFAULT_TAX_INTERVAL_DAYS ({DEFAULT_TAX_INTERVAL_DAYS}).");
+                    timeBetweenTaxes_days = DEFAULT_TAX_INTERVAL_DAYS;
+                }
+                else
+                {
+                    LogUtil.Message($"Loaded timeBetweenTaxes_days={timeBetweenTaxes_days} from settings.");
+                }
+            }
             Scribe_Values.Look(ref productionTitheMod, "productionTitheMod", DEFAULT_PRODUCTION_TITHE_MOD);
             Scribe_Values.Look(ref workerCost, "workerCost", DEFAULT_WORKER_COST);
             Scribe_Values.Look(ref settlementMaxLevel, "settlementMaxLevel", DEFAULT_SETTLEMENT_MAX_LEVEL);
@@ -205,6 +220,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref maxThreatMultiplier, "maxThreatMultiplier", DEFAULT_MAX_THREAT_MULTIPLIER);
             Scribe_Values.Look(ref defenderAdvantage, "defenderAdvantage", DEFAULT_DEFENDER_ADVANTAGE);
             Scribe_Values.Look(ref efficiencyDamping, "efficiencyDamping", DEFAULT_EFFICIENCY_DAMPING);
+            Scribe_Values.Look(ref maxConcurrentBattleMaps, "maxConcurrentBattleMaps", 0);
             Scribe_Values.Look(ref mercenaryHealRatePerHour, "mercenaryHealRatePerHour", 1f);
             Scribe_Collections.Look(ref lastSeenVersions, "lastSeenVersions", LookMode.Value, LookMode.Value);
             if (lastSeenVersions is null) lastSeenVersions = new Dictionary<string, string>();
@@ -348,6 +364,7 @@ namespace FactionColonies
                     // Don't change anything for custom
                     break;
             }
+            LogUtil.Message($"ApplyDifficultyPreset({difficulty}): timeBetweenTaxes_days={timeBetweenTaxes_days}");
         }
 
         public static int DaysBetweenTaxesByDifficulty(EmpireDifficultyLevel difficulty)
@@ -381,14 +398,12 @@ namespace FactionColonies
         string workerCost_buffer;
         string settlementMaxLevel_buffer;
 
+        private static int timeBetweenTaxes_lastSeen = DEFAULT_TAX_INTERVAL_DAYS;
+
         private Vector2 scrollVectorGeneral = new Vector2();
-        private float viewRectHeightGeneral = -1f;
         private Vector2 scrollVectorEvents = new Vector2();
-        private float viewRectHeightEvents = -1f;
         private Vector2 scrollVectorMilitary = new Vector2();
-        private float viewRectHeightMilitary = -1f;
         private Vector2 scrollVectorRoadBuilder = new Vector2();
-        private float viewRectHeightRoadBuilder = -1f;
 
         /// <summary>
         /// Creates an option for the list of ForcedTaxDeliveryOptions. Shuttles may not be used if royality is inactive
@@ -473,6 +488,7 @@ namespace FactionColonies
         {
             silverPerResource_buffer = silverPerResource.ToString();
             timeBetweenTaxes_buffer = timeBetweenTaxes_days.ToString();
+            timeBetweenTaxes_lastSeen = timeBetweenTaxes_days;
             productionTitheMod_buffer = productionTitheMod.ToString();
             workerCost_buffer = workerCost.ToString();
             settlementMaxLevel_buffer = settlementMaxLevel.ToString();
@@ -480,11 +496,8 @@ namespace FactionColonies
             minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
             minMaxDaysTillRandomEvent = new IntRange(minDaysTillRandomEvent, maxDaysTillRandomEvent);
 
-            viewRectHeightGeneral = viewRectHeightGeneral == -1f ? float.MaxValue : viewRectHeightGeneral;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightGeneral);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorGeneral, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorGeneral, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -536,6 +549,16 @@ namespace FactionColonies
                 ls.IntEntry(ref silverPerResource, ref silverPerResource_buffer);
                 ls.Label("FCSettingDaysBetweenTax".Translate());
                 ls.IntEntry(ref timeBetweenTaxes_days, ref timeBetweenTaxes_buffer);
+                if (timeBetweenTaxes_days < 1)
+                {
+                    timeBetweenTaxes_days = 1;
+                    timeBetweenTaxes_buffer = "1";
+                }
+                if (timeBetweenTaxes_days != timeBetweenTaxes_lastSeen)
+                {
+                    LogUtil.Message($"Settings UI: timeBetweenTaxes_days {timeBetweenTaxes_lastSeen} -> {timeBetweenTaxes_days}");
+                    timeBetweenTaxes_lastSeen = timeBetweenTaxes_days;
+                }
                 ls.Label("FCSettingProductionTitheMod".Translate());
                 ls.IntEntry(ref productionTitheMod, ref productionTitheMod_buffer);
                 ls.Label("FCSettingWorkerCost".Translate());
@@ -609,6 +632,7 @@ namespace FactionColonies
                 maxThreatMultiplier = DEFAULT_MAX_THREAT_MULTIPLIER;
                 defenderAdvantage = DEFAULT_DEFENDER_ADVANTAGE;
                 efficiencyDamping = DEFAULT_EFFICIENCY_DAMPING;
+                maxConcurrentBattleMaps = 0;
                 mercenaryHealRatePerHour = 1f;
                 disableForcedPausingDuringEvents = DEFAULT_DISABLE_FORCED_PAUSING_DURING_EVENTS;
                 forcedTaxDeliveryMode = DEFAULT_TAX_DELIVERY_MODE;
@@ -617,21 +641,18 @@ namespace FactionColonies
                 patchNoteAutoOpenThreshold = DEFAULT_PATCH_NOTE_AUTO_OPEN_THRESHOLD;
                 disabledEventDefs.Clear();
                 ApplyDifficultyPreset(difficultyLevel);
+                LogUtil.Message($"Settings reset: timeBetweenTaxes_days={timeBetweenTaxes_days}");
             }
 
-            viewRectHeightGeneral = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoEventsTab(Rect rect)
         {
-            viewRectHeightEvents = viewRectHeightEvents == -1f ? float.MaxValue : viewRectHeightEvents;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightEvents);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorEvents, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorEvents, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -718,21 +739,17 @@ namespace FactionColonies
                 }
             }
 
-            viewRectHeightEvents = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoMilitaryTab(Rect rect)
         {
             minMaxDaysTillMilitaryAction = new IntRange(minDaysTillMilitaryAction, maxDaysTillMilitaryAction);
 
-            viewRectHeightMilitary = viewRectHeightMilitary == -1f ? float.MaxValue : viewRectHeightMilitary;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightMilitary);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorMilitary, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorMilitary, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -753,25 +770,25 @@ namespace FactionColonies
             ls.Label("FCSettingDefenderAdvantage".Translate() + ": " + defenderAdvantage.ToString("0.00") + "x");
             defenderAdvantage = ls.Slider(defenderAdvantage, 1.0f, 1.5f);
 
+            string concurrentLabel = maxConcurrentBattleMaps == 0 ? (string)"FCUnlimited".Translate() : maxConcurrentBattleMaps.ToString();
+            ls.Label("FCSettingMaxConcurrentBattleMaps".Translate() + ": " + concurrentLabel, -1f, "FCSettingMaxConcurrentBattleMapsTip".Translate());
+            maxConcurrentBattleMaps = (int)ls.Slider(maxConcurrentBattleMaps, 0f, 5f);
+
             ls.Label("FCSettingEfficiencyDamping".Translate() + ": " + efficiencyDamping.ToString("0.00"), -1f, "FCSettingEfficiencyDampingTooltip".Translate());
             efficiencyDamping = ls.Slider(efficiencyDamping, 0.0f, 1.0f);
 
             ls.Label("FCSettingMercHealRate".Translate() + ": " + mercenaryHealRatePerHour.ToString("0.0") + " HP/hr", -1f, "FCSettingMercHealRateTip".Translate());
             mercenaryHealRatePerHour = ls.Slider(mercenaryHealRatePerHour, 0.1f, 100f);
 
-            viewRectHeightMilitary = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private void DoRoadBuilderTab(Rect rect)
         {
-            viewRectHeightRoadBuilder = viewRectHeightRoadBuilder == -1f ? float.MaxValue : viewRectHeightRoadBuilder;
-            Rect viewRect = new Rect(rect.x, rect.y, rect.width - 17f, viewRectHeightRoadBuilder);
-            Rect listRect = new Rect(rect.x, rect.y, rect.width - 17f, float.MaxValue);
-
-            Widgets.BeginScrollView(rect, ref scrollVectorRoadBuilder, viewRect);
+            Rect viewRect = ScrollUtil.BeginScrollView(rect, ref scrollVectorRoadBuilder, float.MaxValue);
+            Rect listRect = new Rect(viewRect.x, viewRect.y, viewRect.width, float.MaxValue);
             Listing_Standard ls = new Listing_Standard();
             ls.Begin(listRect);
 
@@ -800,10 +817,9 @@ namespace FactionColonies
                 queue.FlushCache();
             }
 
-            viewRectHeightRoadBuilder = ls.CurHeight + 5f;
             ls.End();
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
     }
 

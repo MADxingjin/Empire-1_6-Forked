@@ -83,9 +83,7 @@ namespace FactionColonies
                 // Prisoner list
                 Text.Anchor = TextAnchor.MiddleLeft;
                 var outRect = new Rect(0, contentY, inRect.width, contentHeight);
-                float scrollMargin = prisoners.Count * optionHeight > contentHeight ? 16f : 0f;
-                var viewRect = new Rect(outRect.x, outRect.y, outRect.width - scrollMargin, prisoners.Count * optionHeight);
-                Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+                var viewRect = ScrollUtil.BeginScrollView(outRect, ref scrollPosition, prisoners.Count * optionHeight);
                 var ls = new Listing_Standard();
                 ls.Begin(viewRect);
                 int i = 0;
@@ -95,7 +93,7 @@ namespace FactionColonies
                     i++;
                 }
                 ls.End();
-                Widgets.EndScrollView();
+                ScrollUtil.EndScrollView();
             }
 
             Text.Font = fontBefore;
@@ -217,21 +215,7 @@ namespace FactionColonies
             Rect infoBtn = new Rect(rx, factionRect.yMax + 4f, rightColW, 22f);
             if (UIUtil.ButtonFlat(infoBtn, "FCViewInfo".Translate()))
             {
-                Pawn pawn = prisoner.prisoner;
-
-                if (prisoner.healthTracker != null)
-                {
-                    prisoner.prisoner.health = prisoner.healthTracker;
-                }
-                else
-                {
-                    prisoner.prisoner.health = new Pawn_HealthTracker(prisoner.prisoner);
-                    prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
-                }
-
-                pawn.health = prisoner.healthTracker;
-
-                Find.WindowStack.Add(new Dialog_InfoCard(pawn));
+                Find.WindowStack.Add(new Dialog_InfoCard(prisoner.prisoner));
             }
 
             // Actions button
@@ -254,16 +238,6 @@ namespace FactionColonies
 
                 list.Add(new FloatMenuOption("FCReturnToPlayer".Translate(), delegate
                 {
-                    if (prisoner.healthTracker != null)
-                    {
-                        prisoner.prisoner.health = prisoner.healthTracker;
-                    }
-                    else
-                    {
-                        prisoner.prisoner.health = new Pawn_HealthTracker(prisoner.prisoner);
-                        prisoner.healthTracker = new Pawn_HealthTracker(prisoner.prisoner);
-                    }
-
                     if (!HealthUtility.TryAnesthetize(prisoner.prisoner)) HealthUtility.DamageUntilDowned(prisoner.prisoner, false);
 
                     if (prisoner.prisoner.guest == null)

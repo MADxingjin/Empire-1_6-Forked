@@ -23,6 +23,7 @@
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementOpenWindow" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementMilitary" />
 	  <li Class="FactionColonies.WorldObjectCompProperties_SettlementBuildings" />
+	  <li Class="FactionColonies.WorldObjectCompProperties_FormCaravanFC" />
     </comps>
 	<modExtensions>
 		<li Class="FactionColonies.SettlementTypeExtension" />

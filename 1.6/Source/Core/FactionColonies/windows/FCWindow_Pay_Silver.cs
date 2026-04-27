@@ -62,12 +62,12 @@ namespace FactionColonies
             Text.Font = GameFont.Small;
 
             Widgets.Label(label_Title, "FCSendSilverToColony".Translate());
-            Widgets.Label(label_Upper, TranslatorFormattedStringExtensions.Translate("SendingXSilver", selectedSilver));
+            Widgets.Label(label_Upper, "FCSendingXSilver".Translate(selectedSilver));
 
 
             selectedSilver = (int)Widgets.HorizontalSlider(slider, selectedSilver, 0, silverCount, roundTo: 1);
 
-            Widgets.Label(label_Lower, TranslatorFormattedStringExtensions.Translate(stringEffect, ReturnValue(selectedSilver)));
+            Widgets.Label(label_Lower, stringEffect.Translate(ReturnValue(selectedSilver)));
 
             if (Widgets.ButtonText(button_Confirm, "FCConfirm".Translate()))
             {

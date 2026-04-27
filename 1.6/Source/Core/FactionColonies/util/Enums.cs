@@ -107,4 +107,27 @@ namespace FactionColonies.util
         Social = 5,
         Doctrine = 6
     }
+
+    public enum MilitaryWindowSlot
+    {
+        Units,
+        Squads,
+        FireSupport
+    }
+
+    /// <summary>
+    /// Lifecycle phase of an <see cref="FCEvent"/>.
+    /// Queued: in the queue, awaiting timer.
+    /// Fired: tentative, mid-processing only — should never persist past a single ProcessEvents pass.
+    /// Resolving: handler-driven persistent state. Set explicitly by a handler that wants the event
+    /// to stick around. Stays in queue until something transitions it to Completed.
+    /// Completed: done, awaiting sweep from the queue.
+    /// </summary>
+    public enum FCEventPhase
+    {
+        Queued,
+        Fired,
+        Resolving,
+        Completed
+    }
 }

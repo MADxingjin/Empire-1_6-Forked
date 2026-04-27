@@ -78,10 +78,7 @@ namespace FactionColonies
             Widgets.DrawMenuSection(scrollOutRect);
 
             float viewHeight = filtered.Count * RowHeight;
-            Rect scrollViewRect = new Rect(0, 0, scrollOutRect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(scrollOutRect, ref scrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(scrollOutRect, ref scrollPos, viewHeight);
 
             for (int i = 0; i < filtered.Count; i++)
             {
@@ -114,7 +111,7 @@ namespace FactionColonies
                 Widgets.Label(scrollOutRect, "FCChangeUnitRaceNoRaces".Translate());
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // Bottom buttons
             float buttonWidth = 120f;

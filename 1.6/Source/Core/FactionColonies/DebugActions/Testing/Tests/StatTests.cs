@@ -569,32 +569,31 @@ namespace FactionColonies
         }
 
         [EmpireTest("Stat")]
-        public static void Behavior_Egalitarian_TaxBonusDependsOnHappiness()
+        public static void Behavior_Egalitarian_TaxBreakReducesTaxBonus()
         {
             var faction = GetFaction();
             var settlement = GetFirstSettlement();
             if (faction == null || settlement == null)
                 TestAssert.Skip("No faction/settlement");
 
-            // Check if Egalitarian is active
             bool egalitarianActive = faction.policies.Any(p =>
                 p?.def == FCPolicyDefOf.egalitarian);
             if (!egalitarianActive)
                 TestAssert.Skip("Egalitarian policy not active");
 
             double taxBonus = faction.GetStatValue(FCStatDefOf.taxBonusFlat, settlement);
-            double expectedMinBonus = Math.Floor(settlement.happiness / 10);
             TestAssert.IsFalse(double.IsNaN(taxBonus),
                 "Egalitarian taxBonusFlat should not be NaN");
 
-            // The behavior adds floor(happiness/10), minus 30 if on tax break.
-            // Compute what the stat would be without the behavior contribution.
+            // When no tax break is active, the behavior contributes 0 to taxBonusFlat.
+            // When a tax break is active, it contributes -30. Either way the delta vs. faction base
+            // is never above 0 for this trait.
             double baseWithoutBehavior = faction.GetFactionStatValue(FCStatDefOf.taxBonusFlat);
             double behaviorDelta = taxBonus - baseWithoutBehavior;
-            // At worst (tax break active), delta = floor(happiness/10) - 30
-            double minExpected = expectedMinBonus - 30;
-            TestAssert.IsTrue(behaviorDelta >= minExpected - 0.01,
-                $"Egalitarian delta ({behaviorDelta:F2}) should be >= {minExpected:F0} (floor(happiness/10) - taxBreakPenalty)");
+            TestAssert.IsTrue(behaviorDelta <= 0.01,
+                $"Egalitarian delta ({behaviorDelta:F2}) should be <= 0 (0 off-break, -30 on-break)");
+            TestAssert.IsTrue(behaviorDelta >= -30.01,
+                $"Egalitarian delta ({behaviorDelta:F2}) should be >= -30 (tax break penalty)");
         }
 
         [EmpireTest("Stat")]

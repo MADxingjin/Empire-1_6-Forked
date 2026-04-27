@@ -5,9 +5,7 @@ namespace FactionColonies
 {
     public class FCPolicyBehaviorExt_Expansionist : FCPolicyBehaviorExtension
     {
-        public int feeReductionCooldownTicks = GenDate.TicksPerYear;
-        public double discountMultiplier = 0.5;
         public int autoUpgradeToLevel = 2;
-        public string readyLetterKey = "FCActionAvailable";
+        public float startingProsperity = 75f;
     }
 }

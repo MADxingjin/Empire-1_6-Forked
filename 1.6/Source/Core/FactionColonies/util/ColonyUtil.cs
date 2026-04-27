@@ -7,12 +7,26 @@ namespace FactionColonies.util
 {
     public static class ColonyUtil
     {
+        /// <summary>
+        /// Picks the default settlement type for a tile based on its planet layer.
+        /// Use when creating a settlement where the caller has no specific type in mind
+        /// (capturing a vanilla NPC settlement, fallback for null input, etc.).
+        /// </summary>
+        public static WorldSettlementDef DefaultSettlementDefForTile(PlanetTile tile)
+        {
+            if (ModsConfig.OdysseyActive && tile.Valid && tile.Layer == Find.WorldGrid.Orbit)
+            {
+                return WorldSettlementDefOf.WorldSettlementDef_Orbital;
+            }
+            return WorldSettlementDefOf.WorldSettlementDef_Surface;
+        }
+
         public static WorldSettlementFC CreatePlayerColonySettlement(PlanetTile tile, WorldSettlementDef settlementType)
         {
             if (settlementType == null)
             {
-                LogUtil.Error($"Tried to create a settlement with null WorldSettlementDef! Using default WorldSettlementDef.");
-                settlementType = WorldSettlementDefOf.WorldSettlementDef_Surface;
+                settlementType = DefaultSettlementDefForTile(tile);
+                LogUtil.Error($"Tried to create a settlement with null WorldSettlementDef! Defaulting to {settlementType.defName} based on tile layer.");
             }
 
             /* Do any pre-settlement-creation demanded of the settlement type */

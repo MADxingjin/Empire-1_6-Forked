@@ -53,6 +53,10 @@
 	<FCMilitaryPolicy>Military Policy</FCMilitaryPolicy>
 	<FCPolicySelection>Policy Selection</FCPolicySelection>
 	<FCSelectPolicies>Select Policies</FCSelectPolicies>
+	<FCClearPolicies>Clear Policies ({0} silver)</FCClearPolicies>
+	<FCClearPoliciesTooltip>Wipe your current core policies and choose new ones. The cost scales with your empire's size and prosperity.</FCClearPoliciesTooltip>
+	<FCClearPoliciesConfirm>Spend {0} silver to clear your current core policies and choose new ones?</FCClearPoliciesConfirm>
+	<FCClearPoliciesInsufficientSilver>Insufficient silver to clear policies (need {0}).</FCClearPoliciesInsufficientSilver>
 	<FCPolicyAlreadyEnacted>That policy has already been enacted</FCPolicyAlreadyEnacted>
 	<FCAlreadyPolicyTypeBeingEnacted>There is already a policy of that type being enacted</FCAlreadyPolicyTypeBeingEnacted>
 	<FCAlreadyPolicyInSlot>There is already a policy being enacted in that slot</FCAlreadyPolicyInSlot>
@@ -75,17 +79,17 @@
 	<FCNoOpenTraitSlots>All available trait slots are filled!</FCNoOpenTraitSlots>
 	<FCAllTraitSlotsFilled>All trait slots have been assigned.</FCAllTraitSlotsFilled>
 	<FCSelectTraitsPrompt>Select {0} more trait(s) from the list above.</FCSelectTraitsPrompt>
-	<FCTraitSelectionReady>Press Confirm to assign the selected traits. This cannot be undone!</FCTraitSelectionReady>
+	<FCTraitSelectionReady>Press Confirm to assign the selected traits. Once confirmed, changing your policies will cost silver.</FCTraitSelectionReady>
 	<FCHoverTraitForDetails>Hover over a trait to see its details.</FCHoverTraitForDetails>
 	<FCSelectedPolicies>Selected ({0}/{1})</FCSelectedPolicies>
 	<FCAvailablePolicies>Available Policies</FCAvailablePolicies>
 	<FCConflictsWith>Conflicts with: {0}</FCConflictsWith>
 	<FCTraits>Traits</FCTraits>
-	<FCSelectTraits0>Select {0} policies to be added! But be warned, your choice is irreversible!</FCSelectTraits0>
-	<FCSelectTraits2>Remember, your choice is irreversible after you exit this window!</FCSelectTraits2>
+	<FCSelectTraits0>Select {0} policies to be added! Once confirmed, changing your policies will cost silver.</FCSelectTraits0>
+	<FCSelectTraits2>Once confirmed, changing your policies will cost silver.</FCSelectTraits2>
 	<FCConflictingTraits>You cannot have conflicting faction traits!</FCConflictingTraits>
 	<FCUnselectTrait>You have to unselect one of your current traits to select another!</FCUnselectTrait>
-	<FCTraitsChosen>You have already chosen your traits. You cannot edit them any longer!</FCTraitsChosen>
+	<FCTraitsChosen>To change your policies, pay silver to clear them (top right button).</FCTraitsChosen>
 	<FCSelectANewTrait>Select a new trait</FCSelectANewTrait>
 	<FCTraitLockedUntilLevel>Locked until level {0}</FCTraitLockedUntilLevel>
 	<FCConfirmTrait>Are you sure you wish to select {0}? You will not be able to reverse this decision</FCConfirmTrait>

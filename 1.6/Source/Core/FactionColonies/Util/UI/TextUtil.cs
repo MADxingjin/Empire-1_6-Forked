@@ -26,7 +26,7 @@ namespace FactionColonies
         /// <param name="hardinvert">If true, the bonus is multiplied by -1 before being processed.</param>
         /// <param name="addPlusSign">If true, adds a "+" before positive values. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString ColorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
+        public static string ColorizeAdditiveBonus(double bonus, bool invert = false, bool addPlusSign = true, bool hardinvert = false)
         {
             if (hardinvert)
             {
@@ -77,7 +77,7 @@ namespace FactionColonies
         /// <param name="invert">If true, values less than 1 are colorized as positive, and vice versa. Defaults to false</param>
         /// <param name="addXsign">If true, adds a "x" before the bonus. Defaults to true</param>
         /// <returns></returns>
-        public static TaggedString ColorizeMultiplierBonus(double bonus, bool invert = false, bool addXsign = true)
+        public static string ColorizeMultiplierBonus(double bonus, bool invert = false, bool addXsign = true)
         {
             string baseBonus = Math.Round(bonus, 2).ToString();
             if (addXsign)
@@ -93,6 +93,21 @@ namespace FactionColonies
             {
                 return baseBonus.Colorize(Color.green);
             }
+        }
+
+        public static string ColorizeBonus(double bonus, double compare, bool invert = false)
+        {
+            string result = Math.Round(bonus, 2).ToString();
+            if ((!invert && bonus > compare) || (invert && bonus < compare))
+            {
+                return result.Colorize(Color.green);
+            }
+            if ((!invert && bonus < compare) || (invert && bonus > compare))
+            {
+                return result.Colorize(Color.red);
+            }
+
+            return result;
         }
 
         public static string GetTownTitle(WorldSettlementFC settlement)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FactionColonies.util;
 using RimWorld;
@@ -18,11 +19,18 @@ namespace FactionColonies
                 return false;
             }
 
+            var milComp = settlement.MilitaryComp;
             FCEvent existingEvent = ReturnMilitaryEventByLocation(settlement.Tile);
-            if (settlement.MilitaryComp.isUnderAttack || existingEvent is object || settlement.HasMap)
+
+            // Allow new attacks if a manual battle is active on the map (wave defense)
+            // or the map is still loaded post-battle (map reuse). Reject only when there's
+            // a pending warning-phase event and no active battle map yet.
+            bool hasActiveBattle = milComp.isUnderAttack && settlement.HasMap;
+            bool hasPostBattleMap = !milComp.isUnderAttack && settlement.HasMap;
+            if (!hasActiveBattle && !hasPostBattleMap && (milComp.isUnderAttack || existingEvent is object))
             {
                 LogUtil.Warning($"AttackPlayerSettlement rejected: {settlement.Name} is already under attack " +
-                    $"(isUnderAttack={settlement.MilitaryComp.isUnderAttack}, existingEvent={existingEvent is object}). " +
+                    $"(isUnderAttack={milComp.isUnderAttack}, existingEvent={existingEvent is object}). " +
                     $"Attacker {enemyFaction?.Name ?? "null"} dropped.");
                 return false;
             }
@@ -215,7 +223,7 @@ namespace FactionColonies
                         factionfc.ReturnSettlementByLocation(evt.location), true);
             }
 
-            factionfc.militaryTargets.Remove(evt.location);
+            factionfc.RemoveMilitaryTarget(evt.location);
             evt.militaryForceDefending =
                 MilitaryForce.CreateMilitaryForceFromSettlement(settlementOfMilitaryForce,
                     homeDefendingForce: tmpMilitaryForce);
@@ -236,7 +244,7 @@ namespace FactionColonies
             {
                 //if settlement is foreign
                 settlementOfMilitaryForce.MilitaryComp?.SendMilitary(evt.settlementFCDefending.Tile, MilitaryJobDefOf.DefendFriendlySettlement, -1, evt.militaryForceAttackingFaction);
-                Find.LetterStack.ReceiveLetter("Military Action", "ForeignMilitarySwitch"
+                Find.LetterStack.ReceiveLetter("FCMilitaryAction".Translate(), "FCForeignMilitarySwitch"
                     .Translate(settlementOfMilitaryForce.Name,
                         factionfc.ReturnSettlementByLocation(evt.location).Name,
                         evt.militaryForceDefending.militaryLevel), LetterDefOf.NeutralEvent);
@@ -266,7 +274,7 @@ namespace FactionColonies
             }
 
             // Assign new external defender
-            factionfc.militaryTargets.Remove(evt.location);
+            factionfc.RemoveMilitaryTarget(evt.location);
             evt.militaryForceDefending = defender.CreateDefendingForce();
             evt.externalDefenderSource = defender.WorldObject;
             defender.OnDefenseStarted(evt.settlementFCDefending);
@@ -289,6 +297,11 @@ namespace FactionColonies
         public static FCEvent ReturnMilitaryEventByLocation(PlanetTile location)
         {
             return FactionCache.FactionComp.FindEventByDefAndLocation(FCEventDefOf.settlementBeingAttacked, location);
+        }
+
+        public static IReadOnlyList<FCEvent> ReturnMilitaryEventsByLocation(PlanetTile location)
+        {
+            return FactionCache.FactionComp.FindAllEventsByDefAndLocation(FCEventDefOf.settlementBeingAttacked, location);
         }
     }
 }

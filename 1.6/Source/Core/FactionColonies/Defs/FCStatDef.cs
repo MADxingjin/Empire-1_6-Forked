@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
 
@@ -72,7 +72,7 @@ namespace FactionColonies
     [DefOf]
     public class FCStatDefOf
     {
-        // ── Military ──────────────────────────────────────────────
+        /* Military */
         public static FCStatDef militaryBaseLevel;
         public static FCStatDef militaryCombatEfficiency;
         public static FCStatDef militaryLevelBonusDefending;
@@ -84,17 +84,17 @@ namespace FactionColonies
         public static FCStatDef deadPawnCooldownOffset;
         public static FCStatDef mercHealRateMultiplier;
 
-        // ── Threat Scaling ───────────────────────────────────────
+        /* Threat Scaling */
         public static FCStatDef threatScalingBase;
         public static FCStatDef threatScalingMultiplier;
 
-        // ── Battle Penalties ──────────────────────────────────────
+        /* Battle Penalties */
         public static FCStatDef battleProsperityLossMultiplier;
         public static FCStatDef battleHappinessLossMultiplier;
         public static FCStatDef battleLoyaltyLossMultiplier;
         public static FCStatDef buildingDestructionChance;
 
-        // ── Economy ───────────────────────────────────────────────
+        /* Economy */
         public static FCStatDef taxBasePercentage;
         public static FCStatDef taxBaseRandomModifier;
         public static FCStatDef taxBonusFlat;
@@ -106,7 +106,7 @@ namespace FactionColonies
         public static FCStatDef createSettlementMultiplier;
         public static FCStatDef researchContributionMultiplier;
 
-        // ── Workers ───────────────────────────────────────────────
+        /* Workers */
         public static FCStatDef workerBaseCost;
         public static FCStatDef workerBaseMax;
         public static FCStatDef workerBaseOverMax;
@@ -115,31 +115,31 @@ namespace FactionColonies
         public static FCStatDef workerProductionBase;
         public static FCStatDef workerProductionMultiplier;
 
-        // ── Prosperity ────────────────────────────────────────────
+        /* Prosperity */
         public static FCStatDef prosperityGainedBase;
         public static FCStatDef prosperityLostBase;
 
-        // ── Happiness (base) ──────────────────────────────────────
+        /* Happiness (base) */
         public static FCStatDef happinessLostBase;
         public static FCStatDef happinessGainedBase;
 
-        // ── Happiness (multipliers) ───────────────────────────────
+        /* Happiness (multipliers) */
         public static FCStatDef happinessLostMultiplier;
         public static FCStatDef happinessGainedMultiplier;
 
-        // ── Loyalty (base) ────────────────────────────────────────
+        /* Loyalty (base) */
         public static FCStatDef loyaltyLostBase;
         public static FCStatDef loyaltyGainedBase;
 
-        // ── Loyalty (multipliers) ─────────────────────────────────
+        /* Loyalty (multipliers) */
         public static FCStatDef loyaltyLostMultiplier;
         public static FCStatDef loyaltyGainedMultiplier;
 
-        // ── Unrest (base) ─────────────────────────────────────────
+        /* Unrest (base) */
         public static FCStatDef unrestLostBase;
         public static FCStatDef unrestGainedBase;
 
-        // ── Unrest (multipliers) ──────────────────────────────────
+        /* Unrest (multipliers) */
         public static FCStatDef unrestLostMultiplier;
         public static FCStatDef unrestGainedMultiplier;
 

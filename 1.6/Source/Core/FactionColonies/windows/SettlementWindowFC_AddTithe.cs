@@ -306,15 +306,13 @@ namespace FactionColonies
             Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = thingsList.Count * rowHeight;
-            float width = listHeight > outerListBox.height ? outerListBox.width - scrollSpacing : outerListBox.width;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(new Rect(headerRow.xMax - margin - 65f - (listHeight > outerListBox.height ? scrollSpacing : 0), headerRow.y, 60f, headerRow.height), "FCTitheBasePrice".Translate());
             Text.Font = GameFont.Small;
-            Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
-            Widgets.BeginScrollView(outerListBox, ref scrollBarLeft, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(outerListBox, ref scrollBarLeft, listHeight);
 
             for (int i = 0; i < thingsList.Count; i++)
             {
@@ -372,7 +370,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
         private void DrawRightPanel(Rect boundingBox)
         {
@@ -427,15 +425,13 @@ namespace FactionColonies
             Rect drawBox = new Rect(boundingBox.x, curY + margin, boundingBox.width, boundingBox.yMax - curY - margin);
             Rect outerListBox = new Rect(drawBox.x + 2, drawBox.y + 2, drawBox.width - 4, drawBox.height - 4);
             float listHeight = stuffList.Count * rowHeight;
-            float width = listHeight > outerListBox.height ? outerListBox.width - scrollSpacing : outerListBox.width;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(new Rect(headerRow.xMax - margin - 65f - (listHeight > outerListBox.height ? scrollSpacing : 0), headerRow.y, 60f, headerRow.height), "FCTitheMaterialPrice".Translate());
             Text.Font = GameFont.Small;
-            Rect innerScrollBox = new Rect(outerListBox.x, outerListBox.y, width, listHeight);
             Widgets.DrawMenuSection(drawBox);
 
-            Widgets.BeginScrollView(outerListBox, ref scrollBarRight, innerScrollBox);
+            Rect innerScrollBox = ScrollUtil.BeginScrollView(outerListBox, ref scrollBarRight, listHeight);
 
             for (int i = 0; i < stuffList.Count; i++)
             {
@@ -470,7 +466,7 @@ namespace FactionColonies
                 Text.Anchor = TextAnchor.MiddleLeft;
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
         }
 
         private List<ThingDef> ApplySort(List<ThingDef> list, int sortIndex, bool isStuffList = false)

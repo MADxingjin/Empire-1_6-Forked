@@ -11,7 +11,7 @@
             this.silverCount = PaymentUtil.GetSilver();
             this.settlement = settlement;
             this.selectedSilver = 0;
-            this.stringEffect = "SettlementGainsXLoyalty";
+            this.stringEffect = "FCSettlementGainsXLoyalty";
         }
 
 
@@ -23,8 +23,6 @@
         public override void UseValue(float value)
         {
             settlement.loyalty += ReturnValue(selectedSilver);
-            if (settlement.loyalty > 100)
-                settlement.loyalty = 100;
         }
 
 

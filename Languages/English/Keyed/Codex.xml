@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<!-- Codex Window Chrome -->
+	<FCCodexTitle>Empire Codex</FCCodexTitle>
+	<FCCodexTabInfo>Info</FCCodexTabInfo>
+	<FCCodexSelectEntry>Select an entry from the left to view details.</FCCodexSelectEntry>
+	<FCCodexLiveData>Current Game Values</FCCodexLiveData>
+	<FCCodexSeeAlso>See Also:</FCCodexSeeAlso>
+	<FCCodexEnabled>Enabled</FCCodexEnabled>
+	<FCCodexDisabled>Disabled</FCCodexDisabled>
+
+	<!-- Threat Level Provider -->
+	<FCCodexETLNoSettlements>No settlements — ETL defaults to 1.0×.</FCCodexETLNoSettlements>
+	<FCCodexETLCurrent>Current ETL: {0}×</FCCodexETLCurrent>
+	<FCCodexETLBreakdown>Components:</FCCodexETLBreakdown>
+	<FCCodexETLAvgLevel>Avg Level: {0}</FCCodexETLAvgLevel>
+	<FCCodexETLMaxLevel>Max Level: {0}</FCCodexETLMaxLevel>
+	<FCCodexETLContrib>+{0}</FCCodexETLContrib>
+	<FCCodexETLIncome>Income: {0} silver</FCCodexETLIncome>
+	<FCCodexETLCount>Settlements: {0}</FCCodexETLCount>
+	<FCCodexETLHandicapCap>Handicap Cap: {0}×</FCCodexETLHandicapCap>
+	<FCCodexETLMaxSetting>Max Setting: {0}×</FCCodexETLMaxSetting>
+
+	<!-- Battle Simulation Provider -->
+	<FCCodexBattleParams>Current Battle Parameters</FCCodexBattleParams>
+	<FCCodexBattleDefAdv>Defender Advantage: {0}× ({1}% force bonus)</FCCodexBattleDefAdv>
+	<FCCodexBattleDamping>Efficiency Damping: {0}</FCCodexBattleDamping>
+	<FCCodexBattleDampExample>Example: raw efficiency {0}× → dampened to {1}×</FCCodexBattleDampExample>
+
+	<!-- Resource Production Provider -->
+	<FCCodexResNoSettlements>No settlements to show production data.</FCCodexResNoSettlements>
+	<FCCodexResNoWorkers>No workers assigned to any resource yet.</FCCodexResNoWorkers>
+	<FCCodexResExample>Example: {0} — {1}</FCCodexResExample>
+	<FCCodexResStage1>Stage 1 (Additives): {0} base</FCCodexResStage1>
+	<FCCodexResStage2>Stage 2 (Multipliers): ×{0} (includes prosperity {1}%)</FCCodexResStage2>
+	<FCCodexResStage3>Stage 3 (Workers): {0} workers → {1} total production</FCCodexResStage3>
+	<FCCodexResSilver>Silver conversion: {0} silver/unit → {1} silver value</FCCodexResSilver>
+
+	<!-- Prosperity Provider -->
+	<FCCodexProsNoSettlements>No settlements to show prosperity data.</FCCodexProsNoSettlements>
+	<FCCodexProsHeader>Per-Settlement Breakdown</FCCodexProsHeader>
+	<FCCodexProsCurrent>Prosperity: {0}</FCCodexProsCurrent>
+	<FCCodexProsTargetVal>Target: {0}</FCCodexProsTargetVal>
+	<FCCodexProsHappiness>Happiness: {0}</FCCodexProsHappiness>
+	<FCCodexProsLoyalty>Loyalty: {0}</FCCodexProsLoyalty>
+	<FCCodexProsStability>Stability: {0}</FCCodexProsStability>
+	<FCCodexProsDrift>Drift: {0}/day</FCCodexProsDrift>
+	<FCCodexProsProdMult>Production: ×{0}</FCCodexProsProdMult>
+
+	<!-- Worker Overwork Provider -->
+	<FCCodexWorkerParams>Current Worker Parameters</FCCodexWorkerParams>
+	<FCCodexWorkerBaseCost>Base worker cost: {0} silver</FCCodexWorkerBaseCost>
+	<FCCodexWorkerFormula>Formula: cost × (1 + overwork/20)</FCCodexWorkerFormula>
+	<FCCodexWorkerFormulaDesc>Each worker over soft cap adds 5% cost</FCCodexWorkerFormulaDesc>
+	<FCCodexWorkerExample>Example: {0} workers over cap → +{1}% cost → {2} silver per worker</FCCodexWorkerExample>
+
+	<!-- Military Cooldown Provider -->
+	<FCCodexCooldownParams>Current Cooldown Parameters</FCCodexCooldownParams>
+	<FCCodexCooldownBase>Base cooldown: {0} days</FCCodexCooldownBase>
+	<FCCodexCooldownDeadPawn>Dead pawn penalty: {0}</FCCodexCooldownDeadPawn>
+	<FCCodexCooldownDeadPawnCalc>Each death adds ~{0} hours to cooldown</FCCodexCooldownDeadPawnCalc>
+	<FCCodexCooldownExample>Example: {0} deaths → +{1} hours → total ~{2} days</FCCodexCooldownExample>
+
+	<!-- Attack Frequency Provider -->
+	<FCCodexFreqParams>Current Attack Frequency Parameters</FCCodexFreqParams>
+	<FCCodexFreqRange>Base interval range: {0}–{1} days</FCCodexFreqRange>
+	<FCCodexFreqCount>Your settlement count: {0}</FCCodexFreqCount>
+	<FCCodexFreqCurve>Frequency curve (settlements → multiplier):</FCCodexFreqCurve>
+	<FCCodexFreqPoint>{0} settlements → {1}×</FCCodexFreqPoint>
+
+	<!-- Difficulty Settings Provider -->
+	<FCCodexDiffCurrent>Current difficulty: {0}</FCCodexDiffCurrent>
+	<FCCodexDiffHeader>Difficulty → Silver/Res | Tax Days | Tithe Mod | Worker Cost</FCCodexDiffHeader>
+	<FCCodexDiffRow>{0}: {1} | {2}d | {3} | {4}</FCCodexDiffRow>
+	<FCCodexDiffCustomLabel>Your custom values:</FCCodexDiffCustomLabel>
+	<FCCodexDiffCustomRow>  {0}: {1}</FCCodexDiffCustomRow>
+
+	<!-- Settlement Types Tab -->
+	<FCCodexTabSettlements>Settlements</FCCodexTabSettlements>
+	<FCCodexSelectSettlement>Select a settlement type from the left to view details.</FCCodexSelectSettlement>
+	<FCCodexSettlementStats>Key Stats</FCCodexSettlementStats>
+	<FCCodexSettlementWorkers>Workers: {0} base, +{1} per level</FCCodexSettlementWorkers>
+	<FCCodexSettlementMaxLevel>Max Level: {0}</FCCodexSettlementMaxLevel>
+	<FCCodexSettlementBuildingSlots>Building Slots</FCCodexSettlementBuildingSlots>
+	<FCCodexSettlementBuildingSlotsLevel>Level</FCCodexSettlementBuildingSlotsLevel>
+	<FCCodexSettlementBuildingSlotsCount>Building Slots</FCCodexSettlementBuildingSlotsCount>
+	<FCCodexSettlementBuildingSlotsWorkers>Workers</FCCodexSettlementBuildingSlotsWorkers>
+	<FCCodexSettlementPlanetLayer>Planet Layer: {0}</FCCodexSettlementPlanetLayer>
+	<FCCodexSettlementManualBattle>Manual Battle: {0}</FCCodexSettlementManualBattle>
+	<FCCodexSettlementCanBeRaided>Can Be Raided: {0}</FCCodexSettlementCanBeRaided>
+	<FCCodexSettlementRaidWeight>Raid Targeting Weight: {0}</FCCodexSettlementRaidWeight>
+	<FCCodexSettlementResources>Available Resources</FCCodexSettlementResources>
+	<FCCodexSettlementStatModifiers>Stat Modifiers</FCCodexSettlementStatModifiers>
+	<FCCodexSettlementTechReqs>Tech Requirements</FCCodexSettlementTechReqs>
+	<FCCodexSettlementTechLevel>Tech Level: {0}</FCCodexSettlementTechLevel>
+	<FCCodexSettlementResearch>Research: {0}</FCCodexSettlementResearch>
+	<FCCodexSettlementBiomes>Biome Restrictions</FCCodexSettlementBiomes>
+	<FCCodexSettlementAllBiomes>All biomes</FCCodexSettlementAllBiomes>
+	<FCCodexSettlementBlockedBiomes>Blocked: {0}</FCCodexSettlementBlockedBiomes>
+	<FCCodexSettlementAllowedBiomes>Allowed only: {0}</FCCodexSettlementAllowedBiomes>
+	<FCCodexYes>Yes</FCCodexYes>
+	<FCCodexNo>No</FCCodexNo>
+
+	<!-- Resources Tab -->
+	<FCCodexTabResources>Resources</FCCodexTabResources>
+	<FCCodexSelectResource>Select a resource from the left to view details.</FCCodexSelectResource>
+	<FCCodexResourceKeyInfo>Key Info</FCCodexResourceKeyInfo>
+	<FCCodexResourcePoolResource>Pool Resource</FCCodexResourcePoolResource>
+	<FCCodexResourceTitheable>Titheable: {0}</FCCodexResourceTitheable>
+	<FCCodexResourceDefaultResource>Default Resource: {0}</FCCodexResourceDefaultResource>
+	<FCCodexResourceMinTechLevel>Min Tech Level: {0}</FCCodexResourceMinTechLevel>
+	<FCCodexResourceMaxTechLevel>Max Tech Level: {0}</FCCodexResourceMaxTechLevel>
+	<FCCodexResourceDefenseWeight>Defense Weight: {0}</FCCodexResourceDefenseWeight>
+	<FCCodexResourceBiomeProduction>Biome Production</FCCodexResourceBiomeProduction>
+	<FCCodexResourceBiomeName>Biome</FCCodexResourceBiomeName>
+	<FCCodexResourceBiomeAdditive>Additive</FCCodexResourceBiomeAdditive>
+	<FCCodexResourceBiomeMultiplier>Multiplier</FCCodexResourceBiomeMultiplier>
+	<FCCodexResourceBiomeTotal>Total</FCCodexResourceBiomeTotal>
+	<FCCodexResourceTitheItems>Tithe Items ({0})</FCCodexResourceTitheItems>
+	<FCCodexResourceSearchTithe>Search tithe items...</FCCodexResourceSearchTithe>
+	<FCCodexResourceCompatibleSettlements>Compatible Settlements</FCCodexResourceCompatibleSettlements>
+	<FCCodexResourceRequiresResearch>Requires: {0}</FCCodexResourceRequiresResearch>
+
+	<!-- Buildings Tab -->
+	<FCCodexTabBuildings>Buildings</FCCodexTabBuildings>
+	<FCCodexSelectBuilding>Select a building from the left to view details.</FCCodexSelectBuilding>
+	<FCCodexSearchBuildings>Search buildings...</FCCodexSearchBuildings>
+	<FCCodexBuildingStats>Stats</FCCodexBuildingStats>
+	<FCCodexBuildingCost>Cost: {0} silver</FCCodexBuildingCost>
+	<FCCodexBuildingDuration>Construction Time: {0}</FCCodexBuildingDuration>
+	<FCCodexBuildingUpkeep>Upkeep: {0} silver</FCCodexBuildingUpkeep>
+	<FCCodexBuildingIncome>Income: {0} silver</FCCodexBuildingIncome>
+	<FCCodexBuildingTechLevel>Tech Level: {0}</FCCodexBuildingTechLevel>
+	<FCCodexBuildingModifiers>Modifiers</FCCodexBuildingModifiers>
+	<FCCodexBuildingRequired>Required Buildings</FCCodexBuildingRequired>
+	<FCCodexBuildingUpgrades>Upgrade Tree</FCCodexBuildingUpgrades>
+	<FCCodexBuildingRequiredBy>Required By</FCCodexBuildingRequiredBy>
+	<FCCodexBuildingTechGeneral>General</FCCodexBuildingTechGeneral>
+	<FCCodexBuildingCompatibleSettlements>Compatible Settlements</FCCodexBuildingCompatibleSettlements>
+	<FCCodexBuildingBiomeRestrictions>Terrain Restrictions</FCCodexBuildingBiomeRestrictions>
+	<FCCodexBuildingApplicableBiomes>Biomes:</FCCodexBuildingApplicableBiomes>
+	<FCCodexBuildingHilliness>Hilliness: {0} to {1}</FCCodexBuildingHilliness>
+	<FCCodexBuildingMaxHilliness>Max Hilliness: {0}</FCCodexBuildingMaxHilliness>
+	<FCCodexBuildingMinHilliness>Min Hilliness: {0}</FCCodexBuildingMinHilliness>
+	<FCCodexBuildingAllBiomes>All biomes</FCCodexBuildingAllBiomes>
+	<FCCodexBuildingAnyTerrain>Any terrain</FCCodexBuildingAnyTerrain>
+
+	<!-- Enhanced Tooltips -->
+	<FCCodexTipProsFormula>Production multiplier = prosperity / 100. At 50%, you produce half as much.</FCCodexTipProsFormula>
+	<FCCodexTipProsRange>Range across settlements: {0}% - {1}%</FCCodexTipProsRange>
+	<FCCodexTipSocialDrift>{0} naturally increases by 1/day, unless there is a negative modifier. Policies, buildings, and events can incresae or decrease this rate. This stat feeds into the prosperity target.</FCCodexTipSocialDrift>
+	<FCCodexTipUnrestDrift>Unrest naturally decreases by 1/day, unless there is a penalty modifier. Policies, buildings, and events can increase or decrease this rate. Lower unrest raises the prosperity target.</FCCodexTipUnrestDrift>
+	<FCCodexTipProfitBreakdown>Income: {0} silver\nUpkeep: {1} silver\nProfit: {2} silver\n\nIncome is the total silver value of all settlement production. Upkeep includes worker costs, building maintenance, and military expenses.</FCCodexTipProfitBreakdown>
+	<FCCodexTipTaxTimer>Tax collection every {0} days (configurable in settings).\n</FCCodexTipTaxTimer>
+	<FCCodexTipTaxAveraging>Tax income uses the AVERAGE of daily production snapshots across the tax period, not a single snapshot at collection time. Building or losing things mid-period affects the average proportionally.</FCCodexTipTaxAveraging>
+	<FCCodexTipMilTargeting>Raid targeting weight: {0}\n(lower military level = more likely targeted; scale: 1-10)</FCCodexTipMilTargeting>
+	<FCCodexTipMilETL>Current Empire Threat Level: {0}x</FCCodexTipMilETL>
+
+</LanguageData>

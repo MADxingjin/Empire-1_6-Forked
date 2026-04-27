@@ -217,9 +217,9 @@ namespace FactionColonies
         public static List<PawnKindDef> AllAnimalKindDefs => _cachedAnimalKinds ??
                                                              (_cachedAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsAnimalAndAllowed()).ToList());
         public static List<PawnKindDef> AllCombatAnimalKindDefs => _cachedCombatAnimalKinds ??
-                                                                   (_cachedCombatAnimalKinds = AllPawnKindDefs.Where(kind => kind.IsCombatAnimal()).ToList());
+                                                                   (_cachedCombatAnimalKinds = AllAnimalKindDefs.Where(kind => kind.IsCombatAnimal()).ToList());
         public static List<PawnKindDef> AllPackAnimalKinds => _cachedPackAnimalKinds ??
-                                                              (_cachedPackAnimalKinds = AllPawnKindDefs.Where(kind => kind.RaceProps.packAnimal).ToList());
+                                                              (_cachedPackAnimalKinds = AllAnimalKindDefs.Where(kind => kind.IsPackAnimal()).ToList());
         public static bool NonViolentXenotypesExist
         {
             get
@@ -527,6 +527,7 @@ namespace FactionColonies
             _cachedUpgradeTrees = null;
             _cachedUpgradeDescendants = null;
             _cachedRequiredByMap = null;
+            BuildingFCDef.ClearCompatibleSettlementCache();
             _cachedEventCategoryDefs = null;
             _cachedHostileMilitaryJobs = null;
 

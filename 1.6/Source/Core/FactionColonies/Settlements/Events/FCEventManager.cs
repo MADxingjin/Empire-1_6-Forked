@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FactionColonies.util;
 using RimWorld.Planet;
 using Verse;
 
@@ -25,7 +26,7 @@ namespace FactionColonies
         private Dictionary<string, int> eventFireCounts = new Dictionary<string, int>();
         private int version;
 
-        // ── Indexes (not serialized — rebuilt on load) ──
+        /* Indexes (not serialized — rebuilt on load) */
         private Dictionary<FCEventDef, List<FCEvent>> defIndex = new Dictionary<FCEventDef, List<FCEvent>>();
         private Dictionary<DefTileKey, List<FCEvent>> defLocationIndex = new Dictionary<DefTileKey, List<FCEvent>>();
 
@@ -35,8 +36,7 @@ namespace FactionColonies
         public int Version => version;
         public int Count => events.Count;
 
-        // ── Index maintenance ──
-
+        /* Index maintenance */
         private void IndexAdd(FCEvent evt)
         {
             if (evt?.def is null) return;
@@ -88,8 +88,7 @@ namespace FactionColonies
                 IndexAdd(evt);
         }
 
-        // ── Indexed query methods ──
-
+        /* Indexed query methods */
         /// <summary>All events with the given def. Returns empty list if none.</summary>
         public IReadOnlyList<FCEvent> GetByDef(FCEventDef def)
         {
@@ -128,8 +127,7 @@ namespace FactionColonies
             return defLocationIndex.TryGetValue(key, out List<FCEvent> list) && list.Count > 0;
         }
 
-        // ── Mutation methods ──
-
+        /* Mutation methods */
         // Raw append. Does NOT apply stat modifiers or invalidate caches;
         // FactionFC.AddEvent is responsible for cascading side effects.
         public void Enqueue(FCEvent evt)
@@ -145,7 +143,7 @@ namespace FactionColonies
             if (evt is null) return false;
             if (!events.Remove(evt)) return false;
             IndexRemove(evt);
-            evt.fired = true;
+            evt.phase = FCEventPhase.Completed;
             version++;
             return true;
         }
@@ -158,7 +156,7 @@ namespace FactionColonies
             {
                 if (!match(events[i])) continue;
                 IndexRemove(events[i]);
-                events[i].fired = true;
+                events[i].phase = FCEventPhase.Completed;
                 events.RemoveAt(i);
                 removed++;
             }
@@ -174,22 +172,20 @@ namespace FactionColonies
             version++;
         }
 
-        // Atomically collects every event whose timeTillTrigger has passed,
-        // removes them from the queue, and returns them as a new list.
-        // Does NOT set 'fired'; FCEventMaker.ProcessEvents still wants its
-        // per-event re-entrancy guard to gate processing.
+        // Collects every Queued event whose timeTillTrigger has passed, returning them as a new list.
+        // Events stay in the queue; ProcessEvents transitions phase Queued -> Fired (tentative)
+        // -> Completed (default at end of body) inside its per-event re-entrancy guard, and a sweep
+        // after the loop removes Completed events. Skips events already in Fired or Completed phase.
         public List<FCEvent> CollectDueEvents(int currentTick)
         {
             List<FCEvent> due = null;
             for (int i = events.Count - 1; i >= 0; i--)
             {
+                if (!events[i].IsQueued) continue;
                 if (events[i].timeTillTrigger > currentTick) continue;
                 if (due is null) due = new List<FCEvent>();
                 due.Add(events[i]);
-                IndexRemove(events[i]);
-                events.RemoveAt(i);
             }
-            if (due != null) version++;
             return due;
         }
 
@@ -245,8 +241,11 @@ namespace FactionColonies
             Scribe_Collections.Look(ref eventFireCounts, "eventFireCounts", LookMode.Value, LookMode.Value);
             if (eventFireCounts is null) eventFireCounts = new Dictionary<string, int>();
 
-            // Indexes are transient — rebuild from deserialized event list
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            // Indexes are transient — rebuild as soon as the events list is populated.
+            // Must run in LoadingVars (not PostLoadInit): WorldSettlementFC.PostLoadInit
+            // fires ISettlementPostLoadInit callbacks that query the index, and the
+            // PostLoadIniter HashSet can schedule WorldSettlementFC before FCEventManager.
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
                 IndexRebuild();
         }
     }

@@ -451,9 +451,8 @@ namespace FactionColonies
             FactionFC faction = FactionCache.FactionComp;
             int currentTick = Find.TickManager.TicksGame;
 
-            // Phase 1: atomically collect every due event and remove it from the queue.
-            // CollectDueEvents deliberately does NOT set evt.fired — phase 2 below still
-            // wants its own re-entrancy guard to gate per-event processing.
+            // Phase 1: collect every Queued event past its timer (events stay in the queue;
+            // their phase transitions during processing and a sweep at the end removes Completed).
             List<FCEvent> due = faction.eventManager.CollectDueEvents(currentTick);
             if (due is null) return;
 
@@ -463,12 +462,12 @@ namespace FactionColonies
                 try
                 {
                 // Guard against accidental re-fires
-                if (evt.fired)
+                if (!evt.IsQueued)
                 {
-                    LogUtil.Error($"ProcessEvents: event '{evt.def?.defName ?? "NULL"}' (loadID={evt.loadID}) already fired. Skipping re-fire.");
+                    LogUtil.Error($"ProcessEvents: event '{evt.def?.defName ?? "NULL"}' (loadID={evt.loadID}) not in Queued phase ({evt.phase}). Skipping.");
                     continue;
                 }
-                evt.fired = true;
+                evt.phase = FCEventPhase.Fired;     // tentative; mid-processing only. Handlers wanting persistence transition to Resolving during their run.
 
                 // Record cooldown for events that define one
                 if (evt.def != null && evt.def.cooldownTicks > 0)
@@ -521,17 +520,21 @@ namespace FactionColonies
                         case "taxColony":
                         {
                             settlement = faction.ReturnSettlementByLocation(evt.source);
-                            if (settlement == null)
+                            if (settlement is null)
                             {
                                 LogUtil.Warning($"taxColony event references missing settlement at tile {evt.source}. Skipping delivery.");
                                 break;
                             }
 
-                            string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
-
-                            Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
-
-                            PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            // Let registered interceptors try to handle delivery first
+                            TaxDeliveryContext deliveryCtx = new TaxDeliveryContext(evt, settlement);
+                            if (!TaxDeliveryRegistry.InvokeTryDeliverGoods(deliveryCtx))
+                            {
+                                // No interceptor handled it — default delivery
+                                string str = "FCTaxesFrom".Translate() + " " + settlement.Name + " " + "FCHaveBeenDelivered".Translate() + "!";
+                                Message msg = new Message(str, MessageTypeDefOf.PositiveEvent);
+                                PaymentUtil.DeliverThings(evt, LetterMaker.MakeLetter("FCTaxesHaveArrived".Translate(), str + "\n" + evt.goods.ToLetterString(), LetterDefOf.PositiveEvent), msg);
+                            }
                             break;
                         }
                         case "constructBuilding":
@@ -747,7 +750,19 @@ namespace FactionColonies
                         $"(loadID={evt.loadID}): {ex}");
                     TryRecoverFailedEvent(evt, faction);
                 }
+
+                // Force out of Fired phase. Handlers that wanted persistence transitioned to
+                // Resolving during their run; everything still in Fired here is fire-and-forget
+                // and unconditionally completed. After this point, no event in the queue should
+                // be in Fired phase.
+                if (evt.IsFired)
+                {
+                    evt.phase = FCEventPhase.Completed;
+                }
             }
+
+            // Sweep events that completed during this tick (or earlier).
+            faction.eventManager.RemoveWhere(e => e.IsCompleted);
         }
 
         private static void TryRecoverFailedEvent(FCEvent evt, FactionFC faction)

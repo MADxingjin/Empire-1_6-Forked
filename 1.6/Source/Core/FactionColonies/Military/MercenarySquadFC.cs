@@ -33,7 +33,7 @@ namespace FactionColonies
         public XenotypeDef xenotype1;
         public List<Gene> GeneList;
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_Values.Look(ref name, "name");
@@ -86,6 +86,10 @@ namespace FactionColonies
 
         public IEnumerable<Mercenary> DeployedMercenaryAnimals =>
             animals.Where(merc => merc?.pawn?.Map != null);
+
+        /// <summary>True if any mercenary pawn is currently spawned on a map.</summary>
+        public bool IsPhysicallyDeployed() => mercenaries.Any(m => m?.pawn?.Map != null);
+
         public WorldSettlementFC getSettlement
         {
             get
@@ -144,7 +148,7 @@ namespace FactionColonies
                 for (int k = 0; k < MilSquadFC.MaxSquadSize; k++)
                 {
                     Mercenary pawn = new Mercenary(true);
-                    CreateNewPawn(ref pawn, outfit.units[k].pawnKind, outfit.units[k].xenotype, outfit.units[k].customXenotypeName);
+                    CreateNewPawn(ref pawn, outfit.Units[k].pawnKind, outfit.Units[k].xenotype, outfit.Units[k].customXenotypeName);
                     // Only add if pawn was successfully created
                     if (pawn?.pawn != null)
                     {
@@ -152,7 +156,7 @@ namespace FactionColonies
                     }
                     else
                     {
-                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 for unit {outfit.units[k]?.name ?? "unknown"}.");
+                        LogUtil.Warning($"Failed to create mercenary {k + 1}/30 for unit {outfit.Units[k]?.name ?? "unknown"}.");
                     }
                 }
             }
@@ -531,7 +535,7 @@ namespace FactionColonies
             }
         }
 
-        public void OutfitSquad(MilSquadFC outfit)
+        public virtual void OutfitSquad(MilSquadFC outfit)
         {
             FactionFC faction = FactionCache.FactionComp;
             int count = 0;
@@ -540,7 +544,7 @@ namespace FactionColonies
             UsedApparelList = new List<Apparel>();
             animals = new List<Mercenary>();
             GeneList = new List<Gene>();
-            foreach (MilUnitFC loadout in outfit.units)
+            foreach (MilUnitFC loadout in outfit.Units)
             {
                 try
                 {
@@ -644,7 +648,7 @@ namespace FactionColonies
         }
 
 
-        public void StripPawn(Mercenary merc)
+        public virtual void StripPawn(Mercenary merc)
         {
             if (merc?.pawn == null) return;
 
@@ -661,7 +665,7 @@ namespace FactionColonies
             CombatExtendedUtil.UpdateInventory(merc.pawn);
         }
 
-        public void EquipPawn(Mercenary merc, MilUnitFC loadout)
+        public virtual void EquipPawn(Mercenary merc, MilUnitFC loadout)
         {
             if (merc?.pawn == null || loadout == null) return;
 
@@ -673,7 +677,7 @@ namespace FactionColonies
                     Thing thing = apparelDef.CreateThing();
                     if (thing is Apparel ap)
                     {
-                        Color resolved = factionComp != null ? factionComp.ResolveApparelColor(apparelDef) : Color.white;
+                        Color resolved = factionComp?.ResolveApparelColor(apparelDef) ?? Color.white;
                         thing.SetColor(resolved, reportFailure: false);
                         merc.pawn.apparel.Wear(ap);
                     }

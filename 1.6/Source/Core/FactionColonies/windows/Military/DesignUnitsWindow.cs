@@ -10,9 +10,11 @@ namespace FactionColonies
 {
     public class DesignUnitsWindow : MilitaryWindow
     {
-        private readonly MilitaryCustomizationUtil util;
-        private readonly FactionFC faction;
-        private MilUnitFC selectedUnit;
+        public override MilitaryWindowSlot Slot => MilitaryWindowSlot.Units;
+
+        protected readonly MilitaryCustomizationUtil util;
+        protected readonly FactionFC faction;
+        protected MilUnitFC selectedUnit;
 
         private Vector2 unitListScrollPos;
         private string unitSearchTerm = "";
@@ -119,11 +121,7 @@ namespace FactionColonies
                 : util.units.Where(u => (u.name ?? "").IndexOf(unitSearchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
 
             float viewHeight = filteredUnits.Count * RowHeight;
-            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
-                rect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(listOutRect, ref unitListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref unitListScrollPos, viewHeight);
 
             for (int i = 0; i < filteredUnits.Count; i++)
             {
@@ -159,7 +157,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // Action buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
@@ -175,10 +173,8 @@ namespace FactionColonies
 
             if (Widgets.ButtonText(createBtn, "FCCreateNewUnit".Translate()))
             {
-                MilUnitFC newUnit = new MilUnitFC(false)
-                {
-                    name = $"New Unit {util.units.Count + 1}"
-                };
+                MilUnitFC newUnit = MilTemplateFactory.CreateUnit(false);
+                newUnit.name = $"New Unit {util.units.Count + 1}";
                 selectedText = newUnit.name;
                 selectedUnit = newUnit;
                 util.units.Add(newUnit);
@@ -211,7 +207,7 @@ namespace FactionColonies
 
                 if (Widgets.ButtonText(exportBtn, "FCExportUnitButton".Translate()))
                 {
-                    FactionColoniesMilitary.SaveUnit(new SavedUnitFC(selectedUnit));
+                    FactionColoniesMilitary.SaveUnit(selectedUnit.ToSavedUnit());
                     Messages.Message("FCExportUnit".Translate(), MessageTypeDefOf.TaskCompletion);
                 }
             }
@@ -330,7 +326,7 @@ namespace FactionColonies
             reason = "";
             FactionFC factionFC = FactionCache.FactionComp;
             List<MilSquadFC> squadsContainingUnit = factionFC?.militaryCustomizationUtil?.squads
-                ?.Where(squad => squad?.units != null && squad.units.Contains(unit)).ToList();
+                ?.Where(squad => squad?.Units != null && squad.Units.Contains(unit)).ToList();
 
             if (squadsContainingUnit == null || squadsContainingUnit.Count == 0) return false;
 
@@ -562,11 +558,7 @@ namespace FactionColonies
                 .ToList();
 
             float viewHeight = sortedApparel.Count * apparelRowHeight;
-            Rect scrollViewRect = new Rect(0f, 0f,
-                listOutRect.width - (viewHeight > listOutRect.height ? 16f : 0f),
-                Mathf.Max(viewHeight, listOutRect.height));
-
-            Widgets.BeginScrollView(listOutRect, ref apparelListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref apparelListScrollPos, viewHeight);
 
             for (int i = 0; i < sortedApparel.Count; i++)
             {
@@ -638,7 +630,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

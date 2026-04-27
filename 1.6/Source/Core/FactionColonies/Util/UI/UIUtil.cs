@@ -9,6 +9,13 @@ namespace FactionColonies
 {
     public static class UIUtil
     {
+        // Table rendering constants
+        private const float TableRowHeight = 22f;
+        private static readonly Color TableAltRowColor = new Color(1f, 1f, 1f, 0.06f);
+        private static readonly Color TableLineColor = new Color(1f, 1f, 1f, 0.15f);
+        private static readonly Color TableHeaderBgColor = new Color(1f, 1f, 1f, 0.1f);
+        private static readonly Color TableHeaderTextColor = new Color(0.85f, 0.85f, 0.85f);
+
         public static void DrawProgressBar(Rect rect, float progress)
         {
             DrawProgressBarColors(rect, progress, Color.black, Color.cyan);
@@ -275,6 +282,100 @@ namespace FactionColonies
             return DrawTabRow(boundingBox, tabLabels, selectedTab, out contentRect,
                 (r, l, sel) => ButtonFlatIcon(r, l, icon, labelColor: labelColor, highlighted: sel, baseColor: baseColor),
                 tabHeight, minTabWidth, borderColor);
+        }
+        // TABLE RENDERING
+
+        /// <summary>Returns the height a table with the given row count will consume.</summary>
+        public static float TableHeight(int rowCount)
+        {
+            return TableRowHeight + 1f + rowCount * TableRowHeight + 1f;
+        }
+
+        /// <summary>Draws a 2-column table. Returns the total height consumed.</summary>
+        public static float DrawTable(Rect rect,
+            string col1Header, List<string> col1,
+            string col2Header, List<string> col2)
+        {
+            return DrawTableCore(rect,
+                new string[] { col1Header, col2Header },
+                new List<string>[] { col1, col2 });
+        }
+
+        /// <summary>Draws a 3-column table. Returns the total height consumed.</summary>
+        public static float DrawTable(Rect rect,
+            string col1Header, List<string> col1,
+            string col2Header, List<string> col2,
+            string col3Header, List<string> col3)
+        {
+            return DrawTableCore(rect,
+                new string[] { col1Header, col2Header, col3Header },
+                new List<string>[] { col1, col2, col3 });
+        }
+
+        /// <summary>Draws a 4-column table. Returns the total height consumed.</summary>
+        public static float DrawTable(Rect rect,
+            string col1Header, List<string> col1,
+            string col2Header, List<string> col2,
+            string col3Header, List<string> col3,
+            string col4Header, List<string> col4)
+        {
+            return DrawTableCore(rect,
+                new string[] { col1Header, col2Header, col3Header, col4Header },
+                new List<string>[] { col1, col2, col3, col4 });
+        }
+
+        private static float DrawTableCore(Rect rect, string[] headers, List<string>[] columns)
+        {
+            int colCount = headers.Length;
+            int rowCount = columns[0].Count;
+            float colW = rect.width / colCount;
+            float curY = rect.y;
+
+            // Header row
+            Rect headerRect = new Rect(rect.x, curY, rect.width, TableRowHeight);
+            Widgets.DrawBoxSolid(headerRect, TableHeaderBgColor);
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            GUI.color = TableHeaderTextColor;
+            for (int c = 0; c < colCount; c++)
+                Widgets.Label(new Rect(rect.x + c * colW, curY, colW, TableRowHeight), headers[c]);
+
+            // Header bottom line
+            GUI.color = TableLineColor;
+            Widgets.DrawLineHorizontal(rect.x, curY + TableRowHeight, rect.width);
+            curY += TableRowHeight + 1f;
+
+            // Data rows
+            for (int r = 0; r < rowCount; r++)
+            {
+                if (r % 2 == 1)
+                    Widgets.DrawBoxSolid(new Rect(rect.x, curY, rect.width, TableRowHeight), TableAltRowColor);
+
+                Text.Anchor = TextAnchor.MiddleCenter;
+                GUI.color = Color.white;
+                for (int c = 0; c < colCount; c++)
+                    Widgets.Label(new Rect(rect.x + c * colW, curY, colW, TableRowHeight), columns[c][r]);
+
+                curY += TableRowHeight;
+            }
+
+            // Bottom line
+            GUI.color = TableLineColor;
+            Widgets.DrawLineHorizontal(rect.x, curY, rect.width);
+
+            // Vertical dividers between columns
+            float tableTop = rect.y;
+            float tableHeight = curY - tableTop;
+            for (int c = 1; c < colCount; c++)
+                Widgets.DrawLineVertical(rect.x + c * colW, tableTop, tableHeight);
+
+            // Reset
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.color = Color.white;
+
+            return curY + 1f - rect.y;
         }
     }
 }

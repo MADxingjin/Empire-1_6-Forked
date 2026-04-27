@@ -36,6 +36,22 @@ namespace FactionColonies
         /// </summary>
         public static bool IsAnimalAndAllowed(this PawnKindDef pawnKindDef)
         {
+            if (pawnKindDef is null)
+            {
+                LogUtil.Error($"IsAnimalAndAllowed: found null pawnKindDef. This shouldn't be possible!");
+                return false;
+            }
+            if (pawnKindDef.RaceProps is null)
+            {
+                LogUtil.Warning($"IsAnimalAndAllowed: found null RaceProps for PawnKindDef {pawnKindDef.LabelCap} ({pawnKindDef.defName})");
+                return false;
+            }
+            if (pawnKindDef.race?.race is null)
+            {
+                LogUtil.Warning($"IsAnimalAndAllowed: detected null race or race.race for pawnKindDef {pawnKindDef.LabelCap} ({pawnKindDef.defName})");
+                return false;
+            }
+            
             var config = AnimalFilterConfig;
             return pawnKindDef.race.race.Animal
                 && pawnKindDef.RaceProps.IsFlesh
@@ -56,13 +72,24 @@ namespace FactionColonies
                    && pawnKindDef.combatPower >= 50f;
         }
 
+        /// <summary>
+        /// Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is a valid pack animal.
+        /// </summary>
+        public static bool IsPackAnimal(this PawnKindDef pawnKindDef)
+        {
+            return pawnKindDef.IsAnimalAndAllowed() 
+                && pawnKindDef.RaceProps.packAnimal;
+        }
 
-        public static int GetReasonableMercenaryAge(this PawnKindDef pawnKindDef) => Rand.Range((int)Math.Ceiling(pawnKindDef.race.race.lifeExpectancy * 0.2625d), (int)Math.Floor(pawnKindDef.race.race.lifeExpectancy * 0.625d));
+
+        public static int GetReasonableMercenaryAge(this PawnKindDef pawnKindDef) =>
+            Rand.Range((int)Math.Ceiling((pawnKindDef.race?.race?.lifeExpectancy ?? 18) * 0.2625d), 
+                       (int)Math.Floor((pawnKindDef.race?.race?.lifeExpectancy ?? 100) * 0.625d));
 
         /// <summary>
         /// Creates a shallow clone of the given PawnKindDef using <see cref="Gen.MemberwiseClone{T}"/>.
         /// The new PawnKindDef will be its own object, but will share references to the original's collection/object fields.
-        /// Since Defs are read-only at runtime, this is safe — RimWorld uses the same approach in DebugAutotests.
+        /// Since Defs are read-only at runtime, this is safe, in theory. Rimworld uses the same approach in DebugAutotests.
         /// <para>Only exists for HAR compatibility when we need runtime PawnKindDefs for alien races.</para>
         /// </summary>
         /// <param name="pawnKindDef">PawnKindDef to copy.</param>

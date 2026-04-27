@@ -14,10 +14,10 @@
 			<li>pacifist</li>
 		</incompatiblePolicies>
 		<positiveEffects>
-			<li>- +20% combat modifier when using your faction's military forces</li>
-			<li>- Once per five days, you can deploy a second squad from a single settlement by paying 20% of the squad's cost in Silver</li>
+			<li>- +10% combat modifier when using your faction's military forces</li>
+			<li>- Once per five days, you can deploy a second squad from a single settlement by paying 40% of the squad's cost in Silver</li>
 			<li>- When creating a new settlement, it will start with a Barracks</li>
-			<li>- All military buildings cost 100 less upkeep</li>
+			<li>- All military buildings cost 50 less upkeep</li>
 		</positiveEffects>
 		<negativeEffects>
 		</negativeEffects>
@@ -25,14 +25,15 @@
 			<li Class="FactionColonies.FCPolicyBehaviorExt_Militaristic">
 				<behaviorClass>FactionColonies.FCPolicyBehavior_Militaristic</behaviorClass>
 				<extraSquadCooldownDays>5</extraSquadCooldownDays>
-				<extraSquadCostFraction>0.2</extraSquadCostFraction>
-				<militaryBuildingUpkeepDiscount>100</militaryBuildingUpkeepDiscount>
+				<extraSquadCostFraction>0.4</extraSquadCostFraction>
+				<militaryBuildingUpkeepDiscount>50</militaryBuildingUpkeepDiscount>
 				<autoPlaceBuildingDefName>barracks</autoPlaceBuildingDefName>
 			</li>
 		</modExtensions>
 		<statModifiers>
-			<li><stat>militaryCombatEfficiency</stat><value>1.2</value></li>
+			<li><stat>militaryCombatEfficiency</stat><value>1.1</value></li>
 			<li><stat>deadPawnCooldownOffset</stat><value>-2000</value></li>
+			<li><stat>happinessLostBase</stat><value>0.5</value></li>
 		</statModifiers>
 		<enabledActions>
 			<li>DeployExtraSquad</li>
@@ -53,7 +54,6 @@
 		</incompatiblePolicies>
 		<positiveEffects>
 			<li>- Once per five days, can send a diplomatic envoy to another faction to attempt to improve relations</li>
-			<li>- Deaths of members of your faction will not cause unrest to rise or happiness to reduce</li>
 		</positiveEffects>
 		<negativeEffects>
 			<li>- Cannot use military forces to raid or to capture other faction's settlements</li>
@@ -63,9 +63,9 @@
 				<behaviorClass>FactionColonies.FCPolicyBehavior_Pacifist</behaviorClass>
 				<diplomatCooldownDays>5</diplomatCooldownDays>
 				<successRollMax>10</successRollMax>
-				<successThreshold>5</successThreshold>
-				<relationImprovementMin>5</relationImprovementMin>
-				<relationImprovementMax>15</relationImprovementMax>
+				<successThreshold>4</successThreshold>
+				<relationImprovementMin>8</relationImprovementMin>
+				<relationImprovementMax>20</relationImprovementMax>
 			</li>
 		</modExtensions>
 		<statModifiers>
@@ -77,7 +77,6 @@
 		<enabledActions>
 			<li>SendDiplomat</li>
 		</enabledActions>
-		<suppressMemberDeathPenalty>true</suppressMemberDeathPenalty>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -127,23 +126,29 @@
 			<li>slaver</li>
 		</incompatiblePolicies>
 		<positiveEffects>
-			<li>- Can reduce base tax by 20% for two tax periods to drastically boost happiness and prosperity</li>
-			<li>- Receives a base tax bonus of (1% per 10% happiness)</li>
+			<li>- Every worker produces 10% more</li>
+			<li>- +1 to worker softcap per settlement level</li>
+			<li>- Can grant a 10-day tax break to a settlement to boost happiness and prosperity at the cost of tax revenue</li>
 		</positiveEffects>
 		<negativeEffects>
-			<li>- Happiness starts at 60%</li>
+			<li>- All workers cost 10 additional silver</li>
+			<li>- -3 over-max worker cap</li>
 		</negativeEffects>
 		<modExtensions>
 			<li Class="FactionColonies.FCPolicyBehaviorExt_Egalitarian">
 				<behaviorClass>FactionColonies.FCPolicyBehavior_Egalitarian</behaviorClass>
-				<startingHappiness>60</startingHappiness>
 				<taxBreakDurationDays>10</taxBreakDurationDays>
 				<taxBreakPenalty>30</taxBreakPenalty>
 				<taxBreakHappinessBonus>2</taxBreakHappinessBonus>
 				<taxBreakProsperityBonus>2</taxBreakProsperityBonus>
-				<happinessDivisor>10</happinessDivisor>
 			</li>
 		</modExtensions>
+		<statModifiers>
+			<li><stat>workerProductionMultiplier</stat><value>1.1</value></li>
+			<li><stat>extraWorkersSoftcap</stat><value>1</value></li>
+			<li><stat>overMaxWorkersAdjustment</stat><value>-3</value></li>
+			<li><stat>workerBaseCost</stat><value>10</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -191,21 +196,24 @@
 			<li>isolationist</li>
 		</incompatiblePolicies>
 		<positiveEffects>
-			<li>- Your first settlement is free</li>
-			<li>- Once per year, starting after your first year, the cost to create a new settlement is reduced by 50%</li>
+			<li>- All new settlements cost 25% less to establish</li>
 			<li>- Settlements that you construct start at level 2</li>
 		</positiveEffects>
 		<negativeEffects>
+			<li>- New settlements start at 75% prosperity</li>
+			<li>- Your empire's rapid growth draws stronger raids (+10% threat scaling)</li>
 		</negativeEffects>
 		<modExtensions>
 			<li Class="FactionColonies.FCPolicyBehaviorExt_Expansionist">
 				<behaviorClass>FactionColonies.FCPolicyBehavior_Expansionist</behaviorClass>
-				<feeReductionCooldownTicks>3600000</feeReductionCooldownTicks>
-				<discountMultiplier>0.5</discountMultiplier>
 				<autoUpgradeToLevel>2</autoUpgradeToLevel>
-				<readyLetterKey>FCActionAvailable</readyLetterKey>
+				<startingProsperity>75</startingProsperity>
 			</li>
 		</modExtensions>
+		<statModifiers>
+			<li><stat>settlementCostMultiplier</stat><value>0.75</value></li>
+			<li><stat>threatScalingMultiplier</stat><value>1.1</value></li>
+		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
 	<FactionColonies.FCPolicyDef>
@@ -225,6 +233,7 @@
 			<li>- Can send items that you have not completed the research for or are above your tech level to your settlements to be reverse-engineered, giving you their value in research points</li>
 		</positiveEffects>
 		<negativeEffects>
+			<li>- Research investment reduces tax revenue (-10% base tax)</li>
 		</negativeEffects>
 		<modExtensions>
 			<li Class="FactionColonies.FCPolicyBehaviorExtension">
@@ -233,6 +242,7 @@
 		</modExtensions>
 		<statModifiers>
 			<li><stat>researchContributionMultiplier</stat><value>2</value></li>
+			<li><stat>taxBasePercentage</stat><value>-10</value></li>
 		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 
@@ -288,10 +298,13 @@
 		</positiveEffects>
 		<negativeEffects>
 			<li>- -2 Over Max Workers</li>
+			<li>- Slave labor breeds discontent (-0.5 happiness gained, +0.5 unrest gained per day)</li>
 		</negativeEffects>
 		<statModifiers>
 			<li><stat>extraWorkersSoftcap</stat><value>2</value></li>
 			<li><stat>overMaxWorkersAdjustment</stat><value>-2</value></li>
+			<li><stat>happinessGainedBase</stat><value>-0.5</value></li>
+			<li><stat>unrestGainedBase</stat><value>0.5</value></li>
 		</statModifiers>
 	</FactionColonies.FCPolicyDef>
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -16,8 +16,7 @@ namespace FactionColonies
         public static void ClearAll() => _participants.Clear();
         public static IReadOnlyList<ILifecycleParticipant> Participants => _participants;
 
-        // ── Settlement ──
-
+        /* Settlement */
         public static void InvokeOnSettlementCreated(WorldSettlementFC settlement)
         {
             foreach (ILifecycleParticipant p in _participants)
@@ -66,8 +65,7 @@ namespace FactionColonies
             settlement.InvalidateStatCache();
         }
 
-        // ── Building ──
-
+        /* Building */
         public static void InvokeOnBuildingConstructed(WorldSettlementFC settlement, BuildingFCDef building, int slot)
         {
             foreach (ILifecycleParticipant p in _participants)
@@ -92,8 +90,7 @@ namespace FactionColonies
             settlement.InvalidateStatCache();
         }
 
-        // ── Military ──
-
+        /* Military */
         public static void InvokeOnSquadDeployed(WorldSettlementFC settlement, MilitaryJobDef job, bool isExtraSquad = false)
         {
             foreach (ILifecycleParticipant p in _participants)
@@ -130,8 +127,7 @@ namespace FactionColonies
             settlement.InvalidateStatCache();
         }
 
-        // ── Mercenary ──
-
+        /* Mercenary */
         public static void InvokeOnMercenaryDeath(MercenaryDeathEvent evt)
         {
             foreach (ILifecycleParticipant p in _participants)
@@ -141,8 +137,7 @@ namespace FactionColonies
             }
         }
 
-        // ── Research ──
-
+        /* Research */
         public static void InvokeOnResearchCompleted(ResearchProjectDef project)
         {
             foreach (ILifecycleParticipant p in _participants)

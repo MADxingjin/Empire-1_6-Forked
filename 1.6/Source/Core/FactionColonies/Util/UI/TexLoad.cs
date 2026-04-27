@@ -19,6 +19,10 @@ namespace FactionColonies
             checkerboard = CreateCheckerboard();
             gradientHorizontal = CreateHorizontalGradient();
             gradientVertical = CreateVerticalGradient();
+            scrollTrack = SolidTex("ScrollTrack", new Color(0.1f, 0.1f, 0.1f, 0.3f));
+            scrollThumb = SolidTex("ScrollThumb", new Color(0.5f, 0.5f, 0.5f, 0.7f));
+            scrollThumbHover = SolidTex("ScrollThumbHover", new Color(0.7f, 0.7f, 0.7f, 0.85f));
+            scrollThumbActive = SolidTex("ScrollThumbActive", new Color(0.8f, 0.8f, 0.8f, 0.9f));
         }
 
         public static readonly Texture2D iconTest100 = ContentFinder<Texture2D>.Get("GUI/100x");
@@ -39,6 +43,7 @@ namespace FactionColonies
         public static readonly Texture2D iconUpgrade = ContentFinder<Texture2D>.Get("UI/Buttons/ReorderUp");
 
         public static readonly Texture2D iconTrade = ContentFinder<Texture2D>.Get("UI/Commands/Trade");
+        public static readonly Texture2D codexLogo = ContentFinder<Texture2D>.Get("UI/Icons/EmpireLogo");
 
 
         //Trait Icons
@@ -73,6 +78,12 @@ namespace FactionColonies
         public static readonly Texture2D checkerboard;
         public static readonly Texture2D gradientHorizontal;
         public static readonly Texture2D gradientVertical;
+
+        // Scrollbar textures (1x1 solid color, used by ScrollUtil GUIStyles)
+        public static readonly Texture2D scrollTrack;
+        public static readonly Texture2D scrollThumb;
+        public static readonly Texture2D scrollThumbHover;
+        public static readonly Texture2D scrollThumbActive;
 
         private static Texture2D CreateHorizontalGradient()
         {
@@ -232,6 +243,15 @@ namespace FactionColonies
             }
 
             GUI.color = prev;
+        }
+
+        private static Texture2D SolidTex(string name, Color color)
+        {
+            Texture2D tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            tex.name = name;
+            tex.SetPixel(0, 0, color);
+            tex.Apply();
+            return tex;
         }
 
         private static Texture2D CreateCheckerboard()

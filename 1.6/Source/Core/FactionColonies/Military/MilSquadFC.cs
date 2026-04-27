@@ -12,7 +12,8 @@ namespace FactionColonies
 
         public int loadID = -1;
         public string name;
-        public List<MilUnitFC> units = new List<MilUnitFC>();
+        private List<MilUnitFC> units = new List<MilUnitFC>();
+        public IReadOnlyList<MilUnitFC> Units => units;
         public double equipmentTotalCost;
         public int tickChanged;
 
@@ -39,7 +40,7 @@ namespace FactionColonies
             }
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref loadID, "loadID", -1);
             Scribe_Values.Look(ref name, "name");
@@ -70,7 +71,7 @@ namespace FactionColonies
             return equipmentTotalCost;
         }
 
-        public int UpdateEquipmentTotalCost()
+        public virtual int UpdateEquipmentTotalCost()
         {
             double totalCost = 0;
             foreach (MilUnitFC unit in units)
@@ -99,6 +100,20 @@ namespace FactionColonies
             costDirty = true;
         }
 
+        public void SetUnit(int index, MilUnitFC unit)
+        {
+            units[index] = unit;
+            ChangeTick();
+        }
+
+        public void AddUnit(MilUnitFC unit)
+        {
+            units.Add(unit);
+            ChangeTick();
+        }
+
+        public int FindUnitIndex(Predicate<MilUnitFC> predicate) => units.FindIndex(predicate);
+
         public int getLatestChanged
         {
             get
@@ -122,6 +137,22 @@ namespace FactionColonies
         public string GetUniqueLoadID()
         {
             return $"MilSquadFC_{loadID}";
+        }
+
+        // --- Subclass Hooks ---
+
+        /* Returns validation errors that should block mustering or flag issues in the UI.
+           Base implementation is a no-op; subclasses add their own rules. */
+        public virtual List<string> GetValidationErrors() => new List<string>();
+
+        /* Creates the appropriate SavedSquadFC (or subclass) snapshot of this squad.
+           Subclasses override to return their own SavedSquadFC subtype carrying their extra fields. */
+        public virtual SavedSquadFC ToSavedSquad() => new SavedSquadFC(this);
+
+        /* Called after base fields have been copied into a new instance during import.
+           Subclasses override to pull their extra fields out of the SavedSquadFC subclass. */
+        public virtual void LoadFromSaved(SavedSquadFC saved)
+        {
         }
 
     }

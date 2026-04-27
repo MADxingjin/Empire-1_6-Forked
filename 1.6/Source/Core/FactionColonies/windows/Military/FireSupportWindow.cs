@@ -1,3 +1,4 @@
+using FactionColonies.util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace FactionColonies
 {
     public class FireSupportWindow : MilitaryWindow
     {
+        public override MilitaryWindowSlot Slot => MilitaryWindowSlot.FireSupport;
+
         private WorldSettlementFC settlementPointReference;
         private MilitaryFireSupport selectedSupport;
         private readonly MilitaryCustomizationUtil util;
@@ -115,11 +118,7 @@ namespace FactionColonies
                     .ToList();
 
             float viewHeight = filteredSupports.Count * RowHeight;
-            Rect scrollViewRect = new Rect(listOutRect.x, listOutRect.y,
-                rect.width - (viewHeight > listHeight ? 16f : 0f),
-                Mathf.Max(viewHeight, listHeight));
-
-            Widgets.BeginScrollView(listOutRect, ref supportListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(listOutRect, ref supportListScrollPos, viewHeight);
 
             for (int i = 0; i < filteredSupports.Count; i++)
             {
@@ -144,7 +143,7 @@ namespace FactionColonies
                 }
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             // Buttons (2x2 grid)
             float btnY = listOutRect.yMax + margin;
@@ -309,11 +308,7 @@ namespace FactionColonies
             foreach (ThingDef key in staleKeys) quantityBuffers.Remove(key);
 
             float viewHeight = groups.Count * ProjectileRowHeight;
-            Rect scrollViewRect = new Rect(rect.x, rect.y,
-                rect.width - (viewHeight > rect.height ? 16f : 0f),
-                Mathf.Max(viewHeight, rect.height));
-
-            Widgets.BeginScrollView(rect, ref projectileListScrollPos, scrollViewRect);
+            Rect scrollViewRect = ScrollUtil.BeginScrollView(rect, ref projectileListScrollPos, viewHeight);
 
             for (int i = 0; i < groups.Count; i++)
             {
@@ -322,7 +317,7 @@ namespace FactionColonies
                 DrawProjectileRow(row, groups[i], i);
             }
 
-            Widgets.EndScrollView();
+            ScrollUtil.EndScrollView();
 
             Text.Font = fontBefore;
             Text.Anchor = anchorBefore;

@@ -1,5 +1,6 @@
 ﻿using FactionColonies.util;
 using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -17,6 +18,7 @@ namespace FactionColonies
         public const string Reason_EventOption = "event_option";
         public const string Reason_TaxPayment = "tax_payment";
         public const string Reason_SilverPayment = "silver_payment";
+        public const string Reason_PolicyRepick = "policy_repick";
 
         public static (List<BillFC>, List<BillFC>) returnBillTypes(List<BillFC> bills)
         {
@@ -128,8 +130,7 @@ namespace FactionColonies
                 resolvedBills++;
             }
 
-            Messages.Message(TranslatorFormattedStringExtensions.Translate("NumberTaxesHasBeenSolved", resolvedBills),
-                MessageTypeDefOf.NeutralEvent);
+            Messages.Message("FCNumberTaxesHasBeenSolved".Translate(resolvedBills), MessageTypeDefOf.NeutralEvent);
         }
 
         public static void PlaceThing(Thing thing)
@@ -161,7 +162,7 @@ namespace FactionColonies
         }
 
 
-        public static void DeliverThings(List<Thing> things, int source, Letter let = null, Message msg = null)
+        public static void DeliverThings(List<Thing> things, PlanetTile source, Letter let = null, Message msg = null)
         {
             DeliveryEvent.CreateDeliveryEvent(things, source, let, msg);
         }

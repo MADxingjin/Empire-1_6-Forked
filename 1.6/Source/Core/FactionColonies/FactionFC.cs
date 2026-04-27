@@ -1,4 +1,4 @@
-using FactionColonies.util;
+﻿using FactionColonies.util;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -13,7 +13,7 @@ namespace FactionColonies
     {
         #region Fields & Properties
 
-        // ── Core Identity ──
+        /* Core Identity */
         public string name = "FCPlayerFaction".Translate();
         public string title = "FCBastion".Translate();
         public Texture2D factionIcon = TexLoad.factionIcons[0];
@@ -28,7 +28,7 @@ namespace FactionColonies
         private Vector2 startingLongLat = new Vector2();
         public Vector2 StartingLongLat => startingLongLat;
 
-        // ── Capital & Maps ──
+        /* Capital & Maps */
         public PlanetTile capitalLocation = PlanetTile.Invalid;
         public string capitalPlanet;
         private Map taxMap;
@@ -74,21 +74,22 @@ namespace FactionColonies
             }
         }
 
-        // ── Settlements ──
+        /* Settlements */
         /// <summary>
         /// Used by other mods to find our settlements. Move, rename, or otherwise modify at your own peril
         /// </summary>
         public List<WorldSettlementFC> settlements = new List<WorldSettlementFC>();
 
-        // ── Timing & Scheduling ──
+        /* Timing & Scheduling */
         public int taxTimeDue = Find.TickManager.TicksGame;
+        public int lastTaxTickTime = -1;
         public int timeStart = Find.TickManager.TicksGame;
         public int uiTimeUpdate;
         public int militaryTimeDue;
         public const int MercenaryHealTickInterval = GenDate.TicksPerHour;
         private bool firstTick = true;
 
-        // ── Lazy-Cached Averages ──
+        /* Lazy-Cached Averages */
         /* Faction averages — lazy-cached via dirtyAveragesCache */
         private double _averageHappiness = 100;
         private double _averageLoyalty = 100;
@@ -100,7 +101,7 @@ namespace FactionColonies
         public double averageUnrest { get { if (dirtyAveragesCache) RecomputeAverages(); return _averageUnrest; } }
         public double averageProsperity { get { if (dirtyAveragesCache) RecomputeAverages(); return _averageProsperity; } }
 
-        // ── Lazy-Cached Profit ──
+        /* Lazy-Cached Profit */
         /* Faction profit — lazy-cached via dirtyFactionProfitCache */
         private double _income;
         private double _upkeep;
@@ -110,7 +111,7 @@ namespace FactionColonies
         public double upkeep { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _upkeep; } }
         public double profit { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _profit; } }
 
-        // ── Lazy-Cached Tech Level ──
+        /* Lazy-Cached Tech Level */
         /* Tech level — lazy-cached via dirtyTechLevelCache */
         private TechLevel _techLevel = TechLevel.Undefined;
         private bool dirtyTechLevelCache = true;
@@ -123,11 +124,11 @@ namespace FactionColonies
             }
         }
 
-        // ── Lazy-Cached Grand Thing List ──
+        /* Lazy-Cached Grand Thing List */
         private bool DirtyGrandThingListFlag = true;
         private List<ThingDef> grandThingList = null;
 
-        // ── Stat & Behavior Caches ──
+        /* Stat & Behavior Caches */
         private Dictionary<FCStatDef, double> cachedFactionStatValues = new Dictionary<FCStatDef, double>();
         private List<FCPolicyBehavior> _cachedBehaviors = null;
         public List<FCPolicyBehavior> cachedBehaviors
@@ -144,7 +145,7 @@ namespace FactionColonies
         private HashSet<MilitaryJobDef> _cachedBlockedJobs;
         private HashSet<MilitaryJobDef> _cachedEnabledJobs;
 
-        // ── Policies & Traits ──
+        /* Policies & Traits */
         public List<FCPolicy> policies = new List<FCPolicy>();
         public List<FCPolicy> factionTraits = new List<FCPolicy>
         {
@@ -155,7 +156,7 @@ namespace FactionColonies
             new FCPolicy(FCPolicyDefOf.empty)
         };
 
-        // ── Edicts (toggleable faction-level policies) ──
+        /* Edicts (toggleable faction-level policies) */
         public Dictionary<FCPolicyCategory, FCPolicy> edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
         private HashSet<FCPolicyCategory> pendingEdictActivations = new HashSet<FCPolicyCategory>();
 
@@ -168,7 +169,7 @@ namespace FactionColonies
             { FCPolicyCategory.Military, 4 }
         };
 
-        // ── Events & Bills ──
+        /* Events & Bills */
         // LEGACY: populated only when loading pre-manager saves. Migrated into
         // eventManager during ExposeData(ResolvingCrossRefs) and then nulled out.
         // DO NOT READ. Use the Events property instead.
@@ -185,19 +186,23 @@ namespace FactionColonies
         public List<BillFC> OldBills = new List<BillFC>();
         public bool autoResolveBills;
 
-        // ── Resources ──
+        /* Resources */
         public List<ResourcePool> resourcePools = new List<ResourcePool>();
         public ThingWithComps powerOutput;
         public List<ResourceDisplay> factionResources = new List<ResourceDisplay>();
         public List<ResourceDisplay> FactionResources => factionResources;
 
-        // ── Military & Roads ──
+        /* Military & Roads */
         public MilitaryCustomizationUtil militaryCustomizationUtil = new MilitaryCustomizationUtil();
         public EmpireThreatAdaptation threatAdaptation = new EmpireThreatAdaptation();
         public FCRoadBuilder roadBuilder = new FCRoadBuilder();
-        public List<int> militaryTargets = new List<int>();
+        private List<PlanetTile> militaryTargets = new List<PlanetTile>();
+        public IReadOnlyList<PlanetTile> MilitaryTargets => militaryTargets;
+        public void AddMilitaryTarget(PlanetTile tile) { militaryTargets.Add(tile); }
+        public void RemoveMilitaryTarget(PlanetTile tile) { militaryTargets.Remove(tile); }
+        public bool HasMilitaryTarget(PlanetTile tile) => militaryTargets.Contains(tile);
 
-        // ── Caravans ──
+        /* Caravans */
         public List<PlanetTile> settlementCaravansList = new List<PlanetTile>(); //list of locations caravans already sent to
         /// <summary>
         /// Player-selected caravan types. Strings are logical identifiers:
@@ -206,12 +211,13 @@ namespace FactionColonies
         /// </summary>
         public List<string> enabledCaravanTypes = new List<string>();
 
-        // ── Leveling ──
+        /* Leveling */
+        public const int MaxFactionLevel = 5;
         public int factionLevel = 1;
         public float factionXPCurrent = 0;
         public float factionXPGoal = 100;
 
-        // ── ID Counters ──
+        /* ID Counters */
         private int nextUnitId;
         private int nextSquadId;
         public int NextUnitID => ++nextUnitId;
@@ -225,7 +231,7 @@ namespace FactionColonies
         public int nextPrisonerID = 1;
         public int nextMilitaryFireSupportID = 1;
 
-        // ── Filters & Misc ──
+        /* Filters & Misc */
         public XenotypeFilter xenotypeFilter;
         public AnimalFilter animalFilter;
         public List<PlanetLayerDef> layersForTilePicker = null;
@@ -285,6 +291,7 @@ namespace FactionColonies
             Scribe_Values.Look(ref _profit, "profit");
 
             Scribe_Values.Look(ref taxTimeDue, "taxTimeDue");
+            Scribe_Values.Look(ref lastTaxTickTime, "lastTaxTickTime", -1);
             Scribe_Values.Look(ref timeStart, "timeStart", -1);
             Scribe_Values.Look(ref uiTimeUpdate, "uiTimeUpdate");
             Scribe_Values.Look(ref militaryTimeDue, "militaryTimeDue", -1);
@@ -372,15 +379,7 @@ namespace FactionColonies
 
             Scribe_Collections.Look(ref edicts, "edicts", LookMode.Value, LookMode.Deep);
             if (edicts == null) edicts = new Dictionary<FCPolicyCategory, FCPolicy>();
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                pendingEdictActivations.Clear();
-                foreach (var kvp in edicts)
-                {
-                    if (kvp.Value != null && !kvp.Value.IsFullyActive)
-                        pendingEdictActivations.Add(kvp.Key);
-                }
-            }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) PostLoadInit();
 
             //Research Trading
             Scribe_Values.Look(ref tradedAmount, "tradedAmount");
@@ -402,61 +401,32 @@ namespace FactionColonies
             base.FinalizeInit(fromLoad);
             LogUtil.MessageForce($"Finalizing init of FactionFC. fromload: {fromLoad}");
 
-            // Scrub null entries that can arise when LookMode.Reference fails to resolve
-            // (e.g., another mod destroyed a settlement or it failed to deserialize).
-            ScrubNullSettlements("FinalizeInit");
+            /* Shared init. Runs on both new-game and load paths; all idempotent. */
+            RebuildFactionResources();
+            EnsureCaravanTypesPopulated();
+            EnsureResourcePools();
+            LifecycleRegistry.Register(this);
 
-            // Apply saved tech level to FactionDef early — must happen before anything
-            // reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
-            // of going through RecomputeTechLevel, which has side effects (xenotypeFilter
-            // FinalizeInit) that depend on deferred initialization.
-            if (fromLoad && _techLevel > TechLevel.Undefined)
+            if (fromLoad)
             {
-                Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
-                if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
-                {
-                    UpdateFactionDef(_techLevel, ref playerColonyfaction);
-                }
+                /* Load path. Scribe.mode == LoadingVars here; cross-refs NOT resolved,
+                 * maps NOT loaded. Filter finalize is deferred to firstTick because
+                 * xenotypeFilter.FinalizeInit reaches into CustomXenotypesForReading,
+                 * which calls Scribe.ForceStop if Scribe is still active. And if the
+                 * Scribe is ForceStopped during load, then everything breaks.
+                 * And I do mean everything. The game straight-up crashes. */
+                ApplySavedTechLevelToFactionDef();
             }
-
-            // Initialize caravan types with defaults if empty (new game or old save)
-            if (enabledCaravanTypes.NullOrEmpty())
+            else
             {
-                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
-                InitEnabledCaravanTypes();
+                /* New-world path. Scribe is Inactive, disk I/O is legal. */
+                EnsureFiltersInitialized();
             }
+        }
 
-            // Initialize animal filter
-            if (animalFilter is null)
-            {
-                LogUtil.Warning("Null animalFilter detected - Creating new one");
-                animalFilter = new AnimalFilter();
-                if (Scribe.mode == LoadSaveMode.Inactive)
-                {
-                    animalFilter.FinalizeInit();
-                }
-            }
-
-            // Initialize xenotype filter
-            // The xenotype filter isn't properly loaded until after this function is called, so we don't *actually* want to finalize it yet.
-            //   Only finalize it if it doesn't even exist
-            if (xenotypeFilter is null)
-            {
-                LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
-                xenotypeFilter = new XenotypeFilter(this);
-                // Do NOT call FinalizeInit here if the Scribe is still loading.
-                // CustomXenotypesForReading reads files from disk via InitLoadingMetaHeaderOnly,
-                // which calls Scribe.ForceStop() when mode != Inactive, which destroys the
-                // active save-load pipeline and nulls all cross-references.
-                // Man, who thought adding custom xenotype support would be so fraught with peril?
-                if (Scribe.mode == LoadSaveMode.Inactive)
-                {
-                    xenotypeFilter.FinalizeInit(this);
-                }
-                // Otherwise deferred to firstTick (see WorldComponentTick)
-            }
-
-            // Rebuilt on each load from DefDatabase — intentional, ensures defs stay in sync
+        /* Rebuilt on each game init from DefDatabase, ensures defs stay in sync across load. */
+        private void RebuildFactionResources()
+        {
             factionResources.Clear();
             foreach (ResourceTypeDef resourceTypeDef in DefDatabase<ResourceTypeDef>.AllDefs)
             {
@@ -464,10 +434,94 @@ namespace FactionColonies
                 LogUtil.Message($"Added ResourceDisplay for resourceTypeDef {resourceTypeDef} to FactionFC.factionResources");
             }
             factionResources.Sort(ResourceDisplay.SortForUI);
+        }
 
-            EnsureResourcePools();
+        private void EnsureCaravanTypesPopulated()
+        {
+            if (enabledCaravanTypes.NullOrEmpty())
+            {
+                LogUtil.Warning("Null or empty enabledCaravanTypes - Creating and filling list");
+                InitEnabledCaravanTypes();
+            }
+        }
 
-            LifecycleRegistry.Register(this);
+        /* Apply saved tech level to FactionDef early — must happen before anything
+         * reads faction.def.techLevel directly. Calls UpdateFactionDef directly instead
+         * of going through RecomputeTechLevel, which has side effects (xenotypeFilter
+         * FinalizeInit) that depend on deferred initialization. */
+        private void ApplySavedTechLevelToFactionDef()
+        {
+            if (_techLevel <= TechLevel.Undefined) return;
+            Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
+            if (playerColonyfaction != null && playerColonyfaction.def.techLevel < _techLevel)
+            {
+                UpdateFactionDef(_techLevel, ref playerColonyfaction);
+            }
+        }
+
+        /* Ensures both filters exist and are initialized. Idempotent (safe to call
+         * multiple times). Called from FinalizeInit on the new-world path and from
+         * FirstTick on the load path.
+         *
+         * MUST be called with Scribe.mode == Inactive. xenotypeFilter.FinalizeInit
+         * reads custom xenotypes from disk via InitLoadingMetaHeaderOnly, which calls
+         * Scribe.ForceStop() when Scribe is active, destroying the active save-load
+         * pipeline and nulling all cross-references.
+         * In other words, the game crashes and burns. */
+        private void EnsureFiltersInitialized()
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive)
+            {
+                LogUtil.Error($"EnsureFiltersInitialized called with Scribe.mode={Scribe.mode}. Skipping to avoid Scribe.ForceStop trap.");
+                return;
+            }
+
+            bool animalWasInitialized = false;
+            if (animalFilter is null)
+            {
+                LogUtil.Warning("Null animalFilter detected - Creating new one");
+                animalFilter = new AnimalFilter();
+            }
+            if (!animalFilter.IsInitialized)
+            {
+                animalFilter.FinalizeInit();
+                animalWasInitialized = true;
+            }
+
+            if (xenotypeFilter is null)
+            {
+                LogUtil.Warning("Null xenotypeFilter detected - Creating new one");
+                xenotypeFilter = new XenotypeFilter(this);
+            }
+            /* Force xenotype re-finalize if animal filter was just initialized; xeno
+             * filter depends on animal filter state during its own finalization. */
+            if (!xenotypeFilter.IsInitialized || animalWasInitialized)
+            {
+                xenotypeFilter.FinalizeInit(this);
+            }
+        }
+
+        /* Cross-ref-dependent post-load work. Invoked from ExposeData's PostLoadInit
+         * branch — by this point settlements/edicts/events cross-refs are all resolved. */
+        private void PostLoadInit()
+        {
+            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+            {
+                LogUtil.Error($"FactionFC.PostLoadInit called during Scribe mode {Scribe.mode}");
+                return;
+            }
+            ScrubNullSettlements("FactionFC.PostLoadInit");
+            RebuildPendingEdictActivations();
+        }
+
+        private void RebuildPendingEdictActivations()
+        {
+            pendingEdictActivations.Clear();
+            foreach (var kvp in edicts)
+            {
+                if (kvp.Value != null && !kvp.Value.IsFullyActive)
+                    pendingEdictActivations.Add(kvp.Key);
+            }
         }
 
         #endregion
@@ -484,32 +538,14 @@ namespace FactionColonies
 
         private void FirstTick(Faction faction)
         {
-            bool reinitXenoFilter = false;
-            if (animalFilter is null)
-            {
-                animalFilter = new AnimalFilter();
-            }
-            if (!animalFilter.IsInitialized)
-            {
-                animalFilter.FinalizeInit();
-                reinitXenoFilter = true;
-            }
+            /* Scribe.mode is Inactive by firstTick — filter FinalizeInit is safe.
+             * On the load path, this is where deferred filter init actually happens.
+             * On the new-world path, FinalizeInit already initialized them; this is a no-op. */
+            EnsureFiltersInitialized();
 
-            // Finalize xenotypeFilter if it was deferred from FinalizeInit
-            // (happens when Empire is added to an existing save)
-            if (xenotypeFilter is null)
-            {
-                LogUtil.Warning("Null xenotypeFilter detected at firstTick - Creating new one");
-                xenotypeFilter = new XenotypeFilter(this);
-            }
-            if (!xenotypeFilter.IsInitialized || reinitXenoFilter)
-            {
-                xenotypeFilter.FinalizeInit(this);
-            }
-
-            // Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
-            // (happens during Game.InitNewGame; ClearCaches postfix clears the registry
-            // after World.FinalizeInit already registered us during world generation)
+            /* Re-register with LifecycleRegistry in case ClearCaches ran after FinalizeInit
+             * (happens during Game.InitNewGame; ClearCaches postfix clears the registry
+             * after World.FinalizeInit already registered us during world generation). */
             LifecycleRegistry.Register(this);
 
             roadBuilder.FirstTick();
@@ -632,6 +668,16 @@ namespace FactionColonies
         {
             if (faction is null || Find.TickManager.TicksGame < taxTimeDue)
                 return;
+
+            int now = Find.TickManager.TicksGame;
+            int minInterval = Math.Max(GenDate.TicksPerDay, FCSettings.timeBetweenTaxes / 2);
+            if (lastTaxTickTime > 0 && now - lastTaxTickTime < minInterval)
+            {
+                LogUtil.Error($"TaxTick guard: AddTax would fire {now - lastTaxTickTime} ticks after last call (min {minInterval}). settlements={settlements.Count}, taxTimeDue={taxTimeDue}, timeBetweenTaxes={FCSettings.timeBetweenTaxes}. Skipping and rescheduling.");
+                taxTimeDue = now + FCSettings.timeBetweenTaxes;
+                return;
+            }
+            lastTaxTickTime = now;
 
             AddTax();
             taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
@@ -1600,13 +1646,9 @@ namespace FactionColonies
 
         #region Tax & Billing
 
-        public void SetStartTime()
-        {
-            taxTimeDue = Find.TickManager.TicksGame + FCSettings.timeBetweenTaxes;
-        }
-
         public void AddTax()
         {
+            LogUtil.Message($"AddTax at tick {Find.TickManager.TicksGame}: settlements={settlements.Count}, timeBetweenTaxes={FCSettings.timeBetweenTaxes}");
             TaxTickRegistry.InvokePreTaxResolution(this);
             foreach (ResourcePool pool in resourcePools)
             {
@@ -1715,6 +1757,13 @@ namespace FactionColonies
                 fcevent.goods = FCEvent.ConsolidateGoods(fcevent.goods);
             }
 
+            // Tax delivery interception: let registered interceptors redirect taxColony events
+            if (fcevent.def == FCEventDefOf.taxColony && fcevent.source != PlanetTile.Invalid)
+            {
+                WorldSettlementFC sourceSettlement = ReturnSettlementByLocation(fcevent.source);
+                TaxDeliveryRegistry.InvokeOnTaxEventCreated(new TaxDeliveryContext(fcevent, sourceSettlement));
+            }
+
             //Add event to the manager queue
             eventManager.Enqueue(fcevent);
 
@@ -1753,8 +1802,9 @@ namespace FactionColonies
 
         // Indexed event queries — O(1) via FCEventManager's internal indexes.
         public IReadOnlyList<FCEvent> GetEventsByDef(FCEventDef def) => eventManager.GetByDef(def);
-        public FCEvent FindEventByDefAndLocation(FCEventDef def, int tile) => eventManager.FindFirstByDefAndLocation(def, tile);
-        public bool HasEventWithDefAndLocation(FCEventDef def, int tile) => eventManager.AnyWithDefAndLocation(def, tile);
+        public FCEvent FindEventByDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.FindFirstByDefAndLocation(def, tile);
+        public IReadOnlyList<FCEvent> FindAllEventsByDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.GetByDefAndLocation(def, tile);
+        public bool HasEventWithDefAndLocation(FCEventDef def, PlanetTile tile) => eventManager.AnyWithDefAndLocation(def, tile);
 
         private void MakeRandomEvent()
         {
@@ -1955,17 +2005,29 @@ namespace FactionColonies
 
         public bool AddExperienceToFactionLevel(float xp)
         {
+            if (factionLevel >= MaxFactionLevel)
+            {
+                factionXPCurrent = factionXPGoal;
+                return false;
+            }
+
             bool leveled = false;
             factionXPCurrent += xp;
 
-            while (factionXPCurrent >= factionXPGoal)
+            while (factionXPCurrent >= factionXPGoal && factionLevel < MaxFactionLevel)
             {
                 factionXPCurrent -= factionXPGoal;
                 factionLevel += 1;
+                LogUtil.Message($"Faction leveled up to {factionLevel} at tick {Find.TickManager.TicksGame} (gained {xp} XP)");
                 Find.LetterStack.ReceiveLetter("FCFactionLevelUp".Translate(),
                     "FCFactionLevelUpDesc".Translate(name, factionLevel), LetterDefOf.PositiveEvent);
                 leveled = true;
                 factionXPGoal = UpdateFactionLevelGoalXP(factionLevel);
+            }
+
+            if (factionLevel >= MaxFactionLevel)
+            {
+                factionXPCurrent = factionXPGoal;
             }
 
             return leveled;
@@ -2402,7 +2464,7 @@ namespace FactionColonies
                 }
 
                 // Check for orphaned upgrade state
-                if (settlement.isUpgrading && settlement.finishUpgradeTick + gracePeriod < currentTick)
+                if (settlement.IsUpgrading && settlement.FinishUpgradeTick + gracePeriod < currentTick)
                 {
                     bool hasMatchingEvent = upgradeEvents.Any(t => t.location == settlement.Tile);
 

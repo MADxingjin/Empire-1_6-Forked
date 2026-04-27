@@ -8,7 +8,7 @@ namespace FactionColonies
     public class Building_CapitalSpot : Building
     {
         private bool isActiveCapitalSpot = false;
-        private int lastKnownTile = -1; // Track the last known tile location
+        private PlanetTile lastKnownTile = PlanetTile.Invalid; // Track the last known tile location
 
         public bool IsActiveCapitalSpot
         {
@@ -69,7 +69,7 @@ namespace FactionColonies
                 PlanetTile currentTile = Map.Parent.Tile;
 
                 // Initialize lastKnownTile if it's not set (shouldn't happen but just in case)
-                if (lastKnownTile == -1)
+                if (!lastKnownTile.Valid)
                 {
                     lastKnownTile = currentTile;
                     LogUtil.Message($"Capital Spot Debug: Initialized lastKnownTile to {currentTile}");
@@ -112,10 +112,10 @@ namespace FactionColonies
         {
             base.ExposeData();
             Scribe_Values.Look(ref isActiveCapitalSpot, "isActiveCapitalSpot", false);
-            Scribe_Values.Look(ref lastKnownTile, "lastKnownTile", -1);
+            Scribe_Values.Look(ref lastKnownTile, "lastKnownTile", PlanetTile.Invalid);
 
             // After loading, if this is the active capital spot but lastKnownTile is uninitialized, set it
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && isActiveCapitalSpot && lastKnownTile == -1 && Map != null)
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && isActiveCapitalSpot && !lastKnownTile.Valid && Map != null)
             {
                 lastKnownTile = Map.Parent.Tile;
             }

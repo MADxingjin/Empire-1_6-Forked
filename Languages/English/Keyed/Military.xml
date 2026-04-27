@@ -23,6 +23,7 @@
 
 	<!-- Military Sent Notifications -->
 	<FCMilitarySent>Military Sent</FCMilitarySent>
+	<FCMilitaryAction>Military Action</FCMilitaryAction>
 	<FCMilitarySentToDefend>The military forces of {0} have been sent to defend {1}</FCMilitarySentToDefend>
 	<FCMilitaryAlreadyAssigned>The military force is already assigned.</FCMilitaryAlreadyAssigned>
 	<FCForeignMilitarySwitch>The military forces of {0} have been sent to defend {1}. They have an effective force of {2}</FCForeignMilitarySwitch>
@@ -49,8 +50,11 @@
 	<FCDefenseFailure>Defense Failure</FCDefenseFailure>
 	<FCDefenseFailureFull>The defense of our settlement, {0}, has been crushed.</FCDefenseFailureFull>
 	<FCDefenseBattleOverLeaveMap>The battle is over. Gather your forces and leave the settlement when ready.</FCDefenseBattleOverLeaveMap>
+	<FCReformCaravanBattleStillActive>The battle isn't over until every hostile has died or left the map.</FCReformCaravanBattleStillActive>
 	<FCManualBattleStarted>Battle for {0}</FCManualBattleStarted>
 	<FCManualBattleStartedDesc>{0} is under attack by {1}! Take command of the settlement's defenses.</FCManualBattleStartedDesc>
+	<FCNewWaveArrived>New Wave at {0}</FCNewWaveArrived>
+	<FCNewWaveArrivedDesc>A new wave of attackers from {1} has arrived at {0}! Reinforcements may be on the way.</FCNewWaveArrivedDesc>
 	<FCDefendColony>Defend</FCDefendColony>
 	<FCDefendColonyDesc>Defend your Settlement manually</FCDefendColonyDesc>
 	<FCDefendSettlement>Set Defending Force</FCDefendSettlement>
@@ -138,6 +142,7 @@
 	<FCMilitaryTableFireSupport>Fire Support</FCMilitaryTableFireSupport>
 	<FCNoValidMilitaries>No valid militaries to use.</FCNoValidMilitaries>
 	<FCAvailable>Available</FCAvailable>
+	<FCCurrentDefender>Current Defender</FCCurrentDefender>
 	<FCShortMilitary>Mil</FCShortMilitary>
 	<FCPower>Power</FCPower>
 	<FCUnsupportedMilJobError>The job chosen for this FloatMenuOption doesn't have any translation keys registered in AddButtonsToNonEmpireObjects.MilJobOptionStringsDic</FCUnsupportedMilJobError>

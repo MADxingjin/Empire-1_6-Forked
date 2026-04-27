@@ -163,33 +163,16 @@ namespace FactionColonies.util
             faction = FactionCache.EmpireFactionDef;
         }
 
+        /* The five dictionary fields are initialized inline at declaration (so new ctor
+         * instances start with empty dicts) and the ExposeData PostLoadInit branch guards
+         * against null from pre-existing saves that predate those fields. FinalizeInit
+         * can assume they're non-null. */
         public void FinalizeInit(FactionFC factionFc)
         {
             this.factionFc = factionFc;
             militaryUtil = factionFc.militaryCustomizationUtil;
             faction = FactionCache.EmpireFactionDef;
             LogUtil.Message("XenotypeFilter FinalizeInit");
-
-            if (xenotypeWeights == null)
-            {
-                xenotypeWeights = new Dictionary<XenotypeDef, float>();
-            }
-            if (customXenotypeWeights == null)
-            {
-                customXenotypeWeights = new Dictionary<string, float>();
-            }
-            if (raceWeights == null)
-            {
-                raceWeights = new Dictionary<ThingDef, float>();
-            }
-            if (securityGuardsByXenotype == null)
-            {
-                securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
-            }
-            if (securityGuardsByCustomXenotype == null)
-            {
-                securityGuardsByCustomXenotype = new Dictionary<string, SecurityGuardList>();
-            }
 
             if (XenoCompleteWeight == 0)
             {
@@ -1294,29 +1277,23 @@ namespace FactionColonies.util
             Scribe_Collections.Look(ref securityGuardsByXenotype, "securityGuardsByXenotype", LookMode.Def, LookMode.Deep);
             Scribe_Collections.Look(ref securityGuardsByCustomXenotype, "securityGuardsByCustomXenotype", LookMode.Value, LookMode.Deep);
 
+            /* Guard against null dicts from pre-existing saves made before these fields
+             * existed. Actual FinalizeInit is driven from FactionFC.EnsureFiltersInitialized
+             * (called on firstTick on the load path) — we can't call it here because
+             * InitializeXenotypes reaches into CustomXenotypesForReading, which triggers
+             * Scribe.ForceStop if Scribe is active. */
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (securityGuardsByXenotype == null)
-                {
                     securityGuardsByXenotype = new Dictionary<XenotypeDef, SecurityGuardList>();
-                }
                 if (securityGuardsByCustomXenotype == null)
-                {
                     securityGuardsByCustomXenotype = new Dictionary<string, SecurityGuardList>();
-                }
                 if (xenotypeWeights == null)
-                {
                     xenotypeWeights = new Dictionary<XenotypeDef, float>();
-                }
                 if (customXenotypeWeights == null)
-                {
                     customXenotypeWeights = new Dictionary<string, float>();
-                }
                 if (raceWeights == null)
-                {
                     raceWeights = new Dictionary<ThingDef, float>();
-                }
-                FinalizeInit(FactionCache.FactionComp);
             }
         }
     }
