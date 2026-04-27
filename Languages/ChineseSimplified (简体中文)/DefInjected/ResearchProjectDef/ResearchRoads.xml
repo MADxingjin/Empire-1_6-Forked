@@ -8,12 +8,17 @@
   
   <!-- EN: Settlement Asphalt Highway Building -->
   <FCRoadBuildingHighway.label>领地间高速公路修筑</FCRoadBuildingHighway.label>
-  <!-- EN: Enables your Empire settlements to build asphalt highways automatically over time. Roads will construct one segment every 3 days if the road building option is enabled.. -->
+  <!-- EN: Enables your Empire settlements to build asphalt highways automatically over time. Roads will construct one segment every 3 days if the road building option is enabled. -->
   <FCRoadBuildingHighway.description>允许你的领地间自动修筑高速公路。每格道路需要3天时间建成。</FCRoadBuildingHighway.description>
   
   <!-- EN: Settlement Asphalt Road Building -->
   <FCRoadBuildingRoad.label>领地间沥青路修筑</FCRoadBuildingRoad.label>
-  <!-- EN: Enables your Empire settlements to build asphalt roads automatically over time. Roads will construct one segment every 3 days if the road building option is enabled.. -->
+  <!-- EN: Enables your Empire settlements to build asphalt roads automatically over time. Roads will construct one segment every 3 days if the road building option is enabled. -->
   <FCRoadBuildingRoad.description>允许你的领地间自动修筑沥青路。每格道路需要3天时间建成。</FCRoadBuildingRoad.description>
+  
+  <!-- EN: Settlement Stone Road Building -->
+  <FCRoadBuildingStone.label>领地间石头路修筑</FCRoadBuildingStone.label>
+  <!-- EN: Enables your Empire settlements to build stone roads automatically over time. Roads will construct one segment every 3 days if the road building option is enabled.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <FCRoadBuildingStone.description>允许你的领地间自动修筑石头路。每格道路需要3天时间建成。</FCRoadBuildingStone.description>
   
 </LanguageData>

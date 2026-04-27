@@ -27,6 +27,18 @@
   <FCSettingsTabEvents>事件</FCSettingsTabEvents>
 	<!-- EN: Military -->
   <FCSettingsTabMilitary>军事</FCSettingsTabMilitary>
+	<!-- EN: Road Builder -->
+  <FCSettingsTabRoadBuilder>TODO</FCSettingsTabRoadBuilder>
+	<!-- EN: The Road Builder automatically connects your Empire settlements with roads using a Minimum Spanning Tree algorithm, which is recalculated on the following events:
+ - each time a settlement is founded or lost
+ - when you research a new level of roads
+		
+This requires computing pathfinding costs between many pairs of settlements, which can be expensive with many settlements, or with very sparse settlements.
+
+By default, this computation runs on a background thread to avoid freezing the game. If you experience issues with threading, you can disable it and optionally spread the computation across multiple ticks instead.
+		
+Spreading out the computation will reduce the impact on performance, but no roads will build until the MST is fully constructed. So the more you throttle the algorithm, the longer it will take for your roads to start building. -->
+  <FCSettingRoadBuilderDesc>TODO</FCSettingRoadBuilderDesc>
 	<!-- EN: Enable All Events -->
   <FCSettingEnableAllEvents>启用所有事件</FCSettingEnableAllEvents>
 	<!-- EN: Dead Pawns Increase Military Cooldown -->
@@ -73,12 +85,27 @@ Values in between dampen the effect of military efficiency on the auto combat. -
   <FCSettingMinMaxRandomEvent>随机事件的最小/最大间隔天数</FCSettingMinMaxRandomEvent>
 	<!-- EN: Show confirmation when founding settlements -->
   <FCSettingShowSettleConfirm>建立新领地时需要二次确认</FCSettingShowSettleConfirm>
+	<!-- EN: Use threaded road computation -->
+  <FCSettingUseThreadedRoadComputation>TODO</FCSettingUseThreadedRoadComputation>
+	<!-- EN: Computes road paths on a background thread for better performance. Disable this if you experience issues with road building. -->
+  <FCSettingUseThreadedRoadComputationDesc>TODO</FCSettingUseThreadedRoadComputationDesc>
+	<!-- EN: Edges per road tick -->
+  <FCSettingEdgesPerRoadTick>TODO</FCSettingEdgesPerRoadTick>
+	<!-- EN: Flush Road Path Cache -->
+  <FCSettingFlushRoadCache>TODO</FCSettingFlushRoadCache>
 	<!-- EN: Enable Verbose Logging -->
   <FCSettingEnableDebugLogging>启用详细日志</FCSettingEnableDebugLogging>
 	<!-- EN: Reset Settings -->
   <FCSettingResetButton>重置设置</FCSettingResetButton>
 	<!-- EN: Open Patch Notes Window -->
   <FCOpenPatchNotes>打开更新日志窗口</FCOpenPatchNotes>
+
+	<!-- EN: Medieval Tech Only -->
+  <FCMedievalTechOnly>TODO</FCMedievalTechOnly>
+	<!-- EN: Mirror player faction tech level -->
+  <FCMirrorPlayerTechLevel>TODO</FCMirrorPlayerTechLevel>
+	<!-- EN: When enabled, the Empire faction's tech level is pinned to the player faction's tech level. Research projects no longer advance the Empire's tech level. -->
+  <FCMirrorPlayerTechLevelDesc>TODO</FCMirrorPlayerTechLevelDesc>
 
 	<!-- Difficulty Settings -->
 	<!-- EN: Empire Difficulty -->

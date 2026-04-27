@@ -2,38 +2,38 @@
 <LanguageData>
 
 	<!-- Settlement Creation -->
-	<!-- EN: Settle A New Colony -->
-  <SettleANewColony>开辟新领地</SettleANewColony>
-	<!-- EN: Create New Colony -->
-  <CreateNewColony>开辟新领地</CreateNewColony>
-	<!-- EN: Select a tile to create the colony -->
-  <SelectTile>选择一个地块来开辟新领地吧</SelectTile>
+	<!-- EN: Found A New Settlement -->
+  <FCSettleANewColony>TODO</FCSettleANewColony>
+	<!-- EN: Found New Settlement -->
+  <FCCreateNewColony>TODO</FCCreateNewColony>
+	<!-- EN: Select a tile to found the settlement -->
+  <FCSelectTile>TODO</FCSelectTile>
 	<!-- EN: You can't build a settlement here! -->
-  <selectedInvalidTile>这里不能建立领地。</selectedInvalidTile>
+  <FCSelectedInvalidTile>TODO</FCSelectedInvalidTile>
 	<!-- EN: Settle -->
-  <Settle>定居</Settle>
+  <FCSettle>TODO</FCSettle>
 	<!-- EN: A caravan is already on its way -->
-  <CaravanOnWay>一支远行队正在路上</CaravanOnWay>
+  <FCCaravanOnWay>TODO</FCCaravanOnWay>
 	<!-- EN: A caravan has been sent to the location! They will arrive in -->
-  <CaravanSentToLocation>一支远行队已派到目标位置。他们将在稍后到达：</CaravanSentToLocation>
+  <FCCaravanSentToLocation>TODO</FCCaravanSentToLocation>
 	<!-- EN: Construction crews have been sent to the location! Their work will complete in -->
-  <ConstructionToLocation>建筑工人已被派到目标位置，他们的工作将稍后结束：</ConstructionToLocation>
+  <FCConstructionToLocation>TODO</FCConstructionToLocation>
 	<!-- EN: {0} Construction -->
-  <ColonyConstruction>{0}工程量</ColonyConstruction>
+  <FCColonyConstruction>TODO</FCColonyConstruction>
 	<!-- EN: You cannot found a {0} on impassable mountains. -->
-  <ImpassableMountains>你不能在不可跨越的山上建立{0}</ImpassableMountains>
+  <FCImpassableMountains>TODO</FCImpassableMountains>
 	<!-- EN: You cannot found a {0} in this biome. -->
-  <NotAllowedBiome>你不能在该生物群系里建立{0}</NotAllowedBiome>
+  <FCNotAllowedBiome>TODO</FCNotAllowedBiome>
 	<!-- EN: Invalid planet layer. -->
-  <InvalidPlanetLayer>所选行星层级不可用。</InvalidPlanetLayer>
+  <FCInvalidPlanetLayer>TODO</FCInvalidPlanetLayer>
 	<!-- EN: This orbital tile is occupied. -->
-  <OrbitalTileOccupied>此轨道位置已被占据。</OrbitalTileOccupied>
+  <FCOrbitalTileOccupied>TODO</FCOrbitalTileOccupied>
 	<!-- EN: Settlement Formed -->
   <FCSettlementFormed>建立了领地</FCSettlementFormed>
 	<!-- EN: The settlement -->
-  <TheSettlement>领地</TheSettlement>
+  <FCTheSettlement>TODO</FCTheSettlement>
 	<!-- EN:  has been formed -->
-  <HasBeenFormed>已建成</HasBeenFormed>
+  <FCHasBeenFormed>TODO</FCHasBeenFormed>
 	<!-- EN: Choose Settlement Type -->
   <FCPickSettlementType>选择领地类型</FCPickSettlementType>
 	<!-- EN: Requires research: {0} -->
@@ -43,77 +43,75 @@
 	<!-- EN: Resources: -->
   <FCSettlementResources>资源：</FCSettlementResources>
 	<!-- EN: A caravan is traveling to establish a new {0} in the {1}. Estimated arrival: {2}. -->
-  <SettleEventDesc>一支远行队将在{1}建立{0}，预计于{2}后到达。</SettleEventDesc>
+  <FCSettleEventDesc>TODO</FCSettleEventDesc>
 	<!-- EN: {0} has been established as a new {1} in the {2}. -->
-  <SettleEventCompletedDesc>领地“{0}”已在{2}建立，其类型为“{1}”。</SettleEventCompletedDesc>
-	<!-- EN: Player Colony -->
-  <PlayerColony>玩家的领地</PlayerColony>
+  <FCSettleEventCompletedDesc>TODO</FCSettleEventCompletedDesc>
+	<!-- EN: Player Empire -->
+  <FCPlayerColony>TODO</FCPlayerColony>
 	<!-- EN: Set Capital -->
-  <SetCapital>设为首都</SetCapital>
+  <FCSetCapital>TODO</FCSetCapital>
 	<!-- EN: {0} has been set as the faction capital -->
-  <SetAsFactionCapital>{0}被定为派系首都</SetAsFactionCapital>
+  <FCSetAsFactionCapital>TODO</FCSetAsFactionCapital>
 
 	<!-- Settlement Upgrading -->
 	<!-- EN: This settlement is already being upgraded! -->
-  <AlreadyUpgradeSettlement>已经安排了该领地的升级。</AlreadyUpgradeSettlement>
+  <FCAlreadyUpgradeSettlement>TODO</FCAlreadyUpgradeSettlement>
 	<!-- EN: The settlement is now being upgraded... -->
-  <StartUpgradeSettlement>正在升级该领地</StartUpgradeSettlement>
+  <FCStartUpgradeSettlement>TODO</FCStartUpgradeSettlement>
 	<!-- EN: Upgrade Settlement -->
-  <UpgradeSettlement>升级领地</UpgradeSettlement>
+  <FCUpgradeSettlement>TODO</FCUpgradeSettlement>
 	<!-- EN: Upgrade -->
-  <Upgrade>升级</Upgrade>
+  <FCUpgrade>TODO</FCUpgrade>
 	<!-- EN: Upgrading... -->
-  <SettlementUpgradeInProgress>升级中</SettlementUpgradeInProgress>
+  <FCSettlementUpgradeInProgress>TODO</FCSettlementUpgradeInProgress>
 	<!-- EN: can be upgraded for -->
-  <CanBeUpgraded>可升级</CanBeUpgraded>
-	<!-- EN: Upgrading this colony will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this colony will also increase by 1. -->
-  <UpgradeColonyDesc>升级领地后,+3工人软上限,+3工人硬上限,+1军事级别.</UpgradeColonyDesc>
+  <FCCanBeUpgraded>TODO</FCCanBeUpgraded>
+	<!-- EN: Upgrading this settlement will increase the max worker count before the cost of workers begins to rise by 3 workers. The military level of this settlement will also increase by 1. -->
+  <FCUpgradeColonyDesc>TODO</FCUpgradeColonyDesc>
 	<!-- EN: has been upgraded to level -->
-  <HasBeenUpgraded>已升级</HasBeenUpgraded>
+  <FCHasBeenUpgraded>TODO</FCHasBeenUpgraded>
 	<!-- EN: {0} is being upgraded from level {1} to level {2}.\n\n{3} -->
-  <UpgradeEventDesc>将{0}从等级{1}升级到等级{2}。\n\n{3}</UpgradeEventDesc>
+  <FCUpgradeEventDesc>TODO</FCUpgradeEventDesc>
 	<!-- EN: {0} has been upgraded to level {1}!\n\n{2} -->
-  <UpgradeEventCompletedDesc>已将{0}升级到{1}！\n\n{2}</UpgradeEventCompletedDesc>
+  <FCUpgradeEventCompletedDesc>TODO</FCUpgradeEventCompletedDesc>
 	<!-- EN: is already max level -->
-  <AlreadyMaxLevel>已经是最高级别了</AlreadyMaxLevel>
+  <FCAlreadyMaxLevel>TODO</FCAlreadyMaxLevel>
 	<!-- EN: The current map does not have enough silver to pay for the settlement upgrade. -->
-  <NotEnoughSilverUpgrade>你没有足够的白银升级你的领地.</NotEnoughSilverUpgrade>
+  <FCNotEnoughSilverUpgrade>TODO</FCNotEnoughSilverUpgrade>
 	<!-- EN: This settlement cannot be upgraded past max level -->
-  <CannotBeUpgradedPastMax>领地级别已达上限</CannotBeUpgradedPastMax>
-	<!-- EN: Upgrade Town -->
-  <UpgradeTown>升级城镇</UpgradeTown>
+  <FCCannotBeUpgradedPastMax>TODO</FCCannotBeUpgradedPastMax>
 	<!-- EN: Upgrading: {0} remaining -->
   <FCUpgradeBadgeInProgress>升级中，还需要{0}</FCUpgradeBadgeInProgress>
 	<!-- EN: Click to upgrade (cost: {0} silver) -->
   <FCUpgradeBadgeAvailable>点击以升级（花费{0}白银）</FCUpgradeBadgeAvailable>
 
 	<!-- Settlement Window -->
-	<!-- EN: Town Log -->
-  <TownLog>城镇日志</TownLog>
 	<!-- EN: Go To Location -->
-  <GoToLocation>定位</GoToLocation>
+  <FCGoToLocation>TODO</FCGoToLocation>
 	<!-- EN: Located in the -->
-  <Located>位于</Located>
+  <FCLocated>TODO</FCLocated>
 	<!-- EN: land of a -->
-  <LandOf>用地</LandOf>
+  <FCLandOf>TODO</FCLandOf>
 	<!-- EN: See settlement information -->
-  <openSettlementWindowDefaultLabel>打开领地信息</openSettlementWindowDefaultLabel>
-	<!-- EN: Opens the settlements colony window -->
-  <openSettlementWindowDefaultDesc>打开此领地的信息窗</openSettlementWindowDefaultDesc>
+  <FCOpenSettlementWindowDefaultLabel>TODO</FCOpenSettlementWindowDefaultLabel>
+	<!-- EN: Opens the settlement window -->
+  <FCOpenSettlementWindowDefaultDesc>TODO</FCOpenSettlementWindowDefaultDesc>
 	<!-- EN: Build Roads -->
   <FCBuildRoads>建筑道路</FCBuildRoads>
+	<!-- EN: Your Empire settlements have constructed new {0} segments connecting your territories. -->
+  <FCRoadSegmentsBuilt>TODO</FCRoadSegmentsBuilt>
 
 	<!-- Settlement Stats -->
 	<!-- EN: Settlement Military Level -->
-  <SettlementMilitaryLevel>领地军事级别</SettlementMilitaryLevel>
+  <FCSettlementMilitaryLevel>TODO</FCSettlementMilitaryLevel>
 	<!-- EN: Settlement Happiness -->
-  <SettlementHappiness>领地幸福度</SettlementHappiness>
+  <FCSettlementHappiness>TODO</FCSettlementHappiness>
 	<!-- EN: Settlement Loyalty -->
-  <SettlementLoyalty>领地忠诚度</SettlementLoyalty>
+  <FCSettlementLoyalty>TODO</FCSettlementLoyalty>
 	<!-- EN: Settlement Unrest -->
-  <SettlementUnrest>领地叛乱度</SettlementUnrest>
+  <FCSettlementUnrest>TODO</FCSettlementUnrest>
 	<!-- EN: Settlement Prosperity -->
-  <SettlementProsperity>领地繁荣度</SettlementProsperity>
+  <FCSettlementProsperity>TODO</FCSettlementProsperity>
 	<!-- EN: happiness -->
   <FCHappiness>幸福度</FCHappiness>
 	<!-- EN: loyalty -->
@@ -122,58 +120,50 @@
   <FCUnrest>动乱度</FCUnrest>
 	<!-- EN: prosperity -->
   <FCProsperity>繁荣度</FCProsperity>
-	<!-- EN: happiness -->
-  <Happiness>幸福度</Happiness>
-	<!-- EN: loyalty -->
-  <Loyalty>忠诚度</Loyalty>
-	<!-- EN: unrest -->
-  <Unrest>叛乱度</Unrest>
-	<!-- EN: prosperity -->
-  <Prosperity>繁荣度</Prosperity>
 	<!-- EN: Base Recovery -->
-  <BaseRecovery>基础恢复</BaseRecovery>
+  <FCBaseRecovery>TODO</FCBaseRecovery>
 	<!-- EN: Target: {0}% -->
-  <ProsperityTarget>目标：{0}%</ProsperityTarget>
+  <FCProsperityTarget>TODO</FCProsperityTarget>
 	<!-- EN: Drift toward target -->
-  <ProsperityDrift>向目标偏移</ProsperityDrift>
+  <FCProsperityDrift>TODO</FCProsperityDrift>
 	<!-- EN: Happiness ({0}) + Loyalty ({1}) + Stability ({2}) / 3 -->
-  <ProsperityTargetBreakdown>（幸福度{0}+忠诚度{1}+稳定度{2}）/3</ProsperityTargetBreakdown>
+  <FCProsperityTargetBreakdown>TODO</FCProsperityTargetBreakdown>
 	<!-- EN: Base Gain -->
-  <BaseGain>基础获得</BaseGain>
+  <FCBaseGain>TODO</FCBaseGain>
 	<!-- EN: Base Loss -->
-  <BaseLoss>基础损失</BaseLoss>
+  <FCBaseLoss>TODO</FCBaseLoss>
 	<!-- EN: Gaining {0} {1} per day -->
-  <SettlementStatGain>每天获得{0}{1}</SettlementStatGain>
+  <FCSettlementStatGain>TODO</FCSettlementStatGain>
 	<!-- EN: Losing {0} {1} per day -->
-  <SettlementStatLoss>每天损失{0}{1}</SettlementStatLoss>
+  <FCSettlementStatLoss>TODO</FCSettlementStatLoss>
 
 	<!-- Settlement Stat Descriptions -->
 	<!-- EN: The military level directly affects the settlement's ability to defend itself and attack external threats. -->
-  <SettlementMilitaryLevelDesc>衡量领地军事能力的标准.一个城镇的军事水平直接影响到城镇的自卫能力和对外威胁的打击能力.</SettlementMilitaryLevelDesc>
+  <FCSettlementMilitaryLevelDesc>TODO</FCSettlementMilitaryLevelDesc>
 	<!-- EN: The measure of the Settlement's overall happiness.
 
 A high happiness means that any internal conflict within the settlement will lean heavily to your favor.
 	 -->
-  <SettlementHappinessDesc>衡量领地居民幸福感的标准.高幸福度对和解内部冲突极有帮助.</SettlementHappinessDesc>
+  <FCSettlementHappinessDesc>TODO</FCSettlementHappinessDesc>
 	<!-- EN: The measure of the Settlement's overall loyalty.
 
 The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection.
 	 -->
-  <SettlementLoyaltyDesc>衡量领地居民是否忠诚的标准.忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能.</SettlementLoyaltyDesc>
+  <FCSettlementLoyaltyDesc>TODO</FCSettlementLoyaltyDesc>
 	<!-- EN: The measure of the Settlement's overall unrest.
 
 The higher unrest grows, the more likely dangerous events internal in your Settlement will spark. Let it grow too high, and a Settlement-wide revolt may grow.
 	 -->
-  <SettlementUnrestDesc>衡量领地动荡程度的标准.动乱越严重,你的领地就越有可能发生危险事件.高叛乱度会增加内部冲突，过高的动乱度有可能引发领地规模的叛乱。</SettlementUnrestDesc>
+  <FCSettlementUnrestDesc>TODO</FCSettlementUnrestDesc>
 	<!-- EN: The measure of the Settlement's overall prosperity.
 
-The prosperity of a town directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
+The prosperity of a settlement directly correlates with the production of resources (e.g. 50% prosperity = 50% production). Prosperity drifts toward a target determined by the settlement's happiness, loyalty, and unrest.
 	 -->
-  <SettlementProsperityDesc>衡量领地运行状况的标准。一个城镇的繁荣度与产量直接相关（50%繁荣度=50%产量）。繁荣度由幸福度，忠诚度，动乱度混合加权计算得到预期值。</SettlementProsperityDesc>
+  <FCSettlementProsperityDesc>TODO</FCSettlementProsperityDesc>
 
 	<!-- Settlement Table -->
 	<!-- EN: Settlement Manager -->
-  <SettlementManager>领地管理人</SettlementManager>
+  <FCSettlementManager>TODO</FCSettlementManager>
 	<!-- EN: Name -->
   <FCSettlementTableName>名称</FCSettlementTableName>
 	<!-- EN: Level -->
@@ -200,20 +190,20 @@ The prosperity of a town directly correlates with the production of resources (e
   <FCSettlementCount>{0}个领地T</FCSettlementCount>
 	<!-- EN: Sort: {0} -->
   <FCSortBy>{0}</FCSortBy>
-	<!-- EN: Colony Level -->
-  <ColonyLevel>领地级别</ColonyLevel>
-	<!-- EN: hamlet -->
-  <Hamlet>城镇</Hamlet>
+	<!-- EN: Settlement Level -->
+  <FCColonyLevel>TODO</FCColonyLevel>
+	<!-- EN: settlement -->
+  <FCHamlet>TODO</FCHamlet>
 
 	<!-- Settlement Delete -->
 	<!-- EN: Delete Settlement -->
-  <DeleteSettlement>删除领地</DeleteSettlement>
+  <FCDeleteSettlement>TODO</FCDeleteSettlement>
 	<!-- EN: Remove settlement {0}? -->
-  <DeleteSettlementConfirm>移除领地{0}吗？</DeleteSettlementConfirm>
+  <FCDeleteSettlementConfirm>TODO</FCDeleteSettlementConfirm>
 	<!-- EN: Are you sure? -->
-  <AreYouSureRemove>确定?</AreYouSureRemove>
+  <FCAreYouSureRemove>TODO</FCAreYouSureRemove>
 	<!-- EN: The settlement {0} has been removed. -->
-  <SettlementRemoved>领地{0}已被移除.</SettlementRemoved>
+  <FCSettlementRemoved>TODO</FCSettlementRemoved>
 
 	<!-- Settlement Customization -->
 	<!-- EN: Customize Settlement -->
@@ -230,26 +220,26 @@ The prosperity of a town directly correlates with the production of resources (e
   <FCSpecialActions>特殊动作</FCSpecialActions>
 	<!-- EN: Buy Loyalty -->
   <FCBuyLoyalty>购买忠诚</FCBuyLoyalty>
-	<!-- EN: Send Silver to Colony -->
-  <SendSilverToColony>向领地发送白银</SendSilverToColony>
+	<!-- EN: Send Silver to Settlement -->
+  <FCSendSilverToColony>TODO</FCSendSilverToColony>
 	<!-- EN: Sending {0} silver -->
-  <SendingXSilver>发送了{0}白银</SendingXSilver>
+  <FCSendingXSilver>TODO</FCSendingXSilver>
 	<!-- EN: Settlement will gain {0} loyalty -->
-  <SettlementGainsXLoyalty>领地忠诚度获得：{0}</SettlementGainsXLoyalty>
+  <FCSettlementGainsXLoyalty>TODO</FCSettlementGainsXLoyalty>
 
 	<!-- Construction Status -->
 	<!-- EN: Active Construction: {0} -->
-  <numUnderConstruction>施工中：{0}</numUnderConstruction>
+  <FCNumUnderConstruction>TODO</FCNumUnderConstruction>
 	<!-- EN: Active Construction -->
-  <ActiveConstruction>施工中</ActiveConstruction>
+  <FCActiveConstruction>TODO</FCActiveConstruction>
 	<!-- EN: Close Constructions List -->
-  <closeConstructionBox>关闭建筑清单</closeConstructionBox>
+  <FCCloseConstructionBox>TODO</FCCloseConstructionBox>
 	<!-- EN: Open Constructions List -->
-  <openConstructionBox>打开建筑清单</openConstructionBox>
+  <FCOpenConstructionBox>TODO</FCOpenConstructionBox>
 	<!-- EN: Settlement Upgrade -->
-  <settlementupgrading>领地升级</settlementupgrading>
+  <FCSettlementupgrading>TODO</FCSettlementupgrading>
 	<!-- EN: Finishes in: {0} -->
-  <completiontimer>将在{0}后完成</completiontimer>
+  <FCCompletiontimer>TODO</FCCompletiontimer>
 
 	<!-- Biome Descriptions -->
 	<!-- EN: Endless sheets of ice unbroken by nothing but small, sparse wildlife. No food grows except within heated rooms. Only the most tenacious of life survives here. -->
@@ -276,7 +266,7 @@ The prosperity of a town directly correlates with the production of resources (e
   <FCDescDesert>可耕种的土壤在此珍惜无比，大部分的地面都在沙子之下。一部分流沙地区上无法建立任何地基。即使如此，沙漠仍然孕育了独有的一套生态。</FCDescDesert>
 	<!-- EN: The sun has baked this land into a wasteland. There is almost no soil that can support proper vegetation, and that which there is, is poor in quality. -->
   <FCDescExtremeDesert>烈阳将此地烘烤为荒漠和废土。这里几乎没有任何可以种下植物的土壤，哪怕有，也极度缺失肥力。</FCDescExtremeDesert>
-	<!-- EN: Little is widely known about the surrounding land, but the colony manages to survive and prosper in their present conditions. -->
+	<!-- EN: Little is widely known about the surrounding land, but the settlement manages to survive and prosper in their present conditions. -->
   <FCDescUnknown>此地为人所知甚少，即使如此仍能让人在此存活并繁荣。（这是Empire模组没有识别到兼容的群系的默认介绍）</FCDescUnknown>
 	<!-- EN: The vast emptiness of space stretches in all directions, broken only by the distant twinkle of stars and the occasional passing asteroid. Solar panels gleam in the eternal sunlight, while life support systems hum quietly in the artificial environment. The station floats in the void, a beacon of civilization in the cosmic wilderness. -->
   <FCDescOrbitalSpace>太空的虚无感向所有方向延申，然后被遥远星光的闪烁和偶尔飘过的小行星打破。太阳能板在无尽的日照下闪烁，生命维持系统在人造的生活区里蜂鸣。该站点在虚空中漂浮，宇宙荒野当中的又一个文明信标。</FCDescOrbitalSpace>
@@ -288,9 +278,9 @@ The prosperity of a town directly correlates with the production of resources (e
   <FCTownLevel2>这个领地围绕着数个大型结构组建，但仍不是很大。一圈沙袋和掩体环绕着领地的外侧。</FCTownLevel2>
 	<!-- EN: The settlement has a good number of structures — largely production oriented — as well as dedicated storehouses, and busy workers scurry between them. A modest wall protects the settlement. -->
   <FCTownLevel3>这个领地有足够数量的大型结构 ——大型生产结构，和专门的商店，可以看到忙碌的工人们来往。一堵朴素的墙保护着它。</FCTownLevel3>
-	<!-- EN: The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the colony from attack. -->
+	<!-- EN: The settlement is reasonably large, and well organised, with a number of industrial buildings clustered together to maximize efficiency. A thick wall and internal defenses protect the settlement from attack. -->
   <FCTownLevel4>这个领地足够大，且井然有序。可以看到数个工厂被集中在园区内以最大化效能。一道足够厚长的墙壁和更多的内部防卫设施将从外敌手中保卫这里。</FCTownLevel4>
-	<!-- EN: Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the colony, with plentiful interior defenses in carefully planned chokepoints. -->
+	<!-- EN: Clearly labelled buildings mark the industrial heart of this bustling beacon of civilization, as well as various other utilities. Multiple walls ring the settlement, with plentiful interior defenses in carefully planned chokepoints. -->
   <FCTownLevel5>标记分明的大型厂房是这个繁忙的文明信标的心脏，外围还有不计其数的各类设施。多道墙体围绕着领地，墙内还有着足量的内部防御和精心设计的制高点。</FCTownLevel5>
 
 	<!-- Orbital Town Level Descriptions -->
@@ -345,6 +335,93 @@ The prosperity of a town directly correlates with the production of resources (e
 
 	<!-- Building Environment Restrictions -->
 	<!-- EN: That building cannot be built on this settlement's biome! -->
+  <FCBuildingInvalidEnvironment>TODO</FCBuildingInvalidEnvironment>
+	<!-- EN: {0} has been removed due to the settlement type transition at {1}. -->
+  <FCBuildingRemovedByTypeTransition>TODO</FCBuildingRemovedByTypeTransition>
+	<!-- EN: Cannot settle adjacent to an existing faction base. -->
+  <FCFactionBaseAdjacent>TODO</FCFactionBaseAdjacent>
+	<!-- EN: This tile is on the wrong planet layer for this settlement type. -->
+  <FCTileWrongPlanetLayer>TODO</FCTileWrongPlanetLayer>
+
+  
+  <SettleANewColony>开辟新领地</SettleANewColony>
+  <CreateNewColony>开辟新领地</CreateNewColony>
+  <SelectTile>选择一个地块来开辟新领地吧</SelectTile>
+  <selectedInvalidTile>这里不能建立领地。</selectedInvalidTile>
+  <Settle>定居</Settle>
+  <CaravanOnWay>一支远行队正在路上</CaravanOnWay>
+  <CaravanSentToLocation>一支远行队已派到目标位置。他们将在稍后到达：</CaravanSentToLocation>
+  <ConstructionToLocation>建筑工人已被派到目标位置，他们的工作将稍后结束：</ConstructionToLocation>
+  <ColonyConstruction>{0}工程量</ColonyConstruction>
+  <ImpassableMountains>你不能在不可跨越的山上建立{0}</ImpassableMountains>
+  <NotAllowedBiome>你不能在该生物群系里建立{0}</NotAllowedBiome>
+  <InvalidPlanetLayer>所选行星层级不可用。</InvalidPlanetLayer>
+  <OrbitalTileOccupied>此轨道位置已被占据。</OrbitalTileOccupied>
+  <TheSettlement>领地</TheSettlement>
+  <HasBeenFormed>已建成</HasBeenFormed>
+  <SettleEventDesc>一支远行队将在{1}建立{0}，预计于{2}后到达。</SettleEventDesc>
+  <SettleEventCompletedDesc>领地“{0}”已在{2}建立，其类型为“{1}”。</SettleEventCompletedDesc>
+  <PlayerColony>玩家的领地</PlayerColony>
+  <SetCapital>设为首都</SetCapital>
+  <SetAsFactionCapital>{0}被定为派系首都</SetAsFactionCapital>
+  <AlreadyUpgradeSettlement>已经安排了该领地的升级。</AlreadyUpgradeSettlement>
+  <StartUpgradeSettlement>正在升级该领地</StartUpgradeSettlement>
+  <UpgradeSettlement>升级领地</UpgradeSettlement>
+  <Upgrade>升级</Upgrade>
+  <SettlementUpgradeInProgress>升级中</SettlementUpgradeInProgress>
+  <CanBeUpgraded>可升级</CanBeUpgraded>
+  <UpgradeColonyDesc>升级领地后,+3工人软上限,+3工人硬上限,+1军事级别.</UpgradeColonyDesc>
+  <HasBeenUpgraded>已升级</HasBeenUpgraded>
+  <UpgradeEventDesc>将{0}从等级{1}升级到等级{2}。\n\n{3}</UpgradeEventDesc>
+  <UpgradeEventCompletedDesc>已将{0}升级到{1}！\n\n{2}</UpgradeEventCompletedDesc>
+  <AlreadyMaxLevel>已经是最高级别了</AlreadyMaxLevel>
+  <NotEnoughSilverUpgrade>你没有足够的白银升级你的领地.</NotEnoughSilverUpgrade>
+  <CannotBeUpgradedPastMax>领地级别已达上限</CannotBeUpgradedPastMax>
+  <UpgradeTown>升级城镇</UpgradeTown>
+  <TownLog>城镇日志</TownLog>
+  <GoToLocation>定位</GoToLocation>
+  <Located>位于</Located>
+  <LandOf>用地</LandOf>
+  <openSettlementWindowDefaultLabel>打开领地信息</openSettlementWindowDefaultLabel>
+  <openSettlementWindowDefaultDesc>打开此领地的信息窗</openSettlementWindowDefaultDesc>
+  <SettlementMilitaryLevel>领地军事级别</SettlementMilitaryLevel>
+  <SettlementHappiness>领地幸福度</SettlementHappiness>
+  <SettlementLoyalty>领地忠诚度</SettlementLoyalty>
+  <SettlementUnrest>领地叛乱度</SettlementUnrest>
+  <SettlementProsperity>领地繁荣度</SettlementProsperity>
+  <Happiness>幸福度</Happiness>
+  <Loyalty>忠诚度</Loyalty>
+  <Unrest>叛乱度</Unrest>
+  <Prosperity>繁荣度</Prosperity>
+  <BaseRecovery>基础恢复</BaseRecovery>
+  <ProsperityTarget>目标：{0}%</ProsperityTarget>
+  <ProsperityDrift>向目标偏移</ProsperityDrift>
+  <ProsperityTargetBreakdown>（幸福度{0}+忠诚度{1}+稳定度{2}）/3</ProsperityTargetBreakdown>
+  <BaseGain>基础获得</BaseGain>
+  <BaseLoss>基础损失</BaseLoss>
+  <SettlementStatGain>每天获得{0}{1}</SettlementStatGain>
+  <SettlementStatLoss>每天损失{0}{1}</SettlementStatLoss>
+  <SettlementMilitaryLevelDesc>衡量领地军事能力的标准.一个城镇的军事水平直接影响到城镇的自卫能力和对外威胁的打击能力.</SettlementMilitaryLevelDesc>
+  <SettlementHappinessDesc>衡量领地居民幸福感的标准.高幸福度对和解内部冲突极有帮助.</SettlementHappinessDesc>
+  <SettlementLoyaltyDesc>衡量领地居民是否忠诚的标准.忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能.</SettlementLoyaltyDesc>
+  <SettlementUnrestDesc>衡量领地动荡程度的标准.动乱越严重,你的领地就越有可能发生危险事件.高叛乱度会增加内部冲突，过高的动乱度有可能引发领地规模的叛乱。</SettlementUnrestDesc>
+  <SettlementProsperityDesc>衡量领地运行状况的标准。一个城镇的繁荣度与产量直接相关（50%繁荣度=50%产量）。繁荣度由幸福度，忠诚度，动乱度混合加权计算得到预期值。</SettlementProsperityDesc>
+  <SettlementManager>领地管理人</SettlementManager>
+  <ColonyLevel>领地级别</ColonyLevel>
+  <Hamlet>城镇</Hamlet>
+  <DeleteSettlement>删除领地</DeleteSettlement>
+  <DeleteSettlementConfirm>移除领地{0}吗？</DeleteSettlementConfirm>
+  <AreYouSureRemove>确定?</AreYouSureRemove>
+  <SettlementRemoved>领地{0}已被移除.</SettlementRemoved>
+  <SendSilverToColony>向领地发送白银</SendSilverToColony>
+  <SendingXSilver>发送了{0}白银</SendingXSilver>
+  <SettlementGainsXLoyalty>领地忠诚度获得：{0}</SettlementGainsXLoyalty>
+  <numUnderConstruction>施工中：{0}</numUnderConstruction>
+  <ActiveConstruction>施工中</ActiveConstruction>
+  <closeConstructionBox>关闭建筑清单</closeConstructionBox>
+  <openConstructionBox>打开建筑清单</openConstructionBox>
+  <settlementupgrading>领地升级</settlementupgrading>
+  <completiontimer>将在{0}后完成</completiontimer>
   <BuildingInvalidEnvironment>领地所处的生物群系不支持该建筑。</BuildingInvalidEnvironment>
 
 </LanguageData>

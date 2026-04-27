@@ -21,10 +21,10 @@
   <!-- EN: A blank event. -->
   <Null.desc>DEV:空事件</Null.desc>
   
-  <!-- EN: Settle Colony -->
+  <!-- EN: Found Settlement -->
   <settleNewColony.label>建立新的领地</settleNewColony.label>
-  <!-- EN: A caravan is forming a new colony. -->
-  <settleNewColony.desc>一队殖民者正在被派往新的领地。</settleNewColony.desc>
+  <!-- EN: A caravan is forming a new settlement. -->
+  <settleNewColony.desc>已派出一队殖民者建立新的领地。</settleNewColony.desc>
   
   <!-- EN: Settlement Taxes En-Route -->
   <taxColony.label>税务运输队出发</taxColony.label>

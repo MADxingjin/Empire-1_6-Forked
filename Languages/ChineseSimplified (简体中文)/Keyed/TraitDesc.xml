@@ -2,13 +2,9 @@
 <LanguageData>
 
 	<!-- EN: {0} {1} production -->
-  <RTDproductionAdditive>产出{0}{1}</RTDproductionAdditive>
+  <FCRTDproductionAdditive>TODO</FCRTDproductionAdditive>
 	<!-- EN: {0} {1} production -->
-  <RTDproductionMultiplier>产出{0}{1}</RTDproductionMultiplier>
-	<!-- EN: {0} {1} production from {2} -->
-  <RTDproductionAdditiveFrom>基于{2}产出{0}{1}</RTDproductionAdditiveFrom>
-	<!-- EN: {0} {1} production from {2} -->
-  <RTDproductionMultiplierFrom>基于{2}产出{0}{1}</RTDproductionMultiplierFrom>
+  <FCRTDproductionMultiplier>TODO</FCRTDproductionMultiplier>
 	
 	<!-- EN: Resource Bonuses -->
   <FCTraitDesc_ResourceBonusLabel>资源加成</FCTraitDesc_ResourceBonusLabel>
@@ -107,4 +103,10 @@
   <FCBuildingUpkeep>维持：{0}</FCBuildingUpkeep>
 	<!-- EN: Income: ${0} -->
   <FCBuildingIncome>收入：{0}</FCBuildingIncome>
+  
+  <RTDproductionAdditive>产出{0}{1}</RTDproductionAdditive>
+  <RTDproductionMultiplier>产出{0}{1}</RTDproductionMultiplier>
+  <RTDproductionAdditiveFrom>基于{2}产出{0}{1}</RTDproductionAdditiveFrom>
+  <RTDproductionMultiplierFrom>基于{2}产出{0}{1}</RTDproductionMultiplierFrom>
+
 </LanguageData>

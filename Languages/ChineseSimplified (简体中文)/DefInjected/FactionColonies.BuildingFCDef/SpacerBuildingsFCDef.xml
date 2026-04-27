@@ -63,7 +63,7 @@
   
   <!-- EN: Worker Bots -->
   <WorkerBots.label>工作机器人</WorkerBots.label>
-  <!-- EN: Put robots to work doing the more mundane tasks around the colony so the people can be put to work elsewhere. -->
+  <!-- EN: Put robots to work doing the more mundane tasks around the settlement so the people can be put to work elsewhere. -->
   <WorkerBots.desc>让机器人去干那些重复繁琐的工作，以将人类劳动力从领地里这些工作中投入到其他地方。</WorkerBots.desc>
   
 </LanguageData>

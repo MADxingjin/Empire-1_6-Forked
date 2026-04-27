@@ -1,41 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
-	<!-- Building Construction -->
-	<!-- EN: Construct Building -->
-  <ConstructBuilding>建造建筑</ConstructBuilding>
-	<!-- EN: Construct -->
-  <Construct>建造</Construct>
-	<!-- EN: Build -->
-  <Build>建造</Build>
-	<!-- EN: Built -->
-  <Built>已建成</Built>
-	<!-- EN: will be constructed in -->
-  <WillBeConstructedIn>将建造于</WillBeConstructedIn>
-	<!-- EN: has been constructed at -->
-  <HasBeenConstructedAt>建造于</HasBeenConstructedAt>
 	<!-- EN: Currently under construction: {0} -->
   <Empire_BuildingWindow_ConstructionDesc>建造{0}中</Empire_BuildingWindow_ConstructionDesc>
-	<!-- EN: Build Time: {0} -->
-  <BuildTime>建筑用时：{0}</BuildTime>
-
-	<!-- Building Restrictions -->
-	<!-- EN: This building can only be constructed on surface settlements -->
-  <BuildingSurfaceOnly>此建筑只能在地表聚落建造</BuildingSurfaceOnly>
-	<!-- EN: This building can only be constructed on orbital platforms -->
-  <BuildingOrbitalOnly>此建筑只能在轨道平台上建造</BuildingOrbitalOnly>
-	<!-- EN: {0} cannot be built in a {1} -->
-  <BuildingInvalidSettlement>{0}不能在{1}建造</BuildingInvalidSettlement>
-	<!-- EN: There is already a building of that type -->
-  <BuildingAlreadyType>已经有这样的建筑了</BuildingAlreadyType>
-	<!-- EN: There is already a building of that type being built -->
-  <BuildingBeingBuiltAlreadyType>已经有一座这种类型的建筑在建了</BuildingBeingBuiltAlreadyType>
-	<!-- EN: There is already a building being constructed there -->
-  <BuildingAlreadyConstructed>那里已经在建一座建筑了</BuildingAlreadyConstructed>
-
 	<!-- Building Demolition -->
-	<!-- EN: Destroy -->
-  <Destroy>摧毁</Destroy>
 	<!-- EN: Demolish -->
   <FCDemolish>拆除</FCDemolish>
 	<!-- EN: Are you sure you want to demolish {0}? This will cost {1} silver. -->
@@ -45,17 +13,6 @@
 	<!-- EN: Change Building -->
   <FCChangeBuildingButton>更改建筑</FCChangeBuildingButton>
 
-	<!-- Building Filters -->
-	<!-- EN: All -->
-  <BuildingFilterAll>所有</BuildingFilterAll>
-	<!-- EN: Happiness -->
-  <BuildingFilterHappiness>幸福度</BuildingFilterHappiness>
-	<!-- EN: Base Tax -->
-  <BuildingFilterBasetax>基础税收</BuildingFilterBasetax>
-	<!-- EN: Workers -->
-  <BuildingFilterWorkers>劳动力</BuildingFilterWorkers>
-	<!-- EN: Military -->
-  <BuildingFilterMilitary>军事能力</BuildingFilterMilitary>
 
 	<!-- Capital Seat -->
 	<!-- EN: Empire capital established at {0}! This location will be used as the center of your empire. -->
@@ -85,15 +42,9 @@
 	<!-- EN: Requires: {0} -->
   <Empire_BuildingWindow_Requires>依赖于：{0}</Empire_BuildingWindow_Requires>
 	<!-- EN: Cannot demolish: required by {0} -->
-  <Empire_BuildingWindow_CannotDemolishRequired>不能拆除：被{0}依赖</Empire_BuildingWindow_CannotDemolishRequired>
+  <Empire_BuildingWindow_CannotDemolishRequired>不能拆除：被“{0}”依赖</Empire_BuildingWindow_CannotDemolishRequired>
 	<!-- EN: Upgrades -->
   <Empire_BuildingWindow_SlotUpgrades>升级</Empire_BuildingWindow_SlotUpgrades>
-	<!-- EN: Building Upgrades -->
-  <BuildingUpgrades>建筑升级</BuildingUpgrades>
-	<!-- EN: Buildings -->
-  <Buildings>建筑设备</Buildings>
-	<!-- EN: Facilities -->
-  <Facilities>设施</Facilities>
 	<!-- EN: Search buildings... -->
   <FCSearchBuildings>搜索建筑</FCSearchBuildings>
 
@@ -106,5 +57,27 @@
   <Empire_BuildingWindow_LockedButton>不可用</Empire_BuildingWindow_LockedButton>
 	<!-- EN: This building requires researching {0} to unlock. -->
   <Empire_BuildingWindow_TechLockedTooltip>此建筑需要你完成研究项目{0}来解锁。</Empire_BuildingWindow_TechLockedTooltip>
+
+  <FCConstructBuilding>建造建筑</FCConstructBuilding>
+  <FCConstruct>建造</FCConstruct>
+  <FCBuild>建造</FCBuild>
+  <FCBuilt>已建成</FCBuilt>
+  <FCWillBeConstructedIn>将建造于</FCWillBeConstructedIn>
+  <FCHasBeenConstructedAt>建造于</FCHasBeenConstructedAt>
+  <FCBuildTime>建筑用时：{0}</FCBuildTime>
+  <FCBuildingSurfaceOnly>此建筑只能在地表建造</FCBuildingSurfaceOnly>
+  <FCBuildingOrbitalOnly>此建筑只能在轨道上建造</FCBuildingOrbitalOnly>
+  <FCBuildingInvalidSettlement>{0}不能在{1}建造</FCBuildingInvalidSettlement>
+  <FCBuildingAlreadyType>已经有这样的建筑了</FCBuildingAlreadyType>
+  <FCBuildingBeingBuiltAlreadyType>已经有一座这种类型的建筑在建了</FCBuildingBeingBuiltAlreadyType>
+  <FCBuildingAlreadyConstructed>那里已经在建一座建筑了</FCBuildingAlreadyConstructed>
+  <FCDestroy>摧毁</FCDestroy>
+  <FCBuildingFilterAll>所有</FCBuildingFilterAll>
+  <FCBuildingFilterHappiness>幸福度</FCBuildingFilterHappiness>
+  <FCBuildingFilterBasetax>基础税收</FCBuildingFilterBasetax>
+  <FCBuildingFilterWorkers>劳动力</FCBuildingFilterWorkers>
+  <FCBuildingFilterMilitary>军事能力</FCBuildingFilterMilitary>
+  <FCBuildingUpgrades>建筑升级</FCBuildingUpgrades>
+  <FCFacilities>设施</FCFacilities>
 
 </LanguageData>

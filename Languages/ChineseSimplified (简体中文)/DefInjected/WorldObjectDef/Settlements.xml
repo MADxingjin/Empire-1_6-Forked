@@ -1,30 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
   
-  <!-- EN: basic orbital colony -->
-  <WorldSettlementDef_Orbital.label>基础在轨
-    
-  </WorldSettlementDef_Orbital.label>
+  <!-- EN: basic orbital station -->
+  <WorldSettlementDef_Orbital.label>基础轨道空间站</WorldSettlementDef_Orbital.label>
   <!-- EN: A general-purpose orbital station. Produces all standard resources plus chemfuel and gravtech. Only raidable by spacer-tech factions. Battles auto-resolve only. -->
   <WorldSettlementDef_Orbital.description>通用规格的太空轨道空间站。处理所有标准资源，并额外处理燃料和逆重科技资源。仅会被科技等级大于等于“太空”的派系攻击。发生在这里的战斗仅支持自动结算。</WorldSettlementDef_Orbital.description>
   
-  <!-- EN: advanced orbital colony -->
-  <WorldSettlementDef_Orbital_Advanced.label>高级在轨殖民地</WorldSettlementDef_Orbital_Advanced.label>
+  <!-- EN: advanced orbital station -->
+  <WorldSettlementDef_Orbital_Advanced.label>进阶轨道空间站</WorldSettlementDef_Orbital_Advanced.label>
   <!-- EN: An industrial orbital station. Unlocks exclusive buildings that reduce construction time and boost animal and mining production. -->
   <WorldSettlementDef_Orbital_Advanced.description>一座侧重于工业的轨道站。提供能降低建筑工程用时和提高动物与矿业产出的特殊建筑。</WorldSettlementDef_Orbital_Advanced.description>
   
-  <!-- EN: glitterworld orbital colony -->
-  <WorldSettlementDef_Orbital_Glitter.label>闪耀世界在轨殖民地</WorldSettlementDef_Orbital_Glitter.label>
+  <!-- EN: glitterworld orbital station -->
+  <WorldSettlementDef_Orbital_Glitter.label>闪耀世界轨道空间站</WorldSettlementDef_Orbital_Glitter.label>
   <!-- EN: A high-tech orbital station. Unlocks exclusive buildings that enhance research output and military effectiveness. -->
   <WorldSettlementDef_Orbital_Glitter.description>一座高科技的轨道站。提供能提高研究产出和军力效能的特殊建筑。</WorldSettlementDef_Orbital_Glitter.description>
   
-  <!-- EN: logistics orbital colony -->
-  <WorldSettlementDef_Orbital_Logistics.label>物流中心在轨殖民地</WorldSettlementDef_Orbital_Logistics.label>
+  <!-- EN: logistics orbital station -->
+  <WorldSettlementDef_Orbital_Logistics.label>物流中心轨道空间站</WorldSettlementDef_Orbital_Logistics.label>
   <!-- EN: A trade-focused orbital station. Unlocks exclusive buildings that increase tax rate and tithe value. -->
   <WorldSettlementDef_Orbital_Logistics.description>专注于贸易的轨道站。提供可提高税基和什一税预算的特殊建筑。</WorldSettlementDef_Orbital_Logistics.description>
   
   <!-- EN: empire settlement -->
-  <WorldSettlementDef_Surface.label>帝国定居点</WorldSettlementDef_Surface.label>
+  <WorldSettlementDef_Surface.label>玩家派系定居点</WorldSettlementDef_Surface.label>
   <!-- EN: A base of the Empire player faction -->
   <WorldSettlementDef_Surface.description>通过Empire模组建立的一个所属于玩家派系的基地</WorldSettlementDef_Surface.description>
   

@@ -39,39 +39,39 @@
 	<!-- EN: Right-click to remove -->
   <fcColorPickerRightClickRemove>右键点击以移除</fcColorPickerRightClickRemove>
 	<!-- EN: Customize Faction -->
-  <CustomizeFaction>自定义派系</CustomizeFaction>
+  <FCCustomizeFaction>TODO</FCCustomizeFaction>
 	<!-- EN: Faction Name -->
-  <FactionName>派系名称</FactionName>
+  <FCFactionName>TODO</FCFactionName>
 	<!-- EN: Faction Title -->
-  <FactionTitle>派系称号</FactionTitle>
+  <FCFactionTitle>TODO</FCFactionTitle>
 	<!-- EN: Faction Icon -->
-  <FactionIcon>派系图标</FactionIcon>
+  <FCFactionIcon>TODO</FCFactionIcon>
 	<!-- EN: That faction can't run an empire on its own! -->
-  <InvalidFaction>目标派系不能独立建立一个帝国！</InvalidFaction>
+  <FCInvalidFaction>TODO</FCInvalidFaction>
 	<!-- EN: Player Faction -->
-  <PlayerFaction>玩家派系</PlayerFaction>
+  <FCPlayerFaction>TODO</FCPlayerFaction>
 	<!-- EN: Bastion -->
-  <Bastion>城堡</Bastion>
+  <FCBastion>TODO</FCBastion>
 	<!-- EN: Founded on {0} -->
   <FCFoundedOn>在{0}建立</FCFoundedOn>
 
 	<!-- Faction Stats -->
 	<!-- EN: Faction Happiness -->
-  <FactionHappiness>派系幸福度</FactionHappiness>
+  <FCFactionHappiness>TODO</FCFactionHappiness>
 	<!-- EN: Faction Loyalty -->
-  <FactionLoyalty>派系忠诚度</FactionLoyalty>
+  <FCFactionLoyalty>TODO</FCFactionLoyalty>
 	<!-- EN: Faction Unrest -->
-  <FactionUnrest>派系叛乱度</FactionUnrest>
+  <FCFactionUnrest>TODO</FCFactionUnrest>
 	<!-- EN: Faction Prosperity -->
-  <FactionProsperity>派系繁荣度</FactionProsperity>
+  <FCFactionProsperity>TODO</FCFactionProsperity>
 	<!-- EN: The measure of the faction's overall happiness. A high happiness means that any internal conflict within the settlement will lean heavily to your favor. -->
-  <FactionHappinessDesc>衡量派系居民总体幸福感的标准，高幸福度将在领地内部冲突上更倾向于你方获利。</FactionHappinessDesc>
+  <FCFactionHappinessDesc>TODO</FCFactionHappinessDesc>
 	<!-- EN: The measure of the faction's overall loyalty. The loyalty of a settlement determines how willing the settlement is to listen to you. A high loyalty will reduce the chance of defection. -->
-  <FactionLoyaltyDesc>衡量派系居民总体是否忠诚的标准，忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能。</FactionLoyaltyDesc>
+  <FCFactionLoyaltyDesc>TODO</FCFactionLoyaltyDesc>
 	<!-- EN: The measure of the faction's overall unrest. The higher unrest grows, the more likely dangerous events internal in your faction will spark. Let it grow too high, and a faction-wide revolt may grow. -->
-  <FactionUnrestDesc>衡量派系总体动荡程度的标准，动乱值越高，你的派系内部就越有可能发生危险事件，且增加派系叛乱的几率。</FactionUnrestDesc>
+  <FCFactionUnrestDesc>TODO</FCFactionUnrestDesc>
 	<!-- EN: The measure of the faction's overall prosperity. The prosperity of a town directly correlates with the production of resources. 50% prosperity = 50% production. If prosperity is damaged, it will slowly accumulate over time. -->
-  <FactionProsperityDesc>衡量派系总体运行状况的标准，一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度受损,它将随着时间慢慢回复。</FactionProsperityDesc>
+  <FCFactionProsperityDesc>TODO</FCFactionProsperityDesc>
 
 	<!-- Faction Levels -->
 	<!-- EN: Faction Level: {0} -->
@@ -81,49 +81,49 @@
 	<!-- EN: Your faction {0} has leveled up to {1}! -->
   <FCFactionLevelUpDesc>你的派系“{0}”已升级到{1}级！</FCFactionLevelUpDesc>
 	<!-- EN: reached max level -->
-  <ReachedMaxLevel>已到达最大派系等级</ReachedMaxLevel>
+  <FCReachedMaxLevel>TODO</FCReachedMaxLevel>
 
 	<!-- Policies -->
 	<!-- EN: Policies/Traits -->
-  <Policies-Traits>政策/特性</Policies-Traits>
+  <FCPolicies-Traits>TODO</FCPolicies-Traits>
 	<!-- EN: Faction Policies and Traits -->
-  <FactionPoliciesAndTraits>派系的政策/特性</FactionPoliciesAndTraits>
+  <FCFactionPoliciesAndTraits>TODO</FCFactionPoliciesAndTraits>
 	<!-- EN: Tax Law -->
-  <TaxLaw>税法</TaxLaw>
+  <FCTaxLaw>TODO</FCTaxLaw>
 	<!-- EN: Social Policy -->
-  <SocialPolicy>社会政策</SocialPolicy>
+  <FCSocialPolicy>TODO</FCSocialPolicy>
 	<!-- EN: Military Policy -->
-  <MilitaryPolicy>军事政策</MilitaryPolicy>
+  <FCMilitaryPolicy>TODO</FCMilitaryPolicy>
 	<!-- EN: Policy Selection -->
   <FCPolicySelection>政策选择页</FCPolicySelection>
 	<!-- EN: Select Policies -->
   <FCSelectPolicies>选择政策</FCSelectPolicies>
 	<!-- EN: That policy has already been enacted -->
-  <PolicyAlreadyEnacted>政策已颁布</PolicyAlreadyEnacted>
+  <FCPolicyAlreadyEnacted>TODO</FCPolicyAlreadyEnacted>
 	<!-- EN: There is already a policy of that type being enacted -->
-  <AlreadyPolicyTypeBeingEnacted>已经有一种此类型的政策正在实施</AlreadyPolicyTypeBeingEnacted>
+  <FCAlreadyPolicyTypeBeingEnacted>TODO</FCAlreadyPolicyTypeBeingEnacted>
 	<!-- EN: There is already a policy being enacted in that slot -->
-  <AlreadyPolicyInSlot>已经有一项政策在那个槽位颁布了</AlreadyPolicyInSlot>
+  <FCAlreadyPolicyInSlot>TODO</FCAlreadyPolicyInSlot>
 	<!-- EN: Enact -->
-  <Enact>制定</Enact>
+  <FCEnact>TODO</FCEnact>
 	<!-- EN: Enacted -->
-  <Enacted>颁布</Enacted>
+  <FCEnacted>TODO</FCEnacted>
 	<!-- EN: Repeal -->
-  <Repeal>废除</Repeal>
+  <FCRepeal>TODO</FCRepeal>
 	<!-- EN: will be enacted in -->
-  <WillBeEnactedIn>将颁布于</WillBeEnactedIn>
+  <FCWillBeEnactedIn>TODO</FCWillBeEnactedIn>
 	<!-- EN: Enact Policy -->
-  <EnactPolicy>制定政策</EnactPolicy>
+  <FCEnactPolicy>TODO</FCEnactPolicy>
 	<!-- EN: has been enacted at -->
-  <HasBeenEnactedAt>颁布于</HasBeenEnactedAt>
+  <FCHasBeenEnactedAt>TODO</FCHasBeenEnactedAt>
 	<!-- EN: has been enacted in your faction -->
-  <EnactedInYourFaction>已经在你的派系里颁布了</EnactedInYourFaction>
+  <FCEnactedInYourFaction>TODO</FCEnactedInYourFaction>
 
 	<!-- Traits -->
 	<!-- EN: Faction Traits -->
-  <FactionTraits>派系特性</FactionTraits>
+  <FCFactionTraits>TODO</FCFactionTraits>
 	<!-- EN: Add Trait -->
-  <AddTrait>添加特性</AddTrait>
+  <FCAddTrait>TODO</FCAddTrait>
 	<!-- EN: Trait Selection -->
   <FCTraitSelection>特性选择页</FCTraitSelection>
 	<!-- EN: Select Traits -->
@@ -227,28 +227,28 @@
 
 	<!-- Research -->
 	<!-- EN: Researching -->
-  <Researching>研究</Researching>
+  <FCResearching>TODO</FCResearching>
 	<!-- EN: {0} points of research have been used to research {1}. You have {2} points remaining. -->
-  <ResearchExpended>已将{0}点研究点投入到项目{1}上。你还有{2}点研究点未使用。</ResearchExpended>
+  <FCResearchExpended>TODO</FCResearchExpended>
 	<!-- EN: Research Expended -->
-  <ResearchPointsExpended>研究拓展</ResearchPointsExpended>
+  <FCResearchPointsExpended>TODO</FCResearchPointsExpended>
 	<!-- EN: No research has been used today. You have {0} points remaining. -->
-  <NoResearchExpended>今日未使用研究点。你还有{0}点研究点未使用。</NoResearchExpended>
+  <FCNoResearchExpended>TODO</FCNoResearchExpended>
 	<!-- EN: {0} points have been added to the research pool! -->
-  <PointsAddedToResearchPool>已向研究池内添加了{0}点！</PointsAddedToResearchPool>
+  <FCPointsAddedToResearchPool>TODO</FCPointsAddedToResearchPool>
 	<!-- EN: Research points generated by your faction has been wasted as you have no research selected
 	 -->
-  <ResearchGeneratedWaste>你没有活跃的研究项目，派系产生的科研点数被浪费了。</ResearchGeneratedWaste>
+  <FCResearchGeneratedWaste>TODO</FCResearchGeneratedWaste>
 	<!-- EN: Activate Research -->
-  <ActivateResearch>激活研究</ActivateResearch>
+  <FCActivateResearch>TODO</FCActivateResearch>
 	<!-- EN: Send Research Items -->
   <FCSendResearchItems>送出研究物品</FCSendResearchItems>
 	<!-- EN: Faction Research -->
   <FCFactionResearch>派系研究</FCFactionResearch>
 	<!-- EN: Check Tech Level -->
-  <ResearchLevel>检查科技等级</ResearchLevel>
+  <FCResearchLevel>TODO</FCResearchLevel>
 	<!-- EN: Your current tech level is {0}. To reach the next tech level you must research {1} -->
-  <CurrentResearchLevel>你派系当前的技术等级是{0}。达到下一个技术等级需要你完成研究项目：{1}</CurrentResearchLevel>
+  <FCCurrentResearchLevel>TODO</FCCurrentResearchLevel>
 	<!-- EN: Ship Basics -->
   <FCShipBasics>星际航行基础</FCShipBasics>
 	<!-- EN: Fabrication -->
@@ -268,7 +268,7 @@
 	<!-- EN: Your communications with {0} have failed to improve relations. -->
   <FCFailedToImproveRelationship>你送往{0}的外交团未能提升好感。</FCFailedToImproveRelationship>
 	<!-- EN: {0} days are left until the ability to improve relations is refreshed -->
-  <XDaysToSendDiplomat>还有{0}天才能送出下一支外交团来提升好感。</XDaysToSendDiplomat>
+  <FCXDaysToSendDiplomat>TODO</FCXDaysToSendDiplomat>
 	<!-- EN: Attempt to Increase Relations -->
   <FCIncreaseRelations>尝试提升好感</FCIncreaseRelations>
 	<!-- EN: You cannot improve relations with factions of that type -->
@@ -276,7 +276,7 @@
 
 	<!-- Capital -->
 	<!-- EN: Could not find map of capital -->
-  <CouldNotFindMapOfCapital>地图上找不到首都</CouldNotFindMapOfCapital>
+  <FCCouldNotFindMapOfCapital>TODO</FCCouldNotFindMapOfCapital>
 	<!-- EN: Empire capital is already established at {0}. Disable the capital seat there first if you want to move it. -->
   <FCCapitalAlreadyEstablished>你已设置{0}为首都。迁都需要首先将首都符号关闭。</FCCapitalAlreadyEstablished>
 	<!-- EN: Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat. -->
@@ -304,5 +304,51 @@
   <FCCaravanSlaverTooltip>交易奴隶和其他来路不正的商品。</FCCaravanSlaverTooltip>
 	<!-- EN: Blocked by Pacifist or Egalitarian policy. -->
   <FCCaravanSlaverBlocked>因选择了“和平”或“平等”特性而被禁用。</FCCaravanSlaverBlocked>
+
+  
+  <CustomizeFaction>自定义派系</CustomizeFaction>
+  <FactionName>派系名称</FactionName>
+  <FactionTitle>派系称号</FactionTitle>
+  <FactionIcon>派系图标</FactionIcon>
+  <InvalidFaction>目标派系不能独立建立一个帝国！</InvalidFaction>
+  <PlayerFaction>玩家派系</PlayerFaction>
+  <Bastion>城堡</Bastion>
+  <FactionHappiness>派系幸福度</FactionHappiness>
+  <FactionLoyalty>派系忠诚度</FactionLoyalty>
+  <FactionUnrest>派系叛乱度</FactionUnrest>
+  <FactionProsperity>派系繁荣度</FactionProsperity>
+  <FactionHappinessDesc>衡量派系居民总体幸福感的标准，高幸福度将在领地内部冲突上更倾向于你方获利。</FactionHappinessDesc>
+  <FactionLoyaltyDesc>衡量派系居民总体是否忠诚的标准，忠诚度决定了内部冲突和解的意愿.高忠诚度可以减少叛逃的可能。</FactionLoyaltyDesc>
+  <FactionUnrestDesc>衡量派系总体动荡程度的标准，动乱值越高，你的派系内部就越有可能发生危险事件，且增加派系叛乱的几率。</FactionUnrestDesc>
+  <FactionProsperityDesc>衡量派系总体运行状况的标准，一个城镇的繁荣度与产量直接相关.50%繁荣度=50%产量.如果繁荣度受损,它将随着时间慢慢回复。</FactionProsperityDesc>
+  <ReachedMaxLevel>已到达最大派系等级</ReachedMaxLevel>
+  <Policies-Traits>政策/特性</Policies-Traits>
+  <FactionPoliciesAndTraits>派系的政策/特性</FactionPoliciesAndTraits>
+  <TaxLaw>税法</TaxLaw>
+  <SocialPolicy>社会政策</SocialPolicy>
+  <MilitaryPolicy>军事政策</MilitaryPolicy>
+  <PolicyAlreadyEnacted>政策已颁布</PolicyAlreadyEnacted>
+  <AlreadyPolicyTypeBeingEnacted>已经有一种此类型的政策正在实施</AlreadyPolicyTypeBeingEnacted>
+  <AlreadyPolicyInSlot>已经有一项政策在那个槽位颁布了</AlreadyPolicyInSlot>
+  <Enact>制定</Enact>
+  <Enacted>颁布</Enacted>
+  <Repeal>废除</Repeal>
+  <WillBeEnactedIn>将颁布于</WillBeEnactedIn>
+  <EnactPolicy>制定政策</EnactPolicy>
+  <HasBeenEnactedAt>颁布于</HasBeenEnactedAt>
+  <EnactedInYourFaction>已经在你的派系里颁布了</EnactedInYourFaction>
+  <FactionTraits>派系特性</FactionTraits>
+  <AddTrait>添加特性</AddTrait>
+  <Researching>研究</Researching>
+  <ResearchExpended>已将{0}点研究点投入到项目{1}上。你还有{2}点研究点未使用。</ResearchExpended>
+  <ResearchPointsExpended>研究拓展</ResearchPointsExpended>
+  <NoResearchExpended>今日未使用研究点。你还有{0}点研究点未使用。</NoResearchExpended>
+  <PointsAddedToResearchPool>已向研究池内添加了{0}点！</PointsAddedToResearchPool>
+  <ResearchGeneratedWaste>你没有活跃的研究项目，派系产生的科研点数被浪费了。</ResearchGeneratedWaste>
+  <ActivateResearch>激活研究</ActivateResearch>
+  <ResearchLevel>检查科技等级</ResearchLevel>
+  <CurrentResearchLevel>你派系当前的技术等级是{0}。达到下一个技术等级需要你完成研究项目：{1}</CurrentResearchLevel>
+  <XDaysToSendDiplomat>还有{0}天才能送出下一支外交团来提升好感。</XDaysToSendDiplomat>
+  <CouldNotFindMapOfCapital>地图上找不到首都</CouldNotFindMapOfCapital>
 
 </LanguageData>

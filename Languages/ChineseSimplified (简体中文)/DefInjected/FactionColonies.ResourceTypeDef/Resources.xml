@@ -5,6 +5,8 @@
   <RTD_Animals.label>动物</RTD_Animals.label>
   <!-- EN: A resource category for livestock and animal products. -->
   <RTD_Animals.description>这个资源类别包括动物本身，肉，和其产物。</RTD_Animals.description>
+  <!-- EN: Tile environment -->
+  <RTD_Animals.modExtensions.1.extDesc>地块环境</RTD_Animals.modExtensions.1.extDesc>
   
   <!-- EN: apparel -->
   <RTD_Apparel.label>服装</RTD_Apparel.label>
@@ -22,6 +24,8 @@
   <RTD_Food.description>这个资源类别包括已烹饪的餐食和生的原材料</RTD_Food.description>
   <!-- EN: Tile hilliness -->
   <RTD_Food.modExtensions.0.extDesc>地块地形起伏</RTD_Food.modExtensions.0.extDesc>
+  <!-- EN: Tile environment -->
+  <RTD_Food.modExtensions.1.extDesc>地块环境</RTD_Food.modExtensions.1.extDesc>
   
   <!-- EN: gravtech -->
   <RTD_Gravtech.label>逆重科技</RTD_Gravtech.label>
@@ -32,11 +36,15 @@
   <RTD_Logging.label>木材</RTD_Logging.label>
   <!-- EN: A resource category for logging. -->
   <RTD_Logging.description>这个资源类别包括各种木制品。</RTD_Logging.description>
+  <!-- EN: Tile environment -->
+  <RTD_Logging.modExtensions.0.extDesc>地块环境</RTD_Logging.modExtensions.0.extDesc>
   
   <!-- EN: medicine -->
   <RTD_Medicine.label>医药</RTD_Medicine.label>
   <!-- EN: A resource category for medicine. -->
   <RTD_Medicine.description>这个资源类别包括各种药物。</RTD_Medicine.description>
+  <!-- EN: Tile environment -->
+  <RTD_Medicine.modExtensions.0.extDesc>地块环境</RTD_Medicine.modExtensions.0.extDesc>
   
   <!-- EN: mining -->
   <RTD_Mining.label>矿物</RTD_Mining.label>
@@ -44,6 +52,8 @@
   <RTD_Mining.description>这个资源类别包括各种矿物产出。</RTD_Mining.description>
   <!-- EN: Tile hilliness -->
   <RTD_Mining.modExtensions.0.extDesc>地块地形起伏</RTD_Mining.modExtensions.0.extDesc>
+  <!-- EN: Tile environment -->
+  <RTD_Mining.modExtensions.1.extDesc>地块环境</RTD_Mining.modExtensions.1.extDesc>
   
   <!-- EN: power -->
   <RTD_Power.label>电能</RTD_Power.label>
@@ -58,6 +68,8 @@
   <RTD_Research.description>专属于研究的资源类别。</RTD_Research.description>
   <!-- EN: Tile hilliness -->
   <RTD_Research.modExtensions.1.extDesc>地块地形起伏</RTD_Research.modExtensions.1.extDesc>
+  <!-- EN: Tile environment -->
+  <RTD_Research.modExtensions.2.extDesc>地块环境</RTD_Research.modExtensions.2.extDesc>
   
   <!-- EN: weapons -->
   <RTD_Weapons.label>武器</RTD_Weapons.label>

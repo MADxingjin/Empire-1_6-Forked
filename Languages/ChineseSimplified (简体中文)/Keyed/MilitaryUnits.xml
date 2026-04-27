@@ -25,31 +25,31 @@
 	<!-- EN: There are no pawns to reset. Assign a squad first. -->
   <FCResetSquadRejected>没有需要重置的Pawn，首先指定一个编队。</FCResetSquadRejected>
 	<!-- EN: Select Deployed Squad -->
-  <selectDeployedSquad>选择已部署的编队</selectDeployedSquad>
+  <FCSelectDeployedSquad>TODO</FCSelectDeployedSquad>
 	<!-- EN: {0}'s {1} -->
-  <selectedDeployedSquad>{0}的{1}</selectedDeployedSquad>
+  <FCSelectedDeployedSquad>TODO</FCSelectedDeployedSquad>
 	<!-- EN: No squads available -->
-  <noSquadsAvailable>没有可用编队</noSquadsAvailable>
+  <FCNoSquadsAvailable>TODO</FCNoSquadsAvailable>
 
 	<!-- Unit Customization -->
 	<!-- EN: Exported Unit -->
-  <ExportUnit>已导出单位</ExportUnit>
+  <FCExportUnit>TODO</FCExportUnit>
 	<!-- EN: Exported Squad -->
-  <ExportSquad>已导出编队</ExportSquad>
+  <FCExportSquad>TODO</FCExportSquad>
 	<!-- EN: {0} can't be modified: {1} -->
-  <CantBeModified>不能修改{0}，原因是{1}</CantBeModified>
+  <FCCantBeModified>TODO</FCCantBeModified>
 	<!-- EN: A squad containing it is deployed -->
-  <ReasonDeployed>已部署了一支包含该单位的编队。</ReasonDeployed>
+  <FCReasonDeployed>TODO</FCReasonDeployed>
 	<!-- EN: A squad containing it is defending a settlement -->
-  <ReasonDefending>一支包含该单位的编队正在防卫某个领地。</ReasonDefending>
+  <FCReasonDefending>TODO</FCReasonDefending>
 	<!-- EN: The squad is currently deployed -->
-  <ReasonDeployedSquad>该编队正被部署。</ReasonDeployedSquad>
+  <FCReasonDeployedSquad>TODO</FCReasonDeployedSquad>
 	<!-- EN: The squad is currently defending a settlement -->
-  <ReasonDefendingSquad>该编队正在防卫某个领地。</ReasonDefendingSquad>
+  <FCReasonDefendingSquad>TODO</FCReasonDefendingSquad>
 	<!-- EN: Import Unit -->
-  <importUnit>导入单位</importUnit>
+  <FCImportUnit>TODO</FCImportUnit>
 	<!-- EN: Clear Unit Slot -->
-  <clearUnitSlot>清空单位槽</clearUnitSlot>
+  <FCClearUnitSlot>TODO</FCClearUnitSlot>
 	<!-- EN: Degraded -->
   <FCDegraded>降级</FCDegraded>
 
@@ -81,19 +81,19 @@
 	<!-- EN: Are you sure you want to delete "{0}"? -->
   <FCConfirmDeleteUnit>你确定要删除“{0}”吗？</FCConfirmDeleteUnit>
 	<!-- EN: Reset to default -->
-  <resetUnitToDefaultButton>重设为默认值</resetUnitToDefaultButton>
+  <FCResetUnitToDefaultButton>TODO</FCResetUnitToDefaultButton>
 	<!-- EN: Delete unit -->
-  <deleteUnitButton>删除单位</deleteUnitButton>
+  <FCDeleteUnitButton>TODO</FCDeleteUnitButton>
 	<!-- EN: Select a unit -->
-  <selectAUnitButton>选择一个单位</selectAUnitButton>
+  <FCSelectAUnitButton>TODO</FCSelectAUnitButton>
 	<!-- EN: Roll a new pawn -->
-  <rollANewUnitButton>随机一个新Pawn</rollANewUnitButton>
+  <FCRollANewUnitButton>TODO</FCRollANewUnitButton>
 	<!-- EN: Change Race -->
-  <changeUnitRaceButton>更改（外星人）种族</changeUnitRaceButton>
+  <FCChangeUnitRaceButton>TODO</FCChangeUnitRaceButton>
 	<!-- EN: Change Xenotype -->
-  <changeUnitXenoButton>更改生物科技异种</changeUnitXenoButton>
+  <FCChangeUnitXenoButton>TODO</FCChangeUnitXenoButton>
 	<!-- EN: Export unit -->
-  <exportUnitButton>导出单位</exportUnitButton>
+  <FCExportUnitButton>TODO</FCExportUnitButton>
 
 	<!-- Unit Equipment -->
 	<!-- EN: Choose Apparel Color -->
@@ -109,9 +109,9 @@
 	<!-- EN: Replaces -->
   <fcReplacesApparel>替换</fcReplacesApparel>
 	<!-- EN: Total Equipment Cost:  -->
-  <totalEquipmentCostLabel>装备总成本：</totalEquipmentCostLabel>
+  <FCTotalEquipmentCostLabel>TODO</FCTotalEquipmentCostLabel>
 	<!-- EN: Unequip -->
-  <unitActionUnequipThing>卸除</unitActionUnequipThing>
+  <FCUnitActionUnequipThing>TODO</FCUnitActionUnequipThing>
 	<!-- EN: Select Weapon -->
   <fcPickWeapon>选择武器</fcPickWeapon>
 	<!-- EN: Select Apparel -->
@@ -129,17 +129,17 @@
 
 	<!-- Unit Race/PawnKind Errors -->
 	<!-- EN: No available races -->
-  <changeUnitRaceNoRaces>没有可用种族</changeUnitRaceNoRaces>
+  <FCChangeUnitRaceNoRaces>TODO</FCChangeUnitRaceNoRaces>
 	<!-- EN: No available animals -->
   <fcNoAnimalsAvailable>没有可用动物</fcNoAnimalsAvailable>
 	<!-- EN: No available Xeno -->
-  <changeUnitXenoNoXenos>没有可用生物科技异种</changeUnitXenoNoXenos>
+  <FCChangeUnitXenoNoXenos>TODO</FCChangeUnitXenoNoXenos>
 	<!-- EN: Couldn't find any{0}PawnKindDefs for techlevels: {1} with the {2} race. Empire will generate {2}{3}using the techlevel: {4}. -->
-  <noPawnKindDefOfTypeOfRaceWarning>警告：当前科技等级{1}在种族{2}中没有可用的{0}PawnKindDef。Empire将尝试用科技等级{4}生成{2}{3}。</noPawnKindDefOfTypeOfRaceWarning>
+  <FCNoPawnKindDefOfTypeOfRaceWarning>TODO</FCNoPawnKindDefOfTypeOfRaceWarning>
 	<!-- EN: Couldn't find any{0}PawnKindDefs for any techlevel with the {1} race. They will not be able to be generated! -->
-  <noPawnKindDefOfTypeOfRaceError>警告：任何科技等级在种族{1}中都没有可用的{0}PawnKindDef。Empire无法生成！</noPawnKindDefOfTypeOfRaceError>
+  <FCNoPawnKindDefOfTypeOfRaceError>TODO</FCNoPawnKindDefOfTypeOfRaceError>
 	<!-- EN: The races you selected are missing critical PawnKindDefs! Your faction may generate Humans to fill the gap. -->
-  <missingPawnKindDefsCriticalError>警告：你所选择的种族缺少所需的PawnKindDef。派系可能会回退到原版人类来填充。</missingPawnKindDefsCriticalError>
+  <FCMissingPawnKindDefsCriticalError>TODO</FCMissingPawnKindDefsCriticalError>
 
 	<!-- Squad Design -->
 	<!-- EN: Create New Squad -->
@@ -157,9 +157,9 @@
 	<!-- EN: Units: {0} / 30 -->
   <FCSquadUnitCount>单位：{0}/30</FCSquadUnitCount>
 	<!-- EN: Export squad -->
-  <exportSquadButton>导出编队</exportSquadButton>
+  <FCExportSquadButton>TODO</FCExportSquadButton>
 	<!-- EN: Delete squad -->
-  <DeleteSquadButton>删除编队</DeleteSquadButton>
+  <FCDeleteSquadButton>TODO</FCDeleteSquadButton>
 	<!-- EN: Total Squad Equipment Cost: {0} / {1} (Max Cost) -->
   <FCTotalSquadEquipmentCost>编队装备成本共计：{0}/最大{1}</FCTotalSquadEquipmentCost>
 	<!-- EN: Total Squad Equipment Cost: {0} / No Reference -->
@@ -199,7 +199,7 @@
 	<!-- EN: Are you sure you want to delete "{0}"? -->
   <FCConfirmDeleteFireSupport>你确定要删除“{0}”吗？</FCConfirmDeleteFireSupport>
 	<!-- EN: Delete -->
-  <deleteFireSupportButton>删除</deleteFireSupportButton>
+  <FCDeleteFireSupportButton>TODO</FCDeleteFireSupportButton>
 	<!-- EN: Cost: {0} -->
   <FCFireSupportCostLabel>成本：{0}</FCFireSupportCostLabel>
 	<!-- EN: Cost: {0} / {1} (Max) -->
@@ -213,11 +213,11 @@
 	<!-- EN: Select a fire support -->
   <FCSelectAFireSupport>选择一个方案</FCSelectAFireSupport>
 	<!-- EN: Import -->
-  <importFireSupport>导入</importFireSupport>
+  <FCImportFireSupport>TODO</FCImportFireSupport>
 	<!-- EN: Export -->
-  <exportFireSupportButton>导出</exportFireSupportButton>
+  <FCExportFireSupportButton>TODO</FCExportFireSupportButton>
 	<!-- EN: Exported Fire Support -->
-  <ExportFireSupport>已导出方案</ExportFireSupport>
+  <FCExportFireSupport>TODO</FCExportFireSupport>
 	<!-- EN: No available projectiles found -->
   <FCNoProjectilesFound>没有可用的投射物</FCNoProjectilesFound>
 	<!-- EN: Options -->
@@ -257,7 +257,7 @@
 
 	<!-- Prisoners -->
 	<!-- EN: Prisoners -->
-  <PrisonersMenu>囚犯</PrisonersMenu>
+  <FCPrisonersMenu>TODO</FCPrisonersMenu>
 	<!-- EN: workload -->
   <FCWorkload>工作负但</FCWorkload>
 	<!-- EN: heavy -->
@@ -273,19 +273,19 @@
 	<!-- EN: Adds +1 to worker hard cap (Over-Max Workers). Increases health by 4 -->
   <FCLightExplanation>增加劳动力硬上限1（超限劳动力），每税期增加健康4点</FCLightExplanation>
 	<!-- EN: Sell Pawn -->
-  <SellPawn>卖出此人</SellPawn>
+  <FCSellPawn>TODO</FCSellPawn>
 	<!-- EN: Return To Player -->
-  <ReturnToPlayer>发回给玩家</ReturnToPlayer>
-	<!-- EN: Value will be added to next bill from colony -->
-  <SellPawnInfo>卖出获利将与下次税额一同送到玩家殖民地。</SellPawnInfo>
+  <FCReturnToPlayer>TODO</FCReturnToPlayer>
+	<!-- EN: Value will be added to next bill from the settlement -->
+  <FCSellPawnInfo>TODO</FCSellPawnInfo>
 	<!-- EN: Prisoner: {0} has been enslaved and delivered to {1} -->
-  <PrisonerCaptureInfo>囚犯{0}已被奴役并送往{1}。</PrisonerCaptureInfo>
+  <FCPrisonerCaptureInfo>TODO</FCPrisonerCaptureInfo>
 	<!-- EN: You can't send a prisoner to your settlements when the map has a danger level of {0}! -->
-  <cantSendWithDangerLevel>你不能在当前地图危险等级为{0}时将囚犯送往你的领地！</cantSendWithDangerLevel>
+  <FCCantSendWithDangerLevel>TODO</FCCantSendWithDangerLevel>
 	<!-- EN: {0} - Settlement Level: {1}, Prisoners: {2} -->
-  <floatMenuOptionSendPrisonerToSettlement>{0} ——领地等级：{1}，囚犯们：{2}</floatMenuOptionSendPrisonerToSettlement>
+  <FCFloatMenuOptionSendPrisonerToSettlement>TODO</FCFloatMenuOptionSendPrisonerToSettlement>
 	<!-- EN: A prisoner is being delivered to you -->
-  <aPrisonerIsBeingDeliveredToYou>正将一个囚犯发回给你。</aPrisonerIsBeingDeliveredToYou>
+  <FCAPrisonerIsBeingDeliveredToYou>TODO</FCAPrisonerIsBeingDeliveredToYou>
 	<!-- EN: No prisoners at this settlement. -->
   <FCNoPrisoners>该领地没有囚犯。</FCNoPrisoners>
 	<!-- EN: Prisoners — {0} -->
@@ -298,5 +298,47 @@
   <FCActionMercenaryRefreshed>当前可用。</FCActionMercenaryRefreshed>
 	<!-- EN: You cannot use that action for until another {0} -->
   <FCActionMercenaryOnCooldown>在{0}之前不可用。</FCActionMercenaryOnCooldown>
+
+  
+  <selectDeployedSquad>选择已部署的编队</selectDeployedSquad>
+  <selectedDeployedSquad>{0}的{1}</selectedDeployedSquad>
+  <noSquadsAvailable>没有可用编队</noSquadsAvailable>
+  <ExportUnit>已导出单位</ExportUnit>
+  <ExportSquad>已导出编队</ExportSquad>
+  <CantBeModified>不能修改{0}，原因是{1}</CantBeModified>
+  <ReasonDeployed>已部署了一支包含该单位的编队。</ReasonDeployed>
+  <ReasonDefending>一支包含该单位的编队正在防卫某个领地。</ReasonDefending>
+  <ReasonDeployedSquad>该编队正被部署。</ReasonDeployedSquad>
+  <ReasonDefendingSquad>该编队正在防卫某个领地。</ReasonDefendingSquad>
+  <importUnit>导入单位</importUnit>
+  <clearUnitSlot>清空单位槽</clearUnitSlot>
+  <resetUnitToDefaultButton>重设为默认值</resetUnitToDefaultButton>
+  <deleteUnitButton>删除单位</deleteUnitButton>
+  <selectAUnitButton>选择一个单位</selectAUnitButton>
+  <rollANewUnitButton>随机一个新Pawn</rollANewUnitButton>
+  <changeUnitRaceButton>更改（外星人）种族</changeUnitRaceButton>
+  <changeUnitXenoButton>更改生物科技异种</changeUnitXenoButton>
+  <exportUnitButton>导出单位</exportUnitButton>
+  <totalEquipmentCostLabel>装备总成本：</totalEquipmentCostLabel>
+  <unitActionUnequipThing>卸除</unitActionUnequipThing>
+  <changeUnitRaceNoRaces>没有可用种族</changeUnitRaceNoRaces>
+  <changeUnitXenoNoXenos>没有可用生物科技异种</changeUnitXenoNoXenos>
+  <noPawnKindDefOfTypeOfRaceWarning>警告：当前科技等级{1}在种族{2}中没有可用的{0}PawnKindDef。Empire将尝试用科技等级{4}生成{2}{3}。</noPawnKindDefOfTypeOfRaceWarning>
+  <noPawnKindDefOfTypeOfRaceError>警告：任何科技等级在种族{1}中都没有可用的{0}PawnKindDef。Empire无法生成！</noPawnKindDefOfTypeOfRaceError>
+  <missingPawnKindDefsCriticalError>警告：你所选择的种族缺少所需的PawnKindDef。派系可能会回退到原版人类来填充。</missingPawnKindDefsCriticalError>
+  <exportSquadButton>导出编队</exportSquadButton>
+  <DeleteSquadButton>删除编队</DeleteSquadButton>
+  <deleteFireSupportButton>删除</deleteFireSupportButton>
+  <importFireSupport>导入</importFireSupport>
+  <exportFireSupportButton>导出</exportFireSupportButton>
+  <ExportFireSupport>已导出方案</ExportFireSupport>
+  <PrisonersMenu>囚犯</PrisonersMenu>
+  <SellPawn>卖出此人</SellPawn>
+  <ReturnToPlayer>发回给玩家</ReturnToPlayer>
+  <SellPawnInfo>卖出获利将与下次税额一同送到玩家殖民地。</SellPawnInfo>
+  <PrisonerCaptureInfo>囚犯{0}已被奴役并送往{1}。</PrisonerCaptureInfo>
+  <cantSendWithDangerLevel>你不能在当前地图危险等级为{0}时将囚犯送往你的领地！</cantSendWithDangerLevel>
+  <floatMenuOptionSendPrisonerToSettlement>{0} ——领地等级：{1}，囚犯们：{2}</floatMenuOptionSendPrisonerToSettlement>
+  <aPrisonerIsBeingDeliveredToYou>正将一个囚犯发回给你。</aPrisonerIsBeingDeliveredToYou>
 
 </LanguageData>
