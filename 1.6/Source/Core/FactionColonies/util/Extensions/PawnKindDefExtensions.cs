@@ -9,7 +9,7 @@ namespace FactionColonies
     {
         public static bool IsHumanLikeRace(this PawnKindDef pawnKindDef)
         {
-            return pawnKindDef.race.race?.intelligence == Intelligence.Humanlike && pawnKindDef.race.BaseMarketValue != 0;
+            return pawnKindDef.ValidPawnKindDef() && pawnKindDef.race.race.intelligence == Intelligence.Humanlike && pawnKindDef.race.BaseMarketValue != 0;
         }
 
         public static bool IsHumanlikeWithLabelRace(this PawnKindDef pawnKindDef)
@@ -28,37 +28,50 @@ namespace FactionColonies
 
         private static HashSet<string> _blacklistedDefNamesSet;
         private static HashSet<string> BlacklistedDefNames =>
-            _blacklistedDefNamesSet ?? (_blacklistedDefNamesSet = new HashSet<string>(AnimalFilterConfig.blacklistedDefNames ?? new List<string>()));
+            _blacklistedDefNamesSet ?? (_blacklistedDefNamesSet = new HashSet<string>(AnimalFilterConfig?.blacklistedDefNames ?? new List<string>()));
 
+        public static bool ValidPawnKindDef(this PawnKindDef pawnKindDef)
+        {
+            if (pawnKindDef is null)
+            {
+                LogUtil.Error($"ValidPawnKindDef: found null pawnKindDef. This shouldn't be possible!");
+                return false;
+            }
+            if (pawnKindDef.RaceProps is null)
+            {
+                LogUtil.Warning($"ValidPawnKindDef: found null RaceProps for PawnKindDef {pawnKindDef.label ?? "[null label]"} ({pawnKindDef.defName ?? "null defName??"})");
+                return false;
+            }
+            if (pawnKindDef.race?.race is null)
+            {
+                LogUtil.Warning($"ValidPawnKindDef: detected null race or race.race for pawnKindDef {pawnKindDef.label ?? "[null label]"} ({pawnKindDef.defName ?? "null defName??"})");
+                return false;
+            }
+
+            return true;
+        }
         /// <summary>
         ///		Checks if a given <c>PawnKindDef</c> <paramref name="pawnKindDef"/> is an Animal and if it is not blacklisted.
         ///		Blacklists are configured via XML on <see cref="ResourceFilterExtension_Animals"/> (attached to RTD_Animals).
         /// </summary>
         public static bool IsAnimalAndAllowed(this PawnKindDef pawnKindDef)
         {
-            if (pawnKindDef is null)
-            {
-                LogUtil.Error($"IsAnimalAndAllowed: found null pawnKindDef. This shouldn't be possible!");
+            if (!pawnKindDef.ValidPawnKindDef())
                 return false;
-            }
-            if (pawnKindDef.RaceProps is null)
+            
+            var config = AnimalFilterConfig;
+            if (config is null)
             {
-                LogUtil.Warning($"IsAnimalAndAllowed: found null RaceProps for PawnKindDef {pawnKindDef.LabelCap} ({pawnKindDef.defName})");
-                return false;
-            }
-            if (pawnKindDef.race?.race is null)
-            {
-                LogUtil.Warning($"IsAnimalAndAllowed: detected null race or race.race for pawnKindDef {pawnKindDef.LabelCap} ({pawnKindDef.defName})");
+                LogUtil.ErrorOnce($"IsAnimalAndAllowed: found null AnimalFilterConfig", 12532580);
                 return false;
             }
             
-            var config = AnimalFilterConfig;
             return pawnKindDef.race.race.Animal
                 && pawnKindDef.RaceProps.IsFlesh
                 && pawnKindDef.race.race.animalType != AnimalType.Dryad
                 && (!config.requireTradeTags || pawnKindDef.race.tradeTags != null)
                 && !BlacklistedDefNames.Contains(pawnKindDef.race.defName)
-                && (pawnKindDef.race.tradeTags is null
+                && (pawnKindDef.race.tradeTags.NullOrEmpty() || config.blacklistedTradeTags.NullOrEmpty()
                     || !pawnKindDef.race.tradeTags.Any(tag => config.blacklistedTradeTags.Contains(tag)));
         }
         /// <summary>
