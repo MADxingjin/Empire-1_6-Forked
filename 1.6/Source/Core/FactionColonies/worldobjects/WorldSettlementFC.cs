@@ -154,6 +154,13 @@ namespace FactionColonies
         // A private state variable
         private bool calculatingTax = false;
         public bool IsCalculatingTax => calculatingTax;
+
+        /* Sampled in lockstep with per-resource production accumulation. Used at tax time so
+         * the player can't flip fast-flippable upkeep state (e.g. unassign all workers) right
+         * before the deadline to dodge the cycle's running cost while still collecting the
+         * cycle's averaged production. */
+        private double accumulatedTotalUpkeep = 0;
+        private int upkeepAccumulationDays = 0;
         public WorldObjectComp_SettlementMilitary MilitaryComp
         {
             get
@@ -479,6 +486,8 @@ namespace FactionColonies
             Scribe_Values.Look(ref _prosperity, "prosperity");
             Scribe_Values.Look(ref _workerCost, "workerCost");
             Scribe_Values.Look(ref _workerTotalUpkeep, "workerTotalUpkeep");
+            Scribe_Values.Look(ref accumulatedTotalUpkeep, "accumulatedTotalUpkeep", 0);
+            Scribe_Values.Look(ref upkeepAccumulationDays, "upkeepAccumulationDays", 0);
 
             Scribe_Collections.Look(ref resources, "resources", LookMode.Deep);
 
@@ -990,7 +999,9 @@ namespace FactionColonies
             _upkeepExp = _upkeepExp.Trim();
             _incomeExp = _incomeExp.Trim();
 
-            _totalUpkeep = upkeep;
+            _totalUpkeep = (calculatingTax && upkeepAccumulationDays > 0)
+                ? accumulatedTotalUpkeep / upkeepAccumulationDays
+                : upkeep;
             _totalIncome = income;
             _workerCost = _workers == 0 ? GetBaseWorkerCost() : (_workerTotalUpkeep / _workers);
             _totalProfit = _totalIncome - _totalUpkeep;
@@ -1839,6 +1850,13 @@ namespace FactionColonies
             {
                 res.AccumulateDailyProduction();
             }
+
+            /* Snapshot total upkeep at the same instant production is sampled. calculatingTax is
+             * false here, so RecomputeProfit uses each resource's instantaneous actualIncome for
+             * the day rather than the (still-accumulating) average. */
+            DirtyProfitCache();
+            accumulatedTotalUpkeep += totalUpkeep;
+            upkeepAccumulationDays++;
         }
         private void PostTaxPrep()
         {
@@ -1847,6 +1865,8 @@ namespace FactionColonies
             {
                 res.ResetAccumulator();
             }
+            accumulatedTotalUpkeep = 0;
+            upkeepAccumulationDays = 0;
         }
         /// <summary>
         /// This function handles the calculations for determining this settlement's taxes at tax time. It handles both tithes and silver taxes.

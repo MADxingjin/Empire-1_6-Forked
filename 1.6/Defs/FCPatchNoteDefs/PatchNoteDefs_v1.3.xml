@@ -610,4 +610,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_43</defName>
+		<label>Tax Evasion Update</label>
+		<description>Patches an exploit where workers could be all unassigned right before tax is due to minimize the upkeep paid, while coasting by on income being calculated by the period average.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Settlements now track a periodic average of their upkeep.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
