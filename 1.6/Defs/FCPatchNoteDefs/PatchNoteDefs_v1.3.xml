@@ -624,4 +624,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_44</defName>
+		<label>Missing translation key</label>
+		<description>Add missing translation key for the prosperity lost base stat.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add FCTraitDesc_prosperityLostBase translation key</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

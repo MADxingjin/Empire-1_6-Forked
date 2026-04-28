@@ -11,6 +11,7 @@
 	<FCTraitDesc_taxBasePercentage>{0} Base Tax Percentage</FCTraitDesc_taxBasePercentage>
 	<FCTraitDesc_taxBaseRandomModifier>{0} Tithe Modifier</FCTraitDesc_taxBaseRandomModifier>
 	<FCTraitDesc_prosperityGainedBase>{0} Base Prosperity Gained</FCTraitDesc_prosperityGainedBase>
+	<FCTraitDesc_prosperityLostBase>{0} Base Prosperity Lost</FCTraitDesc_prosperityLostBase>
 	<FCTraitDesc_workerProductionBase>{0} Base Worker Production</FCTraitDesc_workerProductionBase>
 	<FCTraitDesc_workerProductionMultiplier>{0} Worker Production</FCTraitDesc_workerProductionMultiplier>
 	<FCTraitDesc_workerBaseCost>{0} Worker Cost</FCTraitDesc_workerBaseCost>
