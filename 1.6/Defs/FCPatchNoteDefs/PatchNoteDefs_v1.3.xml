@@ -638,4 +638,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_45</defName>
+		<label>UI Update for Estimated Income</label>
+		<description>Updates UI displays for estimated income to show the period average, which is what the player will actually receive.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates UI displays for estimated income to show the period average, which is what the player will actually receive</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

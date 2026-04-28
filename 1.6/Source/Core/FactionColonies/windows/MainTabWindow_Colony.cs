@@ -495,19 +495,47 @@ namespace FactionColonies
             float y = panel.y;
             float width = panel.width;
 
-            Rect profitBox = new Rect(x, y, width, 28f);
-            Rect profitLabel = new Rect(profitBox.x, profitBox.y, (width - margin) / 2f, profitBox.height);
-            Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, profitLabel.width, profitLabel.height);
-
             // --- Economic Stats ---
-            Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
+            // Headline = period-averaged faction profit (what the player will actually receive
+            // at the next tax tick). Subtitle below shows the live "Daily Rate" — the current
+            // moment's net flow, useful when the player has just made a change.
+            bool factionHasAvg = faction.HasTaxAverageData;
+            double factionAvgProfit = faction.averageProfit;
+            double factionLiveProfit = faction.profit;
+            double factionDisplay = factionHasAvg ? factionAvgProfit : factionLiveProfit;
+
+            float profitBoxHeight = factionHasAvg ? 44f : 28f;
+            Rect profitBox = new Rect(x, y, width, profitBoxHeight);
             Widgets.DrawHighlight(profitBox);
+
+            float headlineH = factionHasAvg ? 28f : profitBoxHeight;
+            Rect profitLabel = new Rect(profitBox.x, profitBox.y, (width - margin) / 2f, headlineH);
+            Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, profitLabel.width, headlineH);
+
+            Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "FCEstimatedProfit".Translate() + ": ");
             Text.Anchor = TextAnchor.MiddleLeft;
-            Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
-            Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
+            Color profitColor = factionDisplay >= 0 ? AccentUtil.Income : AccentUtil.Expense;
+            Widgets.Label(profitNum, new GUIContent(Math.Round(factionDisplay).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
+
+            if (factionHasAvg)
+            {
+                Rect subtitleRect = new Rect(profitBox.x, profitLabel.yMax, profitBox.width, profitBoxHeight - headlineH);
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Color origSubColor = GUI.color;
+                GUI.color = new Color(0.7f, 0.7f, 0.7f);
+                Widgets.Label(subtitleRect, "FCDailyRate".Translate() + ": " + Math.Round(factionLiveProfit));
+                GUI.color = origSubColor;
+            }
+
+            int settlementsWithSamples = faction.settlements.Count(st => st.HasTaxAverageData);
+            TooltipHandler.TipRegion(profitBox, TextUtil.BuildPeriodAverageFactionTooltip(
+                factionAvgProfit, factionLiveProfit, factionHasAvg, settlementsWithSamples, faction.settlements.Count));
+
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
@@ -808,19 +836,28 @@ namespace FactionColonies
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
 
-                // Top-right: Profit value (colored green/red)
-                int profit = (int)s.GetTotalProfit();
-                string profitStr = "$" + (profit >= 0 ? "+" : "") + profit;
+                // Top-right: Profit value. Headline = period-averaged silver (what the player
+                // will actually be paid at the next tax tick). Tooltip exposes the live "Daily
+                // Rate" plus the explanation of how the average is computed.
+                double avgProfit = s.averageTotalProfit;
+                double liveProfit = s.totalProfit;
+                bool hasAvg = s.HasTaxAverageData;
+                int displayProfit = (int)(hasAvg ? avgProfit : liveProfit);
+                string profitStr = "$" + (displayProfit >= 0 ? "+" : "") + displayProfit;
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
-                GUI.color = profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
-                Widgets.Label(new Rect(contentX + contentW - profitDisplayW, topY, profitDisplayW, lineH), profitStr);
+                GUI.color = displayProfit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
+                Rect profitRect = new Rect(contentX + contentW - profitDisplayW, topY, profitDisplayW, lineH);
+                Widgets.Label(profitRect, profitStr);
                 GUI.color = origColor;
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
+                int totalPeriodDays = FCSettings.timeBetweenTaxes / GenDate.TicksPerDay;
+                TooltipHandler.TipRegion(profitRect, TextUtil.BuildPeriodAverageTooltip(
+                    avgProfit, liveProfit, hasAvg, s.TaxAccumulationDays, totalPeriodDays));
 
                 // Bottom-left: Town title + free workers
                 string townTitle = TextUtil.GetTownTitle(s);
@@ -894,7 +931,7 @@ namespace FactionColonies
                 string tooltip = s.Name + "\n\n"
                     + "FCSettlementTableLevel".Translate() + ": " + s.settlementLevel + "\n"
                     + "FCSettlementTableMilLevel".Translate() + ": " + s.settlementMilitaryLevel + "\n"
-                    + "FCSettlementTableProfit".Translate() + ": " + profit + "\n"
+                    + "FCSettlementTableProfit".Translate() + ": " + displayProfit + "\n"
                     + "FCSettlementTableWorkers".Translate() + ": " + freeWorkers + "/" + (int)s.workersUltraMax + "\n"
                     + "FCSettlementTableHappiness".Translate() + ": " + (int)s.Happiness + "\n"
                     + "FCSettlementTableLoyalty".Translate() + ": " + (int)s.Loyalty + "\n"

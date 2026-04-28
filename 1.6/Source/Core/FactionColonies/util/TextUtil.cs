@@ -128,6 +128,31 @@ namespace FactionColonies
             return cat is QualityCategory cat2 ? cat2.GetLabel().CapitalizeFirst() : $"({"FCSelect".Translate()})";
         }
 
+        /* Period-average tooltip builders. These explain what the headline value really represents
+         * (the cycle-averaged silver paid at tax tick) and how it relates to the "Daily Rate"
+         * subtitle (the live, current rate). The "None" variant fires when no samples have been
+         * taken yet — fresh settlements or just after a tax cycle reset — so the headline is
+         * showing the live value as a fallback. */
+        public static string BuildPeriodAverageTooltip(double averaged, double live, bool hasAverage, int daysSampled, int totalDaysInPeriod)
+        {
+            if (!hasAverage) return "FCPeriodAverageTooltipNone".Translate();
+            return "FCPeriodAverageTooltipHas".Translate(
+                Math.Round(averaged),
+                daysSampled,
+                totalDaysInPeriod,
+                Math.Round(live));
+        }
+
+        public static string BuildPeriodAverageFactionTooltip(double averaged, double live, bool hasAverage, int settlementsWithSamples, int totalSettlements)
+        {
+            if (!hasAverage) return "FCPeriodAverageTooltipNone".Translate();
+            return "FCPeriodAverageTooltipFaction".Translate(
+                Math.Round(averaged),
+                settlementsWithSamples,
+                totalSettlements,
+                Math.Round(live));
+        }
+
         /// <summary>
         /// Converts the given string <paramref name="name"/> into a shorter version. The resulting string contains the first word and every uppercase char of the following words
         /// </summary>
