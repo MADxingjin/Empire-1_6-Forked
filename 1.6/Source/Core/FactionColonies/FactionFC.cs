@@ -2206,7 +2206,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    // Resource-based: RTD_Food -> Caravan_Empire_Food
+                    // Resource-based: RTD_Food -> FC_Caravan_Empire_Food
                     ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.GetNamedSilentFail(typeId);
                     if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
                         continue;
@@ -2216,7 +2216,7 @@ namespace FactionColonies
                         continue;
 
                     string suffix = rtd.defName.Replace("RTD_", "");
-                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("FC_Caravan_Empire_" + suffix);
                 }
 
                 if (resolved is object)

@@ -4,7 +4,7 @@
 <Defs>
 
   <TraderKindDef>
-    <defName>Base_Empire_Standard</defName>
+    <defName>FC_Base_Empire_Standard</defName>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
     <stockGenerators>

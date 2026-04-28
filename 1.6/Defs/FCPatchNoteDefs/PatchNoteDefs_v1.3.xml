@@ -652,4 +652,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_46</defName>
+		<label>Shattered Empire trader fix</label>
+		<description>The defName for Empire Refactor&apos;s settlement traderkind collided with the base game&apos;s traderkind for the Shattered Empire, causing the actual Empire to generate stock oddly, or not at all. ...Really ought to&apos;ve changed the mod name when I had the chance. Oh well.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: Base_Empire_Standard traderKindDef collides with the traderKindDef used for the base game&apos;s Shattered Empire faction</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
