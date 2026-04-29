@@ -128,29 +128,18 @@ namespace FactionColonies
             return cat is QualityCategory cat2 ? cat2.GetLabel().CapitalizeFirst() : $"({"FCSelect".Translate()})";
         }
 
-        /* Period-average tooltip builders. These explain what the headline value really represents
-         * (the cycle-averaged silver paid at tax tick) and how it relates to the "Daily Rate"
-         * subtitle (the live, current rate). The "None" variant fires when no samples have been
-         * taken yet — fresh settlements or just after a tax cycle reset — so the headline is
-         * showing the live value as a fallback. */
-        public static string BuildPeriodAverageTooltip(double averaged, double live, bool hasAverage, int daysSampled, int totalDaysInPeriod)
+        /* Period-average tooltip builders. The tooltip is purely an explanation of how the
+         * averaged headline relates to the in-UI "Current Rate" subtitle — the values themselves
+         * are visible on the UI, no point repeating them here. The "None" variant fires when no
+         * samples have been taken yet (fresh settlement / just-reset post-tax). */
+        public static string BuildPeriodAverageTooltip(bool hasAverage)
         {
-            if (!hasAverage) return "FCPeriodAverageTooltipNone".Translate();
-            return "FCPeriodAverageTooltipHas".Translate(
-                Math.Round(averaged),
-                daysSampled,
-                totalDaysInPeriod,
-                Math.Round(live));
+            return hasAverage ? "FCPeriodAverageTooltipHas".Translate() : "FCPeriodAverageTooltipNone".Translate();
         }
 
-        public static string BuildPeriodAverageFactionTooltip(double averaged, double live, bool hasAverage, int settlementsWithSamples, int totalSettlements)
+        public static string BuildPeriodAverageFactionTooltip(bool hasAverage)
         {
-            if (!hasAverage) return "FCPeriodAverageTooltipNone".Translate();
-            return "FCPeriodAverageTooltipFaction".Translate(
-                Math.Round(averaged),
-                settlementsWithSamples,
-                totalSettlements,
-                Math.Round(live));
+            return hasAverage ? "FCPeriodAverageTooltipFaction".Translate() : "FCPeriodAverageTooltipNone".Translate();
         }
 
         /// <summary>

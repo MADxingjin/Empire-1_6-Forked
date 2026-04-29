@@ -1047,6 +1047,23 @@ namespace FactionColonies
             FactionCache.FactionComp.taxTimeDue = Find.TickManager.TicksGame + 1;
         }
 
+        [DebugAction("Empire", "Snapshot Tax Production Now", allowedGameStates = AllowedGameStates.Playing)]
+        private static void SnapshotTaxProductionNow()
+        {
+            LogUtil.MessageForce("Debug - Snapshot Tax Production (1 day)");
+            foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
+                s.AccumulateDailyProduction();
+        }
+
+        [DebugAction("Empire", "Snapshot Tax Production x10", allowedGameStates = AllowedGameStates.Playing)]
+        private static void SnapshotTaxProductionTenTimes()
+        {
+            LogUtil.MessageForce("Debug - Snapshot Tax Production (10 days)");
+            foreach (WorldSettlementFC s in FactionCache.FactionComp.settlements)
+                for (int i = 0; i < 10; i++)
+                    s.AccumulateDailyProduction();
+        }
+
         [DebugAction("Empire", "Log Resource Production", allowedGameStates = AllowedGameStates.Playing)]
         private static void LogResourceProduction()
         {

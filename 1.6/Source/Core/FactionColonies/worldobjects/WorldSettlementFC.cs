@@ -144,7 +144,6 @@ namespace FactionColonies
          * tax time; UI surfaces should headline these and treat the live values above
          * as a "current daily rate" subtitle. */
         public bool HasTaxAverageData => taxAccumulationDays > 0;
-        public int TaxAccumulationDays => taxAccumulationDays;
         public double averageTotalIncome => HasTaxAverageData ? accumulatedTotalIncome / taxAccumulationDays : totalIncome;
         public double averageTotalUpkeep => HasTaxAverageData ? accumulatedTotalUpkeep / taxAccumulationDays : totalUpkeep;
         public double averageTotalProfit => averageTotalIncome - averageTotalUpkeep;

@@ -1434,11 +1434,11 @@ namespace FactionColonies
         public void DrawProduction(Rect boundingBox)
         {
             Rect header = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, 30f);
-            // Costs block holds the Total Profit headline plus the Income / Upkeep / Tax Base
-            // cards. Height covers headline (28) + daily-rate subtitle (16) + card row
-            // (rowHeight*2 + subtitle ~16) plus margins. Always reserved (no resize for the
-            // no-samples case) so the surrounding layout stays stable.
-            Rect costs = new Rect(boundingBox.x, header.yMax, boundingBox.width, 103f);
+            // Costs block: Total Profit headline + Income / Upkeep / Tax Base cards. Per-row
+            // subtitle slots are reserved only when the relevant rounded values diverge — see
+            // ComputeCostBreakdownLayout.
+            float costsH = ComputeCostBreakdownLayout().costsH;
+            Rect costs = new Rect(boundingBox.x, header.yMax, boundingBox.width, costsH);
             Rect workers = new Rect(boundingBox.x, costs.yMax + margin, boundingBox.width, 69f);
 
             DrawProductionHeader(header);
@@ -1447,6 +1447,24 @@ namespace FactionColonies
 
             Rect prodOverview = new Rect(boundingBox.x, workers.yMax + margin, boundingBox.width, boundingBox.yMax - (workers.yMax + margin));
             DrawProductionOverview(prodOverview);
+        }
+
+        /* "Current Rate" subtitles only appear when the live value differs from the period
+         * average after rounding to whole silver. Otherwise the subtitle would just say
+         * "Current Rate: X" right under "X" — no information, only clutter. The cards row
+         * shares one subtitle slot (uniform card heights), so the row reserves the slot iff
+         * either income or upkeep diverges; cards that don't diverge then center their value
+         * vertically in the freed space. */
+        private const float subtitleH = 18f;
+        private (float costsH, bool showProfitSub, bool showIncomeSub, bool showUpkeepSub) ComputeCostBreakdownLayout()
+        {
+            bool hasAvg = settlement.HasTaxAverageData;
+            bool sp = hasAvg && Math.Round(settlement.averageTotalProfit) != Math.Round(settlement.totalProfit);
+            bool si = hasAvg && Math.Round(settlement.averageTotalIncome) != Math.Round(settlement.totalIncome);
+            bool su = hasAvg && Math.Round(settlement.averageTotalUpkeep) != Math.Round(settlement.totalUpkeep);
+            float profitBoxH = 28f + (sp ? subtitleH : 0f);
+            float cardH = 40f + ((si || su) ? subtitleH : 0f);
+            return (profitBoxH + margin + cardH, sp, si, su);
         }
         private void DrawProductionHeader(Rect boundingBox)
         {
@@ -1462,99 +1480,108 @@ namespace FactionColonies
             float labelHeight = rowHeight - (smallMargin * 2);
             float labelWidth = (boundingBox.width - margin) / 2f;
 
-            // Headline values are the period-averaged silver flows (what gets paid at the next
-            // tax tick); subtitles show the live "Daily Rate" so the player can still see
-            // immediate feedback from changes. Falls back to live-only display when no samples
-            // have been taken yet (fresh settlement / just-reset post-tax).
+            var layout = ComputeCostBreakdownLayout();
+            bool showProfitSub = layout.showProfitSub;
+            bool showIncomeSub = layout.showIncomeSub;
+            bool showUpkeepSub = layout.showUpkeepSub;
             bool hasAvg = settlement.HasTaxAverageData;
-            int totalPeriodDays = FCSettings.timeBetweenTaxes / GenDate.TicksPerDay;
+            bool showCardsSub = showIncomeSub || showUpkeepSub;
             double avgProfit = settlement.averageTotalProfit;
             double liveProfit = settlement.totalProfit;
             double avgIncome = settlement.averageTotalIncome;
             double liveIncome = settlement.totalIncome;
             double avgUpkeep = settlement.averageTotalUpkeep;
             double liveUpkeep = settlement.totalUpkeep;
+            Color subColor = new Color(0.7f, 0.7f, 0.7f);
 
             float profitHeadlineH = 28f;
-            float subtitleH = 16f;
-            float profitBoxH = profitHeadlineH + subtitleH;
+            float profitBoxH = profitHeadlineH + (showProfitSub ? subtitleH : 0f);
             Rect profitBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width, profitBoxH);
             Rect profitLabel = new Rect(profitBox.x, profitBox.y, labelWidth, profitHeadlineH);
             Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, labelWidth, profitHeadlineH);
             UIUtil.DrawColoredHighlight(profitBox, highlightColor);
             Text.Anchor = TextAnchor.MiddleRight;
-            Widgets.Label(profitLabel, "FCTotal".Translate() + " " + "FCProfit".Translate() + ":");
+            Widgets.Label(profitLabel, "FCSettlementEstimatedProfit".Translate() + ":");
             Text.Anchor = TextAnchor.MiddleLeft;
             double displayProfit = hasAvg ? avgProfit : liveProfit;
             Widgets.Label(profitNum, new GUIContent(Math.Round(displayProfit).ToString(), ThingDefOf.Silver.uiIcon));
 
-            if (hasAvg)
+            if (showProfitSub)
             {
                 Rect profitSubtitle = new Rect(profitBox.x, profitLabel.yMax, profitBox.width, subtitleH);
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Color origColor = GUI.color;
-                GUI.color = new Color(0.7f, 0.7f, 0.7f);
+                GUI.color = subColor;
                 Widgets.Label(profitSubtitle, "FCDailyRate".Translate() + ": " + Math.Round(liveProfit));
                 GUI.color = origColor;
             }
-            TooltipHandler.TipRegion(profitBox, TextUtil.BuildPeriodAverageTooltip(
-                avgProfit, liveProfit, hasAvg, settlement.TaxAccumulationDays, totalPeriodDays));
+            TooltipHandler.TipRegion(profitBox, TextUtil.BuildPeriodAverageTooltip(hasAvg));
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.LowerCenter;
             labelWidth = (boundingBox.width - (margin * 12f)) / 3f;
 
-            // Each card: label (top) + value (middle) + subtitle (bottom). Subtitle slot is
-            // always reserved so all three cards stay the same height; Tax Base just leaves
-            // its slot blank since it has no average analog.
-            float cardH = (rowHeight * 2) + subtitleH;
+            // Cards row stays uniform-height (all three cards same `cardH`). The row reserves
+            // a subtitle slot iff either income or upkeep needs one; cards that don't need a
+            // subtitle (Tax Base always, plus whichever of income/upkeep matches average)
+            // center their value in the freed space instead.
+            float cardH = (rowHeight * 2) + (showCardsSub ? subtitleH : 0f);
             Rect incomeBox = new Rect(boundingBox.x + (margin * 3), profitBox.yMax + margin, labelWidth, cardH);
             Rect costsBox = new Rect(incomeBox.xMax + (margin * 3), incomeBox.y, labelWidth, cardH);
             Rect taxBonusBox = new Rect(costsBox.xMax + (margin * 3), incomeBox.y, labelWidth, cardH);
 
             float cardLabelH = rowHeight;
-            float cardNumH = rowHeight;
             Rect incomeLabel = new Rect(incomeBox.x, incomeBox.y, incomeBox.width, cardLabelH);
             Rect costLabel = new Rect(costsBox.x, costsBox.y, costsBox.width, cardLabelH);
             Rect taxBonusLabel = new Rect(taxBonusBox.x, taxBonusBox.y, taxBonusBox.width, cardLabelH);
-
-            Rect incomeNum = new Rect(incomeLabel.x, incomeLabel.yMax + smallMargin, incomeBox.width, cardNumH);
-            Rect costsNum = new Rect(costLabel.x, costLabel.yMax + smallMargin, costsBox.width, cardNumH);
-            Rect taxBonusNum = new Rect(taxBonusLabel.x, taxBonusLabel.yMax + smallMargin, taxBonusBox.width, cardNumH);
 
             UIUtil.DrawColoredHighlight(incomeBox, highlightColor);
             UIUtil.DrawColoredHighlight(costsBox, highlightColor);
             UIUtil.DrawColoredHighlight(taxBonusBox, highlightColor);
 
-            Widgets.Label(incomeLabel, "FCTotal".Translate() + " " + "FCIncome".Translate());
+            Widgets.Label(incomeLabel, "FCSettlementEstimatedIncome".Translate());
             Widgets.Label(costLabel, "FCUpkeep".Translate());
             Widgets.Label(taxBonusLabel, "FCTaxBase".Translate());
 
-            Text.Anchor = TextAnchor.UpperCenter;
-            Widgets.Label(incomeNum, Math.Round(hasAvg ? avgIncome : liveIncome, 2).ToString());
-            Widgets.Label(costsNum, Math.Round(hasAvg ? avgUpkeep : liveUpkeep, 2).ToString());
-            Widgets.Label(taxBonusNum, (settlement.GetSettlementTaxBonus() * 100d).ToString() + "%");
+            DrawCardValueAndSubtitle(incomeBox, cardLabelH, showCardsSub, showIncomeSub,
+                Math.Round(hasAvg ? avgIncome : liveIncome, 2).ToString(), Math.Round(liveIncome).ToString(), subColor);
+            DrawCardValueAndSubtitle(costsBox, cardLabelH, showCardsSub, showUpkeepSub,
+                Math.Round(hasAvg ? avgUpkeep : liveUpkeep, 2).ToString(), Math.Round(liveUpkeep).ToString(), subColor);
+            DrawCardValueAndSubtitle(taxBonusBox, cardLabelH, showCardsSub, false,
+                (settlement.GetSettlementTaxBonus() * 100d).ToString() + "%", null, subColor);
 
-            if (hasAvg)
+            string avgTooltip = TextUtil.BuildPeriodAverageTooltip(hasAvg);
+            TooltipHandler.TipRegion(incomeBox, settlement.incomeExp + "\n\n" + avgTooltip);
+            TooltipHandler.TipRegion(costsBox, settlement.upkeepExp + "\n\n" + avgTooltip);
+            TooltipHandler.TipRegion(taxBonusBox, settlement.GetTaxBaseDesc());
+        }
+
+        /* Draws a card's value and (conditionally) its "Current Rate" subtitle. When the row
+         * reserves subtitle space but THIS card doesn't need one, the value rect expands to
+         * fill the freed area and switches to MiddleCenter anchoring so the value sits centered
+         * in the post-label region rather than hugging the top. */
+        private void DrawCardValueAndSubtitle(Rect cardBox, float cardLabelH, bool rowHasSubtitleSlot, bool thisCardHasSubtitle, string valueText, string subtitleLiveValue, Color subColor)
+        {
+            float postLabelStart = cardBox.y + cardLabelH + smallMargin;
+            float postLabelHeight = cardBox.yMax - postLabelStart;
+            if (thisCardHasSubtitle)
             {
-                Text.Anchor = TextAnchor.MiddleCenter;
+                Rect numRect = new Rect(cardBox.x, postLabelStart, cardBox.width, postLabelHeight - subtitleH);
+                Rect subRect = new Rect(cardBox.x, numRect.yMax, cardBox.width, subtitleH);
+                Text.Anchor = TextAnchor.UpperCenter;
+                Widgets.Label(numRect, valueText);
                 Color origColor = GUI.color;
-                GUI.color = new Color(0.7f, 0.7f, 0.7f);
-                Rect incomeSub = new Rect(incomeBox.x, incomeNum.yMax, incomeBox.width, subtitleH);
-                Rect costsSub = new Rect(costsBox.x, costsNum.yMax, costsBox.width, subtitleH);
-                Widgets.Label(incomeSub, "FCDailyRate".Translate() + ": " + Math.Round(liveIncome));
-                Widgets.Label(costsSub, "FCDailyRate".Translate() + ": " + Math.Round(liveUpkeep));
+                GUI.color = subColor;
+                Widgets.Label(subRect, "FCDailyRate".Translate() + ": " + subtitleLiveValue);
                 GUI.color = origColor;
             }
-
-            string avgTooltip = TextUtil.BuildPeriodAverageTooltip(
-                avgIncome, liveIncome, hasAvg, settlement.TaxAccumulationDays, totalPeriodDays);
-            string upkeepAvgTooltip = TextUtil.BuildPeriodAverageTooltip(
-                avgUpkeep, liveUpkeep, hasAvg, settlement.TaxAccumulationDays, totalPeriodDays);
-            TooltipHandler.TipRegion(incomeBox, settlement.incomeExp + "\n\n" + avgTooltip);
-            TooltipHandler.TipRegion(costsBox, settlement.upkeepExp + "\n\n" + upkeepAvgTooltip);
-            TooltipHandler.TipRegion(taxBonusBox, settlement.GetTaxBaseDesc());
+            else
+            {
+                Rect numRect = new Rect(cardBox.x, postLabelStart, cardBox.width, postLabelHeight);
+                Text.Anchor = rowHasSubtitleSlot ? TextAnchor.MiddleCenter : TextAnchor.UpperCenter;
+                Widgets.Label(numRect, valueText);
+            }
         }
 
         private void DrawWorkerBreakdown(Rect boundingBox)
