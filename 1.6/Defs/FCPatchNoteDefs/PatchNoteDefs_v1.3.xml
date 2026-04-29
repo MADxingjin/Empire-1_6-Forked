@@ -610,4 +610,60 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_43</defName>
+		<label>Tax Evasion Update</label>
+		<description>Patches an exploit where workers could be all unassigned right before tax is due to minimize the upkeep paid, while coasting by on income being calculated by the period average.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Settlements now track a periodic average of their upkeep.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_44</defName>
+		<label>Missing translation key</label>
+		<description>Add missing translation key for the prosperity lost base stat.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add FCTraitDesc_prosperityLostBase translation key</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_45</defName>
+		<label>UI Update for Estimated Income</label>
+		<description>Updates UI displays for estimated income to show the period average, which is what the player will actually receive.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates UI displays for estimated income to show the period average, which is what the player will actually receive</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_46</defName>
+		<label>Shattered Empire trader fix</label>
+		<description>The defName for Empire Refactor&apos;s settlement traderkind collided with the base game&apos;s traderkind for the Shattered Empire, causing the actual Empire to generate stock oddly, or not at all. ...Really ought to&apos;ve changed the mod name when I had the chance. Oh well.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: Base_Empire_Standard traderKindDef collides with the traderKindDef used for the base game&apos;s Shattered Empire faction</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

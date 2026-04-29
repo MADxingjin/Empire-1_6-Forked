@@ -143,6 +143,20 @@ namespace FactionColonies
             return cat is QualityCategory cat2 ? cat2.GetLabel().CapitalizeFirst() : $"({"FCSelect".Translate()})";
         }
 
+        /* Period-average tooltip builders. The tooltip is purely an explanation of how the
+         * averaged headline relates to the in-UI "Current Rate" subtitle — the values themselves
+         * are visible on the UI, no point repeating them here. The "None" variant fires when no
+         * samples have been taken yet (fresh settlement / just-reset post-tax). */
+        public static string BuildPeriodAverageTooltip(bool hasAverage)
+        {
+            return hasAverage ? "FCPeriodAverageTooltipHas".Translate() : "FCPeriodAverageTooltipNone".Translate();
+        }
+
+        public static string BuildPeriodAverageFactionTooltip(bool hasAverage)
+        {
+            return hasAverage ? "FCPeriodAverageTooltipFaction".Translate() : "FCPeriodAverageTooltipNone".Translate();
+        }
+
         /// <summary>
         /// Converts the given string <paramref name="name"/> into a shorter version. The resulting string contains the first word and every uppercase char of the following words
         /// </summary>

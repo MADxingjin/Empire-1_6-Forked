@@ -191,6 +191,15 @@ namespace FactionColonies
         public string incomeExp { get { if (dirtyProfitCache) RecomputeProfit(); return _incomeExp; } }
         public double totalProfit { get { if (dirtyProfitCache) RecomputeProfit(); return _totalProfit; } }
 
+        /* Period-averaged values, derived from the daily samples accumulated in
+         * AccumulateDailyProduction. These are what the player will actually be paid at
+         * tax time; UI surfaces should headline these and treat the live values above
+         * as a "current daily rate" subtitle. */
+        public bool HasTaxAverageData => taxAccumulationDays > 0;
+        public double averageTotalIncome => HasTaxAverageData ? accumulatedTotalIncome / taxAccumulationDays : totalIncome;
+        public double averageTotalUpkeep => HasTaxAverageData ? accumulatedTotalUpkeep / taxAccumulationDays : totalUpkeep;
+        public double averageTotalProfit => averageTotalIncome - averageTotalUpkeep;
+
         // Jealously guard our resources. Only we can modify them!
         private List<ResourceFC> resources = new List<ResourceFC>();
         public List<ResourceFC> Resources => resources;
@@ -206,6 +215,15 @@ namespace FactionColonies
         // A private state variable
         private bool calculatingTax = false;
         public bool IsCalculatingTax => calculatingTax;
+
+        /* Sampled daily, in lockstep with per-resource production accumulation. The upkeep
+         * accumulator closes the unassign-before-tax exploit. The income accumulator backs
+         * the averaged-value UI surfaces so the player sees the silver they'll actually
+         * receive at tax time, not the instantaneous rate. taxAccumulationDays counts
+         * samples for both. */
+        private double accumulatedTotalIncome = 0;
+        private double accumulatedTotalUpkeep = 0;
+        private int taxAccumulationDays = 0;
         public WorldObjectComp_SettlementMilitary MilitaryComp
         {
             get
@@ -531,6 +549,9 @@ namespace FactionColonies
             Scribe_Values.Look(ref _prosperity, "prosperity");
             Scribe_Values.Look(ref _workerCost, "workerCost");
             Scribe_Values.Look(ref _workerTotalUpkeep, "workerTotalUpkeep");
+            Scribe_Values.Look(ref accumulatedTotalIncome, "accumulatedTotalIncome", 0);
+            Scribe_Values.Look(ref accumulatedTotalUpkeep, "accumulatedTotalUpkeep", 0);
+            Scribe_Values.Look(ref taxAccumulationDays, "taxAccumulationDays", 0);
 
             Scribe_Collections.Look(ref resources, "resources", LookMode.Deep);
 
@@ -1037,7 +1058,9 @@ namespace FactionColonies
             _upkeepExp = _upkeepExp.Trim();
             _incomeExp = _incomeExp.Trim();
 
-            _totalUpkeep = upkeep;
+            _totalUpkeep = (calculatingTax && taxAccumulationDays > 0)
+                ? accumulatedTotalUpkeep / taxAccumulationDays
+                : upkeep;
             _totalIncome = income;
             _workerCost = _workers == 0 ? GetBaseWorkerCost() : (_workerTotalUpkeep / _workers);
             _totalProfit = _totalIncome - _totalUpkeep;
@@ -1886,6 +1909,15 @@ namespace FactionColonies
             {
                 res.AccumulateDailyProduction();
             }
+
+            /* Snapshot total income and upkeep at the same instant production is sampled.
+             * calculatingTax is false here, so RecomputeProfit uses each resource's instantaneous
+             * actualIncome for the day rather than the (still-accumulating) average. The first
+             * accessor below triggers RecomputeProfit; the second reads the cached value. */
+            DirtyProfitCache();
+            accumulatedTotalIncome += totalIncome;
+            accumulatedTotalUpkeep += totalUpkeep;
+            taxAccumulationDays++;
         }
         private void PostTaxPrep()
         {
@@ -1894,6 +1926,9 @@ namespace FactionColonies
             {
                 res.ResetAccumulator();
             }
+            accumulatedTotalIncome = 0;
+            accumulatedTotalUpkeep = 0;
+            taxAccumulationDays = 0;
         }
         /// <summary>
         /// This function handles the calculations for determining this settlement's taxes at tax time. It handles both tithes and silver taxes.

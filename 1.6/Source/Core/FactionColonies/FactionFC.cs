@@ -111,6 +111,14 @@ namespace FactionColonies
         public double upkeep { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _upkeep; } }
         public double profit { get { if (dirtyFactionProfitCache) RecomputeTotalProfit(); return _profit; } }
 
+        /* Period-averaged faction-wide silver flows. Derived directly from each settlement's
+         * averaged values (no separate cache needed — those are themselves cached). Edict upkeep
+         * is stable, paid in full each tax cycle, so it's added directly to averaged upkeep. */
+        public bool HasTaxAverageData => settlements.Any(s => s.HasTaxAverageData);
+        public double averageIncome => settlements.Sum(s => s.averageTotalIncome);
+        public double averageUpkeep => settlements.Sum(s => s.averageTotalUpkeep) + GetEdictUpkeep();
+        public double averageProfit => averageIncome - averageUpkeep;
+
         /* Lazy-Cached Tech Level */
         /* Tech level — lazy-cached via dirtyTechLevelCache */
         private TechLevel _techLevel = TechLevel.Undefined;
@@ -2260,7 +2268,7 @@ namespace FactionColonies
                 }
                 else
                 {
-                    // Resource-based: RTD_Food -> Caravan_Empire_Food
+                    // Resource-based: RTD_Food -> FC_Caravan_Empire_Food
                     ResourceTypeDef rtd = DefDatabase<ResourceTypeDef>.GetNamedSilentFail(typeId);
                     if (rtd is null || !rtd.ResourceTypeAllowedByTech(tech))
                         continue;
@@ -2270,7 +2278,7 @@ namespace FactionColonies
                         continue;
 
                     string suffix = rtd.defName.Replace("RTD_", "");
-                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("Caravan_Empire_" + suffix);
+                    resolved = DefDatabase<TraderKindDef>.GetNamedSilentFail("FC_Caravan_Empire_" + suffix);
                 }
 
                 if (resolved is object)

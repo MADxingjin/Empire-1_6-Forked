@@ -31,7 +31,9 @@ namespace FactionColonies
 
         public static Color GetSettlementAccent(WorldSettlementFC s)
         {
-            return s.settlementDef.accentColor ?? (s.GetTotalProfit() >= 0 ? Income : Expense);
+            // averageTotalProfit reflects what will actually be paid at the next tax tick;
+            // falls back to live profit (totalIncome - totalUpkeep) when no samples exist.
+            return s.settlementDef.accentColor ?? (s.averageTotalProfit >= 0 ? Income : Expense);
         }
 
         public static Color GetStatColor(float value, bool inverted)
