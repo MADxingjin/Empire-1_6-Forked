@@ -666,4 +666,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_47</defName>
+		<label>Minor Fix</label>
+		<description>Mods that define a pawnKindDef with a null race field can crash various aspects of Empire.</description>
+		<releaseDate>2026-04-29</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Remove RaceProps null check in ValidPawnKindDef. PawnKindDef.RaceProps is just a property that accesses race.race, so race being null crashes the access. The following null check on pawnKindDef.race?.race is sufficient.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

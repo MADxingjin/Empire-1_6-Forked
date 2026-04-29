@@ -37,11 +37,6 @@ namespace FactionColonies
                 LogUtil.Error($"ValidPawnKindDef: found null pawnKindDef. This shouldn't be possible!");
                 return false;
             }
-            if (pawnKindDef.RaceProps is null)
-            {
-                LogUtil.Warning($"ValidPawnKindDef: found null RaceProps for PawnKindDef {pawnKindDef.label ?? "[null label]"} ({pawnKindDef.defName ?? "null defName??"})");
-                return false;
-            }
             if (pawnKindDef.race?.race is null)
             {
                 LogUtil.Warning($"ValidPawnKindDef: detected null race or race.race for pawnKindDef {pawnKindDef.label ?? "[null label]"} ({pawnKindDef.defName ?? "null defName??"})");
