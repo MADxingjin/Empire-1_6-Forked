@@ -26,7 +26,7 @@ namespace FactionColonies
             if (parentDef is FCPolicyDef pd)
                 this.parentDef = pd;
             else
-                LogUtil.Error($"FCPolicyBehaviorExtension on non-FCPolicyDef: {parentDef.defName}");
+                LogUtil.Error($"FCPolicyBehaviorExtension on non-FCPolicyDef: {TextUtil.GetDefModInfo(parentDef)}");
         }
 
         public override IEnumerable<string> ConfigErrors()

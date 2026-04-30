@@ -10,9 +10,9 @@ namespace FactionColonies
 {
     /// <summary>
     /// Static cache to hold on to frequently-accessed fields that change infrequently, or never.
-    /// 
+    ///
     /// <para>This cache needs to be invalidated any time the game loads or changes. Presently, this is done through a Harmony Postfix on Game.Dispose().</para>
-    /// <para>NOTE: DefDatabase[PawnKindDef].AllDefsListForReading is cached here. That means that def hotloading is a no-no.</para>
+    /// <para>NOTE: DefDatabase[PawnKindDef].AllDefsListForReading is cached here, filtered through <see cref="PawnKindDefExtensions.ValidPawnKindDef"/> so malformed defs from other mods never reach downstream consumers. Nevertheless, def caching means that def hotloading is a no-no.</para>
     /// </summary>
     public static class FactionCache
     {
@@ -63,7 +63,16 @@ namespace FactionColonies
             {
                 if (_cachedPawnKindDefs is null || _cachedPawnKindDefs.Count == 0)
                 {
-                    _cachedPawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                    List<PawnKindDef> all = DefDatabase<PawnKindDef>.AllDefsListForReading;
+                    _cachedPawnKindDefs = new List<PawnKindDef>(all.Count);
+                    int skipped = 0;
+                    foreach (PawnKindDef def in all)
+                    {
+                        if (def.ValidPawnKindDef()) _cachedPawnKindDefs.Add(def);
+                        else skipped++;
+                    }
+                    if (skipped > 0)
+                        LogUtil.Warning($"FactionCache.AllPawnKindDefs: skipped {skipped} malformed PawnKindDef(s). See preceding warnings for offending defs and source mods.");
                 }
                 return _cachedPawnKindDefs;
             }

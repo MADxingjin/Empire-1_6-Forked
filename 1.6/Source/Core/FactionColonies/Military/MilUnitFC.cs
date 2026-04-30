@@ -62,6 +62,12 @@ namespace FactionColonies
                         pawnKind = PawnKindDefOf.Colonist;
                     }
                 }
+
+                if (!pawnKind.ValidPawnKindDef())
+                {
+                    LogUtil.Warning($"MilUnitFC: selected pawnKind failed validation. Falling back to Colonist.");
+                    pawnKind = PawnKindDefOf.Colonist;
+                }
             }
             catch (Exception ex)
             {

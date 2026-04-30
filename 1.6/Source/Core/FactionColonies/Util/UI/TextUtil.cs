@@ -172,5 +172,14 @@ namespace FactionColonies
 
             return nameSplit.Aggregate(main, (total, next) => total + ((main == next) ? ' ' : next[0]));
         }
+
+        public static string GetDefModInfo(Def def)
+        {
+            if (def is null)
+                return "???";
+            
+            return
+                $"{def.label ?? "???"} [{def.defName ?? "??? defName"}] ({def.modContentPack?.PackageId ?? "???"}, {def.modContentPack?.Name ?? "???"})";
+        }
     }
 }
