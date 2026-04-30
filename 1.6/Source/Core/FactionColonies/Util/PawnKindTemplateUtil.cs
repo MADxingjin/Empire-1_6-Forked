@@ -379,9 +379,10 @@ namespace FactionColonies.util
 
             // Group PKDs by their faction's tech level
             Dictionary<TechLevel, List<PawnKindDef>> groups = new Dictionary<TechLevel, List<PawnKindDef>>();
-            foreach (PawnKindDef def in DefDatabase<PawnKindDef>.AllDefsListForReading)
+            foreach (PawnKindDef def in FactionCache.AllPawnKindDefs)
             {
                 if (def.race != race) continue;
+                if (def.defName is null) continue;
                 if (def.defName.StartsWith("PColony_")) continue;
 
                 TechLevel tier = def.defaultFactionDef?.techLevel ?? TechLevel.Undefined;

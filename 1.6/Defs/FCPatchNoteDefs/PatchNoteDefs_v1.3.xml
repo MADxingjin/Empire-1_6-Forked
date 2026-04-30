@@ -680,4 +680,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_48</defName>
+		<label>Minor Fixes</label>
+		<description>More hardening of pawnKindDef handling. Hopefully, this time, we won&apos;t see any more pawnKindDef-related errors. Hopefully.</description>
+		<releaseDate>2026-04-29</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Further hardening of Empire&apos;s pawnKindDef handling</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

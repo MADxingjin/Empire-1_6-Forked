@@ -37,9 +37,14 @@ namespace FactionColonies
                 LogUtil.Error($"ValidPawnKindDef: found null pawnKindDef. This shouldn't be possible!");
                 return false;
             }
+            if (pawnKindDef.defName is null)
+            {
+                LogUtil.Warning($"ValidPawnKindDef: detected null defName for pawnKindDef {TextUtil.GetDefModInfo(pawnKindDef)}");
+                return false;
+            }
             if (pawnKindDef.race?.race is null)
             {
-                LogUtil.Warning($"ValidPawnKindDef: detected null race or race.race for pawnKindDef {pawnKindDef.label ?? "[null label]"} ({pawnKindDef.defName ?? "null defName??"})");
+                LogUtil.Warning($"ValidPawnKindDef: detected null race or race.race for pawnKindDef {TextUtil.GetDefModInfo(pawnKindDef)}");
                 return false;
             }
 
