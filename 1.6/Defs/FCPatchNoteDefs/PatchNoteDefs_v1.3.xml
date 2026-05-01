@@ -694,4 +694,19 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_49</defName>
+		<label>Asteroids &amp; Ammo</label>
+		<description>Fix for an issue with the capital spot on asteroids, and a small tweak to the Combat Extended patch.</description>
+		<releaseDate>2026-04-30</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: due to int/PlanetTile conversion, the capital location update for the Capital Spot building is broken on non-surface layers, resulting in gravship bases getting bombarded with &quot;Empire Relocated&quot; messages</li>
+		<li>Tweak: CE compat: increase the number of mags that pawns start with from 3 to 6</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

@@ -91,8 +91,8 @@ namespace FactionColonies
                         LogUtil.Message($"Empire capital location updated from {oldCapital} to {currentTile} (gravship moved)");
 
                         Find.LetterStack.ReceiveLetter(
-                            "Empire Relocated",
-                            "Your Empire has moved accordingly after your travels",
+                            "FCCapitalRelocatedLabel".Translate(),
+                            "FCCapitalRelocatedDesc".Translate(),
                             LetterDefOf.NeutralEvent
                         );
                     }

@@ -154,6 +154,8 @@
 	<FCCouldNotFindMapOfCapital>Could not find map of capital</FCCouldNotFindMapOfCapital>
 	<FCCapitalAlreadyEstablished>Empire capital is already established at {0}. Disable the capital seat there first if you want to move it.</FCCapitalAlreadyEstablished>
 	<FCUnableToSetCapitalHere>Unable to set faction capital on this map. Please go to your capital map and use the Set Capital button or build a Capital Seat.</FCUnableToSetCapitalHere>
+	<FCCapitalRelocatedLabel>Empire Capital Relocated</FCCapitalRelocatedLabel>
+	<FCCapitalRelocatedDesc>The seat of your Empire's capital has updated to your new location.</FCCapitalRelocatedDesc>
 	
 	<FCCaravanTypes>Caravan Types</FCCaravanTypes>
 	<FCCaravanTypesDesc>Select which types of trade caravans your empire will send.</FCCaravanTypesDesc>
