@@ -139,9 +139,13 @@ namespace FactionColonies
         /// <summary>
         /// Accepts items matching any resource type or common essentials (food, medicine,
         /// non-armor apparel). Rejects dangerous/worthless items via the shared blocklist.
+        /// Silver is always accepted — the trader generates it as stock and uses it as currency.
         /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
+            if (thingDef == ThingDefOf.Silver)
+                return true;
+
             if (EmpireTradeFilterUtil.ShouldReject(thingDef))
                 return false;
 

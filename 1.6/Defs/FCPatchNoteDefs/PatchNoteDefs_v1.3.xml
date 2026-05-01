@@ -737,4 +737,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_52</defName>
+		<label>Faction-level Resource Display Fix</label>
+		<description>Fixes an issue with the faction-level &quot;Total Production&quot; resource readouts not being correct.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: due to load-ordering issues, faction-level &quot;Total Production&quot; resource readouts are incorrect when loading a save</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

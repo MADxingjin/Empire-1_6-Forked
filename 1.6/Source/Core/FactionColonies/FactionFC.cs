@@ -476,12 +476,6 @@ namespace FactionColonies
             EnsureResourcePools();
 
             LifecycleRegistry.Register(this);
-
-            /* Rebuild caravan trader kinds last, once factionResources, settlements, and tech
-             * level are settled. If production hasn't computed yet (new world, or load path
-             * where caches still warm up), the helper preserves the FactionDef's existing list
-             * rather than clobbering it with an empty result. */
-            RebuildCaravanTraderKinds();
         }
 
         #endregion
@@ -498,6 +492,11 @@ namespace FactionColonies
 
         private void FirstTick(Faction faction)
         {
+            // Settlement resource assignments aren't actually available when we first create the resource display list
+            //   in FinalizeInit. So set the display caches as dirty here so they get properly calculated the next time
+            //   the UI shows up (or anything else tries to access them)
+            SetAllDirtyResourceDisplayCaches();
+            
             bool reinitXenoFilter = false;
             if (animalFilter is null)
             {
@@ -585,6 +584,12 @@ namespace FactionColonies
             {
                 startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
             }
+
+            /* Rebuild caravan trader kinds last, once factionResources, settlements, and tech
+             * level are settled. If production hasn't computed yet (new world, or load path
+             * where caches still warm up), the helper preserves the FactionDef's existing list
+             * rather than clobbering it with an empty result. */
+            RebuildCaravanTraderKinds();
         }
 
         public override void WorldComponentTick()
@@ -1910,6 +1915,14 @@ namespace FactionColonies
             if (rdisplay != null)
             {
                 rdisplay.SetDirtyCache();
+            }
+        }
+
+        public void SetAllDirtyResourceDisplayCaches()
+        {
+            foreach (ResourceDisplay rdis in factionResources)
+            {
+                rdis.SetDirtyCache();
             }
         }
 

@@ -119,21 +119,24 @@ namespace FactionColonies
 
         /// <summary>
         /// Cached trade filter used by <see cref="AllowsForTrade"/>. Built lazily on first access
-        /// with max tech level so buy-side is not restricted by the empire's current tech.
+        /// via <see cref="FilterResourceForTrade"/>, which ignores research/recipe/tech-level
+        /// gates — so the cache is purely Def-driven and never goes stale relative to player
+        /// research progression.
         /// </summary>
         private ThingFilter _tradeFilter;
 
         /// <summary>
         /// Returns true if this resource type's allow/block lists include the given ThingDef.
-        /// Used for buy-side trade filtering — ignores tech level gates so traders will accept
-        /// items they can't yet produce.
+        /// Used for buy-side trade filtering: traders are willing to buy any item that fits
+        /// the resource category, regardless of whether the player has researched the recipe
+        /// or has the tech level to produce it.
         /// </summary>
         public bool AllowsForTrade(ThingDef thingDef)
         {
             if (_tradeFilter is null)
             {
                 _tradeFilter = new ThingFilter();
-                FilterResource(_tradeFilter, TechLevel.Archotech);
+                FilterResourceForTrade(_tradeFilter);
             }
             return _tradeFilter.Allows(thingDef);
         }
@@ -547,6 +550,51 @@ namespace FactionColonies
                 foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
                 {
                     ext.SetFilter(filter, techlevel, resource);
+                }
+            }
+        }
+
+        /* Buy-side variant of FilterResource. Ignores all research/recipe/tech-level gates so
+         * traders accept any item belonging to the resource category, regardless of whether the
+         * player has researched the recipe or has the tech level to produce it. */
+        public void FilterResourceForTrade(ThingFilter filter)
+        {
+            /* Allow whole categories outright */
+            foreach (ResourceThingCategoryDefRestriction thingCategoryRestriction in thingCategoryAllowList)
+            {
+                filter.SetAllow(thingCategoryRestriction.thingCategoryDef, true);
+            }
+            foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryAllowList)
+            {
+                filter.SetAllow(stuffCategoryDef, true);
+            }
+            /* Block categories */
+            foreach (ThingCategoryDef thingCategoryDef in thingCategoryBlockList)
+            {
+                filter.SetAllow(thingCategoryDef, false);
+            }
+            foreach (StuffCategoryDef stuffCategoryDef in stuffCategoryBlockList)
+            {
+                filter.SetAllow(stuffCategoryDef, false);
+            }
+            /* Allow specific things outright (overrides category blocks) */
+            foreach (ResourceThingDefRestriction thingDefRestriction in thingAllowList)
+            {
+                filter.SetAllow(thingDefRestriction.thingDef, true);
+            }
+            /* Block specific things (highest precedence) */
+            foreach (ThingDef thingDef in thingBlockList)
+            {
+                filter.SetAllow(thingDef, false);
+            }
+
+            /* Run extensions at max tech level so they don't gate either. Pass a null ResourceFC
+             * because there's no settlement context for an empire-wide buy filter. */
+            if (modExtensions != null)
+            {
+                foreach (ResourceFilterExtension ext in modExtensions.OfType<ResourceFilterExtension>())
+                {
+                    ext.SetFilter(filter, TechLevel.Archotech, null);
                 }
             }
         }
