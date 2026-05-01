@@ -723,4 +723,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_51</defName>
+		<label>Empire Caravan Refinement</label>
+		<description>Refines the specialized resource trader caravans: there is now a cap on the number of distinct items they carry, which should mitigate issues such as animal traders arriving with a thousand different animals.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Refines Empire caravans to carry far fewer distinct items</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

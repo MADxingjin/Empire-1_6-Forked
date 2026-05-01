@@ -2187,6 +2187,11 @@ namespace FactionColonies
             List<TraderKindDef> result = BuildCaravanTraderKinds(techLevel);
             if (result.Count > 0)
                 faction.def.caravanTraderKinds = result;
+
+            if (result.Count == 0)
+                LogUtil.Warning($"RebuildCaravanTraderKinds produced an empty list. enabledCaravanTypes: {enabledCaravanTypes?.Count ?? 0}");
+            else
+                LogUtil.Message($"RebuildCaravanTraderKinds produced a list of {enabledCaravanTypes?.Count ?? 0} caravan types");
         }
 
         /// <summary>
