@@ -81,7 +81,7 @@ namespace FactionColonies
             {
                 if (rtd.isPoolResource)
                     continue;
-                rtd.FilterResource(filter, TechLevel.Archotech);
+                rtd.FilterResourceForTrade(filter);
             }
             return filter;
         }

@@ -50,6 +50,7 @@
     <stockGenerators>
       <li Class="FactionColonies.EmpireCaravanStockGenerator">
         <resourceDef>RTD_Animals</resourceDef>
+        <varietyRange>8~14</varietyRange>
       </li>
       <li Class="StockGenerator_BuyExpensiveSimple" />
     </stockGenerators>

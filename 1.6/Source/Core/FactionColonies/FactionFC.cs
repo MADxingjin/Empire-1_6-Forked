@@ -552,6 +552,11 @@ namespace FactionColonies
 
         private void FirstTick(Faction faction)
         {
+            // Settlement resource assignments aren't actually available when we first create the resource display list
+            //   in FinalizeInit. So set the display caches as dirty here so they get properly calculated the next time
+            //   the UI shows up (or anything else tries to access them)
+            SetAllDirtyResourceDisplayCaches();
+            
             /* Scribe.mode is Inactive by firstTick — filter FinalizeInit is safe.
              * On the load path, this is where deferred filter init actually happens.
              * On the new-world path, FinalizeInit already initialized them; this is a no-op. */
@@ -621,6 +626,12 @@ namespace FactionColonies
             {
                 startingLongLat = Find.WorldGrid.LongLatOf(playerHome.Tile);
             }
+
+            /* Rebuild caravan trader kinds last, once factionResources, settlements, and tech
+             * level are settled. If production hasn't computed yet (new world, or load path
+             * where caches still warm up), the helper preserves the FactionDef's existing list
+             * rather than clobbering it with an empty result. */
+            RebuildCaravanTraderKinds();
         }
 
         public override void WorldComponentTick()
@@ -1963,6 +1974,14 @@ namespace FactionColonies
             }
         }
 
+        public void SetAllDirtyResourceDisplayCaches()
+        {
+            foreach (ResourceDisplay rdis in factionResources)
+            {
+                rdis.SetDirtyCache();
+            }
+        }
+
         #endregion
 
         #region ID Generation
@@ -2249,6 +2268,11 @@ namespace FactionColonies
             List<TraderKindDef> result = BuildCaravanTraderKinds(techLevel);
             if (result.Count > 0)
                 faction.def.caravanTraderKinds = result;
+
+            if (result.Count == 0)
+                LogUtil.Warning($"RebuildCaravanTraderKinds produced an empty list. enabledCaravanTypes: {enabledCaravanTypes?.Count ?? 0}");
+            else
+                LogUtil.Message($"RebuildCaravanTraderKinds produced a list of {enabledCaravanTypes?.Count ?? 0} caravan types");
         }
 
         /// <summary>
