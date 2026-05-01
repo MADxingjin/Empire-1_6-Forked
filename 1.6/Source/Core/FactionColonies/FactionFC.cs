@@ -476,6 +476,12 @@ namespace FactionColonies
             EnsureResourcePools();
 
             LifecycleRegistry.Register(this);
+
+            /* Rebuild caravan trader kinds last, once factionResources, settlements, and tech
+             * level are settled. If production hasn't computed yet (new world, or load path
+             * where caches still warm up), the helper preserves the FactionDef's existing list
+             * rather than clobbering it with an empty result. */
+            RebuildCaravanTraderKinds();
         }
 
         #endregion
@@ -648,7 +654,7 @@ namespace FactionColonies
                 PaymentUtil.AutoresolveBills(Bills);
 
             // Rebuild caravan trader kinds to reflect current worker assignments
-            faction.def.caravanTraderKinds = BuildCaravanTraderKinds(techLevel);
+            RebuildCaravanTraderKinds();
         }
 
         public void StatTick()
@@ -885,13 +891,20 @@ namespace FactionColonies
             }
 
             Faction playerColonyfaction = FactionCache.PlayerColonyFaction;
-            if (playerColonyfaction?.def.techLevel < _techLevel)
+            bool techLevelChanged = playerColonyfaction?.def.techLevel < _techLevel;
+            if (techLevelChanged)
             {
                 LogUtil.Message("Updating Tech Level");
                 UpdateFactionDef(_techLevel, ref playerColonyfaction);
             }
 
             dirtyTechLevelCache = false;
+
+            // Refresh caravan trader kinds after a tech-level bump (must run after
+            // dirtyTechLevelCache is cleared to avoid re-entering RecomputeTechLevel
+            // through the techLevel property).
+            if (techLevelChanged)
+                RebuildCaravanTraderKinds();
         }
 
         public void DirtyAllTitheCaches()
@@ -2132,7 +2145,6 @@ namespace FactionColonies
                     replacingDef = DefDatabase<FactionDef>.GetNamedSilentFail("TribeCivil");
                     break;
             }
-            def.caravanTraderKinds = BuildCaravanTraderKinds(tech);
             if (replacingDef.backstoryFilters != null && replacingDef.backstoryFilters.Count != 0)
                 def.backstoryFilters = replacingDef.backstoryFilters;
             def.techLevel = tech;
@@ -2160,6 +2172,21 @@ namespace FactionColonies
                 if (!rtd.isPoolResource && rtd.CanTithe && rtd.ResourceTypeAllowedByTech(_techLevel))
                     enabledCaravanTypes.Add(rtd.defName);
             }
+        }
+
+        /// <summary>
+        /// Rebuilds <c>faction.def.caravanTraderKinds</c> from current state. If the build returns
+        /// an empty list (e.g., 0 production across all enabled resource types, or called too early
+        /// during load before production caches are settled), the existing list is left intact so
+        /// the FactionDef's XML default isn't clobbered with an empty list.
+        /// </summary>
+        public void RebuildCaravanTraderKinds()
+        {
+            Faction faction = FactionCache.PlayerColonyFaction;
+            if (faction is null) return;
+            List<TraderKindDef> result = BuildCaravanTraderKinds(techLevel);
+            if (result.Count > 0)
+                faction.def.caravanTraderKinds = result;
         }
 
         /// <summary>

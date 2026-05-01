@@ -58,11 +58,7 @@ namespace FactionColonies
             }
 
             // Rebuild caravanTraderKinds immediately
-            Faction playerColonyFaction = FactionCache.PlayerColonyFaction;
-            if (playerColonyFaction is object)
-            {
-                faction.UpdateFactionDef(faction.techLevel, ref playerColonyFaction);
-            }
+            faction.RebuildCaravanTraderKinds();
         }
 
         public override void DoWindowContents(Rect inRect)

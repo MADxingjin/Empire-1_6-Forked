@@ -709,4 +709,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_50</defName>
+		<label>Caravan Fix</label>
+		<description>Delays the construction of caravan traderkinds so that actually valid lists are created.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Fixes a bug where, after loading a save, the Empire faction would not have any valid caravan traders until a tax tick occurred</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
