@@ -105,7 +105,7 @@ namespace FactionColonies.util
             }
             catch (Exception ex)
             {
-                LogUtil.Warning($"Failed to get reasonable age for {pawnKindDef?.defName}: {ex.Message}");
+                LogUtil.Warning($"Failed to get reasonable age for {TextUtil.GetDefModInfo(pawnKindDef)}: {ex.Message}");
                 fixedAge = null;
             }
 

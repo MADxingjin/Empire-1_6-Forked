@@ -233,4 +233,18 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_4_16</defName>
+		<label>Caravan Fix</label>
+		<description>The caravan list for the Empire NPC faction gets built too early in the loading process, resulting in an empty list until a taxday occurs. This patch delays the list assembly to make sure that it always correctly reflects the production of the Empire faction.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: the list of caravan traderkinds is assembled before faction-level production allocations are loaded, resulting in an empty caravan list until tax time</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>

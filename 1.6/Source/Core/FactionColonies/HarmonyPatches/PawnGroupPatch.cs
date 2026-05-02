@@ -23,8 +23,8 @@ namespace FactionColonies
                 {
                     PawnGenOptionWithXenotype culled = __result[i];
                     LogUtil.Warning("GetOptions culled zero-cost option: kind="
-                        + culled.Option.kind.defName
-                        + " combatPower=" + culled.Option.kind.combatPower
+                        + (culled.Option.kind?.defName ?? "[null kind]")
+                        + " combatPower=" + (culled.Option.kind?.combatPower.ToString() ?? "?")
                         + " xenotype=" + (culled.Xenotype != null ? culled.Xenotype.defName : "null")
                         + " xenotypeCombatPowerFactor=" + (culled.Xenotype != null ? culled.Xenotype.combatPowerFactor.ToString() : "N/A")
                         + " effectiveCost=" + culled.Cost);

@@ -27,6 +27,15 @@ namespace FactionColonies
         /// <summary>Settlement level at which variety is 100%. Level 1 = 20%, level 10 = 200%.</summary>
         private const float AnchorLevel = 5f;
 
+        /// <summary>
+        /// Distinct ThingDef count to pick per active resource. The settlement trader cycles
+        /// through every active resource, so total stock distinct-count is roughly this range
+        /// times the number of active resources. Scaled by settlement level (a level-1 settlement
+        /// at 0.2x scale shows ~1 item per resource; a level-10 settlement at 2x shows the full
+        /// range times 2). Default is calibrated against vanilla focused-trader counts.
+        /// </summary>
+        public IntRange varietyRange = new IntRange(5, 10);
+
         /// <summary>Randomness range for per-item budget (multiplier). Prevents uniform stack sizes.</summary>
         private const float BudgetRandomMin = 0.5f;
         private const float BudgetRandomMax = 1.5f;
@@ -76,17 +85,24 @@ namespace FactionColonies
                 float resourceShare = (float)res.InstantaneousProduction / totalProduction;
                 float resourceBudget = resourceShare * (float)totalIncome;
 
-                // Variety: level-scaled, determines how many distinct ThingDefs to pick
-                int variety = Mathf.Max(1, Mathf.RoundToInt(thingDefs.Count * resourceShare * levelScale));
-                variety = Mathf.Min(variety, thingDefs.Count);
-
-                float perItemBudget = resourceBudget / variety;
-
+                // Filter & shuffle the pool first so we know how many tradeable candidates exist
+                // before deciding variety.
                 List<ThingDef> candidates = thingDefs
                     .Where(td => td.tradeability.TraderCanSell())
                     .InRandomOrder()
-                    .Take(variety)
                     .ToList();
+
+                if (candidates.Count == 0)
+                    continue;
+
+                // Variety is XML-tunable and scales with settlement level. Budget already scales
+                // with resourceShare via resourceBudget above, so don't double-count share here.
+                int targetVariety = Mathf.RoundToInt(varietyRange.RandomInRange * levelScale);
+                int variety = Mathf.Clamp(targetVariety, 1, candidates.Count);
+
+                float perItemBudget = resourceBudget / variety;
+
+                candidates = candidates.Take(variety).ToList();
 
                 foreach (ThingDef td in candidates)
                 {
@@ -123,9 +139,13 @@ namespace FactionColonies
         /// <summary>
         /// Accepts items matching any resource type or common essentials (food, medicine,
         /// non-armor apparel). Rejects dangerous/worthless items via the shared blocklist.
+        /// Silver is always accepted — the trader generates it as stock and uses it as currency.
         /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
+            if (thingDef == ThingDefOf.Silver)
+                return true;
+
             if (EmpireTradeFilterUtil.ShouldReject(thingDef))
                 return false;
 

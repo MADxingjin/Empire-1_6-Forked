@@ -17,6 +17,15 @@ namespace FactionColonies
         /// <summary>Set in XML — which resource this caravan specializes in.</summary>
         public ResourceTypeDef resourceDef;
 
+        /// <summary>
+        /// Distinct ThingDef count to pick from the resource pool. Caps trader variety so each
+        /// item gets a meaningful budget slice (otherwise budget is spread across hundreds of
+        /// candidates and produces 1-3 stacks of every low-value product).
+        /// Override per-resource in XML when the pool conflates very different value tiers
+        /// (e.g. animals + animal products).
+        /// </summary>
+        public IntRange varietyRange = new IntRange(15, 25);
+
         /// <summary>Randomness range for per-item budget (multiplier).</summary>
         private const float BudgetRandomMin = 0.5f;
         private const float BudgetRandomMax = 1.5f;
@@ -73,7 +82,13 @@ namespace FactionColonies
             if (candidates.Count == 0)
                 yield break;
 
-            float perItemBudget = (float)totalBudget / candidates.Count;
+            // Cap variety so we don't see a thousand stacks of single items (or a thousand animals)
+            int variety = Mathf.Min(varietyRange.RandomInRange, candidates.Count);
+            if (variety <= 0)
+                yield break;
+            candidates = candidates.Take(variety).ToList();
+
+            float perItemBudget = (float)totalBudget / variety;
 
             foreach (ThingDef td in candidates)
             {
@@ -108,9 +123,13 @@ namespace FactionColonies
         /// <summary>
         /// Accepts items matching this caravan's resource type or common essentials (food,
         /// medicine, non-armor apparel). Rejects dangerous/worthless items via the shared blocklist.
+        /// Silver is always accepted — the trader generates it as stock and uses it as currency.
         /// </summary>
         public override bool HandlesThingDef(ThingDef thingDef)
         {
+            if (thingDef == ThingDefOf.Silver)
+                return true;
+
             if (EmpireTradeFilterUtil.ShouldReject(thingDef))
                 return false;
 

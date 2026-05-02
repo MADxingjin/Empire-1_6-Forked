@@ -4,7 +4,7 @@
 <Defs>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Food</defName>
+    <defName>FC_Caravan_Empire_Food</defName>
     <label>food trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -17,7 +17,7 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Weapons</defName>
+    <defName>FC_Caravan_Empire_Weapons</defName>
     <label>arms dealer</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -30,7 +30,7 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Apparel</defName>
+    <defName>FC_Caravan_Empire_Apparel</defName>
     <label>clothier</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -43,20 +43,21 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Animals</defName>
+    <defName>FC_Caravan_Empire_Animals</defName>
     <label>animal trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
     <stockGenerators>
       <li Class="FactionColonies.EmpireCaravanStockGenerator">
         <resourceDef>RTD_Animals</resourceDef>
+        <varietyRange>8~14</varietyRange>
       </li>
       <li Class="StockGenerator_BuyExpensiveSimple" />
     </stockGenerators>
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Logging</defName>
+    <defName>FC_Caravan_Empire_Logging</defName>
     <label>lumber trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -69,7 +70,7 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Mining</defName>
+    <defName>FC_Caravan_Empire_Mining</defName>
     <label>ore trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -82,7 +83,7 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Medicine</defName>
+    <defName>FC_Caravan_Empire_Medicine</defName>
     <label>medical supplier</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -95,7 +96,7 @@
   </TraderKindDef>
 
   <TraderKindDef>
-    <defName>Caravan_Empire_Chemfuel</defName>
+    <defName>FC_Caravan_Empire_Chemfuel</defName>
     <label>fuel trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>
@@ -108,7 +109,7 @@
   </TraderKindDef>
 
   <TraderKindDef MayRequire="Ludeon.RimWorld.Odyssey">
-    <defName>Caravan_Empire_Gravtech</defName>
+    <defName>FC_Caravan_Empire_Gravtech</defName>
     <label>gravtech trader</label>
     <hideThingsNotWillingToTrade>false</hideThingsNotWillingToTrade>
     <tradeCurrency>Silver</tradeCurrency>

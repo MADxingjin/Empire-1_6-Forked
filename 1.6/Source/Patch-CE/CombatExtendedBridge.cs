@@ -30,6 +30,7 @@ namespace FactionColonies.CE
     /// </summary>
     public class CombatExtendedBridge : ICombatExtendedBridge
     {
+        private const int Default_Ammo_Count = 6;
         public void EquipWeaponWithAmmo(Pawn pawn, ThingWithComps weapon)
         {
             if (pawn == null || weapon == null) return;
@@ -44,7 +45,7 @@ namespace FactionColonies.CE
                 // These are private methods in CE — Traverse is required
                 Traverse.Create(loadoutProps).Method("LoadWeaponWithRandAmmo", weapon).GetValue();
                 Traverse.Create(loadoutProps).Method("TryGenerateAmmoFor",
-                    new object[] { weapon, compInventory, 3 }).GetValue();
+                    new object[] { weapon, compInventory, Default_Ammo_Count }).GetValue();
 
                 compInventory.UpdateInventory();
             }
@@ -164,7 +165,7 @@ namespace FactionColonies.CE
 
                 var loadoutProps = new LoadoutPropertiesExtension();
                 Traverse.Create(loadoutProps)
-                    .Method("TryGenerateAmmoFor", new object[] { weapon, compInventory, 3 })
+                    .Method("TryGenerateAmmoFor", new object[] { weapon, compInventory, Default_Ammo_Count })
                     .GetValue();
 
                 compInventory.UpdateInventory();

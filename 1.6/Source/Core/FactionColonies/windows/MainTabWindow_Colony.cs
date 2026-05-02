@@ -501,20 +501,28 @@ namespace FactionColonies
             float y = panel.y;
             float width = panel.width;
 
+            // --- Economic Stats ---
+            // Single-line readout of the period-averaged faction profit. The "Current Rate"
+            // subtitle lives only on the per-settlement window — at the faction level we just
+            // care about what's actually going to be paid out at the next tax tick.
+            bool factionHasAvg = faction.HasTaxAverageData;
+            double factionDisplay = factionHasAvg ? faction.averageProfit : faction.profit;
+
             Rect profitBox = new Rect(x, y, width, 28f);
             Rect profitLabel = new Rect(profitBox.x, profitBox.y, (width - margin) / 2f, profitBox.height);
-            Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, profitLabel.width, profitLabel.height);
+            Rect profitNum = new Rect(profitLabel.xMax + margin, profitLabel.y, profitLabel.width, profitBox.height);
 
-            // --- Economic Stats ---
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.DrawHighlight(profitBox);
             Text.Anchor = TextAnchor.MiddleRight;
             Widgets.Label(profitLabel, "FCEstimatedProfit".Translate() + ": ");
             Text.Anchor = TextAnchor.MiddleLeft;
-            Color profitColor = faction.profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
-            Widgets.Label(profitNum, new GUIContent(Math.Round(faction.profit).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
-            TooltipHandler.TipRegion(profitBox, CodexTooltips.GetProfitTooltip(faction));
+            Color profitColor = factionDisplay >= 0 ? AccentUtil.Income : AccentUtil.Expense;
+            Widgets.Label(profitNum, new GUIContent(Math.Round(factionDisplay).ToString().Colorize(profitColor), ThingDefOf.Silver.uiIcon));
+
+            TooltipHandler.TipRegion(profitBox, TextUtil.BuildPeriodAverageFactionTooltip(factionHasAvg));
+
             y += profitBox.height + margin;
 
             Rect taxBox = new Rect(x, y, width, 22f);
@@ -812,19 +820,23 @@ namespace FactionColonies
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
 
-                // Top-right: Profit value (colored green/red)
-                int profit = (int)s.GetTotalProfit();
-                string profitStr = "$" + (profit >= 0 ? "+" : "") + profit;
+                // Top-right: Profit value. Shows the period-averaged silver — what the player
+                // will actually be paid at the next tax tick. Tooltip explains the averaging.
+                bool hasAvg = s.HasTaxAverageData;
+                int displayProfit = (int)(hasAvg ? s.averageTotalProfit : s.totalProfit);
+                string profitStr = "$" + (displayProfit >= 0 ? "+" : "") + displayProfit;
                 fontBefore = Text.Font;
                 anchorBefore = Text.Anchor;
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
                 origColor = GUI.color;
-                GUI.color = profit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
-                Widgets.Label(new Rect(contentX + contentW - profitDisplayW, topY, profitDisplayW, lineH), profitStr);
+                GUI.color = displayProfit >= 0 ? AccentUtil.Income : AccentUtil.Expense;
+                Rect profitRect = new Rect(contentX + contentW - profitDisplayW, topY, profitDisplayW, lineH);
+                Widgets.Label(profitRect, profitStr);
                 GUI.color = origColor;
                 Text.Font = fontBefore;
                 Text.Anchor = anchorBefore;
+                TooltipHandler.TipRegion(profitRect, TextUtil.BuildPeriodAverageTooltip(hasAvg));
 
                 // Bottom-left: Town title + free workers
                 string townTitle = TextUtil.GetTownTitle(s);
@@ -898,7 +910,7 @@ namespace FactionColonies
                 string tooltip = s.Name + "\n\n"
                     + "FCSettlementTableLevel".Translate() + ": " + s.settlementLevel + "\n"
                     + "FCSettlementTableMilLevel".Translate() + ": " + s.settlementMilitaryLevel + "\n"
-                    + "FCSettlementTableProfit".Translate() + ": " + profit + "\n"
+                    + "FCSettlementTableProfit".Translate() + ": " + displayProfit + "\n"
                     + "FCSettlementTableWorkers".Translate() + ": " + freeWorkers + "/" + (int)s.workersUltraMax + "\n"
                     + "FCSettlementTableHappiness".Translate() + ": " + (int)s.Happiness + "\n"
                     + "FCSettlementTableLoyalty".Translate() + ": " + (int)s.Loyalty + "\n"

@@ -596,4 +596,159 @@
 		<li>Matathias</li>
 		</authors>
 	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_42</defName>
+		<label>Minor Fix</label>
+		<description>More null hardening for IsAnimalAndAllowed, used to fill out the animal pawnkind caches.</description>
+		<releaseDate>2026-04-27</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add more null checks when processing pawnKindDefs for the pawnkind caches</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_43</defName>
+		<label>Tax Evasion Update</label>
+		<description>Patches an exploit where workers could be all unassigned right before tax is due to minimize the upkeep paid, while coasting by on income being calculated by the period average.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Settlements now track a periodic average of their upkeep.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_44</defName>
+		<label>Missing translation key</label>
+		<description>Add missing translation key for the prosperity lost base stat.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Add FCTraitDesc_prosperityLostBase translation key</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_45</defName>
+		<label>UI Update for Estimated Income</label>
+		<description>Updates UI displays for estimated income to show the period average, which is what the player will actually receive.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Updates UI displays for estimated income to show the period average, which is what the player will actually receive</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_46</defName>
+		<label>Shattered Empire trader fix</label>
+		<description>The defName for Empire Refactor&apos;s settlement traderkind collided with the base game&apos;s traderkind for the Shattered Empire, causing the actual Empire to generate stock oddly, or not at all. ...Really ought to&apos;ve changed the mod name when I had the chance. Oh well.</description>
+		<releaseDate>2026-04-28</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: Base_Empire_Standard traderKindDef collides with the traderKindDef used for the base game&apos;s Shattered Empire faction</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_47</defName>
+		<label>Minor Fix</label>
+		<description>Mods that define a pawnKindDef with a null race field can crash various aspects of Empire.</description>
+		<releaseDate>2026-04-29</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Remove RaceProps null check in ValidPawnKindDef. PawnKindDef.RaceProps is just a property that accesses race.race, so race being null crashes the access. The following null check on pawnKindDef.race?.race is sufficient.</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_48</defName>
+		<label>Minor Fixes</label>
+		<description>More hardening of pawnKindDef handling. Hopefully, this time, we won&apos;t see any more pawnKindDef-related errors. Hopefully.</description>
+		<releaseDate>2026-04-29</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Further hardening of Empire&apos;s pawnKindDef handling</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_49</defName>
+		<label>Asteroids &amp; Ammo</label>
+		<description>Fix for an issue with the capital spot on asteroids, and a small tweak to the Combat Extended patch.</description>
+		<releaseDate>2026-04-30</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: due to int/PlanetTile conversion, the capital location update for the Capital Spot building is broken on non-surface layers, resulting in gravship bases getting bombarded with &quot;Empire Relocated&quot; messages</li>
+		<li>Tweak: CE compat: increase the number of mags that pawns start with from 3 to 6</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_50</defName>
+		<label>Caravan Fix</label>
+		<description>Delays the construction of caravan traderkinds so that actually valid lists are created.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Fixes a bug where, after loading a save, the Empire faction would not have any valid caravan traders until a tax tick occurred</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_51</defName>
+		<label>Empire Caravan Refinement</label>
+		<description>Refines the specialized resource trader caravans: there is now a cap on the number of distinct items they carry, which should mitigate issues such as animal traders arriving with a thousand different animals.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Refines Empire caravans to carry far fewer distinct items</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
+
+	<FactionColonies.PatchNoteDef ParentName="EmpirePatchBase">
+		<defName>1_3_52</defName>
+		<label>Faction-level Resource Display Fix</label>
+		<description>Fixes an issue with the faction-level &quot;Total Production&quot; resource readouts not being correct.</description>
+		<releaseDate>2026-05-01</releaseDate>
+		<patchNoteType>Patch</patchNoteType>
+		<patchNoteLines>
+		<li>Bugfix: due to load-ordering issues, faction-level &quot;Total Production&quot; resource readouts are incorrect when loading a save</li>
+		</patchNoteLines>
+		<authors>
+		<li>Matathias</li>
+		</authors>
+	</FactionColonies.PatchNoteDef>
 </Defs>
