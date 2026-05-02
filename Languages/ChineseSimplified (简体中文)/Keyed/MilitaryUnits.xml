@@ -299,7 +299,7 @@
 	<!-- EN: You cannot use that action for until another {0} -->
   <FCActionMercenaryOnCooldown>在{0}之前不可用。</FCActionMercenaryOnCooldown>
 
-  
+  <!-- UNUSED -->
   <selectDeployedSquad>选择已部署的编队</selectDeployedSquad>
   <selectedDeployedSquad>{0}的{1}</selectedDeployedSquad>
   <noSquadsAvailable>没有可用编队</noSquadsAvailable>

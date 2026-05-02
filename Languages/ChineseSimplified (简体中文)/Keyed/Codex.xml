@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+	<!-- Codex Window Chrome -->
+	<!-- EN: Empire Codex -->
+  <FCCodexTitle>TODO</FCCodexTitle>
+	<!-- EN: Info -->
+  <FCCodexTabInfo>TODO</FCCodexTabInfo>
+	<!-- EN: Select an entry from the left to view details. -->
+  <FCCodexSelectEntry>TODO</FCCodexSelectEntry>
+	<!-- EN: Current Game Values -->
+  <FCCodexLiveData>TODO</FCCodexLiveData>
+	<!-- EN: See Also: -->
+  <FCCodexSeeAlso>TODO</FCCodexSeeAlso>
+	<!-- EN: Enabled -->
+  <FCCodexEnabled>TODO</FCCodexEnabled>
+	<!-- EN: Disabled -->
+  <FCCodexDisabled>TODO</FCCodexDisabled>
+
+	<!-- Threat Level Provider -->
+	<!-- EN: No settlements — ETL defaults to 1.0×. -->
+  <FCCodexETLNoSettlements>TODO</FCCodexETLNoSettlements>
+	<!-- EN: Current ETL: {0}× -->
+  <FCCodexETLCurrent>TODO</FCCodexETLCurrent>
+	<!-- EN: Components: -->
+  <FCCodexETLBreakdown>TODO</FCCodexETLBreakdown>
+	<!-- EN: Avg Level: {0} -->
+  <FCCodexETLAvgLevel>TODO</FCCodexETLAvgLevel>
+	<!-- EN: Max Level: {0} -->
+  <FCCodexETLMaxLevel>TODO</FCCodexETLMaxLevel>
+	<!-- EN: +{0} -->
+  <FCCodexETLContrib>TODO</FCCodexETLContrib>
+	<!-- EN: Income: {0} silver -->
+  <FCCodexETLIncome>TODO</FCCodexETLIncome>
+	<!-- EN: Settlements: {0} -->
+  <FCCodexETLCount>TODO</FCCodexETLCount>
+	<!-- EN: Handicap Cap: {0}× -->
+  <FCCodexETLHandicapCap>TODO</FCCodexETLHandicapCap>
+	<!-- EN: Max Setting: {0}× -->
+  <FCCodexETLMaxSetting>TODO</FCCodexETLMaxSetting>
+
+	<!-- Battle Simulation Provider -->
+	<!-- EN: Current Battle Parameters -->
+  <FCCodexBattleParams>TODO</FCCodexBattleParams>
+	<!-- EN: Defender Advantage: {0}× ({1}% force bonus) -->
+  <FCCodexBattleDefAdv>TODO</FCCodexBattleDefAdv>
+	<!-- EN: Efficiency Damping: {0} -->
+  <FCCodexBattleDamping>TODO</FCCodexBattleDamping>
+	<!-- EN: Example: raw efficiency {0}× → dampened to {1}× -->
+  <FCCodexBattleDampExample>TODO</FCCodexBattleDampExample>
+
+	<!-- Resource Production Provider -->
+	<!-- EN: No settlements to show production data. -->
+  <FCCodexResNoSettlements>TODO</FCCodexResNoSettlements>
+	<!-- EN: No workers assigned to any resource yet. -->
+  <FCCodexResNoWorkers>TODO</FCCodexResNoWorkers>
+	<!-- EN: Example: {0} — {1} -->
+  <FCCodexResExample>TODO</FCCodexResExample>
+	<!-- EN: Stage 1 (Additives): {0} base -->
+  <FCCodexResStage1>TODO</FCCodexResStage1>
+	<!-- EN: Stage 2 (Multipliers): ×{0} (includes prosperity {1}%) -->
+  <FCCodexResStage2>TODO</FCCodexResStage2>
+	<!-- EN: Stage 3 (Workers): {0} workers → {1} total production -->
+  <FCCodexResStage3>TODO</FCCodexResStage3>
+	<!-- EN: Silver conversion: {0} silver/unit → {1} silver value -->
+  <FCCodexResSilver>TODO</FCCodexResSilver>
+
+	<!-- Prosperity Provider -->
+	<!-- EN: No settlements to show prosperity data. -->
+  <FCCodexProsNoSettlements>TODO</FCCodexProsNoSettlements>
+	<!-- EN: Per-Settlement Breakdown -->
+  <FCCodexProsHeader>TODO</FCCodexProsHeader>
+	<!-- EN: Prosperity: {0} -->
+  <FCCodexProsCurrent>TODO</FCCodexProsCurrent>
+	<!-- EN: Target: {0} -->
+  <FCCodexProsTargetVal>TODO</FCCodexProsTargetVal>
+	<!-- EN: Happiness: {0} -->
+  <FCCodexProsHappiness>TODO</FCCodexProsHappiness>
+	<!-- EN: Loyalty: {0} -->
+  <FCCodexProsLoyalty>TODO</FCCodexProsLoyalty>
+	<!-- EN: Stability: {0} -->
+  <FCCodexProsStability>TODO</FCCodexProsStability>
+	<!-- EN: Drift: {0}/day -->
+  <FCCodexProsDrift>TODO</FCCodexProsDrift>
+	<!-- EN: Production: ×{0} -->
+  <FCCodexProsProdMult>TODO</FCCodexProsProdMult>
+
+	<!-- Worker Overwork Provider -->
+	<!-- EN: Current Worker Parameters -->
+  <FCCodexWorkerParams>TODO</FCCodexWorkerParams>
+	<!-- EN: Base worker cost: {0} silver -->
+  <FCCodexWorkerBaseCost>TODO</FCCodexWorkerBaseCost>
+	<!-- EN: Formula: cost × (1 + overwork/20) -->
+  <FCCodexWorkerFormula>TODO</FCCodexWorkerFormula>
+	<!-- EN: Each worker over soft cap adds 5% cost -->
+  <FCCodexWorkerFormulaDesc>TODO</FCCodexWorkerFormulaDesc>
+	<!-- EN: Example: {0} workers over cap → +{1}% cost → {2} silver per worker -->
+  <FCCodexWorkerExample>TODO</FCCodexWorkerExample>
+
+	<!-- Military Cooldown Provider -->
+	<!-- EN: Current Cooldown Parameters -->
+  <FCCodexCooldownParams>TODO</FCCodexCooldownParams>
+	<!-- EN: Base cooldown: {0} days -->
+  <FCCodexCooldownBase>TODO</FCCodexCooldownBase>
+	<!-- EN: Dead pawn penalty: {0} -->
+  <FCCodexCooldownDeadPawn>TODO</FCCodexCooldownDeadPawn>
+	<!-- EN: Each death adds ~{0} hours to cooldown -->
+  <FCCodexCooldownDeadPawnCalc>TODO</FCCodexCooldownDeadPawnCalc>
+	<!-- EN: Example: {0} deaths → +{1} hours → total ~{2} days -->
+  <FCCodexCooldownExample>TODO</FCCodexCooldownExample>
+
+	<!-- Attack Frequency Provider -->
+	<!-- EN: Current Attack Frequency Parameters -->
+  <FCCodexFreqParams>TODO</FCCodexFreqParams>
+	<!-- EN: Base interval range: {0}–{1} days -->
+  <FCCodexFreqRange>TODO</FCCodexFreqRange>
+	<!-- EN: Your settlement count: {0} -->
+  <FCCodexFreqCount>TODO</FCCodexFreqCount>
+	<!-- EN: Frequency curve (settlements → multiplier): -->
+  <FCCodexFreqCurve>TODO</FCCodexFreqCurve>
+	<!-- EN: {0} settlements → {1}× -->
+  <FCCodexFreqPoint>TODO</FCCodexFreqPoint>
+
+	<!-- Difficulty Settings Provider -->
+	<!-- EN: Current difficulty: {0} -->
+  <FCCodexDiffCurrent>TODO</FCCodexDiffCurrent>
+	<!-- EN: Difficulty → Silver/Res | Tax Days | Tithe Mod | Worker Cost -->
+  <FCCodexDiffHeader>TODO</FCCodexDiffHeader>
+	<!-- EN: {0}: {1} | {2}d | {3} | {4} -->
+  <FCCodexDiffRow>TODO</FCCodexDiffRow>
+	<!-- EN: Your custom values: -->
+  <FCCodexDiffCustomLabel>TODO</FCCodexDiffCustomLabel>
+	<!-- EN:   {0}: {1} -->
+  <FCCodexDiffCustomRow>TODO</FCCodexDiffCustomRow>
+
+	<!-- Settlement Types Tab -->
+	<!-- EN: Settlements -->
+  <FCCodexTabSettlements>TODO</FCCodexTabSettlements>
+	<!-- EN: Select a settlement type from the left to view details. -->
+  <FCCodexSelectSettlement>TODO</FCCodexSelectSettlement>
+	<!-- EN: Key Stats -->
+  <FCCodexSettlementStats>TODO</FCCodexSettlementStats>
+	<!-- EN: Workers: {0} base, +{1} per level -->
+  <FCCodexSettlementWorkers>TODO</FCCodexSettlementWorkers>
+	<!-- EN: Max Level: {0} -->
+  <FCCodexSettlementMaxLevel>TODO</FCCodexSettlementMaxLevel>
+	<!-- EN: Building Slots -->
+  <FCCodexSettlementBuildingSlots>TODO</FCCodexSettlementBuildingSlots>
+	<!-- EN: Level -->
+  <FCCodexSettlementBuildingSlotsLevel>TODO</FCCodexSettlementBuildingSlotsLevel>
+	<!-- EN: Building Slots -->
+  <FCCodexSettlementBuildingSlotsCount>TODO</FCCodexSettlementBuildingSlotsCount>
+	<!-- EN: Workers -->
+  <FCCodexSettlementBuildingSlotsWorkers>TODO</FCCodexSettlementBuildingSlotsWorkers>
+	<!-- EN: Planet Layer: {0} -->
+  <FCCodexSettlementPlanetLayer>TODO</FCCodexSettlementPlanetLayer>
+	<!-- EN: Manual Battle: {0} -->
+  <FCCodexSettlementManualBattle>TODO</FCCodexSettlementManualBattle>
+	<!-- EN: Can Be Raided: {0} -->
+  <FCCodexSettlementCanBeRaided>TODO</FCCodexSettlementCanBeRaided>
+	<!-- EN: Raid Targeting Weight: {0} -->
+  <FCCodexSettlementRaidWeight>TODO</FCCodexSettlementRaidWeight>
+	<!-- EN: Available Resources -->
+  <FCCodexSettlementResources>TODO</FCCodexSettlementResources>
+	<!-- EN: Stat Modifiers -->
+  <FCCodexSettlementStatModifiers>TODO</FCCodexSettlementStatModifiers>
+	<!-- EN: Tech Requirements -->
+  <FCCodexSettlementTechReqs>TODO</FCCodexSettlementTechReqs>
+	<!-- EN: Tech Level: {0} -->
+  <FCCodexSettlementTechLevel>TODO</FCCodexSettlementTechLevel>
+	<!-- EN: Research: {0} -->
+  <FCCodexSettlementResearch>TODO</FCCodexSettlementResearch>
+	<!-- EN: Biome Restrictions -->
+  <FCCodexSettlementBiomes>TODO</FCCodexSettlementBiomes>
+	<!-- EN: All biomes -->
+  <FCCodexSettlementAllBiomes>TODO</FCCodexSettlementAllBiomes>
+	<!-- EN: Blocked: {0} -->
+  <FCCodexSettlementBlockedBiomes>TODO</FCCodexSettlementBlockedBiomes>
+	<!-- EN: Allowed only: {0} -->
+  <FCCodexSettlementAllowedBiomes>TODO</FCCodexSettlementAllowedBiomes>
+	<!-- EN: Yes -->
+  <FCCodexYes>TODO</FCCodexYes>
+	<!-- EN: No -->
+  <FCCodexNo>TODO</FCCodexNo>
+
+	<!-- Resources Tab -->
+	<!-- EN: Resources -->
+  <FCCodexTabResources>TODO</FCCodexTabResources>
+	<!-- EN: Select a resource from the left to view details. -->
+  <FCCodexSelectResource>TODO</FCCodexSelectResource>
+	<!-- EN: Key Info -->
+  <FCCodexResourceKeyInfo>TODO</FCCodexResourceKeyInfo>
+	<!-- EN: Pool Resource -->
+  <FCCodexResourcePoolResource>TODO</FCCodexResourcePoolResource>
+	<!-- EN: Titheable: {0} -->
+  <FCCodexResourceTitheable>TODO</FCCodexResourceTitheable>
+	<!-- EN: Default Resource: {0} -->
+  <FCCodexResourceDefaultResource>TODO</FCCodexResourceDefaultResource>
+	<!-- EN: Min Tech Level: {0} -->
+  <FCCodexResourceMinTechLevel>TODO</FCCodexResourceMinTechLevel>
+	<!-- EN: Max Tech Level: {0} -->
+  <FCCodexResourceMaxTechLevel>TODO</FCCodexResourceMaxTechLevel>
+	<!-- EN: Defense Weight: {0} -->
+  <FCCodexResourceDefenseWeight>TODO</FCCodexResourceDefenseWeight>
+	<!-- EN: Biome Production -->
+  <FCCodexResourceBiomeProduction>TODO</FCCodexResourceBiomeProduction>
+	<!-- EN: Biome -->
+  <FCCodexResourceBiomeName>TODO</FCCodexResourceBiomeName>
+	<!-- EN: Additive -->
+  <FCCodexResourceBiomeAdditive>TODO</FCCodexResourceBiomeAdditive>
+	<!-- EN: Multiplier -->
+  <FCCodexResourceBiomeMultiplier>TODO</FCCodexResourceBiomeMultiplier>
+	<!-- EN: Total -->
+  <FCCodexResourceBiomeTotal>TODO</FCCodexResourceBiomeTotal>
+	<!-- EN: Tithe Items ({0}) -->
+  <FCCodexResourceTitheItems>TODO</FCCodexResourceTitheItems>
+	<!-- EN: Search tithe items... -->
+  <FCCodexResourceSearchTithe>TODO</FCCodexResourceSearchTithe>
+	<!-- EN: Compatible Settlements -->
+  <FCCodexResourceCompatibleSettlements>TODO</FCCodexResourceCompatibleSettlements>
+	<!-- EN: Requires: {0} -->
+  <FCCodexResourceRequiresResearch>TODO</FCCodexResourceRequiresResearch>
+
+	<!-- Buildings Tab -->
+	<!-- EN: Buildings -->
+  <FCCodexTabBuildings>TODO</FCCodexTabBuildings>
+	<!-- EN: Select a building from the left to view details. -->
+  <FCCodexSelectBuilding>TODO</FCCodexSelectBuilding>
+	<!-- EN: Search buildings... -->
+  <FCCodexSearchBuildings>TODO</FCCodexSearchBuildings>
+	<!-- EN: Stats -->
+  <FCCodexBuildingStats>TODO</FCCodexBuildingStats>
+	<!-- EN: Cost: {0} silver -->
+  <FCCodexBuildingCost>TODO</FCCodexBuildingCost>
+	<!-- EN: Construction Time: {0} -->
+  <FCCodexBuildingDuration>TODO</FCCodexBuildingDuration>
+	<!-- EN: Upkeep: {0} silver -->
+  <FCCodexBuildingUpkeep>TODO</FCCodexBuildingUpkeep>
+	<!-- EN: Income: {0} silver -->
+  <FCCodexBuildingIncome>TODO</FCCodexBuildingIncome>
+	<!-- EN: Tech Level: {0} -->
+  <FCCodexBuildingTechLevel>TODO</FCCodexBuildingTechLevel>
+	<!-- EN: Modifiers -->
+  <FCCodexBuildingModifiers>TODO</FCCodexBuildingModifiers>
+	<!-- EN: Required Buildings -->
+  <FCCodexBuildingRequired>TODO</FCCodexBuildingRequired>
+	<!-- EN: Upgrade Tree -->
+  <FCCodexBuildingUpgrades>TODO</FCCodexBuildingUpgrades>
+	<!-- EN: Required By -->
+  <FCCodexBuildingRequiredBy>TODO</FCCodexBuildingRequiredBy>
+	<!-- EN: General -->
+  <FCCodexBuildingTechGeneral>TODO</FCCodexBuildingTechGeneral>
+	<!-- EN: Compatible Settlements -->
+  <FCCodexBuildingCompatibleSettlements>TODO</FCCodexBuildingCompatibleSettlements>
+	<!-- EN: Terrain Restrictions -->
+  <FCCodexBuildingBiomeRestrictions>TODO</FCCodexBuildingBiomeRestrictions>
+	<!-- EN: Biomes: -->
+  <FCCodexBuildingApplicableBiomes>TODO</FCCodexBuildingApplicableBiomes>
+	<!-- EN: Hilliness: {0} to {1} -->
+  <FCCodexBuildingHilliness>TODO</FCCodexBuildingHilliness>
+	<!-- EN: Max Hilliness: {0} -->
+  <FCCodexBuildingMaxHilliness>TODO</FCCodexBuildingMaxHilliness>
+	<!-- EN: Min Hilliness: {0} -->
+  <FCCodexBuildingMinHilliness>TODO</FCCodexBuildingMinHilliness>
+	<!-- EN: All biomes -->
+  <FCCodexBuildingAllBiomes>TODO</FCCodexBuildingAllBiomes>
+	<!-- EN: Any terrain -->
+  <FCCodexBuildingAnyTerrain>TODO</FCCodexBuildingAnyTerrain>
+
+	<!-- Enhanced Tooltips -->
+	<!-- EN: Production multiplier = prosperity / 100. At 50%, you produce half as much. -->
+  <FCCodexTipProsFormula>TODO</FCCodexTipProsFormula>
+	<!-- EN: Range across settlements: {0}% - {1}% -->
+  <FCCodexTipProsRange>TODO</FCCodexTipProsRange>
+	<!-- EN: {0} naturally increases by 1/day, unless there is a negative modifier. Policies, buildings, and events can incresae or decrease this rate. This stat feeds into the prosperity target. -->
+  <FCCodexTipSocialDrift>TODO</FCCodexTipSocialDrift>
+	<!-- EN: Unrest naturally decreases by 1/day, unless there is a penalty modifier. Policies, buildings, and events can increase or decrease this rate. Lower unrest raises the prosperity target. -->
+  <FCCodexTipUnrestDrift>TODO</FCCodexTipUnrestDrift>
+	<!-- EN: Income: {0} silver\nUpkeep: {1} silver\nProfit: {2} silver\n\nIncome is the total silver value of all settlement production. Upkeep includes worker costs, building maintenance, and military expenses. -->
+  <FCCodexTipProfitBreakdown>TODO</FCCodexTipProfitBreakdown>
+	<!-- EN: Tax collection every {0} days (configurable in settings).\n -->
+  <FCCodexTipTaxTimer>TODO</FCCodexTipTaxTimer>
+	<!-- EN: Tax income uses the AVERAGE of daily production snapshots across the tax period, not a single snapshot at collection time. Building or losing things mid-period affects the average proportionally. -->
+  <FCCodexTipTaxAveraging>TODO</FCCodexTipTaxAveraging>
+	<!-- EN: Raid targeting weight: {0}\n(lower military level = more likely targeted; scale: 1-10) -->
+  <FCCodexTipMilTargeting>TODO</FCCodexTipMilTargeting>
+	<!-- EN: Current Empire Threat Level: {0}x -->
+  <FCCodexTipMilETL>TODO</FCCodexTipMilETL>
+
+</LanguageData>

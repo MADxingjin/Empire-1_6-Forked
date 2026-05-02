@@ -18,7 +18,7 @@
   
   <!-- EN: Settlement Stone Road Building -->
   <FCRoadBuildingStone.label>领地间石头路修筑</FCRoadBuildingStone.label>
-  <!-- EN: Enables your Empire settlements to build stone roads automatically over time. Roads will construct one segment every 3 days if the road building option is enabled.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <!-- EN: Enables your Empire settlements to build stone roads automatically over time. Roads will construct one segment every 3 days if the road building option is enabled. -->
   <FCRoadBuildingStone.description>允许你的领地间自动修筑石头路。每格道路需要3天时间建成。</FCRoadBuildingStone.description>
   
 </LanguageData>

@@ -98,6 +98,14 @@
   <FCPolicySelection>政策选择页</FCPolicySelection>
 	<!-- EN: Select Policies -->
   <FCSelectPolicies>选择政策</FCSelectPolicies>
+	<!-- EN: Clear Policies ({0} silver) -->
+  <FCClearPolicies>TODO</FCClearPolicies>
+	<!-- EN: Wipe your current core policies and choose new ones. The cost scales with your empire's size and prosperity. -->
+  <FCClearPoliciesTooltip>TODO</FCClearPoliciesTooltip>
+	<!-- EN: Spend {0} silver to clear your current core policies and choose new ones? -->
+  <FCClearPoliciesConfirm>TODO</FCClearPoliciesConfirm>
+	<!-- EN: Insufficient silver to clear policies (need {0}). -->
+  <FCClearPoliciesInsufficientSilver>TODO</FCClearPoliciesInsufficientSilver>
 	<!-- EN: That policy has already been enacted -->
   <FCPolicyAlreadyEnacted>TODO</FCPolicyAlreadyEnacted>
 	<!-- EN: There is already a policy of that type being enacted -->
@@ -140,7 +148,7 @@
   <FCAllTraitSlotsFilled>所有特性槽均已指派。</FCAllTraitSlotsFilled>
 	<!-- EN: Select {0} more trait(s) from the list above. -->
   <FCSelectTraitsPrompt>再从上方列表中选择{0}个特性。</FCSelectTraitsPrompt>
-	<!-- EN: Press Confirm to assign the selected traits. This cannot be undone! -->
+	<!-- EN: Press Confirm to assign the selected traits. Once confirmed, changing your policies will cost silver. -->
   <FCTraitSelectionReady>按下确认将分配所选择的特性。这一操作不可逆！</FCTraitSelectionReady>
 	<!-- EN: Hover over a trait to see its details. -->
   <FCHoverTraitForDetails>鼠标悬浮在特性上可以阅览详情。</FCHoverTraitForDetails>
@@ -152,15 +160,15 @@
   <FCConflictsWith>与{0}冲突</FCConflictsWith>
 	<!-- EN: Traits -->
   <FCTraits>特性</FCTraits>
-	<!-- EN: Select {0} policies to be added! But be warned, your choice is irreversible! -->
+	<!-- EN: Select {0} policies to be added! Once confirmed, changing your policies will cost silver. -->
   <FCSelectTraits0>选中了以下政策来添加：{0} \n此选择不可逆！</FCSelectTraits0>
-	<!-- EN: Remember, your choice is irreversible after you exit this window! -->
+	<!-- EN: Once confirmed, changing your policies will cost silver. -->
   <FCSelectTraits2>记住，你关闭窗口后就不能再调整你的选择！</FCSelectTraits2>
 	<!-- EN: You cannot have conflicting faction traits! -->
   <FCConflictingTraits>不能选择互斥的特性</FCConflictingTraits>
 	<!-- EN: You have to unselect one of your current traits to select another! -->
   <FCUnselectTrait>首先取消选中一个当前已选中的特性，才能选择另一个新的！</FCUnselectTrait>
-	<!-- EN: You have already chosen your traits. You cannot edit them any longer! -->
+	<!-- EN: To change your policies, pay silver to clear them (top right button). -->
   <FCTraitsChosen>你已经选好了你的特性，你不能再编辑它们了！</FCTraitsChosen>
 	<!-- EN: Select a new trait -->
   <FCSelectANewTrait>选择一个新特性</FCSelectANewTrait>
@@ -305,7 +313,7 @@
 	<!-- EN: Blocked by Pacifist or Egalitarian policy. -->
   <FCCaravanSlaverBlocked>因选择了“和平”或“平等”特性而被禁用。</FCCaravanSlaverBlocked>
 
-  
+  <!-- UNUSED -->
   <CustomizeFaction>自定义派系</CustomizeFaction>
   <FactionName>派系名称</FactionName>
   <FactionTitle>派系称号</FactionTitle>

@@ -103,7 +103,7 @@
   <FCBuildingUpkeep>维持：{0}</FCBuildingUpkeep>
 	<!-- EN: Income: ${0} -->
   <FCBuildingIncome>收入：{0}</FCBuildingIncome>
-  
+  <!-- UNUSED -->
   <RTDproductionAdditive>产出{0}{1}</RTDproductionAdditive>
   <RTDproductionMultiplier>产出{0}{1}</RTDproductionMultiplier>
   <RTDproductionAdditiveFrom>基于{2}产出{0}{1}</RTDproductionAdditiveFrom>

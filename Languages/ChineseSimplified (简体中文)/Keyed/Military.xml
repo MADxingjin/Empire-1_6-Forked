@@ -40,6 +40,8 @@
 	<!-- Military Sent Notifications -->
 	<!-- EN: Military Sent -->
   <FCMilitarySent>TODO</FCMilitarySent>
+	<!-- EN: Military Action -->
+  <FCMilitaryAction>军事行动</FCMilitaryAction>
 	<!-- EN: The military forces of {0} have been sent to defend {1} -->
   <FCMilitarySentToDefend>TODO</FCMilitarySentToDefend>
 	<!-- EN: The military force is already assigned. -->
@@ -88,10 +90,16 @@
   <FCDefenseFailureFull>TODO</FCDefenseFailureFull>
 	<!-- EN: The battle is over. Gather your forces and leave the settlement when ready. -->
   <FCDefenseBattleOverLeaveMap>TODO</FCDefenseBattleOverLeaveMap>
+	<!-- EN: The battle isn't over until every hostile has died or left the map. -->
+  <FCReformCaravanBattleStillActive>TODO</FCReformCaravanBattleStillActive>
 	<!-- EN: Battle for {0} -->
   <FCManualBattleStarted>TODO</FCManualBattleStarted>
 	<!-- EN: {0} is under attack by {1}! Take command of the settlement's defenses. -->
   <FCManualBattleStartedDesc>TODO</FCManualBattleStartedDesc>
+	<!-- EN: New Wave at {0} -->
+  <FCNewWaveArrived>TODO</FCNewWaveArrived>
+	<!-- EN: A new wave of attackers from {1} has arrived at {0}! Reinforcements may be on the way. -->
+  <FCNewWaveArrivedDesc>TODO</FCNewWaveArrivedDesc>
 	<!-- EN: Defend -->
   <FCDefendColony>TODO</FCDefendColony>
 	<!-- EN: Defend your Settlement manually -->
@@ -249,6 +257,8 @@
   <FCNoValidMilitaries>TODO</FCNoValidMilitaries>
 	<!-- EN: Available -->
   <FCAvailable>可用</FCAvailable>
+	<!-- EN: Current Defender -->
+  <FCCurrentDefender>TODO</FCCurrentDefender>
 	<!-- EN: Mil -->
   <FCShortMilitary>TODO</FCShortMilitary>
 	<!-- EN: Power -->
@@ -306,7 +316,7 @@
 	<!-- EN: Atk {0} / Def {1}  •  ${2} -->
   <FCMilBadge>进攻方 {0} /防守方 {1} * {2}白银</FCMilBadge>
 
-  
+  <!-- UNUSED -->
   <AttackSettlementfc>进攻基地</AttackSettlementfc>
   <CaptureSettlementfc>占领基地</CaptureSettlementfc>
   <CaptureSettlement>占领基地</CaptureSettlement>

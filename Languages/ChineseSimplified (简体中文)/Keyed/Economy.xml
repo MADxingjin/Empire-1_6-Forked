@@ -2,7 +2,30 @@
 <LanguageData>
 
 	<!-- Bills -->
-
+	<!-- EN: You did not have enough silver to pay an outstanding bill from -->
+  <FCNotEnoughSilverForBill>你没有足够的白银来支付未付的账单</FCNotEnoughSilverForBill>
+	<!-- EN: They have confiscated your tithes in return -->
+  <FCConfiscatedTithes>他们没收了你的什一税。</FCConfiscatedTithes>
+	<!-- EN: Outstanding Bills -->
+  <FCOutstandingBills>未付账单</FCOutstandingBills>
+	<!-- EN: Due Date -->
+  <FCDueDate>结算日</FCDueDate>
+	<!-- EN: Amount -->
+  <FCAmount>金额</FCAmount>
+	<!-- EN: Has Tithe -->
+  <FCHasTithe>税务</FCHasTithe>
+	<!-- EN: Pay/Receive Silver -->
+  <FCPayReceiveSilver>支付/收取白银</FCPayReceiveSilver>
+	<!-- EN: Resolve Bill -->
+  <FCResolveBill>结算此账单</FCResolveBill>
+	<!-- EN: You do not have enough silver on the current map to pay the bill -->
+  <FCNotEnoughSilverOnMapToPayBill>你在当前地图上没有足够的白银来支付账单</FCNotEnoughSilverOnMapToPayBill>
+	<!-- EN: {0} bills have been auto-resolved! -->
+  <FCNumberTaxesHasBeenSolved>已自动结算了{0}个账单</FCNumberTaxesHasBeenSolved>
+	<!-- EN: Bill resolved. -->
+  <FCBillResolved>账单已结算。</FCBillResolved>
+	<!-- EN: Due -->
+  <FCDueFC>截止日</FCDueFC>
 	<!-- EN: No pending bills. -->
   <FCNoPendingBills>无待处理账单</FCNoPendingBills>
 	<!-- EN: {0} pending bills -->
@@ -20,6 +43,50 @@
 	<!-- EN: {0} overdue bill(s) have been auto-paid from your silver reserves.\n\nAffected settlements:\n{1}\n\nYour dereliction in payment has caused a small amount of unhappiness and unrest in the affected settlements. -->
   <FCLateBillAutoPaidDesc>TODO</FCLateBillAutoPaidDesc>
 
+	<!-- Taxes -->
+	<!-- EN: Settlement Tax -->
+  <FCSettlementTax>领地税收</FCSettlementTax>
+	<!-- EN: week of -->
+  <FCWeekOf>星期</FCWeekOf>
+	<!-- EN: Taxes have been billed -->
+  <FCTaxesBilled>已开始汇总税收</FCTaxesBilled>
+	<!-- EN: Taxes Billed -->
+  <FCTaxesBilledShort>税收已发出</FCTaxesBilledShort>
+	<!-- EN: Taxes from your settlements have been billed. -->
+  <FCTaxesBilledDesc>你的领地已征税。</FCTaxesBilledDesc>
+	<!-- EN: No settlements to tax -->
+  <FCNoSettlementsToTax>没有可征税的领地</FCNoSettlementsToTax>
+	<!-- EN: Taxes from -->
+  <FCTaxesFrom>征税自</FCTaxesFrom>
+	<!-- EN: have been delivered -->
+  <FCHaveBeenDelivered>已交付</FCHaveBeenDelivered>
+	<!-- EN: Taxes have arrived! -->
+  <FCTaxesHaveArrived>征税已到达</FCTaxesHaveArrived>
+	<!-- EN: Taxes from {0} are en-route to your tax collection point! -->
+  <FCTaxesFromSettlementAreBeingDelivered>来自{0}的征税正前往你指定的收税点</FCTaxesFromSettlementAreBeingDelivered>
+	<!-- EN: Tithe % -->
+  <FCTaxPercentage>什一税 %</FCTaxPercentage>
+	<!-- EN: Tax Delivery Map -->
+  <FCTaxDeliveryMap>税收目的地（地图）</FCTaxDeliveryMap>
+	
+	<!-- EN: {0}'s innovation has provided you with {1} research points. -->
+  <FCInnovativeMessage>来自{0}的研究进展为你提供了{0}研究点。</FCInnovativeMessage>
+
+	<!-- Tax Reports -->
+	<!-- EN: Tax Reports -->
+  <FCTaxReports>税收报告</FCTaxReports>
+	<!-- EN: Faction Tax Reports -->
+  <FCFactionTaxReports>派系税收报告</FCFactionTaxReports>
+	<!-- EN: Settlements Tax Collection -->
+  <FCSettlementTaxCollection>领地税收累计</FCSettlementTaxCollection>
+	<!-- EN: Est. Profit -->
+  <FCEstimatedProfit>预计收益</FCEstimatedProfit>
+	<!-- EN: Est Value -->
+  <FCEstimatedValue>预估值</FCEstimatedValue>
+	<!-- EN: Time till tax -->
+  <FCTimeTillTax>距离下次征税时间</FCTimeTillTax>
+	<!-- EN: The total faction-wide production of the resource -->
+  <FCTotalFactionProduction>派系总产量</FCTotalFactionProduction>
 
 	<!-- Tax Break -->
 	<!-- EN: Issue Tax Break -->
@@ -48,16 +115,61 @@
 	<!-- EN: None (hide all) -->
   <FCTaxNotifyNone>不显示</FCTaxNotifyNone>
 
-	<!-- Tithes -->
+	<!-- Delivery Modes -->
+	<!-- EN: Forced Tax Delivery Mode:  -->
+  <FCSelectTaxDeliveryModeButton>TODO</FCSelectTaxDeliveryModeButton>
+	<!-- EN: None. Delivery depends on technology and settlement buildings -->
+  <FCTaxDeliveryModeDefaultDesc>TODO</FCTaxDeliveryModeDefaultDesc>
+	<!-- EN: TaxSpot. Delivery spawns on the tax spot -->
+  <FCTaxDeliveryModeTaxSpotDesc>TODO</FCTaxDeliveryModeTaxSpotDesc>
+	<!-- EN: Caravan. Delivery is always brought by a caravan -->
+  <FCTaxDeliveryModeCaravanDesc>TODO</FCTaxDeliveryModeCaravanDesc>
+	<!-- EN: DropPod. Delivery always arrives in drop pods -->
+  <FCTaxDeliveryModeDropPodDesc>TODO</FCTaxDeliveryModeDropPodDesc>
+	<!-- EN: Shuttle. Delivery always arrives by shuttle -->
+  <FCTaxDeliveryModeShuttleDesc>TODO</FCTaxDeliveryModeShuttleDesc>
+	<!-- EN: Shuttle. Unavailable due to royality not being present -->
+  <FCTaxDeliveryModeShuttleUnavailableDesc>TODO</FCTaxDeliveryModeShuttleUnavailableDesc>
 
+	<!-- Delivery Events -->
+	<!-- EN: The delivering pawns are dropping their items and hiding on your tax delivery spot! They will only engage if the enemy is close! -->
+  <FCDeliveryPawnsHiding>TODO</FCDeliveryPawnsHiding>
+	<!-- EN: The delivering pawns are leaving the map. -->
+  <FCDeliveryPawnsLeavingMap>TODO</FCDeliveryPawnsLeavingMap>
+	<!-- EN: The delivering pawns are leaving the map, because they couldn't access the tax delivery spot. -->
+  <FCDeliveryPawnsLeavingMapNoPath>TODO</FCDeliveryPawnsLeavingMapNoPath>
+	<!-- EN: The delivering pawns are collecting downed members and leaving the map. -->
+  <FCDeliveryPawnsLeavingMapWithDowned>TODO</FCDeliveryPawnsLeavingMapWithDowned>
+	<!-- EN: Your settlement is delivering the following loot to you:  -->
+  <FCSettlementDeliveringLoot>TODO</FCSettlementDeliveringLoot>
+	<!-- EN: A delivery that was forced to wait has arrived! -->
+  <FCDeliveryHeldUpArriving>TODO</FCDeliveryHeldUpArriving>
+
+	<!-- Tithes -->
+	<!-- EN: Pause Tithes -->
+  <FCPauseTithes>暂停什一税</FCPauseTithes>
+	<!-- EN: Unpause Tithes -->
+  <FCUnPauseTithes>继续什一税</FCUnPauseTithes>
 	<!-- EN: Tithes Paused -->
   <FCTithesPaused>什一税已暂停</FCTithesPaused>
 	<!-- EN: When enabled, no tithe items will be collected for this resource at tax time. Its production value will be converted to silver income instead. Your tithe settings are preserved and will resume when unpaused. -->
   <FCPauseTithesDesc>TODO</FCPauseTithesDesc>
-
+	<!-- EN: Tithe List -->
+  <FCTitheList>什一税物品清单</FCTitheList>
+	<!-- EN: Stack Count -->
+  <FCStackCount>堆叠量</FCStackCount>
 	<!-- EN: Total Value -->
   <FCTotalValue>总计</FCTotalValue>
-
+	<!-- EN: Is Tithe -->
+  <FCIsTithe>是什一税</FCIsTithe>
+	<!-- EN: Tithe -->
+  <FCTithe>什一税</FCTithe>
+	<!-- EN: Tithing -->
+  <FCTithing>什一税</FCTithing>
+	<!-- EN: Tithe Modifier -->
+  <FCTitheModifier>什一税修正</FCTitheModifier>
+	<!-- EN: Item Selection -->
+  <FCTitheSelection>物品选取</FCTitheSelection>
 	<!-- EN: Enable All -->
   <FCTitheEnableAll>允许所有</FCTitheEnableAll>
 	<!-- EN: Disable All -->
@@ -77,6 +189,79 @@
 	<!-- EN: Show: {0} -->
   <FCTitheShowFilter>显示：{0}</FCTitheShowFilter>
 
+	<!-- Random Tithes -->
+	<!-- EN: Random Tithing -->
+  <FCRandomTithesEnabled>随机什一税</FCRandomTithesEnabled>
+	<!-- EN: Random Tithe Item Selection -->
+  <FCRandomTitheSelectionHeader>随机什一税物品选择</FCRandomTitheSelectionHeader>
+	<!-- EN: Random Tithe Budget -->
+  <FCRandomTitheBudget>随机什一税预算</FCRandomTitheBudget>
+	<!-- EN: Max -->
+  <FCAutoMaxRandomTithe>自动最大</FCAutoMaxRandomTithe>
+	<!-- EN: When enabled, the random tithe budget automatically fills the remaining income after manual tithes. Adding manual tithes will reduce the random budget accordingly. -->
+  <FCAutoMaxRandomTitheDesc>启用时，随机什一税预算将自动填补固定什一税已缴纳的实际物品值到本次税收预算上限的剩余额度。（本次随机什一税预算=本次什一税预算上限-固定什一税物品值）</FCAutoMaxRandomTitheDesc>
+	<!-- EN: If the used tithe budget is greater than the available tithe budget, then at tax time, all selected tithe options will be pruned until the used budget meets the available budget. -->
+  <FCTitheOverBudget>如果已使用的什一税预算大于可用预算，那么将在征税时尝试逐行排除你已选择的纳税物品列表，直到剩余的纳税物品价值合计小于等于本期+累计预算和。</FCTitheOverBudget>
+	<!-- EN: At tax time, you will receive a random selection of items, with a total value equal to or less than the Random Tithe Budget. You can add or remove items to the list to control what is or isn't selected.
+
+If the lowest value item in the list has a higher value than your Random Tithe Budget, or if there are no items to select from, then the budget is carried over to the next tax period. -->
+  <FCRandomTithesDesc>\n		你将在征税时收到随机选取的物品，它们的总计财富小于或等于你的随机什一税预算。你可以调整你的列表来控制你想要收到的物品。\n如果你列表中最便宜的物品也比预算上限昂贵，或你的列表是空的，那么这笔预算将累计到下个税期。</FCRandomTithesDesc>
+	<!-- EN: Accrued Budget: ${0} -->
+  <FCRandomTitheAccrued>已存储的预算：{2}</FCRandomTitheAccrued>
+	<!-- EN: The amount of leftover Random Tithe Budget that has accrued. This will be added to your Random Tithe Budget to determine the total budget for Random Tithes at tax time. -->
+  <FCRandomTitheAccruedDesc>未能转化为实物的随机什一税预算的累计值。下次征税时将与当期预算加和。</FCRandomTitheAccruedDesc>
+	<!-- EN: Disburse Accrued Budget -->
+  <FCDisburseAccruedRandomTithe>支付累计预算</FCDisburseAccruedRandomTithe>
+	<!-- EN: If checked, then the Accrued Budget will be disbursed as raw silver come tax time. It will not count towards the Random Tithe Budget. -->
+  <FCDisburseAccruedRandomTitheDesc>选中此项，则累计什一税预算将以白银的形式纳税并不再计入下次税算。</FCDisburseAccruedRandomTitheDesc>
+	<!-- EN: No Tithe: {0} -->
+  <FCNoTitheLetterLabel>没有什一税：{0}</FCNoTitheLetterLabel>
+	<!-- EN: {0} has a Random Tithe Budget for resource {1}, but no items were enabled. The Random Tithe Budget will be stored for future use.
+
+Total accrued budget: {2} -->
+  <FCNoTitheLetterDesc>{0}设置了对资源{1}的随机什一税预算，但未选择任何物品。这一预算将被存储以备后用。 已累计的预算：{2}</FCNoTitheLetterDesc>
+	<!-- EN: {0} has a Random Tithe Budget for resource {1}, but did not have enough budget to select any of the enabled items. The Random Tithe Budget will be stored for future use.
+
+Total accrued budget: {2} -->
+  <FCNoTitheLetterDesc2>{0}设置了对资源{1}的随机什一税预算，但所选择的任何物品均不足以由本次预算负担。这一预算将被存储以备后用。 已累计的预算：{2}</FCNoTitheLetterDesc2>
+	<!-- EN: Tithe Injection -->
+  <FCExternalTitheBudget>注入什一税</FCExternalTitheBudget>
+	<!-- EN: Total Tithe Budget -->
+  <FCTotalTitheBudget>总计什一税预算</FCTotalTitheBudget>
+	<!-- EN: Available Budget -->
+  <FCAvailableTitheBudget>可用预算</FCAvailableTitheBudget>
+	<!-- EN: Used Budget -->
+  <FCUsedTitheBudget>已使用预算</FCUsedTitheBudget>
+	<!-- EN: Remove this item from the tithes list. -->
+  <FCTitheXDesc>将该物品从什一税允许列表中移除。</FCTitheXDesc>
+	<!-- EN: {0} already exists in the item selection list. -->
+  <FCTitheListRejection>{0}已经在列表中</FCTitheListRejection>
+	<!-- EN: {0} with quality {1} already exists in the item selection list. -->
+  <FCTitheListRejectionQuality>品质为{1}的{0}已经在列表中</FCTitheListRejectionQuality>
+	<!-- EN: {0} with stuff {1} already exists in the item selection list. -->
+  <FCTitheListRejectionStuff>材质为{1}的{0}已经在列表中</FCTitheListRejectionStuff>
+	<!-- EN: {0} with quality {1} and stuff {2} already exists in the item selection list -->
+  <FCTitheListRejectionStuffQuality>品质为{1}材质为{2}的{0}已经在列表中</FCTitheListRejectionStuffQuality>
+	<!-- EN: Add workers to this resource to generate tithe budget. -->
+  <FCTitheBudgetNoWorkers>为此资源分配劳动力来生成什一税预算。</FCTitheBudgetNoWorkers>
+	<!-- EN: The max tithe budget isn't high enough. -->
+  <FCTitheBudgetInsufficient>最大什一税预算不足。</FCTitheBudgetInsufficient>
+
+	<!-- Add Tithe Item Window -->
+	<!-- EN: Add Tithe Item -->
+  <FCAddTitheItemHeader>添加什一税物品</FCAddTitheItemHeader>
+	<!-- EN: Item Selection -->
+  <FCItemSelection>物品选择</FCItemSelection>
+	<!-- EN: Add Item -->
+  <FCAddItem>添加</FCAddItem>
+	<!-- EN: Stuff -->
+  <FCStuff>材质</FCStuff>
+	<!-- EN: Select stuff... -->
+  <FCSelectStuff>选择物品材质</FCSelectStuff>
+	<!-- EN: Must select a stuff type -->
+  <FCMustSelectStuff>必须选择材质</FCMustSelectStuff>
+	<!-- EN: This item is already in the tithe list -->
+  <FCItemAlreadyInTitheList>物品已经在列表中</FCItemAlreadyInTitheList>
 	<!-- EN: Clear Selection -->
   <FCClearSelection>清空所选</FCClearSelection>
 	<!-- EN: Remaining Budget: {0} / {1} total -->
@@ -102,55 +287,124 @@
 	<!-- EN: Price: High -->
   <FCTitheSortPriceHigh>价格排序：高</FCTitheSortPriceHigh>
 
-
+	<!-- Production -->
+	<!-- EN: Base Production Stats -->
+  <FCBaseProductionStats>地块产量</FCBaseProductionStats>
+	<!-- EN: Production -->
+  <FCProduction>产量</FCProduction>
+	<!-- EN: Production Efficiency -->
+  <FCProductionEfficiency>生产效率</FCProductionEfficiency>
+	<!-- EN: The total settlement production of the resource -->
+  <FCSettlementProductionOf>总领地产量</FCSettlementProductionOf>
+	<!-- EN: Total Production -->
+  <FCTotalProduction>总产量</FCTotalProduction>
+	<!-- EN: Per-Worker Production -->
+  <FCPerWorkerProduction>每劳动力产量</FCPerWorkerProduction>
+	<!-- EN: Total Production -->
+  <FCTotalProd>合集产量</FCTotalProd>
 	<!-- EN: Current rate: {0}\nPeriod average: {1} ({2} of {3} days sampled) -->
   <FCTotalProdTooltip>当前速率：{0}\n 平均：{1} （已计算{2}\{3}天）</FCTotalProdTooltip>
 	<!-- EN: Resource Pools -->
   <FCResourcePools>资源池</FCResourcePools>
 
+	<!-- Resource Types -->
+	<!-- EN: Food -->
+  <FCFood>食物</FCFood>
+	<!-- EN: Weapons -->
+  <FCWeapons>武器</FCWeapons>
+	<!-- EN: Animals -->
+  <FCAnimals>畜牧</FCAnimals>
+	<!-- EN: Logging -->
+  <FCLogging>林业</FCLogging>
+	<!-- EN: Mining -->
+  <FCMining>矿业</FCMining>
+
+	<!-- Workers -->
+	<!-- EN: Workers -->
+  <FCWorkers>劳动力</FCWorkers>
+	<!-- EN: Free Workers -->
+  <FCFreeWorkers>空余劳动力</FCFreeWorkers>
+	<!-- EN: Assigned Workers -->
+  <FCAssignedWorkers>已指派劳动力</FCAssignedWorkers>
+	<!-- EN: {0}/{1} -->
+  <FCAssignedWorkersValue>{0}/{1}</FCAssignedWorkersValue>
+	<!-- EN: Assigned Overmax Workers -->
+  <FCAssignedOvermaxWorkers>已指派的额外劳动力</FCAssignedOvermaxWorkers>
+	<!-- EN: {0}/{1} -->
+  <FCAssignedOvermaxWorkersValue>{0}/{1}</FCAssignedOvermaxWorkersValue>
+	<!-- EN: Each addtional overmax worker increases the cost of all workers by 5. -->
+  <FCAssignedOvermaxWorkersTooltip>每指派一个额外劳动力就增加所有劳动力的成本 5点</FCAssignedOvermaxWorkersTooltip>
+	<!-- EN: Cost Per Worker -->
+  <FCCostPerWorker>每劳动力成本</FCCostPerWorker>
+
+	<!-- Income -->
+	<!-- EN: Cost -->
+  <FCCost>TODO</FCCost>
+	<!-- EN: Silver -->
+  <FCSilver>白银</FCSilver>
+	<!-- EN: $ -->
+  <FCCashSymbol>$</FCCashSymbol>
+	<!-- EN: Initial Cost -->
+  <FCInitialCost>初始成本</FCInitialCost>
+	<!-- EN: You do not have enough silver on the current map to found a new settlement -->
+  <FCNotEnoughSilverToSettle>你的白银不足以开设新的领地</FCNotEnoughSilverToSettle>
+	<!-- EN: You do not have enough silver on the current map to construct that building
+	 -->
+  <FCNotEnoughSilverConstructBuilding>你没有足够的白银建造这个建筑</FCNotEnoughSilverConstructBuilding>
 	<!-- EN: You do not have enough silver on the current map to pay for the demolition -->
   <FCNotEnoughSilverDemolish>你当前地图上没有足够的白银来支付拆除费用</FCNotEnoughSilverDemolish>
+	<!-- EN: You do not have enough silver on the current map to enact that policy -->
+  <FCNotEnoughMoneyToEnact>你没有足够的白银来制定这项政策</FCNotEnoughMoneyToEnact>
+	<!-- EN: Profit -->
+  <FCProfit>税额</FCProfit>
+	<!-- EN: Tax Base -->
+  <FCTaxBase>税基</FCTaxBase>
+	<!-- EN: Income -->
+  <FCIncome>收入</FCIncome>
 	<!-- EN: Upkeep -->
   <FCUpkeep>维护</FCUpkeep>
+	<!-- EN: Raw -->
+  <FCRaw>原始</FCRaw>
+	<!-- EN: The total income a resource produces, before any deductions. -->
+  <FCRawIncomeDesc>资源提供的原始收入值，在各种计算前的净值。</FCRawIncomeDesc>
+	<!-- EN: Net -->
+  <FCNet>净收入</FCNet>
+	<!-- EN: The total income a resource produces, after accounting for stockpile diversions and tithes. -->
+  <FCNetIncomeDesc>从某个资源处获得的净收入，这个值是在计算了库存转储和什一税扣缴后的结果。</FCNetIncomeDesc>
+	<!-- EN: Gross income: {0} -->
+  <FCNetIncomeBreakdownGross>原始收入：{0}</FCNetIncomeBreakdownGross>
+	<!-- EN: Stockpile diversions: -{0} -->
+  <FCNetIncomeBreakdownStockpile>库存转储：{0}</FCNetIncomeBreakdownStockpile>
+	<!-- EN: Tithes: -{0} -->
+  <FCNetIncomeBreakdownTithes>什一税：{0}</FCNetIncomeBreakdownTithes>
+	<!-- EN: Tithe injection offset: +{0} -->
+  <FCNetIncomeBreakdownTitheInjection>什一税注入偏移：{0}</FCNetIncomeBreakdownTitheInjection>
+	<!-- EN: Net income: {0} -->
+  <FCNetIncomeBreakdownNet>净收入：{0}</FCNetIncomeBreakdownNet>
+	<!-- EN: Period average net: {0} ({1} of {2} days sampled) -->
+  <FCNetIncomeBreakdownAvg>日均净收入：{0} （{1}/{2}天已计算）</FCNetIncomeBreakdownAvg>
+	<!-- EN: {0}{1} -->
+  <FCItemcost>TODO</FCItemcost>
+
+	<!-- Power Output -->
+	<!-- EN: Set as Empire Power Output -->
+  <FCSetAsEmpirePowerOutput>设置为玩家派系电能出口</FCSetAsEmpirePowerOutput>
+	<!-- EN: Set Power Output -->
+  <FCSetAsOutput>设置电能出口</FCSetAsOutput>
+	<!-- EN: The transformer has been set as the power output for your settlements! -->
+  <FCSetAsOutputSuccess>此变压器已设置为你领地的电能出口！</FCSetAsOutputSuccess>
 
 	<!-- Settlement Fee Reduction -->
 	<!-- EN: The cost of your next settlement will be reduced by half because of your faction's expansionist trait -->
   <FCActionSettlementFeeReduction>扩张主义特性奖励：下一个领地的成本减半。</FCActionSettlementFeeReduction>
-  <FCNotEnoughSilverForBill>你没有足够的白银来支付未付的账单</FCNotEnoughSilverForBill>
-  <FCConfiscatedTithes>他们没收了你的什一税。</FCConfiscatedTithes>
-  <FCOutstandingBills>未付账单</FCOutstandingBills>
-  <FCDueDate>结算日</FCDueDate>
-  <FCAmount>金额</FCAmount>
-  <FCHasTithe>税务</FCHasTithe>
-  <FCPayReceiveSilver>支付/收取白银</FCPayReceiveSilver>
-  <FCResolveBill>结算此账单</FCResolveBill>
-  <FCNotEnoughSilverOnMapToPayBill>你在当前地图上没有足够的白银来支付账单</FCNotEnoughSilverOnMapToPayBill>
-  <FCNumberTaxesHasBeenSolved>已自动结算了{0}个账单</FCNumberTaxesHasBeenSolved>
-  <FCBillResolved>账单已结算。</FCBillResolved>
-  <FCDueFC>截止日</FCDueFC>
-  <FCUnpaidTitheEffect>在这个领地动乱度+10,幸福度有所下降.</FCUnpaidTitheEffect>
-  <FCLateBillAutoPaidLabel>自动付清过期账单</FCLateBillAutoPaidLabel>
-  <FCLateBillAutoPaidDesc>已从你的白银储备自动付清{0}个超期账单。\n\n这影响了以下领地：\n{1}\n\n 你的延期付清导致了这些领地出现小的不满，且幸福度下降。</FCLateBillAutoPaidDesc>
-  <FCSettlementTax>领地税收</FCSettlementTax>
-  <FCWeekOf>星期</FCWeekOf>
-  <FCTaxesBilled>已开始汇总税收</FCTaxesBilled>
-  <FCTaxesBilledShort>税收已发出</FCTaxesBilledShort>
-  <FCTaxesBilledDesc>你的领地已征税。</FCTaxesBilledDesc>
-  <FCNoSettlementsToTax>没有可征税的领地</FCNoSettlementsToTax>
-  <FCTaxesFrom>征税自</FCTaxesFrom>
-  <FCHaveBeenDelivered>已交付</FCHaveBeenDelivered>
-  <FCTaxesHaveArrived>征税已到达</FCTaxesHaveArrived>
-  <FCTaxesFromSettlementAreBeingDelivered>来自{0}的征税正前往你指定的收税点</FCTaxesFromSettlementAreBeingDelivered>
-  <FCTaxPercentage>什一税 %</FCTaxPercentage>
-  <FCTaxDeliveryMap>税收目的地（地图）</FCTaxDeliveryMap>
-  <FCInnovativeMessage>来自{0}的研究进展为你提供了{0}研究点。</FCInnovativeMessage>
-  <FCTaxReports>税收报告</FCTaxReports>
-  <FCFactionTaxReports>派系税收报告</FCFactionTaxReports>
-  <FCSettlementTaxCollection>领地税收累计</FCSettlementTaxCollection>
-  <FCEstimatedProfit>预计收益</FCEstimatedProfit>
-  <FCEstimatedValue>预估值</FCEstimatedValue>
-  <FCTimeTillTax>距离下次征税时间</FCTimeTillTax>
-  <FCTotalFactionProduction>派系总产量</FCTotalFactionProduction>
+
+	<!-- Goods Received -->
+	<!-- EN: Goods Received -->
+  <FCGoodsReceived>收到物品</FCGoodsReceived>
+	<!-- EN: You have received the following goods from the {0} event: -->
+  <FCGoodsReceivedFollowing>你从{0}事件中获得了下列物品：</FCGoodsReceivedFollowing>
+
+  <!-- UNUSED -->
   <FCselectTaxDeliveryModeButton>强制税收到达模式：</FCselectTaxDeliveryModeButton>
   <FCtaxDeliveryModeDefaultDesc>不强制，税收到达模式取决于你的科技和税收来源领地的建筑</FCtaxDeliveryModeDefaultDesc>
   <FCtaxDeliveryModeTaxSpotDesc>税收点，税收直接在税收点生成。</FCtaxDeliveryModeTaxSpotDesc>
@@ -164,92 +418,6 @@
   <FCdeliveryPawnsLeavingMapWithDowned>税收护送队伍正在救援倒下的成员并离开地图。</FCdeliveryPawnsLeavingMapWithDowned>
   <FCsettlementDeliveringLoot>你的领地正在运送以下物资：</FCsettlementDeliveringLoot>
   <FCdeliveryHeldUpArriving>一批被迫延后的货物已到达！</FCdeliveryHeldUpArriving>
-  <FCPauseTithes>暂停什一税</FCPauseTithes>
-  <FCUnPauseTithes>继续什一税</FCUnPauseTithes>
-  <FCPauseTithesDesc>暂停什一税时，缴税不会缴纳实物，将继续按产值缴纳对应的白银。不必担心，你的什一税收取物品相关设置受到保留，你可以随时继续用已配置好的物品清单收取什一税。</FCPauseTithesDesc>
-  <FCTitheList>什一税物品清单</FCTitheList>
-  <FCStackCount>堆叠量</FCStackCount>
-  <FCIsTithe>是什一税</FCIsTithe>
-  <FCTithe>什一税</FCTithe>
-  <FCTithing>什一税</FCTithing>
-  <FCTitheModifier>什一税修正</FCTitheModifier>
-  <FCTitheSelection>物品选取</FCTitheSelection>
-  <FCRandomTithesEnabled>随机什一税</FCRandomTithesEnabled>
-  <FCRandomTitheSelectionHeader>随机什一税物品选择</FCRandomTitheSelectionHeader>
-  <FCRandomTitheBudget>随机什一税预算</FCRandomTitheBudget>
-  <FCAutoMaxRandomTithe>自动最大</FCAutoMaxRandomTithe>
-  <FCAutoMaxRandomTitheDesc>启用时，随机什一税预算将自动填补固定什一税已缴纳的实际物品值到本次税收预算上限的剩余额度。（本次随机什一税预算=本次什一税预算上限-固定什一税物品值）</FCAutoMaxRandomTitheDesc>
-  <FCTitheOverBudget>如果已使用的什一税预算大于可用预算，那么将在征税时尝试逐行排除你已选择的纳税物品列表，直到剩余的纳税物品价值合计小于等于本期+累计预算和。</FCTitheOverBudget>
-  <FCRandomTithesDesc>\n		你将在征税时收到随机选取的物品，它们的总计财富小于或等于你的随机什一税预算。你可以调整你的列表来控制你想要收到的物品。\n如果你列表中最便宜的物品也比预算上限昂贵，或你的列表是空的，那么这笔预算将累计到下个税期。</FCRandomTithesDesc>
-  <FCRandomTitheAccrued>已存储的预算：{2}</FCRandomTitheAccrued>
-  <FCRandomTitheAccruedDesc>未能转化为实物的随机什一税预算的累计值。下次征税时将与当期预算加和。</FCRandomTitheAccruedDesc>
-  <FCDisburseAccruedRandomTithe>支付累计预算</FCDisburseAccruedRandomTithe>
-  <FCDisburseAccruedRandomTitheDesc>选中此项，则累计什一税预算将以白银的形式纳税并不再计入下次税算。</FCDisburseAccruedRandomTitheDesc>
-  <FCNoTitheLetterLabel>没有什一税：{0}</FCNoTitheLetterLabel>
-  <FCNoTitheLetterDesc>{0}设置了对资源{1}的随机什一税预算，但未选择任何物品。这一预算将被存储以备后用。 已累计的预算：{2}</FCNoTitheLetterDesc>
-  <FCNoTitheLetterDesc2>{0}设置了对资源{1}的随机什一税预算，但所选择的任何物品均不足以由本次预算负担。这一预算将被存储以备后用。 已累计的预算：{2}</FCNoTitheLetterDesc2>
-  <FCExternalTitheBudget>注入什一税</FCExternalTitheBudget>
-  <FCTotalTitheBudget>总计什一税预算</FCTotalTitheBudget>
-  <FCAvailableTitheBudget>可用预算</FCAvailableTitheBudget>
-  <FCUsedTitheBudget>已使用预算</FCUsedTitheBudget>
-  <FCTitheXDesc>将该物品从什一税允许列表中移除。</FCTitheXDesc>
-  <FCTitheListRejection>{0}已经在列表中</FCTitheListRejection>
-  <FCTitheListRejectionQuality>品质为{1}的{0}已经在列表中</FCTitheListRejectionQuality>
-  <FCTitheListRejectionStuff>材质为{1}的{0}已经在列表中</FCTitheListRejectionStuff>
-  <FCTitheListRejectionStuffQuality>品质为{1}材质为{2}的{0}已经在列表中</FCTitheListRejectionStuffQuality>
-  <FCTitheBudgetNoWorkers>为此资源分配劳动力来生成什一税预算。</FCTitheBudgetNoWorkers>
-  <FCTitheBudgetInsufficient>最大什一税预算不足。</FCTitheBudgetInsufficient>
-  <FCAddTitheItemHeader>添加什一税物品</FCAddTitheItemHeader>
-  <FCItemSelection>物品选择</FCItemSelection>
-  <FCAddItem>添加</FCAddItem>
-  <FCStuff>材质</FCStuff>
-  <FCSelectStuff>选择物品材质</FCSelectStuff>
-  <FCMustSelectStuff>必须选择材质</FCMustSelectStuff>
-  <FCItemAlreadyInTitheList>物品已经在列表中</FCItemAlreadyInTitheList>
-  <FCBaseProductionStats>地块产量</FCBaseProductionStats>
-  <FCProduction>产量</FCProduction>
-  <FCProductionEfficiency>生产效率</FCProductionEfficiency>
-  <FCSettlementProductionOf>总领地产量</FCSettlementProductionOf>
-  <FCTotalProduction>总产量</FCTotalProduction>
-  <FCPerWorkerProduction>每劳动力产量</FCPerWorkerProduction>
-  <FCTotalProd>合集产量</FCTotalProd>
-  <FCFood>食物</FCFood>
-  <FCWeapons>武器</FCWeapons>
-  <FCAnimals>畜牧</FCAnimals>
-  <FCLogging>林业</FCLogging>
-  <FCMining>矿业</FCMining>
-  <FCWorkers>劳动力</FCWorkers>
-  <FCFreeWorkers>空余劳动力</FCFreeWorkers>
-  <FCAssignedWorkers>已指派劳动力</FCAssignedWorkers>
-  <FCAssignedWorkersValue>{0}/{1}</FCAssignedWorkersValue>
-  <FCAssignedOvermaxWorkers>已指派的额外劳动力</FCAssignedOvermaxWorkers>
-  <FCAssignedOvermaxWorkersValue>{0}/{1}</FCAssignedOvermaxWorkersValue>
-  <FCAssignedOvermaxWorkersTooltip>每指派一个额外劳动力就增加所有劳动力的成本 5点</FCAssignedOvermaxWorkersTooltip>
-  <FCCostPerWorker>每劳动力成本</FCCostPerWorker>
-  <FCSilver>白银</FCSilver>
-  <FCCashSymbol>$</FCCashSymbol>
-  <FCInitialCost>初始成本</FCInitialCost>
-  <FCNotEnoughSilverToSettle>你的白银不足以开设新的领地</FCNotEnoughSilverToSettle>
-  <FCNotEnoughSilverConstructBuilding>你没有足够的白银建造这个建筑</FCNotEnoughSilverConstructBuilding>
-  <FCNotEnoughMoneyToEnact>你没有足够的白银来制定这项政策</FCNotEnoughMoneyToEnact>
-  <FCProfit>税额</FCProfit>
-  <FCTaxBase>税基</FCTaxBase>
-  <FCIncome>收入</FCIncome>
-  <FCUpkeep>维护</FCUpkeep>
-  <FCRaw>原始</FCRaw>
-  <FCRawIncomeDesc>资源提供的原始收入值，在各种计算前的净值。</FCRawIncomeDesc>
-  <FCNet>净收入</FCNet>
-  <FCNetIncomeDesc>从某个资源处获得的净收入，这个值是在计算了库存转储和什一税扣缴后的结果。</FCNetIncomeDesc>
-  <FCNetIncomeBreakdownGross>原始收入：{0}</FCNetIncomeBreakdownGross>
-  <FCNetIncomeBreakdownStockpile>库存转储：{0}</FCNetIncomeBreakdownStockpile>
-  <FCNetIncomeBreakdownTithes>什一税：{0}</FCNetIncomeBreakdownTithes>
-  <FCNetIncomeBreakdownTitheInjection>什一税注入偏移：{0}</FCNetIncomeBreakdownTitheInjection>
-  <FCNetIncomeBreakdownNet>净收入：{0}</FCNetIncomeBreakdownNet>
-  <FCNetIncomeBreakdownAvg>日均净收入：{0} （{1}/{2}天已计算）</FCNetIncomeBreakdownAvg>
   <FCitemcost>{0}{1}</FCitemcost>
-  <FCSetAsEmpirePowerOutput>设置为玩家派系电能出口</FCSetAsEmpirePowerOutput>
-  <FCSetAsOutput>设置电能出口</FCSetAsOutput>
-  <FCSetAsOutputSuccess>此变压器已设置为你领地的电能出口！</FCSetAsOutputSuccess>
-  <FCGoodsReceived>收到物品</FCGoodsReceived>
-  <FCGoodsReceivedFollowing>你从{0}事件中获得了下列物品：</FCGoodsReceivedFollowing>
+
 </LanguageData>

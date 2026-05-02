@@ -2,16 +2,80 @@
 <LanguageData>
 
 	<!-- Generic Labels -->
-
+	<!-- EN: Name -->
+  <FCName>TODO</FCName>
+	<!-- EN: None -->
+  <FCNone>TODO</FCNone>
+	<!-- EN: No -->
+  <FCNo>TODO</FCNo>
+	<!-- EN: Yes -->
+  <FCYes>TODO</FCYes>
+	<!-- EN: Set -->
+  <FCSet>设置</FCSet>
+	<!-- EN: Deploy -->
+  <FCDeploy>部署</FCDeploy>
+	<!-- EN: Reset -->
+  <FCReset>TODO</FCReset>
+	<!-- EN: Base -->
+  <FCBase>TODO</FCBase>
+	<!-- EN: Modifier -->
+  <FCModifier>加成系数</FCModifier>
+	<!-- EN: Final -->
+  <FCFinal>最终值</FCFinal>
+	<!-- EN: Tile Modifiers -->
+  <FCCreateColonyTileModifiersTitle>TODO</FCCreateColonyTileModifiersTitle>
+	<!-- EN: Effect -->
+  <FCEffect>效果</FCEffect>
+	<!-- EN: Info -->
+  <FCInfo>信息</FCInfo>
+	<!-- EN: Total -->
+  <FCTotal>TODO</FCTotal>
+	<!-- EN: Mult -->
+  <FCMult>乘数</FCMult>
+	<!-- EN: Date -->
+  <FCDate>TODO</FCDate>
+	<!-- EN: Selected -->
+  <FCSelected>已选中</FCSelected>
+	<!-- EN: Select -->
+  <FCSelect>选择</FCSelect>
 	<!-- EN: Enabled -->
   <FCIsAllowed>已启用</FCIsAllowed>
 	<!-- EN: Disabled -->
   <FCIsNotAllowed>已禁用</FCIsNotAllowed>
 	<!-- EN: Per-Worker -->
+  <FCPerWorker>每劳动力</FCPerWorker>
+	<!-- EN: {0}/{1} -->
+  <FCNumRatio>{0}/{1}</FCNumRatio>
+	<!-- EN:  a settlement  -->
+  <FCASettlement>TODO</FCASettlement>
+	<!-- EN: This will be added to in the future -->
+  <FCAddedInFuture>待更新</FCAddedInFuture>
+	<!-- EN: Item -->
+  <FCItem>物品</FCItem>
 
+	<!-- Tab Labels -->
+	<!-- EN: Settlements -->
+  <FCColonies>殖民地</FCColonies>
+	<!-- EN: Bills -->
+  <FCBills>账单</FCBills>
+	<!-- EN: Events -->
+  <FCEvents>事件</FCEvents>
+	<!-- EN: Settlement -->
+  <FCSettlement>领地</FCSettlement>
+	<!-- EN: Settlements -->
+  <FCSettlements>领地</FCSettlements>
 	<!-- EN: Overview -->
   <FCOverview>总览</FCOverview>
+	<!-- EN: Travel Time -->
+  <FCTravelTime>旅途用时</FCTravelTime>
+	<!-- EN: Construction Time -->
+  <FCConstructionTime>建筑用时</FCConstructionTime>
 
+	<!-- Buttons -->
+	<!-- EN: This button is not available yet -->
+  <FCButtonNotAvailable>此按钮尚不可用</FCButtonNotAvailable>
+	<!-- EN: Confirm Changes -->
+  <FCConfirmChanges>确认更改</FCConfirmChanges>
 	<!-- EN: Confirm -->
   <FCConfirm>确认</FCConfirm>
 	<!-- EN: Confirm Decision -->
@@ -20,7 +84,20 @@
   <FCConfirmSettle>要使用 {1} 白银 建立 {0} 吗？</FCConfirmSettle>
 	<!-- EN: Don't show this again -->
   <FCConfirmDontShowAgain>不再提示</FCConfirmDontShowAgain>
-
+	<!-- EN: View -->
+  <FCView>查看</FCView>
+	<!-- EN: Go To -->
+  <FCGoTo>去往</FCGoTo>
+	<!-- EN: Report -->
+  <FCReport>报告</FCReport>
+	<!-- EN: Reports -->
+  <FCReports>报告</FCReports>
+	<!-- EN: Actions -->
+  <FCActions>行动</FCActions>
+	<!-- EN: View Info -->
+  <FCViewInfo>查看详情</FCViewInfo>
+	<!-- EN: Set Map -->
+  <FCSetMap>设置地图</FCSetMap>
 	<!-- EN: Action Available -->
   <FCActionAvailable>有操作可执行</FCActionAvailable>
 
@@ -51,15 +128,22 @@
   <FCBuildingLockedLevel>将在殖民地等级{0}解锁。</FCBuildingLockedLevel>
 	<!-- EN: Maximum building slots reached for this settlement type. -->
   <FCBuildingLockedMax>已达到此聚落类型所能支持的最大建筑槽位。</FCBuildingLockedMax>
-
+	<!-- EN: Capital -->
+  <FCCapital>首都</FCCapital>
 
 	<!-- Float Menu -->
 	<!-- EN: Type to search: -->
+  <FCFloatMenuSearchable>输入以搜索</FCFloatMenuSearchable>
 	<!-- EN: Force Open -->
   <FCSMFForceOpen>强制打开</FCSMFForceOpen>
 
 	<!-- Errors -->
-
+	<!-- EN: Action not allowed -->
+  <FCActionNotAllowed>TODO</FCActionNotAllowed>
+	<!-- EN: Are you sure you want to delete "{0}"? -->
+  <FCConfirmDelete>TODO</FCConfirmDelete>
+	<!-- EN: That name is invalid -->
+  <FCNameIsInvalid>TODO</FCNameIsInvalid>
 	<!-- EN: If you can read this, something went wrong. -->
   <FCGenericError>看到此文本表示出现了错误。</FCGenericError>
 	<!-- EN: You do not have enough silver on the map to pay for that option -->
@@ -69,39 +153,7 @@
 	<!-- EN: Requires one of: {0} -->
   <FCOptionRequiresPolicyAny>需要{0}中之一</FCOptionRequiresPolicyAny>
 
-  
-  <FCSet>设置</FCSet>
-  <FCDeploy>部署</FCDeploy>
-  <FCModifier>加成系数</FCModifier>
-  <FCFinal>最终值</FCFinal>
-  <FCEffect>效果</FCEffect>
-  <FCInfo>信息</FCInfo>
-  <FCMult>乘数</FCMult>
-  <FCSelected>已选中</FCSelected>
-  <FCSelect>选择</FCSelect>
-  <FCPerWorker>每劳动力</FCPerWorker>
-  <FCNumRatio>{0}/{1}</FCNumRatio>
+  <!-- UNUSED -->
   <FCaSettlement>一个殖民地</FCaSettlement>
-  <FCAddedInFuture>待更新</FCAddedInFuture>
-  <FCItem>物品</FCItem>
-  <FCColonies>殖民地</FCColonies>
-  <FCBills>账单</FCBills>
-  <FCEvents>事件</FCEvents>
-  <FCSettlement>领地</FCSettlement>
-  <FCSettlements>领地</FCSettlements>
-  <FCOverview>总览</FCOverview>
-  <FCTravelTime>旅途用时</FCTravelTime>
-  <FCConstructionTime>建筑用时</FCConstructionTime>
-  <FCButtonNotAvailable>此按钮尚不可用</FCButtonNotAvailable>
-  <FCConfirmChanges>确认更改</FCConfirmChanges>
-  <FCView>查看</FCView>
-  <FCGoTo>去往</FCGoTo>
-  <FCReport>报告</FCReport>
-  <FCReports>报告</FCReports>
-  <FCActions>行动</FCActions>
-  <FCViewInfo>查看详情</FCViewInfo>
-  <FCSetMap>设置地图</FCSetMap>
-  <FCCapital>首都</FCCapital>
-  <FCFloatMenuSearchable>输入以搜索</FCFloatMenuSearchable>
 
 </LanguageData>

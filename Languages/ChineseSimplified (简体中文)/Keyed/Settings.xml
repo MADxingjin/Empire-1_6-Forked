@@ -67,6 +67,12 @@ Spreading out the computation will reduce the impact on performance, but no road
   <FCSettingMaxThreatScaling>最大威胁缩放</FCSettingMaxThreatScaling>
 	<!-- EN: Defender Advantage -->
   <FCSettingDefenderAdvantage>防守方优势</FCSettingDefenderAdvantage>
+	<!-- EN: Max Concurrent Battle Maps -->
+  <FCSettingMaxConcurrentBattleMaps>TODO</FCSettingMaxConcurrentBattleMaps>
+	<!-- EN: Maximum number of manual defense battle maps that can be open simultaneously across all settlements. Set to 0 for unlimited. Additional battles beyond this limit will auto-resolve. -->
+  <FCSettingMaxConcurrentBattleMapsTip>TODO</FCSettingMaxConcurrentBattleMapsTip>
+	<!-- EN: Unlimited -->
+  <FCUnlimited>TODO</FCUnlimited>
 	<!-- EN: Efficiency Combat Influence (0 = HP only, 1 = full roll effect) -->
   <FCSettingEfficiencyDamping>战斗效能对战局的影响程度（0 = 仅影响生命值，1 = 完整影响）</FCSettingEfficiencyDamping>
 	<!-- EN: Controls how much the military efficiency stat affects auto-resolve battle outcomes.

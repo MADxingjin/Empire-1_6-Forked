@@ -1,42 +1,90 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
+	<!-- Xenotype/Race Selection -->
+	<!-- EN: Xenotype Selection -->
   <FCXenotypeSelection>选择异种类型</FCXenotypeSelection>
+	<!-- EN: Race Selection -->
   <FCRaceSelection>选择种族</FCRaceSelection>
+	<!-- EN: Xenotype and Race Selection -->
   <FCXenotypeRaceSelection>选择生物科技异种类型和种族</FCXenotypeRaceSelection>
+	<!-- EN: Allowed Races -->
   <FCAllowedRaces>允许的种族</FCAllowedRaces>
+	<!-- EN: Cannot have less than one race in your faction -->
   <FCCannotHaveLessThanOneRace>你的派系至少需要一个种族</FCCannotHaveLessThanOneRace>
+	<!-- EN: Allowed Xenotypes -->
   <FCAllowedXenotypes>允许的物种</FCAllowedXenotypes>
+	<!-- EN: Cannot have less than one xenotype in your faction -->
   <FCCannotHaveLessThanOneXenotype>你的派系需要至少一个生物科技异种</FCCannotHaveLessThanOneXenotype>
+	<!-- EN: Security guards will be provided for non-violent xenotypes -->
   <FCSecurityGuardsIncluded>将为无暴力能力的生物科技异种提供安保护卫</FCSecurityGuardsIncluded>
+
+	<!-- Weight Errors -->
+	<!-- EN: All Xenotypes have 0 weight! -->
   <FCXenotypeWeightError>错误：所有生物科技异种的权重均为0</FCXenotypeWeightError>
+	<!-- EN: If you close this window while all xenotypes have 0 weight, then they will all be reset to 1 weight. -->
   <FCXenotypeWeightErrorDesc>在当前状态下关闭此窗口将重置所有生物科技异种的权重为1。</FCXenotypeWeightErrorDesc>
+	<!-- EN: All races have 0 weight! -->
   <FCRaceWeightError>错误：所有种族的权重均为0</FCRaceWeightError>
+	<!-- EN: If you close this window while all races have 0 weight, then they will all be reset to 1 weight. -->
   <FCRaceWeightErrorDesc>在当前状态下关闭此窗口将重置所有物种的权重为1。</FCRaceWeightErrorDesc>
+
+	<!-- Enable/Disable Options -->
+	<!-- EN: Enable All -->
   <FCXenoRaceEnableAll>允许所有</FCXenoRaceEnableAll>
+	<!-- EN: Disable Non-Baseliner -->
   <FCXenoDisableNonBaseliner>禁用除智人种外所有</FCXenoDisableNonBaseliner>
+	<!-- EN: Disable Non-Human -->
   <FCRaceDisableNonHuman>禁用非人类种族</FCRaceDisableNonHuman>
+
+	<!-- Faction Tooltip -->
+	<!-- EN: Member Race Chances -->
+  <FCEmpireMemberRaceChances>成员种族概率</FCEmpireMemberRaceChances>
+
+	<!-- Warnings -->
+	<!-- EN: The Human race is disabled, but may still appear as a fallback if your selected races do not have valid pawn kind options. -->
+  <FCDisabledHumanWarning>即使你禁用了人类种族，当你所选的种族没有可生成的方案时，人类仍可能作为替代种族被生成</FCDisabledHumanWarning>
+	<!-- EN: Xenotype is considered non-violent. -->
+  <FCXenoNonViolentIndicatorDesc>该生物科技异种是无暴力能力的</FCXenoNonViolentIndicatorDesc>
+	<!-- EN: Only non-violent xenotypes are selected. You will still see Baseliners if violence is required. -->
+  <FCOnlyNonViolentXenoWarning>你仅选择了无暴力能力的生物科技异种。在需要战斗的场景中将回退到智人种。</FCOnlyNonViolentXenoWarning>
+
+	<!-- Animal Filter -->
+	<!-- EN: Allowed Animals -->
+  <FCAllowedAnimals>允许的动物</FCAllowedAnimals>
+	<!-- EN: Animal Selection -->
+  <FCAnimalSelection>选择动物</FCAnimalSelection>
+	<!-- EN: Enable All -->
+  <FCAnimalEnableAll>允许所有</FCAnimalEnableAll>
+	<!-- EN: Disable All -->
+  <FCAnimalDisableAll>禁用所有</FCAnimalDisableAll>
+	<!-- EN: Defaults -->
+  <FCAnimalDefaults>默认</FCAnimalDefaults>
+	<!-- EN: No animals are allowed! Defaults will be restored on close. -->
+  <FCAnimalFilterNoneError>没有允许任何动物！将在关闭此窗口时回退到默认值。</FCAnimalFilterNoneError>
+	<!-- EN: No combat-capable animals are allowed. Delivery caravans will have no guard animals. -->
+  <FCAnimalFilterNoCombatWarning>没有允许战斗用动物。税收护送远行队将没有战斗用动物用于护卫。</FCAnimalFilterNoCombatWarning>
+	<!-- EN: No pack animals are allowed! All pack animals will be re-enabled on close. -->
+  <FCAnimalFilterNoPackError>没有选择驮运动物！将在关闭此窗口时自动重新允许它们。</FCAnimalFilterNoPackError>
+	<!-- EN: Combat -->
+  <FCAnimalTagCombat>战斗</FCAnimalTagCombat>
+	<!-- EN: Pack -->
+  <FCAnimalTagPack>驮运</FCAnimalTagPack>
+	<!-- EN: Not a combat animal: -->
+  <FCAnimalNotCombatHeader>不可作为战兽：</FCAnimalNotCombatHeader>
+	<!-- EN: Trainability too low (needs Intermediate or higher) -->
+  <FCAnimalNotCombatTrainability>可训练度太低（需要适中或更高）</FCAnimalNotCombatTrainability>
+	<!-- EN: Combat power too low ({0}, needs 50 or more) -->
+  <FCAnimalNotCombatPowerLow>战斗点数太低（该动物为{0}点，需要大于等于50点才能作为战兽）</FCAnimalNotCombatPowerLow>
+	<!-- EN: All -->
+  <FCAnimalFilterShowAll>所有</FCAnimalFilterShowAll>
+	<!-- EN: Combat -->
+  <FCAnimalFilterShowCombat>战斗</FCAnimalFilterShowCombat>
+	<!-- EN: Pack -->
+  <FCAnimalFilterShowPack>驮运</FCAnimalFilterShowPack>
+
+  <!-- UNUSED -->
   <FCEmpire_XenotypeMenus_EnableAll>允许所有</FCEmpire_XenotypeMenus_EnableAll>
   <FCEmpire_XenotypeMenus_DisableNonBaseliner>禁用除智人种外所有</FCEmpire_XenotypeMenus_DisableNonBaseliner>
-  <FCEmpireMemberRaceChances>成员种族概率</FCEmpireMemberRaceChances>
-  <FCDisabledHumanWarning>即使你禁用了人类种族，当你所选的种族没有可生成的方案时，人类仍可能作为替代种族被生成</FCDisabledHumanWarning>
-  <FCXenoNonViolentIndicatorDesc>该生物科技异种是无暴力能力的</FCXenoNonViolentIndicatorDesc>
-  <FCOnlyNonViolentXenoWarning>你仅选择了无暴力能力的生物科技异种。在需要战斗的场景中将回退到智人种。</FCOnlyNonViolentXenoWarning>
-  <FCAllowedAnimals>允许的动物</FCAllowedAnimals>
-  <FCAnimalSelection>选择动物</FCAnimalSelection>
-  <FCAnimalEnableAll>允许所有</FCAnimalEnableAll>
-  <FCAnimalDisableAll>禁用所有</FCAnimalDisableAll>
-  <FCAnimalDefaults>默认</FCAnimalDefaults>
-  <FCAnimalFilterNoneError>没有允许任何动物！将在关闭此窗口时回退到默认值。</FCAnimalFilterNoneError>
-  <FCAnimalFilterNoCombatWarning>没有允许战斗用动物。税收护送远行队将没有战斗用动物用于护卫。</FCAnimalFilterNoCombatWarning>
-  <FCAnimalFilterNoPackError>没有选择驮运动物！将在关闭此窗口时自动重新允许它们。</FCAnimalFilterNoPackError>
-  <FCAnimalTagCombat>战斗</FCAnimalTagCombat>
-  <FCAnimalTagPack>驮运</FCAnimalTagPack>
-  <FCAnimalNotCombatHeader>不可作为战兽：</FCAnimalNotCombatHeader>
-  <FCAnimalNotCombatTrainability>可训练度太低（需要适中或更高）</FCAnimalNotCombatTrainability>
-  <FCAnimalNotCombatPowerLow>战斗点数太低（该动物为{0}点，需要大于等于50点才能作为战兽）</FCAnimalNotCombatPowerLow>
-  <FCAnimalFilterShowAll>所有</FCAnimalFilterShowAll>
-  <FCAnimalFilterShowCombat>战斗</FCAnimalFilterShowCombat>
-  <FCAnimalFilterShowPack>驮运</FCAnimalFilterShowPack>
 
 </LanguageData>

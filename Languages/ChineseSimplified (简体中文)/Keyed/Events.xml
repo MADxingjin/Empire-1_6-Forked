@@ -2,7 +2,14 @@
 <LanguageData>
 
 	<!-- Event Window -->
-
+	<!-- EN: Current Ongoing Events -->
+  <FCCurrentOngoingEvents>TODO</FCCurrentOngoingEvents>
+	<!-- EN: Time Remaining -->
+  <FCTimeRemaining>TODO</FCTimeRemaining>
+	<!-- EN: New Land -->
+  <FCNewLand>TODO</FCNewLand>
+	<!-- EN: This event is affecting the following settlements: -->
+  <FCEventAffectingSettlements>TODO</FCEventAffectingSettlements>
 	<!-- EN: Event -->
   <FCEvent>事件</FCEvent>
 	<!-- EN: No active events. -->
@@ -42,18 +49,80 @@
 	<!-- EN: ({0} days) -->
   <FCEffectPreviewDuration>（{0}天）</FCEffectPreviewDuration>
 
+	<!-- Building Events -->
+	<!-- EN: {0} is under construction at {1}. Estimated completion: {2}. -->
+  <FCBuildingEventDesc>TODO</FCBuildingEventDesc>
+	<!-- EN: {0} has been constructed at {1}! -->
+  <FCBuildingEventCompletedMsg>TODO</FCBuildingEventCompletedMsg>
 
+	<!-- Pawn Events -->
+	<!-- EN: Your incompetence has led to the death of a pawn from your settlements! Unrest has grown in your subject settlements. -->
+  <FCDeathOfFactionPawn>TODO</FCDeathOfFactionPawn>
+	<!-- EN: Capturing one of your settlement's pawns has caused great unrest in your subject settlements! -->
+  <FCCaptureOfFactionPawn>TODO</FCCaptureOfFactionPawn>
+	<!-- EN: Prisoner Has Died -->
+  <FCPrisonerHasDiedLetter>TODO</FCPrisonerHasDiedLetter>
+	<!-- EN: {0} at {1} has died from overworking -->
+  <FCPrisonerHasDied>TODO</FCPrisonerHasDied>
 
 	<!-- Mercenary Events -->
 	<!-- EN: Mercenary Joined -->
   <FCMercenaryJoined>雇佣兵加入</FCMercenaryJoined>
 	<!-- EN: A mercenary, {0}, from your faction has joined your colony! -->
   <FCMercenaryJoinedText>来自你派系的雇佣兵“{0}”已加入你的殖民地！</FCMercenaryJoinedText>
+
+	<!-- Shuttle/Transport Events -->
+	<!-- EN: A shuttle is transporting injured colonists back to you after a successful settlement defence -->
+  <FCTransportingInjuredShuttle>TODO</FCTransportingInjuredShuttle>
+	<!-- EN: Drop pods are transporting injured colonists back to you after a successful settlement defence -->
+  <FCTransportingInjuredDropPod>TODO</FCTransportingInjuredDropPod>
+	<!-- EN: A caravan is transporting injured colonists back to you after a successful settlement defence -->
+  <FCTransportingInjuredCaravan>TODO</FCTransportingInjuredCaravan>
+	<!-- EN: A shuttle is transporting injured colonists back to you after a failed settlement defence -->
+  <FCTransportingInjuredShuttleLost>TODO</FCTransportingInjuredShuttleLost>
+	<!-- EN: Drop pods are transporting injured colonists back to you after a failed settlement defence -->
+  <FCTransportingInjuredDropPodLost>TODO</FCTransportingInjuredDropPodLost>
+	<!-- EN: A caravan is transporting injured colonists back to you after a failed settlement defence -->
+  <FCTransportingInjuredCaravanLost>TODO</FCTransportingInjuredCaravanLost>
+	<!-- EN: A shuttle couldn't find a free landing spot and is waiting for one to be cleared. It contains: {0}. -->
+  <FCShuttleLandingBlockedWithItems>TODO</FCShuttleLandingBlockedWithItems>
+	<!-- EN: A shuttle couldn't find a free landing spot and is waiting for one to be cleared. -->
+  <FCShuttleLandingBlocked>TODO</FCShuttleLandingBlocked>
+	<!-- EN: A caravan is waiting with it's delivery until your map is clear of danger. -->
+  <FCCaravanDangerTooHigh>TODO</FCCaravanDangerTooHigh>
+	<!-- EN: A caravan is waiting with it's delivery until your map is clear of danger. They carry: {0}. -->
+  <FCCaravanDangerTooHighWithItems>TODO</FCCaravanDangerTooHighWithItems>
+
+	<!-- Shuttle Port -->
+	<!-- EN: Request a shuttle -->
+  <FCShuttlePortCallShuttleLabel>TODO</FCShuttlePortCallShuttleLabel>
+	<!-- EN: Ask your settlement to send you a shuttle that can transport a caravan:\n {0} uses remaining (Costs {1}) -->
+  <FCShuttlePortCallShuttleDesc>TODO</FCShuttlePortCallShuttleDesc>
+	<!-- EN: Target anything with free colonists to send the shuttle -->
+  <FCTargetAnythingWithColonists>TODO</FCTargetAnythingWithColonists>
+	<!-- EN: Request a shuttle for this caravan -->
+  <FCRequestShuttleToCaravan>TODO</FCRequestShuttleToCaravan>
+	<!-- EN: Request a shuttle for this settlement -->
+  <FCRequestShuttleToColony>TODO</FCRequestShuttleToColony>
+	<!-- EN: Request a shuttle for this map -->
+  <FCRequestShuttleToMap>TODO</FCRequestShuttleToMap>
+	<!-- EN: Request a shuttle for a caravan -->
+  <FCShuttlePortCallShuttleForCaravanLabel>TODO</FCShuttlePortCallShuttleForCaravanLabel>
+	<!-- EN: Target any world object you want to send the shuttle to:\n {0} uses remaining (Costs: {1}) -->
+  <FCTargetAnyWorldObject>TODO</FCTargetAnyWorldObject>
+	<!-- EN: Send the caravan here -->
+  <FCSendCaravanHere>TODO</FCSendCaravanHere>
+	<!-- EN: There are no caravans to send a shuttle to! -->
+  <FCNoCaravansToSendShuttleTo>TODO</FCNoCaravansToSendShuttleTo>
+	<!-- EN: No shuttle uses remaining in this tax period! -->
+  <FCNoShuttleUsesRemaining>TODO</FCNoShuttleUsesRemaining>
+	<!-- EN: Not enough shuttle uses remaining in this tax period! -->
+  <FCNotEnoughShuttleUsesRemaining>TODO</FCNotEnoughShuttleUsesRemaining>
 	
 	<!-- EN: Random Event -->
   <FCRandomEventLetterLabel>随机事件</FCRandomEventLetterLabel>
 
-  
+  <!-- UNUSED -->
   <CurrentOngoingEvents>正在进行中的事件</CurrentOngoingEvents>
   <TimeRemaining>剩余时间</TimeRemaining>
   <NewLand>新领地</NewLand>

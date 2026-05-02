@@ -343,7 +343,7 @@ The prosperity of a settlement directly correlates with the production of resour
 	<!-- EN: This tile is on the wrong planet layer for this settlement type. -->
   <FCTileWrongPlanetLayer>TODO</FCTileWrongPlanetLayer>
 
-  
+  <!-- UNUSED -->
   <SettleANewColony>开辟新领地</SettleANewColony>
   <CreateNewColony>开辟新领地</CreateNewColony>
   <SelectTile>选择一个地块来开辟新领地吧</SelectTile>

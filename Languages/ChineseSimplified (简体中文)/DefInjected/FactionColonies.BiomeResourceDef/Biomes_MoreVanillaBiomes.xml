@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: alpine meadow -->
+  <ZBiome_AlpineMeadow.label>TODO</ZBiome_AlpineMeadow.label>
+  
+  <!-- EN: badlands -->
+  <ZBiome_Badlands.label>TODO</ZBiome_Badlands.label>
+  
+  <!-- EN: cloud forest -->
+  <ZBiome_CloudForest.label>TODO</ZBiome_CloudForest.label>
+  
+  <!-- EN: coastal dunes -->
+  <ZBiome_CoastalDunes.label>TODO</ZBiome_CoastalDunes.label>
+  
+  <!-- EN: desert oasis -->
+  <ZBiome_DesertOasis.label>TODO</ZBiome_DesertOasis.label>
+  
+  <!-- EN: glacial shield -->
+  <ZBiome_GlacialShield.label>TODO</ZBiome_GlacialShield.label>
+  
+  <!-- EN: stormy savanna -->
+  <ZBiome_Grasslands.label>TODO</ZBiome_Grasslands.label>
+  
+  <!-- EN: ice floes -->
+  <ZBiome_Iceberg_NoBeach.label>TODO</ZBiome_Iceberg_NoBeach.label>
+  
+  <!-- EN: marsh -->
+  <ZBiome_Marsh.label>TODO</ZBiome_Marsh.label>
+  
+  <!-- EN: sandbar -->
+  <ZBiome_Sandbar_NoBeach.label>TODO</ZBiome_Sandbar_NoBeach.label>
+  
+</LanguageData>

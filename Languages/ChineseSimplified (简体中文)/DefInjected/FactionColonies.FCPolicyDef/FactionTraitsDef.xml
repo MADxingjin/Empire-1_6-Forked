@@ -16,22 +16,31 @@
   <egalitarian.label>平等</egalitarian.label>
   <!-- EN: A egalatarian society is one that seeks equality amongst all. -->
   <egalitarian.desc>平等社会致力于人人公平。</egalitarian.desc>
-  <!-- EN: - Happiness starts at 60% -->
+  <!-- EN: - All workers cost 10 additional silver -->
   <egalitarian.negativeEffects.0>幸福度从60%开始</egalitarian.negativeEffects.0>
-  <!-- EN: - Can reduce base tax by 20% for two tax periods to drastically boost happiness and prosperity -->
+  <!-- EN: - -3 over-max worker cap -->
+  <egalitarian.negativeEffects.1>TODO</egalitarian.negativeEffects.1>
+  <!-- EN: - Every worker produces 10% more -->
   <egalitarian.positiveEffects.0>可以在两个税期间降低基础税率20%以极大提升幸福度和繁荣度</egalitarian.positiveEffects.0>
-  <!-- EN: - Receives a base tax bonus of (1% per 10% happiness) -->
+  <!-- EN: - +1 to worker softcap per settlement level -->
   <egalitarian.positiveEffects.1>基础税率增强：每10%幸福度增加1%</egalitarian.positiveEffects.1>
+  <!-- EN: - Can grant a 10-day tax break to a settlement to boost happiness and prosperity at the cost of tax revenue -->
+  <egalitarian.positiveEffects.2>TODO</egalitarian.positiveEffects.2>
   
   <!-- EN: Expansionist -->
   <expansionist.label>扩张</expansionist.label>
   <!-- EN: An expansionist society is one that seeks to spread their glory across the entirety of the realm. -->
   <expansionist.desc>扩张社会致力于将他们的荣光传遍此地</expansionist.desc>
-  <!-- EN: - Your first settlement is free -->
+  <!-- EN: - New settlements start at 75% prosperity -->
+  <expansionist.negativeEffects.0>TODO</expansionist.negativeEffects.0>
+  <!-- EN: - Your empire's rapid growth draws stronger raids (+10% threat scaling) -->
+  <expansionist.negativeEffects.1>TODO</expansionist.negativeEffects.1>
+  <!-- EN: - All new settlements cost 25% less to establish -->
   <expansionist.positiveEffects.0>首个领地免费。</expansionist.positiveEffects.0>
-  <!-- EN: - Once per year, starting after your first year, the cost to create a new settlement is reduced by 50% -->
-  <expansionist.positiveEffects.1>每年的第一个新领地设立成本降低50%。</expansionist.positiveEffects.1>
   <!-- EN: - Settlements that you construct start at level 2 -->
+  <expansionist.positiveEffects.1>每年的第一个新领地设立成本降低50%。</expansionist.positiveEffects.1>
+  
+  <!-- UNUSED -->
   <expansionist.positiveEffects.2>新设立的领地从2级开始。</expansionist.positiveEffects.2>
   
   <!-- EN: Feudal -->
@@ -64,13 +73,13 @@
   <militaristic.label>军事</militaristic.label>
   <!-- EN: A militaristic society, one who seeks glory in blood and death for their cause. -->
   <militaristic.desc>军事社会在鲜血中追求荣誉，以死亡和牺牲达成其目的。</militaristic.desc>
-  <!-- EN: - +20% combat modifier when using your faction's military forces -->
+  <!-- EN: - +10% combat modifier when using your faction's military forces -->
   <militaristic.positiveEffects.0>使用派系军事力量时+20%战斗强度</militaristic.positiveEffects.0>
-  <!-- EN: - Once per five days, you can deploy a second squad from a single settlement by paying 20% of the squad's cost in Silver -->
+  <!-- EN: - Once per five days, you can deploy a second squad from a single settlement by paying 40% of the squad's cost in Silver -->
   <militaristic.positiveEffects.1>每五天一次，可以从单一领地部署一支额外队伍，但需要以现银支付队伍的20%成本。</militaristic.positiveEffects.1>
   <!-- EN: - When creating a new settlement, it will start with a Barracks -->
   <militaristic.positiveEffects.2>新领地自带军营建筑</militaristic.positiveEffects.2>
-  <!-- EN: - All military buildings cost 100 less upkeep -->
+  <!-- EN: - All military buildings cost 50 less upkeep -->
   <militaristic.positiveEffects.3>所有军事建筑减少100白银维持成本</militaristic.positiveEffects.3>
   
   <!-- EN: Pacifist -->
@@ -81,7 +90,8 @@
   <pacifist.negativeEffects.0>禁用进攻型军事行动。不能袭击或占领其他派系的基地。</pacifist.negativeEffects.0>
   <!-- EN: - Once per five days, can send a diplomatic envoy to another faction to attempt to improve relations -->
   <pacifist.positiveEffects.0>每五天一次，可以派出一支外交队伍来尝试提高目标派系的关系。</pacifist.positiveEffects.0>
-  <!-- EN: - Deaths of members of your faction will not cause unrest to rise or happiness to reduce -->
+  
+  <!-- UNUSED -->
   <pacifist.positiveEffects.1>你派系成员的死亡不会导致其所属领地的动乱度提高或幸福度降低。</pacifist.positiveEffects.1>
   
   <!-- EN: Slaver -->
@@ -90,6 +100,8 @@
   <slaver.desc>该社会专注于奴隶生意。</slaver.desc>
   <!-- EN: - -2 Over Max Workers -->
   <slaver.negativeEffects.0>领地减少2个额外劳动力</slaver.negativeEffects.0>
+  <!-- EN: - Slave labor breeds discontent (-0.5 happiness gained, +0.5 unrest gained per day) -->
+  <slaver.negativeEffects.1>TODO</slaver.negativeEffects.1>
   <!-- EN: - Your Faction has been using slaves for its projects since the start, gaining more workers at the cost of not being able to hire as many normal citizens. -->
   <slaver.positiveEffects.0>你的派系自建立之初就开始将奴隶计入资产的一部分，在获得更多劳动力的代价是招募正常成员的难度加大。</slaver.positiveEffects.0>
   <!-- EN: - +2 Workers Per Settlement Level -->
@@ -99,6 +111,8 @@
   <technocratic.label>技官</technocratic.label>
   <!-- EN: A technocratic society is one that seeks the furthering of knowledge and continuous improvement. -->
   <technocratic.desc>技官社会致力于推动知识的边界和持续的技术改进。</technocratic.desc>
+  <!-- EN: - Research investment reduces tax revenue (-10% base tax) -->
+  <technocratic.negativeEffects.0>TODO</technocratic.negativeEffects.0>
   <!-- EN: - All research produced by your settlements is doubled -->
   <technocratic.positiveEffects.0>领地产出的所有研究加倍。</technocratic.positiveEffects.0>
   <!-- EN: - Can send items that you have not completed the research for or are above your tech level to your settlements to be reverse-engineered, giving you their value in research points -->

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Economy -->
+  <CodexCat_Economy.label>TODO</CodexCat_Economy.label>
+  <!-- EN: Economic mechanics: resource production, taxes, workers, prosperity, and difficulty settings.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <CodexCat_Economy.description>TODO</CodexCat_Economy.description>
+  
+  <!-- EN: Getting Started -->
+  <CodexCat_GettingStarted.label>TODO</CodexCat_GettingStarted.label>
+  <!-- EN: Onboarding topics: founding your faction, your first settlement, and the basics of running an empire.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <CodexCat_GettingStarted.description>TODO</CodexCat_GettingStarted.description>
+  
+  <!-- EN: Military -->
+  <CodexCat_Military.label>TODO</CodexCat_Military.label>
+  <!-- EN: Military mechanics: threat level, battle simulation, cooldowns, targeting, and attack frequency.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <CodexCat_Military.description>TODO</CodexCat_Military.description>
+  
+  <!-- EN: Settlements -->
+  <CodexCat_Settlements.label>TODO</CodexCat_Settlements.label>
+  <!-- EN: Settlement mechanics: social stats, upgrade costs, building slots, and settlement types.\n<i><color=#66E0E4FF>Empire Refactored</color></i> -->
+  <CodexCat_Settlements.description>TODO</CodexCat_Settlements.description>
+  
+</LanguageData>
